@@ -1,6 +1,5 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { withKnobs } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
 import ProductStat from '.'
 const stories = storiesOf('Shared/Stat', module)
@@ -11,7 +10,6 @@ const stories = storiesOf('Shared/Stat', module)
             background: '#F8F8F8',
         }),
     )
-    .addDecorator(withKnobs)
 const stats = [
     {
         id: 'revenue',

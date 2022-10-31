@@ -1,6 +1,5 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { withKnobs } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
 import AvatarImage from '../AvatarImage'
 import AvatarCircle from '.'
@@ -11,7 +10,6 @@ const stories = storiesOf('Shared/AvatarCircle', module)
             padding: '3rem',
         }),
     )
-    .addDecorator(withKnobs)
 stories.add('default', () => (
     <AvatarCircle>
         <AvatarImage src="https://miro.medium.com/fit/c/256/256/1*NfJkA-ChiQtYLRBOLryZxQ.jpeg" name="Matt Innes" />

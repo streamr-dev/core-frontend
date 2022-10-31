@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { storiesOf } from '@storybook/react'
-import { withKnobs } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
 import DaysPopover from '$shared/components/DaysPopover'
 import ProductStat from '$shared/components/ProductStat'
@@ -13,7 +12,6 @@ const stories = storiesOf('Shared/TimeSeriesGraph', module)
             background: '#F8F8F8',
         }),
     )
-    .addDecorator(withKnobs)
 const MSEC_DAILY = 86400000
 const today = new Date('2035-01-01').getTime() + Math.floor(MSEC_DAILY * 0.5)
 const graphData = [

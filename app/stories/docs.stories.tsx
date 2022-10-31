@@ -2,7 +2,6 @@
 import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
 import { storiesOf } from '@storybook/react'
-import { withKnobs } from '@storybook/addon-knobs'
 import StoryRouter from 'storybook-react-router'
 import styles from '@sambego/storybook-styles'
 import Navigation from '$docs/components/DocsLayout/Navigation'
@@ -18,14 +17,13 @@ const story = (name) =>
                 padding: '15px',
             }),
         )
-        .addDecorator(withKnobs)
 
 story('Search')
     .addDecorator(StoryRouter())
     .add('Search', () => <Search />)
 story('Navigation')
     .addDecorator(StoryRouter())
-    .addWithJSX('desktop', () => (
+    .add('desktop', () => (
         <div>
             <span
                 style={{
@@ -59,7 +57,7 @@ story('Navigation')
     )
 story('PageTurner')
     .addDecorator(StoryRouter())
-    .addWithJSX('PageTurner', () => (
+    .add('PageTurner', () => (
         <MemoryRouter initialEntries={['/docs/welcome']}>
             <div className={docsStyles.docsLayout}>
                 <PageTurner />

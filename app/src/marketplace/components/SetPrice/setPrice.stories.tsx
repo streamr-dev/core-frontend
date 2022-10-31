@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { storiesOf } from '@storybook/react'
-import { withKnobs } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
 import SetPrice from '.'
 const stories = storiesOf('Marketplace/SetPrice', module)
@@ -11,7 +10,6 @@ const stories = storiesOf('Marketplace/SetPrice', module)
             background: '#F8F8F8',
         }),
     )
-    .addDecorator(withKnobs)
 type SetPriceControllerProps = {
     error?: string
     disabled?: boolean

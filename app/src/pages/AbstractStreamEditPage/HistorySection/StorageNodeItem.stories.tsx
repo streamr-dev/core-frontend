@@ -2,7 +2,6 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
 import { action } from '@storybook/addon-actions'
-import { withKnobs, boolean, text } from '@storybook/addon-knobs'
 import StorageNodeItem from './StorageNodeItem'
 
 const story = (name) =>
@@ -13,12 +12,11 @@ const story = (name) =>
                 padding: '15px',
             }),
         )
-        .addDecorator(withKnobs)
 
 story('StorageNodeItem').add('with knobs', () => (
     <StorageNodeItem
-        disabled={boolean('Disabled', false)}
-        active={boolean('Active', false)}
+        disabled={false}
+        active={false}
         onClick={action('onClick')}
     >
         {text('Location name', 'United States of America')}

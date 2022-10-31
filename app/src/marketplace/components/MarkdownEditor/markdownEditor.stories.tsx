@@ -1,6 +1,5 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { withKnobs } from '@storybook/addon-knobs'
 import { action } from '@storybook/addon-actions'
 import styles from '@sambego/storybook-styles'
 import MarkdownEditor from '.'
@@ -12,7 +11,6 @@ const stories = storiesOf('Marketplace/MarkdownEditor', module)
             background: '#F8F8F8',
         }),
     )
-    .addDecorator(withKnobs)
 stories.add('basic', () => <MarkdownEditor placeholder="Type here" onCommit={action('commit')} />)
 stories.add('disabled', () => <MarkdownEditor placeholder="Type here" onCommit={action('commit')} disabled />)
 stories.add('with error', () => (

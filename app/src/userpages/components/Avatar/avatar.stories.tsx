@@ -1,6 +1,5 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { withKnobs } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
 import Balance from '../Balance'
 import Avatar from '.'
@@ -11,7 +10,6 @@ const stories = storiesOf('Userpages/Avatar', module)
             padding: '3rem',
         }),
     )
-    .addDecorator(withKnobs)
 const emailUser = {
     email: 'tester1@streamr.com',
     name: 'Matt Innes',

@@ -2,7 +2,6 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
 import { action } from '@storybook/addon-actions'
-import { withKnobs, boolean } from '@storybook/addon-knobs'
 import sample from './sample.stories.png'
 import Badge, { DeployingBadge, DataUnionBadge, SharedBadge, ChainBadge } from './Badge'
 import Grid from './Grid'
@@ -16,7 +15,6 @@ const stories = storiesOf('Shared/Tile', module)
             padding: '16px',
         }),
     )
-    .addDecorator(withKnobs)
 stories.add('placeholder only', () => (
     <Grid>
         <Tile.ImageContainer autoSize>
@@ -64,7 +62,7 @@ stories.add('fixed thumbnail height', () => (
                     }}
                 >
                     <Tile.ImageContainer height="144px">
-                        <Tile.Thumbnail skeletonize={boolean('Skeletonize')} src={sample} />
+                        <Tile.Thumbnail skeletonize={true} src={sample} />
                     </Tile.ImageContainer>
                 </a>
                 <DataUnionBadge top left memberCount={16} />
@@ -92,7 +90,7 @@ stories.add('square thumbnails', () => (
                     }}
                 >
                     <Tile.ImageContainer ratio="1:1">
-                        <Tile.Thumbnail skeletonize={boolean('Skeletonize')} src={sample} />
+                        <Tile.Thumbnail skeletonize={true} src={sample} />
                     </Tile.ImageContainer>
                 </a>
                 <DataUnionBadge top left memberCount={16} />
@@ -120,7 +118,7 @@ stories.add('with Data Union badge being a link', () => (
                     }}
                 >
                     <Tile.ImageContainer autoSize>
-                        <Tile.Thumbnail skeletonize={boolean('Skeletonize')} src={sample} />
+                        <Tile.Thumbnail skeletonize={true} src={sample} />
                     </Tile.ImageContainer>
                 </a>
                 <DataUnionBadge
@@ -160,10 +158,10 @@ stories.add('elastic grid', () => (
                         }}
                     >
                         <Tile.ImageContainer autoSize>
-                            <Tile.Thumbnail skeletonize={boolean('Skeletonize')} src={sample} />
+                            <Tile.Thumbnail skeletonize={true} src={sample} />
                         </Tile.ImageContainer>
                         <Summary
-                            skeletonize={boolean('Skeletonize')}
+                            skeletonize={true}
                             name="Helsinki Tram Network GPS"
                             description={touchedAgo({
                                 created: new Date('2020-01-01'),

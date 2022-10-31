@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react'
 import { action } from '@storybook/addon-actions'
 import { storiesOf } from '@storybook/react'
-import { withKnobs } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
 import styled, { css } from 'styled-components'
 import Button from '.'
@@ -14,7 +13,6 @@ const story = (name) =>
                 padding: '32px 0',
             }),
         )
-        .addDecorator(withKnobs)
 
 const Container = styled.div`
     display: grid;
@@ -42,7 +40,7 @@ const Container = styled.div`
             text-transform: uppercase;
         `}
 `
-story('Button').addWithJSX('all', () => (
+story('Button').add('all', () => (
     <Fragment>
         <Container header>
             <strong>Normal button</strong>

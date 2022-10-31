@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { storiesOf } from '@storybook/react'
-import { withKnobs, select } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
 import EditorNav, { statuses } from '.'
 const stories = storiesOf('Marketplace/ProductPage/EditorNav', module)
@@ -11,7 +10,6 @@ const stories = storiesOf('Marketplace/ProductPage/EditorNav', module)
             background: '#F8F8F8',
         }),
     )
-    .addDecorator(withKnobs)
 const sections = [
     {
         id: 'name',
@@ -41,12 +39,12 @@ const sections = [
 
 const EditNavController = (props) => {
     const [activeSection, setActiveSection] = useState('')
-    const nameStatus = select('Name', statuses, statuses.EMPTY)
-    const coverImageStatus = select('Cover Image', statuses, statuses.EMPTY)
-    const descriptionStatus = select('Description', statuses, statuses.EMPTY)
-    const streamsStatus = select('Streams', statuses, statuses.EMPTY)
-    const priceStatus = select('Price', statuses, statuses.EMPTY)
-    const datailsStatus = select('Details', statuses, statuses.EMPTY)
+    const nameStatus = statuses.EMPTY
+    const coverImageStatus = statuses.EMPTY
+    const descriptionStatus = statuses.EMPTY
+    const streamsStatus = statuses.EMPTY
+    const priceStatus = statuses.EMPTY
+    const datailsStatus = statuses.EMPTY
     const statusValues = {
         name: nameStatus,
         coverImage: coverImageStatus,

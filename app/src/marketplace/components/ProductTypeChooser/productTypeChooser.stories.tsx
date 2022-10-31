@@ -15,7 +15,7 @@ const Container = styled.div`
 `
 storiesOf('Marketplace/ProductTypeChooser', module)
     .addDecorator(StoryRouter())
-    .addWithJSX('basic', () => (
+    .add('basic', () => (
         <Container>
             <ProductTypeChooser />
         </Container>

@@ -7,17 +7,17 @@ import exampleProductList from './exampleProductList'
 const story = (name) => storiesOf(`Marketplace/${name}`, module).addDecorator(StoryRouter())
 
 story('ProductList')
-    .addWithJSX('basic', () => (
+    .add('basic', () => (
         <Products.Container fluid>
             <Products products={exampleProductList} type="products" />
         </Products.Container>
     ))
-    .addWithJSX('no products', () => (
+    .add('no products', () => (
         <Products.Container fluid>
             <Products products={[]} type="products" />
         </Products.Container>
     ))
-    .addWithJSX('fetching', () => (
+    .add('fetching', () => (
         <Products.Container fluid>
             <Products products={exampleProductList} type="products" isFetching />
         </Products.Container>

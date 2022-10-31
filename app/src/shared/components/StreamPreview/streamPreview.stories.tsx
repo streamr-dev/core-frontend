@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
-import { withKnobs, text, boolean } from '@storybook/addon-knobs'
 import { action } from '@storybook/addon-actions'
 import StreamPreview from './'
 const stories = storiesOf('Marketplace/StreamPreview', module)
@@ -12,7 +11,6 @@ const stories = storiesOf('Marketplace/StreamPreview', module)
             height: '100vh',
         }),
     )
-    .addDecorator(withKnobs)
 const streamList = [
     {
         id: 'test-stream-1',
@@ -135,7 +133,7 @@ stories.add('loading stream with navigation (iPhone)', () => <ActiveStream />, {
 
 const PrefixedPreview = () => {
     const [streamId, setStreamId] = useState(streamIds[0])
-    const linkToStreamSettings = boolean('Link to settings', true)
+    const linkToStreamSettings = true
     const [activePartition, setActivePartition] = useState(0)
     useEffect(() => {
         setActivePartition(0)
@@ -146,7 +144,7 @@ const PrefixedPreview = () => {
             stream={streamList.find(({ id }) => id === streamId)}
             navigableStreamIds={streamIds}
             onChange={setStreamId}
-            titlePrefix={text('Product prefix', 'Tram Data')}
+            titlePrefix={'Tram Data'}
             onStreamSettings={linkToStreamSettings && action('onStreamSettings')}
             activePartition={activePartition}
             onPartitionChange={setActivePartition}

@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react'
 import { storiesOf } from '@storybook/react'
-import { withKnobs } from '@storybook/addon-knobs'
 // import { action } from '@storybook/addon-actions'
 import styles from '@sambego/storybook-styles'
 import SelectField from '.'
@@ -12,7 +11,7 @@ const stories = storiesOf('Marketplace/SelectField', module)
             background: '#F8F8F8',
         }),
     )
-    .addDecorator(withKnobs)
+
 const options = [
     {
         label: 'First',

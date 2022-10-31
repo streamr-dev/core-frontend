@@ -1,6 +1,5 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { withKnobs } from '@storybook/addon-knobs'
 import { action } from '@storybook/addon-actions'
 import styles from '@sambego/storybook-styles'
 import KeyFieldEditor from '.'
@@ -14,7 +13,6 @@ const stories = storiesOf('Userpages/KeyFieldEditor', module)
             margin: '3rem',
         }),
     )
-    .addDecorator(withKnobs)
 stories.add('default', () => (
     <KeyFieldEditor keyName="key" value="value" onCancel={action('onCancel')} onSave={action('onSave')} />
 ))

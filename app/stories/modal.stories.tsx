@@ -1,7 +1,6 @@
 import React from 'react'
 import StoryRouter from 'storybook-react-router'
 import { storiesOf } from '@storybook/react'
-import { withKnobs, select, text, number, boolean } from '@storybook/addon-knobs'
 import { action } from '@storybook/addon-actions'
 import styles from '@sambego/storybook-styles'
 import BN from 'bignumber.js'
@@ -56,7 +55,6 @@ import WrongNetworkSelectedDialog from '$shared/components/WrongNetworkSelectedD
 const story = (name) =>
     storiesOf(`Modal/${name}`, module)
         .addDecorator(StoryRouter())
-        .addDecorator(withKnobs)
         .addDecorator(
             styles({
                 color: '#323232',
@@ -80,12 +78,12 @@ const options = [
 ]
 story('Product Editor/PublishTransactionProgress')
     .add('Publish', () => {
-        const adminFeeStatus = select('Admin Fee', options, transactionStates.STARTED)
-        const updateContractStatus = select('Edit product price', options, transactionStates.STARTED)
-        const createContractStatus = select('Create contract product', options, transactionStates.STARTED)
-        const redeployPaidStatus = select('Redeploy paid', options, transactionStates.STARTED)
-        const publishFreeStatus = select('Publish free', options, transactionStates.STARTED)
-        const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
+        const adminFeeStatus = transactionStates.STARTED
+        const updateContractStatus = transactionStates.STARTED
+        const createContractStatus = transactionStates.STARTED
+        const redeployPaidStatus = transactionStates.STARTED
+        const publishFreeStatus = transactionStates.STARTED
+        const publishPendingStatus = transactionStates.STARTED
         const statuses = {
             [publishActionTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
             [publishActionTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
@@ -99,17 +97,17 @@ story('Product Editor/PublishTransactionProgress')
                 publishMode={publishModes.PUBLISH}
                 onCancel={action('cancel')}
                 status={statuses}
-                isPrompted={boolean('Prompted', false)}
+                isPrompted={false}
             />
         )
     })
     .add('Republish', () => {
-        const adminFeeStatus = select('Admin Fee', options, transactionStates.STARTED)
-        const updateContractStatus = select('Edit product price', options, transactionStates.STARTED)
-        const createContractStatus = select('Create contract product', options, transactionStates.STARTED)
-        const redeployPaidStatus = select('Redeploy paid', options, transactionStates.STARTED)
-        const publishFreeStatus = select('Publish free', options, transactionStates.STARTED)
-        const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
+        const adminFeeStatus = transactionStates.STARTED
+        const updateContractStatus = transactionStates.STARTED
+        const createContractStatus = transactionStates.STARTED
+        const redeployPaidStatus = transactionStates.STARTED
+        const publishFreeStatus = transactionStates.STARTED
+        const publishPendingStatus = transactionStates.STARTED
         const statuses = {
             [publishActionTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
             [publishActionTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
@@ -123,17 +121,17 @@ story('Product Editor/PublishTransactionProgress')
                 publishMode={publishModes.REPUBLISH}
                 onCancel={action('cancel')}
                 status={statuses}
-                isPrompted={boolean('Prompted', false)}
+                isPrompted={false}
             />
         )
     })
     .add('Redeploy', () => {
-        const adminFeeStatus = select('Admin Fee', options, transactionStates.STARTED)
-        const updateContractStatus = select('Edit product price', options, transactionStates.STARTED)
-        const createContractStatus = select('Create contract product', options, transactionStates.STARTED)
-        const redeployPaidStatus = select('Redeploy paid', options, transactionStates.STARTED)
-        const publishFreeStatus = select('Publish free', options, transactionStates.STARTED)
-        const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
+        const adminFeeStatus = transactionStates.STARTED
+        const updateContractStatus = transactionStates.STARTED
+        const createContractStatus = transactionStates.STARTED
+        const redeployPaidStatus = transactionStates.STARTED
+        const publishFreeStatus = transactionStates.STARTED
+        const publishPendingStatus = transactionStates.STARTED
         const statuses = {
             [publishActionTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
             [publishActionTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
@@ -147,13 +145,13 @@ story('Product Editor/PublishTransactionProgress')
                 publishMode={publishModes.REDEPLOY}
                 onCancel={action('cancel')}
                 status={statuses}
-                isPrompted={boolean('Prompted', false)}
+                isPrompted={false}
             />
         )
     })
     .add('Unpublish', () => {
-        const unpublishFreeStatus = select('Unpublish free', options, transactionStates.STARTED)
-        const undeployPaidStatus = select('Undeploy paid', options, transactionStates.STARTED)
+        const unpublishFreeStatus = transactionStates.STARTED
+        const undeployPaidStatus = transactionStates.STARTED
         const statuses = {
             [publishActionTypes.UNPUBLISH_FREE]: unpublishFreeStatus,
             [publishActionTypes.UNDEPLOY_CONTRACT_PRODUCT]: undeployPaidStatus,
@@ -171,7 +169,7 @@ story('Product Editor/PublishComplete')
         <PublishComplete
             onClose={action('onClose')}
             onContinue={action('onContinue')}
-            productId={text('Product id', '1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890')}
+            productId={'1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890'}
             publishMode={publishModes.PUBLISH}
         />
     ))
@@ -179,7 +177,7 @@ story('Product Editor/PublishComplete')
         <PublishComplete
             onClose={action('onClose')}
             onContinue={action('onContinue')}
-            productId={text('Product id', '1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890')}
+            productId={'1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890'}
             publishMode={publishModes.REDEPLOY}
         />
     ))
@@ -187,7 +185,7 @@ story('Product Editor/PublishComplete')
         <PublishComplete
             onClose={action('onClose')}
             onContinue={action('onContinue')}
-            productId={text('Product id', '1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890')}
+            productId={'1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890'}
             publishMode={publishModes.REPUBLISH}
         />
     ))
@@ -195,18 +193,18 @@ story('Product Editor/PublishComplete')
         <PublishComplete
             onClose={action('onClose')}
             onContinue={action('onContinue')}
-            productId={text('Product id', '1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890')}
+            productId={'1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890'}
             publishMode={publishModes.UNPUBLISH}
         />
     ))
 story('Product Editor/PublishError')
     .add('Publish', () => {
-        const adminFeeStatus = select('Admin Fee', options, transactionStates.STARTED)
-        const updateContractStatus = select('Edit product price', options, transactionStates.STARTED)
-        const createContractStatus = select('Create contract product', options, transactionStates.STARTED)
-        const redeployPaidStatus = select('Redeploy paid', options, transactionStates.STARTED)
-        const publishFreeStatus = select('Publish free', options, transactionStates.STARTED)
-        const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
+        const adminFeeStatus = transactionStates.STARTED
+        const updateContractStatus = transactionStates.STARTED
+        const createContractStatus = transactionStates.STARTED
+        const redeployPaidStatus = transactionStates.STARTED
+        const publishFreeStatus = transactionStates.STARTED
+        const publishPendingStatus = transactionStates.STARTED
         const statuses = {
             [publishActionTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
             [publishActionTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
@@ -218,12 +216,12 @@ story('Product Editor/PublishError')
         return <PublishError onClose={action('onClose')} status={statuses} publishMode={publishModes.PUBLISH} />
     })
     .add('Republish', () => {
-        const adminFeeStatus = select('Admin Fee', options, transactionStates.STARTED)
-        const updateContractStatus = select('Edit product price', options, transactionStates.STARTED)
-        const createContractStatus = select('Create contract product', options, transactionStates.STARTED)
-        const redeployPaidStatus = select('Redeploy paid', options, transactionStates.STARTED)
-        const publishFreeStatus = select('Publish free', options, transactionStates.STARTED)
-        const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
+        const adminFeeStatus = transactionStates.STARTED
+        const updateContractStatus = transactionStates.STARTED
+        const createContractStatus = transactionStates.STARTED
+        const redeployPaidStatus = transactionStates.STARTED
+        const publishFreeStatus = transactionStates.STARTED
+        const publishPendingStatus = transactionStates.STARTED
         const statuses = {
             [publishActionTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
             [publishActionTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
@@ -235,12 +233,12 @@ story('Product Editor/PublishError')
         return <PublishError onClose={action('onClose')} status={statuses} publishMode={publishModes.REPUBLISH} />
     })
     .add('Redeploy', () => {
-        const adminFeeStatus = select('Admin Fee', options, transactionStates.STARTED)
-        const updateContractStatus = select('Edit product price', options, transactionStates.STARTED)
-        const createContractStatus = select('Create contract product', options, transactionStates.STARTED)
-        const redeployPaidStatus = select('Redeploy paid', options, transactionStates.STARTED)
-        const publishFreeStatus = select('Publish free', options, transactionStates.STARTED)
-        const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
+        const adminFeeStatus = transactionStates.STARTED
+        const updateContractStatus = transactionStates.STARTED
+        const createContractStatus = transactionStates.STARTED
+        const redeployPaidStatus = transactionStates.STARTED
+        const publishFreeStatus = transactionStates.STARTED
+        const publishPendingStatus = transactionStates.STARTED
         const statuses = {
             [publishActionTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
             [publishActionTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
@@ -252,8 +250,8 @@ story('Product Editor/PublishError')
         return <PublishError onClose={action('onClose')} status={statuses} publishMode={publishModes.REDEPLOY} />
     })
     .add('Unpublish', () => {
-        const unpublishFreeStatus = select('Unpublish free', options, transactionStates.STARTED)
-        const undeployPaidStatus = select('Undeploy paid', options, transactionStates.STARTED)
+        const unpublishFreeStatus = transactionStates.STARTED
+        const undeployPaidStatus = transactionStates.STARTED
         const statuses = {
             [publishActionTypes.UNPUBLISH_FREE]: unpublishFreeStatus,
             [publishActionTypes.UNDEPLOY_CONTRACT_PRODUCT]: undeployPaidStatus,
@@ -324,7 +322,7 @@ story('Product Editor/DeployingCommunityDialog')
                 name: 'Example product',
                 type: 'DATAUNION',
             }}
-            estimate={number('Estimate', 360)}
+            estimate={360}
             onClose={action('onClose')}
             onContinue={action('onContinue')}
             spin={false}
@@ -337,7 +335,7 @@ story('Product Editor/DeployingCommunityDialog')
                 name: 'Example product',
                 type: 'DATAUNION',
             }}
-            estimate={number('Estimate', 360)}
+            estimate={360}
             onClose={action('onClose')}
             onContinue={action('onContinue')}
             minimized
@@ -534,8 +532,8 @@ story('Marketplace/PurchaseSummaryDialog')
             price={BN(123)}
             paymentCurrency="DATA"
             tokenSymbol="TEST"
-            time={text('Time', '24')}
-            timeUnit={select('Time unit', timeUnits, 'hour')}
+            time={'24'}
+            timeUnit={transactionStates.STARTED}
             approxUsd="0.11"
             onBack={action('onBack')}
             onCancel={action('onCancel')}
@@ -603,11 +601,11 @@ story('Marketplace/PurchaseSummaryDialog')
         },
     )
 story('Marketplace/PurchaseTransactionProgress').add('default', () => {
-    const resetDataAllowanceStatus = select('Reset DATA Allowance', options, transactionStates.STARTED)
-    const setDataAllowanceStatus = select('Set DATA Allowance', options, transactionStates.STARTED)
-    const resetDaiAllowanceStatus = select('Reset DAI Allowance', options, transactionStates.STARTED)
-    const setDaiAllowanceStatus = select('Set DAI Allowance', options, transactionStates.STARTED)
-    const purchaseStateStatus = select('Purchase', options, transactionStates.STARTED)
+    const resetDataAllowanceStatus = transactionStates.STARTED
+    const setDataAllowanceStatus = transactionStates.STARTED
+    const resetDaiAllowanceStatus = transactionStates.STARTED
+    const setDaiAllowanceStatus = transactionStates.STARTED
+    const purchaseStateStatus = transactionStates.STARTED
     const statuses = {
         [purchaseActionTypes.RESET_DATA_ALLOWANCE]: resetDataAllowanceStatus,
         [purchaseActionTypes.SET_DATA_ALLOWANCE]: setDataAllowanceStatus,
@@ -615,10 +613,10 @@ story('Marketplace/PurchaseTransactionProgress').add('default', () => {
         [purchaseActionTypes.SET_DAI_ALLOWANCE]: setDaiAllowanceStatus,
         [purchaseActionTypes.SUBSCRIPTION]: purchaseStateStatus,
     }
-    const prompt = select('Prompt', {
+    const prompt = {
         none: undefined,
         ...purchaseActionTypes,
-    })
+    }
     return (
         <PurchaseTransactionProgress onCancel={action('cancel')} status={statuses} prompt={prompt} tokenSymbol="DATA" />
     )
@@ -632,11 +630,11 @@ story('Marketplace/PurchaseComplete').add('default', () => (
     />
 ))
 story('Marketplace/PurchaseError').add('default', () => {
-    const resetDataAllowanceStatus = select('Reset DATA Allowance', options, transactionStates.STARTED)
-    const setDataAllowanceStatus = select('Set DATA Allowance', options, transactionStates.STARTED)
-    const resetDaiAllowanceStatus = select('Reset DAI Allowance', options, transactionStates.STARTED)
-    const setDaiAllowanceStatus = select('Set DAI Allowance', options, transactionStates.STARTED)
-    const purchaseStateStatus = select('Purchase', options, transactionStates.STARTED)
+    const resetDataAllowanceStatus = transactionStates.STARTED
+    const setDataAllowanceStatus = transactionStates.STARTED
+    const resetDaiAllowanceStatus = transactionStates.STARTED
+    const setDaiAllowanceStatus = transactionStates.STARTED
+    const purchaseStateStatus = transactionStates.STARTED
     const statuses = {
         [purchaseActionTypes.RESET_DATA_ALLOWANCE]: resetDataAllowanceStatus,
         [purchaseActionTypes.SET_DATA_ALLOWANCE]: setDataAllowanceStatus,
@@ -650,15 +648,15 @@ story('Marketplace/ErrorDialog')
     .add('default', () => (
         <ErrorDialog
             onClose={action('close')}
-            title={text('Dialog title', 'Dialog title')}
-            message={text('Dialog text', 'Dialog text')}
+            title={'Dialog title'}
+            message={'Dialog text'}
         />
     ))
     .add('waiting', () => (
         <ErrorDialog
             onClose={action('close')}
-            title={text('Dialog title', 'Dialog title')}
-            message={text('Dialog text', 'Dialog text')}
+            title={'Dialog title'}
+            message={'Dialog text'}
             waiting
         />
     ))
@@ -672,9 +670,9 @@ story('Product Editor/Whitelist/RemoveWhitelistedAddressDialog').add('default', 
     <RemoveWhitelistedAddressDialog onClose={action('onClose')} onContinue={action('onContinue')} />
 ))
 story('Product Editor/Whitelist/WhitelistEditProgressDialog').add('default', () => {
-    const setWhitelistStatus = select('Enable whitelist', options, transactionStates.STARTED)
-    const addWhitelistedAddressStatus = select('Add whitelisted address', options, transactionStates.STARTED)
-    const removeWhitelistedAddressStatus = select('Remove whitelisted address', options, transactionStates.STARTED)
+    const setWhitelistStatus = transactionStates.STARTED
+    const addWhitelistedAddressStatus = transactionStates.STARTED
+    const removeWhitelistedAddressStatus = transactionStates.STARTED
     const statuses = {
         [whitelistActionTypes.SET_REQUIRES_WHITELIST]: setWhitelistStatus,
         [whitelistActionTypes.ADD_WHITELIST_ADDRESS]: addWhitelistedAddressStatus,
@@ -684,14 +682,14 @@ story('Product Editor/Whitelist/WhitelistEditProgressDialog').add('default', () 
         <WhitelistEditProgressDialog
             onCancel={action('onCancel')}
             status={statuses}
-            isPrompted={boolean('Prompted', false)}
+            isPrompted={false}
         />
     )
 })
 story('Product Editor/Whitelist/WhitelistEditErrorDialog').add('default', () => {
-    const setWhitelistStatus = select('Enable whitelist', options, transactionStates.STARTED)
-    const addWhitelistedAddressStatus = select('Add whitelisted address', options, transactionStates.STARTED)
-    const removeWhitelistedAddressStatus = select('Remove whitelisted address', options, transactionStates.STARTED)
+    const setWhitelistStatus = transactionStates.STARTED
+    const addWhitelistedAddressStatus = transactionStates.STARTED
+    const removeWhitelistedAddressStatus = transactionStates.STARTED
     const statuses = {
         [whitelistActionTypes.SET_REQUIRES_WHITELIST]: setWhitelistStatus,
         [whitelistActionTypes.ADD_WHITELIST_ADDRESS]: addWhitelistedAddressStatus,
@@ -763,36 +761,36 @@ story('Shared/ConfirmDialog')
     ))
 story('Shared/ConfirmSaveDialog').add('default', () => (
     <ConfirmSaveDialog onClose={action('onClose')} onContinue={action('onContinue')} onSave={action('onSave')}>
-        <p>{text('Dialog text', 'Dialog text')}</p>
+        <p>{'Dialog text'}</p>
     </ConfirmSaveDialog>
 ))
 story('Shared/UnlockWalletDialog')
     .add('default', () => (
-        <UnlockWalletDialog title={text('Dialog title', 'Dialog title')} onClose={action('onClose')} />
+        <UnlockWalletDialog title={'Dialog title'} onClose={action('onClose')} />
     ))
     .add('with text', () => (
-        <UnlockWalletDialog title={text('Dialog title', 'Dialog title')} onClose={action('onClose')}>
-            {text('Dialog text', 'Please unlock your wallet')}
+        <UnlockWalletDialog title={'Dialog title'} onClose={action('onClose')}>
+            {'Please unlock your wallet'}
         </UnlockWalletDialog>
     ))
     .add('with address', () => (
         <UnlockWalletDialog
-            title={text('Dialog title', 'Dialog title')}
+            title={'Dialog title'}
             onClose={action('onClose')}
             requiredAddress="0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0"
         >
-            {text('Dialog text', 'Please unlock your wallet')}
+            {'Please unlock your wallet'}
         </UnlockWalletDialog>
     ))
     .add(
         'with address (iPhone)',
         () => (
             <UnlockWalletDialog
-                title={text('Dialog title', 'Dialog title')}
+                title={'Dialog title'}
                 onClose={action('onClose')}
                 requiredAddress="0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0"
             >
-                {text('Dialog text', 'Please unlock your wallet')}
+                {'Please unlock your wallet'}
             </UnlockWalletDialog>
         ),
         {
@@ -803,15 +801,15 @@ story('Shared/UnlockWalletDialog')
     )
     .add('with different icon', () => (
         <UnlockWalletDialog
-            title={text('Dialog title', 'Dialog title')}
+            title={'Dialog title'}
             onClose={action('onClose')}
-            icon={select('Icon', PngIcon.names, 'walletError')}
+            icon={transactionStates.STARTED}
         >
-            {text('Dialog text', 'Please unlock your wallet')}
+            {'Please unlock your wallet'}
         </UnlockWalletDialog>
     ))
     .add('waiting', () => (
-        <UnlockWalletDialog waiting title={text('Dialog title', 'Dialog title')} onClose={action('onClose')} />
+        <UnlockWalletDialog waiting title={'Dialog title'} onClose={action('onClose')} />
     ))
 story('Shared/Web3NotDetectedDialog')
     .add('install Metamask', () => <InstallMetaMaskDialog onClose={action('onClose')} />)
@@ -835,16 +833,16 @@ story('Shared/Web3NotDetectedDialog')
 story('Shared/WrongNetworkSelectedDialog')
     .add('default', () => (
         <WrongNetworkSelectedDialog
-            requiredNetwork={text('Required network', '1')}
-            currentNetwork={text('Current network', '2')}
+            requiredNetwork={'1'}
+            currentNetwork={'2'}
             onClose={action('onClose')}
             onSwitch={action('onSwitch')}
         />
     ))
     .add('switching', () => (
         <WrongNetworkSelectedDialog
-            requiredNetwork={text('Required network', '1')}
-            currentNetwork={text('Current network', '2')}
+            requiredNetwork={'1'}
+            currentNetwork={'2'}
             switching
             onClose={action('onClose')}
             onSwitch={action('onSwitch')}

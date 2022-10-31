@@ -1,6 +1,5 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { withKnobs } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
 import DonutChart from '.'
 const stories = storiesOf('Shared/DonutChart', module)
@@ -11,7 +10,6 @@ const stories = storiesOf('Shared/DonutChart', module)
             background: '#F8F8F8',
         }),
     )
-    .addDecorator(withKnobs)
 const data = [
     {
         title: '1',

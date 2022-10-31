@@ -1,6 +1,5 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { withKnobs } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
 import MarkdownText from '.'
 const stories = storiesOf('Marketplace/MarkdownText', module)
@@ -11,7 +10,6 @@ const stories = storiesOf('Marketplace/MarkdownText', module)
             background: '#F8F8F8',
         }),
     )
-    .addDecorator(withKnobs)
 
 /* eslint-disable max-len */
 const shortText = [

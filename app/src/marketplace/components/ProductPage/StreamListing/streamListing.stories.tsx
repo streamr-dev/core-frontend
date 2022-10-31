@@ -1,7 +1,6 @@
 import React, { useReducer, useMemo, useCallback } from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
-import { withKnobs, boolean } from '@storybook/addon-knobs'
 import { action } from '@storybook/addon-actions'
 import styled from 'styled-components'
 import StreamListingWithContainer, { StreamListing } from './'
@@ -15,7 +14,6 @@ const stories = storiesOf('Marketplace/StreamListing', module)
             fontSize: '16px',
         }),
     )
-    .addDecorator(withKnobs)
 const streamList = [
     {
         id: 'test-stream-1',
@@ -56,8 +54,8 @@ const longStreamList = [...Array(1000)].map((value, index) => ({
 }))
 
 const DefaultView = () => {
-    const showPreview = boolean('Show preview', true)
-    const showSettings = boolean('Show settings', true)
+    const showPreview = true
+    const showSettings = true
     return (
         <StreamListingWithContainer
             streams={streamList}
@@ -81,15 +79,15 @@ stories.add('default (iPhone)', () => <DefaultView />, {
 })
 
 const FetchingView = () => {
-    const showPreview = boolean('Show preview', true)
-    const showSettings = boolean('Show settings', true)
+    const showPreview = true
+    const showSettings = true
     return (
         <StreamListingWithContainer
             streams={[]}
             onStreamPreview={!!showPreview && action('onStreamPreview')}
             onStreamSettings={!!showSettings && action('onStreamSettings')}
             fetchingStreams
-            locked={boolean('Locked', false)}
+            locked={false}
         />
     )
 }
@@ -107,15 +105,15 @@ stories.add('fetching streams (iPhone)', () => <FetchingView />, {
 })
 
 const EmptyView = () => {
-    const showPreview = boolean('Show preview', true)
-    const showSettings = boolean('Show settings', true)
+    const showPreview = true
+    const showSettings = true
     return (
         <StreamListingWithContainer
             streams={[]}
             totalStreams={0}
             onStreamPreview={!!showPreview && action('onStreamPreview')}
             onStreamSettings={!!showSettings && action('onStreamSettings')}
-            locked={boolean('Locked', false)}
+            locked={false}
         />
     )
 }
@@ -133,8 +131,8 @@ stories.add('empty (iPhone)', () => <EmptyView />, {
 })
 
 const LongListView = () => {
-    const showPreview = boolean('Show preview', true)
-    const showSettings = boolean('Show settings', true)
+    const showPreview = true
+    const showSettings = true
     return (
         <StreamListingWithContainer
             streams={longStreamList}
@@ -158,8 +156,8 @@ stories.add('long list (iPhone)', () => <LongListView />, {
 })
 
 const LockedView = () => {
-    const showPreview = boolean('Show preview', true)
-    const showSettings = boolean('Show settings', true)
+    const showPreview = true
+    const showSettings = true
     return (
         <StreamListingWithContainer
             streams={streamList}
@@ -184,8 +182,8 @@ stories.add('locked (iPhone)', () => <LockedView />, {
 })
 
 const WithoutContainerView = () => {
-    const showPreview = boolean('Show preview', true)
-    const showSettings = boolean('Show settings', true)
+    const showPreview = true
+    const showSettings = true
     return (
         <Container>
             <StreamListing
@@ -212,8 +210,8 @@ stories.add('without container (iPhone)', () => <WithoutContainerView />, {
 const PAGE_SIZE = 100
 
 const LoadingMoreListView = () => {
-    const showPreview = boolean('Show preview', true)
-    const showSettings = boolean('Show settings', true)
+    const showPreview = true
+    const showSettings = true
     const [page, advancePage] = useReducer((p) => p + 1, 1)
     const [visibleStreams, hasMoreResults] = useMemo(() => {
         const nextItems = longStreamList.slice(0, page * PAGE_SIZE)

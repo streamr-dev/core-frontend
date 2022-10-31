@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import styles from '@sambego/storybook-styles'
-import { withKnobs } from '@storybook/addon-knobs'
 import WhitelistEditor from '.'
 const stories = storiesOf('Marketplace/ProductEditor/Whitelist', module)
     .addDecorator(
@@ -12,7 +11,6 @@ const stories = storiesOf('Marketplace/ProductEditor/Whitelist', module)
             width: '680px',
         }),
     )
-    .addDecorator(withKnobs)
 type Props = {
     items: Array<any>
 }

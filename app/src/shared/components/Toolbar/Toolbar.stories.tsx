@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import { withKnobs, text, boolean } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
 import styled from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -18,7 +17,6 @@ const story = (name) =>
                 color: '#323232',
             }),
         )
-        .addDecorator(withKnobs)
 
 const toolbarActions = {
     cancel: {
@@ -30,8 +28,8 @@ const toolbarActions = {
         title: 'Ok',
         kind: 'primary',
         onClick: action('ok'),
-        disabled: boolean('disabled'),
-        spinner: boolean('spinner'),
+        disabled: false,
+        spinner: false,
     },
 }
 story('Toolbar')
@@ -41,23 +39,23 @@ story('Toolbar')
             viewports: [SM - 1, SM, MD, LG, XL],
         },
     })
-    .addWithJSX('basic', () => (
+    .add('basic', () => (
         <Fragment>
             <Toolbar actions={toolbarActions} altMobileLayout />
             <Content>Lorem ipsum dolor sit emat.</Content>
         </Fragment>
     ))
-story('Toolbar').addWithJSX('left status text', () => (
+story('Toolbar').add('left status text', () => (
     <Fragment>
-        <Toolbar actions={toolbarActions} altMobileLayout left={text('status text', 'status')} />
+        <Toolbar actions={toolbarActions} altMobileLayout left={'status'} />
         <Content>Lorem ipsum dolor sit emat.</Content>
     </Fragment>
 ))
-story('Toolbar').addWithJSX('middle icon', () => (
+story('Toolbar').add('middle icon', () => (
     <Fragment>
         <Toolbar
             actions={toolbarActions}
-            left={text('status text', 'status')}
+            left={'status'}
             altMobileLayout
             middle={
                 <SvgIcon
@@ -72,11 +70,11 @@ story('Toolbar').addWithJSX('middle icon', () => (
         <Content>Lorem ipsum dolor sit emat.</Content>
     </Fragment>
 ))
-story('Toolbar').addWithJSX('loading', () => (
+story('Toolbar').add('loading', () => (
     <Fragment>
         <Toolbar
             actions={toolbarActions}
-            left={text('status text', 'status')}
+            left={'status'}
             loading
             altMobileLayout
             middle={

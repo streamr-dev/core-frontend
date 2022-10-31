@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { storiesOf } from '@storybook/react'
-import { withKnobs } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
 import AvatarImage from '.'
 const stories = storiesOf('Shared/AvatarImage', module)
@@ -11,7 +10,6 @@ const stories = storiesOf('Shared/AvatarImage', module)
             padding: '3rem',
         }),
     )
-    .addDecorator(withKnobs)
 const Container = styled.div`
     width: 200px;
     height: 200px;

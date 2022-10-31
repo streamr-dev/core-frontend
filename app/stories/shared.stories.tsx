@@ -2,7 +2,6 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import { withKnobs, text, boolean } from '@storybook/addon-knobs'
 import StoryRouter from 'storybook-react-router'
 import styles from '@sambego/storybook-styles'
 import { Row, Col } from 'reactstrap'
@@ -34,7 +33,6 @@ const story = (name: string) =>
                 padding: '15px',
             }),
         )
-        .addDecorator(withKnobs)
 
 class ToggleContainer extends React.Component {
     state = {
@@ -57,9 +55,9 @@ class ToggleContainer extends React.Component {
 }
 
 story('Toggle')
-    .addWithJSX('changeable', () => <ToggleContainer />)
-    .addWithJSX('off', () => <Toggle value={boolean('value', false)} onChange={action('onChange')} />)
-    .addWithJSX('on', () => <Toggle value={boolean('value', true)} onChange={action('onChange')} />)
+    .add('changeable', () => <ToggleContainer />)
+    .add('off', () => <Toggle value={false} onChange={action('onChange')} />)
+    .add('on', () => <Toggle value={true} onChange={action('onChange')} />)
 
 class CheckboxContainer extends React.Component {
     constructor() {
@@ -85,9 +83,9 @@ class CheckboxContainer extends React.Component {
 }
 
 story('Checkbox')
-    .addWithJSX('checked', () => <Checkbox value={boolean('checked', true)} />)
-    .addWithJSX('unchecked', () => <Checkbox value={boolean('checked', false)} />)
-    .addWithJSX('changeable', () => <CheckboxContainer />)
+    .add('checked', () => <Checkbox value={true} />)
+    .add('unchecked', () => <Checkbox value={false} />)
+    .add('changeable', () => <CheckboxContainer />)
 
 class SortableListContainer extends React.Component {
     state = {
@@ -140,7 +138,7 @@ class FieldListContainer extends React.Component {
 }
 
 story('Sortable list')
-    .addWithJSX('basic', () => (
+    .add('basic', () => (
         <SortableListContainer>
             <div>Item 1</div>
             <div>Item 2</div>
@@ -148,11 +146,11 @@ story('Sortable list')
             <div>Item 4</div>
         </SortableListContainer>
     ))
-    .addWithJSX('field list', () => <FieldListContainer />)
-story('Dialog').addWithJSX('basic', () => {
+    .add('field list', () => <FieldListContainer />)
+story('Dialog').add('basic', () => {
     const actions = {}
 
-    if (boolean('hasCancel', true)) {
+    if (true) {
         actions.cancel = {
             title: 'Cancel',
             kind: 'link',
@@ -160,8 +158,8 @@ story('Dialog').addWithJSX('basic', () => {
         }
     }
 
-    if (boolean('hasSave', true)) {
-        const waitingForSave = boolean('waitingForSave', false)
+    if (true) {
+        const waitingForSave = false
         actions.ok = {
             title: waitingForSave ? 'Saving....' : 'Save',
             kind: 'primary',
@@ -173,8 +171,8 @@ story('Dialog').addWithJSX('basic', () => {
 
     return (
         <Dialog
-            showCloseIcon={boolean('showCloseIcon')}
-            waiting={boolean('waiting', false)}
+            showCloseIcon={true}
+            waiting={false}
             title={text('title', 'Dialog Title')}
             actions={actions}
         >
@@ -184,13 +182,13 @@ story('Dialog').addWithJSX('basic', () => {
 })
 story('BackButton')
     .addDecorator(StoryRouter())
-    .addWithJSX('basic', () => (
+    .add('basic', () => (
         <div>
             <BackButton />
             <hr />
         </div>
     ))
-story('SvgIcon').addWithJSX('all', () => (
+story('SvgIcon').add('all', () => (
     <Row>
         {SvgIcon.names.map((name) => (
             <Col xs="4" key={name}>
@@ -212,7 +210,7 @@ story('SvgIcon').addWithJSX('all', () => (
         </Col>
     </Row>
 ))
-story('PngIcon').addWithJSX('all', () => (
+story('PngIcon').add('all', () => (
     <Row>
         {PngIcon.names.map((name) => (
             <Col xs="4" key={name}>
@@ -253,19 +251,19 @@ class SliderContainer extends React.Component {
     }
 }
 
-story('Slider').addWithJSX('basic', () => <SliderContainer />)
+story('Slider').add('basic', () => <SliderContainer />)
 story('ModalPortal')
     .addDecorator(StoryRouter())
-    .addWithJSX('basic', () => (
+    .add('basic', () => (
         <React.Fragment>
             <div id="modal-root" />
             <ModalPortalProvider>
                 <h1>Lorem ipsum cause dolor sit emat!</h1>
-                {boolean('Visible', true) && <ErrorDialog title="Godlike!" message="Hello world!" onClose={() => {}} />}
+                {<ErrorDialog title="Godlike!" message="Hello world!" onClose={() => {}} />}
             </ModalPortalProvider>
         </React.Fragment>
     ))
-story('Notifications').addWithJSX('basic', () => {
+story('Notifications').add('basic', () => {
     const title = text('Title', 'Lorem ipsum dolor sit. But hey, you always have emat!')
     return (
         <React.Fragment>
@@ -296,7 +294,7 @@ story('Notifications').addWithJSX('basic', () => {
                     </button>
                 ))}
                 <Notifications />
-                {boolean('Show dialog', false) && (
+                {(
                     <ErrorDialog title="Godlike!" message="Hello world!" onClose={() => {}} />
                 )}
             </ModalPortalProvider>
@@ -304,7 +302,7 @@ story('Notifications').addWithJSX('basic', () => {
     )
 })
 story('Spinner')
-    .addWithJSX('Small', () => <Spinner size="small" />)
-    .addWithJSX('Large', () => <Spinner size="large" />)
-    .addWithJSX('Green', () => <Spinner color="green" />)
-    .addWithJSX('White', () => <Spinner color="white" />)
+    .add('Small', () => <Spinner size="small" />)
+    .add('Large', () => <Spinner size="large" />)
+    .add('Green', () => <Spinner color="green" />)
+    .add('White', () => <Spinner color="white" />)
