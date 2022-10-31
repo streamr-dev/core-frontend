@@ -156,7 +156,7 @@ jobs:
         run: |
           npm ci
       - name: Build Storybook
-      - env:
+        env:
           NODE_ENV: production
           PORT: 12345
           SENTRY_ENVIRONMENT: chromatic
