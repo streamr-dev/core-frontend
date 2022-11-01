@@ -18,10 +18,15 @@ export const checkEthereumNetworkIsCorrect = async ({
         throw new WrongNetworkSelectedError(network, currentChainId)
     }
 }
-export const hasTransactionCompleted = (txHash: Hash): Promise<boolean> =>
-    getPublicWeb3()
+export const hasTransactionCompleted = (txHash: Hash, chainId: number): Promise<boolean> =>
+    getPublicWeb3(chainId)
         .eth.getTransaction(txHash)
         .then((trx) => !!(trx && trx.blockNumber))
+
+export const getTransactionReceipt = (txHash: Hash, chainId: number): Promise<boolean> =>
+    getPublicWeb3(chainId)
+        .eth.getTransactionReceipt(txHash)
+        .then((receipt) => receipt)
 
 /**
  * Estimates time it takes to mine one block on the blockchain by counting the average time

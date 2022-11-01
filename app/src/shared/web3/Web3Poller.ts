@@ -4,10 +4,11 @@ import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import type { NumberString } from '$shared/types/common-types'
-import { hasTransactionCompleted } from '$shared/utils/web3'
+import { hasTransactionCompleted, getTransactionReceipt } from '$shared/utils/web3'
 import { getTransactionsFromSessionStorage } from '$shared/utils/transactions'
 import TransactionError from '$shared/errors/TransactionError'
 import getChainId from '$utils/web3/getChainId'
+import getProviderChainId from '$utils/web3/getProviderChainId'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 export const events = {
     ACCOUNT: 'WEB3POLLER/ACCOUNT',
@@ -197,8 +198,9 @@ class Web3Poller {
                 let receipt
 
                 try {
-                    completed = await hasTransactionCompleted(txHash)
-                    receipt = !!completed && (await web3.eth.getTransactionReceipt(txHash))
+                    const chainId = getProviderChainId()
+                    completed = await hasTransactionCompleted(txHash, chainId)
+                    receipt = !!completed && (await getTransactionReceipt(txHash, chainId))
                 } catch (err) {
                     warnOnce(err)
                     return // bail out
