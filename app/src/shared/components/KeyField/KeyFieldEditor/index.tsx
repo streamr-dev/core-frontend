@@ -4,10 +4,13 @@ import UnstyledButtons from '$shared/components/Buttons'
 import Label from '$ui/Label'
 import Text from '$ui/Text'
 import Errors from '$ui/Errors'
+
 export type LabelType = 'apiKey' | 'address' | 'sharedSecret'
+
 const KeyName = styled.div``
 const KeyValue = styled.div``
 const Buttons = styled(UnstyledButtons)``
+
 type Props = {
     keyName?: string
     value?: string
@@ -19,6 +22,7 @@ type Props = {
     error?: string | null | undefined
     labelType?: LabelType
 }
+
 export const keyValues = {
     apiKey: 'API key',
     address: 'Address',
@@ -70,7 +74,6 @@ const UnstyledKeyFieldEditor: FunctionComponent<Props> = ({
                     save: {
                         title: createNew ? 'Add' : 'Save',
                         kind: 'secondary',
-                        // TODO - check if it's ok, I've added the value param to onSave
                         onClick: () => onSave(keyName, value),
                         disabled: !filled || waiting,
                         spinner: waiting,

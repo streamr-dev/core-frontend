@@ -7,10 +7,11 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import useFilePreview from '$shared/hooks/useFilePreview'
 import Notification from '$shared/utils/Notification'
 import styles from './imageUpload.pcss'
-export type OnUploadError = (errorMessage: string) => void
+
 type DropzoneFile = File & {
     preview?: string
 }
+
 type Props = {
     setImageToUpload?: (arg0: DropzoneFile) => void | Promise<void>
     originalImage?: string | null | undefined

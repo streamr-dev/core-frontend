@@ -19,7 +19,9 @@ import { getUsdRate } from '$shared/utils/coingecko'
 import { fromDecimals } from '$mp/utils/math'
 import CurrencySelector from './CurrencySelector'
 import styles from './chooseAccessPeriod.pcss'
+
 export type Balances = Record<$Values<typeof paymentCurrencies>, NumberString>
+
 export type Props = {
     pricePerSecond: $ElementType<Product, 'pricePerSecond'>
     pricingTokenAddress: $ElementType<Product, 'pricingTokenAddress'>
@@ -32,6 +34,7 @@ export type Props = {
     disabled?: boolean
     initialValues?: AccessPeriod
 }
+
 const options = [timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month].map((unit: TimeUnit) => ({
     label: unit,
     value: unit,
@@ -122,7 +125,6 @@ export const ChooseAccessPeriodDialog = ({
                 usdEstimate = inUsd
             }
 
-            // TODO check if its ok - I had to use BN here to comply with the types
             setCurrentPrice(fromDecimals(price, new BN(pricingTokenDecimals)))
             setApproxUsd(usdEstimate)
             setLoading(false)

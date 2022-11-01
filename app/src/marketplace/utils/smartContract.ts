@@ -74,7 +74,6 @@ export const send = (
             network: options && options.network,
         }),
     ]).then(
-        // TODO check if this works as I had to make some changes in order to comply with the typing
         ([account]) =>
             method
                 .send({

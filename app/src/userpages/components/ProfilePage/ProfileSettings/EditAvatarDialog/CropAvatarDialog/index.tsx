@@ -56,7 +56,6 @@ const CropAvatarDialog: FunctionComponent<{
                     color={[255, 255, 255, 0.6]} // RGBA
                     scale={(100 + sliderValue) / 100}
                     rotate={0}
-                    // disabled={!!waiting} // TODO check if it's ok - disabled prop does not exist in AvatarEditor
                 />
                 <div>
                     <Slider

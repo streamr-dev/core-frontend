@@ -3,6 +3,7 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import ImageUpload from '$shared/components/ImageUpload'
 import styles from './avatarUpload.pcss'
+
 type Props = {
     originalImage: string
     onClose: (param?: any) => void
@@ -19,9 +20,7 @@ const AvatarUploadDialog: FunctionComponent<Props> = ({ originalImage, onClose, 
             <ImageUpload
                 className={styles.upload}
                 setImageToUpload={onUpload}
-                // onUploadError={(error: string) => console.warn(error)}
                 originalImage={originalImage}
-                // dropzoneClassname={styles.dropzone} // TODO check if it's ok - this prop does not exist in ImageUpload
             />
         </Dialog>
     </ModalPortal>

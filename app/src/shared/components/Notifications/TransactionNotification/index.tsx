@@ -8,6 +8,7 @@ import type { TransactionState } from '$shared/types/common-types'
 import type { Hash, TransactionEntity } from '$shared/types/web3-types'
 import { makeSelectTransaction } from '$mp/modules/transactions/selectors'
 import styles from '../BasicNotification/basic.pcss'
+
 type OwnProps = {
     // eslint-disable-next-line react/no-unused-prop-types
     txHash: Hash
@@ -18,7 +19,6 @@ type StateProps = {
 type DispatchProps = object
 type Props = OwnProps & StateProps & DispatchProps
 
-// TODO check if it's ok - I've removed `size=small` attribute on SvgIcon elements
 const renderPublishComponent = (state: TransactionState | null | undefined, isPublish: boolean) => {
     switch (state) {
         case transactionStates.PENDING:
