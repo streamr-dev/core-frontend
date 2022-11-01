@@ -70,7 +70,7 @@ describe('web3 utils', () => {
                 },
             }
             mockPublicWeb3(publicWeb3Stub)
-            const result = await all.hasTransactionCompleted('0x123')
+            const result = await all.hasTransactionCompleted('0x123', 1)
             expect(result).toBe(true)
         })
         it('returns false if transaction doesnt have a block number', async () => {
@@ -84,7 +84,7 @@ describe('web3 utils', () => {
                 },
             }
             mockPublicWeb3(publicWeb3Stub)
-            const result = await all.hasTransactionCompleted('0x123')
+            const result = await all.hasTransactionCompleted('0x123', 1)
             expect(result).toBe(false)
         })
         it('returns false if transaction is null', async () => {
@@ -96,7 +96,7 @@ describe('web3 utils', () => {
                 },
             }
             mockPublicWeb3(publicWeb3Stub)
-            const result = await all.hasTransactionCompleted('0x123')
+            const result = await all.hasTransactionCompleted('0x123', 1)
             expect(result).toBe(false)
         })
     })

@@ -1,3 +1,4 @@
+import { TransactionReceipt } from 'web3-core'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import getWeb3 from '$utils/web3/getWeb3'
 import { networks } from '$shared/utils/constants'
@@ -24,7 +25,7 @@ export const hasTransactionCompleted = (txHash: Hash, chainId: number): Promise<
         .eth.getTransaction(txHash)
         .then((trx) => !!(trx && trx.blockNumber))
 
-export const getTransactionReceipt = (txHash: Hash, chainId: number): Promise<boolean> =>
+export const getTransactionReceipt = (txHash: Hash, chainId: number): Promise<TransactionReceipt> =>
     getPublicWeb3(chainId)
         .eth.getTransactionReceipt(txHash)
         .then((receipt) => receipt)

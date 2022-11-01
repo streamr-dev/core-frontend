@@ -1,3 +1,5 @@
+// @ts-ignore: We need to have .ts extension here because this file is
+//            imported also from a javascript file docsSearchIndexer/indexer.js.
 import docsLinks from '../docsLinks.ts'
 // docsMap is used by the Docs UI Navigation and the Search Indexer script.
 // All sections must contain a 'root' entry.

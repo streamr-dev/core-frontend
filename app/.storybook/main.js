@@ -5,7 +5,7 @@ const isProduction = require('../scripts/isProduction')
 
 module.exports = {
     stories: [
-        '../**/*.stories.@(ts|tsx)',
+        '../**/*.stories.tsx',
     ],
     addons: [
         '@storybook/addon-postcss',
