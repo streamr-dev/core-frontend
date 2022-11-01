@@ -1,5 +1,5 @@
 /* eslint-disable global-require, import/no-dynamic-require */
-import docsMap from '../../src/docs/docsMap'
+import docsMap from '../../src/docs/docsMap.ts'
 
 const fs = require('fs')
 const remark = require('remark')

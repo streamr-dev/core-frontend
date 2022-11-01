@@ -1,4 +1,4 @@
-import docsLinks from '../docsLinks'
+import docsLinks from '../docsLinks.ts'
 // docsMap is used by the Docs UI Navigation and the Search Indexer script.
 // All sections must contain a 'root' entry.
 // [Section title] {   <-- Rendered navigation section title.
