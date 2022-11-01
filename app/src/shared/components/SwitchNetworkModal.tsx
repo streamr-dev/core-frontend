@@ -84,4 +84,4 @@ const SwitchNetworkModalWrapped = () => {
     return <SwitchNetworkModal api={api} requiredNetwork={requiredNetwork} initialNetwork={initialNetwork} />
 }
 
-export default SwitchNetworkModalWrap
+export default SwitchNetworkModalWrapped
