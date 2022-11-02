@@ -174,19 +174,14 @@ module.exports = {
         new ESLintPlugin({
             extensions: ['tsx', 'ts'],
         }),
-        new ForkTsCheckerWebpackPlugin({
-            issue: {
-                include: [
-                    { file: '**/src/**/*' }
-                ],
-            },
-            // TODO: Disable logging of typescript errors for now as there's
-            // so many of them. Enable this later by removing the 'logger' key.
-            logger: {
-                devServer: false,
-                issues: 'silent',
-            }
-        }),
+        // TODO: Disable logging of typescript errors for now as there's so many of them.
+        // new ForkTsCheckerWebpackPlugin({
+        //     issue: {
+        //         include: [
+        //             { file: '**/src/**/*' }
+        //         ],
+        //     },
+        // }),
         new HtmlWebpackPlugin({
             template: 'src/index.html',
             templateParameters: {
