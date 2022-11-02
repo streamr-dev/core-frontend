@@ -149,7 +149,7 @@
         "jest-environment-jsdom": "^29.1.2",
         "jest-mock-extended": "^3.0.1",
         "jsdom": "^20.0.1",
-        "lint-staged": "^8.2.1",
+        "lint-staged": "^13.0.3",
         "lodash": "^4.17.21",
         "logrocket": "^0.6.21",
         "lunr": "^2.3.9",
