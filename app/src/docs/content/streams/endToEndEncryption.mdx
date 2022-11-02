@@ -6,11 +6,11 @@ Confidentiality of events published on a stream can be guaranteed with end-to-en
 
 ## Key exchange
 
-The subscribers need the symmetric group key in order to decrypt the data. They automatically obtain this key by performing a key exchange with the publisher. The key exchange happens using asymmetric encryption: 
+The subscribers need the symmetric group key in order to decrypt the data. They automatically obtain this key by performing a key exchange with the publisher. The key exchange happens using asymmetric encryption:
 
-- Both the publisher and subscriber generate a temporary RSA key pair to be used for the key exchange
-- The subscriber sends a key request to the publisher, containing the subscriber's public key, signed with the subscriber's Ethereum key
-- The publisher checks from the on-chain access control registry whether that subscriber should be able to access the stream, and if it does, the publisher responds with the AES symmetric key, encrypted with the publisher's RSA key for the subscriber's RSA key, and signs with the publisher's Ethereum key.
+-   Both the publisher and subscriber generate a temporary RSA key pair to be used for the key exchange
+-   The subscriber sends a key request to the publisher, containing the subscriber's public key, signed with the subscriber's Ethereum key
+-   The publisher checks from the on-chain access control registry whether that subscriber should be able to access the stream, and if it does, the publisher responds with the AES symmetric key, encrypted with the publisher's RSA key for the subscriber's RSA key, and signs with the publisher's Ethereum key.
 
 ## Publisher liveness
 
@@ -27,4 +27,3 @@ The AES key need not stay the same over time. There are two operations which the
 ## The JS client library
 
 The [Streamr JS client](https://www.npmjs.com/package/streamr-client) library automatically encrypts messages published to non-public streams. Messages published to public streams are not encrypted, as it would be unnecessary. The library fully supports the automatic key exchange, and also provides methods for key rotation and re-key.
-

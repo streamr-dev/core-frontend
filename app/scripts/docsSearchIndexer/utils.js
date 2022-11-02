@@ -1,5 +1,5 @@
 /* eslint-disable global-require, import/no-dynamic-require */
-import docsMap from '../../src/docs/docsMap'
+import docsMap from '../../src/docs/docsMap.ts'
 
 const fs = require('fs')
 const remark = require('remark')
@@ -9,7 +9,7 @@ const lunr = require('lunr')
 
 /**
  * Loads MDX as plain text.
-*/
+ */
 require.extensions['.mdx'] = function readMdx(module, filename) {
     const mdxFilename = filename
     const mdxModule = module
@@ -17,36 +17,38 @@ require.extensions['.mdx'] = function readMdx(module, filename) {
 }
 
 /**
-  * Extract plain text from the MDX files and add the necessary metaData to the
-  * entry to create valid store entries.
-*/
+ * Extract plain text from the MDX files and add the necessary metaData to the
+ * entry to create valid store entries.
+ */
 async function getPageContents(fileInfos) {
-    return Promise.all(fileInfos.map((fileInfo) => {
-        const contentPage = require(`../../src/docs/content/${fileInfo.filePath}`)
-        const { path, section, title } = fileInfo
-        return new Promise((resolve, reject) => {
-            remark()
-                .use(remarkMdx)
-                .use(strip)
-                .process(contentPage, (err, file) => {
-                    if (err) {
-                        reject(err)
-                    }
-                    resolve({
-                        id: path,
-                        content: String(file),
-                        section,
-                        title,
+    return Promise.all(
+        fileInfos.map((fileInfo) => {
+            const contentPage = require(`../../src/docs/content/${fileInfo.filePath}`)
+            const { path, section, title } = fileInfo
+            return new Promise((resolve, reject) => {
+                remark()
+                    .use(remarkMdx)
+                    .use(strip)
+                    .process(contentPage, (err, file) => {
+                        if (err) {
+                            reject(err)
+                        }
+                        resolve({
+                            id: path,
+                            content: String(file),
+                            section,
+                            title,
+                        })
                     })
-                })
-        })
-    }))
+            })
+        }),
+    )
 }
 
 /**
-  * Helper function to get filter the file information requried to
-  * cleanly loop through the file read promises.
-*/
+ * Helper function to get filter the file information requried to
+ * cleanly loop through the file read promises.
+ */
 function getFileInfos() {
     const fileInfos = []
     Object.keys(docsMap).forEach((section) => {
@@ -68,16 +70,15 @@ function getFileInfos() {
 }
 
 /**
-  * Process mdx files by iterating through the docs Pages
-*/
+ * Process mdx files by iterating through the docs Pages
+ */
 export async function processMdxDocsPages() {
     const pagesStore = {}
     const fileInfos = getFileInfos()
     const pages = await getPageContents(fileInfos)
 
     pages.forEach((page) => {
-        pagesStore[page.id] =
-        {
+        pagesStore[page.id] = {
             ...page,
         }
     })
@@ -90,7 +91,7 @@ export async function processMdxDocsPages() {
  * The id is the 'key' that is returned from searches on the index,
  * that matches a key inside the search store object.
  * Fields (content, section and title) are searchable parts of every searchable entry.
-*/
+ */
 export function buildLunrIndex(searchStore) {
     const idx = lunr(function build() {
         this.ref('id')
@@ -99,7 +100,9 @@ export function buildLunrIndex(searchStore) {
         this.field('title')
         this.metadataWhitelist = ['position']
 
-        Object.values(searchStore).forEach(function addDoc(doc) { this.add(doc) }, this)
+        Object.values(searchStore).forEach(function addDoc(doc) {
+            this.add(doc)
+        }, this)
     })
 
     return idx
@@ -107,7 +110,7 @@ export function buildLunrIndex(searchStore) {
 
 /**
  * Write Store to disk.
-*/
+ */
 export function saveStore(searchStore) {
     if (!searchStore || !Object.keys(searchStore).length) {
         throw new Error('Store cannot be empty')
@@ -122,7 +125,7 @@ export function saveStore(searchStore) {
 
 /**
  * Write Index to disk.
-*/
+ */
 export function saveIndex(searchIndex) {
     if (!searchIndex || !Object.keys(searchIndex).length) {
         throw new Error('Index cannot be empty')

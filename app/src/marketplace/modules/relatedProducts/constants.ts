@@ -1,0 +1,3 @@
+export const GET_RELATED_PRODUCTS_REQUEST = 'marketplace/relatedProducts/GET_RELATED_PRODUCTS_REQUEST'
+export const GET_RELATED_PRODUCTS_SUCCESS = 'marketplace/relatedProducts/GET_RELATED_PRODUCTS_SUCCESS'
+export const GET_RELATED_PRODUCTS_FAILURE = 'marketplace/relatedProducts/GET_RELATED_PRODUCTS_FAILURE'

@@ -7,7 +7,8 @@ module.exports = function BabelConfig(api) {
     }
     return {
         presets: [
-            ['@babel/preset-env',
+            [
+                '@babel/preset-env',
                 api.env('test')
                     ? {
                         useBuiltIns: 'usage',
@@ -16,7 +17,8 @@ module.exports = function BabelConfig(api) {
                         targets: {
                             node: 'current',
                         },
-                    } : {
+                    }
+                    : {
                         useBuiltIns: 'usage',
                         modules: false,
                         corejs: 3,
@@ -34,44 +36,57 @@ module.exports = function BabelConfig(api) {
                         ],
                     },
             ],
-            ['@babel/preset-react', {
-                development: !api.env('production'),
-                useBuiltIns: true,
-            }],
+            [
+                '@babel/preset-react',
+                {
+                    development: !api.env('production'),
+                    useBuiltIns: true,
+                },
+            ],
         ],
         plugins: [
-            '@babel/plugin-syntax-flow',
-            '@babel/plugin-transform-flow-strip-types',
             '@babel/plugin-proposal-optional-chaining',
-            ['@babel/plugin-transform-destructuring', {
-                // Use loose mode for performance:
-                // https://github.com/facebook/create-react-app/issues/5602
-                loose: true,
-                selectiveLoose: [
-                    'useState',
-                    'useEffect',
-                    'useContext',
-                    'useReducer',
-                    'useCallback',
-                    'useMemo',
-                    'useRef',
-                    'useImperativeHandle',
-                    'useLayoutEffect',
-                    'useDebugValue',
-                ],
-            }],
-            ['@babel/plugin-proposal-class-properties', {
-                loose: true,
-            }],
-            ['@babel/plugin-proposal-object-rest-spread', {
-                useBuiltIns: true,
-            }],
-            ['@babel/plugin-transform-runtime', {
-                corejs: false,
-                helpers: true,
-                regenerator: false,
-                useESModules: api.env(['development', 'production']),
-            }],
+            [
+                '@babel/plugin-transform-destructuring',
+                {
+                    // Use loose mode for performance:
+                    // https://github.com/facebook/create-react-app/issues/5602
+                    loose: true,
+                    selectiveLoose: [
+                        'useState',
+                        'useEffect',
+                        'useContext',
+                        'useReducer',
+                        'useCallback',
+                        'useMemo',
+                        'useRef',
+                        'useImperativeHandle',
+                        'useLayoutEffect',
+                        'useDebugValue',
+                    ],
+                },
+            ],
+            [
+                '@babel/plugin-proposal-class-properties',
+                {
+                    loose: true,
+                },
+            ],
+            [
+                '@babel/plugin-proposal-object-rest-spread',
+                {
+                    useBuiltIns: true,
+                },
+            ],
+            [
+                '@babel/plugin-transform-runtime',
+                {
+                    corejs: false,
+                    helpers: true,
+                    regenerator: false,
+                    useESModules: api.env(['development', 'production']),
+                },
+            ],
             '@babel/plugin-syntax-dynamic-import',
             'babel-plugin-styled-components',
             api.env('test') && 'babel-plugin-dynamic-import-node',

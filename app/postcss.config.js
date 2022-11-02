@@ -3,22 +3,14 @@ const webpack = require('webpack')
 
 const postcssImport = require('postcss-import')({
     addDependencyTo: webpack,
-    addModulesDirectories: [
-        path.resolve(__dirname, 'src/shared/assets/stylesheets'),
-    ],
+    addModulesDirectories: [path.resolve(__dirname, 'src/shared/assets/stylesheets')],
 })
 const calc = require('postcss-calc')
 const precss = require('precss')
 const postcssColorFunction = require('postcss-color-function')
 const cssMqpacker = require('css-mqpacker')
 const ums = require('./scripts/postcss/ums')
-const {
-    xs,
-    sm,
-    md,
-    lg,
-    xl,
-} = require('./scripts/breakpoints')
+const { xs, sm, md, lg, xl } = require('./scripts/breakpoints')
 
 module.exports = {
     plugins: [

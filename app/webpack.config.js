@@ -3,10 +3,10 @@ const path = require('path')
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const WebpackNotifierPlugin = require('webpack-notifier')
-const FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const ImageminPlugin = require('imagemin-webpack-plugin').default
 const StyleLintPlugin = require('stylelint-webpack-plugin')
+const ESLintPlugin = require('eslint-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin')
 const cssProcessor = require('clean-css')
@@ -14,6 +14,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const SentryPlugin = require('@sentry/webpack-plugin')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const validateEnv = require('./scripts/validateEnv')
 const pkg = require('./package')
 
@@ -37,15 +38,14 @@ if (isProduction() && !process.env.STORYBOOK) {
 // We have to make sure that publicPath ends with a slash. If it
 // doesn't then chunks are not gonna load correctly. #codesplitting
 const publicPath = `${process.env.PLATFORM_PUBLIC_PATH || ''}/`
-
 module.exports = {
     mode: isProduction() ? 'production' : 'development',
     entry: [
         // forcibly print diagnostics upfront
-        path.resolve(root, 'src', 'shared', 'utils', 'diagnostics.js'),
+        path.resolve(root, 'src', 'shared', 'utils', 'diagnostics.ts'),
         // always load setup first
-        path.resolve(root, 'src', 'setup.js'),
-        path.resolve(root, 'src', 'index.jsx'),
+        path.resolve(root, 'src', 'setup.ts'),
+        path.resolve(root, 'src', 'index.tsx'),
     ],
     output: {
         path: dist,
@@ -57,6 +57,18 @@ module.exports = {
     module: {
         strictExportPresence: true,
         rules: [
+            {
+                test: /\.(ts|tsx)?$/,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'ts-loader',
+                        options: {
+                            transpileOnly: true,
+                        },
+                    },
+                ],
+            },
             {
                 test: /\.mdx$/,
                 use: [
@@ -72,23 +84,9 @@ module.exports = {
                 ],
             },
             {
-                test: /\.jsx?$/,
-                include: [path.resolve(root, 'src'), path.resolve(root, 'scripts')],
-                enforce: 'pre',
-                use: [{
-                    loader: 'eslint-loader',
-                    options: {
-                        cache: !isProduction(),
-                    },
-                }],
-            },
-            {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
-                include: [
-                    path.resolve(root, 'src'),
-                    path.resolve(root, 'scripts'),
-                ],
+                include: [path.resolve(root, 'src'), path.resolve(root, 'scripts')],
                 options: {
                     rootMode: 'upward',
                     cacheDirectory: !isProduction(),
@@ -152,9 +150,7 @@ module.exports = {
                     {
                         loader: 'sass-loader',
                         options: {
-                            includePaths: [
-                                path.resolve(__dirname, 'src/shared/assets/stylesheets'),
-                            ],
+                            includePaths: [path.resolve(__dirname, 'src/shared/assets/stylesheets')],
                         },
                     },
                 ],
@@ -175,6 +171,22 @@ module.exports = {
     },
     plugins: [
         // Common plugins between prod and dev
+        new ESLintPlugin({
+            extensions: ['tsx', 'ts'],
+        }),
+        new ForkTsCheckerWebpackPlugin({
+            issue: {
+                include: [
+                    { file: '**/src/**/*' }
+                ],
+            },
+            // TODO: Disable logging of typescript errors for now as there's
+            // so many of them. Enable this later by removing the 'logger' key.
+            logger: {
+                devServer: false,
+                issues: 'silent',
+            }
+        }),
         new HtmlWebpackPlugin({
             template: 'src/index.html',
             templateParameters: {
@@ -189,10 +201,7 @@ module.exports = {
             chunkFilename: !isProduction() ? '[id].css' : '[id].[contenthash:8].css',
         }),
         new StyleLintPlugin({
-            files: [
-                'src/**/*.css',
-                'src/**/*.(p|s)css',
-            ],
+            files: ['src/**/*.css', 'src/**/*.(p|s)css'],
         }),
         new webpack.EnvironmentPlugin({
             GIT_VERSION: gitRevisionPlugin.version(),
@@ -209,96 +218,103 @@ module.exports = {
             GOOGLE_ANALYTICS_ID: process.env.GOOGLE_ANALYTICS_ID || '',
         }),
         new webpack.EnvironmentPlugin(loadedDotenv),
-        ...(analyze ? [
-            new BundleAnalyzerPlugin({
-                analyzerMode: 'static',
-                openAnalyzer: false,
-            }),
-        ] : []),
+        ...(analyze
+            ? [
+                new BundleAnalyzerPlugin({
+                    analyzerMode: 'static',
+                    openAnalyzer: false,
+                }),
+            ]
+            : []),
         // Ignore all locale files of moment.js
         new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    ].concat(isProduction() ? [
-        new CleanWebpackPlugin([dist]),
-        // Production plugins
-        new webpack.optimize.OccurrenceOrderPlugin(),
-        new webpack.EnvironmentPlugin({
-            NODE_ENV: 'production',
-        }),
-        new OptimizeCssAssetsPlugin({
-            cssProcessor,
-            cssProcessorOptions: {
-                discardComments: {
-                    removeAll: true,
-                },
-            },
-            canPrint: true,
-        }),
-        new ImageminPlugin({
-            disable: !isProduction(), // Disable during development
-            pngquant: {
-                quality: '50-75',
-            },
-        }),
-    ] : [
-        // Dev plugins
-        new UnusedFilesWebpackPlugin({
-            patterns: [
-                'src/marketplace/**/*.*',
-                'src/shared/**/*.*',
-                'src/routes/**/*.*',
-                'src/userpages/**/*.*',
-                'src/docs/**/*.*',
-                'src/*.*',
-            ].filter(Boolean),
-            globOptions: {
-                ignore: [
-                    'node_modules/**/*.*',
-                    // skip tests
-                    '**/tests/*.*',
-                    '**/tests/**/*.*',
-                    '**/test/*.*',
-                    '**/test/**/*.*',
-                    '**/*.test.js',
-                    '**/*.test.jsx',
-                    // skip flowtype
-                    '**/flowtype/**/*.*',
-                    '**/flowtype/*.*',
-                    '**/types.js',
-                    // skip conditional stubs
-                    '**/stub.jsx',
-                    // skip stories
-                    '**/*.stories.*',
-                    // skip MD documentation
-                    'src/docs/docsEditingGuide.md',
-                    // skip sketch files
-                    '**/*.sketch',
-                    'src/docs/scripts/*.*',
+    ]
+        .concat(
+            isProduction()
+                ? [
+                    new CleanWebpackPlugin([dist]),
+                    // Production plugins
+                    new webpack.optimize.OccurrenceOrderPlugin(),
+                    new webpack.EnvironmentPlugin({
+                        NODE_ENV: 'production',
+                    }),
+                    new OptimizeCssAssetsPlugin({
+                        cssProcessor,
+                        cssProcessorOptions: {
+                            discardComments: {
+                                removeAll: true,
+                            },
+                        },
+                        canPrint: true,
+                    }),
+                    new ImageminPlugin({
+                        disable: !isProduction(), // Disable during development
+                        pngquant: {
+                            quality: '50-75',
+                        },
+                    }),
+                ]
+                : [
+                    // Dev plugins
+                    new UnusedFilesWebpackPlugin({
+                        patterns: [
+                            'src/marketplace/**/*.*',
+                            'src/shared/**/*.*',
+                            'src/routes/**/*.*',
+                            'src/userpages/**/*.*',
+                            'src/docs/**/*.*',
+                            'src/*.*',
+                        ].filter(Boolean),
+                        globOptions: {
+                            ignore: [
+                                'node_modules/**/*.*',
+                                // skip tests
+                                '**/tests/*.*',
+                                '**/tests/**/*.*',
+                                '**/test/*.*',
+                                '**/test/**/*.*',
+                                '**/*.test.ts',
+                                '**/*.test.tsx',
+                                // skip conditional stubs
+                                '**/stub.tsx',
+                                // skip stories
+                                '**/*.stories.*',
+                                // skip MD documentation
+                                'src/docs/docsEditingGuide.md',
+                                // skip sketch files
+                                '**/*.sketch',
+                                'src/docs/scripts/*.*',
+                            ],
+                        },
+                    }),
+                    new WebpackNotifierPlugin(),
                 ],
-            },
-        }),
-        new FlowBabelWebpackPlugin(),
-        new WebpackNotifierPlugin(),
-    ]).concat(process.env.SENTRY_DSN ? [
-        new SentryPlugin({
-            include: dist,
-            validate: true,
-            ignore: [
-                '.cache',
-                '.DS_STORE',
-                '.env',
-                '.storybook',
-                'bin',
-                'coverage',
-                'node_modules',
-                'scripts',
-                'stories',
-                'test',
-                'travis_scripts',
-                'webpack.config.js',
-            ],
-            release: process.env.VERSION,
-        }),
-    ] : []),
+        )
+        .concat(
+            process.env.SENTRY_DSN
+                ? [
+                    new SentryPlugin({
+                        include: dist,
+                        validate: true,
+                        ignore: [
+                            '.cache',
+                            '.DS_STORE',
+                            '.env',
+                            '.storybook',
+                            'bin',
+                            'coverage',
+                            'node_modules',
+                            'scripts',
+                            'stories',
+                            'test',
+                            'travis_scripts',
+                            'webpack.config.js',
+                        ],
+                        release: process.env.VERSION,
+                    }),
+                ]
+                : [],
+        ),
     devtool: isProduction() ? 'source-map' : 'eval-source-map',
     devServer: {
         historyApiFallback: {
@@ -319,7 +335,7 @@ module.exports = {
         },
     },
     resolve: {
-        extensions: ['.js', '.jsx', '.json'],
+        extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
         symlinks: false,
         alias: {
             // Make sure you set up aliases in flow and jest configs.
@@ -330,7 +346,7 @@ module.exports = {
             $userpages: path.resolve(__dirname, 'src/userpages/'),
             $shared: path.resolve(__dirname, 'src/shared/'),
             $testUtils: path.resolve(__dirname, 'test/test-utils/'),
-            $routes: path.resolve(__dirname, 'src/routes'),
+            $routes: path.resolve(__dirname, 'src/routes/'),
             $utils: path.resolve(__dirname, 'src/utils/'),
             $ui: path.resolve(__dirname, 'src/shared/components/Ui'),
             $config: path.resolve(__dirname, `src/config/${process.env.NODE_ENV}.toml`),

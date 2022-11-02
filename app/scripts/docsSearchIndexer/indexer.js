@@ -8,16 +8,11 @@
  * entry inside the exported object from 'docsMap.js'. Follow the advice inside
  * that file. If you want to hide parts of the docs from the indexer,
  * use a conditional environmental flag inside docsMap.js to hide these pages.
-*/
+ */
 
 import * as Sentry from '@sentry/node'
 
-import {
-    buildLunrIndex,
-    processMdxDocsPages,
-    saveStore,
-    saveIndex,
-} from './utils'
+import { buildLunrIndex, processMdxDocsPages, saveStore, saveIndex } from './utils'
 
 function initSentry() {
     if (process.env.SENTRY_INDEXER_DSN) {
@@ -31,8 +26,9 @@ function initSentry() {
 
 /**
  * Process the docs. Save the index & store as JSON files.
-*/
-(async function start() {
+ */
+// eslint-disable-next-line @typescript-eslint/no-extra-semi
+;(async function start() {
     console.log('Generating the Docs Search Index & Store...')
     initSentry()
     const pagesStore = await processMdxDocsPages()
@@ -49,4 +45,4 @@ function initSentry() {
     } catch (error) {
         console.log(error)
     }
-}())
+})()

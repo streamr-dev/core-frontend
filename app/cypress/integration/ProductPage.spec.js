@@ -31,14 +31,18 @@ describe('New product', () => {
         cy.login()
         cy.visit('/core/products/new')
         cy.location().should((l) => {
-            const { params: { id } } = matchPath(l.pathname, {
+            const {
+                params: { id },
+            } = matchPath(l.pathname, {
                 path: '/core/products/:id',
             })
             expect(l.pathname).to.eq(`/core/products/${id}/edit`)
             expect(l.search).to.eq('?newProduct=true')
         })
         cy.get('h1').contains(/Name your product/i)
-        cy.get('h1').contains(/shared secret/).should('not.exist')
+        cy.get('h1')
+            .contains(/shared secret/)
+            .should('not.exist')
         cy.get('[name=name]').invoke('val').should('eq', 'Untitled Product')
     })
 
@@ -46,7 +50,9 @@ describe('New product', () => {
         cy.login()
         cy.visit('/core/products/new?type=DATAUNION')
         cy.location().should((l) => {
-            const { params: { id } } = matchPath(l.pathname, {
+            const {
+                params: { id },
+            } = matchPath(l.pathname, {
                 path: '/core/products/:id',
             })
             expect(l.pathname).to.eq(`/core/products/${id}/edit`)
@@ -93,7 +99,9 @@ describe('Edit product', () => {
         cy.createProduct().then((productId) => {
             cy.visit(`/core/products/${productId}/edit`)
             cy.location('pathname').should('eq', `/core/products/${productId}/edit`)
-            cy.get('[name=name]').invoke('val').should('match', /test product #\d{4}\/\d{6}/i)
+            cy.get('[name=name]')
+                .invoke('val')
+                .should('match', /test product #\d{4}\/\d{6}/i)
             cy.logout()
             cy.login('tester two')
             cy.visit(`/core/products/${productId}/edit`)
