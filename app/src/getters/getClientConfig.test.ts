@@ -17,7 +17,6 @@ describe('getClientConfig', () => {
             /* emptiness */
         }))
         const mods = {}
-        console.log(DEFAULTS)
 
         expect(g()).toMatchObject({
             ...DEFAULTS,
