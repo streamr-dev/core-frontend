@@ -14,6 +14,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const SentryPlugin = require('@sentry/webpack-plugin')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const validateEnv = require('./scripts/validateEnv')
 const pkg = require('./package')
 
@@ -172,6 +173,19 @@ module.exports = {
         // Common plugins between prod and dev
         new ESLintPlugin({
             extensions: ['tsx', 'ts'],
+        }),
+        new ForkTsCheckerWebpackPlugin({
+            issue: {
+                include: [
+                    { file: '**/src/**/*' }
+                ],
+            },
+            // TODO: Disable logging of typescript errors for now as there's
+            // so many of them. Enable this later by removing the 'logger' key.
+            logger: {
+                devServer: false,
+                issues: 'silent',
+            }
         }),
         new HtmlWebpackPlugin({
             template: 'src/index.html',
