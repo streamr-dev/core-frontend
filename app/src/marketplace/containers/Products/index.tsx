@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import merge from 'lodash/merge'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
@@ -8,7 +8,7 @@ import Layout from '$shared/components/Layout'
 import Footer from '$shared/components/Layout/Footer'
 import useModal from '$shared/hooks/useModal'
 import CreateProductModal from '$mp/containers/CreateProductModal'
-import type { Filter, SearchFilter } from '$mp/types/product-types'
+import type { Filter, ProductList, SearchFilter } from '$mp/types/product-types'
 import { getProducts, getProductsDebounced, updateFilter, clearFilters } from '$mp/modules/productList/actions'
 import { getCategories } from '$mp/modules/categories/actions'
 import { selectAllCategories } from '$mp/modules/categories/selectors'
@@ -24,7 +24,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import useContractProducts from '$shared/hooks/useContractProducts'
 import styles from './products.pcss'
 
-const Products = () => {
+const Products: FunctionComponent = () => {
     const categories = useSelector(selectAllCategories)
     const products = useSelector(selectProductList)
     const productsError = useSelector(selectProductListError)
@@ -33,7 +33,7 @@ const Products = () => {
     const hasMoreSearchResults = useSelector(selectHasMoreSearchResults)
     const dispatch = useDispatch()
     const isMounted = useIsMounted()
-    const productsRef = useRef()
+    const productsRef = useRef<ProductList>()
     productsRef.current = products
     const [contractProducts, setContractProducts] = useState([])
     const { api: createProductModal } = useModal('marketplace.createProduct')
@@ -110,7 +110,7 @@ const Products = () => {
         [resetStats],
     )
     return (
-        <Layout framedClassname={styles.productsFramed} innerClassname={styles.productsInner} footer={false}>
+        <Layout framedClassName={styles.productsFramed} innerClassName={styles.productsInner} footer={false}>
             <MarketplaceHelmet />
             <ActionBar
                 filter={selectedFilter}
