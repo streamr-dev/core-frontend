@@ -68,7 +68,7 @@ const doGetProductsDebounced = debounce(
 // TODO add typing
 export const getProductsDebounced = (options: GetProducts): any => doGetProductsDebounced.bind(null, options)
 export const getProducts = (
-    replace: boolean | null | undefined
+    replace?: boolean | null | undefined
 ): (dispatch: (...args: Array<any>) => any, getState: () => StoreState) => Promise<any> => doGetProducts.bind(null, replace)
 export const updateFilter: FilterActionCreator = createAction(UPDATE_FILTER, (filter: Filter) => ({
     filter,

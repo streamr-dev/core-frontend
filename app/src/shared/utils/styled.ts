@@ -9,3 +9,9 @@ export const MONO = "'IBM Plex Mono', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Ve
 export const SANS = "'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif"
 export const TABLET = `(min-width: ${MD}px)`
 export const DESKTOP = `(min-width: ${LG}px)`
+export enum COLORS {
+    primary = '#323232',
+    primaryContrast = '#FFF',
+    primaryDisabled = '#A3A3A3',
+    secondary = '#F5F5F5'
+}
