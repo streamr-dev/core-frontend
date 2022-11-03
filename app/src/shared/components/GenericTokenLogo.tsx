@@ -42,7 +42,7 @@ const GenericTokenLogo = ({ contractAddress, symbol, ...props }: Props) => {
         <Circle
             {...props}
             css={`
-                background: ${cssColor};
+                background-color: ${cssColor};
                 color: ${Color(cssColor).isDark() ? '#ffffff' : '#000000'};
             `}
         >

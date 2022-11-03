@@ -147,14 +147,14 @@ export const getMyCustomTokenBalance = async (pricingTokenAddress: Address): Sma
     const chainId = await getChainId()
     return getCustomTokenBalance(pricingTokenAddress, myAccount, false, chainId)
 }
-const tokenInformationCache: any = {}
+const tokenInformationCache: Record<string, any> = {}
 export const getTokenInformation = async (
     address: Address,
     chainId?: number,
 ): Promise<Record<string, any> | null | undefined> => {
     const actualChainId = chainId || (await getChainId())
     // Check from cache first
-    const cacheKey = `${address ? address.toString() : 'noaddress'}-${
+    const cacheKey = `${address ? address.toString().toLowerCase() : 'noaddress'}-${
         actualChainId ? actualChainId.toString() : 'nochainid'
     }`
     const cacheItem = tokenInformationCache[cacheKey]
