@@ -11,7 +11,11 @@ export const TABLET = `(min-width: ${MD}px)`
 export const DESKTOP = `(min-width: ${LG}px)`
 export enum COLORS {
     primary = '#323232',
+    primaryLight = '#525252',
     primaryContrast = '#FFF',
     primaryDisabled = '#A3A3A3',
-    secondary = '#F5F5F5'
+    secondary = '#F5F5F5',
+    secondaryHover = '#E7E7E7',
+    focus = '#9BC1FB',
+    selection = '#CCE9FD'
 }
