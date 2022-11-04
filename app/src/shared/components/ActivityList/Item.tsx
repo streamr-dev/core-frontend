@@ -70,6 +70,15 @@ const Text = styled.div`
     }
 `
 
+const Subject = styled.div`
+    color: #a3a3a3;
+    font-size: 12px;
+`
+
+const Gray = styled.span`
+    color: #323232;
+`
+
 const truncate = (input, maxLength) => (input.length > maxLength ? `${input.substring(0, maxLength)}...` : input)
 
 const ResourceImage = ({ resource, resourceType, isLoading }) => {
@@ -117,17 +126,8 @@ const Item = ({ activity }: {activity: any}) => {
                     {resource && href ? <a href={href}>{truncate(resource.name || '', 75)}</a> : resourceId || ''}{' '}
                     {actionVerbs[activity.action]}
                 </Text>
-                <div // eslint-disable-next-line react/jsx-curly-brace-presence
-                    css={`
-                        color: #a3a3a3;
-                        font-size: 12px;
-                    `}
-                >
-                    <span // eslint-disable-next-line react/jsx-curly-brace-presence
-                        css={`
-                            color: #323232;
-                        `}
-                    >
+                <Subject>
+                    <Gray>
                         {resourceType === resourceTypes.PRODUCT &&
                             resource &&
                             resource.type === productTypes.DATAUNION &&
@@ -137,9 +137,9 @@ const Item = ({ activity }: {activity: any}) => {
                             resource.type === productTypes.NORMAL &&
                             'Data Product'}
                         {resourceType === resourceTypes.STREAM && 'Stream'}
-                    </span>{' '}
+                    </Gray>{' '}
                     {!!timestamp && ago(new Date(timestamp))}
-                </div>
+                </Subject>
             </TextContent>
         </Container>
     )

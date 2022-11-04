@@ -7,7 +7,7 @@ import {
     HamburgerButton,
     Logo,
     LogoLink,
-    Menu,
+    Menu as UnstyledMenu,
     Navbar,
     NavDropdown,
     NavProvider,
@@ -37,6 +37,10 @@ const CaretDownIcon = styled(SvgIcon)`
 const CaretUpIcon = styled(SvgIcon)`
     opacity: 0;
 `
+const BellIcon = styled(SvgIcon)`
+    height: 20px;
+    width: 16px;
+`
 const DropdownToggle = styled.div`
     background: #f8f8f8;
     width: 32px;
@@ -54,6 +58,10 @@ const DropdownToggle = styled.div`
         height: 10px;
         transition: 200ms opacity;
     }
+`
+const Menu = styled(UnstyledMenu)``
+const UnpaddedMenu = styled(Menu)`
+    padding: 0 !important;
 `
 const SignedInUserMenu = styled(NavDropdown)`
     ${Menu} {
@@ -202,23 +210,13 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                     nodeco
                                     toggle={
                                         <NavLink>
-                                            <SvgIcon
-                                                name="alarmBell" // eslint-disable-next-line react/jsx-curly-brace-presence
-                                                css={`
-                                                    height: 20px;
-                                                    width: 16px;
-                                                `}
-                                            />
+                                            <BellIcon name="alarmBell" />
                                         </NavLink>
                                     }
                                     menu={
-                                        <Menu // eslint-disable-next-line react/jsx-curly-brace-presence
-                                            css={`
-                                                padding: 0 !important;
-                                            `}
-                                        >
+                                        <UnpaddedMenu>
                                             <ActivityListItems />
-                                        </Menu>
+                                        </UnpaddedMenu>
                                     }
                                 />
                             </ActivityList>

@@ -7,7 +7,11 @@ type Props = {
     symbol?: string,
 }
 
-const Circle = styled.div`
+type CircleProps = {
+    tokenColor: string,
+}
+
+const Circle = styled.div<CircleProps>`
     display: flex;
     align-items: center;
     justify-content: center;
@@ -16,7 +20,8 @@ const Circle = styled.div`
     line-height: 16px;
     font-size: 16px;
     border-radius: 50%;
-    color: #ffffff;
+    color: ${({ tokenColor }) => Color(tokenColor).isDark() ? '#ffffff' : '#000000'};
+    background-color: ${({ tokenColor }) => tokenColor};
     margin-right: 0.5rem;
 `
 
@@ -41,10 +46,7 @@ const GenericTokenLogo = ({ contractAddress, symbol, ...props }: Props) => {
     return (
         <Circle
             {...props}
-            css={`
-                background-color: ${cssColor};
-                color: ${Color(cssColor).isDark() ? '#ffffff' : '#000000'};
-            `}
+            tokenColor={cssColor}
         >
             {(symbol || '?').charAt(0).toUpperCase()}
         </Circle>

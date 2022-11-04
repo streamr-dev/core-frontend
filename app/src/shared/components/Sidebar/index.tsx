@@ -177,6 +177,11 @@ const Body = styled.div`
     overflow: auto;
 `
 
+const CollapseContainer = styled.div`
+    line-height: 1.5em;
+    padding-top: 20px;
+`
+
 const UnstyledCollapse: FunctionComponent<{ label: string; children: ReactNode; isOpen: boolean }> = ({
     label,
     children,
@@ -197,14 +202,9 @@ const UnstyledCollapse: FunctionComponent<{ label: string; children: ReactNode; 
                 <SvgIcon name={isOpen ? 'minus' : 'plus'} />
             </button>
             <RsCollapse isOpen={isOpen}>
-                <div // eslint-disable-next-line react/jsx-curly-brace-presence
-                    css={`
-                        line-height: 1.5em;
-                        padding-top: 20px;
-                    `}
-                >
+                <CollapseContainer>
                     {children}
-                </div>
+                </CollapseContainer>
             </RsCollapse>
         </Container>
     )
