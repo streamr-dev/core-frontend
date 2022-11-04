@@ -112,7 +112,12 @@ export default function useProductLoadCallback() {
                 let pricingTokenDecimals: number | BN = 18
 
                 if (pricingTokenAddress) {
-                    pricingTokenDecimals = await getCustomTokenDecimals(pricingTokenAddress, chainId)
+                    try {
+                        pricingTokenDecimals = await getCustomTokenDecimals(pricingTokenAddress, chainId)
+                    } catch (e) {
+                        // Not an ERC-20 contract
+                        console.error('Invalid pricingTokenAddress', e)
+                    }
                 }
 
                 if (!isMounted()) {

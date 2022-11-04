@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
+import BN from 'bignumber.js'
 import Text from '$ui/Text'
 import Label from '$ui/Label'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
@@ -94,42 +95,55 @@ const TokenSelector = ({ disabled }: Props) => {
     const [isEditable, setIsEditable] = useState(false)
     const chainId = getChainIdFromApiString(product.chain)
     const { pricingTokenAddress } = product
+
     // Set default value to DATA
     useEffect(() => {
         if (!pricingTokenAddress) {
             setSelection(TokenType.DATA)
         }
     }, [pricingTokenAddress])
+
     useEffect(() => {
+        let loading = true
+
         const check = async () => {
             const dataAddress = getDataAddress(chainId)
 
             if (pricingTokenAddress === dataAddress) {
                 setSelection(TokenType.DATA)
-                setTokenDecimals(18)
             } else if (pricingTokenAddress != null) {
                 setSelection(TokenType.Custom)
                 setCustomTokenAddress(pricingTokenAddress)
-                const info = await getTokenInformation(pricingTokenAddress, chainId)
+            }
 
-                if (!isMounted()) {
-                    return
-                }
+            const info = await getTokenInformation(pricingTokenAddress, chainId)
+            if (!isMounted()) {
+                return
+            }
 
-                if (info) {
-                    setError(null)
-                    setTokenSymbol(info.symbol)
-                    setTokenDecimals(info.decimals)
-                } else {
-                    setError('This not an ERC-20 token contract')
-                    setTokenSymbol(null)
-                    setTokenDecimals(null)
-                }
+            if (!loading) {
+                return
+            }
+
+            if (info) {
+                setError(null)
+                setTokenSymbol(info.symbol)
+                setTokenDecimals(info.decimals)
+            } else {
+                setError('This is not an ERC-20 token contract')
+                setTokenSymbol(null)
+                setTokenDecimals(null)
             }
         }
 
         check()
+
+        // Allow only latest load operation
+        return () => {
+            loading = false
+        }
     }, [pricingTokenAddress, chainId, isMounted])
+
     useEffect(() => {
         if (selection === TokenType.DATA) {
             setCustomTokenAddress('')
@@ -142,11 +156,14 @@ const TokenSelector = ({ disabled }: Props) => {
             setTokenSymbol(null)
         } // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selection, chainId])
+
+    // Update product pricingToken
     useEffect(() => {
         if (selectedTokenAddress) {
-            updatePricingToken(selectedTokenAddress, tokenDecimals)
+            updatePricingToken(selectedTokenAddress, new BN(tokenDecimals || 18))
         }
     }, [selectedTokenAddress, updatePricingToken, tokenDecimals])
+
     return (
         <Container>
             <Item>
@@ -182,7 +199,7 @@ const TokenSelector = ({ disabled }: Props) => {
                 <CustomTokenContainer>
                     <SmallLabel htmlFor="tokenContractAddress">
                         Token contract address
-                        {tokenSymbol == null ? (
+                        {(tokenSymbol == null || selection !== TokenType.Custom) ? (
                             <Text
                                 id="tokenContractAddress"
                                 autoComplete="off"
