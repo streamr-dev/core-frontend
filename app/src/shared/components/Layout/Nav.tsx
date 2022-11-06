@@ -16,7 +16,7 @@ import {
 } from '@streamr/streamr-layout'
 
 import docsLinks from '$shared/../docsLinks'
-import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
+import { MD as TABLET, LG as DESKTOP, SM as MOBILE } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import { selectUserData } from '$shared/modules/user/selectors'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -104,7 +104,7 @@ const SignedInUserMenu = styled(NavDropdown)`
 
 const Navbar = styled(UnstyledNavbar)`
     display: grid;
-    grid-template-columns: auto 1fr auto auto;
+    grid-template-columns: auto 1fr auto auto auto;
 `
 
 const MenuGrid = styled.div`
@@ -144,9 +144,6 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                     <LogoLink href={routes.root()}>
                         <Logo />
                     </LogoLink>
-                </Navbar.Item>
-                <Navbar.Item data-mobile-only>
-                    <SiteSection>{current}</SiteSection>
                 </Navbar.Item>
                 <MenuGrid>
                     <Navbar.Item data-desktop-only>
@@ -217,24 +214,6 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                 )}
                 {!!currentUser && (
                     <Fragment>
-                        <Navbar.Item data-desktop-only>
-                            <ActivityList>
-                                <NavDropdown
-                                    alignMenu="right"
-                                    nodeco
-                                    toggle={
-                                        <NavLink>
-                                            <BellIcon name="alarmBell" />
-                                        </NavLink>
-                                    }
-                                    menu={
-                                        <UnpaddedMenu>
-                                            <ActivityListItems />
-                                        </UnpaddedMenu>
-                                    }
-                                />
-                            </ActivityList>
-                        </Navbar.Item>
                         <Navbar.Item data-desktop-only>
                             <UsernameCopy username={currentUser.username} />
                         </Navbar.Item>
@@ -505,12 +484,14 @@ export const NavContainer = styled(UnstyledContainer)`
             display: none;
         }
 
-        ${Navbar} > [data-desktop-only=true] {
-            display: block;
-        }
-
         ${Navbar} > ${HamburgerButton} {
             display: none;
+        }
+    }
+
+    @media (min-width: ${MOBILE}px) {
+        ${Navbar} > [data-desktop-only=true] {
+            display: block;
         }
     }
 `
