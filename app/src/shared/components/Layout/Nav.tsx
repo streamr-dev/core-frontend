@@ -145,8 +145,8 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                         <Logo />
                     </LogoLink>
                 </Navbar.Item>
-                <MenuGrid>
-                    <Navbar.Item data-desktop-only>
+                <MenuGrid data-desktop-only>
+                    <Navbar.Item>
                         <NavDropdown
                             highlight={current === 'marketplace'}
                             toggle={
@@ -156,7 +156,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                             }
                         />
                     </Navbar.Item>
-                    <Navbar.Item data-desktop-only>
+                    <Navbar.Item>
                         <NavDropdown
                             highlight={current === 'streams'}
                             toggle={
@@ -166,7 +166,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                             }
                         />
                     </Navbar.Item>
-                    <Navbar.Item data-desktop-only>
+                    <Navbar.Item>
                         <NavDropdown
                             highlight={current === 'network'}
                             toggle={
@@ -176,7 +176,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                             }
                         />
                     </Navbar.Item>
-                    <Navbar.Item data-desktop-only>
+                    <Navbar.Item>
                         <NavDropdown
                             highlight={current === 'docs'}
                             toggle={
@@ -189,15 +189,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                 </MenuGrid>
                 {!currentUser && (
                     <Fragment>
-                        <Navbar.Item
-                            style={{
-                                marginLeft: '4px',
-                            }}
-                            data-desktop-only
-                        >
-                            <NavDivider />
-                        </Navbar.Item>
-                        <Navbar.Item data-desktop-only>
+                        <Navbar.Item>
                             <Button
                                 tag="a"
                                 href={routes.auth.login({
@@ -207,7 +199,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                 size="mini"
                                 outline
                             >
-                                Connect Wallet
+                                Connect
                             </Button>
                         </Navbar.Item>
                     </Fragment>
@@ -218,14 +210,13 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                             style={{
                                 marginLeft: 0,
                             }}
-                            data-desktop-only
                         >
                             <SignedInUserMenu
                                 edge
                                 alignMenu="right"
                                 nodeco
                                 toggle={
-                                    <Avatar username={currentUser.username} circle />
+                                    <Avatar username={currentUser.username} />
                                 }
                                 menu={
                                     <Menu>
@@ -459,11 +450,11 @@ export const NavContainer = styled(UnstyledContainer)`
         }
 
         > [data-mobile-only='true'] {
-            display: block;
+            visibility: visible;
         }
 
         > [data-desktop-only='true'] {
-            display: none;
+            visibility: hidden;
         }
     }
 
@@ -471,15 +462,13 @@ export const NavContainer = styled(UnstyledContainer)`
         padding: 0 16px;
     }
 
-    @media (min-width: ${DESKTOP}px) {
-        ${Navbar} > [data-mobile-only=true] {
-            display: none;
-        }
-    }
-
     @media (min-width: ${MOBILE}px) {
-        ${Navbar} > [data-desktop-only=true] {
-            display: block;
+        ${Navbar} > [data-mobile-only='true'] {
+            visibility: hidden;
+        }
+
+        ${Navbar} > [data-desktop-only='true'] {
+            visibility: visible;
         }
 
         ${Navbar} > ${HamburgerButton} {

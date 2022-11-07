@@ -5,7 +5,6 @@ import { mount } from 'enzyme'
 import mockStore from '$app/test/test-utils/mockStoreProvider'
 // eslint-disable-next-line import/order
 import Nav from '$shared/components/Layout/Nav'
-import { Avatarless, UsernameCopy } from '$shared/components/Layout/User'
 
 /* eslint-disable object-curly-newline */
 describe('Nav.Wide', () => {
@@ -115,7 +114,7 @@ describe('Nav.Wide', () => {
                 user: {
                     user: {
                         id: '1',
-                        username: 'tester1@streamr.com',
+                        username: '0x9B3E47C99f06f49724F8527ED493d253d83BeCfC',
                     },
                 },
             }
@@ -126,8 +125,7 @@ describe('Nav.Wide', () => {
                     </Provider>
                 </MemoryRouter>,
             )
-            expect(el.find(Avatarless).exists()).toBe(true)
-            expect(el.find(UsernameCopy).text()).toMatch(/tester1@streamr\.com/)
+            expect(el.find('UnstyledAvatarImage').exists()).toBe(true)
         })
     })
 })
