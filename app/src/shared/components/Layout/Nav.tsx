@@ -20,9 +20,8 @@ import { MD as TABLET, LG as DESKTOP, SM as MOBILE } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import { selectUserData } from '$shared/modules/user/selectors'
 import SvgIcon from '$shared/components/SvgIcon'
-import ActivityList from '$shared/components/ActivityList'
+import AvatarImage from '$shared/components/AvatarImage'
 import { useSessionMethod } from '$shared/reducers/session'
-import ActivityListItems from '$shared/components/ActivityList/ActivityListItems'
 import routes from '$routes'
 import User, { Avatarless, Name, Username, UsernameCopy } from './User'
 import SiteSection from './SiteSection'
@@ -38,10 +37,6 @@ const CaretDownIcon = styled(SvgIcon)`
 `
 const CaretUpIcon = styled(SvgIcon)`
     opacity: 0;
-`
-const BellIcon = styled(SvgIcon)`
-    height: 20px;
-    width: 16px;
 `
 const DropdownToggle = styled.div`
     background: #f8f8f8;
@@ -62,9 +57,7 @@ const DropdownToggle = styled.div`
     }
 `
 const Menu = styled(UnstyledMenu)``
-const UnpaddedMenu = styled(Menu)`
-    padding: 0 !important;
-`
+
 const SignedInUserMenu = styled(NavDropdown)`
     ${Menu} {
         padding-top: 4px;
@@ -104,7 +97,7 @@ const SignedInUserMenu = styled(NavDropdown)`
 
 const Navbar = styled(UnstyledNavbar)`
     display: grid;
-    grid-template-columns: auto 1fr auto auto auto;
+    grid-template-columns: auto 1fr auto auto;
 `
 
 const MenuGrid = styled.div`
@@ -130,6 +123,13 @@ const NavDivider = styled(UnstyledNavDivider)`
         height: 100%;
         width: 1px;
     }
+`
+
+const Avatar = styled(AvatarImage)`
+    width: 32px;
+    height: 32px;
+    border: 1px solid #F3F3F3;
+    border-radius: 50%;
 `
 
 const UnstyledDesktopNav: FunctionComponent = (props) => {
@@ -214,9 +214,6 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                 )}
                 {!!currentUser && (
                     <Fragment>
-                        <Navbar.Item data-desktop-only>
-                            <UsernameCopy username={currentUser.username} />
-                        </Navbar.Item>
                         <Navbar.Item
                             style={{
                                 marginLeft: 0,
@@ -228,12 +225,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                 alignMenu="right"
                                 nodeco
                                 toggle={
-                                    <NavLink>
-                                        <DropdownToggle>
-                                            <CaretDownIcon name="caretDown" />
-                                            <CaretUpIcon name="caretUp" />
-                                        </DropdownToggle>
-                                    </NavLink>
+                                    <Avatar username={currentUser.username} circle />
                                 }
                                 menu={
                                     <Menu>
@@ -483,15 +475,15 @@ export const NavContainer = styled(UnstyledContainer)`
         ${Navbar} > [data-mobile-only=true] {
             display: none;
         }
-
-        ${Navbar} > ${HamburgerButton} {
-            display: none;
-        }
     }
 
     @media (min-width: ${MOBILE}px) {
         ${Navbar} > [data-desktop-only=true] {
             display: block;
+        }
+
+        ${Navbar} > ${HamburgerButton} {
+            display: none;
         }
     }
 `
