@@ -30,6 +30,7 @@ export const productStates = {
     DEPLOYED: 'DEPLOYED',
     DEPLOYING: 'DEPLOYING',
     UNDEPLOYING: 'UNDEPLOYING',
+    DETACHED: 'DETACHED',
 }
 export const networks = {
     STREAMS: getConfigForChainByName(getCoreConfig().streamChains[0]).id,

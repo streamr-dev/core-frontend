@@ -74,7 +74,7 @@ const getDataunionSubgraphUrlForChain = (chainId: number): string => {
 // ----------------------
 // smart contract queries
 // ----------------------
-const getDataUnionObject = async (address: string, chainId: number) => {
+export const getDataUnionObject = async (address: string, chainId: number) => {
     const client = createClient(chainId)
     const dataUnion = await client.getDataUnion(address)
     return dataUnion
@@ -230,6 +230,40 @@ export const getDataUnionStatistics = async (id: DataUnionId, chainId: number, f
         useAuthorization: false,
     })
     return result.data.dataUnionStatsBuckets
+}
+type TheGraphDataUnion = {
+    id: string,
+    owner: string,
+    memberCount: number,
+    revenueWei: string,
+    creationDate: string,
+}
+
+export const getDataUnionsOwnedBy = async (user: Address, chainId: number): Promise<Array<TheGraphDataUnion>> => {
+    const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
+    const result = await post({
+        url: theGraphUrl,
+        data: {
+            query: `
+                query {
+                    dataUnions(where: { owner: "${user.toLowerCase()}" }) {
+                        id,
+                        owner,
+                        memberCount,
+                        revenueWei,
+                        creationDate,
+                    }
+                }
+            `,
+        },
+        useAuthorization: false,
+    })
+
+    if (result.data.dataUnions.length > 0) {
+        return result.data.dataUnions
+    }
+
+    return []
 }
 export const getDataUnionMembers = async (id: DataUnionId, chainId: number, limit = 100): Promise<Array<string>> => {
     const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)

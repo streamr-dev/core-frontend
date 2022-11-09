@@ -42,8 +42,8 @@ export type Product = {
     newImageToUpload?: File | null | undefined
     thumbnailUrl: string | null | undefined
     state?: ProductState
-    created?: Date
-    updated?: Date
+    created?: string
+    updated?: string
     category: CategoryId | null | undefined
     streams: StreamIdList
     previewStream: StreamId | null | undefined

@@ -1,11 +1,13 @@
-import React, { FunctionComponent, useEffect, useMemo } from 'react'
+import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+
 import { CoreHelmet } from '$shared/components/Helmet'
 import { getMyProducts } from '$mp/modules/myProductList/actions'
 import { selectMyProductList, selectFetching } from '$mp/modules/myProductList/selectors'
 import useAllDataUnionStats from '$mp/modules/dataUnion/hooks/useAllDataUnionStats'
+import { getDataUnionsOwnedBy } from '$mp/modules/dataUnion/services'
 import { productTypes } from '$mp/utils/constants'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
@@ -16,11 +18,19 @@ import { getFilters } from '$userpages/utils/constants'
 import PublishModal from '$mp/containers/EditProductPage/PublishModal'
 import DeployDataUnionModal from '$mp/containers/EditProductPage/DeployDataUnionModal'
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
+import { selectUserData } from '$shared/modules/user/selectors'
+import { getConfigForChainByName } from '$shared/web3/config'
+import { getApiStringFromChainId } from '$shared/utils/chains'
+import { ProductIdList } from '$mp/types/product-types'
+import getCoreConfig from '$app/src/getters/getCoreConfig'
+import { productStates } from '$shared/utils/constants'
 import routes from '$routes'
+
 import Search from '../Header/Search'
 import Layout from '../Layout'
 import NoDataUnionsView from './NoDataUnions'
 import Item from './Item'
+
 const CreateButton = styled(Button)`
     && {
         display: none;
@@ -33,6 +43,7 @@ const CreateButton = styled(Button)`
         }
     }
 `
+
 const StyledListContainer = styled(ListContainer)`
     && {
         margin-top: 16px;
@@ -56,14 +67,19 @@ const DataUnionPage: FunctionComponent = () => {
         const filters = getFilters('product')
         return [filters.RECENT_DESC]
     }, [])
+    const [dataUnionsFromTheGraph, setDataUnionsFromTheGraph ] = useState([])
     const { filter, setSearch, resetFilter } = useFilterSort(sortOptions)
     const allProducts = useSelector(selectMyProductList)
     const fetching = useSelector(selectFetching)
     const dispatch = useDispatch()
     const { load: loadDataUnionStats, stats } = useAllDataUnionStats()
+    const currentUser = useSelector(selectUserData)
+    const { dataunionChains } = getCoreConfig()
+
     // Make sure we show only data unions.
     // This is needed to avoid quick flash of possibly normal products.
     const products = useMemo(() => allProducts.filter((p) => p.type === productTypes.DATAUNION), [allProducts])
+
     useEffect(() => {
         // Modify filter to include only dataunions
         const finalFilter = {
@@ -71,10 +87,34 @@ const DataUnionPage: FunctionComponent = () => {
             key: 'type',
             value: productTypes.DATAUNION,
         }
-        dispatch(getMyProducts(finalFilter)).then((results) => {
+
+        const load = async () => {
+            // Load DUs from API
+            const results = await dispatch(getMyProducts(finalFilter)) as unknown as ProductIdList
             loadDataUnionStats(results)
-        })
-    }, [dispatch, filter, loadDataUnionStats])
+
+            // Load DUs from The Graph so that we can show "detached" DUs that have no corresponding product in the API
+            for (const c of dataunionChains) {
+                const config = getConfigForChainByName(c)
+                const chainId = config.id
+                const ownedDus = await getDataUnionsOwnedBy(currentUser.username, chainId)
+
+                setDataUnionsFromTheGraph((prev) => ([
+                    ...prev,
+                    ...ownedDus.map((du) => ({
+                        ...du,
+                        chain: getApiStringFromChainId(chainId),
+                        state: productStates.DETACHED,
+                        updated: Number.parseInt(du.creationDate || '0') * 1000,
+                        beneficiaryAddress: du.id,
+                    }))
+                ]))
+            }
+        }
+
+        load()
+    }, [dispatch, filter, loadDataUnionStats, currentUser.username, dataunionChains])
+
     return (
         <Layout
             headerAdditionalComponent={
@@ -98,14 +138,14 @@ const DataUnionPage: FunctionComponent = () => {
         >
             <CoreHelmet title="Data Unions" />
             <StyledListContainer>
-                {!fetching && products && !products.length && (
+                {!fetching && (products && products.length === 0) && (dataUnionsFromTheGraph && dataUnionsFromTheGraph.length === 0) && (
                     <NoDataUnionsView
                         hasFilter={!!filter && (!!filter.search || !!filter.key)}
                         filter={filter}
                         onResetFilter={resetFilter}
                     />
                 )}
-                {products.map((product) => {
+                {products != null && products.length > 0 && products.map((product) => {
                     const duStats = stats.find(
                         (s) =>
                             s.id &&
@@ -114,6 +154,23 @@ const DataUnionPage: FunctionComponent = () => {
                     )
                     return <Item key={product.id} product={product} stats={duStats} />
                 })}
+                {
+                    dataUnionsFromTheGraph != null &&
+                    dataUnionsFromTheGraph.length > 0 &&
+                    dataUnionsFromTheGraph
+                        // Prioritize products from API
+                        .filter((du) => !products.map((p) => p && p.beneficiaryAddress && p.beneficiaryAddress.toLowerCase()).includes(du.id))
+                        .map((du) =>
+                        {
+                            const duStats = {
+                                totalEarnings: du.revenueWei,
+                                memberCount: {
+                                    total: du.memberCount,
+                                },
+                            }
+                            return <Item key={du.id} product={du} stats={duStats} />
+                        })
+                }
             </StyledListContainer>
             <DocsShortcuts />
             <PublishModal />
