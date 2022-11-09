@@ -145,6 +145,13 @@ const EditorNav = () => {
                     status: getStatus('chain'),
                 }
             ]),
+            ...includeIf(!!isDataUnion, [
+                {
+                    id: 'deployment',
+                    heading: 'Deployment',
+                    status: getStatus('deployment'),
+                }
+            ]),
             ...includeIf(!!isPaid, [
                 {
                     id: 'pricingToken',
