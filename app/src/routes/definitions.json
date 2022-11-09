@@ -43,7 +43,7 @@
             "product": "<streamr>/marketplace/products/:id"
         }
     },
-    "networkExplorer": "/network-explorer",
+    "networkExplorer": "<streamr>/network-explorer/",
     "privacy": "https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf",
     "subscriptions": "/core/subscriptions",
     "root": "/",
