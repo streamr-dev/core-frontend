@@ -156,6 +156,19 @@ export function useEditableProductActions() {
         },
         [commit, setTouched],
     )
+    const updateExistingDUAddress = useCallback(
+        (address: string, didTouch = true) => {
+            commit('Update existing DU address', (p: Product) => ({
+                ...p,
+                existingDUAddress: address,
+            }))
+
+            if (didTouch) {
+                setTouched('existingDUAddress')
+            }
+        },
+        [commit, setTouched],
+    )
     const updateType = useCallback(
         (type: $ElementType<Product, 'type'>) => {
             commit('Update type', (p: Product) => ({ ...p, type }))
@@ -196,7 +209,6 @@ export function useEditableProductActions() {
                 ...p,
                 contact: {
                     ...(p.contact || {}),
-                    // $FlowFixMe: "Computing object literal may lead to an exponentially large number of cases to reason about because inferred union"
                     ...(social1 != null && {
                         social1,
                     }),
@@ -232,6 +244,7 @@ export function useEditableProductActions() {
             updateIsFree,
             updatePrice,
             updateBeneficiaryAddress,
+            updateExistingDUAddress,
             updateType,
             updateTermsOfUse,
             updateContactUrl,
@@ -254,6 +267,7 @@ export function useEditableProductActions() {
             updateIsFree,
             updatePrice,
             updateBeneficiaryAddress,
+            updateExistingDUAddress,
             updateType,
             updateTermsOfUse,
             updateContactUrl,

@@ -25,6 +25,8 @@ const EditorNav = () => {
     const isDataUnion = isDataUnionProduct(product)
     const isPublic = isPublished(product)
     const isPaid = isPaidProduct(product)
+    const isProductDeployed = product.beneficiaryAddress != null
+
     const getStatus = useCallback(
         (name: string) => {
             if (isNewProduct && !isTouched(name)) {
@@ -145,7 +147,7 @@ const EditorNav = () => {
                     status: getStatus('chain'),
                 }
             ]),
-            ...includeIf(!!isDataUnion, [
+            ...includeIf(!!isDataUnion && !isProductDeployed, [
                 {
                     id: 'deployment',
                     heading: 'Deployment',

@@ -19,10 +19,8 @@ import PublishModal from '$mp/containers/EditProductPage/PublishModal'
 import DeployDataUnionModal from '$mp/containers/EditProductPage/DeployDataUnionModal'
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import { selectUserData } from '$shared/modules/user/selectors'
-import { getConfigForChainByName } from '$shared/web3/config'
 import { getApiStringFromChainId } from '$shared/utils/chains'
 import { ProductIdList } from '$mp/types/product-types'
-import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { productStates } from '$shared/utils/constants'
 import routes from '$routes'
 
@@ -74,7 +72,7 @@ const DataUnionPage: FunctionComponent = () => {
     const dispatch = useDispatch()
     const { load: loadDataUnionStats, stats } = useAllDataUnionStats()
     const currentUser = useSelector(selectUserData)
-    const { dataunionChains } = getCoreConfig()
+    const currentUserName = currentUser && currentUser.username
 
     // Make sure we show only data unions.
     // This is needed to avoid quick flash of possibly normal products.
@@ -93,17 +91,15 @@ const DataUnionPage: FunctionComponent = () => {
             const results = await dispatch(getMyProducts(finalFilter)) as unknown as ProductIdList
             loadDataUnionStats(results)
 
-            // Load DUs from The Graph so that we can show "detached" DUs that have no corresponding product in the API
-            for (const c of dataunionChains) {
-                const config = getConfigForChainByName(c)
-                const chainId = config.id
-                const ownedDus = await getDataUnionsOwnedBy(currentUser.username, chainId)
+            if (currentUserName) {
+                // Load DUs from The Graph so that we can show "detached" DUs that have no corresponding product in the API
+                const ownedDus = await getDataUnionsOwnedBy(currentUserName)
 
                 setDataUnionsFromTheGraph((prev) => ([
                     ...prev,
                     ...ownedDus.map((du) => ({
                         ...du,
-                        chain: getApiStringFromChainId(chainId),
+                        chain: getApiStringFromChainId(du.chainId),
                         state: productStates.DETACHED,
                         updated: Number.parseInt(du.creationDate || '0') * 1000,
                         beneficiaryAddress: du.id,
@@ -113,7 +109,7 @@ const DataUnionPage: FunctionComponent = () => {
         }
 
         load()
-    }, [dispatch, filter, loadDataUnionStats, currentUser.username, dataunionChains])
+    }, [dispatch, filter, loadDataUnionStats, currentUserName])
 
     return (
         <Layout

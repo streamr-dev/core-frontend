@@ -1,14 +1,14 @@
-import React, { useState, useMemo, useCallback, useContext, useRef, Context, ReactNode } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useState, useMemo, useCallback, useContext, useRef, Context, ReactNode, useEffect } from 'react'
+import { DataUnionStats } from '@dataunions/client/types/src/DataUnion'
 import qs from 'query-string'
 import { useLocation, useHistory } from 'react-router-dom'
 import type { Product } from '$mp/types/product-types'
 import { isDataUnionProduct } from '$mp/utils/product'
 import usePending from '$shared/hooks/usePending'
 import { putProduct, postImage } from '$mp/modules/product/services'
-import { selectDataUnionStats } from '$mp/modules/dataUnion/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Notification from '$shared/utils/Notification'
+import { getDataUnionObject } from '$mp/modules/dataUnion/services'
 import { NotificationIcon, productStates } from '$shared/utils/constants'
 import { numberToText } from '$shared/utils/text'
 import { isEthereumAddress } from '$mp/utils/validate'
@@ -18,6 +18,7 @@ import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import useModal from '$shared/hooks/useModal'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import routes from '$routes'
 import * as State from '../EditProductPage/state'
 import { useController } from '../ProductController'
@@ -49,13 +50,16 @@ function useEditController(product: Product) {
     const savePending = usePending('product.SAVE')
     const { updateBeneficiaryAddress } = useEditableProductActions()
     const { product: originalProduct } = useController()
-    const { replaceState } = useEditableState()
-    const dataUnion = useSelector(selectDataUnionStats)
+    const { replaceState, state } = useEditableState()
+    const [dataUnionStats, setDataUnionStats] = useState<DataUnionStats>(null)
     const [publishAttempted, setPublishAttempted] = useState(!!(qs.parse(location.search).publishAttempted || ''))
     usePreventNavigatingAway('You have unsaved changes', isAnyTouched)
     const { dataUnionPublishMemberLimit } = getCoreConfig()
     const productRef = useRef(product)
     productRef.current = product
+    const chainId = product && getChainIdFromApiString(product.chain)
+    const nextAddress = state.existingDUAddress || state.beneficiaryAddress
+
     const errors = useMemo(
         () =>
             Object.keys(status)
@@ -69,6 +73,18 @@ function useEditController(product: Product) {
     const { api: deployDataUnionDialog } = useModal('dataUnion.DEPLOY')
     const { api: confirmSaveDialog } = useModal('confirmSave')
     const { api: publishDialog } = useModal('publish')
+
+    useEffect(() => {
+        const loadDU = async () => {
+            if (nextAddress) {
+                const du = await getDataUnionObject(nextAddress, chainId)
+                const stats = await du.getStats()
+                setDataUnionStats(stats)
+            }
+        }
+        loadDU()
+    }, [nextAddress, chainId])
+
     const redirectToProductList = useCallback(() => {
         if (!isMounted()) {
             return
@@ -159,26 +175,24 @@ function useEditController(product: Product) {
             return false
         }
 
-        if (isDataUnionProduct(productRef.current) && isEthereumAddress(productRef.current.beneficiaryAddress)) {
-            const { active: activeMembers } = (dataUnion && dataUnion.memberCount) || {}
-
-            if (!dataUnion || (activeMembers || 0) < dataUnionPublishMemberLimit) {
-                Notification.push({
-                    title: `The minimum community size for a Data Union is ${
-                        dataUnionPublishMemberLimit === 1 ? 'one member' : `${numberToText(dataUnionPublishMemberLimit)} members`
-                    }.`,
-                    icon: NotificationIcon.ERROR,
-                })
-                return false
-            }
-        }
-
         return true
-    }, [errors, dataUnion, dataUnionPublishMemberLimit])
+    }, [errors])
     const publish = useCallback(async () => {
         setPublishAttempted(true)
 
         if (validate()) {
+            if (isDataUnionProduct(productRef.current) && isEthereumAddress(nextAddress)) {
+                if (!dataUnionStats || (dataUnionStats.activeMemberCount.toNumber() || 0) < dataUnionPublishMemberLimit) {
+                    Notification.push({
+                        title: `The minimum community size for a Data Union is ${
+                            dataUnionPublishMemberLimit === 1 ? 'one member' : `${numberToText(dataUnionPublishMemberLimit)} members`
+                        }.`,
+                        icon: NotificationIcon.ERROR,
+                    })
+                    return
+                }
+            }
+
             await save({
                 redirect: false,
             })
@@ -203,7 +217,18 @@ function useEditController(product: Product) {
                 redirectToProduct()
             }
         }
-    }, [validate, save, publishDialog, redirectToProductList, redirectToProduct, replaceState, isMounted])
+    }, [
+        validate,
+        save,
+        publishDialog,
+        redirectToProductList,
+        redirectToProduct,
+        replaceState,
+        isMounted,
+        dataUnionPublishMemberLimit,
+        dataUnionStats,
+        nextAddress
+    ])
     const updateBeneficiary = useCallback(
         async (address) => {
             const { beneficiaryAddress } = productRef.current

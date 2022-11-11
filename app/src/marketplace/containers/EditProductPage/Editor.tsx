@@ -49,8 +49,13 @@ const Editor = ({ disabled }: Props) => {
                         {(isDataUnion || isPaid) && (
                             <ProductChain disabled={disabled || isChainSelectorDisabled} />
                         )}
-                        {(isDataUnion) && (
-                            <DataUnionDeployment disabled={disabled} />
+                        {(isDataUnion && !isChainSelectorDisabled) && (
+                            <DataUnionDeployment
+                                // NOTE: We want to remount component when chain changes
+                                // so that we reset the list of selectable data unions.
+                                key={`${product.id}-${product.chain}`}
+                                disabled={disabled}
+                            />
                         )}
                         {isPaid && (
                             <React.Fragment>
