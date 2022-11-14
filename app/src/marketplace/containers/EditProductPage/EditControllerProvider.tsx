@@ -57,8 +57,8 @@ function useEditController(product: Product) {
     const { dataUnionPublishMemberLimit } = getCoreConfig()
     const productRef = useRef(product)
     productRef.current = product
-    const chainId = product && getChainIdFromApiString(product.chain)
-    const nextAddress = state.existingDUAddress || state.beneficiaryAddress
+    const chainId = product && product.chain && getChainIdFromApiString(product.chain)
+    const nextAddress = state && (state.existingDUAddress || state.beneficiaryAddress)
 
     const errors = useMemo(
         () =>
