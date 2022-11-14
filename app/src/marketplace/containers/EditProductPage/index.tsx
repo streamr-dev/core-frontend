@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useEffect } from 'react'
+import React, { useContext, useMemo, useEffect, useCallback } from 'react'
 import { withRouter } from 'react-router-dom'
 import cx from 'classnames'
 import { CoreHelmet } from '$shared/components/Helmet'
@@ -21,6 +21,7 @@ import SwitchNetworkModal from '$shared/components/SwitchNetworkModal'
 import BackButton from '$shared/components/BackButton'
 import useProductPermissions from '../ProductController/useProductPermissions'
 import ProductController, { useController } from '../ProductController'
+import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
 import Editor from './Editor'
 import Preview from './Preview'
@@ -32,13 +33,14 @@ import WhitelistEditModal from './WhitelistEditModal'
 import styles from './editProductPage.pcss'
 
 const EditProductPage = ({ product }: { product: Product }) => {
-    const { isPreview, setIsPreview, save, publish, deployDataUnion, back } = useContext(EditControllerContext)
+    const { isPreview, setIsPreview, save, publish, deployDataUnion, back, validate } = useContext(EditControllerContext)
     const { isPending: savePending } = usePending('product.SAVE')
     const { isPending: publishDialogLoading } = usePending('product.PUBLISH_DIALOG_LOAD')
     const { isPending: fetchingAllStreams } = usePending('product.LOAD_ALL_STREAMS')
     const { product: originalProduct, loadCategories, loadDataUnion, loadDataUnionStats, loadAllStreams, resetDataUnion } = useController()
     const chainId = getChainIdFromApiString(product.chain)
     const { reset: resetDataUnionSecrets } = useDataUnionSecrets()
+    const { updateBeneficiaryAddress } = useEditableProductActions()
     const { load: loadWhiteWhitelistedAdresses, reset: resetWhiteWhitelistedAdresses } = useWhitelist()
     const { isOpen: isDataUnionDeployDialogOpen } = useModal('dataUnion.DEPLOY')
     const { isOpen: isConfirmSaveDialogOpen } = useModal('confirmSave')
@@ -124,18 +126,40 @@ const EditProductPage = ({ product }: { product: Product }) => {
             disabled: !(productState === productStates.NOT_DEPLOYED || productState === productStates.DEPLOYED) || isDisabled,
         }
     }, [productState, publish, isDisabled])
+    const deployOrSetContract = useCallback(() => {
+        const existingAddr = product.existingDUAddress
+        if (existingAddr) {
+            // Update beneficiary after validate succeeds so that
+            // user does not end up in a situation where contract
+            // cannot be updated anymore
+            if (validate()) {
+                const previousBeneficiary = product.beneficiaryAddress
+                updateBeneficiaryAddress(existingAddr)
+
+                // Need to validate again to check DU member count
+                if (validate()) {
+                    return
+                } else {
+                    // Rollback change
+                    updateBeneficiaryAddress(previousBeneficiary)
+                }
+            }
+        } else {
+            deployDataUnion()
+        }
+    }, [product, deployDataUnion, validate, updateBeneficiaryAddress])
     const deployButton = useMemo(() => {
         if (isDataUnion && !isDeployed) {
             return {
                 title: 'Continue',
                 kind: 'primary',
-                onClick: deployDataUnion,
+                onClick: deployOrSetContract,
                 disabled: isDisabled,
             }
         }
 
         return publishButton
-    }, [isDataUnion, isDeployed, deployDataUnion, isDisabled, publishButton])
+    }, [isDataUnion, isDeployed, deployOrSetContract, isDisabled, publishButton])
     const actions = {
         saveAndExit: saveAndExitButton,
         preview: previewButton,

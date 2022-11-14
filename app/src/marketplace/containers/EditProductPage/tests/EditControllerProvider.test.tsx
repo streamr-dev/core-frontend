@@ -111,15 +111,6 @@ describe('EditControllerProvider', () => {
             expect(notificationStub).toHaveBeenCalledTimes(5)
         })
         it('notifies if product fields are missing', async () => {
-            const originalConfig = getConfig()
-            const getConfigMock = getConfig as any
-            getConfigMock.mockImplementation(() => ({
-                ...originalConfig,
-                core: {
-                    ...originalConfig.core,
-                    dataUnionPublishMemberLimit: 10,
-                },
-            }))
             let currentContext
             let validationContext
 
@@ -140,7 +131,6 @@ describe('EditControllerProvider', () => {
                 category: 'test',
                 imageUrl: 'http://...',
                 streams: ['1', '2'],
-                adminFee: '0.3',
                 pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
             } as any
             const notificationStub = jest.spyOn(Notification, 'push')
@@ -161,12 +151,12 @@ describe('EditControllerProvider', () => {
             await act(async () => {
                 result = await currentContext.validate()
             })
-            expect(result).toBe(false)
             expect(notificationStub).toHaveBeenCalledTimes(1)
             expect(notificationStub).toBeCalledWith({
-                title: 'The minimum community size for a Data Union is ten members.',
+                title: 'Admin fee cannot be empty',
                 icon: 'error',
             })
+            expect(result).toBe(false)
         })
     })
     describe('back', () => {
@@ -594,6 +584,7 @@ describe('EditControllerProvider', () => {
                 imageUrl: 'http://...',
                 streams: ['1', '2'],
                 pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
+                chain: 'ETHEREUM',
             } as any
             const modalOpenStub = jest.fn(() =>
                 Promise.resolve({
@@ -657,6 +648,7 @@ describe('EditControllerProvider', () => {
                 imageUrl: 'http://...',
                 streams: ['1', '2'],
                 pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
+                chain: 'ETHEREUM',
             } as any
             const modalOpenStub = jest.fn(() =>
                 Promise.resolve({
@@ -731,6 +723,7 @@ describe('EditControllerProvider', () => {
                 imageUrl: 'http://...',
                 streams: ['1', '2'],
                 pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
+                chain: 'ETHEREUM',
             } as any
             const modalOpenStub = jest.fn(() =>
                 Promise.resolve({
@@ -805,6 +798,7 @@ describe('EditControllerProvider', () => {
                 imageUrl: 'http://...',
                 streams: ['1', '2'],
                 pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
+                chain: 'ETHEREUM',
             } as any
             const modalOpenStub = jest.fn(() =>
                 Promise.resolve({
@@ -879,6 +873,7 @@ describe('EditControllerProvider', () => {
                 imageUrl: 'http://...',
                 streams: ['1', '2'],
                 pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
+                chain: 'ETHEREUM',
             } as any
             const modalOpenStub = jest.fn(() =>
                 Promise.resolve({
@@ -954,6 +949,7 @@ describe('EditControllerProvider', () => {
                 imageUrl: 'http://...',
                 streams: ['1', '2'],
                 pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
+                chain: 'ETHEREUM',
             } as any
             const modalOpenStub = jest.fn(() =>
                 Promise.resolve({
@@ -1004,6 +1000,91 @@ describe('EditControllerProvider', () => {
             })
             expect(location.pathname).toBe('/core/products')
         })
+        it('checks dataunion member count on publish', async () => {
+            let currentContext
+            let validationContext
+            let location
+
+            const originalConfig = getConfig()
+            const getConfigMock = getConfig as any
+            getConfigMock.mockImplementation(() => ({
+                ...originalConfig,
+                core: {
+                    ...originalConfig.core,
+                    dataUnionPublishMemberLimit: 10,
+                },
+            }))
+
+            const Test = () => {
+                location = useLocation()
+                currentContext = useContext(EditControllerContext)
+                validationContext = useContext(ValidationContext)
+                return null
+            }
+
+            const product = {
+                id: '1',
+                name: 'data union',
+                description: 'description',
+                type: 'DATAUNION',
+                beneficiaryAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
+                pricePerSecond: '1',
+                priceCurrency: 'DATA',
+                category: 'test',
+                imageUrl: 'http://...',
+                streams: ['1', '2'],
+                pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
+                chain: 'POLYGON',
+                adminFee: 0.2,
+            } as any
+            const modalOpenStub = jest.fn(() =>
+                Promise.resolve({
+                    succeeded: true,
+                    started: true,
+                    isUnpublish: true,
+                }),
+            )
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
+                api: {
+                    open: modalOpenStub,
+                },
+            } as any))
+            jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({ ...product as any }))
+            const replaceStateStub = jest.fn()
+            jest.spyOn(useEditableState, 'default').mockImplementation(() => ({
+                replaceState: (fn) => replaceStateStub(fn(product)),
+                state: {
+                    existingDUAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
+                },
+            } as any))
+            const notificationStub = jest.spyOn(Notification, 'push')
+            const history = createMemoryHistory({
+                initialEntries: ['/core/products/1/edit'],
+            })
+            mount(
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>,
+            )
+            expect(currentContext.publishAttempted).toBe(false)
+            expect(location.pathname).toBe('/core/products/1/edit')
+            await act(async () => {
+                await validationContext.validate(product)
+            })
+            await act(async () => {
+                await currentContext.publish()
+            })
+            expect(notificationStub).toHaveBeenCalledTimes(1)
+            expect(notificationStub).toBeCalledWith({
+                title: 'The minimum community size for a Data Union is ten members.',
+                icon: 'error',
+            })
+            expect(currentContext.publishAttempted).toBe(true)
+        })
     })
     describe('deployDataUnion', () => {
         it('sets publish attempted if validation fails', async () => {
@@ -1020,6 +1101,7 @@ describe('EditControllerProvider', () => {
 
             const product = {
                 id: '1',
+                chain: 'ETHEREUM',
             } as any
             const notificationStub = jest.spyOn(Notification, 'push')
             const history = createMemoryHistory({
@@ -1079,6 +1161,7 @@ describe('EditControllerProvider', () => {
                 streams: ['1', '2'],
                 adminFee: '0.3',
                 pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
+                chain: 'ETHEREUM',
             } as any
             const modalOpenStub = jest.fn(() => Promise.resolve(false))
             jest.spyOn(useModal, 'default').mockImplementation(() => ({
@@ -1147,6 +1230,7 @@ describe('EditControllerProvider', () => {
                 streams: ['1', '2'],
                 adminFee: '0.3',
                 pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
+                chain: 'POLYGON',
             }
             const beneficiaryAddress = '0x538a2Fa87E03B280e10C83AA8dD7E5B15B868BD9'
             const modalOpenStub = jest.fn(

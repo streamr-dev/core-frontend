@@ -46,7 +46,7 @@ describe('Product State', () => {
                     thumbnailUrl: undefined,
                     streams: [],
                     previewStream: '',
-                    updated: new Date('2019-10-01 09:51:00'),
+                    updated: '2019-10-01 09:51:00',
                     adminFee: '0.1',
                 }),
             ).toMatchObject({
@@ -67,7 +67,7 @@ describe('Product State', () => {
                     thumbnailUrl: undefined,
                     streams: [],
                     previewStream: '',
-                    updated: new Date('2019-10-01 09:51:00'),
+                    updated: '2019-10-01 09:51:00',
                     adminFee: '0.1',
                     contact: {
                         email: 'a@b.com',
