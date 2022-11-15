@@ -30,7 +30,8 @@ function stubStreams(streams) {
         }
     })
     const getAddressStub = jest.fn().mockImplementation(() => Promise.resolve({} as any))
-    useClient.mockImplementation(() => ({
+    const useClientMock = useClient as any
+    useClientMock.mockImplementation(() => ({
         searchStreams: searchStreamsStub,
         getAddress: getAddressStub,
     }))

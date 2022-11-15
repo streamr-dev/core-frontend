@@ -11,7 +11,7 @@ export default function useLoadProductStreamsCallback({ setProductStreams }) {
                     (streamIds || []).map(async (id) => {
                         try {
                             const stream = await client.getStream(id)
-                            return stream.toObject()
+                            return stream
                         } catch (e) {
                             console.warn(e)
                         }

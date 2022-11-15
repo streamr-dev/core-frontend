@@ -122,6 +122,7 @@ export default function usePublish() {
                             // otherwise the product update will fail
                             const gen = client.searchStreams(undefined, {
                                 user: await client.getAddress(),
+                                allowPublic: false,
                             })
                             const streams = []
 

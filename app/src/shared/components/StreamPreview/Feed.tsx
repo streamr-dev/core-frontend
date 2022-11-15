@@ -163,8 +163,8 @@ const UnstyledFeed = ({
         setDatapoint(undefined)
     }, [streamId])
     const { metadata, data } = datapoint || { metadata: null, data: null }
-    const selectedMsgId = metadata && JSON.stringify(metadata.messageId)
-    const selectedTimestamp = metadata && metadata.messageId.timestamp
+    const selectedMsgId = metadata && JSON.stringify(metadata)
+    const selectedTimestamp = metadata && metadata.timestamp
     const selection = Object.entries(data || {})
     const { copy } = useCopy()
     const rowRef = useRef(null)
@@ -210,7 +210,7 @@ const UnstyledFeed = ({
                                 return null
                             }
 
-                            const msgId = JSON.stringify(d.metadata.messageId)
+                            const msgId = JSON.stringify(d.metadata)
                             const Tag = selectedMsgId === msgId ? 'strong' : 'span'
                             return (
                                 <Row
@@ -227,7 +227,7 @@ const UnstyledFeed = ({
                                     <Inner>
                                         <Cell as={Tag}>
                                             {formatDateTime(
-                                                d.metadata && d.metadata.messageId && d.metadata.messageId.timestamp,
+                                                d.metadata && d.metadata.timestamp,
                                                 tz,
                                             )}
                                         </Cell>

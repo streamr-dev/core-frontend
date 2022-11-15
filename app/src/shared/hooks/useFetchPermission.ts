@@ -54,6 +54,7 @@ export default function useFetchPermission() {
                         permission,
                         streamId,
                         user,
+                        allowPublic: false,
                     }))
                 )
             } catch (e) {

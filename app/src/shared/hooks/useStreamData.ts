@@ -15,8 +15,8 @@ function getEmptyData() {
 }
 
 function areMessagesSame(a, b) {
-    return a.toMessageRef().compareTo(b.toMessageRef()) === 0
-} // eslint-disable-next-line max-len
+    return a.streamMessage.messageId.toMessageRef().compareTo(b.streamMessage.messageId.toMessageRef()) === 0
+}
 
 export default function useStreamData(
     streamId: string,
@@ -47,7 +47,7 @@ export default function useStreamData(
                     return
                 }
 
-                switch (message.type) {
+                switch ((message as any).type) {
                     case Message.Done:
                     case Message.Notification:
                     case Message.Warning:
@@ -68,7 +68,7 @@ export default function useStreamData(
                     metadata,
                 }
                 const { current: cache } = cacheRef
-                const existingMessage = cache.find((d) => areMessagesSame(d.metadata.messageId, metadata.messageId))
+                const existingMessage = cache.find((d) => areMessagesSame(d.metadata, metadata))
 
                 if (existingMessage) {
                     // Duplicate message -> skip it

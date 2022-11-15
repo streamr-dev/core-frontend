@@ -21,7 +21,7 @@ export default function useRemoveStream() {
     return useCallback(
         async (streamId) => {
             const { requireUninterrupted } = itp(streamId)
-            const canDelete = await fetchPermission(StreamPermission.DELETE)
+            const canDelete = await fetchPermission(streamId, StreamPermission.DELETE)
             requireUninterrupted()
             const confirmed = await confirmDialog('stream', {
                 title: `${canDelete ? 'Delete' : 'Remove'} this stream?`,

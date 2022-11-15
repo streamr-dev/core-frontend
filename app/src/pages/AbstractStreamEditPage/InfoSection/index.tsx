@@ -15,7 +15,7 @@ import { ENS_DOMAINS_URL, ReadonlyStreamId, EditableStreamId } from './StreamId'
 function UnwrappedInfoSection({ disabled, canEdit }) {
     const streamId = useStreamId()
     const StreamIdComponent = streamId ? ReadonlyStreamId : EditableStreamId
-    const { description = '' } = useTransientStream()
+    const { metadata: { description = '' } } = useTransientStream()
     const { stage } = useStreamModifier()
     return (
         <Fragment>
@@ -51,7 +51,9 @@ function UnwrappedInfoSection({ disabled, canEdit }) {
                         value={description}
                         onChange={({ target }) =>
                             void stage({
-                                description: target.value || '',
+                                metadata: {
+                                    description: target.value || '',
+                                },
                             })
                         }
                         disabled={disabled}
