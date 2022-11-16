@@ -1,21 +1,21 @@
 const xs = {
     min: null,
-    max: 575,
+    max: 375,
 }
 
 const sm = {
     min: xs.max + 1,
-    max: 767,
+    max: 744,
 }
 
 const md = {
     min: sm.max + 1,
-    max: 991,
+    max: 1440,
 }
 
 const lg = {
     min: md.max + 1,
-    max: 1199,
+    max: 1920,
 }
 
 const xl = {

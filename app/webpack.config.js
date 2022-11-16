@@ -15,6 +15,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const SentryPlugin = require('@sentry/webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+const createStyledComponentsTransformer = require('typescript-plugin-styled-components').default
 const validateEnv = require('./scripts/validateEnv')
 const pkg = require('./package')
 
@@ -22,6 +23,7 @@ const dotenv = require('./scripts/dotenv')
 
 const loadedDotenv = !process.env.NO_DOTENV ? dotenv() : []
 const analyze = !!process.env.BUNDLE_ANALYSIS
+const styledComponentsTransformer = createStyledComponentsTransformer()
 
 const isProduction = require('./scripts/isProduction')
 
@@ -65,6 +67,11 @@ module.exports = {
                         loader: 'ts-loader',
                         options: {
                             transpileOnly: true,
+                            getCustomTransformers: () => (
+                                {
+                                    before: [styledComponentsTransformer]
+                                }
+                            ),
                         },
                     },
                 ],

@@ -126,10 +126,15 @@ const IconOption: FunctionComponent<{isSelected: boolean, data: {icon: ReactNode
     </components.Option>
 )
 
-const Caret = styled(SvgIcon)<SvgIconProps>`
+type CaretProps = {
+    isOpen: boolean,
+} & SvgIconProps
+
+const Caret = styled(SvgIcon)<CaretProps>`
     height: 8px;
     width: 10px;
     transition: transform 180ms ease-in-out;
+    transform: ${({ isOpen }) => isOpen ? 'rotate(180deg)' : ''};
 `
 
 const DropdownIndicator = (props: any) =>
@@ -137,13 +142,7 @@ const DropdownIndicator = (props: any) =>
         <components.DropdownIndicator {...props}>
             <Caret
                 name="caretDown"
-                css={
-                    props.selectProps.menuIsOpen
-                        ? css`
-                              transform: rotate(180deg);
-                          `
-                        : undefined
-                }
+                isOpen={props.selectProps.menuIsOpen}
             />
         </components.DropdownIndicator>
     )

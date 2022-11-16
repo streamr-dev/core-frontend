@@ -7,26 +7,27 @@ import {
     HamburgerButton,
     Logo,
     LogoLink,
-    Menu,
-    Navbar,
+    Menu as UnstyledMenu,
+    Navbar as UnstyledNavbar,
     NavDropdown,
     NavProvider,
     NavLink,
     NavOverlay,
 } from '@streamr/streamr-layout'
-import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
+
+import docsLinks from '$shared/../docsLinks'
+import { MD as TABLET, LG as DESKTOP, SM as MOBILE } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
-import { DevelopersMenu } from '$docs/components/DocsLayout/DocsNav'
 import { selectUserData } from '$shared/modules/user/selectors'
 import SvgIcon from '$shared/components/SvgIcon'
-import ActivityList from '$shared/components/ActivityList'
+import AvatarImage from '$shared/components/AvatarImage'
 import { useSessionMethod } from '$shared/reducers/session'
-import ActivityListItems from '$shared/components/ActivityList/ActivityListItems'
 import routes from '$routes'
 import User, { Avatarless, Name, Username, UsernameCopy } from './User'
 import SiteSection from './SiteSection'
 import MetamaskIcon from './metamask.svg'
 import WalletconnectIcon from './walletConnect.svg'
+
 const icons: {[key: string]: any} = {
     metamask: MetamaskIcon,
     walletConnect: WalletconnectIcon,
@@ -55,6 +56,8 @@ const DropdownToggle = styled.div`
         transition: 200ms opacity;
     }
 `
+const Menu = styled(UnstyledMenu)``
+
 const SignedInUserMenu = styled(NavDropdown)`
     ${Menu} {
         padding-top: 4px;
@@ -92,6 +95,17 @@ const SignedInUserMenu = styled(NavDropdown)`
     }
 `
 
+const Navbar = styled(UnstyledNavbar)`
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+`
+
+const MenuGrid = styled.div`
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    justify-content: center;
+`
+
 const UnstyledNavDivider: FunctionComponent = (props) => (
     <div {...props}>
         <div />
@@ -111,10 +125,18 @@ const NavDivider = styled(UnstyledNavDivider)`
     }
 `
 
+const Avatar = styled(AvatarImage)`
+    width: 32px;
+    height: 32px;
+    border: 1px solid #F3F3F3;
+    border-radius: 50%;
+`
+
 const UnstyledDesktopNav: FunctionComponent = (props) => {
     const { highlight: current } = NavProvider.useState()
     const { pathname } = useLocation()
     const currentUser = useSelector(selectUserData)
+
     return (
         <div {...props}>
             <Navbar>
@@ -123,62 +145,51 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                         <Logo />
                     </LogoLink>
                 </Navbar.Item>
-                <Navbar.Item data-mobile-only>
-                    <SiteSection>{current}</SiteSection>
-                </Navbar.Item>
-                <Navbar.Item data-desktop-only>
-                    <NavDropdown
-                        highlight={current === 'core'}
-                        toggle={<NavLink>Core</NavLink>}
-                        menu={
-                            <Menu>
-                                <Menu.Item as={Link} to={routes.streams.index()}>
+                <MenuGrid data-desktop-only>
+                    <Navbar.Item>
+                        <NavDropdown
+                            highlight={current === 'marketplace'}
+                            toggle={
+                                <NavLink as={Link} to={routes.marketplace.index()}>
+                                    Projects
+                                </NavLink>
+                            }
+                        />
+                    </Navbar.Item>
+                    <Navbar.Item>
+                        <NavDropdown
+                            highlight={current === 'streams'}
+                            toggle={
+                                <NavLink as={Link} to={routes.streams.index()}>
                                     Streams
-                                </Menu.Item>
-                                <Menu.Item as={Link} to={routes.products.index()}>
-                                    Products
-                                </Menu.Item>
-                                <Menu.Item as={Link} to={routes.dataunions.index()}>
-                                    Data Unions
-                                </Menu.Item>
-                                <Menu.Item as={Link} to={routes.subscriptions()}>
-                                    Subscriptions
-                                </Menu.Item>
-                                <Menu.Item as={Link} to={routes.transactions()}>
-                                    Transactions
-                                </Menu.Item>
-                            </Menu>
-                        }
-                    />
-                </Navbar.Item>
-                <Navbar.Item data-desktop-only>
-                    <NavDropdown
-                        highlight={current === 'marketplace'}
-                        toggle={
-                            <NavLink as={Link} to={routes.marketplace.index()}>
-                                Marketplace
-                            </NavLink>
-                        }
-                    />
-                </Navbar.Item>
-                <Navbar.Item data-desktop-only>
-                    <NavDropdown
-                        highlight={current === 'docs'}
-                        toggle={<NavLink>Developers</NavLink>}
-                        menu={<DevelopersMenu />}
-                    />
-                </Navbar.Item>
+                                </NavLink>
+                            }
+                        />
+                    </Navbar.Item>
+                    <Navbar.Item>
+                        <NavDropdown
+                            highlight={current === 'network'}
+                            toggle={
+                                <NavLink as={Link} href={routes.networkExplorer()} rel="noopener noreferrer" target="_blank">
+                                    Network
+                                </NavLink>
+                            }
+                        />
+                    </Navbar.Item>
+                    <Navbar.Item>
+                        <NavDropdown
+                            highlight={current === 'docs'}
+                            toggle={
+                                <NavLink as={Link} to={docsLinks.docs}>
+                                    Docs
+                                </NavLink>
+                            }
+                        />
+                    </Navbar.Item>
+                </MenuGrid>
                 {!currentUser && (
                     <Fragment>
-                        <Navbar.Item
-                            style={{
-                                marginLeft: '4px',
-                            }}
-                            data-desktop-only
-                        >
-                            <NavDivider />
-                        </Navbar.Item>
-                        <Navbar.Item data-desktop-only>
+                        <Navbar.Item>
                             <Button
                                 tag="a"
                                 href={routes.auth.login({
@@ -188,61 +199,24 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                 size="mini"
                                 outline
                             >
-                                Connect Wallet
+                                Connect
                             </Button>
                         </Navbar.Item>
                     </Fragment>
                 )}
                 {!!currentUser && (
                     <Fragment>
-                        <Navbar.Item data-desktop-only>
-                            <ActivityList>
-                                <NavDropdown
-                                    alignMenu="right"
-                                    nodeco
-                                    toggle={
-                                        <NavLink>
-                                            <SvgIcon
-                                                name="alarmBell" // eslint-disable-next-line react/jsx-curly-brace-presence
-                                                css={`
-                                                    height: 20px;
-                                                    width: 16px;
-                                                `}
-                                            />
-                                        </NavLink>
-                                    }
-                                    menu={
-                                        <Menu // eslint-disable-next-line react/jsx-curly-brace-presence
-                                            css={`
-                                                padding: 0 !important;
-                                            `}
-                                        >
-                                            <ActivityListItems />
-                                        </Menu>
-                                    }
-                                />
-                            </ActivityList>
-                        </Navbar.Item>
-                        <Navbar.Item data-desktop-only>
-                            <UsernameCopy username={currentUser.username} />
-                        </Navbar.Item>
                         <Navbar.Item
                             style={{
                                 marginLeft: 0,
                             }}
-                            data-desktop-only
                         >
                             <SignedInUserMenu
                                 edge
                                 alignMenu="right"
                                 nodeco
                                 toggle={
-                                    <NavLink>
-                                        <DropdownToggle>
-                                            <CaretDownIcon name="caretDown" />
-                                            <CaretUpIcon name="caretUp" />
-                                        </DropdownToggle>
-                                    </NavLink>
+                                    <Avatar username={currentUser.username} />
                                 }
                                 menu={
                                     <Menu>
@@ -476,11 +450,11 @@ export const NavContainer = styled(UnstyledContainer)`
         }
 
         > [data-mobile-only='true'] {
-            display: block;
+            visibility: visible;
         }
 
         > [data-desktop-only='true'] {
-            display: none;
+            visibility: hidden;
         }
     }
 
@@ -488,13 +462,13 @@ export const NavContainer = styled(UnstyledContainer)`
         padding: 0 16px;
     }
 
-    @media (min-width: ${DESKTOP}px) {
-        ${Navbar} > [data-mobile-only=true] {
-            display: none;
+    @media (min-width: ${MOBILE}px) {
+        ${Navbar} > [data-mobile-only='true'] {
+            visibility: hidden;
         }
 
-        ${Navbar} > [data-desktop-only=true] {
-            display: block;
+        ${Navbar} > [data-desktop-only='true'] {
+            visibility: visible;
         }
 
         ${Navbar} > ${HamburgerButton} {
