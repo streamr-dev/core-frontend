@@ -20,7 +20,7 @@ export type Props = {
     controlClassName?: string
 }
 // TODO add typing
-const customStyles = {
+const customStyles: any = {
     control: (provided: any, state: any) => ({
         ...provided,
         padding: '0',
