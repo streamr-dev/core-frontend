@@ -1,12 +1,16 @@
 .modalTitle {
   margin: 0;
-  padding: 24px;
-  font-size: 20px;
+  padding: 24px 56px 24px 24px;
+  font-size: 24px;
   line-height: 32px;
   font-family: var(--sans);
   font-weight: normal;
-  text-align: center;
+  text-align: left;
   position: relative;
+
+  @media (--md-up) {
+    padding: 48px 80px 24px 48px;
+  }
 
   &:empty {
     display: none;
@@ -21,12 +25,16 @@
   appearance: none;
   border: none;
   padding: 0;
-  background: none;
+  background: #F8F8F8;
   cursor: pointer;
   width: 32px;
   height: 32px;
   position: absolute;
-  right: 1.5rem;
+  right: 24px;
+
+  @media (--md-up) {
+    right: 48px;
+  }
 
   &:focus {
     outline: none;
@@ -37,11 +45,4 @@
   width: 10px;
   height: 10px;
   color: #A3A3A3;
-}
-
-@media (--xs) {
-  .modalTitle {
-    font-size: 16px;
-    line-height: 32px;
-  }
 }
