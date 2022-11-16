@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import Button from '$shared/components/Button'
 import { LG } from '$shared/utils/styled'
 import useModal from '$shared/hooks/useModal'
-import type { Filter, SearchFilter, CategoryFilter, SortByFilter, ProductTypeFilter } from '../../types/product-types'
+import type { Filter, SearchFilter, CategoryFilter, SortByFilter, ProjectTypeFilter } from '../../types/project-types'
 import type { Category } from '../../types/category-types'
 import { isValidSearchQuery } from '../../utils/validate'
 import SearchInput from './SearchInput'
@@ -135,7 +135,7 @@ const UnstyledActionBar = ({
         [onFilterChangeProp, filterModal],
     )
     const onProductTypeChange = useCallback(
-        (type: ProductTypeFilter | null | undefined) => {
+        (type: ProjectTypeFilter | null | undefined) => {
             onFilterChangeProp({
                 type,
             })

@@ -7,7 +7,7 @@ import type { StoreState } from '$shared/types/store-state'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { selectEthereumNetworkId } from '$mp/modules/global/selectors'
-import type { ProductIdList } from '$mp/types/product-types'
+import type { ProjectIdList } from '$mp/types/project-types'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { selectMyProductList } from '$mp/modules/myProductList/selectors'
 import { isEthereumAddress } from '$mp/utils/validate'
@@ -51,7 +51,7 @@ const getTransactionsFailure = (error: ErrorInUi): AnyAction => ({
 })
 
 export const fetchProducts =
-    (ids: ProductIdList, chainId: number) =>
+    (ids: ProjectIdList, chainId: number) =>
         (dispatch: (...args: Array<any>) => void): void => {
             (ids || []).forEach((id) => {
                 try {
@@ -83,7 +83,7 @@ export const showEvents =
             return services
                 .getTransactionsFromEvents(eventsToFetch)
                 .then((data: TransactionEntityList) => {
-                    const productsToFetch: ProductIdList = data
+                    const productsToFetch: ProjectIdList = data
                         .filter(
                             (transaction: TransactionEntity) =>
                                 transaction.productId &&
@@ -118,7 +118,7 @@ export const getTransactionEvents =
 
             const address = username.toLowerCase()
             const products = selectMyProductList(state)
-            const ownedProductIds: ProductIdList = (products || [])
+            const ownedProductIds: ProjectIdList = (products || [])
                 .filter(({ ownerAddress }) => (ownerAddress || '').toLowerCase() === address)
                 .map(({ id }) => getValidId(id || ''))
             dispatch(getTransactionEventsRequest())

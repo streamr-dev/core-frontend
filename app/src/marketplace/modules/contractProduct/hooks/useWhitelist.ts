@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getWhitelistAddresses } from '$mp/modules/contractProduct/services'
 import { whiteListedAddressesSchema, whiteListedAddressSchema } from '$shared/modules/entities/schema'
 import useEntities from '$shared/hooks/useEntities'
-import type { ProductId } from '$mp/types/product-types'
+import type { ProjectId } from '$mp/types/project-types'
 import { setWhiteListedAddresses, addWhiteListedAddress, removeWhiteListedAddress } from '../actions'
 import { selectWhiteListedAddresses } from '../selectors'
 type WhitelistParams = {
-    productId: ProductId
+    productId: ProjectId
     address: string
     status: string
     isPending: boolean
@@ -17,7 +17,7 @@ export function useWhitelist() {
     const { update } = useEntities()
     const items = useSelector(selectWhiteListedAddresses)
     const load = useCallback(
-        async (productId: ProductId, chainId: number) => {
+        async (productId: ProjectId, chainId: number) => {
             try {
                 const addresses = await getWhitelistAddresses(productId, chainId)
                 const result = update({
@@ -88,7 +88,7 @@ export function useWhitelist() {
         [dispatch, update],
     )
     const reset = useCallback(
-        (productId: ProductId) => {
+        (productId: ProjectId) => {
             dispatch(setWhiteListedAddresses(productId, []))
         },
         [dispatch],

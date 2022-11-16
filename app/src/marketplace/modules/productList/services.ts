@@ -1,9 +1,9 @@
 import { get } from '$shared/utils/api'
 import type { ApiResult } from '$shared/types/common-types'
 import routes from '$routes'
-import type { Filter, ProductListPageWrapper } from '../../types/product-types'
+import type { Filter, ProjectListPageWrapper } from '../../types/project-types'
 import { mapProductFromApi } from '../../utils/product'
-export const getProducts = (filter: Filter, pageSize: number, offset: number): ApiResult<ProductListPageWrapper> =>
+export const getProducts = (filter: Filter, pageSize: number, offset: number): ApiResult<ProjectListPageWrapper> =>
     get({
         url: routes.api.products.index({
             ...filter,

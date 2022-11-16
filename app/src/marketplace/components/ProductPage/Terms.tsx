@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import type { Product } from '$mp/types/product-types'
+import type { Project } from '$mp/types/project-types'
 import { MEDIUM } from '$shared/utils/styled'
 import Segment from '$shared/components/Segment'
 type Props = {
     className?: string
-    product: Product
+    product: Project
 }
 const termNames = {
     redistribution: 'Redistribution',

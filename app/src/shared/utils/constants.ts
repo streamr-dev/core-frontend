@@ -25,7 +25,7 @@ export const paymentCurrencies = {
 export const DEFAULT_CURRENCY = contractCurrencies.DATA
 export const MIN_UNISWAP_AMOUNT_USD = 0.1
 // The order of these must be the same than in the smart contract
-export const productStates = {
+export const projectStates = {
     NOT_DEPLOYED: 'NOT_DEPLOYED',
     DEPLOYED: 'DEPLOYED',
     DEPLOYING: 'DEPLOYING',

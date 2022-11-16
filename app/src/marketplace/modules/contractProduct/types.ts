@@ -1,25 +1,25 @@
 import type { ErrorFromApi, PayloadAction } from '$shared/types/common-types'
 import type { Address } from '$shared/types/web3-types'
-import type { ProductId, WhitelistStatus } from '../../types/product-types'
+import type { ProjectId, WhitelistStatus } from '../../types/project-types'
 export type ProductIdAction = PayloadAction<{
-    id: ProductId
+    id: ProjectId
 }>
-export type ProductIdActionCreator = (arg0: ProductId) => ProductIdAction
+export type ProductIdActionCreator = (arg0: ProjectId) => ProductIdAction
 export type ProductErrorAction = PayloadAction<{
-    id: ProductId
+    id: ProjectId
     error: ErrorFromApi
 }>
-export type ProductErrorActionCreator = (id: ProductId, error: ErrorFromApi) => ProductErrorAction
+export type ProductErrorActionCreator = (id: ProjectId, error: ErrorFromApi) => ProductErrorAction
 export type WhiteListedAddressAction = PayloadAction<{
-    id: ProductId
+    id: ProjectId
     address: Address
 }>
-export type WhiteListedAddressActionCreator = (arg0: ProductId, arg1: Address) => WhiteListedAddressAction
+export type WhiteListedAddressActionCreator = (arg0: ProjectId, arg1: Address) => WhiteListedAddressAction
 export type WhiteListedAddressesAction = PayloadAction<{
-    id: ProductId
+    id: ProjectId
     addresses: Array<Address>
 }>
-export type WhiteListedAddressesActionCreator = (arg0: ProductId, arg1: Array<Address>) => WhiteListedAddressesAction
+export type WhiteListedAddressesActionCreator = (arg0: ProjectId, arg1: Array<Address>) => WhiteListedAddressesAction
 export type WhitelistItem = {
     address: string
     status: WhitelistStatus

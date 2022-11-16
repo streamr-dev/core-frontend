@@ -7,7 +7,7 @@ import { areAddressesEqual } from '$mp/utils/smartContract'
 import usePending from '$shared/hooks/usePending'
 import { transactionStates } from '$shared/utils/constants'
 import type { Address } from '$shared/types/web3-types'
-import type { ProductId } from '$mp/types/product-types'
+import type { ProjectId } from '$mp/types/project-types'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
@@ -21,7 +21,7 @@ import useSwitchChain from '$shared/hooks/useSwitchChain'
 import useUpdateWhitelist, { actionsTypes } from './useUpdateWhitelist'
 
 type Props = {
-    productId: ProductId
+    productId: ProjectId
     chainId: number
     removedAddress: Address
     api: Record<string, any>

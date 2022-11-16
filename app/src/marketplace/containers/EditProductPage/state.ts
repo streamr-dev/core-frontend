@@ -3,8 +3,8 @@ import pickBy from 'lodash/pickBy'
 import get from 'lodash/get'
 import isEqual from 'lodash/isEqual'
 import { isDataUnionProduct } from '$mp/utils/product'
-import { productStates } from '$shared/utils/constants'
-import type { Product, PendingChanges } from '$mp/types/product-types'
+import { projectStates } from '$shared/utils/constants'
+import type { Project, PendingChanges } from '$mp/types/project-types'
 export const PENDING_CHANGE_FIELDS = [
     'name',
     'description',
@@ -29,20 +29,20 @@ export const PENDING_CHANGE_FIELDS = [
     'requiresWhitelist',
     'pricingTokenAddress',
 ]
-export function isPublished(product: Product): boolean {
+export function isPublished(product: Project): boolean {
     const { state } = product || {}
-    return !!(state === productStates.DEPLOYED || state === productStates.DEPLOYING)
+    return !!(state === projectStates.DEPLOYED || state === projectStates.DEPLOYING)
 }
-export const getPendingObject = (product: Product | PendingChanges): Partial<Product | PendingChanges> => {
+export const getPendingObject = (product: Project | PendingChanges): Partial<Project | PendingChanges> => {
     let pendingObj = pick(product, PENDING_CHANGE_FIELDS)
     pendingObj = pickBy(pendingObj, (value) => value !== undefined)
     return pendingObj
 }
-export const getChangeObject = (original: Product, next: Product): Record<string, any> =>
-    Object.fromEntries(Object.entries(getPendingObject(next)).filter(([key, value]) => !isEqual(value, original[key as keyof Product])))
+export const getChangeObject = (original: Project, next: Project): Record<string, any> =>
+    Object.fromEntries(Object.entries(getPendingObject(next)).filter(([key, value]) => !isEqual(value, original[key as keyof Project])))
 
 // Returns smart contract field changes and other changes separated
-const getChanges = (product: Partial<Product>) => {
+const getChanges = (product: Partial<Project>) => {
     const { adminFee, requiresWhitelist, pricingTokenAddress, ...otherChanges } = product
     // $FlowFixMe: Computing object literal [1] may lead to an exponentially large number of cases
     const smartContractFields = {
@@ -65,7 +65,7 @@ const getChanges = (product: Partial<Product>) => {
     return [smartContractFields, otherChanges]
 }
 
-export function getPendingChanges(product: Product): Record<string, any> {
+export function getPendingChanges(product: Project): Record<string, any> {
     const isProductPublished = isPublished(product)
     const [smartContractFields, otherChanges] = getChanges(getPendingObject(product.pendingChanges || {}))
 
@@ -75,11 +75,11 @@ export function getPendingChanges(product: Product): Record<string, any> {
 
     return { ...smartContractFields }
 }
-export function hasPendingChange(product: Product, field: string) {
+export function hasPendingChange(product: Project, field: string) {
     const pendingChanges = getPendingChanges(product)
     return get(pendingChanges, field) !== undefined
 }
-export function update(product: Product, fn: (...args: Array<any>) => any) {
+export function update(product: Project, fn: (...args: Array<any>) => any) {
     const result = fn(product)
     const [smartContractFields, otherChanges] = getChanges(result)
     const isProductPublished = isPublished(product)
@@ -90,7 +90,7 @@ export function update(product: Product, fn: (...args: Array<any>) => any) {
 
     return { ...otherChanges, pendingChanges: { ...smartContractFields } }
 }
-export function withPendingChanges(product: Product) {
+export function withPendingChanges(product: Project) {
     if (product && (isPublished(product) || isDataUnionProduct(product))) {
         return { ...product, ...getPendingChanges(product) }
     }

@@ -1,14 +1,13 @@
 import { $Keys, $Values, $ElementType } from 'utility-types'
-import BN from 'bignumber.js'
-import { productStates } from '$shared/utils/constants'
-import { productTypes } from '$mp/utils/constants'
+import { projectStates } from '$shared/utils/constants'
+import { projectTypes } from '$mp/utils/constants'
 import type { StreamIdList, StreamId } from '$shared/types/stream-types'
 import type { ContractCurrency, PaymentCurrency, NumberString, TimeUnit } from '$shared/types/common-types'
 import type { Address } from '$shared/types/web3-types'
 import type { CategoryId } from './category-types'
-export type ProductId = string
-export type ProductState = $Keys<typeof productStates>
-export type ProductType = $Values<typeof productTypes>
+export type ProjectId = string
+export type ProjectState = $Keys<typeof projectStates>
+export type ProjectType = $Values<typeof projectTypes>
 export type PendingChanges = {
     adminFee?: string
     requiresWhitelist?: boolean
@@ -30,10 +29,10 @@ export type ContactDetails = {
     social3?: string | null | undefined
     social4?: string | null | undefined
 }
-export type Product = {
+export type Project = {
     adminFee?: string
     key?: string
-    id: ProductId | null | undefined
+    id: ProjectId | null | undefined
     name: string
     description: string
     chain: string
@@ -41,7 +40,7 @@ export type Product = {
     imageUrl: string | null | undefined
     newImageToUpload?: File | null | undefined
     thumbnailUrl: string | null | undefined
-    state?: ProductState
+    state?: ProjectState
     created?: string
     updated?: string
     category: CategoryId | null | undefined
@@ -56,7 +55,7 @@ export type Product = {
     timeUnit?: TimeUnit | null | undefined
     price?: NumberString
     isFree?: boolean
-    type?: ProductType
+    type?: ProjectType
     requiresWhitelist?: boolean
     pendingChanges?: PendingChanges
     termsOfUse: TermsOfUse
@@ -65,29 +64,29 @@ export type Product = {
     pricingTokenAddress: Address
     pricingTokenDecimals: number
 }
-export type ProductSubscriptionId = string
-export type ProductSubscriptionIdList = Array<ProductSubscriptionId>
-export type ProductSubscription = {
-    id: ProductSubscriptionId
+export type ProjectSubscriptionId = string
+export type ProjectSubscriptionIdList = Array<ProjectSubscriptionId>
+export type ProjectSubscription = {
+    id: ProjectSubscriptionId
     address?: Address
     user?: string
     endsAt: Date
-    product: Product
+    product: Project
     dateCreated: Date
     lastUpdated: Date
 }
-export type ProductSubscriptionList = Array<ProductSubscription>
+export type ProjectSubscriptionList = Array<ProjectSubscription>
 export type SmartContractProduct = {
-    id: ProductId
-    name: $ElementType<Product, 'name'>
-    ownerAddress: $ElementType<Product, 'ownerAddress'>
-    beneficiaryAddress: $ElementType<Product, 'beneficiaryAddress'>
-    pricePerSecond: $ElementType<Product, 'pricePerSecond'>
-    minimumSubscriptionInSeconds: $ElementType<Product, 'minimumSubscriptionInSeconds'>
-    state: $ElementType<Product, 'state'>
-    requiresWhitelist: $ElementType<Product, 'requiresWhitelist'>
+    id: ProjectId
+    name: $ElementType<Project, 'name'>
+    ownerAddress: $ElementType<Project, 'ownerAddress'>
+    beneficiaryAddress: $ElementType<Project, 'beneficiaryAddress'>
+    pricePerSecond: $ElementType<Project, 'pricePerSecond'>
+    minimumSubscriptionInSeconds: $ElementType<Project, 'minimumSubscriptionInSeconds'>
+    state: $ElementType<Project, 'state'>
+    requiresWhitelist: $ElementType<Project, 'requiresWhitelist'>
     chainId: number
-    pricingTokenAddress: $ElementType<Product, 'pricingTokenAddress'>
+    pricingTokenAddress: $ElementType<Project, 'pricingTokenAddress'>
     pricingTokenDecimals: number // this isn't actually stored on the contract but we need it to piggyback information
 }
 export type WhitelistStatus = 'added' | 'removed' | 'subscribed'
@@ -97,31 +96,31 @@ export type WhitelistedAddress = {
     isPending: boolean
 }
 export type Subscription = {
-    productId: ProductId
+    productId: ProjectId
     endTimestamp: number
 }
-export type ProductIdList = Array<ProductId>
-export type ProductList = Array<Product>
-export type ProductListPageWrapper = {
-    products: ProductList
+export type ProjectIdList = Array<ProjectId>
+export type ProjectList = Array<Project>
+export type ProjectListPageWrapper = {
+    products: ProjectList
     hasMoreProducts: boolean
 }
-export type ProductEntities = Record<ProductId, Product>
-export type SmartContractProductEntities = Record<ProductId, SmartContractProduct>
+export type ProjectEntities = Record<ProjectId, Project>
+export type SmartContractProjectEntities = Record<ProjectId, SmartContractProduct>
 export type SearchFilter = string
 export type CategoryFilter = CategoryId
 export type SortByFilter = string
-export type ProductTypeFilter = string
+export type ProjectTypeFilter = string
 export type MaxPriceFilter = NumberString
-export type AnyFilter = SearchFilter | CategoryFilter | SortByFilter | ProductTypeFilter
+export type AnyFilter = SearchFilter | CategoryFilter | SortByFilter | ProjectTypeFilter
 export type Filter = {
     search?: SearchFilter | null | undefined
     categories?: CategoryFilter | null | undefined
     sortBy?: SortByFilter | null | undefined
     maxPrice?: MaxPriceFilter | null | undefined
-    type?: ProductTypeFilter | null | undefined
+    type?: ProjectTypeFilter | null | undefined
 }
-export type DataUnionId = $ElementType<Product, 'beneficiaryAddress'>
+export type DataUnionId = $ElementType<Project, 'beneficiaryAddress'>
 export type MemberCount = {
     total: number
     active: number

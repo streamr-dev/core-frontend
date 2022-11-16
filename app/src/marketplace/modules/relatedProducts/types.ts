@@ -1,13 +1,13 @@
 import type { PayloadAction, ErrorInUi } from '$shared/types/common-types'
-import type { ProductId, ProductIdList } from '../../types/product-types'
+import type { ProjectId, ProjectIdList } from '../../types/project-types'
 export type relatedProductIdAction = PayloadAction<{
-    id: ProductIdList
+    id: ProjectIdList
 }>
-export type relatedProductIdActionCreator = (arg0: ProductId) => relatedProductIdAction
+export type relatedProductIdActionCreator = (arg0: ProjectId) => relatedProductIdAction
 export type RelatedProductsAction = PayloadAction<{
-    products: ProductIdList
+    products: ProjectIdList
 }>
-export type RelatedProductsActionCreator = (products: ProductIdList) => RelatedProductsAction
+export type RelatedProductsActionCreator = (products: ProjectIdList) => RelatedProductsAction
 export type RelatedProductsErrorAction = PayloadAction<{
     error: ErrorInUi
 }>

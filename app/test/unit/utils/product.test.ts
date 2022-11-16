@@ -1,5 +1,5 @@
 import BN from 'bignumber.js'
-import { productStates } from '$shared/utils/constants'
+import { projectStates } from '$shared/utils/constants'
 import * as all from '$mp/utils/product'
 describe('product utils', () => {
     describe('isPaidProduct', () => {
@@ -151,14 +151,14 @@ describe('product utils', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 pricePerSecond: '0',
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
             } as any
             expect(all.mapProductToPutApi(product)).toMatchObject({
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
                 pricePerSecond: '0',
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
             })
         })
         it('maps price for unpublished paid product', () => {
@@ -169,7 +169,7 @@ describe('product utils', () => {
                 pricePerSecond: '1',
                 beneficiaryAddress: '0x12334',
                 isFree: false,
-                state: productStates.NOT_DEPLOYED,
+                state: projectStates.NOT_DEPLOYED,
             } as any
             expect(all.mapProductToPutApi(product)).toMatchObject({
                 id: '1',
@@ -178,7 +178,7 @@ describe('product utils', () => {
                 pricePerSecond: '1',
                 beneficiaryAddress: '0x12334',
                 isFree: false,
-                state: productStates.NOT_DEPLOYED,
+                state: projectStates.NOT_DEPLOYED,
             })
         })
         it('returns the pending changes for unpaid product', () => {
@@ -186,7 +186,7 @@ describe('product utils', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
                 pendingChanges: {
                     name: 'Better name',
                 },
@@ -195,7 +195,7 @@ describe('product utils', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
                 pendingChanges: {
                     name: 'Better name',
                 },
@@ -211,13 +211,13 @@ describe('product utils', () => {
                 pricePerSecond: '12345',
                 priceCurrency: 'USD',
                 minimumSubscriptionInSeconds: 0,
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
             } as any
             expect(all.mapProductToPutApi(product)).toMatchObject({
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
             })
         })
         it('removes smart contract fields and returns pending changes for published paid product', () => {
@@ -230,7 +230,7 @@ describe('product utils', () => {
                 pricePerSecond: '12345',
                 priceCurrency: 'USD',
                 minimumSubscriptionInSeconds: 0,
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
                 pendingChanges: {
                     name: 'Better name',
                 },
@@ -239,7 +239,7 @@ describe('product utils', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
                 pendingChanges: {
                     name: 'Better name',
                 },

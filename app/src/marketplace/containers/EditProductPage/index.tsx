@@ -6,10 +6,10 @@ import CoreLayout from '$shared/components/Layout/Core'
 import coreLayoutStyles from '$shared/components/Layout/core.pcss'
 import * as UndoContext from '$shared/contexts/Undo'
 import Toolbar from '$shared/components/Toolbar'
-import type { Product } from '$mp/types/product-types'
+import type { Project } from '$mp/types/project-types'
 import { isDataUnionProduct } from '$mp/utils/product'
 import usePending from '$shared/hooks/usePending'
-import { productStates } from '$shared/utils/constants'
+import { projectStates } from '$shared/utils/constants'
 import { isEthereumAddress } from '$mp/utils/validate'
 import useDataUnionSecrets from '$mp/modules/dataUnion/hooks/useDataUnionSecrets'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
@@ -32,7 +32,7 @@ import CropImageModal from './CropImageModal'
 import WhitelistEditModal from './WhitelistEditModal'
 import styles from './editProductPage.pcss'
 
-const EditProductPage = ({ product }: { product: Product }) => {
+const EditProductPage = ({ product }: { product: Project }) => {
     const { isPreview, setIsPreview, save, publish, deployDataUnion, back, validate } = useContext(EditControllerContext)
     const { isPending: savePending } = usePending('product.SAVE')
     const { isPending: publishDialogLoading } = usePending('product.PUBLISH_DIALOG_LOAD')
@@ -114,16 +114,16 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const productState = product.state
     const publishButton = useMemo(() => {
         const titles = {
-            [productStates.DEPLOYING]: 'Publishing',
-            [productStates.UNDEPLOYING]: 'Unpublishing',
-            [productStates.NOT_DEPLOYED]: 'Publish',
-            [productStates.DEPLOYED]: 'Unpublish',
+            [projectStates.DEPLOYING]: 'Publishing',
+            [projectStates.UNDEPLOYING]: 'Unpublishing',
+            [projectStates.NOT_DEPLOYED]: 'Publish',
+            [projectStates.DEPLOYED]: 'Unpublish',
         }
         return {
             title: (productState && titles[productState]) || 'Continue',
             kind: 'primary',
             onClick: publish,
-            disabled: !(productState === productStates.NOT_DEPLOYED || productState === productStates.DEPLOYED) || isDisabled,
+            disabled: !(productState === projectStates.NOT_DEPLOYED || productState === projectStates.DEPLOYED) || isDisabled,
         }
     }, [productState, publish, isDisabled])
     const deployOrSetContract = useCallback(() => {

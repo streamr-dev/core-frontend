@@ -2,13 +2,13 @@ import React, { FunctionComponent, useCallback, useEffect, useRef, useState } fr
 import { useSelector, useDispatch } from 'react-redux'
 import merge from 'lodash/merge'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
-import ProductsComponent from '$mp/components/Products'
+import ProjectsComponent, { ProjectsContainer } from '$mp/components/Projects'
 import ActionBar from '$mp/components/ActionBar'
 import Layout from '$shared/components/Layout'
 import Footer from '$shared/components/Layout/Footer'
 import useModal from '$shared/hooks/useModal'
 import CreateProductModal from '$mp/containers/CreateProductModal'
-import type { Filter, ProductList, SearchFilter } from '$mp/types/product-types'
+import type { Filter, ProjectList, SearchFilter } from '$mp/types/project-types'
 import { getProducts, getProductsDebounced, updateFilter, clearFilters } from '$mp/modules/productList/actions'
 import { getCategories } from '$mp/modules/categories/actions'
 import { selectAllCategories } from '$mp/modules/categories/selectors'
@@ -22,19 +22,19 @@ import {
 } from '$mp/modules/productList/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useContractProducts from '$shared/hooks/useContractProducts'
-import styles from './products.pcss'
+import styles from './projects.pcss'
 
-const Products: FunctionComponent = () => {
+const ProjectsPage: FunctionComponent = () => {
     const categories = useSelector(selectAllCategories)
-    const products = useSelector(selectProductList)
-    const productsError = useSelector(selectProductListError)
+    const projects = useSelector(selectProductList)
+    const projectsError = useSelector(selectProductListError)
     const selectedFilter = useSelector(selectFilter)
     const isFetching = useSelector(selectFetchingProductList)
     const hasMoreSearchResults = useSelector(selectHasMoreSearchResults)
     const dispatch = useDispatch()
     const isMounted = useIsMounted()
-    const productsRef = useRef<ProductList>()
-    productsRef.current = products
+    const productsRef = useRef<ProjectList>()
+    productsRef.current = projects
     const [contractProducts, setContractProducts] = useState([])
     const { api: createProductModal } = useModal('marketplace.createProduct')
     const loadCategories = useCallback(() => dispatch(getCategories(false)), [dispatch])
@@ -120,9 +120,9 @@ const Products: FunctionComponent = () => {
                 onCreateProduct={() => createProductModal.open()}
             />
             <CreateProductModal />
-            <ProductsComponent.Container fluid>
-                <ProductsComponent
-                    products={products.map((p, i) => {
+            <ProjectsContainer fluid>
+                <ProjectsComponent
+                    projects={projects.map((p, i) => {
                         const beneficiaryAddress = (p.beneficiaryAddress || '').toLowerCase()
                         const contractProd = contractProducts.find((cp) => cp.id === p.id)
                         const pricingTokenAddress = contractProd ? contractProd.pricingTokenAddress : null
@@ -134,16 +134,16 @@ const Products: FunctionComponent = () => {
                             pricePerSecond,
                         })
                     })}
-                    error={productsError}
-                    type="products"
+                    error={projectsError}
+                    type="projects"
                     isFetching={isFetching}
                     loadProducts={loadProducts}
                     hasMoreSearchResults={hasMoreSearchResults}
                 />
-            </ProductsComponent.Container>
+            </ProjectsContainer>
             <Footer topBorder />
         </Layout>
     )
 }
 
-export default Products
+export default ProjectsPage

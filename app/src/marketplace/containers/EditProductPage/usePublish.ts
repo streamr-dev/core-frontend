@@ -3,8 +3,8 @@ import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import BN from 'bignumber.js'
 import { useClient } from 'streamr-client-react'
-import type { Product, SmartContractProduct } from '$mp/types/product-types'
-import { productStates, transactionStates, transactionTypes } from '$shared/utils/constants'
+import type { Project, SmartContractProduct } from '$mp/types/project-types'
+import { projectStates, transactionStates, transactionTypes } from '$shared/utils/constants'
 import {
     getProductFromContract,
     createContractProduct,
@@ -49,7 +49,7 @@ export default function usePublish() {
     const dispatch = useDispatch()
     const client = useClient()
     return useCallback(
-        async (product: Product) => {
+        async (product: Project) => {
             if (!product) {
                 throw new Error('no product')
             }
@@ -99,9 +99,9 @@ export default function usePublish() {
             let nextMode
 
             // is published and has pending changes?
-            if (productState === productStates.DEPLOYED) {
+            if (productState === projectStates.DEPLOYED) {
                 nextMode = hasPendingChanges ? publishModes.REPUBLISH : publishModes.UNPUBLISH
-            } else if (productState === productStates.NOT_DEPLOYED) {
+            } else if (productState === projectStates.NOT_DEPLOYED) {
                 nextMode = contractProduct ? publishModes.REDEPLOY : publishModes.PUBLISH
             } else {
                 // product is either being deployed to contract or being undeployed

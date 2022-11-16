@@ -1,9 +1,9 @@
-import type { Node } from 'react'
+import type { ReactNode } from 'react'
 import React from 'react'
 import get from 'lodash/get'
 import NoProductsView from '../NoProductsView'
 const setup = {
-    products: {
+    projects: {
         errorView: <NoProductsView />,
         cols: {
             xs: 12,
@@ -12,7 +12,7 @@ const setup = {
             lg: 'custom-products',
         },
     },
-    relatedProducts: {
+    relatedProjects: {
         errorView: <NoProductsView />,
         cols: {
             xs: 12,
@@ -22,5 +22,5 @@ const setup = {
         },
     },
 }
-export const getErrorView = (type: string): Node => get(setup, [type, 'errorView'])
+export const getErrorView = (type: string): ReactNode => get(setup, [type, 'errorView'])
 export const getCols = (type: string) => get(setup, [type, 'cols'])

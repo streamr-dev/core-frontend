@@ -5,18 +5,18 @@ import { Row, Container as RsContainer, Col } from 'reactstrap'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { MarketplaceProductTile as UnstyledMarketplaceProductTile } from '$shared/components/Tile'
 import { MD, LG, REGULAR } from '$shared/utils/styled'
-import type { ProductList } from '../../types/product-types'
+import type { ProjectList } from '../../types/project-types'
 import ProductPageSpinner from '../ProductPageSpinner'
 import LoadMore from '../LoadMore'
 import Error from '../Error'
 import { getErrorView, getCols } from './settings'
-import styles from './products.pcss'
+import styles from './projects.pcss'
 
-export type ProductTilePropType = 'products' | 'relatedProducts'
+export type ProjectTilePropType = 'projects' | 'relatedProjects'
 
 export type OwnProps = {
-    products: ProductList
-    type: ProductTilePropType
+    projects: ProjectList
+    type: ProjectTilePropType
     error?: any
     isFetching?: boolean
     loadProducts?: () => void
@@ -27,34 +27,34 @@ export type OwnProps = {
 export const MarketplaceProductTile = styled(UnstyledMarketplaceProductTile)`
     margin-top: 16px;
 `
-export const MarketplaceProductRow = styled(Row)``
-export const MarketplaceProductCol = styled(Col)`
+export const MarketplaceProjectRow = styled(Row)``
+export const MarketplaceProjectCol = styled(Col)`
     padding-left: 1em;
     padding-right: 1em;
 `
 
-const listProducts = (products, cols, isFetching: boolean | null | undefined) => (
-    <MarketplaceProductRow
+const listProjects = (products, cols, isFetching: boolean | null | undefined) => (
+    <MarketplaceProjectRow
         className={classnames(styles.productsRow, {
             [styles.fetching]: isFetching,
         })}
     >
         {products.map((product) => (
-            <MarketplaceProductCol {...cols} key={product.key || product.id}>
+            <MarketplaceProjectCol {...cols} key={product.key || product.id}>
                 <MarketplaceProductTile product={product} showDataUnionBadge={isDataUnionProduct(product.type)} />
-            </MarketplaceProductCol>
+            </MarketplaceProjectCol>
         ))}
-    </MarketplaceProductRow>
+    </MarketplaceProjectRow>
 )
 
-const Container = styled(RsContainer)`
+export const ProjectsContainer = styled(RsContainer)`
     padding: 1.25em 30px 3.5em 30px;
 
     @media (min-width: ${LG}px) {
         padding: 1.5em 5em 7em 5em;
     }
 `
-const Header = styled.h3`
+export const ProjectsHeader = styled.h3`
     font-size: 18px;
     font-weight: ${REGULAR};
 
@@ -63,19 +63,16 @@ const Header = styled.h3`
     }
 `
 
-const UnstyledProducts = ({ products, type, error, isFetching, loadProducts, hasMoreSearchResults, header, ...props }: OwnProps) => (
+const UnstyledProjects = ({ projects, type, error, isFetching, loadProducts, hasMoreSearchResults, header, ...props }: OwnProps) => (
     <div {...props}>
-        {header && <Header>{header}</Header>}
+        {header && <ProjectsHeader>{header}</ProjectsHeader>}
         <Error source={error} />
-        {isFetching || products.length > 0 ? listProducts(products, getCols(type), isFetching) : getErrorView(type)}
+        {isFetching || projects.length > 0 ? listProjects(projects, getCols(type), isFetching) : getErrorView(type)}
         {loadProducts && !isFetching && <LoadMore onClick={loadProducts} hasMoreSearchResults={!!hasMoreSearchResults} />}
         {isFetching && <ProductPageSpinner className={styles.spinner} />}
     </div>
 )
 
-const Products = styled(UnstyledProducts)``
-Object.assign(Products, {
-    Header,
-    Container,
-})
-export default Products
+const ProjectsComponent = styled(UnstyledProjects)<OwnProps>``
+
+export default ProjectsComponent

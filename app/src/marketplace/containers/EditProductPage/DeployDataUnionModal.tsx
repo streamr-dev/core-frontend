@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react'
 import useModal from '$shared/hooks/useModal'
-import type { Product } from '$mp/types/product-types'
-import '$mp/types/product-types'
+import type { Project } from '$mp/types/project-types'
+import '$mp/types/project-types'
 import GuidedDeployDataUnionDialog from '$mp/components/Modal/GuidedDeployDataUnionDialog'
 import ConfirmDeployDataUnionDialog from '$mp/components/Modal/ConfirmDeployDataUnionDialog'
 import DeployingDataUnionDialog from '$mp/components/Modal/DeployingDataUnionDialog'
@@ -21,7 +21,7 @@ import useSwitchChain from '$shared/hooks/useSwitchChain'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 
 type DeployDialogProps = {
-    product: Product
+    product: Project
     api: Record<string, any>
     updateAddress: (arg0: Address | null | undefined) => void
 }

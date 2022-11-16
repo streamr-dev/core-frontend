@@ -2,14 +2,14 @@ import React, { useState, useMemo, useCallback, useContext, useRef, Context, Rea
 import { DataUnionStats } from '@dataunions/client/types/src/DataUnion'
 import qs from 'query-string'
 import { useLocation, useHistory } from 'react-router-dom'
-import type { Product } from '$mp/types/product-types'
+import type { Project } from '$mp/types/project-types'
 import { isDataUnionProduct } from '$mp/utils/product'
 import usePending from '$shared/hooks/usePending'
 import { putProduct, postImage } from '$mp/modules/product/services'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Notification from '$shared/utils/Notification'
 import { getDataUnionObject } from '$mp/modules/dataUnion/services'
-import { NotificationIcon, productStates } from '$shared/utils/constants'
+import { NotificationIcon, projectStates } from '$shared/utils/constants'
 import { numberToText } from '$shared/utils/text'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { areAddressesEqual } from '$mp/utils/smartContract'
@@ -38,7 +38,7 @@ type ContextProps = {
 }
 const EditControllerContext: Context<ContextProps> = React.createContext<ContextProps>({})
 
-function useEditController(product: Product) {
+function useEditController(product: Project) {
     const location = useLocation()
     const history = useHistory()
     const { isAnyTouched, resetTouched, status } = useContext(ValidationContext)
@@ -143,7 +143,7 @@ function useEditController(product: Product) {
                 // save product (don't need to abort if unmounted)
                 // $FlowFixMe: object literal weirdness
                 await putProduct(
-                    State.update(originalProduct, () => ({ ...nextProduct })) as Product,
+                    State.update(originalProduct, () => ({ ...nextProduct })) as Project,
                     nextProduct.id || '',
                 )
                 resetTouched()
@@ -207,7 +207,7 @@ function useEditController(product: Product) {
             if (started) {
                 replaceState((prevProduct) => ({
                     ...prevProduct,
-                    state: isUnpublish ? productStates.UNDEPLOYING : productStates.DEPLOYING,
+                    state: isUnpublish ? projectStates.UNDEPLOYING : projectStates.DEPLOYING,
                 }))
             }
 
@@ -241,7 +241,7 @@ function useEditController(product: Product) {
                     State.update(productRef.current, () => ({
                         ...productRef.current,
                         beneficiaryAddress: address,
-                    })) as Product,
+                    })) as Project,
                     productRef.current.id || '',
                 )
             }
@@ -302,7 +302,7 @@ function useEditController(product: Product) {
 
 type ControllerProps = {
     children?: ReactNode | ReactNode[]
-    product: Product
+    product: Project
 }
 
 function EditControllerProvider({ children, product }: ControllerProps) {

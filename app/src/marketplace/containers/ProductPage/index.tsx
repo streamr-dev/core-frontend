@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import Layout from '$shared/components/Layout'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
-import type { ProductId } from '$mp/types/product-types'
+import type { ProjectId } from '$mp/types/project-types'
 import usePending from '$shared/hooks/usePending'
 import { getProductSubscription } from '$mp/modules/product/actions'
 import PrestyledLoadingIndicator from '$shared/components/LoadingIndicator'
@@ -30,7 +30,7 @@ const ProductPage = () => {
     const { id: productId } = useParams()
     const chainId = getChainIdFromApiString(product.chain)
     const loadAdditionalProductData = useCallback(
-        async (id: ProductId) => {
+        async (id: ProjectId) => {
             loadCategories()
             loadRelatedProducts(id, isLoggedIn)
 

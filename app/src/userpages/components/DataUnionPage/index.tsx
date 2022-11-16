@@ -8,7 +8,7 @@ import { getMyProducts } from '$mp/modules/myProductList/actions'
 import { selectMyProductList, selectFetching } from '$mp/modules/myProductList/selectors'
 import useAllDataUnionStats from '$mp/modules/dataUnion/hooks/useAllDataUnionStats'
 import { getDataUnionsOwnedBy } from '$mp/modules/dataUnion/services'
-import { productTypes } from '$mp/utils/constants'
+import { projectTypes } from '$mp/utils/constants'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
 import useFilterSort from '$userpages/hooks/useFilterSort'
@@ -20,8 +20,8 @@ import DeployDataUnionModal from '$mp/containers/EditProductPage/DeployDataUnion
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { getApiStringFromChainId } from '$shared/utils/chains'
-import { ProductIdList } from '$mp/types/product-types'
-import { productStates } from '$shared/utils/constants'
+import { ProjectIdList } from '$mp/types/project-types'
+import { projectStates } from '$shared/utils/constants'
 import routes from '$routes'
 
 import Search from '../Header/Search'
@@ -76,19 +76,19 @@ const DataUnionPage: FunctionComponent = () => {
 
     // Make sure we show only data unions.
     // This is needed to avoid quick flash of possibly normal products.
-    const products = useMemo(() => allProducts.filter((p) => p.type === productTypes.DATAUNION), [allProducts])
+    const products = useMemo(() => allProducts.filter((p) => p.type === projectTypes.DATAUNION), [allProducts])
 
     useEffect(() => {
         // Modify filter to include only dataunions
         const finalFilter = {
             ...filter,
             key: 'type',
-            value: productTypes.DATAUNION,
+            value: projectTypes.DATAUNION,
         }
 
         const load = async () => {
             // Load DUs from API
-            const results = await dispatch(getMyProducts(finalFilter)) as unknown as ProductIdList
+            const results = await dispatch(getMyProducts(finalFilter)) as unknown as ProjectIdList
             loadDataUnionStats(results)
 
             if (currentUserName) {
@@ -100,7 +100,7 @@ const DataUnionPage: FunctionComponent = () => {
                     ...ownedDus.map((du) => ({
                         ...du,
                         chain: getApiStringFromChainId(du.chainId),
-                        state: productStates.DETACHED,
+                        state: projectStates.DETACHED,
                         updated: Number.parseInt(du.creationDate || '0') * 1000,
                         beneficiaryAddress: du.id,
                     }))

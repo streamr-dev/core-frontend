@@ -4,14 +4,14 @@ import debounce from 'lodash/debounce'
 import { productsSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
-import type { Filter, ProductIdList } from '../../types/product-types'
+import type { Filter, ProjectIdList } from '../../types/project-types'
 import type { StoreState } from '../../types/store-state'
 import { selectFilter, selectPageSize, selectOffset } from './selectors'
 import { GET_PRODUCTS_REQUEST, GET_PRODUCTS_SUCCESS, GET_PRODUCTS_FAILURE, UPDATE_FILTER, CLEAR_FILTERS, CLEAR_PRODUCT_LIST } from './constants'
 import * as api from './services'
 import type { ProductsActionCreator, ProductsErrorActionCreator, FilterActionCreator } from './types'
 const getProductsRequest: ReduxActionCreator = createAction(GET_PRODUCTS_REQUEST)
-const getProductsSuccess: ProductsActionCreator = createAction(GET_PRODUCTS_SUCCESS, (products: ProductIdList, hasMore: boolean) => ({
+const getProductsSuccess: ProductsActionCreator = createAction(GET_PRODUCTS_SUCCESS, (products: ProjectIdList, hasMore: boolean) => ({
     products,
     hasMore,
 }))

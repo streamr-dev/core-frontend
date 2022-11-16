@@ -12,7 +12,7 @@ import type { SmartContractCall, Address, SmartContractConfig, SmartContractTran
 import type { NumberString } from '$shared/types/common-types'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import Transaction from '$shared/utils/Transaction'
-import type { Product, SmartContractProduct } from '../types/product-types'
+import type { Project, SmartContractProduct } from '../types/project-types'
 import { arePricesEqual } from '../utils/price'
 
 // TODO add typing
@@ -42,7 +42,7 @@ export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode
     const web3 = usePublicNode ? getPublicWeb3(chainId) : getWeb3()
     return new web3.eth.Contract(abi, address)
 }
-export const isContractProductUpdateRequired = (contractProduct: SmartContractProduct, editProduct: Product): boolean => {
+export const isContractProductUpdateRequired = (contractProduct: SmartContractProduct, editProduct: Project): boolean => {
     const hasPriceChanged = !arePricesEqual(contractProduct.pricePerSecond, editProduct.pricePerSecond)
     const hasBeneficiaryChanged = !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress)
     const hasPricingTokenChanged =
