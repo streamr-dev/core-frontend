@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const UnstyledRect = ({ ratio = '3:2', height, ...props }) => (
+const UnstyledRect = ({ ratio = '1:1', height, ...props }) => (
     <svg
         {...props}
         height={height}

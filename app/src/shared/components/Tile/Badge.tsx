@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {ReactNode} from 'react'
 import styled, { css } from 'styled-components'
 import UnstyledSpinner from '$shared/components/Spinner'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -31,7 +31,7 @@ const SingleBadge = styled.div`
         margin-left: 8px;
     }
 `
-const BadgeContainer = styled.div`
+const BadgeContainer = styled.div<HTMLDivElement & {children: (ReactNode | ReactNode[])}>`
     align-items: center;
     color: white !important;
     display: flex;
@@ -104,7 +104,7 @@ const BadgeContainer = styled.div`
     }
 `
 const Badge = styled(BadgeContainer)``
-const StyledChainBadge = styled(Badge)`
+const StyledChainBadge = styled(Badge)<HTMLDivElement & {children: (ReactNode | ReactNode[])}>`
     font-size: 18px;
     line-height: 18px;
     background-color: transparent;
@@ -118,7 +118,7 @@ const StyledChainBadge = styled(Badge)`
         margin-left: 8px;
     }
 `
-const Spinner = styled(UnstyledSpinner)`
+const Spinner = styled(UnstyledSpinner)<UnstyledSpinner['props']>`
     height: 10px;
     min-height: 0 !important;
     min-width: 0 !important;
@@ -129,19 +129,27 @@ const DeployingBadge = (props) => (
     <BadgeContainer {...props}>
         <SingleBadge>
             <span>Deploying</span>
-            <Spinner size="tiny" color="white" />
+            <Spinner size="small" color="white" />
         </SingleBadge>
     </BadgeContainer>
 )
 
-const DataUnionBadge = ({ memberCount, linkTo, linkHref, ...props }) => (
+type DataUnionBadgeProps = {
+    memberCount?: any
+    linkTo?: string
+    linkHref?: string
+    top?: boolean
+    left?: boolean
+}
+
+const DataUnionBadge = ({ memberCount, linkTo, linkHref, ...props }: DataUnionBadgeProps) => (
     <BadgeContainer {...props}>
         <SingleBadge>Data Union</SingleBadge>
         {memberCount != null && (
             <SingleBadge>
-                <Badge.Link to={linkTo} href={linkHref}>
+                <BadgeLink to={linkTo} href={linkHref}>
                     {memberCount}
-                </Badge.Link>
+                </BadgeLink>
                 &nbsp; members
             </SingleBadge>
         )}
@@ -181,8 +189,5 @@ const IconBadge = styled(UnstyledIconBadge)`
 
 const BadgeLink = ({ left, top, bottom, right, ...props }) => <Link {...props} />
 
-Object.assign(Badge, {
-    Link: styled(BadgeLink)``,
-})
-export { DataUnionBadge, IconBadge, DeployingBadge, ChainBadge, SharedBadge, SharedTheme }
+export { DataUnionBadge, IconBadge, DeployingBadge, ChainBadge, SharedBadge, SharedTheme, BadgeLink }
 export default Badge
