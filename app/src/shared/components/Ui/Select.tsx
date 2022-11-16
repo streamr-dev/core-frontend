@@ -75,6 +75,8 @@ const customStyles = {
     placeholder: () => ({
         color: '#CDCDCD',
         lineHeight: '1rem',
+        position: 'absolute',
+        left: '16px'
     }),
     valueContainer: (provided: any) => ({
         ...provided,
@@ -95,7 +97,7 @@ const customStyles = {
 const Control: FunctionComponent<{className?: string, children?: ReactNode | ReactNode[], selectProps: any}> = ({ className, children, ...props }) => {
     const { controlClassName } = props.selectProps
     return (
-        <components.Control {...props} className={cx(className, controlClassName)}>
+        <components.Control {...props as any} className={cx(className, controlClassName)}>
             {children}
         </components.Control>
     )
@@ -117,7 +119,7 @@ const OptionIconWrapper = styled.div`
 `
 
 const IconOption: FunctionComponent<{isSelected: boolean, data: {icon: ReactNode, label: string}}> = (props) => (
-    <components.Option {...props}>
+    <components.Option {...props as any}>
         {props.isSelected && <Tick />}
         {props.data.icon != null && <OptionIconWrapper>{props.data.icon}</OptionIconWrapper>}
         {props.data.label}
@@ -154,14 +156,16 @@ const IconWrapper = styled.div`
 const SingleValue = ({ children, ...props }) => {
     const { icon } = props.getValue()[0] || {}
     return (
-        <components.SingleValue {...props}>
+        <components.SingleValue {...props as any}>
             {icon != null && <IconWrapper>{icon}</IconWrapper>}
             {children}
         </components.SingleValue>
     )
 }
 
-const UnstyledSelect = ({ controlClassName, required = false, clearable = true, disabled, ...props }: Props) => (
+const ClearIndicator = () => (<></>)
+
+export const UnstyledSelect = ({ controlClassName, required = false, clearable = true, disabled, ...props }: Props) => (
     <ReactSelect
         styles={customStyles}
         components={{
@@ -170,10 +174,12 @@ const UnstyledSelect = ({ controlClassName, required = false, clearable = true, 
             Option: IconOption,
             DropdownIndicator,
             SingleValue,
+            ClearIndicator
         }}
-        controlClassName={controlClassName}
+        isMulti={false}
+        className={controlClassName}
         required={required}
-        clearable={clearable}
+        isClearable={clearable}
         isDisabled={disabled}
         isSearchable={false} // $FlowFixMe potential override necessary.
         {...props}
@@ -181,6 +187,10 @@ const UnstyledSelect = ({ controlClassName, required = false, clearable = true, 
 )
 
 const Select = styled(UnstyledSelect)`
-    font-size: 0.875rem;
+    font-size: 0.875rem;,
 `
+/**
+ * @deprecated
+ * Replaced by SelectField2 due to redesign of the Hub
+ */
 export default Select

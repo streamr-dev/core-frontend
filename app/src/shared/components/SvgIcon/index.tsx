@@ -61,6 +61,12 @@ const sources = {
             />
         </svg>
     ),
+    close: (
+        <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7.46875 1.57343L1.53125 7.51092" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            <path d="M1.53125 1.57343L7.46875 7.51092" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+        </svg>
+    ),
     tick: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8">
             <path
@@ -510,6 +516,7 @@ const sources = {
             />
         </svg>
     ),
+    // TODO check if is used and delete if not
     x: (
         <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
             <g stroke="#A3A3A3" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round">

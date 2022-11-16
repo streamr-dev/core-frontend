@@ -178,4 +178,8 @@ const Search = styled(UnstyledSearch)`
         flex-grow: 1;
     }
 `
+/**
+ * @deprecated
+ * Replaced by SearchBar due to redesign of the Hub
+ */
 export default Search

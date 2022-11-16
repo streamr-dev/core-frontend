@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import Button from '$shared/components/Button'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
-import { COLORS, TABLET } from '$shared/utils/styled'
+import { COLORS, PHONE, TABLET } from '$shared/utils/styled'
 import { ButtonActions } from '$shared/components/Buttons'
 import Faders from './Faders.svg'
 
@@ -18,7 +18,6 @@ const MobileFilter: FunctionComponent<MobileFilterProps> = ({filters, onChange, 
     const [selections, setSelections] = useState<Record<string, string>>({})
 
     useEffect(() => {
-        console.log('eff')
         if (selectedFilters && JSON.stringify(selectedFilters) !== JSON.stringify(selections)) {
             setSelections(selectedFilters)
         }
@@ -53,7 +52,13 @@ const MobileFilter: FunctionComponent<MobileFilterProps> = ({filters, onChange, 
     }, [selections])
 
     return <>
-        <Trigger id={'mobile-filter-trigger'} onClick={() => setDialogOpen(true)} kind={'secondary'}><img src={Faders}/></Trigger>
+        <Trigger
+            id={'mobile-filter-trigger'}
+            onClick={() => setDialogOpen(true)}
+            kind={'secondary'}
+        >
+            <span>Filter</span><img src={Faders}/>
+        </Trigger>
         <ModalPortal>
             {dialogOpen && <FilterDialog
                 title={'Filter'}
@@ -98,6 +103,15 @@ const MobileFilter: FunctionComponent<MobileFilterProps> = ({filters, onChange, 
 
 const Trigger = styled(Button)`
   padding: 0 10px !important;
+  
+  span {
+    display: none;
+    margin-right: 15px;
+    
+    @media(${PHONE}) {
+      display: inline;
+    }
+  }
 `
 
 const FilterSection = styled.div`
