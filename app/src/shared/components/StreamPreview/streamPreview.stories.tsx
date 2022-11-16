@@ -45,9 +45,7 @@ const generateData = (rows) =>
         timestamp.setMinutes(timestamp.getMinutes() + factor)
         return {
             metadata: {
-                messageId: {
-                    timestamp: timestamp.getTime(),
-                },
+                timestamp: timestamp.getTime(),
             },
             data: {
                 NO2: factor * 14,

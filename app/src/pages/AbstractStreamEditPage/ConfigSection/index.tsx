@@ -35,7 +35,9 @@ const fallbackConfig = {
 }
 
 const UnwrappedConfigSection = ({ disabled, canEdit }) => {
-    const { config: configProp = fallbackConfig } = useTransientStream()
+    const { metadata } = useTransientStream()
+    const { config: configProp = fallbackConfig } = metadata || {}
+
     const stream = useStream()
     const [{ cache, config }, dispatch] = useReducer(
         reducer,
@@ -71,7 +73,9 @@ const UnwrappedConfigSection = ({ disabled, canEdit }) => {
 
         if (typeof stageRef.current === 'function') {
             stageRef.current({
-                config: configRef.current,
+                metadata: {
+                    config: configRef.current,
+                },
             })
         }
     }, [cache])

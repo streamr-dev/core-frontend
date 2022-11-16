@@ -4,7 +4,7 @@ import { StatusIcon } from '@streamr/streamr-layout'
 import useStreamId from '$shared/hooks/useStreamId'
 
 export default function useStreamActivityStatus(inactivityThresholdHours, { cache = 0 } = {}) {
-    const [timestamp, setTimestamp] = useState()
+    const [timestamp, setTimestamp] = useState<number>()
     const client = useClient({
         auth: {
             // Use a throwaway private key to authenticate and allow read-only mode.
@@ -28,13 +28,11 @@ export default function useStreamActivityStatus(inactivityThresholdHours, { cach
                     {
                         last: 1,
                     },
-                    (content: any, metadata: any) => {
-                        const ts = (metadata || {}).messageId.timestamp
+                    (content, metadata) => {
+                        const ts = metadata.timestamp || 0
                         if (!aborted) {
                             setTimestamp(ts)
                         }
-                    }, {
-                        resend: 1,
                     }
                 )
             } catch (e) {

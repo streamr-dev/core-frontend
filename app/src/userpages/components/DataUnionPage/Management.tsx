@@ -120,7 +120,7 @@ const Management = ({
     )
 }
 
-const WrappedManagement: FunctionComponent = (props: Props) => (
+const WrappedManagement: FunctionComponent<Props> = (props: Props) => (
     <ProductController>
         <Management {...props} />
     </ProductController>

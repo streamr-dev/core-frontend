@@ -47,7 +47,8 @@ function reducer(state, { type, payload }) {
 }
 
 function UnwrappedPartitionsSection({ disabled, canEdit }) {
-    const { partitions = 1 } = useTransientStream()
+    const { metadata } = useTransientStream()
+    const { partitions = 1 } = metadata || {}
     const [state, dispatch] = useReducer(
         reducer,
         reducer(undefined, {
@@ -82,7 +83,9 @@ function UnwrappedPartitionsSection({ disabled, canEdit }) {
 
         if (sanitizedValue !== initializer) {
             stageRef.current({
-                partitions: sanitizedValue,
+                metadata: {
+                    partitions: sanitizedValue,
+                },
             })
         }
     }, [cache])

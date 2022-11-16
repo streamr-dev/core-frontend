@@ -19,7 +19,9 @@ import ProductDetails from './ProductDetails'
 import Whitelist from './Whitelist'
 import SharedSecrets from './SharedSecrets'
 import TermsOfUse from './TermsOfUse'
+import DataUnionDeployment from './DataUnionDeployment'
 import styles from './editor.pcss'
+
 type Props = {
     disabled?: boolean
 }
@@ -46,6 +48,14 @@ const Editor = ({ disabled }: Props) => {
                         <ProductType disabled={disabled} />
                         {(isDataUnion || isPaid) && (
                             <ProductChain disabled={disabled || isChainSelectorDisabled} />
+                        )}
+                        {(isDataUnion && !isChainSelectorDisabled) && (
+                            <DataUnionDeployment
+                                // NOTE: We want to remount component when chain changes
+                                // so that we reset the list of selectable data unions.
+                                key={`${product.id}-${product.chain}`}
+                                disabled={disabled}
+                            />
                         )}
                         {isPaid && (
                             <React.Fragment>

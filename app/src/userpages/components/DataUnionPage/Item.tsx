@@ -16,7 +16,7 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import { getProductById, putProduct } from '$mp/modules/product/services'
 import { validate as validateProduct } from '$mp/utils/product'
 import { MEDIUM, SM, LG } from '$shared/utils/styled'
-import { getDataUnion } from '$mp/modules/dataUnion/services'
+import { getDataUnion, getDataUnionObject } from '$mp/modules/dataUnion/services'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { fromAtto } from '$mp/utils/math'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -88,7 +88,10 @@ const Name = styled.div`
 const Details = styled.div`
     line-height: 18px;
 `
-const State = styled.span`
+type StateProps = {
+    published: boolean,
+}
+const State = styled.span<StateProps>`
     font-weight: ${MEDIUM};
     font-size: 12px;
     line-height: 18px;
@@ -268,13 +271,19 @@ const Item = ({ product, stats }: Props) => {
     const history = useHistory()
     const { copy } = useCopy()
     const isMounted = useIsMounted()
-    const productId = product && product.id
-    const productName = product && product.name
-    const dataUnionId = product && product.beneficiaryAddress
-    const chainId = product && getChainIdFromApiString(product.chain)
     const [isOpen, setIsOpen] = useState(false)
     const [dataUnion, setDataUnion] = useState(null)
+    const [metadata, setMetadata] = useState(null)
     const [contractProduct, setContractProduct] = useState(null)
+    const productId = product && product.id
+    const productName = useMemo(() => {
+        return product && product.name || typeof metadata === 'object' && metadata && metadata.name || 'Untitled Data Union'
+    }, [product, metadata])
+    const dataUnionId = product && product.beneficiaryAddress
+    const imageUrl = useMemo(() => {
+        return product && product.imageUrl || typeof metadata === 'object' && metadata && metadata.thumbnailUrl || null
+    }, [product, metadata])
+    const chainId = product && getChainIdFromApiString(product.chain)
     const { update: updateEntities } = useEntities()
     const { wrap: wrapDataUnionLoad, isPending: loadingDataUnion } = usePending(`dataunion.item.${productId || ''}.DATAUNION`)
     const { wrap: wrapPublish, isPending: isPublishPending } = usePending(`dataunion.item.${productId || ''}.PUBLISH`)
@@ -288,9 +297,12 @@ const Item = ({ product, stats }: Props) => {
         const load = async () => {
             if (dataUnionId) {
                 const du = await getDataUnion(dataUnionId, chainId)
+                const duObj = await getDataUnionObject(dataUnionId, chainId)
+                const metadata = await duObj.getMetadata()
 
                 if (isMounted()) {
                     setDataUnion(du)
+                    setMetadata(metadata)
                 }
             }
 
@@ -311,6 +323,8 @@ const Item = ({ product, stats }: Props) => {
     const productState = useMemo(() => {
         if (product.state === productStates.DEPLOYED && isEthereumAddress(product.beneficiaryAddress)) {
             return 'Published'
+        } else if (product.state === productStates.DETACHED) {
+            return 'Detached'
         } else if (isEthereumAddress(product.beneficiaryAddress)) {
             return 'Unpublished'
         }
@@ -324,23 +338,23 @@ const Item = ({ product, stats }: Props) => {
             const fee = Number.parseFloat(adminFee)
 
             if (fee) {
-                return revenue * fee
+                return revenue.multipliedBy(fee)
             }
         }
 
         return 0
     }, [revenue, dataUnion])
     const avgUserRevenue = useMemo(() => {
-        const memberCount = get(stats, 'memberCount.total', 0)
-        const created = get(product, 'created', 0)
+        const memberCount = get<number>(stats, 'memberCount.total', 0)
+        const created = get(product, 'created', '0')
         const ageMs = Date.now() - Date.parse(created)
         const ageInWeeks = ageMs / WEEK_IN_MS
 
-        if (revenue <= 0) {
+        if (revenue.isLessThanOrEqualTo(0)) {
             return 0
         }
 
-        return revenue / ageInWeeks / memberCount
+        return revenue.dividedBy(ageInWeeks / memberCount)
     }, [revenue, product, stats])
     const onHeaderClick = useCallback(() => {
         setIsOpen(!isOpen)
@@ -453,25 +467,25 @@ const Item = ({ product, stats }: Props) => {
         <Container>
             <Header>
                 <ImageContainer onClick={onHeaderClick}>
-                    <FallbackImage alt={product.name || ''} src={product.imageUrl || ''} placeholder={productInitials} />
+                    <FallbackImage alt={productName|| ''} src={imageUrl || ''} placeholder={productInitials} />
                 </ImageContainer>
                 <TitleContainer onClick={onHeaderClick}>
-                    <Name>{product.name}</Name>
+                    <Name>{productName}</Name>
                     <Details>
                         <State published={productState === 'Published'}>{productState}</State>
-                        {dataUnion ? (
+                        {dataUnionId ? (
                             <Tooltip value="Copy DU address">
                                 <Address
                                     onClick={(event) => {
                                         event.stopPropagation()
-                                        copy(dataUnion.id)
+                                        copy(dataUnionId)
                                         Notification.push({
                                             title: 'DU address copied to clipboard',
                                             icon: NotificationIcon.CHECKMARK,
                                         })
                                     }}
                                 >
-                                    {truncate(dataUnion.id)}
+                                    {truncate(dataUnionId)}
                                 </Address>
                             </Tooltip>
                         ) : (
@@ -480,9 +494,9 @@ const Item = ({ product, stats }: Props) => {
                     </Details>
                 </TitleContainer>
                 <Buttons>
-                    {dataUnion && (
+                    {dataUnionId && (
                         <Tooltip value="View on block explorer">
-                            <Button href={getAddressLink(chainId, dataUnion.id)} target="_blank" rel="noopener noreferrer">
+                            <Button href={getAddressLink(chainId, dataUnionId)} target="_blank" rel="noopener noreferrer">
                                 <Icon name="externalLink" />
                             </Button>
                         </Tooltip>
@@ -577,7 +591,7 @@ const Item = ({ product, stats }: Props) => {
     )
 }
 
-const WrappedItem: FunctionComponent = (props: Props) => (
+const WrappedItem: FunctionComponent<Props> = (props: Props) => (
     <DataUnionMembersProvider>
         <Item {...props} />
     </DataUnionMembersProvider>

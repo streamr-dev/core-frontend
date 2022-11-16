@@ -28,7 +28,7 @@ const Handler = () => {
     useEffect(() => {
         const createStream = async () => {
             const stream = await client.createStream({
-                name: 'Activity stream',
+                id: 'activity-stream',
                 description: 'Automatically created stream for storing user activity',
             })
             // TODO: Remove permissions from stream so that user cannot delete this stream

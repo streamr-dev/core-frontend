@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
 
-type StreamSetterContextProps = React.Dispatch<(prevState: any) => any>
+type StreamSetterContextProps = object
 
 const StreamSetterContext = createContext<StreamSetterContextProps>(() => {})
 export function useStreamSetter() {

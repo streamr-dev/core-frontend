@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 const StreamModifierContext = createContext({
     commit: () => {},
-    stage: () => {},
+    stage: (changes: any) => {},
     goBack: () => {},
 })
 export default StreamModifierContext

@@ -1,7 +1,9 @@
 import isEqual from 'lodash/isEqual'
+
 export const Init = 'init'
 export const SetBusy = 'set busy'
 export const Modify = 'modify'
+
 export const initialState = {
     busy: false,
     clean: true,
@@ -9,21 +11,17 @@ export const initialState = {
     paramsModified: {},
 }
 
-function toObject({ id, description, config, storageDays, inactivityThresholdHours, partitions } = {}) {
+function toObject({ id, metadata } = { id: '', metadata: {} }) {
     return {
-        config,
-        description,
         id,
-        inactivityThresholdHours,
-        partitions,
-        storageDays,
+        metadata,
     }
 }
 
 export default function reducer(state, { type, payload }) {
     switch (type) {
         case Init:
-            return ((params = {}) => ({ ...initialState, params, paramsModified: params }))(toObject(payload))
+            return ((params = { id: '', metadata: {}}) => ({ ...initialState, params, paramsModified: params }))(toObject(payload))
 
         case SetBusy:
             return { ...state, busy: !!payload }
@@ -31,7 +29,15 @@ export default function reducer(state, { type, payload }) {
         case Modify:
             return ((paramsModified) => ({ ...state, paramsModified, clean: isEqual(state.params, paramsModified) }))({
                 ...state.paramsModified,
-                ...payload,
+                ...(payload.metadata ?
+                    {
+                        metadata: {
+                            ...state.paramsModified.metadata,
+                            ...payload.metadata,
+                        }
+                    }
+                    :
+                    payload),
             })
 
         default:

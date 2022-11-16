@@ -12,9 +12,11 @@ export const mapStateToProps = (state: StoreState): {user: User} => ({
 })
 
 function Analytics({ user }: {user: User}): null {
-    Sentry.configureScope((scope) => {
-        scope.setUser({...user, id: String(user.id)})
-    })
+    if (user) {
+        Sentry.configureScope((scope) => {
+            scope.setUser({...user, id: (user.username || 'no username').toString()})
+        })
+    }
     return null
 }
 

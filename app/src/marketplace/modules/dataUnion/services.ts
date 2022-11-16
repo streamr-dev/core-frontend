@@ -4,7 +4,7 @@ import BN from 'bignumber.js'
 import { hexToNumber } from 'web3-utils'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
-import { getConfigForChain } from '$shared/web3/config'
+import { getConfigForChain, getConfigForChainByName } from '$shared/web3/config'
 import type { SmartContractTransaction, Address } from '$shared/types/web3-types'
 import type { ProductId, DataUnionId } from '$mp/types/product-types'
 import type { ApiResult } from '$shared/types/common-types'
@@ -74,7 +74,7 @@ const getDataunionSubgraphUrlForChain = (chainId: number): string => {
 // ----------------------
 // smart contract queries
 // ----------------------
-const getDataUnionObject = async (address: string, chainId: number) => {
+export const getDataUnionObject = async (address: string, chainId: number) => {
     const client = createClient(chainId)
     const dataUnion = await client.getDataUnion(address)
     return dataUnion
@@ -230,6 +230,63 @@ export const getDataUnionStatistics = async (id: DataUnionId, chainId: number, f
         useAuthorization: false,
     })
     return result.data.dataUnionStatsBuckets
+}
+
+export const getDataUnionChainIds = (): Array<number> => {
+    const { dataunionChains } = getCoreConfig()
+    return dataunionChains.map((chain: string) => {
+        return getConfigForChainByName(chain).id
+    })
+}
+
+export const getDataUnionsOwnedBy = async (user: Address): Promise<Array<TheGraphDataUnion>> => {
+    let result: Array<TheGraphDataUnion> = []
+
+    for (const chainId of getDataUnionChainIds()) {
+        const ownedDus = await getDataUnionsOwnedByInChain(user, chainId)
+        result = result.concat(ownedDus)
+    }
+
+    return result
+}
+
+export type TheGraphDataUnion = {
+    id: string,
+    owner: string,
+    memberCount: number,
+    revenueWei: string,
+    creationDate: string,
+    chainId: number,
+}
+
+export const getDataUnionsOwnedByInChain = async (user: Address, chainId: number): Promise<Array<TheGraphDataUnion>> => {
+    const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
+    const result = await post({
+        url: theGraphUrl,
+        data: {
+            query: `
+                query {
+                    dataUnions(where: { owner: "${user.toLowerCase()}" }) {
+                        id,
+                        owner,
+                        memberCount,
+                        revenueWei,
+                        creationDate,
+                    }
+                }
+            `,
+        },
+        useAuthorization: false,
+    })
+
+    if (result.data.dataUnions.length > 0) {
+        return result.data.dataUnions.map((du) => ({
+            ...du,
+            chainId,
+        }))
+    }
+
+    return []
 }
 export const getDataUnionMembers = async (id: DataUnionId, chainId: number, limit = 100): Promise<Array<string>> => {
     const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)

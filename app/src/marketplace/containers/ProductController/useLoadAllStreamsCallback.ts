@@ -10,6 +10,7 @@ export default function useLoadAllStreamsCallback({ setAllStreams }: { setAllStr
                 try {
                     const gen = client.searchStreams(undefined, {
                         user: await client.getAddress(),
+                        allowPublic: false,
                     })
                     const streams = []
 
