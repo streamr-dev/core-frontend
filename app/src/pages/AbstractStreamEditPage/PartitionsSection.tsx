@@ -47,7 +47,8 @@ function reducer(state, { type, payload }) {
 }
 
 function UnwrappedPartitionsSection({ disabled, canEdit }) {
-    const { metadata: { partitions = 1 } } = useTransientStream()
+    const { metadata } = useTransientStream()
+    const { partitions = 1 } = metadata || {}
     const [state, dispatch] = useReducer(
         reducer,
         reducer(undefined, {

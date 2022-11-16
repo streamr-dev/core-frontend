@@ -14,7 +14,8 @@ import StorageNodeList from './StorageNodeList'
 function UnwrappedHistorySection({ disabled, canEdit }) {
     const streamId = useStreamId()
     const { stage } = useStreamModifier()
-    const { metadata: { storageDays } } = useTransientStream()
+    const { metadata } = useTransientStream()
+    const { storageDays } = metadata || {}
     const canAssignStorageNodes = !!streamId && !!canEdit
     return (
         <Fragment>

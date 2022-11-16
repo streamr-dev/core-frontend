@@ -35,7 +35,9 @@ const fallbackConfig = {
 }
 
 const UnwrappedConfigSection = ({ disabled, canEdit }) => {
-    const { metadata: { config: configProp = fallbackConfig } } = useTransientStream()
+    const { metadata } = useTransientStream()
+    const { config: configProp = fallbackConfig } = metadata || {}
+
     const stream = useStream()
     const [{ cache, config }, dispatch] = useReducer(
         reducer,

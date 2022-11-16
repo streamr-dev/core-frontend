@@ -14,7 +14,8 @@ import TOCSection from '$shared/components/TOCPage/TOCSection'
 
 function UnwrappedStatusSection({ disabled, canEdit, onStatusChange }) {
     const { stage } = useStreamModifier()
-    const { metadata: { inactivityThresholdHours } } = useTransientStream()
+    const { metadata } = useTransientStream()
+    const { inactivityThresholdHours } = metadata || {}
     const stream = useStream() || {}
     const [status] = useStreamActivityStatus(stream?.metadata?.inactivityThresholdHours)
     const onStatusChangeRef = useRef(onStatusChange)
