@@ -37,7 +37,7 @@ export const networks = {
 }
 export const ethereumNetworks = {
     [getMainChainId()]: 'Local mainchain',
-    [getClientConfig().streamRegistryChainRPCs.chainId]: 'Local streams chain',
+    [getClientConfig().contracts.streamRegistryChainRPCs.chainId]: 'Local streams chain',
     '1': 'Mainnet',
     '3': 'Ropsten',
     '4': 'Rinkeby',

@@ -67,7 +67,7 @@ export const getConfigForChainByName = (chainName: string): Chain => {
 }
 
 const getConfig = (): Config => {
-    const { mainChainRPCs, streamRegistryChainRPCs } = getClientConfig()
+    const { contracts: { mainChainRPCs, streamRegistryChainRPCs } } = getClientConfig()
 
     const mainChainId = getMainChainId()
     return {
