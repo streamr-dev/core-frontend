@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
+import React, { FunctionComponent, ReactNode, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import Button from '$shared/components/Button'
 import ModalPortal from '$shared/components/ModalPortal'
@@ -11,9 +11,10 @@ type MobileFilterProps = {
     onChange: (filters: Record<string, string>) => void
     filters: {label: string, value: string, options: {label: string, value: string}[]}[],
     selectedFilters?: Record<string, string>
+    children?: ReactNode
 }
 
-const MobileFilter: FunctionComponent<MobileFilterProps> = ({filters, onChange, selectedFilters }) => {
+const MobileFilter: FunctionComponent<MobileFilterProps> = ({filters, onChange, selectedFilters, children }) => {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false)
     const [selections, setSelections] = useState<Record<string, string>>({})
 
@@ -57,7 +58,7 @@ const MobileFilter: FunctionComponent<MobileFilterProps> = ({filters, onChange, 
             onClick={() => setDialogOpen(true)}
             kind={'secondary'}
         >
-            <span>Filter</span><img src={Faders}/>
+            {children}<img src={Faders}/>
         </Trigger>
         <ModalPortal>
             {dialogOpen && <FilterDialog
@@ -103,15 +104,6 @@ const MobileFilter: FunctionComponent<MobileFilterProps> = ({filters, onChange, 
 
 const Trigger = styled(Button)`
   padding: 0 10px !important;
-  
-  span {
-    display: none;
-    margin-right: 15px;
-    
-    @media(${PHONE}) {
-      display: inline;
-    }
-  }
 `
 
 const FilterSection = styled.div`

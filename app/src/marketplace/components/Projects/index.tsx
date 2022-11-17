@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Row, Container as RsContainer, Col } from 'reactstrap'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { MarketplaceProductTile as UnstyledMarketplaceProductTile } from '$shared/components/Tile'
-import { MD, LG, REGULAR } from '$shared/utils/styled'
+import { MD, REGULAR, DESKTOP, COLORS } from '$shared/utils/styled'
 import type { ProjectList } from '../../types/project-types'
 import ProductPageSpinner from '../ProductPageSpinner'
 import LoadMore from '../LoadMore'
@@ -49,8 +49,9 @@ const listProjects = (products, cols, isFetching: boolean | null | undefined) =>
 
 export const ProjectsContainer = styled(RsContainer)`
     padding: 1.25em 30px 3.5em 30px;
+    background-color: ${COLORS.secondary};
 
-    @media (min-width: ${LG}px) {
+    @media (${DESKTOP}) {
         padding: 1.5em 5em 7em 5em;
     }
 `

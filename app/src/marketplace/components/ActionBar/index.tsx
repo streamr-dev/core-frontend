@@ -1,91 +1,35 @@
-import React, { useMemo, useCallback } from 'react'
-import BN from 'bignumber.js'
-import { Container as UnstyledContainer } from 'reactstrap'
+import React, { useCallback, useMemo } from 'react'
 import styled from 'styled-components'
-import Button from '$shared/components/Button'
-import { LG } from '$shared/utils/styled'
 import useModal from '$shared/hooks/useModal'
-import type { Filter, SearchFilter, CategoryFilter, SortByFilter, ProjectTypeFilter } from '../../types/project-types'
+import type { CategoryFilter, Filter, ProjectTypeFilter, SearchFilter } from '$mp/types/project-types'
+import SearchBar from '$shared/components/SearchBar'
+import {
+    CreateProjectButton,
+    DropdownFilters,
+    FiltersBar,
+    FiltersWrap, MobileFilterText,
+    MobileFilterWrap,
+    SearchBarWrap,
+    SelectFieldWrap
+} from '$mp/components/ActionBar/actionBar.styles'
+import Tabs from '$shared/components/Tabs'
+import SelectField2 from '$mp/components/SelectField2'
+import MobileFilter from '$shared/components/MobileFilter'
 import type { Category } from '../../types/category-types'
 import { isValidSearchQuery } from '../../utils/validate'
-import SearchInput from './SearchInput'
-import FilterSelector from './FilterSelector'
-import FilterModal from './FilterModal'
+
 export type Props = {
     filter: Filter
     categories: Array<Category> | null | undefined
     onFilterChange: (filter: Filter) => void
     onSearchChange: (search: SearchFilter) => void
-    onCreateProduct: () => void
+    onCreateProject: () => void
 }
-const sortByOptions = [
-    {
-        id: 'pricePerSecond',
-        title: 'Price, low to high',
-    },
-    {
-        id: 'free',
-        title: 'Free products only',
-    },
-    {
-        id: 'dateCreated',
-        title: 'Latest',
-    },
-]
-const Filters = styled.div`
-    background-color: white;
-`
-const Container = styled(UnstyledContainer)`
-    padding: 0 30px;
-
-    ul {
-        margin: 0;
-        list-style: none;
-        padding: 1em 0;
-        display: flex;
-        align-items: center;
-    }
-
-    li {
-        flex: 1;
-
-        + li {
-            margin-left: 0;
-        }
-
-        :last-child {
-            display: none;
-        }
-    }
-
-    @media (min-width: ${LG}px) {
-        padding: 0 5em;
-
-        ul {
-            padding: 1.5em 0;
-        }
-
-        li {
-            display: inline-block;
-            outline: none !important;
-            flex: unset;
-
-            :last-child {
-                margin-left: auto;
-                display: block;
-            }
-        }
-
-        li + li {
-            margin-left: 3em;
-        }
-    }
-`
 
 const UnstyledActionBar = ({
     filter,
     categories,
-    onCreateProduct,
+    onCreateProject,
     onFilterChange: onFilterChangeProp,
     onSearchChange: onSearchChangeProp,
     ...props
@@ -108,32 +52,7 @@ const UnstyledActionBar = ({
         },
         [onFilterChangeProp, filterModal],
     )
-    const onSortByChange = useCallback(
-        (sortBy: SortByFilter | null | undefined) => {
-            if (sortBy === 'free') {
-                onFilterChangeProp({
-                    sortBy: undefined,
-                    maxPrice: '0',
-                    order: undefined,
-                })
-            } else if (sortBy === 'dateCreated') {
-                onFilterChangeProp({
-                    maxPrice: undefined,
-                    sortBy: 'dateCreated',
-                    order: 'desc',
-                })
-            } else {
-                onFilterChangeProp({
-                    maxPrice: undefined,
-                    sortBy,
-                    order: 'asc',
-                })
-            }
 
-            filterModal.close()
-        },
-        [onFilterChangeProp, filterModal],
-    )
     const onProductTypeChange = useCallback(
         (type: ProjectTypeFilter | null | undefined) => {
             onFilterChangeProp({
@@ -143,90 +62,108 @@ const UnstyledActionBar = ({
         },
         [onFilterChangeProp, filterModal],
     )
-    const clearSearch = useCallback(() => {
-        onSearchChangeProp('')
-    }, [onSearchChangeProp])
+
     const productTypeOptions = useMemo(
         () => [
             {
-                id: 'all',
-                value: undefined,
-                title: 'All products',
-            },
-            {
-                id: 'normal',
                 value: 'normal',
-                title: 'Data Products',
+                label: 'Data Projects',
             },
             {
-                id: 'dataunion',
                 value: 'dataunion',
-                title: 'Data Unions',
+                label: 'Data Unions',
             },
         ],
         [],
     )
     const categoryOptions = useMemo(
-        () => [
-            {
-                id: '__all',
-                value: '__all',
-                title: 'Everything',
-            },
-            ...(categories
-                ? categories.map((c) => ({
-                    id: c.id,
-                    value: c.id,
-                    title: c.name,
-                }))
-                : []),
-        ],
+        () => categories.map((category) => ({label: category.name, value: category.id})),
         [categories],
     )
-    const sortOptions = useMemo(
-        () =>
-            sortByOptions.map(({ id, title }) => ({
-                id,
-                value: id,
-                title,
-            })),
-        [],
-    )
-    const { categories: category, maxPrice, sortBy, type } = filter
-    const currentSortByFilter = useMemo(() => {
-        const { id: currentId } =
-            (BN(maxPrice).isEqualTo('0') ? sortByOptions.find(({ id }) => id === 'free') : sortByOptions.find(({ id }) => id === sortBy)) || {}
-        return currentId
-    }, [maxPrice, sortBy])
+
+    const { categories: category, type } = filter
+
+    const onTabFilterChange = (value: string): void => {
+        // TODO implement
+    }
+
+    const handleMobileFilterChange = (filters: Record<string, string>): void => {
+        onCategoryChange(filters.category)
+        onProductTypeChange(filters.type)
+    }
+
     return (
         <div {...props}>
-            <SearchInput value={filter.search} onChange={onSearchChange} onClear={clearSearch} hidePlaceholderOnFocus />
-            <FilterModal />
-            <Filters>
-                <Container fluid>
-                    <ul>
-                        <li>
-                            <FilterSelector title="Product type" selected={type} onChange={onProductTypeChange} options={productTypeOptions} />
-                        </li>
-                        <li>
-                            <FilterSelector title="Category" selected={category} onChange={onCategoryChange} options={categoryOptions} />
-                        </li>
-                        <li>
-                            <FilterSelector title="Sort by" selected={currentSortByFilter} onChange={onSortByChange} options={sortOptions} />
-                        </li>
-                        <li>
-                            <Button kind="secondary" type="button" onClick={() => onCreateProduct()}>
-                                Create a Product
-                            </Button>
-                        </li>
-                    </ul>
-                </Container>
-            </Filters>
+            <SearchBarWrap>
+                <SearchBar value={filter.search} onChange={onSearchChange}/>
+            </SearchBarWrap>
+            <FiltersBar>
+                <FiltersWrap>
+                    <Tabs
+                        options={
+                            [
+                                {
+                                    label: 'All projects',
+                                    value: 'all_projects'
+                                },
+                                {
+                                    label: 'Your projects',
+                                    value: 'your_projects',
+                                    disabled: true,
+                                    disabledReason: "This feature will be implemented soon"
+                                }
+                            ]
+                        }
+                        selectedOptionValue={'all_projects'}
+                        onChange={onTabFilterChange}
+                        fullWidth={'onlyMobile'}
+                    />
+                    <DropdownFilters>
+                        <span>Filter by</span>
+                        <SelectFieldWrap>
+                            <SelectField2
+                                placeholder={'Category'}
+                                options={categoryOptions}
+                                value={category}
+                                onChange={onCategoryChange}
+                            />
+                        </SelectFieldWrap>
+                        <SelectFieldWrap>
+                            <SelectField2
+                                placeholder={'Project type'}
+                                options={productTypeOptions}
+                                value={type}
+                                onChange={onProductTypeChange}
+                            />
+                        </SelectFieldWrap>
+                    </DropdownFilters>
+                    <MobileFilterWrap>
+                        <MobileFilter
+                            filters={[
+                                {
+                                    label: 'Category',
+                                    value: 'category',
+                                    options: categoryOptions
+                                },
+                                {
+                                    label: 'Project type',
+                                    value: 'type',
+                                    options: productTypeOptions
+                                }
+                            ]}
+                            onChange={handleMobileFilterChange}
+                            selectedFilters={{category, type }}
+                        >
+                            <MobileFilterText>Filter</MobileFilterText>
+                        </MobileFilter>
+                    </MobileFilterWrap>
+                </FiltersWrap>
+                <CreateProjectButton kind={'primary'} type={'button'} onClick={() => onCreateProject()}>Create project</CreateProjectButton>
+            </FiltersBar>
         </div>
     )
 }
 
 const ActionBar = styled(UnstyledActionBar)`
-    color: #323232;
 `
 export default ActionBar

@@ -117,7 +117,7 @@ const ProjectsPage: FunctionComponent = () => {
                 categories={categories}
                 onFilterChange={onFilterChange}
                 onSearchChange={onSearchChange}
-                onCreateProduct={() => createProductModal.open()}
+                onCreateProject={() => createProductModal.open()}
             />
             <CreateProductModal />
             <ProjectsContainer fluid>
