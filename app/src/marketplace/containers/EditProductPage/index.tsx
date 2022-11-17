@@ -46,7 +46,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const { load: loadWhiteWhitelistedAdresses, reset: resetWhiteWhitelistedAdresses } = useWhitelist()
     const { isOpen: isDataUnionDeployDialogOpen } = useModal('dataUnion.DEPLOY')
     const { isOpen: isConfirmSaveDialogOpen } = useModal('confirmSave')
-    const { isOpen: isPublishDialogOpen } = useModal('publish') 
+    const { isOpen: isPublishDialogOpen } = useModal('publish')
     const productId = product.id
 
     // Load categories and streams
@@ -58,6 +58,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         loadCategories()
         loadAllStreams()
     }, [loadCategories, productId, loadAllStreams, loadWhiteWhitelistedAdresses, chainId])
+
     const { beneficiaryAddress } = originalProduct
     const isDataUnion = isDataUnionProduct(product)
     // TODO: should really check for the contract existance here

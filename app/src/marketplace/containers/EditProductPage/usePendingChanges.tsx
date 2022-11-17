@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react'
 import BN from 'bignumber.js'
 
 import useEditableState from '$shared/contexts/Undo/useEditableState'
-import type { SmartContractProduct } from '$mp/types/product-types'
+import type { Product, SmartContractProduct } from '$mp/types/product-types'
 import { productStates } from '$shared/utils/constants'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { getAdminFee } from '$mp/modules/dataUnion/services'
@@ -37,7 +37,7 @@ export type PendingChangeResult = {
 }
 
 export async function calculatePendingChanges(
-    product: Record<string, any>,
+    product: Product,
     contractProduct: SmartContractProduct,
     chainId: number,
 ): Promise<PendingChangeResult> {
@@ -122,7 +122,7 @@ export default function usePendingChanges() {
             }
 
             const { state: productState } = product
-            const { hasPendingChanges } = await calculatePendingChanges(product, contractProduct, chainId)
+            const { hasPendingChanges } = await calculatePendingChanges(product as Product, contractProduct, chainId)
             const nextMode = getNextMode(productState, contractProduct, hasPendingChanges)
 
             if (isMounted()) {

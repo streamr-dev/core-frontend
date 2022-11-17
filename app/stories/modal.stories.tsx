@@ -8,7 +8,8 @@ import { transactionStates, timeUnits } from '$shared/utils/constants'
 import { subscribeSnippets } from '$utils/streamSnippets'
 import PngIcon from '$shared/components/PngIcon'
 import croppedImage from '$mp/assets/product_standard.png'
-import { publishModes, actionsTypes as publishActionTypes } from '$mp/containers/EditProductPage/usePublish'
+import { PublishMode } from '$mp/containers/EditProductPage/usePendingChanges'
+import { actionsTypes as publishActionTypes } from '$mp/containers/EditProductPage/usePublish'
 import { actionsTypes as purchaseActionTypes } from '$mp/containers/ProductPage/usePurchase'
 import { actionsTypes as whitelistActionTypes } from '$mp/containers/EditProductPage/useUpdateWhitelist'
 // marketplace
@@ -94,7 +95,7 @@ story('Product Editor/PublishTransactionProgress')
         }
         return (
             <PublishTransactionProgress
-                publishMode={publishModes.PUBLISH}
+                publishMode={PublishMode.PUBLISH}
                 onCancel={action('cancel')}
                 status={statuses}
                 isPrompted={false}
@@ -118,7 +119,7 @@ story('Product Editor/PublishTransactionProgress')
         }
         return (
             <PublishTransactionProgress
-                publishMode={publishModes.REPUBLISH}
+                publishMode={PublishMode.REPUBLISH}
                 onCancel={action('cancel')}
                 status={statuses}
                 isPrompted={false}
@@ -142,7 +143,7 @@ story('Product Editor/PublishTransactionProgress')
         }
         return (
             <PublishTransactionProgress
-                publishMode={publishModes.REDEPLOY}
+                publishMode={PublishMode.REDEPLOY}
                 onCancel={action('cancel')}
                 status={statuses}
                 isPrompted={false}
@@ -158,7 +159,7 @@ story('Product Editor/PublishTransactionProgress')
         }
         return (
             <PublishTransactionProgress
-                publishMode={publishModes.UNPUBLISH}
+                publishMode={PublishMode.UNPUBLISH}
                 onCancel={action('cancel')}
                 status={statuses}
             />
@@ -170,7 +171,7 @@ story('Product Editor/PublishComplete')
             onClose={action('onClose')}
             onContinue={action('onContinue')}
             productId={'1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890'}
-            publishMode={publishModes.PUBLISH}
+            publishMode={PublishMode.PUBLISH}
         />
     ))
     .add('Redeploy', () => (
@@ -178,7 +179,7 @@ story('Product Editor/PublishComplete')
             onClose={action('onClose')}
             onContinue={action('onContinue')}
             productId={'1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890'}
-            publishMode={publishModes.REDEPLOY}
+            publishMode={PublishMode.REDEPLOY}
         />
     ))
     .add('Republish', () => (
@@ -186,7 +187,7 @@ story('Product Editor/PublishComplete')
             onClose={action('onClose')}
             onContinue={action('onContinue')}
             productId={'1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890'}
-            publishMode={publishModes.REPUBLISH}
+            publishMode={PublishMode.REPUBLISH}
         />
     ))
     .add('Unpublish', () => (
@@ -194,7 +195,7 @@ story('Product Editor/PublishComplete')
             onClose={action('onClose')}
             onContinue={action('onContinue')}
             productId={'1ff644fdb6ba40a287af2e607b131f32aaad9872ddd54e79b1106ff916e12890'}
-            publishMode={publishModes.UNPUBLISH}
+            publishMode={PublishMode.UNPUBLISH}
         />
     ))
 story('Product Editor/PublishError')
@@ -213,7 +214,7 @@ story('Product Editor/PublishError')
             [publishActionTypes.PUBLISH_FREE]: publishFreeStatus,
             [publishActionTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
         }
-        return <PublishError onClose={action('onClose')} status={statuses} publishMode={publishModes.PUBLISH} />
+        return <PublishError onClose={action('onClose')} status={statuses} publishMode={PublishMode.PUBLISH} />
     })
     .add('Republish', () => {
         const adminFeeStatus = transactionStates.STARTED
@@ -230,7 +231,7 @@ story('Product Editor/PublishError')
             [publishActionTypes.PUBLISH_FREE]: publishFreeStatus,
             [publishActionTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
         }
-        return <PublishError onClose={action('onClose')} status={statuses} publishMode={publishModes.REPUBLISH} />
+        return <PublishError onClose={action('onClose')} status={statuses} publishMode={PublishMode.REPUBLISH} />
     })
     .add('Redeploy', () => {
         const adminFeeStatus = transactionStates.STARTED
@@ -247,7 +248,7 @@ story('Product Editor/PublishError')
             [publishActionTypes.PUBLISH_FREE]: publishFreeStatus,
             [publishActionTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
         }
-        return <PublishError onClose={action('onClose')} status={statuses} publishMode={publishModes.REDEPLOY} />
+        return <PublishError onClose={action('onClose')} status={statuses} publishMode={PublishMode.REDEPLOY} />
     })
     .add('Unpublish', () => {
         const unpublishFreeStatus = transactionStates.STARTED
@@ -256,14 +257,14 @@ story('Product Editor/PublishError')
             [publishActionTypes.UNPUBLISH_FREE]: unpublishFreeStatus,
             [publishActionTypes.UNDEPLOY_CONTRACT_PRODUCT]: undeployPaidStatus,
         }
-        return <PublishError onClose={action('onClose')} status={statuses} publishMode={publishModes.UNPUBLISH} />
+        return <PublishError onClose={action('onClose')} status={statuses} publishMode={PublishMode.UNPUBLISH} />
     })
 story('Product Editor/ReadyToPublishDialog')
     .add('Publish', () => (
         <ReadyToPublishDialog
             onCancel={action('onCancel')}
             onContinue={action('onContinue')}
-            publishMode={publishModes.PUBLISH}
+            publishMode={PublishMode.PUBLISH}
             nativeTokenName="ETH"
         />
     ))
@@ -271,7 +272,7 @@ story('Product Editor/ReadyToPublishDialog')
         <ReadyToPublishDialog
             onCancel={action('onCancel')}
             onContinue={action('onContinue')}
-            publishMode={publishModes.REPUBLISH}
+            publishMode={PublishMode.REPUBLISH}
             nativeTokenName="ETH"
         />
     ))
@@ -279,7 +280,7 @@ story('Product Editor/ReadyToPublishDialog')
         <ReadyToPublishDialog
             onCancel={action('onCancel')}
             onContinue={action('onContinue')}
-            publishMode={publishModes.REDEPLOY}
+            publishMode={PublishMode.REDEPLOY}
             nativeTokenName="ETH"
         />
     ))
@@ -287,7 +288,7 @@ story('Product Editor/ReadyToPublishDialog')
         <ReadyToPublishDialog
             onCancel={action('onCancel')}
             onContinue={action('onContinue')}
-            publishMode={publishModes.UNPUBLISH}
+            publishMode={PublishMode.UNPUBLISH}
             nativeTokenName="ETH"
         />
     ))

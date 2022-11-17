@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import useCopy from '$shared/hooks/useCopy'
+import { PublishMode } from '$mp/containers/EditProductPage/usePendingChanges'
 import routes from '$routes'
 import type { Props } from '.'
 const TranslatedText = styled.p`
@@ -40,11 +41,11 @@ const Copy = styled.div`
     }
 `
 const publishModes = {
-    republish: 'Republish',
-    redeploy: 'Publish',
-    publish: 'Publish',
-    unpublish: '',
-    error: '',
+    [PublishMode.REPUBLISH]: 'Republish',
+    [PublishMode.REDEPLOY]: 'Publish',
+    [PublishMode.PUBLISH]: 'Publish',
+    [PublishMode.UNPUBLISH]: '',
+    [PublishMode.ERROR]: '',
 }
 
 const PublishComplete = ({ onContinue, onClose, publishMode, productId }: Props) => {

@@ -17,7 +17,7 @@ const EditorNav = () => {
     const { state: product } = useEditableState()
     const productRef = useRef()
     productRef.current = product
-    const isNewProduct = useNewProductMode()
+    const { isNew: isNewProduct } = useNewProductMode()
     const [activeSectionId, setActiveSectionId] = useState(undefined)
     const { isValid, isTouched, isPendingChange } = useContext(ValidationContext)
     // lastSectionRef is stored EditControllerContext so it remembers its state when toggling
@@ -199,7 +199,7 @@ const EditorNav = () => {
             ]),
         ]
         return nextSections
-    }, [getStatus, priceStatus, detailsStatus, isDataUnion, sharedSecretStatus, isPaid])
+    }, [getStatus, priceStatus, detailsStatus, isDataUnion, sharedSecretStatus, isPaid, isProductDeployed])
     const sectionWithLinks = useMemo(
         () =>
             sections.map((section) => ({

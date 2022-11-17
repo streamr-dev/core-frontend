@@ -19,7 +19,8 @@ import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import getNativeTokenName from '$shared/utils/nativeToken'
-import usePublish, { publishModes } from './usePublish'
+import { PublishMode } from '$mp/containers/EditProductPage/usePendingChanges'
+import usePublish from './usePublish'
 type Props = {
     product: Product
     api: Record<string, any>
@@ -143,7 +144,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
             showPublishedProduct?: boolean
         } = {}) => {
             api.close({
-                isUnpublish: mode === publishModes.UNPUBLISH,
+                isUnpublish: mode === PublishMode.UNPUBLISH,
                 started,
                 succeeded: allSucceeded,
                 showPublishedProduct,

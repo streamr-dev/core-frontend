@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import type { PublishMode } from '$mp/containers/EditProductPage/usePublish'
+import { PublishMode } from '$mp/containers/EditProductPage/usePendingChanges'
 import '$mp/containers/EditProductPage/usePublish'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
@@ -16,11 +16,11 @@ const StyledPngIcon = styled(PngIcon)`
     margin: 0.5rem 0 2.5rem;
 `
 const publishModes = {
-    publish: 'Publishing',
-    republish: 'Republishing',
-    redeploy: 'Publishing',
-    unpublish: 'Unpublishing',
-    error: '',
+    [PublishMode.REPUBLISH]: 'Republishing',
+    [PublishMode.REDEPLOY]: 'Publishing',
+    [PublishMode.PUBLISH]: 'Publishing',
+    [PublishMode.UNPUBLISH]: 'Unpublishing',
+    [PublishMode.ERROR]: '',
 }
 const actions = {
     updateAdminFee: 'The admin fee failed to update.',
