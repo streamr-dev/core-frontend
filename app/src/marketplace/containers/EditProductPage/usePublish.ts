@@ -23,7 +23,7 @@ import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import { getCustomTokenDecimals } from '$mp/utils/web3'
 import { getPendingChanges, withPendingChanges } from './state'
-import { checkPendingChanges, getNextMode } from './usePendingChanges'
+import { calculatePendingChanges, getNextMode } from './usePendingChanges'
 
 export const actionsTypes = {
     UPDATE_ADMIN_FEE: 'updateAdminFee',
@@ -57,7 +57,8 @@ export default function usePublish() {
             }
 
             const chainId = getChainIdFromApiString(product.chain)
-            // load contract product
+
+            // Load contract product
             let contractProduct: SmartContractProduct
 
             try {
@@ -67,29 +68,30 @@ export default function usePublish() {
                 // it just means that the product wasn't deployed
             }
 
-            let currentAdminFee
+            // Load Data Union owner
             let dataUnionOwner
 
             try {
-                currentAdminFee = await getAdminFee(product.beneficiaryAddress, chainId)
                 dataUnionOwner = await getDataUnionOwner(product.beneficiaryAddress, chainId)
             } catch (e) {
                 // ignore error, assume contract has not been deployed
             }
 
             const { state: productState } = product
-            const pendingChanges = getPendingChanges(product)
-            const productWithPendingChanges = withPendingChanges(product)
-            const { adminFee, pricePerSecond, beneficiaryAddress, priceCurrency, requiresWhitelist, pricingTokenAddress, ...productDataChanges } =
-                pendingChanges || {}
-            const hasAdminFeeChanged = !!currentAdminFee && adminFee && currentAdminFee !== adminFee
-            const hasContractProductChanged = !!contractProduct && isContractProductUpdateRequired(contractProduct, productWithPendingChanges)
-            const hasRequireWhitelistChanged = !!(
-                !!contractProduct &&
-                requiresWhitelist !== undefined &&
-                contractProduct.requiresWhitelist !== requiresWhitelist
-            )
-            const hasPendingChanges = await checkPendingChanges(product, contractProduct, chainId)
+
+            const {
+                hasPendingChanges,
+                hasAdminFeeChanged,
+                hasContractProductChanged,
+                hasRequireWhitelistChanged,
+                adminFee,
+                pricePerSecond,
+                beneficiaryAddress,
+                priceCurrency,
+                requiresWhitelist,
+                pricingTokenAddress,
+                productDataChanges,
+            } = await calculatePendingChanges(product, contractProduct, chainId)
 
             let pricingTokenDecimals: number | BN = 18
             if (pricingTokenAddress || (contractProduct && contractProduct.pricingTokenAddress)) {

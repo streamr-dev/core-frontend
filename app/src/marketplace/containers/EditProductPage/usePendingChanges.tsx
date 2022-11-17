@@ -11,23 +11,37 @@ import { getChainIdFromApiString } from '$shared/utils/chains'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { getPendingChanges, withPendingChanges } from './state'
 
-export const publishModes = {
-    REPUBLISH: 'republish',
+export enum PublishMode {
+    REPUBLISH = 'republish',
     // live product update
-    REDEPLOY: 'redeploy',
+    REDEPLOY = 'redeploy',
     // unpublished, but published at least once
-    PUBLISH: 'publish',
+    PUBLISH = 'publish',
     // unpublished, publish for the first time
-    UNPUBLISH: 'unpublish',
-    ERROR: 'error',
+    UNPUBLISH = 'unpublish',
+    ERROR = 'error',
 }
 
-export async function checkPendingChanges(
+export type PendingChangeResult = {
+    hasPendingChanges: boolean,
+    hasAdminFeeChanged: boolean,
+    hasContractProductChanged: boolean,
+    hasRequireWhitelistChanged: boolean,
+    adminFee: any,
+    pricePerSecond: any,
+    beneficiaryAddress: any,
+    priceCurrency: any,
+    requiresWhitelist: any,
+    pricingTokenAddress: any,
+    productDataChanges: any,
+}
+
+export async function calculatePendingChanges(
     product: Record<string, any>,
     contractProduct: SmartContractProduct,
     chainId: number,
-): Promise<boolean> {
-    let currentAdminFee
+): Promise<PendingChangeResult> {
+    let currentAdminFee: string
 
     try {
         currentAdminFee = await getAdminFee(product.beneficiaryAddress, chainId)
@@ -49,24 +63,36 @@ export async function checkPendingChanges(
     const hasPendingChanges =
         Object.keys(productDataChanges).length > 0 || hasAdminFeeChanged || hasContractProductChanged || hasRequireWhitelistChanged
 
-    return hasPendingChanges
+    return {
+        hasPendingChanges,
+        hasAdminFeeChanged,
+        hasContractProductChanged,
+        hasRequireWhitelistChanged,
+        adminFee,
+        pricePerSecond,
+        beneficiaryAddress,
+        priceCurrency,
+        requiresWhitelist,
+        pricingTokenAddress,
+        productDataChanges,
+    }
 }
 
 export function getNextMode(
     productState: string,
     contractProduct: SmartContractProduct,
     hasPendingChanges: boolean,
-): string {
-    let nextMode
+): PublishMode {
+    let nextMode: PublishMode
 
     // is published and has pending changes?
     if (productState === productStates.DEPLOYED) {
-        nextMode = hasPendingChanges ? publishModes.REPUBLISH : publishModes.UNPUBLISH
+        nextMode = hasPendingChanges ? PublishMode.REPUBLISH : PublishMode.UNPUBLISH
     } else if (productState === productStates.NOT_DEPLOYED) {
-        nextMode = contractProduct ? publishModes.REDEPLOY : publishModes.PUBLISH
+        nextMode = contractProduct ? PublishMode.REDEPLOY : PublishMode.PUBLISH
     } else {
         // product is either being deployed to contract or being undeployed
-        throw new Error('Invalid product state')
+        nextMode = PublishMode.ERROR
     }
 
     return nextMode
@@ -75,7 +101,7 @@ export function getNextMode(
 export default function usePendingChanges() {
     const isMounted = useIsMounted()
     const { state: product } = useEditableState()
-    const [mode, setMode] = useState(null)
+    const [mode, setMode] = useState<PublishMode>(null)
 
     useEffect(() => {
         const load = async () => {
@@ -96,7 +122,7 @@ export default function usePendingChanges() {
             }
 
             const { state: productState } = product
-            const hasPendingChanges = await checkPendingChanges(product, contractProduct, chainId)
+            const { hasPendingChanges } = await calculatePendingChanges(product, contractProduct, chainId)
             const nextMode = getNextMode(productState, contractProduct, hasPendingChanges)
 
             if (isMounted()) {
