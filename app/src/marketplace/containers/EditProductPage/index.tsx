@@ -31,6 +31,7 @@ import PublishModal from './PublishModal'
 import CropImageModal from './CropImageModal'
 import WhitelistEditModal from './WhitelistEditModal'
 import styles from './editProductPage.pcss'
+import usePendingChanges from './usePendingChanges'
 
 const EditProductPage = ({ product }: { product: Product }) => {
     const { isPreview, setIsPreview, save, publish, deployDataUnion, back, validate } = useContext(EditControllerContext)
@@ -41,11 +42,13 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const chainId = getChainIdFromApiString(product.chain)
     const { reset: resetDataUnionSecrets } = useDataUnionSecrets()
     const { updateBeneficiaryAddress } = useEditableProductActions()
+    const { nextMode } = usePendingChanges()
     const { load: loadWhiteWhitelistedAdresses, reset: resetWhiteWhitelistedAdresses } = useWhitelist()
     const { isOpen: isDataUnionDeployDialogOpen } = useModal('dataUnion.DEPLOY')
     const { isOpen: isConfirmSaveDialogOpen } = useModal('confirmSave')
-    const { isOpen: isPublishDialogOpen } = useModal('publish')
+    const { isOpen: isPublishDialogOpen } = useModal('publish') 
     const productId = product.id
+
     // Load categories and streams
     useEffect(() => {
         if (productId && chainId) {

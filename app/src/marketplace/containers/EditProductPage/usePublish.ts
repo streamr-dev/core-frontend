@@ -23,6 +23,8 @@ import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import { getCustomTokenDecimals } from '$mp/utils/web3'
 import { getPendingChanges, withPendingChanges } from './state'
+import { checkPendingChanges, getNextMode } from './usePendingChanges'
+
 export const actionsTypes = {
     UPDATE_ADMIN_FEE: 'updateAdminFee',
     UPDATE_CONTRACT_PRODUCT: 'updateContractProduct',
@@ -87,26 +89,15 @@ export default function usePublish() {
                 requiresWhitelist !== undefined &&
                 contractProduct.requiresWhitelist !== requiresWhitelist
             )
-            const hasPendingChanges =
-                Object.keys(productDataChanges).length > 0 || hasAdminFeeChanged || hasContractProductChanged || hasRequireWhitelistChanged
-            let pricingTokenDecimals: number | BN = 18
+            const hasPendingChanges = await checkPendingChanges(product, contractProduct, chainId)
 
+            let pricingTokenDecimals: number | BN = 18
             if (pricingTokenAddress || (contractProduct && contractProduct.pricingTokenAddress)) {
                 const address = pricingTokenAddress || (contractProduct && contractProduct.pricingTokenAddress)
                 pricingTokenDecimals = await getCustomTokenDecimals(address, chainId)
             }
 
-            let nextMode
-
-            // is published and has pending changes?
-            if (productState === productStates.DEPLOYED) {
-                nextMode = hasPendingChanges ? publishModes.REPUBLISH : publishModes.UNPUBLISH
-            } else if (productState === productStates.NOT_DEPLOYED) {
-                nextMode = contractProduct ? publishModes.REDEPLOY : publishModes.PUBLISH
-            } else {
-                // product is either being deployed to contract or being undeployed
-                throw new Error('Invalid product state')
-            }
+            const nextMode = getNextMode(productState, contractProduct, hasPendingChanges)
 
             const queue = new ActionQueue()
 
