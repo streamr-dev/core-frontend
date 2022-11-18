@@ -39,7 +39,6 @@ export default function useStreamData(
         {
             stream: streamId,
             partition,
-            gapFill: false,
         },
         {
             onMessage(message, metadata) {

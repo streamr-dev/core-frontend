@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { mount } from 'enzyme'
 import useNewProductMode from '../useNewProductMode'
 describe('useNewProductMode', () => {
-    it('returns false if newProduct flag is not defined', () => {
+    it('works when newProduct flag is not defined', () => {
         let result
 
         function Test() {
@@ -16,9 +16,9 @@ describe('useNewProductMode', () => {
                 <Test />
             </MemoryRouter>,
         )
-        expect(result).toBe(false)
+        expect(result.isNew).toBe(false)
     })
-    it('returns true if newProduct flag is defined', () => {
+    it('works when newProduct flag is defined', () => {
         let result
 
         function Test() {
@@ -31,6 +31,36 @@ describe('useNewProductMode', () => {
                 <Test />
             </MemoryRouter>,
         )
-        expect(result).toBe(true)
+        expect(result.isNew).toBe(true)
+    })
+    it('gets dataUnionAddress correctly', () => {
+        let result
+
+        function Test() {
+            result = useNewProductMode()
+            return null
+        }
+
+        mount(
+            <MemoryRouter initialEntries={['/products/1234/edit?newProduct=true&dataUnionAddress=0x123']}>
+                <Test />
+            </MemoryRouter>,
+        )
+        expect(result.dataUnionAddress).toBe('0x123')
+    })
+    it('gets chainId correctly', () => {
+        let result
+
+        function Test() {
+            result = useNewProductMode()
+            return null
+        }
+
+        mount(
+            <MemoryRouter initialEntries={['/products/1234/edit?newProduct=true&dataUnionAddress=0x123&chainId=1337']}>
+                <Test />
+            </MemoryRouter>,
+        )
+        expect(result.chainId).toBe(1337)
     })
 })

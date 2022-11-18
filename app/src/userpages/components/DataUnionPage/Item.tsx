@@ -35,7 +35,9 @@ import { productSchema } from '$shared/modules/entities/schema'
 import { getChainIdFromApiString, formatChainName } from '$shared/utils/chains'
 import { getAddressLink } from '$shared/utils/blockexplorer'
 import PopoverItem from '$shared/components/Popover/PopoverItem'
+import { productTypes } from '$mp/utils/constants'
 import routes from '$routes'
+
 import Management from './Management'
 import ManageJoinRequests from './ManageJoinRequests'
 import ManageMembers from './ManageMembers'
@@ -501,15 +503,30 @@ const Item = ({ product, stats }: Props) => {
                             </Button>
                         </Tooltip>
                     )}
-                    <Tooltip value="Edit product">
-                        <Button
-                            to={routes.products.edit({
-                                id: product.id,
-                            })}
-                        >
-                            <Icon name="pencil" />
-                        </Button>
-                    </Tooltip>
+                    {product.state !== productStates.DETACHED && (
+                        <Tooltip value="Edit product">
+                            <Button
+                                to={routes.products.edit({
+                                    id: product.id,
+                                })}
+                            >
+                                <Icon name="pencil" />
+                            </Button>
+                        </Tooltip>
+                    )}
+                    {product.state === productStates.DETACHED && (
+                        <Tooltip value="Create product">
+                            <Button
+                                to={routes.products.new({
+                                    type: productTypes.DATAUNION,
+                                    dataUnionAddress: dataUnionId,
+                                    chainId,
+                                })}
+                            >
+                                <Icon name="pencil" />
+                            </Button>
+                        </Tooltip>
+                    )}
                     {product.state === productStates.DEPLOYED && (
                         <Tooltip value="View on marketplace">
                             <Button
@@ -521,35 +538,37 @@ const Item = ({ product, stats }: Props) => {
                             </Button>
                         </Tooltip>
                     )}
-                    <Popover
-                        title="Options"
-                        caret={false}
-                        type="meatball"
-                        menuProps={{
-                            right: true,
-                        }}
-                    >
-                        {!dataUnion && (
-                            <PopoverItem
-                                onClick={async () => {
-                                    deploy(product.id)
-                                }}
-                                disabled={loading}
-                            >
-                                Deploy
-                            </PopoverItem>
-                        )}
-                        {!!dataUnion && (
-                            <PopoverItem
-                                onClick={async () => {
-                                    publish(product.id)
-                                }}
-                                disabled={loading}
-                            >
-                                {product.state === productStates.DEPLOYED ? 'Unpublish' : 'Publish'}
-                            </PopoverItem>
-                        )}
-                    </Popover>
+                    {product.state !== productStates.DETACHED && (
+                        <Popover
+                            title="Options"
+                            caret={false}
+                            type="meatball"
+                            menuProps={{
+                                right: true,
+                            }}
+                        >
+                            {!dataUnion && (
+                                <PopoverItem
+                                    onClick={async () => {
+                                        deploy(product.id)
+                                    }}
+                                    disabled={loading}
+                                >
+                                    Deploy
+                                </PopoverItem>
+                            )}
+                            {!!dataUnion && (
+                                <PopoverItem
+                                    onClick={async () => {
+                                        publish(product.id)
+                                    }}
+                                    disabled={loading}
+                                >
+                                    {product.state === productStates.DEPLOYED ? 'Unpublish' : 'Publish'}
+                                </PopoverItem>
+                            )}
+                        </Popover>
+                    )}
                 </Buttons>
             </Header>
             <LoadingIndicator loading={loading} />

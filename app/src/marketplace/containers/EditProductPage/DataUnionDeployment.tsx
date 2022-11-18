@@ -10,6 +10,7 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import { truncate } from '$shared/utils/text'
+import useNewProductMode from '../ProductController/useNewProductMode'
 
 type Props = {
     disabled?: boolean
@@ -67,7 +68,8 @@ const DataUnionDeployment: React.FC<Props> = ({ disabled }: Props) => {
     const currentUser = useSelector(selectUserData)
     const currentUserName = currentUser && currentUser.username
     const { state: product } = useEditableState()
-    const beneficiaryAddress = product && product.beneficiaryAddress
+    const { dataUnionAddress } = useNewProductMode()
+    const beneficiaryAddress = product && product.beneficiaryAddress || dataUnionAddress
     const chainId = product && getChainIdFromApiString(product.chain)
     const { updateExistingDUAddress, updateBeneficiaryAddress } = useEditableProductActions()
     const [selection, setSelection] = useState<DeploymentType>(beneficiaryAddress ? DeploymentType.EXISTING : DeploymentType.NEW)
@@ -81,6 +83,12 @@ const DataUnionDeployment: React.FC<Props> = ({ disabled }: Props) => {
         label: du.name ? `${du.name} (${truncate(du.id)})` : du.id,
         value: du.id,
     })), [ownedDataUnions])
+
+    useEffect(() => {
+        if (dataUnionAddress) {
+            updateExistingDUAddress(dataUnionAddress)
+        }
+    }, [dataUnionAddress, updateExistingDUAddress])
 
     useEffect(() => {
         const load = async () => {

@@ -5,6 +5,7 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Checkbox from '$shared/components/Checkbox'
 import Buttons from '$shared/components/Buttons'
+import { PublishMode } from '$mp/containers/EditProductPage/usePendingChanges'
 import routes from '$routes'
 import type { Props } from '.'
 const Footer = styled.div`
@@ -40,11 +41,11 @@ const StyledLabel = styled(Label)`
     }
 `
 const publishModes = {
-    publish: 'Publish',
-    republish: 'Republish',
-    redeploy: 'Publish',
-    unpublish: '',
-    error: '',
+    [PublishMode.REPUBLISH]: 'Republish',
+    [PublishMode.REDEPLOY]: 'Publish',
+    [PublishMode.PUBLISH]: 'Publish',
+    [PublishMode.UNPUBLISH]: '',
+    [PublishMode.ERROR]: '',
 }
 
 const ReadyToPublishDialog = ({ onContinue, onCancel, publishMode, disabled, nativeTokenName }: Props) => {

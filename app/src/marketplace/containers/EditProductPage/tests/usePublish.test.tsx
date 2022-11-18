@@ -10,7 +10,8 @@ import * as transactionActions from '$mp/modules/transactions/actions'
 import * as productServices from '$mp/modules/product/services'
 import * as web3Utils from '$mp/utils/web3'
 import { transactionStates, transactionTypes } from '$shared/utils/constants'
-import usePublish, { publishModes, actionsTypes } from '../usePublish'
+import { PublishMode } from '../usePendingChanges'
+import usePublish, { actionsTypes } from '../usePublish'
 jest.mock('react-redux', () => ({
     useDispatch: jest.fn().mockImplementation(() => (action) => action),
 }))
@@ -99,7 +100,7 @@ describe('usePublish', () => {
             await act(async () => {
                 result = await publish(product)
             })
-            expect(result.mode).toBe(publishModes.UNPUBLISH)
+            expect(result.mode).toBe(PublishMode.UNPUBLISH)
         })
         it('sets republish mode if there are pending changes', async () => {
             let publish
@@ -132,7 +133,7 @@ describe('usePublish', () => {
             await act(async () => {
                 result = await publish(product)
             })
-            expect(result.mode).toBe(publishModes.REPUBLISH)
+            expect(result.mode).toBe(PublishMode.REPUBLISH)
         })
         it('sets publish mode if not deployed & no contract product', async () => {
             let publish
@@ -162,7 +163,7 @@ describe('usePublish', () => {
             await act(async () => {
                 result = await publish(product)
             })
-            expect(result.mode).toBe(publishModes.PUBLISH)
+            expect(result.mode).toBe(PublishMode.PUBLISH)
         })
         it('sets redeploy mode if not deployed & contract product', async () => {
             let publish
@@ -194,7 +195,7 @@ describe('usePublish', () => {
             await act(async () => {
                 result = await publish(product)
             })
-            expect(result.mode).toBe(publishModes.REDEPLOY)
+            expect(result.mode).toBe(PublishMode.REDEPLOY)
         })
         it('throws an error if unknown product state', async () => {
             let publish
@@ -264,7 +265,7 @@ describe('usePublish', () => {
                     state: 'NOT_DEPLOYED',
                     chain: 'ETHEREUM',
                 })
-                expect(result.mode).toBe(publishModes.PUBLISH)
+                expect(result.mode).toBe(PublishMode.PUBLISH)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([actionsTypes.PUBLISH_FREE])
                 expect(result.queue.needsWeb3()).toBe(false)
@@ -300,7 +301,7 @@ describe('usePublish', () => {
                     state: 'NOT_DEPLOYED',
                     chain: 'ETHEREUM',
                 })
-                expect(result.mode).toBe(publishModes.PUBLISH)
+                expect(result.mode).toBe(PublishMode.PUBLISH)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([actionsTypes.PUBLISH_FREE])
                 expect(result.queue.needsWeb3()).toBe(false)
@@ -343,7 +344,7 @@ describe('usePublish', () => {
                 await act(async () => {
                     result = await publish(product)
                 })
-                expect(result.mode).toBe(publishModes.UNPUBLISH)
+                expect(result.mode).toBe(PublishMode.UNPUBLISH)
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([actionsTypes.UNPUBLISH_FREE])
                 expect(result.queue.needsWeb3()).toBe(false)
                 expect(result.queue.needsOwner()).toStrictEqual([])
@@ -382,7 +383,7 @@ describe('usePublish', () => {
                 await act(async () => {
                     result = await publish(product)
                 })
-                expect(result.mode).toBe(publishModes.UNPUBLISH)
+                expect(result.mode).toBe(PublishMode.UNPUBLISH)
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([actionsTypes.UNPUBLISH_FREE])
                 expect(result.queue.needsWeb3()).toBe(false)
                 expect(result.queue.needsOwner()).toStrictEqual([])
@@ -444,7 +445,7 @@ describe('usePublish', () => {
                 await act(async () => {
                     result = await publish(product)
                 })
-                expect(result.mode).toBe(publishModes.REPUBLISH)
+                expect(result.mode).toBe(PublishMode.REPUBLISH)
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                     actionsTypes.PUBLISH_PENDING_CHANGES,
                 ])
@@ -513,7 +514,7 @@ describe('usePublish', () => {
                 await act(async () => {
                     result = await publish(product)
                 })
-                expect(result.mode).toBe(publishModes.REPUBLISH)
+                expect(result.mode).toBe(PublishMode.REPUBLISH)
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                     actionsTypes.PUBLISH_PENDING_CHANGES,
                 ])
@@ -572,7 +573,7 @@ describe('usePublish', () => {
                     minimumSubscriptionInSeconds: '0',
                     chain: 'ETHEREUM',
                 })
-                expect(result.mode).toBe(publishModes.PUBLISH)
+                expect(result.mode).toBe(PublishMode.PUBLISH)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                     actionsTypes.CREATE_CONTRACT_PRODUCT,
@@ -657,7 +658,7 @@ describe('usePublish', () => {
                         pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76', // DATA
                     },
                 })
-                expect(result.mode).toBe(publishModes.PUBLISH)
+                expect(result.mode).toBe(PublishMode.PUBLISH)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                     actionsTypes.CREATE_CONTRACT_PRODUCT,
@@ -749,7 +750,7 @@ describe('usePublish', () => {
                     minimumSubscriptionInSeconds: '0',
                     chain: 'ETHEREUM',
                 })
-                expect(result.mode).toBe(publishModes.UNPUBLISH)
+                expect(result.mode).toBe(PublishMode.UNPUBLISH)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                     actionsTypes.UNDEPLOY_CONTRACT_PRODUCT,
@@ -828,7 +829,7 @@ describe('usePublish', () => {
                     minimumSubscriptionInSeconds: '0',
                     chain: 'ETHEREUM',
                 })
-                expect(result.mode).toBe(publishModes.REDEPLOY)
+                expect(result.mode).toBe(PublishMode.REDEPLOY)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([actionsTypes.REDEPLOY_PAID])
                 expect(result.queue.needsWeb3()).toBe(true)
@@ -904,7 +905,7 @@ describe('usePublish', () => {
                     chain: 'ETHEREUM',
                 }
                 const result = await publish(product)
-                expect(result.mode).toBe(publishModes.REDEPLOY)
+                expect(result.mode).toBe(PublishMode.REDEPLOY)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                     actionsTypes.UPDATE_CONTRACT_PRODUCT,
@@ -991,7 +992,7 @@ describe('usePublish', () => {
                     chain: 'ETHEREUM',
                 }
                 const result = await publish(product)
-                expect(result.mode).toBe(publishModes.REDEPLOY)
+                expect(result.mode).toBe(PublishMode.REDEPLOY)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                     actionsTypes.UPDATE_CONTRACT_PRODUCT,
@@ -1082,7 +1083,7 @@ describe('usePublish', () => {
                     },
                     chain: 'ETHEREUM',
                 })
-                expect(result.mode).toBe(publishModes.REPUBLISH)
+                expect(result.mode).toBe(PublishMode.REPUBLISH)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                     actionsTypes.PUBLISH_PENDING_CHANGES,
@@ -1202,7 +1203,7 @@ describe('usePublish', () => {
                     chain: 'ETHEREUM',
                 }
                 const result = await publish(product)
-                expect(result.mode).toBe(publishModes.REPUBLISH)
+                expect(result.mode).toBe(PublishMode.REPUBLISH)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                     actionsTypes.PUBLISH_PENDING_CHANGES,
@@ -1288,7 +1289,7 @@ describe('usePublish', () => {
                     type: 'DATAUNION',
                     chain: 'ETHEREUM',
                 })
-                expect(result.mode).toBe(publishModes.PUBLISH)
+                expect(result.mode).toBe(PublishMode.PUBLISH)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                     actionsTypes.CREATE_CONTRACT_PRODUCT,
@@ -1379,7 +1380,7 @@ describe('usePublish', () => {
                     type: 'DATAUNION',
                     chain: 'ETHEREUM',
                 })
-                expect(result.mode).toBe(publishModes.UNPUBLISH)
+                expect(result.mode).toBe(PublishMode.UNPUBLISH)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                     actionsTypes.UNDEPLOY_CONTRACT_PRODUCT,
@@ -1467,7 +1468,7 @@ describe('usePublish', () => {
                     chain: 'ETHEREUM',
                 }
                 const result = await publish(product)
-                expect(result.mode).toBe(publishModes.REDEPLOY)
+                expect(result.mode).toBe(PublishMode.REDEPLOY)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                     actionsTypes.UPDATE_CONTRACT_PRODUCT,
@@ -1569,7 +1570,7 @@ describe('usePublish', () => {
                     chain: 'ETHEREUM',
                 }
                 const result = await publish(product)
-                expect(result.mode).toBe(publishModes.REDEPLOY)
+                expect(result.mode).toBe(PublishMode.REDEPLOY)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                     actionsTypes.UPDATE_ADMIN_FEE,
@@ -1691,7 +1692,7 @@ describe('usePublish', () => {
                     chain: 'ETHEREUM',
                 }
                 const result = await publish(product)
-                expect(result.mode).toBe(publishModes.REPUBLISH)
+                expect(result.mode).toBe(PublishMode.REPUBLISH)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                     actionsTypes.PUBLISH_PENDING_CHANGES,
@@ -1828,7 +1829,7 @@ describe('usePublish', () => {
                     chain: 'ETHEREUM',
                 }
                 const result = await publish(product)
-                expect(result.mode).toBe(publishModes.REPUBLISH)
+                expect(result.mode).toBe(PublishMode.REPUBLISH)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                     actionsTypes.PUBLISH_PENDING_CHANGES,

@@ -1,6 +1,5 @@
 import React from 'react'
-import type { PublishMode } from '$mp/containers/EditProductPage/usePublish'
-import { publishModes } from '$mp/containers/EditProductPage/usePublish'
+import { PublishMode } from '$mp/containers/EditProductPage/usePendingChanges'
 import ReadyToPublish from './ReadyToPublish'
 import ReadyToUnpublish from './ReadyToUnpublish'
 
@@ -16,7 +15,7 @@ export type Props = BaseProps & {
 }
 
 const ReadyToPublishDialogWrap = ({ publishMode, onCancel, onContinue, disabled, nativeTokenName }: Props) => {
-    if (publishMode === publishModes.UNPUBLISH) {
+    if (publishMode === PublishMode.UNPUBLISH) {
         return <ReadyToUnpublish onContinue={onContinue} onCancel={onCancel} disabled={disabled} />
     }
 

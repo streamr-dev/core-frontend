@@ -1,6 +1,5 @@
 import React from 'react'
-import type { PublishMode } from '$mp/containers/EditProductPage/usePublish'
-import { publishModes } from '$mp/containers/EditProductPage/usePublish'
+import { PublishMode } from '$mp/containers/EditProductPage/usePendingChanges'
 import type { ProductId } from '$mp/types/product-types'
 import PublishComplete from './PublishComplete'
 import UnpublishComplete from './UnpublishComplete'
@@ -16,7 +15,7 @@ export type Props = BaseProps & {
 }
 
 const PublishCompleteWrap = ({ publishMode, onClose, onContinue, productId }: Props) => {
-    if (publishMode === publishModes.UNPUBLISH) {
+    if (publishMode === PublishMode.UNPUBLISH) {
         return <UnpublishComplete onClose={onClose} />
     }
 
