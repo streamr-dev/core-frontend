@@ -38,7 +38,7 @@ const UserpagesRouter = () => [
         key="publicStreamPreviewPageRedir"
     />,
     <Route exact path={routes.streams.preview()} component={StreamInspectorPage} key="streamPreviewPage" />,
-    <Route exact path={routes.streams.index()} component={StreamListViewAuth} key="StreamListView" />,
+    // <Route exact path={routes.streams.index()} component={StreamListViewAuth} key="StreamListView" />,
     <Route exact path={routes.transactions()} component={TransactionListAuth} key="TransactionList" />,
     <Route exact path={routes.subscriptions()} component={PurchasesPageAuth} key="PurchasesPage" />,
     <Route exact path={routes.products.index()} component={ProductsPageAuth} key="ProductsPage" />,
