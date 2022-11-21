@@ -12,10 +12,10 @@ const AccountsBalance: FunctionComponent = () => {
     const { balances } = useBalances()
     const { ethBalance, dataBalance } = useMemo(
         () => ({
-            ethBalance: BN(balances[BalanceType.ETH] || '0')
+            ethBalance: new BN(balances[BalanceType.ETH] || '0')
                 .decimalPlaces(4)
                 .toString(),
-            dataBalance: BN(balances[BalanceType.DATA] || '0')
+            dataBalance: new BN(balances[BalanceType.DATA] || '0')
                 .decimalPlaces(4)
                 .toString(),
         }),

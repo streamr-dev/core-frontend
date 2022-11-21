@@ -125,7 +125,7 @@ describe('Nav.Wide', () => {
                     </Provider>
                 </MemoryRouter>,
             )
-            expect(el.find('UnstyledAvatarImage').exists()).toBe(true)
+            expect(el.find('Avatar').exists()).toBe(true)
         })
     })
 })
