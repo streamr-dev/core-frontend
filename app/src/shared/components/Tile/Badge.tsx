@@ -31,7 +31,15 @@ const SingleBadge = styled.div`
         margin-left: 8px;
     }
 `
-const BadgeContainer = styled.div<HTMLDivElement & {children: (ReactNode | ReactNode[])}>`
+type BadgeContainerProps = {
+    children: ReactNode
+    top?: boolean
+    bottom?: boolean
+    left?: boolean
+    right?: boolean
+}
+
+const BadgeContainer = styled.div<BadgeContainerProps>`
     align-items: center;
     color: white !important;
     display: flex;
@@ -104,7 +112,11 @@ const BadgeContainer = styled.div<HTMLDivElement & {children: (ReactNode | React
     }
 `
 const Badge = styled(BadgeContainer)``
-const StyledChainBadge = styled(Badge)<HTMLDivElement & {children: (ReactNode | ReactNode[])}>`
+
+type StyledChainBadgeProps = {
+    children: ReactNode
+}
+const StyledChainBadge = styled(Badge)<StyledChainBadgeProps>`
     font-size: 18px;
     line-height: 18px;
     background-color: transparent;
@@ -118,7 +130,7 @@ const StyledChainBadge = styled(Badge)<HTMLDivElement & {children: (ReactNode | 
         margin-left: 8px;
     }
 `
-const Spinner = styled(UnstyledSpinner)<UnstyledSpinner['props']>`
+const Spinner = styled(UnstyledSpinner)`
     height: 10px;
     min-height: 0 !important;
     min-width: 0 !important;
@@ -135,11 +147,9 @@ const DeployingBadge = (props) => (
 )
 
 type DataUnionBadgeProps = {
-    memberCount?: any
+    memberCount?: number
     linkTo?: string
     linkHref?: string
-    top?: boolean
-    left?: boolean
 }
 
 const DataUnionBadge = ({ memberCount, linkTo, linkHref, ...props }: DataUnionBadgeProps) => (
@@ -187,7 +197,7 @@ const IconBadge = styled(UnstyledIconBadge)`
     }
 `
 
-const BadgeLink = ({ left, top, bottom, right, ...props }) => <Link {...props} />
+const BadgeLink = ({ ...props }) => <Link {...props} />
 
 export { DataUnionBadge, IconBadge, DeployingBadge, ChainBadge, SharedBadge, SharedTheme, BadgeLink }
 export default Badge
