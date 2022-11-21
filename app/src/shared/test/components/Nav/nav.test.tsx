@@ -71,6 +71,10 @@ describe('Nav.Wide', () => {
                         id: '1',
                         username: 'tester1@streamr.com',
                     },
+                    balances: {
+                        ETH: 1,
+                        DATA: 1,
+                    },
                 },
             }
             const el = mount(
@@ -115,6 +119,10 @@ describe('Nav.Wide', () => {
                     user: {
                         id: '1',
                         username: '0x9B3E47C99f06f49724F8527ED493d253d83BeCfC',
+                    },
+                    balances: {
+                        ETH: 1,
+                        DATA: 1,
                     },
                 },
             }
