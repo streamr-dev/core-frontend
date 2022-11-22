@@ -9,7 +9,7 @@ import Footer from '$shared/components/Layout/Footer'
 import useModal from '$shared/hooks/useModal'
 import CreateProductModal from '$mp/containers/CreateProductModal'
 import type { Filter, ProjectList, SearchFilter } from '$mp/types/project-types'
-import { getProducts, getProductsDebounced, updateFilter, clearFilters } from '$mp/modules/productList/actions'
+import { getProducts, getProductsDebounced, updateFilter, clearFilters, updateProjectsAuthorFilter } from '$mp/modules/productList/actions'
 import { getCategories } from '$mp/modules/categories/actions'
 import { selectAllCategories } from '$mp/modules/categories/selectors'
 import useAllDataUnionStats from '$mp/modules/dataUnion/hooks/useAllDataUnionStats'
@@ -22,6 +22,7 @@ import {
 } from '$mp/modules/productList/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useContractProducts from '$shared/hooks/useContractProducts'
+import { isAuthenticated } from '$shared/modules/user/selectors'
 import styles from './projects.pcss'
 
 const ProjectsPage: FunctionComponent = () => {
@@ -31,6 +32,7 @@ const ProjectsPage: FunctionComponent = () => {
     const selectedFilter = useSelector(selectFilter)
     const isFetching = useSelector(selectFetchingProductList)
     const hasMoreSearchResults = useSelector(selectHasMoreSearchResults)
+    const isUserAuthenticated = useSelector(isAuthenticated)
     const dispatch = useDispatch()
     const isMounted = useIsMounted()
     const productsRef = useRef<ProjectList>()
@@ -83,6 +85,24 @@ const ProjectsPage: FunctionComponent = () => {
         },
         [dispatch, isMounted, loadDataUnionStats, loadProductsFromContract],
     )
+
+    const onFilterByAuthorChange = useCallback((myProjects: boolean): void => {
+        dispatch(
+            updateProjectsAuthorFilter(myProjects),
+        )
+        dispatch(
+            getProductsDebounced({
+                replace: true,
+                onSuccess: (productIds) => {
+                    if (isMounted()) {
+                        loadDataUnionStats(productIds)
+                        loadProductsFromContract()
+                    }
+                },
+            }),
+        )
+    }, [dispatch, isMounted, loadDataUnionStats, loadProductsFromContract])
+
     const clearFiltersAndReloadProducts = useCallback(() => {
         dispatch(clearFilters())
         dispatch(getProducts(true)).then((productIds) => {
@@ -118,6 +138,8 @@ const ProjectsPage: FunctionComponent = () => {
                 onFilterChange={onFilterChange}
                 onSearchChange={onSearchChange}
                 onCreateProject={() => createProductModal.open()}
+                onFilterByAuthorChange={onFilterByAuthorChange}
+                isUserAuthenticated={isUserAuthenticated}
             />
             <CreateProductModal />
             <ProjectsContainer fluid>

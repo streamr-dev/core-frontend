@@ -17,3 +17,5 @@ export type FilterAction = PayloadAction<{
     filter: Filter
 }>
 export type FilterActionCreator = (filter: Filter) => FilterAction
+export type ProjectsAuthorFilterAction = PayloadAction<{onlyMyProjects: boolean}>
+export type ProjectsAuthorFilterActionCreator = (onlyMyProjects: boolean) => ProjectsAuthorFilterAction

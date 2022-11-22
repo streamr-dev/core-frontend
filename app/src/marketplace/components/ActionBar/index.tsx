@@ -24,6 +24,8 @@ export type Props = {
     onFilterChange: (filter: Filter) => void
     onSearchChange: (search: SearchFilter) => void
     onCreateProject: () => void
+    onFilterByAuthorChange: (myProjects: boolean) => void
+    isUserAuthenticated: boolean
 }
 
 const UnstyledActionBar = ({
@@ -32,6 +34,8 @@ const UnstyledActionBar = ({
     onCreateProject,
     onFilterChange: onFilterChangeProp,
     onSearchChange: onSearchChangeProp,
+    onFilterByAuthorChange,
+    isUserAuthenticated,
     ...props
 }: Props) => {
     const { api: filterModal } = useModal('marketplace.filter')
@@ -84,7 +88,7 @@ const UnstyledActionBar = ({
     const { categories: category, type } = filter
 
     const onTabFilterChange = (value: string): void => {
-        // TODO implement
+        onFilterByAuthorChange(value === 'your_projects')
     }
 
     const handleMobileFilterChange = (filters: Record<string, string>): void => {
@@ -109,8 +113,8 @@ const UnstyledActionBar = ({
                                 {
                                     label: 'Your projects',
                                     value: 'your_projects',
-                                    disabled: true,
-                                    disabledReason: "This feature will be implemented soon"
+                                    disabled: !isUserAuthenticated,
+                                    disabledReason: 'You need to be logged in to view your projects'
                                 }
                             ]
                         }

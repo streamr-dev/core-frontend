@@ -6,10 +6,23 @@ import { updateEntities } from '$shared/modules/entities/actions'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
 import type { Filter, ProjectIdList } from '../../types/project-types'
 import type { StoreState } from '../../types/store-state'
-import { selectFilter, selectPageSize, selectOffset } from './selectors'
-import { GET_PRODUCTS_REQUEST, GET_PRODUCTS_SUCCESS, GET_PRODUCTS_FAILURE, UPDATE_FILTER, CLEAR_FILTERS, CLEAR_PRODUCT_LIST } from './constants'
+import { selectFilter, selectPageSize, selectOffset, selectProjectsAuthorFilter } from './selectors'
+import {
+    GET_PRODUCTS_REQUEST,
+    GET_PRODUCTS_SUCCESS,
+    GET_PRODUCTS_FAILURE,
+    UPDATE_FILTER,
+    CLEAR_FILTERS,
+    CLEAR_PRODUCT_LIST,
+    UPDATE_PROJECTS_AUTHOR_FILTER
+} from './constants'
 import * as api from './services'
-import type { ProductsActionCreator, ProductsErrorActionCreator, FilterActionCreator } from './types'
+import type {
+    ProductsActionCreator,
+    ProductsErrorActionCreator,
+    FilterActionCreator,
+    ProjectsAuthorFilterActionCreator
+} from './types'
 const getProductsRequest: ReduxActionCreator = createAction(GET_PRODUCTS_REQUEST)
 const getProductsSuccess: ProductsActionCreator = createAction(GET_PRODUCTS_SUCCESS, (products: ProjectIdList, hasMore: boolean) => ({
     products,
@@ -20,10 +33,15 @@ const getProductsFailure: ProductsErrorActionCreator = createAction(GET_PRODUCTS
 }))
 const clearProductList: ReduxActionCreator = createAction(CLEAR_PRODUCT_LIST)
 
-const doGetProducts = (replace: boolean | null | undefined = false, dispatch: (...args: Array<any>) => any, getState: () => StoreState) => {
+const doGetProducts = (
+    replace: boolean | null | undefined = false,
+    dispatch: (...args: Array<any>) => any,
+    getState: () => StoreState,
+) => {
     const state = getState()
     const filter = selectFilter(state)
     const pageSize = selectPageSize(state)
+    const projectsAuthorFilter =selectProjectsAuthorFilter(state)
     let offset = selectOffset(state)
 
     // If we are replacing, reset the offset before API call
@@ -32,7 +50,7 @@ const doGetProducts = (replace: boolean | null | undefined = false, dispatch: (.
     }
 
     dispatch(getProductsRequest())
-    return api.getProducts(filter, pageSize, offset).then(
+    return api.getProducts(filter, pageSize, offset, projectsAuthorFilter).then(
         (data) => {
             const { result, entities } = normalize(data.products, productsSchema)
 
@@ -74,3 +92,5 @@ export const updateFilter: FilterActionCreator = createAction(UPDATE_FILTER, (fi
     filter,
 }))
 export const clearFilters: ReduxActionCreator = createAction(CLEAR_FILTERS)
+export const updateProjectsAuthorFilter: ProjectsAuthorFilterActionCreator
+    = createAction(UPDATE_PROJECTS_AUTHOR_FILTER, (onlyMyProjects: boolean) => ({onlyMyProjects}))

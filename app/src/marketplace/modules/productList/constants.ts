@@ -4,3 +4,4 @@ export const GET_PRODUCTS_FAILURE = 'marketplace/productList/GET_PRODUCTS_FAILUR
 export const UPDATE_FILTER = 'marketplace/productList/UPDATE_FILTER'
 export const CLEAR_FILTERS = 'marketplace/productList/CLEAR_FILTERS'
 export const CLEAR_PRODUCT_LIST = 'marketplace/productList/CLEAR_PRODUCT_LIST'
+export const UPDATE_PROJECTS_AUTHOR_FILTER = 'marketplace/productList/UPDATE_PROJECTS_AUTHOR_FILTER'

@@ -5,9 +5,9 @@ import { Row, Container as RsContainer, Col } from 'reactstrap'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { MarketplaceProductTile as UnstyledMarketplaceProductTile } from '$shared/components/Tile'
 import { MD, REGULAR, DESKTOP, COLORS } from '$shared/utils/styled'
+import Button from '$shared/components/Button'
 import type { ProjectList } from '../../types/project-types'
 import ProductPageSpinner from '../ProductPageSpinner'
-import LoadMore from '../LoadMore'
 import Error from '../Error'
 import { getErrorView, getCols } from './settings'
 import styles from './projects.pcss'
@@ -64,12 +64,17 @@ export const ProjectsHeader = styled.h3`
     }
 `
 
+export const LoadMoreButton = styled(Button)`
+  display: block !important;
+  margin: 130px auto 80px;
+`
+
 const UnstyledProjects = ({ projects, type, error, isFetching, loadProducts, hasMoreSearchResults, header, ...props }: OwnProps) => (
     <div {...props}>
         {header && <ProjectsHeader>{header}</ProjectsHeader>}
         <Error source={error} />
         {isFetching || projects.length > 0 ? listProjects(projects, getCols(type), isFetching) : getErrorView(type)}
-        {loadProducts && !isFetching && <LoadMore onClick={loadProducts} hasMoreSearchResults={!!hasMoreSearchResults} />}
+        {loadProducts && !isFetching && hasMoreSearchResults && <LoadMoreButton onClick={loadProducts} kind={'primary2'}>Load more</LoadMoreButton>}
         {isFetching && <ProductPageSpinner className={styles.spinner} />}
     </div>
 )

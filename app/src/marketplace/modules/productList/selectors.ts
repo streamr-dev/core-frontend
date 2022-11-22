@@ -5,7 +5,7 @@ import type { ErrorInUi } from '$shared/types/common-types'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { productsSchema } from '$shared/modules/entities/schema'
 import type { ProjectIdList, ProjectList, Filter } from '../../types/project-types'
-import type { ProductListState, StoreState } from '../../types/store-state'
+import type { ProductListState, ProjectAuthor, StoreState } from '../../types/store-state'
 
 const selectProductListState = (state: StoreState): ProductListState => state.productList
 
@@ -41,4 +41,8 @@ export const selectOffset: (arg0: StoreState) => number = createSelector(
 export const selectHasMoreSearchResults: (arg0: StoreState) => boolean = createSelector(
     selectProductListState,
     (subState: ProductListState): boolean => !!subState.hasMoreSearchResults,
+)
+export const selectProjectsAuthorFilter: (state: StoreState) => ProjectAuthor = createSelector(
+    selectProductListState,
+    (subState: ProductListState): ProjectAuthor => subState.projectAuthor
 )

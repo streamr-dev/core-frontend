@@ -88,4 +88,11 @@ describe('productList - reducer', () => {
         })
         expect(reducerState).toStrictEqual(expectedState)
     })
+
+    it('updates the projectAuthor filter', () => {
+        const mockState: ProductListState = {...initialState}
+        const expectedState: ProductListState = {...initialState, projectAuthor: 'currentUser'}
+        const reducerState = reducer(mockState, {type: constants.UPDATE_PROJECTS_AUTHOR_FILTER, payload: {onlyMyProjects: true}})
+        expect(reducerState).toStrictEqual(expectedState)
+    })
 })

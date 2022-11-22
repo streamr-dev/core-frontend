@@ -18,7 +18,8 @@ export type ProductListState = {
     error: ErrorInUi | null | undefined
     pageSize: number
     offset: number
-    hasMoreSearchResults: boolean | null | undefined
+    hasMoreSearchResults: boolean | null | undefined,
+    projectAuthor: ProjectAuthor
 }
 // my products
 export type MyProductListState = {
@@ -132,3 +133,5 @@ export type StoreState = {
     web3: Web3State
     transactions: TransactionsState
 }
+
+export type ProjectAuthor = 'currentUser' | 'all'
