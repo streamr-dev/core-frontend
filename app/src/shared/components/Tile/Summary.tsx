@@ -1,39 +1,52 @@
-import type { Node } from 'react'
+import type { ReactNode } from 'react'
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import Skeleton from '$shared/components/Skeleton'
-import { MEDIUM } from '$shared/utils/styled'
+import {MEDIUM, REGULAR, MD} from '$shared/utils/styled'
 const Name = styled.div``
 const Secondary = styled.div`
-    font-size: 12px;
+    font-size: 16px;
+    font-weight: ${REGULAR};
 `
 const Description = styled(Secondary)`
-    color: #a3a3a3;
+    color: #323232;
     overflow-x: hidden;
     text-overflow: ellipsis;
+    font-weight: ${REGULAR};
+    padding-top: 8px;
 `
 const Label = styled(Secondary)`
     text-align: right;
 `
-const Root = styled.div`
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-gap: 0.5em;
+type Root = {
+    label?: ReactNode
+}
+const Root = styled.div<Root>`
     color: #323232;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: ${MEDIUM};
-    line-height: 20px;
-    padding-top: 8px;
+    line-height: 24px;
+    padding-top: 16px;
+
+  ${({label}) => label && css`
+      display: grid;
+      grid-template-columns: auto auto;
+      grid-gap: 0.5em;
+    `};
+
+    @media (min-width: ${MD}px) {
+      padding-top: 24px;
+    }
 `
 type Props = {
-    label?: Node
+    label?: ReactNode
     name: string
     skeletonize?: boolean
     description?: string | false
 }
 
 const Summary = ({ name, description, label, skeletonize, ...props }: Props) => (
-    <Root {...props}>
+    <Root {...props} label={label}>
         <div>
             <Name>
                 <Skeleton disabled={!skeletonize}>{name}</Skeleton>

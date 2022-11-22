@@ -3,11 +3,12 @@ import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
 import { action } from '@storybook/addon-actions'
 import sample from './sample.stories.png'
-import Badge, { DeployingBadge, DataUnionBadge, SharedBadge, ChainBadge } from './Badge'
+import Badge, { DeployingBadge, DataUnionBadge, SharedBadge, ChainBadge, BadgeLink } from './Badge'
 import Grid from './Grid'
 import Summary from './Summary'
 import Menu, { MenuItem } from './Menu'
-import Tile, { touchedAgo, PurchaseTile } from './'
+import Tile, {touchedAgo, PurchaseTile, TileImageContainer, TileThumbnail} from './'
+
 const stories = storiesOf('Shared/Tile', module)
     .addDecorator(
         styles({
@@ -17,29 +18,29 @@ const stories = storiesOf('Shared/Tile', module)
     )
 stories.add('placeholder only', () => (
     <Grid>
-        <Tile.ImageContainer autoSize>
-            <Tile.Thumbnail src="" />
-        </Tile.ImageContainer>
+        <TileImageContainer autoSize>
+            <TileThumbnail src="" />
+        </TileImageContainer>
     </Grid>
 ))
 stories.add('with sample image', () => (
     <Grid>
         <Tile>
-            <Tile.ImageContainer autoSize>
-                <Tile.Thumbnail src={sample} />
-            </Tile.ImageContainer>
+            <TileImageContainer autoSize>
+                <TileThumbnail src={sample} />
+            </TileImageContainer>
         </Tile>
     </Grid>
 ))
 stories.add('with sample image and badge', () => (
     <Grid>
         <Tile>
-            <Tile.ImageContainer autoSize>
-                <Tile.Thumbnail src={sample} />
+            <TileImageContainer autoSize>
+                <TileThumbnail src={sample} />
                 <DataUnionBadge top left memberCount={16} linkHref="http://google.com" />
                 <DeployingBadge bottom right />
                 <SharedBadge bottom left />
-            </Tile.ImageContainer>
+            </TileImageContainer>
         </Tile>
     </Grid>
 ))
@@ -53,7 +54,7 @@ stories.add('fixed thumbnail height', () => (
                 <MenuItem>Item #4</MenuItem>
                 <MenuItem>Item #5</MenuItem>
             </Menu>
-            <Tile.ImageContainer>
+            <TileImageContainer>
                 <a
                     href="/resource/1403"
                     onClick={(e) => {
@@ -61,13 +62,13 @@ stories.add('fixed thumbnail height', () => (
                         action('Navigate!')()
                     }}
                 >
-                    <Tile.ImageContainer height="144px">
-                        <Tile.Thumbnail skeletonize={true} src={sample} />
-                    </Tile.ImageContainer>
+                    <TileImageContainer height="144px">
+                        <TileThumbnail skeletonize={true} src={sample} />
+                    </TileImageContainer>
                 </a>
                 <DataUnionBadge top left memberCount={16} />
                 <DeployingBadge bottom right />
-            </Tile.ImageContainer>
+            </TileImageContainer>
         </Tile>
     </Grid>
 ))
@@ -81,7 +82,7 @@ stories.add('square thumbnails', () => (
                 <MenuItem>Item #4</MenuItem>
                 <MenuItem>Item #5</MenuItem>
             </Menu>
-            <Tile.ImageContainer>
+            <TileImageContainer>
                 <a
                     href="/resource/1403"
                     onClick={(e) => {
@@ -89,13 +90,13 @@ stories.add('square thumbnails', () => (
                         action('Navigate!')()
                     }}
                 >
-                    <Tile.ImageContainer ratio="1:1">
-                        <Tile.Thumbnail skeletonize={true} src={sample} />
-                    </Tile.ImageContainer>
+                    <TileImageContainer>
+                        <TileThumbnail skeletonize={true} src={sample} />
+                    </TileImageContainer>
                 </a>
                 <DataUnionBadge top left memberCount={16} />
                 <DeployingBadge bottom right />
-            </Tile.ImageContainer>
+            </TileImageContainer>
         </Tile>
     </Grid>
 ))
@@ -109,7 +110,7 @@ stories.add('with Data Union badge being a link', () => (
                 <MenuItem>Item #4</MenuItem>
                 <MenuItem>Item #5</MenuItem>
             </Menu>
-            <Tile.ImageContainer>
+            <TileImageContainer>
                 <a
                     href="/resource/1403"
                     onClick={(e) => {
@@ -117,21 +118,21 @@ stories.add('with Data Union badge being a link', () => (
                         action('Navigate!')()
                     }}
                 >
-                    <Tile.ImageContainer autoSize>
-                        <Tile.Thumbnail skeletonize={true} src={sample} />
-                    </Tile.ImageContainer>
+                    <TileImageContainer autoSize>
+                        <TileThumbnail skeletonize={true} src={sample} />
+                    </TileImageContainer>
                 </a>
                 <DataUnionBadge
                     top
                     left
-                    as={Badge.Link}
+                    as={BadgeLink}
                     href="https://google.com/"
                     rel="noopener noreferrer"
                     target="_blank"
                     memberCount={16}
                 />
                 <ChainBadge bottom left chainId={1} chainName="Ethereum" />
-            </Tile.ImageContainer>
+            </TileImageContainer>
         </Tile>
     </Grid>
 ))
@@ -157,9 +158,9 @@ stories.add('elastic grid', () => (
                             action('Navigate!')()
                         }}
                     >
-                        <Tile.ImageContainer autoSize>
-                            <Tile.Thumbnail skeletonize={true} src={sample} />
-                        </Tile.ImageContainer>
+                        <TileImageContainer autoSize>
+                            <TileThumbnail skeletonize={true} src={sample} />
+                        </TileImageContainer>
                         <Summary
                             skeletonize={true}
                             name="Helsinki Tram Network GPS"

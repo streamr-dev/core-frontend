@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {FunctionComponent} from 'react'
 import classNames from 'classnames'
 import styles from './spinner.pcss'
 export type SpinnerSize = 'small' | 'large'
@@ -10,15 +10,11 @@ type Props = {
     containerClassname?: string
 }
 
-const Spinner = ({ size, color, className, containerClassname }: Props) => (
+const Spinner: FunctionComponent<Props> = ({ size = 'small', color = 'green', className, containerClassname }: Props) => (
     <div className={classNames(styles.container, containerClassname)}>
         <span className={classNames(className, styles[size], styles.spinner, styles[color])} />
         <span className={styles.screenReaderText}>Loading...</span>
     </div>
 )
 
-Spinner.defaultProps = {
-    size: 'small',
-    color: 'green',
-}
 export default Spinner
