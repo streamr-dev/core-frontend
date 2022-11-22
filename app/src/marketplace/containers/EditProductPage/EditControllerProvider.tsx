@@ -76,7 +76,7 @@ function useEditController(product: Project) {
 
     useEffect(() => {
         const loadDU = async () => {
-            if (nextAddress) {
+            if (isDataUnionProduct(productRef.current) && nextAddress) {
                 const du = await getDataUnionObject(nextAddress, chainId)
                 const stats = await du.getStats()
                 setDataUnionStats(stats)

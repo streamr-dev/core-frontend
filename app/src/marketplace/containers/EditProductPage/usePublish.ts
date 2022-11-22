@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux'
 import BN from 'bignumber.js'
 import { useClient } from 'streamr-client-react'
 import type { Project, SmartContractProduct } from '$mp/types/project-types'
-import { projectStates, transactionStates, transactionTypes } from '$shared/utils/constants'
+import { transactionStates, transactionTypes } from '$shared/utils/constants'
 import {
     getProductFromContract,
     createContractProduct,
@@ -14,15 +14,15 @@ import {
     setRequiresWhitelist,
 } from '$mp/modules/contractProduct/services'
 import { putProduct, postUndeployFree, postSetUndeploying, postDeployFree, postSetDeploying } from '$mp/modules/product/services'
-import { getDataUnionOwner, getAdminFee, setAdminFee } from '$mp/modules/dataUnion/services'
-import { isContractProductUpdateRequired } from '$mp/utils/smartContract'
+import { getDataUnionOwner, setAdminFee } from '$mp/modules/dataUnion/services'
 import ActionQueue from '$mp/utils/actionQueue'
 import { isPaidProduct } from '$mp/utils/product'
 import { addTransaction } from '$mp/modules/transactions/actions'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import { getCustomTokenDecimals } from '$mp/utils/web3'
-import { getPendingChanges, withPendingChanges } from './state'
+import { calculatePendingChanges, getNextMode, PublishMode } from './usePendingChanges'
+
 export const actionsTypes = {
     UPDATE_ADMIN_FEE: 'updateAdminFee',
     UPDATE_CONTRACT_PRODUCT: 'updateContractProduct',
@@ -34,17 +34,7 @@ export const actionsTypes = {
     PUBLISH_PENDING_CHANGES: 'publishPendingChanges',
     SET_REQUIRES_WHITELIST: 'setRequiresWhitelist',
 }
-export const publishModes = {
-    REPUBLISH: 'republish',
-    // live product update
-    REDEPLOY: 'redeploy',
-    // unpublished, but published at least once
-    PUBLISH: 'publish',
-    // unpublished, publish for the first time
-    UNPUBLISH: 'unpublish',
-    ERROR: 'error',
-}
-export type PublishMode = $Values<typeof publishModes>
+
 export default function usePublish() {
     const dispatch = useDispatch()
     const client = useClient()
@@ -55,7 +45,8 @@ export default function usePublish() {
             }
 
             const chainId = getChainIdFromApiString(product.chain)
-            // load contract product
+
+            // Load contract product
             let contractProduct: SmartContractProduct
 
             try {
@@ -65,53 +56,46 @@ export default function usePublish() {
                 // it just means that the product wasn't deployed
             }
 
-            let currentAdminFee
+            // Load Data Union owner
             let dataUnionOwner
 
             try {
-                currentAdminFee = await getAdminFee(product.beneficiaryAddress, chainId)
                 dataUnionOwner = await getDataUnionOwner(product.beneficiaryAddress, chainId)
             } catch (e) {
                 // ignore error, assume contract has not been deployed
             }
 
             const { state: productState } = product
-            const pendingChanges = getPendingChanges(product)
-            const productWithPendingChanges = withPendingChanges(product)
-            const { adminFee, pricePerSecond, beneficiaryAddress, priceCurrency, requiresWhitelist, pricingTokenAddress, ...productDataChanges } =
-                pendingChanges || {}
-            const hasAdminFeeChanged = !!currentAdminFee && adminFee && currentAdminFee !== adminFee
-            const hasContractProductChanged = !!contractProduct && isContractProductUpdateRequired(contractProduct, productWithPendingChanges)
-            const hasRequireWhitelistChanged = !!(
-                !!contractProduct &&
-                requiresWhitelist !== undefined &&
-                contractProduct.requiresWhitelist !== requiresWhitelist
-            )
-            const hasPendingChanges =
-                Object.keys(productDataChanges).length > 0 || hasAdminFeeChanged || hasContractProductChanged || hasRequireWhitelistChanged
-            let pricingTokenDecimals: number | BN = 18
 
+            const {
+                hasPendingChanges,
+                hasAdminFeeChanged,
+                hasContractProductChanged,
+                hasRequireWhitelistChanged,
+                adminFee,
+                pricePerSecond,
+                beneficiaryAddress,
+                priceCurrency,
+                requiresWhitelist,
+                pricingTokenAddress,
+                productDataChanges,
+            } = await calculatePendingChanges(product, contractProduct, chainId)
+
+            let pricingTokenDecimals: number | BN = 18
             if (pricingTokenAddress || (contractProduct && contractProduct.pricingTokenAddress)) {
                 const address = pricingTokenAddress || (contractProduct && contractProduct.pricingTokenAddress)
                 pricingTokenDecimals = await getCustomTokenDecimals(address, chainId)
             }
 
-            let nextMode
-
-            // is published and has pending changes?
-            if (productState === projectStates.DEPLOYED) {
-                nextMode = hasPendingChanges ? publishModes.REPUBLISH : publishModes.UNPUBLISH
-            } else if (productState === projectStates.NOT_DEPLOYED) {
-                nextMode = contractProduct ? publishModes.REDEPLOY : publishModes.PUBLISH
-            } else {
-                // product is either being deployed to contract or being undeployed
+            const nextMode = getNextMode(productState, contractProduct, hasPendingChanges)
+            if (nextMode === PublishMode.ERROR) {
                 throw new Error('Invalid product state')
             }
 
             const queue = new ActionQueue()
 
             // update product data if needed
-            if (nextMode === publishModes.REPUBLISH || (nextMode === publishModes.PUBLISH && Object.keys(productDataChanges).length > 0)) {
+            if (nextMode === PublishMode.REPUBLISH || (nextMode === PublishMode.PUBLISH && Object.keys(productDataChanges).length > 0)) {
                 const nextProduct = { ...product, ...productDataChanges, pendingChanges: undefined as any }
                 delete nextProduct.state
                 queue.add({
@@ -147,7 +131,7 @@ export default function usePublish() {
             }
 
             // update admin fee if it has changed
-            if ([publishModes.REPUBLISH, publishModes.REDEPLOY, publishModes.PUBLISH].includes(nextMode)) {
+            if ([PublishMode.REPUBLISH, PublishMode.REDEPLOY, PublishMode.PUBLISH].includes(nextMode)) {
                 if (adminFee && hasAdminFeeChanged) {
                     queue.add({
                         id: actionsTypes.UPDATE_ADMIN_FEE,
@@ -184,7 +168,7 @@ export default function usePublish() {
             }
 
             // update whitelist enabled status if it has changed
-            if ([publishModes.REPUBLISH, publishModes.REDEPLOY].includes(nextMode)) {
+            if ([PublishMode.REPUBLISH, PublishMode.REDEPLOY].includes(nextMode)) {
                 if (hasRequireWhitelistChanged && contractProduct) {
                     queue.add({
                         id: actionsTypes.SET_REQUIRES_WHITELIST,
@@ -209,9 +193,9 @@ export default function usePublish() {
             }
 
             // update price, currency & beneficiary if changed
-            if ([publishModes.REPUBLISH, publishModes.REDEPLOY].includes(nextMode)) {
+            if ([PublishMode.REPUBLISH, PublishMode.REDEPLOY].includes(nextMode)) {
                 if (hasContractProductChanged && contractProduct) {
-                    const isRedeploy = !!(nextMode === publishModes.REDEPLOY)
+                    const isRedeploy = !!(nextMode === PublishMode.REDEPLOY)
                     queue.add({
                         id: actionsTypes.UPDATE_CONTRACT_PRODUCT,
                         requireWeb3: true,
@@ -269,7 +253,7 @@ export default function usePublish() {
             }
 
             // do the actual publish action
-            if (nextMode === publishModes.PUBLISH) {
+            if (nextMode === PublishMode.PUBLISH) {
                 if (isPaidProduct(product)) {
                     // TODO: figure out a better to detect if deploying data union for the first time
                     // force data union product to be published by the same account as the data union itself
@@ -354,7 +338,7 @@ export default function usePublish() {
 
             // do a separate republish for products that have been at some point deployed
             // and we didn't do a contract update above
-            if (nextMode === publishModes.REDEPLOY && !hasContractProductChanged && contractProduct) {
+            if (nextMode === PublishMode.REDEPLOY && !hasContractProductChanged && contractProduct) {
                 queue.add({
                     id: actionsTypes.REDEPLOY_PAID,
                     requireWeb3: true,
@@ -392,7 +376,7 @@ export default function usePublish() {
             }
 
             // do unpublish
-            if (nextMode === publishModes.UNPUBLISH) {
+            if (nextMode === PublishMode.UNPUBLISH) {
                 if (contractProduct) {
                     queue.add({
                         id: actionsTypes.UNDEPLOY_CONTRACT_PRODUCT,

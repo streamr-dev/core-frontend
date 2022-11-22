@@ -7,19 +7,22 @@ import getConfig from '$app/src/getters/getConfig'
 export default function getClientConfig(mods: any = {}): any {
     const { client } = getConfig()
 
-    const { ensCacheChainAddress, ...DEFAULTS } = STREAM_CLIENT_DEFAULTS
+    const { ...DEFAULTS } = STREAM_CLIENT_DEFAULTS
 
     return {
         ...DEFAULTS,
-        mainChainRPCs: formatRpc(client?.mainchain?.rpc) || DEFAULTS.mainChainRPCs,
         network: {
             ...DEFAULTS.network,
             trackers: formatTrackers(client?.network?.trackers) || DEFAULTS.network?.trackers,
         },
-        streamRegistryChainAddress: client?.streamRegistryChainAddress || DEFAULTS.streamRegistryChainAddress,
-        streamRegistryChainRPCs: formatRpc(client?.streamRegistryChain?.rpc) || DEFAULTS.streamRegistryChainRPCs,
-        streamStorageRegistryChainAddress: client?.streamStorageRegistryChainAddress || DEFAULTS.streamStorageRegistryChainAddress,
-        theGraphUrl: formatConfigUrl(client?.graphUrl) || DEFAULTS.theGraphUrl,
+        contracts: {
+            ...DEFAULTS.contracts,
+            mainChainRPCs: formatRpc(client?.mainchain?.rpc) || DEFAULTS.contracts.mainChainRPCs,
+            streamRegistryChainAddress: client?.streamRegistryChainAddress || DEFAULTS.contracts.streamRegistryChainAddress,
+            streamRegistryChainRPCs: formatRpc(client?.streamRegistryChain?.rpc) || DEFAULTS.contracts.streamRegistryChainRPCs,
+            streamStorageRegistryChainAddress: client?.streamStorageRegistryChainAddress || DEFAULTS.contracts.streamStorageRegistryChainAddress,
+            theGraphUrl: formatConfigUrl(client?.graphUrl) || DEFAULTS.contracts.theGraphUrl,
+        },
         metrics: false,
         ...mods,
     }

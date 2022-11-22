@@ -18,8 +18,10 @@ import { getValidId, mapProductFromApi, mapProductToPostApi, mapProductToPutApi 
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { fromAtto, toAtto } from '$mp/utils/math'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
+import { getApiStringFromChainId } from '$shared/utils/chains'
 import routes from '$routes'
 import { call, send } from '../../utils/smartContract'
+
 export const getProductById = async (id: ProjectId, useAuthorization = true): ApiResult<Project> =>
     get({
         url: routes.api.products.show({
@@ -47,11 +49,12 @@ export const postProduct = (product: Project): ApiResult<Project> =>
         url: routes.api.products.index(),
         data: mapProductToPostApi(product),
     }).then(mapProductFromApi)
-export const postEmptyProduct = (type: ProjectType): ApiResult<Project> =>
+export const postEmptyProduct = (type: ProjectType, chainId: number): ApiResult<Project> =>
     post({
         url: routes.api.products.index(),
         data: {
             type,
+            chain: getApiStringFromChainId(chainId),
             pricePerSecond: '277777777777778', // default to paid product by setting price to 1 data per hour
         },
     }).then(mapProductFromApi)

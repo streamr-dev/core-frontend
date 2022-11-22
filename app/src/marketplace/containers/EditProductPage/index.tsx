@@ -31,6 +31,7 @@ import PublishModal from './PublishModal'
 import CropImageModal from './CropImageModal'
 import WhitelistEditModal from './WhitelistEditModal'
 import styles from './editProductPage.pcss'
+import usePendingChanges, { PublishMode } from './usePendingChanges'
 
 const EditProductPage = ({ product }: { product: Project }) => {
     const { isPreview, setIsPreview, save, publish, deployDataUnion, back, validate } = useContext(EditControllerContext)
@@ -41,11 +42,13 @@ const EditProductPage = ({ product }: { product: Project }) => {
     const chainId = getChainIdFromApiString(product.chain)
     const { reset: resetDataUnionSecrets } = useDataUnionSecrets()
     const { updateBeneficiaryAddress } = useEditableProductActions()
+    const { nextMode } = usePendingChanges()
     const { load: loadWhiteWhitelistedAdresses, reset: resetWhiteWhitelistedAdresses } = useWhitelist()
     const { isOpen: isDataUnionDeployDialogOpen } = useModal('dataUnion.DEPLOY')
     const { isOpen: isConfirmSaveDialogOpen } = useModal('confirmSave')
     const { isOpen: isPublishDialogOpen } = useModal('publish')
     const productId = product.id
+
     // Load categories and streams
     useEffect(() => {
         if (productId && chainId) {
@@ -55,6 +58,7 @@ const EditProductPage = ({ product }: { product: Project }) => {
         loadCategories()
         loadAllStreams()
     }, [loadCategories, productId, loadAllStreams, loadWhiteWhitelistedAdresses, chainId])
+
     const { beneficiaryAddress } = originalProduct
     const isDataUnion = isDataUnionProduct(product)
     // TODO: should really check for the contract existance here
@@ -114,18 +118,30 @@ const EditProductPage = ({ product }: { product: Project }) => {
     const productState = product.state
     const publishButton = useMemo(() => {
         const titles = {
-            [projectStates.DEPLOYING]: 'Publishing',
-            [projectStates.UNDEPLOYING]: 'Unpublishing',
-            [projectStates.NOT_DEPLOYED]: 'Publish',
-            [projectStates.DEPLOYED]: 'Unpublish',
+            [PublishMode.PUBLISH]: 'Publish',
+            [PublishMode.UNPUBLISH]: 'Unpublish',
+            [PublishMode.REPUBLISH]: 'Publish',
+            [PublishMode.REDEPLOY]: 'Publish',
+            [PublishMode.ERROR]: 'Continue',
         }
+
+        let title = 'Continue'
+
+        if (productState === projectStates.DEPLOYING) {
+            title = 'Publishing'
+        } else if (productState === projectStates.UNDEPLOYING) {
+            title = 'Unpublishing'
+        } else if (nextMode != null) {
+            title = titles[nextMode]
+        }
+
         return {
-            title: (productState && titles[productState]) || 'Continue',
+            title: title,
             kind: 'primary',
             onClick: publish,
             disabled: !(productState === projectStates.NOT_DEPLOYED || productState === projectStates.DEPLOYED) || isDisabled,
         }
-    }, [productState, publish, isDisabled])
+    }, [productState, publish, isDisabled, nextMode])
     const deployOrSetContract = useCallback(() => {
         const existingAddr = product.existingDUAddress
         if (existingAddr) {

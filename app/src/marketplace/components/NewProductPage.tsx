@@ -3,6 +3,7 @@ import type { Location } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import qs from 'query-string'
+
 import { postEmptyProduct } from '$mp/modules/product/services'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import type { ProjectType } from '$mp/types/project-types'
@@ -12,6 +13,8 @@ import { projectTypes } from '$mp/utils/constants'
 import useFailure from '$shared/hooks/useFailure'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import routes from '$routes'
+import useNewProductMode from '../containers/ProductController/useNewProductMode'
+
 type Props = {
     className?: string | null | undefined
     location: Location
@@ -23,14 +26,18 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
     const history = useHistory()
     const isMounted = useIsMounted()
     const fail = useFailure()
+    const { dataUnionAddress, chainId } = useNewProductMode()
     useEffect(() => {
         const { type } = qs.parse(search)
-        postEmptyProduct(sanitizedType(type)).then(({ id }) => {
+        const typeString = (type != null && typeof type === "string") ? type : type[0]
+
+        postEmptyProduct(sanitizedType(typeString), chainId).then(({ id }) => {
             if (isMounted()) {
                 history.replace(
                     routes.products.edit({
                         id,
                         newProduct: true,
+                        dataUnionAddress,
                     }),
                 )
                 Activity.push({
@@ -40,7 +47,7 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
                 })
             }
         }, fail)
-    }, [isMounted, search, fail, history])
+    }, [isMounted, search, fail, history, dataUnionAddress, chainId])
     return <LoadingIndicator className={className} loading />
 }
 
