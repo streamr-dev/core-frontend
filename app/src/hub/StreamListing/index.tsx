@@ -2,13 +2,14 @@ import React, { useCallback, useEffect, useState } from 'react'
 import type { Stream } from 'streamr-client'
 import styled from 'styled-components'
 
-import { COLORS } from '$shared/utils/styled'
+import { COLORS, DESKTOP, TABLET } from '$shared/utils/styled'
 import Layout from '$shared/components/Layout'
 import SearchBar from '$shared/components/SearchBar'
 import Tabs from '$shared/components/Tabs'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import useFetchStreams from '$shared/hooks/useFetchStreams'
 import InterruptionError from '$shared/errors/InterruptionError'
+import LoadMore from '$mp/components/LoadMore'
 
 import StreamTable from './StreamTable'
 
@@ -33,15 +34,26 @@ const BATCH_SIZE = 10
 const TableContainer = styled.div`
     border-radius: 8px;
     background-color: white;
-    margin: 60px 78px 0 78px;
+    margin: 24px;
+
+    @media ${DESKTOP} {
+        margin: 60px 78px 0 78px;
+    }
 `
 
 const Heading = styled.div`
     font-size: 34px;
     line-height: 34px;
     color: ${COLORS.primary};
-    padding-left: 60px;
-    padding: 55px 60px;
+    padding: 30px 24px;
+
+    @media ${TABLET} {
+        padding: 45px 40px;
+    }
+
+    @media ${DESKTOP} {
+        padding: 55px 60px;
+    }
 `
 
 const StreamListing: React.FC = () => {
@@ -95,7 +107,7 @@ const StreamListing: React.FC = () => {
             <Tabs
                 name='Test'
                 options={streamSelectionOptions}
-                onChange={(newValue) => setStreamsSelection(newValue)}
+                onChange={(newValue) => setStreamsSelection(StreamSelection[newValue])}
                 selectedOptionValue={streamsSelection}
             />
             <TableContainer>
@@ -103,6 +115,7 @@ const StreamListing: React.FC = () => {
                 <StreamTable
                     streams={streams}
                 />
+                <LoadMore hasMoreSearchResults={!!hasMore} onClick={fetch} preserveSpace />
             </TableContainer>
         </Layout>
     )

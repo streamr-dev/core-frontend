@@ -1,24 +1,40 @@
 import React from 'react'
 import type { Stream } from 'streamr-client'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
-import { COLORS, MEDIUM, REGULAR } from '$shared/utils/styled'
+import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
 
-const ROW_HEIGHT = 78
+const ROW_HEIGHT = 88
 
 type Props = {
     streams: Array<Stream>,
 }
 
 const Row = styled.div`
-    padding-left: 60px;
     align-items: center;
+    padding-left: 24px;
+
+    @media ${TABLET} {
+        padding-left: 40px;
+    }
+
+    @media ${DESKTOP} {
+        padding-left: 60px;
+    }
 `
 
 const TableGrid = styled(Row)`
     display: grid;
-    grid-template-columns: minmax(0, 3fr) repeat(5, minmax(0, 1fr));
     gap: 8px;
+    grid-template-columns: minmax(0, 1fr);
+
+    @media ${TABLET} {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    @media ${DESKTOP} {
+        grid-template-columns: minmax(0, 3fr) repeat(5, minmax(0, 1fr));
+    }
 `
 
 const Table = styled.div`
@@ -58,10 +74,39 @@ const TableRow = styled(TableGrid)`
     }
 `
 
-const GridCell = styled.span`
+type GridCellProps = {
+    onlyDesktop?: boolean,
+    onlyTablet?: boolean,
+}
+
+const GridCell = styled.span<GridCellProps>`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    ${({ onlyDesktop }) =>
+        onlyDesktop &&
+        css`
+            display: none;
+
+            @media ${DESKTOP} {
+                display: block;
+            }
+        `}
+
+    ${({ onlyTablet }) =>
+        onlyTablet &&
+        css`
+            display: none;
+
+            @media ${TABLET} {
+                display: block;
+            }
+
+            @media ${DESKTOP} {
+                display: none;
+            }
+        `}
 `
 
 const NoStreams = styled.div`
@@ -94,11 +139,12 @@ const StreamTable: React.FC<Props> = ({ streams }: Props) => {
         <Table>
             <TableHeader>
                 <GridCell>Stream ID</GridCell>
-                <GridCell>Live peers</GridCell>
-                <GridCell>Msg/s</GridCell>
-                <GridCell>Access</GridCell>
-                <GridCell>Publishers</GridCell>
-                <GridCell>Subscribers</GridCell>
+                <GridCell onlyTablet>Description</GridCell>
+                <GridCell onlyDesktop>Live peers</GridCell>
+                <GridCell onlyDesktop>Msg/s</GridCell>
+                <GridCell onlyDesktop>Access</GridCell>
+                <GridCell onlyDesktop>Publishers</GridCell>
+                <GridCell onlyDesktop>Subscribers</GridCell>
             </TableHeader>
             <TableRows rowCount={Math.max(streams.length, 1)}>
                 {streams.map((s) => (
@@ -112,11 +158,12 @@ const StreamTable: React.FC<Props> = ({ streams }: Props) => {
                                 {s.getMetadata().description}
                             </StreamDescription>
                         </StreamDetails>
-                        <GridCell>50</GridCell>
-                        <GridCell>1</GridCell>
-                        <GridCell>Public</GridCell>
-                        <GridCell>5</GridCell>
-                        <GridCell>100</GridCell>
+                        <GridCell onlyTablet>{s.getMetadata().description}</GridCell>
+                        <GridCell onlyDesktop>50</GridCell>
+                        <GridCell onlyDesktop>1</GridCell>
+                        <GridCell onlyDesktop>Public</GridCell>
+                        <GridCell onlyDesktop>5</GridCell>
+                        <GridCell onlyDesktop>100</GridCell>
                     </TableRow>
                 ))}
                 {streams.length === 0 && <NoStreams>No streams that match your query</NoStreams>}
