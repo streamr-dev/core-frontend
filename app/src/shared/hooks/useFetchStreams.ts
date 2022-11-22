@@ -1,22 +1,28 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useClient } from 'streamr-client-react'
+import type { Stream } from 'streamr-client'
 import getClientAddress from '$app/src/getters/getClientAddress'
 import useInterrupt from '$shared/hooks/useInterrupt'
+
 export default function useFetchStreams() {
     const client = useClient()
     const itp = useInterrupt()
-    const searchRef = useRef()
-    const iteratorRef = useRef()
-    const tailStreamRef = useRef()
+    const searchRef = useRef<string>()
+    const allowPublicRef = useRef<boolean>()
+    const iteratorRef = useRef<AsyncIterable<Stream>>()
+    const tailStreamRef = useRef<Stream>()
+
     useEffect(() => {
         itp().interruptAll()
     }, [itp, client])
+
     return useCallback(
-        async (search, { batchSize = 1 } = {}) => {
+        async (search, { batchSize = 1, allowPublic = false } = {}) => {
             const { requireUninterrupted } = itp(search)
 
-            if (searchRef.current !== search) {
+            if (searchRef.current !== search || allowPublicRef.current !== allowPublic) {
                 searchRef.current = search
+                allowPublicRef.current = allowPublic
                 iteratorRef.current = undefined
             }
 
@@ -28,11 +34,12 @@ export default function useFetchStreams() {
                 tailStreamRef.current = undefined
                 iteratorRef.current = client.searchStreams(search, {
                     user,
+                    allowPublic,
                 })
             }
 
             let i = 0
-            const batch = []
+            const batch: Array<Stream> = []
             let hasMore = false
             const { current: iterator } = iteratorRef
             // We load 1 extra entry to determine if we show "Load more" button.
