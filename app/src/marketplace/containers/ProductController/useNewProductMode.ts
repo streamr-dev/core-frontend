@@ -17,7 +17,7 @@ function useNewProductMode() {
         return {
             isNew: !!(query.newProduct || ''),
             dataUnionAddress: getFirstElement(query.dataUnionAddress || ''),
-            chainId: query.chainId ? Number.parseInt(getFirstElement(query.chainId || '')) : 0,
+            chainId: query.chainId ? Number.parseInt(getFirstElement(query.chainId || '')) : null,
         }
     }, [location])
 }
