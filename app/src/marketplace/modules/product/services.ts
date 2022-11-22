@@ -49,12 +49,12 @@ export const postProduct = (product: Project): ApiResult<Project> =>
         url: routes.api.products.index(),
         data: mapProductToPostApi(product),
     }).then(mapProductFromApi)
-export const postEmptyProduct = (type: ProjectType, chainId: number): ApiResult<Project> =>
+export const postEmptyProduct = (type: ProjectType, chainId?: number): ApiResult<Project> =>
     post({
         url: routes.api.products.index(),
         data: {
             type,
-            chain: getApiStringFromChainId(chainId),
+            chain: chainId != null ? getApiStringFromChainId(chainId) : undefined,
             pricePerSecond: '277777777777778', // default to paid product by setting price to 1 data per hour
         },
     }).then(mapProductFromApi)
