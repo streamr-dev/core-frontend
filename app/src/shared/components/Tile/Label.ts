@@ -7,7 +7,11 @@ const colors = {
     [WORRIED]: '#ff5c00',
     [ANGRY]: '#ff0f2d',
 }
-const Label = styled.span`
+type LabelProps = {
+    mood?: string
+}
+
+const Label = styled.span<LabelProps>`
     color: ${({ mood }) => colors[mood] || '#323232'};
     transition: 500ms color;
 `
