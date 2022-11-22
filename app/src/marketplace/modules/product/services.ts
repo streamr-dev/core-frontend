@@ -13,7 +13,7 @@ import {
     erc20TokenContractMethods,
 } from '$mp/utils/web3'
 import type { NumberString, ApiResult, PaymentCurrency } from '$shared/types/common-types'
-import type { Product, ProductId, Subscription, ProductType } from '$mp/types/product-types'
+import type { Project, ProjectId, Subscription, ProjectType } from '$mp/types/project-types'
 import { getValidId, mapProductFromApi, mapProductToPostApi, mapProductToPutApi } from '$mp/utils/product'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { fromAtto, toAtto } from '$mp/utils/math'
@@ -22,7 +22,7 @@ import { getApiStringFromChainId } from '$shared/utils/chains'
 import routes from '$routes'
 import { call, send } from '../../utils/smartContract'
 
-export const getProductById = async (id: ProductId, useAuthorization = true): ApiResult<Product> =>
+export const getProductById = async (id: ProjectId, useAuthorization = true): ApiResult<Project> =>
     get({
         url: routes.api.products.show({
             id: getValidId(id, false),
@@ -30,26 +30,26 @@ export const getProductById = async (id: ProductId, useAuthorization = true): Ap
         useAuthorization,
     }).then(mapProductFromApi)
 
-export const getMyProductSubscription = (id: ProductId, chainId: number): SmartContractCall<Subscription> =>
+export const getMyProductSubscription = (id: ProjectId, chainId: number): SmartContractCall<Subscription> =>
     Promise.all([getProductFromContract(id, true, chainId), getDefaultWeb3Account()])
         .then(([, account]) => call(marketplaceContract(true, chainId).methods.getSubscription(getValidId(id), account)))
         .then(({ endTimestamp }: { endTimestamp: string }) => ({
             productId: id,
             endTimestamp: parseInt(endTimestamp, 10),
         }))
-export const putProduct = (data: Product, id: ProductId): ApiResult<Product> =>
+export const putProduct = (data: Project, id: ProjectId): ApiResult<Project> =>
     put({
         url: routes.api.products.show({
             id,
         }),
         data: mapProductToPutApi(data),
     }).then(mapProductFromApi)
-export const postProduct = (product: Product): ApiResult<Product> =>
+export const postProduct = (product: Project): ApiResult<Project> =>
     post({
         url: routes.api.products.index(),
         data: mapProductToPostApi(product),
     }).then(mapProductFromApi)
-export const postEmptyProduct = (type: ProductType, chainId?: number): ApiResult<Product> =>
+export const postEmptyProduct = (type: ProjectType, chainId?: number): ApiResult<Project> =>
     post({
         url: routes.api.products.index(),
         data: {
@@ -58,7 +58,7 @@ export const postEmptyProduct = (type: ProductType, chainId?: number): ApiResult
             pricePerSecond: '277777777777778', // default to paid product by setting price to 1 data per hour
         },
     }).then(mapProductFromApi)
-export const postImage = (id: ProductId, image: File): ApiResult<Product> => {
+export const postImage = (id: ProjectId, image: File): ApiResult<Project> => {
     const options = {
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -74,20 +74,20 @@ export const postImage = (id: ProductId, image: File): ApiResult<Product> => {
         options,
     }).then(mapProductFromApi)
 }
-export const getPermissions = (productId: ProductId, id: string): ApiResult<any> =>
+export const getPermissions = (productId: ProjectId, id: string): ApiResult<any> =>
     get({
         url: routes.api.products.permissions.show({
             productId,
             id,
         }),
     })
-export const postUndeployFree = async (id: ProductId): ApiResult<Product> =>
+export const postUndeployFree = async (id: ProjectId): ApiResult<Project> =>
     post({
         url: routes.api.products.undeployFree({
             id: getValidId(id, false),
         }),
     }).then(mapProductFromApi)
-export const postSetUndeploying = async (id: ProductId, txHash: Hash): ApiResult<Product> =>
+export const postSetUndeploying = async (id: ProjectId, txHash: Hash): ApiResult<Project> =>
     post({
         url: routes.api.products.setUndeploying({
             id: getValidId(id, false),
@@ -96,13 +96,13 @@ export const postSetUndeploying = async (id: ProductId, txHash: Hash): ApiResult
             transactionHash: txHash,
         },
     }).then(mapProductFromApi)
-export const postDeployFree = async (id: ProductId): ApiResult<Product> =>
+export const postDeployFree = async (id: ProjectId): ApiResult<Project> =>
     post({
         url: routes.api.products.deployFree({
             id: getValidId(id, false),
         }),
     }).then(mapProductFromApi)
-export const postSetDeploying = async (id: ProductId, txHash: Hash): ApiResult<Product> =>
+export const postSetDeploying = async (id: ProjectId, txHash: Hash): ApiResult<Project> =>
     post({
         url: routes.api.products.setDeploying({
             id: getValidId(id, false),
@@ -111,7 +111,7 @@ export const postSetDeploying = async (id: ProductId, txHash: Hash): ApiResult<P
             transactionHash: txHash,
         },
     }).then(mapProductFromApi)
-export const addFreeProduct = async (id: ProductId, endsAt: number): ApiResult<null> =>
+export const addFreeProduct = async (id: ProjectId, endsAt: number): ApiResult<null> =>
     post({
         url: routes.api.subscriptions(),
         data: {
@@ -121,7 +121,7 @@ export const addFreeProduct = async (id: ProductId, endsAt: number): ApiResult<n
     })
 const ONE_DAY = '86400'
 export const buyProduct = (
-    id: ProductId,
+    id: ProjectId,
     chainId: number,
     subscriptionInSeconds: NumberString | BN,
     paymentCurrency: PaymentCurrency,

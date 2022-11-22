@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import BN from 'bignumber.js'
-import type { SmartContractProduct, AccessPeriod } from '$mp/types/product-types'
+import type { SmartContractProduct, AccessPeriod } from '$mp/types/project-types'
 import { priceForTimeUnits } from '$mp/utils/price'
 import { validateBalanceForPurchase, getDataAddress, getCustomTokenDecimals } from '$mp/utils/web3'
 import { transactionStates, paymentCurrencies, transactionTypes } from '$shared/utils/constants'

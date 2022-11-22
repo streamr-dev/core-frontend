@@ -4,11 +4,11 @@ import get from 'lodash/get'
 import { useHistory } from 'react-router-dom'
 import { Tooltip } from '@streamr/streamr-layout'
 
-import type { Product } from '$mp/types/product-types'
-import '$mp/types/product-types'
+import type { Project } from '$mp/types/project-types'
+import '$mp/types/project-types'
 import { ago } from '$shared/utils/time'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
-import { productStates, NotificationIcon } from '$shared/utils/constants'
+import { projectStates, NotificationIcon } from '$shared/utils/constants'
 import SvgIcon from '$shared/components/SvgIcon'
 import UnstyledFallbackImage from '$shared/components/FallbackImage'
 import UnstyledPopover from '$shared/components/Popover'
@@ -35,7 +35,7 @@ import { productSchema } from '$shared/modules/entities/schema'
 import { getChainIdFromApiString, formatChainName } from '$shared/utils/chains'
 import { getAddressLink } from '$shared/utils/blockexplorer'
 import PopoverItem from '$shared/components/Popover/PopoverItem'
-import { productTypes } from '$mp/utils/constants'
+import { projectTypes } from '$mp/utils/constants'
 import routes from '$routes'
 
 import Management from './Management'
@@ -265,7 +265,7 @@ const StyledManagement = styled(Management)`
 `
 const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000
 type Props = {
-    product: Product
+    product: Project
     stats: any
 }
 
@@ -323,9 +323,9 @@ const Item = ({ product, stats }: Props) => {
     }, [dataUnionId, productId, chainId, isMounted, wrapDataUnionLoad])
 
     const productState = useMemo(() => {
-        if (product.state === productStates.DEPLOYED && isEthereumAddress(product.beneficiaryAddress)) {
+        if (product.state === projectStates.DEPLOYED && isEthereumAddress(product.beneficiaryAddress)) {
             return 'Published'
-        } else if (product.state === productStates.DETACHED) {
+        } else if (product.state === projectStates.DETACHED) {
             return 'Detached'
         } else if (isEthereumAddress(product.beneficiaryAddress)) {
             return 'Unpublished'
@@ -503,7 +503,7 @@ const Item = ({ product, stats }: Props) => {
                             </Button>
                         </Tooltip>
                     )}
-                    {product.state !== productStates.DETACHED && (
+                    {product.state !== projectStates.DETACHED && (
                         <Tooltip value="Edit product">
                             <Button
                                 to={routes.products.edit({
@@ -514,11 +514,11 @@ const Item = ({ product, stats }: Props) => {
                             </Button>
                         </Tooltip>
                     )}
-                    {product.state === productStates.DETACHED && (
+                    {product.state === projectStates.DETACHED && (
                         <Tooltip value="Create product">
                             <Button
                                 to={routes.products.new({
-                                    type: productTypes.DATAUNION,
+                                    type: projectTypes.DATAUNION,
                                     dataUnionAddress: dataUnionId,
                                     chainId,
                                 })}
@@ -527,7 +527,7 @@ const Item = ({ product, stats }: Props) => {
                             </Button>
                         </Tooltip>
                     )}
-                    {product.state === productStates.DEPLOYED && (
+                    {product.state === projectStates.DEPLOYED && (
                         <Tooltip value="View on marketplace">
                             <Button
                                 to={routes.marketplace.product({
@@ -538,7 +538,7 @@ const Item = ({ product, stats }: Props) => {
                             </Button>
                         </Tooltip>
                     )}
-                    {product.state !== productStates.DETACHED && (
+                    {product.state !== projectStates.DETACHED && (
                         <Popover
                             title="Options"
                             caret={false}
@@ -564,7 +564,7 @@ const Item = ({ product, stats }: Props) => {
                                     }}
                                     disabled={loading}
                                 >
-                                    {product.state === productStates.DEPLOYED ? 'Unpublish' : 'Publish'}
+                                    {product.state === projectStates.DEPLOYED ? 'Unpublish' : 'Publish'}
                                 </PopoverItem>
                             )}
                         </Popover>

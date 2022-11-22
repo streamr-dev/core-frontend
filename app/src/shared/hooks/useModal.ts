@@ -6,7 +6,7 @@ type ModalResult = {
     isOpen: boolean,
     api: {
         open: (value?: object) => Promise<any>,
-        close: (value) => void,
+        close: (value?) => void,
     },
     value: any,
 }

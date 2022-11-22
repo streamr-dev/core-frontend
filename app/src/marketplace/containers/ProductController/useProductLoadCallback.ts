@@ -3,11 +3,11 @@ import { useCallback } from 'react'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import usePending from '$shared/hooks/usePending'
 import { canHandleLoadError, handleLoadError } from '$auth/utils/loginInterceptor'
-import type { Product, ProductId } from '$mp/types/product-types'
+import type { Project, ProjectId } from '$mp/types/project-types'
 import { getProductById } from '$mp/modules/product/services'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
-import { timeUnits, DEFAULT_CURRENCY, productStates } from '$shared/utils/constants'
+import { timeUnits, DEFAULT_CURRENCY, projectStates } from '$shared/utils/constants'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import { priceForTimeUnits } from '$mp/utils/price'
 import { isEthereumAddress } from '$mp/utils/validate'
@@ -20,7 +20,7 @@ import useEditableState from '$shared/contexts/Undo/useEditableState'
 import * as State from '../EditProductPage/state'
 import { useController } from '.'
 type LoadProps = {
-    productId: ProductId
+    productId: ProjectId
     ignoreUnauthorized?: boolean
     requirePublished?: boolean
     useAuthorization?: boolean
@@ -63,7 +63,7 @@ export default function useProductLoadCallback() {
                 // bail if the product is not actually published - this is an edge case
                 // because this should only happen with user's own products, otherwise
                 // the product load will fail due to permissions
-                if (!!requirePublished && product.state !== productStates.DEPLOYED) {
+                if (!!requirePublished && product.state !== projectStates.DEPLOYED) {
                     throw new ResourceNotFoundError(ResourceType.PRODUCT, product.id)
                 }
 
@@ -124,7 +124,7 @@ export default function useProductLoadCallback() {
                     return
                 }
 
-                const nextProduct: Product = {
+                const nextProduct: Project = {
                     ...product,
                     isFree: !!product.isFree || !isPaidProduct(product),
                     timeUnit: timeUnits.hour,

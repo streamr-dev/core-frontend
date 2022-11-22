@@ -8,7 +8,7 @@ import * as productUtils from '$mp/utils/product'
 import * as web3Utils from '$mp/utils/web3'
 import setTempEnv from '$app/test/test-utils/setTempEnv'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
-import { Product } from '$mp/types/product-types'
+import { Project } from '$mp/types/project-types'
 import { existingProduct } from './mockData'
 jest.mock('$utils/web3/getDefaultWeb3Account', () => ({
     __esModule: true,
@@ -127,7 +127,7 @@ describe('product - services', () => {
         })
     })
     it('puts product', async () => {
-        const data: Product = cloneDeep(existingProduct)
+        const data: Project = cloneDeep(existingProduct)
         const expectedResult = cloneDeep(existingProduct)
         expectedResult.pricePerSecond = '0.00001898'
         moxios.wait(() => {

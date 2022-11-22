@@ -1,9 +1,8 @@
 import { useEffect, useState, useMemo } from 'react'
-import BN from 'bignumber.js'
 
 import useEditableState from '$shared/contexts/Undo/useEditableState'
-import type { Product, SmartContractProduct } from '$mp/types/product-types'
-import { productStates } from '$shared/utils/constants'
+import type { Project, SmartContractProduct } from '$mp/types/project-types'
+import { projectStates } from '$shared/utils/constants'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { getAdminFee } from '$mp/modules/dataUnion/services'
 import { isContractProductUpdateRequired } from '$mp/utils/smartContract'
@@ -37,7 +36,7 @@ export type PendingChangeResult = {
 }
 
 export async function calculatePendingChanges(
-    product: Product,
+    product: Project,
     contractProduct: SmartContractProduct,
     chainId: number,
 ): Promise<PendingChangeResult> {
@@ -86,9 +85,9 @@ export function getNextMode(
     let nextMode: PublishMode
 
     // is published and has pending changes?
-    if (productState === productStates.DEPLOYED) {
+    if (productState === projectStates.DEPLOYED) {
         nextMode = hasPendingChanges ? PublishMode.REPUBLISH : PublishMode.UNPUBLISH
-    } else if (productState === productStates.NOT_DEPLOYED) {
+    } else if (productState === projectStates.NOT_DEPLOYED) {
         nextMode = contractProduct ? PublishMode.REDEPLOY : PublishMode.PUBLISH
     } else {
         // product is either being deployed to contract or being undeployed
@@ -122,7 +121,7 @@ export default function usePendingChanges() {
             }
 
             const { state: productState } = product
-            const { hasPendingChanges } = await calculatePendingChanges(product as Product, contractProduct, chainId)
+            const { hasPendingChanges } = await calculatePendingChanges(product as Project, contractProduct, chainId)
             const nextMode = getNextMode(productState, contractProduct, hasPendingChanges)
 
             if (isMounted()) {

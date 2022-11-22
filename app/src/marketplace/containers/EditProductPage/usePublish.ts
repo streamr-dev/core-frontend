@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import BN from 'bignumber.js'
 import { useClient } from 'streamr-client-react'
-import type { Product, SmartContractProduct } from '$mp/types/product-types'
+import type { Project, SmartContractProduct } from '$mp/types/project-types'
 import { transactionStates, transactionTypes } from '$shared/utils/constants'
 import {
     getProductFromContract,
@@ -39,7 +39,7 @@ export default function usePublish() {
     const dispatch = useDispatch()
     const client = useClient()
     return useCallback(
-        async (product: Product) => {
+        async (product: Project) => {
             if (!product) {
                 throw new Error('no product')
             }

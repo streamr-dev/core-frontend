@@ -4,7 +4,7 @@ import type { EntitiesState } from '$shared/types/store-state'
 import type { ErrorInUi } from '$shared/types/common-types'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { productsSchema } from '$shared/modules/entities/schema'
-import type { ProductIdList, ProductList } from '../../types/product-types'
+import type { ProjectIdList, ProjectList } from '../../types/project-types'
 import type { RelatedProductListState, StoreState } from '../../types/store-state'
 
 const selectRelatedProductListState = (state: StoreState): RelatedProductListState => state.relatedProducts
@@ -13,14 +13,14 @@ export const selectFetchingRelatedProductList: (state: StoreState) => boolean = 
     selectRelatedProductListState,
     (subState: RelatedProductListState): boolean => subState.fetching,
 )
-export const selectRelatedProductListIds: (state: StoreState) => ProductIdList = createSelector(
+export const selectRelatedProductListIds: (state: StoreState) => ProjectIdList = createSelector(
     selectRelatedProductListState,
     (subState: RelatedProductListState) => subState.ids,
 )
-export const selectRelatedProductList: (arg0: StoreState) => ProductList = createSelector(
+export const selectRelatedProductList: (arg0: StoreState) => ProjectList = createSelector(
     selectRelatedProductListIds,
     selectEntities,
-    (result: ProductIdList, entities: EntitiesState): ProductList => denormalize(result, productsSchema, entities),
+    (result: ProjectIdList, entities: EntitiesState): ProjectList => denormalize(result, productsSchema, entities),
 )
 export const selectRelatedProductListError: (arg0: StoreState) => ErrorInUi | null | undefined = createSelector(
     selectRelatedProductListState,

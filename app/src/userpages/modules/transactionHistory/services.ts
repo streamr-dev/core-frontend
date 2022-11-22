@@ -5,7 +5,7 @@ import getChainId from '$utils/web3/getChainId'
 import { getMarketplaceAddress } from '$mp/utils/web3'
 import type { HashList, TransactionEntityList, TransactionEntity, EventLog, EventLogList } from '$shared/types/web3-types'
 import TransactionError from '$shared/errors/TransactionError'
-import type { ProductIdList } from '$mp/types/product-types'
+import type { ProjectIdList } from '$mp/types/project-types'
 import tokenAbi from '$shared/web3/abis/token'
 import marketplaceAbi from '$shared/web3/abis/marketplace'
 const eventTypeToTransactionType = {
@@ -109,7 +109,7 @@ const getInputValues = (type, logs) => {
     }
 }
 
-export const getTransactionEvents = async (addresses: HashList, products: ProductIdList): Promise<EventLogList> => {
+export const getTransactionEvents = async (addresses: HashList, products: ProjectIdList): Promise<EventLogList> => {
     const web3 = getWeb3()
     const chainId = await getChainId()
     const marketplaceAddress = getMarketplaceAddress(chainId)

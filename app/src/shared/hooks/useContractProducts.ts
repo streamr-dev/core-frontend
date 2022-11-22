@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react'
-import type { ProductList } from '$mp/types/product-types'
+import type { ProjectList } from '$mp/types/project-types'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 export default function useContractProducts() {
-    const load = useCallback(async (products: ProductList) => {
+    const load = useCallback(async (products: ProjectList) => {
         const contractProducts = []
         await Promise.all(
             products.map(async (p) => {

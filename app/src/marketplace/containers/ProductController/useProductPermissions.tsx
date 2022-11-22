@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, useState, useEffect, useContext, Context, 
 import usePending from '$shared/hooks/usePending'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { getPermissions } from '$mp/modules/product/services'
-import { ProductId } from '$mp/types/product-types'
+import { ProjectId } from '$mp/types/project-types'
 import { useController } from '.'
 type ContextProps = {
     hasPermissions?: boolean
@@ -21,7 +21,7 @@ function usePermissionContextValue(autoLoadPermissions = true) {
     const [loadedOnce, setLoadedOnce] = useState(false)
     const productId = !!product && product.id
     const loadPermissions = useCallback(
-        async (id: ProductId) =>
+        async (id: ProjectId) =>
             wrap(async () => {
                 const result = await getPermissions(id, 'me')
 

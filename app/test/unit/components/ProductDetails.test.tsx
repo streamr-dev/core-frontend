@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { productStates } from '$shared/utils/constants'
+import { projectStates } from '$shared/utils/constants'
 import ProductDetails from '$mp/components/ProductPage/ProductDetails'
 import ExpirationCounter from '$mp/components/ExpirationCounter'
 describe('Product Details', () => {
@@ -9,7 +9,7 @@ describe('Product Details', () => {
     const product = {
         id: 'product-1',
         name: 'Product 1',
-        state: productStates.DEPLOYED,
+        state: projectStates.DEPLOYED,
         chain: 'ETHEREUM',
     }
     props = {

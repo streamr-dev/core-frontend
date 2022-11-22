@@ -3,17 +3,17 @@ import cx from 'classnames'
 import BN from 'bignumber.js'
 import Button from '$shared/components/Button'
 import { isPaidProduct } from '$mp/utils/product'
-import type { Product, Subscription } from '$mp/types/product-types'
+import type { Project, Subscription } from '$mp/types/project-types'
 import type { Address } from '$shared/types/web3-types'
 import PaymentRate from '$mp/components/PaymentRate'
 import ExpirationCounter from '$mp/components/ExpirationCounter'
-import { timeUnits, productStates } from '$shared/utils/constants'
+import { timeUnits, projectStates } from '$shared/utils/constants'
 import { formatChainName, getChainIdFromApiString } from '$shared/utils/chains'
 import NetworkIcon from '$shared/components/NetworkIcon'
 import SocialIcons from './SocialIcons'
 import styles from './productDetails2.pcss'
 type Props = {
-    product: Product
+    product: Project
     isValidSubscription: boolean
     productSubscription?: Subscription
     pricingTokenAddress: Address
@@ -22,7 +22,7 @@ type Props = {
     isWhitelisted?: boolean | null | undefined
 }
 
-const buttonTitle = (product: Product, isValidSubscription: boolean, isWhitelisted: boolean | null | undefined) => {
+const buttonTitle = (product: Project, isValidSubscription: boolean, isWhitelisted: boolean | null | undefined) => {
     if (isPaidProduct(product)) {
         if (product.requiresWhitelist && isWhitelisted === false) {
             return 'Request Access'
@@ -97,7 +97,7 @@ const ProductDetails = ({
                         isPurchasing ||
                         isWhitelisted === null ||
                         (!isPaidProduct(product) && isValidSubscription) ||
-                        product.state !== productStates.DEPLOYED
+                        product.state !== projectStates.DEPLOYED
                     }
                     onClick={onPurchase}
                     waiting={isPurchasing}

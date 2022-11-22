@@ -1,6 +1,7 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { COLORS } from '$shared/utils/styled'
+import { COLORS, DESKTOP, TABLET } from '$shared/utils/styled'
+import { useWindowSize } from '$shared/hooks/useWindowSize'
 
 export type TabOption = {
     label: string
@@ -10,12 +11,12 @@ export type TabOption = {
 }
 
 export type TabsProps = {
-    name: string
     options: TabOption[]
     selectedOptionValue: string
-    onChange: (optionValue: string) => void
+    onChange: (optionValue: string) => void,
+    fullWidth?: 'on' | 'onlyMobile' | 'mobileAndTablet'
 }
-const Tabs: FunctionComponent<TabsProps> = ({options, selectedOptionValue, onChange}) => {
+const Tabs: FunctionComponent<TabsProps> = ({options, selectedOptionValue, onChange, fullWidth}) => {
 
     const [selection, setSelection] = useState<string>(selectedOptionValue)
     const [markerWidth, setMarkerWidth] = useState<string>('0px')
@@ -23,12 +24,9 @@ const Tabs: FunctionComponent<TabsProps> = ({options, selectedOptionValue, onCha
     const [componentLoaded, setComponentLoaded] = useState<boolean>(false)
     const [markerLoaded, setMarkerLoaded] = useState<boolean>(false)
     const list = useRef<HTMLUListElement>(null)
+    const {width} = useWindowSize()
 
-    useEffect(() => {
-        setSelection(selectedOptionValue)
-    }, [selectedOptionValue])
-
-    useEffect((): void => {
+    const handleMarkerResize = (): void => {
         if (list.current && componentLoaded) {
             const elementIndex = options.findIndex((option) => option.value === selection)
             const element: HTMLLIElement = list.current.children[elementIndex + 1] as HTMLLIElement
@@ -39,26 +37,50 @@ const Tabs: FunctionComponent<TabsProps> = ({options, selectedOptionValue, onCha
             }
 
         }
-    }, [list, options, selection, componentLoaded])
+    }
+
+    useEffect(() => {
+        setSelection(selectedOptionValue)
+    }, [selectedOptionValue])
+
+    useEffect((): void => {
+        handleMarkerResize()
+    }, [list, options, selection, componentLoaded, width])
 
     useEffect(() => {
         setComponentLoaded(true)
     }, [])
 
     const handleClick = (newSelection: TabOption): void => {
-        if (newSelection.disabled) {
+        if (newSelection.disabled || (newSelection.value === selection)) {
             return
         }
         setSelection(newSelection.value)
         onChange(newSelection.value)
     }
 
-    return <TabList ref={list}>
+    const getFullWidthClassName = (fullWidth: TabsProps['fullWidth']): string => {
+        switch (fullWidth) {
+            case 'on':
+                return 'fullWidth'
+            case 'onlyMobile':
+                return 'fullWidthToTablet'
+            case 'mobileAndTablet':
+                return 'fullWidthToDesktop'
+            default:
+                return ''
+        }
+    }
+
+    return <TabList ref={list} className={getFullWidthClassName(fullWidth)}>
         <Marker style={{width: markerWidth, marginLeft: markerMarginLeft}} className={markerLoaded ? 'transition' : ''}><MarkerFill/></Marker>
         {options.map((option, index) => {
             return <TabOption
                 key={index}
-                className={`${option.value === selection ? 'selected' : ''} ${markerLoaded ? 'transition' : ''} ${option.disabled ? 'disabled' : ''}`}
+                className={
+                    `${option.value === selection ? 'selected' : ''} ${markerLoaded ? 'transition' : ''} ${option.disabled ? 'disabled' : ''} `
+                    + getFullWidthClassName(fullWidth)
+                }
                 onClick={() => handleClick(option)}
                 title={option.disabled ? option.disabledReason : undefined}
             >
@@ -77,6 +99,26 @@ const TabList = styled.ul`
   border-radius: 100px;
   width: fit-content;
   position: relative;
+  &.fullWidth {
+    width: 100%;
+    justify-content: space-between;
+  }
+  &.fullWidthToTablet {
+    width: 100%;
+    justify-content: space-between;
+    @media(${TABLET}) {
+      width: fit-content;
+      justify-content: unset;
+    }
+  }
+  &.fullWidthToDesktop {
+    width: 100%;
+    justify-content: space-between;
+    @media(${DESKTOP}) {
+      width: fit-content;
+      justify-content: unset;
+    }
+  }
 `
 
 const TabOption = styled.li`
@@ -87,6 +129,10 @@ const TabOption = styled.li`
   color: ${COLORS.primary};
   cursor: pointer;
   z-index: 2;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   &.transition {
     transition: color 250ms ease-in;
   }
@@ -99,6 +145,21 @@ const TabOption = styled.li`
     cursor: not-allowed;
     color: ${COLORS.primaryDisabled};
   }
+
+  &.fullWidth {
+    flex: 1;
+  }
+  &.fullWidthToTablet {
+    flex: 1;
+    @media(${TABLET}) {
+      flex: unset;
+    }
+  }
+  &.fullWidthToDesktop {
+    flex: 1;
+    @media(${DESKTOP}) {
+      flex: unset;
+    }
 `
 
 const Marker = styled.li`

@@ -10,7 +10,7 @@ import SelectField from '$mp/components/SelectField'
 import { uniswapDATAtoETH, uniswapDATAtoDAI, uniswapETHtoDATA, getDataAddress } from '$mp/utils/web3'
 import { priceForTimeUnits } from '$mp/utils/price'
 import { timeUnits, contractCurrencies, paymentCurrencies, DEFAULT_CURRENCY, MIN_UNISWAP_AMOUNT_USD } from '$shared/utils/constants'
-import type { Product, AccessPeriod } from '$mp/types/product-types'
+import type { Project, AccessPeriod } from '$mp/types/project-types'
 import type { PaymentCurrency, NumberString, TimeUnit } from '$shared/types/common-types'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
@@ -23,9 +23,9 @@ import styles from './chooseAccessPeriod.pcss'
 export type Balances = Record<$Values<typeof paymentCurrencies>, NumberString>
 
 export type Props = {
-    pricePerSecond: $ElementType<Product, 'pricePerSecond'>
-    pricingTokenAddress: $ElementType<Product, 'pricingTokenAddress'>
-    pricingTokenDecimals: $ElementType<Product, 'pricingTokenDecimals'>
+    pricePerSecond: $ElementType<Project, 'pricePerSecond'>
+    pricingTokenAddress: $ElementType<Project, 'pricingTokenAddress'>
+    pricingTokenDecimals: $ElementType<Project, 'pricingTokenDecimals'>
     tokenSymbol: string
     chainId: number
     balances: Balances

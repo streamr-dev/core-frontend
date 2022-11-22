@@ -1,14 +1,14 @@
 import type { ErrorInUi, PayloadAction } from '$shared/types/common-types'
 import type { Filter } from '$userpages/types/common-types'
-import type { ProductIdList, ProductSubscriptionIdList } from '../../types/product-types'
+import type { ProjectIdList, ProjectSubscriptionIdList } from '../../types/project-types'
 export type MySubscriptionsAction = PayloadAction<{
-    subscriptions: ProductSubscriptionIdList
+    subscriptions: ProjectSubscriptionIdList
 }>
-export type MySubscriptionsActionCreator = (arg0: ProductSubscriptionIdList) => MySubscriptionsAction
+export type MySubscriptionsActionCreator = (arg0: ProjectSubscriptionIdList) => MySubscriptionsAction
 export type MyPurchasesAction = PayloadAction<{
-    products: ProductIdList
+    products: ProjectIdList
 }>
-export type MyPurchasesActionCreator = (products: ProductIdList) => MyPurchasesAction
+export type MyPurchasesActionCreator = (products: ProjectIdList) => MyPurchasesAction
 export type MyPurchasesErrorAction = PayloadAction<{
     error: ErrorInUi
 }>

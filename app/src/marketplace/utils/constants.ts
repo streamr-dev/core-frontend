@@ -19,7 +19,7 @@ export const purchaseFlowSteps = {
 }
 export const productListPageSize = 20
 export const searchCharMax = 250
-export const productTypes = {
+export const projectTypes = {
     NORMAL: 'NORMAL',
     DATAUNION: 'DATAUNION',
 }

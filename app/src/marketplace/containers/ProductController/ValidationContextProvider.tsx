@@ -4,7 +4,7 @@ import set from 'lodash/fp/set'
 import isPlainObject from 'lodash/isPlainObject'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { validate as validateProduct } from '$mp/utils/product'
-import { Product } from '$mp/types/product-types'
+import { Project } from '$mp/types/project-types'
 import { isPublished, getPendingChanges, PENDING_CHANGE_FIELDS } from '../EditProductPage/state'
 import useController from '../ProductController/useController'
 export const INFO = 'info'
@@ -133,7 +133,7 @@ function useValidationContext(): ContextProps {
     )
     const isValid = useCallback((name: string) => !status[name], [status])
     const validate = useCallback(
-        (product: Product) => {
+        (product: Project) => {
             if (!isMounted() || !product) {
                 return
             }

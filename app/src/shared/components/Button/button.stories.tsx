@@ -138,6 +138,28 @@ story('Button').add('all', () => (
         </Container>
         <Container>
             <div>
+                <Button kind="primary2" size="normal" onClick={action('Clicked')}>
+                    Primary2
+                </Button>
+            </div>
+            <div>
+                <Button kind="primary2" size="normal" onClick={action('Clicked')} disabled>
+                    Primary2
+                </Button>
+            </div>
+            <div>
+                <Button tag="a" href="/" kind="primary2" size="normal" onClick={action('Clicked')}>
+                    Primary2
+                </Button>
+            </div>
+            <div>
+                <Button tag="a" href="/" kind="primary2" size="normal" onClick={action('Clicked')} disabled>
+                    Primary2
+                </Button>
+            </div>
+        </Container>
+        <Container>
+            <div>
                 <Button kind="secondary" size="mini" onClick={action('Clicked')}>
                     Secondary mini
                 </Button>

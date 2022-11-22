@@ -6,11 +6,11 @@ import Tabs from '.'
 const stories = storiesOf('Shared/Tabs', module).addDecorator(
     styles({
         padding: '2rem',
+        color: '#000'
     }),
 )
 stories.add('default', () => (
     <Tabs
-        name="group"
         options={[{label: 'Value 1', value: 'value1'}, {label: 'OtherValue', value: 'value2'}, {label: 'Very long value label', value: 'value3'}]}
         selectedOptionValue="value2"
         onChange={action('selected')}
@@ -18,7 +18,6 @@ stories.add('default', () => (
 ))
 stories.add('disabled', () => (
     <Tabs
-        name="group"
         options={[
             {label: 'Value 1', value: 'value1'},
             {label: 'OtherValue', value: 'value2'},
@@ -26,4 +25,47 @@ stories.add('disabled', () => (
         selectedOptionValue="value2"
         onChange={action('selected')}
     />
+))
+stories.add('fullWidth', () => (
+    <>
+        <div style={{marginBottom: '20px'}}>
+            <p>Always:</p>
+            <Tabs
+                options={[
+                    {label: 'Value 1', value: 'value1'},
+                    {label: 'OtherValue', value: 'value2'},
+                    {label: 'Very long value label', value: 'value3'}
+                ]}
+                selectedOptionValue="value2"
+                onChange={action('selected')}
+                fullWidth={'on'}
+            />
+        </div>
+        <div style={{marginBottom: '20px'}}>
+            <p>Up until desktop resolutions:</p>
+            <Tabs
+                options={[
+                    {label: 'Value 1', value: 'value1'},
+                    {label: 'OtherValue', value: 'value2'},
+                    {label: 'Very long value label', value: 'value3'}
+                ]}
+                selectedOptionValue="value2"
+                onChange={action('selected')}
+                fullWidth={'mobileAndTablet'}
+            />
+        </div>
+        <div style={{marginBottom: '20px'}}>
+            <p>Up until tablet resolutions:</p>
+            <Tabs
+                options={[
+                    {label: 'Value 1', value: 'value1'},
+                    {label: 'OtherValue', value: 'value2'},
+                    {label: 'Very long value label', value: 'value3'}
+                ]}
+                selectedOptionValue="value2"
+                onChange={action('selected')}
+                fullWidth={'onlyMobile'}
+            />
+        </div>
+    </>
 ))

@@ -6,7 +6,7 @@ import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { getConfigForChain, getConfigForChainByName } from '$shared/web3/config'
 import type { SmartContractTransaction, Address } from '$shared/types/web3-types'
-import type { ProductId, DataUnionId } from '$mp/types/product-types'
+import type { ProjectId, DataUnionId } from '$mp/types/project-types'
 import type { ApiResult } from '$shared/types/common-types'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 import { post, del, get, put } from '$shared/utils/api'
@@ -117,7 +117,7 @@ export const getDataUnion = async (id: DataUnionId, chainId: number): ApiResult<
 // transactions
 // ----------------------
 type DeployDataUnion = {
-    productId: ProductId
+    productId: ProjectId
     adminFee: string
     chainId: number
 }
