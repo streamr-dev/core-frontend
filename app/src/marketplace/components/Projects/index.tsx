@@ -48,11 +48,11 @@ const listProjects = (products, cols, isFetching: boolean | null | undefined) =>
 )
 
 export const ProjectsContainer = styled(RsContainer)`
-    padding: 1.25em 30px 3.5em 30px;
+    padding: 40px 30px 3.5em 30px;
     background-color: ${COLORS.secondary};
 
     @media (${DESKTOP}) {
-        padding: 1.5em 5em 7em 5em;
+        padding: 72px 5em 7em 5em;
     }
 `
 export const ProjectsHeader = styled.h3`
