@@ -12,15 +12,19 @@ import { ImageTile } from '$shared/components/Tile'
 import ProductDetails from '$mp/components/ProductPage/ProductDetails'
 import StreamListing from '$mp/components/ProductPage/StreamListing'
 import Terms from '$mp/components/ProductPage/Terms'
-import ProductPageDataUnionStats from '$mp/containers/ProductPage/DataUnionStats'
-import useDataUnionServerStats from '$mp/containers/ProductPage/useDataUnionServerStats'
+import ProductPageDataUnionStats from '$mp/containers/ProjectPage/DataUnionStats'
+import useDataUnionServerStats from '$mp/containers/ProjectPage/useDataUnionServerStats'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
 import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
 import usePending from '$shared/hooks/usePending'
-import ProductPage from '$shared/components/ProductPage'
+import ProjectPage, {
+    ProjectPageContainer,
+    ProjectPageHero,
+    ProjectPageSeparator
+} from '$shared/components/ProjectPage'
 import { MD, XL } from '$shared/utils/styled'
-import usePreviewStats from '$mp/containers/ProductPage/usePreviewStats'
+import usePreviewStats from '$mp/containers/ProjectPage/usePreviewStats'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import { useController } from '../ProductController'
@@ -186,22 +190,22 @@ const UnstyledPreview = (props) => {
         })
     }, [])
     return (
-        <ProductPage {...props}>
-            <ProductPage.Hero>
-                <ProductPage.Container>
-                    <ProductPage.Container>
+        <ProjectPage {...props}>
+            <ProjectPageHero>
+                <ProjectPageContainer>
+                    <ProjectPageContainer>
                         <Hero />
-                        <ProductPage.Separator />
+                        <ProjectPageSeparator />
                         <Description />
-                    </ProductPage.Container>
-                </ProductPage.Container>
-            </ProductPage.Hero>
-            <ProductPage.Container>
+                    </ProjectPageContainer>
+                </ProjectPageContainer>
+            </ProjectPageHero>
+            <ProjectPageContainer>
                 {isDataUnion && <DataUnionStats />}
                 <Streams />
                 <Terms product={product} />
-            </ProductPage.Container>
-        </ProductPage>
+            </ProjectPageContainer>
+        </ProjectPage>
     )
 }
 

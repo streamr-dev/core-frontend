@@ -20,7 +20,7 @@ export const Edit: FunctionComponent<{id: string}> = ({ id }: any) => (
 export const View: FunctionComponent<{id: string, disabled: boolean}> = ({ id, disabled }) => {
     const onClick = useCallback(() => {
         window.open(
-            routes.marketplace.product({
+            routes.marketplace.product.overview({
                 id,
             }),
             '_blank',
@@ -37,7 +37,7 @@ export const Copy: FunctionComponent<{id: string, disabled: boolean}> = ({ id, d
     const { copy } = useCopy()
     const onClick = useCallback(() => {
         copy(
-            routes.marketplace.public.product({
+            routes.marketplace.public.product.overview({
                 id,
             }),
         )

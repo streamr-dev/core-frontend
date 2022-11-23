@@ -5,18 +5,22 @@ import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
 import { isEthereumAddress } from '$mp/utils/validate'
 import Terms from '$mp/components/ProductPage/Terms'
-import ProductPage from '$shared/components/ProductPage'
+import ProjectPage, {
+    ProjectPageContainer,
+    ProjectPageHero,
+    ProjectPageSeparator
+} from '$shared/components/ProjectPage'
 import Segment from '$shared/components/Segment'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import useDataUnionServerStats from './useDataUnionServerStats'
-import Hero from './Hero'
+import ProjectHero from './ProjectHero'
 import Description from './Description'
 import DataUnionStats from './DataUnionStats'
 import Streams from './Streams'
 import RelatedProducts from './RelatedProducts'
 import usePreviewStats from './usePreviewStats'
 
-const ProductDetailsPage = () => {
+const ProjectDetailsPage = () => {
     const { product } = useController()
     const chainId = getChainIdFromApiString(product.chain)
     const contractProduct = useContractProduct()
@@ -43,17 +47,17 @@ const ProductDetailsPage = () => {
         return () => {}
     }, [startPolling, stopPolling, isDataUnion, beneficiaryAddress, chainId])
     return (
-        <ProductPage>
-            <ProductPage.Hero>
-                <ProductPage.Container>
-                    <ProductPage.Container>
-                        <Hero />
-                        <ProductPage.Separator />
+        <ProjectPage>
+            <ProjectPageHero>
+                <ProjectPageContainer>
+                    <ProjectPageContainer>
+                        <ProjectHero />
+                        <ProjectPageSeparator />
                         <Description />
-                    </ProductPage.Container>
-                </ProductPage.Container>
-            </ProductPage.Hero>
-            <ProductPage.Container>
+                    </ProjectPageContainer>
+                </ProjectPageContainer>
+            </ProjectPageHero>
+            <ProjectPageContainer>
                 {isDataUnion && (
                     <DataUnionStats
                         showDeploying={!isDuDeployed}
@@ -65,15 +69,15 @@ const ProductDetailsPage = () => {
                 )}
                 <Streams />
                 <Terms product={product} />
-                <ProductPage.Container>
+                <ProjectPageContainer>
                     <Segment>
                         <RelatedProducts />
                     </Segment>
-                </ProductPage.Container>
+                </ProjectPageContainer>
                 <Segment />
-            </ProductPage.Container>
-        </ProductPage>
+            </ProjectPageContainer>
+        </ProjectPage>
     )
 }
 
-export default ProductDetailsPage
+export default ProjectDetailsPage

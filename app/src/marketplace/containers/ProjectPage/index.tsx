@@ -20,7 +20,7 @@ const LoadingIndicator = styled(PrestyledLoadingIndicator)`
     top: 2px;
 `
 
-const ProductPage = () => {
+const ProjectPage = () => {
     const dispatch = useDispatch()
     const { product, loadCategories, loadDataUnion, loadRelatedProducts } = useController()
     const userData = useSelector(selectUserData)
@@ -77,10 +77,10 @@ const EditWrap = () => {
     }
 
     const key = (!!product && product.id) || ''
-    return <ProductPage key={key} product={product} />
+    return <ProjectPage key={key} product={product} />
 }
 
-const ProductContainer = () => {
+const ProjectContainer = () => {
     const { id } = useParams()
     return (
         <ProductController key={id} ignoreUnauthorized requirePublished useAuthorization={false}>
@@ -89,4 +89,4 @@ const ProductContainer = () => {
     )
 }
 
-export default ProductContainer
+export default ProjectContainer

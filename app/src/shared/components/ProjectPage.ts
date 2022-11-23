@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import Segment from '$shared/components/Segment'
 import { SM, MD, LG, XL } from '$shared/utils/styled'
-const Container = styled.div`
+export const ProjectPageContainer = styled.div`
     margin: 0 auto;
 
     & & {
@@ -25,7 +25,7 @@ const Container = styled.div`
         max-width: 1104px;
     }
 `
-const Hero = styled.div`
+export const ProjectPageHero = styled.div`
     background-color: #f8f8f8;
     padding: 24px 0;
 
@@ -41,7 +41,7 @@ const Hero = styled.div`
         padding: 64px 0;
     }
 `
-const Separator = styled.div`
+export const ProjectPageSeparator = styled.div`
     background-color: #e7e7e7;
     height: 1px;
     margin: 2em 0;
@@ -50,7 +50,7 @@ const Separator = styled.div`
         margin: 3em 0;
     }
 `
-const ProductPage = styled.div`
+const ProjectPage = styled.div`
     color: #323232;
 
     ${Segment} {
@@ -75,9 +75,5 @@ const ProductPage = styled.div`
         }
     }
 `
-Object.assign(ProductPage, {
-    Container,
-    Hero,
-    Separator,
-})
-export default ProductPage
+
+export default ProjectPage

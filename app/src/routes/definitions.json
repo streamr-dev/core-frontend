@@ -38,9 +38,17 @@
     "marketplace": {
         "index": "/marketplace",
         "streamPreview": "/marketplace/products/:id/streamPreview/:streamId",
-        "product": "/marketplace/products/:id",
+        "product": {
+            "overview": "/marketplace/products/:id",
+            "connect": "/marketplace/products/:id/connect",
+            "liveData": "/marketplace/products/:id/live-data"
+        },
         "public": {
-            "product": "<streamr>/marketplace/products/:id"
+            "product": {
+                "overview": "<streamr>/marketplace/products/:id",
+                "connect": "<streamr>/marketplace/products/:id/connect",
+                "liveData": "<streamr>/marketplace/products/:id/live-data"
+            }
         }
     },
     "networkExplorer": "<streamr>/network-explorer/",
