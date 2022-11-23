@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback, useMemo, ReactNode } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
@@ -12,6 +12,8 @@ import Nav from '$shared/components/Layout/Nav'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { useSessionToken } from '$shared/reducers/session'
 import { getChainIdFromApiString } from '$shared/utils/chains'
+import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
+import routes from '$routes'
 import ProductController, { useController } from '../ProductController'
 import WhitelistRequestAccessModal from './WhitelistRequestAccessModal'
 import PurchaseModal from './PurchaseModal'
@@ -27,7 +29,7 @@ const ProjectPage = () => {
     const token = useSessionToken()
     const isLoggedIn = userData !== null && !!token
     const { isPending } = usePending('contractProduct.LOAD')
-    const { id: productId } = useParams()
+    const { id: productId } = useParams<{id: string}>()
     const chainId = getChainIdFromApiString(product.chain)
     const loadAdditionalProductData = useCallback(
         async (id: ProjectId) => {
@@ -49,9 +51,33 @@ const ProjectPage = () => {
             loadDataUnion(beneficiaryAddress, chainId)
         }
     }, [dataUnionDeployed, beneficiaryAddress, chainId, loadDataUnion])
+
+    const pageTitle = useMemo<ReactNode>(
+        () => <>{product.name} by <strong>{product.owner}</strong></>,
+        [product])
+
     return (
-        <Layout nav={<Nav shadow />}>
+        <Layout nav={<Nav />}>
             <MarketplaceHelmet title={product.name} />
+            <DetailsPageHeader
+                backButtonLink={routes.marketplace.index}
+                pageTitle={pageTitle}
+                currentPageUrl={ routes.marketplace.product.overview({id: productId})}
+                linkTabs={[
+                    {
+                        label: 'Project overview',
+                        href:  routes.marketplace.product.overview({id: productId})
+                    },
+                    {
+                        label: 'Connect',
+                        href:  routes.marketplace.product.connect({id: productId})
+                    },
+                    {
+                        label: 'Live data',
+                        href:  routes.marketplace.product.liveData({id: productId})
+                    }
+                ]}
+            />
             <LoadingIndicator loading={isPending} />
             <Page />
             <PurchaseModal />
@@ -77,11 +103,11 @@ const EditWrap = () => {
     }
 
     const key = (!!product && product.id) || ''
-    return <ProjectPage key={key} product={product} />
+    return <ProjectPage key={key} />
 }
 
 const ProjectContainer = () => {
-    const { id } = useParams()
+    const { id } = useParams<{id: string}>()
     return (
         <ProductController key={id} ignoreUnauthorized requirePublished useAuthorization={false}>
             <EditWrap />
