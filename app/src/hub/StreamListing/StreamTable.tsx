@@ -2,13 +2,12 @@ import React from 'react'
 import type { Stream } from 'streamr-client'
 import styled, { css } from 'styled-components'
 
+import LoadMore from '$mp/components/LoadMore'
 import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
 
 const ROW_HEIGHT = 88
 
-type Props = {
-    streams: Array<Stream>,
-}
+const Container = styled.div``
 
 const Row = styled.div`
     align-items: center;
@@ -58,7 +57,7 @@ type TableRowsProps = {
 }
 
 const TableRows = styled.div<TableRowsProps>`
-    height: ${({ rowCount }) => rowCount * (ROW_HEIGHT + 1)}px;
+    height: ${({ rowCount }) => Math.max(rowCount, 1) * (ROW_HEIGHT + 1)}px;
 `
 
 const TableRow = styled(TableGrid)`
@@ -77,6 +76,7 @@ const TableRow = styled(TableGrid)`
 type GridCellProps = {
     onlyDesktop?: boolean,
     onlyTablet?: boolean,
+    notOnTablet?: boolean,
 }
 
 const GridCell = styled.span<GridCellProps>`
@@ -107,6 +107,20 @@ const GridCell = styled.span<GridCellProps>`
                 display: none;
             }
         `}
+
+    ${({ notOnTablet }) =>
+        notOnTablet &&
+        css`
+            display: block;
+
+            @media ${TABLET} {
+                display: none;
+            }
+
+            @media ${DESKTOP} {
+                display: block;
+            }
+        `}
 `
 
 const NoStreams = styled.div`
@@ -134,41 +148,56 @@ const StreamDescription = styled(GridCell)`
     font-weight: ${REGULAR};
 `
 
-const StreamTable: React.FC<Props> = ({ streams }: Props) => {
+type Props = {
+    streams: Array<Stream>,
+    loadMore?: () => void | Promise<void>,
+    hasMoreResults?: boolean,
+}
+
+const StreamTable: React.FC<Props> = ({ streams, loadMore, hasMoreResults }: Props) => {
     return (
-        <Table>
-            <TableHeader>
-                <GridCell>Stream ID</GridCell>
-                <GridCell onlyTablet>Description</GridCell>
-                <GridCell onlyDesktop>Live peers</GridCell>
-                <GridCell onlyDesktop>Msg/s</GridCell>
-                <GridCell onlyDesktop>Access</GridCell>
-                <GridCell onlyDesktop>Publishers</GridCell>
-                <GridCell onlyDesktop>Subscribers</GridCell>
-            </TableHeader>
-            <TableRows rowCount={Math.max(streams.length, 1)}>
-                {streams.map((s) => (
-                    <TableRow key={s.id}>
-                        <StreamDetails>
-                            <StreamId>
-                                {s.id}
-                            </StreamId>
-                            {'\n'}
-                            <StreamDescription>
-                                {s.getMetadata().description}
-                            </StreamDescription>
-                        </StreamDetails>
-                        <GridCell onlyTablet>{s.getMetadata().description}</GridCell>
-                        <GridCell onlyDesktop>50</GridCell>
-                        <GridCell onlyDesktop>1</GridCell>
-                        <GridCell onlyDesktop>Public</GridCell>
-                        <GridCell onlyDesktop>5</GridCell>
-                        <GridCell onlyDesktop>100</GridCell>
-                    </TableRow>
-                ))}
-                {streams.length === 0 && <NoStreams>No streams that match your query</NoStreams>}
-            </TableRows>
-        </Table>
+        <Container>
+            <Table>
+                <TableHeader>
+                    <GridCell>Stream ID</GridCell>
+                    <GridCell onlyTablet>Description</GridCell>
+                    <GridCell onlyDesktop>Live peers</GridCell>
+                    <GridCell onlyDesktop>Msg/s</GridCell>
+                    <GridCell onlyDesktop>Access</GridCell>
+                    <GridCell onlyDesktop>Publishers</GridCell>
+                    <GridCell onlyDesktop>Subscribers</GridCell>
+                </TableHeader>
+                <TableRows rowCount={streams.length}>
+                    {streams.map((s) => (
+                        <TableRow key={s.id}>
+                            <StreamDetails>
+                                <StreamId>
+                                    {s.id}
+                                </StreamId>
+                                {'\n'}
+                                <StreamDescription notOnTablet>
+                                    {s.getMetadata().description}
+                                </StreamDescription>
+                            </StreamDetails>
+                            <GridCell onlyTablet>{s.getMetadata().description}</GridCell>
+                            <GridCell onlyDesktop>50</GridCell>
+                            <GridCell onlyDesktop>1</GridCell>
+                            <GridCell onlyDesktop>Public</GridCell>
+                            <GridCell onlyDesktop>5</GridCell>
+                            <GridCell onlyDesktop>100</GridCell>
+                        </TableRow>
+                    ))}
+                    {streams.length === 0 && <NoStreams>No streams that match your query</NoStreams>}
+                </TableRows>
+            </Table>
+            {loadMore != null && (
+                <LoadMore
+                    hasMoreSearchResults={!!hasMoreResults}
+                    onClick={loadMore}
+                    preserveSpace
+                />
+            )}
+        </Container>
     )
 }
 

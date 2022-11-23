@@ -9,7 +9,6 @@ import Tabs from '$shared/components/Tabs'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import useFetchStreams from '$shared/hooks/useFetchStreams'
 import InterruptionError from '$shared/errors/InterruptionError'
-import LoadMore from '$mp/components/LoadMore'
 
 import StreamTable from './StreamTable'
 
@@ -34,10 +33,14 @@ const BATCH_SIZE = 10
 const TableContainer = styled.div`
     border-radius: 8px;
     background-color: white;
-    margin: 24px;
+    margin: 24px 24px 80px 24px;
+
+    @media ${TABLET} {
+        margin: 45px 40px 90px 40px;
+    }
 
     @media ${DESKTOP} {
-        margin: 60px 78px 0 78px;
+        margin: 60px 78px 130px 78px;
     }
 `
 
@@ -114,8 +117,9 @@ const StreamListing: React.FC = () => {
                 <Heading>{streamsSelection === StreamSelection.ALL ? 'All' : 'Your'} Streams</Heading>
                 <StreamTable
                     streams={streams}
+                    loadMore={fetch}
+                    hasMoreResults={hasMore}
                 />
-                <LoadMore hasMoreSearchResults={!!hasMore} onClick={fetch} preserveSpace />
             </TableContainer>
         </Layout>
     )
