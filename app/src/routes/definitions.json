@@ -39,7 +39,8 @@
         "index": "/marketplace",
         "streamPreview": "/marketplace/products/:id/streamPreview/:streamId",
         "product": {
-            "overview": "/marketplace/products/:id",
+            "index": "/marketplace/products/:id",
+            "overview": "/marketplace/products/:id/overview",
             "connect": "/marketplace/products/:id/connect",
             "liveData": "/marketplace/products/:id/live-data"
         },

@@ -5,7 +5,7 @@ import Button from '$shared/components/Button'
 export const SearchBarWrap = styled.div`
   display: flex;
   justify-content: center;
-  margin: 60px 0 80px;
+  padding: 60px 0 80px;
   > * {
     max-width: 770px;
     margin: 0 24px;
@@ -21,11 +21,10 @@ export const SearchBarWrap = styled.div`
 export const FiltersBar = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 0 30px;
-  margin-bottom: 30px;
+  padding: 0 30px 30px;
 
   @media (${DESKTOP}) {
-    padding: 0 5em;
+    padding: 0 5em 30px;
   }
 `
 
@@ -83,4 +82,8 @@ export const CreateProjectButton = styled(Button)`
   @media(${TABLET}) {
     display: inherit !important;
   }
+`
+
+export const ActionBarContainer = styled.div`
+  background-color: ${COLORS.primaryContrast};
 `

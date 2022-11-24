@@ -1,5 +1,5 @@
-import React, { useEffect, useCallback, useMemo, ReactNode } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { ReactNode, useCallback, useEffect, useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import Layout from '$shared/components/Layout'
@@ -13,11 +13,14 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import { useSessionToken } from '$shared/reducers/session'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
+import { MarketplaceLoadingView } from '$mp/containers/ProjectPage/MarketplaceLoadingView'
 import routes from '$routes'
 import ProductController, { useController } from '../ProductController'
 import WhitelistRequestAccessModal from './WhitelistRequestAccessModal'
 import PurchaseModal from './PurchaseModal'
 import Page from './Page'
+import { getProjectDetailsLinkTabs, getProjectTitle } from './utils'
+
 const LoadingIndicator = styled(PrestyledLoadingIndicator)`
     top: 2px;
 `
@@ -52,9 +55,8 @@ const ProjectPage = () => {
         }
     }, [dataUnionDeployed, beneficiaryAddress, chainId, loadDataUnion])
 
-    const pageTitle = useMemo<ReactNode>(
-        () => <>{product.name} by <strong>{product.owner}</strong></>,
-        [product])
+    const pageTitle = useMemo<ReactNode>(() => getProjectTitle(product), [product])
+    const linkTabs = useMemo(() => getProjectDetailsLinkTabs(productId), [productId])
 
     return (
         <Layout nav={<Nav />}>
@@ -63,20 +65,7 @@ const ProjectPage = () => {
                 backButtonLink={routes.marketplace.index}
                 pageTitle={pageTitle}
                 currentPageUrl={ routes.marketplace.product.overview({id: productId})}
-                linkTabs={[
-                    {
-                        label: 'Project overview',
-                        href:  routes.marketplace.product.overview({id: productId})
-                    },
-                    {
-                        label: 'Connect',
-                        href:  routes.marketplace.product.connect({id: productId})
-                    },
-                    {
-                        label: 'Live data',
-                        href:  routes.marketplace.product.liveData({id: productId})
-                    }
-                ]}
+                linkTabs={linkTabs}
             />
             <LoadingIndicator loading={isPending} />
             <Page />
@@ -86,20 +75,13 @@ const ProjectPage = () => {
     )
 }
 
-const LoadingView = () => (
-    <Layout>
-        <MarketplaceHelmet />
-        <LoadingIndicator loading />
-    </Layout>
-)
-
-const EditWrap = () => {
+const ProjectPageWrap = () => {
     const { product, hasLoaded } = useController()
     const { isPending: loadPending } = usePending('product.LOAD')
     const { isPending: permissionsPending } = usePending('product.PERMISSIONS')
 
     if (!hasLoaded || loadPending || permissionsPending) {
-        return <LoadingView />
+        return <MarketplaceLoadingView />
     }
 
     const key = (!!product && product.id) || ''
@@ -110,7 +92,7 @@ const ProjectContainer = () => {
     const { id } = useParams<{id: string}>()
     return (
         <ProductController key={id} ignoreUnauthorized requirePublished useAuthorization={false}>
-            <EditWrap />
+            <ProjectPageWrap />
         </ProductController>
     )
 }

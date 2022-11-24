@@ -4,6 +4,7 @@ import useModal from '$shared/hooks/useModal'
 import type { CategoryFilter, Filter, ProjectTypeFilter, SearchFilter } from '$mp/types/project-types'
 import SearchBar from '$shared/components/SearchBar'
 import {
+    ActionBarContainer,
     CreateProjectButton,
     DropdownFilters,
     FiltersBar,
@@ -97,7 +98,7 @@ const UnstyledActionBar = ({
     }
 
     return (
-        <div {...props}>
+        <ActionBarContainer {...props}>
             <SearchBarWrap>
                 <SearchBar value={filter.search} onChange={onSearchChange}/>
             </SearchBarWrap>
@@ -164,7 +165,7 @@ const UnstyledActionBar = ({
                 </FiltersWrap>
                 <CreateProjectButton kind={'primary'} type={'button'} onClick={() => onCreateProject()}>Create project</CreateProjectButton>
             </FiltersBar>
-        </div>
+        </ActionBarContainer>
     )
 }
 

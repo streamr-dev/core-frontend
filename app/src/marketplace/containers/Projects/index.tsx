@@ -130,7 +130,7 @@ const ProjectsPage: FunctionComponent = () => {
         [resetStats],
     )
     return (
-        <Layout framedClassName={styles.productsFramed} innerClassName={styles.productsInner} footer={false}>
+        <Layout className={styles.projectsListPage} framedClassName={styles.productsFramed} innerClassName={styles.productsInner} footer={false}>
             <MarketplaceHelmet />
             <ActionBar
                 filter={selectedFilter}
