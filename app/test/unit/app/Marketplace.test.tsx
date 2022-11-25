@@ -5,7 +5,7 @@ import MarketplaceRouter from '$mp/../app/Marketplace'
 import GenericErrorPage from '$shared/components/GenericErrorPage'
 
 /* eslint-disable react/prop-types */
-jest.mock('$mp/containers/Products', () => ({
+jest.mock('$mp/containers/Projects', () => ({
     __esModule: true,
     default: () => 'Main page',
 }))

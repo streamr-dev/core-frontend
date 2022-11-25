@@ -4,8 +4,8 @@ import type { EntitiesState } from '$shared/types/store-state'
 import type { ErrorInUi } from '$shared/types/common-types'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { productsSchema } from '$shared/modules/entities/schema'
-import type { ProductIdList, ProductList, Filter } from '../../types/product-types'
-import type { ProductListState, StoreState } from '../../types/store-state'
+import type { ProjectIdList, ProjectList, Filter } from '../../types/project-types'
+import type { ProductListState, ProjectAuthor, StoreState } from '../../types/store-state'
 
 const selectProductListState = (state: StoreState): ProductListState => state.productList
 
@@ -13,14 +13,14 @@ export const selectFetchingProductList: (state: StoreState) => boolean = createS
     selectProductListState,
     (subState: ProductListState): boolean => subState.fetching,
 )
-export const selectProductListIds: (state: StoreState) => ProductIdList = createSelector(
+export const selectProductListIds: (state: StoreState) => ProjectIdList = createSelector(
     selectProductListState,
     (subState: ProductListState) => subState.ids,
 )
-export const selectProductList: (arg0: StoreState) => ProductList = createSelector(
+export const selectProductList: (arg0: StoreState) => ProjectList = createSelector(
     selectProductListIds,
     selectEntities,
-    (result: ProductIdList, entities: EntitiesState): ProductList => denormalize(result, productsSchema, entities),
+    (result: ProjectIdList, entities: EntitiesState): ProjectList => denormalize(result, productsSchema, entities),
 )
 export const selectFilter: (arg0: StoreState) => Filter = createSelector(
     selectProductListState,
@@ -41,4 +41,8 @@ export const selectOffset: (arg0: StoreState) => number = createSelector(
 export const selectHasMoreSearchResults: (arg0: StoreState) => boolean = createSelector(
     selectProductListState,
     (subState: ProductListState): boolean => !!subState.hasMoreSearchResults,
+)
+export const selectProjectsAuthorFilter: (state: StoreState) => ProjectAuthor = createSelector(
+    selectProductListState,
+    (subState: ProductListState): ProjectAuthor => subState.projectAuthor
 )

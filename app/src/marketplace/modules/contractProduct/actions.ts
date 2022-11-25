@@ -3,7 +3,7 @@ import { contractProductSchema } from '$shared/modules/entities/schema'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
 import { handleEntities } from '$shared/utils/entities'
 import type { Address } from '$shared/types/web3-types'
-import type { ProductId } from '../../types/product-types'
+import type { ProjectId } from '../../types/project-types'
 import {
     GET_PRODUCT_FROM_CONTRACT_FAILURE,
     GET_PRODUCT_FROM_CONTRACT_REQUEST,
@@ -15,38 +15,38 @@ import {
 } from './constants'
 import * as services from './services'
 import type { ProductIdActionCreator, ProductErrorActionCreator, WhiteListedAddressActionCreator, WhiteListedAddressesActionCreator } from './types'
-const getProductFromContractRequest: ProductIdActionCreator = createAction(GET_PRODUCT_FROM_CONTRACT_REQUEST, (id: ProductId) => ({
+const getProductFromContractRequest: ProductIdActionCreator = createAction(GET_PRODUCT_FROM_CONTRACT_REQUEST, (id: ProjectId) => ({
     id,
 }))
-const getProductFromContractSuccess: ProductIdActionCreator = createAction(GET_PRODUCT_FROM_CONTRACT_SUCCESS, (id: ProductId) => ({
+const getProductFromContractSuccess: ProductIdActionCreator = createAction(GET_PRODUCT_FROM_CONTRACT_SUCCESS, (id: ProjectId) => ({
     id,
 }))
 const getProductFromContractFailure: ProductErrorActionCreator = createAction(
     GET_PRODUCT_FROM_CONTRACT_FAILURE,
-    (id: ProductId, error: ErrorInUi) => ({
+    (id: ProjectId, error: ErrorInUi) => ({
         id,
         error,
     }),
 )
 export const setWhiteListedAddresses: WhiteListedAddressesActionCreator = createAction(
     SET_WHITELISTED_ADDRESSES,
-    (id: ProductId, addresses: Array<Address>) => ({
+    (id: ProjectId, addresses: Array<Address>) => ({
         id,
         addresses,
     }),
 )
-export const addWhiteListedAddress: WhiteListedAddressActionCreator = createAction(ADD_WHITELISTED_ADDRESS, (id: ProductId, address: Address) => ({
+export const addWhiteListedAddress: WhiteListedAddressActionCreator = createAction(ADD_WHITELISTED_ADDRESS, (id: ProjectId, address: Address) => ({
     id,
     address,
 }))
 export const removeWhiteListedAddress: WhiteListedAddressActionCreator = createAction(
     REMOVE_WHITELISTED_ADDRESS,
-    (id: ProductId, address: Address) => ({
+    (id: ProjectId, address: Address) => ({
         id,
         address,
     }),
 )
-export const getProductFromContract = (id: ProductId, chainId: number) => (dispatch: (...args: Array<any>) => any) => {
+export const getProductFromContract = (id: ProjectId, chainId: number) => (dispatch: (...args: Array<any>) => any) => {
     dispatch(getProductFromContractRequest(id))
     return services
         .getProductFromContract(id, true, chainId)

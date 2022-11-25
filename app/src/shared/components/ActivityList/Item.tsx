@@ -8,7 +8,7 @@ import { ago } from '$shared/utils/time'
 import Spinner from '$shared/components/Spinner'
 import SvgIcon from '$shared/components/SvgIcon'
 import resourcePath from '$shared/utils/resourcePath'
-import { productTypes } from '$mp/utils/constants'
+import { projectTypes } from '$mp/utils/constants'
 import { useResource } from './ActivityResourceProvider'
 import { useIsPendingTransaction } from '.'
 const Container = styled.div`
@@ -130,11 +130,11 @@ const Item = ({ activity }: {activity: any}) => {
                     <Gray>
                         {resourceType === resourceTypes.PRODUCT &&
                             resource &&
-                            resource.type === productTypes.DATAUNION &&
+                            resource.type === projectTypes.DATAUNION &&
                             'Data Union'}
                         {resourceType === resourceTypes.PRODUCT &&
                             resource &&
-                            resource.type === productTypes.NORMAL &&
+                            resource.type === projectTypes.NORMAL &&
                             'Data Product'}
                         {resourceType === resourceTypes.STREAM && 'Stream'}
                     </Gray>{' '}

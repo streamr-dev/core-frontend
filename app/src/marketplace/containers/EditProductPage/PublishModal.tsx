@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
-import type { Product } from '$mp/types/product-types'
+import type { Project } from '$mp/types/project-types'
 import { transactionStates } from '$shared/utils/constants'
 import useModal from '$shared/hooks/useModal'
 import { getProductById } from '$mp/modules/product/services'
@@ -22,7 +22,7 @@ import getNativeTokenName from '$shared/utils/nativeToken'
 import { PublishMode } from '$mp/containers/EditProductPage/usePendingChanges'
 import usePublish from './usePublish'
 type Props = {
-    product: Product
+    product: Project
     api: Record<string, any>
 }
 export const PublishOrUnpublishModal = ({ product, api }: Props) => {

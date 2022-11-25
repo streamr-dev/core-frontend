@@ -6,16 +6,14 @@ import Logo from '$shared/components/Logo'
 import Skeleton from '$shared/components/Skeleton'
 import Rect from '$shared/components/Rect'
 import Link from '$shared/components/Link'
-import { isPaidProduct } from '$mp/utils/product'
-import { timeUnits } from '$shared/utils/constants'
-import PaymentRate from '$mp/components/PaymentRate'
 import useExpiresIn, { formatRemainingTime } from '$shared/hooks/useExpiresIn'
 import { formatChainName, getChainIdFromApiString } from '$shared/utils/chains'
 import routes from '$routes'
 import Label, { HAPPY, ANGRY, WORRIED } from './Label'
 import Summary from './Summary'
 import Menu from './Menu'
-import Badge, { DataUnionBadge, DeployingBadge, ChainBadge as UnstyledChainBadge } from './Badge'
+import { DataUnionBadge, DeployingBadge, ChainBadge as UnstyledChainBadge } from './Badge'
+
 const Image = styled(Img)`
     img& {
         display: block;
@@ -36,7 +34,13 @@ const Placeholder = styled.div`
     }
 `
 
-const UnstyledThumbnail = ({ src, skeletonize, alt, ...props }) =>
+type ThumbnailProps = {
+    src?: string | null | undefined
+    skeletonize?: boolean
+    alt?: string | null | undefined
+}
+
+const UnstyledThumbnail = ({ src, skeletonize, alt, ...props }: ThumbnailProps) =>
     src != null &&
     (skeletonize ? (
         <Image {...props} as={Skeleton} block />
@@ -54,14 +58,19 @@ const UnstyledThumbnail = ({ src, skeletonize, alt, ...props }) =>
         />
     ))
 
-const Thumbnail = styled(UnstyledThumbnail)`
+export const TileThumbnail = styled(UnstyledThumbnail)<ThumbnailProps>`
     height: 100%;
     left: 0;
     position: absolute;
     top: 0;
     width: 100%;
 `
-const Tile = styled.div`
+
+type TileProps = {
+    suppressHover?: boolean
+}
+
+const Tile = styled.div<TileProps>`
     position: relative;
 
     ${Menu} {
@@ -83,32 +92,37 @@ const Tile = styled.div`
     ${({ suppressHover }) =>
         !suppressHover &&
         css`
-            ${Thumbnail} {
+            ${TileThumbnail} {
                 filter: brightness(100%);
                 transition: 240ms ease-out filter;
             }
 
-            ${Menu}.show + a ${Thumbnail},
-        :hover ${Thumbnail} {
+            ${Menu}.show + a ${TileThumbnail},
+        :hover ${TileThumbnail} {
                 filter: brightness(70%);
                 transition-duration: 40ms;
             }
         `}
 `
 
-const UnstyledImageContainer = ({ children, ratio, height, autoSize: autoSizeProp, ...props }) => {
-    const autoSize = autoSizeProp === true || height != null || ratio != null
+type UnstyledTileImageContainerProps = {
+    children?: any
+    height?: string
+    autoSize?: any
+}
+
+const UnstyledTileImageContainer = ({ children, height, autoSize: autoSizeProp, ...props }: UnstyledTileImageContainerProps) => {
+    const autoSize = autoSizeProp === true || height != null
     return (
         <div {...props}>
             {children}
-            {!!autoSize && <Rect height={height} ratio={ratio} />}
+            {!!autoSize && <Rect height={height} />}
         </div>
     )
 }
 
-const ImageContainer = styled(UnstyledImageContainer)`
-    border-radius: 8px;
-    border-radius: ${({ theme }) => theme.borderRadius};
+export const TileImageContainer = styled(UnstyledTileImageContainer)<UnstyledTileImageContainerProps>`
+    border-radius: 16px;
     overflow: hidden;
     position: relative;
 
@@ -117,10 +131,7 @@ const ImageContainer = styled(UnstyledImageContainer)`
         overflow: visible;
     }
 `
-Object.assign(Tile, {
-    ImageContainer,
-    Thumbnail,
-})
+
 type ImageTileProps = {
     alt?: string | null | undefined
     height?: any
@@ -130,10 +141,10 @@ type ImageTileProps = {
 
 const ImageTile = ({ alt, height, showDataUnionBadge, src, ...props }: ImageTileProps) => (
     <Tile {...props} suppressHover>
-        <Tile.ImageContainer autoSize height={height}>
-            <Tile.Thumbnail alt={alt || ''} src={src || ''} />
+        <TileImageContainer autoSize height={height}>
+            <TileThumbnail alt={alt || ''} src={src || ''} />
             {!!showDataUnionBadge && <DataUnionBadge top left />}
-        </Tile.ImageContainer>
+        </TileImageContainer>
     </Tile>
 )
 
@@ -191,7 +202,7 @@ const PurchaseTile = ({
     ...props
 }: PurchaseTileProps) => (
     <Tile {...props}>
-        <Tile.ImageContainer>
+        <TileImageContainer>
             <Link
                 to={
                     product.id &&
@@ -200,15 +211,14 @@ const PurchaseTile = ({
                     })
                 }
             >
-                <Tile.ImageContainer autoSize>
-                    <Tile.Thumbnail src={product.imageUrl || ''} />
-                </Tile.ImageContainer>
+                <TileImageContainer autoSize>
+                    <TileThumbnail src={product.imageUrl || ''} />
+                </TileImageContainer>
                 {!!showDataUnionBadge && (
                     <DataUnionBadge
                         top
                         left
                         memberCount={numMembers}
-                        forwardAs={Badge.Link}
                         linkTo={
                             product.id &&
                             routes.marketplace.product(
@@ -222,7 +232,7 @@ const PurchaseTile = ({
                 )}
                 {!!showDeployingBadge && <DeployingBadge bottom right />}
             </Link>
-        </Tile.ImageContainer>
+        </TileImageContainer>
         <Link
             to={
                 product.id &&
@@ -234,7 +244,6 @@ const PurchaseTile = ({
             <Summary
                 name={product.name}
                 description={product.owner}
-                label={<ExpirationLabel expiresAt={expiresAt} now={now} />}
             />
         </Link>
     </Tile>
@@ -262,7 +271,7 @@ const ProductTile = ({
 }: ProductTileProps) => (
     <Tile {...props}>
         {!!actions && <Menu>{actions}</Menu>}
-        <Tile.ImageContainer>
+        <TileImageContainer>
             <Link
                 to={
                     product.id &&
@@ -271,15 +280,15 @@ const ProductTile = ({
                     })
                 }
             >
-                <Tile.ImageContainer autoSize>
-                    <Tile.Thumbnail src={product.imageUrl || ''} />
-                </Tile.ImageContainer>
+                <TileImageContainer autoSize>
+                    <TileThumbnail src={product.imageUrl || ''} />
+                </TileImageContainer>
             </Link>
             {!!showDataUnionBadge && (
                 <DataUnionBadge top left memberCount={numMembers} linkTo={routes.dataunions.index()} />
             )}
             {!!showDeployingBadge && <DeployingBadge bottom right />}
-        </Tile.ImageContainer>
+        </TileImageContainer>
         <Link
             to={
                 product.id &&
@@ -291,13 +300,6 @@ const ProductTile = ({
             <Summary
                 name={product.name}
                 description={touchedAgo(product)}
-                label={
-                    <Label mood={published && HAPPY}>
-                        {!!published && 'Published'}
-                        {!published && !!deployed && 'Deployed'}
-                        {!published && !deployed && 'Draft'}
-                    </Label>
-                }
             />
         </Link>
     </Tile>
@@ -310,15 +312,15 @@ type MarketplaceProductTileProps = {
 
 const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: MarketplaceProductTileProps) => (
     <Tile {...props}>
-        <Tile.ImageContainer>
+        <TileImageContainer>
             <Link
                 to={routes.marketplace.product({
                     id: product.id,
                 })}
             >
-                <Tile.ImageContainer autoSize>
-                    <Tile.Thumbnail src={product.imageUrl || ''} />
-                </Tile.ImageContainer>
+                <TileImageContainer autoSize>
+                    <TileThumbnail src={product.imageUrl || ''} />
+                </TileImageContainer>
             </Link>
             {!!showDataUnionBadge && (
                 <DataUnionBadge
@@ -341,7 +343,7 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: Marke
                     chainName={formatChainName(product.chain)}
                 />
             )}
-        </Tile.ImageContainer>
+        </TileImageContainer>
         <Link
             to={routes.marketplace.product({
                 id: product.id,
@@ -350,19 +352,6 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: Marke
             <Summary
                 name={product.name}
                 description={product.owner}
-                label={
-                    isPaidProduct(product) ? (
-                        <PaymentRate
-                            amount={product.pricePerSecond}
-                            pricingTokenAddress={product.pricingTokenAddress}
-                            chainId={getChainIdFromApiString(product.chain)}
-                            timeUnit={timeUnits.hour}
-                            maxDigits={4}
-                        />
-                    ) : (
-                        'Free'
-                    )
-                }
             />
         </Link>
     </Tile>

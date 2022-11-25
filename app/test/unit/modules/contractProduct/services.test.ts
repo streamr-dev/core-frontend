@@ -1,6 +1,6 @@
 import * as all from '$mp/modules/contractProduct/services'
 import * as utils from '$mp/utils/smartContract'
-import { SmartContractProduct } from '$mp/types/product-types'
+import { SmartContractProduct } from '$mp/types/project-types'
 describe('Product services', () => {
     beforeEach(() => {})
     afterEach(() => {

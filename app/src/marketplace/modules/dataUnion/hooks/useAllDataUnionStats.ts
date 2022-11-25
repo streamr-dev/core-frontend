@@ -12,12 +12,12 @@ import {
     selectDataUnionFetchingIds,
     selectDataUnionDeployedIds,
 } from '$mp/modules/dataUnion/selectors'
-import type { ProductIdList, DataUnionId } from '$mp/types/product-types'
+import type { ProjectIdList, DataUnionId } from '$mp/types/project-types'
 
 function useAllDataUnionStats() {
     const dispatch = useDispatch()
     const load = useCallback(
-        (ids: ProductIdList = []) => {
+        (ids: ProjectIdList = []) => {
             dispatch(updateDataUnionStats(ids))
         },
         [dispatch],

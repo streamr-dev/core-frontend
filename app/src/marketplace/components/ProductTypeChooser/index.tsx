@@ -7,7 +7,7 @@ import standardProductImage from '$mp/assets/product_standard.png'
 import standardProductImage2x from '$mp/assets/product_standard@2x.png'
 import dataUnionImage from '$mp/assets/product_dataunion.png'
 import dataUnionImage2x from '$mp/assets/product_dataunion@2x.png'
-import { productTypes } from '$mp/utils/constants'
+import { projectTypes } from '$mp/utils/constants'
 import routes from '$routes'
 type Props = {
     className?: string
@@ -98,7 +98,7 @@ const ProductTypeChooser = ({ className }: Props) => (
                         outline
                         tag={Link}
                         to={routes.products.new({
-                            type: productTypes.NORMAL,
+                            type: projectTypes.NORMAL,
                         })}
                     >
                         Create Data Product
@@ -120,7 +120,7 @@ const ProductTypeChooser = ({ className }: Props) => (
                         outline
                         tag={Link}
                         to={routes.products.new({
-                            type: productTypes.DATAUNION,
+                            type: projectTypes.DATAUNION,
                         })}
                     >
                         Create Data Union

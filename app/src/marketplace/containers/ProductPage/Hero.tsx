@@ -21,12 +21,12 @@ import { NotificationIcon } from '$shared/utils/constants'
 import Notification from '$shared/utils/Notification'
 import { isAddressWhitelisted } from '$mp/modules/contractProduct/services'
 import useAccountAddress from '$shared/hooks/useAccountAddress'
-import type { ProductId } from '$mp/types/product-types'
+import type { ProjectId } from '$mp/types/project-types'
 import validateWeb3 from '$utils/web3/validateWeb3'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import routes from '$routes'
 type WhitelistStatus = {
-    productId: ProductId
+    productId: ProjectId
     validate?: boolean
     chainId: number
 }

@@ -1,27 +1,27 @@
-import { productStates } from '$shared/utils/constants'
-import { productTypes } from '$mp/utils/constants'
+import { projectStates } from '$shared/utils/constants'
+import { projectTypes } from '$mp/utils/constants'
 import * as State from '../state'
 describe('Product State', () => {
     describe('isPublished', () => {
         it('detects published state', () => {
             expect(
                 State.isPublished({
-                    state: productStates.DEPLOYED,
+                    state: projectStates.DEPLOYED,
                 } as any),
             ).toBe(true)
             expect(
                 State.isPublished({
-                    state: productStates.DEPLOYING,
+                    state: projectStates.DEPLOYING,
                 } as any),
             ).toBe(true)
             expect(
                 State.isPublished({
-                    state: productStates.NOT_DEPLOYED,
+                    state: projectStates.NOT_DEPLOYED,
                 } as any),
             ).toBe(false)
             expect(
                 State.isPublished({
-                    state: productStates.UNDEPLOYING,
+                    state: projectStates.UNDEPLOYING,
                 } as any),
             ).toBe(false)
         })
@@ -93,7 +93,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.NOT_DEPLOYED,
+                state: projectStates.NOT_DEPLOYED,
             } as any
             expect(
                 State.getChangeObject(product, {
@@ -110,7 +110,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.NOT_DEPLOYED,
+                state: projectStates.NOT_DEPLOYED,
                 streams: ['1', '2'],
             } as any
             expect(
@@ -130,7 +130,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.NOT_DEPLOYED,
+                state: projectStates.NOT_DEPLOYED,
                 contact: {
                     email: 'tester1@streamr.com',
                     url: 'http://streamr.network',
@@ -158,7 +158,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.NOT_DEPLOYED,
+                state: projectStates.NOT_DEPLOYED,
                 contact: {
                     social1: 'twitter',
                     url: 'http://streamr.network',
@@ -191,7 +191,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.NOT_DEPLOYED,
+                state: projectStates.NOT_DEPLOYED,
             } as any
             expect(
                 State.update(product, (p) => ({
@@ -203,14 +203,14 @@ describe('Product State', () => {
                 id: '1',
                 name: 'newName',
                 description: 'A better description',
-                state: productStates.NOT_DEPLOYED,
+                state: projectStates.NOT_DEPLOYED,
             })
         })
         it('updates smart contract fields for unpublished product', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
-                state: productStates.NOT_DEPLOYED,
+                state: projectStates.NOT_DEPLOYED,
             } as any
             expect(
                 State.update(product, (p) => ({
@@ -221,7 +221,7 @@ describe('Product State', () => {
                 })),
             ).toMatchObject({
                 id: '1',
-                state: productStates.NOT_DEPLOYED,
+                state: projectStates.NOT_DEPLOYED,
                 pendingChanges: {
                     adminFee: '0.2',
                     pricingTokenAddress: '0x123',
@@ -234,8 +234,8 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.NOT_DEPLOYED,
-                type: productTypes.DATAUNION,
+                state: projectStates.NOT_DEPLOYED,
+                type: projectTypes.DATAUNION,
             } as any
             expect(
                 State.update(product, (p) => ({
@@ -248,7 +248,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'Better Name',
                 description: 'A better description',
-                state: productStates.NOT_DEPLOYED,
+                state: projectStates.NOT_DEPLOYED,
                 pendingChanges: {
                     adminFee: '0.2',
                 },
@@ -259,7 +259,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
             } as any
             expect(
                 State.update(product, (p) => ({
@@ -271,7 +271,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
                 pendingChanges: {
                     name: 'Better Name',
                     description: 'A better description',
@@ -282,7 +282,7 @@ describe('Product State', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
             } as any
             expect(
                 State.update(product, (p) => ({
@@ -293,7 +293,7 @@ describe('Product State', () => {
             ).toMatchObject({
                 id: '1',
                 name: 'My Product',
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
                 pendingChanges: {
                     pricingTokenAddress: '0x123',
                     requiresWhitelist: true,
@@ -305,7 +305,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.DEPLOYING,
+                state: projectStates.DEPLOYING,
             } as any
             expect(
                 State.update(product, (p) => ({
@@ -317,7 +317,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.DEPLOYING,
+                state: projectStates.DEPLOYING,
                 pendingChanges: {
                     name: 'Better Name',
                     description: 'A better description',
@@ -331,7 +331,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.NOT_DEPLOYED,
+                state: projectStates.NOT_DEPLOYED,
             } as any
             expect(State.getPendingChanges(product)).toMatchObject({})
         })
@@ -340,8 +340,8 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.NOT_DEPLOYED,
-                type: productTypes.DATAUNION,
+                state: projectStates.NOT_DEPLOYED,
+                type: projectTypes.DATAUNION,
             } as any
             expect(State.getPendingChanges(product)).toMatchObject({})
         })
@@ -350,8 +350,8 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.NOT_DEPLOYED,
-                type: productTypes.DATAUNION,
+                state: projectStates.NOT_DEPLOYED,
+                type: projectTypes.DATAUNION,
             } as any
             expect(
                 State.getPendingChanges({
@@ -371,7 +371,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
             } as any
             expect(
                 State.getPendingChanges({
@@ -391,7 +391,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
             } as any
             expect(
                 State.getPendingChanges({
@@ -412,8 +412,8 @@ describe('Product State', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 adminFee: '0.2',
-                state: productStates.DEPLOYED,
-                type: productTypes.DATAUNION,
+                state: projectStates.DEPLOYED,
+                type: projectTypes.DATAUNION,
             } as any
             expect(
                 State.getPendingChanges({
@@ -436,8 +436,8 @@ describe('Product State', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 adminFee: '0.2',
-                state: productStates.NOT_DEPLOYED,
-                type: productTypes.DATAUNION,
+                state: projectStates.NOT_DEPLOYED,
+                type: projectTypes.DATAUNION,
             } as any
             expect(
                 State.getPendingChanges(
@@ -458,8 +458,8 @@ describe('Product State', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 adminFee: '0.2',
-                state: productStates.NOT_DEPLOYED,
-                type: productTypes.DATAUNION,
+                state: projectStates.NOT_DEPLOYED,
+                type: projectTypes.DATAUNION,
             } as any
             expect(
                 State.getPendingChanges(
@@ -483,8 +483,8 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.NOT_DEPLOYED,
-                type: productTypes.NORMAL,
+                state: projectStates.NOT_DEPLOYED,
+                type: projectTypes.NORMAL,
             } as any
             expect(
                 State.getPendingChanges(
@@ -506,7 +506,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
                 pendingChanges: {
                     contact: {
                         email: 'a@b.com',
@@ -526,7 +526,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.NOT_DEPLOYED,
+                state: projectStates.NOT_DEPLOYED,
             }
             const nextProduct = {
                 ...product,
@@ -543,8 +543,8 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.NOT_DEPLOYED,
-                type: productTypes.DATAUNION,
+                state: projectStates.NOT_DEPLOYED,
+                type: projectTypes.DATAUNION,
             }
             const nextProduct = {
                 ...product,
@@ -563,7 +563,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
             }
             const nextProduct = {
                 ...product,
@@ -581,7 +581,7 @@ describe('Product State', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 otherField: 'asd',
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
             }
             const nextProduct = {
                 ...product,
@@ -599,7 +599,7 @@ describe('Product State', () => {
         it('returns true for nested property changes', () => {
             const product = {
                 id: '1',
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
                 contact: {
                     email: 'a@b.com',
                 },
@@ -621,7 +621,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.NOT_DEPLOYED,
+                state: projectStates.NOT_DEPLOYED,
             } as any
             expect(
                 State.withPendingChanges({
@@ -635,7 +635,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.NOT_DEPLOYED,
+                state: projectStates.NOT_DEPLOYED,
             })
         })
         it('returns the current data and updated admin fee for unpublished data union', () => {
@@ -644,8 +644,8 @@ describe('Product State', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 adminFee: '0.2',
-                state: productStates.NOT_DEPLOYED,
-                type: productTypes.DATAUNION,
+                state: projectStates.NOT_DEPLOYED,
+                type: projectTypes.DATAUNION,
             } as any
             expect(
                 State.withPendingChanges({
@@ -661,8 +661,8 @@ describe('Product State', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 adminFee: '0.5',
-                state: productStates.NOT_DEPLOYED,
-                type: productTypes.DATAUNION,
+                state: projectStates.NOT_DEPLOYED,
+                type: projectTypes.DATAUNION,
             })
         })
         it('returns the updated data for published product', () => {
@@ -670,7 +670,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
             } as any
             expect(
                 State.withPendingChanges({
@@ -684,7 +684,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'Better Name',
                 description: 'A better description',
-                state: productStates.DEPLOYED,
+                state: projectStates.DEPLOYED,
             })
         })
     })

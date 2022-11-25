@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState, useMemo, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import type { ProductId, AccessPeriod } from '$mp/types/product-types'
+import type { ProjectId, AccessPeriod } from '$mp/types/project-types'
 import useModal from '$shared/hooks/useModal'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import { useController } from '$mp/containers/ProductController'
@@ -30,7 +30,7 @@ import { getChainIdFromApiString } from '$shared/utils/chains'
 import usePurchase, { actionsTypes } from './usePurchase'
 
 type Props = {
-    productId: ProductId
+    productId: ProjectId
     api: Record<string, any>
 }
 

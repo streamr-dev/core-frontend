@@ -1,8 +1,8 @@
 import BN from 'bignumber.js'
 import { Category } from '$mp/types/category-types'
-import { Product } from '$mp/types/product-types'
+import { Project } from '$mp/types/project-types'
 
-export const existingProduct: Product = {
+export const existingProduct: Project = {
     id: '459828a2f9df2991e5a3d921dda23b4c09a84cd6bc7930dcf1ad829d5ee006ed',
     name: 'Weather on North Atlantic',
     description: 'Weather on North Atlantic. Weather on North Atlantic. Weather on North Atlantic. ',

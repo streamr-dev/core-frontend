@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { CoreHelmet } from '$shared/components/Helmet'
 import { getMyProducts } from '$mp/modules/myProductList/actions'
 import { selectMyProductList, selectFetching } from '$mp/modules/myProductList/selectors'
-import { productStates } from '$shared/utils/constants'
+import { projectStates } from '$shared/utils/constants'
 import Popover from '$shared/components/Popover'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
@@ -15,7 +15,7 @@ import CreateProductModal from '$mp/containers/CreateProductModal'
 import Button from '$shared/components/Button'
 import Grid from '$shared/components/Tile/Grid'
 import { ProductTile } from '$shared/components/Tile'
-import { productTypes } from '$mp/utils/constants'
+import { projectTypes } from '$mp/utils/constants'
 import PopoverItem from '$shared/components/Popover/PopoverItem'
 import routes from '$routes'
 import Search from '../Header/Search'
@@ -34,7 +34,7 @@ export const CreateProductButton: FunctionComponent = () => {
             onClick={() => {
                 history.replace(
                     routes.products.new({
-                        type: productTypes.NORMAL,
+                        type: projectTypes.NORMAL,
                     }),
                 )
             }}
@@ -60,11 +60,11 @@ const ProductsPage: FunctionComponent = () => {
     } = useAllDataUnionStats()
     // Make sure we show only normal products.
     // This is needed to avoid quick flash of possibly data union products.
-    const products = useMemo(() => allProducts.filter((p) => p.type === productTypes.NORMAL), [allProducts])
+    const products = useMemo(() => allProducts.filter((p) => p.type === projectTypes.NORMAL), [allProducts])
     useEffect(() => {
         // Modify filter to include only normal products
         const finalFilter = {
-            ...filter, key: 'type', value: productTypes.NORMAL
+            ...filter, key: 'type', value: projectTypes.NORMAL
         }
         dispatch(getMyProducts(finalFilter)).then(loadDataUnionStats)
     }, [dispatch, filter, loadDataUnionStats])
@@ -124,7 +124,7 @@ const ProductsPage: FunctionComponent = () => {
                         const memberCount = isDataUnion && !isFetching ? members[beneficiaryAddress] : undefined
                         const isDeploying =
                             isDataUnion && readyToFetch && !isFetching && typeof memberCount === 'undefined'
-                        const published = state === productStates.DEPLOYED
+                        const published = state === projectStates.DEPLOYED
                         const deployed = !!(isDataUnion && !!beneficiaryAddress)
                         return (
                             <ProductTile

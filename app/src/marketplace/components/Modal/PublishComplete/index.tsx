@@ -1,6 +1,6 @@
 import React from 'react'
 import { PublishMode } from '$mp/containers/EditProductPage/usePendingChanges'
-import type { ProductId } from '$mp/types/product-types'
+import type { ProjectId } from '$mp/types/project-types'
 import PublishComplete from './PublishComplete'
 import UnpublishComplete from './UnpublishComplete'
 
@@ -11,7 +11,7 @@ export type BaseProps = {
 export type Props = BaseProps & {
     onContinue: () => void
     publishMode: PublishMode
-    productId: ProductId
+    productId: ProjectId
 }
 
 const PublishCompleteWrap = ({ publishMode, onClose, onContinue, productId }: Props) => {

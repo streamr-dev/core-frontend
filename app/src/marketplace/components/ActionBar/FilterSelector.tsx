@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, ReactNode } from 'react'
 import styled from 'styled-components'
-import type { AnyFilter } from '$mp/types/product-types'
+import type { AnyFilter } from '$mp/types/project-types'
 import UnstyledPopover from '$shared/components/Popover'
 import { LG } from '$shared/utils/styled'
 import useModal from '$shared/hooks/useModal'

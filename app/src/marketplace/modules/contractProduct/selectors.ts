@@ -3,7 +3,7 @@ import { denormalize } from 'normalizr'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import type { EntitiesState } from '$shared/types/store-state'
 import type { ErrorInUi } from '$shared/types/common-types'
-import type { ProductId, SmartContractProduct, WhitelistedAddress } from '$mp/types/product-types'
+import type { ProjectId, SmartContractProduct, WhitelistedAddress } from '$mp/types/project-types'
 import { contractProductSchema, whiteListedAddressesSchema } from '$shared/modules/entities/schema'
 import type { Address } from '$shared/types/web3-types'
 import type { ContractProductState, StoreState } from '../../types/store-state'
@@ -18,14 +18,14 @@ export const selectContractProductError: (arg0: StoreState) => ErrorInUi | null 
     selectContractProductState,
     (subState: ContractProductState): ErrorInUi | null | undefined => subState.contractProductError,
 )
-export const selectContractProductId: (arg0: StoreState) => ProductId | null | undefined = createSelector(
+export const selectContractProductId: (arg0: StoreState) => ProjectId | null | undefined = createSelector(
     selectContractProductState,
-    (subState: ContractProductState): ProductId | null | undefined => subState.id,
+    (subState: ContractProductState): ProjectId | null | undefined => subState.id,
 )
 export const selectContractProduct: (arg0: StoreState) => SmartContractProduct | null | undefined = createSelector(
     selectContractProductId,
     selectEntities,
-    (id: ProductId, entities: EntitiesState): SmartContractProduct | null | undefined => denormalize(id, contractProductSchema, entities),
+    (id: ProjectId, entities: EntitiesState): SmartContractProduct | null | undefined => denormalize(id, contractProductSchema, entities),
 )
 export const selectWhiteListedAddressIds: (arg0: StoreState) => Array<Address> = createSelector(
     selectContractProductState,
