@@ -1,10 +1,10 @@
-import type { Node } from 'react'
+import type { ReactNode } from 'react'
 import React from 'react'
 import cx from 'classnames'
 import styles from './docs.pcss'
 type Props = {
     className?: string
-    children?: Node
+    children?: ReactNode
 }
 
 const Docs = ({ className, children, ...props }: Props) => (

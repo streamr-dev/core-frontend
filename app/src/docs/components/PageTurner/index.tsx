@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, FunctionComponent } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -16,7 +16,11 @@ const docsPages = (Object.values(docsMap) || []).flatMap((subPages) => {
     return pages
 })
 
-const UnstyledPageTurner = ({ className }) => {
+type UnstyledPageTurnerProps = {
+    className?: string
+}
+
+const UnstyledPageTurner: FunctionComponent<UnstyledPageTurnerProps> = ({ className }) => {
     const { pathname } = useLocation()
     const links = useMemo(() => {
         const currentPageIndex = docsPages.findIndex(({ path }) => path === pathname)

@@ -10,26 +10,42 @@ type Props = {
     onChange: (text: SearchFilter) => void
     onClose?: () => void
 }
+const SearchInputWrapper = styled.div`
+    position: relative;
+    flex: 1;
+`
 const Inner = styled.div`
+    position: relative;
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     margin: 0 auto;
     width: 100%;
     height: 100%;
     padding: 0 calc(1.5rem - 4px) 0 1.5rem;
 
     @media (min-width: ${SM}px) {
-        padding: 0 calc(1.5rem - 4px) 0 3rem;
+        padding: 0 calc(1.5rem - 4px) 0 1.5rem;
+        max-width: 540px;
     }
 
     @media (min-width: ${MD}px) {
-        padding: 0 1.5rem 0 3rem;
+        //padding: 0 3rem;
+        max-width: 708px;
     }
 
     @media (min-width: ${LG}px) {
         padding: 0 1.5rem;
+
+        max-width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 736px 1fr;
+        grid-column-gap: 2rem;
+
+        ${SearchInputWrapper} {
+            grid-column-start: 2;
+        }
     }
 `
 const SearchIcon = styled.div`
@@ -47,14 +63,17 @@ const SearchIcon = styled.div`
 `
 const EditableText = styled(UnstyledEditableText)`
     && {
+        position: relative;
         text-align: left;
         font-family: var(--sans);
-        font-size: 16px;
-        color: ${({ theme }) => (theme.editing ? 'var(--greyDark2)' : '#CDCDCD')};
-        border: none;
-        background: none;
+        font-size: 14px;
+        color: ${({ theme }) => (theme.editing ? 'var(--greyDark2)' : '#a3a3a3')};
+        border: ${({ theme }) => (theme.editing ? '2px solid #9BC1FB' : 'none')};
+        background: #f5f5f5;
         display: flex;
-        height: 100%;
+        height: 40px;
+        padding: 8px 50px 8px 20px;
+        border-radius: 20px;
         font-style: normal;
         line-height: normal;
         cursor: initial;
@@ -85,6 +104,13 @@ const EditableText = styled(UnstyledEditableText)`
             }
         }
     }
+
+    @media (min-width: ${LG}px) {
+        && {
+            height: 60px;
+            border-radius: 30px;
+        }
+    }
 `
 const ButtonBase = styled.button`
     appearance: none;
@@ -108,40 +134,65 @@ const ButtonBase = styled.button`
     }
 `
 const CloseButton = styled(ButtonBase)`
-    min-width: 32px;
-    height: 32px;
     white-space: nowrap;
+    margin-left: 7px;
+    color: var(--greyDark2);
+    transition: color .3s ease-in-out;
 
-    svg {
-        width: 10px;
-        height: 10px;
+    :hover {
+        color: var(--greyDark);
     }
 
-    path {
-        transition: all 0.1s;
-        fill: var(--greyDark2);
-        stroke: var(--greyDark2);
+    @media (min-width: ${LG}px) {
+        margin-left: auto;
+        margin-right: 1rem;
     }
-`
-const Separator = styled.div`
-    width: 1px;
-    height: 24px;
-    border-left: 1px solid #cdcdcd;
-    margin: 0 16px;
 `
 const ClearButtonWrapper = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1010;
+
+    @media (min-width: ${LG}px) {
+        right: 20px;
+    }
 `
 const ClearButton = styled(ButtonBase)`
-    color: #a3a3a3;
-    height: 32px;
-    font-size: 14px;
-    white-space: nowrap;
+    background-color: var(--greyDark2);
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    border-radius: 100%;
+    transition: background-color .3s ease-in-out;
+
+    svg {
+        width: 7px;
+        height: 7px;
+    }
+
+    path {
+        transition: all 0.1s;
+        fill: var(--grey4);
+        stroke: var(--grey4);
+    }
 
     :hover {
-        color: var(--greyDark2);
+        background-color: var(--greyDark);
+    }
+
+    @media (min-width: ${LG}px) {
+        width: 24px;
+        height: 24px;
+
+        svg {
+            width: 10px;
+            height: 10px;
+        }
     }
 `
 
@@ -155,39 +206,37 @@ const UnstyledSearchInput = ({ value, onChange, onClose, ...props }: Props) => {
     return (
         <div {...props}>
             <Inner>
-                <SearchIcon>
-                    <SvgIcon name="search" />
-                </SearchIcon>
-                <UseState initialValue={false} key={refreshCounter}>
-                    {(editing, setEditing) => (
-                        <EditableText
-                            placeholder="Search..."
-                            value={value}
-                            onChange={onChange}
-                            editOnFocus
-                            selectAllOnFocus={false}
-                            commitEmpty
-                            editing={editing}
-                            setEditing={setEditing}
-                            autoFocus
-                            theme={{
-                                editing,
-                            }}
-                        >
-                            {value || ''}
-                        </EditableText>
+                <SearchInputWrapper>
+                    <UseState initialValue={false} key={refreshCounter}>
+                        {(editing, setEditing) => (
+                            <EditableText
+                                placeholder="Search..."
+                                value={value}
+                                onChange={onChange}
+                                editOnFocus
+                                selectAllOnFocus={false}
+                                commitEmpty
+                                editing={editing}
+                                setEditing={setEditing}
+                                autoFocus
+                                theme={{
+                                    editing,
+                                }}
+                            >
+                                {value || ''}
+                            </EditableText>
+                        )}
+                    </UseState>
+                    {!!value && (
+                        <ClearButtonWrapper>
+                            <ClearButton type="button" onClick={onClear}>
+                                <SvgIcon name="crossMedium" />
+                            </ClearButton>
+                        </ClearButtonWrapper>
                     )}
-                </UseState>
-                {!!value && (
-                    <ClearButtonWrapper>
-                        <ClearButton type="button" onClick={onClear}>
-                            Clear
-                        </ClearButton>
-                        <Separator />
-                    </ClearButtonWrapper>
-                )}
+                </SearchInputWrapper>
                 <CloseButton type="button" onClick={onClose}>
-                    <SvgIcon name="crossMedium" />
+                    Cancel
                 </CloseButton>
             </Inner>
         </div>
@@ -195,16 +244,15 @@ const UnstyledSearchInput = ({ value, onChange, onClose, ...props }: Props) => {
 }
 
 const SearchInput = styled(UnstyledSearchInput)`
-    background: var(--greyLight3);
-    color: #cdcdcd;
-    height: 80px;
-    font-size: 16px;
+    background: #ffffff;
+    color: var(--greyDark2);
+    font-size: 14px;
     text-align: center;
-    height: 72px;
-
-    ${Inner} {
-        max-width: 1080px;
-    }
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
 
     ${SearchIcon} {
         display: none;
@@ -212,20 +260,15 @@ const SearchInput = styled(UnstyledSearchInput)`
 
     ${EditableText} {
         flex-grow: 1;
-        margin-right: 4px;
-
-        @media (min-width: ${MD}px) {
-            margin-right: 8px;
-        }
     }
 
     @media (min-width: ${LG}px) {
-        ${SearchIcon} {
-            display: flex;
-            margin-left: -8px;
-        }
-
-        height: 112px;
+        position: relative;
+        top: auto;
+        left: auto;
+        height: auto;
+        padding: 2.5rem 0 3rem;
+        border-bottom: 1px solid #e7e7e7;
     }
 `
 export default SearchInput

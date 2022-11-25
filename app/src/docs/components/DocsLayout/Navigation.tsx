@@ -27,7 +27,11 @@ const SubNavList = styled.ul`
     position: sticky;
     text-align: left;
 `
-const NavListItem = styled.li`
+type NavListItemProps = {
+    $active?: boolean
+    $hasSubitems?: number
+}
+const NavListItem = styled.li<NavListItemProps>`
     a {
         color: var(--greyDark);
         display: block;
@@ -165,7 +169,7 @@ const TableOfContents = styled(UnstyledTableOfContents)`
 
     @media (min-width: ${DESKTOP}px) {
         display: block;
-        max-height: calc(100vh - 32px - 4.5rem);
+        max-height: calc(100vh - 32px - 6rem);
     }
 
     &::-webkit-scrollbar {
@@ -175,9 +179,13 @@ const TableOfContents = styled(UnstyledTableOfContents)`
 `
 const MobileHeader = styled(NavListItem)`
     && {
-        margin-top: 0.5em;
+        margin-top: 0.35em;
         margin-bottom: 2.5em;
         cursor: pointer;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-right: 50px;
 
         a {
             width: calc(100% - 60px);
@@ -215,6 +223,10 @@ const ElevatedContainer = styled(UnstyledElevatedContainer)`
 
             ${DropdownCaret} {
                 transform: rotate(270deg);
+            }
+
+            ${TableOfContents} {
+                overflow: hidden;
             }
         `}
 `

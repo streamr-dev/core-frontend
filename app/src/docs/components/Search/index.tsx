@@ -1,24 +1,24 @@
-import type { Node } from 'react'
+import type { ReactNode } from 'react'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import useLunr from '$docs/hooks/useLunr'
 import RawHtml from '$shared/components/RawHtml'
 import BodyClass from '$shared/components/BodyClass'
-import { SM, LG } from '$shared/utils/styled'
+import { SM, MD, LG } from '$shared/utils/styled'
 import routes from '$routes'
 import { formatSearchResults } from './searchUtils'
 import SearchInput from './SearchInput'
 const SearchResults = styled.div``
 const SearchResultsInner = styled.div`
     margin: 0 auto;
-    max-width: 1080px;
+    max-width: 540px;
     padding: 0 1.5rem;
 
     > * {
         text-align: left;
         list-style: none;
-        margin: 1.5rem 0 10rem;
+        margin: .5rem 0 10rem;
         padding: 0;
     }
 
@@ -40,12 +40,17 @@ const SearchResultsInner = styled.div`
         font-weight: var(--medium);
     }
 
-    @media (min-width: ${SM}px) {
-        padding: 0 3rem;
+    @media (min-width: ${MD}px) {
+        max-width: 708px;
     }
 
     @media (min-width: ${LG}px) {
-        padding: 0 1.5rem;
+        max-width: 736px;
+        padding: 0;
+
+        > * {
+            margin: 2.5rem 0 10rem;
+        }
     }
 `
 const ResultHeading = styled(Link)`
@@ -97,7 +102,7 @@ const TopWrapper = styled.div`
     background: white;
 `
 type Props = {
-    nav?: Node
+    nav?: ReactNode
     toggleOverlay: () => void
 }
 
