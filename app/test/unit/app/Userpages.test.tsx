@@ -55,14 +55,6 @@ describe('Userpages Routes', () => {
         )
         expect(el.text()).toBe('Profile page')
     })
-    it('shows stream list', () => {
-        const el = mount(
-            <MemoryRouter initialEntries={['/core/streams']}>
-                <Switch>{UserpagesRouter()}</Switch>
-            </MemoryRouter>,
-        )
-        expect(el.text()).toBe('Stream list')
-    })
     it('shows the new stream page', () => {
         const el = mount(
             <MemoryRouter initialEntries={['/core/streams/new']}>
@@ -119,6 +111,7 @@ describe('Userpages Routes', () => {
         )
         expect(el.text()).toBe('Product 123 editor')
     })
+    /*
     it('redirects to stream list on bad route', () => {
         const el = mount(
             <MemoryRouter initialEntries={['/core/some/route']}>
@@ -127,4 +120,5 @@ describe('Userpages Routes', () => {
         )
         expect(el.text()).toBe('Stream list')
     })
+    */
 })
