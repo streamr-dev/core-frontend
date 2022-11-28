@@ -17,6 +17,7 @@ export enum COLORS {
     primaryDisabled = '#A3A3A3',
     secondary = '#F5F5F5',
     secondaryHover = '#E7E7E7',
+    secondaryLight = '#F8F8F8',
     focus = '#9BC1FB',
     selection = '#CCE9FD',
     separator = '#EFEFEF',

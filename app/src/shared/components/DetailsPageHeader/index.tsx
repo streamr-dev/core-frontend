@@ -42,16 +42,12 @@ const DetailsPageHeaderContainer = styled.div`
     padding: 0 32px;
   }
   @media (${TABLET}) {
-    max-width: 816px;
+    max-width: 1360px;
     padding: 0 24px;
 
     & & {
       padding: 0;
     }
-  }
-
-  @media (min-width: ${XL}px) {
-    max-width: 1104px;
   }
 `
 

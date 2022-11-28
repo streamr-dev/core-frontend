@@ -195,4 +195,8 @@ const ProjectHero = () => {
     )
 }
 
+/**
+ * @deprecated
+ * Use ProjectHero2 now and remove this one after releasing the Hub
+ */
 export default ProjectHero

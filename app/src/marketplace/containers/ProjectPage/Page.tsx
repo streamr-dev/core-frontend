@@ -19,6 +19,7 @@ import DataUnionStats from './DataUnionStats'
 import Streams from './Streams'
 import RelatedProducts from './RelatedProducts'
 import usePreviewStats from './usePreviewStats'
+import { ProjectHero2 } from './Hero/ProjectHero2'
 
 const ProjectDetailsPage = () => {
     const { product } = useController()
@@ -51,7 +52,8 @@ const ProjectDetailsPage = () => {
             <ProjectPageHero>
                 <ProjectPageContainer>
                     <ProjectPageContainer>
-                        <ProjectHero />
+                        <ProjectHero2 project={product}/>
+                        {/*<ProjectHero />*/}
                         <ProjectPageSeparator />
                         <Description />
                     </ProjectPageContainer>
