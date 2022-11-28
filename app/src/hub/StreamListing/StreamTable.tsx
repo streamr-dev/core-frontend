@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components'
 
 import LoadMore from '$mp/components/LoadMore'
 import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
+import routes from '$routes'
 
 const ROW_HEIGHT = 88
 
@@ -135,11 +136,18 @@ const NoStreams = styled.div`
     color: ${COLORS.primaryLight};
 `
 
-const StreamDetails = styled.div`
+const StreamDetails = styled.a`
     font-size: 16px;
     line-height: 26px;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: ellipsis;    
+
+    &:active,
+    &:link,
+    &:visited,
+    &:hover {
+        color: ${COLORS.primaryLight};
+    }
 `
 
 const StreamId = styled(GridCell)`
@@ -151,9 +159,10 @@ const StreamDescription = styled(GridCell)`
 `
 
 const Heading = styled.div`
-    font-size: 34px;
-    line-height: 34px;
-    color: ${COLORS.primary};
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 16px;
+    align-items: center;
     padding: 30px 24px;
 
     @media ${TABLET} {
@@ -162,6 +171,24 @@ const Heading = styled.div`
 
     @media ${DESKTOP} {
         padding: 55px 60px;
+    }
+`
+
+const Title = styled.div`
+    font-size: 34px;
+    line-height: 34px;
+    color: ${COLORS.primary};
+`
+
+const Stat = styled.div`
+    color: ${COLORS.primaryLight};
+    background-color: ${COLORS.secondary};
+    font-size: 18px;
+    line-height: 16px;
+    padding: 16px;
+
+    strong {
+        font-weight: ${MEDIUM};
     }
 `
 
@@ -176,7 +203,9 @@ const StreamTable: React.FC<Props> = ({ title = "Streams", streams, loadMore, ha
     return (
         <Container>
             <Heading>
-                {title}
+                <Title>{title}</Title>
+                <Stat>Streams <strong>{streams.length}</strong></Stat>
+                <Stat>Msg/s <strong>100</strong></Stat>
             </Heading>
             <Table>
                 <TableHeader>
@@ -191,7 +220,7 @@ const StreamTable: React.FC<Props> = ({ title = "Streams", streams, loadMore, ha
                 <TableRows rowCount={streams.length}>
                     {streams.map((s) => (
                         <TableRow key={s.id}>
-                            <StreamDetails>
+                            <StreamDetails href={routes.streams.show({ id: s.id })}>
                                 <StreamId>
                                     {s.id}
                                 </StreamId>
