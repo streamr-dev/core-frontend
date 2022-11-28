@@ -7,13 +7,11 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import Terms from '$mp/components/ProductPage/Terms'
 import ProjectPage, {
     ProjectPageContainer,
-    ProjectPageHero,
-    ProjectPageSeparator
+    ProjectPageHero
 } from '$shared/components/ProjectPage'
 import Segment from '$shared/components/Segment'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import useDataUnionServerStats from './useDataUnionServerStats'
-import ProjectHero from './ProjectHero'
 import Description from './Description'
 import DataUnionStats from './DataUnionStats'
 import Streams from './Streams'
@@ -53,9 +51,7 @@ const ProjectDetailsPage = () => {
                 <ProjectPageContainer>
                     <ProjectPageContainer>
                         <ProjectHero2 project={product}/>
-                        {/*<ProjectHero />*/}
-                        <ProjectPageSeparator />
-                        <Description />
+                        <Description project={product} />
                     </ProjectPageContainer>
                 </ProjectPageContainer>
             </ProjectPageHero>

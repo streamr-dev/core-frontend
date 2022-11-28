@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components'
 import { ImageTile } from '$shared/components/Tile'
-import { COLORS, DESKTOP, TABLET } from '$shared/utils/styled'
+import { COLORS, LAPTOP, TABLET } from '$shared/utils/styled'
+import MarkdownText from '$mp/components/ProductPage/MarkdownText'
 
 const mobileSpacing = '24px'
 const tabletSpacing = '40px'
@@ -19,7 +20,7 @@ export const ProjectHeroContainer = styled.div`
     padding: ${tabletSpacing};
   }
   
-  @media(${DESKTOP}) {
+  @media(${LAPTOP}) {
     grid-template-columns: auto 1fr;
     grid-template-rows: auto 1fr auto;
     padding: 0;
@@ -36,7 +37,7 @@ export const ProjectHeroImageStyles = css`
   @media(${TABLET}) {
     margin-bottom: ${tabletSpacing};
   }
-  @media(${DESKTOP}) {
+  @media(${LAPTOP}) {
     border-radius: 0;
     margin-bottom: 0;
     grid-column-start: 1;
@@ -63,7 +64,7 @@ export const ProjectHeroTitleStyles = css`
     margin-bottom: ${tabletSpacing};
     font-size: 34px;
   }
-  @media(${DESKTOP}) {
+  @media(${LAPTOP}) {
     grid-column-start: 2;
     grid-column-end: 2;
     grid-row-start: 1;
@@ -79,15 +80,11 @@ export const ProjectHeroDescriptionStyles = css`
   grid-column-end: 2;
   grid-row-start: 3;
   grid-row-end: 3;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-  color: ${COLORS.primaryLight};
-  margin-bottom: ${mobileSpacing};
+  /*margin-bottom: ${mobileSpacing}; TODO uncomment when enabling Signalling feature */
   @media(${TABLET}) {
-    margin-bottom: ${tabletSpacing};
+    /*margin-bottom: ${tabletSpacing}; TODO uncomment when enabling Signalling feature */
   }
-  @media(${DESKTOP}) {
+  @media(${LAPTOP}) {
     grid-column-start: 2;
     grid-column-end: 2;
     grid-row-start: 2;
@@ -95,7 +92,18 @@ export const ProjectHeroDescriptionStyles = css`
     margin: 0 ${desktopSpacing} 24px;
   }
 `
-export const ProjectHeroDescription = styled.p`${ProjectHeroDescriptionStyles}`
+export const ProjectHeroDescription = styled.div`${ProjectHeroDescriptionStyles}`
+
+export const ProjectHeroMarkdownText = styled(MarkdownText)`
+  div[class^='MarkdownContainer'] {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+    color: ${COLORS.primaryLight};
+    padding: 0;
+  }
+    
+`
 
 export const ProjectHeroSignalContainer = styled.div`
   grid-column-start: 1;
@@ -132,7 +140,7 @@ export const ProjectHeroSignalContainer = styled.div`
     display: flex;
     justify-content: space-between;
   }
-  @media(${DESKTOP}) {
+  @media(${LAPTOP}) {
     grid-column-start: 2;
     grid-column-end: 2;
     grid-row-start: 3;

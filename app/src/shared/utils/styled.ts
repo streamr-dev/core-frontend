@@ -1,5 +1,6 @@
 export const SM = 375
 export const MD = 744
+export const MDLG = 1100
 export const LG = 1440
 export const XL = 1920
 export const REGULAR = 400
@@ -9,6 +10,7 @@ export const MONO = "'IBM Plex Mono', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Ve
 export const SANS = "'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif"
 export const PHONE = `(min-width: ${SM}px)`
 export const TABLET = `(min-width: ${MD}px)`
+export const LAPTOP = `(min-width: ${MDLG}px)`
 export const DESKTOP = `(min-width: ${LG}px)`
 export enum COLORS {
     primary = '#323232',
