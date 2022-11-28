@@ -163,7 +163,7 @@ const ProjectsPage: FunctionComponent = () => {
                     hasMoreSearchResults={hasMoreSearchResults}
                 />
             </ProjectsContainer>
-            <Footer topBorder />
+            <Footer />
         </Layout>
     )
 }

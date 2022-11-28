@@ -30,40 +30,30 @@ const streamSelectionOptions = [
 
 const BATCH_SIZE = 10
 
-const TableContainer = styled.div`
-    border-radius: 8px;
-    background-color: white;
-    margin: 24px 24px 80px 24px;
+const Container = styled.div`
+    background-color: ${COLORS.secondary};
+
+    padding: 24px 24px 80px 24px;
 
     @media ${TABLET} {
-        margin: 45px 40px 90px 40px;
+        padding: 45px 40px 90px 40px;
     }
 
     @media ${DESKTOP} {
-        margin: 60px 78px 130px 78px;
+        padding: 60px 78px 130px 78px;
     }
 `
 
-const Heading = styled.div`
-    font-size: 34px;
-    line-height: 34px;
-    color: ${COLORS.primary};
-    padding: 30px 24px;
-
-    @media ${TABLET} {
-        padding: 45px 40px;
-    }
-
-    @media ${DESKTOP} {
-        padding: 55px 60px;
-    }
+const TableContainer = styled.div`
+    border-radius: 16px;
+    background-color: white;
 `
 
 const StreamListing: React.FC = () => {
     const [search, setSearch] = useState<string>('')
     const [streamsSelection, setStreamsSelection] = useState<StreamSelection>(StreamSelection.ALL)
     const [streams, setStreams] = useState<Array<Stream>>([])
-    const [hasMore, setHasMore] = useState()
+    const [hasMore, setHasMore] = useState<boolean>(false)
 
     const itp = useInterrupt()
     const fetchStreams = useFetchStreams()
@@ -73,12 +63,12 @@ const StreamListing: React.FC = () => {
 
         try {
             const allowPublic = streamsSelection === StreamSelection.ALL
-            const [newStreams, hasMore2, isFirstBatch] = await fetchStreams(search, {
+            const [newStreams, hasMoreResults, isFirstBatch] = await fetchStreams(search, {
                 batchSize: BATCH_SIZE,
                 allowPublic,
             })
             requireUninterrupted()
-            setHasMore(hasMore2)
+            setHasMore(hasMoreResults)
 
             if (isFirstBatch) {
                 setStreams(newStreams)
@@ -108,19 +98,20 @@ const StreamListing: React.FC = () => {
                 }}
             />
             <Tabs
-                name='Test'
                 options={streamSelectionOptions}
                 onChange={(newValue) => setStreamsSelection(StreamSelection[newValue])}
                 selectedOptionValue={streamsSelection}
             />
-            <TableContainer>
-                <Heading>{streamsSelection === StreamSelection.ALL ? 'All' : 'Your'} Streams</Heading>
-                <StreamTable
-                    streams={streams}
-                    loadMore={fetch}
-                    hasMoreResults={hasMore}
-                />
-            </TableContainer>
+            <Container>
+                <TableContainer>
+                    <StreamTable
+                        title={`${streamsSelection === StreamSelection.ALL ? 'All' : 'Your'} Streams`}
+                        streams={streams}
+                        loadMore={fetch}
+                        hasMoreResults={hasMore}
+                    />
+                </TableContainer>
+            </Container>
         </Layout>
     )
 }

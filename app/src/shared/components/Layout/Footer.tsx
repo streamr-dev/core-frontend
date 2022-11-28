@@ -1,14 +1,17 @@
 import React from 'react'
 import styled from 'styled-components'
 import {
-    Footer as LayoutFooter,
+    Footer as UnstyledLayoutFooter,
     FooterColumn,
     FooterColumns as UnstyledFooterColumns,
     MadeBy as UnstyledMadeBy,
     SocialChannels,
 } from '@streamr/streamr-layout'
+
 import docsLinks from '$shared/../docsLinks'
+import { COLORS, DESKTOP, TABLET } from '$shared/utils/styled'
 import routes from '$routes'
+
 const MadeBy = styled(UnstyledMadeBy)`
     padding: 0 0 32px;
     text-align: center;
@@ -18,6 +21,11 @@ const MadeBy = styled(UnstyledMadeBy)`
         text-align: left;
     }
 `
+
+const LayoutFooter = styled(UnstyledLayoutFooter)`
+    background-color: ${COLORS.secondary};
+`
+
 const FooterColumns = styled(UnstyledFooterColumns)`
     border-top: ${({ separate }) => (separate ? '1px' : '0')} solid #d8d8d8;
 `

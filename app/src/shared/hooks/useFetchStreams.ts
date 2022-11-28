@@ -4,7 +4,9 @@ import type { Stream } from 'streamr-client'
 import getClientAddress from '$app/src/getters/getClientAddress'
 import useInterrupt from '$shared/hooks/useInterrupt'
 
-export default function useFetchStreams() {
+type FetchCallbackType = (search: string, { batchSize = 1, allowPublic = false }) => Promise<[Stream[], boolean, boolean]>
+
+export default function useFetchStreams(): FetchCallbackType {
     const client = useClient()
     const itp = useInterrupt()
     const searchRef = useRef<string>()
@@ -16,8 +18,8 @@ export default function useFetchStreams() {
         itp().interruptAll()
     }, [itp, client])
 
-    return useCallback(
-        async (search, { batchSize = 1, allowPublic = false } = {}) => {
+    return useCallback<FetchCallbackType>(
+        async (search: string, { batchSize = 1, allowPublic = false } = {}) => {
             const { requireUninterrupted } = itp(search)
 
             if (searchRef.current !== search || allowPublicRef.current !== allowPublic) {
@@ -69,7 +71,7 @@ export default function useFetchStreams() {
             }
 
             if (prevTailStream) {
-                return [[prevTailStream, ...batch], hasMore]
+                return [[prevTailStream, ...batch], hasMore, false]
             }
 
             return [batch, hasMore, !prevTailStream]

@@ -7,7 +7,9 @@ import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
 
 const ROW_HEIGHT = 88
 
-const Container = styled.div``
+const Container = styled.div`
+    padding-bottom: 80px;
+`
 
 const Row = styled.div`
     align-items: center;
@@ -148,15 +150,34 @@ const StreamDescription = styled(GridCell)`
     font-weight: ${REGULAR};
 `
 
+const Heading = styled.div`
+    font-size: 34px;
+    line-height: 34px;
+    color: ${COLORS.primary};
+    padding: 30px 24px;
+
+    @media ${TABLET} {
+        padding: 45px 40px;
+    }
+
+    @media ${DESKTOP} {
+        padding: 55px 60px;
+    }
+`
+
 type Props = {
+    title?: string,
     streams: Array<Stream>,
     loadMore?: () => void | Promise<void>,
     hasMoreResults?: boolean,
 }
 
-const StreamTable: React.FC<Props> = ({ streams, loadMore, hasMoreResults }: Props) => {
+const StreamTable: React.FC<Props> = ({ title = "Streams", streams, loadMore, hasMoreResults }: Props) => {
     return (
         <Container>
+            <Heading>
+                {title}
+            </Heading>
             <Table>
                 <TableHeader>
                     <GridCell>Stream ID</GridCell>
