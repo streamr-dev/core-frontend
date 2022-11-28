@@ -1,14 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import type { Stream } from 'streamr-client'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 
 import { COLORS, DESKTOP, TABLET } from '$shared/utils/styled'
+import Button from '$shared/components/Button'
 import Layout from '$shared/components/Layout'
 import SearchBar from '$shared/components/SearchBar'
 import Tabs from '$shared/components/Tabs'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import useFetchStreams from '$shared/hooks/useFetchStreams'
 import InterruptionError from '$shared/errors/InterruptionError'
+import { FiltersBar, FiltersWrap, SearchBarWrap } from '$mp/components/ActionBar/actionBar.styles'
+import routes from '$routes'
 
 import StreamTable from '../../shared/components/StreamTable'
 
@@ -91,17 +95,26 @@ const StreamListing: React.FC = () => {
 
     return (
         <Layout>
-            <SearchBar
-                value={search}
-                onChange={(value) => {
-                    setSearch(value)
-                }}
-            />
-            <Tabs
-                options={streamSelectionOptions}
-                onChange={(newValue) => setStreamsSelection(StreamSelection[newValue])}
-                selectedOptionValue={streamsSelection}
-            />
+            <SearchBarWrap>
+                <SearchBar
+                    value={search}
+                    onChange={(value) => {
+                        setSearch(value)
+                    }}
+                />
+            </SearchBarWrap>
+            <FiltersBar>
+                <FiltersWrap>
+                    <Tabs
+                        options={streamSelectionOptions}
+                        onChange={(newValue) => setStreamsSelection(StreamSelection[newValue])}
+                        selectedOptionValue={streamsSelection}
+                    />
+                </FiltersWrap>
+                <Button tag={Link} to={routes.streams.new()}>
+                    Create stream
+                </Button>
+            </FiltersBar>
             <Container>
                 <TableContainer>
                     <StreamTable
