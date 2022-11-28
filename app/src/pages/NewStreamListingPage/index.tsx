@@ -10,7 +10,7 @@ import useInterrupt from '$shared/hooks/useInterrupt'
 import useFetchStreams from '$shared/hooks/useFetchStreams'
 import InterruptionError from '$shared/errors/InterruptionError'
 
-import StreamTable from './StreamTable'
+import StreamTable from '../../shared/components/StreamTable'
 
 enum StreamSelection {
     ALL = 'ALL',

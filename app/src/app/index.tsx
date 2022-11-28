@@ -18,8 +18,8 @@ import ErrorPage from '$shared/components/ErrorPage'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import Analytics from '$shared/utils/Analytics'
 import GlobalInfoWatcher from '$mp/containers/GlobalInfoWatcher'
+import NewStreamListingPage from '$app/src/pages/NewStreamListingPage'
 import routes from '$routes'
-import HubRouter from '../hub/Router'
 import history from '../history'
 import '../analytics'
 // Userpages
@@ -48,6 +48,10 @@ const AuthenticationRouter = () => [
 const MiscRouter = () => [
     <Route exact path="/error" component={GenericErrorPage} key="GenericErrorPage" />,
     <Route component={NotFoundPage} key="NotFoundPage" />,
+]
+
+const HubRouter = () => [
+    <Route exact path={routes.streams.index()} component={NewStreamListingPage} key="NewStreamListingPage" />,
 ]
 
 const App = () => (
