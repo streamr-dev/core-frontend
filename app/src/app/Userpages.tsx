@@ -44,8 +44,8 @@ const UserpagesRouter = () => [
     <Route exact path={routes.products.index()} component={ProductsPageAuth} key="ProductsPage" />,
     <Route exact path={routes.dataunions.index()} component={DataUnionPageAuth} key="DataUnionPage" />,
     <Route exact path={routes.products.edit()} component={EditProductAuth} key="EditProduct" />,
-    <Redirect from={routes.root()} to={routes.streams.index()} key="RootRedirect" />, // edge case for localhost
-    <Redirect from={routes.core()} to={routes.streams.index()} key="StreamListViewRedirect" />,
+    // <Redirect from={routes.root()} to={routes.streams.index()} key="RootRedirect" />, // edge case for localhost
+    // <Redirect from={routes.core()} to={routes.streams.index()} key="StreamListViewRedirect" />,
 ]
 
 export default UserpagesRouter
