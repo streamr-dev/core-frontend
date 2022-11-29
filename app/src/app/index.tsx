@@ -18,6 +18,7 @@ import ErrorPage from '$shared/components/ErrorPage'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import Analytics from '$shared/utils/Analytics'
 import GlobalInfoWatcher from '$mp/containers/GlobalInfoWatcher'
+import NewStreamListingPage from '$app/src/pages/NewStreamListingPage'
 import routes from '$routes'
 import history from '../history'
 import '../analytics'
@@ -26,6 +27,7 @@ import UserpagesRouter from './Userpages'
 // Docs
 import DocsRouter from './Docs'
 import MarketplaceRouter from './Marketplace'
+
 // Wrap authenticated components here instead of render() method
 // Wrap each Route to an ErrorBoundary
 const Route = withErrorBoundary(ErrorPage)(RouterRoute)
@@ -48,6 +50,12 @@ const MiscRouter = () => [
     <Route component={NotFoundPage} key="NotFoundPage" />,
 ]
 
+const HubRouter = () => [
+    <Route exact path={routes.streams.index()} component={NewStreamListingPage} key="NewStreamListingPage" />,
+    <Redirect from={routes.root()} to={routes.streams.index()} key="RootRedirect" />, // edge case for localhost
+    <Redirect from={routes.core()} to={routes.streams.index()} key="StreamListViewRedirect" />,
+]
+
 const App = () => (
     <Router history={history}>
         <StreamrClientProvider>
@@ -61,6 +69,7 @@ const App = () => (
                                 {MarketplaceRouter()}
                                 {DocsRouter()}
                                 {UserpagesRouter()}
+                                {HubRouter()}
                                 {MiscRouter()}
                             </Switch>
                             <Notifications />
