@@ -11,10 +11,11 @@ type Props = {
     chainId: number
     timeUnit: TimeUnit
     className?: string
+    tag?: 'div' | 'span'
 }
 
 const PaymentRate = (props: Props) => {
-    const { amount, pricingTokenAddress, chainId, timeUnit, className } = props
+    const { amount, pricingTokenAddress, chainId, timeUnit, className, tag: Tag = 'div' } = props
     const [currency, setCurrency] = useState(currencies.PRODUCT_DEFINED)
     const [symbol, setSymbol] = useState(currencies.DATA)
     const [decimals, setDecimals] = useState(new BN(18))
@@ -34,7 +35,7 @@ const PaymentRate = (props: Props) => {
 
         check()
     }, [pricingTokenAddress, chainId, isMounted])
-    return <div className={className}>{formatPrice(amount, currency, decimals, timeUnit, symbol)}</div>
+    return <Tag className={className}>{formatPrice(amount, currency, decimals, timeUnit, symbol)}</Tag>
 }
 
 export default PaymentRate

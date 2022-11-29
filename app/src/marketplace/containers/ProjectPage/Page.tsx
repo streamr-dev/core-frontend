@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect} from 'react'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { useController } from '$mp/containers/ProductController'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
@@ -6,8 +6,7 @@ import useContractProduct from '$mp/containers/ProductController/useContractProd
 import { isEthereumAddress } from '$mp/utils/validate'
 import Terms from '$mp/components/ProductPage/Terms'
 import ProjectPage, {
-    ProjectPageContainer,
-    ProjectPageHero
+    ProjectPageContainer, RelatedProductsContainer,
 } from '$shared/components/ProjectPage'
 import Segment from '$shared/components/Segment'
 import { getChainIdFromApiString } from '$shared/utils/chains'
@@ -47,15 +46,10 @@ const ProjectDetailsPage = () => {
     }, [startPolling, stopPolling, isDataUnion, beneficiaryAddress, chainId])
     return (
         <ProjectPage>
-            <ProjectPageHero>
-                <ProjectPageContainer>
-                    <ProjectPageContainer>
-                        <ProjectHero2 project={product}/>
-                        <Description project={product} />
-                    </ProjectPageContainer>
-                </ProjectPageContainer>
-            </ProjectPageHero>
             <ProjectPageContainer>
+                <ProjectHero2 project={product}/>
+                <Description project={product} />
+                <Streams />
                 {isDataUnion && (
                     <DataUnionStats
                         showDeploying={!isDuDeployed}
@@ -65,14 +59,11 @@ const ProjectDetailsPage = () => {
                         chainId={chainId}
                     />
                 )}
-                <Streams />
+
                 <Terms product={product} />
-                <ProjectPageContainer>
-                    <Segment>
-                        <RelatedProducts />
-                    </Segment>
-                </ProjectPageContainer>
-                <Segment />
+                <RelatedProductsContainer>
+                    <RelatedProducts />
+                </RelatedProductsContainer>
             </ProjectPageContainer>
         </ProjectPage>
     )

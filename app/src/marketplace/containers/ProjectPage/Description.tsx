@@ -6,7 +6,7 @@ import BN from 'bignumber.js'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { categorySchema } from '$shared/modules/entities/schema'
 import { Project } from '$mp/types/project-types'
-import { COLORS, REGULAR } from '$shared/utils/styled'
+import { DESKTOP, REGULAR, TABLET } from '$shared/utils/styled'
 import Button from '$shared/components/Button'
 import { projectTypeNames } from '$mp/utils/constants'
 import PaymentRate from '$mp/components/PaymentRate'
@@ -20,13 +20,16 @@ const Description: FunctionComponent<{project: Project}> = ({project}) => {
     return <DescriptionContainer>
         <p>
             <span>The streams in this {projectTypeNames[project.type]} can be accessed for </span>
-            <strong>{project.isFree ? 'free' :
-                <PaymentRate
-                    className={'payment-rate'}
-                    amount={new BN(project.pricePerSecond)}
-                    chainId={getChainIdFromApiString(project.chain)}
-                    pricingTokenAddress={project.pricingTokenAddress}
-                    timeUnit={timeUnits.hour}/>}
+            <strong>
+                {project.isFree ? 'free' :
+                    <PaymentRate
+                        amount={new BN(project.pricePerSecond)}
+                        chainId={getChainIdFromApiString(project.chain)}
+                        pricingTokenAddress={project.pricingTokenAddress}
+                        timeUnit={timeUnits.hour}
+                        tag={'span'}
+                    />
+                }
             </strong>
             <span> on </span>
             <strong>{formatChainName(project.chain)}</strong>
@@ -41,20 +44,37 @@ export default Description
 
 const DescriptionContainer = styled.div`
   margin-top: 24px;
-  padding: 30px 50px;
-  background-color: ${COLORS.primaryContrast};
+  padding: 30px 24px;
+  background-color: white;
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-size: 18px;
   font-weight: ${REGULAR};
-  
-  .payment-rate {
-    display: inline;
-  }
+  flex-direction: column;
   
   p {
     margin: 0;
+  }
+  
+  a {
+    width: 100%;
+    margin-top: 20px;
+    @media(${TABLET}) {
+      width: auto;
+      margin-top: 0;
+      margin-left: 20px;
+    }
+  }
+  
+  
+  @media(${TABLET}) {
+    flex-direction: row;
+    padding: 45px 40px;
+  }
+  
+  @media(${DESKTOP}) {
+    padding: 30px 55px;
   }
 `

@@ -11,7 +11,7 @@ export const ProjectHeroContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto auto auto auto;
-  background-color: ${COLORS.primaryContrast};
+  background-color: white;
   padding: ${mobileSpacing};
   border-radius: 16px;
   overflow: hidden;

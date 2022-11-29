@@ -1,52 +1,23 @@
-import React, { useCallback, useMemo, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
-import Segment from '$shared/components/Segment'
+import React, { useCallback, useMemo, useEffect, useState, FunctionComponent } from 'react'
+import styled from 'styled-components'
 import { useController } from '$mp/containers/ProductController'
-import useProductSubscription from '$mp/containers/ProductController/useProductSubscription'
-import { selectUserData } from '$shared/modules/user/selectors'
-import { usePending } from '$shared/hooks/usePending'
-import StreamListing from '$mp/components/ProductPage/StreamListing'
-import { isPaidProduct } from '$mp/utils/product'
-import routes from '$routes'
+import { TABLET } from '$shared/utils/styled'
+import StreamTable from '$shared/components/StreamTable'
 const PAGE_SIZE = 5
 const INITIAL_OFFSET = 2 * PAGE_SIZE
 
-const Streams = () => {
+const StreamsContainer = styled.div`
+  background-color: white;
+  border-radius: 16px;
+  margin-top: 16px;
+  @media(${TABLET}) {
+    margin-top: 24px;
+  }
+`
+
+const Streams: FunctionComponent = () => {
     const { product, productStreams: streams, loadProductStreams } = useController()
-    const history = useHistory()
-    const productId = product.id
-    const { isSubscriptionValid } = useProductSubscription()
-    const userData = useSelector(selectUserData)
-    const { isPending: fetchingStreams } = usePending('product.LOAD_PRODUCT_STREAMS')
-    const isLoggedIn = userData !== null
-    const isProductFree = !!(product && !isPaidProduct(product))
     const [offset, setOffset] = useState(INITIAL_OFFSET)
-    const onStreamPreview = useCallback(
-        (streamId) => {
-            history.replace(
-                routes.marketplace.streamPreview({
-                    id: productId,
-                    streamId,
-                }),
-            )
-        },
-        [history, productId],
-    )
-    const onStreamSettings = useCallback(
-        (id) => {
-            history.push(
-                routes.streams.show({
-                    id,
-                }),
-            )
-        },
-        [history],
-    )
-    const locked = useMemo(
-        () => !(isProductFree || (isLoggedIn && isSubscriptionValid)),
-        [isProductFree, isLoggedIn, isSubscriptionValid],
-    )
     useEffect(() => {
         loadProductStreams(product.streams.slice(0, INITIAL_OFFSET))
     }, [product.streams, loadProductStreams])
@@ -55,22 +26,15 @@ const Streams = () => {
         loadProductStreams(product.streams.slice(offset, offset + PAGE_SIZE))
         setOffset(offset + PAGE_SIZE)
     }, [offset, setOffset, loadProductStreams, product.streams])
-    return (
-        <Segment>
-            <Segment.Body>
-                <StreamListing
-                    streams={streams}
-                    totalStreams={product.streams.length}
-                    fetchingStreams={fetchingStreams}
-                    hasMoreResults={hasMoreResults}
-                    onLoadMore={onLoadMore}
-                    locked={locked}
-                    onStreamPreview={onStreamPreview}
-                    onStreamSettings={!!isLoggedIn && isSubscriptionValid && onStreamSettings}
-                />
-            </Segment.Body>
-        </Segment>
-    )
+    /**
+     * The conditions here are because of the faulty pre-populated data in streamer-docker-dev which
+     * was throwing errors here. So we are not displaying the streams table when the metadata of a stream is missing
+     */
+    return <>
+        {streams && streams.length > 0 && streams[0]?.metadata && <StreamsContainer>
+            <StreamTable streams={streams} loadMore={onLoadMore} hasMoreResults={hasMoreResults}/>
+        </StreamsContainer>}
+    </>
 }
 
 export default Streams

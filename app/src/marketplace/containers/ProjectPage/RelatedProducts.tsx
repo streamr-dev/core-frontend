@@ -35,8 +35,7 @@ const RelatedProducts = () => {
     if (!relatedProjects || relatedProjects.length < 1) {
         return null
     }
-
-    const projects = relatedProjects.slice(0, 3)
+    const projects = relatedProjects.slice(0, 4)
     return (
         <RelatedProductsContainer
             header="Related products"
