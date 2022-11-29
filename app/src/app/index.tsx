@@ -52,6 +52,8 @@ const MiscRouter = () => [
 
 const HubRouter = () => [
     <Route exact path={routes.streams.index()} component={NewStreamListingPage} key="NewStreamListingPage" />,
+    <Redirect from={routes.root()} to={routes.streams.index()} key="RootRedirect" />, // edge case for localhost
+    <Redirect from={routes.core()} to={routes.streams.index()} key="StreamListViewRedirect" />,
 ]
 
 const App = () => (
@@ -63,11 +65,11 @@ const App = () => (
                         <ActivityResourceProvider>
                             <Analytics />
                             <Switch>
-                                {HubRouter()}
                                 {AuthenticationRouter()}
                                 {MarketplaceRouter()}
                                 {DocsRouter()}
                                 {UserpagesRouter()}
+                                {HubRouter()}
                                 {MiscRouter()}
                             </Switch>
                             <Notifications />
