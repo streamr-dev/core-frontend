@@ -5,7 +5,7 @@ import Button from '$shared/components/Button'
 export const SearchBarWrap = styled.div`
   display: flex;
   justify-content: center;
-  padding: 30px 0 50px;
+  padding: 70px 0 50px;
   > * {
     max-width: 770px;
     margin: 0 24px;
@@ -18,7 +18,7 @@ export const SearchBarWrap = styled.div`
   }
 
     @media (min-width: ${MD}px) {
-        margin: 40px 0 80px;
+        margin: 0 0 80px;
     }
 `
 

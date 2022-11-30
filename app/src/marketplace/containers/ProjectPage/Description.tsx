@@ -1,11 +1,7 @@
 import React, { FunctionComponent } from 'react'
 import styled from 'styled-components'
-import { useSelector } from 'react-redux'
-import { denormalize } from 'normalizr'
 import { Link } from 'react-router-dom'
 import BN from 'bignumber.js'
-import { selectEntities } from '$shared/modules/entities/selectors'
-import { categorySchema } from '$shared/modules/entities/schema'
 import { Project } from '$mp/types/project-types'
 import { DESKTOP, REGULAR, TABLET } from '$shared/utils/styled'
 import Button from '$shared/components/Button'
@@ -13,14 +9,17 @@ import { projectTypeNames } from '$mp/utils/constants'
 import PaymentRate from '$mp/components/PaymentRate'
 import { formatChainName, getChainIdFromApiString } from '$shared/utils/chains'
 import { timeUnits } from '$shared/utils/constants'
+import { usePurchaseProject } from '$shared/hooks/usePurchaseProject'
 import routes from '$routes'
 
 const Description: FunctionComponent<{project: Project}> = ({project}) => {
-    const entities = useSelector(selectEntities)
-    const category = project && denormalize(project.category, categorySchema, entities)
+    const onPurchase = usePurchaseProject()
     return <DescriptionContainer>
         <p>
-            <span>The streams in this {projectTypeNames[project.type]} can be accessed for </span>
+            <span>The streams in this {projectTypeNames[project.type]}
+                {project.isFree ? ' are public and ' : ''} can be accessed for&nbsp;
+            </span>
+
             <strong>
                 {project.isFree ? 'free' :
                     <PaymentRate
@@ -32,12 +31,14 @@ const Description: FunctionComponent<{project: Project}> = ({project}) => {
                     />
                 }
             </strong>
-            <span> on </span>
-            <strong>{formatChainName(project.chain)}</strong>
+            {!project.isFree && <>
+                <span> on </span>
+                <strong>{formatChainName(project.chain)}</strong>
+            </>
+            }
         </p>
-        <Button tag={Link} to={routes.marketplace.product.connect({id: project.id})}>
-            Get Access
-        </Button>
+        {project.isFree && <Button tag={Link} to={routes.marketplace.product.connect({id: project.id})}>Connect</Button>}
+        {!project.isFree && <Button onClick={onPurchase}>Get Access</Button>}
     </DescriptionContainer>
 }
 
