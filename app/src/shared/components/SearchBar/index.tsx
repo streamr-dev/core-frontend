@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FunctionComponent, MouseEventHandler, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { debounce } from 'lodash'
-import { COLORS } from '$shared/utils/styled'
+import { COLORS, SM, MD } from '$shared/utils/styled'
 import searchIcon from './SearchIcon.svg'
 import closeIcon from './CloseIcon.svg'
 
@@ -10,9 +10,10 @@ type SearchBarProps = {
     debounceTime?: number,
     placeholder?: string,
     value?: string
+    autoFocus?: boolean
 }
 
-const SearchBar: FunctionComponent<SearchBarProps> = ({onChange, value, debounceTime = 300, placeholder= 'Search'}) => {
+const SearchBar: FunctionComponent<SearchBarProps> = ({onChange, value, debounceTime = 300, placeholder= 'Search', autoFocus= false}) => {
     const [focused, setFocused] = useState<boolean>()
     const [inputValue, setInputValue] = useState<string>('')
 
@@ -45,6 +46,7 @@ const SearchBar: FunctionComponent<SearchBarProps> = ({onChange, value, debounce
             onBlur={() => setFocused(false)}
             onChange={handleChange}
             value={inputValue}
+            autoFocus={autoFocus}
         />
         <ClearButton onClick={clearSearch} className={!inputValue ? 'hidden' : ''} type="button">
             <img src={closeIcon} alt="Clear search"/>
@@ -68,7 +70,7 @@ const SearchInput = styled.input`
   border-radius: 200px;
   width: 100%;
   line-height: 40px;
-  height: 60px;
+  height: 40px;
   font-size: 14px;
   padding: 0 20px 0 45px;
   color: ${COLORS.primary};
@@ -90,12 +92,22 @@ const SearchInput = styled.input`
     opacity: 1;
     color: ${COLORS.primary};
   }
+
+    @media (min-width: ${SM}px) {
+        line-height: 50px;
+        height: 50px;
+    }
+
+    @media (min-width: ${MD}px) {
+        line-height: 60px;
+        height: 60px;
+    }
 `
 
 const SearchIcon = styled.img`
   position: absolute;
   width: 16px;
-  top: 22px;
+  top: 12px;
   left: 20px;
   transition: opacity ${transitionTime}ms ease-in, left 1ms linear;
   opacity: 1;
@@ -105,15 +117,27 @@ const SearchIcon = styled.img`
     opacity: 0;
     left: 0;
   }
+
+    @media (min-width: ${SM}px) {
+        top: 17px;
+    }
+
+    @media (min-width: ${MD}px) {
+        top: 22px;
+    }
 `
 
 const ClearButton = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center;
   border: none;
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   position: absolute;
   right: 0;
-  top: 0;
+  top: 50%;
+    transform: translateY(-50%);
   background-color: transparent;
   border-radius: 100%;
   transition: opacity ${transitionTime}ms ease-in, background-color ${transitionTime}ms ease-in;
@@ -126,6 +150,16 @@ const ClearButton = styled.button`
   :hover {
     background-color: ${COLORS.secondaryHover};
   }
+
+    @media (min-width: ${SM}px) {
+        width: 50px;
+        height: 50px;
+    }
+
+    @media (min-width: ${MD}px) {
+        width: 60px;
+        height: 60px;
+    }
 `
 
 export default SearchBar

@@ -146,7 +146,9 @@ const NavbarLinkDesktop = styled(UnstyledNavbarLink)<{ highlight: boolean }>`
     
     ${NavLink} {
         font-size: 12px;
-        padding: 6px 10px;
+        padding: 0 10px;
+        height: 40px;
+        line-height: 40px;
     }
     
     &:after {

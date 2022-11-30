@@ -1,11 +1,11 @@
 import styled from 'styled-components'
-import { COLORS, DESKTOP, LG, MEDIUM, TABLET } from '$shared/utils/styled'
+import { COLORS, DESKTOP, MD, LG, MEDIUM, TABLET } from '$shared/utils/styled'
 import Button from '$shared/components/Button'
 
 export const SearchBarWrap = styled.div`
   display: flex;
   justify-content: center;
-  margin: 60px 0 80px;
+  margin: 30px 0 50px;
   > * {
     max-width: 770px;
     margin: 0 24px;
@@ -16,6 +16,10 @@ export const SearchBarWrap = styled.div`
       margin: 0;
     }
   }
+
+    @media (min-width: ${MD}px) {
+        margin: 40px 0 80px;
+    }
 `
 
 export const FiltersBar = styled.div`

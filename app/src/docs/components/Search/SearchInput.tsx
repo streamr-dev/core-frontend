@@ -2,6 +2,7 @@ import React, { useCallback, useReducer } from 'react'
 import styled from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
 import UnstyledEditableText from '$shared/components/EditableText'
+import SearchBar from '$shared/components/SearchBar'
 import UseState from '$shared/components/UseState'
 import { SM, MD, LG } from '$shared/utils/styled'
 import type { SearchFilter } from '$mp/types/project-types'
@@ -22,11 +23,10 @@ const Inner = styled.div`
     justify-content: space-between;
     margin: 0 auto;
     width: 100%;
-    height: 100%;
-    padding: 0 calc(1.5rem - 4px) 0 1.5rem;
+    height: auto;
+    padding: 20px calc(1.5rem - 4px) 0 1.5rem;
 
     @media (min-width: ${SM}px) {
-        padding: 0 calc(1.5rem - 4px) 0 1.5rem;
         max-width: 540px;
     }
 
@@ -40,7 +40,7 @@ const Inner = styled.div`
 
         max-width: 100%;
         display: grid;
-        grid-template-columns: 1fr 736px 1fr;
+        grid-template-columns: 1fr 770px 1fr;
         grid-column-gap: 2rem;
 
         ${SearchInputWrapper} {
@@ -207,33 +207,7 @@ const UnstyledSearchInput = ({ value, onChange, onClose, ...props }: Props) => {
         <div {...props}>
             <Inner>
                 <SearchInputWrapper>
-                    <UseState initialValue={false} key={refreshCounter}>
-                        {(editing, setEditing) => (
-                            <EditableText
-                                placeholder="Search..."
-                                value={value}
-                                onChange={onChange}
-                                editOnFocus
-                                selectAllOnFocus={false}
-                                commitEmpty
-                                editing={editing}
-                                setEditing={setEditing}
-                                autoFocus
-                                theme={{
-                                    editing,
-                                }}
-                            >
-                                {value || ''}
-                            </EditableText>
-                        )}
-                    </UseState>
-                    {!!value && (
-                        <ClearButtonWrapper>
-                            <ClearButton type="button" onClick={onClear}>
-                                <SvgIcon name="crossMedium" />
-                            </ClearButton>
-                        </ClearButtonWrapper>
-                    )}
+                    <SearchBar value={value} onChange={onChange} autoFocus />
                 </SearchInputWrapper>
                 <CloseButton type="button" onClick={onClose}>
                     Cancel
@@ -267,7 +241,7 @@ const SearchInput = styled(UnstyledSearchInput)`
         top: auto;
         left: auto;
         height: auto;
-        padding: 2.5rem 0 3rem;
+        padding: 40px 0 3rem;
         border-bottom: 1px solid #e7e7e7;
     }
 `

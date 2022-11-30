@@ -3,7 +3,7 @@ import { MDXProvider } from '@mdx-js/react'
 import SimpleReactLightbox from 'simple-react-lightbox'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
-import { MD, LG } from '$shared/utils/styled'
+import { SM, MD, LG } from '$shared/utils/styled'
 import Layout from '$shared/components/Layout'
 import Components from '$docs/mdxConfig'
 import docsMap from '$docs/docsMap'
@@ -39,7 +39,7 @@ const ButtonBase = styled.button`
 const SearchButtonText = styled.span`
     font-size: 14px;
     text-align: left;
-    margin-left: 8px;
+    margin-left: 9px;
 `
 const Key = styled.span`
     display: inline-block;
@@ -67,12 +67,6 @@ const DesktopSearchButton = styled(ButtonBase)`
         background-color: #f3f3f3;
     }
 
-    @media (min-width: ${LG}px) {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-    }
-
     ${SearchButtonText} {
         flex-grow: 1;
     }
@@ -82,8 +76,11 @@ const DesktopSearchButton = styled(ButtonBase)`
     }
 
     @media (min-width: ${LG}px) {
-        
+        display: flex;
+        flex-direction: row;
+        align-items: center;
     }
+    
 `
 const DesktopSearchButtonContainer = styled.div`
     display: none;
@@ -92,7 +89,7 @@ const DesktopSearchButtonContainer = styled.div`
     border-bottom: 1px solid #e7e7e7;
     
     ${DesktopSearchButton} {
-        width: 736px;
+        width: 770px;
         margin: 0 auto;
         height: 60px;
         border-radius: 30px;
@@ -126,13 +123,13 @@ const DesktopNav = styled.div`
     }
 `
 const MobileSearchButtonContainer = styled.div`
-    padding: 1.5rem;
+    padding: 30px 1.5rem 2rem;
     max-width: 540px;
     margin: 0 auto;
 
     @media (min-width: ${MD}px) {
         max-width: 708px;
-        padding: 1.5rem 1.5rem 3rem;
+        padding: 40px 1.5rem 3rem;
     }
 
     @media (min-width: ${LG}px) {
@@ -143,16 +140,29 @@ const MobileSearchButton = styled(ButtonBase)`
     background-color: #f5f5f5;
     width: 100%;
     height: 40px;
+    line-height: 40px;
     text-align: left;
     border-radius: 20px;
-    padding: 8px 20px;
+    padding: 0 20px;
     
     &:after {
         display: inline-block;
         content: "Search";
         color: #525252;
         font-size: 14px;
-        margin-left: 5px;
+        margin-left: 8px;
+    }
+
+    @media (min-width: ${SM}px) {
+        height: 50px;
+        line-height: 50px;
+        border-radius: 25px;
+    }
+
+    @media (min-width: ${MD}px) {
+        height: 60px;
+        line-height: 60px;
+        border-radius: 30px;
     }
 
     @media (min-width: ${LG}px) {

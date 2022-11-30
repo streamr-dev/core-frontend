@@ -18,7 +18,7 @@ const SearchResultsInner = styled.div`
     > * {
         text-align: left;
         list-style: none;
-        margin: .5rem 0 10rem;
+        margin: 2.5rem 0 10rem;
         padding: 0;
     }
 
@@ -45,7 +45,7 @@ const SearchResultsInner = styled.div`
     }
 
     @media (min-width: ${LG}px) {
-        max-width: 736px;
+        max-width: 770px;
         padding: 0;
 
         > * {
