@@ -4,6 +4,8 @@ import '$shared/types/common-types'
 type TextControlRef = Ref<HTMLTextAreaElement | HTMLInputElement>
 type Props = {
     commitEmpty?: boolean
+    autoComplete?: string
+    autoFocus?: boolean
     flushHistoryOnBlur?: boolean
     immediateCommit?: boolean
     innerRef?: TextControlRef | null | undefined
@@ -12,8 +14,10 @@ type Props = {
     onCommit?: ((arg0: string) => void) | null | undefined
     onFocus?: ((arg0: React.SyntheticEvent<EventTarget>) => void) | null | undefined
     onKeyDown?: ((arg0: React.KeyboardEvent<EventTarget>) => void) | null | undefined
+    placeholder?: string
     revertOnEsc?: boolean
     selectAllOnFocus?: boolean
+    spellCheck?: string | boolean
     tag?: 'input' | 'textarea'
     value?: string | number
 }

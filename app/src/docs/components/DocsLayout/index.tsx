@@ -1,9 +1,9 @@
-import React, { useMemo, useState, useCallback, useEffect } from 'react'
+import React, { useMemo, useState, useCallback, useEffect, useRef } from 'react'
 import { MDXProvider } from '@mdx-js/react'
 import SimpleReactLightbox from 'simple-react-lightbox'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
-import { LG } from '$shared/utils/styled'
+import { SM, MD, LG } from '$shared/utils/styled'
 import Layout from '$shared/components/Layout'
 import Components from '$docs/mdxConfig'
 import docsMap from '$docs/docsMap'
@@ -13,25 +13,11 @@ import BusLine from '$shared/components/BusLine'
 import Button from '$shared/components/Button'
 import SvgIcon from '$shared/components/SvgIcon'
 import isEditableElement from '$shared/utils/isEditableElement'
+import Nav from '$shared/components/Layout/Nav'
 import Search from '../Search'
 import styles from './docsLayout.pcss'
 import Navigation from './Navigation'
-import DocsNav from './DocsNav'
-const EditButtonWrapper = styled.div`
-    display: none;
 
-    svg {
-        height: 12px;
-        width: 12px;
-        margin-right: 6px;
-    }
-
-    @media (min-width: ${LG}px) {
-        display: block;
-        position: relative;
-        min-height: 80px;
-    }
-`
 const ButtonBase = styled.button`
     appearance: none;
     border: 0;
@@ -41,7 +27,7 @@ const ButtonBase = styled.button`
     line-height: 16px;
 
     svg {
-        color: #a3a3a3;
+        color: #525252;
         width: 16px;
         height: 16px;
     }
@@ -52,6 +38,8 @@ const ButtonBase = styled.button`
 `
 const SearchButtonText = styled.span`
     font-size: 14px;
+    text-align: left;
+    margin-left: 9px;
 `
 const Key = styled.span`
     display: inline-block;
@@ -67,21 +55,16 @@ const Key = styled.span`
 const DesktopSearchButton = styled(ButtonBase)`
     display: none;
     color: #323232;
-    background-color: #f8f8f8;
-    border-radius: 4px;
-    width: 124px;
-    height: 32px;
+    background-color: #f5f5f5;
+    border-radius: 20px;
+    width: 160px;
+    height: 40px;
+    padding: 8px 20px;
     cursor: pointer;
 
     :hover,
     :active {
         background-color: #f3f3f3;
-    }
-
-    @media (min-width: ${LG}px) {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
     }
 
     ${SearchButtonText} {
@@ -91,6 +74,30 @@ const DesktopSearchButton = styled(ButtonBase)`
     ${Key} + ${Key} {
         margin-left: 2px;
     }
+
+    @media (min-width: ${LG}px) {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    
+`
+const DesktopSearchButtonContainer = styled.div`
+    display: none;
+    margin: 0 auto 3rem;
+    padding: 0 0 3rem;
+    border-bottom: 1px solid #e7e7e7;
+    
+    ${DesktopSearchButton} {
+        width: 770px;
+        margin: 0 auto;
+        height: 60px;
+        border-radius: 30px;
+    }
+    
+    @media (min-width: ${LG}px) {
+        display: block;
+    }
 `
 const DesktopNavInner = styled.div``
 const DesktopNav = styled.div`
@@ -98,25 +105,65 @@ const DesktopNav = styled.div`
 
     ${DesktopNavInner} {
         position: sticky;
-        top: 20px;
+        top: 40px;
     }
 
     ${Navigation.TableOfContents} {
-        margin-top: 3rem;
+        margin-top: 0;
         max-width: 184px;
+    }
+    
+    ${DesktopSearchButton} {
+        margin-bottom: 2rem;
     }
 
     @media (min-width: ${LG}px) {
         display: block;
+        padding-left: 40px;
+    }
+`
+const MobileSearchButtonContainer = styled.div`
+    padding: 30px 1.5rem 2rem;
+    max-width: 540px;
+    margin: 0 auto;
+
+    @media (min-width: ${MD}px) {
+        max-width: 708px;
+        padding: 40px 1.5rem 3rem;
+    }
+
+    @media (min-width: ${LG}px) {
+        display: none;
     }
 `
 const MobileSearchButton = styled(ButtonBase)`
-    display: inline-block;
-    position: absolute;
-    top: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1010;
+    background-color: #f5f5f5;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    text-align: left;
+    border-radius: 20px;
+    padding: 0 20px;
+    
+    &:after {
+        display: inline-block;
+        content: "Search";
+        color: #525252;
+        font-size: 14px;
+        margin-left: 8px;
+    }
+
+    @media (min-width: ${SM}px) {
+        height: 50px;
+        line-height: 50px;
+        border-radius: 25px;
+    }
+
+    @media (min-width: ${MD}px) {
+        height: 60px;
+        line-height: 60px;
+        border-radius: 30px;
+    }
 
     @media (min-width: ${LG}px) {
         display: none;
@@ -133,8 +180,10 @@ const MobileNav = styled.div`
     }
 `
 
-const DocsLayout = ({ nav = <DocsNav />, staticContext, ...props }) => {
+const DocsLayout = ({ nav = <Nav />, staticContext, ...props }) => {
     const [isSearching, setIsSearching] = useState(false)
+    const [desktopSearchY, setDesktopSearchY] = useState(0)
+    const desktopSearchRef = useRef(null)
     const { pathname } = useLocation()
     const editFilePath = useMemo(() => {
         let path = null
@@ -174,7 +223,13 @@ const DocsLayout = ({ nav = <DocsNav />, staticContext, ...props }) => {
             }
         }
 
+        const handleScroll = (event) => {
+            setDesktopSearchY(desktopSearchRef.current.getBoundingClientRect().y)
+        }
+
         window.addEventListener('keydown', onKeyDown)
+        window.addEventListener('scroll', handleScroll)
+
         return () => {
             window.removeEventListener('keydown', onKeyDown)
         }
@@ -183,39 +238,36 @@ const DocsLayout = ({ nav = <DocsNav />, staticContext, ...props }) => {
         <SimpleReactLightbox>
             <Layout className={styles.docsLayout} footer nav={nav}>
                 {isSearching && <Search nav={nav} toggleOverlay={toggleOverlay} />}
-                <MobileSearchButton type="button" onClick={toggleOverlay}>
-                    <SvgIcon name="search" />
-                </MobileSearchButton>
+                <MobileSearchButtonContainer>
+                    <MobileSearchButton type="button" onClick={toggleOverlay}>
+                        <SvgIcon name="search" />
+                    </MobileSearchButton>
+                </MobileSearchButtonContainer>
                 <MobileNav>{!isSearching && <Navigation.Responsive />}</MobileNav>
+                <DesktopSearchButtonContainer ref={desktopSearchRef}>
+                    <DesktopSearchButton type="button" onClick={toggleOverlay}>
+                        <SvgIcon name="search" />
+                        <SearchButtonText>Search</SearchButtonText>
+                        <Key>⌘</Key>
+                        <Key>K</Key>
+                    </DesktopSearchButton>
+                </DesktopSearchButtonContainer>
                 <DocsContainer>
                     <div className={styles.grid}>
                         <DesktopNav>
                             <DesktopNavInner>
-                                <DesktopSearchButton type="button" onClick={toggleOverlay}>
-                                    <SvgIcon name="search" />
-                                    <SearchButtonText>Search</SearchButtonText>
-                                    <Key>⌘</Key>
-                                    <Key>K</Key>
-                                </DesktopSearchButton>
+                                { desktopSearchY < -60 &&
+                                    <DesktopSearchButton type="button" onClick={toggleOverlay}>
+                                        <SvgIcon name="search" />
+                                        <SearchButtonText>Search</SearchButtonText>
+                                        <Key>⌘</Key>
+                                        <Key>K</Key>
+                                    </DesktopSearchButton>
+                                }
                                 <Navigation.TableOfContents />
                             </DesktopNavInner>
                         </DesktopNav>
                         <div className={styles.content}>
-                            <EditButtonWrapper>
-                                {editFilePath && (
-                                    <Button
-                                        tag="a"
-                                        href={`https://github.com/streamr-dev/core-frontend/edit/master/app/src/docs/content/${editFilePath}`}
-                                        kind="secondary"
-                                        size="mini"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        <SvgIcon name="github" />
-                                        Edit on GitHub
-                                    </Button>
-                                )}
-                            </EditButtonWrapper>
                             <BusLine dynamicScrollPosition>
                                 <MDXProvider components={Components}>
                                     <div {...props} />
