@@ -1,5 +1,5 @@
 import React from 'react'
-import { Router, Route as RouterRoute, Switch, Redirect } from 'react-router-dom'
+import { Router, Route as RouterRoute, Switch, Redirect, useParams } from 'react-router-dom'
 import '$shared/assets/stylesheets'
 import '@ibm/plex/css/ibm-plex.css'
 import '$utils/setupSnippets'
@@ -19,6 +19,9 @@ import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import Analytics from '$shared/utils/Analytics'
 import GlobalInfoWatcher from '$mp/containers/GlobalInfoWatcher'
 import NewStreamListingPage from '$app/src/pages/NewStreamListingPage'
+import StreamLiveDataPage from '$app/src/pages/StreamLiveDataPage'
+import StreamConnectPage from '$app/src/pages/StreamConnectPage'
+import StreamEditPage from '$app/src/pages/StreamEditPage'
 import routes from '$routes'
 import history from '../history'
 import '../analytics'
@@ -52,6 +55,9 @@ const MiscRouter = () => [
 
 const HubRouter = () => [
     <Route exact path={routes.streams.index()} component={NewStreamListingPage} key="NewStreamListingPage" />,
+    <Route exact path={routes.streams.show()} component={StreamEditPage} key="StreamDetailsOverviewPage" />,
+    <Route exact path={routes.streams.connect()} component={StreamConnectPage} key="StreamDetailsConnectPage" />,
+    <Route exact path={routes.streams.liveData()} component={StreamLiveDataPage} key="StreamDetailsLiveDataPage" />,
     <Redirect from={routes.root()} to={routes.streams.index()} key="RootRedirect" />, // edge case for localhost
     <Redirect from={routes.core()} to={routes.streams.index()} key="StreamListViewRedirect" />,
 ]

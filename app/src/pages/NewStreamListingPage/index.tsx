@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import type { Stream } from 'streamr-client'
+import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
@@ -11,6 +12,7 @@ import Tabs from '$shared/components/Tabs'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import useFetchStreams from '$shared/hooks/useFetchStreams'
 import InterruptionError from '$shared/errors/InterruptionError'
+import { isAuthenticated } from '$shared/modules/user/selectors'
 import { FiltersBar, FiltersWrap, SearchBarWrap } from '$mp/components/ActionBar/actionBar.styles'
 import routes from '$routes'
 
@@ -21,7 +23,7 @@ enum StreamSelection {
     YOUR = 'YOUR',
 }
 
-const streamSelectionOptions = [
+const streamSelectionOptions = (isUserAuthenticated: boolean) => [
     {
         label: 'All streams',
         value: StreamSelection.ALL,
@@ -29,6 +31,8 @@ const streamSelectionOptions = [
     {
         label: 'Your streams',
         value: StreamSelection.YOUR,
+        disabled: !isUserAuthenticated,
+        disabledReason: 'Connect your wallet to view your streams'
     },
 ]
 
@@ -53,11 +57,12 @@ const TableContainer = styled.div`
     background-color: white;
 `
 
-const StreamListing: React.FC = () => {
+const NewStreamListingPage: React.FC = () => {
     const [search, setSearch] = useState<string>('')
     const [streamsSelection, setStreamsSelection] = useState<StreamSelection>(StreamSelection.ALL)
     const [streams, setStreams] = useState<Array<Stream>>([])
     const [hasMore, setHasMore] = useState<boolean>(false)
+    const isUserAuthenticated = useSelector(isAuthenticated)
 
     const itp = useInterrupt()
     const fetchStreams = useFetchStreams()
@@ -106,7 +111,7 @@ const StreamListing: React.FC = () => {
             <FiltersBar>
                 <FiltersWrap>
                     <Tabs
-                        options={streamSelectionOptions}
+                        options={streamSelectionOptions(isUserAuthenticated)}
                         onChange={(newValue) => setStreamsSelection(StreamSelection[newValue])}
                         selectedOptionValue={streamsSelection}
                     />
@@ -129,4 +134,4 @@ const StreamListing: React.FC = () => {
     )
 }
 
-export default StreamListing
+export default NewStreamListingPage

@@ -1,31 +1,31 @@
 import React from 'react'
 import { StreamPermission } from 'streamr-client'
+import Display from '$shared/components/Display'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
 import StreamPage from './StreamPage'
 import AbstractStreamPage from './AbstractStreamPage'
 import StreamModifier from './AbstractStreamEditPage/StreamModifier'
 import InfoSection from './AbstractStreamEditPage/InfoSection'
-import AccessControlSection from './AbstractStreamEditPage/AccessControlSection'
+import CodeSnippetsSection from './AbstractStreamEditPage/CodeSnippetsSection'
+import StatusSection from './AbstractStreamEditPage/StatusSection'
+import PreviewSection from './AbstractStreamEditPage/PreviewSection'
 import HistorySection from './AbstractStreamEditPage/HistorySection'
 import PartitionsSection from './AbstractStreamEditPage/PartitionsSection'
+import ConfigSection from './AbstractStreamEditPage/ConfigSection'
 
 function UnwrappedStreamEditPage() {
     const { busy } = useStreamModifierStatusContext()
     const { [StreamPermission.EDIT]: canEdit } = useStreamPermissions()
-    const title = canEdit ? 'Set up your stream' : 'Read only stream'
     const loading = typeof canEdit === 'undefined'
     return (
-        <StreamPage title={title} loading={loading}>
-            <InfoSection disabled={busy} />
-            <AccessControlSection disabled={busy} />
-            <HistorySection disabled={busy} />
-            <PartitionsSection disabled={busy} />
+        <StreamPage loading={loading}>
+            <div>Live data</div>
         </StreamPage>
     )
 }
 
-export default function StreamCreatePage() {
+export default function StreamLiveDataPage() {
     return (
         <AbstractStreamPage
             streamOperations={[StreamPermission.EDIT, StreamPermission.GRANT, StreamPermission.SUBSCRIBE]}
