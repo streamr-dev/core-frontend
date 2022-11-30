@@ -10,7 +10,7 @@ import PngIcon from '$shared/components/PngIcon'
 import croppedImage from '$mp/assets/product_standard.png'
 import { PublishMode } from '$mp/containers/EditProductPage/usePendingChanges'
 import { actionsTypes as publishActionTypes } from '$mp/containers/EditProductPage/usePublish'
-import { actionsTypes as purchaseActionTypes } from '$mp/containers/ProductPage/usePurchase'
+import { actionsTypes as purchaseActionTypes } from '$mp/containers/ProjectPage/usePurchase'
 import { actionsTypes as whitelistActionTypes } from '$mp/containers/EditProductPage/useUpdateWhitelist'
 // marketplace
 import PublishTransactionProgress from '$mp/components/Modal/PublishTransactionProgress'

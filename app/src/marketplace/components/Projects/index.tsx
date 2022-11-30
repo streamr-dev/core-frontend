@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Row, Container as RsContainer, Col } from 'reactstrap'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { MarketplaceProductTile as UnstyledMarketplaceProductTile } from '$shared/components/Tile'
-import { MD, REGULAR, DESKTOP, COLORS } from '$shared/utils/styled'
+import { MD, REGULAR, DESKTOP, COLORS, TABLET } from '$shared/utils/styled'
 import Button from '$shared/components/Button'
 import type { ProjectList } from '../../types/project-types'
 import ProductPageSpinner from '../ProductPageSpinner'
@@ -56,11 +56,12 @@ export const ProjectsContainer = styled(RsContainer)`
     }
 `
 export const ProjectsHeader = styled.h3`
-    font-size: 18px;
+    font-size: 34px;
+    line-height: 34px;
     font-weight: ${REGULAR};
-
-    @media (min-width: ${MD}px) {
-        font-size: 24px;
+    margin-bottom: 16px;
+    @media(${TABLET}) {
+      margin-bottom: 40px;
     }
 `
 

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { COLORS, DESKTOP, TABLET } from '$shared/utils/styled'
 import { useWindowSize } from '$shared/hooks/useWindowSize'
 
-export type TabOption = {
+export type TabOptionProps = {
     label: string
     value: string
     disabled?: boolean
@@ -11,7 +11,7 @@ export type TabOption = {
 }
 
 export type TabsProps = {
-    options: TabOption[]
+    options: TabOptionProps[]
     selectedOptionValue: string
     onChange: (optionValue: string) => void,
     fullWidth?: 'on' | 'onlyMobile' | 'mobileAndTablet'
@@ -51,7 +51,7 @@ const Tabs: FunctionComponent<TabsProps> = ({options, selectedOptionValue, onCha
         setComponentLoaded(true)
     }, [])
 
-    const handleClick = (newSelection: TabOption): void => {
+    const handleClick = (newSelection: TabOptionProps): void => {
         if (newSelection.disabled || (newSelection.value === selection)) {
             return
         }
@@ -90,7 +90,7 @@ const Tabs: FunctionComponent<TabsProps> = ({options, selectedOptionValue, onCha
     </TabList>
 }
 
-const TabList = styled.ul`
+export const TabList = styled.ul`
   list-style-type: none;
   padding: 4px 0;
   margin: 0;
@@ -121,9 +121,9 @@ const TabList = styled.ul`
   }
 `
 
-const TabOption = styled.li`
+export const TabOption = styled.li`
   padding: 8px 16px;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 18px;
   font-weight: 500;
   color: ${COLORS.primary};
@@ -133,6 +133,12 @@ const TabOption = styled.li`
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: pre;
+  
+  @media(${TABLET}) { 
+    font-size: 14px;
+  }
+  
   &.transition {
     transition: color 250ms ease-in;
   }

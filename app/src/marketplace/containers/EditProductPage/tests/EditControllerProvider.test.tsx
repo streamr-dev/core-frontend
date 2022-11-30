@@ -923,7 +923,7 @@ describe('EditControllerProvider', () => {
                 ...product,
                 state: 'DEPLOYING',
             })
-            expect(location.pathname).toBe('/marketplace/products/1')
+            expect(location.pathname).toBe('/marketplace/products/1/overview')
         })
         it('redirects to product list if unpublish succeeded', async () => {
             let currentContext

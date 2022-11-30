@@ -51,7 +51,7 @@ const getWhitelistStatus = async ({ productId, validate = false, chainId }: Whit
     return false
 }
 
-const Hero = () => {
+const ProjectHero = () => {
     const dispatch = useDispatch()
     const history = useHistory()
     const { product } = useController()
@@ -132,7 +132,7 @@ const Hero = () => {
                 } else {
                     history.replace(
                         routes.auth.login({
-                            redirect: routes.marketplace.product({
+                            redirect: routes.marketplace.product.overview({
                                 id: productId,
                             }),
                         }),
@@ -195,4 +195,8 @@ const Hero = () => {
     )
 }
 
-export default Hero
+/**
+ * @deprecated
+ * Use ProjectHero2 now and remove this one after releasing the Hub
+ */
+export default ProjectHero

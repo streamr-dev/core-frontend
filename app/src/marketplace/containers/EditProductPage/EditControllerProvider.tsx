@@ -103,7 +103,7 @@ function useEditController(product: Project) {
         }
 
         history.replace(
-            routes.marketplace.product({
+            routes.marketplace.product.overview({
                 id: productId,
             }),
         )

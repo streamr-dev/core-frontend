@@ -23,3 +23,8 @@ export const projectTypes = {
     NORMAL: 'NORMAL',
     DATAUNION: 'DATAUNION',
 }
+
+export enum projectTypeNames {
+    NORMAL = 'Data Project',
+    DATAUNION = 'Data Union'
+}

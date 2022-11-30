@@ -1,8 +1,9 @@
 import { createContext, useContext } from 'react'
+import { Project } from '$mp/types/project-types'
 // TODO - fix typing
 type ProductControllerContextProps = {
     hasLoaded: any,
-    product: any,
+    product: Project,
     setProduct: any,
     productStreams: any,
     setProductStreams: any,

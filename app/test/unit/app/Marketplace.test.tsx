@@ -9,7 +9,7 @@ jest.mock('$mp/containers/Projects', () => ({
     __esModule: true,
     default: () => 'Main page',
 }))
-jest.mock('$mp/containers/ProductPage', () => ({
+jest.mock('$mp/containers/ProjectPage', () => ({
     __esModule: true,
     default: ({ match }) => `Product ${match.params.id} page`,
 }))

@@ -530,7 +530,7 @@ const Item = ({ product, stats }: Props) => {
                     {product.state === projectStates.DEPLOYED && (
                         <Tooltip value="View on marketplace">
                             <Button
-                                to={routes.marketplace.product({
+                                to={routes.marketplace.product.overview({
                                     id: product.id,
                                 })}
                             >

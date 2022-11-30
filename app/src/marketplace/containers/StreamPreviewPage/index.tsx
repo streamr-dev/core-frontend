@@ -150,7 +150,7 @@ const PreviewWrap = ({ productId, streamId }) => {
         }
 
         history.replace(
-            routes.marketplace.product({
+            routes.marketplace.product.overview({
                 id: productId,
             }),
         )

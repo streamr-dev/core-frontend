@@ -122,14 +122,18 @@ const UnstyledTileImageContainer = ({ children, height, autoSize: autoSizeProp, 
 }
 
 export const TileImageContainer = styled(UnstyledTileImageContainer)<UnstyledTileImageContainerProps>`
-    border-radius: 16px;
-    overflow: hidden;
-    position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
 
-    & & {
-        border-radius: 0;
-        overflow: visible;
-    }
+  & & {
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  &.no-border-radius {
+    border-radius: 0;
+  }
 `
 
 type ImageTileProps = {
@@ -137,11 +141,12 @@ type ImageTileProps = {
     height?: any
     showDataUnionBadge?: boolean
     src?: string | null | undefined
+    noBorderRadius?: boolean
 }
 
-const ImageTile = ({ alt, height, showDataUnionBadge, src, ...props }: ImageTileProps) => (
+const ImageTile = ({ alt, height, showDataUnionBadge, src, noBorderRadius, ...props }: ImageTileProps) => (
     <Tile {...props} suppressHover>
-        <TileImageContainer autoSize height={height}>
+        <TileImageContainer autoSize height={height} className={noBorderRadius ? 'no-border-radius' : ''}>
             <TileThumbnail alt={alt || ''} src={src || ''} />
             {!!showDataUnionBadge && <DataUnionBadge top left />}
         </TileImageContainer>
@@ -206,7 +211,7 @@ const PurchaseTile = ({
             <Link
                 to={
                     product.id &&
-                    routes.marketplace.product({
+                    routes.marketplace.product.overview({
                         id: product.id,
                     })
                 }
@@ -221,7 +226,7 @@ const PurchaseTile = ({
                         memberCount={numMembers}
                         linkTo={
                             product.id &&
-                            routes.marketplace.product(
+                            routes.marketplace.product.overview(
                                 {
                                     id: product.id,
                                 },
@@ -236,7 +241,7 @@ const PurchaseTile = ({
         <Link
             to={
                 product.id &&
-                routes.marketplace.product({
+                routes.marketplace.product.overview({
                     id: product.id,
                 })
             }
@@ -314,7 +319,7 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: Marke
     <Tile {...props}>
         <TileImageContainer>
             <Link
-                to={routes.marketplace.product({
+                to={routes.marketplace.product.overview({
                     id: product.id,
                 })}
             >
@@ -327,7 +332,7 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: Marke
                     top
                     left
                     memberCount={product.members}
-                    linkTo={routes.marketplace.product(
+                    linkTo={routes.marketplace.product.overview(
                         {
                             id: product.id,
                         },
@@ -345,7 +350,7 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: Marke
             )}
         </TileImageContainer>
         <Link
-            to={routes.marketplace.product({
+            to={routes.marketplace.product.overview({
                 id: product.id,
             })}
         >
