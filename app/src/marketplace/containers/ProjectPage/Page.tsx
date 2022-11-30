@@ -8,7 +8,6 @@ import Terms from '$mp/components/ProductPage/Terms'
 import ProjectPage, {
     ProjectPageContainer, RelatedProductsContainer,
 } from '$shared/components/ProjectPage'
-import Segment from '$shared/components/Segment'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import useDataUnionServerStats from './useDataUnionServerStats'
 import Description from './Description'
