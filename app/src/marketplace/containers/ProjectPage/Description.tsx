@@ -2,6 +2,7 @@ import React, { FunctionComponent } from 'react'
 import styled from 'styled-components'
 import { useSelector } from 'react-redux'
 import { denormalize } from 'normalizr'
+import { Link } from 'react-router-dom'
 import BN from 'bignumber.js'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { categorySchema } from '$shared/modules/entities/schema'
@@ -34,7 +35,7 @@ const Description: FunctionComponent<{project: Project}> = ({project}) => {
             <span> on </span>
             <strong>{formatChainName(project.chain)}</strong>
         </p>
-        <Button tag={'a'} href={routes.marketplace.product.connect({id: project.id})}>
+        <Button tag={Link} to={routes.marketplace.product.connect({id: project.id})}>
             Get Access
         </Button>
     </DescriptionContainer>
