@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React, { FunctionComponent, ReactNode } from 'react'
 import { Redirect, Route as RouterRoute, useParams } from 'react-router-dom'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorPage from '$shared/components/ErrorPage'
@@ -16,14 +16,14 @@ const ProjectDetailsPageRedirect: FunctionComponent = () => {
     return <Redirect to={routes.marketplace.product.overview({id})}/>
 }
 
-const MarketplaceRouter = () => [
+const MarketplaceRouter = (): ReactNode => [
     <Route exact path={routes.marketplace.index()} component={ProjectsPage} key="Projects" />,
     <Route exact path={routes.marketplace.streamPreview()} component={StreamPreviewPage} key="StreamPreview" />,
     <Route exact path={routes.marketplace.product.overview()} component={ProjectPage} key="ProjectDetailsOverviewPage" />,
     <Route exact path={routes.marketplace.product.connect()} component={ProjectConnectPage} key="ProjectDetailsConnectPage" />,
     <Route exact path={routes.marketplace.product.liveData()} component={ProjectLiveDataPage} key="ProjectDetailsLiveDataPage" />,
-    <Route exact path={routes.products.new()} component={NewProductPage} key="NewProductPage" />,
     <Route exact path={routes.marketplace.product.index()} component={ProjectDetailsPageRedirect} key="ProjectDetailsPageRedirect"/>,
+    <Route exact path={routes.products.new()} component={NewProductPage} key="NewProductPage" />,
 ]
 
 export default MarketplaceRouter
