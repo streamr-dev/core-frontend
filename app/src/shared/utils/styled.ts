@@ -23,5 +23,6 @@ export enum COLORS {
     focus = '#9BC1FB',
     selection = '#CCE9FD',
     separator = '#EFEFEF',
-    disabled = '#ADADAD'
+    disabled = '#ADADAD',
+    docLink = '#F1F1F1'
 }

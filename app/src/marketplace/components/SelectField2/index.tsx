@@ -21,6 +21,7 @@ type SelectFieldProps = {
     onChange: (value: string) => void,
     value?: string,
     disabled?: boolean
+    isClearable?: boolean
 }
 
 const DropdownIndicator = (props: DropdownIndicatorProps) => {
@@ -49,7 +50,8 @@ const SelectField2: FunctionComponent<SelectFieldProps> = ({
     options,
     value,
     onChange,
-    disabled
+    disabled,
+    isClearable = true
 }) => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [selected, setSelected] = useState<string>()
@@ -71,7 +73,7 @@ const SelectField2: FunctionComponent<SelectFieldProps> = ({
             placeholder={placeholder}
             options={options}
             isSearchable={false}
-            isClearable={true}
+            isClearable={isClearable}
             isDisabled={disabled}
             menuIsOpen={isOpen}
             onMenuOpen={() => {setIsOpen(true)}}

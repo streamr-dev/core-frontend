@@ -119,7 +119,7 @@ const ItemWrap = styled.div<{$expand: boolean}>`
             overflow: hidden;
         `}
 `
-const CodeSnippetsSection: FunctionComponent<{disabled: boolean, className?: string}> = ({ disabled, className, ...props }) =>{
+const CodeSnippetsSection: FunctionComponent<{disabled?: boolean, className?: string}> = ({ disabled, className, ...props }) =>{
     const isWithinNav = useIsWithinNav()
     return (
         <TOCSection disabled={disabled} id="snippets" title="Code Snippets">
