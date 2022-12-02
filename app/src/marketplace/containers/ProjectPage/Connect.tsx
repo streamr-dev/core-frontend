@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useContext } from 'react'
 import styled from 'styled-components'
+import BN from 'bignumber.js'
 import ProjectPage, { ProjectPageContainer, RelatedProductsContainer } from '$shared/components/ProjectPage'
 import { StreamConnect } from '$shared/components/StreamConnect'
 import { useUserHasAccessToProject } from '$mp/containers/ProductController/useUserHasAccessToProject'
@@ -9,6 +10,10 @@ import { useController } from '$mp/containers/ProductController'
 import Button from '$shared/components/Button'
 import { usePurchaseProject } from '$shared/hooks/usePurchaseProject'
 import RelatedProducts from '$mp/containers/ProjectPage/RelatedProducts'
+import { projectTypeNames } from '$mp/utils/constants'
+import PaymentRate from '$mp/components/PaymentRate'
+import { formatChainName, getChainIdFromApiString } from '$shared/utils/chains'
+import { timeUnits } from '$shared/utils/constants'
 import { SelectedStreamContext } from '../SelectedStreamContext/SelectedStreamContext'
 
 export const Connect: FunctionComponent = () => {
@@ -26,7 +31,20 @@ export const Connect: FunctionComponent = () => {
                     : <GetAccessContainer>
                         <img src={ProjectPng}/>
                         <h1>Get access to {product.name}</h1>
-                        <p>Lorem ipsum dolor sit amet</p>
+                        <p>
+                            <span>The streams in this {projectTypeNames[product.type]} can be accessed for <br/></span>
+                            <strong>
+                                <PaymentRate
+                                    amount={new BN(product.pricePerSecond)}
+                                    chainId={getChainIdFromApiString(product.chain)}
+                                    pricingTokenAddress={product.pricingTokenAddress}
+                                    timeUnit={timeUnits.hour}
+                                    tag={'span'}
+                                />
+                            </strong>
+                            <span> on </span>
+                            <strong>{formatChainName(product.chain)}</strong>
+                        </p>
                         <Button onClick={onPurchase}>Get Access</Button>
                     </GetAccessContainer>
             }
