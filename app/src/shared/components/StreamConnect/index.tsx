@@ -112,15 +112,15 @@ mqtt.publish('${streamId}', {
                 the node runs separately, and your application connects to it remotely using one of the supported protocols
             </li>
         </StreamConnectList>
-        <StreamConnectLink href={'/'}>
+        {/*<StreamConnectLink href={'/'}>
             <span>Pattern of data integration</span>
             <SvgIcon name={'linkOut'} />
-        </StreamConnectLink>
-        <StreamConnectLink href={'/'}>
+        </StreamConnectLink>*/}
+        <StreamConnectLink href={'https://www.npmjs.com/package/@streamr/cli-tools'} target={'_blank'} rel={'noreferrer noopener'}>
             <span>Streamr CLI</span>
             <SvgIcon name={'linkOut'} />
         </StreamConnectLink>
-        <StreamConnectLink href={'/'}>
+        <StreamConnectLink href={'https://www.npmjs.com/package/streamr-client'} target={'_blank'} rel={'noreferrer noopener'}>
             <span>Streamr Client quickstart guide</span>
             <SvgIcon name={'linkOut'} />
         </StreamConnectLink>
