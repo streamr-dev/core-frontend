@@ -11,7 +11,15 @@ jest.mock('$mp/containers/Projects', () => ({
 }))
 jest.mock('$mp/containers/ProjectPage', () => ({
     __esModule: true,
-    default: ({ match }) => `Product ${match.params.id} page`,
+    default: ({ match }) => `Product ${match.params.id} page - project overview`,
+}))
+jest.mock('$mp/containers/ProjectPage/ProjectConnectPage', () => ({
+    __esModule: true,
+    default: ({ match }) => `Product ${match.params.id} page - connect tab`,
+}))
+jest.mock('$mp/containers/ProjectPage/ProjectLiveDataPage', () => ({
+    __esModule: true,
+    default: ({ match }) => `Product ${match.params.id} page - live data tab`,
 }))
 jest.mock('$mp/containers/StreamPreviewPage', () => ({
     __esModule: true,
@@ -42,7 +50,7 @@ describe('Marketplace Routes', () => {
                 <Switch>{MarketplaceRouter()}</Switch>
             </MemoryRouter>,
         )
-        expect(el.text()).toBe('Product 123 page')
+        expect(el.text()).toBe('Product 123 page - project overview')
     })
     it('shows stream preview', () => {
         const el = mount(
@@ -59,15 +67,6 @@ describe('Marketplace Routes', () => {
             </MemoryRouter>,
         )
         expect(el.text()).toBe('New product')
-    })
-    it('does not show previous new product page', () => {
-        const el = mount(
-            <MemoryRouter initialEntries={['/marketplace/products/create']}>
-                <Switch>{MarketplaceRouter()}</Switch>
-            </MemoryRouter>,
-        )
-        // "create" is treated as an id
-        expect(el.text()).toBe('Product create page')
     })
     it('does not show edit product page', () => {
         const el = mount(

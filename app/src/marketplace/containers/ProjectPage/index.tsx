@@ -1,19 +1,15 @@
-import React, { ReactNode, useCallback, useEffect, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { ReactNode, useEffect, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import Layout from '$shared/components/Layout'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
-import type { ProjectId } from '$mp/types/project-types'
 import usePending from '$shared/hooks/usePending'
-import { getProductSubscription } from '$mp/modules/product/actions'
 import PrestyledLoadingIndicator from '$shared/components/LoadingIndicator'
 import Nav from '$shared/components/Layout/Nav'
-import { selectUserData } from '$shared/modules/user/selectors'
-import { useSessionToken } from '$shared/reducers/session'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
 import { MarketplaceLoadingView } from '$mp/containers/ProjectPage/MarketplaceLoadingView'
+import { useLoadAdditionalProductData } from '$shared/hooks/useLoadAdditionalProductData'
 import routes from '$routes'
 import ProductController, { useController } from '../ProductController'
 import WhitelistRequestAccessModal from './WhitelistRequestAccessModal'
@@ -26,28 +22,11 @@ const LoadingIndicator = styled(PrestyledLoadingIndicator)`
 `
 
 const ProjectPage = () => {
-    const dispatch = useDispatch()
-    const { product, loadCategories, loadDataUnion, loadRelatedProducts } = useController()
-    const userData = useSelector(selectUserData)
-    const token = useSessionToken()
-    const isLoggedIn = userData !== null && !!token
+    const { product, loadDataUnion } = useController()
     const { isPending } = usePending('contractProduct.LOAD')
     const { id: productId } = useParams<{id: string}>()
     const chainId = getChainIdFromApiString(product.chain)
-    const loadAdditionalProductData = useCallback(
-        async (id: ProjectId) => {
-            loadCategories()
-            loadRelatedProducts(id, isLoggedIn)
-
-            if (isLoggedIn) {
-                dispatch(getProductSubscription(id, chainId))
-            }
-        },
-        [dispatch, isLoggedIn, loadCategories, loadRelatedProducts, chainId],
-    )
-    useEffect(() => {
-        loadAdditionalProductData(productId)
-    }, [loadAdditionalProductData, productId])
+    useLoadAdditionalProductData()
     const { dataUnionDeployed, beneficiaryAddress } = product
     useEffect(() => {
         if (dataUnionDeployed && beneficiaryAddress) {

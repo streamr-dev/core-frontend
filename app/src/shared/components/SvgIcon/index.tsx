@@ -121,6 +121,12 @@ const sources = {
             </g>
         </svg>
     ),
+    linkOut: (
+        <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M27.8906 24.5684V14.0684H17.3906" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M27.8906 14.0684L13.4531 28.5059" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+    ),
     play: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
             <path
