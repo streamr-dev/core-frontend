@@ -11,6 +11,11 @@ type Props = {
     disabled?: boolean
 }
 
+/**
+ * @deprecated
+ * @param disabled
+ * @constructor
+ */
 const ProductName = ({ disabled }: Props) => {
     const { state: product } = useEditableState()
     const { isValid, message } = useValidation('name')

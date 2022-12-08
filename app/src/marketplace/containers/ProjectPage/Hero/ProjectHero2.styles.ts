@@ -15,6 +15,7 @@ export const ProjectHeroContainer = styled.div`
   padding: ${mobileSpacing};
   border-radius: 16px;
   overflow: hidden;
+  margin-bottom: 24px;
   
   @media(${TABLET}) {
     padding: ${tabletSpacing};

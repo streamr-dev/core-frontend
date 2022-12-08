@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useCallback, useMemo, FunctionComponent } from 'react'
-import { DropzoneInputProps, useDropzone } from 'react-dropzone'
+import { useDropzone } from 'react-dropzone'
 import cx from 'classnames'
 import { maxFileSizeForImageUpload } from '$shared/utils/constants'
 import PngIcon from '$shared/components/PngIcon'
@@ -16,11 +16,19 @@ type Props = {
     setImageToUpload?: (arg0: DropzoneFile) => void | Promise<void>
     originalImage?: string | null | undefined
     className?: string
+    dropZoneClassName?: string
     disabled?: boolean
     noPreview?: boolean
 }
 
-const ImageUpload: FunctionComponent<Props> = ({ setImageToUpload, originalImage, className, noPreview, disabled }: Props) => {
+const ImageUpload: FunctionComponent<Props> = ({
+    setImageToUpload,
+    originalImage,
+    className,
+    dropZoneClassName,
+    noPreview,
+    disabled
+}: Props) => {
     const [uploading, setUploading] = useState(false)
     const { preview, createPreview } = useFilePreview()
     const isMounted = useIsMounted()
@@ -104,7 +112,7 @@ const ImageUpload: FunctionComponent<Props> = ({ setImageToUpload, originalImage
             })}
         >
             <input {...getInputProps()} />
-            <div className={styles.dropzoneAdvice}>
+            <div className={cx(styles.dropzoneAdvice, dropZoneClassName)}>
                 <PngIcon className={styles.icon} name="imageUpload" alt="" />
                 <p>
                     {srcImage ? (

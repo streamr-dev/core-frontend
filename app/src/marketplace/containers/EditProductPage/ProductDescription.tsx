@@ -10,6 +10,11 @@ type Props = {
     disabled?: boolean
 }
 
+/**
+ * @deprecated
+ * @param disabled
+ * @constructor
+ */
 const ProductDescription = ({ disabled }: Props) => {
     const { state: product } = useEditableState()
     const { publishAttempted } = useContext(EditControllerContext)

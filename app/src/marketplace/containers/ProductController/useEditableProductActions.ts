@@ -37,7 +37,7 @@ export function useEditableProductActions() {
         [commit, setTouched],
     )
     const updateDescription = useCallback(
-        (description: $ElementType<Project, 'description'>) => {
+        (description: string) => {
             commit('Update description', (p: Project) => ({ ...p, description }))
             setTouched('description')
         },

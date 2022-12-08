@@ -115,7 +115,7 @@ const UnstyledActionBar = ({
                                     label: 'Your projects',
                                     value: 'your_projects',
                                     disabled: !isUserAuthenticated,
-                                    disabledReason: 'You need to be logged in to view your projects'
+                                    disabledReason: 'You need to be connected in to view your projects'
                                 }
                             ]
                         }
