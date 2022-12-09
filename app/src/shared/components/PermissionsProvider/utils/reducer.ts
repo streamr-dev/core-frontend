@@ -35,6 +35,7 @@ function norm(userId) {
 }
 
 export default function reducer(state, action) {
+    console.log(state, action)
     if (action.type === UNLOCK) {
         return { ...state, locked: false }
     }

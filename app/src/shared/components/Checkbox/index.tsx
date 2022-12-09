@@ -21,6 +21,11 @@ const Tick = styled.div<{checked: boolean}>`
         transition: opacity 0.1s;
     }
 
+    :disabled {
+        filter: grayscale(1);
+        cursor: not-allowed;
+    }
+
     ${({ checked }) =>
         !!checked &&
         css`

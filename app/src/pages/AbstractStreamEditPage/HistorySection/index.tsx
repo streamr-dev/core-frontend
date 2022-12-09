@@ -19,12 +19,10 @@ function UnwrappedHistorySection({ disabled, canEdit }) {
     const canAssignStorageNodes = !!streamId && !!canEdit
     return (
         <Fragment>
-            {!!canEdit && (
-                <Desc>
-                    Enable storage to retain historical data in one or more geographic locations of your choice. You can
-                    also choose how long to store your stream&apos;s historical data before auto-deletion.
-                </Desc>
-            )}
+            <Desc>
+                Enable storage to retain historical data in one or more geographic locations of your choice. You can
+                also choose how long to store your stream&apos;s historical data before auto-deletion.
+            </Desc>
             {canAssignStorageNodes && <StorageNodeList />}
             <Label htmlFor="storageAmount">Store historical data for</Label>
             <UnitizedQuantity
