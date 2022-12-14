@@ -25,5 +25,6 @@ export enum COLORS {
     separator = '#EFEFEF',
     disabled = '#ADADAD',
     docLink = '#F1F1F1',
-    link = '#0324FF'
+    link = '#0324FF',
+    error = '#D90C25'
 }

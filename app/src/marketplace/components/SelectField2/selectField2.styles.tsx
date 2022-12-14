@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components'
 import { components, CSSObjectWithLabel } from 'react-select'
 import SvgIcon, { SvgIconProps } from '$shared/components/SvgIcon'
 import { COLORS } from '$shared/utils/styled'
-import CheckmarkIcon from './checkmark.svg'
+import CheckmarkIcon from '$shared/assets/icons/checkmark.svg'
 
 const transitionTime = 150
 
