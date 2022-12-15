@@ -2,11 +2,10 @@ import React, { useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import ChainSelector from '$shared/components/ChainSelector'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
-import { getApiStringFromChainId, getChainIdFromApiString } from '$shared/utils/chains'
+import { getApiStringFromChainId, getChainIdFromApiString, getChainOptions } from '$shared/utils/chains'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { projectTypes } from '$mp/utils/constants'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
-import { getChainOptions } from './projectChain.utils'
 
 const Section = styled.section`
     background: none;

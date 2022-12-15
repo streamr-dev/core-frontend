@@ -12,7 +12,7 @@ import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { projectTypes } from '$mp/utils/constants'
 import { getConfigForChain, getConfigForChainByName } from '$shared/web3/config'
 import { projectStates } from '$shared/utils/constants'
-import { configChainNameMapping } from './projectChain.utils'
+import { configChainNameMapping } from '$shared/utils/chains'
 
 const ProjectDetailsWrap = styled.div`
   display: flex;
