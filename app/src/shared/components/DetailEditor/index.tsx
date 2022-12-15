@@ -14,23 +14,24 @@ import EnterIcon from './enter.svg'
 
 export type DetailEditorSelectOption = {
     label: ReactNode,
-    value: string
+    value: any
 }
 
 type DetailsEditorProps = {
     defaultIcon?: ReactNode,
     unsetValueText?: string,
     hasValueIcon?: ReactNode,
-    value?: string,
+    value?: any,
     showValue?: boolean,
-    showValueFormatter?: (value: string) => string,
+    showValueFormatter?: (value: any) => string,
     optional?: boolean,
     selectOptions?: DetailEditorSelectOption[],
     instructionText: string,
     ctaButtonText?: string,
     placeholder?: string,
-    validation?: {validator: (value: string) => boolean, message: string}[]
-    onChange: (value: string) => void
+    validation?: {validator: (value: any) => boolean, message: string}[]
+    onChange: (value: any) => void,
+    className?: string
 }
 
 export const DetailEditor: FunctionComponent<DetailsEditorProps> = ({
@@ -46,7 +47,8 @@ export const DetailEditor: FunctionComponent<DetailsEditorProps> = ({
     ctaButtonText,
     placeholder,
     validation,
-    onChange
+    onChange,
+    className
 }) => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [inputValue, setInputValue] = useState<string>()
@@ -103,87 +105,89 @@ export const DetailEditor: FunctionComponent<DetailsEditorProps> = ({
         return value
     }, [value, unsetValueText, showValueFormatter])
 
-    return <>
-        <DetailEditorDropdown isOpen={isOpen} toggle={handleToggle}>
-            <DropdownToggle>
-                {value ? (hasValueIcon || defaultIcon) : defaultIcon}
-                {showValue &&
-                    <span className={"value" + (!value ? ' value-unset' : '') + (defaultIcon || hasValueIcon ? ' has-icon' : '')}>
-                        {valueToDisplay}
-                    </span>
-                }
-            </DropdownToggle>
-            <DropdownMenu>
-                <div className={'header'}>
-                    <span className={'instruction'}>{instructionText}</span>
-                    <span className={'optional'}>{optional && 'Optional'}</span>
-                </div>
-                {!selectOptions && <div>
-                    <form className={'text-input-container'} onSubmit={(event) => {
-                        event.preventDefault()
-                        handleSubmit()
-                    }}>
-                        <input
-                            onChange={(event: ChangeEvent<HTMLInputElement>) => setInputValue(event.target.value)}
-                            onFocus={() => {
-                                setInputTouched(true)
-                                setInputIsFocused(true)
-                            }}
-                            onBlur={() => setInputIsFocused(false)}
-                            placeholder={placeholder}
-                            className={'text-input ' + (validationError ? 'invalid-input' : '')}
-                            defaultValue={inputValue}
-                        />
-                        <img
-                            src={EnterIcon}
-                            className={'enter-icon ' + (inputIsFocused && inputValue ? 'visible' : '')}
-                            onClick={handleSubmit}
-                        />
-                    </form>
-                    {
-                        !validationError && !inputValue && !!value &&
-                        <button className={'detail-input-cta'} type={'button'} onClick={handleClear}>
-                            <SvgIcon name={'close'} className={'cta-icon'}/>
-                            <span>Remove {ctaButtonText}</span>
-                        </button>
-                    }
-                    {
-                        !validationError && !(!inputValue && !!value) &&
-                        <button className={'detail-input-cta'} type={'button'} onClick={handleSubmit} disabled={!inputValue}>
-                            <SvgIcon name={'plusSmall'} className={'cta-icon'}/>
-                            <span>Add {ctaButtonText}</span>
-                        </button>
-                    }
-                    {
-                        validationError && <span className={'validation-error'}>{validationError}</span>
-                    }
-                </div>}
-                {selectOptions &&
-                    <ReactSelect
-                        options={selectOptions}
+    return <DetailEditorDropdown isOpen={isOpen} toggle={handleToggle} className={className}>
+        <DropdownToggle>
+            {value ? (hasValueIcon || defaultIcon) : defaultIcon}
+            {showValue &&
+                <span
+                    className={"value" + (!value ? ' value-unset' : '') + (defaultIcon || hasValueIcon ? ' has-icon' : '')}>
+                    {valueToDisplay}
+                </span>
+            }
+        </DropdownToggle>
+        <DropdownMenu>
+            <div className={'header'}>
+                <span className={'instruction'}>{instructionText}</span>
+                <span className={'optional'}>{optional && 'Optional'}</span>
+            </div>
+            {!selectOptions && <div>
+                <form className={'text-input-container'} onSubmit={(event) => {
+                    event.preventDefault()
+                    handleSubmit()
+                }}>
+                    <input
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => setInputValue(event.target.value)}
+                        onFocus={() => {
+                            setInputTouched(true)
+                            setInputIsFocused(true)
+                        }}
+                        onBlur={() => setInputIsFocused(false)}
                         placeholder={placeholder}
-                        isSearchable={false}
-                        isClearable={false}
-                        defaultValue={value ? selectOptions.find((option) => option.value === value) : null}
-                        components={{
-                            IndicatorSeparator: () => <></>,
-                            Option: StyledDetailEditorDropdownOption
-                        }}
-                        onChange={(element: DetailEditorSelectOption) => {
-                            setInputValue(element.value)
-                            handleSubmit()
-                        }}
-                        styles={{
-                            placeholder: (styles) => getDetailEditorDropdownPlaceholderStyles(styles),
-                            control: (styles, props) => getDetailEditorDropdownControlStyles(styles, props.isFocused),
-                            menu: (styles) => getDetailEditorDropdownMenuStyles(styles),
-                            menuList: (styles) => getDetailEditorDropdownMenuListStyles(styles),
-                            option: (styles, props) => getDetailEditorDropdownOptionStyles(styles, props.isSelected)
-                        }}
+                        className={'text-input ' + (validationError ? 'invalid-input' : '')}
+                        defaultValue={inputValue}
                     />
+                    <img
+                        src={EnterIcon}
+                        className={'enter-icon ' + (inputIsFocused && inputValue ? 'visible' : '')}
+                        onClick={handleSubmit}
+                    />
+                </form>
+                {
+                    !validationError && !inputValue && !!value &&
+                    <button className={'detail-input-cta'} type={'button'} onClick={handleClear}>
+                        <SvgIcon name={'close'} className={'cta-icon'}/>
+                        <span>Remove {ctaButtonText}</span>
+                    </button>
                 }
-            </DropdownMenu>
-        </DetailEditorDropdown>
-    </>
+                {
+                    !validationError && !(!inputValue && !!value) &&
+                    <button className={'detail-input-cta'}
+                        type={'button'}
+                        onClick={handleSubmit}
+                        disabled={!inputValue}>
+                        <SvgIcon name={'plusSmall'} className={'cta-icon'}/>
+                        <span>Add {ctaButtonText}</span>
+                    </button>
+                }
+                {
+                    validationError && <span className={'validation-error'}>{validationError}</span>
+                }
+            </div>}
+            {selectOptions &&
+                <ReactSelect
+                    options={selectOptions}
+                    placeholder={placeholder}
+                    isSearchable={false}
+                    isClearable={false}
+                    defaultValue={value ? selectOptions.find((option) => option.value === value) : null}
+                    components={{
+                        IndicatorSeparator: () => <></>,
+                        Option: StyledDetailEditorDropdownOption
+                    }}
+                    onChange={(element: DetailEditorSelectOption) => {
+                        setInputValue(element.value)
+                        handleSubmit()
+                    }}
+                    styles={{
+                        placeholder: (styles) => getDetailEditorDropdownPlaceholderStyles(styles),
+                        control: (styles, props) => getDetailEditorDropdownControlStyles(styles, props.isFocused),
+                        menu: (styles) => getDetailEditorDropdownMenuStyles(styles),
+                        menuList: (styles) => getDetailEditorDropdownMenuListStyles(styles),
+                        option: (styles, props) => getDetailEditorDropdownOptionStyles(styles, props.isSelected)
+                    }}
+                />
+            }
+        </DropdownMenu>
+    </DetailEditorDropdown>
 }
 

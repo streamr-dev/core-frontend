@@ -25,6 +25,7 @@ import Whitelist from './Whitelist'
 import SharedSecrets from './SharedSecrets'
 import TermsOfUse from './TermsOfUse'
 import DataUnionDeployment from './DataUnionDeployment'
+import { ProjectDetails } from './ProjectDetails'
 import styles from './editor.pcss'
 
 type Props = {
@@ -41,10 +42,11 @@ const ProjectEditor = ({ disabled }: Props) => {
     return (
         <div className={cx(styles.root, styles.Editor)}>
             <ProjectPageContainer>
-                <ProjectHeroContainer>
+                <ProjectHeroContainer overflowVisible={true}>
                     <CoverImage2 disabled={disabled} />
                     <ProductName2/>
                     <ProductDescription2/>
+                    <ProjectDetails/>
                 </ProjectHeroContainer>
                 <WhiteBox>
                     <p>ELO</p>

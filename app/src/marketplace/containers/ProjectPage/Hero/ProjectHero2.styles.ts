@@ -7,15 +7,17 @@ const mobileSpacing = '24px'
 const tabletSpacing = '40px'
 const desktopSpacing = '50px'
 
-export const ProjectHeroContainer = styled.div`
+export const ProjectHeroContainer = styled.div<{overflowVisible?: boolean}>`
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 100%;
   grid-template-rows: auto auto auto auto;
   background-color: white;
   padding: ${mobileSpacing};
   border-radius: 16px;
   overflow: hidden;
   margin-bottom: 24px;
+  
+  ${(props) => props.overflowVisible ? 'overflow: visible;' : ''}
   
   @media(${TABLET}) {
     padding: ${tabletSpacing};

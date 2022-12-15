@@ -1,4 +1,3 @@
-import '$shared/styles/pcss'
 import { ThemeProvider } from 'styled-components'
 import { NavProvider } from '@streamr/streamr-layout'
 import React, { FunctionComponent, ReactNode } from 'react'

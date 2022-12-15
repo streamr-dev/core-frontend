@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import { components, CSSObjectWithLabel } from 'react-select'
 import { UncontrolledDropdown } from 'reactstrap'
-import { COLORS, REGULAR, SANS } from '$shared/utils/styled'
+import { COLORS, REGULAR, SANS, TABLET } from '$shared/utils/styled'
 import BlackCheckmarkIcon from '$shared/assets/icons/checkmark-black.svg'
 
 const SelectedOption = css`
@@ -34,6 +34,7 @@ export const StyledDetailEditorDropdownOption = styled(components.Option)`
 
 export const DetailEditorDropdown = styled(UncontrolledDropdown)`
   &.dropdown {
+    display: grid;
 
     > button {
       font-family: ${SANS};
@@ -51,9 +52,12 @@ export const DetailEditorDropdown = styled(UncontrolledDropdown)`
       height: auto;
       min-width: 33px;
       min-height: 33px;
+      text-transform: none;
+      letter-spacing: inherit;
 
       &:hover {
         background-color: ${COLORS.secondaryLight};
+        box-shadow: 0 0 1px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.15);
       }
 
       &:active, &:focus {
@@ -81,6 +85,7 @@ export const DetailEditorDropdown = styled(UncontrolledDropdown)`
         align-items: center;
         justify-content: space-between;
         margin-bottom: 13px;
+        line-height: 16px;
       }
 
       .instruction {
@@ -165,7 +170,7 @@ export const DetailEditorDropdown = styled(UncontrolledDropdown)`
 
       .validation-error {
         font-size: 12px;
-        margin-top: 12px;
+        margin-top: 13px;
         display: block;
         color: ${COLORS.error};
       }
@@ -174,6 +179,12 @@ export const DetailEditorDropdown = styled(UncontrolledDropdown)`
     .value {
       color: ${COLORS.primary};
       padding-top: 3px;
+      white-space: nowrap;
+      max-width: calc(100% - 16px);
+      display: none;
+      @media(${TABLET}) {
+        display: block;
+      }
     }
 
     .value-unset {
