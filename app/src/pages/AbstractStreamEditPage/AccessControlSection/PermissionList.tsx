@@ -3,7 +3,12 @@ import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
 import { usePermissionsState } from '$shared/components/PermissionsProvider'
+import usePersistChangeset from '$shared/components/PermissionsProvider/usePersistChangeset'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
+import useModal from '$shared/hooks/useModal'
 import PermissionItem from './PermissionItem'
+import AddAccountDialog from './AddAccountDialog'
 
 const Container = styled.div`
     background: #f1f1f1;
@@ -27,7 +32,9 @@ type Props = {
 }
 
 const PermissionList: React.FunctionComponent<Props> = ({ disabled }) => {
+    const { api: addModal } = useModal('accesscontrol.addaccount')
     const { changeset, combinations } = usePermissionsState()
+    const persist = usePersistChangeset()
     const permissions = useMemo(() => (
         Object.entries({ ...combinations, ...changeset })
     ), [combinations, changeset])
@@ -50,18 +57,24 @@ const PermissionList: React.FunctionComponent<Props> = ({ disabled }) => {
                     kind="primary"
                     disabled={disabled}
                     outline
-                    onClick={() => console.log('add')}
+                    onClick={() => addModal.open()}
                 >
                     Add a new account
                 </Button>
                 <Button
                     kind="primary"
-                    disabled={disabled}
-                    onClick={() => console.log('save')}
+                    disabled={disabled || Object.entries(changeset).length === 0}
+                    onClick={() => persist(() => {
+                        Notification.push({
+                            title: 'Stream permissions updated',
+                            icon: NotificationIcon.CHECKMARK,
+                        })
+                    })}
                 >
                     Save
                 </Button>
             </Footer>
+            <AddAccountDialog />
         </Container>
     )
 }

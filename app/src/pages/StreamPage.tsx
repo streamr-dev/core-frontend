@@ -229,28 +229,21 @@ function UnwrappedStreamPage({ children, loading = false }) {
 
     return (
         <Fragment>
-            <form
-                onSubmit={(e) => {
-                    save()
-                    e.preventDefault()
-                }}
-            >
-                <Layout>
-                    <MarketplaceHelmet title={`Stream ${streamId}`} />
-                    <DetailsPageHeader
-                        backButtonLink={routes.streams.index()}
-                        pageTitle={streamId}
-                        linkTabs={linkTabs}
-                    />
-                    <Outer>
-                        <Inner>
-                            <Content>
-                                {!loading && children}
-                            </Content>
-                        </Inner>
-                    </Outer>
-                </Layout>
-            </form>
+            <Layout>
+                <MarketplaceHelmet title={`Stream ${streamId}`} />
+                <DetailsPageHeader
+                    backButtonLink={routes.streams.index()}
+                    pageTitle={streamId}
+                    linkTabs={linkTabs}
+                />
+                <Outer>
+                    <Inner>
+                        <Content>
+                            {!loading && children}
+                        </Content>
+                    </Inner>
+                </Outer>
+            </Layout>
             {showGetCryptoDialog && (
                 <GetCryptoDialog
                     onCancel={() => void setShowGetCryptoDialog(false)}

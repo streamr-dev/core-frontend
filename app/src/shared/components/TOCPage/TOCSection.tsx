@@ -27,11 +27,12 @@ const Title = styled.h3`
 `
 const TitleWrapper = styled.div`
     display: inline-flex;
-    justify-content: space-between;
     align-items: center;
     width: 100%;
 `
-const TitleText = styled.span``
+const TitleText = styled.span`
+    margin-right: 16px;
+`
 const Status = styled.span``
 export type TOCSectionProps = {
     id: string,

@@ -14,6 +14,7 @@ const Label = styled.label<LabelProps>`
     display: grid;
     grid-template-columns: 1fr auto;
     align-items: center;
+    justify-items: left;
     padding: 0px 12px 0px 18px;
     height: 40px;
     margin: 0;
