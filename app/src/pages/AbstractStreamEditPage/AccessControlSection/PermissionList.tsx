@@ -55,6 +55,7 @@ const PermissionList: React.FunctionComponent<Props> = ({ disabled }) => {
                 </span>
                 <Button
                     kind="primary"
+                    type="button"
                     disabled={disabled}
                     outline
                     onClick={() => addModal.open()}
@@ -63,6 +64,7 @@ const PermissionList: React.FunctionComponent<Props> = ({ disabled }) => {
                 </Button>
                 <Button
                     kind="primary"
+                    type="button"
                     disabled={disabled || Object.entries(changeset).length === 0}
                     onClick={() => persist(() => {
                         Notification.push({

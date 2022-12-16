@@ -27,7 +27,7 @@ function UnwrappedStreamEditPage() {
     })
 
     return (
-        <StreamPage loading={loading}>
+        <StreamPage loading={loading} includeContainerBox={false}>
             <StreamPreview
                 streamId={streamId}
                 stream={stream}

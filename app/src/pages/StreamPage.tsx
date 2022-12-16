@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 
 import Layout from '$shared/components/Layout/Core'
+import Button from '$shared/components/Button'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import SwitchNetworkModal from '$shared/components/SwitchNetworkModal'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
@@ -29,7 +30,7 @@ import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
 import { DESKTOP, TABLET } from '$shared/utils/styled'
 import routes from '$routes'
 
-export const getStreamDetailsLinkTabs = (streamId: string) => {
+export const getStreamDetailsLinkTabs = (streamId?: string) => {
     return [
         {
             label: 'Stream overview',
@@ -61,9 +62,10 @@ const Outer = styled.div`
 `
 
 const Inner = styled.div`
+    display: grid;
+    grid-template-columns: fit-content(680px) auto;
     border-radius: 16px;
     background-color: white;
-
     padding: 24px;
 
     @media ${TABLET} {
@@ -75,9 +77,28 @@ const Inner = styled.div`
     }
 `
 
-const Content = styled.div`
-    max-width: 680px;
+const SaveButton = styled(Button)`
+    width: fit-content;
+    justify-self: right;
 `
+
+type ContainerBoxProps = {
+    children?: React.ReactNode
+}
+const ContainerBox: React.FunctionComponent<ContainerBoxProps> = ({ children }) =>
+    <Outer>
+        <Inner>
+            <div>
+                {children}
+            </div>
+            <SaveButton
+                kind="primary"
+                type="submit"
+            >
+                Save
+            </SaveButton>
+        </Inner>
+    </Outer>
 
 function StreamPageSidebar() {
     const streamId = useStreamId()
@@ -102,7 +123,7 @@ function StreamPageSidebar() {
     )
 }
 
-function UnwrappedStreamPage({ children, loading = false }) {
+function UnwrappedStreamPage({ children, loading = false, includeContainerBox = true }) {
     const history = useHistory()
     const { commit, goBack } = useStreamModifier()
     const { busy, clean } = useStreamModifierStatusContext()
@@ -113,7 +134,7 @@ function UnwrappedStreamPage({ children, loading = false }) {
     const isNew = !streamId
     const nativeTokenName = useNativeTokenName()
     const [showGetCryptoDialog, setShowGetCryptoDialog] = useState(false)
-    const linkTabs = useMemo(() => getStreamDetailsLinkTabs(streamId), [streamId])
+    const linkTabs = useMemo(() => streamId ? getStreamDetailsLinkTabs(streamId) : [], [streamId])
 
     async function save() {
         const { requireUninterrupted } = itp('save')
@@ -229,21 +250,30 @@ function UnwrappedStreamPage({ children, loading = false }) {
 
     return (
         <Fragment>
-            <Layout>
-                <MarketplaceHelmet title={`Stream ${streamId}`} />
-                <DetailsPageHeader
-                    backButtonLink={routes.streams.index()}
-                    pageTitle={streamId}
-                    linkTabs={linkTabs}
-                />
-                <Outer>
-                    <Inner>
-                        <Content>
+            <form
+                onSubmit={(e) => {
+                    save()
+                    e.preventDefault()
+                }}
+            >
+                <Layout>
+                    <MarketplaceHelmet title={`Stream ${streamId}`} />
+                    <DetailsPageHeader
+                        backButtonLink={routes.streams.index()}
+                        pageTitle={streamId}
+                        linkTabs={linkTabs}
+                    />
+                    {includeContainerBox ? (
+                        <ContainerBox>
                             {!loading && children}
-                        </Content>
-                    </Inner>
-                </Outer>
-            </Layout>
+                        </ContainerBox>
+                    ) : (
+                        <>
+                            {!loading && children}
+                        </>
+                    )}
+                </Layout>
+            </form>
             {showGetCryptoDialog && (
                 <GetCryptoDialog
                     onCancel={() => void setShowGetCryptoDialog(false)}
