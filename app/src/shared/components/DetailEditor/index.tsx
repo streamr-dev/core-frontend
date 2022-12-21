@@ -32,6 +32,7 @@ type DetailsEditorProps = {
     validation?: {validator: (value: any) => boolean, message: string}[]
     onChange: (value: any) => void,
     className?: string
+    disabled?: boolean
 }
 
 export const DetailEditor: FunctionComponent<DetailsEditorProps> = ({
@@ -48,7 +49,8 @@ export const DetailEditor: FunctionComponent<DetailsEditorProps> = ({
     placeholder,
     validation,
     onChange,
-    className
+    className,
+    disabled
 }) => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [inputValue, setInputValue] = useState<string>()
@@ -89,6 +91,13 @@ export const DetailEditor: FunctionComponent<DetailsEditorProps> = ({
         }
     }
 
+    const handleSelection = (value: any) => {
+        onChange(value)
+        setInputValue(value)
+        setIsOpen(false)
+        return
+    }
+
     const handleClear = () => {
         setInputValue('')
         onChange('')
@@ -106,7 +115,7 @@ export const DetailEditor: FunctionComponent<DetailsEditorProps> = ({
     }, [value, unsetValueText, showValueFormatter])
 
     return <DetailEditorDropdown isOpen={isOpen} toggle={handleToggle} className={className}>
-        <DropdownToggle>
+        <DropdownToggle disabled={disabled}>
             {value ? (hasValueIcon || defaultIcon) : defaultIcon}
             {showValue &&
                 <span
@@ -175,8 +184,7 @@ export const DetailEditor: FunctionComponent<DetailsEditorProps> = ({
                         Option: StyledDetailEditorDropdownOption
                     }}
                     onChange={(element: DetailEditorSelectOption) => {
-                        setInputValue(element.value)
-                        handleSubmit()
+                        handleSelection(element.value)
                     }}
                     styles={{
                         placeholder: (styles) => getDetailEditorDropdownPlaceholderStyles(styles),

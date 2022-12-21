@@ -1,93 +1,26 @@
-import React from 'react'
-import cx from 'classnames'
-import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
-import useEditableState from '$shared/contexts/Undo/useEditableState'
-import { projectStates } from '$shared/utils/constants'
-import { projectTypes } from '$mp/utils/constants'
-import { WhiteBox } from '$shared/components/WhiteBox'
-import { CoverImage2 } from '$mp/containers/EditProductPage/CoverImage2'
-import ProductName2 from '$mp/containers/EditProductPage/ProductName2'
-import ProductDescription2 from '$mp/containers/EditProductPage/ProductDescription2'
+import React, { FunctionComponent } from 'react'
 import { ProjectPageContainer } from '$shared/components/ProjectPage'
-import { ProjectHeroContainer } from '../ProjectPage/Hero/ProjectHero2.styles'
-import EditorNav from './EditorNav'
-import ProductName from './ProductName'
-import CoverImage from './CoverImage'
-import ProductDescription from './ProductDescription'
-import ProductChain from './ProductChain'
-import ProductStreams from './ProductStreams'
-import PriceSelector from './PriceSelector'
-import PaymentToken from './PaymentToken'
-import ProductType from './ProductType'
-import ProductBeneficiary from './ProductBeneficiary'
-import ProductDetails from './ProductDetails'
-import Whitelist from './Whitelist'
-import SharedSecrets from './SharedSecrets'
-import TermsOfUse from './TermsOfUse'
-import DataUnionDeployment from './DataUnionDeployment'
-import { ProjectDetails } from './ProjectDetails'
-import styles from './editor.pcss'
+import { ProjectHeroContainer } from '$mp/containers/ProjectPage/Hero/ProjectHero2.styles'
+import { CoverImage2 } from '$mp/containers/EditProductPage/CoverImage2'
+import ProjectName from '$mp/containers/EditProductPage/ProjectName'
+import ProjectDescription from '$mp/containers/EditProductPage/ProjectDescription'
+import { ProjectDetails } from '$mp/containers/EditProductPage/ProjectDetails'
+import { WhiteBox } from '$shared/components/WhiteBox'
 
-type Props = {
+type ProjectEditorProps = {
     disabled?: boolean
 }
 
-const ProjectEditor = ({ disabled }: Props) => {
-    const { state: product } = useEditableState()
-    const isDataUnion = isDataUnionProduct(product)
-    const isPaid = isPaidProduct(product)
-    const isChainSelectorDisabled =
-        product.state === projectStates.DEPLOYED ||
-        (product.type === projectTypes.DATAUNION && product.beneficiaryAddress != null)
-    return (
-        <div className={cx(styles.root, styles.Editor)}>
-            <ProjectPageContainer>
-                <ProjectHeroContainer overflowVisible={true}>
-                    <CoverImage2 disabled={disabled} />
-                    <ProductName2/>
-                    <ProductDescription2/>
-                    <ProjectDetails/>
-                </ProjectHeroContainer>
-                <WhiteBox>
-                    <p>ELO</p>
-                </WhiteBox>
-                <div className={styles.grid}>
-                    <div className={styles.nav}>
-                        <EditorNav />
-                    </div>
-                    <div className={styles.info}>
-                        <ProductName disabled={disabled} />
-                        <CoverImage disabled={disabled} />
-                        <ProductDescription disabled={disabled} />
-                        <ProductStreams disabled={disabled} />
-                        <ProductType disabled={disabled} />
-                        {(isDataUnion || isPaid) && (
-                            <ProductChain disabled={disabled || isChainSelectorDisabled} />
-                        )}
-                        {(isDataUnion && !isChainSelectorDisabled) && (
-                            <DataUnionDeployment
-                                // NOTE: We want to remount component when chain changes
-                                // so that we reset the list of selectable data unions.
-                                key={`${product.id}-${product.chain}`}
-                                disabled={disabled}
-                            />
-                        )}
-                        {isPaid && (
-                            <React.Fragment>
-                                <PaymentToken disabled={disabled} />
-                                <PriceSelector disabled={disabled} />
-                                {!isDataUnion && <ProductBeneficiary disabled={disabled} />}
-                            </React.Fragment>
-                        )}
-                        <ProductDetails disabled={disabled} />
-                        {!!isPaid && <Whitelist disabled={disabled} />}
-                        <TermsOfUse disabled={disabled} />
-                        {!!isDataUnion && <SharedSecrets disabled={disabled} />}
-                    </div>
-                </div>
-            </ProjectPageContainer>
-        </div>
-    )
+export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({disabled}) => {
+    return <ProjectPageContainer>
+        <ProjectHeroContainer overflowVisible={true}>
+            <CoverImage2 disabled={disabled} />
+            <ProjectName/>
+            <ProjectDescription/>
+            <ProjectDetails/>
+        </ProjectHeroContainer>
+        <WhiteBox>
+            <p>ELO</p>
+        </WhiteBox>
+    </ProjectPageContainer>
 }
-
-export default ProjectEditor

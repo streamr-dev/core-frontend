@@ -18,32 +18,36 @@ export const DetailsPageHeader: FunctionComponent<DetailsPageHeaderProps> = ({
     currentPageUrl,
     linkTabs
 }) => {
-    return <DetailsPageHeaderContainer>
-        <DetailsPageHeaderBar>
-            <LeftSideContainer>
-                {!!backButtonLink && <BackLink to={backButtonLink}><BackButtonIcon name={'backArrow'}></BackButtonIcon></BackLink>}
-                {!!pageTitle && <PageTitleContainer>{pageTitle}</PageTitleContainer>}
-            </LeftSideContainer>
-            <RightSideContainer>
-                <LinkTabs selectedOptionHref={currentPageUrl} options={linkTabs} fullWidth={'mobileAndTablet'}></LinkTabs>
-            </RightSideContainer>
-        </DetailsPageHeaderBar>
-    </DetailsPageHeaderContainer>
+    return <DetailsPageHeaderWrap>
+        <DetailsPageHeaderContainer>
+            <DetailsPageHeaderBar>
+                <LeftSideContainer>
+                    {!!backButtonLink && <BackLink to={backButtonLink}><BackButtonIcon name={'backArrow'}></BackButtonIcon></BackLink>}
+                    {!!pageTitle && <PageTitleContainer>{pageTitle}</PageTitleContainer>}
+                </LeftSideContainer>
+                <RightSideContainer>
+                    <LinkTabs selectedOptionHref={currentPageUrl} options={linkTabs} fullWidth={'mobileAndTablet'}></LinkTabs>
+                </RightSideContainer>
+            </DetailsPageHeaderBar>
+        </DetailsPageHeaderContainer>
+    </DetailsPageHeaderWrap>
 }
 
+const DetailsPageHeaderWrap = styled.div`
+  background-color: white;
+`
+
 const DetailsPageHeaderContainer = styled.div`
-  margin: 45px auto 22px;
-  padding: 0 24px;
+  margin: 0 auto;
+  padding: 45px 24px 22px;
   & & {
     padding: 0 24px;
   }
   @media(${DESKTOP}) {
-    margin: 130px auto 30px;
-    padding: 0 32px;
+    padding: 130px 32px 30px;
   }
   @media (${TABLET}) {
     max-width: 1360px;
-    padding: 0 24px;
 
     & & {
       padding: 0;

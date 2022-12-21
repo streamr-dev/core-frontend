@@ -13,7 +13,7 @@ export const ERROR = 'error'
 
 export type Level = 'info' | 'warning' | 'error'
 
-type ContextProps = {
+export type ValidationContextProps = {
     setStatus: (param1: string, param2: Level, param3: string) => void,
     clearStatus: (param: string) => void,
     status: object,
@@ -28,7 +28,7 @@ type ContextProps = {
     isPendingChange: (param: string) => boolean,
     isAnyChangePending: () => boolean,
 }
-const ValidationContext = React.createContext<ContextProps>({} as ContextProps)
+const ValidationContext = React.createContext<ValidationContextProps>({} as ValidationContextProps)
 
 const isEqual = (a: object, b: object) => JSON.stringify(a) === JSON.stringify(b)
 
@@ -53,7 +53,7 @@ const validationErrors: Record<string, string> = {
 }
 
 // TODO add typing
-function useValidationContext(): ContextProps {
+function useValidationContext(): ValidationContextProps {
     const [status, setStatusState] = useState<any>({})
     const [pendingChanges, setPendingChanges] = useState({})
     const [touched, setTouchedState] = useState<Record<string, boolean>>({})

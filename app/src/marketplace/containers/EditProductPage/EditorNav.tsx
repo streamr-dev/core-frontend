@@ -13,6 +13,10 @@ const CLICK_OFFSET = -130
 
 const includeIf = (condition: boolean, elements: Array<any>) => (condition ? elements : [])
 
+/**
+ * @deprecated
+ * @constructor
+ */
 const EditorNav = () => {
     const { state: product } = useEditableState()
     const productRef = useRef()

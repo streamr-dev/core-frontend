@@ -6,7 +6,7 @@ import { Optional } from 'utility-types'
 import Spinner from '$shared/components/Spinner'
 import styles from './newButton.pcss'
 export type Size = 'mini' | 'normal' | 'big'
-export type Kind = 'primary' | 'secondary' | 'destructive' | 'link' | 'special' | 'primary2'
+export type Kind = 'primary' | 'secondary' | 'destructive' | 'link' | 'special' | 'primary2' | 'transparent'
 export type Variant = 'dark' | 'light'
 // TODO - try to make it more generic without passing LinkProps directly
 type ButtonProps = Omit<HTMLProps<HTMLButtonElement | HTMLAnchorElement> & Optional<LinkProps>, 'size'> & {
@@ -55,7 +55,8 @@ const Button: FunctionComponent<ButtonProps> = ({
                 [styles.big]: size === 'big',
                 [styles.dark]: variant === 'dark',
                 [styles.outline]: outline,
-                [styles.primary2]: kind === 'primary2'
+                [styles.primary2]: kind === 'primary2',
+                [styles.transparent]: kind === 'transparent'
             },
             className,
         )}

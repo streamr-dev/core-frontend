@@ -1,18 +1,18 @@
-import React, { FunctionComponent, useMemo } from 'react'
+import React, { FunctionComponent, ReactNode, useContext, useMemo } from 'react'
 import styled from 'styled-components'
 import * as yup from 'yup'
 import { DetailEditor, DetailEditorSelectOption } from '$shared/components/DetailEditor'
 import SvgIcon from '$shared/components/SvgIcon'
 import { COLORS, LAPTOP } from '$shared/utils/styled'
 import NetworkIcon from '$shared/components/NetworkIcon'
-import useEditableState from '$shared/contexts/Undo/useEditableState'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
-import useEditableProductActions from '$mp/containers/ProductController/useEditableProductActions'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { projectTypes } from '$mp/utils/constants'
-import { getConfigForChain, getConfigForChainByName } from '$shared/web3/config'
+import { getConfigForChainByName } from '$shared/web3/config'
 import { projectStates } from '$shared/utils/constants'
 import { configChainNameMapping } from '$shared/utils/chains'
+import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
+import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 
 const ProjectDetailsWrap = styled.div`
   display: flex;
@@ -42,8 +42,17 @@ const StandardIcon = styled(SvgIcon)`
   height: 16px;
   min-width: 16px;
   min-height: 16px;
-  &.twitterBlue {
-    color: #1DA1F2
+  &.twitterColor {
+    color: #1DA1F2;
+  }
+  &.telegramColor {
+    color: #2AABEE;
+  }
+  &.redditColor {
+    color: #FF5700;
+  }
+  &.linkedInColor {
+    color: #0077B5;
   }
 `
 
@@ -70,51 +79,58 @@ const getChainOptions = (chains: Array<string>): DetailEditorSelectOption[] =>
         const config = getConfigForChainByName(c)
         const chainId = config.id
         return {
-            value: chainId,
+            value: config.name,
             label: <ChainOption><ChainIcon chainId={chainId} /><span>{configChainNameMapping[config.name]}</span></ChainOption>
         }
     })
 
 export const ProjectDetails: FunctionComponent = () => {
-    const { state: project } = useEditableState()
+    const { state: project } = useContext(ProjectStateContext)
     const isDataUnion = isDataUnionProduct(project)
     const isPaid = isPaidProduct(project)
     const isChainSelectorDisabled =
         project.state === projectStates.DEPLOYED ||
         (project.type === projectTypes.DATAUNION && project.beneficiaryAddress != null)
-    const { updateChain } = useEditableProductActions()
+    const { updateChain, updateContactUrl, updateContactEmail, updateSocialUrl } = useEditableProjectActions()
     const productType = project.type
-    const productChain = project.chain
+    const projectChain = project.chain
     const { marketplaceChains, dataunionChains } = getCoreConfig()
     const chainOptions = useMemo<DetailEditorSelectOption[]>(() => {
         let options: DetailEditorSelectOption[] = []
-
         if (productType === projectTypes.DATAUNION) {
             options = getChainOptions(dataunionChains)
         } else {
             options = getChainOptions(marketplaceChains)
         }
-
         return options
     }, [productType, marketplaceChains, dataunionChains])
+    const currentChainIcon = useMemo<ReactNode>(() => {
+        if (!projectChain) {
+            return undefined
+        }
+        const config = getConfigForChainByName(projectChain)
+        return <ChainIcon chainId={config.id} className={'preview'}/>
+    }, [projectChain])
+
     return <ProjectDetailsWrap>
-        {/*{(isDataUnion || isPaid) &&
+        {(isDataUnion || isPaid) &&
             <DetailEditor
+                disabled={isChainSelectorDisabled}
                 className={'detail'}
                 unsetValueText={'Chain'}
                 defaultIcon={<StandardIcon name={'ellipse'}/>}
+                hasValueIcon={currentChainIcon}
                 showValue={true}
                 instructionText={'Please select a chain'}
-                onChange={console.log}
+                onChange={updateChain}
                 placeholder={'Select...'}
-                value={productChain}
+                value={projectChain}
                 selectOptions={chainOptions}
-                showValueFormatter={(chainId) => {
-                    const chain = getConfigForChain(chainId)
-                    return chain?.name
+                showValueFormatter={(chainName) => {
+                    return chainName ? configChainNameMapping[chainName] : ''
                 }}
             />
-        }*/}
+        }
         <DetailEditor
             className={'detail'}
             unsetValueText={'Site URL'}
@@ -123,7 +139,7 @@ export const ProjectDetails: FunctionComponent = () => {
             instructionText={'Please add a site URL'}
             ctaButtonText={'site URL'}
             placeholder={'https://siteinfo.com'}
-            onChange={console.log}
+            onChange={updateContactUrl}
             optional={true}
             validation={[{
                 validator: (value) => {
@@ -132,6 +148,7 @@ export const ProjectDetails: FunctionComponent = () => {
                 },
                 message: 'Not a valid URL'
             }]}
+            value={project?.contact?.url || ''}
         />
         <DetailEditor
             className={'detail'}
@@ -141,7 +158,7 @@ export const ProjectDetails: FunctionComponent = () => {
             instructionText={'Please add a contact email'}
             ctaButtonText={'contact email'}
             placeholder={'owner@example.com'}
-            onChange={console.log}
+            onChange={updateContactEmail}
             optional={true}
             validation={[{
                 validator: (value) => {
@@ -150,14 +167,16 @@ export const ProjectDetails: FunctionComponent = () => {
                 },
                 message: 'Not a valid email address'
             }]}
-            value={'john.the.admin@verylongcompanyname.com'}
+            value={project?.contact?.email || ''}
         />
         <DetailEditor
             className={'detail'}
             defaultIcon={<StandardIcon name={'twitter'}/>}
             instructionText={'Please add Twitter link'}
             ctaButtonText={'Twitter link'}
-            onChange={console.log}
+            hasValueIcon={!!project?.contact?.social1 && <StandardIcon name={'twitter'} className={'twitterColor'}/>}
+            value={project?.contact?.social1}
+            onChange={(value) => updateSocialUrl('twitter', value)}
             optional={true}
             validation={[{
                 validator: (value) => {
@@ -172,7 +191,9 @@ export const ProjectDetails: FunctionComponent = () => {
             defaultIcon={<StandardIcon name={'telegram'}/>}
             instructionText={'Please add Telegram link'}
             ctaButtonText={'Telegram link'}
-            onChange={console.log}
+            hasValueIcon={!!project?.contact?.social2 && <StandardIcon name={'telegram'} className={'telegramColor'}/>}
+            value={project?.contact?.social2}
+            onChange={(value) => updateSocialUrl('telegram', value)}
             optional={true}
             validation={[{
                 validator: (value) => {
@@ -187,7 +208,9 @@ export const ProjectDetails: FunctionComponent = () => {
             defaultIcon={<StandardIcon name={'reddit'}/>}
             instructionText={'Please add Reddit link'}
             ctaButtonText={'Reddit link'}
-            onChange={console.log}
+            hasValueIcon={!!project?.contact?.social3 && <StandardIcon name={'reddit'} className={'redditColor'}/>}
+            value={project?.contact?.social3}
+            onChange={(value) => updateSocialUrl('reddit', value)}
             optional={true}
             validation={[{
                 validator: (value) => {
@@ -201,7 +224,9 @@ export const ProjectDetails: FunctionComponent = () => {
             defaultIcon={<StandardIcon name={'linkedin'}/>}
             instructionText={'Please add LinkedIn link'}
             ctaButtonText={'LinkedIn link'}
-            onChange={console.log}
+            hasValueIcon={!!project?.contact?.social4 && <StandardIcon name={'linkedin'} className={'linkedInColor'}/>}
+            value={project?.contact?.social4}
+            onChange={(value) => updateSocialUrl('linkedin', value)}
             optional={true}
             validation={[{
                 validator: (value) => {

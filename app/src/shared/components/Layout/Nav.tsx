@@ -93,7 +93,7 @@ const SignedInUserMenu = styled(NavDropdown)`
         }
     }
 `
-const Navbar = styled.div`
+export const Navbar = styled.div`
     display: grid;
     grid-template-columns: auto 1fr auto auto;
     align-items: center;
@@ -105,7 +105,7 @@ const MenuGrid = styled.div`
     align-items: center;
 `
 const NavLink = styled.a``
-const NavbarItem = styled.div`
+export const NavbarItem = styled.div`
     ${MenuGrid} & + & {
         margin-left: 16px;
     }
@@ -232,7 +232,7 @@ const UnstyledLogoLink: FunctionComponent<{children?: any, href: string}> = ({ch
     )
 }
 
-const LogoLink = styled(UnstyledLogoLink)`
+export const LogoLink = styled(UnstyledLogoLink)`
     color: #f65f0a !important;
     display: block;
     max-width: 64px;

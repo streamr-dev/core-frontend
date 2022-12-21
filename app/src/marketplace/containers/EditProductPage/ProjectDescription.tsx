@@ -2,12 +2,11 @@ import React, { useContext } from 'react'
 import styled from 'styled-components'
 import Editor from "rich-markdown-editor"
 import light from 'rich-markdown-editor/dist/styles/theme'
-import MarkdownEditor from '$mp/components/MarkdownEditor'
-import useEditableState from '$shared/contexts/Undo/useEditableState'
 import { COLORS } from '$shared/utils/styled'
 import { ProjectHeroDescriptionStyles } from '$mp/containers/ProjectPage/Hero/ProjectHero2.styles'
+import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
+import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 import useValidation from '../ProductController/useValidation'
-import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { Context as EditControllerContext } from './EditControllerProvider'
 type Props = {
     disabled?: boolean
@@ -33,11 +32,12 @@ const customTheme = {
     link: COLORS.link
 }
 
-const ProductDescription2 = ({ disabled }: Props) => {
-    const { state: product } = useEditableState()
-    const { publishAttempted } = useContext(EditControllerContext)
+const ProjectDescription = ({ disabled }: Props) => {
+    const { state: product } = useContext(ProjectStateContext)
+    // TODO Check if its needed
+    // const { publishAttempted } = useContext(EditControllerContext)
     const { isValid, message } = useValidation('description')
-    const { updateDescription } = useEditableProductActions()
+    const { updateDescription } = useEditableProjectActions()
     return (
         <DescriptionEditor readOnly={disabled}
             defaultValue={product.description || ''}
@@ -52,4 +52,4 @@ const ProductDescription2 = ({ disabled }: Props) => {
     )
 }
 
-export default ProductDescription2
+export default ProjectDescription

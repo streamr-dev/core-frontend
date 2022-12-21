@@ -7,10 +7,10 @@ import ImageUpload from '$shared/components/ImageUpload'
 import Errors from '$ui/Errors'
 import useModal from '$shared/hooks/useModal'
 import useFilePreview from '$shared/hooks/useFilePreview'
-import useEditableState from '$shared/contexts/Undo/useEditableState'
 import { COLORS, LAPTOP } from '$shared/utils/styled'
 import { ProjectHeroImageStyles } from '$mp/containers/ProjectPage/Hero/ProjectHero2.styles'
-import useEditableProductActions from '../ProductController/useEditableProductActions'
+import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
+import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import useValidation from '../ProductController/useValidation'
 import { Context as EditControllerContext } from './EditControllerProvider'
 import styles from './coverImage.pcss'
@@ -64,8 +64,8 @@ const Container = styled.div`
 `
 
 export const CoverImage2 = ({ disabled }: Props) => {
-    const { state: product } = useEditableState()
-    const { updateImageFile } = useEditableProductActions()
+    const { state: product } = useContext(ProjectStateContext)
+    const { updateImageFile } = useEditableProjectActions()
     const { isValid, message } = useValidation('imageUrl')
     const { api: cropImageDialog, isOpen } = useModal('cropImage')
     const { preview, createPreview } = useFilePreview()

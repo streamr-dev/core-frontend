@@ -21,13 +21,13 @@ const Helmet = ({ description, image, suffix, title, ...props }: Props) => (
 )
 
 export const MarketplaceHelmet = ({
-    description = 'Buy and sell real-time data on the Streamr Marketplace',
+    description = 'Discover, create, share and consume data streams on the Streamr Hub',
     image = 'https://streamr.network/resources/social/marketplace.png',
     title,
     suffix,
     ...props
 }: Props) => (
-    <Helmet {...props} description={description} image={image} suffix={suffix || 'Streamr Marketplace'} title={title} />
+    <Helmet {...props} description={description} image={image} suffix={suffix || 'Streamr Hub'} title={title} />
 )
 export const CoreHelmet = ({
     description = 'Your real-time data toolkit. Create a stream, integrate, process and visualise real-time data',
@@ -36,7 +36,7 @@ export const CoreHelmet = ({
     title,
     ...props
 }: Props) => (
-    <Helmet {...props} title={title} image={image} description={description} suffix={suffix || 'Streamr Core'} />
+    <Helmet {...props} title={title} image={image} description={description} suffix={suffix || 'Streamr Hub'} />
 )
 export const DocsHelmet = ({
     description = 'Learn more and explore what you can do with Streamr',

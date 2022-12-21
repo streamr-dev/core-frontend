@@ -132,6 +132,31 @@
   }
 }
 
+.transparent {
+  background-color: transparent;
+  border-color: transparent;
+
+  &,
+  &:link,
+  &:not([disabled]):--idle {
+    color: rgba(82, 82, 82, 1);
+  }
+
+  &:not([disabled]):--enter {
+    background-color: transparent;
+    border-color: transparent;
+  }
+
+  &:not([disabled]):active {
+    background-color: transparent;
+    border-color: transparent;
+  }
+
+  &[disabled] {
+    color: rgba(82, 82, 82, 0.5);
+  }
+}
+
 .secondary {
   background-color: #F5F5F5;
   border-color: #F5F5F5;

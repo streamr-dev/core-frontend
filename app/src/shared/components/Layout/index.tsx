@@ -29,17 +29,17 @@ const Layout: FunctionComponent<LayoutProps> = ({
     theme = DefaultTheme,
     footer = true,
     nav = <Nav />,
-    framedClassname,
-    innerClassname,
+    framedClassName,
+    innerClassName,
     ...props
-}: Props = {}) => {
+}: LayoutProps = {}) => {
     useScrollToTop()
     const current = useCurrentLocation()
     return (
         <ThemeProvider theme={theme}>
             <NavProvider highlight={current}>
-                <div className={cx(styles.framed, framedClassname)}>
-                    <div className={cx(styles.inner, innerClassname)}>
+                <div className={cx(styles.framed, framedClassName)}>
+                    <div className={cx(styles.inner, innerClassName)}>
                         {nav}
                         <div {...props} />
                     </div>

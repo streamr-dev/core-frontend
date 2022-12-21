@@ -1,11 +1,11 @@
 import React, { useContext, useCallback, ChangeEvent } from 'react'
 import styled from 'styled-components'
 import { ProjectHeroTitleStyles } from '$mp/containers/ProjectPage/Hero/ProjectHero2.styles'
-import useEditableState from '$shared/contexts/Undo/useEditableState'
 import EnhancedText from '$ui/Text'
 import { COLORS } from '$shared/utils/styled'
+import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
+import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import useValidation from '../ProductController/useValidation'
-import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { Context as EditControllerContext } from './EditControllerProvider'
 type Props = {
     disabled?: boolean
@@ -29,10 +29,10 @@ const ProjectNameInput = styled(EnhancedText)`
   }
 `
 
-const ProductName2 = ({ disabled }: Props) => {
-    const { state: product } = useEditableState()
+const ProjectName = ({ disabled }: Props) => {
+    const { state: product } = useContext(ProjectStateContext)
     const { isValid, message } = useValidation('name')
-    const { updateName } = useEditableProductActions()
+    const { updateName } = useEditableProjectActions()
     const { publishAttempted } = useContext(EditControllerContext)
     const invalid = publishAttempted && !isValid
     const onChange = useCallback(
@@ -48,7 +48,7 @@ const ProductName2 = ({ disabled }: Props) => {
                 name={'projectName'}
                 disabled={disabled}
                 placeholder={'Project name'}
-                value={product.name}
+                value={product.name || ''}
                 onChange={onChange}
                 autoFocus
             />
@@ -56,4 +56,4 @@ const ProductName2 = ({ disabled }: Props) => {
     )
 }
 
-export default ProductName2
+export default ProjectName

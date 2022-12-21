@@ -62,7 +62,8 @@ export type Project = {
     contact: ContactDetails | null | undefined
     dataUnionDeployed?: boolean
     pricingTokenAddress: Address
-    pricingTokenDecimals: number
+    pricingTokenDecimals: number,
+    existingDUAddress?: string
 }
 export type ProjectSubscriptionId = string
 export type ProjectSubscriptionIdList = Array<ProjectSubscriptionId>
