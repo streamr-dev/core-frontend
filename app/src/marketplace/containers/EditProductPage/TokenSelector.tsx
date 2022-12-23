@@ -82,6 +82,11 @@ const TokenType = {
     Custom: 'custom',
 }
 
+/**
+ * @deprecated
+ * @param disabled
+ * @constructor
+ */
 const TokenSelector = ({ disabled }: Props) => {
     const isMounted = useIsMounted()
     const { state: product } = useEditableState()

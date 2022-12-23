@@ -21,7 +21,7 @@ const Helmet = ({ description, image, suffix, title, ...props }: Props) => (
 )
 
 export const MarketplaceHelmet = ({
-    description = 'Discover, create, share and consume data streams on the Streamr Hub',
+    description = 'Discover, create and consume data streams on the Streamr Hub',
     image = 'https://streamr.network/resources/social/marketplace.png',
     title,
     suffix,

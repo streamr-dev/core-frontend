@@ -3,6 +3,7 @@ import { components, CSSObjectWithLabel } from 'react-select'
 import SvgIcon, { SvgIconProps } from '$shared/components/SvgIcon'
 import { COLORS } from '$shared/utils/styled'
 import CheckmarkIcon from '$shared/assets/icons/checkmark.svg'
+import BlackCheckmarkIcon from '$shared/assets/icons/checkmark-black.svg'
 
 const transitionTime = 150
 
@@ -179,6 +180,94 @@ export const getClearIndicatorStyles = (styles: CSSObjectWithLabel, isOpen: bool
     }
     if (isOpen) {
         styleObject.color = COLORS.primaryContrast
+    }
+    return styleObject
+}
+
+const SelectedWhiteOption = css`
+  :after {
+    content: ' ';
+    background: url("${BlackCheckmarkIcon}") center center no-repeat;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    right: 12px;
+    top: 18px;
+  }
+`
+
+export const StyledWhiteDropdownOption = styled(components.Option)`
+  position: relative;
+  &:active {
+    //background-color: ${COLORS.primary} !important;
+  }
+  &:focus {
+    background-color: ${COLORS.focus};
+  }
+  
+  ${(props) => {
+        if (props.isSelected ) {
+            return SelectedWhiteOption
+        }
+    }}
+`
+
+export const getWhitePlaceholderStyles = (styles: CSSObjectWithLabel): CSSObjectWithLabel => {
+    return {
+        ...styles,
+        color: COLORS.disabled
+    }
+}
+
+export const getWhiteControlStyles = (styles: CSSObjectWithLabel, isFocused: boolean): CSSObjectWithLabel => {
+    const styleObject: CSSObjectWithLabel = {
+        ...styles,
+        fontSize: '14px',
+        borderColor: COLORS.secondaryHover,
+        width: 'auto',
+        display: 'inline-flex'
+    }
+    if (isFocused) {
+        styleObject.borderColor = COLORS.focus
+        styleObject.boxShadow = `0 0 0 1px ${COLORS.focus}`
+    }
+    return styleObject
+}
+
+export const getWhiteMenuStyles = (styles: CSSObjectWithLabel): CSSObjectWithLabel => {
+    return {
+        ...styles,
+        background: '#FFF',
+        border: 'none',
+        borderRadius: '8px',
+        color: COLORS.primary,
+        padding: 0,
+        boxShadow: '0px 0px 4px rgba(0, 0, 0, 0.1)',
+        marginTop: '4px',
+        width: '280px',
+    }
+}
+
+export const getWhiteMenuListStyles = (styles: CSSObjectWithLabel): CSSObjectWithLabel => {
+    return {
+        ...styles,
+        padding: 0,
+        borderRadius: '8px',
+    }
+}
+
+export const getWhiteOptionStyles = (styles: CSSObjectWithLabel, isSelected: boolean): CSSObjectWithLabel => {
+    const styleObject: CSSObjectWithLabel = {
+        ...styles,
+        cursor: 'pointer',
+        color: COLORS.primaryLight,
+        fontSize: '14px',
+        fontWeight: 400,
+        lineHeight: '18px'
+    }
+    if (isSelected) {
+        styleObject.color = COLORS.primaryLight
+        styleObject.backgroundColor = 'white'
     }
     return styleObject
 }

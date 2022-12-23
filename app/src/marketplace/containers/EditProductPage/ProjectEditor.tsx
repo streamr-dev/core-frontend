@@ -6,6 +6,7 @@ import ProjectName from '$mp/containers/EditProductPage/ProjectName'
 import ProjectDescription from '$mp/containers/EditProductPage/ProjectDescription'
 import { ProjectDetails } from '$mp/containers/EditProductPage/ProjectDetails'
 import { WhiteBox } from '$shared/components/WhiteBox'
+import TokenSelector2 from '$mp/containers/EditProductPage/TokenSelector2'
 
 type ProjectEditorProps = {
     disabled?: boolean
@@ -20,7 +21,7 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({disabled})
             <ProjectDetails/>
         </ProjectHeroContainer>
         <WhiteBox>
-            <p>ELO</p>
+            <TokenSelector2/>
         </WhiteBox>
     </ProjectPageContainer>
 }
