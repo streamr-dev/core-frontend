@@ -110,7 +110,7 @@ const ResizeHandle = styled(UnstyledResizeHandle)`
     }
 
     @media (min-width: 668px) {
-        display: block;
+        //display: block;
     }
 `
 export default ResizeHandle

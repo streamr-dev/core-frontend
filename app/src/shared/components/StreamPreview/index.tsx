@@ -82,6 +82,7 @@ const UnstyledStreamPreview = ({
     )
     return (
         <div className={className}>
+            {/*
             <Head
                 description={description}
                 onCloseClick={onClose}
@@ -89,6 +90,7 @@ const UnstyledStreamPreview = ({
                 streamId={streamId}
                 titlePrefix={titlePrefix}
             />
+            */}
             <Toolbar
                 onPartitionChange={onPartitionChange}
                 onSettingsButtonClick={onStreamSettings}
@@ -113,12 +115,20 @@ const UnstyledStreamPreview = ({
             />
             <Foot>
                 <div>
-                    <InspectorButton active={!inspectorFocused} onClick={() => setInspectorFocused(false)}>
+                    <InspectorButton
+                        active={!inspectorFocused}
+                        onClick={() => setInspectorFocused(false)}
+                        type="button"
+                    >
                         <SvgIcon name="list" />
                     </InspectorButton>
                 </div>
                 <div>
-                    <InspectorButton active={!!inspectorFocused} onClick={() => setInspectorFocused(true)}>
+                    <InspectorButton
+                        active={!!inspectorFocused}
+                        onClick={() => setInspectorFocused(true)}
+                        type="button"
+                    >
                         <SvgIcon name="listInspect" />
                     </InspectorButton>
                 </div>

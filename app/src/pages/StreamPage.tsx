@@ -83,9 +83,10 @@ const SaveButton = styled(Button)`
 `
 
 type ContainerBoxProps = {
-    children?: React.ReactNode
+    children?: React.ReactNode,
+    disabled?: boolean,
 }
-const ContainerBox: React.FunctionComponent<ContainerBoxProps> = ({ children }) =>
+const ContainerBox: React.FunctionComponent<ContainerBoxProps> = ({ children, disabled }) =>
     <Outer>
         <Inner>
             <div>
@@ -94,6 +95,7 @@ const ContainerBox: React.FunctionComponent<ContainerBoxProps> = ({ children }) 
             <SaveButton
                 kind="primary"
                 type="submit"
+                disabled={disabled}
             >
                 Save
             </SaveButton>
@@ -264,7 +266,7 @@ function UnwrappedStreamPage({ children, loading = false, includeContainerBox = 
                         linkTabs={linkTabs}
                     />
                     {includeContainerBox ? (
-                        <ContainerBox>
+                        <ContainerBox disabled={clean || busy}>
                             {!loading && children}
                         </ContainerBox>
                     ) : (

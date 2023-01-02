@@ -7,7 +7,7 @@ type Props = {
 
 const Layout = createGlobalStyle<Props>`
     :root {
-        --LiveDataInspectorMinWidth: 420px;
+        --LiveDataInspectorMinWidth: 375px;
         --LiveDataMinLhsWidth: 248px;
         --LiveDataMinMargin: 8px;
         --LiveDataTimestampColumnMaxWidth: 224px;
@@ -15,7 +15,7 @@ const Layout = createGlobalStyle<Props>`
 
     @media (min-width: ${SM}px) {
         :root {
-            --LiveDataInspectorMinWidth: 420px;
+            --LiveDataInspectorMinWidth: 375px;
             --LiveDataMinLhsWidth: 248px;
             --LiveDataMinMargin: 8px;
             --LiveDataTimestampColumnMaxWidth: 224px;
@@ -24,7 +24,7 @@ const Layout = createGlobalStyle<Props>`
 
     @media (min-width: ${MD}px) {
         :root {
-            --LiveDataInspectorMinWidth: 420px;
+            --LiveDataInspectorMinWidth: 488px;
             --LiveDataMinLhsWidth: 264px;
             --LiveDataMinMargin: 24px;
             --LiveDataTimestampColumnMaxWidth: 224px;
@@ -33,7 +33,7 @@ const Layout = createGlobalStyle<Props>`
 
     @media (min-width: ${XL}px) {
         :root {
-            --LiveDataInspectorMinWidth: 504px;
+            --LiveDataInspectorMinWidth: 488px;
             --LiveDataMinLhsWidth: 332px;
             --LiveDataMinMargin: 92px;
             --LiveDataTimestampColumnMaxWidth: 360px;
@@ -60,9 +60,9 @@ const Layout = createGlobalStyle<Props>`
 `
 
 const Pusher = styled.div`
-    min-width: var(--LiveDataMinMargin);
-    max-width: calc((100vw - 1108px - var(--LiveDataInspectorMinWidth) - 32px) * 0.5);
-    width: calc((100vw - 1108px - var(--LiveDataInspectorWidth) - 32px) * 0.5);
+    //min-width: var(--LiveDataMinMargin);
+    //max-width: calc((100vw - 1108px - var(--LiveDataInspectorMinWidth) - 32px) * 0.5);
+    //width: calc((100vw - 1108px - var(--LiveDataInspectorWidth) - 32px) * 0.5);
 `
 
 const FinalExport = Object.assign(Layout, {

@@ -18,6 +18,11 @@ const formatValue = (data) =>
         })
         : data.toString()
 
+const Container = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 420px;
+`
+
 const Inner = styled.div`
     display: grid;
     line-height: 28px;
@@ -43,8 +48,8 @@ const Viewport = styled.div`
 `
 const Header = styled.div`
     height: 54px;
-    position: absolute;
-    top: 0;
+    //position: absolute;
+    //top: 0;
     width: 100%;
 
     ${Row} {
@@ -54,20 +59,22 @@ const Header = styled.div`
 const Side = styled.div`
     height: 100%;
     overflow: hidden;
-    padding-top: 56px;
-    position: absolute;
-    top: 0;
+    //padding-top: 56px;
+    //position: absolute;
+    //top: 0;
 `
 const Lhs = styled(Side)`
     left: 0;
     right: 0;
-    width: 224px;
+    //width: 224px;
 
+    /*
     @media (min-width: 668px) {
         max-width: calc(100vw - var(--LiveDataInspectorMinWidth));
         min-width: var(--LiveDataMinLhsWidth);
         width: calc(100vw - var(--LiveDataInspectorWidth));
     }
+    */
 
     ${Row} {
         display: grid;
@@ -76,7 +83,7 @@ const Lhs = styled(Side)`
 
     ${Inner} {
         grid-template-columns: minmax(0, var(--LiveDataTimestampColumnMaxWidth)) 1fr;
-        max-width: 1108px;
+        //max-width: 1108px;
     }
 
     ${Viewport} ${Inner}:hover {
@@ -95,9 +102,7 @@ type RhsProps = {
 const Rhs = styled(Side)<RhsProps>`
     background: #fafafa;
     border-left: 1px solid #efefef;
-    left: 224px;
     transition: 0.2s left;
-    width: 100vw;
 
     ${({ focused }) =>
         !!focused &&
@@ -121,12 +126,12 @@ const Rhs = styled(Side)<RhsProps>`
     }
 
     @media (min-width: 668px) {
-        max-width: calc(100vw - var(--LiveDataMinLhsWidth) + 1px);
-        min-width: var(--LiveDataInspectorMinWidth);
-        left: auto;
-        right: 0;
+        //max-width: calc(100vw - var(--LiveDataMinLhsWidth) + 1px);
+        //min-width: var(--LiveDataInspectorMinWidth);
+        //left: auto;
+        //right: 0;
         transition: none;
-        width: var(--LiveDataInspectorWidth);
+        //width: var(--LiveDataInspectorWidth);
 
         ${Inner} {
             grid-template-columns: 164px 1fr;
@@ -192,7 +197,7 @@ const UnstyledFeed = ({
     }
 
     return (
-        <div className={className}>
+        <Container className={className}>
             <Lhs>
                 <Header>
                     <Row>
@@ -284,7 +289,7 @@ const UnstyledFeed = ({
                 </Viewport>
             </Rhs>
             <ResizeHandle />
-        </div>
+        </Container>
     )
 }
 
