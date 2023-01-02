@@ -93,7 +93,7 @@ const PreviewTable = ({ streamData = [] }) => (
                     }
 
                     return (
-                        <Row key={JSON.stringify(d.metadata)} highlight>
+                        <Row key={JSON.stringify(d.metadata.messageId)} highlight>
                             <Column>
                                 {formatDateTime(
                                     d.metadata && d.metadata.timestamp,

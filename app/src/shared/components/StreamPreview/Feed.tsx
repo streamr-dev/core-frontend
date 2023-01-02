@@ -215,7 +215,7 @@ const UnstyledFeed = ({
                                 return null
                             }
 
-                            const msgId = JSON.stringify(d.metadata)
+                            const msgId = JSON.stringify(d.metadata.messageId)
                             const Tag = selectedMsgId === msgId ? 'strong' : 'span'
                             return (
                                 <Row

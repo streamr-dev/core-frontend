@@ -1,7 +1,8 @@
 import React, { useEffect, useCallback, useMemo, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
-import { useClient, useSubscription } from 'streamr-client-react'
+import { useClient, useSubscribe } from 'streamr-client-react'
+import { StreamMessage } from 'streamr-client'
 import { useThrottledCallback } from 'use-debounce'
 import usePending from '$shared/hooks/usePending'
 import ModalPortal from '$shared/components/ModalPortal'
@@ -45,36 +46,23 @@ const PreviewModalWithSubscription = ({ streamId, stream, ...previewProps }) => 
         }
     }, [isMounted])
     const onData = useCallback(
-        (data, metadata) => {
+        (msg: StreamMessage) => {
             if (!isMounted()) {
                 return
             }
 
-            switch (data.type) {
-                case Message.Done:
-                case Message.Notification:
-                case Message.Warning: {
-                    // ignore
-                    return
-                }
-
-                case Message.Error: {
-                    onError()
-                    return
-                }
-
-                default: // continue
-            }
-
             const dataPoint = {
-                data,
-                metadata,
+                data: msg.parsedContent,
+                metadata: {
+                    messageId: msg.getMessageID(),
+                    timestamp: msg.getTimestamp(),
+                },
             }
             dataRef.current.unshift(dataPoint)
             dataRef.current.length = Math.min(dataRef.current.length, LOCAL_DATA_LIST_LENGTH)
             updateDataToState(dataRef.current)
         },
-        [dataRef, updateDataToState, isMounted, onError],
+        [dataRef, updateDataToState, isMounted],
     )
     const onSub = useCallback(() => {
         if (isMounted()) {
@@ -92,19 +80,14 @@ const PreviewModalWithSubscription = ({ streamId, stream, ...previewProps }) => 
     useEffect(() => {
         setVisibleData([])
     }, [activePartition])
-    useSubscription(
-        {
-            stream: streamId,
-            partition: activePartition,
-            resend: {
-                last: LOCAL_DATA_LIST_LENGTH,
-            },
-        },
-        {
-            onMessage: onData,
-            onSubscribed: onSub,
-        },
-    )
+    useSubscribe({ id: streamId, partition: activePartition }, {
+        onBeforeStart: onSub,
+        onMessage: onData,
+        onError: onError,
+        resendOptions: {
+            last: LOCAL_DATA_LIST_LENGTH,
+        }
+    })
     return (
         <PreviewModal
             {...previewProps}
