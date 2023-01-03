@@ -1,13 +1,12 @@
 import React, { useState, useMemo, Fragment } from 'react'
 import styled, { css } from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
+import { COLORS } from '$shared/utils/styled'
 import Errors from '$ui/Errors'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import IconButton from './IconButton'
-import Toolbar from './Toolbar'
 import Feed from './Feed'
 import Foot from './Foot'
-import Head from './Head'
 import Selector from './Selector'
 
 type InspectorButtonProps = {
@@ -81,27 +80,10 @@ const UnstyledStreamPreview = ({
         [partitions],
     )
     return (
-        <div className={className}>
-            {/*
-            <Head
-                description={description}
-                onCloseClick={onClose}
-                skeletonize={!streamLoaded}
-                streamId={streamId}
-                titlePrefix={titlePrefix}
-            />
-            */}
-            <Toolbar
-                onPartitionChange={onPartitionChange}
-                onSettingsButtonClick={onStreamSettings}
-                onStreamChange={onStreamChange}
-                partition={activePartition}
-                partitions={partitionOptions || []}
-                streamId={streamId}
-                streamIds={navigableStreamIds || []}
-            />
+        <>
             <LoadingIndicator loading={!streamLoaded || !!loading} />
             <Feed
+                className={className}
                 inspectorFocused={inspectorFocused}
                 stream={stream}
                 streamData={streamData}
@@ -112,6 +94,13 @@ const UnstyledStreamPreview = ({
                         {!!dataError && <Errors>{dataError}</Errors>}
                     </Fragment>
                 }
+                onPartitionChange={onPartitionChange}
+                onSettingsButtonClick={onStreamSettings}
+                onStreamChange={onStreamChange}
+                partition={activePartition}
+                partitions={partitionOptions || []}
+                streamId={streamId}
+                streamIds={navigableStreamIds || []}
             />
             <Foot>
                 <div>
@@ -143,15 +132,15 @@ const UnstyledStreamPreview = ({
                     </div>
                 )}
             </Foot>
-        </div>
+        </>
     )
 }
 
 const StreamPreview = styled(UnstyledStreamPreview)`
     background: #ffffff;
     color: #323232;
-    display: flex;
-    flex-direction: column;
+    font-size: 14px;
+    border-top: 1px solid ${COLORS.separator};
     height: 100%;
 
     ${Errors} {

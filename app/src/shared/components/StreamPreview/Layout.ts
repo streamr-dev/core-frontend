@@ -47,13 +47,13 @@ const Layout = createGlobalStyle<Props>`
 
         @media (min-width: ${SM}px) {
             :root {
-                --LiveDataInspectorWidth: ${inspectorWidth || 420}px;
+                --LiveDataInspectorWidth: ${inspectorWidth || 375}px;
             }
         }
 
         @media (min-width: ${XL}px) {
             :root {
-                --LiveDataInspectorWidth: ${inspectorWidth || 504}px;
+                --LiveDataInspectorWidth: ${inspectorWidth || 488}px;
             }
         }
     `}
