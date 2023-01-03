@@ -96,6 +96,10 @@ const PriceInputWrap = styled.div`
   margin-right: 16px;
   .price-input {
     padding-right: 60px;
+    &:disabled {
+      background-color: white;
+      opacity: 1;
+    }
   }
   .token-symbol {
     position: absolute;
@@ -298,6 +302,7 @@ const TokenSelector2: FunctionComponent<Props> = ({ disabled }) => {
                             className={'price-input'}
                             placeholder={'Set your price'}
                             onChange={(event) => {handlePriceUpdate(event.target.value)}}
+                            disabled={!chainId}
                         />
                         {tokenSymbol && <span className={'token-symbol'}>{tokenSymbol}</span>}
                     </PriceInputWrap>
@@ -308,6 +313,7 @@ const TokenSelector2: FunctionComponent<Props> = ({ disabled }) => {
                             options={options}
                             isClearable={false}
                             onChange={(selected) => {handleTimeUnitUpdate(selected)}}
+                            disabled={!chainId}
                         />
                     </SelectContainer>
                 </PriceContainer>

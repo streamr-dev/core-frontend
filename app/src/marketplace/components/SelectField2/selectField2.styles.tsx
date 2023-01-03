@@ -219,7 +219,7 @@ export const getWhitePlaceholderStyles = (styles: CSSObjectWithLabel): CSSObject
     }
 }
 
-export const getWhiteControlStyles = (styles: CSSObjectWithLabel, isFocused: boolean): CSSObjectWithLabel => {
+export const getWhiteControlStyles = (styles: CSSObjectWithLabel, isFocused: boolean, isDisabled: boolean): CSSObjectWithLabel => {
     const styleObject: CSSObjectWithLabel = {
         ...styles,
         fontSize: '14px',
@@ -230,6 +230,11 @@ export const getWhiteControlStyles = (styles: CSSObjectWithLabel, isFocused: boo
     if (isFocused) {
         styleObject.borderColor = COLORS.focus
         styleObject.boxShadow = `0 0 0 1px ${COLORS.focus}`
+    }
+    if (isDisabled) {
+        styleObject.cursor = 'not-allowed'
+        styleObject.border = `1px solid ${COLORS.separator}`
+        styleObject.backgroundColor = 'white'
     }
     return styleObject
 }

@@ -78,7 +78,7 @@ const SelectField2: FunctionComponent<SelectFieldProps> = ({
 
     const whiteVariantStyles = useMemo(() => ({
         placeholder: (styles) => getWhitePlaceholderStyles(styles),
-        control: (styles, props) => getWhiteControlStyles(styles, props.isFocused),
+        control: (styles, props) => getWhiteControlStyles(styles, props.isFocused, disabled),
         menu: (styles) => getWhiteMenuStyles(styles),
         menuList: (styles) => getWhiteMenuListStyles(styles),
         option: (styles, props) => getWhiteOptionStyles(styles, props.isSelected)
