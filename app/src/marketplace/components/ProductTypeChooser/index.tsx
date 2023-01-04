@@ -79,6 +79,11 @@ const ProductText = styled.div`
     }
 `
 
+/**
+ * @deprecated
+ * @param className
+ * @constructor
+ */
 const ProductTypeChooser = ({ className }: Props) => (
     <Root className={className}>
         <PageTitle>Choose your product type</PageTitle>

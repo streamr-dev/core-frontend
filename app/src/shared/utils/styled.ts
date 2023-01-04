@@ -26,6 +26,8 @@ export enum COLORS {
     disabled = '#ADADAD',
     docLink = '#F1F1F1',
     radioBorder = '#CDCDCD',
+    close = '#848484',
     link = '#0324FF',
-    error = '#D90C25'
+    error = '#D90C25',
+    warning = '#FFF6F1'
 }

@@ -38,8 +38,9 @@ export const Radio: FunctionComponent<RadioProps> = ({
             checked={checked}
             type={'radio'}
             disabled={disabled}
-            onChange={handleChange}/>
-        <div>{label}</div>
+            onChange={handleChange}
+            className={!label ? 'no-label' : ''}/>
+        {!!label && <div>{label}</div>}
     </RadioLabel>
 }
 
@@ -57,16 +58,19 @@ const RadioLabel = styled.label`
     appearance: none;
     background-color: transparent;
     margin: 0;
-
+    flex-shrink: 0;
     font: inherit;
     color: purple;
-    width: 1.15em;
-    height: 1.15em;
-    border: 0.15em solid ${COLORS.radioBorder};
+    width: 15px;
+    height: 15px;
+    border: 2px solid ${COLORS.radioBorder};
     border-radius: 50%;
-    transform: translateY(-0.075em);
+    transform: translateY(-2px);
     display: grid;
     place-content: center;
+    &.no-label {
+      transform: none;
+    }
     
     &:checked {
       border-color: ${COLORS.link};
@@ -82,8 +86,8 @@ const RadioLabel = styled.label`
 
   input[type="radio"]::before {
     content: "";
-    width: 0.65em;
-    height: 0.65em;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     transform: scale(0);
     transition: 120ms transform ease-in-out;

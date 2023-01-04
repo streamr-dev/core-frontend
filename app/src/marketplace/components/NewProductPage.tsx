@@ -36,8 +36,8 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
     const isMounted = useIsMounted()
     const fail = useFailure()
     const {state: project} = useContext(ProjectStateContext)
-    const { dataUnionAddress, chainId } = useNewProductMode()
-    const { type } = qs.parse(search)
+    const { dataUnionAddress, chainId } = useNewProductMode() // TODO check if it's still needed
+    const { type, isPaid } = qs.parse(search)
     const typeString = (type != null && typeof type === "string") ? type : type[0]
     const sanitized = sanitizedType(typeString)
     const {updateType} = useEditableProjectActions()
