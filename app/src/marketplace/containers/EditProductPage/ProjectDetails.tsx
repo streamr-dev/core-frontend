@@ -113,24 +113,22 @@ export const ProjectDetails: FunctionComponent = () => {
     }, [projectChain])
 
     return <ProjectDetailsWrap>
-        {(isDataUnion || isPaid) &&
-            <DetailEditor
-                disabled={isChainSelectorDisabled}
-                className={'detail'}
-                unsetValueText={'Chain'}
-                defaultIcon={<StandardIcon name={'ellipse'}/>}
-                hasValueIcon={currentChainIcon}
-                showValue={true}
-                instructionText={'Please select a chain'}
-                onChange={updateChain}
-                placeholder={'Select...'}
-                value={projectChain}
-                selectOptions={chainOptions}
-                showValueFormatter={(chainName) => {
-                    return chainName ? configChainNameMapping[chainName] : ''
-                }}
-            />
-        }
+        <DetailEditor
+            disabled={isChainSelectorDisabled}
+            className={'detail'}
+            unsetValueText={'Chain'}
+            defaultIcon={<StandardIcon name={'ellipse'}/>}
+            hasValueIcon={currentChainIcon}
+            showValue={true}
+            instructionText={'Please select a chain'}
+            onChange={updateChain}
+            placeholder={'Select...'}
+            value={projectChain}
+            selectOptions={chainOptions}
+            showValueFormatter={(chainName) => {
+                return chainName ? configChainNameMapping[chainName] : ''
+            }}
+        />
         <DetailEditor
             className={'detail'}
             unsetValueText={'Site URL'}

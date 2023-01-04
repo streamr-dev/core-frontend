@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import useModal from '$shared/hooks/useModal'
-import { ProductTypeChooser2 } from '$mp/components/ProductTypeChooser2'
+import { ProjectTypeChooser } from '$mp/components/ProjectTypeChooser'
 import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
 type Props = {
     api: Record<string, any>
 }
-const StyledProductTypeChooser = styled(ProductTypeChooser2)`
+const StyledProductTypeChooser = styled(ProjectTypeChooser)`
     position: absolute;
     top: 50%;
     left: 50%;

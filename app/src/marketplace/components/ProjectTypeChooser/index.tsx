@@ -161,7 +161,7 @@ enum ProjectTypesEnum {
     dataUnion = 'dataUnion'
 }
 
-export const ProductTypeChooser2: FunctionComponent<{className?: string, onClose: () => void}> = ({className, onClose}) => {
+export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose: () => void}> = ({className, onClose}) => {
 
     // todo check if user has streams and disable if doesn't
     const fetchStreams = useFetchStreams()
@@ -173,7 +173,7 @@ export const ProductTypeChooser2: FunctionComponent<{className?: string, onClose
         if (!selectedProductType) {
             return null
         }
-        let params: {type: string, paid?: boolean}
+        let params: {type: string, isFree?: boolean}
         switch (selectedProductType) {
             case ProjectTypesEnum.dataUnion:
                 params = {
@@ -183,17 +183,16 @@ export const ProductTypeChooser2: FunctionComponent<{className?: string, onClose
             case ProjectTypesEnum.openData:
                 params = {
                     type: projectTypes.NORMAL,
-                    paid: false
+                    isFree: true
                 }
                 break
             case ProjectTypesEnum.paidData:
                 params = {
                     type: projectTypes.NORMAL,
-                    paid: true
+                    isFree: false
                 }
                 break
         }
-        console.log('link update', selectedProductType, params, routes.products.new(params))
         return routes.products.new(params)
     }, [selectedProductType])
 

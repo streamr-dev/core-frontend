@@ -1,7 +1,9 @@
-import React, { useContext, useEffect, useMemo } from 'react'
+import React, { ReactNode, useContext, useEffect, useMemo } from 'react'
+import BN from 'bignumber.js'
 import type { Location } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
+import { useSelector } from 'react-redux'
 import qs from 'query-string'
 import type { ProjectType } from '$mp/types/project-types'
 import '$mp/types/project-types'
@@ -21,7 +23,7 @@ import {
 import { ProjectEditor } from '$mp/containers/EditProductPage/ProjectEditor'
 import styles from '$shared/components/Layout/layout.pcss'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
-import routes from '$routes'
+import { selectUserData } from '$shared/modules/user/selectors'
 import useNewProductMode from '../containers/ProductController/useNewProductMode'
 
 type Props = {
@@ -37,10 +39,11 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
     const fail = useFailure()
     const {state: project} = useContext(ProjectStateContext)
     const { dataUnionAddress, chainId } = useNewProductMode() // TODO check if it's still needed
-    const { type, isPaid } = qs.parse(search)
+    const currentUser = useSelector(selectUserData)
+    const { type, isFree } = qs.parse(search)
     const typeString = (type != null && typeof type === "string") ? type : type[0]
     const sanitized = sanitizedType(typeString)
-    const {updateType} = useEditableProjectActions()
+    const {updateType, updateIsFree} = useEditableProjectActions()
     const { isAnyTouched, resetTouched, status } = useContext(ValidationContext)
     usePreventNavigatingAway('You have unsaved changes', isAnyTouched)
     useEffect(() => {
@@ -50,8 +53,23 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
     }, [sanitized])
 
     useEffect(() => {
+        const isFreeProject = isFree === 'true'
+        updateIsFree(isFreeProject, new BN(10))
+    }, [isFree])
+
+    useEffect(() => {
         resetTouched()
     }, [])
+
+    const pageTitle = useMemo<ReactNode>(() => {
+        if (project.type === projectTypes.DATAUNION) {
+            return <>Data Union by <strong>{currentUser.name || currentUser.username}</strong></>
+        }
+        if (project.isFree) {
+            return <>Open Data by <strong>{currentUser.name || currentUser.username}</strong></>
+        }
+        return <>Paid Data by <strong>{currentUser.name || currentUser.username}</strong></>
+    }, [project, currentUser])
 
     const linkTabs = useMemo(() => [
         {
@@ -71,7 +89,7 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
     return <Layout nav={<EditorNav2/>} innerClassName={styles.greyInner}>
         <MarketplaceHelmet title={'Create a new project'}/>
         <DetailsPageHeader
-            pageTitle={project.name || 'Create a project'}
+            pageTitle={pageTitle}
             currentPageUrl={window.location.href}
             linkTabs={linkTabs}
         />
