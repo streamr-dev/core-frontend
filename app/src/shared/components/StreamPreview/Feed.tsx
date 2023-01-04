@@ -7,10 +7,10 @@ import { formatDateTime } from '$mp/utils/time'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import useCopy from '$shared/hooks/useCopy'
-import { DESKTOP, TABLET } from '$shared/utils/styled'
+import { TABLET } from '$shared/utils/styled'
+import { HEADER_WIDTH } from '$shared/components/DetailsPageHeader'
 import Layout from './Layout'
 import Cell from './Cell'
-import ResizeHandle from './ResizeHandle'
 import Toolbar from './Toolbar'
 
 const formatValue = (data) =>
@@ -20,27 +20,35 @@ const formatValue = (data) =>
         })
         : data.toString()
 
-const Container = styled.div`
+type ContainerProps = {
+    inspectorFocused: boolean,
+}
+
+const Container = styled.div<ContainerProps>`
     display: grid;
-    grid-template-columns: 1fr max(var(--LiveDataInspectorMinWidth), var(--LiveDataInspectorWidth));
+    transition: 0.2s grid-template-columns;
+    grid-template-columns: auto 248px 1fr auto;
 
+    ${({ inspectorFocused }) =>
+        !!inspectorFocused &&
+        css`
+            grid-template-columns: auto 0px 1fr auto;
+        `}
 
-    margin: 0 auto;
-    padding: 0 24px;
-    & & {
-        padding: 0 24px;
+    @media ${TABLET} {
+        grid-template-columns: auto 1fr 1fr auto;
     }
-    @media (${DESKTOP}) {
-        padding: 0 32px;
-    }
-    @media (${TABLET}) {
-        max-width: 1360px;
-        padding: 0 24px;
 
-        & & {
-            padding: 0;
-        }
+    @media (min-width: ${HEADER_WIDTH}px) {
+        grid-template-columns: auto ${HEADER_WIDTH - 560}px 560px auto;
     }
+`
+const LeftFiller = styled.div`
+    background: #ffffff;
+`
+
+const RightFiller = styled.div`
+    background: #fafafa;
 `
 
 const Inner = styled.div`
@@ -51,10 +59,6 @@ const Inner = styled.div`
     > div {
         min-width: 0;
     }
-`
-const ToolbarFiller = styled.div`
-    background: #fafafa;
-    border-left: 1px solid #efefef;
 `
 
 const Row = styled.div``
@@ -72,38 +76,21 @@ const Viewport = styled.div`
 `
 const Header = styled.div`
     height: 54px;
-    //position: absolute;
-    //top: 0;
     width: 100%;
 `
 const Side = styled.div`
     height: 100%;
     overflow: hidden;
-    //padding-top: 56px;
-    //position: absolute;
-    //top: 0;
 `
+
 const Lhs = styled(Side)`
-    left: 0;
-    right: 0;
-    //width: 224px;
-
-    /*
-    @media (min-width: 668px) {
-        max-width: calc(100vw - var(--LiveDataInspectorMinWidth));
-        min-width: var(--LiveDataMinLhsWidth);
-        width: calc(100vw - var(--LiveDataInspectorWidth));
-    }
-    */
-
     ${Row} {
         display: grid;
         grid-template-columns: auto 1fr;
     }
 
     ${Inner} {
-        grid-template-columns: minmax(0, var(--LiveDataTimestampColumnMaxWidth)) 1fr;
-        //max-width: 1108px;
+        grid-template-columns: 224px 1fr;
     }
 
     ${Viewport} ${Inner}:hover {
@@ -115,20 +102,9 @@ const Lhs = styled(Side)`
     }
 `
 
-type RhsProps = {
-    focused: boolean,
-}
-
-const Rhs = styled(Side)<RhsProps>`
+const Rhs = styled(Side)`
     background: #fafafa;
-    border-left: 1px solid #efefef;
-    transition: 0.2s left;
-
-    ${({ focused }) =>
-        !!focused &&
-        css`
-            left: 0;
-        `}
+    border-left: 1px solid #efefef;    
 
     ${Inner} {
         grid-template-columns: 128px 1fr;
@@ -150,12 +126,7 @@ const Rhs = styled(Side)<RhsProps>`
     }
 
     @media (min-width: 668px) {
-        //max-width: calc(100vw - var(--LiveDataMinLhsWidth) + 1px);
-        //min-width: var(--LiveDataInspectorMinWidth);
-        //left: auto;
-        //right: 0;
         transition: none;
-        //width: var(--LiveDataInspectorWidth);
 
         ${Inner} {
             grid-template-columns: 164px 1fr;
@@ -235,19 +206,24 @@ const UnstyledFeed = ({
 
     return (
         <div className={className}>
-            <Container>
-                <Toolbar
-                    onPartitionChange={onPartitionChange}
-                    onSettingsButtonClick={onSettingsButtonClick}
-                    onStreamChange={onStreamChange}
-                    partition={partition}
-                    partitions={partitions || []}
-                    streamId={streamId}
-                    streamIds={streamIds || []}
-                />
-                <ToolbarFiller />
+            <Container inspectorFocused={inspectorFocused}>
+                <LeftFiller />
+                <Lhs>
+                    <Toolbar
+                        onPartitionChange={onPartitionChange}
+                        onSettingsButtonClick={onSettingsButtonClick}
+                        onStreamChange={onStreamChange}
+                        partition={partition}
+                        partitions={partitions || []}
+                        streamId={streamId}
+                        streamIds={streamIds || []}
+                    />
+                </Lhs>
+                <Rhs />
+                <RightFiller />
             </Container>
-            <Container>
+            <Container inspectorFocused={inspectorFocused}>
+                <LeftFiller />
                 <Lhs>
                     <Header>
                         <Row>
@@ -293,7 +269,7 @@ const UnstyledFeed = ({
                             })}
                     </Viewport>
                 </Lhs>
-                <Rhs focused={inspectorFocused}>
+                <Rhs>
                     <Header>
                         <Row>
                             <Inner>
@@ -338,7 +314,7 @@ const UnstyledFeed = ({
                         {errorComponent}
                     </Viewport>
                 </Rhs>
-                <ResizeHandle />
+                <RightFiller />
             </Container>
         </div>
     )

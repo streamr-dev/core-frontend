@@ -35,6 +35,8 @@ export const DetailsPageHeader: FunctionComponent<DetailsPageHeaderProps> = ({ b
     )
 }
 
+export const HEADER_WIDTH = 1360
+
 const DetailsPageHeaderBackground = styled.div`
     background-color: white;
     padding: 45px 0 22px;
@@ -54,7 +56,7 @@ const DetailsPageHeaderContainer = styled.div`
         padding: 0 32px;
     }
     @media (${TABLET}) {
-        max-width: 1360px;
+        max-width: ${HEADER_WIDTH}px;
         padding: 0 24px;
 
         & & {

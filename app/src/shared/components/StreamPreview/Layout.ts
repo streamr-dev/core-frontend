@@ -36,7 +36,7 @@ const Layout = createGlobalStyle<Props>`
             --LiveDataInspectorMinWidth: 488px;
             --LiveDataMinLhsWidth: 332px;
             --LiveDataMinMargin: 92px;
-            --LiveDataTimestampColumnMaxWidth: 360px;
+            --LiveDataTimestampColumnMaxWidth: 224px;
         }
     }
 
