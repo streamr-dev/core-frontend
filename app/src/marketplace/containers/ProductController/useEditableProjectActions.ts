@@ -11,12 +11,6 @@ import { Context as ValidationContext } from './ValidationContextProvider'
 const getPricePerSecond = (isFree: boolean, price: NumberString, timeUnit: TimeUnit, decimals: BN) =>
     isFree ? new BN(0) : pricePerSecondFromTimeUnit(new BN(price || 0), timeUnit || timeUnits.hour, decimals)
 
-type SocialLinks = {
-    social1?: string
-    social2?: string
-    social3?: string
-    social4?: string
-}
 export type EditableProjectActions = {
     updateProject: (project: Partial<Project>) => void,
     updateName: (name: Project['name']) => void,

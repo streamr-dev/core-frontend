@@ -53,9 +53,9 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
     }, [sanitized])
 
     useEffect(() => {
-        const isFreeProject = isFree === 'true'
+        const isFreeProject = sanitized !== projectTypes.DATAUNION && isFree === 'true'
         updateIsFree(isFreeProject, new BN(10))
-    }, [isFree])
+    }, [isFree, sanitized])
 
     useEffect(() => {
         resetTouched()

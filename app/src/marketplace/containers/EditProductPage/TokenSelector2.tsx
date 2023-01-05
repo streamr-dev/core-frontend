@@ -7,7 +7,7 @@ import { getChainIdFromApiString } from '$shared/utils/chains'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
-import { COLORS, MEDIUM, REGULAR } from '$shared/utils/styled'
+import { COLORS, MAX_CONTENT_WIDTH, MEDIUM, REGULAR } from '$shared/utils/styled'
 import { Radio } from '$shared/components/Radio'
 import Text from '$ui/Text'
 import Button from '$shared/components/Button'
@@ -19,7 +19,7 @@ type Props = {
 }
 const Container = styled.div`
   color: ${COLORS.primary};
-  max-width: 678px;
+  max-width: ${MAX_CONTENT_WIDTH};
 `
 
 const Heading = styled.p`
@@ -32,6 +32,7 @@ const Heading = styled.p`
 const SubHeading = styled.p`
   font-size: 20px;
   margin-bottom: 16px;
+  color: black;
 `
 
 const Description = styled.p`
@@ -41,7 +42,7 @@ const Description = styled.p`
 
 const Form = styled.div`
   border-radius: 4px;
-  background-color: ${COLORS.docLink};
+  background-color: ${COLORS.inputBackground};
   padding: 24px;
 `
 
@@ -104,11 +105,14 @@ const PriceInputWrap = styled.div`
   .token-symbol {
     position: absolute;
     right: 12px;
-    top: 5px;
+    top: 0;
+    height: 100%;
     font-size: 14px;
     border-left: 1px solid ${COLORS.separator};
     padding-left: 12px;
-    color: ${COLORS.primaryLight}
+    color: ${COLORS.primaryLight};
+    display: flex;
+    align-items: center;
   }
 `
 
@@ -149,11 +153,11 @@ const TokenSelector2: FunctionComponent<Props> = ({ disabled }) => {
     const { pricingTokenAddress } = project
 
     // Set default value to DATA
-    /*useEffect(() => {
-        if (!pricingTokenAddress) {
+    useEffect(() => {
+        if (!pricingTokenAddress && project.chain) {
             setSelection(TokenType.DATA)
         }
-    }, [pricingTokenAddress])*/
+    }, [pricingTokenAddress, project.chain])
 
     useEffect(() => {
         if (chainId && pricingTokenAddress) {

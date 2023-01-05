@@ -19,7 +19,8 @@ const ActionContainer = styled.div<{open: boolean}>`
 type Props = {
     actions?: ReactNode[]
     disabled?: boolean
-    children?: ReactNode | ReactNode[]
+    children?: ReactNode | ReactNode[],
+    className?: string
 }
 
 const UnstyledWithInputActions: FunctionComponent<Props> = ({ actions, disabled, children = null, ...props }: Props) => {

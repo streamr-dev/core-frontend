@@ -90,7 +90,7 @@ export const ProjectDetails: FunctionComponent = () => {
     const isPaid = isPaidProduct(project)
     const isChainSelectorDisabled =
         project.state === projectStates.DEPLOYED ||
-        (project.type === projectTypes.DATAUNION && project.beneficiaryAddress != null)
+        (project.type === projectTypes.DATAUNION && !!project.beneficiaryAddress)
     const { updateChain, updateContactUrl, updateContactEmail, updateSocialUrl } = useEditableProjectActions()
     const productType = project.type
     const projectChain = project.chain

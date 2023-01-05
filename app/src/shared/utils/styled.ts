@@ -12,6 +12,7 @@ export const PHONE = `(min-width: ${SM}px)`
 export const TABLET = `(min-width: ${MD}px)`
 export const LAPTOP = `(min-width: ${MDLG}px)`
 export const DESKTOP = `(min-width: ${LG}px)`
+export const MAX_CONTENT_WIDTH = '678px'
 export enum COLORS {
     primary = '#323232',
     primaryLight = '#525252',
@@ -25,6 +26,7 @@ export enum COLORS {
     separator = '#EFEFEF',
     disabled = '#ADADAD',
     docLink = '#F1F1F1',
+    inputBackground = '#F1F1F1',
     radioBorder = '#CDCDCD',
     close = '#848484',
     link = '#0324FF',

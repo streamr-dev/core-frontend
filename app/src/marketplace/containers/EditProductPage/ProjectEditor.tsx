@@ -9,13 +9,14 @@ import { WhiteBox } from '$shared/components/WhiteBox'
 import TokenSelector2 from '$mp/containers/EditProductPage/TokenSelector2'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { projectTypes } from '$mp/utils/constants'
+import { DataUnionFeesAndBeneficiary } from '$mp/containers/EditProductPage/DataUnionFeesAndBeneficiary'
 
 type ProjectEditorProps = {
     disabled?: boolean
 }
 
 export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({disabled}) => {
-    const {state} = useContext(ProjectStateContext)
+    const {state: project} = useContext(ProjectStateContext)
 
     return <ProjectPageContainer>
         <ProjectHeroContainer overflowVisible={true}>
@@ -24,9 +25,10 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({disabled})
             <ProjectDescription/>
             <ProjectDetails/>
         </ProjectHeroContainer>
-        {(!state.isFree || state.type === projectTypes.DATAUNION) &&
+        {(!project.isFree || project.type === projectTypes.DATAUNION) &&
             <WhiteBox>
                 <TokenSelector2/>
+                {project.type === projectTypes.DATAUNION && <DataUnionFeesAndBeneficiary/>}
             </WhiteBox>
         }
     </ProjectPageContainer>
