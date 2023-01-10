@@ -48,12 +48,15 @@ export const StreamSelector: FunctionComponent = () => {
         fetch()
     }, [fetch])
 
-    return streams.length ? <StreamTable
-        title={'Add Streams'}
-        streams={streams}
-        loadMore={fetch}
-        hasMoreResults={hasMore}
-        onSelectionChange={updateStreams}
-        selected={project.streams}
-    /> : <></>
+    return streams.length ?
+        <StreamTable
+            noPadding={true}
+            title={'Add Streams'}
+            streams={streams}
+            loadMore={fetch}
+            preserveSpaceForLoadMoreButton={false}
+            hasMoreResults={hasMore}
+            onSelectionChange={updateStreams}
+            selected={project.streams}
+        /> : <></>
 }

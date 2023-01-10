@@ -10,25 +10,26 @@ import routes from '$routes'
 
 const ROW_HEIGHT = 88
 
-const Container = styled.div`
-    padding-bottom: 80px;
+const Container = styled.div<{noPadding?: boolean}>`
+    padding-bottom: ${({noPadding}) => noPadding ? '0' : '80px'};
 `
 
-const Row = styled.div`
+const Row = styled.div<{noPadding?: boolean}>`
     align-items: center;
     padding-left: 24px;
 
     @media ${TABLET} {
-        padding-left: 40px;
+        padding-left: ${({noPadding}) => noPadding ? '0' : '40px'};
     }
 
     @media ${DESKTOP} {
-        padding-left: 60px;
+        padding-left: ${({noPadding}) => noPadding ? '0' : '60px'};
     }
 `
 
 type TableGridProps = {
     selectorMode: boolean
+    noPadding?: boolean
 }
 
 const TableGrid = styled(Row)<TableGridProps>`
@@ -167,7 +168,7 @@ const StreamDescription = styled(GridCell)`
     font-weight: ${REGULAR};
 `
 
-const Heading = styled.div`
+const Heading = styled.div<{noPadding?: boolean}>`
     display: grid;
     grid-template-columns: 1fr auto auto;
     gap: 16px;
@@ -181,6 +182,20 @@ const Heading = styled.div`
     @media ${DESKTOP} {
         padding: 55px 60px;
     }
+  
+    ${({noPadding}) => {
+        if (noPadding) {
+            return css`
+              @media ${TABLET} {
+                padding: 0 0 45px;
+              }
+
+              @media ${DESKTOP} {
+                padding: 0 0 55px;
+              }
+            `
+        }
+    }}
 `
 
 const Title = styled.div`
@@ -205,6 +220,8 @@ type Props = {
     title?: string,
     streams: Array<Stream>,
     loadMore?: () => void | Promise<void>,
+    noPadding?: boolean,
+    preserveSpaceForLoadMoreButton?: boolean,
     hasMoreResults?: boolean,
     onSelectionChange?: (selectedStreams: StreamId[]) => void
     selected?: StreamId[]
@@ -214,6 +231,8 @@ const StreamTable: React.FC<Props> = ({
     title = "Streams",
     streams,
     loadMore,
+    noPadding,
+    preserveSpaceForLoadMoreButton = true,
     hasMoreResults,
     onSelectionChange,
     selected
@@ -269,14 +288,14 @@ const StreamTable: React.FC<Props> = ({
     }, [selected])
 
     return (
-        <Container>
-            <Heading>
+        <Container noPadding={noPadding}>
+            <Heading noPadding={noPadding}>
                 <Title>{title}</Title>
                 <Stat>Streams <strong>{streams.length}</strong></Stat>
                 <Stat>Msg/s <strong>100</strong></Stat>
             </Heading>
             <Table>
-                <TableHeader selectorMode={selectorMode}>
+                <TableHeader selectorMode={selectorMode} noPadding={noPadding}>
                     <GridCell>Stream ID</GridCell>
                     <GridCell onlyTablet>Description</GridCell>
                     <GridCell onlyDesktop>Live peers</GridCell>
@@ -290,7 +309,7 @@ const StreamTable: React.FC<Props> = ({
                 </TableHeader>
                 <TableRows rowCount={streams.length}>
                     {streams.map((s) => (
-                        <TableRow key={s.id} selectorMode={selectorMode}>
+                        <TableRow key={s.id} selectorMode={selectorMode} noPadding={noPadding}>
                             <StreamDetails href={routes.streams.show({ id: s.id })}>
                                 <StreamId>
                                     {s.id}
@@ -318,7 +337,7 @@ const StreamTable: React.FC<Props> = ({
                 <LoadMore
                     hasMoreSearchResults={!!hasMoreResults}
                     onClick={loadMore}
-                    preserveSpace
+                    preserveSpace={preserveSpaceForLoadMoreButton}
                 />
             )}
         </Container>
