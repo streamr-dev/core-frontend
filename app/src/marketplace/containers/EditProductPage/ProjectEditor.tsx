@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useContext } from 'react'
+import styled from 'styled-components'
 import { ProjectPageContainer } from '$shared/components/ProjectPage'
 import { ProjectHeroContainer } from '$mp/containers/ProjectPage/Hero/ProjectHero2.styles'
 import { CoverImage2 } from '$mp/containers/EditProductPage/CoverImage2'
@@ -10,10 +11,15 @@ import TokenSelector2 from '$mp/containers/EditProductPage/TokenSelector2'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { projectTypes } from '$mp/utils/constants'
 import { DataUnionFeesAndBeneficiary } from '$mp/containers/EditProductPage/DataUnionFeesAndBeneficiary'
+import { StreamSelector } from '$mp/containers/EditProductPage/StreamSelector'
 
 type ProjectEditorProps = {
     disabled?: boolean
 }
+
+const WhiteBoxWithMargin = styled(WhiteBox)`
+  margin-top: 24px;
+`
 
 export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({disabled}) => {
     const {state: project} = useContext(ProjectStateContext)
@@ -31,5 +37,8 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({disabled})
                 {project.type === projectTypes.DATAUNION && <DataUnionFeesAndBeneficiary/>}
             </WhiteBox>
         }
+        <WhiteBoxWithMargin>
+            <StreamSelector />
+        </WhiteBoxWithMargin>
     </ProjectPageContainer>
 }

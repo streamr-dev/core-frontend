@@ -1,8 +1,8 @@
-import React, { FunctionComponent, ReactNode } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { DESKTOP, TABLET } from '$shared/utils/styled'
 
-const Box = styled.div`
+export const WhiteBox = styled.div`
   background-color: white;
   border-radius: 16px;
   padding: 24px;
@@ -13,7 +13,3 @@ const Box = styled.div`
     padding: 52px;
   }
 `
-
-export const WhiteBox: FunctionComponent<{children: ReactNode | ReactNode[]}> = ({children}) => {
-    return <Box>{children}</Box>
-}
