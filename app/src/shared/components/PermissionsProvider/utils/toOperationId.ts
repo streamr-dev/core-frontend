@@ -1,5 +1,6 @@
-import * as operations from '../operations'
+import { Operation, getOperationWithName } from '../operations'
 import toOperationKey from './toOperationKey'
-export default function toOperationID(o: string): number {
-    return (operations as {[key: string]: number})[toOperationKey(o)]
+export default function toOperationID(o: string): Operation {
+    const opKey = toOperationKey(o)
+    return getOperationWithName(opKey)
 }

@@ -1,10 +1,11 @@
-import React, { Fragment, useState, useCallback } from 'react'
+import React, { Fragment, useState, useCallback, useMemo } from 'react'
 import { StreamPermission } from 'streamr-client'
 import { useHistory } from 'react-router-dom'
-import BackButton from '$shared/components/BackButton'
+import styled from 'styled-components'
+
 import Layout from '$shared/components/Layout/Core'
-import TOCPage from '$shared/components/TOCPage'
-import Toolbar from '$shared/components/Toolbar'
+import Button from '$shared/components/Button'
+import { MarketplaceHelmet } from '$shared/components/Helmet'
 import SwitchNetworkModal from '$shared/components/SwitchNetworkModal'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
 import ValidationError from '$shared/errors/ValidationError'
@@ -20,12 +21,86 @@ import { useValidationErrorSetter } from '$shared/components/ValidationErrorProv
 import useStreamId from '$shared/hooks/useStreamId'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
+import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import { truncate } from '$shared/utils/text'
 import Sidebar from '$shared/components/Sidebar'
 import useNativeTokenName from '$shared/hooks/useNativeTokenName'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
+import { DESKTOP, TABLET } from '$shared/utils/styled'
 import routes from '$routes'
+
+export const getStreamDetailsLinkTabs = (streamId?: string) => {
+    return [
+        {
+            label: 'Stream overview',
+            href:  routes.streams.show({id: streamId})
+        },
+        {
+            label: 'Connect',
+            href:  routes.streams.connect({id: streamId})
+        },
+        {
+            label: 'Live data',
+            href:  routes.streams.liveData({id: streamId})
+        }
+    ]
+}
+
+const Outer = styled.div`
+    padding: 24px 24px 80px 24px;
+
+    @media ${TABLET} {
+        max-width: 1296px;
+        margin: 0 auto;
+        padding: 45px 40px 90px 40px;
+    }
+
+    @media ${DESKTOP} {
+        padding: 60px 78px 130px 78px;
+    }
+`
+
+const Inner = styled.div`
+    display: grid;
+    grid-template-columns: fit-content(680px) auto;
+    border-radius: 16px;
+    background-color: white;
+    padding: 24px;
+
+    @media ${TABLET} {
+        padding: 40px;
+    }
+
+    @media ${DESKTOP} {
+        padding: 52px;
+    }
+`
+
+const SaveButton = styled(Button)`
+    width: fit-content;
+    justify-self: right;
+`
+
+type ContainerBoxProps = {
+    children?: React.ReactNode,
+    disabled?: boolean,
+}
+const ContainerBox: React.FunctionComponent<ContainerBoxProps> = ({ children, disabled }) =>
+    <Outer>
+        <Inner>
+            <div>
+                {children}
+            </div>
+            <SaveButton
+                kind="primary"
+                type="submit"
+                disabled={disabled}
+            >
+                Save
+            </SaveButton>
+        </Inner>
+    </Outer>
 
 function StreamPageSidebar() {
     const streamId = useStreamId()
@@ -50,16 +125,18 @@ function StreamPageSidebar() {
     )
 }
 
-function UnwrappedStreamPage({ title, children, loading = false }) {
+function UnwrappedStreamPage({ children, loading = false, includeContainerBox = true }) {
     const history = useHistory()
     const { commit, goBack } = useStreamModifier()
     const { busy, clean } = useStreamModifierStatusContext()
     const itp = useInterrupt()
     const setValidationError = useValidationErrorSetter()
     const { [StreamPermission.GRANT]: canGrant = false } = useStreamPermissions()
-    const isNew = !useStreamId()
+    const streamId = useStreamId()
+    const isNew = !streamId
     const nativeTokenName = useNativeTokenName()
     const [showGetCryptoDialog, setShowGetCryptoDialog] = useState(false)
+    const linkTabs = useMemo(() => streamId ? getStreamDetailsLinkTabs(streamId) : [], [streamId])
 
     async function save() {
         const { requireUninterrupted } = itp('save')
@@ -181,18 +258,22 @@ function UnwrappedStreamPage({ title, children, loading = false }) {
                     e.preventDefault()
                 }}
             >
-                <Layout
-                    nav={false}
-                    navComponent={
-                        <Toolbar
-                            altMobileLayout
-                            loading={loading || busy}
-                            left={<BackButton onBack={goBack} />}
-                            actions={buttons}
-                        />
-                    }
-                >
-                    {!loading && <TOCPage title={title}>{children}</TOCPage>}
+                <Layout>
+                    <MarketplaceHelmet title={`Stream ${streamId}`} />
+                    <DetailsPageHeader
+                        backButtonLink={routes.streams.index()}
+                        pageTitle={streamId}
+                        linkTabs={linkTabs}
+                    />
+                    {includeContainerBox ? (
+                        <ContainerBox disabled={clean || busy}>
+                            {!loading && children}
+                        </ContainerBox>
+                    ) : (
+                        <>
+                            {!loading && children}
+                        </>
+                    )}
                 </Layout>
             </form>
             {showGetCryptoDialog && (

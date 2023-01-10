@@ -6,6 +6,9 @@ const Foot = styled.div`
     display: flex;
     height: 80px;
     padding: 0 24px;
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
 
     > div + div {
         margin-left: 32px;

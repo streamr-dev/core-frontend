@@ -91,12 +91,10 @@ function UnwrappedPartitionsSection({ disabled, canEdit }) {
     }, [cache])
     return (
         <Fragment>
-            {!!canEdit && (
-                <Desc>
-                    Partitioning enables high-volume streams to scale beyond what a typical node can handle. If
-                    you&apos;re not sure if your stream needs partitions, leave it set to 1.
-                </Desc>
-            )}
+            <Desc>
+                Partitioning enables high-volume streams to scale beyond what a typical node can handle. If
+                you&apos;re not sure if your stream needs partitions, leave it set to 1.
+            </Desc>
             <Partitions>
                 <Label>Partitions</Label>
                 <Numeric

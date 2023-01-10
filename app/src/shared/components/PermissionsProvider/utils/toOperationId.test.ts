@@ -1,14 +1,14 @@
-import { EDIT } from '../operations'
+import { Operation } from '../operations'
 import toi from './toOperationId'
 it('converts operation NAME into its numeric representation', () => {
-    expect(toi('canEdit')).toBe(EDIT)
+    expect(toi('canEdit')).toBe(Operation.Edit)
 })
 it('converts operation KEY into its numeric representation', () => {
-    expect(toi('EDIT')).toBe(EDIT)
+    expect(toi('EDIT')).toBe(Operation.Edit)
 })
 it('is case insensitive', () => {
-    expect(toi('edit')).toBe(EDIT)
-    expect(toi('CANEDIT')).toBe(EDIT)
+    expect(toi('edit')).toBe(Operation.Edit)
+    expect(toi('CANEDIT')).toBe(Operation.Edit)
 })
 it('converts unknown operation into undefined', () => {
     expect(toi('FOO')).not.toBeDefined()

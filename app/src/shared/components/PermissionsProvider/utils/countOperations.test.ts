@@ -1,10 +1,10 @@
-import { EDIT, DELETE, PUBLISH, SUBSCRIBE, GRANT } from '../operations'
+import { Operation } from '../operations'
 import countOperations from './countOperations'
 it('gives zero for empty combination', () => {
     expect(countOperations(0)).toBe(0)
 })
 it('gives a number of combined operations', () => {
-    expect(countOperations(PUBLISH)).toBe(1)
-    expect(countOperations(PUBLISH + GRANT)).toBe(2)
-    expect(countOperations(PUBLISH + EDIT + DELETE + SUBSCRIBE + GRANT)).toBe(5)
+    expect(countOperations(Operation.Publish)).toBe(1)
+    expect(countOperations(Operation.Publish | Operation.Grant)).toBe(2)
+    expect(countOperations(Operation.Publish + Operation.Edit + Operation.Delete + Operation.Subscribe + Operation.Grant)).toBe(5)
 })

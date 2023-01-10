@@ -1,6 +1,7 @@
 import React from 'react'
 import type { Stream } from 'streamr-client'
 import styled, { css } from 'styled-components'
+import { Link } from 'react-router-dom'
 
 import LoadMore from '$mp/components/LoadMore'
 import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
@@ -136,7 +137,7 @@ const NoStreams = styled.div`
     color: ${COLORS.primaryLight};
 `
 
-const StreamDetails = styled.a`
+const StreamDetails = styled(Link)`
     font-size: 16px;
     line-height: 26px;
     overflow: hidden;
@@ -220,7 +221,7 @@ const StreamTable: React.FC<Props> = ({ title = "Streams", streams, loadMore, ha
                 <TableRows rowCount={streams.length}>
                     {streams.map((s) => (
                         <TableRow key={s.id}>
-                            <StreamDetails href={routes.streams.show({ id: s.id })}>
+                            <StreamDetails to={routes.streams.show({ id: s.id })}>
                                 <StreamId>
                                     {s.id}
                                 </StreamId>
