@@ -12,6 +12,7 @@ import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { projectTypes } from '$mp/utils/constants'
 import { DataUnionFeesAndBeneficiary } from '$mp/containers/EditProductPage/DataUnionFeesAndBeneficiary'
 import { StreamSelector } from '$mp/containers/EditProductPage/StreamSelector'
+import { TermsOfUse2 } from '$mp/containers/EditProductPage/TermsOfUse2'
 
 type ProjectEditorProps = {
     disabled?: boolean
@@ -39,6 +40,9 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({disabled})
         }
         <WhiteBoxWithMargin>
             <StreamSelector />
+        </WhiteBoxWithMargin>
+        <WhiteBoxWithMargin>
+            <TermsOfUse2/>
         </WhiteBoxWithMargin>
     </ProjectPageContainer>
 }

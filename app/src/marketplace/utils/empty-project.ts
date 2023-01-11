@@ -15,7 +15,7 @@ export class EmptyProject implements Project {
     previewConfigJson = undefined
     thumbnailUrl = undefined
     ownerAddress = undefined
-    termsOfUse = undefined
+    termsOfUse = {}
     updated = undefined
     minimumSubscriptionInSeconds = 1
     beneficiaryAddress = undefined

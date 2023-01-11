@@ -151,42 +151,7 @@ const StreamDescription = styled(GridCell)`
   font-weight: ${REGULAR};
 `
 
-const Heading = styled.div`
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 16px;
-  align-items: center;
-  padding: 0 24px 30px;
-
-  @media ${TABLET} {
-    padding-bottom: 45px
-  }
-
-  @media ${DESKTOP} {
-    padding-bottom: 55px;
-  }
-`
-
-const Title = styled.div`
-  font-size: 34px;
-  line-height: 34px;
-  color: ${COLORS.primary};
-`
-
-const Stat = styled.div`
-  color: ${COLORS.primaryLight};
-  background-color: ${COLORS.secondary};
-  font-size: 18px;
-  line-height: 16px;
-  padding: 16px;
-
-  strong {
-    font-weight: ${MEDIUM};
-  }
-`
-
 type Props = {
-    title?: string,
     streams: Array<Stream>,
     loadMore?: () => void | Promise<void>,
     hasMoreResults?: boolean,
@@ -195,7 +160,6 @@ type Props = {
 }
 
 export const StreamSelectTable: FunctionComponent<Props> = ({
-    title = "Select Streams",
     streams,
     loadMore,
     hasMoreResults,
@@ -235,7 +199,7 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
         const selectedStreamsArray = Object.entries(selectedStreams)
             .filter(([streamId, isSelected]) => isSelected)
             .map(([streamId]) => streamId)
-        if (selectedStreamsArray.length === streams.length && !allSelected) {
+        if (streams.length > 0 && selectedStreamsArray.length === streams.length && !allSelected) {
             setAllSelected(true)
         }
         if (selectedStreamsArray.length !== streams.length && allSelected) {
@@ -255,11 +219,6 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
 
     return (
         <div>
-            <Heading>
-                <Title>{title}</Title>
-                <Stat>Streams <strong>{streams.length}</strong></Stat>
-                <Stat>Msg/s <strong>100</strong></Stat>
-            </Heading>
             <Table>
                 <TableHeader>
                     <GridCell>Stream ID</GridCell>
