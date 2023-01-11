@@ -25,7 +25,7 @@ export const Radio: FunctionComponent<RadioProps> = ({
     disabledReason,
     onChange,
     className,
-    size
+    size = 'normal'
 }) => {
     const handleChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => onChange(event.target.value),
