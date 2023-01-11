@@ -1,28 +1,18 @@
-import React from 'react'
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
 import type { Stream } from 'streamr-client'
 import styled, { css } from 'styled-components'
 
 import LoadMore from '$mp/components/LoadMore'
+import { StreamId } from '$shared/types/stream-types'
 import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
+import Checkbox from '$shared/components/Checkbox'
 import routes from '$routes'
 
 const ROW_HEIGHT = 88
 
-const Container = styled.div`
-    padding-bottom: 80px;
-`
-
 const Row = styled.div`
   align-items: center;
   padding-left: 24px;
-
-  @media ${TABLET} {
-    padding-left: 40px;
-  }
-
-  @media ${DESKTOP} {
-    padding-left: 60px;
-  }
 `
 
 const TableGrid = styled(Row)`
@@ -35,7 +25,7 @@ const TableGrid = styled(Row)`
   }
 
   @media ${DESKTOP} {
-    grid-template-columns: minmax(0, 3fr) repeat(5, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 3fr) repeat(6, minmax(0, 1fr));
   }
 `
 
@@ -60,7 +50,7 @@ type TableRowsProps = {
 }
 
 const TableRows = styled.div<TableRowsProps>`
-  height: ${({ rowCount }) => Math.max(rowCount, 1) * (ROW_HEIGHT + 1)}px;
+  height: ${({rowCount}) => Math.max(rowCount, 1) * (ROW_HEIGHT + 1)}px;
 `
 
 const TableRow = styled(TableGrid)`
@@ -80,6 +70,7 @@ type GridCellProps = {
     onlyDesktop?: boolean,
     onlyTablet?: boolean,
     notOnTablet?: boolean,
+    flex?: boolean
 }
 
 const GridCell = styled.span<GridCellProps>`
@@ -87,7 +78,7 @@ const GridCell = styled.span<GridCellProps>`
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  ${({ onlyDesktop }) =>
+  ${({onlyDesktop}) =>
         onlyDesktop &&
           css`
             display: none;
@@ -97,7 +88,7 @@ const GridCell = styled.span<GridCellProps>`
             }
           `}
 
-  ${({ onlyTablet }) =>
+  ${({onlyTablet}) =>
         onlyTablet &&
           css`
             display: none;
@@ -111,7 +102,7 @@ const GridCell = styled.span<GridCellProps>`
             }
           `}
 
-  ${({ notOnTablet }) =>
+  ${({notOnTablet}) =>
         notOnTablet &&
           css`
             display: block;
@@ -124,6 +115,8 @@ const GridCell = styled.span<GridCellProps>`
               display: block;
             }
           `}
+
+  ${({flex}) => flex ? css`display: flex;` : ''}
 `
 
 const NoStreams = styled.div`
@@ -163,14 +156,14 @@ const Heading = styled.div`
   grid-template-columns: 1fr auto auto;
   gap: 16px;
   align-items: center;
-  padding: 30px 24px;
+  padding: 0 24px 30px;
 
   @media ${TABLET} {
-    padding: 45px 40px;
+    padding-bottom: 45px
   }
 
   @media ${DESKTOP} {
-    padding: 55px 60px;
+    padding-bottom: 55px;
   }
 `
 
@@ -197,11 +190,71 @@ type Props = {
     streams: Array<Stream>,
     loadMore?: () => void | Promise<void>,
     hasMoreResults?: boolean,
+    onSelectionChange: (selectedStreams: StreamId[]) => void
+    selected: StreamId[]
 }
 
-const StreamTable: React.FC<Props> = ({ title = "Streams", streams, loadMore, hasMoreResults }: Props) => {
+export const StreamSelectTable: FunctionComponent<Props> = ({
+    title = "Select Streams",
+    streams,
+    loadMore,
+    hasMoreResults,
+    onSelectionChange,
+    selected
+}: Props) => {
+    const [selectedStreams, setSelectedStreams] = useState<Record<StreamId, boolean>>({})
+    const [allSelected, setAllSelected] = useState<boolean>(false)
+
+    const emitSelectedStreamsChange = useCallback((streams: Record<StreamId, boolean>) => {
+        if (onSelectionChange) {
+            const selectedStreamsArray = Object.entries(streams)
+                .filter(([streamId, isSelected]) => isSelected)
+                .map(([streamId]) => streamId)
+            onSelectionChange(selectedStreamsArray)
+        }
+    }, [onSelectionChange])
+
+    const handleSelectChange = useCallback((streamId: StreamId) => {
+        const newSelectedStreams = {...selectedStreams, [streamId]: !selectedStreams[streamId]}
+        setSelectedStreams(newSelectedStreams)
+        emitSelectedStreamsChange(newSelectedStreams)
+    }, [selectedStreams, emitSelectedStreamsChange])
+
+    const handleSelectAllChange = useCallback(() => {
+        const shouldAllBeChecked = !allSelected
+        const newSelectedStreams: Record<StreamId, boolean> = {}
+        streams.forEach((stream) => {
+            newSelectedStreams[stream.id] = shouldAllBeChecked
+        })
+        setSelectedStreams(newSelectedStreams)
+        setAllSelected(shouldAllBeChecked)
+        emitSelectedStreamsChange(newSelectedStreams)
+    }, [allSelected, streams, emitSelectedStreamsChange])
+
+    useEffect(() => {
+        const selectedStreamsArray = Object.entries(selectedStreams)
+            .filter(([streamId, isSelected]) => isSelected)
+            .map(([streamId]) => streamId)
+        if (selectedStreamsArray.length === streams.length && !allSelected) {
+            setAllSelected(true)
+        }
+        if (selectedStreamsArray.length !== streams.length && allSelected) {
+            setAllSelected(false)
+        }
+    }, [selectedStreams, streams, allSelected])
+
+    useEffect(() => {
+        if (selected && selected.length) {
+            const newSelectedStreams: Record<StreamId, boolean> = {}
+            selected.forEach((streamId) => {
+                newSelectedStreams[streamId] = true
+            })
+            setSelectedStreams(newSelectedStreams)
+        }
+    }, [selected])
+
     return (
-        <Container>
+        <div>
             <Heading>
                 <Title>{title}</Title>
                 <Stat>Streams <strong>{streams.length}</strong></Stat>
@@ -216,11 +269,14 @@ const StreamTable: React.FC<Props> = ({ title = "Streams", streams, loadMore, ha
                     <GridCell onlyDesktop>Access</GridCell>
                     <GridCell onlyDesktop>Publishers</GridCell>
                     <GridCell onlyDesktop>Subscribers</GridCell>
+                    <GridCell flex={true}>
+                        <Checkbox value={allSelected} onChange={handleSelectAllChange}/>
+                    </GridCell>
                 </TableHeader>
                 <TableRows rowCount={streams.length}>
                     {streams.map((s) => (
                         <TableRow key={s.id}>
-                            <StreamDetails href={routes.streams.show({ id: s.id })}>
+                            <StreamDetails href={routes.streams.show({id: s.id})}>
                                 <StreamId>
                                     {s.id}
                                 </StreamId>
@@ -235,6 +291,11 @@ const StreamTable: React.FC<Props> = ({ title = "Streams", streams, loadMore, ha
                             <GridCell onlyDesktop>Public</GridCell>
                             <GridCell onlyDesktop>5</GridCell>
                             <GridCell onlyDesktop>100</GridCell>
+                            <GridCell flex={true}>
+                                <Checkbox value={selectedStreams[s.id]} onChange={() => {
+                                    handleSelectChange(s.id)
+                                }}/>
+                            </GridCell>
                         </TableRow>
                     ))}
                     {streams.length === 0 && <NoStreams>No streams that match your query</NoStreams>}
@@ -244,11 +305,9 @@ const StreamTable: React.FC<Props> = ({ title = "Streams", streams, loadMore, ha
                 <LoadMore
                     hasMoreSearchResults={!!hasMoreResults}
                     onClick={loadMore}
-                    preserveSpace
+                    preserveSpace={false}
                 />
             )}
-        </Container>
+        </div>
     )
 }
-
-export default StreamTable

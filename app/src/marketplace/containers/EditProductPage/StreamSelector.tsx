@@ -7,6 +7,7 @@ import StreamTable from '$shared/components/StreamTable'
 import { StreamId } from '$shared/types/stream-types'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
+import { StreamSelectTable } from '$shared/components/StreamSelectTable'
 
 const BATCH_SIZE = 10
 
@@ -49,12 +50,10 @@ export const StreamSelector: FunctionComponent = () => {
     }, [fetch])
 
     return streams.length ?
-        <StreamTable
-            noPadding={true}
+        <StreamSelectTable
             title={'Add Streams'}
             streams={streams}
             loadMore={fetch}
-            preserveSpaceForLoadMoreButton={false}
             hasMoreResults={hasMore}
             onSelectionChange={updateStreams}
             selected={project.streams}
