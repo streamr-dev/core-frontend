@@ -12,6 +12,7 @@ type RadioProps = {
     disabledReason?: string,
     onChange: (value: any) => void
     className?: string
+    size?: 'normal' | 'large'
 }
 
 export const Radio: FunctionComponent<RadioProps> = ({
@@ -23,7 +24,8 @@ export const Radio: FunctionComponent<RadioProps> = ({
     disabled,
     disabledReason,
     onChange,
-    className
+    className,
+    size
 }) => {
     const handleChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => onChange(event.target.value),
@@ -39,7 +41,7 @@ export const Radio: FunctionComponent<RadioProps> = ({
             type={'radio'}
             disabled={disabled}
             onChange={handleChange}
-            className={!label ? 'no-label' : ''}/>
+            className={(!label ? 'no-label ' : '') + (size === 'large' ? 'large ' : '')}/>
         {!!label && <div>{label}</div>}
     </RadioLabel>
 }
@@ -68,6 +70,7 @@ const RadioLabel = styled.label`
     transform: translateY(-2px);
     display: grid;
     place-content: center;
+    
     &.no-label {
       transform: none;
     }
@@ -80,6 +83,16 @@ const RadioLabel = styled.label`
       border-color: ${COLORS.secondaryHover};
       &:not(:checked) {
         background-color: ${COLORS.secondaryHover};
+      }
+    }
+
+    &.large {
+      width: 20px;
+      height: 20px;
+      ::before {
+        width: 10px;
+        height: 10px;
+        box-shadow: inset 1.5em 1.5em ${COLORS.link};
       }
     }
   }

@@ -55,9 +55,10 @@ const Product = styled.button`
   border: none;
   background-color: transparent;
   border-radius: 8px;
-  grid-template-columns: 15px auto 50px;
+  grid-template-columns: 20px auto 50px;
   grid-template-rows: auto;
   padding: 10px 20px;
+  align-items: center;
   @media(${DESKTOP}) {
     padding: 0;
     grid-template-columns: auto;
@@ -66,20 +67,24 @@ const Product = styled.button`
 `
 const ProductTitle = styled.div`
   line-height: 16px;
-  font-size: 20px;
+  font-size: 18px;
   letter-spacing: 0;
   font-weight: ${MEDIUM};
-  margin: 20px 0 20px 20px;
+  margin: 24px 0 20px 20px;
   grid-column-start: 2;
   grid-column-end: 2;
   grid-row-start: 1;
   grid-row-end: 1;
   text-align: left;
   @media(${DESKTOP}) {
-    margin: 20px 0;
+    margin: 30px 0 40px;
     text-align: center;
     grid-column-start: 1;
     grid-column-end: 1;
+    height: 40px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
   }
 `
 const ProductImage = styled.div`
@@ -101,7 +106,7 @@ const ProductImage = styled.div`
     height: 50px;
     width: auto;
     @media(${DESKTOP}) {
-      height: 160px;
+      height: 140px;
     }
   }
 `
@@ -118,6 +123,7 @@ const RadioWrap = styled.div`
   @media(${DESKTOP}) {
     grid-row-start: 3;
     grid-row-end: 3;
+    margin: 40px auto;
   }
 `
 
@@ -218,6 +224,7 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
                 <RadioWrap>
                     <Radio id={'openData'}
                         name={'productType'}
+                        size={'large'}
                         label={''}
                         value={ProjectTypesEnum.openData}
                         onChange={setSelectedProductType}
@@ -232,6 +239,7 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
                 <RadioWrap>
                     <Radio id={'paidData'}
                         name={'productType'}
+                        size={'large'}
                         label={''}
                         value={ProjectTypesEnum.paidData}
                         onChange={setSelectedProductType}
@@ -246,6 +254,7 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
                 <RadioWrap>
                     <Radio id={'dataUnion'}
                         name={'productType'}
+                        size={'large'}
                         label={''}
                         value={ProjectTypesEnum.dataUnion}
                         onChange={setSelectedProductType}

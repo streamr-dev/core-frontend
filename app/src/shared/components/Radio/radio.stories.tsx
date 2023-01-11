@@ -55,6 +55,18 @@ stories.add('default', () => (
                 disabled={true}
             />
         </form>
+        <form>
+            <p>Large:</p>
+            <Radio
+                id="radio-example-option1483834"
+                size={'large'}
+                name={'large-selection'}
+                label={'Some option'}
+                value={'some-option'}
+                checked={true}
+                onChange={action('selected')}
+            />
+        </form>
     </div>
 
 ))
