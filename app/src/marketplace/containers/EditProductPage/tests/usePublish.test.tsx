@@ -1605,13 +1605,12 @@ describe('usePublish', () => {
                 await Promise.all([txPromise, result.queue.start()])
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE)
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
-                expect(setAdminFeeStub).toBeCalledWith(product.beneficiaryAddress, 8995, product.pendingChanges.adminFee)
+                expect(setAdminFeeStub).toBeCalledWith(product.beneficiaryAddress, 1, product.pendingChanges.adminFee)
                 expect(updateContractStub.mock.calls[0][0]).toMatchObject({
                     ...contractProduct,
                     pricePerSecond: product.pricePerSecond,
                     beneficiaryAddress: product.beneficiaryAddress,
                     priceCurrency: product.priceCurrency,
-                    chainId: 8995
                 })
                 expect(postSetDeployingStub).toBeCalledWith('1', 'test2')
                 expect(addTransactionStub).toBeCalledWith(hash1, transactionTypes.UPDATE_ADMIN_FEE)
@@ -1740,7 +1739,7 @@ describe('usePublish', () => {
                     },
                     '1',
                 )
-                expect(setAdminFeeStub).toBeCalledWith('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0', 8995, '0.5')
+                expect(setAdminFeeStub).toBeCalledWith('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0', 1, '0.5')
                 expect(addTransactionStub).toBeCalledWith(hash, transactionTypes.UPDATE_ADMIN_FEE)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
@@ -1887,9 +1886,9 @@ describe('usePublish', () => {
                     pricePerSecond: product.pendingChanges.pricePerSecond,
                     beneficiaryAddress: product.pendingChanges.beneficiaryAddress,
                     priceCurrency: product.pendingChanges.priceCurrency,
-                    chainId: 8995,
+                    chainId: 1,
                 })
-                expect(setAdminFeeStub).toBeCalledWith('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0', 8995, '0.5')
+                expect(setAdminFeeStub).toBeCalledWith('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0', 1, '0.5')
                 expect(addTransactionStub).toBeCalledWith(hash1, transactionTypes.UPDATE_ADMIN_FEE)
                 expect(addTransactionStub).toBeCalledWith(hash2, transactionTypes.UPDATE_CONTRACT_PRODUCT)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
