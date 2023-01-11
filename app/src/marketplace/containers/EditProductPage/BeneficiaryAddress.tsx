@@ -43,7 +43,14 @@ const AddressItem = styled(UnstyledAddressItem)`
         margin-top: -14px;
     }
 `
-
+/**
+ * @deprecated
+ * @param addressProp
+ * @param onChange
+ * @param disabled
+ * @param className
+ * @constructor
+ */
 const BeneficiaryAddress = ({ address: addressProp, onChange, disabled, className }: Props) => {
     const { isValid, message } = useValidation('beneficiaryAddress')
     const { publishAttempted } = useContext(EditControllerContext)
