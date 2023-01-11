@@ -50,8 +50,7 @@ const Rhs = styled.div`
     }
 `
 const Inner = styled.div`
-    display: grid;
-    grid-template-columns: auto 1fr;
+    display: flex;
     min-width: 0;
     padding: 0 16px;
 
@@ -116,16 +115,6 @@ const UnstyledToolbar = ({
                             Stream Settings
                         </SettingsButton>
                     )}
-                    <Button kind="secondary" onClick={() => copy(streamId)}>
-                        {isCopied ? (
-                            'Copied!'
-                        ) : (
-                            <React.Fragment>
-                                <TabletText>Copy Stream ID</TabletText>
-                                <MobileText>Copy Id</MobileText>
-                            </React.Fragment>
-                        )}
-                    </Button>
                 </div>
             </Rhs>
         </div>
@@ -134,10 +123,8 @@ const UnstyledToolbar = ({
 
 const Toolbar = styled(UnstyledToolbar)`
     align-items: center;
-    background: #fdfdfd;
     display: flex;
-    height: 64px;
-    padding: 0 16px 0 0;
+    padding-top: 58px;
 `
 Object.assign(Toolbar, {
     Lhs,

@@ -15,6 +15,10 @@ export default function StreamLoader() {
 
         async function fn() {
             try {
+                if (client == null) {
+                    return
+                }
+
                 const remoteStream = await client.getStream(streamId)
 
                 if (aborted || typeof setStreamRef.current !== 'function') {

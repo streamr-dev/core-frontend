@@ -1,6 +1,7 @@
 import React from 'react'
 import type { Stream } from 'streamr-client'
 import styled, { css } from 'styled-components'
+import { Link } from 'react-router-dom'
 
 import LoadMore from '$mp/components/LoadMore'
 import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
@@ -13,46 +14,46 @@ const Container = styled.div`
 `
 
 const Row = styled.div`
-  align-items: center;
-  padding-left: 24px;
+    align-items: center;
+    padding-left: 24px;
 
-  @media ${TABLET} {
-    padding-left: 40px;
-  }
+    @media ${TABLET} {
+        padding-left: 40px;
+    }
 
-  @media ${DESKTOP} {
-    padding-left: 60px;
-  }
+    @media ${DESKTOP} {
+        padding-left: 60px;
+    }
 `
 
 const TableGrid = styled(Row)`
-  display: grid;
-  gap: 8px;
-  grid-template-columns: minmax(0, 1fr);
+    display: grid;
+    gap: 8px;
+    grid-template-columns: minmax(0, 1fr);
 
-  @media ${TABLET} {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  }
+    @media ${TABLET} {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
 
-  @media ${DESKTOP} {
-    grid-template-columns: minmax(0, 3fr) repeat(5, minmax(0, 1fr));
-  }
+    @media ${DESKTOP} {
+        grid-template-columns: minmax(0, 3fr) repeat(5, minmax(0, 1fr));
+    }
 `
 
 const Table = styled.div`
-  overflow: auto;
+    overflow: auto;
 `
 
 const TableHeader = styled(TableGrid)`
-  font-weight: ${MEDIUM};
-  height: ${ROW_HEIGHT}px;
-  font-size: 15px;
-  line-height: 26px;
-  color: ${COLORS.primaryLight};
-  border-bottom: 1px solid #f8f8f8;
-  position: sticky;
-  top: 0;
-  z-index: 1;
+    font-weight: ${MEDIUM};
+    height: ${ROW_HEIGHT}px;
+    font-size: 15px;
+    line-height: 26px;
+    color: ${COLORS.primaryLight};
+    border-bottom: 1px solid #f8f8f8;
+    position: sticky;
+    top: 0;
+    z-index: 1;
 `
 
 type TableRowsProps = {
@@ -60,20 +61,20 @@ type TableRowsProps = {
 }
 
 const TableRows = styled.div<TableRowsProps>`
-  height: ${({ rowCount }) => Math.max(rowCount, 1) * (ROW_HEIGHT + 1)}px;
+    height: ${({ rowCount }) => Math.max(rowCount, 1) * (ROW_HEIGHT + 1)}px;
 `
 
 const TableRow = styled(TableGrid)`
-  font-size: 16px;
-  line-height: 26px;
-  height: ${ROW_HEIGHT}px;
-  max-height: ${ROW_HEIGHT}px;
-  box-sizing: content-box;
-  color: ${COLORS.primaryLight};
+    font-size: 16px;
+    line-height: 26px;
+    height: ${ROW_HEIGHT}px;
+    max-height: ${ROW_HEIGHT}px;
+    box-sizing: content-box;
+    color: ${COLORS.primaryLight};
 
-  &:not(:last-child) {
-    border-bottom: 1px solid #f8f8f8;
-  }
+    &:not(:last-child) {
+        border-bottom: 1px solid #f8f8f8;
+    }
 `
 
 type GridCellProps = {
@@ -83,113 +84,113 @@ type GridCellProps = {
 }
 
 const GridCell = styled.span<GridCellProps>`
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 
-  ${({ onlyDesktop }) =>
+    ${({ onlyDesktop }) =>
         onlyDesktop &&
-          css`
+        css`
             display: none;
 
             @media ${DESKTOP} {
-              display: block;
+                display: block;
             }
-          `}
+        `}
 
-  ${({ onlyTablet }) =>
+    ${({ onlyTablet }) =>
         onlyTablet &&
-          css`
+        css`
             display: none;
 
             @media ${TABLET} {
-              display: block;
+                display: block;
             }
 
             @media ${DESKTOP} {
-              display: none;
+                display: none;
             }
-          `}
+        `}
 
-  ${({ notOnTablet }) =>
+    ${({ notOnTablet }) =>
         notOnTablet &&
-          css`
+        css`
             display: block;
 
             @media ${TABLET} {
-              display: none;
+                display: none;
             }
 
             @media ${DESKTOP} {
-              display: block;
+                display: block;
             }
-          `}
+        `}
 `
 
 const NoStreams = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  font-size: 14px;
-  line-height: 18px;
-  color: ${COLORS.primaryLight};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 14px;
+    line-height: 18px;
+    color: ${COLORS.primaryLight};
 `
 
-const StreamDetails = styled.a`
-  font-size: 16px;
-  line-height: 26px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+const StreamDetails = styled(Link)`
+    font-size: 16px;
+    line-height: 26px;
+    overflow: hidden;
+    text-overflow: ellipsis;    
 
-  &:active,
-  &:link,
-  &:visited,
-  &:hover {
-    color: ${COLORS.primaryLight};
-  }
+    &:active,
+    &:link,
+    &:visited,
+    &:hover {
+        color: ${COLORS.primaryLight};
+    }
 `
 
 const StreamId = styled(GridCell)`
-  font-weight: ${MEDIUM};
+    font-weight: ${MEDIUM};
 `
 
 const StreamDescription = styled(GridCell)`
-  font-weight: ${REGULAR};
+    font-weight: ${REGULAR};
 `
 
 const Heading = styled.div`
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 16px;
-  align-items: center;
-  padding: 30px 24px;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 16px;
+    align-items: center;
+    padding: 30px 24px;
 
-  @media ${TABLET} {
-    padding: 45px 40px;
-  }
+    @media ${TABLET} {
+        padding: 45px 40px;
+    }
 
-  @media ${DESKTOP} {
-    padding: 55px 60px;
-  }
+    @media ${DESKTOP} {
+        padding: 55px 60px;
+    }
 `
 
 const Title = styled.div`
-  font-size: 34px;
-  line-height: 34px;
-  color: ${COLORS.primary};
+    font-size: 34px;
+    line-height: 34px;
+    color: ${COLORS.primary};
 `
 
 const Stat = styled.div`
-  color: ${COLORS.primaryLight};
-  background-color: ${COLORS.secondary};
-  font-size: 18px;
-  line-height: 16px;
-  padding: 16px;
+    color: ${COLORS.primaryLight};
+    background-color: ${COLORS.secondary};
+    font-size: 18px;
+    line-height: 16px;
+    padding: 16px;
 
-  strong {
-    font-weight: ${MEDIUM};
-  }
+    strong {
+        font-weight: ${MEDIUM};
+    }
 `
 
 type Props = {
@@ -220,7 +221,7 @@ const StreamTable: React.FC<Props> = ({ title = "Streams", streams, loadMore, ha
                 <TableRows rowCount={streams.length}>
                     {streams.map((s) => (
                         <TableRow key={s.id}>
-                            <StreamDetails href={routes.streams.show({ id: s.id })}>
+                            <StreamDetails to={routes.streams.show({ id: s.id })}>
                                 <StreamId>
                                     {s.id}
                                 </StreamId>

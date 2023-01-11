@@ -1,14 +1,14 @@
 /* eslint-disable no-bitwise */
-import { GET, EDIT, GRANT, PUBLISH, SUBSCRIBE, DELETE } from './operations'
+import { Operation } from './operations'
 const STREAM = {
-    subscriber: SUBSCRIBE,
-    publisher: PUBLISH,
-    editor: SUBSCRIBE | EDIT | PUBLISH,
-    owner: EDIT | DELETE | PUBLISH | SUBSCRIBE | GRANT,
+    subscriber: Operation.Subscribe,
+    publisher: Operation.Publish,
+    editor: Operation.Subscribe | Operation.Edit | Operation.Publish,
+    owner: Operation.Edit | Operation.Delete | Operation.Publish | Operation.Subscribe | Operation.Grant,
 }
 const PRODUCT = {
-    viewer: GET,
-    owner: GET | EDIT | DELETE | GRANT,
+    viewer: Operation.Get,
+    owner: Operation.Get | Operation.Edit | Operation.Delete | Operation.Grant,
 }
 export const DEFAULTS_KEYS = {
     PRODUCT: 'viewer',

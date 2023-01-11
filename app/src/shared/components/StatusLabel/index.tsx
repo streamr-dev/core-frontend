@@ -17,7 +17,6 @@ const Label = styled.div`
     letter-spacing: 0;
     border-radius: 2px;
     padding: 0.375rem 0.5rem;
-    min-width: 80px;
     text-align: center;
 `
 export const Deprecated = () => <Label theme={DarkGrayTheme}>Deprecated</Label>

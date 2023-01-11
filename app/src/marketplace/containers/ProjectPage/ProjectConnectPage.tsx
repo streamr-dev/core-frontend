@@ -53,7 +53,6 @@ const ProjectConnect: FunctionComponent = () => {
             <MarketplaceHelmet title={product.name}/>
             <DetailsPageHeader
                 pageTitle={PageTitle}
-                currentPageUrl={routes.marketplace.product.connect({id: productId})}
                 linkTabs={linkTabs}
             />
             <LoadingIndicator loading={isPending}/>

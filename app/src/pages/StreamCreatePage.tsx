@@ -8,29 +8,17 @@ import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierS
 import StreamPage from './StreamPage'
 import StreamModifier from './AbstractStreamEditPage/StreamModifier'
 import InfoSection from './AbstractStreamEditPage/InfoSection'
-import CodeSnippetsSection from './AbstractStreamEditPage/CodeSnippetsSection'
-import StatusSection from './AbstractStreamEditPage/StatusSection'
-import PreviewSection from './AbstractStreamEditPage/PreviewSection'
+import AccessControlSection from './AbstractStreamEditPage/AccessControlSection'
 import HistorySection from './AbstractStreamEditPage/HistorySection'
 import PartitionsSection from './AbstractStreamEditPage/PartitionsSection'
-import ConfigSection from './AbstractStreamEditPage/ConfigSection'
 
 function UnwrappedStreamCreatePage() {
     const { busy } = useStreamModifierStatusContext()
     return (
         <StreamPage title="Name your Stream">
             <InfoSection disabled={busy} />
-            <CodeSnippetsSection disabled />
-            <Display $mobile="none" $desktop>
-                <ConfigSection disabled={busy} />
-            </Display>
-            <Display $mobile="none" $desktop>
-                <StatusSection disabled={busy} />
-            </Display>
-            <PreviewSection disabled />
-            <Display $mobile="none" $desktop>
-                <HistorySection disabled={busy} />
-            </Display>
+            <AccessControlSection disabled={busy} />
+            <HistorySection disabled={busy} />
             <PartitionsSection disabled={busy} />
         </StreamPage>
     )
@@ -39,13 +27,15 @@ function UnwrappedStreamCreatePage() {
 export default function StreamCreatePage() {
     const { current: stream } = useRef({
         id: undefined,
-        description: '',
-        config: {
-            fields: [],
+        metadata: {
+            description: '',
+            config: {
+                fields: [],
+            },
+            storageDays: undefined,
+            inactivityThresholdHours: undefined,
+            partitions: 1,
         },
-        storageDays: undefined,
-        inactivityThresholdHours: undefined,
-        partitions: 1,
     })
     const { current: onValidate } = useRef(({ id }) => {
         if (!id) {

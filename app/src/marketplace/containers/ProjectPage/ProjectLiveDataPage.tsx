@@ -23,7 +23,6 @@ const ProjectLiveData: FunctionComponent = () => {
         <DetailsPageHeader
             backButtonLink={routes.marketplace.index}
             pageTitle={pageTitle}
-            currentPageUrl={ routes.marketplace.product.liveData({id: productId})}
             linkTabs={linkTabs}
         />
         <LoadingIndicator loading={isPending} />

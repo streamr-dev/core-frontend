@@ -21,48 +21,44 @@ function UnwrappedInfoSection({ disabled, canEdit }) {
     const { stage } = useStreamModifier()
     return (
         <Fragment>
-            {!!canEdit && (
-                <Description>
-                    All streams require a unique path in the format <strong>domain/pathname</strong>.
-                    <Surround head=" " tail=" ">
-                        Your default domain will be an Ethereum address, but you can also use an existing ENS domain or
+            <Description>
+                All streams require a unique path in the format <strong>domain/pathname</strong>.
+                <Surround head=" " tail=" ">
+                    Your default domain will be an Ethereum address, but you can also use an existing ENS domain or
+                </Surround>
+                <Surround tail=".">
+                    <a href={ENS_DOMAINS_URL} target="_blank" rel="nofollow noopener noreferrer">
+                        register a new one
+                    </a>
+                </Surround>
+                {!streamId && (
+                    <Surround head=" ">
+                        Choose your stream name &amp; create it in order to adjust stream settings.
                     </Surround>
-                    <Surround tail=".">
-                        <a href={ENS_DOMAINS_URL} target="_blank" rel="nofollow noopener noreferrer">
-                            register a new one
-                        </a>
-                    </Surround>
-                    {!streamId && (
-                        <Surround head=" ">
-                            Choose your stream name &amp; create it in order to adjust stream settings.
-                        </Surround>
-                    )}
-                </Description>
-            )}
+                )}
+            </Description>
             <Row>
                 <StreamIdComponent disabled={disabled} />
             </Row>
-            {!!(canEdit || description) && (
-                <Row>
-                    <Label htmlFor="streamDescription">Description</Label>
-                    <Text
-                        type="text"
-                        id="streamDescription"
-                        name="description"
-                        placeholder="Add a brief description"
-                        value={description}
-                        onChange={({ target }) =>
-                            void stage({
-                                metadata: {
-                                    description: target.value || '',
-                                },
-                            })
-                        }
-                        disabled={disabled}
-                        autoComplete="off"
-                    />
-                </Row>
-            )}
+            <Row>
+                <Label htmlFor="streamDescription">Description</Label>
+                <Text
+                    type="text"
+                    id="streamDescription"
+                    name="description"
+                    placeholder="Add a brief description"
+                    value={description}
+                    onChange={({ target }) =>
+                        void stage({
+                            metadata: {
+                                description: target.value || '',
+                            },
+                        })
+                    }
+                    disabled={disabled}
+                    autoComplete="off"
+                />
+            </Row>
         </Fragment>
     )
 }

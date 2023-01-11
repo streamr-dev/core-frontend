@@ -1,6 +1,6 @@
 import React, { useRef, useCallback, useReducer, useEffect, createContext } from 'react'
 import { useSelector } from 'react-redux'
-import { useSubscription } from 'streamr-client-react'
+import { useSubscribe } from 'streamr-client-react'
 import { selectPendingTransactions } from '$mp/modules/transactions/selectors'
 import Activity, { actionTypes } from '$shared/utils/Activity'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
@@ -73,19 +73,16 @@ const ActivityList = ({ children = <ActivityListItems /> }) => {
         },
         [fetchResource],
     )
-    useSubscription(
+    useSubscribe(streamId,
         {
-            stream: streamId,
-            resend: {
+            disabled: !streamId,
+            onMessage,
+            resendOptions: {
                 from: {
                     timestamp: ACTIVITY_FROM,
                 },
             },
-        },
-        {
-            isActive: !!streamId,
-            onMessage,
-        },
+        }
     )
     return (
         !!streamId && (
@@ -95,6 +92,5 @@ const ActivityList = ({ children = <ActivityListItems /> }) => {
         )
     )
 }
-
 
 export default ActivityList

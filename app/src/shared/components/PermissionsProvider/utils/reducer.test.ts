@@ -1,5 +1,5 @@
 import address0 from '$utils/address0'
-import { EDIT, PUBLISH, SUBSCRIBE } from '../operations'
+import { Operation } from '../operations'
 import r, { ADD_PERMISSION, PERSIST, SET_PERMISSIONS, SET_RESOURCE, UPDATE_PERMISSION } from './reducer'
 describe('SET_PERMISSIONS', () => {
     it('unlocks state', () => {
@@ -37,8 +37,8 @@ describe('SET_PERMISSIONS', () => {
         )
         expect(state.raw).toBe(permissions)
         expect(state.combinations).toEqual({
-            [address0]: SUBSCRIBE,
-            foo: SUBSCRIBE + EDIT,
+            [address0]: Operation.Subscribe,
+            foo: Operation.Subscribe | Operation.Edit,
         })
         expect(state.changeset).toEqual({})
     })
@@ -56,9 +56,9 @@ describe('SET_PERMISSIONS', () => {
         const state = r(
             {
                 changeset: {
-                    [address0]: SUBSCRIBE,
-                    bar: SUBSCRIBE,
-                    foo: SUBSCRIBE + EDIT,
+                    [address0]: Operation.Subscribe,
+                    bar: Operation.Subscribe,
+                    foo: Operation.Subscribe | Operation.Edit,
                 },
             },
             {
@@ -68,11 +68,11 @@ describe('SET_PERMISSIONS', () => {
         )
         expect(state.raw).toBe(permissions)
         expect(state.combinations).toEqual({
-            [address0]: SUBSCRIBE,
-            foo: SUBSCRIBE + EDIT,
+            [address0]: Operation.Subscribe,
+            foo: Operation.Subscribe | Operation.Edit,
         })
         expect(state.changeset).toEqual({
-            bar: SUBSCRIBE,
+            bar: Operation.Subscribe,
         })
         expect({}.hasOwnProperty.call(state.changeset, 'foo')).toBe(false)
         expect({}.hasOwnProperty.call(state.changeset, address0)).toBe(false)
@@ -144,7 +144,7 @@ describe('ADD_PERMISSION', () => {
     it('does not overwrite recent changes', () => {
         const state = {
             changeset: {
-                foo: SUBSCRIBE,
+                foo: Operation.Subscribe,
             },
         }
         expect(
@@ -164,7 +164,7 @@ describe('ADD_PERMISSION', () => {
         const state = {
             changeset: {},
             combinations: {
-                FOO: SUBSCRIBE,
+                FOO: Operation.Subscribe,
             },
         }
         expect(
@@ -188,7 +188,7 @@ describe('ADD_PERMISSION', () => {
                         foo: undefined,
                     },
                     combinations: {
-                        foo: SUBSCRIBE,
+                        foo: Operation.Subscribe,
                     },
                     resourceType: 'STREAM',
                 },
@@ -201,7 +201,7 @@ describe('ADD_PERMISSION', () => {
             changeset: {},
             // changeset == combinations? abandon.
             combinations: {
-                foo: SUBSCRIBE,
+                foo: Operation.Subscribe,
             },
             resourceType: 'STREAM',
         })
@@ -212,7 +212,7 @@ describe('ADD_PERMISSION', () => {
                         foo: undefined,
                     },
                     combinations: {
-                        foo: SUBSCRIBE,
+                        foo: Operation.Subscribe,
                     },
                     resourceType: 'STREAM',
                 },
@@ -225,7 +225,7 @@ describe('ADD_PERMISSION', () => {
             changeset: {},
             // changeset == combinations? abandon.
             combinations: {
-                foo: SUBSCRIBE,
+                foo: Operation.Subscribe,
             },
             resourceType: 'STREAM',
         })
@@ -245,7 +245,7 @@ describe('ADD_PERMISSION', () => {
             ),
         ).toEqual({
             changeset: {
-                foo: SUBSCRIBE,
+                foo: Operation.Subscribe,
             },
             combinations: {},
             resourceType: 'STREAM',
@@ -297,12 +297,12 @@ describe('UPDATE_PERMISSION', () => {
                 {
                     type: UPDATE_PERMISSION,
                     user: 'foo',
-                    value: PUBLISH + EDIT,
+                    value: Operation.Publish | Operation.Edit,
                 },
             ),
         ).toEqual({
             changeset: {
-                foo: PUBLISH + EDIT,
+                foo: Operation.Publish | Operation.Edit,
             },
             combinations: {},
         })
@@ -315,12 +315,12 @@ describe('UPDATE_PERMISSION', () => {
                 {
                     type: UPDATE_PERMISSION,
                     user: 'FOO',
-                    value: PUBLISH + EDIT,
+                    value: Operation.Publish | Operation.Edit,
                 },
             ),
         ).toEqual({
             changeset: {
-                foo: PUBLISH + EDIT,
+                foo: Operation.Publish | Operation.Edit,
             },
             combinations: {},
         })
@@ -330,19 +330,19 @@ describe('UPDATE_PERMISSION', () => {
             r(
                 {
                     changeset: {
-                        foo: EDIT,
+                        foo: Operation.Edit,
                     },
                     combinations: {},
                 },
                 {
                     type: UPDATE_PERMISSION,
                     user: 'FOO',
-                    value: PUBLISH + SUBSCRIBE,
+                    value: Operation.Publish | Operation.Subscribe,
                 },
             ),
         ).toEqual({
             changeset: {
-                foo: PUBLISH + SUBSCRIBE,
+                foo: Operation.Publish | Operation.Subscribe,
             },
             combinations: {},
         })
@@ -350,19 +350,19 @@ describe('UPDATE_PERMISSION', () => {
             r(
                 {
                     changeset: {
-                        foo: EDIT,
+                        foo: Operation.Edit,
                     },
                     combinations: {},
                 },
                 {
                     type: UPDATE_PERMISSION,
                     user: 'foo',
-                    value: PUBLISH + SUBSCRIBE,
+                    value: Operation.Publish | Operation.Subscribe,
                 },
             ),
         ).toEqual({
             changeset: {
-                foo: PUBLISH + SUBSCRIBE,
+                foo: Operation.Publish | Operation.Subscribe,
             },
             combinations: {},
         })
@@ -372,19 +372,19 @@ describe('UPDATE_PERMISSION', () => {
             {
                 changeset: {},
                 combinations: {
-                    foo: PUBLISH,
+                    foo: Operation.Publish,
                 },
             },
             {
                 type: UPDATE_PERMISSION,
                 user: 'FOO',
-                value: PUBLISH,
+                value: Operation.Publish,
             },
         )
         expect(newState).toEqual({
             changeset: {},
             combinations: {
-                foo: PUBLISH,
+                foo: Operation.Publish,
             },
         })
         expect({}.hasOwnProperty.call(newState.changeset, 'foo')).toBe(false)
@@ -392,19 +392,19 @@ describe('UPDATE_PERMISSION', () => {
             {
                 changeset: {},
                 combinations: {
-                    foo: PUBLISH,
+                    foo: Operation.Publish,
                 },
             },
             {
                 type: UPDATE_PERMISSION,
                 user: 'foo',
-                value: PUBLISH,
+                value: Operation.Publish,
             },
         )
         expect(newState).toEqual({
             changeset: {},
             combinations: {
-                foo: PUBLISH,
+                foo: Operation.Publish,
             },
         })
         expect({}.hasOwnProperty.call(newState.changeset, 'foo')).toBe(false)
@@ -414,7 +414,7 @@ describe('UPDATE_PERMISSION', () => {
             let newState = r(
                 {
                     changeset: {
-                        foo: PUBLISH,
+                        foo: Operation.Publish,
                     },
                     combinations: {},
                 },
@@ -432,7 +432,7 @@ describe('UPDATE_PERMISSION', () => {
             newState = r(
                 {
                     changeset: {
-                        foo: PUBLISH,
+                        foo: Operation.Publish,
                     },
                     combinations: {},
                 },
@@ -453,7 +453,7 @@ describe('UPDATE_PERMISSION', () => {
                 {
                     changeset: {},
                     combinations: {
-                        foo: PUBLISH,
+                        foo: Operation.Publish,
                     },
                 },
                 {
@@ -467,7 +467,7 @@ describe('UPDATE_PERMISSION', () => {
                     foo: undefined,
                 },
                 combinations: {
-                    foo: PUBLISH,
+                    foo: Operation.Publish,
                 },
             })
             expect({}.hasOwnProperty.call(newState.changeset, 'foo')).toBe(true)
@@ -475,7 +475,7 @@ describe('UPDATE_PERMISSION', () => {
                 {
                     changeset: {},
                     combinations: {
-                        foo: PUBLISH,
+                        foo: Operation.Publish,
                     },
                 },
                 {
@@ -489,7 +489,7 @@ describe('UPDATE_PERMISSION', () => {
                     foo: undefined,
                 },
                 combinations: {
-                    foo: PUBLISH,
+                    foo: Operation.Publish,
                 },
             })
             expect({}.hasOwnProperty.call(newState.changeset, 'foo')).toBe(true)

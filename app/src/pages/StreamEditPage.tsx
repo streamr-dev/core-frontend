@@ -1,18 +1,14 @@
 import React from 'react'
 import { StreamPermission } from 'streamr-client'
-import Display from '$shared/components/Display'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
 import StreamPage from './StreamPage'
 import AbstractStreamPage from './AbstractStreamPage'
 import StreamModifier from './AbstractStreamEditPage/StreamModifier'
 import InfoSection from './AbstractStreamEditPage/InfoSection'
-import CodeSnippetsSection from './AbstractStreamEditPage/CodeSnippetsSection'
-import StatusSection from './AbstractStreamEditPage/StatusSection'
-import PreviewSection from './AbstractStreamEditPage/PreviewSection'
+import AccessControlSection from './AbstractStreamEditPage/AccessControlSection'
 import HistorySection from './AbstractStreamEditPage/HistorySection'
 import PartitionsSection from './AbstractStreamEditPage/PartitionsSection'
-import ConfigSection from './AbstractStreamEditPage/ConfigSection'
 
 function UnwrappedStreamEditPage() {
     const { busy } = useStreamModifierStatusContext()
@@ -22,17 +18,8 @@ function UnwrappedStreamEditPage() {
     return (
         <StreamPage title={title} loading={loading}>
             <InfoSection disabled={busy} />
-            <CodeSnippetsSection />
-            <Display $mobile="none" $desktop>
-                <ConfigSection disabled={busy} />
-            </Display>
-            <Display $mobile="none" $desktop>
-                <StatusSection disabled={busy} />
-            </Display>
-            <PreviewSection />
-            <Display $mobile="none" $desktop>
-                <HistorySection disabled={busy} />
-            </Display>
+            <AccessControlSection disabled={busy} />
+            <HistorySection disabled={busy} />
             <PartitionsSection disabled={busy} />
         </StreamPage>
     )

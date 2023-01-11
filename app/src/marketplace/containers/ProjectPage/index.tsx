@@ -43,7 +43,6 @@ const ProjectPage = () => {
             <DetailsPageHeader
                 backButtonLink={routes.marketplace.index}
                 pageTitle={pageTitle}
-                currentPageUrl={ routes.marketplace.product.overview({id: productId})}
                 linkTabs={linkTabs}
             />
             <LoadingIndicator loading={isPending} />

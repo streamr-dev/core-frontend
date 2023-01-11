@@ -60,6 +60,8 @@
     "streams": {
         "index": "/core/streams",
         "show": "/core/streams/:id",
+        "connect": "/core/streams/:id/connect",
+        "liveData": "/core/streams/:id/live-data",
         "new": "/core/streams/new",
         "preview": "/core/streams/:id/preview",
         "public": {
