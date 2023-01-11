@@ -33,6 +33,11 @@ jest.mock('$shared/components/GenericErrorPage', () => ({
     __esModule: true,
     default: () => 'Error page',
 }))
+jest.mock('$auth/utils/userAuthenticated', () => ({
+    __esModule: true,
+    userIsAuthenticated: (component) => component,
+}))
+
 
 /* eslint-enable react/prop-types */
 describe('Marketplace Routes', () => {
