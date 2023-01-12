@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import ReactSelect, { ClearIndicatorProps, components, DropdownIndicatorProps } from 'react-select'
-import { StylesConfig } from 'react-select/dist/declarations/src/styles'
+
 import {
     StyledCaretIcon,
     StyledDropdownIndicator,
@@ -31,6 +31,7 @@ type SelectFieldProps = {
     disabled?: boolean
     isClearable?: boolean
     whiteVariant?: boolean
+    noShrink?: boolean
 }
 
 const DropdownIndicator = (props: DropdownIndicatorProps) => {
@@ -61,15 +62,16 @@ const SelectField2: FunctionComponent<SelectFieldProps> = ({
     onChange,
     disabled,
     isClearable = true,
-    whiteVariant = false
+    whiteVariant = false,
+    noShrink = false
 }) => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [selected, setSelected] = useState<string>()
 
     const defaultStyles = useMemo(() => ({
-        control: (styles, props) => getControlStyles(styles, props.isFocused, isOpen, disabled),
+        control: (styles, props) => getControlStyles(styles, props.isFocused, isOpen, disabled, noShrink),
         placeholder: (styles) => getPlaceholderStyles(styles, isOpen, disabled),
-        singleValue: (styles) => getSingleValueStyles(styles, isOpen, disabled),
+        singleValue: (styles) => getSingleValueStyles(styles, isOpen, disabled, noShrink),
         menu: (styles) => getMenuStyles(styles),
         menuList: (styles) => getMenuListStyles(styles),
         option: (styles, props) => getOptionStyles(styles, props.isSelected),
@@ -78,7 +80,7 @@ const SelectField2: FunctionComponent<SelectFieldProps> = ({
 
     const whiteVariantStyles = useMemo(() => ({
         placeholder: (styles) => getWhitePlaceholderStyles(styles),
-        control: (styles, props) => getWhiteControlStyles(styles, props.isFocused, disabled),
+        control: (styles, props) => getWhiteControlStyles(styles, props.isFocused, disabled, noShrink),
         menu: (styles) => getWhiteMenuStyles(styles),
         menuList: (styles) => getWhiteMenuListStyles(styles),
         option: (styles, props) => getWhiteOptionStyles(styles, props.isSelected)
