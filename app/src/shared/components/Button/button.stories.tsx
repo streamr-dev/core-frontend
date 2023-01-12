@@ -160,6 +160,28 @@ story('Button').add('all', () => (
         </Container>
         <Container>
             <div>
+                <Button kind="transparent" size="normal" onClick={action('Clicked')}>
+                    Transparent
+                </Button>
+            </div>
+            <div>
+                <Button kind="transparent" size="normal" onClick={action('Clicked')} disabled>
+                    Transparent
+                </Button>
+            </div>
+            <div>
+                <Button tag="a" href="/" kind="transparent" size="normal" onClick={action('Clicked')}>
+                    Transparent
+                </Button>
+            </div>
+            <div>
+                <Button tag="a" href="/" kind="transparent" size="normal" onClick={action('Clicked')} disabled>
+                    Transparent
+                </Button>
+            </div>
+        </Container>
+        <Container>
+            <div>
                 <Button kind="secondary" size="mini" onClick={action('Clicked')}>
                     Secondary mini
                 </Button>

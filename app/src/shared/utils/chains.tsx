@@ -1,3 +1,7 @@
+import React from 'react'
+import { getConfigForChainByName } from '$shared/web3/config'
+import NetworkIcon from '$shared/components/NetworkIcon'
+
 // Match case with API-defined enum
 const chainNameToIdMapping = {
     ETHEREUM: 1,
@@ -30,15 +34,13 @@ export const formatChainName = (apiChainName: string): string => {
 export const getChainIdFromApiString = (name: string): number => {
     // TODO: Kind of ugly hack to map production values to development environment.
     //       This is needed because core-api uses production values in prepopulated data.
-    /*
     if (process.env.NODE_ENV === 'development') {
-        if (name === 'ETHEREUM') {
+        if (name === 'ETHEREUM' || name === 'dev0') {
             return 8995
         }
 
         return 8997
     }
-    */
 
     const found = Object.entries(chainNameToIdMapping).find((val) => val[0].toLowerCase() === name.toLowerCase())
 
@@ -53,7 +55,6 @@ export const getChainIdFromApiString = (name: string): number => {
 export const getApiStringFromChainId = (id: number): string => {
     // TODO: Kind of ugly hack to map production values to development environment.
     //       This is needed because core-api uses production values in prepopulated data.
-    /*
     if (process.env.NODE_ENV === 'development') {
         if (id === 8995) {
             return 'ETHEREUM'
@@ -61,7 +62,6 @@ export const getApiStringFromChainId = (id: number): string => {
 
         return 'XDAI'
     }
-    */
 
     const found = Object.entries(chainNameToIdMapping).find((val) => val[1] === id)
 
@@ -72,3 +72,22 @@ export const getApiStringFromChainId = (id: number): string => {
 
     throw Error(`Unknown chain id ${id}`)
 }
+// TODO: Would be nice to have this in @streamr/config package
+export const configChainNameMapping = {
+    dev0: 'Docker mainchain',
+    dev1: 'Docker sidechain',
+    ethereum: 'Ethereum',
+    gnosis: 'Gnosis',
+    binance: 'Binance Smart Chain',
+    polygon: 'Polygon',
+}
+export const getChainOptions = (chains: Array<string>) =>
+    chains.map((c) => {
+        const config = getConfigForChainByName(c)
+        const chainId = config.id
+        return {
+            id: chainId,
+            name: configChainNameMapping[c],
+            icon: <NetworkIcon chainId={chainId}/>,
+        }
+    })

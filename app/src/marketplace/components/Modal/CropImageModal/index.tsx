@@ -79,7 +79,7 @@ const CropImageModal = ({ imageUrl, onClose, onSave: onSaveProp }: Props) => {
                         className={styles.editor}
                         image={imageUrl}
                         width={540}
-                        height={340}
+                        height={540}
                         border={[0, 0]}
                         borderRadius={0}
                         color={[255, 255, 255, 0.6]} // RGBA

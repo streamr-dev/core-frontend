@@ -1,10 +1,10 @@
 import React from 'react'
 import cx from 'classnames'
-import DetailsContainer from '$shared/components/Container/Details'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import { projectStates } from '$shared/utils/constants'
 import { projectTypes } from '$mp/utils/constants'
+import { ProjectPageContainer } from '$shared/components/ProjectPage'
 import EditorNav from './EditorNav'
 import ProductName from './ProductName'
 import CoverImage from './CoverImage'
@@ -26,7 +26,12 @@ type Props = {
     disabled?: boolean
 }
 
-const Editor = ({ disabled }: Props) => {
+/**
+ * @deprecated
+ * @param disabled
+ * @constructor
+ */
+const ProductEditor = ({ disabled }: Props) => {
     const { state: product } = useEditableState()
     const isDataUnion = isDataUnionProduct(product)
     const isPaid = isPaidProduct(product)
@@ -35,7 +40,7 @@ const Editor = ({ disabled }: Props) => {
         (product.type === projectTypes.DATAUNION && product.beneficiaryAddress != null)
     return (
         <div className={cx(styles.root, styles.Editor)}>
-            <DetailsContainer className={styles.container}>
+            <ProjectPageContainer>
                 <div className={styles.grid}>
                     <div className={styles.nav}>
                         <EditorNav />
@@ -70,9 +75,9 @@ const Editor = ({ disabled }: Props) => {
                         {!!isDataUnion && <SharedSecrets disabled={disabled} />}
                     </div>
                 </div>
-            </DetailsContainer>
+            </ProjectPageContainer>
         </div>
     )
 }
 
-export default Editor
+export default ProductEditor

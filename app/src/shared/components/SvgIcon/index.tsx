@@ -890,6 +890,27 @@ const sources = {
             />
         </svg>
     ),
+    ellipse: (<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="2"/>
+    </svg>
+    ),
+    email: (<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clipPath="url(#clip0_1889_4457)">
+            <g clipPath="url(#clip1_1889_4457)">
+                <circle cx="8" cy="8" r="8" fill="currentColor"/>
+                <path d="M3.33203 5.5013C3.33203 5.28029 3.43036 5.06833 3.6054 4.91205C3.78043 4.75577 4.01783 4.66797 4.26536 4.66797H11.732C11.9796 4.66797 12.217 4.75577 12.392 4.91205C12.567 5.06833 12.6654 5.28029 12.6654 5.5013V10.5013C12.6654 10.7223 12.567 10.9343 12.392 11.0906C12.217 11.2468 11.9796 11.3346 11.732 11.3346H4.26536C4.01783 11.3346 3.78043 11.2468 3.6054 11.0906C3.43036 10.9343 3.33203 10.7223 3.33203 10.5013V5.5013ZM4.97423 5.5013L7.9987 7.86422L11.0232 5.5013H4.9747H4.97423ZM11.732 6.05505L8.30623 8.73172C8.22113 8.79829 8.11184 8.83499 7.9987 8.83499C7.88555 8.83499 7.77626 8.79829 7.69116 8.73172L4.26536 6.05505V10.5013H11.732V6.05505Z" fill="white"/>
+            </g>
+        </g>
+        <defs>
+            <clipPath id="clip0_1889_4457">
+                <rect width="16" height="16" fill="white"/>
+            </clipPath>
+            <clipPath id="clip1_1889_4457">
+                <rect width="16" height="16" fill="white"/>
+            </clipPath>
+        </defs>
+    </svg>
+    ),
     github: <SocialIcons.GitHub />,
     medium: <SocialIcons.Medium />,
     peepeth: <SocialIcons.Peepeth />,

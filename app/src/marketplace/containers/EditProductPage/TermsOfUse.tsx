@@ -77,6 +77,12 @@ const CheckboxContainer = styled.div`
     }
 `
 
+/**
+ * @deprecated
+ * @param className
+ * @param disabled
+ * @constructor
+ */
 const TermsOfUse = ({ className, disabled }: Props) => {
     const { state: product } = useEditableState()
     const { updateTermsOfUse } = useEditableProductActions()

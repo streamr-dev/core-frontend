@@ -23,7 +23,7 @@ import useProductPermissions from '../ProductController/useProductPermissions'
 import ProductController, { useController } from '../ProductController'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
-import Editor from './Editor'
+import ProductEditor from './ProductEditor'
 import Preview from './Preview'
 import ConfirmSaveModal from './ConfirmSaveModal'
 import DeployDataUnionModal from './DeployDataUnionModal'
@@ -209,7 +209,7 @@ const EditProductPage = ({ product }: { product: Project }) => {
         >
             <CoreHelmet title={product.name} />
             {isPreview && <Preview />}
-            {!isPreview && <Editor disabled={isDisabled} />}
+            {!isPreview && <ProductEditor disabled={isDisabled} />}
             <ConfirmSaveModal />
             <DeployDataUnionModal />
             <PublishModal />

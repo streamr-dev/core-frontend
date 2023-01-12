@@ -36,7 +36,7 @@ const Tick = styled.div<{checked: boolean}>`
 `
 
 const noop = () => {}
-type CheckboxProps = {value: boolean, onChange?: (e: ChangeEvent<HTMLInputElement>) => void, disabled?: boolean}
+type CheckboxProps = {value: boolean, onChange?: (e: ChangeEvent<HTMLInputElement>) => void, disabled?: boolean, id?: string, name?: string}
 const UnstyledCheckbox: FunctionComponent<CheckboxProps> = ({ value, onChange = noop, ...props }) => (
     <Tick {...props} as="input" type="checkbox" checked={!!value} onChange={onChange} />
 )

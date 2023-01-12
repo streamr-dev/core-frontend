@@ -19,6 +19,10 @@ type SocialLinks = {
     social3?: string
     social4?: string
 }
+
+/**
+ * @deprecated
+ */
 export function useEditableProductActions() {
     const { updateState: commit } = useEditableState()
     const { undo } = useContext(UndoContext)
@@ -37,7 +41,7 @@ export function useEditableProductActions() {
         [commit, setTouched],
     )
     const updateDescription = useCallback(
-        (description: $ElementType<Project, 'description'>) => {
+        (description: string) => {
             commit('Update description', (p: Project) => ({ ...p, description }))
             setTouched('description')
         },

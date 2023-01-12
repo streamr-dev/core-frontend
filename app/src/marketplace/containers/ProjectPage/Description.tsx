@@ -10,45 +10,45 @@ import PaymentRate from '$mp/components/PaymentRate'
 import { formatChainName, getChainIdFromApiString } from '$shared/utils/chains'
 import { timeUnits } from '$shared/utils/constants'
 import { usePurchaseProject } from '$shared/hooks/usePurchaseProject'
+import { WhiteBox } from '$shared/components/WhiteBox'
 import routes from '$routes'
 
 const Description: FunctionComponent<{project: Project}> = ({project}) => {
     const onPurchase = usePurchaseProject()
-    return <DescriptionContainer>
-        <p>
-            <span>The streams in this {projectTypeNames[project.type]}
-                {project.isFree ? ' are public and ' : ''} can be accessed for&nbsp;
-            </span>
+    return <WhiteBox>
+        <DescriptionContainer>
+            <p>
+                <span>The streams in this {projectTypeNames[project.type]}
+                    {project.isFree ? ' are public and ' : ''} can be accessed for&nbsp;
+                </span>
 
-            <strong>
-                {project.isFree ? 'free' :
-                    <PaymentRate
-                        amount={new BN(project.pricePerSecond)}
-                        chainId={getChainIdFromApiString(project.chain)}
-                        pricingTokenAddress={project.pricingTokenAddress}
-                        timeUnit={timeUnits.hour}
-                        tag={'span'}
-                    />
+                <strong>
+                    {project.isFree ? 'free' :
+                        <PaymentRate
+                            amount={new BN(project.pricePerSecond)}
+                            chainId={getChainIdFromApiString(project.chain)}
+                            pricingTokenAddress={project.pricingTokenAddress}
+                            timeUnit={timeUnits.hour}
+                            tag={'span'}
+                        />
+                    }
+                </strong>
+                {!project.isFree && <>
+                    <span> on </span>
+                    <strong>{formatChainName(project.chain)}</strong>
+                </>
                 }
-            </strong>
-            {!project.isFree && <>
-                <span> on </span>
-                <strong>{formatChainName(project.chain)}</strong>
-            </>
-            }
-        </p>
-        {project.isFree && <Button tag={Link} to={routes.marketplace.product.connect({id: project.id})}>Connect</Button>}
-        {!project.isFree && <Button onClick={onPurchase}>Get Access</Button>}
-    </DescriptionContainer>
+            </p>
+            {project.isFree &&
+                <Button tag={Link} to={routes.marketplace.product.connect({id: project.id})}>Connect</Button>}
+            {!project.isFree && <Button onClick={onPurchase}>Get Access</Button>}
+        </DescriptionContainer>
+    </WhiteBox>
 }
 
 export default Description
 
 const DescriptionContainer = styled.div`
-  margin-top: 24px;
-  padding: 30px 24px;
-  background-color: white;
-  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -73,10 +73,5 @@ const DescriptionContainer = styled.div`
   
   @media(${TABLET}) {
     flex-direction: row;
-    padding: 45px 40px;
-  }
-  
-  @media(${DESKTOP}) {
-    padding: 30px 55px;
   }
 `

@@ -14,6 +14,7 @@ import { projectTypeNames } from '$mp/utils/constants'
 import PaymentRate from '$mp/components/PaymentRate'
 import { formatChainName, getChainIdFromApiString } from '$shared/utils/chains'
 import { timeUnits } from '$shared/utils/constants'
+import { WhiteBox } from '$shared/components/WhiteBox'
 import { SelectedStreamContext } from '../SelectedStreamContext/SelectedStreamContext'
 
 export const Connect: FunctionComponent = () => {
@@ -55,16 +56,7 @@ export const Connect: FunctionComponent = () => {
     </ProjectPage>
 }
 
-const StreamConnectContainer = styled.div`
-  background-color: white;
-  border-radius: 16px;
-  padding: 24px;
-  @media(${TABLET}) {
-    padding: 40px;
-  }
-  @media(${DESKTOP}) {
-    padding: 52px;
-  }
+const StreamConnectContainer = styled(WhiteBox)`
   > * {
     max-width: 696px;
   }

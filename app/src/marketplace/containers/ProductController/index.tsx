@@ -19,7 +19,7 @@ import useResetDataUnionCallback from './useResetDataUnionCallback'
 import useController, { ProductControllerContext } from './useController'
 export { useController }
 
-type UseProductLoadEffectParams = {ignoreUnauthorized: boolean, requirePublished: boolean, useAuthorization: boolean};
+type UseProductLoadEffectParams = {ignoreUnauthorized?: boolean, requirePublished?: boolean, useAuthorization?: boolean};
 function useProductLoadEffect({ ignoreUnauthorized, requirePublished, useAuthorization }: UseProductLoadEffectParams) {
     const [loadedOnce, setLoadedOnce] = useState(false)
     const loadProduct = useProductLoadCallback()

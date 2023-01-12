@@ -14,6 +14,9 @@ function updater(fn) {
     }
 }
 
+/**
+ * @deprecated
+ */
 export default function useEditableState() {
     const { state, push, replace } = useContext(UndoContext)
     const updateState = useOnlyIfMountedCallback(

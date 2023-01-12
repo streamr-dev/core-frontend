@@ -15,6 +15,12 @@ type Props = {
     disabled?: boolean
 }
 
+/**
+ * @deprecated
+ * @todo - to be deleted after implementing Hub designs
+ * @param disabled
+ * @constructor
+ */
 const CoverImage = ({ disabled }: Props) => {
     const { state: product } = useEditableState()
     const { updateImageFile } = useEditableProductActions()

@@ -1,5 +1,6 @@
-import React, { FunctionComponent, useEffect, useState } from 'react'
+import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import ReactSelect, { ClearIndicatorProps, components, DropdownIndicatorProps } from 'react-select'
+import { StylesConfig } from 'react-select/dist/declarations/src/styles'
 import {
     StyledCaretIcon,
     StyledDropdownIndicator,
@@ -10,7 +11,14 @@ import {
     getOptionStyles,
     getPlaceholderStyles,
     getSingleValueStyles,
-    getClearIndicatorStyles, StyledCloseIcon,
+    getClearIndicatorStyles,
+    StyledCloseIcon,
+    getWhiteControlStyles,
+    getWhitePlaceholderStyles,
+    getWhiteMenuStyles,
+    getWhiteMenuListStyles,
+    getWhiteOptionStyles,
+    StyledWhiteDropdownOption,
 } from './selectField2.styles'
 
 type Option = {label: string, value: string}
@@ -22,6 +30,7 @@ type SelectFieldProps = {
     value?: string,
     disabled?: boolean
     isClearable?: boolean
+    whiteVariant?: boolean
 }
 
 const DropdownIndicator = (props: DropdownIndicatorProps) => {
@@ -51,10 +60,29 @@ const SelectField2: FunctionComponent<SelectFieldProps> = ({
     value,
     onChange,
     disabled,
-    isClearable = true
+    isClearable = true,
+    whiteVariant = false
 }) => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [selected, setSelected] = useState<string>()
+
+    const defaultStyles = useMemo(() => ({
+        control: (styles, props) => getControlStyles(styles, props.isFocused, isOpen, disabled),
+        placeholder: (styles) => getPlaceholderStyles(styles, isOpen, disabled),
+        singleValue: (styles) => getSingleValueStyles(styles, isOpen, disabled),
+        menu: (styles) => getMenuStyles(styles),
+        menuList: (styles) => getMenuListStyles(styles),
+        option: (styles, props) => getOptionStyles(styles, props.isSelected),
+        clearIndicator: (styles) => getClearIndicatorStyles(styles, isOpen)
+    }), [])
+
+    const whiteVariantStyles = useMemo(() => ({
+        placeholder: (styles) => getWhitePlaceholderStyles(styles),
+        control: (styles, props) => getWhiteControlStyles(styles, props.isFocused, disabled),
+        menu: (styles) => getWhiteMenuStyles(styles),
+        menuList: (styles) => getWhiteMenuListStyles(styles),
+        option: (styles, props) => getWhiteOptionStyles(styles, props.isSelected)
+    }), [])
 
     useEffect(() => {
         setSelected(value)
@@ -82,19 +110,11 @@ const SelectField2: FunctionComponent<SelectFieldProps> = ({
                 DropdownIndicator,
                 ClearIndicator,
                 IndicatorSeparator: () => (<></>),
-                Option: StyledOption
+                Option: whiteVariant ? StyledWhiteDropdownOption : StyledOption
             }}
             value={selected ? options.find((option) => option.value === selected): null}
             onChange={(option: Option | null) => handleChange(option)}
-            styles={{
-                control: (styles, props) => getControlStyles(styles, props.isFocused, isOpen, disabled),
-                placeholder: (styles) => getPlaceholderStyles(styles, isOpen, disabled),
-                singleValue: (styles) => getSingleValueStyles(styles, isOpen, disabled),
-                menu: (styles) => getMenuStyles(styles),
-                menuList: (styles) => getMenuListStyles(styles),
-                option: (styles, props) => getOptionStyles(styles, props.isSelected),
-                clearIndicator: (styles) => getClearIndicatorStyles(styles, isOpen)
-            }}
+            styles={whiteVariant ? whiteVariantStyles : defaultStyles}
         />
     </>
 }
