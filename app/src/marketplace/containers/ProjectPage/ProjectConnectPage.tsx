@@ -11,7 +11,6 @@ import { MarketplaceLoadingView } from '$mp/containers/ProjectPage/MarketplaceLo
 import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import { Connect } from '$mp/containers/ProjectPage/Connect'
-import { SelectedStreamContext } from '$mp/containers/SelectedStreamContext/SelectedStreamContext'
 import { useLoadAdditionalProductData } from '$shared/hooks/useLoadAdditionalProductData'
 import { getProjectDetailsLinkTabs, getProjectTitle } from './utils'
 
@@ -27,25 +26,22 @@ const ProjectConnect: FunctionComponent = () => {
     const { isPending } = usePending('contractProduct.LOAD')
     const { id: productId } = useParams<{id: string}>()
     const linkTabs = useMemo(() => getProjectDetailsLinkTabs(productId), [productId])
-    const [selectedStream, setSelectedStream] = useState<string>(product.streams[0])
     useLoadAdditionalProductData()
 
     const PageTitle = useMemo<ReactNode>(() => {
         return <PageTitleText>{getProjectTitle(product)}</PageTitleText>
     }, [product])
 
-    return <SelectedStreamContext.Provider value={selectedStream}>
-        <Layout nav={<Nav/>}>
-            <MarketplaceHelmet title={product.name}/>
-            <DetailsPageHeader
-                pageTitle={PageTitle}
-                linkTabs={linkTabs}
-            />
-            <LoadingIndicator loading={isPending}/>
-            <Connect/>
-            <PurchaseModal/>
-        </Layout>
-    </SelectedStreamContext.Provider>
+    return <Layout nav={<Nav/>}>
+        <MarketplaceHelmet title={product.name}/>
+        <DetailsPageHeader
+            pageTitle={PageTitle}
+            linkTabs={linkTabs}
+        />
+        <LoadingIndicator loading={isPending}/>
+        <Connect/>
+        <PurchaseModal/>
+    </Layout>
 }
 
 const ProjectConnectPageWrap = () => {

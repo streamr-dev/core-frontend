@@ -66,11 +66,16 @@ pub.send({
 })`
     }, [])
     const websocketSubscribe = useMemo(() => {
-        return `// TODO add snippet`
+        return `// Connect to the Websocket plugin on your Streamr 
+// node and subscribe to a stream of messages
+const sub = ws.connect(\`ws://my-streamr-node:7170/streams/${streamId}/subscribe\`)
+sub.onmessage = (msg) => {
+    // Handle incoming messages
+}`
     }, [])
     const websocketSnippet = useMemo<string>(() => {
         return websocketSnippetHeader + (action === 'publish' ? websocketPublish : websocketSubscribe)
-    }, [websocketSnippetHeader, websocketPublish, action])
+    }, [websocketSnippetHeader, websocketPublish, websocketSubscribe, action])
 
     const httpSnippet = useMemo(() => {
         if (action === 'subscribe') {
@@ -88,17 +93,32 @@ http.post(\`http://my-streamr-node:7171/streams/\${streamId}\`, {
 })`
     }, [streamId, action])
 
-    const mqttSnippet = useMemo(() => {
+    const mqttSnippetHeader = useMemo(() => {
         return `// Use your favourite language and MQTT library!
 
 // Connect to MQTT plugin on your Streamr node
 mqtt.connect('mqtt://my-streamr-node')
 
-// Publish a message to a stream
+`
+    }, [])
+
+    const mqttPublish = useMemo(() => {
+        return `// Publish a message to a stream
 mqtt.publish('${streamId}', {
     hello: 'world',
 })`
     }, [streamId])
+
+    const mqttSubscribe = useMemo(() => {
+        return `// Subscribe to a stream of messages
+mqtt.subscribe('${streamId}', (msg) => {
+    // Handle incoming messages
+})`
+    }, [streamId])
+
+    const mqttSnippet = useMemo(() => {
+        return mqttSnippetHeader + (action === 'publish' ? mqttPublish : mqttSubscribe)
+    }, [mqttSnippetHeader, mqttPublish, mqttSubscribe, action])
 
     const handleCopy = (snippet: string): void => {
         copy(snippet)
