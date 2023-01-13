@@ -8,7 +8,16 @@ import TransactionNotification from './TransactionNotification'
 import BasicNotification from './BasicNotification'
 import styles from './notificationStyles'
 type System = {
-    addNotification: (arg0: any) => void
+    addNotification: (notificationParams: {
+        uid: number,
+        title: string,
+        message: string,
+        autoDismiss: number,
+        position: string,
+        level: string,
+        onRemove: () => void,
+        children: ReactNode
+    }) => void
     clearNotifications: () => void
     state: {
         notifications: Array<any>
@@ -25,7 +34,11 @@ const getNotificationComponent = (notification: Notification): ReactNode =>
     notification.txHash ? (
         <TransactionNotification txHash={notification.txHash} />
     ) : (
-        <BasicNotification title={notification.title || ''} icon={notification.icon} />
+        <BasicNotification
+            title={notification.title || ''}
+            icon={notification.icon}
+            description={notification.description || ''}
+        />
     )
 
 class Notifications extends React.Component<Props, State> {
@@ -50,7 +63,10 @@ class Notifications extends React.Component<Props, State> {
     }
 
     showNotification = (notification: Notification): void => {
-        const system: System | null | undefined = this.system.current
+        const system: System | null | undefined = this.system.current as System
+        console.log(
+            'notif', notification
+        )
 
         if (system) {
             // react-notification-system recognizes existing entries
