@@ -10,6 +10,7 @@ import { NotificationIcon } from '$shared/utils/constants'
 import SelectField2 from '$mp/components/SelectField2'
 import { useController } from '$mp/containers/ProductController'
 import { StreamId } from '$shared/types/stream-types'
+import { textShortener } from '$shared/utils/text-shortener'
 
 export const StreamConnect: FunctionComponent = () => {
 
@@ -142,7 +143,7 @@ mqtt.subscribe('${streamId}', (msg) => {
     }, [currentProtocol])
 
     return <div className={'row'}>
-        <div className={'col-md-7'}>
+        <div className={'col-lg-7'}>
             <StreamConnectHeader>Connect</StreamConnectHeader>
             <StreamConnectText>
                 Applications publish and subscribe to streams via Streamr nodes.
@@ -174,7 +175,7 @@ mqtt.subscribe('${streamId}', (msg) => {
                     noShrink={true}/>
                 <span>to</span>
                 <SelectField2 placeholder={''}
-                    options={product?.streams.map((streamId) => ({value: streamId, label: streamId}))}
+                    options={product?.streams.map((streamId) => ({value: streamId, label: textShortener(streamId, 6, 6)}))}
                     value={streamId}
                     isClearable={false}
                     onChange={(streamId) => {
@@ -217,7 +218,7 @@ mqtt.subscribe('${streamId}', (msg) => {
                 </StreamConnectSnippetCopyContainer>
             </BrokerNodeSnippetContainer>}
         </div>
-        <RightColumn className={'col-md-4 offset-md-1'}>
+        <RightColumn className={'col-lg-4 offset-lg-1'}>
             {/*<StreamConnectLink href={'/'}>
             <span>Pattern of data integration</span>
             <SvgIcon name={'linkOut'} />
