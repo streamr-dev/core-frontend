@@ -6,16 +6,12 @@ import Layout from '$shared/components/Layout'
 import ProductController, { useController } from '$mp/containers/ProductController'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import usePending from '$shared/hooks/usePending'
-import SelectField2 from '$mp/components/SelectField2'
 import PurchaseModal from '$mp/containers/ProjectPage/PurchaseModal'
 import { MarketplaceLoadingView } from '$mp/containers/ProjectPage/MarketplaceLoadingView'
 import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import { Connect } from '$mp/containers/ProjectPage/Connect'
-import { SelectedStreamContext } from '$mp/containers/SelectedStreamContext/SelectedStreamContext'
 import { useLoadAdditionalProductData } from '$shared/hooks/useLoadAdditionalProductData'
-import { useUserHasAccessToProject } from '$mp/containers/ProductController/useUserHasAccessToProject'
-import routes from '$routes'
 import { getProjectDetailsLinkTabs, getProjectTitle } from './utils'
 
 const PageTitleText = styled.p`
@@ -30,36 +26,22 @@ const ProjectConnect: FunctionComponent = () => {
     const { isPending } = usePending('contractProduct.LOAD')
     const { id: productId } = useParams<{id: string}>()
     const linkTabs = useMemo(() => getProjectDetailsLinkTabs(productId), [productId])
-    const [selectedStream, setSelectedStream] = useState<string>(product.streams[0])
-    const userHasAccess: boolean = useUserHasAccessToProject()
     useLoadAdditionalProductData()
 
     const PageTitle = useMemo<ReactNode>(() => {
-        return <div>
-            {userHasAccess &&
-                <SelectField2 placeholder={''}
-                    options={product?.streams.map((streamId) => ({value: streamId, label: streamId}))}
-                    value={product?.streams[0]}
-                    isClearable={false}
-                    onChange={(streamId) => {
-                        setSelectedStream(streamId)
-                    }}/>}
-            <PageTitleText>{getProjectTitle(product)}</PageTitleText>
-        </div>
+        return <PageTitleText>{getProjectTitle(product)}</PageTitleText>
     }, [product])
 
-    return <SelectedStreamContext.Provider value={selectedStream}>
-        <Layout nav={<Nav/>}>
-            <MarketplaceHelmet title={product.name}/>
-            <DetailsPageHeader
-                pageTitle={PageTitle}
-                linkTabs={linkTabs}
-            />
-            <LoadingIndicator loading={isPending}/>
-            <Connect/>
-            <PurchaseModal/>
-        </Layout>
-    </SelectedStreamContext.Provider>
+    return <Layout nav={<Nav/>}>
+        <MarketplaceHelmet title={product.name}/>
+        <DetailsPageHeader
+            pageTitle={PageTitle}
+            linkTabs={linkTabs}
+        />
+        <LoadingIndicator loading={isPending}/>
+        <Connect/>
+        <PurchaseModal/>
+    </Layout>
 }
 
 const ProjectConnectPageWrap = () => {

@@ -9,7 +9,6 @@ export enum Operation {
     Interact    = 1 << 6,
     Grant       = 1 << 7,
 }
-
 export const getOperationNames = (): Array<string> => {
     return Object.keys(Operation).filter((key) => !isNaN(Number(Operation[key])) && Operation[key] !== Operation.None)
 }

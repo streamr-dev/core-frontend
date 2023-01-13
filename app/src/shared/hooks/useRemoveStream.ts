@@ -6,7 +6,7 @@ import { networks } from '$shared/utils/constants'
 import useRequireNetwork from '$shared/hooks/useRequireNetwork'
 import useFetchPermission from '$shared/hooks/useFetchPermission'
 import formatAssignments from '$shared/components/PermissionsProvider/utils/formatAssignments'
-import { NONE } from '$shared/components/PermissionsProvider/operations'
+import { Operation } from '$shared/components/PermissionsProvider/operations'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import getClientAddress from '$app/src/getters/getClientAddress'
 export default function useRemoveStream() {
@@ -52,7 +52,7 @@ export default function useRemoveStream() {
                 await client.setPermissions({
                     streamId,
                     assignments: formatAssignments({
-                        [user]: NONE,
+                        [user]: Operation.None,
                     }),
                 })
             }

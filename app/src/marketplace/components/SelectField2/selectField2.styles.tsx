@@ -65,7 +65,7 @@ export const StyledOption = styled(components.Option)`
     }}
 `
 
-export const getControlStyles = (styles: CSSObjectWithLabel, isFocused: boolean, isOpen: boolean, isDisabled: boolean): CSSObjectWithLabel => {
+export const getControlStyles = (styles: CSSObjectWithLabel, isFocused: boolean, isOpen: boolean, isDisabled: boolean, noShrink: boolean): CSSObjectWithLabel => {
     const styleObject: CSSObjectWithLabel = {
         ...styles,
         backgroundColor: COLORS.secondary,
@@ -86,6 +86,9 @@ export const getControlStyles = (styles: CSSObjectWithLabel, isFocused: boolean,
     }
     if (isDisabled) {
         styleObject.cursor = 'not-allowed'
+    }
+    if (noShrink) {
+        styleObject.flexWrap = 'nowrap'
     }
     return styleObject
 }
@@ -112,7 +115,7 @@ export const getPlaceholderStyles = (styles: CSSObjectWithLabel, isOpen: boolean
     return styleObject
 }
 
-export const getSingleValueStyles = (styles: CSSObjectWithLabel, isOpen: boolean, isDisabled: boolean): CSSObjectWithLabel => {
+export const getSingleValueStyles = (styles: CSSObjectWithLabel, isOpen: boolean, isDisabled: boolean, noShrink: boolean): CSSObjectWithLabel => {
     const styleObject: CSSObjectWithLabel = {
         ...styles,
         position: 'relative',
@@ -130,6 +133,9 @@ export const getSingleValueStyles = (styles: CSSObjectWithLabel, isOpen: boolean
     }
     if (isDisabled) {
         styleObject.color = COLORS.disabled
+    }
+    if (noShrink) {
+        styleObject.overflow = 'unset'
     }
     return styleObject
 }
@@ -219,7 +225,7 @@ export const getWhitePlaceholderStyles = (styles: CSSObjectWithLabel): CSSObject
     }
 }
 
-export const getWhiteControlStyles = (styles: CSSObjectWithLabel, isFocused: boolean, isDisabled: boolean): CSSObjectWithLabel => {
+export const getWhiteControlStyles = (styles: CSSObjectWithLabel, isFocused: boolean, isDisabled: boolean, noShrink: boolean): CSSObjectWithLabel => {
     const styleObject: CSSObjectWithLabel = {
         ...styles,
         fontSize: '14px',
@@ -235,6 +241,9 @@ export const getWhiteControlStyles = (styles: CSSObjectWithLabel, isFocused: boo
         styleObject.cursor = 'not-allowed'
         styleObject.border = `1px solid ${COLORS.separator}`
         styleObject.backgroundColor = 'white'
+    }
+    if (noShrink) {
+        styleObject.flexWrap = 'nowrap'
     }
     return styleObject
 }

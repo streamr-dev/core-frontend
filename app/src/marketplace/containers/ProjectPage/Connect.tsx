@@ -1,10 +1,10 @@
-import React, { FunctionComponent, useContext } from 'react'
+import React, { FunctionComponent } from 'react'
 import styled from 'styled-components'
 import BN from 'bignumber.js'
 import ProjectPage, { ProjectPageContainer, RelatedProductsContainer } from '$shared/components/ProjectPage'
 import { StreamConnect } from '$shared/components/StreamConnect'
 import { useUserHasAccessToProject } from '$mp/containers/ProductController/useUserHasAccessToProject'
-import { DESKTOP, MEDIUM, TABLET } from '$shared/utils/styled'
+import { MEDIUM } from '$shared/utils/styled'
 import ProjectPng from '$shared/assets/images/project.png'
 import { useController } from '$mp/containers/ProductController'
 import Button from '$shared/components/Button'
@@ -15,20 +15,18 @@ import PaymentRate from '$mp/components/PaymentRate'
 import { formatChainName, getChainIdFromApiString } from '$shared/utils/chains'
 import { timeUnits } from '$shared/utils/constants'
 import { WhiteBox } from '$shared/components/WhiteBox'
-import { SelectedStreamContext } from '../SelectedStreamContext/SelectedStreamContext'
 
 export const Connect: FunctionComponent = () => {
     const onPurchase = usePurchaseProject()
     const {product} = useController()
-    const streamId: string = useContext(SelectedStreamContext)
     const userHasAccess: boolean = useUserHasAccessToProject()
     return <ProjectPage>
         <ProjectPageContainer>
             {
                 userHasAccess
-                    ? <StreamConnectContainer>
-                        <StreamConnect streamId={streamId} />
-                    </StreamConnectContainer>
+                    ? <WhiteBox>
+                        <StreamConnect />
+                    </WhiteBox>
                     : <GetAccessContainer>
                         <img src={ProjectPng}/>
                         <h1>Get access to {product.name}</h1>
@@ -55,13 +53,6 @@ export const Connect: FunctionComponent = () => {
         </ProjectPageContainer>
     </ProjectPage>
 }
-
-const StreamConnectContainer = styled(WhiteBox)`
-  > * {
-    max-width: 696px;
-  }
-  
-`
 
 const GetAccessContainer = styled.div`
   display: flex;
