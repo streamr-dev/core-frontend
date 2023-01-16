@@ -4,9 +4,9 @@ import { pricePerSecondFromTimeUnit } from '$mp/utils/price'
 import { timeUnits } from '$shared/utils/constants'
 import type { Project, ContactDetails } from '$mp/types/project-types'
 import type { StreamIdList } from '$shared/types/stream-types'
+import { ValidationContext2 } from '$mp/containers/ProductController/ValidationContextProvider2'
 import { NumberString, TimeUnit } from '$shared/types/common-types'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
-import { Context as ValidationContext } from './ValidationContextProvider'
 
 const getPricePerSecond = (isFree: boolean, price: NumberString, timeUnit: TimeUnit, decimals: BN) =>
     isFree ? new BN(0) : pricePerSecondFromTimeUnit(new BN(price || 0), timeUnit || timeUnits.hour, decimals)
@@ -40,7 +40,7 @@ export type EditableProjectActions = {
 }
 export const useEditableProjectActions = (): EditableProjectActions => {
     const {state, updateState} = useContext(ProjectStateContext)
-    const { setTouched } = useContext(ValidationContext)
+    const { setTouched } = useContext(ValidationContext2)
     const updateProject = useCallback<EditableProjectActions['updateProject']>(
         (project: Partial<Project>) => {
             updateState(project)

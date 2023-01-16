@@ -1,38 +1,31 @@
 import React, { useMemo, useCallback, useState, FunctionComponent, ReactNode } from 'react'
-import get from 'lodash/get'
-import set from 'lodash/fp/set'
-import isPlainObject from 'lodash/isPlainObject'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { validate as validateProduct } from '$mp/utils/product'
+import { RecursiveKeyOf } from '$utils/recursiveKeyOf'
 import { Project } from '$mp/types/project-types'
-import { isPublished, getPendingChanges, PENDING_CHANGE_FIELDS } from '../EditProductPage/state'
-import useController from '../ProductController/useController'
-export const INFO = 'info'
-export const WARNING = 'warning'
-export const ERROR = 'error'
+import { isPublished, getPendingChanges } from '../EditProductPage/state'
 
-export type Level = 'info' | 'warning' | 'error'
+export enum SeverityLevel {
+    INFO = 'info',
+    WARNING = 'warning',
+    ERROR = 'error'
+}
 
-export type ValidationContextProps = {
-    setStatus: (param1: string, param2: Level, param3: string) => void,
-    clearStatus: (param: string) => void,
+export type ValidationContext2Props = {
+    setStatus: (name: RecursiveKeyOf<Project>, severity: SeverityLevel, message: string) => void,
+    clearStatus: (name: RecursiveKeyOf<Project>) => void,
     status: object,
-    isValid: (param: string) => boolean,
-    validate: (param: object) => void,
-    touched: object,
-    setTouched: (param1: string, param2?: boolean) => void,
-    isTouched: (param: string) => boolean,
+    isValid: (fieldName: RecursiveKeyOf<Project>) => boolean,
+    validate: (project: Project) => void,
+    touched: Partial<Record<RecursiveKeyOf<Project>, string>>,
+    setTouched: (fieldName: RecursiveKeyOf<Project>, isTouched?: boolean) => void,
+    isTouched: (fieldName: RecursiveKeyOf<Project>) => boolean,
     isAnyTouched: () => boolean,
     resetTouched: () => void,
-    pendingChanges: object,
-    isPendingChange: (param: string) => boolean,
-    isAnyChangePending: () => boolean,
 }
-const ValidationContext = React.createContext<ValidationContextProps>({} as ValidationContextProps)
+export const ValidationContext2 = React.createContext<ValidationContext2Props>({} as ValidationContext2Props)
 
-const isEqual = (a: object, b: object) => JSON.stringify(a) === JSON.stringify(b)
-
-const validationErrors: Record<string, string> = {
+const validationErrors: Partial<Record<RecursiveKeyOf<Project>, string>> = {
     name: 'Product name cannot be empty',
     description: 'Product description cannot be empty',
     chain: 'No chain selected',
@@ -50,17 +43,12 @@ const validationErrors: Record<string, string> = {
     'contact.social3': 'Invalid URL',
     'contact.social4': 'Invalid URL',
     'contact.email': 'Email address is required',
+
 }
 
-// TODO add typing
-/**
- * @deprecated
- */
-function useValidationContext(): ValidationContextProps {
-    const [status, setStatusState] = useState<any>({})
-    const [pendingChanges, setPendingChanges] = useState({})
+function useValidationContext2(): ValidationContext2Props {
+    const [status, setStatusState] = useState<Partial<Record<RecursiveKeyOf<Project>, {level: SeverityLevel, message: string}>>>({})
     const [touched, setTouchedState] = useState<Record<string, boolean>>({})
-    const { product: originalProduct } = useController()
     const setTouched = useCallback(
         (name: string, value = true) => {
             setTouchedState((existing) => ({ ...existing, [name]: !!value }))
@@ -71,35 +59,7 @@ function useValidationContext(): ValidationContextProps {
     const isAnyTouched = useCallback(() => Object.values(touched).some(Boolean), [touched])
     const resetTouched = useCallback(() => setTouchedState({}), [])
     const isMounted = useIsMounted()
-    const setPendingChange = useCallback(
-        (name: string, isPending = true) => {
-            if (!isMounted()) {
-                return
-            }
 
-            if (!name) {
-                throw new Error('pending change needs a name')
-            }
-
-            setPendingChanges((state) => set(name, isPending, state))
-        },
-        [setPendingChanges, isMounted],
-    )
-    const isPendingChange = useCallback((name: string) => !!get(pendingChanges, name), [pendingChanges])
-    const isAnyChangePending = useCallback(
-        () =>
-            // flatten nested values
-            Object.values(pendingChanges)
-                .reduce<any[]>(
-                    (result: any[], value) => [
-                        ...result, // $FlowFixMe value is in fact an object
-                        ...(isPlainObject(value) ? Object.values(value) : [value]),
-                    ],
-                    [],
-                )
-                .some(Boolean),
-        [pendingChanges],
-    )
     const setStatus = useCallback(
         (name: string, level: string, message: string) => {
             if (!isMounted()) {
@@ -121,7 +81,7 @@ function useValidationContext(): ValidationContextProps {
         [setStatusState, isMounted],
     )
     const clearStatus = useCallback(
-        (name: string) => {
+        (name: RecursiveKeyOf<Project>) => {
             if (!isMounted()) {
                 return
             }
@@ -142,9 +102,9 @@ function useValidationContext(): ValidationContextProps {
             }
 
             const invalidFields = validateProduct(product)
-            Object.keys(validationErrors).forEach((field) => {
+            Object.keys(validationErrors).forEach((field: RecursiveKeyOf<Project>) => {
                 if (invalidFields[field]) {
-                    setStatus(field, ERROR, validationErrors[field])
+                    setStatus(field, SeverityLevel.ERROR, validationErrors[field])
                 } else {
                     clearStatus(field)
                 }
@@ -153,17 +113,10 @@ function useValidationContext(): ValidationContextProps {
             // we made a change that is different from the loaded product
             const changes = getPendingChanges(product)
             const isPublic = isPublished(product)
-            PENDING_CHANGE_FIELDS.forEach((field) => {
-                setPendingChange(
-                    field,
-                    get(changes, field) != null ||
-                        (isPublic && isTouched(field) && !isEqual(get(product, field), get(originalProduct, field))),
-                )
-            })
         },
-        [setStatus, clearStatus, isMounted, setPendingChange, isTouched, originalProduct],
+        [setStatus, clearStatus, isMounted, isTouched],
     )
-    return useMemo(
+    return useMemo<ValidationContext2Props>(
         () => ({
             setStatus,
             clearStatus,
@@ -173,9 +126,6 @@ function useValidationContext(): ValidationContextProps {
             isTouched,
             isAnyTouched,
             resetTouched,
-            pendingChanges,
-            isPendingChange,
-            isAnyChangePending,
             status,
             validate,
         }),
@@ -188,17 +138,13 @@ function useValidationContext(): ValidationContextProps {
             isTouched,
             isAnyTouched,
             resetTouched,
-            pendingChanges,
-            isPendingChange,
-            isAnyChangePending,
             clearStatus,
             validate,
         ],
     )
 }
 
-const ValidationContextProvider: FunctionComponent<{children?: ReactNode | ReactNode[] }> = ({ children }) =>{
-    return <ValidationContext.Provider value={useValidationContext()}>{children || null}</ValidationContext.Provider>
+export const ValidationContext2Provider: FunctionComponent<{children?: ReactNode | ReactNode[] }> = ({ children }) =>{
+    return <ValidationContext2.Provider value={useValidationContext2()}>{children || null}</ValidationContext2.Provider>
 }
 
-export { ValidationContextProvider as Provider, ValidationContext as Context }

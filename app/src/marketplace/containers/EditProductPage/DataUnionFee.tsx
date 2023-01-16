@@ -4,6 +4,8 @@ import { COLORS, MAX_CONTENT_WIDTH } from '$shared/utils/styled'
 import Text from '$ui/Text'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
+import useValidation2 from '$mp/containers/ProductController/useValidation2'
+import { SeverityLevel } from '$mp/containers/ProductController/ValidationContextProvider2'
 
 const Heading = styled.p`
   font-size: 20px;
@@ -62,6 +64,16 @@ export const DataUnionFee: FunctionComponent<{disabled?: boolean}> = ({disabled 
 
     const {state: project} = useContext(ProjectStateContext)
     const {updateAdminFee} = useEditableProjectActions()
+    const {setStatus, isValid, clearStatus} = useValidation2('adminFee')
+
+    const handleUpdate = (value: string): void => {
+        updateAdminFee(value)
+        if (Number(value) < 0) {
+            setStatus(SeverityLevel.ERROR, 'Data Union admin fee cannot be negative')
+        } else {
+            clearStatus()
+        }
+    }
 
     return <>
         <Heading>Data Union admin fee</Heading>
@@ -74,8 +86,9 @@ export const DataUnionFee: FunctionComponent<{disabled?: boolean}> = ({disabled 
                     value={project.adminFee || ''}
                     disabled={disabled || !project.chain}
                     onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                        updateAdminFee(event.target.value)
+                        handleUpdate(event.target.value)
                     }}
+                    invalid={!isValid}
                 />
                 <span className={'percent-symbol'}>%</span>
             </AdminFeeInputWrap>

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FunctionComponent, useCallback, useContext } from 'react'
+import React, { ChangeEvent, FunctionComponent, useCallback, useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { COLORS, MAX_CONTENT_WIDTH } from '$shared/utils/styled'
 import WithInputActions from '$shared/components/WithInputActions'
@@ -11,6 +11,9 @@ import { NotificationIcon } from '$shared/utils/constants'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { truncate } from '$shared/utils/text'
+import { isEthereumAddress } from '$mp/utils/validate'
+import useValidation2 from '$mp/containers/ProductController/useValidation2'
+import { SeverityLevel } from '$mp/containers/ProductController/ValidationContextProvider2'
 
 const Heading = styled.p`
   font-size: 20px;
@@ -70,6 +73,8 @@ export const BeneficiaryAddress2: FunctionComponent<{disabled?: boolean}> = ({di
     const {updateBeneficiaryAddress} = useEditableProjectActions()
     const { copy } = useCopy()
     const accountAddress = useAccountAddress()
+    const {setStatus, clearStatus, isValid} = useValidation2('beneficiaryAddress')
+    const [defaultValueWasSet, setDefaultValueWasSet] = useState(false)
     const onCopy = useCallback(() => {
         if (!project.beneficiaryAddress) {
             return
@@ -81,6 +86,24 @@ export const BeneficiaryAddress2: FunctionComponent<{disabled?: boolean}> = ({di
             icon: NotificationIcon.CHECKMARK,
         })
     }, [copy, project.beneficiaryAddress])
+
+    useEffect(() => {
+        if (!defaultValueWasSet && project.chain && !project.beneficiaryAddress) {
+            updateBeneficiaryAddress(accountAddress)
+            setDefaultValueWasSet(true)
+        }
+    }, [accountAddress, project])
+
+    const handleUpdate = (value: string): void => {
+        console.log('updateee', value)
+        updateBeneficiaryAddress(value)
+        const isValid = isEthereumAddress(value)
+        if (isValid) {
+            clearStatus()
+        } else {
+            setStatus(SeverityLevel.ERROR, 'Provided wallet address is invalid')
+        }
+    }
 
     return <>
         <Heading>Set beneficiary</Heading>
@@ -105,10 +128,11 @@ export const BeneficiaryAddress2: FunctionComponent<{disabled?: boolean}> = ({di
                     autoComplete="off"
                     value={project.beneficiaryAddress || ''}
                     onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                        updateBeneficiaryAddress(event.target.value)
+                        handleUpdate(event.target.value)
                     }}
                     placeholder={'i.e. 0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1'}
                     disabled={disabled  || !project.chain}
+                    invalid={!isValid}
                     selectAllOnFocus
                 />
             </WithInputActions>

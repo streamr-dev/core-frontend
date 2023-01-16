@@ -5,7 +5,8 @@ import isEqual from 'lodash/isEqual'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { projectStates } from '$shared/utils/constants'
 import type { Project, PendingChanges } from '$mp/types/project-types'
-export const PENDING_CHANGE_FIELDS = [
+import { RecursiveKeyOf } from '$utils/recursiveKeyOf'
+export const PENDING_CHANGE_FIELDS: RecursiveKeyOf<Project>[] = [
     'name',
     'description',
     'imageUrl',

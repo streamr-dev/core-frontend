@@ -1,8 +1,5 @@
 import React, { useContext, useCallback, useEffect } from 'react'
-import cx from 'classnames'
-import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import docsLinks from '$shared/../docsLinks'
 import ImageUpload from '$shared/components/ImageUpload'
 import Errors from '$ui/Errors'
 import useModal from '$shared/hooks/useModal'
@@ -11,9 +8,9 @@ import { COLORS, LAPTOP } from '$shared/utils/styled'
 import { ProjectHeroImageStyles } from '$mp/containers/ProjectPage/Hero/ProjectHero2.styles'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
-import useValidation from '../ProductController/useValidation'
+import useValidation2 from '../ProductController/useValidation2'
 import { Context as EditControllerContext } from './EditControllerProvider'
-import styles from './coverImage.pcss'
+
 type Props = {
     disabled?: boolean
 }
@@ -66,7 +63,7 @@ const Container = styled.div`
 export const CoverImage2 = ({ disabled }: Props) => {
     const { state: product } = useContext(ProjectStateContext)
     const { updateImageFile } = useEditableProjectActions()
-    const { isValid, message } = useValidation('imageUrl')
+    const { isValid, message } = useValidation2('imageUrl')
     const { api: cropImageDialog, isOpen } = useModal('cropImage')
     const { preview, createPreview } = useFilePreview()
     const { publishAttempted } = useContext(EditControllerContext)
