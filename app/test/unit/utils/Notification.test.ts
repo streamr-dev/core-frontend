@@ -23,7 +23,7 @@ describe(Notification, () => {
         expect(new Notification({}).autoDismissAfter).toBeGreaterThan(0)
         expect(
             new Notification({
-                autoDismiss: true,
+                autoDismiss: 1000,
             }).autoDismissAfter,
         ).toBeGreaterThan(0)
         expect(

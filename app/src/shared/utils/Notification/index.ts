@@ -8,7 +8,7 @@ type Params = {
     description?: string | null | undefined
     txHash?: Hash | null | undefined
     icon?: Icon | null | undefined
-    autoDismiss?: boolean
+    autoDismiss?: number | false
 }
 const emitter = new EventEmitter()
 const events = {
