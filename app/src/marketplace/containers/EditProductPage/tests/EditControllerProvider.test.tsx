@@ -108,7 +108,7 @@ describe('EditControllerProvider', () => {
                 result = await currentContext.validate()
             })
             expect(result).toBe(false)
-            expect(notificationStub).toHaveBeenCalledTimes(5)
+            expect(notificationStub).toHaveBeenCalledTimes(4)
         })
         it('notifies if product fields are missing', async () => {
             let currentContext
@@ -557,7 +557,7 @@ describe('EditControllerProvider', () => {
                 await currentContext.publish()
             })
             expect(currentContext.publishAttempted).toBe(true)
-            expect(notificationStub).toHaveBeenCalledTimes(5)
+            expect(notificationStub).toHaveBeenCalledTimes(4)
             expect(location.pathname).toBe('/core/products/1/edit')
         })
         it('does not redirect if publish fails', async () => {
@@ -1125,7 +1125,7 @@ describe('EditControllerProvider', () => {
                 await currentContext.deployDataUnion()
             })
             expect(currentContext.publishAttempted).toBe(true)
-            expect(notificationStub).toHaveBeenCalledTimes(5)
+            expect(notificationStub).toHaveBeenCalledTimes(4)
             expect(location.pathname).toBe('/core/products/1/edit')
         })
         it('does not redirect if deploy fails', async () => {
