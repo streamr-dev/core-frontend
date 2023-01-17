@@ -6,7 +6,7 @@ import Label from '$ui/Label'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
-import useValidation from '../ProductController/useValidation'
+import useValidation2 from '../ProductController/useValidation2'
 
 type Props = {
     className?: string
@@ -101,7 +101,7 @@ const CheckboxLabel = styled.label`
 export const TermsOfUse2: FunctionComponent<Props> = ({ className, disabled }: Props) => {
     const { state: project } = useContext(ProjectStateContext)
     const { updateTermsOfUse } = useEditableProjectActions()
-    const { isValid, message } = useValidation('termsOfUse')
+    const { isValid, message } = useValidation2('termsOfUse')
     return (
         <Section id="terms" className={className}>
             <Title>Set terms of use</Title>

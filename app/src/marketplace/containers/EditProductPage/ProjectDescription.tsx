@@ -6,8 +6,7 @@ import { COLORS } from '$shared/utils/styled'
 import { ProjectHeroDescriptionStyles } from '$mp/containers/ProjectPage/Hero/ProjectHero2.styles'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
-import useValidation from '../ProductController/useValidation'
-import { Context as EditControllerContext } from './EditControllerProvider'
+import useValidation2 from '../ProductController/useValidation2'
 type Props = {
     disabled?: boolean
 }
@@ -36,7 +35,7 @@ const ProjectDescription = ({ disabled }: Props) => {
     const { state: product } = useContext(ProjectStateContext)
     // TODO Check if its needed
     // const { publishAttempted } = useContext(EditControllerContext)
-    const { isValid, message } = useValidation('description')
+    const { isValid, message } = useValidation2('description')
     const { updateDescription } = useEditableProjectActions()
     return (
         <DescriptionEditor readOnly={disabled}

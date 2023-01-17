@@ -1,7 +1,7 @@
 import React, { ReactNode, useContext, useEffect, useMemo } from 'react'
 import BN from 'bignumber.js'
 import type { Location } from 'react-router-dom'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { useSelector } from 'react-redux'
 import qs from 'query-string'
@@ -17,9 +17,9 @@ import { EditorNav2 } from '$mp/containers/EditProductPage/EditorNav2'
 import { ProjectStateContext, ProjectStateContextProvider } from '$mp/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 import {
-    Context as ValidationContext,
-    Provider as ValidationContextProvider
-} from '$mp/containers/ProductController/ValidationContextProvider'
+    ValidationContext2,
+    ValidationContext2Provider
+} from '$mp/containers/ProductController/ValidationContextProvider2'
 import { ProjectEditor } from '$mp/containers/EditProductPage/ProjectEditor'
 import styles from '$shared/components/Layout/layout.pcss'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
@@ -37,6 +37,7 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
     const history = useHistory()
     const isMounted = useIsMounted()
     const fail = useFailure()
+    const location = useLocation()
     const {state: project} = useContext(ProjectStateContext)
     const { dataUnionAddress, chainId } = useNewProductMode() // TODO check if it's still needed
     const currentUser = useSelector(selectUserData)
@@ -44,7 +45,7 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
     const typeString = (type != null && typeof type === "string") ? type : type[0]
     const sanitized = sanitizedType(typeString)
     const {updateType, updateIsFree} = useEditableProjectActions()
-    const { isAnyTouched, resetTouched, status } = useContext(ValidationContext)
+    const { isAnyTouched, resetTouched, status } = useContext(ValidationContext2)
     usePreventNavigatingAway('You have unsaved changes', isAnyTouched)
     useEffect(() => {
         if (!!sanitized) {
@@ -74,7 +75,7 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
     const linkTabs = useMemo(() => [
         {
             label: 'Project Overview',
-            href: window.location.href,
+            href: location.pathname,
             disabled: false,
         }, {
             label: 'Connect',
@@ -84,13 +85,12 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
             label: 'Live Data',
             href: '',
             disabled: true,
-        }], [])
+        }], [location])
 
     return <Layout nav={<EditorNav2/>} innerClassName={styles.greyInner}>
         <MarketplaceHelmet title={'Create a new project'}/>
         <DetailsPageHeader
             pageTitle={pageTitle}
-            currentPageUrl={window.location.href}
             linkTabs={linkTabs}
         />
         <ProjectEditor/>
@@ -104,10 +104,10 @@ const StyledNewProductPage = styled(UnstyledNewProductPage)`
 `
 
 const NewProjectPageContainer = (props: Props) => {
-    return <ValidationContextProvider>
+    return <ValidationContext2Provider>
         <ProjectStateContextProvider>
             <StyledNewProductPage {...props}/>
         </ProjectStateContextProvider>
-    </ValidationContextProvider>
+    </ValidationContext2Provider>
 }
 export default NewProjectPageContainer

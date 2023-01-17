@@ -1,36 +1,7 @@
 import React, { useContext } from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
-import useController from '../useController'
-import { Provider as ValidationContextProvider, Context as ValidationContext } from '../ValidationContextProvider'
-jest.mock('../useController', () => ({
-    __esModule: true,
-    default: jest.fn(),
-}))
-const mockState = {
-    dataUnion: {
-        id: 'dataUnionId',
-    },
-    entities: {
-        dataUnions: {
-            dataUnionId: {
-                id: 'dataUnionId',
-            },
-        },
-        dataUnionStats: {
-            dataUnionId: {
-                id: 'dataUnionId',
-                memberCount: {
-                    active: 0,
-                },
-            },
-        },
-    },
-}
-jest.mock('react-redux', () => ({
-    useSelector: jest.fn().mockImplementation((selectorFn) => selectorFn(mockState)),
-    useDispatch: jest.fn(),
-}))
+import { ValidationContext2Provider, ValidationContext2 } from '../ValidationContextProvider2'
 describe('validation context', () => {
     afterEach(() => {
         jest.clearAllMocks()
@@ -40,44 +11,31 @@ describe('validation context', () => {
         let currentContext
 
         function Test() {
-            currentContext = useContext(ValidationContext)
+            currentContext = useContext(ValidationContext2)
             return null
         }
 
-        (useController as any).mockImplementation((): any => ({
-            product: {
-                id: '1',
-            },
-        }))
         mount(
-            <ValidationContextProvider>
+            <ValidationContext2Provider>
                 <Test />
-            </ValidationContextProvider>,
+            </ValidationContext2Provider>,
         )
         expect(currentContext.status).toStrictEqual({})
-        expect(currentContext.pendingChanges).toStrictEqual({})
         expect(currentContext.touched).toStrictEqual({})
     })
     describe('touched fields', () => {
-        beforeEach(() => {
-            (useController as any).mockImplementation(() => ({
-                product: {
-                    id: '1',
-                },
-            }))
-        })
         it('marks a field as touched with touch()', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             expect(currentContext.touched).toStrictEqual({})
             act(() => {
@@ -91,14 +49,14 @@ describe('validation context', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             expect(currentContext.touched).toStrictEqual({})
             act(() => {
@@ -111,14 +69,14 @@ describe('validation context', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             expect(currentContext.isAnyTouched()).toBe(false)
             act(() => {
@@ -130,14 +88,14 @@ describe('validation context', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             expect(currentContext.isAnyTouched()).toBe(false)
             act(() => {
@@ -152,25 +110,18 @@ describe('validation context', () => {
         })
     })
     describe('status', () => {
-        beforeEach(() => {
-            (useController as any).mockImplementation(() => ({
-                product: {
-                    id: '1',
-                },
-            }))
-        })
         it('sets field error status with setStatus()', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             expect(currentContext.status).toStrictEqual({})
             act(() => {
@@ -187,14 +138,14 @@ describe('validation context', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             act(() => {
                 try {
@@ -208,14 +159,14 @@ describe('validation context', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             const result = mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             act(() => {
                 result.unmount()
@@ -227,14 +178,14 @@ describe('validation context', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             expect(currentContext.status).toStrictEqual({})
             act(() => {
@@ -247,14 +198,14 @@ describe('validation context', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             act(() => {
                 try {
@@ -268,14 +219,14 @@ describe('validation context', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             const result = mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             act(() => {
                 currentContext.setStatus('myField', 'info', 'message')
@@ -295,14 +246,14 @@ describe('validation context', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             expect(currentContext.status).toStrictEqual({})
             act(() => {
@@ -316,25 +267,18 @@ describe('validation context', () => {
         })
     })
     describe('validate', () => {
-        beforeEach(() => {
-            (useController as any).mockImplementation(() => ({
-                product: {
-                    id: '1',
-                },
-            }))
-        })
         it('does nothing if product is null', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             expect(currentContext.status).toStrictEqual({})
             act(() => {
@@ -346,14 +290,14 @@ describe('validation context', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             const result = mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             expect(currentContext.status).toStrictEqual({})
             act(() => {
@@ -368,14 +312,14 @@ describe('validation context', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             act(() => {
                 currentContext.validate({
@@ -395,14 +339,14 @@ describe('validation context', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             act(() => {
                 currentContext.validate({
@@ -422,14 +366,14 @@ describe('validation context', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             act(() => {
                 currentContext.validate({
@@ -449,14 +393,14 @@ describe('validation context', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             act(() => {
                 currentContext.validate({
@@ -472,18 +416,18 @@ describe('validation context', () => {
             expect(currentContext.isValid('beneficiaryAddress')).toBe(true)
             expect(currentContext.isValid('adminFee')).toBe(false)
         })
-        it('validates name & description ', () => {
+        it('validates name & description', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             act(() => {
                 currentContext.validate({
@@ -506,14 +450,14 @@ describe('validation context', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             act(() => {
                 currentContext.validate({
@@ -541,14 +485,14 @@ describe('validation context', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             act(() => {
                 currentContext.validate({
@@ -568,14 +512,14 @@ describe('validation context', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             act(() => {
                 currentContext.validate({
@@ -619,14 +563,14 @@ describe('validation context', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             act(() => {
                 currentContext.validate({
@@ -658,14 +602,14 @@ describe('validation context', () => {
             let currentContext
 
             function Test() {
-                currentContext = useContext(ValidationContext)
+                currentContext = useContext(ValidationContext2)
                 return null
             }
 
             mount(
-                <ValidationContextProvider>
+                <ValidationContext2Provider>
                     <Test />
-                </ValidationContextProvider>,
+                </ValidationContext2Provider>,
             )
             act(() => {
                 currentContext.validate({
@@ -692,206 +636,6 @@ describe('validation context', () => {
                 })
             })
             expect(currentContext.isValid('pricePerSecond')).toBe(true)
-        })
-    })
-    describe('pending changes', () => {
-        it('marks untouched fields as pending if there were previously saved pending changes', () => {
-            let currentContext
-
-            function Test() {
-                currentContext = useContext(ValidationContext)
-                return null
-            }
-
-            const product = {
-                id: '1',
-                name: 'Name',
-                description: 'Description',
-                streams: ['1', '3'],
-                state: 'DEPLOYED',
-                pendingChanges: {
-                    name: 'New Name',
-                    description: 'New Description',
-                    streams: ['2', '3', '4'],
-                },
-            };
-            (useController as any).mockImplementation(() => ({
-                product,
-            }))
-            mount(
-                <ValidationContextProvider>
-                    <Test />
-                </ValidationContextProvider>,
-            )
-            expect(currentContext.isAnyChangePending()).toBe(false)
-            act(() => {
-                currentContext.validate(product)
-            })
-            expect(currentContext.isAnyChangePending()).toBe(true)
-            expect(currentContext.isPendingChange('name')).toBe(true)
-            expect(currentContext.isPendingChange('description')).toBe(true)
-            expect(currentContext.isPendingChange('streams')).toBe(true)
-        })
-        it('marks fields as pending for published products if touched & different from original product', () => {
-            let currentContext
-
-            function Test() {
-                currentContext = useContext(ValidationContext)
-                return null
-            }
-
-            (useController as any).mockImplementation(() => ({
-                product: {
-                    id: '1',
-                    name: 'Name',
-                    description: 'Description',
-                    streams: ['1', '3']
-                },
-            }))
-            mount(
-                <ValidationContextProvider>
-                    <Test />
-                </ValidationContextProvider>,
-            )
-            expect(currentContext.isAnyChangePending()).toBe(false)
-            act(() => {
-                currentContext.setTouched('name')
-                currentContext.setTouched('description')
-                currentContext.setTouched('streams')
-            })
-            act(() => {
-                currentContext.validate({
-                    type: 'NORMAL',
-                    name: 'New Name',
-                    description: 'New Description',
-                    streams: ['2', '3', '4'],
-                    state: 'DEPLOYED',
-                })
-            })
-            expect(currentContext.isAnyChangePending()).toBe(true)
-            expect(currentContext.isPendingChange('name')).toBe(true)
-            expect(currentContext.isPendingChange('description')).toBe(true)
-            expect(currentContext.isPendingChange('streams')).toBe(true)
-        })
-        it('marks the cover image as pending for published product if new image is uploaded', () => {
-            let currentContext
-
-            function Test() {
-                currentContext = useContext(ValidationContext)
-                return null
-            }
-
-            (useController as any).mockImplementation(() => ({
-                product: {
-                    id: '1',
-                    name: 'Name',
-                    description: 'Description',
-                    streams: ['1', '3'],
-                    imageUrl: 'http://...',
-                },
-            }))
-            mount(
-                <ValidationContextProvider>
-                    <Test />
-                </ValidationContextProvider>,
-            )
-            expect(currentContext.isAnyChangePending()).toBe(false)
-            act(() => {
-                currentContext.setTouched('imageUrl')
-            })
-            act(() => {
-                currentContext.validate({
-                    type: 'NORMAL',
-                    name: 'New Name',
-                    description: 'New Description',
-                    streams: ['2', '3', '4'],
-                    newImageToUpload: new File([''], 'filename'),
-                    state: 'DEPLOYED',
-                })
-            })
-            expect(currentContext.isAnyChangePending()).toBe(true)
-            expect(currentContext.isPendingChange('imageUrl')).toBe(true)
-        })
-        it('does not mark a field as pending for published products if touched but not different from original product', () => {
-            let currentContext
-
-            function Test() {
-                currentContext = useContext(ValidationContext)
-                return null
-            }
-
-            (useController as any).mockImplementation(() => ({
-                product: {
-                    id: '1',
-                    name: 'Name',
-                    description: 'Description',
-                    streams: ['1', '3'],
-                },
-            }))
-            mount(
-                <ValidationContextProvider>
-                    <Test />
-                </ValidationContextProvider>,
-            )
-            expect(currentContext.isAnyChangePending()).toBe(false)
-            act(() => {
-                currentContext.setTouched('name')
-                currentContext.setTouched('description')
-                currentContext.setTouched('streams')
-            })
-            act(() => {
-                currentContext.validate({
-                    type: 'NORMAL',
-                    name: 'Name',
-                    description: 'Description',
-                    streams: ['1', '3'],
-                    state: 'DEPLOYED',
-                })
-            })
-            expect(currentContext.isAnyChangePending()).toBe(false)
-            expect(currentContext.isPendingChange('name')).toBe(false)
-            expect(currentContext.isPendingChange('description')).toBe(false)
-            expect(currentContext.isPendingChange('streams')).toBe(false)
-        })
-        it('ignores pending fields for unpublished product', () => {
-            let currentContext
-
-            function Test() {
-                currentContext = useContext(ValidationContext)
-                return null
-            }
-
-            (useController as any).mockImplementation(() => ({
-                product: {
-                    id: '1',
-                    name: 'Name',
-                    description: 'Description',
-                    streams: ['1', '3'],
-                },
-            }))
-            mount(
-                <ValidationContextProvider>
-                    <Test />
-                </ValidationContextProvider>,
-            )
-            expect(currentContext.isAnyChangePending()).toBe(false)
-            act(() => {
-                currentContext.setTouched('name')
-                currentContext.setTouched('description')
-                currentContext.setTouched('streams')
-            })
-            act(() => {
-                currentContext.validate({
-                    type: 'NORMAL',
-                    name: 'New Name',
-                    description: 'New Description',
-                    streams: ['2', '3', '4'],
-                })
-            })
-            expect(currentContext.isAnyChangePending()).toBe(false)
-            expect(currentContext.isPendingChange('name')).toBe(false)
-            expect(currentContext.isPendingChange('description')).toBe(false)
-            expect(currentContext.isPendingChange('streams')).toBe(false)
         })
     })
 })

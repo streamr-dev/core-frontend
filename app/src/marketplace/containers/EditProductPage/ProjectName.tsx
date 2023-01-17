@@ -5,7 +5,7 @@ import EnhancedText from '$ui/Text'
 import { COLORS } from '$shared/utils/styled'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
-import useValidation from '../ProductController/useValidation'
+import useValidation2 from '../ProductController/useValidation2'
 import { Context as EditControllerContext } from './EditControllerProvider'
 type Props = {
     disabled?: boolean
@@ -31,7 +31,7 @@ const ProjectNameInput = styled(EnhancedText)`
 
 const ProjectName = ({ disabled }: Props) => {
     const { state: product } = useContext(ProjectStateContext)
-    const { isValid, message } = useValidation('name')
+    const { isValid, message } = useValidation2('name')
     const { updateName } = useEditableProjectActions()
     const { publishAttempted } = useContext(EditControllerContext)
     const invalid = publishAttempted && !isValid

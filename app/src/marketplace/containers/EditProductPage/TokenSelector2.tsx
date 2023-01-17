@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo, FunctionComponent, useRef, useCallback } from 'react'
+import React, { FunctionComponent, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import BN from 'bignumber.js'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -12,8 +12,12 @@ import { Radio } from '$shared/components/Radio'
 import Text from '$ui/Text'
 import Button from '$shared/components/Button'
 import SelectField2 from '$mp/components/SelectField2'
-import { timeUnits } from '$shared/utils/constants'
+import { NotificationIcon, timeUnits } from '$shared/utils/constants'
 import { TimeUnit } from '$shared/types/common-types'
+import useValidation2 from '$mp/containers/ProductController/useValidation2'
+import { SeverityLevel } from '$mp/containers/ProductController/ValidationContextProvider2'
+import Notification from '$shared/utils/Notification'
+
 type Props = {
     disabled?: boolean
 }
@@ -144,13 +148,13 @@ const TokenSelector2: FunctionComponent<Props> = ({ disabled }) => {
     const [customTokenAddress, setCustomTokenAddress] = useState<string>('')
     const [selectedTokenAddress, setSelectedTokenAddress] = useState<string>(null)
     const [tokenSymbol, setTokenSymbol] = useState(null)
-    const [error, setError] = useState(null)
     const [tokenDecimals, setTokenDecimals] = useState(18)
     const [isEditable, setIsEditable] = useState<boolean>(false)
     const chainId = useMemo(() => {
         return project.chain ? getChainIdFromApiString(project.chain) : undefined
     }, [project.chain])
     const { pricingTokenAddress } = project
+    const {setStatus, clearStatus, isValid} = useValidation2('pricingTokenAddress')
 
     // Set default value to DATA
     useEffect(() => {
@@ -183,12 +187,16 @@ const TokenSelector2: FunctionComponent<Props> = ({ disabled }) => {
                 }
 
                 if (info) {
-                    setError(null)
+                    clearStatus()
                     setTokenSymbol(info.symbol)
                     setTokenDecimals(info.decimals)
                 } else {
-                    // TODO: trigger a toast notification with error
-                    setError('This is not an ERC-20 token contract')
+                    Notification.push({
+                        title: 'Invalid token contract address',
+                        description: 'This is not an ERC-20 token contract',
+                        icon: NotificationIcon.ERROR
+                    })
+                    setStatus(SeverityLevel.ERROR, 'This is not an ERC-20 token contract')
                     setTokenSymbol(null)
                     setTokenDecimals(null)
                     updatePricingToken('', new BN(tokenDecimals || 18))
@@ -290,6 +298,7 @@ const TokenSelector2: FunctionComponent<Props> = ({ disabled }) => {
                             onChange={(e) => setCustomTokenAddress(e.target.value)}
                             selectAllOnFocus
                             smartCommit
+                            invalid={!isValid}
                         />
                         <SetTokenContainer>
                             <Button

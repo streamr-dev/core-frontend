@@ -103,9 +103,9 @@ export const getValidId = (id: string, prefix = true): string => {
 const urlValidator = yup.string().trim().url()
 const emailValidator = yup.string().trim().email()
 
-export const validate = (product: Project): Record<string, any> => {
-    const invalidFields: {[key: string]: any}= {}
-    ;['name', 'description', 'category'].forEach((field) => {
+export const validate = (product: Project): Record<string, boolean> => {
+    const invalidFields: {[key: string]: boolean}= {}
+    ;['name', 'description'].forEach((field) => {
         invalidFields[field] = !product[field as keyof Project]
     })
     invalidFields.imageUrl = !product.imageUrl && !product.newImageToUpload
@@ -141,7 +141,7 @@ export const validate = (product: Project): Record<string, any> => {
 
         if (product.contact.email && product.contact.email.length > 0) {
             const result = emailValidator.isValidSync(product.contact.email)
-            invalidFields['contact.email'] = !result && product.contact.email
+            invalidFields['contact.email'] = !result && !!product.contact.email
         } else {
             invalidFields['contact.email'] = false
         }
