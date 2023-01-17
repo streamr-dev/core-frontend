@@ -385,7 +385,6 @@ describe('validation context', () => {
             })
             expect(currentContext.isValid('name')).toBe(false)
             expect(currentContext.isValid('description')).toBe(false)
-            expect(currentContext.isValid('category')).toBe(false)
             expect(currentContext.isValid('imageUrl')).toBe(false)
             expect(currentContext.isValid('streams')).toBe(false)
             expect(currentContext.isValid('pricePerSecond')).toBe(true)
@@ -413,7 +412,6 @@ describe('validation context', () => {
             })
             expect(currentContext.isValid('name')).toBe(false)
             expect(currentContext.isValid('description')).toBe(false)
-            expect(currentContext.isValid('category')).toBe(false)
             expect(currentContext.isValid('imageUrl')).toBe(false)
             expect(currentContext.isValid('streams')).toBe(false)
             expect(currentContext.isValid('pricePerSecond')).toBe(true)
@@ -441,7 +439,6 @@ describe('validation context', () => {
             })
             expect(currentContext.isValid('name')).toBe(false)
             expect(currentContext.isValid('description')).toBe(false)
-            expect(currentContext.isValid('category')).toBe(false)
             expect(currentContext.isValid('imageUrl')).toBe(false)
             expect(currentContext.isValid('streams')).toBe(false)
             expect(currentContext.isValid('pricePerSecond')).toBe(false)
@@ -469,14 +466,13 @@ describe('validation context', () => {
             })
             expect(currentContext.isValid('name')).toBe(false)
             expect(currentContext.isValid('description')).toBe(false)
-            expect(currentContext.isValid('category')).toBe(false)
             expect(currentContext.isValid('imageUrl')).toBe(false)
             expect(currentContext.isValid('streams')).toBe(false)
             expect(currentContext.isValid('pricePerSecond')).toBe(false)
             expect(currentContext.isValid('beneficiaryAddress')).toBe(true)
             expect(currentContext.isValid('adminFee')).toBe(false)
         })
-        it('validates name, description & category', () => {
+        it('validates name & description ', () => {
             let currentContext
 
             function Test() {
@@ -496,18 +492,15 @@ describe('validation context', () => {
             })
             expect(currentContext.isValid('name')).toBe(false)
             expect(currentContext.isValid('description')).toBe(false)
-            expect(currentContext.isValid('category')).toBe(false)
             act(() => {
                 currentContext.validate({
                     type: 'NORMAL',
                     name: 'new name',
                     description: 'new description',
-                    category: 'new category',
                 })
             })
             expect(currentContext.isValid('name')).toBe(true)
             expect(currentContext.isValid('description')).toBe(true)
-            expect(currentContext.isValid('category')).toBe(true)
         })
         it('validates image', () => {
             let currentContext
@@ -715,7 +708,6 @@ describe('validation context', () => {
                 name: 'Name',
                 description: 'Description',
                 streams: ['1', '3'],
-                category: 'category',
                 state: 'DEPLOYED',
                 pendingChanges: {
                     name: 'New Name',
@@ -738,7 +730,6 @@ describe('validation context', () => {
             expect(currentContext.isAnyChangePending()).toBe(true)
             expect(currentContext.isPendingChange('name')).toBe(true)
             expect(currentContext.isPendingChange('description')).toBe(true)
-            expect(currentContext.isPendingChange('category')).toBe(false)
             expect(currentContext.isPendingChange('streams')).toBe(true)
         })
         it('marks fields as pending for published products if touched & different from original product', () => {
@@ -754,8 +745,7 @@ describe('validation context', () => {
                     id: '1',
                     name: 'Name',
                     description: 'Description',
-                    streams: ['1', '3'],
-                    category: 'category',
+                    streams: ['1', '3']
                 },
             }))
             mount(
@@ -774,7 +764,6 @@ describe('validation context', () => {
                     type: 'NORMAL',
                     name: 'New Name',
                     description: 'New Description',
-                    category: 'category',
                     streams: ['2', '3', '4'],
                     state: 'DEPLOYED',
                 })
@@ -782,7 +771,6 @@ describe('validation context', () => {
             expect(currentContext.isAnyChangePending()).toBe(true)
             expect(currentContext.isPendingChange('name')).toBe(true)
             expect(currentContext.isPendingChange('description')).toBe(true)
-            expect(currentContext.isPendingChange('category')).toBe(false)
             expect(currentContext.isPendingChange('streams')).toBe(true)
         })
         it('marks the cover image as pending for published product if new image is uploaded', () => {
@@ -799,7 +787,6 @@ describe('validation context', () => {
                     name: 'Name',
                     description: 'Description',
                     streams: ['1', '3'],
-                    category: 'category',
                     imageUrl: 'http://...',
                 },
             }))
@@ -817,7 +804,6 @@ describe('validation context', () => {
                     type: 'NORMAL',
                     name: 'New Name',
                     description: 'New Description',
-                    category: 'category',
                     streams: ['2', '3', '4'],
                     newImageToUpload: new File([''], 'filename'),
                     state: 'DEPLOYED',
@@ -839,7 +825,6 @@ describe('validation context', () => {
                     id: '1',
                     name: 'Name',
                     description: 'Description',
-                    category: 'category',
                     streams: ['1', '3'],
                 },
             }))
@@ -859,7 +844,6 @@ describe('validation context', () => {
                     type: 'NORMAL',
                     name: 'Name',
                     description: 'Description',
-                    category: 'category',
                     streams: ['1', '3'],
                     state: 'DEPLOYED',
                 })
@@ -867,7 +851,6 @@ describe('validation context', () => {
             expect(currentContext.isAnyChangePending()).toBe(false)
             expect(currentContext.isPendingChange('name')).toBe(false)
             expect(currentContext.isPendingChange('description')).toBe(false)
-            expect(currentContext.isPendingChange('category')).toBe(false)
             expect(currentContext.isPendingChange('streams')).toBe(false)
         })
         it('ignores pending fields for unpublished product', () => {
@@ -902,14 +885,12 @@ describe('validation context', () => {
                     type: 'NORMAL',
                     name: 'New Name',
                     description: 'New Description',
-                    category: 'category',
                     streams: ['2', '3', '4'],
                 })
             })
             expect(currentContext.isAnyChangePending()).toBe(false)
             expect(currentContext.isPendingChange('name')).toBe(false)
             expect(currentContext.isPendingChange('description')).toBe(false)
-            expect(currentContext.isPendingChange('category')).toBe(false)
             expect(currentContext.isPendingChange('streams')).toBe(false)
         })
     })

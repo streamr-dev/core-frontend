@@ -333,7 +333,6 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
-                category: true,
                 imageUrl: true,
                 streams: true,
                 pricePerSecond: false,
@@ -353,7 +352,6 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
-                category: true,
                 imageUrl: true,
                 streams: true,
                 pricePerSecond: false,
@@ -375,7 +373,6 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
-                category: true,
                 imageUrl: true,
                 streams: true,
                 pricePerSecond: false,
@@ -395,7 +392,6 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
-                category: true,
                 imageUrl: true,
                 streams: true,
                 pricePerSecond: true,
@@ -415,7 +411,6 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
-                category: true,
                 imageUrl: true,
                 streams: true,
                 pricePerSecond: true,
@@ -426,18 +421,16 @@ describe('product utils', () => {
                 pricingTokenAddress: true,
             })
         })
-        it('validates name, description & category', () => {
+        it('validates name & description', () => {
             expect(
                 all.validate({
                     type: 'NORMAL',
                     name: 'new name',
                     description: 'new description',
-                    category: 'new category',
                 } as any),
             ).toStrictEqual({
                 name: false,
                 description: false,
-                category: false,
                 imageUrl: true,
                 streams: true,
                 pricePerSecond: false,
@@ -457,7 +450,6 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
-                category: true,
                 imageUrl: false,
                 streams: true,
                 pricePerSecond: false,
@@ -475,7 +467,6 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
-                category: true,
                 imageUrl: false,
                 streams: true,
                 pricePerSecond: false,
@@ -495,7 +486,6 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
-                category: true,
                 imageUrl: true,
                 streams: false,
                 pricePerSecond: false,
@@ -515,7 +505,6 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
-                category: true,
                 imageUrl: true,
                 streams: true,
                 pricePerSecond: false,
@@ -533,7 +522,6 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
-                category: true,
                 imageUrl: true,
                 streams: true,
                 pricePerSecond: false,
@@ -551,7 +539,6 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
-                category: true,
                 imageUrl: true,
                 streams: true,
                 pricePerSecond: false,
@@ -572,7 +559,6 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
-                category: true,
                 imageUrl: true,
                 streams: true,
                 pricePerSecond: true,
@@ -591,7 +577,6 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
-                category: true,
                 imageUrl: true,
                 streams: true,
                 pricePerSecond: true,
@@ -613,7 +598,6 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
-                category: true,
                 imageUrl: true,
                 streams: true,
                 pricePerSecond: true,
@@ -633,7 +617,6 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
-                category: true,
                 imageUrl: true,
                 streams: true,
                 pricePerSecond: false,
@@ -655,7 +638,6 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
-                category: true,
                 imageUrl: true,
                 streams: true,
                 pricePerSecond: false,
@@ -675,7 +657,6 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
-                category: true,
                 imageUrl: true,
                 streams: true,
                 pricePerSecond: false,
