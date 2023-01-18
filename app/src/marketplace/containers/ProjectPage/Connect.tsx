@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react'
 import styled from 'styled-components'
 import BN from 'bignumber.js'
-import ProjectPage, { ProjectPageContainer, RelatedProductsContainer } from '$shared/components/ProjectPage'
+import ProjectPage, { ProjectPageContainer } from '$shared/components/ProjectPage'
 import { StreamConnect } from '$shared/components/StreamConnect'
 import { useUserHasAccessToProject } from '$mp/containers/ProductController/useUserHasAccessToProject'
 import { MEDIUM } from '$shared/utils/styled'
@@ -9,7 +9,6 @@ import ProjectPng from '$shared/assets/images/project.png'
 import { useController } from '$mp/containers/ProductController'
 import Button from '$shared/components/Button'
 import { usePurchaseProject } from '$shared/hooks/usePurchaseProject'
-import RelatedProducts from '$mp/containers/ProjectPage/RelatedProducts'
 import { projectTypeNames } from '$mp/utils/constants'
 import PaymentRate from '$mp/components/PaymentRate'
 import { formatChainName, getChainIdFromApiString } from '$shared/utils/chains'
@@ -47,9 +46,6 @@ export const Connect: FunctionComponent = () => {
                         <Button onClick={onPurchase}>Get Access</Button>
                     </GetAccessContainer>
             }
-            <RelatedProductsContainer>
-                <RelatedProducts />
-            </RelatedProductsContainer>
         </ProjectPageContainer>
     </ProjectPage>
 }

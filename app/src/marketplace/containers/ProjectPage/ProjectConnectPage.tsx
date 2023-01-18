@@ -11,6 +11,7 @@ import { MarketplaceLoadingView } from '$mp/containers/ProjectPage/MarketplaceLo
 import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import { Connect } from '$mp/containers/ProjectPage/Connect'
+import styles from '$shared/components/Layout/layout.pcss'
 import { useLoadAdditionalProductData } from '$shared/hooks/useLoadAdditionalProductData'
 import { getProjectDetailsLinkTabs, getProjectTitle } from './utils'
 
@@ -32,7 +33,7 @@ const ProjectConnect: FunctionComponent = () => {
         return <PageTitleText>{getProjectTitle(product)}</PageTitleText>
     }, [product])
 
-    return <Layout nav={<Nav/>}>
+    return <Layout nav={<Nav/>} innerClassName={styles.greyInner}>
         <MarketplaceHelmet title={product.name}/>
         <DetailsPageHeader
             pageTitle={PageTitle}

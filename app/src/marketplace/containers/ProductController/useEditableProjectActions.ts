@@ -74,7 +74,7 @@ export const useEditableProjectActions = (): EditableProjectActions => {
                 pricingTokenAddress,
                 pricingTokenDecimals: pricingTokenDecimals.toNumber(),
             })
-            setTouched('paymentTokenContract')
+            setTouched('pricingTokenAddress')
         },
         [updateState, setTouched],
     )
@@ -193,7 +193,7 @@ export const useEditableProjectActions = (): EditableProjectActions => {
             updateState({
                 contact: { ...(state.contact || {}), url },
             })
-            setTouched('url')
+            setTouched('contact.url')
         },
         [updateState, state, setTouched],
     )
@@ -202,7 +202,7 @@ export const useEditableProjectActions = (): EditableProjectActions => {
             updateState({
                 contact: { ...(state.contact || {}), email },
             })
-            setTouched('email')
+            setTouched('contact.email')
         },
         [updateState, state, setTouched],
     )
