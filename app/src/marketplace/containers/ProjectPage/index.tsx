@@ -10,6 +10,7 @@ import { getChainIdFromApiString } from '$shared/utils/chains'
 import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
 import { MarketplaceLoadingView } from '$mp/containers/ProjectPage/MarketplaceLoadingView'
 import { useLoadAdditionalProductData } from '$shared/hooks/useLoadAdditionalProductData'
+import styles from '$shared/components/Layout/layout.pcss'
 import routes from '$routes'
 import ProductController, { useController } from '../ProductController'
 import WhitelistRequestAccessModal from './WhitelistRequestAccessModal'
@@ -38,7 +39,7 @@ const ProjectPage = () => {
     const linkTabs = useMemo(() => getProjectDetailsLinkTabs(productId), [productId])
 
     return (
-        <Layout nav={<Nav />}>
+        <Layout nav={<Nav />} innerClassName={styles.greyInner}>
             <MarketplaceHelmet title={product.name} />
             <DetailsPageHeader
                 backButtonLink={routes.marketplace.index}

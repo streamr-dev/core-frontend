@@ -6,14 +6,13 @@ import useContractProduct from '$mp/containers/ProductController/useContractProd
 import { isEthereumAddress } from '$mp/utils/validate'
 import Terms from '$mp/components/ProductPage/Terms'
 import ProjectPage, {
-    ProjectPageContainer, RelatedProductsContainer,
+    ProjectPageContainer,
 } from '$shared/components/ProjectPage'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import useDataUnionServerStats from './useDataUnionServerStats'
 import Description from './Description'
 import DataUnionStats from './DataUnionStats'
 import Streams from './Streams'
-import RelatedProducts from './RelatedProducts'
 import usePreviewStats from './usePreviewStats'
 import { ProjectHero2 } from './Hero/ProjectHero2'
 
@@ -60,9 +59,6 @@ const ProjectDetailsPage = () => {
                 )}
 
                 <Terms product={product} />
-                <RelatedProductsContainer>
-                    <RelatedProducts />
-                </RelatedProductsContainer>
             </ProjectPageContainer>
         </ProjectPage>
     )

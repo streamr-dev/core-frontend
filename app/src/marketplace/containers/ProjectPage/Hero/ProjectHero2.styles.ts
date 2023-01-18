@@ -95,18 +95,6 @@ export const ProjectHeroDescriptionStyles = css`
     margin: 0 ${desktopSpacing} 24px;
   }
 `
-export const ProjectHeroDescription = styled.div`${ProjectHeroDescriptionStyles}`
-
-export const ProjectHeroMarkdownText = styled(MarkdownText)`
-  div[class^='MarkdownContainer'] {
-    font-size: 16px;
-    line-height: 24px;
-    font-weight: 400;
-    color: ${COLORS.primaryLight};
-    padding: 0;
-  }
-    
-`
 
 export const ProjectHeroSignalContainer = styled.div`
   grid-column-start: 1;
