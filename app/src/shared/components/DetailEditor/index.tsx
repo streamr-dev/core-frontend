@@ -115,10 +115,11 @@ export const DetailEditor: FunctionComponent<DetailsEditorProps> = ({
     }, [value, unsetValueText, showValueFormatter])
 
     return <DetailEditorDropdown isOpen={isOpen} toggle={handleToggle} className={className}>
-        <DropdownToggle disabled={disabled}>
+        <DropdownToggle disabled={disabled} data-testid={'detailEditorToggle'}>
             {value ? (hasValueIcon || defaultIcon) : defaultIcon}
             {showValue &&
                 <span
+                    data-testid={'detailEditorValue'}
                     className={"value" + (!value ? ' value-unset' : '') + (defaultIcon || hasValueIcon ? ' has-icon' : '')}>
                     {valueToDisplay}
                 </span>
@@ -126,8 +127,8 @@ export const DetailEditor: FunctionComponent<DetailsEditorProps> = ({
         </DropdownToggle>
         <DropdownMenu>
             <div className={'header'}>
-                <span className={'instruction'}>{instructionText}</span>
-                <span className={'optional'}>{optional && 'Optional'}</span>
+                <span className={'instruction'} data-testid={'detailEditorInstructionText'}>{instructionText}</span>
+                <span className={'optional'} data-testid={'detailEditorOptional'}>{optional && 'Optional'}</span>
             </div>
             {!selectOptions && <div>
                 <form className={'text-input-container'} onSubmit={(event) => {
@@ -135,6 +136,7 @@ export const DetailEditor: FunctionComponent<DetailsEditorProps> = ({
                     handleSubmit()
                 }}>
                     <input
+                        data-testid={'detailEditorInput'}
                         onChange={(event: ChangeEvent<HTMLInputElement>) => setInputValue(event.target.value)}
                         onFocus={() => {
                             setInputTouched(true)
@@ -163,13 +165,14 @@ export const DetailEditor: FunctionComponent<DetailsEditorProps> = ({
                     <button className={'detail-input-cta'}
                         type={'button'}
                         onClick={handleSubmit}
-                        disabled={!inputValue}>
+                        disabled={!inputValue}
+                        data-testid={'detailEditorAddCTA'}>
                         <SvgIcon name={'plusSmall'} className={'cta-icon'}/>
                         <span>Add {ctaButtonText}</span>
                     </button>
                 }
                 {
-                    validationError && <span className={'validation-error'}>{validationError}</span>
+                    validationError && <span data-testid={'detailEditorValidationError'} className={'validation-error'}>{validationError}</span>
                 }
             </div>}
             {selectOptions &&
