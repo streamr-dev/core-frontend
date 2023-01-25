@@ -1,12 +1,13 @@
-import { useMemo, useCallback, useContext } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 import BN from 'bignumber.js'
 import { pricePerSecondFromTimeUnit } from '$mp/utils/price'
 import { timeUnits } from '$shared/utils/constants'
-import type { Project, ContactDetails } from '$mp/types/project-types'
+import type { ContactDetails, Project } from '$mp/types/project-types'
 import type { StreamIdList } from '$shared/types/stream-types'
 import { ValidationContext2 } from '$mp/containers/ProductController/ValidationContextProvider2'
 import { NumberString, TimeUnit } from '$shared/types/common-types'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
+import { ProjectTypeEnum } from '$mp/utils/constants'
 
 const getPricePerSecond = (isFree: boolean, price: NumberString, timeUnit: TimeUnit, decimals: BN) =>
     isFree ? new BN(0) : pricePerSecondFromTimeUnit(new BN(price || 0), timeUnit || timeUnits.hour, decimals)
@@ -20,10 +21,7 @@ export type EditableProjectActions = {
     updateImageUrl: (image: Project['imageUrl']) => void,
     updateImageFile: (image: File) => void,
     updateStreams: (streams: StreamIdList) => void,
-    updateCategory: (category: Project['category']) => void,
     updateAdminFee: (fee: Project['adminFee']) => void,
-    updateRequiresWhitelist: (requiresWhitelist: boolean, touched?: boolean) => void,
-    updateIsFree: (isFree: Project['isFree'], decimals: BN) => void,
     updatePrice: (
         price: Project['price'],
         priceCurrency: Project['priceCurrency'],
@@ -32,7 +30,7 @@ export type EditableProjectActions = {
     ) => void,
     updateBeneficiaryAddress: (beneficiaryAddress: Project['beneficiaryAddress'], touched?: boolean) => void,
     updateExistingDUAddress: (address: string, touched?: boolean) => void,
-    updateType: (type: Project['type']) => void,
+    updateType: (type: ProjectTypeEnum) => void,
     updateTermsOfUse: (termsOfUse: Project['termsOfUse']) => void,
     updateContactUrl: (url: ContactDetails['url']) => void,
     updateContactEmail: (email: ContactDetails['email']) => void,
@@ -99,43 +97,12 @@ export const useEditableProjectActions = (): EditableProjectActions => {
         },
         [updateState, setTouched],
     )
-    const updateCategory = useCallback<EditableProjectActions['updateCategory']>(
-        (category: Project['category']) => {
-            updateState({ category })
-            setTouched('category')
-            setTouched('details')
-        },
-        [updateState, setTouched],
-    )
     const updateAdminFee = useCallback<EditableProjectActions['updateAdminFee']>(
         (adminFee: Project['adminFee']) => {
             updateState({ adminFee })
             setTouched('adminFee')
-            setTouched('details')
         },
         [updateState, setTouched],
-    )
-    const updateRequiresWhitelist = useCallback<EditableProjectActions['updateRequiresWhitelist']>(
-        (requiresWhitelist: boolean, touched = true) => {
-            updateState({ requiresWhitelist })
-            setTouched('requiresWhitelist', touched)
-        },
-        [updateState, setTouched],
-    )
-    const updateIsFree = useCallback<EditableProjectActions['updateIsFree']>(
-        (isFree: Project['isFree'], decimals: BN) => {
-            // Switching product from free to paid also changes its price from 0 (only
-            // if it's 0) to 1. We're doing it to avoid premature validation errors.
-            const price = state.isFree && !isFree && new BN(state.price).isZero()
-                ? new BN(1).toString() : new BN(state.price).toString()
-            updateState({
-                isFree,
-                price,
-                pricePerSecond: getPricePerSecond(isFree, price, state.timeUnit, decimals).toString()
-            })
-            setTouched('pricePerSecond')
-        },
-        [updateState, state, setTouched],
     )
     const updatePrice = useCallback<EditableProjectActions['updatePrice']>(
         (price: Project['price'], priceCurrency: Project['priceCurrency'], timeUnit: Project['timeUnit'], decimals: BN,
@@ -143,7 +110,7 @@ export const useEditableProjectActions = (): EditableProjectActions => {
             updateState({
                 price,
                 priceCurrency,
-                pricePerSecond: getPricePerSecond(state.isFree, price, timeUnit, decimals).toString(),
+                pricePerSecond: getPricePerSecond(state.type === ProjectTypeEnum.OPEN_DATA, price, timeUnit, decimals).toString(),
                 timeUnit,
             })
             setTouched('pricePerSecond')
@@ -175,7 +142,7 @@ export const useEditableProjectActions = (): EditableProjectActions => {
         [updateState, setTouched],
     )
     const updateType = useCallback<EditableProjectActions['updateType']>(
-        (type: Project['type']) => {
+        (type: ProjectTypeEnum) => {
             updateState({type })
             setTouched('type')
         },
@@ -207,7 +174,7 @@ export const useEditableProjectActions = (): EditableProjectActions => {
         [updateState, state, setTouched],
     )
     const updateSocialUrl = useCallback<EditableProjectActions['updateSocialUrl']>((platform, url) => {
-        let key: string
+        let key: 'social1' | 'social2' | 'social3' | 'social4'
         switch (platform) {
             case 'twitter':
                 key = 'social1'
@@ -228,7 +195,7 @@ export const useEditableProjectActions = (): EditableProjectActions => {
                 [key]: url
             }
         })
-        setTouched('socialLinks')
+        setTouched(`contact.${key}`)
     }, [updateState, state, setTouched])
 
     return useMemo<EditableProjectActions>(
@@ -241,10 +208,7 @@ export const useEditableProjectActions = (): EditableProjectActions => {
             updateImageUrl,
             updateImageFile,
             updateStreams,
-            updateCategory,
             updateAdminFee,
-            updateRequiresWhitelist,
-            updateIsFree,
             updatePrice,
             updateBeneficiaryAddress,
             updateExistingDUAddress,
@@ -263,10 +227,7 @@ export const useEditableProjectActions = (): EditableProjectActions => {
             updateImageUrl,
             updateImageFile,
             updateStreams,
-            updateCategory,
             updateAdminFee,
-            updateRequiresWhitelist,
-            updateIsFree,
             updatePrice,
             updateBeneficiaryAddress,
             updateExistingDUAddress,

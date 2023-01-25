@@ -3,9 +3,9 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import BN from 'bignumber.js'
 import { Project } from '$mp/types/project-types'
-import { DESKTOP, REGULAR, TABLET } from '$shared/utils/styled'
+import { REGULAR, TABLET } from '$shared/utils/styled'
 import Button from '$shared/components/Button'
-import { projectTypeNames } from '$mp/utils/constants'
+import { ProjectTypeEnum, projectTypeNames } from '$mp/utils/constants'
 import PaymentRate from '$mp/components/PaymentRate'
 import { formatChainName, getChainIdFromApiString } from '$shared/utils/chains'
 import { timeUnits } from '$shared/utils/constants'
@@ -19,11 +19,11 @@ const Description: FunctionComponent<{project: Project}> = ({project}) => {
         <DescriptionContainer>
             <p>
                 <span>The streams in this {projectTypeNames[project.type]}
-                    {project.isFree ? ' are public and ' : ''} can be accessed for&nbsp;
+                    {project.type === ProjectTypeEnum.OPEN_DATA ? ' are public and ' : ''} can be accessed for&nbsp;
                 </span>
 
                 <strong>
-                    {project.isFree ? 'free' :
+                    {project.type === ProjectTypeEnum.OPEN_DATA ? 'free' :
                         <PaymentRate
                             amount={new BN(project.pricePerSecond)}
                             chainId={getChainIdFromApiString(project.chain)}
@@ -33,15 +33,15 @@ const Description: FunctionComponent<{project: Project}> = ({project}) => {
                         />
                     }
                 </strong>
-                {!project.isFree && <>
+                {(project.type !== ProjectTypeEnum.OPEN_DATA) && <>
                     <span> on </span>
                     <strong>{formatChainName(project.chain)}</strong>
                 </>
                 }
             </p>
-            {project.isFree &&
+            {project.type === ProjectTypeEnum.OPEN_DATA &&
                 <Button tag={Link} to={routes.marketplace.product.connect({id: project.id})}>Connect</Button>}
-            {!project.isFree && <Button onClick={onPurchase}>Get Access</Button>}
+            {(project.type !== ProjectTypeEnum.OPEN_DATA) && <Button onClick={onPurchase}>Get Access</Button>}
         </DescriptionContainer>
     </WhiteBox>
 }

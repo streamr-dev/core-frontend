@@ -1,10 +1,11 @@
-import { $Keys, $Values, $ElementType } from 'utility-types'
+import { $ElementType, $Keys, $Values } from 'utility-types'
 import { projectStates } from '$shared/utils/constants'
-import { projectTypes } from '$mp/utils/constants'
-import type { StreamIdList, StreamId } from '$shared/types/stream-types'
-import type { ContractCurrency, PaymentCurrency, NumberString, TimeUnit } from '$shared/types/common-types'
+import { ProjectTypeEnum, projectTypes } from '$mp/utils/constants'
+import type { StreamId, StreamIdList } from '$shared/types/stream-types'
+import type { ContractCurrency, NumberString, PaymentCurrency, TimeUnit } from '$shared/types/common-types'
 import type { Address } from '$shared/types/web3-types'
 import type { CategoryId } from './category-types'
+
 export type ProjectId = string
 export type ProjectState = $Keys<typeof projectStates>
 export type ProjectType = $Values<typeof projectTypes>
@@ -12,6 +13,16 @@ export type PendingChanges = {
     adminFee?: string
     requiresWhitelist?: boolean
     pricingTokenAddress?: Address
+}
+export type SalePoint = {
+    chain: string,
+    beneficiaryAddress: Address
+    pricePerSecond: NumberString
+    priceCurrency: ContractCurrency
+    timeUnit: TimeUnit | null | undefined
+    price: NumberString
+    pricingTokenAddress: Address
+    pricingTokenDecimals: number
 }
 export type TermsOfUse = {
     commercialUse: boolean
@@ -35,7 +46,6 @@ export type Project = {
     id: ProjectId | null | undefined
     name: string
     description: string
-    chain: string
     owner: string
     imageUrl: string | null | undefined
     newImageToUpload?: File | null | undefined
@@ -43,27 +53,27 @@ export type Project = {
     state?: ProjectState
     created?: string
     updated?: string
-    category: CategoryId | null | undefined
     streams: StreamIdList
     previewStream: StreamId | null | undefined
     previewConfigJson?: string | null | undefined
     minimumSubscriptionInSeconds?: number
     ownerAddress: Address
-    beneficiaryAddress: Address
-    pricePerSecond: NumberString
-    priceCurrency: ContractCurrency
-    timeUnit?: TimeUnit | null | undefined
-    price?: NumberString
-    isFree?: boolean
-    type?: ProjectType
-    requiresWhitelist?: boolean
-    pendingChanges?: PendingChanges
+    type?: ProjectTypeEnum
     termsOfUse: TermsOfUse
     contact: ContactDetails | null | undefined
+    // Paid project
+    salePoints?: SalePoint[]
+    // Data union
+    chain?: string
     dataUnionDeployed?: boolean
-    pricingTokenAddress: Address
-    pricingTokenDecimals: number,
     existingDUAddress?: string
+    pricingTokenAddress?: Address
+    pricingTokenDecimals?: number,
+    beneficiaryAddress?: Address
+    pricePerSecond?: NumberString
+    priceCurrency?: ContractCurrency
+    timeUnit?: TimeUnit | null | undefined
+    price?: NumberString
 }
 export type ProjectSubscriptionId = string
 export type ProjectSubscriptionIdList = Array<ProjectSubscriptionId>
@@ -85,7 +95,6 @@ export type SmartContractProduct = {
     pricePerSecond: $ElementType<Project, 'pricePerSecond'>
     minimumSubscriptionInSeconds: $ElementType<Project, 'minimumSubscriptionInSeconds'>
     state: $ElementType<Project, 'state'>
-    requiresWhitelist: $ElementType<Project, 'requiresWhitelist'>
     chainId: number
     pricingTokenAddress: $ElementType<Project, 'pricingTokenAddress'>
     pricingTokenDecimals: number // this isn't actually stored on the contract but we need it to piggyback information

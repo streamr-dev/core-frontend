@@ -7,11 +7,13 @@ import type { Project, Subscription } from '$mp/types/project-types'
 import type { Address } from '$shared/types/web3-types'
 import PaymentRate from '$mp/components/PaymentRate'
 import ExpirationCounter from '$mp/components/ExpirationCounter'
-import { timeUnits, projectStates } from '$shared/utils/constants'
+import { projectStates, timeUnits } from '$shared/utils/constants'
 import { formatChainName, getChainIdFromApiString } from '$shared/utils/chains'
+import { ProjectTypeEnum } from '$mp/utils/constants'
 import NetworkIcon from '$shared/components/NetworkIcon'
 import SocialIcons from './SocialIcons'
 import styles from './productDetails2.pcss'
+
 type Props = {
     product: Project
     isValidSubscription: boolean
@@ -56,7 +58,7 @@ const ProductDetails = ({
             <h2 className={styles.title}>{product.name}</h2>
             <div className={styles.offer}>
                 <div className={styles.paymentRate}>
-                    {product.isFree ? (
+                    {product.type === ProjectTypeEnum.OPEN_DATA ? (
                         'Free'
                     ) : (
                         <div className={styles.priceDetails}>

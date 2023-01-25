@@ -28,3 +28,10 @@ export enum projectTypeNames {
     NORMAL = 'Data Project',
     DATAUNION = 'Data Union'
 }
+
+// Hub project types
+export enum ProjectTypeEnum {
+    OPEN_DATA = 'OPEN_DATA',
+    PAID_DATA = 'PAID_DATA',
+    DATA_UNION = 'DATA_UNION'
+}
