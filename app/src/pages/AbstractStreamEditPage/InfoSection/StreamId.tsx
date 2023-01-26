@@ -1,5 +1,6 @@
 import React, { Fragment, useMemo, useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
+import { randomHex } from 'web3-utils'
 import docsLinks from '$shared/../docsLinks'
 import { SM, MONO, MEDIUM } from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -20,6 +21,8 @@ import { truncate } from '$shared/utils/text'
 import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
 import useClientAddress from '$shared/hooks/useClientAddress'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
+import { createProject, updateProject, getAllProjects, SmartContractProject, searchProjects, addStreamToProject } from '$app/src/services/projects'
+import { buyProject, setTokenAllowance } from '$app/src/services/marketplace'
 import useStreamOwnerOptions, { ADD_ENS_DOMAIN_VALUE } from './useStreamOwnerOptions'
 export const ENS_DOMAINS_URL = 'https://ens.domains'
 export function ReadonlyStreamId({ className }) {
@@ -29,6 +32,32 @@ export function ReadonlyStreamId({ className }) {
             title: 'Stream ID copied',
             icon: NotificationIcon.CHECKMARK,
         })
+
+        getAllProjects().then((res) => console.log(res))
+        searchProjects("test").then((res) => console.log(res))
+        const metadata = {
+            name: "Test project",
+            description: "Just a test project",
+        }
+        const project: SmartContractProject = {
+            id: "0x5e2e159e2b4658eae5ad713e2487a49fdbaded160a2dff905a59eb0b51cf34e9",
+            //id: randomHex(32),
+            paymentDetails: [{
+                chainId: 8997,
+                beneficiaryAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
+                pricePerSecond: 1000,
+                pricingTokenAddress: '0x5159FBF2e0Ff63e35b17293416fdf7a0909a0cDA', // SCT
+            }],
+            minimumSubscriptionInSeconds: 60,
+            isPublicPurchasable: true,
+            metadata: JSON.stringify(metadata),
+            chainId: 8997,
+        }
+        //createProject(project)
+        //updateProject(project)
+        //setTokenAllowance(5 * 60 * project.paymentDetails[0].pricePerSecond, project.paymentDetails[0].pricingTokenAddress, project.chainId)
+        //buyProject(project.id, 5 * 60, project.chainId)
+        addStreamToProject(project.id, "0xa3d1f77acff0060f7213d7bf3c7fec78df847de1/test", project.chainId)
     })
     const { truncatedDomain: domain, pathname } = getStreamPath(streamId)
     return (

@@ -13,6 +13,7 @@ streamChains = ['dev1']
 theGraphUrl = ":8000"
 mainnetInfuraUrl = "https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206"
 dataUnionJoinServerUrl = "http://localhost:5555"
+theHubGraphName = "subgraphs/name/streamr-dev/hub-subgraph"
 
 [[core.marketplaceContractCreationBlocks]]
 chainId = 8995
