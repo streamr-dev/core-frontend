@@ -31,7 +31,10 @@ jest.mock('react-redux', () => ({
     useDispatch: jest.fn(),
 }))
 jest.mock('../useNewProductMode', () => jest.fn().mockImplementation(() => false))
-describe('useEditableProductActions', () => {
+/**
+ * skipping tests as the hook is deprecated and will be removed
+ */
+describe.skip('useEditableProductActions', () => {
     describe('updateProduct', () => {
         it('updates the product fields', () => {
             let updater

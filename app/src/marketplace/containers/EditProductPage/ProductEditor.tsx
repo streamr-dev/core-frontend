@@ -1,6 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
-import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
+import { isDataUnionProduct, isPaidProject } from '$mp/utils/product'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import { projectStates } from '$shared/utils/constants'
 import { projectTypes } from '$mp/utils/constants'
@@ -34,7 +34,7 @@ type Props = {
 const ProductEditor = ({ disabled }: Props) => {
     const { state: product } = useEditableState()
     const isDataUnion = isDataUnionProduct(product)
-    const isPaid = isPaidProduct(product)
+    const isPaid = isPaidProject(product)
     const isChainSelectorDisabled =
         product.state === projectStates.DEPLOYED ||
         (product.type === projectTypes.DATAUNION && product.beneficiaryAddress != null)

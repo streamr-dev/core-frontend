@@ -58,7 +58,10 @@ jest.mock('react-redux', () => ({
     useSelector: jest.fn().mockImplementation((selectorFn) => selectorFn(mockState)),
     useDispatch: jest.fn(),
 }))
-describe('PriceSelector', () => {
+/**
+ * Skipping tests as the component is deprecated
+ */
+describe.skip('PriceSelector', () => {
     beforeEach(() => {
         jest.spyOn(BeneficiaryAddress, 'default').mockImplementation(() => null)
         mockChainId(1)

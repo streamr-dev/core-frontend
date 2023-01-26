@@ -15,15 +15,16 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
-import useEditableState from '$shared/contexts/Undo/useEditableState'
 import useModal from '$shared/hooks/useModal'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { getChainIdFromApiString } from '$shared/utils/chains'
+import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
+import { ProjectState } from '$mp/types/project-types'
 import routes from '$routes'
 import * as State from '../EditProductPage/state'
 import { useController } from '../ProductController'
-import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
+import { useEditableProjectActions } from '../ProductController/useEditableProjectActions'
 
 type ContextProps = {
     isPreview?: boolean
@@ -48,9 +49,9 @@ function useEditController(product: Project) {
     const lastSectionRef = useRef(undefined)
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
-    const { updateBeneficiaryAddress } = useEditableProductActions()
+    const { updateBeneficiaryAddress } = useEditableProjectActions()
     const { product: originalProduct } = useController()
-    const { replaceState, state } = useEditableState()
+    const { updateState, state } = useContext(ProjectStateContext)
     const [dataUnionStats, setDataUnionStats] = useState<DataUnionStats>(null)
     const [publishAttempted, setPublishAttempted] = useState(!!(qs.parse(location.search).publishAttempted || ''))
     usePreventNavigatingAway('You have unsaved changes', isAnyTouched)
@@ -134,7 +135,7 @@ function useEditController(product: Project) {
                         nextProduct.imageUrl = newImageUrl
                         nextProduct.thumbnailUrl = newThumbnailUrl
                         delete nextProduct.newImageToUpload
-                        replaceState(() => nextProduct)
+                        updateState(nextProduct)
                     } catch (e) {
                         console.error('Could not upload image', e)
                     }
@@ -161,7 +162,7 @@ function useEditController(product: Project) {
                 redirectToProductList()
             }
         },
-        [savePending, redirectToProductList, originalProduct, replaceState, resetTouched],
+        [savePending, redirectToProductList, originalProduct, updateState, resetTouched],
     )
     const validate = useCallback(() => {
         // Notify missing fields
@@ -205,10 +206,10 @@ function useEditController(product: Project) {
             }
 
             if (started) {
-                replaceState((prevProduct) => ({
-                    ...prevProduct,
-                    state: isUnpublish ? projectStates.UNDEPLOYING : projectStates.DEPLOYING,
-                }))
+                updateState({
+                    ...state,
+                    state: (isUnpublish ? projectStates.UNDEPLOYING : projectStates.DEPLOYING) as ProjectState,
+                })
             }
 
             if (succeeded && (isUnpublish || !showPublishedProduct)) {
@@ -223,7 +224,7 @@ function useEditController(product: Project) {
         publishDialog,
         redirectToProductList,
         redirectToProduct,
-        replaceState,
+        updateState,
         isMounted,
         dataUnionPublishMemberLimit,
         dataUnionStats,

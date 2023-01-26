@@ -110,9 +110,6 @@ const createContractProductWithWhitelist = (product: SmartContractProduct): Smar
 }
 
 export const createContractProduct = (product: SmartContractProduct): SmartContractTransaction => {
-    if (product.requiresWhitelist) {
-        return createContractProductWithWhitelist(product)
-    }
 
     return createContractProductWithoutWhitelist(product)
 }
@@ -156,75 +153,13 @@ export const whitelistRequest = (id: ProjectId, address: Address, networkChainId
     send(contractMethods(false, networkChainId).whitelistRequest(getValidId(id), address), {
         network: networkChainId,
     })
+/**
+ * @deprecated
+ * @param id
+ * @param networkChainId
+ */
 export const getWhitelistAddresses = async (id: ProjectId, networkChainId: number): Promise<Array<WhitelistItem>> => {
-    try {
-        const contractProduct = await getProductFromContract(id, true, networkChainId)
-
-        if (!contractProduct || !contractProduct.requiresWhitelist) {
-            return []
-        }
-    } catch (e) {
-        // Product not deployed
-        return []
-    }
-
-    // TODO add typping
-    const subscriptionEvents: any[] = []
-    const approvedItems = []
-    const rejectedItems = []
-    const fromBlock = getMarketplaceContractCreationBlock(networkChainId)
-
-    /* eslint-disable no-restricted-syntax, no-await-in-loop */
-    for await (const e of getMarketplaceEvents(id, 'WhitelistApproved', fromBlock, networkChainId)) {
-        for (const approveEvent of e) {
-            approvedItems.push({
-                address: approveEvent.returnValues.subscriber,
-                blockNumber: approveEvent.blockNumber,
-                approved: true,
-            })
-        }
-    }
-
-    /* eslint-disable no-restricted-syntax, no-await-in-loop */
-    for await (const e of getMarketplaceEvents(id, 'WhitelistRejected', fromBlock, networkChainId)) {
-        for (const approveEvent of e) {
-            rejectedItems.push({
-                address: approveEvent.returnValues.subscriber,
-                blockNumber: approveEvent.blockNumber,
-                approved: false,
-            })
-        }
-    }
-
-    /* eslint-disable no-restricted-syntax, no-await-in-loop */
-    for await (const e of getMarketplaceEvents(id, 'Subscribed', fromBlock, networkChainId)) {
-        for (const subEvent of e) {
-            subscriptionEvents.push(subEvent)
-        }
-    }
-
-    // TODO add typing
-    const isActiveSubscription = (address: any) => {
-        const activeSubs = subscriptionEvents.filter(
-            (e) =>
-                e.returnValues &&
-                e.returnValues.subscriber === address &&
-                e.returnValues.endTimestamp &&
-                parseTimestamp(e.returnValues.endTimestamp) > Date.now(),
-        )
-        return activeSubs.length > 0
-    }
-
-    const events = [...approvedItems, ...rejectedItems]
-    // Sort by blockNumber to make sure we take only the latest events into account
-    events.sort((a, b) => a.blockNumber - b.blockNumber)
-    const addresses = new Map(events.map((item) => [item.address, item]))
-    const whitelist: Array<WhitelistItem> = Array.from(addresses.values()).map((item) => ({
-        address: item.address,
-        status: (item.approved && (isActiveSubscription(item.address) ? 'subscribed' : 'added')) || 'removed',
-        isPending: false,
-    }))
-    return whitelist
+    return []
 }
 export const isAddressWhitelisted = async (id: ProjectId, address: Address, usePublicNode = true, networkChainId: number): Promise<boolean> => {
     const isWhitelistStatus = await call(contractMethods(usePublicNode, networkChainId).getWhitelistState(getValidId(id), address))

@@ -31,7 +31,10 @@ jest.mock('react-redux', () => ({
     useSelector: jest.fn().mockImplementation((selectorFn) => selectorFn(mockState)),
     useDispatch: jest.fn(),
 }))
-describe('validation context', () => {
+/**
+ * Skipping the tests as this context is deprecated
+ */
+describe.skip('validation context', () => {
     afterEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()

@@ -1,6 +1,6 @@
 import React, { useContext, useMemo, useState, useCallback, useRef, useEffect } from 'react'
 import Scrollspy from 'react-scrollspy'
-import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
+import { isDataUnionProduct, isPaidProject } from '$mp/utils/product'
 import EditorNavComponent, { statuses } from '$mp/components/ProductPage/EditorNav'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import useNewProductMode from '../ProductController/useNewProductMode'
@@ -28,7 +28,7 @@ const EditorNav = () => {
     const { lastSectionRef, publishAttempted } = useContext(EditControllerContext)
     const isDataUnion = isDataUnionProduct(product)
     const isPublic = isPublished(product)
-    const isPaid = isPaidProduct(product)
+    const isPaid = isPaidProject(product)
     const isProductDeployed = product.beneficiaryAddress != null
 
     const getStatus = useCallback(

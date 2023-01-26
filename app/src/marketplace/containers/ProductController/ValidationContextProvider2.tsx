@@ -3,7 +3,6 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import { validate as validateProduct } from '$mp/utils/product'
 import { RecursiveKeyOf } from '$utils/recursiveKeyOf'
 import { Project } from '$mp/types/project-types'
-import { isPublished, getPendingChanges } from '../EditProductPage/state'
 
 export enum SeverityLevel {
     INFO = 'info',
@@ -29,7 +28,6 @@ const validationErrors: Partial<Record<RecursiveKeyOf<Project>, string>> = {
     name: 'Product name cannot be empty',
     description: 'Product description cannot be empty',
     chain: 'No chain selected',
-    category: 'Product category cannot be empty',
     imageUrl: 'Product must have a cover image',
     streams: 'No streams selected',
     termsOfUse: 'Invalid URL for detailed terms',
@@ -109,10 +107,7 @@ function useValidationContext2(): ValidationContext2Props {
                     clearStatus(field)
                 }
             })
-            // Set pending fields, a change is marked pending if there was a saved pending change or
-            // we made a change that is different from the loaded product
-            const changes = getPendingChanges(product)
-            const isPublic = isPublished(product)
+
         },
         [setStatus, clearStatus, isMounted, isTouched],
     )

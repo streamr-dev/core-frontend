@@ -16,7 +16,7 @@ import {
 import { putProduct, postUndeployFree, postSetUndeploying, postDeployFree, postSetDeploying } from '$mp/modules/product/services'
 import { getDataUnionOwner, setAdminFee } from '$mp/modules/dataUnion/services'
 import ActionQueue from '$mp/utils/actionQueue'
-import { isPaidProduct } from '$mp/utils/product'
+import { isPaidProject } from '$mp/utils/product'
 import { addTransaction } from '$mp/modules/transactions/actions'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import { getChainIdFromApiString } from '$shared/utils/chains'
@@ -71,7 +71,6 @@ export default function usePublish() {
                 hasPendingChanges,
                 hasAdminFeeChanged,
                 hasContractProductChanged,
-                hasRequireWhitelistChanged,
                 adminFee,
                 pricePerSecond,
                 beneficiaryAddress,
@@ -167,31 +166,6 @@ export default function usePublish() {
                 }
             }
 
-            // update whitelist enabled status if it has changed
-            if ([PublishMode.REPUBLISH, PublishMode.REDEPLOY].includes(nextMode)) {
-                if (hasRequireWhitelistChanged && contractProduct) {
-                    queue.add({
-                        id: actionsTypes.SET_REQUIRES_WHITELIST,
-                        requireWeb3: true,
-                        requireOwner: contractProduct.ownerAddress,
-                        handler: (update, done) =>
-                            setRequiresWhitelist(product.id || '', requiresWhitelist, chainId)
-                                .onTransactionHash((hash) => {
-                                    update(transactionStates.PENDING)
-                                    dispatch(addTransaction(hash, transactionTypes.SET_REQUIRES_WHITELIST))
-                                    done()
-                                })
-                                .onTransactionComplete(() => {
-                                    update(transactionStates.CONFIRMED)
-                                })
-                                .onError((error) => {
-                                    done()
-                                    update(transactionStates.FAILED, error)
-                                }),
-                    })
-                }
-            }
-
             // update price, currency & beneficiary if changed
             if ([PublishMode.REPUBLISH, PublishMode.REDEPLOY].includes(nextMode)) {
                 if (hasContractProductChanged && contractProduct) {
@@ -254,7 +228,7 @@ export default function usePublish() {
 
             // do the actual publish action
             if (nextMode === PublishMode.PUBLISH) {
-                if (isPaidProduct(product)) {
+                if (isPaidProject(product)) {
                     // TODO: figure out a better to detect if deploying data union for the first time
                     // force data union product to be published by the same account as the data union itself
                     queue.add({

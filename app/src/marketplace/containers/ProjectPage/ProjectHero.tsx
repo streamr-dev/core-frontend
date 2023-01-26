@@ -15,7 +15,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import ProductDetails from '$mp/components/ProductPage/ProductDetails'
 import HeroComponent from '$mp/components/Hero'
-import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
+import { isDataUnionProduct, isPaidProject } from '$mp/utils/product'
 import { ImageTile } from '$shared/components/Tile'
 import { NotificationIcon } from '$shared/utils/constants'
 import Notification from '$shared/utils/Notification'
@@ -69,7 +69,7 @@ const ProjectHero = () => {
     const chainId = product && getChainIdFromApiString(product.chain)
     const contactEmail = product && product.contact && product.contact.email
     const productName = product && product.name
-    const isPaid = isPaidProduct(product)
+    const isPaid = isPaidProject(product)
     const isWhitelistEnabled = !!(isPaid && product.requiresWhitelist)
     const [isWhitelisted, setIsWhitelisted] = useState(isWhitelistEnabled ? null : false)
     const onPurchase = useCallback(

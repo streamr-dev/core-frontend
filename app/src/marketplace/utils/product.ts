@@ -1,17 +1,17 @@
 import BN from 'bignumber.js'
 import * as yup from 'yup'
 import type { NumberString } from '$shared/types/common-types'
-import { contractCurrencies as currencies, projectStates } from '$shared/utils/constants'
+import { contractCurrencies as currencies, projectStates, timeUnits } from '$shared/utils/constants'
 import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
-import type { Project, ProjectId, SmartContractProduct, ProjectType, ContactDetails } from '../types/project-types'
+import type { ContactDetails, Project, ProjectId, ProjectType, SmartContractProduct } from '../types/project-types'
 import { ProjectState } from '../types/project-types'
 import { isEthereumAddress } from './validate'
 import { isPriceValid } from './price'
-import { projectTypes } from './constants'
-import { toDecimals, fromDecimals } from './math'
+import { ProjectTypeEnum, projectTypes } from './constants'
+import { fromDecimals, toDecimals } from './math'
 import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from './smartContract'
 
-export const isPaidProduct = (product: Project): boolean => product.isFree === false || new BN(product.pricePerSecond).isGreaterThan(0)
+export const isPaidProject = (project: Project): boolean => project.type !== ProjectTypeEnum.OPEN_DATA
 
 export const isDataUnionProduct = (productOrProductType?: Project | ProjectType): boolean => {
     const { type } =
@@ -19,7 +19,7 @@ export const isDataUnionProduct = (productOrProductType?: Project | ProjectType)
             ? {
                 type: productOrProductType,
             }
-            : productOrProductType || {}
+            : (productOrProductType || {}) as Project
     return type === projectTypes.DATAUNION
 }
 
@@ -58,7 +58,6 @@ export const mapProductFromContract = (id: ProjectId, result: any, chainId: numb
         pricePerSecond: result.pricePerSecond,
         minimumSubscriptionInSeconds: Number.isNaN(minimumSubscriptionSeconds) ? 0 : minimumSubscriptionSeconds,
         state: (Object.keys(projectStates) as ProjectState[])[result.state],
-        requiresWhitelist: result.requiresWhitelist,
         chainId,
         pricingTokenAddress: result.pricingTokenAddress,
         pricingTokenDecimals: pricingTokenDecimals.toNumber(),
@@ -83,7 +82,7 @@ export const isPublishedProduct = (p: Project): boolean => p.state === projectSt
 
 export const mapProductToPutApi = (product: Project): Record<string, any> => {
     // For published paid products, the some fields can only be updated on the smart contract
-    if (isPaidProduct(product) && isPublishedProduct(product)) {
+    if (isPaidProject(product) && isPublishedProduct(product)) {
         const { ownerAddress, beneficiaryAddress, pricePerSecond, priceCurrency, minimumSubscriptionInSeconds, ...otherData } = product
         return otherData
     }
@@ -103,54 +102,64 @@ export const getValidId = (id: string, prefix = true): string => {
 const urlValidator = yup.string().trim().url()
 const emailValidator = yup.string().trim().email()
 
-export const validate = (product: Project): Record<string, boolean> => {
-    const invalidFields: {[key: string]: boolean}= {}
-    ;['name', 'description'].forEach((field) => {
-        invalidFields[field] = !product[field as keyof Project]
+export const validate = (project: Project): Record<string, boolean> => {
+    const invalidFields: {[key: string]: boolean}= {};
+    ['name', 'description'].forEach((field) => {
+        invalidFields[field] = !project[field as keyof Project]
     })
-    invalidFields.imageUrl = !product.imageUrl && !product.newImageToUpload
-    invalidFields.streams = !product.streams || product.streams.length <= 0
-    invalidFields.termsOfUse = !!(product.termsOfUse != null && product.termsOfUse.termsUrl)
-    const isPaid = isPaidProduct(product)
+    invalidFields.imageUrl = !project.imageUrl && !project.newImageToUpload
+    invalidFields.streams = !project.streams || project.streams.length <= 0
+    invalidFields.termsOfUse = !!(project.termsOfUse != null && project.termsOfUse.termsUrl)
 
-    // applies only to data union
-    if (isDataUnionProduct(product)) {
-        invalidFields.adminFee = product.adminFee === undefined || +product.adminFee < 0 || +product.adminFee > 1
-        invalidFields.beneficiaryAddress = false
-    } else {
-        invalidFields.beneficiaryAddress = isPaid && (!product.beneficiaryAddress || !isEthereumAddress(product.beneficiaryAddress))
-        invalidFields.adminFee = false
-    }
-
-    if (isPaid) {
-        invalidFields.pricePerSecond = !isPriceValid(product.pricePerSecond)
-        invalidFields.pricingTokenAddress = !isEthereumAddress(product.pricingTokenAddress)
-    } else {
-        invalidFields.pricePerSecond = false
-        invalidFields.pricingTokenAddress = false
-    }
-
-    if (product.contact) {
+    if (project.contact) {
         ['url', 'social1', 'social2', 'social3', 'social4'].forEach((field) => {
-            if (product.contact[field as keyof ContactDetails] && product.contact[field as keyof ContactDetails].length > 0) {
-                invalidFields[`contact.${field}`] = !urlValidator.isValidSync(product.contact[field as keyof ContactDetails])
-            } else {
-                invalidFields[`contact.${field}`] = false
+            if (project.contact[field as keyof ContactDetails] && project.contact[field as keyof ContactDetails].length > 0) {
+                invalidFields[`contact.${field}`] = !urlValidator.isValidSync(project.contact[field as keyof ContactDetails])
             }
         })
 
-        if (product.contact.email && product.contact.email.length > 0) {
-            const result = emailValidator.isValidSync(product.contact.email)
-            invalidFields['contact.email'] = !result && !!product.contact.email
-        } else {
-            invalidFields['contact.email'] = false
+        if (project.contact.email && project.contact.email.length > 0) {
+            const result = emailValidator.isValidSync(project.contact.email)
+            invalidFields['contact.email'] = !result && !!project.contact.email
         }
     }
 
-    if (product.requiresWhitelist && (product.contact == null || product.contact.email == null || product.contact.email.length === 0)) {
-        invalidFields['contact.email'] = true
-    } else if (!product.requiresWhitelist) {
-        invalidFields['contact.email'] = false
+    // applies only to data union
+    if (project.type === ProjectTypeEnum.DATA_UNION) {
+        invalidFields.adminFee = project.adminFee === undefined || +project.adminFee < 0 || +project.adminFee > 1
+        invalidFields.beneficiaryAddress = false
+        invalidFields.pricePerSecond = !isPriceValid(project.pricePerSecond)
+        invalidFields.pricingTokenAddress = !isEthereumAddress(project.pricingTokenAddress)
+    }
+
+    // applies only to paid projects
+    if (project.type === ProjectTypeEnum.PAID_DATA) {
+        if (!project?.salePoints || !project?.salePoints?.length) {
+            invalidFields.salePoints = true
+        }
+        if (project?.salePoints?.length) {
+            project.salePoints.forEach((salePoint) => {
+                [
+                    !salePoint.priceCurrency,
+                    !salePoint.pricingTokenDecimals,
+                    !salePoint.timeUnit,
+                    !timeUnits[salePoint.timeUnit],
+                    !salePoint.beneficiaryAddress,
+                    !isEthereumAddress(salePoint.beneficiaryAddress),
+                    !isPriceValid(salePoint.price),
+                    new BN(salePoint.price).isLessThanOrEqualTo(0),
+                    !salePoint.pricingTokenAddress,
+                    !isEthereumAddress(salePoint.pricingTokenAddress),
+                    !salePoint.pricePerSecond,
+                    !isPriceValid(salePoint.pricePerSecond),
+                    !salePoint.chain
+                ].forEach((failedCondition) => {
+                    if (failedCondition) {
+                        invalidFields.salePoints = true
+                    }
+                })
+            })
+        }
     }
 
     return invalidFields

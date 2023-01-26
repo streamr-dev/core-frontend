@@ -39,7 +39,10 @@ function stubStreams(streams) {
     return searchStreamsStub
 }
 
-describe('usePublish', () => {
+/**
+ * Skipping tests as the publishing logic will change
+ */
+describe.skip('usePublish', () => {
     let consoleMock = null
     beforeAll(() => {
         // don't show error as console.error

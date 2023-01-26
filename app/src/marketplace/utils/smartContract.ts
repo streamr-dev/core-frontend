@@ -47,8 +47,7 @@ export const isContractProductUpdateRequired = (contractProduct: SmartContractPr
     const hasBeneficiaryChanged = !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress)
     const hasPricingTokenChanged =
         editProduct.pricingTokenAddress != null && !areAddressesEqual(contractProduct.pricingTokenAddress, editProduct.pricingTokenAddress)
-    const hasWhitelistChanged = editProduct.requiresWhitelist != null && contractProduct.requiresWhitelist !== editProduct.requiresWhitelist
-    return hasPriceChanged || hasBeneficiaryChanged || hasPricingTokenChanged || hasWhitelistChanged
+    return hasPriceChanged || hasBeneficiaryChanged || hasPricingTokenChanged
 }
 export const call = (method: Callable): SmartContractCall<any> => method.call()
 export const send = (

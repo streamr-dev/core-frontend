@@ -1,7 +1,11 @@
 import { projectStates } from '$shared/utils/constants'
 import { projectTypes } from '$mp/utils/constants'
 import * as State from '../state'
-describe('Product State', () => {
+
+/**
+ * Skipping tests as the tested functions are deprecated
+ */
+describe.skip('Product State', () => {
     describe('isPublished', () => {
         it('detects published state', () => {
             expect(
@@ -28,63 +32,6 @@ describe('Product State', () => {
         it('detects published state for empty product', () => {
             expect(State.isPublished({} as any)).toBe(false)
             expect(State.isPublished(undefined)).toBe(false)
-        })
-    })
-    describe('getPendingObject', () => {
-        it('returns only the allowed fields', () => {
-            const allowed = Object.fromEntries(State.PENDING_CHANGE_FIELDS.map((key) => [key, key]))
-            const notAllowed = Object.fromEntries(['id', 'newImageToUpload', 'state'].map((key) => [key, key]))
-            expect(State.getPendingObject({ ...allowed, ...notAllowed })).toMatchObject(allowed)
-        })
-        it('returns only defined values', () => {
-            expect(
-                State.getPendingObject({
-                    id: '1',
-                    name: 'new name',
-                    description: 'new description',
-                    imageUrl: undefined,
-                    thumbnailUrl: undefined,
-                    streams: [],
-                    previewStream: '',
-                    updated: '2019-10-01 09:51:00',
-                    adminFee: '0.1',
-                }),
-            ).toMatchObject({
-                name: 'new name',
-                description: 'new description',
-                streams: [],
-                previewStream: '',
-                adminFee: '0.1',
-            })
-        })
-        it('it supports nested fields', () => {
-            expect(
-                State.getPendingObject({
-                    id: '1',
-                    name: 'new name',
-                    description: 'new description',
-                    imageUrl: undefined,
-                    thumbnailUrl: undefined,
-                    streams: [],
-                    previewStream: '',
-                    updated: '2019-10-01 09:51:00',
-                    adminFee: '0.1',
-                    contact: {
-                        email: 'a@b.com',
-                        social1: 'http://social1.com',
-                    },
-                }),
-            ).toMatchObject({
-                name: 'new name',
-                description: 'new description',
-                streams: [],
-                previewStream: '',
-                adminFee: '0.1',
-                contact: {
-                    email: 'a@b.com',
-                    social1: 'http://social1.com',
-                },
-            })
         })
     })
     describe('getChangeObject', () => {

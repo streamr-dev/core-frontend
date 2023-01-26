@@ -2,7 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 import BN from 'bignumber.js'
 import Button from '$shared/components/Button'
-import { isPaidProduct } from '$mp/utils/product'
+import { isPaidProject } from '$mp/utils/product'
 import type { Project, Subscription } from '$mp/types/project-types'
 import type { Address } from '$shared/types/web3-types'
 import PaymentRate from '$mp/components/PaymentRate'
@@ -24,11 +24,8 @@ type Props = {
     isWhitelisted?: boolean | null | undefined
 }
 
-const buttonTitle = (product: Project, isValidSubscription: boolean, isWhitelisted: boolean | null | undefined) => {
-    if (isPaidProduct(product)) {
-        if (product.requiresWhitelist && isWhitelisted === false) {
-            return 'Request Access'
-        }
+const buttonTitle = (product: Project, isValidSubscription: boolean) => {
+    if (isPaidProject(product)) {
 
         return isValidSubscription ? 'Renew' : 'Subscribe'
     }
@@ -47,7 +44,6 @@ const ProductDetails = ({
     pricingTokenAddress,
     onPurchase,
     isPurchasing,
-    isWhitelisted,
 }: Props) => (
     <div className={styles.root}>
         <div
@@ -97,14 +93,13 @@ const ProductDetails = ({
                     size="big"
                     disabled={
                         isPurchasing ||
-                        isWhitelisted === null ||
-                        (!isPaidProduct(product) && isValidSubscription) ||
+                        (!isPaidProject(product) && isValidSubscription) ||
                         product.state !== projectStates.DEPLOYED
                     }
                     onClick={onPurchase}
                     waiting={isPurchasing}
                 >
-                    {buttonTitle(product, isValidSubscription, isWhitelisted)}
+                    {buttonTitle(product, isValidSubscription)}
                 </Button>
                 {product.contact && <SocialIcons className={styles.socialIcons} contactDetails={product.contact} />}
             </div>

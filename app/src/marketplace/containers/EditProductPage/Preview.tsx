@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useSelector } from 'react-redux'
 import Segment from '$shared/components/Segment'
 import { selectAllCategories } from '$mp/modules/categories/selectors'
-import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
+import { isDataUnionProduct, isPaidProject } from '$mp/utils/product'
 import useFilePreview from '$shared/hooks/useFilePreview'
 import { isEthereumAddress } from '$mp/utils/validate'
 import DescriptionComponent from '$mp/components/ProductPage/Description'
@@ -161,7 +161,7 @@ const Streams = () => {
     const streamIds = product.streams
     const streamIdSet = useMemo(() => new Set(streamIds), [streamIds])
     const selectedStreams = useMemo(() => streams.filter(({ id }) => streamIdSet.has(id)), [streamIdSet, streams])
-    const isProductFree = !!(product && !isPaidProduct(product))
+    const isProductFree = !!(product && !isPaidProject(product))
     const { isPending: fetchingAllStreams } = usePending('product.LOAD_ALL_STREAMS')
     return (
         <Segment>

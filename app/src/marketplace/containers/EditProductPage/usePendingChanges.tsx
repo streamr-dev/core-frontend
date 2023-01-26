@@ -25,7 +25,6 @@ export type PendingChangeResult = {
     hasPendingChanges: boolean,
     hasAdminFeeChanged: boolean,
     hasContractProductChanged: boolean,
-    hasRequireWhitelistChanged: boolean,
     adminFee: any,
     pricePerSecond: any,
     beneficiaryAddress: any,
@@ -54,19 +53,14 @@ export async function calculatePendingChanges(
         pendingChanges || {}
     const hasAdminFeeChanged = !!currentAdminFee && adminFee && currentAdminFee !== adminFee
     const hasContractProductChanged = !!contractProduct && isContractProductUpdateRequired(contractProduct, productWithPendingChanges)
-    const hasRequireWhitelistChanged = !!(
-        !!contractProduct &&
-        requiresWhitelist !== undefined &&
-        contractProduct.requiresWhitelist !== requiresWhitelist
-    )
+
     const hasPendingChanges =
-        Object.keys(productDataChanges).length > 0 || hasAdminFeeChanged || hasContractProductChanged || hasRequireWhitelistChanged
+        Object.keys(productDataChanges).length > 0 || hasAdminFeeChanged || hasContractProductChanged
 
     return {
         hasPendingChanges,
         hasAdminFeeChanged,
         hasContractProductChanged,
-        hasRequireWhitelistChanged,
         adminFee,
         pricePerSecond,
         beneficiaryAddress,
@@ -97,6 +91,9 @@ export function getNextMode(
     return nextMode
 }
 
+/**
+ * @deprecated
+ */
 export default function usePendingChanges() {
     const isMounted = useIsMounted()
     const { state: product } = useEditableState()
