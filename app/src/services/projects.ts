@@ -9,45 +9,51 @@ import { Address, SmartContractTransaction } from "$shared/types/web3-types"
 import { getConfigForChain } from '$shared/web3/config'
 import projectRegistryAbi from '$shared/web3/abis/projectRegistry.json'
 
-/*
-export type TheGraphProject = {
-    id: string,
-    paymentDetails {
-        domainId,
-        beneficiary
-        pricingTokenAddress
-        pricePerSecond
-    }
-    minimumSubscriptionSeconds: string,
-    subscriptions {
-        userAddress
-        endTimestamp
-    }
-    metadata
-    version
-    streams
-    permissions {
-        userAddress
-        canBuy
-        canDelete
-        canEdit
-        canGrant
-    }
-    createdAt
-    updatedAt
-    purchases {
-        subscriber
-        subscriptionSeconds
-        price
-        fee
-    }
-    purchasesCount
-}
-*/
-
 const getGraphUrl = () => {
     const { theGraphUrl, theHubGraphName } = getCoreConfig()
     return `${theGraphUrl}/${theHubGraphName}`
+}
+
+export type TheGraphPaymentDetails = {
+    domainId: string,
+    beneficiary: string,
+    pricingTokenAddress: string,
+    pricePerSecond: string,
+}
+
+export type TheGraphSubscription = {
+    userAddress: string,
+    endTimestamp: string,
+}
+
+export type TheGraphPermission = {
+    userAddress: string,
+    canBuy: boolean,
+    canDelete: boolean,
+    canEdit: boolean,
+    canGrant: boolean,
+}
+
+export type TheGraphPurchase = {
+    subscriber: string,
+    subscriptionSeconds: string,
+    price: string,
+    fee: string,
+}
+
+export type TheGraphProject = {
+    id: string,
+    paymentDetails: TheGraphPaymentDetails[],
+    minimumSubscriptionSeconds: string,
+    subscriptions: TheGraphSubscription[],
+    metadata: string,
+    version: number | null,
+    streams: string[],
+    permissions: TheGraphPermission[],
+    createdAt: string,
+    updatedAt: string,
+    purchases: TheGraphPurchase[],
+    purchasesCount: number,
 }
 
 const projectFields = `
@@ -84,7 +90,7 @@ const projectFields = `
     purchasesCount
 `
 
-export const getAllProjects = async () => {
+export const getAllProjects = async (): Promise<TheGraphProject[]> => {
     const theGraphUrl = getGraphUrl()
 
     const result = await post({
@@ -104,7 +110,7 @@ export const getAllProjects = async () => {
     return result.data.projects
 }
 
-export const searchProjects = async (search: string) => {
+export const searchProjects = async (search: string): Promise<TheGraphProject[]> => {
     const theGraphUrl = getGraphUrl()
 
     const result = await post({
@@ -233,7 +239,6 @@ export const addStreamToProject = (projectId: string, streamId: string, chainId:
         projectId,
         streamId,
     )
-    console.log(methodToSend)
     return send(methodToSend, {
         network: chainId,
         gas: 8e6,
