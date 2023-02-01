@@ -355,8 +355,8 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: Marke
             })}
         >
             <Summary
-                name={product.name}
-                description={product.owner}
+                name={product.metadata.name}
+                description={product.metadata.description}
             />
         </Link>
     </Tile>

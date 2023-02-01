@@ -4,9 +4,9 @@ import styled from 'styled-components'
 import { Row, Container as RsContainer, Col } from 'reactstrap'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { MarketplaceProductTile as UnstyledMarketplaceProductTile } from '$shared/components/Tile'
-import { MD, REGULAR, DESKTOP, COLORS, TABLET } from '$shared/utils/styled'
+import { REGULAR, DESKTOP, COLORS, TABLET } from '$shared/utils/styled'
 import Button from '$shared/components/Button'
-import type { ProjectList } from '../../types/project-types'
+import { TheGraphProject } from '$app/src/services/projects'
 import ProductPageSpinner from '../ProductPageSpinner'
 import Error from '../Error'
 import { getErrorView, getCols } from './settings'
@@ -15,7 +15,7 @@ import styles from './projects.pcss'
 export type ProjectTilePropType = 'projects' | 'relatedProjects'
 
 export type OwnProps = {
-    projects: ProjectList
+    projects: TheGraphProject[]
     type: ProjectTilePropType
     error?: any
     isFetching?: boolean

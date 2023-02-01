@@ -56,6 +56,28 @@ export type TheGraphProject = {
     purchasesCount: number,
 }
 
+export type PaymentDetails = {
+    chainId: number,
+    beneficiaryAddress: Address,
+    pricePerSecond: number,
+    pricingTokenAddress: Address,
+}
+
+export type SmartContractProject = {
+    id: string,
+    paymentDetails: PaymentDetails[],
+    minimumSubscriptionInSeconds: number,
+    isPublicPurchasable: boolean,
+    metadata: string,
+    chainId: number,
+}
+
+type SmartContractPaymentDetails = {
+    beneficiary: string,
+    pricePerSecond: number,
+    pricingTokenAddress: string,
+}
+
 const projectFields = `
     id
     paymentDetails {
@@ -90,15 +112,34 @@ const projectFields = `
     purchasesCount
 `
 
-export const getAllProjects = async (): Promise<TheGraphProject[]> => {
+const mapProject = (project: any): TheGraphProject => {
+    try {
+        const metadata = JSON.parse(project.metadata)
+        project.metadata = metadata
+    } catch (e) {
+        console.error(`Could not parse metadata for project ${project.id}`, e)
+        project.metadata = {}
+    }
+
+    return project as TheGraphProject
+}
+
+export const getProjects = async (owner?: string, first = 20, skip = 0): Promise<TheGraphProject[]> => {
     const theGraphUrl = getGraphUrl()
+
+    const ownerFilter = owner != null ? `permissions_: { userAddress: "${owner}", canGrant: true }` : null
+    const allFilters = [ownerFilter].join(',')
 
     const result = await post({
         url: theGraphUrl,
         data: {
             query: `
                 query {
-                    projects {
+                    projects(
+                        first: ${first},
+                        skip: ${skip},
+                        ${allFilters != null && `where: { ${allFilters} }`},
+                    ) {
                         ${projectFields}
                     }
                 }
@@ -107,10 +148,10 @@ export const getAllProjects = async (): Promise<TheGraphProject[]> => {
         useAuthorization: false,
     })
 
-    return result.data.projects
+    return result.data.projects.map((p) => mapProject(p))
 }
 
-export const searchProjects = async (search: string): Promise<TheGraphProject[]> => {
+export const searchProjects = async (search: string, first = 20, skip = 0): Promise<TheGraphProject[]> => {
     const theGraphUrl = getGraphUrl()
 
     const result = await post({
@@ -118,7 +159,11 @@ export const searchProjects = async (search: string): Promise<TheGraphProject[]>
         data: {
             query: `
                 query {
-                    projectSearch(text: "${search}") {
+                    projectSearch(
+                        first: ${first},
+                        skip: ${skip},
+                        text: "${search}",
+                    ) {
                         ${projectFields}
                     }
                 }
@@ -127,10 +172,10 @@ export const searchProjects = async (search: string): Promise<TheGraphProject[]>
         useAuthorization: false,
     })
 
-    return result.data.projectSearch
+    return result.data.projectSearch.map((p) => mapProject(p))
 }
 
-export const projectRegistryContract = (usePublicNode = false, chainId: number): Contract => {
+const projectRegistryContract = (usePublicNode = false, chainId: number): Contract => {
     const { contracts } = getConfigForChain(chainId)
     const address = contracts.ProjectRegistry
 
@@ -140,28 +185,6 @@ export const projectRegistryContract = (usePublicNode = false, chainId: number):
 
     const contract = getContract({ abi: projectRegistryAbi as AbiItem[], address}, usePublicNode, chainId)
     return contract
-}
-
-export type PaymentDetails = {
-    chainId: number,
-    beneficiaryAddress: Address,
-    pricePerSecond: number,
-    pricingTokenAddress: Address,
-}
-
-export type SmartContractProject = {
-    id: string,
-    paymentDetails: PaymentDetails[],
-    minimumSubscriptionInSeconds: number,
-    isPublicPurchasable: boolean,
-    metadata: string,
-    chainId: number,
-}
-
-type SmartContractPaymentDetails = {
-    beneficiary: string,
-    pricePerSecond: number,
-    pricingTokenAddress: string,
 }
 
 const getDomainIds = (paymentDetails: PaymentDetails[]): number[] => {

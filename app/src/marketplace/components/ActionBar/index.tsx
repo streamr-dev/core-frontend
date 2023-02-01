@@ -125,14 +125,16 @@ const UnstyledActionBar = ({
                     />
                     <DropdownFilters>
                         <span>Filter by</span>
-                        <SelectFieldWrap>
-                            <SelectField2
-                                placeholder={'Category'}
-                                options={categoryOptions}
-                                value={category}
-                                onChange={onCategoryChange}
-                            />
-                        </SelectFieldWrap>
+                        {categoryOptions != null && categoryOptions.length > 0 && (
+                            <SelectFieldWrap>
+                                <SelectField2
+                                    placeholder={'Category'}
+                                    options={categoryOptions}
+                                    value={category}
+                                    onChange={onCategoryChange}
+                                />
+                            </SelectFieldWrap>
+                        )}
                         <SelectFieldWrap>
                             <SelectField2
                                 placeholder={'Project type'}
