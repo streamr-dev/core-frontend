@@ -43,12 +43,13 @@ export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode
     return new web3.eth.Contract(abi, address)
 }
 export const isContractProductUpdateRequired = (contractProduct: SmartContractProduct, editProduct: Project): boolean => {
-    const hasPriceChanged = !arePricesEqual(contractProduct.pricePerSecond, editProduct.pricePerSecond)
+    /*const hasPriceChanged = !arePricesEqual(contractProduct.pricePerSecond, editProduct.pricePerSecond)
     const hasBeneficiaryChanged = !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress)
     const hasPricingTokenChanged =
         editProduct.pricingTokenAddress != null && !areAddressesEqual(contractProduct.pricingTokenAddress, editProduct.pricingTokenAddress)
-    const hasWhitelistChanged = editProduct.requiresWhitelist != null && contractProduct.requiresWhitelist !== editProduct.requiresWhitelist
-    return hasPriceChanged || hasBeneficiaryChanged || hasPricingTokenChanged || hasWhitelistChanged
+    return hasPriceChanged || hasBeneficiaryChanged || hasPricingTokenChanged*/
+    // TODO provide new implementation
+    return true
 }
 export const call = (method: Callable): SmartContractCall<any> => method.call()
 export const send = (

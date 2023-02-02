@@ -1,21 +1,22 @@
 import BN from 'bignumber.js'
 import { projectStates } from '$shared/utils/constants'
 import * as all from '$mp/utils/product'
+import { Project, SalePoint } from '$mp/types/project-types'
+import { ProjectTypeEnum } from '$mp/utils/constants'
+
 describe('product utils', () => {
     describe('isPaidProduct', () => {
         it('detects a free product', () => {
             const product = {
-                isFree: true,
-                pricePerSecond: 0,
-            } as any
-            expect(all.isPaidProduct(product)).toBe(false)
+                type: ProjectTypeEnum.OPEN_DATA
+            } as Project
+            expect(all.isPaidProject(product)).toBe(false)
         })
         it('detects a paid product', () => {
             const product = {
-                isFree: false,
-                pricePerSecond: 1000,
-            } as any
-            expect(all.isPaidProduct(product)).toBe(true)
+                type: ProjectTypeEnum.PAID_DATA
+            } as Project
+            expect(all.isPaidProject(product)).toBe(true)
         })
     })
     describe('isDataUnionProduct', () => {
@@ -108,19 +109,6 @@ describe('product utils', () => {
             )
         })
     })
-    describe('mapProductFromApi', () => {
-        it('maps product properties', () => {
-            const inProduct = {
-                name: 'test',
-                pricePerSecond: '1',
-            } as any
-            const outProduct = {
-                name: 'test',
-                pricePerSecond: '1',
-            } as any
-            expect(all.mapProductFromApi(inProduct)).toStrictEqual(outProduct)
-        })
-    })
     describe('mapProductToPostApi', () => {
         it('maps product properties', () => {
             const inProduct = {
@@ -135,14 +123,6 @@ describe('product utils', () => {
             } as any
             expect(all.mapProductToPostApi(inProduct)).toStrictEqual(outProduct)
         })
-        it('rejects invalid objects', () => {
-            const inProduct = {
-                name: 'test',
-                pricePerSecond: 1,
-                priceCurrency: 'EUR',
-            } as any
-            expect(() => all.mapProductToPostApi(inProduct)).toThrow()
-        })
     })
     describe('mapProductToPutApi', () => {
         it('returns the same object for unpaid product', () => {
@@ -150,14 +130,12 @@ describe('product utils', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                pricePerSecond: '0',
                 state: projectStates.DEPLOYED,
             } as any
             expect(all.mapProductToPutApi(product)).toMatchObject({
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                pricePerSecond: '0',
                 state: projectStates.DEPLOYED,
             })
         })
@@ -168,7 +146,6 @@ describe('product utils', () => {
                 description: 'My nice product',
                 pricePerSecond: '1',
                 beneficiaryAddress: '0x12334',
-                isFree: false,
                 state: projectStates.NOT_DEPLOYED,
             } as any
             expect(all.mapProductToPutApi(product)).toMatchObject({
@@ -177,7 +154,6 @@ describe('product utils', () => {
                 description: 'My nice product',
                 pricePerSecond: '1',
                 beneficiaryAddress: '0x12334',
-                isFree: false,
                 state: projectStates.NOT_DEPLOYED,
             })
         })
@@ -257,7 +233,6 @@ describe('product utils', () => {
                 beneficiary: '0x1337',
                 currency: 0,
                 state: 0,
-                requiresWhitelist: true,
                 pricingTokenAddress: '0x1337',
             } as any
             const outProduct = {
@@ -268,7 +243,6 @@ describe('product utils', () => {
                 ownerAddress: '0x123',
                 beneficiaryAddress: '0x1337',
                 state: 'NOT_DEPLOYED',
-                requiresWhitelist: true,
                 pricingTokenAddress: '0x1337',
                 pricingTokenDecimals: 18,
                 chainId: 1337,
@@ -327,344 +301,255 @@ describe('product utils', () => {
         it('validates empty product free data product', () => {
             expect(
                 all.validate({
-                    type: 'NORMAL',
-                    isFree: true,
-                } as any),
+                    type: ProjectTypeEnum.OPEN_DATA,
+                } as Project),
             ).toStrictEqual({
                 name: true,
                 description: true,
                 imageUrl: true,
                 streams: true,
-                pricePerSecond: false,
-                beneficiaryAddress: false,
-                adminFee: false,
-                termsOfUse: false,
-                'contact.email': false,
-                pricingTokenAddress: false,
-            })
-        })
-        it('validates empty product free data union', () => {
-            expect(
-                all.validate({
-                    type: 'DATAUNION',
-                    isFree: true,
-                } as any),
-            ).toStrictEqual({
-                name: true,
-                description: true,
-                imageUrl: true,
-                streams: true,
-                pricePerSecond: false,
-                beneficiaryAddress: false,
-                adminFee: true,
-                termsOfUse: false,
-                'contact.email': false,
-                pricingTokenAddress: false,
-            })
-        })
-        it('validates empty product free data union (eth identity required)', () => {
-            expect(
-                all.validate(
-                    {
-                        type: 'DATAUNION',
-                        isFree: true,
-                    } as any,
-                ),
-            ).toStrictEqual({
-                name: true,
-                description: true,
-                imageUrl: true,
-                streams: true,
-                pricePerSecond: false,
-                beneficiaryAddress: false,
-                adminFee: true,
-                termsOfUse: false,
-                'contact.email': false,
-                pricingTokenAddress: false,
+                termsOfUse: false
             })
         })
         it('validates empty product paid data product', () => {
             expect(
                 all.validate({
-                    type: 'NORMAL',
-                    isFree: false,
-                } as any),
+                    type: ProjectTypeEnum.PAID_DATA,
+                } as Project),
             ).toStrictEqual({
                 name: true,
                 description: true,
                 imageUrl: true,
                 streams: true,
-                pricePerSecond: true,
-                beneficiaryAddress: true,
-                adminFee: false,
-                termsOfUse: false,
-                'contact.email': false,
-                pricingTokenAddress: true,
+                salePoints: true,
+                termsOfUse: false
             })
         })
         it('validates empty product paid data union', () => {
             expect(
                 all.validate({
-                    type: 'DATAUNION',
-                    isFree: false,
-                } as any),
+                    type: ProjectTypeEnum.DATA_UNION,
+                } as Project),
             ).toStrictEqual({
                 name: true,
                 description: true,
                 imageUrl: true,
                 streams: true,
-                pricePerSecond: true,
-                beneficiaryAddress: false,
                 adminFee: true,
-                termsOfUse: false,
-                'contact.email': false,
-                pricingTokenAddress: true,
+                dataUnionChainId: true,
+                salePoints: true,
+                termsOfUse: false
             })
         })
         it('validates name & description', () => {
             expect(
                 all.validate({
-                    type: 'NORMAL',
+                    type: ProjectTypeEnum.OPEN_DATA,
                     name: 'new name',
                     description: 'new description',
-                } as any),
+                } as Project),
             ).toStrictEqual({
                 name: false,
                 description: false,
                 imageUrl: true,
                 streams: true,
-                pricePerSecond: false,
-                beneficiaryAddress: false,
-                adminFee: false,
                 termsOfUse: false,
-                'contact.email': false,
-                pricingTokenAddress: false,
             })
         })
         it('validates image', () => {
             expect(
                 all.validate({
-                    type: 'NORMAL',
+                    type: ProjectTypeEnum.OPEN_DATA,
                     imageUrl: 'http://...',
-                } as any),
+                } as Project),
             ).toStrictEqual({
                 name: true,
                 description: true,
                 imageUrl: false,
                 streams: true,
-                pricePerSecond: false,
-                beneficiaryAddress: false,
-                adminFee: false,
                 termsOfUse: false,
-                'contact.email': false,
-                pricingTokenAddress: false,
             })
             expect(
                 all.validate({
-                    type: 'NORMAL',
-                    newImageToUpload: 'blob',
-                } as any),
+                    type: ProjectTypeEnum.OPEN_DATA,
+                    newImageToUpload: new File(['loremipsum'], 'foobar'),
+                } as Project),
             ).toStrictEqual({
                 name: true,
                 description: true,
                 imageUrl: false,
                 streams: true,
-                pricePerSecond: false,
-                beneficiaryAddress: false,
-                adminFee: false,
-                termsOfUse: false,
-                'contact.email': false,
-                pricingTokenAddress: false,
+                termsOfUse: false
             })
         })
         it('validates streams', () => {
             expect(
                 all.validate({
-                    type: 'NORMAL',
+                    type: ProjectTypeEnum.OPEN_DATA,
                     streams: ['1', '2'],
-                } as any),
+                } as Project),
             ).toStrictEqual({
                 name: true,
                 description: true,
                 imageUrl: true,
                 streams: false,
-                pricePerSecond: false,
-                beneficiaryAddress: false,
-                adminFee: false,
-                termsOfUse: false,
-                'contact.email': false,
-                pricingTokenAddress: false,
+                termsOfUse: false
             })
         })
-        it('validates admin fee', () => {
+        it('validates data union required fields', () => {
             expect(
                 all.validate({
-                    type: 'DATAUNION',
-                    adminFee: 0.3,
-                } as any),
+                    type: ProjectTypeEnum.DATA_UNION,
+                    adminFee: '0.3',
+                    dataUnionChainId: 123
+                } as Project),
             ).toStrictEqual({
                 name: true,
                 description: true,
                 imageUrl: true,
                 streams: true,
-                pricePerSecond: false,
-                beneficiaryAddress: false,
                 adminFee: false,
+                dataUnionChainId: false,
+                salePoints: true,
                 termsOfUse: false,
-                'contact.email': false,
-                pricingTokenAddress: false,
             })
             expect(
                 all.validate({
-                    type: 'DATAUNION',
-                    adminFee: 0,
-                } as any),
+                    type: ProjectTypeEnum.DATA_UNION,
+                    adminFee: '0',
+                    dataUnionChainId: 123
+                } as Project),
             ).toStrictEqual({
                 name: true,
                 description: true,
                 imageUrl: true,
                 streams: true,
-                pricePerSecond: false,
-                beneficiaryAddress: false,
                 adminFee: false,
+                dataUnionChainId: false,
+                salePoints: true,
                 termsOfUse: false,
-                'contact.email': false,
-                pricingTokenAddress: false,
             })
             expect(
                 all.validate({
-                    type: 'DATAUNION',
-                    adminFee: 1.1,
-                } as any),
+                    type: ProjectTypeEnum.DATA_UNION,
+                    adminFee: '1.1',
+                    dataUnionChainId: null
+                } as Project),
             ).toStrictEqual({
                 name: true,
                 description: true,
                 imageUrl: true,
                 streams: true,
-                pricePerSecond: false,
-                beneficiaryAddress: false,
                 adminFee: true,
+                dataUnionChainId: true,
+                salePoints: true,
                 termsOfUse: false,
-                'contact.email': false,
-                pricingTokenAddress: false,
             })
         })
-        it('validates beneficiary address', () => {
-            expect(
-                all.validate({
-                    type: 'NORMAL',
-                    isFree: false,
-                    beneficiaryAddress: 'invalidAddress',
-                } as any),
-            ).toStrictEqual({
+
+        describe('sale points', () => {
+            const expectedValidationResult = {
                 name: true,
                 description: true,
                 imageUrl: true,
                 streams: true,
-                pricePerSecond: true,
-                beneficiaryAddress: true,
-                adminFee: false,
                 termsOfUse: false,
-                'contact.email': false,
-                pricingTokenAddress: true,
-            })
-            expect(
-                all.validate({
-                    type: 'NORMAL',
-                    isFree: false,
-                    beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
-                } as any),
-            ).toStrictEqual({
-                name: true,
-                description: true,
-                imageUrl: true,
-                streams: true,
-                pricePerSecond: true,
-                beneficiaryAddress: false,
-                adminFee: false,
-                termsOfUse: false,
-                'contact.email': false,
-                pricingTokenAddress: true,
-            })
-        })
-        it('validates price', () => {
-            expect(
-                all.validate({
-                    type: 'NORMAL',
-                    isFree: false,
-                    pricePerSecond: '-10',
-                    pricingTokenAddress: '0xbAA81A0179015bE47Ad439566374F2Bae098686F',
-                } as any),
-            ).toStrictEqual({
-                name: true,
-                description: true,
-                imageUrl: true,
-                streams: true,
-                pricePerSecond: true,
-                beneficiaryAddress: true,
-                adminFee: false,
-                termsOfUse: false,
-                'contact.email': false,
-                pricingTokenAddress: false,
-            })
-            expect(
-                all.validate({
-                    type: 'NORMAL',
-                    isFree: false,
-                    pricePerSecond: '123',
-                    pricingTokenAddress: '0xbAA81A0179015bE47Ad439566374F2Bae098686F',
-                } as any),
-            ).toStrictEqual({
-                name: true,
-                description: true,
-                imageUrl: true,
-                streams: true,
-                pricePerSecond: false,
-                beneficiaryAddress: true,
-                adminFee: false,
-                termsOfUse: false,
-                'contact.email': false,
-                pricingTokenAddress: false,
-            })
-        })
-        it('validates pricingTokenAddress', () => {
-            expect(
-                all.validate({
-                    type: 'NORMAL',
-                    isFree: false,
-                    pricePerSecond: '123',
-                    pricingTokenAddress: '0x1233',
-                } as any),
-            ).toStrictEqual({
-                name: true,
-                description: true,
-                imageUrl: true,
-                streams: true,
-                pricePerSecond: false,
-                beneficiaryAddress: true,
-                adminFee: false,
-                termsOfUse: false,
-                'contact.email': false,
-                pricingTokenAddress: true,
-            })
-            expect(
-                all.validate({
-                    type: 'NORMAL',
-                    isFree: false,
-                    pricePerSecond: '123',
-                    pricingTokenAddress: '0xbAA81A0179015bE47Ad439566374F2Bae098686F',
-                } as any),
-            ).toStrictEqual({
-                name: true,
-                description: true,
-                imageUrl: true,
-                streams: true,
-                pricePerSecond: false,
-                beneficiaryAddress: true,
-                adminFee: false,
-                termsOfUse: false,
-                'contact.email': false,
-                pricingTokenAddress: false,
+            }
+            const defaultSalePointChainName = 'polygon'
+            const defaultSalePoint: SalePoint = {
+                chainId: 12345,
+                pricePerSecond: '10',
+                pricingTokenAddress: '0xbAA81A0179015bE47Ad439566374F2Bae098686F',
+                beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
+                price: '3600',
+                timeUnit: 'hour'
+            };
+            [
+                {
+                    description: 'invalid pricePerSecond',
+                    project: {
+                        type: ProjectTypeEnum.PAID_DATA,
+                        salePoints: {
+                            [defaultSalePointChainName] : {
+                                ...defaultSalePoint,
+                                pricePerSecond: '-10'
+                            }
+                        }
+                    },
+                    expectedInvalidField: 'pricePerSecond'
+                },
+                {
+                    description: 'invalid beneficiaryAddress',
+                    project: {
+                        type: ProjectTypeEnum.PAID_DATA,
+                        salePoints: {
+                            [defaultSalePointChainName] : {
+                                ...defaultSalePoint,
+                                beneficiaryAddress: 'loremIpsum'
+                            }
+                        }
+                    },
+                    expectedInvalidField: 'beneficiaryAddress'
+                },
+                {
+                    description: 'invalid pricingTokenAddress',
+                    project: {
+                        type: ProjectTypeEnum.PAID_DATA,
+                        salePoints: {
+                            [defaultSalePointChainName] : {
+                                ...defaultSalePoint,
+                                pricingTokenAddress: '0xa3934kd'
+                            }
+                        }
+                    },
+                    expectedInvalidField: 'pricingTokenAddress'
+                },
+                {
+                    description: 'invalid chain',
+                    project: {
+                        type: ProjectTypeEnum.PAID_DATA,
+                        salePoints: {
+                            [defaultSalePointChainName] : {
+                                ...defaultSalePoint,
+                                chainId: undefined
+                            }
+                        }
+                    },
+                    expectedInvalidField: 'chainId'
+                },
+                {
+                    description: 'invalid price',
+                    project: {
+                        type: ProjectTypeEnum.PAID_DATA,
+                        salePoints: {
+                            [defaultSalePointChainName] : {
+                                ...defaultSalePoint,
+                                price: '0'
+                            }
+                        }
+                    },
+                    expectedInvalidField: 'price'
+                },
+                {
+                    description: 'invalid timeUnit',
+                    project: {
+                        type: ProjectTypeEnum.PAID_DATA,
+                        salePoints: {
+                            [defaultSalePointChainName] : {
+                                ...defaultSalePoint,
+                                timeUnit: '5',
+                            }
+                        }
+                    },
+                    expectedInvalidField: 'timeUnit'
+                }
+            ].forEach((testCase) => {
+                it(`should properly validate the ${testCase.description}`, () => {
+                    expect(all.validate(testCase.project as unknown as Project)).toStrictEqual({
+                        ...expectedValidationResult,
+                        [`salePoints.${defaultSalePointChainName}.${testCase.expectedInvalidField}`]: true
+                    })
+                })
             })
         })
     })

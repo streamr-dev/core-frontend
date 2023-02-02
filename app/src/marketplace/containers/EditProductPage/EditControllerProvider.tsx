@@ -15,15 +15,16 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
-import useEditableState from '$shared/contexts/Undo/useEditableState'
 import useModal from '$shared/hooks/useModal'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { getChainIdFromApiString } from '$shared/utils/chains'
+import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
+import { ProjectState } from '$mp/types/project-types'
 import routes from '$routes'
 import * as State from '../EditProductPage/state'
 import { useController } from '../ProductController'
-import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
+import { useEditableProjectActions } from '../ProductController/useEditableProjectActions'
 
 type ContextProps = {
     isPreview?: boolean
@@ -38,6 +39,10 @@ type ContextProps = {
 }
 const EditControllerContext: Context<ContextProps> = React.createContext<ContextProps>({})
 
+/**
+ * TODO - update the implementation after model change. A lot of code was temporarily commented out
+ * @param product
+ */
 function useEditController(product: Project) {
     const location = useLocation()
     const history = useHistory()
@@ -48,17 +53,17 @@ function useEditController(product: Project) {
     const lastSectionRef = useRef(undefined)
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
-    const { updateBeneficiaryAddress } = useEditableProductActions()
     const { product: originalProduct } = useController()
-    const { replaceState, state } = useEditableState()
+    const { updateState, state } = useContext(ProjectStateContext)
     const [dataUnionStats, setDataUnionStats] = useState<DataUnionStats>(null)
     const [publishAttempted, setPublishAttempted] = useState(!!(qs.parse(location.search).publishAttempted || ''))
     usePreventNavigatingAway('You have unsaved changes', isAnyTouched)
     const { dataUnionPublishMemberLimit } = getCoreConfig()
     const productRef = useRef(product)
     productRef.current = product
-    const chainId = product && product.chain && getChainIdFromApiString(product.chain)
-    const nextAddress = state && (state.existingDUAddress || state.beneficiaryAddress)
+    const chainId = product && product.dataUnionChainId
+    // const nextAddress = state && (state.existingDUAddress || state.beneficiaryAddress)
+    const nextAddress = state && state.existingDUAddress
 
     const errors = useMemo(
         () =>
@@ -134,7 +139,7 @@ function useEditController(product: Project) {
                         nextProduct.imageUrl = newImageUrl
                         nextProduct.thumbnailUrl = newThumbnailUrl
                         delete nextProduct.newImageToUpload
-                        replaceState(() => nextProduct)
+                        updateState(nextProduct)
                     } catch (e) {
                         console.error('Could not upload image', e)
                     }
@@ -161,7 +166,7 @@ function useEditController(product: Project) {
                 redirectToProductList()
             }
         },
-        [savePending, redirectToProductList, originalProduct, replaceState, resetTouched],
+        [savePending, redirectToProductList, originalProduct, updateState, resetTouched],
     )
     const validate = useCallback(() => {
         // Notify missing fields
@@ -205,10 +210,10 @@ function useEditController(product: Project) {
             }
 
             if (started) {
-                replaceState((prevProduct) => ({
-                    ...prevProduct,
-                    state: isUnpublish ? projectStates.UNDEPLOYING : projectStates.DEPLOYING,
-                }))
+                updateState({
+                    ...state,
+                    state: (isUnpublish ? projectStates.UNDEPLOYING : projectStates.DEPLOYING) as ProjectState,
+                })
             }
 
             if (succeeded && (isUnpublish || !showPublishedProduct)) {
@@ -223,15 +228,15 @@ function useEditController(product: Project) {
         publishDialog,
         redirectToProductList,
         redirectToProduct,
-        replaceState,
+        updateState,
         isMounted,
         dataUnionPublishMemberLimit,
         dataUnionStats,
         nextAddress
     ])
-    const updateBeneficiary = useCallback(
+    /*const updateBeneficiary = useCallback(
         async (address) => {
-            const { beneficiaryAddress } = productRef.current
+            // const { beneficiaryAddress } = productRef.current
 
             if ((!address || isEthereumAddress(address)) && (!beneficiaryAddress || !areAddressesEqual(beneficiaryAddress, address))) {
                 updateBeneficiaryAddress(address, false)
@@ -257,7 +262,7 @@ function useEditController(product: Project) {
             })
             const dataUnionCreated = await deployDataUnionDialog.open({
                 product: productRef.current,
-                updateAddress: updateBeneficiary,
+                // updateAddress: updateBeneficiary,
             })
 
             // TODO: doesn't save unless dialog closed
@@ -297,7 +302,7 @@ function useEditController(product: Project) {
             publishAttempted,
         }),
         [isPreview, setIsPreview, validate, back, save, publish, deployDataUnion, lastSectionRef, publishAttempted],
-    )
+    )*/
 }
 
 type ControllerProps = {
@@ -306,7 +311,7 @@ type ControllerProps = {
 }
 
 function EditControllerProvider({ children, product }: ControllerProps) {
-    return <EditControllerContext.Provider value={useEditController(product)}>{children || null}</EditControllerContext.Provider>
+    return <EditControllerContext.Provider value={useEditController(product) as unknown}>{children || null}</EditControllerContext.Provider>
 }
 
 export { EditControllerContext as Context, EditControllerProvider as Provider }

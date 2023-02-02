@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { projectTypes } from '$mp/utils/constants'
+import { ProjectTypeEnum } from '$mp/utils/constants'
 import openDataImage from '$mp/assets/open-data.png'
 import openDataImage2x from '$mp/assets/open-data@2x.png'
 import paidDataImage from '$mp/assets/paid-data.png'
@@ -161,45 +161,17 @@ const ButtonContainer = styled.div`
   margin-top: 40px;
 `
 
-enum ProjectTypesEnum {
-    openData = 'openData',
-    paidData = 'paidData',
-    dataUnion = 'dataUnion'
-}
-
 export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose: () => void}> = ({className, onClose}) => {
-
-    // todo check if user has streams and disable if doesn't
     const fetchStreams = useFetchStreams()
     const [streamsCount, setStreamsCount] = useState<number>()
 
-    const [selectedProductType, setSelectedProductType] = useState<ProjectTypesEnum>()
+    const [selectedProductType, setSelectedProductType] = useState<ProjectTypeEnum>()
 
     const link = useMemo<string>(() => {
         if (!selectedProductType) {
             return null
         }
-        let params: {type: string, isFree?: boolean}
-        switch (selectedProductType) {
-            case ProjectTypesEnum.dataUnion:
-                params = {
-                    type: projectTypes.DATAUNION,
-                }
-                break
-            case ProjectTypesEnum.openData:
-                params = {
-                    type: projectTypes.NORMAL,
-                    isFree: true
-                }
-                break
-            case ProjectTypesEnum.paidData:
-                params = {
-                    type: projectTypes.NORMAL,
-                    isFree: false
-                }
-                break
-        }
-        return routes.products.new(params)
+        return routes.products.new({type: selectedProductType})
     }, [selectedProductType])
 
     useEffect(() => {
@@ -216,7 +188,7 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
             </CloseButton>
         </PageTitleContainer>
         <ProductChoices>
-            <Product onClick={() => setSelectedProductType(ProjectTypesEnum.openData)}>
+            <Product onClick={() => setSelectedProductType(ProjectTypeEnum.OPEN_DATA)}>
                 <ProductTitle>Open Data</ProductTitle>
                 <ProductImage>
                     <img src={openDataImage} srcSet={`${openDataImage2x} 2x`} alt="Open Data"/>
@@ -226,12 +198,12 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
                         name={'productType'}
                         size={'large'}
                         label={''}
-                        value={ProjectTypesEnum.openData}
+                        value={ProjectTypeEnum.OPEN_DATA}
                         onChange={setSelectedProductType}
-                        checked={selectedProductType === ProjectTypesEnum.openData}/>
+                        checked={selectedProductType === ProjectTypeEnum.OPEN_DATA}/>
                 </RadioWrap>
             </Product>
-            <Product onClick={() => setSelectedProductType(ProjectTypesEnum.paidData)}>
+            <Product onClick={() => setSelectedProductType(ProjectTypeEnum.PAID_DATA)}>
                 <ProductTitle>Paid Data</ProductTitle>
                 <ProductImage>
                     <img src={paidDataImage} srcSet={`${paidDataImage2x} 2x`} alt="Paid Data"/>
@@ -241,12 +213,12 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
                         name={'productType'}
                         size={'large'}
                         label={''}
-                        value={ProjectTypesEnum.paidData}
+                        value={ProjectTypeEnum.PAID_DATA}
                         onChange={setSelectedProductType}
-                        checked={selectedProductType === ProjectTypesEnum.paidData}/>
+                        checked={selectedProductType === ProjectTypeEnum.PAID_DATA}/>
                 </RadioWrap>
             </Product>
-            <Product onClick={() => setSelectedProductType(ProjectTypesEnum.dataUnion)}>
+            <Product onClick={() => setSelectedProductType(ProjectTypeEnum.DATA_UNION)}>
                 <ProductTitle>Data Union</ProductTitle>
                 <ProductImage>
                     <img src={dataUnionImage} srcSet={`${dataUnionImage2x} 2x`} alt="Data Union"/>
@@ -256,9 +228,9 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
                         name={'productType'}
                         size={'large'}
                         label={''}
-                        value={ProjectTypesEnum.dataUnion}
+                        value={ProjectTypeEnum.DATA_UNION}
                         onChange={setSelectedProductType}
-                        checked={selectedProductType === ProjectTypesEnum.dataUnion}/>
+                        checked={selectedProductType === ProjectTypeEnum.DATA_UNION}/>
                 </RadioWrap>
             </Product>
         </ProductChoices>

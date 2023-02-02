@@ -12,6 +12,11 @@ type Props = {
     disabled?: boolean
 }
 
+/**
+ * @deprecated
+ * @param disabled
+ * @constructor
+ */
 const PriceSelector = ({ disabled }: Props) => {
     const isMounted = useRef(false)
     const { state: product } = useEditableState()

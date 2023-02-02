@@ -2,16 +2,18 @@ import React from 'react'
 import cx from 'classnames'
 import BN from 'bignumber.js'
 import Button from '$shared/components/Button'
-import { isPaidProduct } from '$mp/utils/product'
+import { isPaidProject } from '$mp/utils/product'
 import type { Project, Subscription } from '$mp/types/project-types'
 import type { Address } from '$shared/types/web3-types'
 import PaymentRate from '$mp/components/PaymentRate'
 import ExpirationCounter from '$mp/components/ExpirationCounter'
-import { timeUnits, projectStates } from '$shared/utils/constants'
+import { projectStates, timeUnits } from '$shared/utils/constants'
 import { formatChainName, getChainIdFromApiString } from '$shared/utils/chains'
+import { ProjectTypeEnum } from '$mp/utils/constants'
 import NetworkIcon from '$shared/components/NetworkIcon'
 import SocialIcons from './SocialIcons'
 import styles from './productDetails2.pcss'
+
 type Props = {
     product: Project
     isValidSubscription: boolean
@@ -22,11 +24,8 @@ type Props = {
     isWhitelisted?: boolean | null | undefined
 }
 
-const buttonTitle = (product: Project, isValidSubscription: boolean, isWhitelisted: boolean | null | undefined) => {
-    if (isPaidProduct(product)) {
-        if (product.requiresWhitelist && isWhitelisted === false) {
-            return 'Request Access'
-        }
+const buttonTitle = (product: Project, isValidSubscription: boolean) => {
+    if (isPaidProject(product)) {
 
         return isValidSubscription ? 'Renew' : 'Subscribe'
     }
@@ -45,7 +44,6 @@ const ProductDetails = ({
     pricingTokenAddress,
     onPurchase,
     isPurchasing,
-    isWhitelisted,
 }: Props) => (
     <div className={styles.root}>
         <div
@@ -56,26 +54,26 @@ const ProductDetails = ({
             <h2 className={styles.title}>{product.name}</h2>
             <div className={styles.offer}>
                 <div className={styles.paymentRate}>
-                    {product.isFree ? (
+                    {product.type === ProjectTypeEnum.OPEN_DATA ? (
                         'Free'
                     ) : (
                         <div className={styles.priceDetails}>
                             <div className={styles.detailRow}>
                                 <span className={styles.priceHeading}>Price</span>
                                 &nbsp;
-                                <PaymentRate
+                                {/*<PaymentRate
                                     className={styles.price}
                                     amount={new BN(product.pricePerSecond)}
                                     pricingTokenAddress={pricingTokenAddress}
                                     chainId={getChainIdFromApiString(product.chain)}
                                     timeUnit={timeUnits.hour}
-                                />
+                                />*/}
                             </div>
                             <div className={styles.detailRow}>
                                 <span className={styles.priceHeading}>Chain</span>
                                 &nbsp;
-                                <span className={styles.price}>{formatChainName(product.chain)}</span>
-                                <NetworkIcon className={styles.networkIcon} chainId={getChainIdFromApiString(product.chain)} />
+                                {/*<span className={styles.price}>{formatChainName(product.chain)}</span>*/}
+                                {/*<NetworkIcon className={styles.networkIcon} chainId={getChainIdFromApiString(product.chain)} />*/}
                             </div>
                         </div>
                     )}
@@ -95,14 +93,13 @@ const ProductDetails = ({
                     size="big"
                     disabled={
                         isPurchasing ||
-                        isWhitelisted === null ||
-                        (!isPaidProduct(product) && isValidSubscription) ||
+                        (!isPaidProject(product) && isValidSubscription) ||
                         product.state !== projectStates.DEPLOYED
                     }
                     onClick={onPurchase}
                     waiting={isPurchasing}
                 >
-                    {buttonTitle(product, isValidSubscription, isWhitelisted)}
+                    {buttonTitle(product, isValidSubscription)}
                 </Button>
                 {product.contact && <SocialIcons className={styles.socialIcons} contactDetails={product.contact} />}
             </div>

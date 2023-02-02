@@ -5,7 +5,7 @@ import { DetailEditor, DetailEditorSelectOption } from '$shared/components/Detai
 import SvgIcon from '$shared/components/SvgIcon'
 import { COLORS, LAPTOP } from '$shared/utils/styled'
 import NetworkIcon from '$shared/components/NetworkIcon'
-import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
+import { isDataUnionProduct, isPaidProject } from '$mp/utils/product'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { projectTypes } from '$mp/utils/constants'
 import { getConfigForChainByName } from '$shared/web3/config'
@@ -87,11 +87,11 @@ const getChainOptions = (chains: Array<string>): DetailEditorSelectOption[] =>
 export const ProjectDetails: FunctionComponent = () => {
     const { state: project } = useContext(ProjectStateContext)
     const isDataUnion = isDataUnionProduct(project)
-    const isPaid = isPaidProduct(project)
+    const isPaid = isPaidProject(project)
     const isChainSelectorDisabled =
         project.state === projectStates.DEPLOYED ||
         (project.type === projectTypes.DATAUNION && !!project.beneficiaryAddress)
-    const { updateChain, updateContactUrl, updateContactEmail, updateSocialUrl } = useEditableProjectActions()
+    const { updateDataUnionChainId, updateContactUrl, updateContactEmail, updateSocialUrl } = useEditableProjectActions()
     const productType = project.type
     const projectChain = project.chain
     const { marketplaceChains, dataunionChains } = getCoreConfig()
@@ -121,7 +121,7 @@ export const ProjectDetails: FunctionComponent = () => {
             hasValueIcon={currentChainIcon}
             showValue={true}
             instructionText={'Please select a chain'}
-            onChange={updateChain}
+            onChange={updateDataUnionChainId}
             placeholder={'Select...'}
             value={projectChain}
             selectOptions={chainOptions}

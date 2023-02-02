@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Project } from '$mp/types/project-types'
 import { transactionStates } from '$shared/utils/constants'
 import useModal from '$shared/hooks/useModal'
@@ -19,18 +19,21 @@ import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import getNativeTokenName from '$shared/utils/nativeToken'
-import { PublishMode } from '$mp/containers/EditProductPage/usePendingChanges'
-import usePublish from './usePublish'
+import { PublishMode } from '$mp/containers/EditProductPage/publishMode'
+import { ProjectTypeEnum } from '$mp/utils/constants'
+
 type Props = {
     product: Project
     api: Record<string, any>
 }
 export const PublishOrUnpublishModal = ({ product, api }: Props) => {
-    const publish = usePublish()
+    // TODO provide implementation of publishing
+    const publish = () => {console.log('PROVIDE THE PUBLISH LOGIC, usePublish hook was here, but was removed')}
     const publishRef = useRef(publish)
     publishRef.current = publish
     const isMounted = useIsMounted()
-    const chainId = product && getChainIdFromApiString(product.chain)
+    // TODO - check if this chainId value assignment is correct
+    const chainId = (product.type === ProjectTypeEnum.DATA_UNION) ? product.dataUnionChainId : getChainIdFromApiString('polygon')
     const nativeTokenName = getNativeTokenName(chainId)
     const [queue, setQueue] = useState(undefined)
     const [mode, setMode] = useState(null)
@@ -58,7 +61,8 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
             getProductById(productId || '')
                 .then(publishRef.current)
                 .then(
-                    ({ queue: nextQueue, mode: nextMode }) => {
+                    // todo check if still valid add typing when implementing publishing
+                    ({ queue: nextQueue, mode: nextMode }: any) => {
                         setQueue(nextQueue)
                         setMode(nextMode)
                     },

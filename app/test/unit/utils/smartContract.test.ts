@@ -374,13 +374,6 @@ describe('smartContract utils', () => {
                 } as any
                 expect(all.isContractProductUpdateRequired(contractProduct, editProductUpdated)).toBe(true)
             })
-            it('it must return true if product is paid and requiresWhitelist changed', () => {
-                const editProductUpdated = {
-                    ...editProduct,
-                    requiresWhitelist: true,
-                } as any
-                expect(all.isContractProductUpdateRequired(contractProduct, editProductUpdated)).toBe(true)
-            })
         })
     })
 })

@@ -11,7 +11,7 @@ import useModal from '$shared/hooks/useModal'
 import usePending from '$shared/hooks/usePending'
 import { useController } from '$mp/containers/ProductController'
 import { getChainIdFromApiString } from '$shared/utils/chains'
-import { isPaidProduct } from '$mp/utils/product'
+import { isPaidProject } from '$mp/utils/product'
 import { selectUserData } from '$shared/modules/user/selectors'
 import useAccountAddress from '$shared/hooks/useAccountAddress'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -36,7 +36,7 @@ export const usePurchaseProject = (): () => Promise<void> => {
     const chainId = product && getChainIdFromApiString(product.chain)
     const contactEmail = product && product.contact && product.contact.email
     const productName = product && product.name
-    const isPaid = isPaidProduct(product)
+    const isPaid = isPaidProject(product)
     const isWhitelistEnabled = !!(isPaid && product.requiresWhitelist)
     const [isWhitelisted, setIsWhitelisted] = useState(isWhitelistEnabled ? null : false)
     useEffect(() => {

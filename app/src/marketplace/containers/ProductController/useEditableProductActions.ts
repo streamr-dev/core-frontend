@@ -22,6 +22,7 @@ type SocialLinks = {
 
 /**
  * @deprecated
+ * removing the implementations of functions due to model change, the whole hook will be removed later
  */
 export function useEditableProductActions() {
     const { updateState: commit } = useEditableState()
@@ -48,14 +49,14 @@ export function useEditableProductActions() {
         [commit, setTouched],
     )
     const updateChain = useCallback(
-        (chain: $ElementType<Project, 'chain'>) => {
+        (chain: any) => {
             commit('Update chain', (p: Project) => ({ ...p, chain }))
             setTouched('chain')
         },
         [commit, setTouched],
     )
     const updatePricingToken = useCallback(
-        (pricingTokenAddress: $ElementType<Project, 'pricingTokenAddress'>, pricingTokenDecimals: BN) => {
+        (pricingTokenAddress: any, pricingTokenDecimals: BN) => {
             commit('Update payment token', (p: Project) => ({
                 ...p,
                 pricingTokenAddress,
@@ -90,10 +91,7 @@ export function useEditableProductActions() {
         [commit, setTouched],
     )
     const updateCategory = useCallback(
-        (category: $ElementType<Project, 'category'>) => {
-            commit('Update category', (p: Project) => ({ ...p, category }))
-            setTouched('category')
-            setTouched('details')
+        (category) => {
         },
         [commit, setTouched],
     )
@@ -113,42 +111,22 @@ export function useEditableProductActions() {
         [commit, setTouched],
     )
     const updateIsFree = useCallback(
-        (isFree: $ElementType<Project, 'isFree'>, decimals: BN) => {
-            commit('Update is free', (p: Project) => {
-                // Switching product from free to paid also changes its price from 0 (only
-                // if it's 0) to 1. We're doing it to avoid premature validation errors.
-                const price = p.isFree && !isFree && new BN(p.price).isZero() ? new BN(1).toString() : new BN(p.price).toString()
-                return {
-                    ...p,
-                    isFree,
-                    price,
-                    pricePerSecond: getPricePerSecond(isFree, price, p.timeUnit, decimals),
-                }
-            })
-            setTouched('pricePerSecond')
+        (isFree, decimals: BN) => {
         },
         [commit, setTouched],
     )
     const updatePrice = useCallback(
         (
-            price: $ElementType<Project, 'price'>,
-            priceCurrency: $ElementType<Project, 'priceCurrency'>,
-            timeUnit: $ElementType<Project, 'timeUnit'>,
+            price: any,
+            priceCurrency: any,
+            timeUnit: any,
             decimals: BN,
         ) => {
-            commit('Update price', (p: Project) => ({
-                ...p,
-                price,
-                priceCurrency,
-                pricePerSecond: getPricePerSecond(p.isFree, price, timeUnit, decimals),
-                timeUnit,
-            }))
-            setTouched('pricePerSecond')
         },
         [commit, setTouched],
     )
     const updateBeneficiaryAddress = useCallback(
-        (beneficiaryAddress: $ElementType<Project, 'beneficiaryAddress'>, didTouch = true) => {
+        (beneficiaryAddress: any, didTouch = true) => {
             commit('Update beneficiary address', (p: Project) => ({
                 ...p,
                 beneficiaryAddress,

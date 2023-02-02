@@ -1,12 +1,13 @@
-import { useMemo, useCallback, useContext } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 import BN from 'bignumber.js'
 import { pricePerSecondFromTimeUnit } from '$mp/utils/price'
 import { timeUnits } from '$shared/utils/constants'
-import type { Project, ContactDetails } from '$mp/types/project-types'
+import type { ContactDetails, Project } from '$mp/types/project-types'
 import type { StreamIdList } from '$shared/types/stream-types'
 import { ValidationContext2 } from '$mp/containers/ProductController/ValidationContextProvider2'
 import { NumberString, TimeUnit } from '$shared/types/common-types'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
+import { ProjectTypeEnum } from '$mp/utils/constants'
 
 const getPricePerSecond = (isFree: boolean, price: NumberString, timeUnit: TimeUnit, decimals: BN) =>
     isFree ? new BN(0) : pricePerSecondFromTimeUnit(new BN(price || 0), timeUnit || timeUnits.hour, decimals)
@@ -15,24 +16,14 @@ export type EditableProjectActions = {
     updateProject: (project: Partial<Project>) => void,
     updateName: (name: Project['name']) => void,
     updateDescription: (description: Project['description']) => void,
-    updateChain: (chain: Project['chain']) => void,
-    updatePricingToken: (pricingTokenAddress: Project['pricingTokenAddress'], pricingTokenDecimals: BN) => void,
     updateImageUrl: (image: Project['imageUrl']) => void,
     updateImageFile: (image: File) => void,
     updateStreams: (streams: StreamIdList) => void,
-    updateCategory: (category: Project['category']) => void,
     updateAdminFee: (fee: Project['adminFee']) => void,
-    updateRequiresWhitelist: (requiresWhitelist: boolean, touched?: boolean) => void,
-    updateIsFree: (isFree: Project['isFree'], decimals: BN) => void,
-    updatePrice: (
-        price: Project['price'],
-        priceCurrency: Project['priceCurrency'],
-        timeUnit: Project['timeUnit'],
-        decimals: BN,
-    ) => void,
-    updateBeneficiaryAddress: (beneficiaryAddress: Project['beneficiaryAddress'], touched?: boolean) => void,
+    updateDataUnionChainId: (chainId: number) => void,
+    updateSalePoints: (salePoints: Project['salePoints']) => void,
     updateExistingDUAddress: (address: string, touched?: boolean) => void,
-    updateType: (type: Project['type']) => void,
+    updateType: (type: ProjectTypeEnum) => void,
     updateTermsOfUse: (termsOfUse: Project['termsOfUse']) => void,
     updateContactUrl: (url: ContactDetails['url']) => void,
     updateContactEmail: (email: ContactDetails['email']) => void,
@@ -41,6 +32,7 @@ export type EditableProjectActions = {
 export const useEditableProjectActions = (): EditableProjectActions => {
     const {state, updateState} = useContext(ProjectStateContext)
     const { setTouched } = useContext(ValidationContext2)
+
     const updateProject = useCallback<EditableProjectActions['updateProject']>(
         (project: Partial<Project>) => {
             updateState(project)
@@ -49,7 +41,7 @@ export const useEditableProjectActions = (): EditableProjectActions => {
     )
     const updateName = useCallback(
         (name: Project['name']) => {
-            updateState({ name })
+            updateState({name})
             setTouched('name')
         },
         [updateState, setTouched],
@@ -61,23 +53,19 @@ export const useEditableProjectActions = (): EditableProjectActions => {
         },
         [updateState, setTouched],
     )
-    const updateChain = useCallback<EditableProjectActions['updateChain']>(
-        (chain: string) => {
-            updateState({chain })
-            setTouched('chain')
+    const updateDataUnionChainId = useCallback<EditableProjectActions['updateDataUnionChainId']>(
+        (chainId: number) => {
+            updateState({dataUnionChainId: chainId})
+            setTouched('dataUnionChainId')
         },
         [updateState, setTouched],
     )
-    const updatePricingToken = useCallback<EditableProjectActions['updatePricingToken']>(
-        (pricingTokenAddress: string, pricingTokenDecimals: BN) => {
-            updateState({
-                pricingTokenAddress,
-                pricingTokenDecimals: pricingTokenDecimals.toNumber(),
-            })
-            setTouched('pricingTokenAddress')
-        },
-        [updateState, setTouched],
-    )
+
+    const updateSalePoints = useCallback<EditableProjectActions['updateSalePoints']>((salePoints: Project['salePoints']) => {
+        updateState({salePoints})
+        setTouched('salePoints')
+    }, [updateState, setTouched])
+
     const updateImageUrl = useCallback<EditableProjectActions['updateImageUrl']>(
         (image: string) => {
             updateState({imageUrl: image })
@@ -99,66 +87,10 @@ export const useEditableProjectActions = (): EditableProjectActions => {
         },
         [updateState, setTouched],
     )
-    const updateCategory = useCallback<EditableProjectActions['updateCategory']>(
-        (category: Project['category']) => {
-            updateState({ category })
-            setTouched('category')
-            setTouched('details')
-        },
-        [updateState, setTouched],
-    )
     const updateAdminFee = useCallback<EditableProjectActions['updateAdminFee']>(
         (adminFee: Project['adminFee']) => {
             updateState({ adminFee })
             setTouched('adminFee')
-            setTouched('details')
-        },
-        [updateState, setTouched],
-    )
-    const updateRequiresWhitelist = useCallback<EditableProjectActions['updateRequiresWhitelist']>(
-        (requiresWhitelist: boolean, touched = true) => {
-            updateState({ requiresWhitelist })
-            setTouched('requiresWhitelist', touched)
-        },
-        [updateState, setTouched],
-    )
-    const updateIsFree = useCallback<EditableProjectActions['updateIsFree']>(
-        (isFree: Project['isFree'], decimals: BN) => {
-            // Switching product from free to paid also changes its price from 0 (only
-            // if it's 0) to 1. We're doing it to avoid premature validation errors.
-            const price = state.isFree && !isFree && new BN(state.price).isZero()
-                ? new BN(1).toString() : new BN(state.price).toString()
-            updateState({
-                isFree,
-                price,
-                pricePerSecond: getPricePerSecond(isFree, price, state.timeUnit, decimals).toString()
-            })
-            setTouched('pricePerSecond')
-        },
-        [updateState, state, setTouched],
-    )
-    const updatePrice = useCallback<EditableProjectActions['updatePrice']>(
-        (price: Project['price'], priceCurrency: Project['priceCurrency'], timeUnit: Project['timeUnit'], decimals: BN,
-        ) => {
-            updateState({
-                price,
-                priceCurrency,
-                pricePerSecond: getPricePerSecond(state.isFree, price, timeUnit, decimals).toString(),
-                timeUnit,
-            })
-            setTouched('pricePerSecond')
-        },
-        [updateState, state, setTouched],
-    )
-    const updateBeneficiaryAddress = useCallback<EditableProjectActions['updateBeneficiaryAddress']>(
-        (beneficiaryAddress: Project['beneficiaryAddress'], didTouch = true) => {
-            updateState({
-                beneficiaryAddress,
-            })
-
-            if (didTouch) {
-                setTouched('beneficiaryAddress')
-            }
         },
         [updateState, setTouched],
     )
@@ -175,7 +107,7 @@ export const useEditableProjectActions = (): EditableProjectActions => {
         [updateState, setTouched],
     )
     const updateType = useCallback<EditableProjectActions['updateType']>(
-        (type: Project['type']) => {
+        (type: ProjectTypeEnum) => {
             updateState({type })
             setTouched('type')
         },
@@ -207,7 +139,7 @@ export const useEditableProjectActions = (): EditableProjectActions => {
         [updateState, state, setTouched],
     )
     const updateSocialUrl = useCallback<EditableProjectActions['updateSocialUrl']>((platform, url) => {
-        let key: string
+        let key: 'social1' | 'social2' | 'social3' | 'social4'
         switch (platform) {
             case 'twitter':
                 key = 'social1'
@@ -228,7 +160,7 @@ export const useEditableProjectActions = (): EditableProjectActions => {
                 [key]: url
             }
         })
-        setTouched('socialLinks')
+        setTouched(`contact.${key}`)
     }, [updateState, state, setTouched])
 
     return useMemo<EditableProjectActions>(
@@ -236,17 +168,12 @@ export const useEditableProjectActions = (): EditableProjectActions => {
             updateProject,
             updateName,
             updateDescription,
-            updateChain,
-            updatePricingToken,
+            updateDataUnionChainId,
+            updateSalePoints,
             updateImageUrl,
             updateImageFile,
             updateStreams,
-            updateCategory,
             updateAdminFee,
-            updateRequiresWhitelist,
-            updateIsFree,
-            updatePrice,
-            updateBeneficiaryAddress,
             updateExistingDUAddress,
             updateType,
             updateTermsOfUse,
@@ -258,17 +185,12 @@ export const useEditableProjectActions = (): EditableProjectActions => {
             updateProject,
             updateName,
             updateDescription,
-            updateChain,
-            updatePricingToken,
+            updateDataUnionChainId,
+            updateSalePoints,
             updateImageUrl,
             updateImageFile,
             updateStreams,
-            updateCategory,
             updateAdminFee,
-            updateRequiresWhitelist,
-            updateIsFree,
-            updatePrice,
-            updateBeneficiaryAddress,
             updateExistingDUAddress,
             updateType,
             updateTermsOfUse,

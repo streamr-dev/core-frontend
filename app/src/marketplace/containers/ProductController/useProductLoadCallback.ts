@@ -6,7 +6,7 @@ import { canHandleLoadError, handleLoadError } from '$auth/utils/loginIntercepto
 import type { Project, ProjectId } from '$mp/types/project-types'
 import { getProductById } from '$mp/modules/product/services'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
-import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
+import { isPaidProject, isDataUnionProduct } from '$mp/utils/product'
 import { timeUnits, DEFAULT_CURRENCY, projectStates } from '$shared/utils/constants'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import { priceForTimeUnits } from '$mp/utils/price'
@@ -85,18 +85,12 @@ export default function useProductLoadCallback() {
                 }
 
                 // Fetch status from contract product and adjust pending changes
-                let requiresWhitelist = false
                 let pricingTokenAddress = null
                 let pricePerSecond = null
 
                 try {
                     const contractProduct = await getProductFromContract(productId, true, chainId)
-                    ;({ requiresWhitelist, pricingTokenAddress, pricePerSecond } = contractProduct)
-
-                    // remove from pending changes if requiresWhitelist setting is correct
-                    if (product.pendingChanges && requiresWhitelist === product.pendingChanges.requiresWhitelist) {
-                        delete product.pendingChanges.requiresWhitelist
-                    }
+                    ;({ pricingTokenAddress, pricePerSecond } = contractProduct)
 
                     // remove from pending changes if pricingTokenAddress setting is correct
                     if (product.pendingChanges && pricingTokenAddress === product.pendingChanges.pricingTokenAddress) {
@@ -104,7 +98,6 @@ export default function useProductLoadCallback() {
                     }
                 } catch (e) {
                     // ignore error, assume product is not published
-                    requiresWhitelist = product && product.pendingChanges && product.pendingChanges.requiresWhitelist
                     pricingTokenAddress = product && product.pendingChanges && product.pendingChanges.pricingTokenAddress
                 }
 
@@ -126,7 +119,7 @@ export default function useProductLoadCallback() {
 
                 const nextProduct: Project = {
                     ...product,
-                    isFree: !!product.isFree || !isPaidProduct(product),
+                    isFree: !!product.isFree || !isPaidProject(product),
                     timeUnit: timeUnits.hour,
                     priceCurrency: product.priceCurrency || DEFAULT_CURRENCY,
                     price:
@@ -137,7 +130,6 @@ export default function useProductLoadCallback() {
                         ).toString(),
                     adminFee: currentAdminFee,
                     dataUnionDeployed,
-                    requiresWhitelist,
                     pricingTokenAddress,
                     pricingTokenDecimals: new BN(pricingTokenDecimals).toNumber(),
                     pricePerSecond: pricePerSecond || product.pricePerSecond,

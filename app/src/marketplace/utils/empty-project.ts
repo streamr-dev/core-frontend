@@ -1,9 +1,12 @@
-import { Project } from '$mp/types/project-types'
+import { Project, TermsOfUse } from '$mp/types/project-types'
+import { ProjectTypeEnum } from '$mp/utils/constants'
 
 export class EmptyProject implements Project {
     id: undefined
     name: undefined
     adminFee = undefined
+    chain = undefined
+    type = ProjectTypeEnum.OPEN_DATA
     category = undefined
     created = undefined
     contact = {}
@@ -15,7 +18,7 @@ export class EmptyProject implements Project {
     previewConfigJson = undefined
     thumbnailUrl = undefined
     ownerAddress = undefined
-    termsOfUse = {}
+    termsOfUse = {} as TermsOfUse
     updated = undefined
     minimumSubscriptionInSeconds = 1
     beneficiaryAddress = undefined
@@ -26,16 +29,9 @@ export class EmptyProject implements Project {
     previewStream = undefined
     existingDUAddress = undefined
     pricingTokenAddress = undefined
-
-    priceCurrency = undefined // MATIC?
+    owner = undefined
+    priceCurrency = undefined
     price = '1'
     pricingTokenDecimals = 10
     isFree = false
-
-    constructor(
-        public type: Project['type'] = 'NORMAL',
-        public owner: Project['owner'] = undefined,
-        public chain: Project['chain'] = undefined
-    ) {
-    }
 }

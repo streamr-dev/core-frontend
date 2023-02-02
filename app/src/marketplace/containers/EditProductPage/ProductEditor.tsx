@@ -1,6 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
-import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
+import { isDataUnionProduct, isPaidProject } from '$mp/utils/product'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import { projectStates } from '$shared/utils/constants'
 import { projectTypes } from '$mp/utils/constants'
@@ -16,7 +16,6 @@ import PaymentToken from './PaymentToken'
 import ProductType from './ProductType'
 import ProductBeneficiary from './ProductBeneficiary'
 import ProductDetails from './ProductDetails'
-import Whitelist from './Whitelist'
 import SharedSecrets from './SharedSecrets'
 import TermsOfUse from './TermsOfUse'
 import DataUnionDeployment from './DataUnionDeployment'
@@ -34,7 +33,7 @@ type Props = {
 const ProductEditor = ({ disabled }: Props) => {
     const { state: product } = useEditableState()
     const isDataUnion = isDataUnionProduct(product)
-    const isPaid = isPaidProduct(product)
+    const isPaid = isPaidProject(product)
     const isChainSelectorDisabled =
         product.state === projectStates.DEPLOYED ||
         (product.type === projectTypes.DATAUNION && product.beneficiaryAddress != null)
@@ -70,7 +69,6 @@ const ProductEditor = ({ disabled }: Props) => {
                             </React.Fragment>
                         )}
                         <ProductDetails disabled={disabled} />
-                        {!!isPaid && <Whitelist disabled={disabled} />}
                         <TermsOfUse disabled={disabled} />
                         {!!isDataUnion && <SharedSecrets disabled={disabled} />}
                     </div>

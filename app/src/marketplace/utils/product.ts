@@ -1,17 +1,17 @@
 import BN from 'bignumber.js'
 import * as yup from 'yup'
 import type { NumberString } from '$shared/types/common-types'
-import { contractCurrencies as currencies, projectStates } from '$shared/utils/constants'
+import { contractCurrencies as currencies, projectStates, timeUnits } from '$shared/utils/constants'
 import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
-import type { Project, ProjectId, SmartContractProduct, ProjectType, ContactDetails } from '../types/project-types'
+import type { ContactDetails, Project, ProjectId, ProjectType, SmartContractProduct } from '../types/project-types'
 import { ProjectState } from '../types/project-types'
 import { isEthereumAddress } from './validate'
 import { isPriceValid } from './price'
-import { projectTypes } from './constants'
-import { toDecimals, fromDecimals } from './math'
+import { ProjectTypeEnum, projectTypes } from './constants'
+import { fromDecimals, toDecimals } from './math'
 import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from './smartContract'
 
-export const isPaidProduct = (product: Project): boolean => product.isFree === false || new BN(product.pricePerSecond).isGreaterThan(0)
+export const isPaidProject = (project: Project): boolean => project.type !== ProjectTypeEnum.OPEN_DATA
 
 export const isDataUnionProduct = (productOrProductType?: Project | ProjectType): boolean => {
     const { type } =
@@ -19,7 +19,7 @@ export const isDataUnionProduct = (productOrProductType?: Project | ProjectType)
             ? {
                 type: productOrProductType,
             }
-            : productOrProductType || {}
+            : (productOrProductType || {}) as Project
     return type === projectTypes.DATAUNION
 }
 
@@ -58,7 +58,6 @@ export const mapProductFromContract = (id: ProjectId, result: any, chainId: numb
         pricePerSecond: result.pricePerSecond,
         minimumSubscriptionInSeconds: Number.isNaN(minimumSubscriptionSeconds) ? 0 : minimumSubscriptionSeconds,
         state: (Object.keys(projectStates) as ProjectState[])[result.state],
-        requiresWhitelist: result.requiresWhitelist,
         chainId,
         pricingTokenAddress: result.pricingTokenAddress,
         pricingTokenDecimals: pricingTokenDecimals.toNumber(),
@@ -66,30 +65,33 @@ export const mapProductFromContract = (id: ProjectId, result: any, chainId: numb
 }
 
 export const mapProductFromApi = (product: Project): Project => {
-    const pricePerSecond = mapPriceFromApi(product.pricePerSecond)
-    return { ...product, pricePerSecond }
+    // TODO map the project from contract
+    // const pricePerSecond = mapPriceFromApi(product.pricePerSecond)
+    return { ...product}
 }
 
 export const mapAllProductsFromApi = (products: Array<Project>): Array<Project> => products.map(mapProductFromApi)
 
 export const mapProductToPostApi = (product: Project): Project => {
-    const pricePerSecond = mapPriceToApi(product.pricePerSecond)
+    // TODO map the project to contract
+    /*const pricePerSecond = mapPriceToApi(product.pricePerSecond)
     validateApiProductPricePerSecond(pricePerSecond)
-    validateProductPriceCurrency(product.priceCurrency)
-    return { ...product, pricePerSecond }
+    validateProductPriceCurrency(product.priceCurrency)*/
+    return { ...product }
 }
 
 export const isPublishedProduct = (p: Project): boolean => p.state === projectStates.DEPLOYED
 
 export const mapProductToPutApi = (product: Project): Record<string, any> => {
-    // For published paid products, the some fields can only be updated on the smart contract
-    if (isPaidProduct(product) && isPublishedProduct(product)) {
+    // TODO - map the project to contract
+    /*// For published paid products, the some fields can only be updated on the smart contract
+    if (isPaidProject(product) && isPublishedProduct(product)) {
         const { ownerAddress, beneficiaryAddress, pricePerSecond, priceCurrency, minimumSubscriptionInSeconds, ...otherData } = product
         return otherData
     }
 
-    const pricePerSecond = mapPriceToApi(product.pricePerSecond)
-    return { ...product, pricePerSecond }
+    const pricePerSecond = mapPriceToApi(product.pricePerSecond)*/
+    return { ...product }
 }
 
 export const getValidId = (id: string, prefix = true): string => {
@@ -103,54 +105,69 @@ export const getValidId = (id: string, prefix = true): string => {
 const urlValidator = yup.string().trim().url()
 const emailValidator = yup.string().trim().email()
 
-export const validate = (product: Project): Record<string, boolean> => {
-    const invalidFields: {[key: string]: boolean}= {}
-    ;['name', 'description'].forEach((field) => {
-        invalidFields[field] = !product[field as keyof Project]
+export const validate = (project: Project): Record<string, boolean> => {
+    const invalidFields: {[key: string]: boolean}= {};
+    ['name', 'description'].forEach((field) => {
+        invalidFields[field] = !project[field as keyof Project]
     })
-    invalidFields.imageUrl = !product.imageUrl && !product.newImageToUpload
-    invalidFields.streams = !product.streams || product.streams.length <= 0
-    invalidFields.termsOfUse = !!(product.termsOfUse != null && product.termsOfUse.termsUrl)
-    const isPaid = isPaidProduct(product)
+    invalidFields.imageUrl = !project.imageUrl && !project.newImageToUpload
+    invalidFields.streams = !project.streams || project.streams.length <= 0
+    invalidFields.termsOfUse = !!(project.termsOfUse != null && project.termsOfUse.termsUrl)
 
-    // applies only to data union
-    if (isDataUnionProduct(product)) {
-        invalidFields.adminFee = product.adminFee === undefined || +product.adminFee < 0 || +product.adminFee > 1
-        invalidFields.beneficiaryAddress = false
-    } else {
-        invalidFields.beneficiaryAddress = isPaid && (!product.beneficiaryAddress || !isEthereumAddress(product.beneficiaryAddress))
-        invalidFields.adminFee = false
-    }
-
-    if (isPaid) {
-        invalidFields.pricePerSecond = !isPriceValid(product.pricePerSecond)
-        invalidFields.pricingTokenAddress = !isEthereumAddress(product.pricingTokenAddress)
-    } else {
-        invalidFields.pricePerSecond = false
-        invalidFields.pricingTokenAddress = false
-    }
-
-    if (product.contact) {
+    if (project.contact) {
         ['url', 'social1', 'social2', 'social3', 'social4'].forEach((field) => {
-            if (product.contact[field as keyof ContactDetails] && product.contact[field as keyof ContactDetails].length > 0) {
-                invalidFields[`contact.${field}`] = !urlValidator.isValidSync(product.contact[field as keyof ContactDetails])
-            } else {
-                invalidFields[`contact.${field}`] = false
+            if (project.contact[field as keyof ContactDetails] && project.contact[field as keyof ContactDetails].length > 0) {
+                invalidFields[`contact.${field}`] = !urlValidator.isValidSync(project.contact[field as keyof ContactDetails])
             }
         })
 
-        if (product.contact.email && product.contact.email.length > 0) {
-            const result = emailValidator.isValidSync(product.contact.email)
-            invalidFields['contact.email'] = !result && !!product.contact.email
-        } else {
-            invalidFields['contact.email'] = false
+        if (project.contact.email && project.contact.email.length > 0) {
+            const result = emailValidator.isValidSync(project.contact.email)
+            invalidFields['contact.email'] = !result && !!project.contact.email
         }
     }
 
-    if (product.requiresWhitelist && (product.contact == null || product.contact.email == null || product.contact.email.length === 0)) {
-        invalidFields['contact.email'] = true
-    } else if (!product.requiresWhitelist) {
-        invalidFields['contact.email'] = false
+    // applies only to data union
+    if (project.type === ProjectTypeEnum.DATA_UNION) {
+        invalidFields.adminFee = project.adminFee === undefined || +project.adminFee < 0 || +project.adminFee > 1
+        invalidFields.dataUnionChainId = !project.dataUnionChainId
+    }
+
+    // applies to paid projects and data unions
+    if ([ProjectTypeEnum.PAID_DATA, ProjectTypeEnum.DATA_UNION].includes(project.type)) {
+        if (!project?.salePoints || !Object.values(project?.salePoints || {}).length) {
+            invalidFields.salePoints = true
+        }
+        if (Object.keys(project?.salePoints || {}).length) {
+            Object.keys(project?.salePoints || {}).forEach((chainName) => {
+                const salePoint = project.salePoints[chainName]
+                if (!salePoint.timeUnit || !timeUnits[salePoint.timeUnit]) {
+                    invalidFields[`salePoints.${chainName}.timeUnit`] = true
+                }
+                if (!isPriceValid(salePoint.price) || new BN(salePoint.price).isLessThanOrEqualTo(0)) {
+                    invalidFields[`salePoints.${chainName}.price`] = true
+                }
+
+                if (!salePoint.pricingTokenAddress || !isEthereumAddress(salePoint.pricingTokenAddress)) {
+                    invalidFields[`salePoints.${chainName}.pricingTokenAddress`] = true
+                }
+
+                if (!salePoint.pricePerSecond || !isPriceValid(salePoint.pricePerSecond)) {
+                    invalidFields[`salePoints.${chainName}.pricePerSecond`] = true
+                }
+
+                if (!salePoint.chainId) {
+                    invalidFields[`salePoints.${chainName}.chainId`] = true
+                }
+                // this applies only to PAID_DATA projects
+                if (
+                    project.type === ProjectTypeEnum.PAID_DATA
+                    && (!salePoint.beneficiaryAddress || !isEthereumAddress(salePoint.beneficiaryAddress))
+                ) {
+                    invalidFields[`salePoints.${chainName}.beneficiaryAddress`] = true
+                }
+            })
+        }
     }
 
     return invalidFields

@@ -39,7 +39,7 @@ describe('myPurchaseList - services', () => {
                 product: {
                     id: '1',
                     name: 'Test product 1',
-                    pricePerSecond: '1',
+                    pricePerSecond: 1,
                 },
             },
             {
@@ -48,7 +48,7 @@ describe('myPurchaseList - services', () => {
                 product: {
                     id: '2',
                     name: 'Test product 2',
-                    pricePerSecond: '2',
+                    pricePerSecond: 2,
                 },
             },
         ]
