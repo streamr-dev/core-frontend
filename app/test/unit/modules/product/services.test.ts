@@ -129,7 +129,6 @@ describe('product - services', () => {
     it('puts product', async () => {
         const data: Project = cloneDeep(existingProduct)
         const expectedResult = cloneDeep(existingProduct)
-        expectedResult.pricePerSecond = '0.00001898'
         moxios.wait(() => {
             const request = moxios.requests.mostRecent()
             request.respondWith({
@@ -145,7 +144,6 @@ describe('product - services', () => {
     it('posts product', async () => {
         const data = cloneDeep(existingProduct)
         const expectedResult = cloneDeep(existingProduct)
-        expectedResult.pricePerSecond = '0.00001898'
         moxios.wait(() => {
             const request = moxios.requests.mostRecent()
             request.respondWith({
@@ -161,7 +159,6 @@ describe('product - services', () => {
     it('posts image', async () => {
         const data = cloneDeep(existingProduct)
         const expectedResult = cloneDeep(existingProduct)
-        expectedResult.pricePerSecond = '0.00001898'
         moxios.wait(() => {
             const request = moxios.requests.mostRecent()
             request.respondWith({

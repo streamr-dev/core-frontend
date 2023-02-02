@@ -16,7 +16,7 @@ export type ValidationContext2Props = {
     status: object,
     isValid: (fieldName: RecursiveKeyOf<Project>) => boolean,
     validate: (project: Project) => void,
-    touched: Partial<Record<RecursiveKeyOf<Project>, string>>,
+    touched: Partial<Record<RecursiveKeyOf<Project>, boolean>>,
     setTouched: (fieldName: RecursiveKeyOf<Project>, isTouched?: boolean) => void,
     isTouched: (fieldName: RecursiveKeyOf<Project>) => boolean,
     isAnyTouched: () => boolean,
@@ -25,16 +25,16 @@ export type ValidationContext2Props = {
 export const ValidationContext2 = React.createContext<ValidationContext2Props>({} as ValidationContext2Props)
 
 const validationErrors: Partial<Record<RecursiveKeyOf<Project>, string>> = {
+    // TODO add salePoints props !!!!!!!!!!!!!!!!!!!!!!!!!!!
     name: 'Product name cannot be empty',
     description: 'Product description cannot be empty',
-    chain: 'No chain selected',
     imageUrl: 'Product must have a cover image',
     streams: 'No streams selected',
     termsOfUse: 'Invalid URL for detailed terms',
     adminFee: 'Admin fee cannot be empty',
-    beneficiaryAddress: 'A valid ethereum address is needed',
-    pricePerSecond: 'Price should be greater or equal to 0',
-    pricingTokenAddress: 'A valid contract address is needed for payment token',
+    // beneficiaryAddress: 'A valid ethereum address is needed',
+    // pricePerSecond: 'Price should be greater or equal to 0',
+    // pricingTokenAddress: 'A valid contract address is needed for payment token',
     'contact.url': 'Invalid URL',
     'contact.social1': 'Invalid URL',
     'contact.social2': 'Invalid URL',
@@ -46,7 +46,7 @@ const validationErrors: Partial<Record<RecursiveKeyOf<Project>, string>> = {
 
 function useValidationContext2(): ValidationContext2Props {
     const [status, setStatusState] = useState<Partial<Record<RecursiveKeyOf<Project>, {level: SeverityLevel, message: string}>>>({})
-    const [touched, setTouchedState] = useState<Record<string, boolean>>({})
+    const [touched, setTouchedState] = useState<Partial<Record<RecursiveKeyOf<Project>, boolean>>>({})
     const setTouched = useCallback(
         (name: string, value = true) => {
             setTouchedState((existing) => ({ ...existing, [name]: !!value }))

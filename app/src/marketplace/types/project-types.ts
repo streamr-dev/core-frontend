@@ -7,6 +7,7 @@ import type { Address } from '$shared/types/web3-types'
 import type { CategoryId } from './category-types'
 
 export type ProjectId = string
+export type ChainName = string
 export type ProjectState = $Keys<typeof projectStates>
 export type ProjectType = $Values<typeof projectTypes>
 export type PendingChanges = {
@@ -14,15 +15,13 @@ export type PendingChanges = {
     requiresWhitelist?: boolean
     pricingTokenAddress?: Address
 }
-export type SalePoint = {
-    chain: string,
+export type  SalePoint = {
+    chainId: number,
     beneficiaryAddress: Address
     pricePerSecond: NumberString
-    priceCurrency: ContractCurrency
     timeUnit: TimeUnit | null | undefined
     price: NumberString
     pricingTokenAddress: Address
-    pricingTokenDecimals: number
 }
 export type TermsOfUse = {
     commercialUse: boolean
@@ -41,13 +40,12 @@ export type ContactDetails = {
     social4?: string | null | undefined
 }
 export type Project = {
-    adminFee?: string
     key?: string
     id: ProjectId | null | undefined
     name: string
     description: string
     owner: string
-    imageUrl: string | null | undefined
+    imageUrl?: string | null | undefined
     newImageToUpload?: File | null | undefined
     thumbnailUrl: string | null | undefined
     state?: ProjectState
@@ -56,24 +54,17 @@ export type Project = {
     streams: StreamIdList
     previewStream: StreamId | null | undefined
     previewConfigJson?: string | null | undefined
-    minimumSubscriptionInSeconds?: number
     ownerAddress: Address
     type?: ProjectTypeEnum
     termsOfUse: TermsOfUse
     contact: ContactDetails | null | undefined
-    // Paid project
-    salePoints?: SalePoint[]
+    // Paid project & Data Union
+    salePoints?: Record<ChainName, SalePoint>
     // Data union
-    chain?: string
+    adminFee?: string
     dataUnionDeployed?: boolean
     existingDUAddress?: string
-    pricingTokenAddress?: Address
-    pricingTokenDecimals?: number,
-    beneficiaryAddress?: Address
-    pricePerSecond?: NumberString
-    priceCurrency?: ContractCurrency
-    timeUnit?: TimeUnit | null | undefined
-    price?: NumberString
+    dataUnionChainId?: number
 }
 export type ProjectSubscriptionId = string
 export type ProjectSubscriptionIdList = Array<ProjectSubscriptionId>
@@ -91,12 +82,12 @@ export type SmartContractProduct = {
     id: ProjectId
     name: $ElementType<Project, 'name'>
     ownerAddress: $ElementType<Project, 'ownerAddress'>
-    beneficiaryAddress: $ElementType<Project, 'beneficiaryAddress'>
-    pricePerSecond: $ElementType<Project, 'pricePerSecond'>
-    minimumSubscriptionInSeconds: $ElementType<Project, 'minimumSubscriptionInSeconds'>
+    beneficiaryAddress: Address
+    pricePerSecond: NumberString,
+    minimumSubscriptionInSeconds: number,
     state: $ElementType<Project, 'state'>
     chainId: number
-    pricingTokenAddress: $ElementType<Project, 'pricingTokenAddress'>
+    pricingTokenAddress: Address
     pricingTokenDecimals: number // this isn't actually stored on the contract but we need it to piggyback information
 }
 export type WhitelistStatus = 'added' | 'removed' | 'subscribed'
@@ -130,7 +121,7 @@ export type Filter = {
     maxPrice?: MaxPriceFilter | null | undefined
     type?: ProjectTypeFilter | null | undefined
 }
-export type DataUnionId = $ElementType<Project, 'beneficiaryAddress'>
+export type DataUnionId = Address
 export type MemberCount = {
     total: number
     active: number

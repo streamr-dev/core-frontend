@@ -28,7 +28,8 @@ function useProductLoadEffect({ ignoreUnauthorized, requirePublished, useAuthori
     const isMounted = useIsMounted()
     const { id: urlId } = useParams<{id: string}>()
     const { product } = useController()
-    const chainId = product && getChainIdFromApiString(product.chain)
+    // TODO check if this chainId assigment is correct
+    const chainId = product.dataUnionChainId || getChainIdFromApiString('polygon')
     useEffect(() => {
         if (urlId && !loadedOnce && !isPending) {
             // load product if needed and not already loading

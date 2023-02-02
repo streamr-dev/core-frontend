@@ -1,4 +1,3 @@
-import BN from 'bignumber.js'
 import { Category } from '$mp/types/category-types'
 import { Project } from '$mp/types/project-types'
 
@@ -7,20 +6,13 @@ export const existingProduct: Project = {
     name: 'Weather on North Atlantic',
     description: 'Weather on North Atlantic. Weather on North Atlantic. Weather on North Atlantic. ',
     streams: ['c1_fiG6PTxmtnCYGU-mKuQ', 'ln2g8OKHSdi7BcL-bcnh2g'],
-    pricePerSecond: '0.00001898',
     ownerAddress: '0x942e694ec12d009f45aead2563426adc182ff527',
-    beneficiaryAddress: '0x72cf0d1ac81571a6cf767fd649ec95f5e12da541',
     previewConfigJson: '',
     previewStream: 'ln2g8OKHSdi7BcL-bcnh2g',
     state: 'DEPLOYED',
-    priceCurrency: 'USD',
-    minimumSubscriptionInSeconds: 560,
     owner: 'Tester One',
     imageUrl: 'https://images.pexels.com/photos/744515/pexels-photo-744515.jpeg?h=400',
     thumbnailUrl: 'https://images.pexels.com/photos/744515/pexels-photo-744515.jpeg?h=210',
-    chain: '',
-    pricingTokenAddress: '',
-    pricingTokenDecimals: 10,
     contact: null,
     termsOfUse: {
         commercialUse: true,

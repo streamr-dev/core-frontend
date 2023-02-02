@@ -1,5 +1,4 @@
 import React, { ReactNode, useContext, useEffect, useMemo } from 'react'
-import BN from 'bignumber.js'
 import type { Location } from 'react-router-dom'
 import { useHistory, useLocation } from 'react-router-dom'
 import styled from 'styled-components'

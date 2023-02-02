@@ -61,19 +61,19 @@ const ProductDetails = ({
                             <div className={styles.detailRow}>
                                 <span className={styles.priceHeading}>Price</span>
                                 &nbsp;
-                                <PaymentRate
+                                {/*<PaymentRate
                                     className={styles.price}
                                     amount={new BN(product.pricePerSecond)}
                                     pricingTokenAddress={pricingTokenAddress}
                                     chainId={getChainIdFromApiString(product.chain)}
                                     timeUnit={timeUnits.hour}
-                                />
+                                />*/}
                             </div>
                             <div className={styles.detailRow}>
                                 <span className={styles.priceHeading}>Chain</span>
                                 &nbsp;
-                                <span className={styles.price}>{formatChainName(product.chain)}</span>
-                                <NetworkIcon className={styles.networkIcon} chainId={getChainIdFromApiString(product.chain)} />
+                                {/*<span className={styles.price}>{formatChainName(product.chain)}</span>*/}
+                                {/*<NetworkIcon className={styles.networkIcon} chainId={getChainIdFromApiString(product.chain)} />*/}
                             </div>
                         </div>
                     )}

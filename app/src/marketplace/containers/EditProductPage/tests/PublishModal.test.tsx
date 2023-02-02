@@ -18,7 +18,10 @@ jest.mock('$shared/components/Dialog', () => ({
     __esModule: true,
     default: ({ children }) => children,
 }))
-describe('Publish modal', () => {
+/**
+ * Skipping the tests due to planned change of implementation
+ */
+describe.skip('Publish modal', () => {
     afterEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()

@@ -91,7 +91,7 @@ export const ProjectDetails: FunctionComponent = () => {
     const isChainSelectorDisabled =
         project.state === projectStates.DEPLOYED ||
         (project.type === projectTypes.DATAUNION && !!project.beneficiaryAddress)
-    const { updateChain, updateContactUrl, updateContactEmail, updateSocialUrl } = useEditableProjectActions()
+    const { updateDataUnionChainId, updateContactUrl, updateContactEmail, updateSocialUrl } = useEditableProjectActions()
     const productType = project.type
     const projectChain = project.chain
     const { marketplaceChains, dataunionChains } = getCoreConfig()
@@ -121,7 +121,7 @@ export const ProjectDetails: FunctionComponent = () => {
             hasValueIcon={currentChainIcon}
             showValue={true}
             instructionText={'Please select a chain'}
-            onChange={updateChain}
+            onChange={updateDataUnionChainId}
             placeholder={'Select...'}
             value={projectChain}
             selectOptions={chainOptions}

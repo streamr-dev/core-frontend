@@ -13,12 +13,7 @@ export const PENDING_CHANGE_FIELDS: RecursiveKeyOf<Project>[] = [
     'thumbnailUrl',
     'streams',
     'previewStream',
-    'beneficiaryAddress',
-    'pricePerSecond',
-    'priceCurrency',
     'adminFee',
-    'timeUnit',
-    'price',
     'termsOfUse',
     'contact.url',
     'contact.email',
@@ -26,7 +21,6 @@ export const PENDING_CHANGE_FIELDS: RecursiveKeyOf<Project>[] = [
     'contact.social2',
     'contact.social3',
     'contact.social4',
-    'pricingTokenAddress',
 ]
 export function isPublished(product: Project): boolean {
     const { state } = product || {}
@@ -52,17 +46,13 @@ export const getChangeObject = (original: Project, next: Project): Record<string
 
 // Returns smart contract field changes and other changes separated
 const getChanges = (product: Partial<Project>) => {
-    const { adminFee, pricingTokenAddress, ...otherChanges } = product
+    // TODO check if this is still needed. pricingTokenAddress was removed from here due to model changes
+    const { adminFee, ...otherChanges } = product
     // $FlowFixMe: Computing object literal [1] may lead to an exponentially large number of cases
     const smartContractFields = {
         ...(adminFee
             ? {
                 adminFee,
-            }
-            : {}),
-        ...(pricingTokenAddress
-            ? {
-                pricingTokenAddress,
             }
             : {}),
     }

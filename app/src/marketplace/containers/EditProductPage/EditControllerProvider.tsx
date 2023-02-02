@@ -39,6 +39,10 @@ type ContextProps = {
 }
 const EditControllerContext: Context<ContextProps> = React.createContext<ContextProps>({})
 
+/**
+ * TODO - update the implementation after model change. A lot of code was temporarily commented out
+ * @param product
+ */
 function useEditController(product: Project) {
     const location = useLocation()
     const history = useHistory()
@@ -49,7 +53,6 @@ function useEditController(product: Project) {
     const lastSectionRef = useRef(undefined)
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
-    const { updateBeneficiaryAddress } = useEditableProjectActions()
     const { product: originalProduct } = useController()
     const { updateState, state } = useContext(ProjectStateContext)
     const [dataUnionStats, setDataUnionStats] = useState<DataUnionStats>(null)
@@ -58,8 +61,9 @@ function useEditController(product: Project) {
     const { dataUnionPublishMemberLimit } = getCoreConfig()
     const productRef = useRef(product)
     productRef.current = product
-    const chainId = product && product.chain && getChainIdFromApiString(product.chain)
-    const nextAddress = state && (state.existingDUAddress || state.beneficiaryAddress)
+    const chainId = product && product.dataUnionChainId
+    // const nextAddress = state && (state.existingDUAddress || state.beneficiaryAddress)
+    const nextAddress = state && state.existingDUAddress
 
     const errors = useMemo(
         () =>
@@ -230,9 +234,9 @@ function useEditController(product: Project) {
         dataUnionStats,
         nextAddress
     ])
-    const updateBeneficiary = useCallback(
+    /*const updateBeneficiary = useCallback(
         async (address) => {
-            const { beneficiaryAddress } = productRef.current
+            // const { beneficiaryAddress } = productRef.current
 
             if ((!address || isEthereumAddress(address)) && (!beneficiaryAddress || !areAddressesEqual(beneficiaryAddress, address))) {
                 updateBeneficiaryAddress(address, false)
@@ -258,7 +262,7 @@ function useEditController(product: Project) {
             })
             const dataUnionCreated = await deployDataUnionDialog.open({
                 product: productRef.current,
-                updateAddress: updateBeneficiary,
+                // updateAddress: updateBeneficiary,
             })
 
             // TODO: doesn't save unless dialog closed
@@ -298,7 +302,7 @@ function useEditController(product: Project) {
             publishAttempted,
         }),
         [isPreview, setIsPreview, validate, back, save, publish, deployDataUnion, lastSectionRef, publishAttempted],
-    )
+    )*/
 }
 
 type ControllerProps = {
@@ -307,7 +311,7 @@ type ControllerProps = {
 }
 
 function EditControllerProvider({ children, product }: ControllerProps) {
-    return <EditControllerContext.Provider value={useEditController(product)}>{children || null}</EditControllerContext.Provider>
+    return <EditControllerContext.Provider value={useEditController(product) as unknown}>{children || null}</EditControllerContext.Provider>
 }
 
 export { EditControllerContext as Context, EditControllerProvider as Provider }

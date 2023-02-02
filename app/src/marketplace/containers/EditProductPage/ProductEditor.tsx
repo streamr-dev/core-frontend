@@ -16,7 +16,6 @@ import PaymentToken from './PaymentToken'
 import ProductType from './ProductType'
 import ProductBeneficiary from './ProductBeneficiary'
 import ProductDetails from './ProductDetails'
-import Whitelist from './Whitelist'
 import SharedSecrets from './SharedSecrets'
 import TermsOfUse from './TermsOfUse'
 import DataUnionDeployment from './DataUnionDeployment'
@@ -70,7 +69,6 @@ const ProductEditor = ({ disabled }: Props) => {
                             </React.Fragment>
                         )}
                         <ProductDetails disabled={disabled} />
-                        {!!isPaid && <Whitelist disabled={disabled} />}
                         <TermsOfUse disabled={disabled} />
                         {!!isDataUnion && <SharedSecrets disabled={disabled} />}
                     </div>

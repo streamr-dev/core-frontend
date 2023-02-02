@@ -16,19 +16,12 @@ export type EditableProjectActions = {
     updateProject: (project: Partial<Project>) => void,
     updateName: (name: Project['name']) => void,
     updateDescription: (description: Project['description']) => void,
-    updateChain: (chain: Project['chain']) => void,
-    updatePricingToken: (pricingTokenAddress: Project['pricingTokenAddress'], pricingTokenDecimals: BN) => void,
     updateImageUrl: (image: Project['imageUrl']) => void,
     updateImageFile: (image: File) => void,
     updateStreams: (streams: StreamIdList) => void,
     updateAdminFee: (fee: Project['adminFee']) => void,
-    updatePrice: (
-        price: Project['price'],
-        priceCurrency: Project['priceCurrency'],
-        timeUnit: Project['timeUnit'],
-        decimals: BN,
-    ) => void,
-    updateBeneficiaryAddress: (beneficiaryAddress: Project['beneficiaryAddress'], touched?: boolean) => void,
+    updateDataUnionChainId: (chainId: number) => void,
+    updateSalePoints: (salePoints: Project['salePoints']) => void,
     updateExistingDUAddress: (address: string, touched?: boolean) => void,
     updateType: (type: ProjectTypeEnum) => void,
     updateTermsOfUse: (termsOfUse: Project['termsOfUse']) => void,
@@ -39,6 +32,7 @@ export type EditableProjectActions = {
 export const useEditableProjectActions = (): EditableProjectActions => {
     const {state, updateState} = useContext(ProjectStateContext)
     const { setTouched } = useContext(ValidationContext2)
+
     const updateProject = useCallback<EditableProjectActions['updateProject']>(
         (project: Partial<Project>) => {
             updateState(project)
@@ -47,7 +41,7 @@ export const useEditableProjectActions = (): EditableProjectActions => {
     )
     const updateName = useCallback(
         (name: Project['name']) => {
-            updateState({ name })
+            updateState({name})
             setTouched('name')
         },
         [updateState, setTouched],
@@ -59,23 +53,19 @@ export const useEditableProjectActions = (): EditableProjectActions => {
         },
         [updateState, setTouched],
     )
-    const updateChain = useCallback<EditableProjectActions['updateChain']>(
-        (chain: string) => {
-            updateState({chain })
-            setTouched('chain')
+    const updateDataUnionChainId = useCallback<EditableProjectActions['updateDataUnionChainId']>(
+        (chainId: number) => {
+            updateState({dataUnionChainId: chainId})
+            setTouched('dataUnionChainId')
         },
         [updateState, setTouched],
     )
-    const updatePricingToken = useCallback<EditableProjectActions['updatePricingToken']>(
-        (pricingTokenAddress: string, pricingTokenDecimals: BN) => {
-            updateState({
-                pricingTokenAddress,
-                pricingTokenDecimals: pricingTokenDecimals.toNumber(),
-            })
-            setTouched('pricingTokenAddress')
-        },
-        [updateState, setTouched],
-    )
+
+    const updateSalePoints = useCallback<EditableProjectActions['updateSalePoints']>((salePoints: Project['salePoints']) => {
+        updateState({salePoints})
+        setTouched('salePoints')
+    }, [updateState, setTouched])
+
     const updateImageUrl = useCallback<EditableProjectActions['updateImageUrl']>(
         (image: string) => {
             updateState({imageUrl: image })
@@ -101,31 +91,6 @@ export const useEditableProjectActions = (): EditableProjectActions => {
         (adminFee: Project['adminFee']) => {
             updateState({ adminFee })
             setTouched('adminFee')
-        },
-        [updateState, setTouched],
-    )
-    const updatePrice = useCallback<EditableProjectActions['updatePrice']>(
-        (price: Project['price'], priceCurrency: Project['priceCurrency'], timeUnit: Project['timeUnit'], decimals: BN,
-        ) => {
-            updateState({
-                price,
-                priceCurrency,
-                pricePerSecond: getPricePerSecond(state.type === ProjectTypeEnum.OPEN_DATA, price, timeUnit, decimals).toString(),
-                timeUnit,
-            })
-            setTouched('pricePerSecond')
-        },
-        [updateState, state, setTouched],
-    )
-    const updateBeneficiaryAddress = useCallback<EditableProjectActions['updateBeneficiaryAddress']>(
-        (beneficiaryAddress: Project['beneficiaryAddress'], didTouch = true) => {
-            updateState({
-                beneficiaryAddress,
-            })
-
-            if (didTouch) {
-                setTouched('beneficiaryAddress')
-            }
         },
         [updateState, setTouched],
     )
@@ -203,14 +168,12 @@ export const useEditableProjectActions = (): EditableProjectActions => {
             updateProject,
             updateName,
             updateDescription,
-            updateChain,
-            updatePricingToken,
+            updateDataUnionChainId,
+            updateSalePoints,
             updateImageUrl,
             updateImageFile,
             updateStreams,
             updateAdminFee,
-            updatePrice,
-            updateBeneficiaryAddress,
             updateExistingDUAddress,
             updateType,
             updateTermsOfUse,
@@ -222,14 +185,12 @@ export const useEditableProjectActions = (): EditableProjectActions => {
             updateProject,
             updateName,
             updateDescription,
-            updateChain,
-            updatePricingToken,
+            updateDataUnionChainId,
+            updateSalePoints,
             updateImageUrl,
             updateImageFile,
             updateStreams,
             updateAdminFee,
-            updatePrice,
-            updateBeneficiaryAddress,
             updateExistingDUAddress,
             updateType,
             updateTermsOfUse,

@@ -49,14 +49,14 @@ export function useEditableProductActions() {
         [commit, setTouched],
     )
     const updateChain = useCallback(
-        (chain: $ElementType<Project, 'chain'>) => {
+        (chain: any) => {
             commit('Update chain', (p: Project) => ({ ...p, chain }))
             setTouched('chain')
         },
         [commit, setTouched],
     )
     const updatePricingToken = useCallback(
-        (pricingTokenAddress: $ElementType<Project, 'pricingTokenAddress'>, pricingTokenDecimals: BN) => {
+        (pricingTokenAddress: any, pricingTokenDecimals: BN) => {
             commit('Update payment token', (p: Project) => ({
                 ...p,
                 pricingTokenAddress,
@@ -117,16 +117,16 @@ export function useEditableProductActions() {
     )
     const updatePrice = useCallback(
         (
-            price: $ElementType<Project, 'price'>,
-            priceCurrency: $ElementType<Project, 'priceCurrency'>,
-            timeUnit: $ElementType<Project, 'timeUnit'>,
+            price: any,
+            priceCurrency: any,
+            timeUnit: any,
             decimals: BN,
         ) => {
         },
         [commit, setTouched],
     )
     const updateBeneficiaryAddress = useCallback(
-        (beneficiaryAddress: $ElementType<Project, 'beneficiaryAddress'>, didTouch = true) => {
+        (beneficiaryAddress: any, didTouch = true) => {
             commit('Update beneficiary address', (p: Project) => ({
                 ...p,
                 beneficiaryAddress,
