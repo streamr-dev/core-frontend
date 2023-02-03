@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import merge from 'lodash/merge'
+import { useSelector } from 'react-redux'
+
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import ProjectsComponent, { ProjectsContainer } from '$mp/components/Projects'
 import ActionBar from '$mp/components/ActionBar'
@@ -8,133 +8,121 @@ import Layout from '$shared/components/Layout'
 import Footer from '$shared/components/Layout/Footer'
 import useModal from '$shared/hooks/useModal'
 import CreateProductModal from '$mp/containers/CreateProductModal'
-import type { Filter, ProjectList, SearchFilter } from '$mp/types/project-types'
-import { getProducts, getProductsDebounced, updateFilter, clearFilters, updateProjectsAuthorFilter } from '$mp/modules/productList/actions'
-import { getCategories } from '$mp/modules/categories/actions'
-import { selectAllCategories } from '$mp/modules/categories/selectors'
-import useAllDataUnionStats from '$mp/modules/dataUnion/hooks/useAllDataUnionStats'
-import {
-    selectProductList,
-    selectProductListError,
-    selectFilter,
-    selectFetchingProductList,
-    selectHasMoreSearchResults,
-} from '$mp/modules/productList/selectors'
+import type { SearchFilter } from '$mp/types/project-types'
+import { getProjects, searchProjects, TheGraphProject } from '$app/src/services/projects'
+import { selectUsername } from '$shared/modules/user/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import useContractProducts from '$shared/hooks/useContractProducts'
+import useDeepEqualMemo from '$shared/hooks/useDeepEqualMemo'
 import { isAuthenticated } from '$shared/modules/user/selectors'
 import styles from './projects.pcss'
 
-const ProjectsPage: FunctionComponent = () => {
-    const categories = useSelector(selectAllCategories)
-    const projects = useSelector(selectProductList)
-    const projectsError = useSelector(selectProductListError)
-    const selectedFilter = useSelector(selectFilter)
-    const isFetching = useSelector(selectFetchingProductList)
-    const hasMoreSearchResults = useSelector(selectHasMoreSearchResults)
-    const isUserAuthenticated = useSelector(isAuthenticated)
-    const dispatch = useDispatch()
-    const isMounted = useIsMounted()
-    const productsRef = useRef<ProjectList>()
-    productsRef.current = projects
-    const [contractProducts, setContractProducts] = useState([])
-    const { api: createProductModal } = useModal('marketplace.createProduct')
-    const loadCategories = useCallback(() => dispatch(getCategories(false)), [dispatch])
-    const { load: loadDataUnionStats, members, reset: resetStats } = useAllDataUnionStats()
-    const loadProducts = useCallback(() => dispatch(getProducts()), [dispatch])
-    const { load: loadContractProducts } = useContractProducts()
-    const loadProductsFromContract = useCallback(async () => {
-        if (productsRef.current) {
-            const cps = await loadContractProducts(productsRef.current)
+const PAGE_SIZE = 12
 
-            if (isMounted()) {
-                setContractProducts(cps)
+type Filter = {
+    search: string,
+    type: string,
+    owner: string | null,
+}
+
+const EMPTY_FILTER: Filter = {
+    search: '',
+    type: '',
+    owner: null,
+}
+
+const ProjectsPage: FunctionComponent = () => {
+    const [projects, setProjects] = useState<TheGraphProject[]>([])
+    const [projectsError, setProjectsError] = useState<string | null>(null)
+    const [isFetching, setIsFetching] = useState(false)
+    const [filterValue, setFilter] = useState(EMPTY_FILTER)
+    const filter = useDeepEqualMemo(filterValue)
+    const [hasMoreSearchResults, setHasMoreSearchResults] = useState(false)
+
+    const { api: createProductModal } = useModal('marketplace.createProduct')
+    const isUserAuthenticated = useSelector(isAuthenticated)
+    const userAddress = useSelector(selectUsername)
+    const isMounted = useIsMounted()
+    const productsRef = useRef<TheGraphProject[]>()
+    productsRef.current = projects
+
+    const loadProjects = useCallback(async (replace = true) => {
+        const limit = PAGE_SIZE + 1 // +1 to determine if we should show "load more" button
+        const offset = replace ? 0 : productsRef.current && productsRef.current.length
+        setIsFetching(true)
+
+        let result = []
+
+        try {
+            if (filter.search != null && filter.search.length > 0) {
+                result = await searchProjects(filter.search, limit, offset)
+            } else {
+                result = await getProjects(filter.owner, limit, offset)
+            }
+            setProjectsError(null)
+        } catch (e) {
+            console.error(e)
+            setProjectsError(e)
+        }
+
+        if (isMounted()) {
+            setIsFetching(false)
+
+            if (result) {
+                const hasMore = result.length > PAGE_SIZE
+                setHasMoreSearchResults(hasMore)
+
+                if (hasMore) {
+                    // Splice to get rid of extra element from "load more" check
+                    result.splice(PAGE_SIZE, 1)
+                }
+
+                if (replace) {
+                    setProjects(result)
+                } else {
+                    setProjects((prev) => ([
+                        ...prev,
+                        ...result,
+                    ]))
+                }
             }
         }
-    }, [loadContractProducts, isMounted])
-    const onFilterChange = useCallback(
-        (filter: Filter) => {
-            dispatch(updateFilter(filter))
-            dispatch(getProducts(true)).then((productIds) => {
-                if (isMounted()) {
-                    loadDataUnionStats(productIds)
-                    loadProductsFromContract()
-                }
-            })
-        },
-        [dispatch, isMounted, loadDataUnionStats, loadProductsFromContract],
-    )
-    const onSearchChange = useCallback(
-        (search: SearchFilter) => {
-            dispatch(
-                updateFilter({
-                    search,
-                }),
-            )
-            dispatch(
-                getProductsDebounced({
-                    replace: true,
-                    onSuccess: (productIds) => {
-                        if (isMounted()) {
-                            loadDataUnionStats(productIds)
-                            loadProductsFromContract()
-                        }
-                    },
-                }),
-            )
-        },
-        [dispatch, isMounted, loadDataUnionStats, loadProductsFromContract],
-    )
+    }, [isMounted, filter])
+
+    const onFilterChange = useCallback((newFilter: Filter) => {
+        setFilter((prev) => ({ ...prev, ...newFilter }))
+    }, [])
+
+    const onSearchChange = useCallback((search: SearchFilter) => {
+        setFilter((prev) => ({ ...prev, search }))
+    }, [])
 
     const onFilterByAuthorChange = useCallback((myProjects: boolean): void => {
-        dispatch(
-            updateProjectsAuthorFilter(myProjects),
-        )
-        dispatch(
-            getProductsDebounced({
-                replace: true,
-                onSuccess: (productIds) => {
-                    if (isMounted()) {
-                        loadDataUnionStats(productIds)
-                        loadProductsFromContract()
-                    }
-                },
-            }),
-        )
-    }, [dispatch, isMounted, loadDataUnionStats, loadProductsFromContract])
+        setFilter((prev) => ({
+            ...prev,
+            owner: myProjects ? userAddress : null,
+        }))
+    }, [userAddress])
 
     const clearFiltersAndReloadProducts = useCallback(() => {
-        dispatch(clearFilters())
-        dispatch(getProducts(true)).then((productIds) => {
-            if (isMounted()) {
-                loadDataUnionStats(productIds)
-                loadProductsFromContract()
-            }
-        })
-    }, [dispatch, isMounted, loadDataUnionStats, loadProductsFromContract])
-    useEffect(() => {
-        loadCategories()
+        setFilter(EMPTY_FILTER)
+    }, [])
 
+    useEffect(() => {
         if (productsRef.current && productsRef.current.length === 0) {
             clearFiltersAndReloadProducts()
-        } else if (productsRef.current && productsRef.current.length > 0) {
-            // just reload DU stats if product list was cached
-            loadDataUnionStats(productsRef.current.map(({ id }) => id))
-            loadProductsFromContract()
         }
-    }, [loadCategories, clearFiltersAndReloadProducts, loadDataUnionStats, loadProductsFromContract])
-    useEffect(
-        () => () => {
-            resetStats()
-        },
-        [resetStats],
-    )
+    }, [clearFiltersAndReloadProducts])
+
+    useEffect(() => {
+        loadProjects()
+    }, [loadProjects])
+
     return (
         <Layout className={styles.projectsListPage} framedClassName={styles.productsFramed} innerClassName={styles.productsInner} footer={false}>
             <MarketplaceHelmet />
             <ActionBar
-                filter={selectedFilter}
-                categories={categories}
+                filter={filter}
+                categories={[]}
                 onFilterChange={onFilterChange}
                 onSearchChange={onSearchChange}
                 onCreateProject={() => createProductModal.open()}
@@ -144,22 +132,11 @@ const ProjectsPage: FunctionComponent = () => {
             <CreateProductModal />
             <ProjectsContainer fluid>
                 <ProjectsComponent
-                    projects={projects.map((p, i) => {
-                        const beneficiaryAddress = (p.beneficiaryAddress || '').toLowerCase()
-                        const contractProd = contractProducts.find((cp) => cp.id === p.id)
-                        const pricingTokenAddress = contractProd ? contractProd.pricingTokenAddress : null
-                        const pricePerSecond = contractProd ? contractProd.pricePerSecond : p.pricePerSecond
-                        return merge({}, p, {
-                            key: `${i}-${p.id || ''}`,
-                            members: members[beneficiaryAddress],
-                            pricingTokenAddress,
-                            pricePerSecond,
-                        })
-                    })}
+                    projects={projects}
                     error={projectsError}
                     type="projects"
                     isFetching={isFetching}
-                    loadProducts={loadProducts}
+                    loadProducts={() => { loadProjects(false) }}
                     hasMoreSearchResults={hasMoreSearchResults}
                 />
             </ProjectsContainer>

@@ -1,5 +1,6 @@
 import React, { Fragment, useMemo, useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
+import { randomHex } from 'web3-utils'
 import docsLinks from '$shared/../docsLinks'
 import { SM, MONO, MEDIUM } from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -20,8 +21,10 @@ import { truncate } from '$shared/utils/text'
 import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
 import useClientAddress from '$shared/hooks/useClientAddress'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
+import { buyProject, setTokenAllowance } from '$app/src/services/marketplace'
 import useStreamOwnerOptions, { ADD_ENS_DOMAIN_VALUE } from './useStreamOwnerOptions'
 export const ENS_DOMAINS_URL = 'https://ens.domains'
+
 export function ReadonlyStreamId({ className }) {
     const streamId = useStreamId()
     const { copy, isCopied } = useCopy(() => {
@@ -64,6 +67,7 @@ export function ReadonlyStreamId({ className }) {
         </StreamId>
     )
 }
+
 export function EditableStreamId({ className, disabled }) {
     const ownerGroups = useStreamOwnerOptions()
     const owners = useMemo(() => {
@@ -239,6 +243,7 @@ export function EditableStreamId({ className, disabled }) {
         </StreamId>
     )
 }
+
 const Domain = styled.div`
     flex-grow: 1;
 
