@@ -46,7 +46,7 @@ const ProjectsPage: FunctionComponent = () => {
     productsRef.current = projects
 
     const loadProjects = useCallback(async (replace = true) => {
-        const limit = PAGE_SIZE + 1 // to determine if we should show "load more" button
+        const limit = PAGE_SIZE + 1 // +1 to determine if we should show "load more" button
         const offset = replace ? 0 : productsRef.current && productsRef.current.length
         setIsFetching(true)
 
@@ -72,7 +72,7 @@ const ProjectsPage: FunctionComponent = () => {
                 setHasMoreSearchResults(hasMore)
 
                 if (hasMore) {
-                    // Splice to get rid of possible extra element from "load more" check
+                    // Splice to get rid of extra element from "load more" check
                     result.splice(PAGE_SIZE, 1)
                 }
 
