@@ -324,7 +324,7 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: Marke
                 })}
             >
                 <TileImageContainer autoSize>
-                    <TileThumbnail src={product.imageUrl || ''} />
+                    <TileThumbnail src={product.metadata.imageUrl || ''} />
                 </TileImageContainer>
             </Link>
             {!!showDataUnionBadge && (
@@ -355,8 +355,8 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: Marke
             })}
         >
             <Summary
-                name={product.metadata.name}
-                description={product.metadata.description}
+                name={product.metadata.name || 'Untitled project'}
+                description={product.metadata.description || ''}
             />
         </Link>
     </Tile>
