@@ -67,9 +67,12 @@ export type SmartContractProject = {
     id: string,
     paymentDetails: PaymentDetails[],
     minimumSubscriptionInSeconds: number,
-    isPublicPurchasable: boolean,
     metadata: string,
     chainId: number,
+}
+
+export interface SmartContractProjectCreate extends SmartContractProject {
+    isPublicPurchasable: boolean,
 }
 
 type SmartContractPaymentDetails = {
@@ -122,6 +125,33 @@ const mapProject = (project: any): TheGraphProject => {
     }
 
     return project as TheGraphProject
+}
+
+export const getProject = async (id: string): Promise<TheGraphProject | null> => {
+    const theGraphUrl = getGraphUrl()
+
+    const result = await post({
+        url: theGraphUrl,
+        data: {
+            query: `
+                query {
+                    projects(
+                        where: { id: "${id.toLowerCase()}" }
+                    ) {
+                        ${projectFields}
+                    }
+                }
+            `,
+        },
+        useAuthorization: false,
+    })
+
+    const projects = result.data.projects.map((p) => mapProject(p))
+    if (projects && projects.length > 0) {
+        return projects[0]
+    }
+
+    return null
 }
 
 export const getProjects = async (owner?: string, first = 20, skip = 0): Promise<TheGraphProject[]> => {
@@ -199,7 +229,7 @@ const getPaymentDetails = (paymentDetails: PaymentDetails[]): SmartContractPayme
     }))
 }
 
-export const createProject = (project: SmartContractProject): SmartContractTransaction => {
+export const createProject = (project: SmartContractProjectCreate): SmartContractTransaction => {
     const {
         id,
         paymentDetails,

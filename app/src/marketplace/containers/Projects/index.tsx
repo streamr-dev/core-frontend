@@ -16,7 +16,7 @@ import useDeepEqualMemo from '$shared/hooks/useDeepEqualMemo'
 import { isAuthenticated } from '$shared/modules/user/selectors'
 import styles from './projects.pcss'
 
-const PAGE_SIZE = 1
+const PAGE_SIZE = 12
 
 type Filter = {
     search: string,
@@ -68,10 +68,13 @@ const ProjectsPage: FunctionComponent = () => {
             setIsFetching(false)
 
             if (result) {
-                setHasMoreSearchResults(result.length > PAGE_SIZE)
+                const hasMore = result.length > PAGE_SIZE
+                setHasMoreSearchResults(hasMore)
 
-                // Splice to get rid of possible extra element from "load more" check
-                result.splice(PAGE_SIZE, 1)
+                if (hasMore) {
+                    // Splice to get rid of possible extra element from "load more" check
+                    result.splice(PAGE_SIZE, 1)
+                }
 
                 if (replace) {
                     setProjects(result)
