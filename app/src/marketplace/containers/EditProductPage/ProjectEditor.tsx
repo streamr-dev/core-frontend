@@ -7,13 +7,12 @@ import ProjectName from '$mp/containers/EditProductPage/ProjectName'
 import ProjectDescription from '$mp/containers/EditProductPage/ProjectDescription'
 import { ProjectDetails } from '$mp/containers/EditProductPage/ProjectDetails'
 import { WhiteBox } from '$shared/components/WhiteBox'
-import TokenSelector2 from '$mp/containers/EditProductPage/TokenSelector2'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { ProjectTypeEnum } from '$mp/utils/constants'
 import { DataUnionFee } from '$mp/containers/EditProductPage/DataUnionFee'
 import { StreamSelector } from '$mp/containers/EditProductPage/StreamSelector'
 import { TermsOfUse2 } from '$mp/containers/EditProductPage/TermsOfUse2'
-import { BeneficiaryAddress2 } from '$mp/containers/EditProductPage/BeneficiaryAddress2'
+import { SalePointSelector } from '$mp/containers/EditProductPage/SalePointSelector/SalePointSelector'
 
 type ProjectEditorProps = {
     disabled?: boolean
@@ -33,11 +32,9 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({disabled})
             <ProjectDescription/>
             <ProjectDetails/>
         </ProjectHeroContainer>
-        {(project.type !== ProjectTypeEnum.OPEN_DATA) &&
+        {project.type === ProjectTypeEnum.PAID_DATA &&
             <WhiteBox>
-                <TokenSelector2/>
-                {project.type === ProjectTypeEnum.DATA_UNION && <DataUnionFee/>}
-                {project.type === ProjectTypeEnum.PAID_DATA && <BeneficiaryAddress2/>}
+                <SalePointSelector/>
             </WhiteBox>
         }
         <WhiteBoxWithMargin>

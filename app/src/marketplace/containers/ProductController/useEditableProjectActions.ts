@@ -179,7 +179,7 @@ export const useEditableProjectActions = (): EditableProjectActions => {
             updateTermsOfUse,
             updateContactUrl,
             updateContactEmail,
-            updateSocialUrl,
+            updateSocialUrl
         }),
         [
             updateProject,

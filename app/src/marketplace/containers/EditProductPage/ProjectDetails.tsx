@@ -113,7 +113,8 @@ export const ProjectDetails: FunctionComponent = () => {
     }, [projectChain])
 
     return <ProjectDetailsWrap>
-        <DetailEditor
+        {/*TODO REMOVE LATER*/}
+        {/*<DetailEditor
             disabled={isChainSelectorDisabled}
             className={'detail'}
             unsetValueText={'Chain'}
@@ -128,7 +129,7 @@ export const ProjectDetails: FunctionComponent = () => {
             showValueFormatter={(chainName) => {
                 return chainName ? configChainNameMapping[chainName] : ''
             }}
-        />
+        />*/}
         <DetailEditor
             className={'detail'}
             unsetValueText={'Site URL'}

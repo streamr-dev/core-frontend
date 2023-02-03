@@ -1,3 +1,4 @@
+import BN from 'bignumber.js'
 import { $ElementType, $Keys, $Values } from 'utility-types'
 import { projectStates } from '$shared/utils/constants'
 import { ProjectTypeEnum, projectTypes } from '$mp/utils/constants'
@@ -17,7 +18,7 @@ export type PendingChanges = {
 }
 export type  SalePoint = {
     chainId: number,
-    beneficiaryAddress: Address
+    beneficiaryAddress?: Address
     pricePerSecond: NumberString
     timeUnit: TimeUnit | null | undefined
     price: NumberString
@@ -150,4 +151,12 @@ export type DataUnionSecret = {
     name: string
     secret: string
     contractAddress: Address
+}
+
+export type PricingData = {
+    tokenAddress: Address,
+    price: BN,
+    pricePerSecond: BN,
+    timeUnit: TimeUnit,
+    beneficiaryAddress?: Address
 }

@@ -64,9 +64,6 @@ class Notifications extends React.Component<Props, State> {
 
     showNotification = (notification: Notification): void => {
         const system: System | null | undefined = this.system.current as System
-        console.log(
-            'notif', notification
-        )
 
         if (system) {
             // react-notification-system recognizes existing entries
