@@ -111,7 +111,7 @@ const DropdownOuter = styled.div`
 const DropdownInner = styled.div`
   padding: 24px 24px 75px;
   transition: margin-bottom 0.5s ease-in-out;
-  margin-bottom: -100%;
+  margin-bottom: -200%;
   
   &.is-open {
     margin-bottom: 0;

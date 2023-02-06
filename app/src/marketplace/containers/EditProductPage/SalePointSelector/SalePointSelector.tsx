@@ -43,7 +43,7 @@ export const SalePointSelector: FunctionComponent = () => {
         }
     }, [firstToggleDone, salePoints])
 
-    return <div>
+    return <SalePointSelectorContainer>
         <Heading>Select chains</Heading>
         <SubHeading>
             Access to the project data can be purchased on the selected chains.
@@ -67,18 +67,23 @@ export const SalePointSelector: FunctionComponent = () => {
                 onToggle={(salePoint) => handleToggle(chain.name, salePoint)}
             />
         })}
-    </div>
+    </SalePointSelectorContainer>
 }
+
+const SalePointSelectorContainer = styled.div`
+  max-width: 728px;
+`
 
 const Heading = styled.p`
   color: black;
   font-weight: ${REGULAR};
-  font-size: 34px;
-  margin-bottom: 44px;
+  font-size: 20px;
+  margin-bottom: 24px;
 `
 
 const SubHeading = styled.p`
-  font-size: 20px;
+  font-size: 16px;
+  line-height: 24px;
   margin-bottom: 16px;
   color: black;
 `

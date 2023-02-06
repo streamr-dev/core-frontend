@@ -172,7 +172,7 @@ const TokenSelector2: FunctionComponent<Props> = ({
     }, [])
 
     useEffect(() => {
-        if (pricingTokenAddress) {
+        if (pricingTokenAddress && chain.id) {
             let loading = true
 
             const check = async () => {
@@ -221,7 +221,7 @@ const TokenSelector2: FunctionComponent<Props> = ({
 
     useEffect(() => {
 
-        if (!selection) {
+        if (!selection || !chain.id) {
             return
         }
         if (selection === contractCurrencies.DATA) {
@@ -250,7 +250,7 @@ const TokenSelector2: FunctionComponent<Props> = ({
 
     return (
         <Container>
-            <Heading>Set the payment token a and price on {chain.name} chain</Heading>
+            <Heading>Set the payment token a and price on {chain?.name || 'the selected'} chain</Heading>
             <Description>
                 You can set a price for others to access the streams in your project.
                 The price can be set in DATA or any other ERC-20 token.

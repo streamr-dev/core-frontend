@@ -9,10 +9,12 @@ import { ProjectDetails } from '$mp/containers/EditProductPage/ProjectDetails'
 import { WhiteBox } from '$shared/components/WhiteBox'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { ProjectTypeEnum } from '$mp/utils/constants'
-import { DataUnionFee } from '$mp/containers/EditProductPage/DataUnionFee'
 import { StreamSelector } from '$mp/containers/EditProductPage/StreamSelector'
 import { TermsOfUse2 } from '$mp/containers/EditProductPage/TermsOfUse2'
 import { SalePointSelector } from '$mp/containers/EditProductPage/SalePointSelector/SalePointSelector'
+import { DataUnionChainSelector } from '$mp/containers/EditProductPage/DataUnionChainSelector/DataUnionChainSelector'
+import { DataUnionTokenSelector } from '$mp/containers/EditProductPage/DataUnionTokenSelector/DataUnionTokenSelector'
+import { DataUnionFee } from '$mp/containers/EditProductPage/DataUnionFee'
 
 type ProjectEditorProps = {
     disabled?: boolean
@@ -37,6 +39,15 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({disabled})
                 <SalePointSelector/>
             </WhiteBox>
         }
+        {project.type === ProjectTypeEnum.DATA_UNION && <>
+            <WhiteBox>
+                <DataUnionChainSelector/>
+            </WhiteBox>
+            <WhiteBoxWithMargin>
+                <DataUnionTokenSelector/>
+                <DataUnionFee/>
+            </WhiteBoxWithMargin>
+        </>}
         <WhiteBoxWithMargin>
             <StreamSelector />
         </WhiteBoxWithMargin>
