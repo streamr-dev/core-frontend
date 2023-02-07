@@ -75,6 +75,7 @@ const NewStreamListingPage: React.FC = () => {
             const [newStreams, hasMoreResults, isFirstBatch] = await fetchStreams(search, {
                 batchSize: BATCH_SIZE,
                 allowPublic,
+                onlyCurrentUser: streamsSelection === StreamSelection.YOUR,
             })
             requireUninterrupted()
             setHasMore(hasMoreResults)
