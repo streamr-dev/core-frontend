@@ -164,6 +164,10 @@ const TokenSelector2: FunctionComponent<Props> = ({
 
     const debouncedOnChange = useMemo(() => debounce(onChange, 50), [onChange])
 
+    useEffect(() => {
+        clearStatus()
+    }, [chain])
+
     // Set default value to DATA
     useEffect(() => {
         if (!pricingTokenAddress) {

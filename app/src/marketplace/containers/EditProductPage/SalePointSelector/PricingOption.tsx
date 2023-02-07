@@ -76,7 +76,7 @@ export const PricingOption: FunctionComponent<{
                     disabled={!isSelected}
                     chain={chain}
                     onChange={setPricing}
-                    validationFieldName={'salePoints'}
+                    validationFieldName={`salePoints.${chain.name}`}
                     value={pricingData ? {
                         tokenAddress: pricingData.tokenAddress,
                         price: pricingData.price,

@@ -30,6 +30,6 @@ export const DataUnionTokenSelector: FunctionComponent = () => {
         disabled={!project.dataUnionChainId}
         onChange={handleChange}
         chain={chain}
-        validationFieldName={'salePoints'}
+        validationFieldName={`salePoints.${chain.name}`}
     />
 }
