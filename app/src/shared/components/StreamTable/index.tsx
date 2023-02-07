@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import LoadMore from '$mp/components/LoadMore'
 import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
 import routes from '$routes'
+import { useStreamStats } from '../../hooks/useStreamStats'
 
 const ROW_HEIGHT = 88
 
@@ -201,6 +202,9 @@ type Props = {
 }
 
 const StreamTable: React.FC<Props> = ({ title = "Streams", streams, loadMore, hasMoreResults }: Props) => {
+    const stats = useStreamStats(streams)
+    console.log(stats)
+
     return (
         <Container>
             <Heading>

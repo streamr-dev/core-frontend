@@ -36,7 +36,7 @@ const streamSelectionOptions = (isUserAuthenticated: boolean) => [
     },
 ]
 
-const BATCH_SIZE = 10
+const BATCH_SIZE = 1
 
 const Container = styled.div`
     background-color: ${COLORS.secondary};
