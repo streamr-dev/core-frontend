@@ -7,6 +7,7 @@ import usePersistChangeset from '$shared/components/PermissionsProvider/usePersi
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import useModal from '$shared/hooks/useModal'
+import address0 from '$utils/address0'
 import PermissionItem from './PermissionItem'
 import AddAccountDialog from './AddAccountDialog'
 
@@ -41,11 +42,11 @@ const PermissionList: React.FunctionComponent<Props> = ({ disabled }) => {
 
     return (
         <Container>
-            {permissions.map(([key, value]) => (
+            {permissions.filter((p) => p[0] && p[0] !== address0).map(([key, value]) => (
                 <PermissionItem
                     key={key}
                     address={key}
-                    permissionBits={value}
+                    permissionBits={value as number}
                     disabled={disabled}
                 />
             ))}
