@@ -490,58 +490,6 @@ describe('product utils', () => {
                         }
                     },
                     expectedInvalidField: 'beneficiaryAddress'
-                },
-                {
-                    description: 'invalid pricingTokenAddress',
-                    project: {
-                        type: ProjectTypeEnum.PAID_DATA,
-                        salePoints: {
-                            [defaultSalePointChainName] : {
-                                ...defaultSalePoint,
-                                pricingTokenAddress: '0xa3934kd'
-                            }
-                        }
-                    },
-                    expectedInvalidField: 'pricingTokenAddress'
-                },
-                {
-                    description: 'invalid chain',
-                    project: {
-                        type: ProjectTypeEnum.PAID_DATA,
-                        salePoints: {
-                            [defaultSalePointChainName] : {
-                                ...defaultSalePoint,
-                                chainId: undefined
-                            }
-                        }
-                    },
-                    expectedInvalidField: 'chainId'
-                },
-                {
-                    description: 'invalid price',
-                    project: {
-                        type: ProjectTypeEnum.PAID_DATA,
-                        salePoints: {
-                            [defaultSalePointChainName] : {
-                                ...defaultSalePoint,
-                                price: '0'
-                            }
-                        }
-                    },
-                    expectedInvalidField: 'price'
-                },
-                {
-                    description: 'invalid timeUnit',
-                    project: {
-                        type: ProjectTypeEnum.PAID_DATA,
-                        salePoints: {
-                            [defaultSalePointChainName] : {
-                                ...defaultSalePoint,
-                                timeUnit: '5',
-                            }
-                        }
-                    },
-                    expectedInvalidField: 'timeUnit'
                 }
             ].forEach((testCase) => {
                 it(`should properly validate the ${testCase.description}`, () => {

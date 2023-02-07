@@ -32,6 +32,7 @@ type SelectFieldProps = {
     isClearable?: boolean
     whiteVariant?: boolean
     noShrink?: boolean
+    fullWidth?: boolean
 }
 
 const DropdownIndicator = (props: DropdownIndicatorProps) => {
@@ -63,13 +64,14 @@ const SelectField2: FunctionComponent<SelectFieldProps> = ({
     disabled,
     isClearable = true,
     whiteVariant = false,
-    noShrink = false
+    noShrink = false,
+    fullWidth = false
 }) => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [selected, setSelected] = useState<string>()
 
     const defaultStyles = useMemo(() => ({
-        control: (styles, props) => getControlStyles(styles, props.isFocused, isOpen, disabled, noShrink),
+        control: (styles, props) => getControlStyles(styles, props.isFocused, isOpen, disabled, noShrink, fullWidth),
         placeholder: (styles) => getPlaceholderStyles(styles, isOpen, disabled),
         singleValue: (styles) => getSingleValueStyles(styles, isOpen, disabled, noShrink),
         menu: (styles) => getMenuStyles(styles),
@@ -80,7 +82,7 @@ const SelectField2: FunctionComponent<SelectFieldProps> = ({
 
     const whiteVariantStyles = useMemo(() => ({
         placeholder: (styles) => getWhitePlaceholderStyles(styles),
-        control: (styles, props) => getWhiteControlStyles(styles, props.isFocused, disabled, noShrink),
+        control: (styles, props) => getWhiteControlStyles(styles, props.isFocused, disabled, noShrink, fullWidth),
         menu: (styles) => getWhiteMenuStyles(styles),
         menuList: (styles) => getWhiteMenuListStyles(styles),
         option: (styles, props) => getWhiteOptionStyles(styles, props.isSelected)

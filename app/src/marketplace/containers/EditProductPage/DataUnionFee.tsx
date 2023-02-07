@@ -66,6 +66,8 @@ export const DataUnionFee: FunctionComponent<{disabled?: boolean}> = ({disabled 
     const {updateAdminFee} = useEditableProjectActions()
     const {setStatus, isValid, clearStatus} = useValidation2('adminFee')
 
+    // TODO add loading of the fee from the selected existing DU
+
     const handleUpdate = (value: string): void => {
         updateAdminFee(value)
         if (Number(value) < 0) {
@@ -84,7 +86,7 @@ export const DataUnionFee: FunctionComponent<{disabled?: boolean}> = ({disabled 
                     className={'percent-input'}
                     placeholder={'Fee'}
                     value={project.adminFee || ''}
-                    disabled={disabled || !project.chain}
+                    disabled={disabled || !project.dataUnionChainId || !!project.existingDUAddress}
                     onChange={(event: ChangeEvent<HTMLInputElement>) => {
                         handleUpdate(event.target.value)
                     }}

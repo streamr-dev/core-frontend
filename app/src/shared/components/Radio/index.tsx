@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { COLORS } from '$shared/utils/styled'
 
 type RadioProps = {
-    id: string
+    id?: string
     name: string,
     label: ReactNode,
     value: any

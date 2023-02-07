@@ -5,7 +5,7 @@ import { contractCurrencies as currencies, projectStates, timeUnits } from '$sha
 import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
 import type { ContactDetails, Project, ProjectId, ProjectType, SmartContractProduct } from '../types/project-types'
 import { ProjectState } from '../types/project-types'
-import { isEthereumAddress } from './validate'
+import { isEthereumAddress, validateSalePoint } from './validate'
 import { isPriceValid } from './price'
 import { ProjectTypeEnum, projectTypes } from './constants'
 import { fromDecimals, toDecimals } from './math'
@@ -141,30 +141,11 @@ export const validate = (project: Project): Record<string, boolean> => {
         if (Object.keys(project?.salePoints || {}).length) {
             Object.keys(project?.salePoints || {}).forEach((chainName) => {
                 const salePoint = project.salePoints[chainName]
-                if (!salePoint.timeUnit || !timeUnits[salePoint.timeUnit]) {
-                    invalidFields[`salePoints.${chainName}.timeUnit`] = true
-                }
-                if (!isPriceValid(salePoint.price) || new BN(salePoint.price).isLessThanOrEqualTo(0)) {
-                    invalidFields[`salePoints.${chainName}.price`] = true
-                }
-
-                if (!salePoint.pricingTokenAddress || !isEthereumAddress(salePoint.pricingTokenAddress)) {
-                    invalidFields[`salePoints.${chainName}.pricingTokenAddress`] = true
-                }
-
-                if (!salePoint.pricePerSecond || !isPriceValid(salePoint.pricePerSecond)) {
-                    invalidFields[`salePoints.${chainName}.pricePerSecond`] = true
-                }
-
-                if (!salePoint.chainId) {
-                    invalidFields[`salePoints.${chainName}.chainId`] = true
-                }
-                // this applies only to PAID_DATA projects
-                if (
-                    project.type === ProjectTypeEnum.PAID_DATA
-                    && (!salePoint.beneficiaryAddress || !isEthereumAddress(salePoint.beneficiaryAddress))
-                ) {
-                    invalidFields[`salePoints.${chainName}.beneficiaryAddress`] = true
+                const invalidSalePointFields = validateSalePoint(salePoint, project.type === ProjectTypeEnum.DATA_UNION)
+                if (!!invalidSalePointFields && invalidSalePointFields.length) {
+                    invalidSalePointFields.forEach((field) => {
+                        invalidFields[`salePoints.${chainName}.${field}`] = true
+                    })
                 }
             })
         }

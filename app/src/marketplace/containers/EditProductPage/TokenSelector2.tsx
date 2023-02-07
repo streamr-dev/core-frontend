@@ -1,25 +1,32 @@
-import React, { FunctionComponent, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
+import { debounce } from 'lodash'
+import { Chain } from '@streamr/config'
 import styled from 'styled-components'
 import BN from 'bignumber.js'
 import SvgIcon from '$shared/components/SvgIcon'
 import { getDataAddress, getTokenInformation } from '$mp/utils/web3'
-import { getChainIdFromApiString } from '$shared/utils/chains'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
-import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 import { COLORS, MAX_CONTENT_WIDTH, MEDIUM, REGULAR } from '$shared/utils/styled'
 import { Radio } from '$shared/components/Radio'
 import Text from '$ui/Text'
 import Button from '$shared/components/Button'
 import SelectField2 from '$mp/components/SelectField2'
-import { NotificationIcon, timeUnits } from '$shared/utils/constants'
-import { TimeUnit } from '$shared/types/common-types'
+import { contractCurrencies, NotificationIcon, timeUnits } from '$shared/utils/constants'
+import { ContractCurrency, TimeUnit } from '$shared/types/common-types'
 import useValidation2 from '$mp/containers/ProductController/useValidation2'
 import { SeverityLevel } from '$mp/containers/ProductController/ValidationContextProvider2'
 import Notification from '$shared/utils/Notification'
+import { Address } from '$shared/types/web3-types'
+import { PricingData, Project } from '$mp/types/project-types'
+import { RecursiveKeyOf } from '$utils/recursiveKeyOf'
+import { pricePerSecondFromTimeUnit } from '$mp/utils/price'
 
 type Props = {
-    disabled?: boolean
+    disabled?: boolean,
+    chain: Chain,
+    onChange: (pricing: PricingData) => void,
+    value?: PricingData,
+    validationFieldName: RecursiveKeyOf<Project>
 }
 const Container = styled.div`
   color: ${COLORS.primary};
@@ -29,8 +36,8 @@ const Container = styled.div`
 const Heading = styled.p`
   color: black;
   font-weight: ${REGULAR};
-  font-size: 34px;
-  margin-bottom: 44px;
+  font-size: 20px;
+  margin-bottom: 22px;
 `
 
 const SubHeading = styled.p`
@@ -48,6 +55,7 @@ const Form = styled.div`
   border-radius: 4px;
   background-color: ${COLORS.inputBackground};
   padding: 24px;
+  margin-bottom: 32px;
 `
 
 const RadioContainer = styled.div`
@@ -130,54 +138,58 @@ const SelectContainer = styled.div`
     }
 `
 
-enum TokenType {
-    DATA = 'data',
-    Custom = 'custom',
-}
-
 const options = [timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month].map((unit: TimeUnit) => ({
     label: `Per ${unit}`,
     value: unit,
 }))
 
-const TokenSelector2: FunctionComponent<Props> = ({ disabled }) => {
+const TokenSelector2: FunctionComponent<Props> = ({
+    disabled,
+    onChange,
+    chain,
+    validationFieldName,
+    value
+}) => {
     const isMounted = useIsMounted()
-    const { state: project } = useContext(ProjectStateContext)
-    const { updatePricingToken, updatePrice } = useEditableProjectActions()
-    const [selection, setSelection] = useState<TokenType>(null)
-    const [customTokenAddress, setCustomTokenAddress] = useState<string>('')
-    const [selectedTokenAddress, setSelectedTokenAddress] = useState<string>(null)
-    const [tokenSymbol, setTokenSymbol] = useState(null)
-    const [tokenDecimals, setTokenDecimals] = useState(18)
+    const [selection, setSelection] = useState<ContractCurrency>(null)
+    const [customTokenAddress, setCustomTokenAddress] = useState<Address>('')
+    const [selectedTokenAddress, setSelectedTokenAddress] = useState<Address>(null)
+    const [tokenSymbol, setTokenSymbol] = useState<string>(null)
+    const [price, setPrice] = useState<string>()
+    const [timeUnit, setTimeUnit] = useState<TimeUnit>()
+    const [tokenDecimals, setTokenDecimals] = useState<number>(18)
     const [isEditable, setIsEditable] = useState<boolean>(false)
-    const chainId = useMemo(() => {
-        return project.chain ? getChainIdFromApiString(project.chain) : undefined
-    }, [project.chain])
-    const { pricingTokenAddress } = project
-    const {setStatus, clearStatus, isValid} = useValidation2('pricingTokenAddress')
+    const {setStatus, clearStatus, isValid} = useValidation2(validationFieldName)
+    const pricingTokenAddress = value?.tokenAddress
+
+    const debouncedOnChange = useMemo(() => debounce(onChange, 50), [onChange])
+
+    useEffect(() => {
+        clearStatus()
+    }, [chain])
 
     // Set default value to DATA
     useEffect(() => {
-        if (!pricingTokenAddress && project.chain) {
-            setSelection(TokenType.DATA)
+        if (!pricingTokenAddress) {
+            setSelection('DATA')
         }
-    }, [pricingTokenAddress, project.chain])
+    }, [])
 
     useEffect(() => {
-        if (chainId && pricingTokenAddress) {
+        if (pricingTokenAddress && chain.id) {
             let loading = true
 
             const check = async () => {
-                const dataAddress = getDataAddress(chainId)
+                const dataAddress = getDataAddress(chain.id)
 
                 if (pricingTokenAddress === dataAddress) {
-                    setSelection(TokenType.DATA)
+                    setSelection(contractCurrencies.DATA)
                 } else if (pricingTokenAddress != null) {
-                    setSelection(TokenType.Custom)
+                    setSelection(contractCurrencies.PRODUCT_DEFINED)
                     setCustomTokenAddress(pricingTokenAddress)
                 }
 
-                const info = await getTokenInformation(pricingTokenAddress, chainId)
+                const info = await getTokenInformation(pricingTokenAddress, chain.id)
                 if (!isMounted()) {
                     return
                 }
@@ -199,7 +211,6 @@ const TokenSelector2: FunctionComponent<Props> = ({ disabled }) => {
                     setStatus(SeverityLevel.ERROR, 'This is not an ERC-20 token contract')
                     setTokenSymbol(null)
                     setTokenDecimals(null)
-                    updatePricingToken('', new BN(tokenDecimals || 18))
                 }
             }
 
@@ -210,89 +221,80 @@ const TokenSelector2: FunctionComponent<Props> = ({ disabled }) => {
                 loading = false
             }
         }
-    }, [pricingTokenAddress, chainId, isMounted])
+    }, [pricingTokenAddress, isMounted, clearStatus, setStatus])
 
     useEffect(() => {
-        if (chainId && !selection) {
-            setSelection(TokenType.DATA)
-        }
 
-        if (!chainId || !selection) {
+        if (!selection || !chain.id) {
             return
         }
-        if (selection === TokenType.DATA) {
+        if (selection === contractCurrencies.DATA) {
             setCustomTokenAddress('')
-            setSelectedTokenAddress(getDataAddress(chainId))
+            setSelectedTokenAddress(getDataAddress(chain.id))
             setIsEditable(false)
             setTokenSymbol(null)
-        } else if (selection === TokenType.Custom) {
+        } else if (selection === contractCurrencies.PRODUCT_DEFINED) {
             setSelectedTokenAddress(null)
             setIsEditable(customTokenAddress.length === 0)
             setTokenSymbol(null)
         } // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selection, chainId])
+    }, [selection, chain.id])
 
-    // Update product pricingToken
     useEffect(() => {
-        if (selectedTokenAddress) {
-            updatePricingToken(selectedTokenAddress, new BN(tokenDecimals || 18))
+        const output: PricingData = {
+            price: price ? new BN(price) : undefined,
+            timeUnit,
+            tokenAddress: selectedTokenAddress,
+            pricePerSecond: price && timeUnit
+                ? new BN(pricePerSecondFromTimeUnit(new BN(price), timeUnit, new BN(tokenDecimals)))
+                : undefined
         }
-    }, [selectedTokenAddress, tokenDecimals])
-
-    const handlePriceUpdate = useCallback((price: string) => {
-        updatePrice(price, project.priceCurrency, project.timeUnit, new BN(project.pricingTokenDecimals))
-    }, [project])
-
-    const handleTimeUnitUpdate = useCallback((timeUnit: string) => {
-        updatePrice(project.price, project.priceCurrency, timeUnit, new BN(project.pricingTokenDecimals))
-    }, [project])
+        debouncedOnChange(output)
+    }, [price, timeUnit, selectedTokenAddress, selection, tokenDecimals])
 
     return (
         <Container>
-            <Heading>Select token</Heading>
+            <Heading>Set the payment token a and price on {chain?.name || 'the selected'} chain</Heading>
             <Description>
                 You can set a price for others to access the streams in your project.
                 The price can be set in DATA or any other ERC-20 token.
             </Description>
-            <SubHeading>
-                Set the payment token and price
-            </SubHeading>
             <Form>
                 <RadioContainer className={'data-token-radio-container'}>
                     <Radio
                         id={'data-token'}
-                        name={'token-selector'}
+                        name={'token-selector-' + chain.name}
                         label={<RadioLabel>
                             <span>DATA Token</span>
                             <SvgIcon name={'DATAColor'} className={'data-icon'} />
                         </RadioLabel>}
-                        value={TokenType.DATA}
-                        disabled={!chainId}
+                        value={contractCurrencies.DATA}
+                        disabled={disabled}
                         disabledReason={'You need to select the chain first!'}
                         onChange={setSelection}
                         className={'radio'}
-                        checked={selection === TokenType.DATA}
+                        checked={selection === contractCurrencies.DATA}
                     />
                 </RadioContainer>
                 <RadioContainer>
                     <Radio
                         id={'custom-token'}
-                        name={'token-selector'}
+                        name={'token-selector-' + chain.name}
                         label={<RadioLabel>
                             <span>Custom Token</span>
                         </RadioLabel>}
-                        value={TokenType.Custom}
-                        disabled={!chainId}
+                        value={contractCurrencies.PRODUCT_DEFINED}
+                        disabled={disabled}
                         disabledReason={'You need to select the chain first!'}
                         onChange={setSelection}
                         className={'radio'}
-                        checked={selection === TokenType.Custom}
+                        checked={selection === contractCurrencies.PRODUCT_DEFINED}
                     />
                     <CustomTokenAddressInputContainer className={'custom-'}>
                         <label>Token contract address</label>
                         <Text
                             autoComplete="off"
-                            disabled={selection !== TokenType.Custom || disabled || !isEditable}
+                            disabled={selection !== contractCurrencies.PRODUCT_DEFINED || disabled || !isEditable}
                             placeholder={'e.g 0xdac17f958d2ee523a2206206994597c13d831ec7'}
                             value={customTokenAddress}
                             onChange={(e) => setCustomTokenAddress(e.target.value)}
@@ -305,6 +307,7 @@ const TokenSelector2: FunctionComponent<Props> = ({ disabled }) => {
                                 onClick={() => {
                                     setSelectedTokenAddress(customTokenAddress)
                                 }}
+                                disabled={disabled}
                             >Set Custom Token</Button>
                         </SetTokenContainer>
                     </CustomTokenAddressInputContainer>
@@ -314,8 +317,9 @@ const TokenSelector2: FunctionComponent<Props> = ({ disabled }) => {
                         <Text
                             className={'price-input'}
                             placeholder={'Set your price'}
-                            onChange={(event) => {handlePriceUpdate(event.target.value)}}
-                            disabled={!chainId}
+                            onChange={(event) => {setPrice(event.target.value)}}
+                            defaultValue={value?.price ? value.price.toString() : undefined}
+                            disabled={disabled}
                         />
                         {tokenSymbol && <span className={'token-symbol'}>{tokenSymbol}</span>}
                     </PriceInputWrap>
@@ -325,8 +329,9 @@ const TokenSelector2: FunctionComponent<Props> = ({ disabled }) => {
                             placeholder={'Unit'}
                             options={options}
                             isClearable={false}
-                            onChange={(selected) => {handleTimeUnitUpdate(selected)}}
-                            disabled={!chainId}
+                            value={value?.timeUnit}
+                            onChange={(selected) => {setTimeUnit(selected as TimeUnit)}}
+                            disabled={disabled}
                         />
                     </SelectContainer>
                 </PriceContainer>

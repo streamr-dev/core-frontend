@@ -65,7 +65,14 @@ export const StyledOption = styled(components.Option)`
     }}
 `
 
-export const getControlStyles = (styles: CSSObjectWithLabel, isFocused: boolean, isOpen: boolean, isDisabled: boolean, noShrink: boolean): CSSObjectWithLabel => {
+export const getControlStyles = (
+    styles: CSSObjectWithLabel,
+    isFocused: boolean,
+    isOpen: boolean,
+    isDisabled: boolean,
+    noShrink: boolean,
+    fullWidth: boolean
+): CSSObjectWithLabel => {
     const styleObject: CSSObjectWithLabel = {
         ...styles,
         backgroundColor: COLORS.secondary,
@@ -89,6 +96,9 @@ export const getControlStyles = (styles: CSSObjectWithLabel, isFocused: boolean,
     }
     if (noShrink) {
         styleObject.flexWrap = 'nowrap'
+    }
+    if (fullWidth) {
+        styleObject.width = '100%'
     }
     return styleObject
 }
@@ -225,7 +235,13 @@ export const getWhitePlaceholderStyles = (styles: CSSObjectWithLabel): CSSObject
     }
 }
 
-export const getWhiteControlStyles = (styles: CSSObjectWithLabel, isFocused: boolean, isDisabled: boolean, noShrink: boolean): CSSObjectWithLabel => {
+export const getWhiteControlStyles = (
+    styles: CSSObjectWithLabel,
+    isFocused: boolean,
+    isDisabled: boolean,
+    noShrink: boolean,
+    fullWidth: boolean
+): CSSObjectWithLabel => {
     const styleObject: CSSObjectWithLabel = {
         ...styles,
         fontSize: '14px',
@@ -244,6 +260,9 @@ export const getWhiteControlStyles = (styles: CSSObjectWithLabel, isFocused: boo
     }
     if (noShrink) {
         styleObject.flexWrap = 'nowrap'
+    }
+    if (fullWidth) {
+        styleObject.width = '100%'
     }
     return styleObject
 }
