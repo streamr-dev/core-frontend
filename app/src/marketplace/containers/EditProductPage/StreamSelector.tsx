@@ -49,7 +49,6 @@ const Stat = styled.div`
 `
 
 export const StreamSelector: FunctionComponent = () => {
-
     const {state: project} = useContext(ProjectStateContext)
     const {updateStreams} = useEditableProjectActions()
     const [search, setSearch] = useState<string>('')
@@ -61,9 +60,10 @@ export const StreamSelector: FunctionComponent = () => {
         const { requireUninterrupted } = itp(search)
 
         try {
-            const [newStreams, hasMoreResults, isFirstBatch] = await fetchStreams(search,{
+            const [newStreams, hasMoreResults, isFirstBatch] = await fetchStreams(search, {
                 batchSize: BATCH_SIZE,
                 allowPublic: false,
+                onlyCurrentUser: true,
             })
             requireUninterrupted()
             setHasMore(hasMoreResults)

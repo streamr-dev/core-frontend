@@ -175,10 +175,12 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
     }, [selectedProductType])
 
     useEffect(() => {
-        fetchStreams('', {batchSize: 1}).then((response) => {
+        const load = async () => {
+            const response = await fetchStreams(undefined, { batchSize: 1, onlyCurrentUser: true })
             setStreamsCount(response[0].length)
-        })
-    }, [])
+        }
+        load()
+    }, [fetchStreams])
 
     return <Root className={className}>
         <PageTitleContainer>

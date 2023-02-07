@@ -4,13 +4,20 @@ import type { Stream } from 'streamr-client'
 import getClientAddress from '$app/src/getters/getClientAddress'
 import useInterrupt from '$shared/hooks/useInterrupt'
 
-type FetchCallbackType = (search: string, { batchSize = 1, allowPublic = false }) => Promise<[Stream[], boolean, boolean]>
+type FetchParameters = {
+    batchSize?: number,
+    allowPublic?: boolean,
+    onlyCurrentUser?: boolean,
+}
+type FetchCallbackType = (search?: string, params?: FetchParameters) =>
+    Promise<[Stream[], boolean, boolean]>
 
 export default function useFetchStreams(): FetchCallbackType {
     const client = useClient()
     const itp = useInterrupt()
     const searchRef = useRef<string>()
     const allowPublicRef = useRef<boolean>()
+    const onlyCurrentUserRef = useRef<boolean>()
     const iteratorRef = useRef<AsyncIterable<Stream>>()
     const tailStreamRef = useRef<Stream>()
 
@@ -19,25 +26,31 @@ export default function useFetchStreams(): FetchCallbackType {
     }, [itp, client])
 
     return useCallback<FetchCallbackType>(
-        async (search: string, { batchSize = 1, allowPublic = false } = {}) => {
+        async (search?: string, { batchSize = 1, allowPublic = false, onlyCurrentUser = true } = {}) => {
             const { requireUninterrupted } = itp(search)
 
-            if (searchRef.current !== search || allowPublicRef.current !== allowPublic) {
+            if (searchRef.current !== search || allowPublicRef.current !== allowPublic || onlyCurrentUserRef.current !== onlyCurrentUser) {
                 searchRef.current = search
                 allowPublicRef.current = allowPublic
+                onlyCurrentUserRef.current = onlyCurrentUser
                 iteratorRef.current = undefined
             }
 
             if (typeof iteratorRef.current === 'undefined') {
-                const user = await getClientAddress(client, {
-                    suppressFailures: true,
-                })
                 requireUninterrupted()
                 tailStreamRef.current = undefined
-                iteratorRef.current = client.searchStreams(search, {
-                    user,
-                    allowPublic,
-                })
+
+                if (onlyCurrentUserRef.current) {
+                    const user = await getClientAddress(client, {
+                        suppressFailures: true,
+                    })
+                    iteratorRef.current = client.searchStreams(search, {
+                        user,
+                        allowPublic,
+                    })
+                } else {
+                    iteratorRef.current = client.searchStreams(search, undefined)
+                }
             }
 
             let i = 0
