@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom'
 
 import LoadMore from '$mp/components/LoadMore'
 import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
+import { useStreamStats } from '$shared/hooks/useStreamStats'
 import routes from '$routes'
-import { useStreamStats } from '../../hooks/useStreamStats'
 
 const ROW_HEIGHT = 88
 

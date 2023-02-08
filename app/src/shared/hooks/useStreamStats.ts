@@ -7,21 +7,31 @@ export type StreamStats = {
     stats: any,
 }
 
-const load = async () => {
-    const { theGraphUrl, theHubGraphName } = getCoreConfig()
-    const pageSize = 10
+const load = async (first: number, skip: number, owner?: string, search?: string) => {
+    const { streamIndexerUrl } = getCoreConfig()
+
+    const ownerFilter = owner != null ? `owner: "${owner}"` : null
+    const searchFilter = search != null ? `searchTerm: "${search}"` : null
+    const allFilters = [ownerFilter, searchFilter].join(',')
 
     const result = await post({
-        url: theGraphUrl,
+        url: streamIndexerUrl,
         data: {
             query: `
-                query {
+                {
                     streams(
-                        pageSize: ${pageSize},
-                        skip: ${skip},
-                        text: "${search}",
+                        pageSize: ${first},
+                        ${allFilters},
                     ) {
-                        ${projectFields}
+                        items {
+                          id
+                          description
+                          peerCount
+                          messagesPerSecond
+                          subscriberCount
+                          publisherCount
+                        }
+                        cursor
                     }
                 }
             `,
@@ -29,18 +39,20 @@ const load = async () => {
         useAuthorization: false,
     })
 
-    return result.data.projectSearch
+    return result.data.streams.items
 }
 
 export const useStreamStats = (streams: Array<Stream>): StreamStats => {
-    const loadStats = useCallback(() => {
-
+    const loadStats = useCallback(async () => {
+        const res = await load(1, 0)
+        console.log(res)
     }, [])
 
     const stats = useMemo(() => {
         console.log('Streams changed', streams)
+        loadStats()
         return []
-    }, [streams])
+    }, [streams, loadStats])
 
     return {
         stats,
