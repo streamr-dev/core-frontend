@@ -49,12 +49,12 @@ export type Project = {
     imageUrl?: string | null | undefined
     newImageToUpload?: File | null | undefined
     thumbnailUrl: string | null | undefined
-    state?: ProjectState
+    state?: ProjectState // still needed?
     created?: string
     updated?: string
     streams: StreamIdList
-    previewStream: StreamId | null | undefined
-    previewConfigJson?: string | null | undefined
+    previewStream: StreamId | null | undefined // still needed?
+    previewConfigJson?: string | null | undefined // still needed?
     ownerAddress: Address
     type?: ProjectTypeEnum
     termsOfUse: TermsOfUse

@@ -25,7 +25,6 @@ export type ValidationContext2Props = {
 export const ValidationContext2 = React.createContext<ValidationContext2Props>({} as ValidationContext2Props)
 
 const validationErrors: Partial<Record<RecursiveKeyOf<Project>, string>> = {
-    // TODO add salePoints props !!!!!!!!!!!!!!!!!!!!!!!!!!!
     name: 'Product name cannot be empty',
     description: 'Product description cannot be empty',
     imageUrl: 'Product must have a cover image',
@@ -41,7 +40,13 @@ const validationErrors: Partial<Record<RecursiveKeyOf<Project>, string>> = {
     'contact.social3': 'Invalid URL',
     'contact.social4': 'Invalid URL',
     'contact.email': 'Email address is required',
-
+    salePoints: 'Missing or invalid payment information',
+    // keep in mind that we need to provide error messages for each possible chain - otherwise the error messages might not show up
+    'salePoints.gnosis': 'Invalid payment information for the Gnosis chain',
+    'salePoints.polygon': 'Invalid payment information for the Polygon chain',
+    'salePoints.ethereum': 'Invalid payment information for the Ethereum chain',
+    'salePoints.dev0': 'Invalid payment information for the dev0 chain',
+    'salePoints.dev1': 'Invalid payment information for the dev1 chain'
 }
 
 function useValidationContext2(): ValidationContext2Props {

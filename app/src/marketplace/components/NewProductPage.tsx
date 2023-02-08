@@ -21,7 +21,9 @@ import { ProjectEditor } from '$mp/containers/EditProductPage/ProjectEditor'
 import styles from '$shared/components/Layout/layout.pcss'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import { selectUserData } from '$shared/modules/user/selectors'
-import useNewProductMode from '../containers/ProductController/useNewProductMode'
+import {
+    ProjectControllerProvider
+} from '$mp/containers/EditProductPage/ProjectControllerProvider'
 import { useEditableProjectActions } from '../containers/ProductController/useEditableProjectActions'
 
 type Props = {
@@ -36,7 +38,6 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
     const fail = useFailure()
     const location = useLocation()
     const {state: project} = useContext(ProjectStateContext)
-    const { dataUnionAddress, chainId } = useNewProductMode() // TODO check if it's still needed
     const currentUser = useSelector(selectUserData)
     const { type } = qs.parse(search)
     const { updateType } = useEditableProjectActions()
@@ -86,7 +87,7 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
             disabled: true,
         }], [location])
 
-    return <Layout nav={<EditorNav2/>} innerClassName={styles.greyInner}>
+    return <Layout nav={<EditorNav2 isNewProject={true}/>} innerClassName={styles.greyInner}>
         <MarketplaceHelmet title={'Create a new project'}/>
         <DetailsPageHeader
             pageTitle={pageTitle}
@@ -105,7 +106,9 @@ const StyledNewProductPage = styled(UnstyledNewProductPage)`
 const NewProjectPageContainer = (props: Props) => {
     return <ProjectStateContextProvider>
         <ValidationContext2Provider>
-            <StyledNewProductPage {...props}/>
+            <ProjectControllerProvider>
+                <StyledNewProductPage {...props}/>
+            </ProjectControllerProvider>
         </ValidationContext2Provider>
     </ProjectStateContextProvider>
 }
