@@ -38,7 +38,7 @@ ipfsUploadEndpoint = "https://ipfs.infura.io:5001/api/v0/add"
 ipfsResourceGetBaseUrl = "https://ipfs.io/ipfs/"
 
 [core.projectRegistry]
-chainId = 8995
+chainId = 8997
 
 [client]
 graphUrl = ":8000/subgraphs/name/streamr-dev/network-contracts"
