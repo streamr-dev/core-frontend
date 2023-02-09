@@ -11,6 +11,7 @@ import SearchBar from '$shared/components/SearchBar'
 import Tabs from '$shared/components/Tabs'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import useFetchStreams from '$shared/hooks/useFetchStreams'
+import useFetchStreamsFromIndexer from '$shared/hooks/useFetchStreamsFromIndexer'
 import InterruptionError from '$shared/errors/InterruptionError'
 import { isAuthenticated } from '$shared/modules/user/selectors'
 import { FiltersBar, FiltersWrap, SearchBarWrap } from '$mp/components/ActionBar/actionBar.styles'
@@ -65,7 +66,7 @@ const NewStreamListingPage: React.FC = () => {
     const isUserAuthenticated = useSelector(isAuthenticated)
 
     const itp = useInterrupt()
-    const fetchStreams = useFetchStreams()
+    const fetchStreams = useFetchStreamsFromIndexer()
 
     const fetch = useCallback(async () => {
         const { requireUninterrupted } = itp(search)

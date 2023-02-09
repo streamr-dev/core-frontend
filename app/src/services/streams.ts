@@ -1,18 +1,27 @@
-import { useCallback, useMemo } from 'react'
-import { Stream } from 'streamr-client'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
-import { post } from '../utils/api'
+import { post } from '$shared/utils/api'
 
-export type StreamStats = {
-    stats: any,
+export type IndexerStream = {
+    id: string,
+    description: string,
+    peerCount: number,
+    messagesPerSecond: number,
+    subscriberCount: number | null,
+    publisherCount: number | null,
 }
 
-const load = async (first: number, skip: number, owner?: string, search?: string) => {
+export type IndexerResult = {
+    items: Array<IndexerStream>,
+    cursor: string,
+}
+
+export const getStreamsFromIndexer = async (first: number, cursor?: string, owner?: string, search?: string): Promise<IndexerResult> => {
     const { streamIndexerUrl } = getCoreConfig()
 
     const ownerFilter = owner != null ? `owner: "${owner}"` : null
     const searchFilter = search != null ? `searchTerm: "${search}"` : null
-    const allFilters = [ownerFilter, searchFilter].join(',')
+    const cursorFilter = cursor != null ? `cursor: "${cursor}"` : null
+    const allFilters = [ownerFilter, searchFilter, cursorFilter].join(',')
 
     const result = await post({
         url: streamIndexerUrl,
@@ -39,22 +48,5 @@ const load = async (first: number, skip: number, owner?: string, search?: string
         useAuthorization: false,
     })
 
-    return result.data.streams.items
-}
-
-export const useStreamStats = (streams: Array<Stream>): StreamStats => {
-    const loadStats = useCallback(async () => {
-        const res = await load(1, 0)
-        console.log(res)
-    }, [])
-
-    const stats = useMemo(() => {
-        console.log('Streams changed', streams)
-        loadStats()
-        return []
-    }, [streams, loadStats])
-
-    return {
-        stats,
-    }
+    return result.data.streams
 }

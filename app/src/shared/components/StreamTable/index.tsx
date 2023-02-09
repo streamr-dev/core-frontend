@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 import LoadMore from '$mp/components/LoadMore'
 import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
-import { useStreamStats } from '$shared/hooks/useStreamStats'
+import { IndexerStream } from '$app/src/services/streams'
 import routes from '$routes'
 
 const ROW_HEIGHT = 88
@@ -196,15 +196,12 @@ const Stat = styled.div`
 
 type Props = {
     title?: string,
-    streams: Array<Stream>,
+    streams: Array<IndexerStream>,
     loadMore?: () => void | Promise<void>,
     hasMoreResults?: boolean,
 }
 
 const StreamTable: React.FC<Props> = ({ title = "Streams", streams, loadMore, hasMoreResults }: Props) => {
-    const stats = useStreamStats(streams)
-    console.log(stats)
-
     return (
         <Container>
             <Heading>
@@ -231,15 +228,15 @@ const StreamTable: React.FC<Props> = ({ title = "Streams", streams, loadMore, ha
                                 </StreamId>
                                 {'\n'}
                                 <StreamDescription notOnTablet>
-                                    {s.getMetadata().description}
+                                    {s.description}
                                 </StreamDescription>
                             </StreamDetails>
-                            <GridCell onlyTablet>{s.getMetadata().description}</GridCell>
-                            <GridCell onlyDesktop>50</GridCell>
-                            <GridCell onlyDesktop>1</GridCell>
+                            <GridCell onlyTablet>{s.description}</GridCell>
+                            <GridCell onlyDesktop>{s.peerCount}</GridCell>
+                            <GridCell onlyDesktop>{s.messagesPerSecond}</GridCell>
                             <GridCell onlyDesktop>Public</GridCell>
-                            <GridCell onlyDesktop>5</GridCell>
-                            <GridCell onlyDesktop>100</GridCell>
+                            <GridCell onlyDesktop>{s.publisherCount}</GridCell>
+                            <GridCell onlyDesktop>{s.subscriberCount}</GridCell>
                         </TableRow>
                     ))}
                     {streams.length === 0 && <NoStreams>No streams that match your query</NoStreams>}
