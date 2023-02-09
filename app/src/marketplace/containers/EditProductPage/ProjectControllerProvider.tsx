@@ -19,24 +19,20 @@ export type ProjectController = {
 
 export const usePublishController = (): ProjectController => {
     const {state: project} = useContext(ProjectStateContext)
-    const {validate, status} = useContext(ValidationContext2)
+    const {validate} = useContext(ValidationContext2)
     const [publishInProgress, setPublishInProgress] = useState<boolean>(false)
     const {projectRegistry} = getCoreConfig()
     const registryChain = getConfigForChain(projectRegistry.chainId)
 
-    const errors = useMemo<{key: string, message: string}[]>(
-        () =>
-            Object.keys(status)
-                .filter((key) => status[key] && status[key].level === SeverityLevel.ERROR)
-                .map((key) => ({
-                    key,
-                    message: status[key].message,
-                })),
-        [status],
-    )
-
     const checkValidationErrors = useCallback((): boolean => {
         // Notify missing/invalid fields
+        const validationResult = validate(project)
+        const errors = Object.keys(validationResult)
+            .filter((key) => validationResult[key] && validationResult[key].level === SeverityLevel.ERROR)
+            .map((key) => ({
+                key,
+                message: validationResult[key].message,
+            }))
         if (errors.length > 0) {
             errors.forEach(({ message }) => {
                 Notification.push({
@@ -48,7 +44,7 @@ export const usePublishController = (): ProjectController => {
         }
 
         return true
-    }, [errors, status])
+    }, [project])
 
     const getProjectMetadata = useCallback<() => Promise<SmartContractProjectMetadata>>(async () => {
         const metadata: SmartContractProjectMetadata = {
@@ -130,7 +126,6 @@ export const usePublishController = (): ProjectController => {
     }, [project, getProjectMetadata])
 
     const create = useCallback<ProjectController['create']>(async() => {
-        validate(project)
         if (checkValidationErrors()) {
             switch (project.type) {
                 case ProjectTypeEnum.PAID_DATA:
@@ -141,16 +136,15 @@ export const usePublishController = (): ProjectController => {
             }
         }
         return true
-    }, [project, checkValidationErrors, validate, createNewProject, createNewDataUnion])
+    }, [project, checkValidationErrors, createNewProject, createNewDataUnion])
 
     const update = useCallback<ProjectController['update']>(async () => {
-        validate(project)
         if (checkValidationErrors()) {
             // todo
             console.log('PRODUCT UPDATE TO BE IMPLEMENTED')
         }
         return true
-    }, [project, checkValidationErrors, validate])
+    }, [project, checkValidationErrors])
     return {
         create,
         update,

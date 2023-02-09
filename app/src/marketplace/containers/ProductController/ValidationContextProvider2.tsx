@@ -13,9 +13,9 @@ export enum SeverityLevel {
 export type ValidationContext2Props = {
     setStatus: (name: RecursiveKeyOf<Project>, severity: SeverityLevel, message: string) => void,
     clearStatus: (name: RecursiveKeyOf<Project>) => void,
-    status: object,
+    status: Partial<Record<RecursiveKeyOf<Project>, {level: SeverityLevel, message: string}>>,
     isValid: (fieldName: RecursiveKeyOf<Project>) => boolean,
-    validate: (project: Project) => void,
+    validate: (project: Project) => Partial<Record<RecursiveKeyOf<Project>, {level: SeverityLevel, message: string}>>,
     touched: Partial<Record<RecursiveKeyOf<Project>, boolean>>,
     setTouched: (fieldName: RecursiveKeyOf<Project>, isTouched?: boolean) => void,
     isTouched: (fieldName: RecursiveKeyOf<Project>) => boolean,
@@ -99,22 +99,27 @@ function useValidationContext2(): ValidationContext2Props {
     )
     const isValid = useCallback((name: string) => !status[name], [status])
     const validate = useCallback(
-        (product: Project) => {
+        (product: Project): Partial<Record<RecursiveKeyOf<Project>, {level: SeverityLevel, message: string}>> => {
             if (!isMounted() || !product) {
                 return
             }
 
             const invalidFields = validateProduct(product)
+            const result: Partial<Record<RecursiveKeyOf<Project>, {level: SeverityLevel, message: string}>> = {
+                ...status
+            }
             Object.keys(validationErrors).forEach((field: RecursiveKeyOf<Project>) => {
                 if (invalidFields[field]) {
                     setStatus(field, SeverityLevel.ERROR, validationErrors[field])
+                    result[field] = {level: SeverityLevel.ERROR, message: validationErrors[field]}
                 } else {
                     clearStatus(field)
                 }
             })
+            return result
 
         },
-        [setStatus, clearStatus, isMounted, isTouched],
+        [setStatus, clearStatus, isMounted, isTouched, status],
     )
     return useMemo<ValidationContext2Props>(
         () => ({
