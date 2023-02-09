@@ -35,10 +35,10 @@ export type TermsOfUse = {
 export type ContactDetails = {
     url?: string | null | undefined
     email?: string | null | undefined
-    social1?: string | null | undefined
-    social2?: string | null | undefined
-    social3?: string | null | undefined
-    social4?: string | null | undefined
+    twitter?: string | null | undefined
+    telegram?: string | null | undefined
+    reddit?: string | null | undefined
+    linkedIn?: string | null | undefined
 }
 export type Project = {
     key?: string

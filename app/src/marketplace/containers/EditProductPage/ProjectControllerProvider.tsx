@@ -54,10 +54,10 @@ export const usePublishController = (): ProjectController => {
             contactDetails: {
                 email: project.contact.email,
                 url: project.contact.url,
-                twitter: project.contact.social1,
-                telegram: project.contact.social2,
-                reddit: project.contact.social3,
-                linkedIn: project.contact.social4
+                twitter: project.contact.twitter,
+                telegram: project.contact.telegram,
+                reddit: project.contact.reddit,
+                linkedIn: project.contact.linkedIn
             },
             termsOfUse: {...project.termsOfUse}
         }
