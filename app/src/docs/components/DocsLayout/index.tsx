@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback, useEffect } from 'react'
+import React, { useMemo, useState, useCallback, useEffect, HTMLAttributes } from 'react'
 import { MDXProvider } from '@mdx-js/react'
 import SimpleReactLightbox from 'simple-react-lightbox'
 import { useLocation } from 'react-router-dom'
@@ -133,6 +133,61 @@ const MobileNav = styled.div`
     }
 `
 
+function UnstyledNewDocsBanner(props: Omit<HTMLAttributes<HTMLDivElement>, 'children'>) {
+    return (
+        <div {...props}>
+            <div>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M10 20C4.477 20 0 15.523 0 10C0 4.477 4.477 0 10 0C15.523 0 20 4.477 20 10C20 15.523 15.523 20 10 20ZM11 6C11 6.55228 10.5523 7 10 7C9.44771 7 9 6.55228 9 6C9 5.44772 9.44771 5 10 5C10.5523 5 11 5.44772 11 6ZM10 8C10.5523 8 11 8.44771 11 9V14C11 14.5523 10.5523 15 10 15C9.44771 15 9 14.5523 9 14V9C9 8.44771 9.44771 8 10 8Z"
+                        fill="#F75F0A"
+                    />
+                </svg>
+
+            </div>
+            <div>
+                <h2>New Streamr Docs on the&nbsp;way</h2>
+                <p>We are planning on release new Streamr Docs soon. Please feel free to have a&nbsp;look.</p>
+                <p>
+                    <a href="https://docs.streamr.network">Go to new Streamr Docs&nbsp;now</a>
+                </p>
+            </div>
+        </div>
+    )
+}
+
+const NewDocsBanner = styled(UnstyledNewDocsBanner)`
+    background: #FFFAE6;
+    border-radius: 8px;
+    display: flex;
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 48px;
+    padding: 24px 16px;
+    padding-left: 0;
+
+    h2 {
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    h2,
+    p {
+        margin: 0;
+    }
+
+    div:first-of-type {
+        flex-shrink: 0;
+        padding: 0 18px;
+    }
+
+    div + div > * + * {
+        margin-top: 0.6em !important;
+    }
+`
+
 const DocsLayout = ({ nav = <DocsNav />, staticContext, ...props }) => {
     const [isSearching, setIsSearching] = useState(false)
     const { pathname } = useLocation()
@@ -201,6 +256,7 @@ const DocsLayout = ({ nav = <DocsNav />, staticContext, ...props }) => {
                             </DesktopNavInner>
                         </DesktopNav>
                         <div className={styles.content}>
+                            <NewDocsBanner />
                             <EditButtonWrapper>
                                 {editFilePath && (
                                     <Button
