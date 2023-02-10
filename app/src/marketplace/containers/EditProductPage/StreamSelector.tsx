@@ -1,11 +1,9 @@
 import React, { FunctionComponent, useCallback, useContext, useEffect, useState } from 'react'
-import { Stream } from 'streamr-client'
 import styled from 'styled-components'
 import InterruptionError from '$shared/errors/InterruptionError'
 import useInterrupt from '$shared/hooks/useInterrupt'
-import useFetchStreams from '$shared/hooks/useFetchStreams'
-import StreamTable from '$shared/components/StreamTable'
-import { StreamId } from '$shared/types/stream-types'
+import useFetchStreamsFromIndexer from '$app/src/shared/hooks/useFetchStreamsFromIndexer'
+import { IndexerStream } from '$app/src/services/streams'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 import { StreamSelectTable } from '$shared/components/StreamSelectTable'
@@ -53,8 +51,8 @@ export const StreamSelector: FunctionComponent = () => {
     const {updateStreams} = useEditableProjectActions()
     const [search, setSearch] = useState<string>('')
     const itp = useInterrupt()
-    const fetchStreams = useFetchStreams()
-    const [streams, setStreams] = useState<Array<Stream>>([])
+    const fetchStreams = useFetchStreamsFromIndexer()
+    const [streams, setStreams] = useState<Array<IndexerStream>>([])
     const [hasMore, setHasMore] = useState<boolean>(false)
     const fetch = useCallback(async () => {
         const { requireUninterrupted } = itp(search)

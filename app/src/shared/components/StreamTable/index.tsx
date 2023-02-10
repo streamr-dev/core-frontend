@@ -234,7 +234,7 @@ const StreamTable: React.FC<Props> = ({ title = "Streams", streams, loadMore, ha
                             <GridCell onlyTablet>{s.description}</GridCell>
                             <GridCell onlyDesktop>{s.peerCount}</GridCell>
                             <GridCell onlyDesktop>{s.messagesPerSecond}</GridCell>
-                            <GridCell onlyDesktop>Public</GridCell>
+                            <GridCell onlyDesktop>{s.subscriberCount == null ? 'Public' : 'Private'}</GridCell>
                             <GridCell onlyDesktop>{s.publisherCount}</GridCell>
                             <GridCell onlyDesktop>{s.subscriberCount}</GridCell>
                         </TableRow>

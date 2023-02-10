@@ -18,7 +18,6 @@ export default function useFetchStreamsFromIndexer(): FetchCallbackType {
     const searchRef = useRef<string>()
     const onlyCurrentUserRef = useRef<boolean>()
     const cursorRef = useRef<string | undefined>()
-    const tailStreamRef = useRef<IndexerStream>()
 
     useEffect(() => {
         itp().interruptAll()
@@ -34,19 +33,25 @@ export default function useFetchStreamsFromIndexer(): FetchCallbackType {
                 cursorRef.current = undefined
             }
 
-            if (typeof cursorRef.current === 'undefined') {
-                tailStreamRef.current = undefined
+            requireUninterrupted()
+
+            let userAddress = null
+            if (onlyCurrentUserRef.current === true) {
+                userAddress = await getClientAddress(client, {
+                    suppressFailures: true,
+                })
             }
 
-            requireUninterrupted()
-            const userAddress = onlyCurrentUserRef.current === true ? await getClientAddress(client, {
-                suppressFailures: true,
-            }) : null
+            const result = await getStreamsFromIndexer(batchSize + 1, cursorRef.current, userAddress, searchRef.current)
 
-            const result = await getStreamsFromIndexer(batchSize, cursorRef.current, userAddress, searchRef.current)
+            let hasMore = false
+            if (result.items.length > batchSize) {
+                result.items.pop() // pop item from loadMore check
+                hasMore = true
+            }
 
-            const hasMore = true
-            const isFirstBatch = true
+            const isFirstBatch = typeof cursorRef.current === 'undefined'
+            cursorRef.current = (Number.parseInt(result.cursor) - 1).toString() // -1 from loadMore check
             requireUninterrupted()
 
             return [result.items, hasMore, isFirstBatch]

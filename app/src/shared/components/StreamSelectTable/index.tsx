@@ -1,11 +1,11 @@
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
-import type { Stream } from 'streamr-client'
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 
 import LoadMore from '$mp/components/LoadMore'
 import { StreamId } from '$shared/types/stream-types'
 import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
 import Checkbox from '$shared/components/Checkbox'
+import { IndexerStream } from '$app/src/services/streams'
 import routes from '$routes'
 
 const ROW_HEIGHT = 88
@@ -152,7 +152,7 @@ const StreamDescription = styled(GridCell)`
 `
 
 type Props = {
-    streams: Array<Stream>,
+    streams: Array<IndexerStream>,
     loadMore?: () => void | Promise<void>,
     hasMoreResults?: boolean,
     onSelectionChange: (selectedStreams: StreamId[]) => void
@@ -241,15 +241,15 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
                                 </StreamId>
                                 {'\n'}
                                 <StreamDescription notOnTablet>
-                                    {s.getMetadata().description}
+                                    {s.description}
                                 </StreamDescription>
                             </StreamDetails>
-                            <GridCell onlyTablet>{s.getMetadata().description}</GridCell>
-                            <GridCell onlyDesktop>50</GridCell>
-                            <GridCell onlyDesktop>1</GridCell>
-                            <GridCell onlyDesktop>Public</GridCell>
-                            <GridCell onlyDesktop>5</GridCell>
-                            <GridCell onlyDesktop>100</GridCell>
+                            <GridCell onlyTablet>{s.description}</GridCell>
+                            <GridCell onlyDesktop>{s.peerCount}</GridCell>
+                            <GridCell onlyDesktop>{s.messagesPerSecond}</GridCell>
+                            <GridCell onlyDesktop>{s.subscriberCount == null ? 'Public' : 'Private'}</GridCell>
+                            <GridCell onlyDesktop>{s.publisherCount}</GridCell>
+                            <GridCell onlyDesktop>{s.subscriberCount}</GridCell>
                             <GridCell flex={true}>
                                 <Checkbox value={selectedStreams[s.id]} onChange={() => {
                                     handleSelectChange(s.id)
