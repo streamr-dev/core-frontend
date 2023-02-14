@@ -37,12 +37,12 @@ const PermissionList: React.FunctionComponent<Props> = ({ disabled }) => {
     const { changeset, combinations } = usePermissionsState()
     const persist = usePersistChangeset()
     const permissions = useMemo(() => (
-        Object.entries({ ...combinations, ...changeset })
+        Object.entries({ ...combinations, ...changeset }).filter((p) => p[0] !== address0)
     ), [combinations, changeset])
 
     return (
         <Container>
-            {permissions.filter((p) => p[0] && p[0] !== address0).map(([key, value]) => (
+            {permissions.map(([key, value]) => (
                 <PermissionItem
                     key={key}
                     address={key}
@@ -52,7 +52,7 @@ const PermissionList: React.FunctionComponent<Props> = ({ disabled }) => {
             ))}
             <Footer>
                 <span>
-                    {permissions.length} Ethereum account{permissions.length > 1 ? 's' : ''}
+                    {permissions.length} Ethereum account{permissions.length === 1 ? '' : 's'}
                 </span>
                 <Button
                     kind="primary"

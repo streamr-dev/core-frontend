@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import type { Stream } from 'streamr-client'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
@@ -10,7 +9,8 @@ import Layout from '$shared/components/Layout'
 import SearchBar from '$shared/components/SearchBar'
 import Tabs from '$shared/components/Tabs'
 import useInterrupt from '$shared/hooks/useInterrupt'
-import useFetchStreams from '$shared/hooks/useFetchStreams'
+import useFetchStreamsFromIndexer from '$shared/hooks/useFetchStreamsFromIndexer'
+import { IndexerStream } from '$app/src/services/streams'
 import InterruptionError from '$shared/errors/InterruptionError'
 import { isAuthenticated } from '$shared/modules/user/selectors'
 import { FiltersBar, FiltersWrap, SearchBarWrap } from '$mp/components/ActionBar/actionBar.styles'
@@ -36,7 +36,7 @@ const streamSelectionOptions = (isUserAuthenticated: boolean) => [
     },
 ]
 
-const BATCH_SIZE = 10
+const PAGE_SIZE = 10
 
 const Container = styled.div`
     background-color: ${COLORS.secondary};
@@ -60,12 +60,12 @@ const TableContainer = styled.div`
 const NewStreamListingPage: React.FC = () => {
     const [search, setSearch] = useState<string>('')
     const [streamsSelection, setStreamsSelection] = useState<StreamSelection>(StreamSelection.ALL)
-    const [streams, setStreams] = useState<Array<Stream>>([])
+    const [streams, setStreams] = useState<Array<IndexerStream>>([])
     const [hasMore, setHasMore] = useState<boolean>(false)
     const isUserAuthenticated = useSelector(isAuthenticated)
 
     const itp = useInterrupt()
-    const fetchStreams = useFetchStreams()
+    const fetchStreams = useFetchStreamsFromIndexer()
 
     const fetch = useCallback(async () => {
         const { requireUninterrupted } = itp(search)
@@ -73,7 +73,7 @@ const NewStreamListingPage: React.FC = () => {
         try {
             const allowPublic = streamsSelection === StreamSelection.ALL
             const [newStreams, hasMoreResults, isFirstBatch] = await fetchStreams(search, {
-                batchSize: BATCH_SIZE,
+                batchSize: PAGE_SIZE,
                 allowPublic,
                 onlyCurrentUser: streamsSelection === StreamSelection.YOUR,
             })
@@ -128,6 +128,7 @@ const NewStreamListingPage: React.FC = () => {
                         streams={streams}
                         loadMore={fetch}
                         hasMoreResults={hasMore}
+                        showGlobalStats={streamsSelection === StreamSelection.ALL}
                     />
                 </TableContainer>
             </Container>
