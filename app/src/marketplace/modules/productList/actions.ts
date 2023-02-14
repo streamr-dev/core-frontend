@@ -6,7 +6,7 @@ import { updateEntities } from '$shared/modules/entities/actions'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
 import type { Filter, ProjectIdList } from '../../types/project-types'
 import type { StoreState } from '../../types/store-state'
-import { selectFilter, selectPageSize, selectOffset, selectProjectsAuthorFilter } from './selectors'
+import { selectFilter, selectPageSize, selectOffset } from './selectors'
 import {
     GET_PRODUCTS_REQUEST,
     GET_PRODUCTS_SUCCESS,
@@ -41,7 +41,6 @@ const doGetProducts = (
     const state = getState()
     const filter = selectFilter(state)
     const pageSize = selectPageSize(state)
-    const projectsAuthorFilter =selectProjectsAuthorFilter(state)
     let offset = selectOffset(state)
 
     // If we are replacing, reset the offset before API call
@@ -50,7 +49,7 @@ const doGetProducts = (
     }
 
     dispatch(getProductsRequest())
-    return api.getProducts(filter, pageSize, offset, projectsAuthorFilter).then(
+    return api.getProducts(filter, pageSize, offset).then(
         (data) => {
             const { result, entities } = normalize(data.products, productsSchema)
 

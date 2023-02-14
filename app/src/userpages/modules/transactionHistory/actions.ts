@@ -4,7 +4,6 @@ import type { ErrorInUi } from '$shared/types/common-types'
 import { handleEntities } from '$shared/utils/entities'
 import { transactionsSchema, contractProductSchema } from '$shared/modules/entities/schema'
 import type { StoreState } from '$shared/types/store-state'
-import { selectUserData } from '$shared/modules/user/selectors'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { selectEthereumNetworkId } from '$mp/modules/global/selectors'
 import type { ProjectIdList } from '$mp/types/project-types'
@@ -12,6 +11,7 @@ import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { selectMyProductList } from '$mp/modules/myProductList/selectors'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { getValidId } from '$mp/utils/product'
+import {useAuthController} from "$auth/hooks/useAuthController"
 import { selectTransactionEvents, selectOffset } from './selectors'
 import * as services from './services'
 export const GET_TRANSACTION_EVENTS_REQUEST = 'GET_TRANSACTION_EVENTS_REQUEST'
@@ -110,13 +110,12 @@ export const getTransactionEvents =
     () =>
         (dispatch: (...args: Array<any>) => void, getState: () => StoreState): Promise<void> => {
             const state = getState()
-            const { username } = selectUserData(state) || {}
-
-            if (!username || !isEthereumAddress(username)) {
+            const {currentAuthSession} = useAuthController()
+            const address = currentAuthSession.address
+            if (!address || !isEthereumAddress(address)) {
                 return dispatch(getTransactionsSuccess([]))
-            }
 
-            const address = username.toLowerCase()
+            }
             const products = selectMyProductList(state)
             const ownedProductIds: ProjectIdList = (products || [])
                 .filter(({ ownerAddress }) => (ownerAddress || '').toLowerCase() === address)

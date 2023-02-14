@@ -70,7 +70,7 @@ const ProjectPageWrap = () => {
 const ProjectContainer = () => {
     const { id } = useParams<{id: string}>()
     return (
-        <ProductController key={id} ignoreUnauthorized requirePublished useAuthorization={false}>
+        <ProductController key={id} ignoreUnauthorized requirePublished>
             <ProjectPageWrap />
         </ProductController>
     )

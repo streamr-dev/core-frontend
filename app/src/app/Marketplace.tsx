@@ -8,11 +8,15 @@ import ProjectsPage from '$mp/containers/Projects'
 import ProjectConnectPage from '$mp/containers/ProjectPage/ProjectConnectPage'
 import ProjectLiveDataPage from '$mp/containers/ProjectPage/ProjectLiveDataPage'
 import NewProductPage from '$mp/components/NewProductPage'
-import { userIsAuthenticated } from '$auth/utils/userAuthenticated'
+import {UserIsAuthenticatedRoute} from '$auth/utils/userAuthenticated'
 import routes from '$routes'
 const Route = withErrorBoundary(ErrorPage)(RouterRoute)
 
-const NewProductPageAuth = userIsAuthenticated(NewProductPage)
+const NewProductPageAuth = (props) => {
+    return <UserIsAuthenticatedRoute>
+        <NewProductPage {...props} />
+    </UserIsAuthenticatedRoute>
+}
 
 const ProjectDetailsPageRedirect: FunctionComponent = () => {
     const { id } = useParams<{id: string}>()
@@ -30,3 +34,4 @@ const MarketplaceRouter = (): ReactNode => [
 ]
 
 export default MarketplaceRouter
+

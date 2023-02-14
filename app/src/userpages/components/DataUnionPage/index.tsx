@@ -18,12 +18,11 @@ import { getFilters } from '$userpages/utils/constants'
 import PublishModal from '$mp/containers/EditProductPage/PublishModal'
 import DeployDataUnionModal from '$mp/containers/EditProductPage/DeployDataUnionModal'
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
-import { selectUserData } from '$shared/modules/user/selectors'
 import { getApiStringFromChainId } from '$shared/utils/chains'
 import { ProjectIdList } from '$mp/types/project-types'
 import { projectStates } from '$shared/utils/constants'
+import {useAuthController} from "$auth/hooks/useAuthController"
 import routes from '$routes'
-
 import Search from '../Header/Search'
 import Layout from '../Layout'
 import NoDataUnionsView from './NoDataUnions'
@@ -71,8 +70,7 @@ const DataUnionPage: FunctionComponent = () => {
     const fetching = useSelector(selectFetching)
     const dispatch = useDispatch()
     const { load: loadDataUnionStats, stats } = useAllDataUnionStats()
-    const currentUser = useSelector(selectUserData)
-    const currentUserName = currentUser && currentUser.username
+    const {currentAuthSession} = useAuthController()
 
     // Make sure we show only data unions.
     // This is needed to avoid quick flash of possibly normal products.
@@ -91,9 +89,9 @@ const DataUnionPage: FunctionComponent = () => {
             const results = await dispatch(getMyProducts(finalFilter)) as unknown as ProjectIdList
             loadDataUnionStats(results)
 
-            if (currentUserName) {
+            if (!!currentAuthSession.address) {
                 // Load DUs from The Graph so that we can show "detached" DUs that have no corresponding product in the API
-                const ownedDus = await getDataUnionsOwnedBy(currentUserName)
+                const ownedDus = await getDataUnionsOwnedBy(currentAuthSession.address)
 
                 setDataUnionsFromTheGraph((prev) => ([
                     ...prev,
@@ -109,7 +107,7 @@ const DataUnionPage: FunctionComponent = () => {
         }
 
         load()
-    }, [dispatch, filter, loadDataUnionStats, currentUserName])
+    }, [dispatch, filter, loadDataUnionStats, currentAuthSession])
 
     return (
         <Layout

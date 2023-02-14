@@ -1,6 +1,5 @@
-import React, { Fragment, FunctionComponent, useState } from 'react'
+import React, {Fragment, FunctionComponent} from 'react'
 import styled, { css } from 'styled-components'
-import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import {
     Button,
@@ -15,11 +14,10 @@ import {
 import docsLinks from '$shared/../docsLinks'
 import { MD as TABLET, LG as DESKTOP, COLORS, REGULAR, MEDIUM } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
-import { selectUserData } from '$shared/modules/user/selectors'
 import SvgIcon from '$shared/components/SvgIcon'
 import AvatarImage from '$shared/components/AvatarImage'
-import { useSessionMethod } from '$shared/reducers/session'
 import AccountsBalance from '$userpages/components/Header/AccountsBalance'
+import {useAuthController} from "$auth/hooks/useAuthController"
 import routes from '$routes'
 import { Avatarless, Name, Username } from './User'
 import SiteSection from './SiteSection'
@@ -298,7 +296,8 @@ const UserInfoMobile = styled.div`
 const UnstyledDesktopNav: FunctionComponent = (props) => {
     const { highlight: current } = NavProvider.useState()
     const { pathname } = useLocation()
-    const currentUser = useSelector(selectUserData)
+    const {currentAuthSession} = useAuthController()
+    const accountAddress = currentAuthSession.address
 
     return (
         <div {...props}>
@@ -338,7 +337,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                         </NavbarLinkDesktop>
                     </NavbarItem>
                 </MenuGrid>
-                {!currentUser && (
+                {!accountAddress && (
                     <Fragment>
                         <NavbarItemAccount>
                             <Button
@@ -355,7 +354,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                         </NavbarItemAccount>
                     </Fragment>
                 )}
-                {!!currentUser && (
+                {!!accountAddress && (
                     <Fragment>
                         <NavbarItemAccount>
                             <SignedInUserMenu
@@ -363,15 +362,12 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                 alignMenu="right"
                                 nodeco
                                 toggle={
-                                    <Avatar username={currentUser.username} />
+                                    <Avatar username={accountAddress} />
                                 }
                                 menu={
                                     <Menu>
                                         <Menu.Item>
-                                            <Avatarless source={currentUser} />
-                                        </Menu.Item>
-                                        <Menu.Item as={Link} to={routes.profile()}>
-                                            Settings
+                                            <Avatarless source={accountAddress} />
                                         </Menu.Item>
                                         <Menu.Divider />
                                         <Menu.Item as={Link} to={routes.auth.logout()}>
@@ -391,8 +387,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
 
 const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className }) => {
     const { highlight: current } = NavProvider.useState()
-    const currentUser = useSelector(selectUserData)
-    const method = useSessionMethod()
+    const {currentAuthSession} = useAuthController()
     const { pathname } = useLocation()
 
     return (
@@ -410,11 +405,11 @@ const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className 
                 </Navbar>
             </NavOverlay.Head>
             <NavOverlay.Body>
-                {!!currentUser &&
+                {!!currentAuthSession.address &&
                     <UserInfoMobile>
-                        <Avatar username={currentUser.username} />
+                        <Avatar username={currentAuthSession.address} />
                         <div>
-                            <Avatarless source={currentUser} />
+                            <Avatarless source={currentAuthSession.address} />
                             <AccountsBalance />
                         </div>
                     </UserInfoMobile>
@@ -441,7 +436,7 @@ const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className 
                 </NavbarLinkMobile>
             </NavOverlay.Body>
             <NavOverlay.Footer>
-                {currentUser ? (
+                {!!currentAuthSession.address ? (
                     <Button tag={Link} to={routes.auth.logout()} kind="secondary" size="normal">
                         Sign out
                     </Button>

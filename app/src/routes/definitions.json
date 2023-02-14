@@ -72,7 +72,6 @@
     },
     "terms": "https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf",
     "core": "/core",
-    "profile": "/core/profile/edit",
     "products": {
         "edit": "/core/products/:id/edit",
         "index": "/core/products",

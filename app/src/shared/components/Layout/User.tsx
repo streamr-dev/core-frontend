@@ -19,14 +19,10 @@ const EmptyUser = {
     username: '',
 }
 
-const UnstyledAvatarless = ({ source = EmptyUser, ...props }) => (
+const UnstyledAvatarless = ({ source , ...props }) => (
     <div {...props}>
-        <Name title={source.name}>
-            {source.name}
-            &zwnj;
-        </Name>
-        <Username title={source.username}>
-            {truncate(source.username)}
+        <Username title={source}>
+            {truncate(source)}
             &zwnj;
         </Username>
     </div>

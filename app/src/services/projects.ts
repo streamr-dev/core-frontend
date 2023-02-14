@@ -142,8 +142,7 @@ export const getProject = async (id: string): Promise<TheGraphProject | null> =>
                     }
                 }
             `,
-        },
-        useAuthorization: false,
+        }
     })
 
     const projects = result.data.projects.map((p) => mapProject(p))
@@ -174,8 +173,7 @@ export const getProjects = async (owner?: string, first = 20, skip = 0): Promise
                     }
                 }
             `,
-        },
-        useAuthorization: false,
+        }
     })
 
     return result.data.projects.map((p) => mapProject(p))
@@ -198,8 +196,7 @@ export const searchProjects = async (search: string, first = 20, skip = 0): Prom
                     }
                 }
             `,
-        },
-        useAuthorization: false,
+        }
     })
 
     return result.data.projectSearch.map((p) => mapProject(p))

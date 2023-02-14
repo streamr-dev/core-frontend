@@ -21,7 +21,6 @@ export default function useStreamOwnerOptions() {
                 } = user
                     ? await post({
                         url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
-                        useAuthorization: false,
                         data: {
                             query: `
                                 query {

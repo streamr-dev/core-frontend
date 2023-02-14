@@ -1,8 +1,7 @@
-import React, { FunctionComponent } from 'react'
+import React, {FunctionComponent} from 'react'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import GhostContentAPI from '@tryghost/content-api'
-import { useSelector } from 'react-redux'
 import {
     Button,
     HamburgerButton,
@@ -18,8 +17,8 @@ import {
 import docsLinks from '$shared/../docsLinks'
 import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
+import {useIsAuthenticated} from "$auth/hooks/useIsAuthenticated"
 import { NavContainer } from '$shared/components/Layout/Nav'
-import { selectUserData } from '$shared/modules/user/selectors'
 import SiteSection from '$shared/components/Layout/SiteSection'
 import routes from '$routes'
 const ghostContentApi = new GhostContentAPI({
@@ -110,7 +109,7 @@ const BlogPostItem = styled(Menu.SecondaryItem)`
 
 const UnstyledDesktopNav: FunctionComponent<{className?: string}> = ({ className }) => {
     const posts = useBlogPosts(ghostContentApi)
-    const currentUser = useSelector(selectUserData)
+    const isAuthenticated = useIsAuthenticated()
     const { pathname } = useLocation()
     return (
         <div className={className}>
@@ -167,12 +166,12 @@ const UnstyledDesktopNav: FunctionComponent<{className?: string}> = ({ className
                     />
                 </Navbar.Item>
                 <Navbar.Item data-desktop-only>
-                    {!!currentUser && (
+                    {isAuthenticated && (
                         <Button tag={Link} href={routes.core()} size="mini" outline>
                             Use Core
                         </Button>
                     )}
-                    {!currentUser && (
+                    {!isAuthenticated && (
                         <Button
                             tag={Link}
                             href={routes.auth.login({
@@ -208,7 +207,7 @@ const MenuColumn = styled.div`
 `
 
 const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className }) => {
-    const currentUser = useSelector(selectUserData)
+    const isAuthenticated = useIsAuthenticated()
     const { pathname } = useLocation()
     return (
         <NavOverlay className={className}>
@@ -315,12 +314,12 @@ const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className 
                 </NavOverlay.Dropdown>
             </NavOverlay.Body>
             <NavOverlay.Footer>
-                {!!currentUser && (
+                {isAuthenticated && (
                     <Button tag={Link} href={routes.core()}>
                         Use Core
                     </Button>
                 )}
-                {!currentUser && (
+                {!isAuthenticated && (
                     <Button
                         tag={Link}
                         href={routes.auth.login({

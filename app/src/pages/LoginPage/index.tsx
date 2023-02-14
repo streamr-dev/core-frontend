@@ -1,22 +1,20 @@
-import React, { Fragment, useReducer, useRef, useCallback } from 'react'
-import { useDispatch } from 'react-redux'
+import React, {Fragment, useReducer, useRef, useCallback, FunctionComponent, useContext} from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import { Logo, Auth, SignInMethod, LoadingIndicator } from '@streamr/streamr-layout'
 import { Link as PrestyledLink } from 'react-router-dom'
 import Button from '$shared/components/Button'
 import { TABLET, MEDIUM } from '$shared/utils/styled'
-import { userIsNotAuthenticated } from '$auth/utils/userAuthenticated'
+import {UserIsNotAuthenticatedRoute} from '$auth/utils/userAuthenticated'
 import useInterrupt from '$shared/hooks/useInterrupt'
-import { getUserData } from '$shared/modules/user/actions'
-import { setupSession } from '$shared/reducers/session'
 import InterruptionError from '$shared/errors/InterruptionError'
+import {AuthenticationControllerContext} from "$auth/authenticationController"
 import methods from '$shared/reducers/session/methods'
 import routes from '$routes'
 import reducer, { Connect, Fail, initialState } from './reducer'
 
 function UnstyledUnwrappedLoginPage({ className }) {
     const [{ method, connecting, error }, trigger] = useReducer(reducer, initialState)
-    const dispatch = useDispatch()
+    const {updateAuthSession} = useContext(AuthenticationControllerContext)
     const itp = useInterrupt()
     const cancelPromiseRef = useRef()
     const cancel = useCallback(() => {
@@ -59,29 +57,7 @@ function UnstyledUnwrappedLoginPage({ className }) {
             if (!token) {
                 throw new Error('No token')
             }
-
-            dispatch(setupSession([token, newMethod.id]))
-            let user
-
-            try {
-                try {
-                    // This will redirect the user from the login page if succesful.
-                    // @FIXME: That magic is confusing. — Mariusz.
-                    user = await dispatch(getUserData())
-                } finally {
-                    requireUninterrupted()
-                }
-            } catch (e) {
-                if (e instanceof InterruptionError) {
-                    return
-                }
-
-                throw e
-            }
-
-            if (!user) {
-                throw new Error('No user data')
-            }
+            updateAuthSession({method: newMethod.id, address: token})
         } catch (e) {
             console.warn(e)
             trigger([Fail, e])
@@ -243,5 +219,7 @@ const UnwrappedLoginPage = styled(UnstyledUnwrappedLoginPage)`
         margin: 152px auto 192px;
     }
 `
-const LoginPage = userIsNotAuthenticated(UnwrappedLoginPage)
+const LoginPage: FunctionComponent = (props) => <UserIsNotAuthenticatedRoute>
+    <UnwrappedLoginPage {...props}/>
+</UserIsNotAuthenticatedRoute>
 export default LoginPage

@@ -22,6 +22,7 @@ import NewStreamListingPage from '$app/src/pages/NewStreamListingPage'
 import StreamLiveDataPage from '$app/src/pages/StreamLiveDataPage'
 import StreamConnectPage from '$app/src/pages/StreamConnectPage'
 import StreamEditPage from '$app/src/pages/StreamEditPage'
+import {AuthenticationControllerContextProvider} from "$auth/authenticationController"
 import routes from '$routes'
 import history from '../history'
 import '../analytics'
@@ -64,27 +65,29 @@ const HubRouter = () => [
 
 const App = () => (
     <Router history={history}>
-        <StreamrClientProvider>
-            <ModalPortalProvider>
-                <ModalProvider>
-                    <GlobalInfoWatcher>
-                        <ActivityResourceProvider>
-                            <Analytics />
-                            <Switch>
-                                {AuthenticationRouter()}
-                                {MarketplaceRouter()}
-                                {DocsRouter()}
-                                {UserpagesRouter()}
-                                {HubRouter()}
-                                {MiscRouter()}
-                            </Switch>
-                            <Notifications />
-                        </ActivityResourceProvider>
-                        <AnalyticsTracker />
-                    </GlobalInfoWatcher>
-                </ModalProvider>
-            </ModalPortalProvider>
-        </StreamrClientProvider>
+        <AuthenticationControllerContextProvider>
+            <StreamrClientProvider>
+                <ModalPortalProvider>
+                    <ModalProvider>
+                        <GlobalInfoWatcher>
+                            <ActivityResourceProvider>
+                                <Analytics />
+                                <Switch>
+                                    {AuthenticationRouter()}
+                                    {MarketplaceRouter()}
+                                    {DocsRouter()}
+                                    {UserpagesRouter()}
+                                    {HubRouter()}
+                                    {MiscRouter()}
+                                </Switch>
+                                <Notifications />
+                            </ActivityResourceProvider>
+                            <AnalyticsTracker />
+                        </GlobalInfoWatcher>
+                    </ModalProvider>
+                </ModalPortalProvider>
+            </StreamrClientProvider>
+        </AuthenticationControllerContextProvider>
     </Router>
 )
 

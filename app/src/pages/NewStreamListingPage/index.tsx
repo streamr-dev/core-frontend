@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import type { Stream } from 'streamr-client'
-import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
@@ -11,11 +10,11 @@ import SearchBar from '$shared/components/SearchBar'
 import Tabs from '$shared/components/Tabs'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import useFetchStreams from '$shared/hooks/useFetchStreams'
+import {useIsAuthenticated} from "$auth/hooks/useIsAuthenticated"
 import InterruptionError from '$shared/errors/InterruptionError'
-import { isAuthenticated } from '$shared/modules/user/selectors'
 import { FiltersBar, FiltersWrap, SearchBarWrap } from '$mp/components/ActionBar/actionBar.styles'
-import routes from '$routes'
 
+import routes from '$routes'
 import StreamTable from '../../shared/components/StreamTable'
 
 enum StreamSelection {
@@ -62,7 +61,7 @@ const NewStreamListingPage: React.FC = () => {
     const [streamsSelection, setStreamsSelection] = useState<StreamSelection>(StreamSelection.ALL)
     const [streams, setStreams] = useState<Array<Stream>>([])
     const [hasMore, setHasMore] = useState<boolean>(false)
-    const isUserAuthenticated = useSelector(isAuthenticated)
+    const isUserAuthenticated = useIsAuthenticated()
 
     const itp = useInterrupt()
     const fetchStreams = useFetchStreams()

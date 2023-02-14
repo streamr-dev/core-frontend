@@ -1,10 +1,10 @@
 import React, { useReducer, createContext, useContext, useEffect, useRef, useMemo } from 'react'
-import { useSelector } from 'react-redux'
 import { useClient } from 'streamr-client-react'
 import address0 from '$utils/address0'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { selectUsername } from '$shared/modules/user/selectors'
+import {useAuthController} from "$auth/hooks/useAuthController"
 import reducer, { initialState, SET_RESOURCE, SET_PERMISSIONS } from './utils/reducer'
+
 const DispatchContext = createContext(() => {})
 export const usePermissionsDispatch = () => useContext(DispatchContext)
 const StateContext = createContext(initialState)
@@ -26,16 +26,16 @@ const remainingUserIds = (combinations, changeset) =>
 
 export const useEditableUserIds = () => {
     const { changeset, combinations } = usePermissionsState()
-    const currentUserId = useSelector(selectUsername)
+    const {currentAuthSession} = useAuthController()
     return useMemo(() => {
         const set = new Set([
-            ...currentUserIds(currentUserId, combinations, changeset),
+            ...currentUserIds(currentAuthSession.address, combinations, changeset),
             ...newUserIds(combinations, changeset),
             ...remainingUserIds(combinations, changeset),
         ])
         set.delete(address0)
         return [...set]
-    }, [currentUserId, combinations, changeset])
+    }, [currentAuthSession, combinations, changeset])
 }
 
 const mountId = (resourceType, resourceId) => `${resourceType}/${resourceId}`

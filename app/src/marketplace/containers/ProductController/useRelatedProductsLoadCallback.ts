@@ -7,9 +7,9 @@ export default function useRelatedProductsLoadCallback() {
     const dispatch = useDispatch()
     const { wrap } = usePending('product.LOAD_RELATED_PRODUCTS')
     return useCallback(
-        async (productId: ProjectId, useAuthorization = true) =>
+        async (productId: ProjectId) =>
             wrap(async () => {
-                await dispatch(getRelatedProducts(productId, useAuthorization))
+                await dispatch(getRelatedProducts(productId))
             }),
         [wrap, dispatch],
     )
