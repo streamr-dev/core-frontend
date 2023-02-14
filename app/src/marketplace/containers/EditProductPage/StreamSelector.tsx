@@ -30,20 +30,8 @@ const Heading = styled.div`
 
 const Title = styled.div`
   font-size: 34px;
-  line-height: 34px;
+  line-height: 48px;
   color: black;
-`
-
-const Stat = styled.div`
-  color: ${COLORS.primaryLight};
-  background-color: ${COLORS.secondary};
-  font-size: 18px;
-  line-height: 16px;
-  padding: 16px;
-
-  strong {
-    font-weight: ${MEDIUM};
-  }
 `
 
 export const StreamSelector: FunctionComponent = () => {
@@ -88,8 +76,6 @@ export const StreamSelector: FunctionComponent = () => {
     return <div>
         <Heading>
             <Title>Add Streams</Title>
-            <Stat>Streams <strong>{streams.length}</strong></Stat>
-            <Stat>Msg/s <strong>100</strong></Stat>
         </Heading>
         <SearchBar
             placeholder={'Search stream'}

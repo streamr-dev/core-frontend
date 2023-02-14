@@ -18,14 +18,14 @@ const Row = styled.div`
 const TableGrid = styled(Row)`
   display: grid;
   gap: 8px;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) 18px;
 
   @media ${TABLET} {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 18px;
   }
 
   @media ${DESKTOP} {
-    grid-template-columns: minmax(0, 3fr) repeat(6, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 3fr) repeat(5, minmax(0, 1fr)) 18px;
   }
 `
 
@@ -248,8 +248,8 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
                             <GridCell onlyDesktop>{s.peerCount}</GridCell>
                             <GridCell onlyDesktop>{s.messagesPerSecond}</GridCell>
                             <GridCell onlyDesktop>{s.subscriberCount == null ? 'Public' : 'Private'}</GridCell>
-                            <GridCell onlyDesktop>{s.publisherCount}</GridCell>
-                            <GridCell onlyDesktop>{s.subscriberCount}</GridCell>
+                            <GridCell onlyDesktop>{s.publisherCount || '-'}</GridCell>
+                            <GridCell onlyDesktop>{s.subscriberCount || '-'}</GridCell>
                             <GridCell flex={true}>
                                 <Checkbox value={selectedStreams[s.id]} onChange={() => {
                                     handleSelectChange(s.id)
