@@ -69,6 +69,7 @@ export type SmartContractProject = {
     minimumSubscriptionInSeconds: number,
     metadata: string,
     chainId: number,
+    streams: string[],
 }
 
 export interface SmartContractProjectCreate extends SmartContractProject {
@@ -83,20 +84,25 @@ type SmartContractPaymentDetails = {
 
 const projectFields = `
     id
+    counter
+    domainIds
+    score
+    metadata
+    version
+    streams
+    minimumSubscriptionSeconds
+    createdAt
+    updatedAt
     paymentDetails {
-        domainId,
+        domainId
         beneficiary
         pricingTokenAddress
         pricePerSecond
     }
-    minimumSubscriptionSeconds
     subscriptions {
         userAddress
         endTimestamp
     }
-    metadata
-    version
-    streams
     permissions {
         userAddress
         canBuy
@@ -104,15 +110,13 @@ const projectFields = `
         canEdit
         canGrant
     }
-    createdAt
-    updatedAt
     purchases {
         subscriber
         subscriptionSeconds
         price
         fee
+        purchasedAt
     }
-    purchasesCount
 `
 
 const mapProject = (project: any): TheGraphProject => {
@@ -145,9 +149,11 @@ export const getProject = async (id: string): Promise<TheGraphProject | null> =>
         }
     })
 
-    const projects = result.data.projects.map((p) => mapProject(p))
-    if (projects && projects.length > 0) {
-        return projects[0]
+    if (result.data) {
+        const projects = result.data.projects.map((p) => mapProject(p))
+        if (projects && projects.length > 0) {
+            return projects[0]
+        }
     }
 
     return null
@@ -176,7 +182,11 @@ export const getProjects = async (owner?: string, first = 20, skip = 0): Promise
         }
     })
 
-    return result.data.projects.map((p) => mapProject(p))
+    if (result.data) {
+        return result.data.projects.map((p) => mapProject(p))
+    }
+
+    return []
 }
 
 export const searchProjects = async (search: string, first = 20, skip = 0): Promise<TheGraphProject[]> => {
@@ -199,7 +209,11 @@ export const searchProjects = async (search: string, first = 20, skip = 0): Prom
         }
     })
 
-    return result.data.projectSearch.map((p) => mapProject(p))
+    if (result.data) {
+        return result.data.projectSearch.map((p) => mapProject(p))
+    }
+
+    return []
 }
 
 const projectRegistryContract = (usePublicNode = false, chainId: number): Contract => {
@@ -230,6 +244,7 @@ export const createProject = (project: SmartContractProjectCreate): SmartContrac
     const {
         id,
         paymentDetails,
+        streams,
         minimumSubscriptionInSeconds,
         chainId,
         isPublicPurchasable,
@@ -240,6 +255,7 @@ export const createProject = (project: SmartContractProjectCreate): SmartContrac
         id,
         getDomainIds(paymentDetails),
         getPaymentDetails(paymentDetails),
+        streams,
         minimumSubscriptionInSeconds,
         isPublicPurchasable,
         metadata,
@@ -253,6 +269,7 @@ export const updateProject = (project: SmartContractProject): SmartContractTrans
     const {
         id,
         paymentDetails,
+        streams,
         minimumSubscriptionInSeconds,
         chainId,
         metadata,
@@ -262,6 +279,7 @@ export const updateProject = (project: SmartContractProject): SmartContractTrans
         id,
         getDomainIds(paymentDetails),
         getPaymentDetails(paymentDetails),
+        streams,
         minimumSubscriptionInSeconds,
         metadata,
     )
@@ -278,27 +296,6 @@ export const deleteProject = (project: SmartContractProject): SmartContractTrans
 
     const methodToSend = projectRegistryContract(false, chainId).methods.deleteProject(
         id,
-    )
-    return send(methodToSend, {
-        network: chainId,
-    })
-}
-
-export const addStreamToProject = (projectId: string, streamId: string, chainId: number): SmartContractTransaction => {
-    const methodToSend = projectRegistryContract(false, chainId).methods.addStream(
-        projectId,
-        streamId,
-    )
-    return send(methodToSend, {
-        network: chainId,
-        gas: 8e6,
-    })
-}
-
-export const removeStreamFromProject = (projectId: string, streamId: string, chainId: number): SmartContractTransaction => {
-    const methodToSend = projectRegistryContract(false, chainId).methods.removeStream(
-        projectId,
-        streamId,
     )
     return send(methodToSend, {
         network: chainId,

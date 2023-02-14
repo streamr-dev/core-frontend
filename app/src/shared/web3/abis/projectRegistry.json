@@ -194,6 +194,12 @@
       },
       {
         "indexed": false,
+        "internalType": "string[]",
+        "name": "streams",
+        "type": "string[]"
+      },
+      {
+        "indexed": false,
         "internalType": "uint256",
         "name": "minimumSubscriptionSeconds",
         "type": "uint256"
@@ -258,6 +264,12 @@
         "internalType": "struct IProjectRegistry.PaymentDetailsByChain[]",
         "name": "paymentDetailsByChain",
         "type": "tuple[]"
+      },
+      {
+        "indexed": false,
+        "internalType": "string[]",
+        "name": "streams",
+        "type": "string[]"
       },
       {
         "indexed": false,
@@ -516,6 +528,24 @@
         "type": "bytes32"
       },
       {
+        "internalType": "string[]",
+        "name": "streamIds",
+        "type": "string[]"
+      }
+    ],
+    "name": "addStreams",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "projectId",
+        "type": "bytes32"
+      },
+      {
         "internalType": "address",
         "name": "buyer",
         "type": "address"
@@ -565,6 +595,11 @@
         "internalType": "struct IProjectRegistry.PaymentDetailsByChain[]",
         "name": "paymentDetailsByChain",
         "type": "tuple[]"
+      },
+      {
+        "internalType": "string[]",
+        "name": "streams",
+        "type": "string[]"
       },
       {
         "internalType": "uint256",
@@ -1337,6 +1372,24 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "projectId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "string[]",
+        "name": "newStreams",
+        "type": "string[]"
+      }
+    ],
+    "name": "setStreams",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "streamRegistry",
     "outputs": [
@@ -1442,6 +1495,11 @@
         "internalType": "struct IProjectRegistry.PaymentDetailsByChain[]",
         "name": "paymentDetailsByChain",
         "type": "tuple[]"
+      },
+      {
+        "internalType": "string[]",
+        "name": "streams",
+        "type": "string[]"
       },
       {
         "internalType": "uint256",
@@ -1618,6 +1676,11 @@
         "internalType": "struct IProjectRegistry.PaymentDetailsByChain[]",
         "name": "paymentDetailsByChain",
         "type": "tuple[]"
+      },
+      {
+        "internalType": "string[]",
+        "name": "streams",
+        "type": "string[]"
       },
       {
         "internalType": "uint256",

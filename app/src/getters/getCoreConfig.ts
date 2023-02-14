@@ -8,5 +8,6 @@ export default function getCoreConfig() {
         platformOriginUrl: formatConfigUrl(core?.platformOriginUrl),
         streamrUrl: formatConfigUrl(core?.streamrUrl),
         theGraphUrl: formatConfigUrl(core?.theGraphUrl),
+        streamIndexerUrl: formatConfigUrl(core?.streamIndexerUrl),
     }
 }
