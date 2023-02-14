@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import type { Stream } from 'streamr-client'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
@@ -10,7 +9,6 @@ import Layout from '$shared/components/Layout'
 import SearchBar from '$shared/components/SearchBar'
 import Tabs from '$shared/components/Tabs'
 import useInterrupt from '$shared/hooks/useInterrupt'
-import useFetchStreams from '$shared/hooks/useFetchStreams'
 import useFetchStreamsFromIndexer from '$shared/hooks/useFetchStreamsFromIndexer'
 import { IndexerStream } from '$app/src/services/streams'
 import InterruptionError from '$shared/errors/InterruptionError'
@@ -38,7 +36,7 @@ const streamSelectionOptions = (isUserAuthenticated: boolean) => [
     },
 ]
 
-const PAGE_SIZE = 1
+const PAGE_SIZE = 10
 
 const Container = styled.div`
     background-color: ${COLORS.secondary};
@@ -130,6 +128,7 @@ const NewStreamListingPage: React.FC = () => {
                         streams={streams}
                         loadMore={fetch}
                         hasMoreResults={hasMore}
+                        showGlobalStats={streamsSelection === StreamSelection.ALL}
                     />
                 </TableContainer>
             </Container>

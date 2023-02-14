@@ -50,3 +50,29 @@ export const getStreamsFromIndexer = async (first: number, cursor?: string, owne
 
     return result.data.streams
 }
+
+export type GlobalStreamStats = {
+    streamCount: number,
+    messagesPerSecond: number,
+}
+
+export const getGlobalStatsFromIndexer = async (): Promise<GlobalStreamStats> => {
+    const { streamIndexerUrl } = getCoreConfig()
+
+    const result = await post({
+        url: streamIndexerUrl,
+        data: {
+            query: `
+                {
+                    summary {
+                        streamCount
+                        messagesPerSecond
+                    }
+                }
+            `,
+        },
+        useAuthorization: false,
+    })
+
+    return result.data.summary
+}
