@@ -13,10 +13,10 @@ export interface AuthenticationController {
     updateAuthSession: (session: Authentication) => void,
     removeAuthSession: () => void
 }
-const auth = getAuthenticationFromStorage()
-const initialState: Authentication = { method: auth ? auth.method : undefined, address: auth ? auth.address : undefined }
 
 const useSessionController = (): AuthenticationController => {
+    const storedAuth = getAuthenticationFromStorage()
+    const initialState: Authentication = { method: storedAuth ? storedAuth.method : undefined, address: storedAuth ? storedAuth.address : undefined }
     const isMounted = useIsMounted()
     const [auth, setAuth] = useState<Authentication>(initialState)
 
