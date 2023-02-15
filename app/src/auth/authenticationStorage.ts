@@ -7,7 +7,7 @@ const cache: {[key: string]: any} = {
 const STORAGE_KEY = 'StreamrAuth'
 
 const storage = isLocalStorageAvailable()
-    ? window.sessionStorage
+    ? window.localStorage
     : {
         setItem: (key: string, value: any) => {
             cache[key] = value || null

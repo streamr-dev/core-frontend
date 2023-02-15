@@ -9,7 +9,7 @@ import Web3Poller, { events } from '$shared/web3/Web3Poller'
 import { useBalances } from '$shared/hooks/useBalances'
 import type { NumberString } from '$shared/types/common-types'
 import { isEthereumAddress } from '$mp/utils/validate'
-import {AuthenticationControllerContext} from "$auth/authenticationController"
+import {useAuthController} from "$auth/hooks/useAuthController"
 import useAccountAddress from '$shared/hooks/useAccountAddress'
 import SwitchAccountModal from './SwitchAccountModal'
 type Props = {
@@ -65,7 +65,7 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
         balanceTimeout.current = setTimeout(balancePoll, ACCOUNT_BALANCE_POLL_INTERVAL)
     }, [updateBalances])
 
-    const {currentAuthSession} = useContext(AuthenticationControllerContext)
+    const {currentAuthSession} = useAuthController()
     useEffect(() => {
         if (!currentAuthSession.address || !isEthereumAddress(currentAuthSession.address)) {
             return () => {}
