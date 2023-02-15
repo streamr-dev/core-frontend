@@ -18,12 +18,17 @@ jest.mock('./authenticationStorage', () => {
         setAuthenticationInStorage: jest.fn()
     }
 })
-
+jest.mock('$shared/modules/user/services', () => {
+    return {
+        getEnsDomains: async () => ({data: {domains: []}})
+    }
+})
 
 describe('AuthenticationController', () => {
     const stubSession: Authentication = {
         method: 'metamask',
-        address: '0x615996D0Ce59cE34d42f032c71149d9702C9b9eF'
+        address: '0x615996D0Ce59cE34d42f032c71149d9702C9b9eF',
+        ensName: 'testing.eth'
     }
     let TestComponent: FunctionComponent
     let controller: AuthenticationController
@@ -59,13 +64,13 @@ describe('AuthenticationController', () => {
 
     })
 
-    it('should set and get the session', () => {
+    it('should set and get the session', async () => {
         render(<AuthenticationControllerContextProvider>
             <TestComponent/>
         </AuthenticationControllerContextProvider>)
         expect(controller.currentAuthSession).toEqual({address: undefined, method: undefined})
         const newSession = {address: address0, method: 'SomeMethod'}
-        act(() => controller.updateAuthSession(newSession))
+        await act(async () => await controller.updateAuthSession(newSession))
         expect(controller.currentAuthSession).toEqual(newSession)
         expect(setAuthenticationInStorage).toHaveBeenCalledWith(newSession)
     })

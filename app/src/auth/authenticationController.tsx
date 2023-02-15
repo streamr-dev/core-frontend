@@ -1,6 +1,8 @@
 import React, {createContext, FunctionComponent, ReactNode, useCallback, useEffect, useState} from "react"
 import useIsMounted from "$shared/hooks/useIsMounted"
 import Web3Poller, {events} from "$shared/web3/Web3Poller"
+import {useStateContainer} from "$shared/hooks/useStateContainer"
+import {getEnsDomains} from "$shared/modules/user/services"
 import {Authentication} from "./authModel"
 import {
     getAuthenticationFromStorage,
@@ -10,26 +12,38 @@ import {
 
 export interface AuthenticationController {
     currentAuthSession: Authentication,
-    updateAuthSession: (session: Authentication) => void,
+    updateAuthSession: (session: Authentication) => Promise<void>,
     removeAuthSession: () => void
 }
 
 const useSessionController = (): AuthenticationController => {
     const storedAuth = getAuthenticationFromStorage()
-    const initialState: Authentication = { method: storedAuth ? storedAuth.method : undefined, address: storedAuth ? storedAuth.address : undefined }
+    const initialState: Authentication = {
+        method: storedAuth ? storedAuth.method : undefined,
+        address: storedAuth ? storedAuth.address : undefined,
+        ensName: storedAuth ? storedAuth.ensName : undefined
+    }
     const isMounted = useIsMounted()
-    const [auth, setAuth] = useState<Authentication>(initialState)
+    const {state: auth, updateState: setAuth} = useStateContainer<Authentication>(initialState)
 
-    const updateSession = useCallback<(session: Authentication) => void>((session) => {
+    const updateSession = useCallback<(session: Authentication) => Promise<void>>(async (session) => {
         if (isMounted()) {
-            setAuth(session)
+            let ensName: string
+            if (session.address !== auth.address) {
+                const addressesResponse = await getEnsDomains({addresses: [session.address]})
+                ensName = addressesResponse.data.domains && addressesResponse.data.domains.length
+                    ? addressesResponse.data.domains[0].name
+                    : undefined
+            }
+            setAuth({...session, ensName})
             setAuthenticationInStorage(session)
+
         }
-    }, [setAuth, isMounted])
+    }, [setAuth, isMounted, auth])
 
     const removeSession = useCallback<() => void>(() => {
         if (isMounted()) {
-            setAuth({method: undefined, address: undefined})
+            setAuth({method: undefined, address: undefined, ensName: undefined})
             removeAuthenticationFromStorage()
         }
     }, [setAuth, isMounted])
