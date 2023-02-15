@@ -6,6 +6,6 @@ export const authenticationControllerStub: AuthenticationController = {
         address: address0,
         method: 'metamask'
     },
-    updateAuthSession: () => {},
+    updateAuthSession: async () => {},
     removeAuthSession: () => {}
 }

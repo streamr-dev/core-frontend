@@ -1,4 +1,4 @@
-import React, {createContext, FunctionComponent, ReactNode, useCallback, useEffect, useState} from "react"
+import React, {createContext, FunctionComponent, ReactNode, useCallback, useEffect} from "react"
 import useIsMounted from "$shared/hooks/useIsMounted"
 import Web3Poller, {events} from "$shared/web3/Web3Poller"
 import {useStateContainer} from "$shared/hooks/useStateContainer"
