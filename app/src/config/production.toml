@@ -10,6 +10,7 @@ streamChains = ['polygon']
 theGraphUrl = "https://api.thegraph.com"
 mainnetInfuraUrl = "https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206"
 theHubGraphName = "INSERT HUB SUBGRAPH NAME WHEN DEPLOYED"
+streamIndexerUrl = "https://INSERT_INDEXER_URL_HERE_WHEN_DEPLOYED/api"
 
 [[core.marketplaceContractCreationBlocks]]
 chainId = 1
