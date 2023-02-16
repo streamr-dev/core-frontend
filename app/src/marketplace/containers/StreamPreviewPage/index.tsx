@@ -1,5 +1,5 @@
-import React, { useEffect, useCallback, useMemo, useRef, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, {useEffect, useCallback, useMemo, useRef, useState} from 'react'
+import { useDispatch } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
 import { useClient, useSubscribe } from 'streamr-client-react'
 import { StreamMessage } from 'streamr-client'
@@ -9,11 +9,10 @@ import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
 import StreamPreview from '$shared/components/StreamPreview'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { Message } from '$shared/utils/SubscriptionEvents'
-import { selectUserData } from '$shared/modules/user/selectors'
 import { getProductSubscription } from '$mp/modules/product/actions'
 import useIsSessionTokenReady from '$shared/hooks/useIsSessionTokenReady'
 import { getChainIdFromApiString } from '$shared/utils/chains'
+import {useIsAuthenticated} from "$auth/hooks/useIsAuthenticated"
 import routes from '$routes'
 import ProductController, { useController } from '../ProductController'
 import useProductSubscription from '../ProductController/useProductSubscription'
@@ -111,8 +110,7 @@ const PreviewWrap = ({ productId, streamId }) => {
     const { isPending: permissionsPending } = usePending('product.PERMISSIONS')
     const { loadProductStreams } = useController()
     const isMounted = useIsMounted()
-    const userData = useSelector(selectUserData)
-    const isLoggedIn = userData !== null
+    const isLoggedIn = useIsAuthenticated()
     const { isSubscriptionValid } = useProductSubscription()
     const chainId = product && getChainIdFromApiString(product.chain)
     const targetStream = useMemo(() => streams && streams.find(({ id }) => id === streamId), [streamId, streams])
@@ -191,7 +189,7 @@ const ProductContainer = () => {
     const { id: productId, streamId: idProp } = useParams()
     const streamId = useMemo(() => decodeURIComponent(idProp), [idProp])
     return (
-        <ProductController key={productId} ignoreUnauthorized useAuthorization={false}>
+        <ProductController key={productId} ignoreUnauthorized>
             <PreviewWrap productId={productId} streamId={streamId} />
         </ProductController>
     )

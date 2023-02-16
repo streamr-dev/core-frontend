@@ -46,7 +46,7 @@ const ProjectLiveDataPageWrap = () => {
 const ProjectLiveDataPage: FunctionComponent = () => {
     const { id } = useParams<{id: string}>()
     return (
-        <ProductController key={id} ignoreUnauthorized requirePublished useAuthorization={false}>
+        <ProductController key={id} ignoreUnauthorized requirePublished>
             <ProjectLiveDataPageWrap />
         </ProductController>
     )

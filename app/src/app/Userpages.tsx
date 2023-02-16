@@ -1,6 +1,6 @@
-import React from 'react'
+import React, {FunctionComponent} from 'react'
 import { Route as RouterRoute, Redirect } from 'react-router-dom'
-import { userIsAuthenticated } from '$auth/utils/userAuthenticated'
+import {UserIsAuthenticatedRoute} from '$auth/utils/userAuthenticated'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorPage from '$shared/components/ErrorPage'
 // Userpages
@@ -9,7 +9,6 @@ import StreamCreatePage from '$app/src/pages/StreamCreatePage'
 import StreamListView from '$app/src/pages/StreamListPage'
 import StreamEditPage from '$app/src/pages/StreamEditPage'
 import TransactionList from '$userpages/components/TransactionPage/List'
-import ProfilePage from '$userpages/components/ProfilePage'
 import PurchasesPage from '$userpages/components/PurchasesPage'
 import ProductsPage from '$userpages/components/ProductsPage'
 import DataUnionPage from '$userpages/components/DataUnionPage'
@@ -17,17 +16,29 @@ import EditProductPage from '$mp/containers/EditProductPage'
 import routes from '$routes'
 const Route = withErrorBoundary(ErrorPage)(RouterRoute)
 // Userpages Auth
-const ProfilePageAuth = userIsAuthenticated(ProfilePage)
-const StreamListViewAuth = userIsAuthenticated(StreamListView)
-const TransactionListAuth = userIsAuthenticated(TransactionList)
-const PurchasesPageAuth = userIsAuthenticated(PurchasesPage)
-const ProductsPageAuth = userIsAuthenticated(ProductsPage)
-const DataUnionPageAuth = userIsAuthenticated(DataUnionPage)
-const EditProductAuth = userIsAuthenticated(EditProductPage)
-const StreamCreatePageAuth = userIsAuthenticated(StreamCreatePage)
+const StreamListViewAuth: FunctionComponent = (props) => <UserIsAuthenticatedRoute>
+    <StreamListView {...props}/>
+</UserIsAuthenticatedRoute>
+const TransactionListAuth: FunctionComponent = (props) => <UserIsAuthenticatedRoute>
+    <TransactionList {...props}/>
+</UserIsAuthenticatedRoute>
+const PurchasesPageAuth: FunctionComponent = (props) => <UserIsAuthenticatedRoute>
+    <PurchasesPage {...props}/>
+</UserIsAuthenticatedRoute>
+const ProductsPageAuth: FunctionComponent = (props) => <UserIsAuthenticatedRoute>
+    <ProductsPage {...props}/>
+</UserIsAuthenticatedRoute>
+const DataUnionPageAuth: FunctionComponent = (props) => <UserIsAuthenticatedRoute>
+    <DataUnionPage {...props}/>
+</UserIsAuthenticatedRoute>
+const EditProductAuth: FunctionComponent = (props) => <UserIsAuthenticatedRoute>
+    <EditProductPage {...props}/>
+</UserIsAuthenticatedRoute>
+const StreamCreatePageAuth: FunctionComponent = (props) => <UserIsAuthenticatedRoute>
+    <StreamCreatePage {...props}/>
+</UserIsAuthenticatedRoute>
 
 const UserpagesRouter = () => [
-    <Route exact path={routes.profile()} component={ProfilePageAuth} key="ProfilePage" />,
     <Route exact path={routes.streams.new()} component={StreamCreatePageAuth} key="StreamCreatePage" />,
     <Route exact path={routes.streams.show()} component={StreamEditPage} key="streamEditPage" />,
     <Redirect exact from={routes.streams.public.show()} to={routes.streams.show()} key="publicStreamPageRedir" />,

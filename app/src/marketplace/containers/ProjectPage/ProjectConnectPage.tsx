@@ -61,7 +61,7 @@ const ProjectConnectPageWrap = () => {
 const ProjectConnectPage: FunctionComponent = () => {
     const { id } = useParams<{id: string}>()
     return (
-        <ProductController key={id} ignoreUnauthorized requirePublished useAuthorization={false}>
+        <ProductController key={id} ignoreUnauthorized requirePublished>
             <ProjectConnectPageWrap />
         </ProductController>
     )

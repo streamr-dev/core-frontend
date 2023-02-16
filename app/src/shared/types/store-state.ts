@@ -4,8 +4,8 @@ import type { TransactionEntities } from '$shared/types/web3-types'
 import type { StreamEntities } from '$shared/types/stream-types'
 import type { StoreState as MarketplaceStoreState } from '$mp/types/store-state'
 import type { StoreState as UserPagesStoreState } from '$userpages/types/states/store-state'
-import type { User, Balances } from '$shared/types/user-types'
-import type { ErrorInUi } from '$shared/types/common-types'
+import type { Balances } from '$shared/types/user-types'
+
 // entities
 export type EntitiesState = {
     products?: ProjectEntities
@@ -25,13 +25,7 @@ export type EntitiesState = {
 }
 // user
 export type UserState = {
-    user: User | null | undefined
     balances: Balances
-    fetchingUserData: boolean
-    userDataError: ErrorInUi | null | undefined
-    deletingUserAccount: boolean
-    deleteUserAccountError: ErrorInUi | null | undefined,
-    saved: boolean
 }
 export type StoreState = MarketplaceStoreState &
     UserPagesStoreState & {

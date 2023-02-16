@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import type { Stream } from 'streamr-client'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
@@ -11,11 +11,11 @@ import Tabs from '$shared/components/Tabs'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import useFetchStreamsFromIndexer from '$shared/hooks/useFetchStreamsFromIndexer'
 import { IndexerStream } from '$app/src/services/streams'
+import {useIsAuthenticated} from "$auth/hooks/useIsAuthenticated"
 import InterruptionError from '$shared/errors/InterruptionError'
-import { isAuthenticated } from '$shared/modules/user/selectors'
 import { FiltersBar, FiltersWrap, SearchBarWrap } from '$mp/components/ActionBar/actionBar.styles'
-import routes from '$routes'
 
+import routes from '$routes'
 import StreamTable from '../../shared/components/StreamTable'
 
 enum StreamSelection {
@@ -62,7 +62,7 @@ const NewStreamListingPage: React.FC = () => {
     const [streamsSelection, setStreamsSelection] = useState<StreamSelection>(StreamSelection.ALL)
     const [streams, setStreams] = useState<Array<IndexerStream>>([])
     const [hasMore, setHasMore] = useState<boolean>(false)
-    const isUserAuthenticated = useSelector(isAuthenticated)
+    const isUserAuthenticated = useIsAuthenticated()
 
     const itp = useInterrupt()
     const fetchStreams = useFetchStreamsFromIndexer()

@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from 'react'
+import {useCallback, useEffect, useState} from 'react'
 import { useHistory } from 'react-router-dom'
 import moment from 'moment/moment'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { getProductSubscription } from '$mp/modules/product/actions'
 import { addFreeProduct } from '$mp/modules/product/services'
 import Notification from '$shared/utils/Notification'
@@ -12,13 +12,13 @@ import usePending from '$shared/hooks/usePending'
 import { useController } from '$mp/containers/ProductController'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import { isPaidProject } from '$mp/utils/product'
-import { selectUserData } from '$shared/modules/user/selectors'
 import useAccountAddress from '$shared/hooks/useAccountAddress'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import validateWeb3 from '$utils/web3/validateWeb3'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import { isAddressWhitelisted } from '$mp/modules/contractProduct/services'
 import { ProjectId } from '$mp/types/project-types'
+import {useIsAuthenticated} from "$auth/hooks/useIsAuthenticated"
 import routes from '$routes'
 
 export const usePurchaseProject = (): () => Promise<void> => {
@@ -27,8 +27,7 @@ export const usePurchaseProject = (): () => Promise<void> => {
     const { product } = useController()
     const { api: purchaseDialog } = useModal('purchase')
     const { isPending, wrap } = usePending('product.PURCHASE_DIALOG')
-    const userData = useSelector(selectUserData)
-    const isLoggedIn = userData !== null
+    const isLoggedIn = useIsAuthenticated()
     const account = useAccountAddress()
     const { api: requestAccessDialog } = useModal('requestWhitelistAccess')
     const isMounted = useIsMounted()

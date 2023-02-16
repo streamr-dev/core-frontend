@@ -1,14 +1,13 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react'
-import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import Label from '$ui/Label'
 import Sidebar from '$shared/components/Sidebar'
 import { useBeforeClose } from '$shared/components/Sidebar/SidebarProvider'
-import { selectUsername } from '$shared/modules/user/selectors'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import { usePermissionsState } from '$shared/components/PermissionsProvider'
 import usePersistChangeset from '$shared/components/PermissionsProvider/usePersistChangeset'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import {useAuthController} from "$auth/hooks/useAuthController"
 import NewShareForm from './NewShareForm'
 import UserList from './UserList'
 import Footer from './Footer'
@@ -18,7 +17,8 @@ import AnonAccessSelect from './AnonAccessSelect'
 const UnstyledShareSidebar = ({ className, onClose }) => {
     const { changeset, locked } = usePermissionsState()
     const hasChanges = Object.keys(changeset).length > 0
-    const hasCurrentUserChanges = {}.hasOwnProperty.call(changeset, useSelector(selectUsername))
+    const {currentAuthSession} = useAuthController()
+    const hasCurrentUserChanges = {}.hasOwnProperty.call(changeset, currentAuthSession.address)
     const dismissedRef = useRef(false)
     const [failedToClose, setFailedToClose] = useState(false)
     useBeforeClose(() => {

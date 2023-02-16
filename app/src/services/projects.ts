@@ -146,8 +146,7 @@ export const getProject = async (id: string): Promise<TheGraphProject | null> =>
                     }
                 }
             `,
-        },
-        useAuthorization: false,
+        }
     })
 
     if (result.data) {
@@ -180,8 +179,7 @@ export const getProjects = async (owner?: string, first = 20, skip = 0): Promise
                     }
                 }
             `,
-        },
-        useAuthorization: false,
+        }
     })
 
     if (result.data) {
@@ -208,8 +206,7 @@ export const searchProjects = async (search: string, first = 20, skip = 0): Prom
                     }
                 }
             `,
-        },
-        useAuthorization: false,
+        }
     })
 
     if (result.data) {

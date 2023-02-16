@@ -1,6 +1,5 @@
-import React, { Fragment, FunctionComponent, useState } from 'react'
+import React, {Fragment, FunctionComponent} from 'react'
 import styled, { css } from 'styled-components'
-import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import {
     Button,
@@ -15,11 +14,11 @@ import {
 import docsLinks from '$shared/../docsLinks'
 import { MD as TABLET, LG as DESKTOP, COLORS, REGULAR, MEDIUM } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
-import { selectUserData } from '$shared/modules/user/selectors'
 import SvgIcon from '$shared/components/SvgIcon'
 import AvatarImage from '$shared/components/AvatarImage'
-import { useSessionMethod } from '$shared/reducers/session'
 import AccountsBalance from '$userpages/components/Header/AccountsBalance'
+import {useAuthController} from "$auth/hooks/useAuthController"
+import {truncate} from "$shared/utils/text"
 import routes from '$routes'
 import { Avatarless, Name, Username } from './User'
 import SiteSection from './SiteSection'
@@ -56,24 +55,54 @@ const DropdownToggle = styled.div`
         transition: 200ms opacity;
     }
 `
-const Menu = styled(UnstyledMenu)``
+const Menu = styled(UnstyledMenu)`
+`
+const MenuItem = styled(Menu.Item)`
+  &.user-info {
+    padding: 0 16px !important;
+  }
+  &.disconnect {
+    padding: 0 !important;
+    .disconnect-text {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+`
+
+const MenuDivider = styled(Menu.Divider)`
+  margin: 0;
+`
+
+const WalletAddress = styled.div`
+  margin-left: 13px;
+  display: flex;
+  flex-direction: column;
+  span {
+    font-size: 14px;
+    line-height: 18px;
+    user-select: none;
+    color: ${COLORS.primary};
+    font-weight: 400;
+    &.ens-name {
+      font-weight: 500;
+    }
+  }
+`
+
 const SignedInUserMenu = styled(NavDropdown)`
     ${Menu} {
-        padding-top: 4px;
+        width: 260px;
+        padding: 0;
 
         ${Menu.Item}:first-child {
             padding: 0 4px;
             margin-bottom: 10px;
         }
 
-        ${Avatarless} {
-            text-align: center;
-            background: #f8f8f8;
-            border-radius: 4px;
-            padding: 16px 6px;
-            width: 160px;
-            user-select: none;
-        }
+        ${Avatarless} {}
 
         ${Name},
         ${Username} {
@@ -248,6 +277,7 @@ const Avatar = styled(AvatarImage)`
     height: 32px;
     border: 1px solid #F3F3F3;
     border-radius: 50%;
+    background-color: white;
 
     @media (min-width: ${DESKTOP}px) {
         width: 40px;
@@ -255,10 +285,14 @@ const Avatar = styled(AvatarImage)`
     }
 `
 
-const methods: {[key: string]: any} = {
-    metamask: 'MetaMask',
-    walletConnect: 'WalletConnect',
-}
+const MenuItemAvatarContainer = styled.div`
+    background-color: ${COLORS.secondaryLight};
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    margin: 16px 0;
+`
 
 const UserInfoMobile = styled.div`
     background-color: #f8f8f8;
@@ -298,7 +332,8 @@ const UserInfoMobile = styled.div`
 const UnstyledDesktopNav: FunctionComponent = (props) => {
     const { highlight: current } = NavProvider.useState()
     const { pathname } = useLocation()
-    const currentUser = useSelector(selectUserData)
+    const {currentAuthSession} = useAuthController()
+    const {address: accountAddress, ensName} = currentAuthSession
 
     return (
         <div {...props}>
@@ -338,7 +373,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                         </NavbarLinkDesktop>
                     </NavbarItem>
                 </MenuGrid>
-                {!currentUser && (
+                {!accountAddress && (
                     <Fragment>
                         <NavbarItemAccount>
                             <Button
@@ -355,7 +390,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                         </NavbarItemAccount>
                     </Fragment>
                 )}
-                {!!currentUser && (
+                {!!accountAddress && (
                     <Fragment>
                         <NavbarItemAccount>
                             <SignedInUserMenu
@@ -363,20 +398,26 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                 alignMenu="right"
                                 nodeco
                                 toggle={
-                                    <Avatar username={currentUser.username} />
+                                    <Avatar username={accountAddress} />
                                 }
                                 menu={
                                     <Menu>
-                                        <Menu.Item>
-                                            <Avatarless source={currentUser} />
-                                        </Menu.Item>
-                                        <Menu.Item as={Link} to={routes.profile()}>
-                                            Settings
-                                        </Menu.Item>
-                                        <Menu.Divider />
-                                        <Menu.Item as={Link} to={routes.auth.logout()}>
-                                            Sign out
-                                        </Menu.Item>
+                                        <MenuItem className={'user-info'}>
+                                            <MenuItemAvatarContainer>
+                                                <Avatar username={accountAddress} />
+                                                <WalletAddress>
+                                                    {!!ensName && <span className={'ens-name'}>{truncate(ensName)}</span>}
+                                                    <span>{truncate(accountAddress)}</span>
+                                                </WalletAddress>
+                                            </MenuItemAvatarContainer>
+                                        </MenuItem>
+                                        <MenuDivider />
+                                        <MenuItem className={'disconnect'} as={Link} to={routes.auth.logout()}>
+                                            <div className={'disconnect-text'}>
+                                                <span>Disconnect</span>
+                                                <SvgIcon name={'disconnect'}/>
+                                            </div>
+                                        </MenuItem>
                                     </Menu>
                                 }
                             />
@@ -391,8 +432,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
 
 const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className }) => {
     const { highlight: current } = NavProvider.useState()
-    const currentUser = useSelector(selectUserData)
-    const method = useSessionMethod()
+    const {currentAuthSession} = useAuthController()
     const { pathname } = useLocation()
 
     return (
@@ -410,11 +450,11 @@ const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className 
                 </Navbar>
             </NavOverlay.Head>
             <NavOverlay.Body>
-                {!!currentUser &&
+                {!!currentAuthSession.address &&
                     <UserInfoMobile>
-                        <Avatar username={currentUser.username} />
+                        <Avatar username={currentAuthSession.address} />
                         <div>
-                            <Avatarless source={currentUser} />
+                            <Avatarless source={currentAuthSession.address} />
                             <AccountsBalance />
                         </div>
                     </UserInfoMobile>
@@ -441,9 +481,9 @@ const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className 
                 </NavbarLinkMobile>
             </NavOverlay.Body>
             <NavOverlay.Footer>
-                {currentUser ? (
+                {!!currentAuthSession.address ? (
                     <Button tag={Link} to={routes.auth.logout()} kind="secondary" size="normal">
-                        Sign out
+                        Disconnect
                     </Button>
                 ) : (
                     <Button

@@ -15,11 +15,11 @@ export const getRelatedProductsFailure: RelatedProductsErrorActionCreator = crea
     error,
 }))
 export const getRelatedProducts =
-    (id: ProjectId, useAuthorization = true) =>
+    (id: ProjectId) =>
         (dispatch: (...args: Array<any>) => any): Promise<void> => {
             dispatch(getRelatedProductsRequest())
             return api
-                .getRelatedProducts(id, useAuthorization)
+                .getRelatedProducts(id)
                 .then((data) => {
                     const { result, entities } = normalize(data, productsSchema)
                     dispatch(updateEntities(entities))

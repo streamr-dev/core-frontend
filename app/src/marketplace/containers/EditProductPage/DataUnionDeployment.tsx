@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import React, {useState, useEffect, useMemo, useContext} from 'react'
 import styled from 'styled-components'
 
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import useEditableProductActions from '$mp/containers/ProductController/useEditableProductActions'
 import SelectField from '$mp/components/SelectField'
 import { getDataUnionObject, getDataUnionsOwnedByInChain, TheGraphDataUnion } from '$mp/modules/dataUnion/services'
-import { selectUserData } from '$shared/modules/user/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { getChainIdFromApiString } from '$shared/utils/chains'
+import {AuthenticationControllerContext} from "$auth/authenticationController"
 import { truncate } from '$shared/utils/text'
 import useNewProductMode from '../ProductController/useNewProductMode'
 
@@ -65,8 +64,8 @@ type DataUnionWithMetadata = TheGraphDataUnion & {
 
 const DataUnionDeployment: React.FC<Props> = ({ disabled }: Props) => {
     const isMounted = useIsMounted()
-    const currentUser = useSelector(selectUserData)
-    const currentUserName = currentUser && currentUser.username
+    // TODO remove the currentUserName or the whole component :)
+    const {currentAuthSession} = useContext(AuthenticationControllerContext)
     const { state: product } = useEditableState()
     const { dataUnionAddress } = useNewProductMode()
     const beneficiaryAddress = product && product.beneficiaryAddress || dataUnionAddress
@@ -92,9 +91,9 @@ const DataUnionDeployment: React.FC<Props> = ({ disabled }: Props) => {
 
     useEffect(() => {
         const load = async () => {
-            if (currentUserName && chainId) {
+            if (currentAuthSession.address && chainId) {
                 const dataUnionsWithMetadata = []
-                const dataUnionsOwned = await getDataUnionsOwnedByInChain(currentUserName, chainId)
+                const dataUnionsOwned = await getDataUnionsOwnedByInChain(currentAuthSession.address, chainId)
 
                 for (const du of dataUnionsOwned) {
                     let duWithMetadata: DataUnionWithMetadata = du
@@ -117,7 +116,7 @@ const DataUnionDeployment: React.FC<Props> = ({ disabled }: Props) => {
             }
         }
         load()
-    }, [currentUserName, chainId, isMounted])
+    }, [currentAuthSession, chainId, isMounted])
 
     useEffect(() => {
         const selectedDuAddress = selectedDataUnion && selectedDataUnion.value

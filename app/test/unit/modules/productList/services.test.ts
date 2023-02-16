@@ -2,9 +2,6 @@ import moxios from 'moxios'
 import setTempEnv from '$app/test/test-utils/setTempEnv'
 import * as services from '$mp/modules/productList/services'
 import { productListPageSize } from '$mp/utils/constants'
-jest.mock('$shared/utils/sessionToken', () => {
-    return {getToken() {return 'TOKEN'}}
-})
 describe('productList - services', () => {
 
     const data = [
@@ -69,34 +66,13 @@ describe('productList - services', () => {
                 response: [...data],
             })
             const expectedUrl = `http://localhost/api/v2\
-/products?categories&grantedAccess=false&max=${
+/products?categories&max=${
     productListPageSize + 1
-}&maxPrice&offset=0&publicAccess=true&search=&sortBy`
+}&maxPrice&offset=0&search=&sortBy`
             expect(request.config.method).toBe('get')
             expect(request.config.url).toBe(`${expectedUrl}`)
         })
-        const result = await services.getProducts(filter, productListPageSize, 0, 'all')
-        expect(result).toStrictEqual(expectedResult)
-    })
-
-    it('gets product list of current user', async () => {
-
-        const filter = {
-            search: '',
-        }
-        moxios.wait(() => {
-            const request = moxios.requests.mostRecent()
-            request.respondWith({
-                status: 200,
-                response: [...data],
-            })
-            const expectedUrl = `http://localhost/api/v2\
-/users/me/products?max=${productListPageSize + 1}&offset=0&search=`
-            expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe(`${expectedUrl}`)
-            expect(request.headers.Authorization).toEqual('Bearer TOKEN')
-        })
-        const result = await services.getProducts(filter, productListPageSize, 0, 'currentUser')
+        const result = await services.getProducts(filter, productListPageSize, 0)
         expect(result).toStrictEqual(expectedResult)
     })
 })

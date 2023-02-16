@@ -2,7 +2,6 @@ import BN from 'bignumber.js'
 import { useCallback } from 'react'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import usePending from '$shared/hooks/usePending'
-import { canHandleLoadError, handleLoadError } from '$auth/utils/loginInterceptor'
 import type { Project, ProjectId } from '$mp/types/project-types'
 import { getProductById } from '$mp/modules/product/services'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
@@ -23,7 +22,6 @@ type LoadProps = {
     productId: ProjectId
     ignoreUnauthorized?: boolean
     requirePublished?: boolean
-    useAuthorization?: boolean
 }
 export default function useProductLoadCallback() {
     const productUpdater = useEditableState()
@@ -32,23 +30,16 @@ export default function useProductLoadCallback() {
     const fail = useFailure()
     const { setProduct } = useController()
     const load = useCallback(
-        async ({ productId, ignoreUnauthorized, requirePublished, useAuthorization = true }: LoadProps) =>
+        async ({ productId, ignoreUnauthorized, requirePublished }: LoadProps) =>
             wrap(async () => {
                 let product
 
                 try {
                     // $FlowFixMe: possibly missing property beneficiaryAddress in Promise
-                    product = await getProductById(productId, useAuthorization)
+                    product = await getProductById(productId)
                 } catch (error) {
                     if (!isMounted()) {
                         return
-                    }
-
-                    if (canHandleLoadError(error)) {
-                        await handleLoadError({
-                            error,
-                            ignoreUnauthorized,
-                        })
                     }
 
                     throw error

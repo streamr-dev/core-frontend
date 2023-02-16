@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { Chain } from '@streamr/config'
 import { COLORS } from '$shared/utils/styled'
@@ -10,9 +9,10 @@ import {
 } from '$mp/containers/EditProductPage/DataUnionChainSelector/DataUnionChainSelectorContext'
 import { Address } from '$shared/types/web3-types'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { selectUserData } from '$shared/modules/user/selectors'
+
 import { getDataUnionObject, getDataUnionsOwnedByInChain, TheGraphDataUnion } from '$mp/modules/dataUnion/services'
 import SelectField2 from '$mp/components/SelectField2'
+import {AuthenticationControllerContext} from "$auth/authenticationController"
 
 type DataUnionChainOptionProps = {
     index: number,
@@ -31,8 +31,7 @@ export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> 
     onChange,
 }) => {
     const isMounted = useIsMounted()
-    const currentUser = useSelector(selectUserData)
-    const currentUserName = currentUser && currentUser.username
+    const {currentAuthSession} = useContext(AuthenticationControllerContext)
     const [ownedDataUnions, setOwnedDataUnions] = useState<DataUnionWithMetadata[]>([])
     const existingDUOptions = useMemo(() => ownedDataUnions.map((du) => ({label: du.name || du.id, value: du.id})), [])
     const [currentlySelectedOption] = useContext(DataUnionChainSelectorContext)
@@ -42,9 +41,9 @@ export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> 
 
     useEffect(() => {
         const load = async () => {
-            if (currentUserName && chain.id) {
+            if (currentAuthSession.address && chain.id) {
                 const dataUnionsWithMetadata = []
-                const dataUnionsOwned = await getDataUnionsOwnedByInChain(currentUserName, chain.id)
+                const dataUnionsOwned = await getDataUnionsOwnedByInChain(currentAuthSession.address, chain.id)
 
                 for (const du of dataUnionsOwned) {
                     let duWithMetadata: DataUnionWithMetadata = du

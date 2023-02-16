@@ -2,8 +2,7 @@ import StreamrClient from 'streamr-client'
 import { mnemonicToSeedSync } from 'bip39'
 import { hdkey } from 'ethereumjs-wallet'
 
-import { setToken } from '$shared/utils/sessionToken'
-import getAuthorizationHeader from '$shared/utils/getAuthorizationHeader'
+import { setToken } from '$shared/utils/session'
 
 // FIXME: This whole cypress spec needs attention. Lots of deprecations.
 import getClientConfig from '$app/src/getters/getClientConfig'
@@ -51,8 +50,7 @@ Cypress.Commands.add('authenticatedRequest', (options = {}) =>
     cy.request({
         ...options,
         headers: {
-            ...options.headers,
-            ...getAuthorizationHeader(),
+            ...options.headers
         },
     }),
 )
