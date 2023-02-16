@@ -226,8 +226,7 @@ export const getDataUnionStatistics = async (id: DataUnionId, chainId: number, f
                     }
                 }
             `,
-        },
-        useAuthorization: false,
+        }
     })
     return result.data.dataUnionStatsBuckets
 }
@@ -275,8 +274,7 @@ export const getDataUnionsOwnedByInChain = async (user: Address, chainId: number
                     }
                 }
             `,
-        },
-        useAuthorization: false,
+        }
     })
 
     if (result.data.dataUnions.length > 0) {
@@ -302,8 +300,7 @@ export const getDataUnionMembers = async (id: DataUnionId, chainId: number, limi
                     }
                 }
             `,
-        },
-        useAuthorization: false,
+        }
     })
 
     if (result.data.dataUnions.length > 0) {
@@ -327,8 +324,7 @@ export const searchDataUnionMembers = async (id: DataUnionId, query: string, cha
                     }
                 }
             `,
-        },
-        useAuthorization: false,
+        }
     })
 
     if (result && result.data && result.data.members) {

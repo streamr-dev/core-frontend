@@ -6,6 +6,5 @@ export const getCategories = (includeEmpty: boolean): ApiResult<Array<Category>>
     get({
         url: routes.api.categories({
             includeEmpty,
-        }),
-        useAuthorization: false,
+        })
     })

@@ -1,12 +1,10 @@
 import React, { ReactNode, useContext, useEffect, useMemo } from 'react'
-import type { Location } from 'react-router-dom'
 import { useHistory, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
-import { useSelector } from 'react-redux'
 import qs from 'query-string'
 import '$mp/types/project-types'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { ProjectTypeEnum, projectTypes } from '$mp/utils/constants'
+import { ProjectTypeEnum } from '$mp/utils/constants'
 import useFailure from '$shared/hooks/useFailure'
 import Layout from '$shared/components/Layout'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
@@ -20,7 +18,6 @@ import {
 import { ProjectEditor } from '$mp/containers/EditProductPage/ProjectEditor'
 import styles from '$shared/components/Layout/layout.pcss'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
-import { selectUserData } from '$shared/modules/user/selectors'
 import {
     ProjectControllerProvider
 } from '$mp/containers/EditProductPage/ProjectControllerProvider'
@@ -28,18 +25,16 @@ import { useEditableProjectActions } from '../containers/ProductController/useEd
 
 type Props = {
     className?: string | null | undefined
-    location: Location
 }
 
-const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
+const UnstyledNewProductPage = ({ className }: Props) => {
     // todo check and remove unused hooks
     const history = useHistory()
     const isMounted = useIsMounted()
     const fail = useFailure()
     const location = useLocation()
     const {state: project} = useContext(ProjectStateContext)
-    const currentUser = useSelector(selectUserData)
-    const { type } = qs.parse(search)
+    const { type } = qs.parse(location.search)
     const { updateType } = useEditableProjectActions()
     const { isAnyTouched, resetTouched } = useContext(ValidationContext2)
     usePreventNavigatingAway('You have unsaved changes', isAnyTouched)
@@ -69,8 +64,8 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
                 projectType = 'Project'
                 break
         }
-        return <>{projectType} by <strong>{currentUser.name || currentUser.username}</strong></>
-    }, [project, currentUser])
+        return <>{projectType} by <strong>[CREATOR NAME HERE]</strong></>
+    }, [project])
 
     const linkTabs = useMemo(() => [
         {

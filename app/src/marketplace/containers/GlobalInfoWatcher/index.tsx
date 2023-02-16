@@ -1,18 +1,16 @@
-import React, { useCallback, useEffect, useRef, useState, Fragment, ReactNode } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, {useCallback, useEffect, useRef, useState, Fragment, ReactNode, useContext} from 'react'
+import { useDispatch } from 'react-redux'
 import type { Hash, Receipt } from '$shared/types/web3-types'
-import { getUserData, logout } from '$shared/modules/user/actions'
 import { setEthereumNetworkId } from '$mp/modules/global/actions'
 import { addTransaction, completeTransaction, transactionError } from '$mp/modules/transactions/actions'
 import { getTransactionsFromSessionStorage } from '$shared/utils/transactions'
 import TransactionError from '$shared/errors/TransactionError'
 import Web3Poller, { events } from '$shared/web3/Web3Poller'
 import { useBalances } from '$shared/hooks/useBalances'
-import { selectUserData } from '$shared/modules/user/selectors'
 import type { NumberString } from '$shared/types/common-types'
 import { isEthereumAddress } from '$mp/utils/validate'
+import {useAuthController} from "$auth/hooks/useAuthController"
 import useAccountAddress from '$shared/hooks/useAccountAddress'
-import { setupSession } from '$shared/reducers/session'
 import SwitchAccountModal from './SwitchAccountModal'
 type Props = {
     children?: ReactNode
@@ -26,19 +24,6 @@ const PENDING_TX_WAIT = 1000 // 1s
 export const GlobalInfoWatcher = ({ children }: Props) => {
     const dispatch = useDispatch()
     const address = useAccountAddress()
-    // Poll login info
-    const loginPollTimeout = useRef<any>()
-    const loginPoll = useCallback(() => {
-        clearTimeout(loginPollTimeout.current)
-        dispatch(getUserData())
-        loginPollTimeout.current = setTimeout(loginPoll, LOGIN_POLL_INTERVAL)
-    }, [dispatch])
-    useEffect(() => {
-        loginPoll()
-        return () => {
-            clearTimeout(loginPollTimeout.current)
-        }
-    }, [loginPoll])
     // Poll transactions
     useEffect(() => {
         const transactionsTimeout = setTimeout(() => {
@@ -79,10 +64,10 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
         updateBalances()
         balanceTimeout.current = setTimeout(balancePoll, ACCOUNT_BALANCE_POLL_INTERVAL)
     }, [updateBalances])
-    const user = useSelector(selectUserData)
-    const { username } = user || {}
+
+    const {currentAuthSession} = useAuthController()
     useEffect(() => {
-        if (!username || !isEthereumAddress(username)) {
+        if (!currentAuthSession.address || !isEthereumAddress(currentAuthSession.address)) {
             return () => {}
         }
 
@@ -91,7 +76,7 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
         return () => {
             clearTimeout(balanceTimeout.current)
         }
-    }, [balancePoll, username])
+    }, [balancePoll, currentAuthSession])
     // Poll network
     useEffect(() => {
         let currentNetworkId: NumberString
@@ -116,19 +101,17 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
     const [accountChanged, setAccountChanged] = useState(false)
     // show notice if Metamask account changes to a different account
     useEffect(() => {
-        if (!username || !address) {
+        if (!currentAuthSession?.address || !address) {
             return
         }
 
-        setAccountChanged(address.toLowerCase() !== username.toLowerCase())
-    }, [address, username])
+        setAccountChanged(address.toLowerCase() !== currentAuthSession?.address?.toLowerCase())
+    }, [address, currentAuthSession])
     const onClose = useCallback(() => {
         setAccountChanged(false)
     }, [])
     const onContinue = useCallback(() => {
         setAccountChanged(false)
-        dispatch(logout())
-        dispatch(setupSession([]))
     }, [dispatch])
     return (
         <Fragment>

@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo, Fragment, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
 import styled, { css, keyframes } from 'styled-components'
 import { Button as LayoutButton, Tooltip } from '@streamr/streamr-layout'
 import { truncate } from '$shared/utils/text'
@@ -10,11 +9,11 @@ import identifyGroup from '$shared/components/PermissionsProvider/utils/identify
 import getOperationKeys from '$shared/components/PermissionsProvider/utils/getOperationKeys'
 import lookup from '$shared/components/PermissionsProvider/utils/lookup'
 import toOperationId from '$shared/components/PermissionsProvider/utils/toOperationId'
-import { selectUsername } from '$shared/modules/user/selectors'
 import SvgIcon from '$shared/components/SvgIcon'
 import useMeasure from '$shared/hooks/useMeasure'
 import { MEDIUM } from '$shared/utils/styled'
 import { isFormElement } from '$shared/utils/isEditableElement'
+import {useAuthController} from "$auth/hooks/useAuthController"
 import Sidebar from '$shared/components/Sidebar'
 import Checkbox from './Checkbox'
 import RadioButtonGroup from './RadioButtonGroup'
@@ -205,7 +204,8 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
         }
     }, [])
     const error = errors[userId]
-    const currentUserId = useSelector(selectUsername)
+    const {currentAuthSession} = useAuthController()
+    const currentUserId = currentAuthSession.address
     const userCombination = changeset[userId] == null ? combinations[userId] : changeset[userId]
     const ownerCombination = groups[resourceType].owner
     const onClick = useCallback(

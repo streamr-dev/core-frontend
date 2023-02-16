@@ -1,20 +1,29 @@
 import React from 'react'
+import {Provider} from "react-redux"
 import { MemoryRouter } from 'react-router-dom'
-import { Provider } from 'react-redux'
 import { mount } from 'enzyme'
-import mockStore from '$app/test/test-utils/mockStoreProvider'
-// eslint-disable-next-line import/order
+import {jest} from "@jest/globals"
+import mockStore from "$app/test/test-utils/mockStoreProvider"
 import Nav from '$shared/components/Layout/Nav'
+import {authenticationControllerStub} from "$auth/authenticationController.stub"
+import {useAuthController} from "$auth/hooks/useAuthController"
+import Mock = jest.Mock
+jest.mock('$auth/hooks/useAuthController', () => {
+    return {
+        useAuthController: jest.fn()
+    }
+})
+jest.mock('$userpages/components/Header/AccountsBalance', () => ({__esModule: true, default: () => <></>}))
 
 /* eslint-disable object-curly-newline */
 describe('Nav.Wide', () => {
+    beforeEach(() => {
+        (useAuthController as Mock).mockReturnValue(authenticationControllerStub)
+    })
     it('renders logo', () => {
-        const store = {
-            user: {},
-        }
         const el = mount(
             <MemoryRouter>
-                <Provider store={mockStore(store)}>
+                <Provider store={mockStore({})}>
                     <Nav />
                 </Provider>
             </MemoryRouter>,
@@ -22,13 +31,16 @@ describe('Nav.Wide', () => {
         expect(el.find('Logo').exists()).toBe(true)
     })
     describe('When the user is not signed in', () => {
+        beforeEach(() => {
+            // simulate lack of stored user wallet address
+            (useAuthController as Mock).mockReturnValueOnce({
+                ...authenticationControllerStub, currentAuthSession: {address: undefined, method: undefined}
+            })
+        })
         it('renders the menu links', () => {
-            const store = {
-                user: {},
-            }
             const el = mount(
                 <MemoryRouter>
-                    <Provider store={mockStore(store)}>
+                    <Provider store={mockStore({})}>
                         <Nav />
                     </Provider>
                 </MemoryRouter>,
@@ -65,21 +77,10 @@ describe('Nav.Wide', () => {
     })
     describe('When the user is signed in', () => {
         it('renders the menu links', () => {
-            const store = {
-                user: {
-                    user: {
-                        id: '1',
-                        username: 'tester1@streamr.com',
-                    },
-                    balances: {
-                        ETH: 1,
-                        DATA: 1,
-                    },
-                },
-            }
+
             const el = mount(
                 <MemoryRouter>
-                    <Provider store={mockStore(store)}>
+                    <Provider store={mockStore({})}>
                         <Nav />
                     </Provider>
                 </MemoryRouter>,
@@ -114,21 +115,9 @@ describe('Nav.Wide', () => {
             ).toBe(true)
         })
         it('renders the user avatar', () => {
-            const store = {
-                user: {
-                    user: {
-                        id: '1',
-                        username: '0x9B3E47C99f06f49724F8527ED493d253d83BeCfC',
-                    },
-                    balances: {
-                        ETH: 1,
-                        DATA: 1,
-                    },
-                },
-            }
             const el = mount(
                 <MemoryRouter>
-                    <Provider store={mockStore(store)}>
+                    <Provider store={mockStore({})}>
                         <Nav />
                     </Provider>
                 </MemoryRouter>,

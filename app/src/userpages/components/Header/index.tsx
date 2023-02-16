@@ -1,36 +1,29 @@
-import type { Node } from 'react'
-import React from 'react'
-import { connect } from 'react-redux'
+import React, {ReactNode} from 'react'
 import cx from 'classnames'
-import type { User } from '$shared/types/user-types'
-import type { StoreState } from '$shared/types/store-state'
-import { selectUserData } from '$shared/modules/user/selectors'
 import Avatar from '$userpages/components/Avatar'
 import ListContainer from '$shared/components/Container/List'
+import {useAuthController} from "$auth/hooks/useAuthController"
 import routes from '$routes'
 import Tab from './Tab'
 import AccountsBalance from './AccountsBalance'
 import styles from './header.pcss'
-type OwnProps = {
+type Props = {
     className?: string
-    additionalComponent?: Node
-    searchComponent?: Node
-    filterComponent?: Node
+    additionalComponent?: ReactNode
+    searchComponent?: ReactNode
+    filterComponent?: ReactNode
     noHeader?: boolean
 }
-type StateProps = {
-    user: User | null | undefined
-}
-type Props = StateProps & OwnProps
 
 const Header = ({
-    className, additionalComponent, searchComponent, filterComponent, user, noHeader
-}: Props) => (
-    <ListContainer className={cx(styles.listTemp, className)}>
-        {!noHeader && user && (
+    className, additionalComponent, searchComponent, filterComponent, noHeader
+}: Props) => {
+    const {currentAuthSession} = useAuthController()
+    return <ListContainer className={cx(styles.listTemp, className)}>
+        {!noHeader && currentAuthSession.address && (
             <div className={styles.profile}>
-                <Avatar className={styles.avatar} user={user} linkToProfile>
-                    <AccountsBalance />
+                <Avatar className={styles.avatar} user={{username: currentAuthSession.address}} linkToProfile>
+                    <AccountsBalance/>
                 </Avatar>
                 <div className={styles.additionalComponent}>{additionalComponent}</div>
             </div>
@@ -51,12 +44,9 @@ const Header = ({
             </div>
         )}
     </ListContainer>
-)
+}
 
 Header.defaultProps = {
     noHeader: false,
 }
-export const mapStateToProps = (state: StoreState): StateProps => ({
-    user: selectUserData(state),
-})
-export default connect(mapStateToProps)(Header)
+export default Header

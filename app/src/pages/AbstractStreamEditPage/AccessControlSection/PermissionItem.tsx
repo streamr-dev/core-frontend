@@ -1,14 +1,12 @@
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { useSelector } from 'react-redux'
-
-import { selectUsername } from '$shared/modules/user/selectors'
 import { truncate } from '$shared/utils/text'
 import SvgIcon from '$shared/components/SvgIcon'
 import { COLORS } from '$shared/utils/styled'
 import { Operation, checkOperation } from '$shared/components/PermissionsProvider/operations'
 import { usePermissionsDispatch } from '$shared/components/PermissionsProvider'
 import { UPDATE_PERMISSION } from '$shared/components/PermissionsProvider/utils/reducer'
+import {useAuthController} from "$auth/hooks/useAuthController"
 import UnstyledPermissionEditor from './PermissionEditor'
 
 const Container = styled.div`
@@ -84,7 +82,7 @@ type Props = {
 const PermissionItem: React.FunctionComponent<Props> = ({ disabled, address, permissionBits }) => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const dispatch = usePermissionsDispatch()
-    const currentUserId = useSelector(selectUsername)
+    const {currentAuthSession} = useAuthController()
     const operations = Object.keys(Operation).filter((item) => {
         return isNaN(Number(item)) && Operation[item] !== Operation.None && checkOperation(permissionBits, Operation[item])
     })
@@ -105,7 +103,10 @@ const PermissionItem: React.FunctionComponent<Props> = ({ disabled, address, per
                 {isOpen ?
                     <div /> :
                     <Labels>
-                        {currentUserId != null && address != null && currentUserId.toLowerCase() === address.toLowerCase() && (
+                        {currentAuthSession.address != null
+                        && address != null
+                        && currentAuthSession.address.toLowerCase() === address.toLowerCase()
+                        && (
                             <YouLabel>You</YouLabel>
                         )}
                         {operations.map((op) => (

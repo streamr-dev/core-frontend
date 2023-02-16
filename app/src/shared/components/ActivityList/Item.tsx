@@ -1,7 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useSelector } from 'react-redux'
-import { selectUserData } from '$shared/modules/user/selectors'
 import { resourceTypes } from '$shared/utils/Activity'
 import AvatarImage from '$shared/components/AvatarImage'
 import { ago } from '$shared/utils/time'
@@ -82,8 +80,6 @@ const Gray = styled.span`
 const truncate = (input, maxLength) => (input.length > maxLength ? `${input.substring(0, maxLength)}...` : input)
 
 const ResourceImage = ({ resource, resourceType, isLoading }) => {
-    const currentUser = useSelector(selectUserData)
-
     switch (resourceType) {
         case resourceTypes.PRODUCT:
             return resource ? (
@@ -96,7 +92,7 @@ const ResourceImage = ({ resource, resourceType, isLoading }) => {
             return <SvgIcon name="stream" />
 
         default:
-            return !!currentUser && <StyledAvatarImage name={currentUser.name} isLoading={isLoading} circle />
+            return undefined
     }
 }
 

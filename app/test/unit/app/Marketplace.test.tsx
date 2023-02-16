@@ -35,7 +35,7 @@ jest.mock('$shared/components/GenericErrorPage', () => ({
 }))
 jest.mock('$auth/utils/userAuthenticated', () => ({
     __esModule: true,
-    userIsAuthenticated: (component) => component,
+    UserIsAuthenticatedRoute: ({children}) => <>{children}</>,
 }))
 
 

@@ -22,12 +22,11 @@ import { getApiStringFromChainId } from '$shared/utils/chains'
 import routes from '$routes'
 import { call, send } from '../../utils/smartContract'
 
-export const getProductById = async (id: ProjectId, useAuthorization = true): ApiResult<Project> =>
+export const getProductById = async (id: ProjectId): ApiResult<Project> =>
     get({
         url: routes.api.products.show({
             id: getValidId(id, false),
-        }),
-        useAuthorization,
+        })
     }).then(mapProductFromApi)
 
 export const getMyProductSubscription = (id: ProjectId, chainId: number): SmartContractCall<Subscription> =>

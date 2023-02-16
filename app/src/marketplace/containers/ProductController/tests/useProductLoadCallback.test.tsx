@@ -6,7 +6,6 @@ import * as UndoContext from '$shared/contexts/Undo'
 import * as usePending from '$shared/hooks/usePending'
 import * as productServices from '$mp/modules/product/services'
 import * as dataUnionServices from '$mp/modules/dataUnion/services'
-import * as loginInterceptor from '$auth/utils/loginInterceptor'
 import * as entitiesUtils from '$shared/utils/entities'
 import useProductLoadCallback from '../useProductLoadCallback'
 import useController from '../useController'
@@ -75,7 +74,6 @@ describe.skip('useProductLoadCallback', () => {
         jest.spyOn(productServices, 'getProductById').mockImplementation(() => {
             throw new Error('something happened')
         })
-        jest.spyOn(loginInterceptor, 'handleLoadError').mockImplementation(() => Promise.resolve())
         let loadProduct
         let product
 

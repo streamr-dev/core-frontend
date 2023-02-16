@@ -1,6 +1,4 @@
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
-
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import ProjectsComponent, { ProjectsContainer } from '$mp/components/Projects'
 import ActionBar from '$mp/components/ActionBar'
@@ -10,10 +8,10 @@ import useModal from '$shared/hooks/useModal'
 import CreateProductModal from '$mp/containers/CreateProductModal'
 import type { SearchFilter } from '$mp/types/project-types'
 import { getProjects, searchProjects, TheGraphProject } from '$app/src/services/projects'
-import { selectUsername } from '$shared/modules/user/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import {useAuthController} from "$auth/hooks/useAuthController"
 import useDeepEqualMemo from '$shared/hooks/useDeepEqualMemo'
-import { isAuthenticated } from '$shared/modules/user/selectors'
+import {useIsAuthenticated} from "$auth/hooks/useIsAuthenticated"
 import styles from './projects.pcss'
 
 const PAGE_SIZE = 12
@@ -39,8 +37,8 @@ const ProjectsPage: FunctionComponent = () => {
     const [hasMoreSearchResults, setHasMoreSearchResults] = useState(false)
 
     const { api: createProductModal } = useModal('marketplace.createProduct')
-    const isUserAuthenticated = useSelector(isAuthenticated)
-    const userAddress = useSelector(selectUsername)
+    const isUserAuthenticated = useIsAuthenticated()
+    const {currentAuthSession} = useAuthController()
     const isMounted = useIsMounted()
     const productsRef = useRef<TheGraphProject[]>()
     productsRef.current = projects
@@ -99,9 +97,9 @@ const ProjectsPage: FunctionComponent = () => {
     const onFilterByAuthorChange = useCallback((myProjects: boolean): void => {
         setFilter((prev) => ({
             ...prev,
-            owner: myProjects ? userAddress : null,
+            owner: myProjects ? currentAuthSession.address : null,
         }))
-    }, [userAddress])
+    }, [currentAuthSession])
 
     const clearFiltersAndReloadProducts = useCallback(() => {
         setFilter(EMPTY_FILTER)

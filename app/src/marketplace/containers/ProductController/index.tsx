@@ -19,8 +19,8 @@ import useResetDataUnionCallback from './useResetDataUnionCallback'
 import useController, { ProductControllerContext } from './useController'
 export { useController }
 
-type UseProductLoadEffectParams = {ignoreUnauthorized?: boolean, requirePublished?: boolean, useAuthorization?: boolean};
-function useProductLoadEffect({ ignoreUnauthorized, requirePublished, useAuthorization }: UseProductLoadEffectParams) {
+type UseProductLoadEffectParams = {ignoreUnauthorized?: boolean, requirePublished?: boolean};
+function useProductLoadEffect({ ignoreUnauthorized, requirePublished }: UseProductLoadEffectParams) {
     const [loadedOnce, setLoadedOnce] = useState(false)
     const loadProduct = useProductLoadCallback()
     const loadContractProduct = useContractProductLoadCallback()
@@ -37,11 +37,10 @@ function useProductLoadEffect({ ignoreUnauthorized, requirePublished, useAuthori
                 productId: urlId,
                 ignoreUnauthorized,
                 requirePublished,
-                useAuthorization,
             })
             setLoadedOnce(true)
         }
-    }, [urlId, loadedOnce, loadProduct, isPending, ignoreUnauthorized, useAuthorization, requirePublished, isMounted])
+    }, [urlId, loadedOnce, loadProduct, isPending, ignoreUnauthorized, requirePublished, isMounted])
     useEffect(() => {
         if (urlId && chainId) {
             loadContractProduct(urlId, chainId)
@@ -49,11 +48,10 @@ function useProductLoadEffect({ ignoreUnauthorized, requirePublished, useAuthori
     }, [urlId, chainId, loadContractProduct])
 }
 
-function ProductEffects({ ignoreUnauthorized, requirePublished, useAuthorization }: UseProductLoadEffectParams): null {
+function ProductEffects({ ignoreUnauthorized, requirePublished }: UseProductLoadEffectParams): null {
     useProductLoadEffect({
         ignoreUnauthorized,
         requirePublished,
-        useAuthorization,
     })
     useProductValidationEffect()
     return null
@@ -181,16 +179,14 @@ const ProductController: FunctionComponent<{children?: ReactNode | ReactNode[]} 
     children,
     ignoreUnauthorized = false,
     requirePublished = false,
-    useAuthorization = true,
 }) => (
     <PendingProvider name="product">
         <ValidationContextProvider>
             <ControllerProvider>
-                <PermissionsProvider autoLoadPermissions={!!useAuthorization}>
+                <PermissionsProvider autoLoadPermissions={true}>
                     <ProductEffects
                         ignoreUnauthorized={ignoreUnauthorized}
                         requirePublished={requirePublished}
-                        useAuthorization={!!useAuthorization}
                     />
                     {children || null}
                 </PermissionsProvider>
