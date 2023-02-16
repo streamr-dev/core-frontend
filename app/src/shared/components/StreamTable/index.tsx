@@ -6,6 +6,7 @@ import LoadMore from '$mp/components/LoadMore'
 import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
 import { getGlobalStatsFromIndexer, GlobalStreamStats, IndexerStream } from '$app/src/services/streams'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import { truncate } from '$shared/utils/text'
 import routes from '$routes'
 
 const ROW_HEIGHT = 88
@@ -245,8 +246,10 @@ const StreamTable: React.FC<Props> = ({ title = "Streams", streams, loadMore, ha
                     {streams.map((s) => (
                         <TableRow key={s.id}>
                             <StreamDetails to={routes.streams.show({ id: s.id })}>
-                                <StreamId>
-                                    {s.id}
+                                <StreamId
+                                    title={s.id}
+                                >
+                                    {truncate(s.id)}
                                 </StreamId>
                                 {'\n'}
                                 <StreamDescription notOnTablet>

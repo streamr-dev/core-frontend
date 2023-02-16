@@ -6,183 +6,189 @@ import { StreamId } from '$shared/types/stream-types'
 import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
 import Checkbox from '$shared/components/Checkbox'
 import { IndexerStream } from '$app/src/services/streams'
+import { truncate } from '$shared/utils/text'
 import routes from '$routes'
 
 const ROW_HEIGHT = 88
 
 const Row = styled.div`
-  align-items: center;
-  padding-left: 24px;
+    align-items: center;
+    padding-left: 24px;
 `
 
 const TableGrid = styled(Row)`
-  display: grid;
-  gap: 8px;
-  grid-template-columns: minmax(0, 1fr) 18px;
+    display: grid;
+    gap: 8px;
+    grid-template-columns: minmax(0, 1fr) 18px;
 
-  @media ${TABLET} {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 18px;
-  }
+    @media ${TABLET} {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 18px;
+    }
 
-  @media ${DESKTOP} {
-    grid-template-columns: minmax(0, 3fr) repeat(5, minmax(0, 1fr)) 18px;
-  }
+    @media ${DESKTOP} {
+        grid-template-columns: minmax(0, 3fr) repeat(5, minmax(0, 1fr)) 18px;
+    }
 `
 
 const Table = styled.div`
-  overflow: auto;
+    overflow: auto;
 `
 
 const TableHeader = styled(TableGrid)`
-  font-weight: ${MEDIUM};
-  height: ${ROW_HEIGHT}px;
-  font-size: 15px;
-  line-height: 26px;
-  color: ${COLORS.primaryLight};
-  border-bottom: 1px solid #f8f8f8;
-  position: sticky;
-  top: 0;
-  z-index: 1;
+    font-weight: ${MEDIUM};
+    height: ${ROW_HEIGHT}px;
+    font-size: 15px;
+    line-height: 26px;
+    color: ${COLORS.primaryLight};
+    border-bottom: 1px solid #f8f8f8;
+    position: sticky;
+    top: 0;
+    z-index: 1;
 `
 
 type TableRowsProps = {
-    rowCount: number,
+    rowCount: number
 }
 
 const TableRows = styled.div<TableRowsProps>`
-  height: ${({rowCount}) => Math.max(rowCount, 1) * (ROW_HEIGHT + 1)}px;
+    height: ${({ rowCount }) => Math.max(rowCount, 1) * (ROW_HEIGHT + 1)}px;
 `
 
 const TableRow = styled(TableGrid)`
-  font-size: 16px;
-  line-height: 26px;
-  height: ${ROW_HEIGHT}px;
-  max-height: ${ROW_HEIGHT}px;
-  box-sizing: content-box;
-  color: ${COLORS.primaryLight};
+    font-size: 16px;
+    line-height: 26px;
+    height: ${ROW_HEIGHT}px;
+    max-height: ${ROW_HEIGHT}px;
+    box-sizing: content-box;
+    color: ${COLORS.primaryLight};
 
-  &:not(:last-child) {
-    border-bottom: 1px solid #f8f8f8;
-  }
+    &:not(:last-child) {
+        border-bottom: 1px solid #f8f8f8;
+    }
 `
 
 type GridCellProps = {
-    onlyDesktop?: boolean,
-    onlyTablet?: boolean,
-    notOnTablet?: boolean,
+    onlyDesktop?: boolean
+    onlyTablet?: boolean
+    notOnTablet?: boolean
     flex?: boolean
 }
 
 const GridCell = styled.span<GridCellProps>`
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 
-  ${({onlyDesktop}) =>
+    ${({ onlyDesktop }) =>
         onlyDesktop &&
-          css`
+        css`
             display: none;
 
             @media ${DESKTOP} {
-              display: block;
+                display: block;
             }
-          `}
+        `}
 
-  ${({onlyTablet}) =>
+    ${({ onlyTablet }) =>
         onlyTablet &&
-          css`
+        css`
             display: none;
 
             @media ${TABLET} {
-              display: block;
+                display: block;
             }
 
             @media ${DESKTOP} {
-              display: none;
+                display: none;
             }
-          `}
+        `}
 
-  ${({notOnTablet}) =>
+  ${({ notOnTablet }) =>
         notOnTablet &&
-          css`
+        css`
             display: block;
 
             @media ${TABLET} {
-              display: none;
+                display: none;
             }
 
             @media ${DESKTOP} {
-              display: block;
+                display: block;
             }
-          `}
+        `}
 
-  ${({flex}) => flex ? css`display: flex;` : ''}
+  ${({ flex }) =>
+        flex
+            ? css`
+                  display: flex;
+              `
+            : ''}
 `
 
 const NoStreams = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  font-size: 14px;
-  line-height: 18px;
-  color: ${COLORS.primaryLight};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 14px;
+    line-height: 18px;
+    color: ${COLORS.primaryLight};
 `
 
 const StreamDetails = styled.a`
-  font-size: 16px;
-  line-height: 26px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    font-size: 16px;
+    line-height: 26px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
-  &:active,
-  &:link,
-  &:visited,
-  &:hover {
-    color: ${COLORS.primaryLight};
-  }
+    &:active,
+    &:link,
+    &:visited,
+    &:hover {
+        color: ${COLORS.primaryLight};
+    }
 `
 
 const StreamId = styled(GridCell)`
-  font-weight: ${MEDIUM};
+    font-weight: ${MEDIUM};
 `
 
 const StreamDescription = styled(GridCell)`
-  font-weight: ${REGULAR};
+    font-weight: ${REGULAR};
 `
 
 type Props = {
-    streams: Array<IndexerStream>,
-    loadMore?: () => void | Promise<void>,
-    hasMoreResults?: boolean,
+    streams: Array<IndexerStream>
+    loadMore?: () => void | Promise<void>
+    hasMoreResults?: boolean
     onSelectionChange: (selectedStreams: StreamId[]) => void
     selected: StreamId[]
 }
 
-export const StreamSelectTable: FunctionComponent<Props> = ({
-    streams,
-    loadMore,
-    hasMoreResults,
-    onSelectionChange,
-    selected
-}: Props) => {
+export const StreamSelectTable: FunctionComponent<Props> = ({ streams, loadMore, hasMoreResults, onSelectionChange, selected }: Props) => {
     const [selectedStreams, setSelectedStreams] = useState<Record<StreamId, boolean>>({})
     const [allSelected, setAllSelected] = useState<boolean>(false)
 
-    const emitSelectedStreamsChange = useCallback((streams: Record<StreamId, boolean>) => {
-        if (onSelectionChange) {
-            const selectedStreamsArray = Object.entries(streams)
-                .filter(([streamId, isSelected]) => isSelected)
-                .map(([streamId]) => streamId)
-            onSelectionChange(selectedStreamsArray)
-        }
-    }, [onSelectionChange])
+    const emitSelectedStreamsChange = useCallback(
+        (streams: Record<StreamId, boolean>) => {
+            if (onSelectionChange) {
+                const selectedStreamsArray = Object.entries(streams)
+                    .filter(([streamId, isSelected]) => isSelected)
+                    .map(([streamId]) => streamId)
+                onSelectionChange(selectedStreamsArray)
+            }
+        },
+        [onSelectionChange],
+    )
 
-    const handleSelectChange = useCallback((streamId: StreamId) => {
-        const newSelectedStreams = {...selectedStreams, [streamId]: !selectedStreams[streamId]}
-        setSelectedStreams(newSelectedStreams)
-        emitSelectedStreamsChange(newSelectedStreams)
-    }, [selectedStreams, emitSelectedStreamsChange])
+    const handleSelectChange = useCallback(
+        (streamId: StreamId) => {
+            const newSelectedStreams = { ...selectedStreams, [streamId]: !selectedStreams[streamId] }
+            setSelectedStreams(newSelectedStreams)
+            emitSelectedStreamsChange(newSelectedStreams)
+        },
+        [selectedStreams, emitSelectedStreamsChange],
+    )
 
     const handleSelectAllChange = useCallback(() => {
         const shouldAllBeChecked = !allSelected
@@ -229,20 +235,16 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
                     <GridCell onlyDesktop>Publishers</GridCell>
                     <GridCell onlyDesktop>Subscribers</GridCell>
                     <GridCell flex={true}>
-                        <Checkbox value={allSelected} onChange={handleSelectAllChange}/>
+                        <Checkbox value={allSelected} onChange={handleSelectAllChange} />
                     </GridCell>
                 </TableHeader>
                 <TableRows rowCount={streams.length}>
                     {streams.map((s) => (
                         <TableRow key={s.id}>
-                            <StreamDetails href={routes.streams.show({id: s.id})}>
-                                <StreamId>
-                                    {s.id}
-                                </StreamId>
+                            <StreamDetails href={routes.streams.show({ id: s.id })}>
+                                <StreamId>{truncate(s.id)}</StreamId>
                                 {'\n'}
-                                <StreamDescription notOnTablet>
-                                    {s.description}
-                                </StreamDescription>
+                                <StreamDescription notOnTablet>{s.description}</StreamDescription>
                             </StreamDetails>
                             <GridCell onlyTablet>{s.description}</GridCell>
                             <GridCell onlyDesktop>{s.peerCount}</GridCell>
@@ -251,22 +253,19 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
                             <GridCell onlyDesktop>{s.publisherCount || '-'}</GridCell>
                             <GridCell onlyDesktop>{s.subscriberCount || '-'}</GridCell>
                             <GridCell flex={true}>
-                                <Checkbox value={selectedStreams[s.id]} onChange={() => {
-                                    handleSelectChange(s.id)
-                                }}/>
+                                <Checkbox
+                                    value={selectedStreams[s.id]}
+                                    onChange={() => {
+                                        handleSelectChange(s.id)
+                                    }}
+                                />
                             </GridCell>
                         </TableRow>
                     ))}
                     {streams.length === 0 && <NoStreams>No streams that match your query</NoStreams>}
                 </TableRows>
             </Table>
-            {loadMore != null && (
-                <LoadMore
-                    hasMoreSearchResults={!!hasMoreResults}
-                    onClick={loadMore}
-                    preserveSpace={false}
-                />
-            )}
+            {loadMore != null && <LoadMore hasMoreSearchResults={!!hasMoreResults} onClick={loadMore} preserveSpace={false} />}
         </div>
     )
 }

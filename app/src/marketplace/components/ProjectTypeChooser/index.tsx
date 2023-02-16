@@ -237,7 +237,7 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
             </Product>
         </ProductChoices>
         {streamsCount < 1 && <NoStreamsWarningBox>
-            You have not create any stream yet.
+            You have not created any streams yet.
             Please <Link to={routes.streams.new()}>create a stream</Link> to get started.
             For help creating streams, see the <Link to={docsLinks.docs}>docs</Link>.
         </NoStreamsWarningBox>}
