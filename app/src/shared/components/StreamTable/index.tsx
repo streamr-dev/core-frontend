@@ -179,7 +179,7 @@ const Heading = styled.div`
 
 const Title = styled.div`
     font-size: 34px;
-    line-height: 34px;
+    line-height: 48px;
     color: ${COLORS.primary};
 `
 
