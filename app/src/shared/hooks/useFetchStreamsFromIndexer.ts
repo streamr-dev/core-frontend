@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useClient } from 'streamr-client-react'
 import { getStreamsFromIndexer, IndexerStream } from '$app/src/services/streams'
-import getClientAddress from '$app/src/getters/getClientAddress'
 import useInterrupt from '$shared/hooks/useInterrupt'
+import {useAuthController} from "$auth/hooks/useAuthController"
 
 type FetchParameters = {
     batchSize?: number,
@@ -18,10 +18,12 @@ export default function useFetchStreamsFromIndexer(): FetchCallbackType {
     const searchRef = useRef<string>()
     const onlyCurrentUserRef = useRef<boolean>()
     const cursorRef = useRef<string | undefined>()
+    const {currentAuthSession} = useAuthController()
+    const authenticatedUserAddress = currentAuthSession.address
 
     useEffect(() => {
         itp().interruptAll()
-    }, [itp, client])
+    }, [itp, authenticatedUserAddress])
 
     const fetchStreams = useCallback<FetchCallbackType>(
         async (search?: string, { batchSize = 1, allowPublic = false, onlyCurrentUser = true } = {}) => {
@@ -37,9 +39,7 @@ export default function useFetchStreamsFromIndexer(): FetchCallbackType {
 
             let userAddress = null
             if (onlyCurrentUserRef.current === true) {
-                userAddress = await getClientAddress(client, {
-                    suppressFailures: true,
-                })
+                userAddress = authenticatedUserAddress
             }
 
             const result = await getStreamsFromIndexer(batchSize + 1, cursorRef.current, userAddress, searchRef.current)
