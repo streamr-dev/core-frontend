@@ -51,7 +51,15 @@ export default function useFetchStreamsFromIndexer(): FetchCallbackType {
             }
 
             const isFirstBatch = typeof cursorRef.current === 'undefined'
-            cursorRef.current = (Number.parseInt(result.cursor) - 1).toString() // -1 from loadMore check
+
+            if (result.cursor) {
+                // TODO: This is kind of hacky since indexer could return other than numbers,
+                //       but we need to be able to rewind one step from loadMore check.
+                const cursorNumber = Number.parseInt(result.cursor)
+                if (Number.isFinite(cursorNumber)) {
+                    cursorRef.current = (cursorNumber - 1).toString() // -1 from loadMore check
+                }
+            }
             requireUninterrupted()
 
             return [result.items, hasMore, isFirstBatch]
