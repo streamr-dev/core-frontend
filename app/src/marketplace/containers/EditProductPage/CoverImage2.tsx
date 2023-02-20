@@ -8,6 +8,7 @@ import { COLORS, LAPTOP } from '$shared/utils/styled'
 import { ProjectHeroImageStyles } from '$mp/containers/ProjectPage/Hero/ProjectHero2.styles'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
+import CropImageModalWrap from "$mp/containers/EditProductPage/CropImageModal"
 import useValidation2 from '../ProductController/useValidation2'
 import { Context as EditControllerContext } from './EditControllerProvider'
 
@@ -21,14 +22,14 @@ const Container = styled.div`
     width: 366px;
   }
   img {
-    margin-bottom: 50px;
+    //margin-bottom: 50px;
   }
   
   .coverImageUpload {
     background-color: ${COLORS.primaryLight};
     border-radius: 16px;
     min-height: unset;
-    height: auto;
+    //height: auto;
     aspect-ratio: 1/1;
   }
   
@@ -95,10 +96,10 @@ export const CoverImage2 = ({ disabled }: Props) => {
                 originalImage={preview || product.imageUrl}
                 dropZoneClassName={'imageUploadDropZone'}
                 disabled={!!disabled || isOpen}
-                noPreview
                 className={'coverImageUpload'}
             />
             {hasError && !!message && <Errors overlap>{message}</Errors>}
+            <CropImageModalWrap/>
         </Container>
     )
 }
