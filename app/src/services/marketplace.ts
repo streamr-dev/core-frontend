@@ -23,7 +23,7 @@ export const marketplaceContract = (usePublicNode = false, chainId: number): Con
     return contract
 }
 
-export const buyProject = (projectId: string, subscriptionSeconds: number, chainId: number): SmartContractTransaction => {
+export const buyProject = (projectId: string, subscriptionSeconds: BN, chainId: number): SmartContractTransaction => {
     const methodToSend = marketplaceContract(false, chainId).methods.buy(
         projectId,
         subscriptionSeconds,
