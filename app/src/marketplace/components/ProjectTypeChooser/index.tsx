@@ -220,7 +220,7 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
                         checked={selectedProductType === ProjectTypeEnum.PAID_DATA}/>
                 </RadioWrap>
             </Product>
-            <Product onClick={() => setSelectedProductType(ProjectTypeEnum.DATA_UNION)}>
+            <Product disabled={true} onClick={() => setSelectedProductType(ProjectTypeEnum.DATA_UNION)} title={'Available soon'}>
                 <ProductTitle>Data Union</ProductTitle>
                 <ProductImage>
                     <img src={dataUnionImage} srcSet={`${dataUnionImage2x} 2x`} alt="Data Union"/>
@@ -232,6 +232,7 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
                         label={''}
                         value={ProjectTypeEnum.DATA_UNION}
                         onChange={setSelectedProductType}
+                        disabled={true}
                         checked={selectedProductType === ProjectTypeEnum.DATA_UNION}/>
                 </RadioWrap>
             </Product>
