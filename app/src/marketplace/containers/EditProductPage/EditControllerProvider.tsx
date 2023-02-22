@@ -5,7 +5,6 @@ import { useLocation, useHistory } from 'react-router-dom'
 import type { Project } from '$mp/types/project-types'
 import { isDataUnionProduct } from '$mp/utils/product'
 import usePending from '$shared/hooks/usePending'
-import { putProduct, postImage } from '$mp/modules/product/services'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Notification from '$shared/utils/Notification'
 import { getDataUnionObject } from '$mp/modules/dataUnion/services'
@@ -17,15 +16,10 @@ import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import useModal from '$shared/hooks/useModal'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
-import { getChainIdFromApiString } from '$shared/utils/chains'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
-import { ProjectState } from '$mp/types/project-types'
-import { ValidationContext2 } from '$mp/containers/ProductController/ValidationContextProvider2'
+import {SeverityLevel, ValidationContext} from '$mp/containers/ProductController/ValidationContextProvider'
 import routes from '$routes'
-import * as State from '../EditProductPage/state'
 import { useController } from '../ProductController'
-import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
-import { useEditableProjectActions } from '../ProductController/useEditableProjectActions'
 
 type ContextProps = {
     isPreview?: boolean
@@ -41,17 +35,16 @@ type ContextProps = {
 const EditControllerContext: Context<ContextProps> = React.createContext<ContextProps>({})
 
 /**
- * TODO - update the implementation after model change. A lot of code was temporarily commented out
+ * TODO - We're just keeping this temporarlity because some code might need to be copied from here when writing the new edit implementation
+ * @deprecated
  * @param product
  */
 function useEditController(product: Project) {
     const location = useLocation()
     const history = useHistory()
-    const { isAnyTouched, resetTouched, status } = useContext(ValidationContext2)
-    const [isPreview, setIsPreview] = useState(false)
+    const { isAnyTouched, resetTouched, status } = useContext(ValidationContext)
     // lastSectionRef is stored here and set in EditorNav so it remembers its state when toggling
     // between editor and preview
-    const lastSectionRef = useRef(undefined)
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
     const { product: originalProduct } = useController()
@@ -69,7 +62,7 @@ function useEditController(product: Project) {
     const errors = useMemo(
         () =>
             Object.keys(status)
-                .filter((key) => status[key] && status[key].level === ERROR)
+                .filter((key) => status[key] && status[key].level === SeverityLevel.ERROR)
                 .map((key) => ({
                     key,
                     message: status[key].message,
@@ -131,14 +124,14 @@ function useEditController(product: Project) {
                 if (nextProduct.newImageToUpload != null) {
                     try {
                         /* eslint-disable object-curly-newline */
-                        const { imageUrl: newImageUrl, thumbnailUrl: newThumbnailUrl } = await postImage(
+                        /*const { imageUrl: newImageUrl, thumbnailUrl: newThumbnailUrl } = await postImage(
                             nextProduct.id || '',
                             nextProduct.newImageToUpload,
-                        )
+                        )*/
 
                         /* eslint-enable object-curly-newline */
-                        nextProduct.imageUrl = newImageUrl
-                        nextProduct.thumbnailUrl = newThumbnailUrl
+                        /*nextProduct.imageUrl = newImageUrl
+                        nextProduct.thumbnailUrl = newThumbnailUrl*/
                         delete nextProduct.newImageToUpload
                         updateState(nextProduct)
                     } catch (e) {
@@ -148,10 +141,10 @@ function useEditController(product: Project) {
 
                 // save product (don't need to abort if unmounted)
                 // $FlowFixMe: object literal weirdness
-                await putProduct(
+                /*await putProduct(
                     State.update(originalProduct, () => ({ ...nextProduct })) as Project,
                     nextProduct.id || '',
-                )
+                )*/
                 resetTouched()
                 Activity.push({
                     action: actionTypes.UPDATE,
@@ -210,12 +203,12 @@ function useEditController(product: Project) {
                 return
             }
 
-            if (started) {
+            /*if (started) {
                 updateState({
                     ...state,
                     state: (isUnpublish ? projectStates.UNDEPLOYING : projectStates.DEPLOYING) as ProjectState,
                 })
-            }
+            }*/
 
             if (succeeded && (isUnpublish || !showPublishedProduct)) {
                 redirectToProductList()

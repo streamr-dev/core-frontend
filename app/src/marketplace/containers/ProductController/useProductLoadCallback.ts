@@ -15,8 +15,6 @@ import { fromDecimals } from '$mp/utils/math'
 import { getAdminFee } from '$mp/modules/dataUnion/services'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import useFailure from '$shared/hooks/useFailure'
-import useEditableState from '$shared/contexts/Undo/useEditableState'
-import * as State from '../EditProductPage/state'
 import { useController } from '.'
 type LoadProps = {
     productId: ProjectId
@@ -24,7 +22,6 @@ type LoadProps = {
     requirePublished?: boolean
 }
 export default function useProductLoadCallback() {
-    const productUpdater = useEditableState()
     const { wrap } = usePending('product.LOAD')
     const isMounted = useIsMounted()
     const fail = useFailure()
@@ -126,9 +123,8 @@ export default function useProductLoadCallback() {
                     pricePerSecond: pricePerSecond || product.pricePerSecond,
                 }
                 setProduct({ ...nextProduct, pendingChanges: null })
-                productUpdater.replaceState(() => State.withPendingChanges(nextProduct))
             }),
-        [wrap, setProduct, productUpdater, isMounted],
+        [wrap, setProduct, isMounted],
     )
     return useCallback(
         async (props: LoadProps) => {

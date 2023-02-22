@@ -2,7 +2,7 @@ import React, { FunctionComponent, useContext } from 'react'
 import styled from 'styled-components'
 import { ProjectPageContainer } from '$shared/components/ProjectPage'
 import { ProjectHeroContainer } from '$mp/containers/ProjectPage/Hero/ProjectHero2.styles'
-import { CoverImage2 } from '$mp/containers/EditProductPage/CoverImage2'
+import { CoverImage } from '$mp/containers/EditProductPage/CoverImage'
 import ProjectName from '$mp/containers/EditProductPage/ProjectName'
 import ProjectDescription from '$mp/containers/EditProductPage/ProjectDescription'
 import { ProjectDetails } from '$mp/containers/EditProductPage/ProjectDetails'
@@ -10,7 +10,7 @@ import { WhiteBox } from '$shared/components/WhiteBox'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { ProjectTypeEnum } from '$mp/utils/constants'
 import { StreamSelector } from '$mp/containers/EditProductPage/StreamSelector'
-import { TermsOfUse2 } from '$mp/containers/EditProductPage/TermsOfUse2'
+import { TermsOfUse } from '$mp/containers/EditProductPage/TermsOfUse'
 import { SalePointSelector } from '$mp/containers/EditProductPage/SalePointSelector/SalePointSelector'
 import { DataUnionChainSelector } from '$mp/containers/EditProductPage/DataUnionChainSelector/DataUnionChainSelector'
 import { DataUnionTokenSelector } from '$mp/containers/EditProductPage/DataUnionTokenSelector/DataUnionTokenSelector'
@@ -29,7 +29,7 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({disabled})
 
     return <ProjectPageContainer>
         <ProjectHeroContainer overflowVisible={true}>
-            <CoverImage2 disabled={disabled} />
+            <CoverImage disabled={disabled} />
             <ProjectName/>
             <ProjectDescription/>
             <ProjectDetails/>
@@ -52,7 +52,7 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({disabled})
             <StreamSelector />
         </WhiteBoxWithMargin>
         <WhiteBoxWithMargin>
-            <TermsOfUse2/>
+            <TermsOfUse/>
         </WhiteBoxWithMargin>
     </ProjectPageContainer>
 }

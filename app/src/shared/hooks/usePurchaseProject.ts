@@ -1,16 +1,14 @@
-import {useCallback, useEffect, useState} from 'react'
+import {useCallback, useEffect} from 'react'
 import { useHistory } from 'react-router-dom'
 import moment from 'moment/moment'
 import { useDispatch } from 'react-redux'
 import { getProductSubscription } from '$mp/modules/product/actions'
-import { addFreeProduct } from '$mp/modules/product/services'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { getMyPurchases } from '$mp/modules/myPurchaseList/actions'
 import useModal from '$shared/hooks/useModal'
 import usePending from '$shared/hooks/usePending'
 import { useController } from '$mp/containers/ProductController'
-import { getChainIdFromApiString } from '$shared/utils/chains'
 import { isPaidProject } from '$mp/utils/product'
 import useAccountAddress from '$shared/hooks/useAccountAddress'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -22,6 +20,7 @@ import {useIsAuthenticated} from "$auth/hooks/useIsAuthenticated"
 import routes from '$routes'
 
 export const usePurchaseProject = (): () => Promise<void> => {
+    // TODO provide new implementation
     const dispatch = useDispatch()
     const history = useHistory()
     const { product } = useController()
@@ -32,18 +31,18 @@ export const usePurchaseProject = (): () => Promise<void> => {
     const { api: requestAccessDialog } = useModal('requestWhitelistAccess')
     const isMounted = useIsMounted()
     const productId = product.id
-    const chainId = product && getChainIdFromApiString(product.chain)
+    // const chainId = product && getChainIdFromApiString(product.chain)
     const contactEmail = product && product.contact && product.contact.email
     const productName = product && product.name
     const isPaid = isPaidProject(product)
-    const isWhitelistEnabled = !!(isPaid && product.requiresWhitelist)
-    const [isWhitelisted, setIsWhitelisted] = useState(isWhitelistEnabled ? null : false)
-    useEffect(() => {
+    // const isWhitelistEnabled = !!(isPaid && product.requiresWhitelist)
+    // const [isWhitelisted, setIsWhitelisted] = useState(isWhitelistEnabled ? null : false)
+    /*useEffect(() => {
         const loadWhitelistStatus = async () => {
             // set product as whitelisted if that feature is enabled, and if
             // 1) metamask is locked -> clicking request access will prompt Metamask
             // 2) metamask is unlocked and user has access
-            const whitelisted =
+            /!*const whitelisted =
                 !isWhitelistEnabled ||
                 (await getWhitelistStatus({
                     productId,
@@ -52,19 +51,19 @@ export const usePurchaseProject = (): () => Promise<void> => {
 
             if (isMounted()) {
                 setIsWhitelisted(whitelisted)
-            }
+            }*!/
         }
 
         if (productId && !isPending) {
             loadWhitelistStatus()
         }
-    }, [productId, chainId, account, isWhitelistEnabled, isPending, isMounted])
+    }, [productId, chainId, account, isWhitelistEnabled, isPending, isMounted])*/
     return useCallback(
         async () =>
             wrap(async () => {
                 if (isLoggedIn) {
                     if (isPaid) {
-                        if (isWhitelistEnabled && !isWhitelisted) {
+                        /*if (isWhitelistEnabled && !isWhitelisted) {
                             // at this point we know either that user has access or Metamask was locked
                             // do a another check but this time validate web3 which will prompt Metamask
                             const canPurchase = await getWhitelistStatus({
@@ -85,7 +84,7 @@ export const usePurchaseProject = (): () => Promise<void> => {
                                 })
                                 return
                             }
-                        }
+                        }*/
 
                         // Paid product has to be bought with Metamask
                         const { started, succeeded, viewInCore } = await purchaseDialog.open({
@@ -96,7 +95,7 @@ export const usePurchaseProject = (): () => Promise<void> => {
                             if (viewInCore) {
                                 history.replace(routes.subscriptions())
                             } else {
-                                dispatch(getProductSubscription(productId, chainId))
+                                // dispatch(getProductSubscription(productId, chainId))
                             }
                         }
                     } else {
@@ -104,7 +103,7 @@ export const usePurchaseProject = (): () => Promise<void> => {
                         // subscribe for one year (TODO: move to constant)
                         const endsAt = moment().add(1, 'year').unix() // Unix timestamp (seconds)
 
-                        await addFreeProduct(productId || '', endsAt)
+                        // await addFreeProduct(productId || '', endsAt)
 
                         if (!isMounted()) {
                             return
@@ -135,12 +134,12 @@ export const usePurchaseProject = (): () => Promise<void> => {
             isPaid,
             wrap,
             isMounted,
-            isWhitelistEnabled,
-            isWhitelisted,
+            // isWhitelistEnabled,
+            // isWhitelisted,
             requestAccessDialog,
             contactEmail,
             productName,
-            chainId,
+            // chainId,
         ],
     )
 }

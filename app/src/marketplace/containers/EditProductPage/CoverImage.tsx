@@ -1,29 +1,65 @@
-import React, { useContext, useCallback, useEffect } from 'react'
-import cx from 'classnames'
-import { Link } from 'react-router-dom'
-import docsLinks from '$shared/../docsLinks'
+import React, {useContext, useCallback, useEffect, FunctionComponent} from 'react'
+import styled from 'styled-components'
 import ImageUpload from '$shared/components/ImageUpload'
 import Errors from '$ui/Errors'
 import useModal from '$shared/hooks/useModal'
 import useFilePreview from '$shared/hooks/useFilePreview'
-import useEditableState from '$shared/contexts/Undo/useEditableState'
-import useEditableProductActions from '../ProductController/useEditableProductActions'
+import { COLORS, LAPTOP } from '$shared/utils/styled'
+import { ProjectHeroImageStyles } from '$mp/containers/ProjectPage/Hero/ProjectHero2.styles'
+import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
+import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
+import CropImageModalWrap from "$mp/containers/EditProductPage/CropImageModal"
 import useValidation from '../ProductController/useValidation'
 import { Context as EditControllerContext } from './EditControllerProvider'
-import styles from './coverImage.pcss'
+
 type Props = {
     disabled?: boolean
 }
 
-/**
- * @deprecated
- * @todo - to be deleted after implementing Hub designs
- * @param disabled
- * @constructor
- */
-const CoverImage = ({ disabled }: Props) => {
-    const { state: product } = useEditableState()
-    const { updateImageFile } = useEditableProductActions()
+const Container = styled.div`
+  ${ProjectHeroImageStyles};
+  @media(${LAPTOP}) {
+    width: 366px;
+  }
+  
+  .coverImageUpload {
+    background-color: ${COLORS.primaryLight};
+    border-radius: 16px;
+    min-height: unset;
+    aspect-ratio: 1/1;
+  }
+  
+  .imageUploadDropZone {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    transition: opacity 150ms ease-in;
+    
+    img {
+      width: 40%;
+    }
+  }
+  
+  .shared_imageUpload_imageUploaded {
+    .imageUploadDropZone {
+      opacity: 0;
+    }
+    &:hover {
+      .imageUploadDropZone {
+        opacity: 1;
+      }
+    }
+  }
+
+  .shared_imageUpload_previewImage {
+    transition: opacity 150ms ease-in;
+  }
+`
+
+export const CoverImage: FunctionComponent<Props> = ({ disabled }) => {
+    const { state: product } = useContext(ProjectStateContext)
+    const { updateImageFile } = useEditableProjectActions()
     const { isValid, message } = useValidation('imageUrl')
     const { api: cropImageDialog, isOpen } = useModal('cropImage')
     const { preview, createPreview } = useFilePreview()
@@ -50,28 +86,17 @@ const CoverImage = ({ disabled }: Props) => {
     }, [uploadedImage, createPreview])
     const hasError = publishAttempted && !isValid
     return (
-        <section id="cover-image" className={cx(styles.root, styles.CoverImage)}>
-            <div>
-                <h1>Add a cover image</h1>
-                <p>
-                    This image will be shown as the tile image in the Marketplace browse view, and also as the main
-                    image on your product page. For best quality, an image size of around 1000 x 800px is recommended.
-                    PNG or JPEG format. Need images? See the <Link to={docsLinks.creatingDataProducts}>docs</Link>
-                </p>
-                <ImageUpload
-                    setImageToUpload={onUpload}
-                    originalImage={preview || product.imageUrl}
-                    className={styles.imageUpload}
-                    dropzoneClassname={cx(styles.dropZone, {
-                        [styles.dropZoneError]: !!hasError,
-                    })}
-                    disabled={!!disabled || isOpen}
-                    noPreview
-                />
-                {hasError && !!message && <Errors overlap>{message}</Errors>}
-            </div>
-        </section>
+        <Container id="cover-image">
+            <ImageUpload
+                setImageToUpload={onUpload}
+                originalImage={preview || product.imageUrl}
+                dropZoneClassName={'imageUploadDropZone'}
+                disabled={!!disabled || isOpen}
+                className={'coverImageUpload'}
+            />
+            {hasError && !!message && <Errors overlap>{message}</Errors>}
+            <CropImageModalWrap/>
+        </Container>
     )
 }
 
-export default CoverImage

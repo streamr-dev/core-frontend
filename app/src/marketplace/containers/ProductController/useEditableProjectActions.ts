@@ -4,7 +4,7 @@ import { pricePerSecondFromTimeUnit } from '$mp/utils/price'
 import { timeUnits } from '$shared/utils/constants'
 import type { ContactDetails, Project } from '$mp/types/project-types'
 import type { StreamIdList } from '$shared/types/stream-types'
-import { ValidationContext2 } from '$mp/containers/ProductController/ValidationContextProvider2'
+import { ValidationContext } from '$mp/containers/ProductController/ValidationContextProvider'
 import { NumberString, TimeUnit } from '$shared/types/common-types'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { ProjectTypeEnum } from '$mp/utils/constants'
@@ -31,7 +31,7 @@ export type EditableProjectActions = {
 }
 export const useEditableProjectActions = (): EditableProjectActions => {
     const {state, updateState} = useContext(ProjectStateContext)
-    const { setTouched } = useContext(ValidationContext2)
+    const { setTouched } = useContext(ValidationContext)
 
     const updateProject = useCallback<EditableProjectActions['updateProject']>(
         (project: Partial<Project>) => {

@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useCallback, useContext, useMemo } from 'react'
 import { Chain } from '@streamr/config'
-import TokenSelector2 from '$mp/containers/EditProductPage/TokenSelector2'
+import TokenSelector from '$mp/containers/EditProductPage/TokenSelector'
 import { PricingData } from '$mp/types/project-types'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { getConfigForChain } from '$shared/web3/config'
@@ -26,7 +26,7 @@ export const DataUnionTokenSelector: FunctionComponent = () => {
             }})
         }
     }, [])
-    return <TokenSelector2
+    return <TokenSelector
         disabled={!project.dataUnionChainId}
         onChange={handleChange}
         chain={chain}

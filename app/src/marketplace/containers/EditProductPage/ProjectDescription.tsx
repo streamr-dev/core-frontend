@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, {FunctionComponent, useContext} from 'react'
 import styled from 'styled-components'
 import Editor from "rich-markdown-editor"
 import light from 'rich-markdown-editor/dist/styles/theme'
@@ -6,7 +6,7 @@ import { COLORS } from '$shared/utils/styled'
 import { ProjectHeroDescriptionStyles } from '$mp/containers/ProjectPage/Hero/ProjectHero2.styles'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
-import useValidation2 from '../ProductController/useValidation2'
+import useValidation from '../ProductController/useValidation'
 type Props = {
     disabled?: boolean
 }
@@ -31,11 +31,9 @@ const customTheme = {
     link: COLORS.link
 }
 
-const ProjectDescription = ({ disabled }: Props) => {
+const ProjectDescription: FunctionComponent<Props> = ({ disabled }) => {
     const { state: product } = useContext(ProjectStateContext)
-    // TODO Check if its needed
-    // const { publishAttempted } = useContext(EditControllerContext)
-    const { isValid, message } = useValidation2('description')
+    // const { isValid, message } = useValidation2('description')
     const { updateDescription } = useEditableProjectActions()
     return (
         <DescriptionEditor readOnly={disabled}

@@ -1,23 +1,26 @@
 import { useContext, useMemo, useCallback } from 'react'
-import type { Level } from './ValidationContextProvider'
-import { Context as ValidationContext } from './ValidationContextProvider'
+import { RecursiveKeyOf } from '$utils/recursiveKeyOf'
+import { Project } from '$mp/types/project-types'
+import { SeverityLevel, ValidationContext } from './ValidationContextProvider'
 
-/**
- * @deprecated
- * @param name
- */
-export function useValidation(name: string) {
+const useValidation = (fieldName: RecursiveKeyOf<Project>): {
+    isValid: boolean,
+    level: SeverityLevel,
+    message: string,
+    setStatus: (level: SeverityLevel, message: string) => void,
+    clearStatus: () => void
+} => {
     const { status, setStatus: setStatusState, clearStatus: clearStatusState } = useContext(ValidationContext)
     const setStatus = useCallback(
-        (level: Level, message: string) => {
-            setStatusState(name, level, message)
+        (level: SeverityLevel, message: string) => {
+            setStatusState(fieldName, level, message)
         },
-        [setStatusState, name],
+        [setStatusState, fieldName],
     )
     const clearStatus = useCallback(() => {
-        clearStatusState(name)
-    }, [clearStatusState, name])
-    const result = status[name]
+        clearStatusState(fieldName)
+    }, [clearStatusState, fieldName])
+    const result = status[fieldName]
     const isValid = useMemo(() => !result, [result])
     const level = useMemo(() => result && result.level, [result])
     const message = useMemo(() => result && result.message, [result])
