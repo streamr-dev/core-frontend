@@ -13,7 +13,7 @@ import { createProject, SmartContractProjectCreate, SmartContractProjectMetadata
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { getConfigForChain } from '$shared/web3/config'
 import { getDataAddress } from '$mp/utils/web3'
-import { ZERO_ADDRESS } from '$utils/web3/constants'
+import address0 from "$utils/address0"
 
 export type ProjectController = {
     create: () => Promise<boolean>,
@@ -90,7 +90,7 @@ export const useProjectController = (): ProjectController => {
                 }
             }) : [{
                 chainId: registryChain.id,
-                beneficiaryAddress: ZERO_ADDRESS,
+                beneficiaryAddress: address0,
                 pricePerSecond: 0,
                 pricingTokenAddress: getDataAddress(registryChain.id),
             }]

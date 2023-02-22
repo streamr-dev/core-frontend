@@ -21,15 +21,11 @@ const Container = styled.div`
   @media(${LAPTOP}) {
     width: 366px;
   }
-  img {
-    //margin-bottom: 50px;
-  }
   
   .coverImageUpload {
     background-color: ${COLORS.primaryLight};
     border-radius: 16px;
     min-height: unset;
-    //height: auto;
     aspect-ratio: 1/1;
   }
   
