@@ -11,7 +11,7 @@ import projectRegistryAbi from '$shared/web3/abis/projectRegistry.json'
 
 const getGraphUrl = () => {
     const { theGraphUrl, theHubGraphName } = getCoreConfig()
-    return `${theGraphUrl}/${theHubGraphName}`
+    return `${theGraphUrl}/subgraphs/name/${theHubGraphName}`
 }
 
 export type TheGraphPaymentDetails = {
