@@ -1,24 +1,46 @@
-import React, { useContext, Fragment, useCallback, useEffect, useState } from 'react'
-import cx from 'classnames'
+import React, { ChangeEvent, FunctionComponent, useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import Text from '$ui/Text'
-import Errors, { MarketplaceTheme } from '$ui/Errors'
+import { COLORS, MAX_CONTENT_WIDTH } from '$shared/utils/styled'
 import WithInputActions from '$shared/components/WithInputActions'
+import PopoverItem from '$shared/components/Popover/PopoverItem'
+import Text from '$ui/Text'
 import useCopy from '$shared/hooks/useCopy'
+import useAccountAddress from '$shared/hooks/useAccountAddress'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
-import useAccountAddress from '$shared/hooks/useAccountAddress'
-import PopoverItem from '$shared/components/Popover/PopoverItem'
-import useValidation from '../ProductController/useValidation'
-import { Context as EditControllerContext } from './EditControllerProvider'
-import styles from './beneficiaryAddress.pcss'
-type Props = {
-    address?: string
-    onChange: (arg0: string) => void
-    disabled: boolean
-    className?: string
-}
+import { isEthereumAddress } from '$mp/utils/validate'
+import useValidation from '$mp/containers/ProductController/useValidation'
+import { SeverityLevel } from '$mp/containers/ProductController/ValidationContextProvider'
+import { Address } from '$shared/types/web3-types'
+
+const Heading = styled.p`
+  font-size: 20px;
+  color: black;
+  margin-top: 30px;
+`
+
+const DescriptionText = styled.p`
+  color: black;
+  margin-bottom: 15px;
+  margin-right: 55px;
+  flex-shrink: 0;
+`
+
+const Container = styled.div`
+  background-color: ${COLORS.inputBackground};
+  padding: 12px 24px;
+  max-width: ${MAX_CONTENT_WIDTH};
+  
+  .beneficiary-address-input {
+    margin: 0;
+    input:disabled {
+      background-color: white;
+      opacity: 1;
+    }
+  }
+`
+
 type AddressItemProps = {
     address?: string | null | undefined
     className?: string | null | undefined
@@ -43,85 +65,84 @@ const AddressItem = styled(UnstyledAddressItem)`
         margin-top: -14px;
     }
 `
-/**
- * @deprecated
- * @param addressProp
- * @param onChange
- * @param disabled
- * @param className
- * @constructor
- */
-const BeneficiaryAddress = ({ address: addressProp, onChange, disabled, className }: Props) => {
-    const { isValid, message } = useValidation('beneficiaryAddress')
-    const { publishAttempted } = useContext(EditControllerContext)
-    const [ownAddress, setOwnAddress] = useState(addressProp || '')
-    const accountAddress = useAccountAddress()
-    const invalid = publishAttempted && !isValid
+type BeneficiaryAddressProps = {
+    disabled?: boolean,
+    beneficiaryAddress?: Address,
+    onChange: (address: Address) => void
+    chainName: string
+}
+
+export const BeneficiaryAddress: FunctionComponent<BeneficiaryAddressProps> = ({
+    disabled,
+    beneficiaryAddress,
+    onChange,
+    chainName
+}) => {
+
     const { copy } = useCopy()
+    const accountAddress = useAccountAddress()
+    const {setStatus, clearStatus, isValid} = useValidation(`salePoints.${chainName}.beneficiaryAddress`)
+    const [defaultValueWasSet, setDefaultValueWasSet] = useState(false)
     const onCopy = useCallback(() => {
-        if (!addressProp) {
+        if (!beneficiaryAddress) {
             return
         }
 
-        copy(addressProp)
+        copy(beneficiaryAddress)
         Notification.push({
             title: 'Copied',
             icon: NotificationIcon.CHECKMARK,
         })
-    }, [copy, addressProp])
-    const useCurrentWalletAddress = useCallback(() => {
-        if (accountAddress) {
-            onChange(accountAddress)
-        }
-    }, [accountAddress, onChange])
+    }, [copy, beneficiaryAddress])
+
     useEffect(() => {
-        setOwnAddress(addressProp)
-
-        // If no address was provided, prefill with accountAddress
-        if ((addressProp == null || addressProp.length === 0) && accountAddress) {
+        if (!defaultValueWasSet && !beneficiaryAddress) {
             onChange(accountAddress)
+            setDefaultValueWasSet(true)
         }
-    }, [addressProp, onChange, accountAddress])
-    const onOwnAddressChange = useCallback<(e: React.ChangeEvent<HTMLInputElement>) => void>((e: React.ChangeEvent<HTMLInputElement>) => {
-        setOwnAddress(e.target.value)
-    }, [])
-    return (
-        <form autoComplete="off" onSubmit={(e) => e.preventDefault()}>
-            <label htmlFor="beneficiaryAddress" className={cx(styles.root, className)}>
-                <WithInputActions
-                    disabled={disabled}
-                    actions={[
-                        <PopoverItem key="useCurrent" onClick={useCurrentWalletAddress} disabled={!accountAddress}>
-                            <AddressItem name="wallet address" address={accountAddress || 'Wallet locked'} />
-                        </PopoverItem>,
-                        <PopoverItem key="copy" disabled={!addressProp} onClick={onCopy}>
-                            Copy
-                        </PopoverItem>,
-                    ]}
-                >
-                    <Text
-                        key={addressProp}
-                        id="beneficiaryAddress"
-                        autoComplete="off"
-                        value={ownAddress}
-                        onCommit={onChange}
-                        onChange={onOwnAddressChange}
-                        placeholder="Beneficiary address"
-                        invalid={invalid}
-                        disabled={disabled}
-                        selectAllOnFocus
-                        smartCommit
-                    />
-                </WithInputActions>
-                {invalid && (
-                    <Fragment>
-                        <div />
-                        <Errors theme={MarketplaceTheme}>{message}</Errors>
-                    </Fragment>
-                )}
-            </label>
-        </form>
-    )
-}
+    }, [accountAddress, beneficiaryAddress, onChange])
 
-export default BeneficiaryAddress
+    const handleUpdate = (value: string): void => {
+        onChange(value)
+        const isValid = isEthereumAddress(value)
+        if (isValid) {
+            clearStatus()
+        } else {
+            setStatus(SeverityLevel.ERROR, 'Provided wallet address is invalid')
+        }
+    }
+
+    return <>
+        <Heading>Set beneficiary</Heading>
+        <DescriptionText>This wallet address receives the payments for this product on {chainName} chain.</DescriptionText>
+        <Container>
+            <WithInputActions
+                disabled={disabled}
+                className={'beneficiary-address-input'}
+                actions={[
+                    <PopoverItem key="useCurrent" onClick={() => {
+                        onChange(accountAddress)
+                    }} disabled={!accountAddress}>
+                        <AddressItem name="wallet address" address={accountAddress || 'Wallet locked'} />
+                    </PopoverItem>,
+                    <PopoverItem key="copy" disabled={!beneficiaryAddress} onClick={onCopy}>
+                        Copy
+                    </PopoverItem>,
+                ]}
+            >
+                <Text
+                    id="beneficiaryAddress"
+                    autoComplete="off"
+                    value={beneficiaryAddress || ''}
+                    onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                        handleUpdate(event.target.value)
+                    }}
+                    placeholder={'i.e. 0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1'}
+                    disabled={disabled}
+                    invalid={!isValid}
+                    selectAllOnFocus
+                />
+            </WithInputActions>
+        </Container>
+    </>
+}

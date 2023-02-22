@@ -4,7 +4,7 @@ import {isHex, randomHex} from "web3-utils"
 import {Chain} from "@streamr/config"
 import {RecursiveKeyOf} from "$utils/recursiveKeyOf"
 import {Project} from "$mp/types/project-types"
-import * as validationCtx from "$mp/containers/ProductController/ValidationContextProvider2"
+import * as validationCtx from "$mp/containers/ProductController/ValidationContextProvider"
 import {createProject, SmartContractProjectCreate} from "$app/src/services/projects"
 import {useProjectState} from "$mp/contexts/ProjectStateContext"
 import Notification from '$shared/utils/Notification'
@@ -86,8 +86,6 @@ const PROJECT_STUB: Project = {
             timeUnit: 'hour'
         }
     },
-    owner: undefined,
-    ownerAddress: randomHex(32),
     thumbnailUrl: undefined,
     streams: ['stream1', 'stream2'],
     termsOfUse: {

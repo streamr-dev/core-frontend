@@ -1,13 +1,12 @@
 import BN from 'bignumber.js'
 import * as yup from 'yup'
 import type { NumberString } from '$shared/types/common-types'
-import { contractCurrencies as currencies, projectStates, timeUnits } from '$shared/utils/constants'
+import { contractCurrencies as currencies, projectStates } from '$shared/utils/constants'
 import { RecursiveKeyOf } from '$utils/recursiveKeyOf'
 import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
 import type { ContactDetails, Project, ProjectId, ProjectType, SmartContractProduct } from '../types/project-types'
 import { ProjectState } from '../types/project-types'
-import { isEthereumAddress, validateSalePoint } from './validate'
-import { isPriceValid } from './price'
+import { validateSalePoint } from './validate'
 import { ProjectTypeEnum, projectTypes } from './constants'
 import { fromDecimals, toDecimals } from './math'
 import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from './smartContract'
@@ -73,28 +72,6 @@ export const mapProductFromApi = (product: Project): Project => {
 
 export const mapAllProductsFromApi = (products: Array<Project>): Array<Project> => products.map(mapProductFromApi)
 
-export const mapProductToPostApi = (product: Project): Project => {
-    // TODO map the project to contract
-    /*const pricePerSecond = mapPriceToApi(product.pricePerSecond)
-    validateApiProductPricePerSecond(pricePerSecond)
-    validateProductPriceCurrency(product.priceCurrency)*/
-    return { ...product }
-}
-
-export const isPublishedProduct = (p: Project): boolean => p.state === projectStates.DEPLOYED
-
-export const mapProductToPutApi = (product: Project): Record<string, any> => {
-    // TODO - map the project to contract
-    /*// For published paid products, the some fields can only be updated on the smart contract
-    if (isPaidProject(product) && isPublishedProduct(product)) {
-        const { ownerAddress, beneficiaryAddress, pricePerSecond, priceCurrency, minimumSubscriptionInSeconds, ...otherData } = product
-        return otherData
-    }
-
-    const pricePerSecond = mapPriceToApi(product.pricePerSecond)*/
-    return { ...product }
-}
-
 export const getValidId = (id: string, prefix = true): string => {
     if (!isValidHexString(id) || parseInt(id, 16) === 0) {
         throw new InvalidHexStringError(id)
@@ -151,6 +128,5 @@ export const validate = (project: Project): Partial<Record<RecursiveKeyOf<Projec
             })
         }
     }
-
     return invalidFields
 }

@@ -2,8 +2,8 @@ import BN from 'bignumber.js'
 import { $ElementType, $Keys, $Values } from 'utility-types'
 import { projectStates } from '$shared/utils/constants'
 import { ProjectTypeEnum, projectTypes } from '$mp/utils/constants'
-import type { StreamId, StreamIdList } from '$shared/types/stream-types'
-import type { ContractCurrency, NumberString, PaymentCurrency, TimeUnit } from '$shared/types/common-types'
+import type { StreamIdList } from '$shared/types/stream-types'
+import type { NumberString, PaymentCurrency, TimeUnit } from '$shared/types/common-types'
 import type { Address } from '$shared/types/web3-types'
 import type { CategoryId } from './category-types'
 
@@ -45,17 +45,10 @@ export type Project = {
     id: ProjectId | null | undefined
     name: string
     description: string
-    owner: string // still needed?
     imageUrl?: string | null | undefined
     newImageToUpload?: File | null | undefined
     thumbnailUrl: string | null | undefined
-    state?: ProjectState // still needed?
-    created?: string // still needed?
-    updated?: string // still needed?
     streams: StreamIdList
-    previewStream?: StreamId | null | undefined // still needed?
-    previewConfigJson?: string | null | undefined // still needed?
-    ownerAddress: Address
     type?: ProjectTypeEnum
     termsOfUse: TermsOfUse
     contact: ContactDetails | null | undefined

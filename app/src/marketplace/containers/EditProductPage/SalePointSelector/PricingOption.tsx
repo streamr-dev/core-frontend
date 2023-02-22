@@ -6,8 +6,8 @@ import Checkbox from '$shared/components/Checkbox'
 import SvgIcon from '$shared/components/SvgIcon'
 import NetworkIcon from '$shared/components/NetworkIcon'
 import { PricingData, SalePoint } from '$mp/types/project-types'
-import TokenSelector2 from '$mp/containers/EditProductPage/TokenSelector2'
-import { BeneficiaryAddress2 } from '$mp/containers/EditProductPage/BeneficiaryAddress2'
+import TokenSelector from '$mp/containers/EditProductPage/TokenSelector'
+import { BeneficiaryAddress } from '$mp/containers/EditProductPage/BeneficiaryAddress'
 import { Address } from '$shared/types/web3-types'
 
 export const PricingOption: FunctionComponent<{
@@ -72,7 +72,7 @@ export const PricingOption: FunctionComponent<{
         </DropdownToggle>
         <DropdownOuter className={isDropdownOpen ? 'is-open' : ''}>
             <DropdownInner className={isDropdownOpen ? 'is-open' : ''}>
-                <TokenSelector2
+                <TokenSelector
                     disabled={!isSelected}
                     chain={chain}
                     onChange={setPricing}
@@ -84,7 +84,7 @@ export const PricingOption: FunctionComponent<{
                         pricePerSecond: pricingData.pricePerSecond
                     } : null}
                 />
-                <BeneficiaryAddress2
+                <BeneficiaryAddress
                     beneficiaryAddress={pricingData?.beneficiaryAddress}
                     onChange={setBeneficiaryAddress}
                     chainName={chain.name}

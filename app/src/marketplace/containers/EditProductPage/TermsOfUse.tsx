@@ -1,28 +1,45 @@
-import React from 'react'
+import React, { FunctionComponent, useContext } from 'react'
 import styled from 'styled-components'
 import Checkbox from '$shared/components/Checkbox'
 import Text from '$ui/Text'
 import Label from '$ui/Label'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
-import useEditableState from '$shared/contexts/Undo/useEditableState'
-import useEditableProductActions from '../ProductController/useEditableProductActions'
+import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
+import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 import useValidation from '../ProductController/useValidation'
+
 type Props = {
     className?: string
     disabled?: boolean
 }
-const Section = styled.section`
+const Section = styled.div`
     background: none;
+    max-width: 678px;
 `
+
+const Title = styled.p`
+  font-size: 34px;
+  line-height: 34px;
+  color: black;
+  margin-bottom: 30px;
+`
+
+const Description = styled.p`
+  color: black;
+  font-size: 16px;
+`
+
 const DetailsContainer = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 24px;
 `
+
 const StyledCheckbox = styled(Checkbox)`
     width: 24px !important;
     height: 24px !important;
 `
+
 const terms = {
     redistribution: 'Redistribution',
     commercialUse: 'Commercial use',
@@ -42,7 +59,7 @@ const UnstyledTermCheckbox = ({
     updateTermsOfUse: any
     disabled: boolean
 }) => (
-    <label {...props} htmlFor={id}>
+    <CheckboxLabel {...props} htmlFor={id}>
         <StyledCheckbox
             id={id}
             name={id}
@@ -57,7 +74,7 @@ const UnstyledTermCheckbox = ({
         />
         &nbsp;
         {terms[id]}
-    </label>
+    </CheckboxLabel>
 )
 
 const TermCheckbox = styled(UnstyledTermCheckbox)`
@@ -77,45 +94,44 @@ const CheckboxContainer = styled.div`
     }
 `
 
-/**
- * @deprecated
- * @param className
- * @param disabled
- * @constructor
- */
-const TermsOfUse = ({ className, disabled }: Props) => {
-    const { state: product } = useEditableState()
-    const { updateTermsOfUse } = useEditableProductActions()
+const CheckboxLabel = styled.label`
+  color: black;
+`
+
+export const TermsOfUse: FunctionComponent<Props> = ({ className, disabled }: Props) => {
+    const { state: project } = useContext(ProjectStateContext)
+    const { updateTermsOfUse } = useEditableProjectActions()
     const { isValid, message } = useValidation('termsOfUse')
     return (
         <Section id="terms" className={className}>
-            <h1>Set terms of use</h1>
-            <p>
-                You can indicate the terms of use you prefer for data subscribers, either by checking boxes below to
-                show permitted usage types, or give more detail by providing a link to your own terms of use document.
-            </p>
+            <Title>Set terms of use</Title>
+            <Description>
+                Indicate the terms of use you prefer, either simply,
+                by checking the appropriate boxes below to show usage types are permitted, or optionally,
+                give more detail by providing a link to your own terms of use document.
+            </Description>
             <CheckboxContainer>
                 <TermCheckbox
                     id="redistribution"
-                    product={product}
+                    product={project}
                     updateTermsOfUse={updateTermsOfUse}
                     disabled={!!disabled}
                 />
                 <TermCheckbox
                     id="commercialUse"
-                    product={product}
+                    product={project}
                     updateTermsOfUse={updateTermsOfUse}
                     disabled={!!disabled}
                 />
                 <TermCheckbox
                     id="reselling"
-                    product={product}
+                    product={project}
                     updateTermsOfUse={updateTermsOfUse}
                     disabled={!!disabled}
                 />
                 <TermCheckbox
                     id="storage"
-                    product={product}
+                    product={project}
                     updateTermsOfUse={updateTermsOfUse}
                     disabled={!!disabled}
                 />
@@ -124,10 +140,10 @@ const TermsOfUse = ({ className, disabled }: Props) => {
                 <div>
                     <Label>Link to detailed terms</Label>
                     <Text
-                        defaultValue={product.termsOfUse.termsUrl}
+                        defaultValue={project?.termsOfUse?.termsUrl}
                         onCommit={(text) => {
                             updateTermsOfUse({
-                                ...product.termsOfUse,
+                                ...project.termsOfUse,
                                 termsUrl: text,
                             })
                         }}
@@ -142,10 +158,10 @@ const TermsOfUse = ({ className, disabled }: Props) => {
                 <div>
                     <Label>Display name for link</Label>
                     <Text
-                        defaultValue={product.termsOfUse.termsName}
+                        defaultValue={project?.termsOfUse?.termsName}
                         onCommit={(text) => {
                             updateTermsOfUse({
-                                ...product.termsOfUse,
+                                ...project.termsOfUse,
                                 termsName: text,
                             })
                         }}
@@ -159,5 +175,3 @@ const TermsOfUse = ({ className, disabled }: Props) => {
         </Section>
     )
 }
-
-export default TermsOfUse

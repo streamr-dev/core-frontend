@@ -1,6 +1,5 @@
 import EventEmitter from 'events'
 import { PromiEvent, TransactionReceipt } from 'web3-core'
-import { Eth } from 'web3-eth'
 import { Contract } from 'web3-eth-contract'
 import { isHex } from 'web3-utils'
 import BN from 'bignumber.js'
@@ -12,8 +11,6 @@ import type { SmartContractCall, Address, SmartContractConfig, SmartContractTran
 import type { NumberString } from '$shared/types/common-types'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import Transaction from '$shared/utils/Transaction'
-import type { Project, SmartContractProduct } from '../types/project-types'
-import { arePricesEqual } from '../utils/price'
 
 // TODO add typing
 export type Callable = {
@@ -42,15 +39,7 @@ export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode
     const web3 = usePublicNode ? getPublicWeb3(chainId) : getWeb3()
     return new web3.eth.Contract(abi, address)
 }
-export const isContractProductUpdateRequired = (contractProduct: SmartContractProduct, editProduct: Project): boolean => {
-    /*const hasPriceChanged = !arePricesEqual(contractProduct.pricePerSecond, editProduct.pricePerSecond)
-    const hasBeneficiaryChanged = !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress)
-    const hasPricingTokenChanged =
-        editProduct.pricingTokenAddress != null && !areAddressesEqual(contractProduct.pricingTokenAddress, editProduct.pricingTokenAddress)
-    return hasPriceChanged || hasBeneficiaryChanged || hasPricingTokenChanged*/
-    // TODO provide new implementation
-    return true
-}
+
 export const call = (method: Callable): SmartContractCall<any> => method.call()
 export const send = (
     method: Sendable,

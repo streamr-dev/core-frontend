@@ -4,7 +4,7 @@ import {useProjectState} from '$mp/contexts/ProjectStateContext'
 import {
     SeverityLevel,
     useValidationContext,
-} from '$mp/containers/ProductController/ValidationContextProvider2'
+} from '$mp/containers/ProductController/ValidationContextProvider'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { ProjectTypeEnum } from '$mp/utils/constants'

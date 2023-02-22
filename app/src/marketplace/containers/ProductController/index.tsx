@@ -4,11 +4,9 @@ import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import { usePending } from '$shared/hooks/usePending'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { getChainIdFromApiString } from '$shared/utils/chains'
-import { Provider as PermissionsProvider } from './useProductPermissions'
-import { Provider as ValidationContextProvider } from './ValidationContextProvider'
+import {ValidationContextProvider} from "../ProductController/ValidationContextProvider"
 import useProductLoadCallback from './useProductLoadCallback'
 import useContractProductLoadCallback from './useContractProductLoadCallback'
-import useProductValidationEffect from './useProductValidationEffect'
 import useLoadCategoriesCallback from './useLoadCategoriesCallback'
 import useLoadProductStreamsCallback from './useLoadProductStreamsCallback'
 import useDataUnionLoadCallback from './useDataUnionLoadCallback'
@@ -53,7 +51,6 @@ function ProductEffects({ ignoreUnauthorized, requirePublished }: UseProductLoad
         ignoreUnauthorized,
         requirePublished,
     })
-    useProductValidationEffect()
     return null
 }
 
@@ -183,13 +180,11 @@ const ProductController: FunctionComponent<{children?: ReactNode | ReactNode[]} 
     <PendingProvider name="product">
         <ValidationContextProvider>
             <ControllerProvider>
-                <PermissionsProvider autoLoadPermissions={true}>
-                    <ProductEffects
-                        ignoreUnauthorized={ignoreUnauthorized}
-                        requirePublished={requirePublished}
-                    />
-                    {children || null}
-                </PermissionsProvider>
+                <ProductEffects
+                    ignoreUnauthorized={ignoreUnauthorized}
+                    requirePublished={requirePublished}
+                />
+                {children || null}
             </ControllerProvider>
         </ValidationContextProvider>
     </PendingProvider>

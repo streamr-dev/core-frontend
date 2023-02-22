@@ -32,14 +32,6 @@ jest.mock('$userpages/components/ProductsPage', () => ({
     __esModule: true,
     default: () => 'Products list',
 }))
-jest.mock('$userpages/components/DataUnionPage', () => ({
-    __esModule: true,
-    default: () => 'Data union list',
-}))
-jest.mock('$mp/containers/EditProductPage', () => ({
-    __esModule: true,
-    default: ({ match }) => `Product ${match.params.id} editor`,
-}))
 jest.mock('$auth/utils/userAuthenticated', () => ({
     __esModule: true,
     UserIsAuthenticatedRoute: ({children}) => <>{children}</>,
@@ -86,22 +78,6 @@ describe('Userpages Routes', () => {
             </MemoryRouter>,
         )
         expect(el.text()).toBe('Products list')
-    })
-    it('shows data unions list', () => {
-        const el = mount(
-            <MemoryRouter initialEntries={['/core/dataunions']}>
-                <Switch>{UserpagesRouter()}</Switch>
-            </MemoryRouter>,
-        )
-        expect(el.text()).toBe('Data union list')
-    })
-    it('shows product editor', () => {
-        const el = mount(
-            <MemoryRouter initialEntries={['/core/products/123/edit']}>
-                <Switch>{UserpagesRouter()}</Switch>
-            </MemoryRouter>,
-        )
-        expect(el.text()).toBe('Product 123 editor')
     })
     /*
     it('redirects to stream list on bad route', () => {

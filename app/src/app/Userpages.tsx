@@ -11,8 +11,6 @@ import StreamEditPage from '$app/src/pages/StreamEditPage'
 import TransactionList from '$userpages/components/TransactionPage/List'
 import PurchasesPage from '$userpages/components/PurchasesPage'
 import ProductsPage from '$userpages/components/ProductsPage'
-import DataUnionPage from '$userpages/components/DataUnionPage'
-import EditProductPage from '$mp/containers/EditProductPage'
 import routes from '$routes'
 const Route = withErrorBoundary(ErrorPage)(RouterRoute)
 // Userpages Auth
@@ -28,11 +26,8 @@ const PurchasesPageAuth: FunctionComponent = (props) => <UserIsAuthenticatedRout
 const ProductsPageAuth: FunctionComponent = (props) => <UserIsAuthenticatedRoute>
     <ProductsPage {...props}/>
 </UserIsAuthenticatedRoute>
-const DataUnionPageAuth: FunctionComponent = (props) => <UserIsAuthenticatedRoute>
-    <DataUnionPage {...props}/>
-</UserIsAuthenticatedRoute>
 const EditProductAuth: FunctionComponent = (props) => <UserIsAuthenticatedRoute>
-    <EditProductPage {...props}/>
+    <p>TODO: make edit page</p>
 </UserIsAuthenticatedRoute>
 const StreamCreatePageAuth: FunctionComponent = (props) => <UserIsAuthenticatedRoute>
     <StreamCreatePage {...props}/>
@@ -53,7 +48,8 @@ const UserpagesRouter = () => [
     <Route exact path={routes.transactions()} component={TransactionListAuth} key="TransactionList" />,
     <Route exact path={routes.subscriptions()} component={PurchasesPageAuth} key="PurchasesPage" />,
     <Route exact path={routes.products.index()} component={ProductsPageAuth} key="ProductsPage" />,
-    <Route exact path={routes.dataunions.index()} component={DataUnionPageAuth} key="DataUnionPage" />,
+    // Redirect for the deleted page
+    <Route exact path={routes.dataunions.index()} component={<Redirect to={routes.marketplace.index()}/>} key="DataUnionPage" />,
     <Route exact path={routes.products.edit()} component={EditProductAuth} key="EditProduct" />,
 ]
 

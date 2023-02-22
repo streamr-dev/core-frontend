@@ -1,16 +1,9 @@
-import React, { FunctionComponent, ReactNode, useContext, useMemo } from 'react'
+import React, { FunctionComponent, useContext } from 'react'
 import styled from 'styled-components'
 import * as yup from 'yup'
-import { DetailEditor, DetailEditorSelectOption } from '$shared/components/DetailEditor'
+import { DetailEditor } from '$shared/components/DetailEditor'
 import SvgIcon from '$shared/components/SvgIcon'
 import { COLORS, LAPTOP } from '$shared/utils/styled'
-import NetworkIcon from '$shared/components/NetworkIcon'
-import { isDataUnionProduct, isPaidProject } from '$mp/utils/product'
-import getCoreConfig from '$app/src/getters/getCoreConfig'
-import { projectTypes } from '$mp/utils/constants'
-import { getConfigForChainByName } from '$shared/web3/config'
-import { projectStates } from '$shared/utils/constants'
-import { configChainNameMapping } from '$shared/utils/chains'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 
@@ -56,80 +49,11 @@ const StandardIcon = styled(SvgIcon)`
   }
 `
 
-const ChainIcon = styled(NetworkIcon)`
-  width: 32px;
-  height: 32px;
-  &.preview {
-    width: 16px;
-    height: 16px;
-  }
-`
-
-const ChainOption = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  span {
-    margin-left: 12px;
-  }
-`
-
-const getChainOptions = (chains: Array<string>): DetailEditorSelectOption[] =>
-    chains.map((c) => {
-        const config = getConfigForChainByName(c)
-        const chainId = config.id
-        return {
-            value: config.name,
-            label: <ChainOption><ChainIcon chainId={chainId} /><span>{configChainNameMapping[config.name]}</span></ChainOption>
-        }
-    })
-
 export const ProjectDetails: FunctionComponent = () => {
     const { state: project } = useContext(ProjectStateContext)
-    const isDataUnion = isDataUnionProduct(project)
-    const isPaid = isPaidProject(project)
-    const isChainSelectorDisabled =
-        project.state === projectStates.DEPLOYED ||
-        (project.type === projectTypes.DATAUNION && !!project.beneficiaryAddress)
-    const { updateDataUnionChainId, updateContactUrl, updateContactEmail, updateSocialUrl } = useEditableProjectActions()
-    const productType = project.type
-    const projectChain = project.chain
-    const { marketplaceChains, dataunionChains } = getCoreConfig()
-    const chainOptions = useMemo<DetailEditorSelectOption[]>(() => {
-        let options: DetailEditorSelectOption[] = []
-        if (productType === projectTypes.DATAUNION) {
-            options = getChainOptions(dataunionChains)
-        } else {
-            options = getChainOptions(marketplaceChains)
-        }
-        return options
-    }, [productType, marketplaceChains, dataunionChains])
-    const currentChainIcon = useMemo<ReactNode>(() => {
-        if (!projectChain) {
-            return undefined
-        }
-        const config = getConfigForChainByName(projectChain)
-        return <ChainIcon chainId={config.id} className={'preview'}/>
-    }, [projectChain])
+    const { updateContactUrl, updateContactEmail, updateSocialUrl } = useEditableProjectActions()
 
     return <ProjectDetailsWrap>
-        {/*TODO REMOVE LATER*/}
-        {/*<DetailEditor
-            disabled={isChainSelectorDisabled}
-            className={'detail'}
-            unsetValueText={'Chain'}
-            defaultIcon={<StandardIcon name={'ellipse'}/>}
-            hasValueIcon={currentChainIcon}
-            showValue={true}
-            instructionText={'Please select a chain'}
-            onChange={updateDataUnionChainId}
-            placeholder={'Select...'}
-            value={projectChain}
-            selectOptions={chainOptions}
-            showValueFormatter={(chainName) => {
-                return chainName ? configChainNameMapping[chainName] : ''
-            }}
-        />*/}
         <DetailEditor
             className={'detail'}
             unsetValueText={'Site URL'}

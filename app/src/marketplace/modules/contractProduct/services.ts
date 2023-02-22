@@ -149,18 +149,7 @@ export const whitelistReject = (id: ProjectId, address: Address, networkChainId:
     send(contractMethods(false, networkChainId).whitelistReject(getValidId(id), address), {
         network: networkChainId,
     })
-export const whitelistRequest = (id: ProjectId, address: Address, networkChainId: number): SmartContractTransaction =>
-    send(contractMethods(false, networkChainId).whitelistRequest(getValidId(id), address), {
-        network: networkChainId,
-    })
-/**
- * @deprecated
- * @param id
- * @param networkChainId
- */
-export const getWhitelistAddresses = async (id: ProjectId, networkChainId: number): Promise<Array<WhitelistItem>> => {
-    return []
-}
+
 export const isAddressWhitelisted = async (id: ProjectId, address: Address, usePublicNode = true, networkChainId: number): Promise<boolean> => {
     const isWhitelistStatus = await call(contractMethods(usePublicNode, networkChainId).getWhitelistState(getValidId(id), address))
     return !!(isWhitelistStatus === 2)

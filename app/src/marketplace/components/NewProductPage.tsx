@@ -9,12 +9,12 @@ import useFailure from '$shared/hooks/useFailure'
 import Layout from '$shared/components/Layout'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
-import { EditorNav2 } from '$mp/containers/EditProductPage/EditorNav2'
+import { EditorNav } from '$mp/containers/EditProductPage/EditorNav'
 import { ProjectStateContext, ProjectStateContextProvider } from '$mp/contexts/ProjectStateContext'
 import {
-    ValidationContext2,
-    ValidationContext2Provider
-} from '$mp/containers/ProductController/ValidationContextProvider2'
+    ValidationContext,
+    ValidationContextProvider
+} from '$mp/containers/ProductController/ValidationContextProvider'
 import { ProjectEditor } from '$mp/containers/EditProductPage/ProjectEditor'
 import styles from '$shared/components/Layout/layout.pcss'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
@@ -36,7 +36,7 @@ const UnstyledNewProductPage = ({ className }: Props) => {
     const {state: project} = useContext(ProjectStateContext)
     const { type } = qs.parse(location.search)
     const { updateType } = useEditableProjectActions()
-    const { isAnyTouched, resetTouched } = useContext(ValidationContext2)
+    const { isAnyTouched, resetTouched } = useContext(ValidationContext)
     usePreventNavigatingAway('You have unsaved changes', isAnyTouched)
 
     useEffect(() => {
@@ -82,7 +82,7 @@ const UnstyledNewProductPage = ({ className }: Props) => {
             disabled: true,
         }], [location])
 
-    return <Layout nav={<EditorNav2 isNewProject={true}/>} innerClassName={styles.greyInner}>
+    return <Layout nav={<EditorNav isNewProject={true}/>} innerClassName={styles.greyInner}>
         <MarketplaceHelmet title={'Create a new project'}/>
         <DetailsPageHeader
             pageTitle={pageTitle}
@@ -100,11 +100,11 @@ const StyledNewProductPage = styled(UnstyledNewProductPage)`
 
 const NewProjectPageContainer = (props: Props) => {
     return <ProjectStateContextProvider>
-        <ValidationContext2Provider>
+        <ValidationContextProvider>
             <ProjectControllerProvider>
                 <StyledNewProductPage {...props}/>
             </ProjectControllerProvider>
-        </ValidationContext2Provider>
+        </ValidationContextProvider>
     </ProjectStateContextProvider>
 }
 export default NewProjectPageContainer

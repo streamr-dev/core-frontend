@@ -4,8 +4,8 @@ import { COLORS, MAX_CONTENT_WIDTH } from '$shared/utils/styled'
 import Text from '$ui/Text'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
-import useValidation2 from '$mp/containers/ProductController/useValidation2'
-import { SeverityLevel } from '$mp/containers/ProductController/ValidationContextProvider2'
+import useValidation from '$mp/containers/ProductController/useValidation'
+import { SeverityLevel } from '$mp/containers/ProductController/ValidationContextProvider'
 
 const Heading = styled.p`
   font-size: 20px;
@@ -64,7 +64,7 @@ export const DataUnionFee: FunctionComponent<{disabled?: boolean}> = ({disabled 
 
     const {state: project} = useContext(ProjectStateContext)
     const {updateAdminFee} = useEditableProjectActions()
-    const {setStatus, isValid, clearStatus} = useValidation2('adminFee')
+    const {setStatus, isValid, clearStatus} = useValidation('adminFee')
 
     // TODO add loading of the fee from the selected existing DU
 
