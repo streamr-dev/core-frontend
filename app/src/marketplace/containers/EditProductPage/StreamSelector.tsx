@@ -8,7 +8,7 @@ import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 import { StreamSelectTable } from '$shared/components/StreamSelectTable'
 import SearchBar from '$shared/components/SearchBar'
-import { COLORS, DESKTOP, MEDIUM, TABLET } from '$shared/utils/styled'
+import { DESKTOP, TABLET } from '$shared/utils/styled'
 
 const BATCH_SIZE = 10
 

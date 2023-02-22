@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState, FunctionComponent, ReactNode } from 'react'
+import React, {useMemo, useCallback, useState, FunctionComponent, ReactNode, useContext} from 'react'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { validate as validateProduct } from '$mp/utils/product'
 import { RecursiveKeyOf } from '$utils/recursiveKeyOf'
@@ -35,10 +35,10 @@ const validationErrors: Partial<Record<RecursiveKeyOf<Project>, string>> = {
     // pricePerSecond: 'Price should be greater or equal to 0',
     // pricingTokenAddress: 'A valid contract address is needed for payment token',
     'contact.url': 'Invalid URL',
-    'contact.social1': 'Invalid URL',
-    'contact.social2': 'Invalid URL',
-    'contact.social3': 'Invalid URL',
-    'contact.social4': 'Invalid URL',
+    'contact.twitter': 'Invalid URL',
+    'contact.linkedIn': 'Invalid URL',
+    'contact.reddit': 'Invalid URL',
+    'contact.telegram': 'Invalid URL',
     'contact.email': 'Email address is required',
     salePoints: 'Missing or invalid payment information',
     // keep in mind that we need to provide error messages for each possible chain - otherwise the error messages might not show up
@@ -153,3 +153,6 @@ export const ValidationContext2Provider: FunctionComponent<{children?: ReactNode
     return <ValidationContext2.Provider value={useValidationContext2()}>{children || null}</ValidationContext2.Provider>
 }
 
+export const useValidationContext = (): ValidationContext2Props => {
+    return useContext(ValidationContext2)
+}

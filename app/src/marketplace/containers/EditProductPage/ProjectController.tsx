@@ -1,6 +1,10 @@
-import React, { createContext, FunctionComponent, ReactNode, useCallback, useContext, useMemo, useState } from 'react'
-import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
-import { SeverityLevel, ValidationContext2 } from '$mp/containers/ProductController/ValidationContextProvider2'
+import React, { createContext, FunctionComponent, ReactNode, useCallback, useState } from 'react'
+import {randomHex} from "web3-utils"
+import {useProjectState} from '$mp/contexts/ProjectStateContext'
+import {
+    SeverityLevel,
+    useValidationContext,
+} from '$mp/containers/ProductController/ValidationContextProvider2'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { ProjectTypeEnum } from '$mp/utils/constants'
@@ -17,9 +21,9 @@ export type ProjectController = {
     publishInProgress: boolean
 }
 
-export const usePublishController = (): ProjectController => {
-    const {state: project} = useContext(ProjectStateContext)
-    const {validate} = useContext(ValidationContext2)
+export const useProjectController = (): ProjectController => {
+    const {state: project} = useProjectState()
+    const {validate} = useValidationContext()
     const [publishInProgress, setPublishInProgress] = useState<boolean>(false)
     const {projectRegistry} = getCoreConfig()
     const registryChain = getConfigForChain(projectRegistry.chainId)
@@ -74,8 +78,9 @@ export const usePublishController = (): ProjectController => {
             isPublicPurchasable: project.type !== ProjectTypeEnum.OPEN_DATA,
             metadata: JSON.stringify(metadata),
             chainId: registryChain.id,
-            id: undefined,
-            minimumSubscriptionInSeconds: 1,
+            id: randomHex(32),
+            minimumSubscriptionInSeconds: 0,
+            streams: [...project.streams],
             paymentDetails: project.type === ProjectTypeEnum.PAID_DATA ? Object.values(project.salePoints).map((salePoint) => {
                 return {
                     chainId: salePoint.chainId,
@@ -114,7 +119,7 @@ export const usePublishController = (): ProjectController => {
                     description: 'An error occurred and your project was not published',
                     icon: NotificationIcon.ERROR,
                 })
-                resolve(true)
+                resolve(false)
             })
         })
     }, [project, getProjectMetadata])
@@ -135,7 +140,7 @@ export const usePublishController = (): ProjectController => {
                     return await createNewDataUnion()
             }
         }
-        return true
+        return false
     }, [project, checkValidationErrors, createNewProject, createNewDataUnion])
 
     const update = useCallback<ProjectController['update']>(async () => {
@@ -155,5 +160,5 @@ export const usePublishController = (): ProjectController => {
 export const ProjectControllerContext = createContext<ProjectController>(null)
 
 export const ProjectControllerProvider: FunctionComponent<{children?: ReactNode}> = ({children}) => {
-    return <ProjectControllerContext.Provider value={usePublishController()}>{children}</ProjectControllerContext.Provider>
+    return <ProjectControllerContext.Provider value={useProjectController()}>{children}</ProjectControllerContext.Provider>
 }

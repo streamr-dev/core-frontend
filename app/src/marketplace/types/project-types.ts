@@ -45,15 +45,15 @@ export type Project = {
     id: ProjectId | null | undefined
     name: string
     description: string
-    owner: string
+    owner: string // still needed?
     imageUrl?: string | null | undefined
     newImageToUpload?: File | null | undefined
     thumbnailUrl: string | null | undefined
     state?: ProjectState // still needed?
-    created?: string
-    updated?: string
+    created?: string // still needed?
+    updated?: string // still needed?
     streams: StreamIdList
-    previewStream: StreamId | null | undefined // still needed?
+    previewStream?: StreamId | null | undefined // still needed?
     previewConfigJson?: string | null | undefined // still needed?
     ownerAddress: Address
     type?: ProjectTypeEnum

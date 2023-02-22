@@ -20,7 +20,7 @@ import styles from '$shared/components/Layout/layout.pcss'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import {
     ProjectControllerProvider
-} from '$mp/containers/EditProductPage/ProjectControllerProvider'
+} from '$mp/containers/EditProductPage/ProjectController'
 import { useEditableProjectActions } from '../containers/ProductController/useEditableProjectActions'
 
 type Props = {
