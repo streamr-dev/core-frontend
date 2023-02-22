@@ -27,7 +27,7 @@ export type EditableProjectActions = {
     updateTermsOfUse: (termsOfUse: Project['termsOfUse']) => void,
     updateContactUrl: (url: ContactDetails['url']) => void,
     updateContactEmail: (email: ContactDetails['email']) => void,
-    updateSocialUrl: (platform: 'twitter' | 'telegram' | 'reddit' | 'linkedin', url: string) => void,
+    updateSocialUrl: (platform: 'twitter' | 'telegram' | 'reddit' | 'linkedIn', url: string) => void,
 }
 export const useEditableProjectActions = (): EditableProjectActions => {
     const {state, updateState} = useContext(ProjectStateContext)
@@ -139,28 +139,13 @@ export const useEditableProjectActions = (): EditableProjectActions => {
         [updateState, state, setTouched],
     )
     const updateSocialUrl = useCallback<EditableProjectActions['updateSocialUrl']>((platform, url) => {
-        let key: 'social1' | 'social2' | 'social3' | 'social4'
-        switch (platform) {
-            case 'twitter':
-                key = 'social1'
-                break
-            case 'telegram':
-                key = 'social2'
-                break
-            case 'reddit':
-                key = 'social3'
-                break
-            case 'linkedin':
-                key = 'social4'
-                break
-        }
         updateState({
             contact: {
                 ...(state.contact || {}),
-                [key]: url
+                [platform]: url
             }
         })
-        setTouched(`contact.${key}`)
+        setTouched(`contact.${platform}`)
     }, [updateState, state, setTouched])
 
     return useMemo<EditableProjectActions>(

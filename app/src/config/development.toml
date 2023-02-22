@@ -32,6 +32,15 @@ name = "streamr-dev/dataunion"
 name = "Local (broker-node-storage-1)"
 address = "0xde1112f631486CfC759A50196853011528bC5FA0"
 
+[core.ipfs]
+projectId = "2KjYUpR265h6R5M5njkSue5RGm7"
+apiSecretKey = "c39492773b28820c8b3654178bf26946"
+ipfsUploadEndpoint = "https://ipfs.infura.io:5001/api/v0/add"
+ipfsResourceGetBaseUrl = "https://ipfs.io/ipfs/"
+
+[core.projectRegistry]
+chainId = 8997
+
 [client]
 graphUrl = ":8000/subgraphs/name/streamr-dev/network-contracts"
 streamRegistryChainAddress = "0x6cCdd5d866ea766f6DF5965aA98DeCCD629ff222"

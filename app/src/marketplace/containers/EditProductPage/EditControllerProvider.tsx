@@ -20,6 +20,7 @@ import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { ProjectState } from '$mp/types/project-types'
+import { ValidationContext2 } from '$mp/containers/ProductController/ValidationContextProvider2'
 import routes from '$routes'
 import * as State from '../EditProductPage/state'
 import { useController } from '../ProductController'
@@ -46,7 +47,7 @@ const EditControllerContext: Context<ContextProps> = React.createContext<Context
 function useEditController(product: Project) {
     const location = useLocation()
     const history = useHistory()
-    const { isAnyTouched, resetTouched, status } = useContext(ValidationContext)
+    const { isAnyTouched, resetTouched, status } = useContext(ValidationContext2)
     const [isPreview, setIsPreview] = useState(false)
     // lastSectionRef is stored here and set in EditorNav so it remembers its state when toggling
     // between editor and preview

@@ -1,4 +1,4 @@
-import React, { createContext, FunctionComponent, ReactNode, useMemo } from 'react'
+import React, {createContext, FunctionComponent, ReactNode, useContext, useMemo} from 'react'
 import { StateContainerProps, useStateContainer } from '$shared/hooks/useStateContainer'
 import { EmptyProject } from '../utils/empty-project'
 import { Project } from '../types/project-types'
@@ -10,4 +10,8 @@ export const ProjectStateContextProvider: FunctionComponent<{children: ReactNode
     return <ProjectStateContext.Provider value={useStateContainer<Project>(defaultState)}>
         {children}
     </ProjectStateContext.Provider>
+}
+
+export const useProjectState = (): StateContainerProps<Project> => {
+    return useContext(ProjectStateContext)
 }

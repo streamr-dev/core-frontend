@@ -173,8 +173,8 @@ export const ProjectDetails: FunctionComponent = () => {
             defaultIcon={<StandardIcon name={'twitter'}/>}
             instructionText={'Please add Twitter link'}
             ctaButtonText={'Twitter link'}
-            hasValueIcon={!!project?.contact?.social1 && <StandardIcon name={'twitter'} className={'twitterColor'}/>}
-            value={project?.contact?.social1}
+            hasValueIcon={!!project?.contact?.twitter && <StandardIcon name={'twitter'} className={'twitterColor'}/>}
+            value={project?.contact?.twitter}
             onChange={(value) => updateSocialUrl('twitter', value)}
             optional={true}
             validation={[{
@@ -190,8 +190,8 @@ export const ProjectDetails: FunctionComponent = () => {
             defaultIcon={<StandardIcon name={'telegram'}/>}
             instructionText={'Please add Telegram link'}
             ctaButtonText={'Telegram link'}
-            hasValueIcon={!!project?.contact?.social2 && <StandardIcon name={'telegram'} className={'telegramColor'}/>}
-            value={project?.contact?.social2}
+            hasValueIcon={!!project?.contact?.telegram && <StandardIcon name={'telegram'} className={'telegramColor'}/>}
+            value={project?.contact?.telegram}
             onChange={(value) => updateSocialUrl('telegram', value)}
             optional={true}
             validation={[{
@@ -207,8 +207,8 @@ export const ProjectDetails: FunctionComponent = () => {
             defaultIcon={<StandardIcon name={'reddit'}/>}
             instructionText={'Please add Reddit link'}
             ctaButtonText={'Reddit link'}
-            hasValueIcon={!!project?.contact?.social3 && <StandardIcon name={'reddit'} className={'redditColor'}/>}
-            value={project?.contact?.social3}
+            hasValueIcon={!!project?.contact?.reddit && <StandardIcon name={'reddit'} className={'redditColor'}/>}
+            value={project?.contact?.reddit}
             onChange={(value) => updateSocialUrl('reddit', value)}
             optional={true}
             validation={[{
@@ -223,9 +223,9 @@ export const ProjectDetails: FunctionComponent = () => {
             defaultIcon={<StandardIcon name={'linkedin'}/>}
             instructionText={'Please add LinkedIn link'}
             ctaButtonText={'LinkedIn link'}
-            hasValueIcon={!!project?.contact?.social4 && <StandardIcon name={'linkedin'} className={'linkedInColor'}/>}
-            value={project?.contact?.social4}
-            onChange={(value) => updateSocialUrl('linkedin', value)}
+            hasValueIcon={!!project?.contact?.linkedIn && <StandardIcon name={'linkedin'} className={'linkedInColor'}/>}
+            value={project?.contact?.linkedIn}
+            onChange={(value) => updateSocialUrl('linkedIn', value)}
             optional={true}
             validation={[{
                 validator: (value) => {

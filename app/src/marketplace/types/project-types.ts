@@ -35,26 +35,26 @@ export type TermsOfUse = {
 export type ContactDetails = {
     url?: string | null | undefined
     email?: string | null | undefined
-    social1?: string | null | undefined
-    social2?: string | null | undefined
-    social3?: string | null | undefined
-    social4?: string | null | undefined
+    twitter?: string | null | undefined
+    telegram?: string | null | undefined
+    reddit?: string | null | undefined
+    linkedIn?: string | null | undefined
 }
 export type Project = {
     key?: string
     id: ProjectId | null | undefined
     name: string
     description: string
-    owner: string
+    owner: string // still needed?
     imageUrl?: string | null | undefined
     newImageToUpload?: File | null | undefined
     thumbnailUrl: string | null | undefined
-    state?: ProjectState
-    created?: string
-    updated?: string
+    state?: ProjectState // still needed?
+    created?: string // still needed?
+    updated?: string // still needed?
     streams: StreamIdList
-    previewStream: StreamId | null | undefined
-    previewConfigJson?: string | null | undefined
+    previewStream?: StreamId | null | undefined // still needed?
+    previewConfigJson?: string | null | undefined // still needed?
     ownerAddress: Address
     type?: ProjectTypeEnum
     termsOfUse: TermsOfUse

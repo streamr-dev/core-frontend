@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState, FunctionComponent, ReactNode } from 'react'
+import React, {useMemo, useCallback, useState, FunctionComponent, ReactNode, useContext} from 'react'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { validate as validateProduct } from '$mp/utils/product'
 import { RecursiveKeyOf } from '$utils/recursiveKeyOf'
@@ -13,9 +13,9 @@ export enum SeverityLevel {
 export type ValidationContext2Props = {
     setStatus: (name: RecursiveKeyOf<Project>, severity: SeverityLevel, message: string) => void,
     clearStatus: (name: RecursiveKeyOf<Project>) => void,
-    status: object,
+    status: Partial<Record<RecursiveKeyOf<Project>, {level: SeverityLevel, message: string}>>,
     isValid: (fieldName: RecursiveKeyOf<Project>) => boolean,
-    validate: (project: Project) => void,
+    validate: (project: Project) => Partial<Record<RecursiveKeyOf<Project>, {level: SeverityLevel, message: string}>>,
     touched: Partial<Record<RecursiveKeyOf<Project>, boolean>>,
     setTouched: (fieldName: RecursiveKeyOf<Project>, isTouched?: boolean) => void,
     isTouched: (fieldName: RecursiveKeyOf<Project>) => boolean,
@@ -25,7 +25,6 @@ export type ValidationContext2Props = {
 export const ValidationContext2 = React.createContext<ValidationContext2Props>({} as ValidationContext2Props)
 
 const validationErrors: Partial<Record<RecursiveKeyOf<Project>, string>> = {
-    // TODO add salePoints props !!!!!!!!!!!!!!!!!!!!!!!!!!!
     name: 'Product name cannot be empty',
     description: 'Product description cannot be empty',
     imageUrl: 'Product must have a cover image',
@@ -36,12 +35,18 @@ const validationErrors: Partial<Record<RecursiveKeyOf<Project>, string>> = {
     // pricePerSecond: 'Price should be greater or equal to 0',
     // pricingTokenAddress: 'A valid contract address is needed for payment token',
     'contact.url': 'Invalid URL',
-    'contact.social1': 'Invalid URL',
-    'contact.social2': 'Invalid URL',
-    'contact.social3': 'Invalid URL',
-    'contact.social4': 'Invalid URL',
+    'contact.twitter': 'Invalid URL',
+    'contact.linkedIn': 'Invalid URL',
+    'contact.reddit': 'Invalid URL',
+    'contact.telegram': 'Invalid URL',
     'contact.email': 'Email address is required',
-
+    salePoints: 'Missing or invalid payment information',
+    // keep in mind that we need to provide error messages for each possible chain - otherwise the error messages might not show up
+    'salePoints.gnosis': 'Invalid payment information for the Gnosis chain',
+    'salePoints.polygon': 'Invalid payment information for the Polygon chain',
+    'salePoints.ethereum': 'Invalid payment information for the Ethereum chain',
+    'salePoints.dev0': 'Invalid payment information for the dev0 chain',
+    'salePoints.dev1': 'Invalid payment information for the dev1 chain'
 }
 
 function useValidationContext2(): ValidationContext2Props {
@@ -94,22 +99,27 @@ function useValidationContext2(): ValidationContext2Props {
     )
     const isValid = useCallback((name: string) => !status[name], [status])
     const validate = useCallback(
-        (product: Project) => {
+        (product: Project): Partial<Record<RecursiveKeyOf<Project>, {level: SeverityLevel, message: string}>> => {
             if (!isMounted() || !product) {
                 return
             }
 
             const invalidFields = validateProduct(product)
+            const result: Partial<Record<RecursiveKeyOf<Project>, {level: SeverityLevel, message: string}>> = {
+                ...status
+            }
             Object.keys(validationErrors).forEach((field: RecursiveKeyOf<Project>) => {
                 if (invalidFields[field]) {
                     setStatus(field, SeverityLevel.ERROR, validationErrors[field])
+                    result[field] = {level: SeverityLevel.ERROR, message: validationErrors[field]}
                 } else {
                     clearStatus(field)
                 }
             })
+            return result
 
         },
-        [setStatus, clearStatus, isMounted, isTouched],
+        [setStatus, clearStatus, isMounted, isTouched, status],
     )
     return useMemo<ValidationContext2Props>(
         () => ({
@@ -143,3 +153,6 @@ export const ValidationContext2Provider: FunctionComponent<{children?: ReactNode
     return <ValidationContext2.Provider value={useValidationContext2()}>{children || null}</ValidationContext2.Provider>
 }
 
+export const useValidationContext = (): ValidationContext2Props => {
+    return useContext(ValidationContext2)
+}

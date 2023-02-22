@@ -17,10 +17,10 @@ export const PENDING_CHANGE_FIELDS: RecursiveKeyOf<Project>[] = [
     'termsOfUse',
     'contact.url',
     'contact.email',
-    'contact.social1',
-    'contact.social2',
-    'contact.social3',
-    'contact.social4',
+    'contact.twitter',
+    'contact.telegram',
+    'contact.reddit',
+    'contact.linkedIn',
 ]
 export function isPublished(product: Project): boolean {
     const { state } = product || {}

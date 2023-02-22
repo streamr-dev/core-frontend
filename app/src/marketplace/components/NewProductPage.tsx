@@ -18,6 +18,9 @@ import {
 import { ProjectEditor } from '$mp/containers/EditProductPage/ProjectEditor'
 import styles from '$shared/components/Layout/layout.pcss'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
+import {
+    ProjectControllerProvider
+} from '$mp/containers/EditProductPage/ProjectController'
 import { useEditableProjectActions } from '../containers/ProductController/useEditableProjectActions'
 
 type Props = {
@@ -79,7 +82,7 @@ const UnstyledNewProductPage = ({ className }: Props) => {
             disabled: true,
         }], [location])
 
-    return <Layout nav={<EditorNav2/>} innerClassName={styles.greyInner}>
+    return <Layout nav={<EditorNav2 isNewProject={true}/>} innerClassName={styles.greyInner}>
         <MarketplaceHelmet title={'Create a new project'}/>
         <DetailsPageHeader
             pageTitle={pageTitle}
@@ -98,7 +101,9 @@ const StyledNewProductPage = styled(UnstyledNewProductPage)`
 const NewProjectPageContainer = (props: Props) => {
     return <ProjectStateContextProvider>
         <ValidationContext2Provider>
-            <StyledNewProductPage {...props}/>
+            <ProjectControllerProvider>
+                <StyledNewProductPage {...props}/>
+            </ProjectControllerProvider>
         </ValidationContext2Provider>
     </ProjectStateContextProvider>
 }

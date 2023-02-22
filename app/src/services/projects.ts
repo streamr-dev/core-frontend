@@ -63,6 +63,28 @@ export type PaymentDetails = {
     pricingTokenAddress: Address,
 }
 
+export type SmartContractProjectMetadata = {
+    name: string,
+    description: string,
+    imageUrl: string,
+    termsOfUse: {
+        commercialUse: boolean
+        redistribution: boolean
+        reselling: boolean
+        storage: boolean
+        termsName: string | null | undefined
+        termsUrl: string | null | undefined
+    } | undefined,
+    contactDetails: {
+        url?: string | null | undefined
+        email?: string | null | undefined
+        twitter?: string | null | undefined
+        telegram?: string | null | undefined
+        reddit?: string | null | undefined
+        linkedIn?: string | null | undefined
+    } | undefined
+}
+
 export type SmartContractProject = {
     id: string,
     paymentDetails: PaymentDetails[],

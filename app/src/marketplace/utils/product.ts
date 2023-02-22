@@ -2,6 +2,7 @@ import BN from 'bignumber.js'
 import * as yup from 'yup'
 import type { NumberString } from '$shared/types/common-types'
 import { contractCurrencies as currencies, projectStates, timeUnits } from '$shared/utils/constants'
+import { RecursiveKeyOf } from '$utils/recursiveKeyOf'
 import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
 import type { ContactDetails, Project, ProjectId, ProjectType, SmartContractProduct } from '../types/project-types'
 import { ProjectState } from '../types/project-types'
@@ -105,7 +106,7 @@ export const getValidId = (id: string, prefix = true): string => {
 const urlValidator = yup.string().trim().url()
 const emailValidator = yup.string().trim().email()
 
-export const validate = (project: Project): Record<string, boolean> => {
+export const validate = (project: Project): Partial<Record<RecursiveKeyOf<Project>, boolean>> => {
     const invalidFields: {[key: string]: boolean}= {};
     ['name', 'description'].forEach((field) => {
         invalidFields[field] = !project[field as keyof Project]
