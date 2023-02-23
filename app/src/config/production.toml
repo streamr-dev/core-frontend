@@ -9,7 +9,7 @@ dataunionChains = ['gnosis', 'polygon']
 streamChains = ['polygon']
 theGraphUrl = "https://api.thegraph.com"
 mainnetInfuraUrl = "https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206"
-theHubGraphName = "INSERT HUB SUBGRAPH NAME WHEN DEPLOYED"
+theHubGraphName = "streamr-dev/projects"
 streamIndexerUrl = "https://stream-metrics.streamr.network/api"
 
 [[core.marketplaceContractCreationBlocks]]
