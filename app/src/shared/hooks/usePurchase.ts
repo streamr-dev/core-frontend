@@ -12,10 +12,8 @@ import { addTransaction } from '$mp/modules/transactions/actions'
 import { toSeconds } from '$mp/utils/time'
 import { fromDecimals } from '$mp/utils/math'
 export const actionsTypes = {
-    SET_DAI_ALLOWANCE: 'setDaiAllowance',
-    RESET_DAI_ALLOWANCE: 'resetDaiAllowance',
-    SET_DATA_ALLOWANCE: 'setDataAllowance',
-    RESET_DATA_ALLOWANCE: 'resetDataAllowance',
+    SET_ALLOWANCE: 'setAllowance',
+    RESET_ALLOWANCE: 'resetAllowance',
     SUBSCRIPTION: 'subscription',
 }
 type Purchase = {
@@ -67,7 +65,7 @@ export default function usePurchase() {
             // Reset allowance if needed
             if (needsAllowanceReset) {
                 queue.add({
-                    id: actionsTypes.RESET_DATA_ALLOWANCE,
+                    id: actionsTypes.RESET_ALLOWANCE,
                     handler: (update, done) => {
                         try {
                             return setTokenAllowance('0', contractProduct.pricingTokenAddress, chainId)
@@ -97,7 +95,7 @@ export default function usePurchase() {
             // Set allowance
             if (needsAllowance) {
                 queue.add({
-                    id: actionsTypes.SET_DATA_ALLOWANCE,
+                    id: actionsTypes.SET_ALLOWANCE,
                     handler: (update, done) => {
                         try {
                             return setTokenAllowance(purchasePrice, contractProduct.pricingTokenAddress, chainId)

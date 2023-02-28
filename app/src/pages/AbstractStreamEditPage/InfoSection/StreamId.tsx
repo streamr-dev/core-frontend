@@ -1,5 +1,7 @@
 import React, { Fragment, useMemo, useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
+import { randomHex } from 'web3-utils'
+
 import docsLinks from '$shared/../docsLinks'
 import { SM, MONO, MEDIUM } from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -20,7 +22,9 @@ import { truncate } from '$shared/utils/text'
 import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
 import useClientAddress from '$shared/hooks/useClientAddress'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
+import { createProject, SmartContractProjectCreate, updateProject } from '$app/src/services/projects'
 import useStreamOwnerOptions, { ADD_ENS_DOMAIN_VALUE } from './useStreamOwnerOptions'
+
 export const ENS_DOMAINS_URL = 'https://ens.domains'
 
 export function ReadonlyStreamId({ className }) {
@@ -30,6 +34,40 @@ export function ReadonlyStreamId({ className }) {
             title: 'Stream ID copied',
             icon: NotificationIcon.CHECKMARK,
         })
+
+        const metadata = {
+            name: 'Test project',
+            description: 'Just a test project',
+            imageUrl: 'https://placekitten.com/200/200',
+            owner: 'Test Person'
+        }
+        const project: SmartContractProjectCreate = {
+            //id: randomHex(32),
+            id: "0xf14de46cc2d0a9b276432b26751903abe703cbab3597a9c7adad69d34b0e3195",
+            isPublicPurchasable: true,
+            chainId: 8997,
+            metadata: JSON.stringify(metadata),
+            minimumSubscriptionInSeconds: 0,
+            streams: [
+                '0xa3d1f77acff0060f7213d7bf3c7fec78df847de1/test',
+            ],
+            paymentDetails: [
+                {
+                    chainId: 8995,
+                    beneficiaryAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
+                    pricePerSecond: 100,
+                    pricingTokenAddress: '0xbAA81A0179015bE47Ad439566374F2Bae098686F', // DATA
+                },
+                {
+                    chainId: 8997,
+                    beneficiaryAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
+                    pricePerSecond: 200,
+                    pricingTokenAddress: '0xBc0c81a318D57ae54dA28DE69184A9c3aE9a1e1c', // SCT
+                }
+            ],
+        }
+        //createProject(project)
+        updateProject(project)
     })
     const { truncatedDomain: domain, pathname } = getStreamPath(streamId)
     return (
