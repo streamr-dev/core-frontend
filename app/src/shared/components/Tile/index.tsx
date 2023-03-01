@@ -8,6 +8,8 @@ import Rect from '$shared/components/Rect'
 import Link from '$shared/components/Link'
 import useExpiresIn, { formatRemainingTime } from '$shared/hooks/useExpiresIn'
 import { formatChainName, getChainIdFromApiString } from '$shared/utils/chains'
+import SvgIcon from "$shared/components/SvgIcon"
+import {COLORS} from "$shared/utils/styled"
 import routes from '$routes'
 import Label, { HAPPY, ANGRY, WORRIED } from './Label'
 import Summary from './Summary'
@@ -111,6 +113,24 @@ type UnstyledTileImageContainerProps = {
     autoSize?: any
 }
 
+const EditButton = styled(Link)`
+  border: none;
+  border-radius: 100%;
+  background-color: white;
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  svg {
+    color: ${COLORS.primary}
+  }
+`
+
 const UnstyledTileImageContainer = ({ children, height, autoSize: autoSizeProp, ...props }: UnstyledTileImageContainerProps) => {
     const autoSize = autoSizeProp === true || height != null
     return (
@@ -133,6 +153,12 @@ export const TileImageContainer = styled(UnstyledTileImageContainer)<UnstyledTil
 
   &.no-border-radius {
     border-radius: 0;
+  }
+  
+  &:hover {
+    ${EditButton} {
+      opacity: 1;
+    }
   }
 `
 
@@ -313,9 +339,10 @@ const ProductTile = ({
 type MarketplaceProductTileProps = {
     product: any
     showDataUnionBadge?: boolean
+    showEditButton: boolean
 }
 
-const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: MarketplaceProductTileProps) => (
+const MarketplaceProductTile = ({ product, showDataUnionBadge, showEditButton, ...props }: MarketplaceProductTileProps) => (
     <Tile {...props}>
         <TileImageContainer>
             <Link
@@ -348,6 +375,9 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: Marke
                     chainName={formatChainName(product.chain)}
                 />
             )}
+            {showEditButton && <EditButton to={routes.products.edit({id: product.id})}>
+                <SvgIcon name={'pencilFull'} />
+            </EditButton>}
         </TileImageContainer>
         <Link
             to={routes.marketplace.product.overview({

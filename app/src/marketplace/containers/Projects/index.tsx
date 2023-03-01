@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react'
+import React, {FunctionComponent, useCallback, useEffect, useReducer, useRef, useState} from 'react'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import ProjectsComponent, { ProjectsContainer } from '$mp/components/Projects'
 import ActionBar from '$mp/components/ActionBar'
@@ -6,12 +6,22 @@ import Layout from '$shared/components/Layout'
 import Footer from '$shared/components/Layout/Footer'
 import useModal from '$shared/hooks/useModal'
 import CreateProductModal from '$mp/containers/CreateProductModal'
-import type { SearchFilter } from '$mp/types/project-types'
-import { getProjects, searchProjects, TheGraphProject } from '$app/src/services/projects'
+import type {SearchFilter} from '$mp/types/project-types'
+import {
+    getProjects,
+    getUserPermissionsForProject,
+    searchProjects,
+    TheGraphProject
+} from '$app/src/services/projects'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import {useAuthController} from "$auth/hooks/useAuthController"
 import useDeepEqualMemo from '$shared/hooks/useDeepEqualMemo'
 import {useIsAuthenticated} from "$auth/hooks/useIsAuthenticated"
+import getCoreConfig from "$app/src/getters/getCoreConfig"
+import {
+    projectsPermissionsReducer,
+    ProjectsPermissionsState
+} from "$mp/modules/projectsPermissionsState/projectsPermissionsState"
 import styles from './projects.pcss'
 
 const PAGE_SIZE = 12
@@ -35,6 +45,7 @@ const ProjectsPage: FunctionComponent = () => {
     const [filterValue, setFilter] = useState(EMPTY_FILTER)
     const filter = useDeepEqualMemo(filterValue)
     const [hasMoreSearchResults, setHasMoreSearchResults] = useState(false)
+    const {projectRegistry} = getCoreConfig()
 
     const { api: createProductModal } = useModal('marketplace.createProduct')
     const isUserAuthenticated = useIsAuthenticated()
@@ -42,6 +53,7 @@ const ProjectsPage: FunctionComponent = () => {
     const isMounted = useIsMounted()
     const productsRef = useRef<TheGraphProject[]>()
     productsRef.current = projects
+    const [projectsPermissions, dispatchPermissionsUpdate] = useReducer(projectsPermissionsReducer, {} as ProjectsPermissionsState)
 
     const loadProjects = useCallback(async (replace = true) => {
         const limit = PAGE_SIZE + 1 // +1 to determine if we should show "load more" button
@@ -115,6 +127,15 @@ const ProjectsPage: FunctionComponent = () => {
         loadProjects()
     }, [loadProjects])
 
+    useEffect(() => {
+        if (currentAuthSession.address && projects?.length) {
+            projects.forEach(async (project) => {
+                const permissions = await getUserPermissionsForProject(projectRegistry.chainId, project.id, currentAuthSession.address)
+                dispatchPermissionsUpdate({projectId: project.id, userAddress: currentAuthSession.address, permissions})
+            })
+        }
+    }, [projects, currentAuthSession.address])
+
     return (
         <Layout className={styles.projectsListPage} framedClassName={styles.productsFramed} innerClassName={styles.productsInner} footer={false}>
             <MarketplaceHelmet />
@@ -131,6 +152,8 @@ const ProjectsPage: FunctionComponent = () => {
             <ProjectsContainer fluid>
                 <ProjectsComponent
                     projects={projects}
+                    projectsPermissions={projectsPermissions}
+                    currentUserAddress={currentAuthSession?.address}
                     error={projectsError}
                     type="projects"
                     isFetching={isFetching}

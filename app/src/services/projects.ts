@@ -5,9 +5,10 @@ import getCoreConfig from "$app/src/getters/getCoreConfig"
 import { post } from "$shared/utils/api"
 import { getContract } from '$mp/utils/smartContract'
 import { send } from '$mp/utils/smartContract'
-import { Address, SmartContractTransaction } from "$shared/types/web3-types"
+import {Address, SmartContractCall, SmartContractTransaction} from "$shared/types/web3-types"
 import { getConfigForChain } from '$shared/web3/config'
 import projectRegistryAbi from '$shared/web3/abis/projectRegistry.json'
+import {ProjectId} from "$mp/types/project-types"
 
 const getGraphUrl = () => {
     const { theGraphUrl, theHubGraphName } = getCoreConfig()
@@ -26,12 +27,15 @@ export type TheGraphSubscription = {
     endTimestamp: string,
 }
 
-export type TheGraphPermission = {
-    userAddress: string,
+export type ProjectPermissions = {
     canBuy: boolean,
     canDelete: boolean,
     canEdit: boolean,
     canGrant: boolean,
+}
+
+export type TheGraphPermission = ProjectPermissions & {
+    userAddress: string,
 }
 
 export type TheGraphPurchase = {
@@ -285,6 +289,16 @@ export const createProject = (project: SmartContractProjectCreate): SmartContrac
     return send(methodToSend, {
         network: chainId,
     })
+}
+
+export const getUserPermissionsForProject = async (
+    chainId: number,
+    projectId: ProjectId,
+    userAddress: Address
+): SmartContractCall<ProjectPermissions> => {
+    const response = await projectRegistryContract(false, chainId).methods.getPermission(projectId, userAddress).call()
+    const {canDelete, canEdit, canGrant, canBuy} = response
+    return {canDelete, canEdit, canGrant, canBuy}
 }
 
 export const updateProject = (project: SmartContractProject): SmartContractTransaction => {
