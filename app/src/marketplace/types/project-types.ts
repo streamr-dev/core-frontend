@@ -16,7 +16,7 @@ export type PendingChanges = {
     requiresWhitelist?: boolean
     pricingTokenAddress?: Address
 }
-export type  SalePoint = {
+export type SalePoint = {
     chainId: number,
     beneficiaryAddress?: Address
     pricePerSecond: NumberString

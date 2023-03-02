@@ -42,14 +42,14 @@ export const getTokenAllowance = async (tokenAddress: Address, chainId: number):
     return new BN(allowance)
 }
 
-export const setTokenAllowance = (amount: string | BN | number, tokenAddress: Address, chainId: number): SmartContractTransaction => {
-    if (new BN(amount).isLessThan(0)) {
+export const setTokenAllowance = (amount: BN, tokenAddress: Address, chainId: number): SmartContractTransaction => {
+    if (amount.isLessThan(0)) {
         throw new Error('Amount must be non-negative!')
     }
 
     const method = erc20TokenContractMethods(tokenAddress, false, chainId).approve(
         marketplaceContract(false, chainId).options.address,
-        new BN(amount).toString(),
+        amount,
     )
     return send(method, {
         network: chainId,

@@ -7,6 +7,7 @@ web3TransactionConfirmationBlocks = 1
 marketplaceChains = ['gnosis', 'polygon']
 dataunionChains = ['gnosis', 'polygon']
 streamChains = ['polygon']
+projectsChain = 'polygon'
 theGraphUrl = "https://api.thegraph.com"
 mainnetInfuraUrl = "https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206"
 theHubGraphName = "streamr-dev/projects"

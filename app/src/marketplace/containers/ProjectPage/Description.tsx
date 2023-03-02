@@ -9,12 +9,13 @@ import { ProjectTypeEnum, projectTypeNames } from '$mp/utils/constants'
 import PaymentRate from '$mp/components/PaymentRate'
 import { formatChainName, getChainIdFromApiString } from '$shared/utils/chains'
 import { timeUnits } from '$shared/utils/constants'
-import { usePurchaseProject } from '$shared/hooks/usePurchaseProject'
+import useModal from '$shared/hooks/useModal'
 import { WhiteBox } from '$shared/components/WhiteBox'
+import PurchaseModal from '$mp/components/Modal/PurchaseModal'
 import routes from '$routes'
 
 const Description: FunctionComponent<{project: Project}> = ({project}) => {
-    const onPurchase = usePurchaseProject()
+    const { api: purchaseDialog } = useModal('purchaseProject')
     return <WhiteBox>
         <DescriptionContainer>
             <p>
@@ -41,7 +42,10 @@ const Description: FunctionComponent<{project: Project}> = ({project}) => {
             </p>
             {project.type === ProjectTypeEnum.OPEN_DATA &&
                 <Button tag={Link} to={routes.marketplace.product.connect({id: project.id})}>Connect</Button>}
-            {(project.type !== ProjectTypeEnum.OPEN_DATA) && <Button onClick={onPurchase}>Get Access</Button>}
+            {(project.type !== ProjectTypeEnum.OPEN_DATA) && (
+                <Button onClick={() => purchaseDialog.open({ projectId: project.id })}>Get Access</Button>
+            )}
+            <PurchaseModal />
         </DescriptionContainer>
     </WhiteBox>
 }
