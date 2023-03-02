@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import NetworkIcon from '$app/src/shared/components/NetworkIcon'
 import { TheGraphPaymentDetails } from '$app/src/services/projects'
 import { getConfigForChain } from '$app/src/shared/web3/config'
 import { Radio as UnstyledRadio } from '$shared/components/Radio'
 import { MEDIUM } from '$shared/utils/styled'
+import useSwitchChain from '$shared/hooks/useSwitchChain'
 import { DialogContainer, DialogTitle, NextButton } from './styles'
 
 type Props = {
@@ -46,6 +47,7 @@ const Radio = styled(UnstyledRadio)`
 
 const SelectChain = ({ visible, paymentDetails, onNextClicked }: Props) => {
     const [selection, setSelection] = useState<TheGraphPaymentDetails | null>(null)
+    const { switchChain } = useSwitchChain()
 
     if (!visible) {
         return null
@@ -78,7 +80,10 @@ const SelectChain = ({ visible, paymentDetails, onNextClicked }: Props) => {
                 })}
             </ChainItems>
             <NextButton
-                onClick={() => onNextClicked(selection)}
+                onClick={async () => {
+                    await switchChain(Number.parseInt(selection.domainId))
+                    onNextClicked(selection)
+                }}
                 disabled={selection == null}
             >
                 Next

@@ -3,15 +3,21 @@ import { Contract } from 'web3-eth-contract'
 
 import getCoreConfig from "$app/src/getters/getCoreConfig"
 import { post } from "$shared/utils/api"
-import { getContract } from '$mp/utils/smartContract'
+import { call, getContract } from '$mp/utils/smartContract'
 import { send } from '$mp/utils/smartContract'
-import { Address, SmartContractTransaction } from "$shared/types/web3-types"
-import { getConfigForChain } from '$shared/web3/config'
+import { Address, SmartContractCall, SmartContractTransaction } from "$shared/types/web3-types"
+import { getConfigForChain, getConfigForChainByName } from '$shared/web3/config'
 import projectRegistryAbi from '$shared/web3/abis/projectRegistry.json'
 
 const getGraphUrl = () => {
     const { theGraphUrl, theHubGraphName } = getCoreConfig()
     return `${theGraphUrl}/subgraphs/name/${theHubGraphName}`
+}
+
+const getProjectRegistryChainId = () => {
+    const { projectsChain } = getCoreConfig()
+    const config = getConfigForChainByName(projectsChain)
+    return config.id
 }
 
 export type TheGraphPaymentDetails = {
@@ -263,12 +269,12 @@ const getPaymentDetails = (paymentDetails: PaymentDetails[]): SmartContractPayme
 }
 
 export const createProject = (project: SmartContractProjectCreate): SmartContractTransaction => {
+    const chainId = getProjectRegistryChainId()
     const {
         id,
         paymentDetails,
         streams,
         minimumSubscriptionInSeconds,
-        chainId,
         isPublicPurchasable,
         metadata,
     } = project
@@ -288,12 +294,12 @@ export const createProject = (project: SmartContractProjectCreate): SmartContrac
 }
 
 export const updateProject = (project: SmartContractProject): SmartContractTransaction => {
+    const chainId = getProjectRegistryChainId()
     const {
         id,
         paymentDetails,
         streams,
         minimumSubscriptionInSeconds,
-        chainId,
         metadata,
     } = project
 
@@ -311,9 +317,9 @@ export const updateProject = (project: SmartContractProject): SmartContractTrans
 }
 
 export const deleteProject = (project: SmartContractProject): SmartContractTransaction => {
+    const chainId = getProjectRegistryChainId()
     const {
-        id,
-        chainId,
+        id
     } = project
 
     const methodToSend = projectRegistryContract(false, chainId).methods.deleteProject(
@@ -323,3 +329,15 @@ export const deleteProject = (project: SmartContractProject): SmartContractTrans
         network: chainId,
     })
 }
+
+export const getProjectFromRegistry =
+    async (id: string, domainIds: Array<string>, usePublicNode = true): SmartContractCall<SmartContractProject> => {
+        const chainId = getProjectRegistryChainId()
+        const result = await call(projectRegistryContract(usePublicNode, chainId).methods.getProject(id, domainIds))
+        const project: SmartContractProject = {
+            ...result,
+            id: id,
+            chainId: chainId,
+        }
+        return project
+    }

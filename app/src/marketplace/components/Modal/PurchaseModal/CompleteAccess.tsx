@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import BN from 'bignumber.js'
 
@@ -8,6 +8,7 @@ import { priceForTimeUnits } from '$mp/utils/price'
 import { TheGraphPaymentDetails } from '$app/src/services/projects'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { getUsdRate } from '$shared/utils/coingecko'
+import useSwitchChain from '$shared/hooks/useSwitchChain'
 import { COLORS, MEDIUM } from '$shared/utils/styled'
 import { Currency, DialogContainer, DialogTitle, NextButton, Price, Usd } from './styles'
 
@@ -67,6 +68,7 @@ export const Box = styled.div`
 
 const CompleteAccess = ({ visible,projectName, length, timeUnit, tokenSymbol, chainId, paymentDetails, onPayClicked }: Props) => {
     const isMounted = useIsMounted()
+    const { switchChain } = useSwitchChain()
     const tokenAddress = useMemo(() => paymentDetails?.pricingTokenAddress, [paymentDetails])
     const pricePerSecond = useMemo(() => paymentDetails?.pricePerSecond, [paymentDetails])
     const price = useMemo(() => (
@@ -87,6 +89,14 @@ const CompleteAccess = ({ visible,projectName, length, timeUnit, tokenSymbol, ch
             load()
         }
     }, [isMounted, price, tokenAddress, chainId])
+
+    const onPay = useCallback(async () => {
+        await switchChain(chainId)
+
+        if (isMounted()) {
+            onPayClicked()
+        }
+    }, [switchChain, onPayClicked, chainId, isMounted])
 
     if (!visible) {
         return null
@@ -121,7 +131,8 @@ const CompleteAccess = ({ visible,projectName, length, timeUnit, tokenSymbol, ch
                 </Box>
             </Container>
             <NextButton
-                onClick={onPayClicked}
+                onClick={onPay}
+                disabled={!price.isFinite() || !length || !timeUnit}
             >
                 Pay now
             </NextButton>

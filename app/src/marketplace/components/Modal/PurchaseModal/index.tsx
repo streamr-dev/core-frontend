@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
@@ -7,8 +7,9 @@ import ModalPortal from '$shared/components/ModalPortal'
 import useModal, { ModalApi } from "$shared/hooks/useModal"
 import SvgIcon from '$shared/components/SvgIcon'
 import { COLORS } from '$shared/utils/styled'
-import usePurchase from '$shared/hooks/usePurchase'
-import { TheGraphPaymentDetails, TheGraphProject } from '$app/src/services/projects'
+import usePurchase, { actionsTypes } from '$shared/hooks/usePurchase'
+import { transactionStates } from '$shared/utils/constants'
+import { getProjectFromRegistry, TheGraphPaymentDetails, TheGraphProject } from '$app/src/services/projects'
 import SelectChain from './SelectChain'
 import ChooseAccessPeriod from './ChooseAccessPeriod'
 import CompleteAccess from './CompleteAccess'
@@ -49,7 +50,6 @@ enum Step {
 }
 
 export const PurchaseDialog = ({ project, api }: Props) => {
-    console.log('Purchase', project)
     const [selectedPaymentDetails, setSelectedPaymentDetails] = useState<TheGraphPaymentDetails | null>(null)
     const [selectedLength, setSelectedLength] = useState<string>(null)
     const [selectedTimeUnit, setSelectedTimeUnit] = useState<string>(null)
@@ -83,15 +83,26 @@ export const PurchaseDialog = ({ project, api }: Props) => {
 
     const onPurchase = useCallback(async () => {
         try {
+            const contractProject = await getProjectFromRegistry(project.id, [selectedPaymentDetails.domainId], true)
             const { queue } = await purchase({
-                contractProduct: null,
-                accessPeriod: null,
+                contractProject: contractProject,
+                length: selectedLength,
+                timeUnit: selectedTimeUnit,
+                chainId: chainId,
             })
-            console.log(queue)
+
+            await queue
+                .subscribe('status', (id, nextStatus, hash) => {
+                    if (id === actionsTypes.SUBSCRIPTION && nextStatus === transactionStates.CONFIRMED) {
+                        // Payment succeeded
+                        onClose()
+                    }
+                })
+                .start()
         } catch (e) {
             console.error(e)
         }
-    }, [purchase])
+    }, [purchase, project, selectedLength, selectedPaymentDetails, selectedTimeUnit, chainId, onClose])
 
     return (
         <ModalPortal>

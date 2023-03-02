@@ -121,15 +121,30 @@ const ChooseAccessPeriod = ({ visible, chainId, paymentDetails, onNextClicked }:
     useEffect(() => {
         const load = async () => {
             const tokenInfo = await getTokenInformation(tokenAddress, chainId)
-            const rate = await getUsdRate(tokenAddress, chainId)
 
             if (isMounted()) {
-                setUsdPrice(price.multipliedBy(rate))
                 setTokenSymbol(tokenInfo.symbol)
             }
         }
 
         if (tokenAddress) {
+            load()
+        }
+    }, [isMounted, tokenAddress, chainId])
+
+    useEffect(() => {
+        const load = async () => {
+            try {
+                const rate = await getUsdRate(tokenAddress, chainId)
+                if (isMounted()) {
+                    setUsdPrice(price.multipliedBy(rate))
+                }
+            } catch (e) {
+                console.error(e)
+            }
+        }
+
+        if (tokenAddress && price.isFinite()) {
             load()
         }
     }, [isMounted, price, tokenAddress, chainId])
@@ -185,6 +200,7 @@ const ChooseAccessPeriod = ({ visible, chainId, paymentDetails, onNextClicked }:
             </Outer>
             <NextButton
                 onClick={() => onNextClicked(length, selectedUnit, tokenSymbol)}
+                disabled={!price.isFinite()}
             >
                 Next
             </NextButton>
