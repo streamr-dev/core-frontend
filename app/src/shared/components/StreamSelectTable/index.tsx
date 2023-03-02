@@ -250,8 +250,8 @@ export const StreamSelectTable: FunctionComponent<Props> = ({ streams, loadMore,
                             <GridCell onlyDesktop>{s.peerCount}</GridCell>
                             <GridCell onlyDesktop>{s.messagesPerSecond}</GridCell>
                             <GridCell onlyDesktop>{s.subscriberCount == null ? 'Public' : 'Private'}</GridCell>
-                            <GridCell onlyDesktop>{s.publisherCount || '-'}</GridCell>
-                            <GridCell onlyDesktop>{s.subscriberCount || '-'}</GridCell>
+                            <GridCell onlyDesktop>{s.publisherCount || '∞'}</GridCell>
+                            <GridCell onlyDesktop>{s.subscriberCount || '∞'}</GridCell>
                             <GridCell flex={true}>
                                 <Checkbox
                                     value={selectedStreams[s.id]}

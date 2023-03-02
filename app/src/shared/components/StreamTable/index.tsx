@@ -260,8 +260,8 @@ const StreamTable: React.FC<Props> = ({ title = "Streams", streams, loadMore, ha
                             <GridCell onlyDesktop>{s.peerCount}</GridCell>
                             <GridCell onlyDesktop>{s.messagesPerSecond}</GridCell>
                             <GridCell onlyDesktop>{s.subscriberCount == null ? 'Public' : 'Private'}</GridCell>
-                            <GridCell onlyDesktop>{s.publisherCount || '-'}</GridCell>
-                            <GridCell onlyDesktop>{s.subscriberCount || '-'}</GridCell>
+                            <GridCell onlyDesktop>{s.publisherCount || '∞'}</GridCell>
+                            <GridCell onlyDesktop>{s.subscriberCount || '∞'}</GridCell>
                         </TableRow>
                     ))}
                     {streams.length === 0 && <NoStreams>No streams that match your query</NoStreams>}
