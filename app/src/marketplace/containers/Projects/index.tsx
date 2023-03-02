@@ -12,7 +12,6 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import {useAuthController} from "$auth/hooks/useAuthController"
 import useDeepEqualMemo from '$shared/hooks/useDeepEqualMemo'
 import {useIsAuthenticated} from "$auth/hooks/useIsAuthenticated"
-import PurchaseModal from '$mp/components/Modal/PurchaseModal'
 import styles from './projects.pcss'
 
 const PAGE_SIZE = 12
@@ -38,7 +37,6 @@ const ProjectsPage: FunctionComponent = () => {
     const [hasMoreSearchResults, setHasMoreSearchResults] = useState(false)
 
     const { api: createProductModal } = useModal('marketplace.createProduct')
-    const { api: purchaseProjectModal } = useModal('purchaseProject')
     const isUserAuthenticated = useIsAuthenticated()
     const {currentAuthSession} = useAuthController()
     const isMounted = useIsMounted()
@@ -125,12 +123,11 @@ const ProjectsPage: FunctionComponent = () => {
                 categories={[]}
                 onFilterChange={onFilterChange}
                 onSearchChange={onSearchChange}
-                onCreateProject={() => purchaseProjectModal.open({ project: projects[0] })}
+                onCreateProject={() => createProductModal.open()}
                 onFilterByAuthorChange={onFilterByAuthorChange}
                 isUserAuthenticated={isUserAuthenticated}
             />
             <CreateProductModal />
-            <PurchaseModal />
             <ProjectsContainer fluid>
                 <ProjectsComponent
                     projects={projects}

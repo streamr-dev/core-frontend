@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import NetworkIcon from '$app/src/shared/components/NetworkIcon'
 import { TheGraphPaymentDetails } from '$app/src/services/projects'
@@ -6,12 +6,17 @@ import { getConfigForChain } from '$app/src/shared/web3/config'
 import { Radio as UnstyledRadio } from '$shared/components/Radio'
 import { MEDIUM } from '$shared/utils/styled'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
+import getChainId from '$utils/web3/getChainId'
 import { DialogContainer, DialogTitle, NextButton } from './styles'
 
 type Props = {
     visible: boolean,
     paymentDetails: Array<TheGraphPaymentDetails>,
     onNextClicked: (paymentDetails: TheGraphPaymentDetails) => void,
+}
+
+type ChainOption = TheGraphPaymentDetails & {
+    chainId: number,
 }
 
 const ChainItems = styled.div``
@@ -49,6 +54,35 @@ const SelectChain = ({ visible, paymentDetails, onNextClicked }: Props) => {
     const [selection, setSelection] = useState<TheGraphPaymentDetails | null>(null)
     const { switchChain } = useSwitchChain()
 
+    const chainOptions = useMemo(() => {
+        const values = Object.values(paymentDetails).map((p) => {
+            const chainId = Number.parseInt(p.domainId)
+            if (!Number.isSafeInteger(chainId)) {
+                console.error("Skipping chain because domainId is not a number", p.domainId)
+            }
+            return {
+                ...p,
+                chainId,
+            }
+        })
+        return values as ChainOption[]
+    }, [paymentDetails])
+
+    useEffect(() => {
+        const loadChainId = async () => {
+            const chainId = await getChainId()
+            if (paymentDetails) {
+                const chainPd = paymentDetails.find((p) => p.domainId === chainId.toString())
+                if (chainPd) {
+                    // Set current chain as preselected value
+                    setSelection(chainPd)
+                }
+            }
+        }
+
+        loadChainId()
+    }, [paymentDetails])
+
     if (!visible) {
         return null
     }
@@ -57,27 +91,20 @@ const SelectChain = ({ visible, paymentDetails, onNextClicked }: Props) => {
         <DialogContainer>
             <DialogTitle>Select chain for payment token</DialogTitle>
             <ChainItems>
-                {Object.values(paymentDetails).map((p) => {
-                    const chainId = Number.parseInt(p.domainId)
-                    const radioId = `paymentChain-${chainId}`
-                    if (!Number.isSafeInteger(chainId)) {
-                        console.error("Skipping chain because domainId is not a number", p.domainId)
-                    }
-                    return (
-                        <ChainItem key={chainId} htmlFor={radioId}>
-                            <ChainIcon chainId={chainId} />
-                            <Name>{getConfigForChain(chainId).name}</Name>
-                            <Radio
-                                id={radioId}
-                                name="paymentChain"
-                                value={chainId}
-                                label=""
-                                checked={selection != null && selection.domainId === chainId.toString()}
-                                onChange={() => setSelection(p)}
-                            />
-                        </ChainItem>
-                    )
-                })}
+                {chainOptions.map((p) => (
+                    <ChainItem key={p.chainId} htmlFor={`paymentChain-${p.chainId}`}>
+                        <ChainIcon chainId={p.chainId} />
+                        <Name>{getConfigForChain(p.chainId).name}</Name>
+                        <Radio
+                            id={`paymentChain-${p.chainId}`}
+                            name="paymentChain"
+                            value={p.chainId}
+                            label=""
+                            checked={selection != null && selection.domainId === p.chainId.toString()}
+                            onChange={() => setSelection(p)}
+                        />
+                    </ChainItem>
+                ))}
             </ChainItems>
             <NextButton
                 onClick={async () => {

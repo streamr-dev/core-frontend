@@ -8,15 +8,16 @@ import { MEDIUM } from '$shared/utils/styled'
 import ProjectPng from '$shared/assets/images/project.png'
 import { useController } from '$mp/containers/ProductController'
 import Button from '$shared/components/Button'
-import { usePurchaseProject } from '$shared/hooks/usePurchaseProject'
 import { projectTypeNames } from '$mp/utils/constants'
 import PaymentRate from '$mp/components/PaymentRate'
 import { formatChainName, getChainIdFromApiString } from '$shared/utils/chains'
 import { timeUnits } from '$shared/utils/constants'
 import { WhiteBox } from '$shared/components/WhiteBox'
+import useModal from '$shared/hooks/useModal'
+import PurchaseModal from '$mp/components/Modal/PurchaseModal'
 
 export const Connect: FunctionComponent = () => {
-    const onPurchase = usePurchaseProject()
+    const { api: purchaseDialog } = useModal('purchaseProject')
     const {product} = useController()
     const userHasAccess: boolean = useUserHasAccessToProject()
     return <ProjectPage>
@@ -43,9 +44,10 @@ export const Connect: FunctionComponent = () => {
                             <span> on </span>
                             <strong>{formatChainName(product.chain)}</strong>
                         </p>
-                        <Button onClick={onPurchase}>Get Access</Button>
+                        <Button onClick={() => { purchaseDialog.open({ projectId: product.id }) }}>Get Access</Button>
                     </GetAccessContainer>
             }
+            <PurchaseModal />
         </ProjectPageContainer>
     </ProjectPage>
 }

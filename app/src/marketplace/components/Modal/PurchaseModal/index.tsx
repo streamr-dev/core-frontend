@@ -8,8 +8,9 @@ import useModal, { ModalApi } from "$shared/hooks/useModal"
 import SvgIcon from '$shared/components/SvgIcon'
 import { COLORS } from '$shared/utils/styled'
 import usePurchase, { actionsTypes } from '$shared/hooks/usePurchase'
+import useIsMounted from '$shared/hooks/useIsMounted'
 import { transactionStates } from '$shared/utils/constants'
-import { getProjectFromRegistry, TheGraphPaymentDetails, TheGraphProject } from '$app/src/services/projects'
+import { getProject, getProjectFromRegistry, TheGraphPaymentDetails, TheGraphProject } from '$app/src/services/projects'
 import SelectChain from './SelectChain'
 import ChooseAccessPeriod from './ChooseAccessPeriod'
 import CompleteAccess from './CompleteAccess'
@@ -39,7 +40,7 @@ const Inner = styled.div`
 `
 
 type Props = {
-    project: TheGraphProject,
+    projectId: string,
     api: ModalApi,
 }
 
@@ -49,13 +50,26 @@ enum Step {
     CompleteAccess,
 }
 
-export const PurchaseDialog = ({ project, api }: Props) => {
-    const [selectedPaymentDetails, setSelectedPaymentDetails] = useState<TheGraphPaymentDetails | null>(null)
+export const PurchaseDialog = ({ projectId, api }: Props) => {
+    const isMounted = useIsMounted()
+    const [project, setProject] = useState<TheGraphProject>(null)
+    const [selectedPaymentDetails, setSelectedPaymentDetails] = useState<TheGraphPaymentDetails>(null)
     const [selectedLength, setSelectedLength] = useState<string>(null)
     const [selectedTimeUnit, setSelectedTimeUnit] = useState<string>(null)
     const [tokenSymbol, setTokenSymbol] = useState<string>(null)
     const [currentStep, setCurrentStep] = useState<Step>(Step.SelectChain)
     const purchase = usePurchase()
+
+    useEffect(() => {
+        const loadProject = async () => {
+            const proj = await getProject(projectId)
+            if (isMounted() && proj) {
+                setProject(proj)
+            }
+        }
+
+        loadProject()
+    }, [projectId, isMounted])
 
     const chainId = useMemo(() => {
         if (selectedPaymentDetails != null) {
@@ -117,7 +131,7 @@ export const PurchaseDialog = ({ project, api }: Props) => {
                         </BackLink>
                         <SelectChain
                             visible={currentStep === Step.SelectChain}
-                            paymentDetails={project.paymentDetails}
+                            paymentDetails={project?.paymentDetails ?? []}
                             onNextClicked={(details) => {
                                 setSelectedPaymentDetails(details)
                                 setCurrentStep(Step.ChooseAccessPeriod)
@@ -141,7 +155,7 @@ export const PurchaseDialog = ({ project, api }: Props) => {
                             length={selectedLength}
                             timeUnit={selectedTimeUnit}
                             tokenSymbol={tokenSymbol}
-                            projectName={project.metadata.name || project.id}
+                            projectName={project?.metadata.name || project?.id}
                             onPayClicked={onPurchase}
                         />
                     </Inner>
@@ -158,8 +172,8 @@ const PurchaseModal = () => {
         return null
     }
 
-    const { project } = value || {}
-    return <PurchaseDialog project={project} api={api} />
+    const { projectId } = value || {}
+    return <PurchaseDialog projectId={projectId} api={api} />
 }
 
 export default PurchaseModal
