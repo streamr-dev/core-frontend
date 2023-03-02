@@ -50,7 +50,7 @@ export type TheGraphProject = {
     paymentDetails: TheGraphPaymentDetails[],
     minimumSubscriptionSeconds: string,
     subscriptions: TheGraphSubscription[],
-    metadata: string,
+    metadata: SmartContractProjectMetadata,
     version: number | null,
     streams: string[],
     permissions: TheGraphPermission[],

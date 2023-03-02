@@ -86,7 +86,6 @@ const PROJECT_STUB: Project = {
             timeUnit: 'hour'
         }
     },
-    thumbnailUrl: undefined,
     streams: ['stream1', 'stream2'],
     termsOfUse: {
         commercialUse: true,

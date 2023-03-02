@@ -17,26 +17,26 @@ import { DataUnionTokenSelector } from '$mp/containers/EditProductPage/DataUnion
 import { DataUnionFee } from '$mp/containers/EditProductPage/DataUnionFee'
 
 type ProjectEditorProps = {
-    disabled?: boolean
+    editMode?: boolean
 }
 
 const WhiteBoxWithMargin = styled(WhiteBox)`
   margin-top: 24px;
 `
 
-export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({disabled}) => {
+export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({editMode = false}) => {
     const {state: project} = useContext(ProjectStateContext)
 
     return <ProjectPageContainer>
         <ProjectHeroContainer overflowVisible={true}>
-            <CoverImage disabled={disabled} />
+            <CoverImage />
             <ProjectName/>
             <ProjectDescription/>
             <ProjectDetails/>
         </ProjectHeroContainer>
         {project.type === ProjectTypeEnum.PAID_DATA &&
             <WhiteBox>
-                <SalePointSelector/>
+                <SalePointSelector editMode={editMode}/>
             </WhiteBox>
         }
         {project.type === ProjectTypeEnum.DATA_UNION && <>

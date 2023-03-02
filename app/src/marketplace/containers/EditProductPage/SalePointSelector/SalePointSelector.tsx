@@ -10,7 +10,7 @@ import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 import { PricingOption } from './PricingOption'
 
-export const SalePointSelector: FunctionComponent = () => {
+export const SalePointSelector: FunctionComponent<{editMode: boolean}> = ({editMode}) => {
     const { marketplaceChains } = getCoreConfig()
     const chains: Chain[] = useMemo(() => marketplaceChains.map((chainName) => getConfigForChainByName(chainName)), [marketplaceChains])
     const {state: project} = useContext(ProjectStateContext)
@@ -37,7 +37,7 @@ export const SalePointSelector: FunctionComponent = () => {
     }, [salePoints, updateSalePoints])
 
     const handleToggle = useCallback((chainName: string, salePoint: SalePoint) => {
-        if (!firstToggleDone && (!salePoints || (salePoints && !Object.values(salePoint).length))) {
+        if (!firstToggleDone && (!salePoints || (salePoints && !Object.values(salePoints).length))) {
             updateSalePoints({[chainName]: salePoint})
             setFirstToggleDone(true)
         }

@@ -28,7 +28,7 @@ const FlexNavbarItem = styled(NavbarItem)`
   }
 `
 
-export const EditorNav: FunctionComponent<{isNewProject: boolean}> = ({isNewProject}) => {
+export const EditorNav: FunctionComponent<{isNewProject: boolean, editedProductHasChanged?: boolean}> = ({isNewProject, editedProductHasChanged}) => {
     const {create, publishInProgress, update} = useContext(ProjectControllerContext)
     return <NavContainer>
         <FlexNavbar>
@@ -36,11 +36,11 @@ export const EditorNav: FunctionComponent<{isNewProject: boolean}> = ({isNewProj
                 <LogoLink href={routes.root()}>
                     <Logo />
                 </LogoLink>
-                <h1>{isNewProject ? 'Creating' : 'Updating'} a project</h1>
+                <h1>{isNewProject ? 'Creating' : 'Edit'} a project</h1>
             </FlexNavbarItem>
             <FlexNavbarItem>
                 <Button tag={Link} to={routes.marketplace.index()} kind={'transparent'}>Exit</Button>
-                <Button disabled={publishInProgress} onClick={isNewProject ? create : update}>Publish</Button>
+                <Button disabled={publishInProgress || (!isNewProject && !editedProductHasChanged)} onClick={isNewProject ? create : update}>Publish</Button>
             </FlexNavbarItem>
         </FlexNavbar>
     </NavContainer>

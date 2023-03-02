@@ -19,8 +19,8 @@ export const PricingOption: FunctionComponent<{
     const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
     const [isSelected, setIsSelected] = useState<boolean>(!!pricingData)
     const toggleDropdown = useCallback(() => setIsDropdownOpen(!isDropdownOpen), [isDropdownOpen])
-    const [pricing, setPricing] = useState<PricingData>({} as PricingData)
-    const [beneficiaryAddress, setBeneficiaryAddress] = useState<Address>()
+    const [pricing, setPricing] = useState<PricingData>(pricingData || {} as PricingData)
+    const [beneficiaryAddress, setBeneficiaryAddress] = useState<Address>(pricingData?.beneficiaryAddress)
 
     const handleToggleClick = useCallback(() => {
         toggleDropdown()

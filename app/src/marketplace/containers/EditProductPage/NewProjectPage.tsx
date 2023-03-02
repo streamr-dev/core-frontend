@@ -1,11 +1,9 @@
 import React, { ReactNode, useContext, useEffect, useMemo } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import qs from 'query-string'
 import '$mp/types/project-types'
-import useIsMounted from '$shared/hooks/useIsMounted'
 import { ProjectTypeEnum } from '$mp/utils/constants'
-import useFailure from '$shared/hooks/useFailure'
 import Layout from '$shared/components/Layout'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
@@ -21,17 +19,14 @@ import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import {
     ProjectControllerProvider
 } from '$mp/containers/EditProductPage/ProjectController'
-import { useEditableProjectActions } from '../containers/ProductController/useEditableProjectActions'
+import {mapProjectTypeName} from "$mp/utils/project-mapper"
+import { useEditableProjectActions } from '../ProductController/useEditableProjectActions'
 
 type Props = {
     className?: string | null | undefined
 }
 
-const UnstyledNewProductPage = ({ className }: Props) => {
-    // todo check and remove unused hooks
-    const history = useHistory()
-    const isMounted = useIsMounted()
-    const fail = useFailure()
+const UnstyledNewProjectPage = ({ className }: Props) => {
     const location = useLocation()
     const {state: project} = useContext(ProjectStateContext)
     const { type } = qs.parse(location.search)
@@ -49,22 +44,7 @@ const UnstyledNewProductPage = ({ className }: Props) => {
     }, [])
 
     const pageTitle = useMemo<ReactNode>(() => {
-        let projectType: string
-        switch (project.type) {
-            case ProjectTypeEnum.OPEN_DATA:
-                projectType = 'Open Data'
-                break
-            case ProjectTypeEnum.DATA_UNION:
-                projectType = 'Data Union'
-                break
-            case ProjectTypeEnum.PAID_DATA:
-                projectType = 'Paid Data'
-                break
-            default:
-                projectType = 'Project'
-                break
-        }
-        return <>{projectType} by <strong>[CREATOR NAME HERE]</strong></>
+        return <>{mapProjectTypeName(project.type)} by <strong>[CREATOR NAME HERE]</strong></>
     }, [project])
 
     const linkTabs = useMemo(() => [
@@ -92,7 +72,7 @@ const UnstyledNewProductPage = ({ className }: Props) => {
     </Layout>
 }
 
-const StyledNewProductPage = styled(UnstyledNewProductPage)`
+const StyledNewProjectPage = styled(UnstyledNewProjectPage)`
     position: absolute;
     top: 0;
     height: 2px;
@@ -102,7 +82,7 @@ const NewProjectPageContainer = (props: Props) => {
     return <ProjectStateContextProvider>
         <ValidationContextProvider>
             <ProjectControllerProvider>
-                <StyledNewProductPage {...props}/>
+                <StyledNewProjectPage {...props}/>
             </ProjectControllerProvider>
         </ValidationContextProvider>
     </ProjectStateContextProvider>
