@@ -337,4 +337,8 @@ const PurchaseModal = () => {
     return <PurchaseDialog productId={productId} api={api} />
 }
 
+/**
+ * @deprecated
+ * Replaced by $mp/components/Modal/PurchaseModal
+ */
 export default PurchaseModal
