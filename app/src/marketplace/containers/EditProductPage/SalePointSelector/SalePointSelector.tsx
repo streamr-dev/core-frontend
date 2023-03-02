@@ -10,7 +10,10 @@ import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 import { PricingOption } from './PricingOption'
 
-export const SalePointSelector: FunctionComponent<{editMode: boolean}> = ({editMode}) => {
+type Props = {
+    nonEditableSalePointChains: number[] // array of chain ids
+}
+export const SalePointSelector: FunctionComponent<Props> = ({nonEditableSalePointChains}) => {
     const { marketplaceChains } = getCoreConfig()
     const chains: Chain[] = useMemo(() => marketplaceChains.map((chainName) => getConfigForChainByName(chainName)), [marketplaceChains])
     const {state: project} = useContext(ProjectStateContext)
@@ -19,10 +22,14 @@ export const SalePointSelector: FunctionComponent<{editMode: boolean}> = ({editM
     const [firstToggleDone, setFirstToggleDone] = useState<boolean>(false)
 
     const handleSalePointChange = useCallback((chainName: string, newSalePoint: SalePoint | null) => {
+        const chain = getConfigForChainByName(chainName)
+        if (nonEditableSalePointChains.includes(chain.id)) {
+            return
+        }
         // handle removal of sale point
         if (!newSalePoint) {
             // case when we are creating a new project and the components emit changes on mounting
-            if (!salePoints || !salePoints.length) {
+            if (!salePoints || !Object.values(salePoints || {}).length) {
                 return
             }
             const newSalePointsObject = {...salePoints}
@@ -65,6 +72,7 @@ export const SalePointSelector: FunctionComponent<{editMode: boolean}> = ({editM
                 onChange={(salePoint) => {handleSalePointChange(chain.name, salePoint)}}
                 pricingData={salePointData}
                 onToggle={(salePoint) => handleToggle(chain.name, salePoint)}
+                editingSelectionAndTokenDisabled={nonEditableSalePointChains.includes(chain.id)}
             />
         })}
     </SalePointSelectorContainer>

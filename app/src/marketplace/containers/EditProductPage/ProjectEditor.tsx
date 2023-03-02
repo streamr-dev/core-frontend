@@ -17,14 +17,14 @@ import { DataUnionTokenSelector } from '$mp/containers/EditProductPage/DataUnion
 import { DataUnionFee } from '$mp/containers/EditProductPage/DataUnionFee'
 
 type ProjectEditorProps = {
-    editMode?: boolean
+    nonEditableSalePointChains?: number[] // array of chain ids
 }
 
 const WhiteBoxWithMargin = styled(WhiteBox)`
   margin-top: 24px;
 `
 
-export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({editMode = false}) => {
+export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({nonEditableSalePointChains = []}) => {
     const {state: project} = useContext(ProjectStateContext)
 
     return <ProjectPageContainer>
@@ -36,7 +36,7 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({editMode =
         </ProjectHeroContainer>
         {project.type === ProjectTypeEnum.PAID_DATA &&
             <WhiteBox>
-                <SalePointSelector editMode={editMode}/>
+                <SalePointSelector nonEditableSalePointChains={nonEditableSalePointChains}/>
             </WhiteBox>
         }
         {project.type === ProjectTypeEnum.DATA_UNION && <>

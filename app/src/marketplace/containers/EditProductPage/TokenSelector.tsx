@@ -21,13 +21,6 @@ import { PricingData, Project } from '$mp/types/project-types'
 import { RecursiveKeyOf } from '$utils/recursiveKeyOf'
 import { pricePerSecondFromTimeUnit } from '$mp/utils/price'
 
-type Props = {
-    disabled?: boolean,
-    chain: Chain,
-    onChange: (pricing: PricingData) => void,
-    value?: PricingData,
-    validationFieldName: RecursiveKeyOf<Project>
-}
 const Container = styled.div`
   color: ${COLORS.primary};
   max-width: ${MAX_CONTENT_WIDTH};
@@ -137,12 +130,22 @@ const options = Object.values(timeUnits).map((unit: TimeUnit) => ({
     value: unit,
 }))
 
+type Props = {
+    disabled?: boolean,
+    chain: Chain,
+    onChange: (pricing: PricingData) => void,
+    value?: PricingData,
+    validationFieldName: RecursiveKeyOf<Project>,
+    tokenChangeDisabled: boolean
+}
+
 const TokenSelector: FunctionComponent<Props> = ({
     disabled,
     onChange,
     chain,
     validationFieldName,
-    value
+    value,
+    tokenChangeDisabled
 }) => {
     const dataAddress = useMemo(() => getDataAddress(chain.id).toLowerCase(), [chain])
     const isMounted = useIsMounted()
@@ -275,7 +278,7 @@ const TokenSelector: FunctionComponent<Props> = ({
                             <SvgIcon name={'DATAColor'} className={'data-icon'} />
                         </RadioLabel>}
                         value={contractCurrencies.DATA}
-                        disabled={disabled}
+                        disabled={disabled || tokenChangeDisabled}
                         disabledReason={'You need to select the chain first!'}
                         onChange={setSelection}
                         className={'radio'}
@@ -290,7 +293,7 @@ const TokenSelector: FunctionComponent<Props> = ({
                             <span>Custom Token</span>
                         </RadioLabel>}
                         value={contractCurrencies.PRODUCT_DEFINED}
-                        disabled={disabled}
+                        disabled={disabled || tokenChangeDisabled}
                         disabledReason={'You need to select the chain first!'}
                         onChange={setSelection}
                         className={'radio'}
@@ -300,7 +303,7 @@ const TokenSelector: FunctionComponent<Props> = ({
                         <label>Token contract address</label>
                         <Text
                             autoComplete="off"
-                            disabled={selection !== contractCurrencies.PRODUCT_DEFINED || disabled || !isEditable}
+                            disabled={selection !== contractCurrencies.PRODUCT_DEFINED || disabled || !isEditable || tokenChangeDisabled}
                             placeholder={'e.g 0xdac17f958d2ee523a2206206994597c13d831ec7'}
                             value={customTokenAddress}
                             onChange={(e) => setCustomTokenAddress(e.target.value)}

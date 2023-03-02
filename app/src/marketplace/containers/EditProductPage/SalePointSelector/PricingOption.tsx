@@ -15,7 +15,8 @@ export const PricingOption: FunctionComponent<{
     chain: Chain,
     pricingData?: PricingData
     onChange: (pricingData: SalePoint | null) => void
-}> = ({onToggle, chain, pricingData, onChange}) => {
+    editingSelectionAndTokenDisabled?: boolean
+}> = ({onToggle, chain, pricingData, onChange, editingSelectionAndTokenDisabled = false }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
     const [isSelected, setIsSelected] = useState<boolean>(!!pricingData)
     const toggleDropdown = useCallback(() => setIsDropdownOpen(!isDropdownOpen), [isDropdownOpen])
@@ -61,6 +62,7 @@ export const PricingOption: FunctionComponent<{
             <label>
                 <StyledCheckbox
                     value={isSelected}
+                    disabled={editingSelectionAndTokenDisabled}
                     onClick={(event) => event.stopPropagation()}
                     onChange={(event) => {
                         setIsSelected(event.target.checked)
@@ -83,6 +85,7 @@ export const PricingOption: FunctionComponent<{
                         timeUnit: pricingData.timeUnit,
                         pricePerSecond: pricingData.pricePerSecond
                     } : null}
+                    tokenChangeDisabled={editingSelectionAndTokenDisabled}
                 />
                 <BeneficiaryAddress
                     beneficiaryAddress={pricingData?.beneficiaryAddress}
@@ -142,6 +145,9 @@ const DropdownToggle = styled.div`
 
 const StyledCheckbox = styled(Checkbox)`
   cursor: pointer;
+  &:disabled {
+    opacity: 0.3;
+  }
 `
 
 const PlusSymbol = styled(SvgIcon)`

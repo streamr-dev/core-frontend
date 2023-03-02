@@ -20,6 +20,9 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
     const { isAnyTouched, resetTouched } = useContext(ValidationContext)
     usePreventNavigatingAway('You have unsaved changes', isAnyTouched)
     const {loadedProject} = useLoadedProject()
+    const nonEditableSalePointChains = useMemo<number[]>(
+        () => Object.values(loadedProject.salePoints).map((salePoint) => salePoint.chainId
+        ), [loadedProject])
 
     useEffect(() => {
         resetTouched()
@@ -53,7 +56,7 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
             pageTitle={pageTitle}
             linkTabs={linkTabs}
         />
-        <ProjectEditor editMode={true}/>
+        <ProjectEditor nonEditableSalePointChains={nonEditableSalePointChains}/>
     </Layout>
 }
 
