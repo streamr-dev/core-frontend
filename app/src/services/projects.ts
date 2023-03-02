@@ -246,7 +246,7 @@ export const searchProjects = async (search: string, first = 20, skip = 0): Prom
 
 const projectRegistryContract = (usePublicNode = false, chainId: number): Contract => {
     const { contracts } = getConfigForChain(chainId)
-    const address = contracts.ProjectRegistry
+    const address = contracts.ProjectRegistryV1 || contracts.ProjectRegistry
 
     if (address == null) {
         throw new Error(`No ProjectRegistry contract address found for chain ${chainId}`)

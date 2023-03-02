@@ -228,7 +228,7 @@ const StreamTable: React.FC<Props> = ({ title = "Streams", streams, loadMore, ha
                 {showGlobalStats && globalStats != null && (
                     <>
                         <Stat>Streams <strong>{globalStats.streamCount}</strong></Stat>
-                        <Stat>Msg/s <strong>{globalStats.messagesPerSecond}</strong></Stat>
+                        <Stat>Msg/s <strong>{globalStats.messagesPerSecond.toFixed(0)}</strong></Stat>
                     </>
                 )}
             </Heading>
