@@ -15,7 +15,7 @@ export type IndexerResult = {
     cursor: string,
 }
 
-export const getStreamsFromIndexer = async (first: number, cursor?: string, owner?: string, search?: string): Promise<IndexerResult> => {
+export const getPagedStreamsFromIndexer = async (first: number, cursor?: string, owner?: string, search?: string): Promise<IndexerResult> => {
     const { streamIndexerUrl } = getCoreConfig()
 
     const ownerFilter = owner != null ? `owner: "${owner}"` : null
@@ -45,10 +45,39 @@ export const getStreamsFromIndexer = async (first: number, cursor?: string, owne
                 }
             `,
         },
-        useAuthorization: false,
     })
 
     return result.data.streams
+}
+
+export const getStreamsFromIndexer = async (streamIds: Array<string>): Promise<Array<IndexerStream>> => {
+    const { streamIndexerUrl } = getCoreConfig()
+
+    if (streamIds.length === 0) {
+        return []
+    }
+
+    const result = await post({
+        url: streamIndexerUrl,
+        data: {
+            query: `
+                {
+                    streams(ids: [${streamIds.map((s) => `"${s}"`).join(',')}]) {
+                        items {
+                          id
+                          description
+                          peerCount
+                          messagesPerSecond
+                          subscriberCount
+                          publisherCount
+                        }
+                    }
+                }
+            `,
+        },
+    })
+
+    return result.data.streams.items
 }
 
 export type GlobalStreamStats = {
@@ -71,7 +100,6 @@ export const getGlobalStatsFromIndexer = async (): Promise<GlobalStreamStats> =>
                 }
             `,
         },
-        useAuthorization: false,
     })
 
     return result.data.summary
