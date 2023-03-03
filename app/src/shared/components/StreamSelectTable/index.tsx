@@ -1,5 +1,7 @@
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components'
+import type { Stream, StreamID } from 'streamr-client'
 
 import LoadMore from '$mp/components/LoadMore'
 import { StreamId } from '$shared/types/stream-types'
@@ -135,7 +137,7 @@ const NoStreams = styled.div`
     color: ${COLORS.primaryLight};
 `
 
-const StreamDetails = styled.a`
+const StreamDetails = styled(Link)`
     font-size: 16px;
     line-height: 26px;
     overflow: hidden;
@@ -158,14 +160,22 @@ const StreamDescription = styled(GridCell)`
 `
 
 type Props = {
-    streams: Array<IndexerStream>
+    streams: Array<Stream>
+    streamStats: Record<StreamID, IndexerStream>
     loadMore?: () => void | Promise<void>
     hasMoreResults?: boolean
     onSelectionChange: (selectedStreams: StreamId[]) => void
     selected: StreamId[]
 }
 
-export const StreamSelectTable: FunctionComponent<Props> = ({ streams, loadMore, hasMoreResults, onSelectionChange, selected }: Props) => {
+export const StreamSelectTable: FunctionComponent<Props> = ({
+    streams,
+    streamStats,
+    loadMore,
+    hasMoreResults,
+    onSelectionChange,
+    selected,
+}: Props) => {
     const [selectedStreams, setSelectedStreams] = useState<Record<StreamId, boolean>>({})
     const [allSelected, setAllSelected] = useState<boolean>(false)
 
@@ -239,29 +249,32 @@ export const StreamSelectTable: FunctionComponent<Props> = ({ streams, loadMore,
                     </GridCell>
                 </TableHeader>
                 <TableRows rowCount={streams.length}>
-                    {streams.map((s) => (
-                        <TableRow key={s.id}>
-                            <StreamDetails href={routes.streams.show({ id: s.id })}>
-                                <StreamId>{truncate(s.id)}</StreamId>
-                                {'\n'}
-                                <StreamDescription notOnTablet>{s.description}</StreamDescription>
-                            </StreamDetails>
-                            <GridCell onlyTablet>{s.description}</GridCell>
-                            <GridCell onlyDesktop>{s.peerCount}</GridCell>
-                            <GridCell onlyDesktop>{s.messagesPerSecond}</GridCell>
-                            <GridCell onlyDesktop>{s.subscriberCount == null ? 'Public' : 'Private'}</GridCell>
-                            <GridCell onlyDesktop>{s.publisherCount || '-'}</GridCell>
-                            <GridCell onlyDesktop>{s.subscriberCount || '-'}</GridCell>
-                            <GridCell flex={true}>
-                                <Checkbox
-                                    value={selectedStreams[s.id]}
-                                    onChange={() => {
-                                        handleSelectChange(s.id)
-                                    }}
-                                />
-                            </GridCell>
-                        </TableRow>
-                    ))}
+                    {streams.map((s) => {
+                        const stats = streamStats ? streamStats[s.id] : null
+                        return (
+                            <TableRow key={s.id}>
+                                <StreamDetails to={routes.streams.show({ id: s.id })}>
+                                    <StreamId title={s.id}>{truncate(s.id)}</StreamId>
+                                    {'\n'}
+                                    <StreamDescription notOnTablet>{s.getMetadata().description}</StreamDescription>
+                                </StreamDetails>
+                                <GridCell onlyTablet>{s.getMetadata().description}</GridCell>
+                                <GridCell onlyDesktop>{stats?.peerCount ?? '-'}</GridCell>
+                                <GridCell onlyDesktop>{stats?.messagesPerSecond ?? '-'}</GridCell>
+                                <GridCell onlyDesktop>{stats == null ? '-' : stats.subscriberCount == null ? 'Public' : 'Private'}</GridCell>
+                                <GridCell onlyDesktop>{stats == null ? '-' : stats.publisherCount == null ? '∞' : stats.publisherCount}</GridCell>
+                                <GridCell onlyDesktop>{stats == null ? '-' : stats.subscriberCount == null ? '∞' : stats.subscriberCount}</GridCell>
+                                <GridCell flex={true}>
+                                    <Checkbox
+                                        value={selectedStreams[s.id]}
+                                        onChange={() => {
+                                            handleSelectChange(s.id)
+                                        }}
+                                    />
+                                </GridCell>
+                            </TableRow>
+                        )
+                    })}
                     {streams.length === 0 && <NoStreams>No streams that match your query</NoStreams>}
                 </TableRows>
             </Table>

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { useClient } from 'streamr-client-react'
-import { getStreamsFromIndexer, IndexerStream } from '$app/src/services/streams'
+import { getPagedStreamsFromIndexer, IndexerStream } from '$app/src/services/streams'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import {useAuthController} from "$auth/hooks/useAuthController"
 
@@ -13,7 +12,6 @@ type FetchCallbackType = (search?: string, params?: FetchParameters) =>
     Promise<[IndexerStream[], boolean, boolean]>
 
 export default function useFetchStreamsFromIndexer(): FetchCallbackType {
-    const client = useClient() // This is only needed for getting user address
     const itp = useInterrupt()
     const searchRef = useRef<string>()
     const onlyCurrentUserRef = useRef<boolean>()
@@ -42,7 +40,7 @@ export default function useFetchStreamsFromIndexer(): FetchCallbackType {
                 userAddress = authenticatedUserAddress
             }
 
-            const result = await getStreamsFromIndexer(batchSize + 1, cursorRef.current, userAddress, searchRef.current)
+            const result = await getPagedStreamsFromIndexer(batchSize + 1, cursorRef.current, userAddress, searchRef.current)
 
             let hasMore = false
             if (result.items.length > batchSize) {
@@ -63,7 +61,7 @@ export default function useFetchStreamsFromIndexer(): FetchCallbackType {
             requireUninterrupted()
 
             return [result.items, hasMore, isFirstBatch]
-        }, [client, itp])
+        }, [itp, authenticatedUserAddress])
 
     return fetchStreams
 }

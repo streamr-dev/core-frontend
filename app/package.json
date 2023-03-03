@@ -68,7 +68,7 @@
         "@storybook/addon-viewport": "^6.5.13",
         "@storybook/addons": "^6.5.13",
         "@storybook/react": "^6.5.13",
-        "@streamr/config": "^2.5.6",
+        "@streamr/config": "^2.5.10",
         "@streamr/po-loader": "^1.0.0",
         "@streamr/streamr-icons": "^0.1.9",
         "@streamr/streamr-layout": "^2.5.3",

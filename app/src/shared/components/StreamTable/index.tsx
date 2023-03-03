@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
+import type { Stream, StreamID } from 'streamr-client'
 import { Link } from 'react-router-dom'
 
 import LoadMore from '$mp/components/LoadMore'
@@ -197,13 +198,14 @@ const Stat = styled.div`
 
 type Props = {
     title?: string,
-    streams: Array<IndexerStream>,
+    streams: Array<Stream>,
+    streamStats: Record<StreamID, IndexerStream>,
     loadMore?: () => void | Promise<void>,
     hasMoreResults?: boolean,
     showGlobalStats: boolean,
 }
 
-const StreamTable: React.FC<Props> = ({ title = "Streams", streams, loadMore, hasMoreResults, showGlobalStats }: Props) => {
+const StreamTable: React.FC<Props> = ({ title = "Streams", streams, streamStats, loadMore, hasMoreResults, showGlobalStats }: Props) => {
     const [globalStats, setGlobalStats] = useState<GlobalStreamStats>(null)
     const isMounted = useIsMounted()
 
@@ -228,7 +230,7 @@ const StreamTable: React.FC<Props> = ({ title = "Streams", streams, loadMore, ha
                 {showGlobalStats && globalStats != null && (
                     <>
                         <Stat>Streams <strong>{globalStats.streamCount}</strong></Stat>
-                        <Stat>Msg/s <strong>{globalStats.messagesPerSecond}</strong></Stat>
+                        <Stat>Msg/s <strong>{globalStats.messagesPerSecond.toFixed(0)}</strong></Stat>
                     </>
                 )}
             </Heading>
@@ -243,27 +245,30 @@ const StreamTable: React.FC<Props> = ({ title = "Streams", streams, loadMore, ha
                     <GridCell onlyDesktop>Subscribers</GridCell>
                 </TableHeader>
                 <TableRows rowCount={streams.length}>
-                    {streams.map((s) => (
-                        <TableRow key={s.id}>
-                            <StreamDetails to={routes.streams.show({ id: s.id })}>
-                                <StreamId
-                                    title={s.id}
-                                >
-                                    {truncate(s.id)}
-                                </StreamId>
-                                {'\n'}
-                                <StreamDescription notOnTablet>
-                                    {s.description}
-                                </StreamDescription>
-                            </StreamDetails>
-                            <GridCell onlyTablet>{s.description}</GridCell>
-                            <GridCell onlyDesktop>{s.peerCount}</GridCell>
-                            <GridCell onlyDesktop>{s.messagesPerSecond}</GridCell>
-                            <GridCell onlyDesktop>{s.subscriberCount == null ? 'Public' : 'Private'}</GridCell>
-                            <GridCell onlyDesktop>{s.publisherCount || '-'}</GridCell>
-                            <GridCell onlyDesktop>{s.subscriberCount || '-'}</GridCell>
-                        </TableRow>
-                    ))}
+                    {streams.map((s) => {
+                        const stats = streamStats ? streamStats[s.id] : null
+                        return (
+                            <TableRow key={s.id}>
+                                <StreamDetails to={routes.streams.show({ id: s.id })}>
+                                    <StreamId
+                                        title={s.id}
+                                    >
+                                        {truncate(s.id)}
+                                    </StreamId>
+                                    {'\n'}
+                                    <StreamDescription notOnTablet>
+                                        {s.getMetadata().description}
+                                    </StreamDescription>
+                                </StreamDetails>
+                                <GridCell onlyTablet>{s.getMetadata().description}</GridCell>
+                                <GridCell onlyDesktop>{stats?.peerCount ?? '-'}</GridCell>
+                                <GridCell onlyDesktop>{stats?.messagesPerSecond ?? '-'}</GridCell>
+                                <GridCell onlyDesktop>{stats == null ? '-' : stats.subscriberCount == null ? 'Public' : 'Private'}</GridCell>
+                                <GridCell onlyDesktop>{stats == null ? '-' : stats.publisherCount == null ? '∞' : stats.publisherCount}</GridCell>
+                                <GridCell onlyDesktop>{stats == null ? '-' : stats.subscriberCount == null ? '∞' : stats.subscriberCount}</GridCell>
+                            </TableRow>
+                        )
+                    })}
                     {streams.length === 0 && <NoStreams>No streams that match your query</NoStreams>}
                 </TableRows>
             </Table>

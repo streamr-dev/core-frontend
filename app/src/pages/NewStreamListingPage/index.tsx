@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import type { Stream } from 'streamr-client'
+import type { Stream, StreamID } from 'streamr-client'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
@@ -9,8 +9,8 @@ import Layout from '$shared/components/Layout'
 import SearchBar from '$shared/components/SearchBar'
 import Tabs from '$shared/components/Tabs'
 import useInterrupt from '$shared/hooks/useInterrupt'
-import useFetchStreamsFromIndexer from '$shared/hooks/useFetchStreamsFromIndexer'
-import { IndexerStream } from '$app/src/services/streams'
+import useFetchStreams from '$shared/hooks/useFetchStreams'
+import { getStreamsFromIndexer, IndexerStream } from '$app/src/services/streams'
 import {useIsAuthenticated} from "$auth/hooks/useIsAuthenticated"
 import InterruptionError from '$shared/errors/InterruptionError'
 import { FiltersBar, FiltersWrap, SearchBarWrap } from '$mp/components/ActionBar/actionBar.styles'
@@ -60,12 +60,13 @@ const TableContainer = styled.div`
 const NewStreamListingPage: React.FC = () => {
     const [search, setSearch] = useState<string>('')
     const [streamsSelection, setStreamsSelection] = useState<StreamSelection>(StreamSelection.ALL)
-    const [streams, setStreams] = useState<Array<IndexerStream>>([])
+    const [streams, setStreams] = useState<Array<Stream>>([])
+    const [streamStats, setStreamStats] = useState<Record<StreamID, IndexerStream>>({})
     const [hasMore, setHasMore] = useState<boolean>(false)
     const isUserAuthenticated = useIsAuthenticated()
 
     const itp = useInterrupt()
-    const fetchStreams = useFetchStreamsFromIndexer()
+    const fetchStreams = useFetchStreams()
 
     const fetch = useCallback(async () => {
         const { requireUninterrupted } = itp(search)
@@ -77,8 +78,16 @@ const NewStreamListingPage: React.FC = () => {
                 allowPublic,
                 onlyCurrentUser: streamsSelection === StreamSelection.YOUR,
             })
+            const stats = await getStreamsFromIndexer(newStreams.map((s) => s.id))
             requireUninterrupted()
             setHasMore(hasMoreResults)
+
+            if (stats && stats.length > 0) {
+                setStreamStats((prev) => ({
+                    ...prev,
+                    ...Object.fromEntries(stats.map((is) => [is.id, is]))
+                }))
+            }
 
             if (isFirstBatch) {
                 setStreams(newStreams)
@@ -126,6 +135,7 @@ const NewStreamListingPage: React.FC = () => {
                     <StreamTable
                         title={`${streamsSelection === StreamSelection.ALL ? 'All' : 'Your'} Streams`}
                         streams={streams}
+                        streamStats={streamStats}
                         loadMore={fetch}
                         hasMoreResults={hasMore}
                         showGlobalStats={streamsSelection === StreamSelection.ALL}

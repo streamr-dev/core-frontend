@@ -12,7 +12,7 @@ export type ChainName = string
 export type ProjectState = $Keys<typeof projectStates>
 export type ProjectType = $Values<typeof projectTypes>
 
-export type  SalePoint = {
+export type SalePoint = {
     chainId: number,
     beneficiaryAddress?: Address
     pricePerSecond: NumberString

@@ -27,7 +27,7 @@ import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 import useNativeTokenName from '$shared/hooks/useNativeTokenName'
 import { getChainIdFromApiString } from '$shared/utils/chains'
-import usePurchase, { actionsTypes } from './usePurchase'
+import usePurchase, { actionsTypes } from '$shared/hooks/usePurchase'
 
 type Props = {
     productId: ProjectId
@@ -337,4 +337,8 @@ const PurchaseModal = () => {
     return <PurchaseDialog productId={productId} api={api} />
 }
 
+/**
+ * @deprecated
+ * Replaced by $mp/components/Modal/PurchaseModal
+ */
 export default PurchaseModal

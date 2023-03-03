@@ -5,7 +5,7 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import ProgressBar from '$shared/components/ProgressBar'
 import { transactionStates, paymentCurrencies } from '$shared/utils/constants'
-import { actionsTypes } from '$mp/containers/ProjectPage/usePurchase'
+import { actionsTypes } from '$shared/hooks/usePurchase'
 import type { PaymentCurrency } from '$shared/types/common-types'
 import routes from '$routes'
 import PendingTasks from '../PendingTasks'
@@ -176,18 +176,14 @@ const PurchaseTransactionProgress = ({ onCancel, status, prompt, tokenSymbol }: 
     )
 
     switch (prompt) {
-        case actionsTypes.RESET_DATA_ALLOWANCE:
-        case actionsTypes.RESET_DAI_ALLOWANCE:
+        case actionsTypes.RESET_ALLOWANCE:
             return <ReplaceAllowancePrompt onCancel={onCancel} />
 
-        case actionsTypes.SET_DATA_ALLOWANCE:
+        case actionsTypes.SET_ALLOWANCE:
             return <SetAllowancePrompt onCancel={onCancel} paymentCurrency={tokenSymbol} />
 
         case actionsTypes.SUBSCRIPTION:
             return <PurchasePrompt onCancel={onCancel} />
-
-        case actionsTypes.SET_DAI_ALLOWANCE:
-            return <SetAllowancePrompt onCancel={onCancel} paymentCurrency={paymentCurrencies.DAI} />
 
         default:
             break
