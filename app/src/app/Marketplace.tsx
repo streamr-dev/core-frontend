@@ -7,7 +7,7 @@ import StreamPreviewPage from '$mp/containers/StreamPreviewPage'
 import ProjectsPage from '$mp/containers/Projects'
 import ProjectConnectPage from '$mp/containers/ProjectPage/ProjectConnectPage'
 import ProjectLiveDataPage from '$mp/containers/ProjectPage/ProjectLiveDataPage'
-import NewProjectPage from '$mp/containers/EditProductPage/NewProjectPage'
+import NewProjectPage from '$mp/containers/ProjectEditing/NewProjectPage'
 import {UserIsAuthenticatedRoute} from '$auth/utils/userAuthenticated'
 import routes from '$routes'
 const Route = withErrorBoundary(ErrorPage)(RouterRoute)

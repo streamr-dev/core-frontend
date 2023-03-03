@@ -8,7 +8,7 @@ import { COLORS, LAPTOP } from '$shared/utils/styled'
 import { ProjectHeroImageStyles } from '$mp/containers/ProjectPage/Hero/ProjectHero2.styles'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
-import CropImageModalWrap from "$mp/containers/EditProductPage/CropImageModal"
+import CropImageModalWrap from "$mp/containers/ProjectEditing/CropImageModal"
 import useValidation from '../ProductController/useValidation'
 import { Context as EditControllerContext } from './EditControllerProvider'
 

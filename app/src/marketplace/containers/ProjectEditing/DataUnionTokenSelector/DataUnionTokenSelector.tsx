@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useCallback, useContext, useMemo } from 'react'
 import { Chain } from '@streamr/config'
-import TokenSelector from '$mp/containers/EditProductPage/TokenSelector'
+import TokenSelector from '$mp/containers/ProjectEditing/TokenSelector'
 import { PricingData } from '$mp/types/project-types'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { getConfigForChain } from '$shared/web3/config'

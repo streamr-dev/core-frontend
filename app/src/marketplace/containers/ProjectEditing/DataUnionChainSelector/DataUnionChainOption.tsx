@@ -6,7 +6,7 @@ import NetworkIcon from '$shared/components/NetworkIcon'
 import { Radio } from '$shared/components/Radio'
 import {
     DataUnionChainSelectorContext
-} from '$mp/containers/EditProductPage/DataUnionChainSelector/DataUnionChainSelectorContext'
+} from '$mp/containers/ProjectEditing/DataUnionChainSelector/DataUnionChainSelectorContext'
 import { Address } from '$shared/types/web3-types'
 import useIsMounted from '$shared/hooks/useIsMounted'
 

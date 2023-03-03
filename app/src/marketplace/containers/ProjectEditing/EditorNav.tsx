@@ -5,7 +5,7 @@ import { LogoLink, Navbar, NavbarItem, NavContainer } from '$shared/components/L
 import Logo from '$shared/components/Logo'
 import Button from '$shared/components/Button'
 import { REGULAR } from '$shared/utils/styled'
-import { ProjectControllerContext } from '$mp/containers/EditProductPage/ProjectController'
+import { ProjectControllerContext } from '$mp/containers/ProjectEditing/ProjectController'
 import routes from '$routes'
 
 const FlexNavbar = styled(Navbar)`

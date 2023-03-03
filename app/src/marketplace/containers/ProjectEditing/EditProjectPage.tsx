@@ -2,16 +2,16 @@ import React, {FunctionComponent, ReactNode, useContext, useEffect, useMemo} fro
 import styled from "styled-components"
 import {isEqual} from "lodash"
 import {ValidationContext, ValidationContextProvider} from "$mp/containers/ProductController/ValidationContextProvider"
-import {ProjectControllerProvider} from "$mp/containers/EditProductPage/ProjectController"
+import {ProjectControllerProvider} from "$mp/containers/ProjectEditing/ProjectController"
 import {ProjectStateContext, ProjectStateContextProvider} from "$mp/contexts/ProjectStateContext"
 import usePreventNavigatingAway from "$shared/hooks/usePreventNavigatingAway"
 import Layout from "$shared/components/Layout"
-import {EditorNav} from "$mp/containers/EditProductPage/EditorNav"
+import {EditorNav} from "$mp/containers/ProjectEditing/EditorNav"
 import styles from "$shared/components/Layout/layout.pcss"
 import {MarketplaceHelmet} from "$shared/components/Helmet"
 import {DetailsPageHeader} from "$shared/components/DetailsPageHeader"
-import {ProjectEditor} from "$mp/containers/EditProductPage/ProjectEditor"
-import {useLoadedProject} from "$mp/contexts/LoadedProjectContext"
+import {ProjectEditor} from "$mp/containers/ProjectEditing/ProjectEditor"
+import {LoadedProjectContextProvider, useLoadedProject} from "$mp/contexts/LoadedProjectContext"
 import {mapProjectTypeName} from "$mp/utils/project-mapper"
 import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
 
@@ -70,7 +70,7 @@ const LoadingIndicator = styled(PrestyledLoadingIndicator)`
     top: 2px;
 `
 
-const EditProjectContainer: FunctionComponent = (props) => {
+const EditProjectInnerContainer: FunctionComponent = (props) => {
     const {loadedProject} = useLoadedProject()
     if (!loadedProject) {
         return <LoadingIndicator loading={true}/>
@@ -82,6 +82,12 @@ const EditProjectContainer: FunctionComponent = (props) => {
             </ProjectControllerProvider>
         </ValidationContextProvider>
     </ProjectStateContextProvider>
+}
+
+const EditProjectContainer: FunctionComponent = (props) => {
+    return <LoadedProjectContextProvider>
+        <EditProjectInnerContainer {...props}/>
+    </LoadedProjectContextProvider>
 }
 
 export default EditProjectContainer

@@ -25,9 +25,9 @@ jest.mock('$mp/containers/StreamPreviewPage', () => ({
     __esModule: true,
     default: ({ match }) => `Product ${match.params.id} preview`,
 }))
-jest.mock('$mp/components/NewProductPage', () => ({
+jest.mock('$mp/containers/ProjectEditing/NewProjectPage', () => ({
     __esModule: true,
-    default: () => 'New product',
+    default: () => 'New project',
 }))
 jest.mock('$shared/components/GenericErrorPage', () => ({
     __esModule: true,
@@ -65,13 +65,13 @@ describe('Marketplace Routes', () => {
         )
         expect(el.text()).toBe('Product 123 preview')
     })
-    it('shows new product page', () => {
+    it('shows new project page', () => {
         const el = mount(
             <MemoryRouter initialEntries={['/core/products/new']}>
                 <Switch>{MarketplaceRouter()}</Switch>
             </MemoryRouter>,
         )
-        expect(el.text()).toBe('New product')
+        expect(el.text()).toBe('New project')
     })
     it('does not show edit product page', () => {
         const el = mount(

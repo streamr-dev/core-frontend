@@ -7,18 +7,18 @@ import { ProjectTypeEnum } from '$mp/utils/constants'
 import Layout from '$shared/components/Layout'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
-import { EditorNav } from '$mp/containers/EditProductPage/EditorNav'
+import { EditorNav } from '$mp/containers/ProjectEditing/EditorNav'
 import { ProjectStateContext, ProjectStateContextProvider } from '$mp/contexts/ProjectStateContext'
 import {
     ValidationContext,
     ValidationContextProvider
 } from '$mp/containers/ProductController/ValidationContextProvider'
-import { ProjectEditor } from '$mp/containers/EditProductPage/ProjectEditor'
+import { ProjectEditor } from '$mp/containers/ProjectEditing/ProjectEditor'
 import styles from '$shared/components/Layout/layout.pcss'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import {
     ProjectControllerProvider
-} from '$mp/containers/EditProductPage/ProjectController'
+} from '$mp/containers/ProjectEditing/ProjectController'
 import {mapProjectTypeName} from "$mp/utils/project-mapper"
 import { useEditableProjectActions } from '../ProductController/useEditableProjectActions'
 

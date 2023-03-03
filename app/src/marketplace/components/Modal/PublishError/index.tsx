@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import { PublishMode } from '$mp/containers/EditProductPage/publishMode'
+import { PublishMode } from '$mp/containers/ProjectEditing/publishMode'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import PngIcon from '$shared/components/PngIcon'

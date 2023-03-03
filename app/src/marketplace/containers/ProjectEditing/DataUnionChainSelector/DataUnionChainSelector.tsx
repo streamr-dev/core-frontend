@@ -6,9 +6,9 @@ import getCoreConfig from '$app/src/getters/getCoreConfig'
 import {
     DataUnionChainSelectorContext,
     DataUnionChainSelectorContextProvider
-} from '$mp/containers/EditProductPage/DataUnionChainSelector/DataUnionChainSelectorContext'
+} from '$mp/containers/ProjectEditing/DataUnionChainSelector/DataUnionChainSelectorContext'
 import { getConfigForChainByName } from '$shared/web3/config'
-import { DataUnionChainOption } from '$mp/containers/EditProductPage/DataUnionChainSelector/DataUnionChainOption'
+import { DataUnionChainOption } from '$mp/containers/ProjectEditing/DataUnionChainSelector/DataUnionChainOption'
 import { Address } from '$shared/types/web3-types'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 

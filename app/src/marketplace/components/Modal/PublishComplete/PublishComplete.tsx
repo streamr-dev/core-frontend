@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import useCopy from '$shared/hooks/useCopy'
-import { PublishMode } from '$mp/containers/EditProductPage/publishMode'
+import { PublishMode } from '$mp/containers/ProjectEditing/publishMode'
 import routes from '$routes'
 import type { Props } from '.'
 const TranslatedText = styled.p`

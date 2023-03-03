@@ -6,8 +6,8 @@ import Checkbox from '$shared/components/Checkbox'
 import SvgIcon from '$shared/components/SvgIcon'
 import NetworkIcon from '$shared/components/NetworkIcon'
 import { PricingData, SalePoint } from '$mp/types/project-types'
-import TokenSelector from '$mp/containers/EditProductPage/TokenSelector'
-import { BeneficiaryAddress } from '$mp/containers/EditProductPage/BeneficiaryAddress'
+import TokenSelector from '$mp/containers/ProjectEditing/TokenSelector'
+import { BeneficiaryAddress } from '$mp/containers/ProjectEditing/BeneficiaryAddress'
 import { Address } from '$shared/types/web3-types'
 
 export const PricingOption: FunctionComponent<{

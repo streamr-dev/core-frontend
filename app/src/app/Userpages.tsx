@@ -11,8 +11,7 @@ import StreamEditPage from '$app/src/pages/StreamEditPage'
 import TransactionList from '$userpages/components/TransactionPage/List'
 import PurchasesPage from '$userpages/components/PurchasesPage'
 import ProductsPage from '$userpages/components/ProductsPage'
-import {LoadedProjectContextProvider} from "$mp/contexts/LoadedProjectContext"
-import EditProjectContainer from "$mp/containers/EditProductPage/EditProjectPage"
+import EditProjectContainer from "$mp/containers/ProjectEditing/EditProjectPage"
 import routes from '$routes'
 
 const Route = withErrorBoundary(ErrorPage)(RouterRoute)
@@ -30,9 +29,7 @@ const ProductsPageAuth: FunctionComponent = (props) => <UserIsAuthenticatedRoute
     <ProductsPage {...props}/>
 </UserIsAuthenticatedRoute>
 const EditProductAuth: FunctionComponent = (props) => <UserIsAuthenticatedRoute>
-    <LoadedProjectContextProvider>
-        <EditProjectContainer {...props} />
-    </LoadedProjectContextProvider>
+    <EditProjectContainer {...props} />
 </UserIsAuthenticatedRoute>
 const StreamCreatePageAuth: FunctionComponent = (props) => <UserIsAuthenticatedRoute>
     <StreamCreatePage {...props}/>
