@@ -1,9 +1,11 @@
 import React, { FunctionComponent, useCallback, useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import type { Stream, StreamID } from 'streamr-client'
+
 import InterruptionError from '$shared/errors/InterruptionError'
 import useInterrupt from '$shared/hooks/useInterrupt'
-import useFetchStreamsFromIndexer from '$app/src/shared/hooks/useFetchStreamsFromIndexer'
-import { IndexerStream } from '$app/src/services/streams'
+import useFetchStreams from '$app/src/shared/hooks/useFetchStreams'
+import { getStreamsFromIndexer, IndexerStream } from '$app/src/services/streams'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 import { StreamSelectTable } from '$shared/components/StreamSelectTable'
@@ -39,8 +41,9 @@ export const StreamSelector: FunctionComponent = () => {
     const {updateStreams} = useEditableProjectActions()
     const [search, setSearch] = useState<string>('')
     const itp = useInterrupt()
-    const fetchStreams = useFetchStreamsFromIndexer()
-    const [streams, setStreams] = useState<Array<IndexerStream>>([])
+    const fetchStreams = useFetchStreams()
+    const [streams, setStreams] = useState<Array<Stream>>([])
+    const [streamStats, setStreamStats] = useState<Record<StreamID, IndexerStream>>({})
     const [hasMore, setHasMore] = useState<boolean>(false)
     const fetch = useCallback(async () => {
         const { requireUninterrupted } = itp(search)
@@ -51,8 +54,16 @@ export const StreamSelector: FunctionComponent = () => {
                 allowPublic: false,
                 onlyCurrentUser: true,
             })
+            const stats = await getStreamsFromIndexer(newStreams.map((s) => s.id))
             requireUninterrupted()
             setHasMore(hasMoreResults)
+
+            if (stats && stats.length > 0) {
+                setStreamStats((prev) => ({
+                    ...prev,
+                    ...Object.fromEntries(stats.map((is) => [is.id, is]))
+                }))
+            }
 
             if (isFirstBatch) {
                 setStreams(newStreams)
@@ -86,6 +97,7 @@ export const StreamSelector: FunctionComponent = () => {
         />
         <StreamSelectTable
             streams={streams}
+            streamStats={streamStats}
             loadMore={fetch}
             hasMoreResults={hasMore}
             onSelectionChange={updateStreams}
