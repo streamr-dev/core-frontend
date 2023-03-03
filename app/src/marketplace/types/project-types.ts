@@ -11,11 +11,7 @@ export type ProjectId = string
 export type ChainName = string
 export type ProjectState = $Keys<typeof projectStates>
 export type ProjectType = $Values<typeof projectTypes>
-export type PendingChanges = {
-    adminFee?: string
-    requiresWhitelist?: boolean
-    pricingTokenAddress?: Address
-}
+
 export type SalePoint = {
     chainId: number,
     beneficiaryAddress?: Address
@@ -47,7 +43,6 @@ export type Project = {
     description: string
     imageUrl?: string | null | undefined
     newImageToUpload?: File | null | undefined
-    thumbnailUrl: string | null | undefined
     streams: StreamIdList
     type?: ProjectTypeEnum
     termsOfUse: TermsOfUse

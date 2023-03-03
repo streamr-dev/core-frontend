@@ -103,7 +103,7 @@ export const BeneficiaryAddress: FunctionComponent<BeneficiaryAddressProps> = ({
     }, [accountAddress, beneficiaryAddress, onChange])
 
     const handleUpdate = (value: string): void => {
-        onChange(value)
+        onChange(value.toLowerCase())
         const isValid = isEthereumAddress(value)
         if (isValid) {
             clearStatus()
@@ -133,7 +133,7 @@ export const BeneficiaryAddress: FunctionComponent<BeneficiaryAddressProps> = ({
                 <Text
                     id="beneficiaryAddress"
                     autoComplete="off"
-                    value={beneficiaryAddress || ''}
+                    defaultValue={beneficiaryAddress}
                     onChange={(event: ChangeEvent<HTMLInputElement>) => {
                         handleUpdate(event.target.value)
                     }}

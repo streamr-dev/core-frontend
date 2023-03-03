@@ -2,6 +2,7 @@ import getMainChainId from '$app/src/getters/getMainChainId'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { getConfigForChainByName } from '$shared/web3/config'
+import {TimeUnit} from "$shared/types/common-types"
 
 /*
     These are all type
@@ -54,6 +55,16 @@ export const timeUnits = {
     week: 'week',
     month: 'month',
 }
+
+export const timeUnitSecondsMultiplierMap = new Map<TimeUnit, number>([
+    ['second', 1],
+    ['minute', 60],
+    ['hour', 3600],
+    ['day', 86400],
+    ['week', 604800],
+    ['month', 2.628e+6]
+])
+
 export const transactionStates = {
     STARTED: 'started',
     // transaction started

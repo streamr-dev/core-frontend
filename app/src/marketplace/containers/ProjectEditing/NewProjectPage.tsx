@@ -1,39 +1,37 @@
 import React, { ReactNode, useContext, useEffect, useMemo } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import qs from 'query-string'
 import '$mp/types/project-types'
-import useIsMounted from '$shared/hooks/useIsMounted'
 import { ProjectTypeEnum } from '$mp/utils/constants'
-import useFailure from '$shared/hooks/useFailure'
 import Layout from '$shared/components/Layout'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
-import { EditorNav } from '$mp/containers/EditProductPage/EditorNav'
+import { EditorNav } from '$mp/containers/ProjectEditing/EditorNav'
 import { ProjectStateContext, ProjectStateContextProvider } from '$mp/contexts/ProjectStateContext'
 import {
     ValidationContext,
     ValidationContextProvider
 } from '$mp/containers/ProductController/ValidationContextProvider'
-import { ProjectEditor } from '$mp/containers/EditProductPage/ProjectEditor'
+import { ProjectEditor } from '$mp/containers/ProjectEditing/ProjectEditor'
 import styles from '$shared/components/Layout/layout.pcss'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import {
+    ProjectControllerContext,
     ProjectControllerProvider
-} from '$mp/containers/EditProductPage/ProjectController'
-import { useEditableProjectActions } from '../containers/ProductController/useEditableProjectActions'
+} from '$mp/containers/ProjectEditing/ProjectController'
+import {mapProjectTypeName} from "$mp/utils/project-mapper"
+import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
+import { useEditableProjectActions } from '../ProductController/useEditableProjectActions'
 
 type Props = {
     className?: string | null | undefined
 }
 
-const UnstyledNewProductPage = ({ className }: Props) => {
-    // todo check and remove unused hooks
-    const history = useHistory()
-    const isMounted = useIsMounted()
-    const fail = useFailure()
+const UnstyledNewProjectPage = ({ className }: Props) => {
     const location = useLocation()
     const {state: project} = useContext(ProjectStateContext)
+    const {publishInProgress} = useContext(ProjectControllerContext)
     const { type } = qs.parse(location.search)
     const { updateType } = useEditableProjectActions()
     const { isAnyTouched, resetTouched } = useContext(ValidationContext)
@@ -49,22 +47,7 @@ const UnstyledNewProductPage = ({ className }: Props) => {
     }, [])
 
     const pageTitle = useMemo<ReactNode>(() => {
-        let projectType: string
-        switch (project.type) {
-            case ProjectTypeEnum.OPEN_DATA:
-                projectType = 'Open Data'
-                break
-            case ProjectTypeEnum.DATA_UNION:
-                projectType = 'Data Union'
-                break
-            case ProjectTypeEnum.PAID_DATA:
-                projectType = 'Paid Data'
-                break
-            default:
-                projectType = 'Project'
-                break
-        }
-        return <>{projectType} by <strong>[CREATOR NAME HERE]</strong></>
+        return <>{mapProjectTypeName(project.type)} by <strong>[CREATOR NAME HERE]</strong></>
     }, [project])
 
     const linkTabs = useMemo(() => [
@@ -88,21 +71,26 @@ const UnstyledNewProductPage = ({ className }: Props) => {
             pageTitle={pageTitle}
             linkTabs={linkTabs}
         />
+        <LoadingIndicator loading={publishInProgress}/>
         <ProjectEditor/>
     </Layout>
 }
 
-const StyledNewProductPage = styled(UnstyledNewProductPage)`
+const StyledNewProjectPage = styled(UnstyledNewProjectPage)`
     position: absolute;
     top: 0;
     height: 2px;
+`
+
+const LoadingIndicator = styled(PrestyledLoadingIndicator)`
+    top: 2px;
 `
 
 const NewProjectPageContainer = (props: Props) => {
     return <ProjectStateContextProvider>
         <ValidationContextProvider>
             <ProjectControllerProvider>
-                <StyledNewProductPage {...props}/>
+                <StyledNewProjectPage {...props}/>
             </ProjectControllerProvider>
         </ValidationContextProvider>
     </ProjectStateContextProvider>

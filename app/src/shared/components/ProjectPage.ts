@@ -4,7 +4,7 @@ import { SM, MD, LG, XL, COLORS } from '$shared/utils/styled'
 
 export const ProjectPageContainer = styled.div`
   margin: 0 auto;
-
+  position: relative;
   padding: 24px;
 
   & & {

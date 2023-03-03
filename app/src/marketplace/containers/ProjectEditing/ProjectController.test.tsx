@@ -5,7 +5,7 @@ import {Chain} from "@streamr/config"
 import {RecursiveKeyOf} from "$utils/recursiveKeyOf"
 import {Project} from "$mp/types/project-types"
 import * as validationCtx from "$mp/containers/ProductController/ValidationContextProvider"
-import {createProject, SmartContractProjectCreate} from "$app/src/services/projects"
+import {createProject, SmartContractProjectCreate, updateProject} from "$app/src/services/projects"
 import {useProjectState} from "$mp/contexts/ProjectStateContext"
 import Notification from '$shared/utils/Notification'
 import {ProjectTypeEnum} from "$mp/utils/constants"
@@ -45,7 +45,8 @@ jest.mock('$shared/utils/Notification', () => ({
 }))
 
 jest.mock('$app/src/services/projects', () => ({
-    createProject: jest.fn()
+    createProject: jest.fn(),
+    updateProject: jest.fn()
 }))
 
 jest.mock('$mp/contexts/ProjectStateContext', () => ({
@@ -86,7 +87,6 @@ const PROJECT_STUB: Project = {
             timeUnit: 'hour'
         }
     },
-    thumbnailUrl: undefined,
     streams: ['stream1', 'stream2'],
     termsOfUse: {
         commercialUse: true,
@@ -101,10 +101,10 @@ const PROJECT_STUB: Project = {
 describe('ProjectController', () => {
     let controller: ProjectController
 
-    const prepareTest = (
+    const prepareTestForProjectCreate = (
         createProjectResult: boolean,
         validationResult: Partial<Record<RecursiveKeyOf<Project>, {level: validationCtx.SeverityLevel, message: string}>>,
-        state: Project
+        state: Project,
     ) => {
         (createProject as Mock).mockReset();
         (useProjectState as Mock).mockReset();
@@ -131,8 +131,38 @@ describe('ProjectController', () => {
         render(<Component/>)
     }
 
+    const prepareTestForProjectUpdate = (
+        updateProjectResult: boolean,
+        validationResult: Partial<Record<RecursiveKeyOf<Project>, {level: validationCtx.SeverityLevel, message: string}>>,
+        state: Project,
+    ) => {
+        (updateProject as Mock).mockReset();
+        (useProjectState as Mock).mockReset();
+        (updateProject as Mock).mockImplementation(() => ({
+            onTransactionComplete: ((cb: () => void) => {
+                if (updateProjectResult === true) {
+                    cb()
+                }
+            }),
+            onError: ((cb: () => void) => {
+                if (updateProjectResult === false) {
+                    cb()
+                }
+            })
+        } as any))
+        jest.spyOn(validationCtx, 'useValidationContext').mockImplementation(() => ({
+            validate: () => validationResult
+        }) as any);
+        (useProjectState as Mock).mockImplementation(() => ({state, updateState: () => {}}))
+        const Component = () => {
+            controller = useProjectController()
+            return <></>
+        }
+        render(<Component/>)
+    }
+
     it('should create a project with proper data ', async () => {
-        prepareTest(true, {}, PROJECT_STUB)
+        prepareTestForProjectCreate(true, {}, PROJECT_STUB)
         let result: boolean
         await act(async () => {
             result = await controller.create()
@@ -177,7 +207,7 @@ describe('ProjectController', () => {
 
     it('should not call createProject function, when some field is invalid and error notifications should be displayed', async () => {
         const errorText = 'Invalid project name'
-        prepareTest(true, {name: {level: validationCtx.SeverityLevel.ERROR, message: errorText}}, {...PROJECT_STUB})
+        prepareTestForProjectCreate(true, {name: {level: validationCtx.SeverityLevel.ERROR, message: errorText}}, {...PROJECT_STUB})
         let result: boolean
         await act(async () => {
             result = await controller.create()
@@ -191,7 +221,7 @@ describe('ProjectController', () => {
     })
 
     it('should display an error notification when an error occurs while publishing', async () => {
-        prepareTest(false, {}, {...PROJECT_STUB})
+        prepareTestForProjectCreate(false, {}, {...PROJECT_STUB})
         let result: boolean
         await act(async () => {
             result = await controller.create()
@@ -202,6 +232,50 @@ describe('ProjectController', () => {
             title: 'Error',
             description: 'An error occurred and your project was not published',
             icon: NotificationIcon.ERROR,
+        })
+    })
+
+    it('should update a project ', async () => {
+        const stubProjectId = '1234'
+        prepareTestForProjectUpdate(true, {}, {...PROJECT_STUB, id: stubProjectId})
+        let result: boolean
+        await act(async () => {
+            result = await controller.update()
+        })
+        expect(result).toBe(true)
+        expect(updateProject).toHaveBeenCalledWith(expect.objectContaining({
+            chainId: STUB_REGISTRY_CHAIN.id,
+            id: stubProjectId,
+            minimumSubscriptionInSeconds: 0,
+            paymentDetails: [{
+                chainId: PROJECT_STUB.salePoints['polygon'].chainId,
+                beneficiaryAddress: PROJECT_STUB.salePoints['polygon'].beneficiaryAddress,
+                pricePerSecond: Number(PROJECT_STUB.salePoints['polygon'].pricePerSecond),
+                pricingTokenAddress: PROJECT_STUB.salePoints['polygon'].pricingTokenAddress
+            }]
+        }))
+        const expectedMetadata = {
+            name: PROJECT_STUB.name,
+            description: PROJECT_STUB.description,
+            imageUrl: STUB_UPLOADED_IMAGE_URL,
+            contactDetails: {
+                email: PROJECT_STUB.contact.email,
+                url: PROJECT_STUB.contact.url,
+                twitter: PROJECT_STUB.contact.twitter,
+                telegram: PROJECT_STUB.contact.telegram,
+                reddit: PROJECT_STUB.contact.reddit,
+                linkedIn: PROJECT_STUB.contact.linkedIn
+            },
+            termsOfUse: {...PROJECT_STUB.termsOfUse},
+        }
+        const argument = (createProject as Mock).mock.lastCall[0] as SmartContractProjectCreate
+        const argumentMetadata = JSON.parse(argument.metadata)
+        expect(argumentMetadata).toEqual(expectedMetadata)
+        expect(isHex(argument.id)).toEqual(true)
+        expect(Notification.push).toHaveBeenCalledWith({
+            title: 'Published',
+            description: 'Your project was updated!',
+            icon: NotificationIcon.CHECKMARK,
         })
     })
 })

@@ -5,9 +5,9 @@ import { Project } from '../types/project-types'
 
 export const ProjectStateContext = createContext<StateContainerProps<Project>>(null)
 
-export const ProjectStateContextProvider: FunctionComponent<{children: ReactNode | ReactNode[] }> = ({children}) => {
+export const ProjectStateContextProvider: FunctionComponent<{children: ReactNode | ReactNode[], initState?: Project }> = ({children, initState}) => {
     const defaultState = useMemo(() => new EmptyProject(), [])
-    return <ProjectStateContext.Provider value={useStateContainer<Project>(defaultState)}>
+    return <ProjectStateContext.Provider value={useStateContainer<Project>(initState || defaultState)}>
         {children}
     </ProjectStateContext.Provider>
 }

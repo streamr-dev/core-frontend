@@ -1,5 +1,5 @@
 import React from 'react'
-import { PublishMode } from '$mp/containers/EditProductPage/publishMode'
+import { PublishMode } from '$mp/containers/ProjectEditing/publishMode'
 import type { ProjectId } from '$mp/types/project-types'
 import PublishComplete from './PublishComplete'
 import UnpublishComplete from './UnpublishComplete'

@@ -37,6 +37,11 @@ jest.mock('$auth/utils/userAuthenticated', () => ({
     UserIsAuthenticatedRoute: ({children}) => <>{children}</>,
 }))
 
+jest.mock('$mp/containers/ProjectEditing/EditProjectPage', () => ({
+    __esModule: true,
+    default: () => 'Edit product',
+}))
+
 /* eslint-enable react/prop-types */
 describe('Userpages Routes', () => {
     it('shows the new stream page', () => {
@@ -78,6 +83,14 @@ describe('Userpages Routes', () => {
             </MemoryRouter>,
         )
         expect(el.text()).toBe('Products list')
+    })
+    it('shows edit product page', () => {
+        const el = mount(
+            <MemoryRouter initialEntries={['/core/products/PRODUCTID/edit']}>
+                <Switch>{UserpagesRouter()}</Switch>
+            </MemoryRouter>,
+        )
+        expect(el.text()).toBe('Edit product')
     })
     /*
     it('redirects to stream list on bad route', () => {

@@ -12,7 +12,6 @@ export const existingProduct: Project = {
     state: 'DEPLOYED',
     owner: 'Tester One',
     imageUrl: 'https://images.pexels.com/photos/744515/pexels-photo-744515.jpeg?h=400',
-    thumbnailUrl: 'https://images.pexels.com/photos/744515/pexels-photo-744515.jpeg?h=210',
     contact: null,
     termsOfUse: {
         commercialUse: true,

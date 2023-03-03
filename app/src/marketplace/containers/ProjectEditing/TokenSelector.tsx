@@ -21,13 +21,6 @@ import { PricingData, Project } from '$mp/types/project-types'
 import { RecursiveKeyOf } from '$utils/recursiveKeyOf'
 import { pricePerSecondFromTimeUnit } from '$mp/utils/price'
 
-type Props = {
-    disabled?: boolean,
-    chain: Chain,
-    onChange: (pricing: PricingData) => void,
-    value?: PricingData,
-    validationFieldName: RecursiveKeyOf<Project>
-}
 const Container = styled.div`
   color: ${COLORS.primary};
   max-width: ${MAX_CONTENT_WIDTH};
@@ -132,29 +125,48 @@ const SelectContainer = styled.div`
     }
 `
 
-const options = [timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month].map((unit: TimeUnit) => ({
+const options = Object.values(timeUnits).map((unit: TimeUnit) => ({
     label: `Per ${unit}`,
     value: unit,
 }))
+
+type Props = {
+    disabled?: boolean,
+    chain: Chain,
+    onChange: (pricing: PricingData) => void,
+    value?: PricingData,
+    validationFieldName: RecursiveKeyOf<Project>,
+    tokenChangeDisabled: boolean
+}
 
 const TokenSelector: FunctionComponent<Props> = ({
     disabled,
     onChange,
     chain,
     validationFieldName,
-    value
+    value,
+    tokenChangeDisabled
 }) => {
+    const dataAddress = useMemo(() => getDataAddress(chain.id).toLowerCase(), [chain])
     const isMounted = useIsMounted()
-    const [selection, setSelection] = useState<ContractCurrency>(null)
-    const [customTokenAddress, setCustomTokenAddress] = useState<Address>('')
-    const [selectedTokenAddress, setSelectedTokenAddress] = useState<Address>(null)
+    const [selection, setSelection] = useState<ContractCurrency>(
+        (value?.tokenAddress && value?.tokenAddress === dataAddress)
+            ? contractCurrencies.DATA
+            : contractCurrencies.PRODUCT_DEFINED
+    )
+    const [customTokenAddress, setCustomTokenAddress] = useState<Address>(
+        (value?.tokenAddress && value?.tokenAddress !== dataAddress)
+            ? value.tokenAddress
+            : ''
+    )
+    const [selectedTokenAddress, setSelectedTokenAddress] = useState<Address>(value?.tokenAddress?.toLowerCase())
     const [tokenSymbol, setTokenSymbol] = useState<string>(null)
-    const [price, setPrice] = useState<string>()
-    const [timeUnit, setTimeUnit] = useState<TimeUnit>()
+    const [price, setPrice] = useState<string>(value?.price?.toString())
+    const [timeUnit, setTimeUnit] = useState<TimeUnit>(value?.timeUnit)
     const [tokenDecimals, setTokenDecimals] = useState<number>(18)
     const [isEditable, setIsEditable] = useState<boolean>(false)
     const {setStatus, clearStatus, isValid} = useValidation(validationFieldName)
-    const pricingTokenAddress = value?.tokenAddress
+    const pricingTokenAddress = value?.tokenAddress?.toLowerCase()
 
     const debouncedOnChange = useMemo(() => debounce(onChange, 50), [onChange])
 
@@ -174,7 +186,6 @@ const TokenSelector: FunctionComponent<Props> = ({
             let loading = true
 
             const check = async () => {
-                const dataAddress = getDataAddress(chain.id)
 
                 if (pricingTokenAddress === dataAddress) {
                     setSelection(contractCurrencies.DATA)
@@ -235,13 +246,17 @@ const TokenSelector: FunctionComponent<Props> = ({
     }, [selection, chain.id])
 
     useEffect(() => {
+        let pricePerSecond
+        if (price && timeUnit) {
+            pricePerSecond = (timeUnit === timeUnits.second)
+                ? new BN(price)
+                : new BN(pricePerSecondFromTimeUnit(new BN(price), timeUnit, new BN(tokenDecimals)))
+        }
         const output: PricingData = {
             price: price ? new BN(price) : undefined,
             timeUnit,
-            tokenAddress: selectedTokenAddress,
-            pricePerSecond: price && timeUnit
-                ? new BN(pricePerSecondFromTimeUnit(new BN(price), timeUnit, new BN(tokenDecimals)))
-                : undefined
+            tokenAddress: selectedTokenAddress?.toLowerCase(),
+            pricePerSecond
         }
         debouncedOnChange(output)
     }, [price, timeUnit, selectedTokenAddress, selection, tokenDecimals])
@@ -263,7 +278,7 @@ const TokenSelector: FunctionComponent<Props> = ({
                             <SvgIcon name={'DATAColor'} className={'data-icon'} />
                         </RadioLabel>}
                         value={contractCurrencies.DATA}
-                        disabled={disabled}
+                        disabled={disabled || tokenChangeDisabled}
                         disabledReason={'You need to select the chain first!'}
                         onChange={setSelection}
                         className={'radio'}
@@ -278,7 +293,7 @@ const TokenSelector: FunctionComponent<Props> = ({
                             <span>Custom Token</span>
                         </RadioLabel>}
                         value={contractCurrencies.PRODUCT_DEFINED}
-                        disabled={disabled}
+                        disabled={disabled || tokenChangeDisabled}
                         disabledReason={'You need to select the chain first!'}
                         onChange={setSelection}
                         className={'radio'}
@@ -288,7 +303,7 @@ const TokenSelector: FunctionComponent<Props> = ({
                         <label>Token contract address</label>
                         <Text
                             autoComplete="off"
-                            disabled={selection !== contractCurrencies.PRODUCT_DEFINED || disabled || !isEditable}
+                            disabled={selection !== contractCurrencies.PRODUCT_DEFINED || disabled || !isEditable || tokenChangeDisabled}
                             placeholder={'e.g 0xdac17f958d2ee523a2206206994597c13d831ec7'}
                             value={customTokenAddress}
                             onChange={(e) => setCustomTokenAddress(e.target.value)}
@@ -323,7 +338,7 @@ const TokenSelector: FunctionComponent<Props> = ({
                             placeholder={'Unit'}
                             options={options}
                             isClearable={false}
-                            value={value?.timeUnit}
+                            value={timeUnit}
                             onChange={(selected) => {setTimeUnit(selected as TimeUnit)}}
                             disabled={disabled}
                         />

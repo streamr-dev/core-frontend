@@ -19,7 +19,7 @@ import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import getNativeTokenName from '$shared/utils/nativeToken'
-import { PublishMode } from '$mp/containers/EditProductPage/publishMode'
+import { PublishMode } from '$mp/containers/ProjectEditing/publishMode'
 import { ProjectTypeEnum } from '$mp/utils/constants'
 
 type Props = {

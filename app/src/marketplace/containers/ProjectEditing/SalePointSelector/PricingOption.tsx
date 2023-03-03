@@ -6,8 +6,8 @@ import Checkbox from '$shared/components/Checkbox'
 import SvgIcon from '$shared/components/SvgIcon'
 import NetworkIcon from '$shared/components/NetworkIcon'
 import { PricingData, SalePoint } from '$mp/types/project-types'
-import TokenSelector from '$mp/containers/EditProductPage/TokenSelector'
-import { BeneficiaryAddress } from '$mp/containers/EditProductPage/BeneficiaryAddress'
+import TokenSelector from '$mp/containers/ProjectEditing/TokenSelector'
+import { BeneficiaryAddress } from '$mp/containers/ProjectEditing/BeneficiaryAddress'
 import { Address } from '$shared/types/web3-types'
 
 export const PricingOption: FunctionComponent<{
@@ -15,12 +15,13 @@ export const PricingOption: FunctionComponent<{
     chain: Chain,
     pricingData?: PricingData
     onChange: (pricingData: SalePoint | null) => void
-}> = ({onToggle, chain, pricingData, onChange}) => {
+    editingSelectionAndTokenDisabled?: boolean
+}> = ({onToggle, chain, pricingData, onChange, editingSelectionAndTokenDisabled = false }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
     const [isSelected, setIsSelected] = useState<boolean>(!!pricingData)
     const toggleDropdown = useCallback(() => setIsDropdownOpen(!isDropdownOpen), [isDropdownOpen])
-    const [pricing, setPricing] = useState<PricingData>({} as PricingData)
-    const [beneficiaryAddress, setBeneficiaryAddress] = useState<Address>()
+    const [pricing, setPricing] = useState<PricingData>(pricingData || {} as PricingData)
+    const [beneficiaryAddress, setBeneficiaryAddress] = useState<Address>(pricingData?.beneficiaryAddress)
 
     const handleToggleClick = useCallback(() => {
         toggleDropdown()
@@ -61,6 +62,7 @@ export const PricingOption: FunctionComponent<{
             <label>
                 <StyledCheckbox
                     value={isSelected}
+                    disabled={editingSelectionAndTokenDisabled}
                     onClick={(event) => event.stopPropagation()}
                     onChange={(event) => {
                         setIsSelected(event.target.checked)
@@ -83,6 +85,7 @@ export const PricingOption: FunctionComponent<{
                         timeUnit: pricingData.timeUnit,
                         pricePerSecond: pricingData.pricePerSecond
                     } : null}
+                    tokenChangeDisabled={editingSelectionAndTokenDisabled}
                 />
                 <BeneficiaryAddress
                     beneficiaryAddress={pricingData?.beneficiaryAddress}
@@ -142,6 +145,9 @@ const DropdownToggle = styled.div`
 
 const StyledCheckbox = styled(Checkbox)`
   cursor: pointer;
+  &:disabled {
+    opacity: 0.3;
+  }
 `
 
 const PlusSymbol = styled(SvgIcon)`
