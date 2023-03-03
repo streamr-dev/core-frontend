@@ -54,16 +54,23 @@ export const StreamSelector: FunctionComponent = () => {
                 allowPublic: false,
                 onlyCurrentUser: true,
             })
-            const stats = await getStreamsFromIndexer(newStreams.map((s) => s.id))
+
+            try {
+                const stats = await getStreamsFromIndexer(newStreams.map((s) => s.id))
+
+                requireUninterrupted()
+                if (stats && stats.length > 0) {
+                    setStreamStats((prev) => ({
+                        ...prev,
+                        ...Object.fromEntries(stats.map((is) => [is.id, is]))
+                    }))
+                }
+            } catch (e) {
+                console.warn('Fetching stream stats failed', e)
+            }
+
             requireUninterrupted()
             setHasMore(hasMoreResults)
-
-            if (stats && stats.length > 0) {
-                setStreamStats((prev) => ({
-                    ...prev,
-                    ...Object.fromEntries(stats.map((is) => [is.id, is]))
-                }))
-            }
 
             if (isFirstBatch) {
                 setStreams(newStreams)
