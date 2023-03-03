@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useContext } from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import {Link, useHistory} from 'react-router-dom'
 import { LogoLink, Navbar, NavbarItem, NavContainer } from '$shared/components/Layout/Nav'
 import Logo from '$shared/components/Logo'
 import Button from '$shared/components/Button'
@@ -30,6 +30,7 @@ const FlexNavbarItem = styled(NavbarItem)`
 
 export const EditorNav: FunctionComponent<{isNewProject: boolean, editedProductHasChanged?: boolean}> = ({isNewProject, editedProductHasChanged}) => {
     const {create, publishInProgress, update} = useContext(ProjectControllerContext)
+    const history = useHistory()
     return <NavContainer>
         <FlexNavbar>
             <FlexNavbarItem>
@@ -40,7 +41,19 @@ export const EditorNav: FunctionComponent<{isNewProject: boolean, editedProductH
             </FlexNavbarItem>
             <FlexNavbarItem>
                 <Button tag={Link} to={routes.marketplace.index()} kind={'transparent'}>Exit</Button>
-                <Button disabled={publishInProgress || (!isNewProject && !editedProductHasChanged)} onClick={isNewProject ? create : update}>Publish</Button>
+                <Button
+                    disabled={publishInProgress || (!isNewProject && !editedProductHasChanged)}
+                    onClick={() => {
+                        const save = isNewProject ? create : update
+                        save().then((success) => {
+                            if (success) {
+                                history.push(routes.marketplace.index())
+                            }
+                        })
+                    }}
+                >
+                    Publish
+                </Button>
             </FlexNavbarItem>
         </FlexNavbar>
     </NavContainer>

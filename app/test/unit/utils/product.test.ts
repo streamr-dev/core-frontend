@@ -1,5 +1,4 @@
 import BN from 'bignumber.js'
-import { projectStates } from '$shared/utils/constants'
 import * as all from '$mp/utils/product'
 import { Project, SalePoint } from '$mp/types/project-types'
 import { ProjectTypeEnum } from '$mp/utils/constants'
@@ -175,7 +174,6 @@ describe('product utils', () => {
                 description: true,
                 imageUrl: true,
                 streams: true,
-                termsOfUse: false
             })
         })
         it('validates empty product paid data product', () => {
@@ -189,7 +187,6 @@ describe('product utils', () => {
                 imageUrl: true,
                 streams: true,
                 salePoints: true,
-                termsOfUse: false
             })
         })
         it('validates empty product paid data union', () => {
@@ -205,7 +202,6 @@ describe('product utils', () => {
                 adminFee: true,
                 dataUnionChainId: true,
                 salePoints: true,
-                termsOfUse: false
             })
         })
         it('validates name & description', () => {
@@ -220,7 +216,6 @@ describe('product utils', () => {
                 description: false,
                 imageUrl: true,
                 streams: true,
-                termsOfUse: false,
             })
         })
         it('validates image', () => {
@@ -234,7 +229,6 @@ describe('product utils', () => {
                 description: true,
                 imageUrl: false,
                 streams: true,
-                termsOfUse: false,
             })
             expect(
                 all.validate({
@@ -246,7 +240,6 @@ describe('product utils', () => {
                 description: true,
                 imageUrl: false,
                 streams: true,
-                termsOfUse: false
             })
         })
         it('validates streams', () => {
@@ -260,7 +253,6 @@ describe('product utils', () => {
                 description: true,
                 imageUrl: true,
                 streams: false,
-                termsOfUse: false
             })
         })
         it('validates data union required fields', () => {
@@ -278,7 +270,6 @@ describe('product utils', () => {
                 adminFee: false,
                 dataUnionChainId: false,
                 salePoints: true,
-                termsOfUse: false,
             })
             expect(
                 all.validate({
@@ -294,7 +285,6 @@ describe('product utils', () => {
                 adminFee: false,
                 dataUnionChainId: false,
                 salePoints: true,
-                termsOfUse: false,
             })
             expect(
                 all.validate({
@@ -310,7 +300,6 @@ describe('product utils', () => {
                 adminFee: true,
                 dataUnionChainId: true,
                 salePoints: true,
-                termsOfUse: false,
             })
         })
 
@@ -320,7 +309,6 @@ describe('product utils', () => {
                 description: true,
                 imageUrl: true,
                 streams: true,
-                termsOfUse: false,
             }
             const defaultSalePointChainName = 'polygon'
             const defaultSalePoint: SalePoint = {

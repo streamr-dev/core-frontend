@@ -17,9 +17,11 @@ import { ProjectEditor } from '$mp/containers/ProjectEditing/ProjectEditor'
 import styles from '$shared/components/Layout/layout.pcss'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import {
+    ProjectControllerContext,
     ProjectControllerProvider
 } from '$mp/containers/ProjectEditing/ProjectController'
 import {mapProjectTypeName} from "$mp/utils/project-mapper"
+import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
 import { useEditableProjectActions } from '../ProductController/useEditableProjectActions'
 
 type Props = {
@@ -29,6 +31,7 @@ type Props = {
 const UnstyledNewProjectPage = ({ className }: Props) => {
     const location = useLocation()
     const {state: project} = useContext(ProjectStateContext)
+    const {publishInProgress} = useContext(ProjectControllerContext)
     const { type } = qs.parse(location.search)
     const { updateType } = useEditableProjectActions()
     const { isAnyTouched, resetTouched } = useContext(ValidationContext)
@@ -68,6 +71,7 @@ const UnstyledNewProjectPage = ({ className }: Props) => {
             pageTitle={pageTitle}
             linkTabs={linkTabs}
         />
+        <LoadingIndicator loading={publishInProgress}/>
         <ProjectEditor/>
     </Layout>
 }
@@ -76,6 +80,10 @@ const StyledNewProjectPage = styled(UnstyledNewProjectPage)`
     position: absolute;
     top: 0;
     height: 2px;
+`
+
+const LoadingIndicator = styled(PrestyledLoadingIndicator)`
+    top: 2px;
 `
 
 const NewProjectPageContainer = (props: Props) => {

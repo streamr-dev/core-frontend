@@ -2,7 +2,7 @@ import React, {FunctionComponent, ReactNode, useContext, useEffect, useMemo} fro
 import styled from "styled-components"
 import {isEqual} from "lodash"
 import {ValidationContext, ValidationContextProvider} from "$mp/containers/ProductController/ValidationContextProvider"
-import {ProjectControllerProvider} from "$mp/containers/ProjectEditing/ProjectController"
+import {ProjectControllerContext, ProjectControllerProvider} from "$mp/containers/ProjectEditing/ProjectController"
 import {ProjectStateContext, ProjectStateContextProvider} from "$mp/contexts/ProjectStateContext"
 import usePreventNavigatingAway from "$shared/hooks/usePreventNavigatingAway"
 import Layout from "$shared/components/Layout"
@@ -16,8 +16,9 @@ import {mapProjectTypeName} from "$mp/utils/project-mapper"
 import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
 
 const UnstyledEditProjectPage: FunctionComponent = () => {
-    const {state: project, updateState} = useContext(ProjectStateContext)
+    const {state: project} = useContext(ProjectStateContext)
     const { isAnyTouched, resetTouched } = useContext(ValidationContext)
+    const {publishInProgress} = useContext(ProjectControllerContext)
     usePreventNavigatingAway('You have unsaved changes', isAnyTouched)
     const {loadedProject} = useLoadedProject()
     const nonEditableSalePointChains = useMemo<number[]>(
@@ -56,6 +57,7 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
             pageTitle={pageTitle}
             linkTabs={linkTabs}
         />
+        <LoadingIndicator loading={publishInProgress}/>
         <ProjectEditor nonEditableSalePointChains={nonEditableSalePointChains}/>
     </Layout>
 }

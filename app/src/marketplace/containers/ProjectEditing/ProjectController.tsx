@@ -143,6 +143,7 @@ export const useProjectController = (): ProjectController => {
     const updateExistingProject = useCallback(async (): Promise<boolean> => {
         const projectContractData = await getSmartContractProject(project.id)
 
+        setPublishInProgress(true)
         return new Promise((resolve) => {
             const transaction = updateProject(projectContractData)
             transaction.onTransactionComplete(() => {

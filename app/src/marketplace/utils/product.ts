@@ -90,7 +90,6 @@ export const validate = (project: Project): Partial<Record<RecursiveKeyOf<Projec
     })
     invalidFields.imageUrl = !project.imageUrl && !project.newImageToUpload
     invalidFields.streams = !project.streams || project.streams.length <= 0
-    invalidFields.termsOfUse = !!(project.termsOfUse != null && project.termsOfUse.termsUrl)
 
     if (project.contact) {
         ['url', 'social1', 'social2', 'social3', 'social4'].forEach((field) => {
