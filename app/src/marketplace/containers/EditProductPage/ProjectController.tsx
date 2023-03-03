@@ -76,12 +76,12 @@ export const useProjectController = (): ProjectController => {
         return metadata
     }, [project])
 
-    const getSmartContractProject = useCallback(async (): Promise<SmartContractProject> => {
+    const getSmartContractProject = useCallback(async (id?: string): Promise<SmartContractProject> => {
         const metadata: SmartContractProjectMetadata = await getProjectMetadata()
         return {
             metadata: JSON.stringify(metadata),
             chainId: registryChain.id,
-            id: randomHex(32),
+            id: id || randomHex(32),
             minimumSubscriptionInSeconds: 0,
             streams: [...project.streams],
             paymentDetails: project.type === ProjectTypeEnum.PAID_DATA ? Object.values(project.salePoints).map((salePoint) => {
@@ -141,7 +141,7 @@ export const useProjectController = (): ProjectController => {
     }, [project, getProjectMetadata])
 
     const updateExistingProject = useCallback(async (): Promise<boolean> => {
-        const projectContractData = await getSmartContractProject()
+        const projectContractData = await getSmartContractProject(project.id)
 
         return new Promise((resolve) => {
             const transaction = updateProject(projectContractData)
