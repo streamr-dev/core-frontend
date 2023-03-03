@@ -96,7 +96,7 @@ export const BeneficiaryAddress: FunctionComponent<BeneficiaryAddressProps> = ({
     }, [copy, beneficiaryAddress])
 
     useEffect(() => {
-        if (!defaultValueWasSet && !beneficiaryAddress) {
+        if (!defaultValueWasSet && !beneficiaryAddress && !!accountAddress) {
             onChange(accountAddress)
             setDefaultValueWasSet(true)
         }
@@ -133,7 +133,7 @@ export const BeneficiaryAddress: FunctionComponent<BeneficiaryAddressProps> = ({
                 <Text
                     id="beneficiaryAddress"
                     autoComplete="off"
-                    defaultValue={beneficiaryAddress}
+                    value={beneficiaryAddress || ''}
                     onChange={(event: ChangeEvent<HTMLInputElement>) => {
                         handleUpdate(event.target.value)
                     }}
