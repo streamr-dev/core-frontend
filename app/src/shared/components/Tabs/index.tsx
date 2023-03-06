@@ -166,6 +166,7 @@ export const TabOption = styled.li`
     @media(${DESKTOP}) {
       flex: unset;
     }
+  }
 `
 
 const Marker = styled.li`

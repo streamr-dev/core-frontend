@@ -57,8 +57,10 @@ const LinkTabList = styled(TabList)`
 `
 
 const LinkTabOption = styled(TabOption)`
+  padding: 0;
   a {
     color: ${COLORS.primary};
+    padding: 8px 16px;
   }
   &.selected {
     background-color: ${COLORS.primary};
