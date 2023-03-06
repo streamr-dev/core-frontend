@@ -30,9 +30,9 @@ export const PricingOption: FunctionComponent<{
         if (onToggle) {
             onToggle({
                 chainId: chain.id,
-                pricePerSecond: pricing?.pricePerSecond?.toString(),
+                pricePerSecond: pricing?.pricePerSecond,
                 timeUnit: pricing.timeUnit,
-                price: pricing?.price?.toString(),
+                price: pricing?.price,
                 pricingTokenAddress: pricing.tokenAddress,
                 beneficiaryAddress: beneficiaryAddress
             })

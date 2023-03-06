@@ -246,17 +246,13 @@ const TokenSelector: FunctionComponent<Props> = ({
     }, [selection, chain.id])
 
     useEffect(() => {
-        let pricePerSecond
-        if (price && timeUnit) {
-            pricePerSecond = (timeUnit === timeUnits.second)
-                ? new BN(price)
-                : new BN(pricePerSecondFromTimeUnit(new BN(price), timeUnit, new BN(tokenDecimals)))
-        }
         const output: PricingData = {
             price: price ? new BN(price) : undefined,
             timeUnit,
             tokenAddress: selectedTokenAddress?.toLowerCase(),
-            pricePerSecond
+            pricePerSecond: (price && timeUnit && tokenDecimals)
+                ? new BN(pricePerSecondFromTimeUnit(new BN(price), timeUnit, new BN(tokenDecimals)))
+                : undefined
         }
         debouncedOnChange(output)
     }, [price, timeUnit, selectedTokenAddress, selection, tokenDecimals])

@@ -1,4 +1,5 @@
 import React, { createContext, FunctionComponent, ReactNode, useCallback, useState } from 'react'
+import BN from "bignumber.js"
 import {randomHex} from "web3-utils"
 import {useProjectState} from '$mp/contexts/ProjectStateContext'
 import {
@@ -88,13 +89,13 @@ export const useProjectController = (): ProjectController => {
                 return {
                     chainId: salePoint.chainId,
                     beneficiaryAddress: salePoint.beneficiaryAddress,
-                    pricePerSecond: Number(salePoint.pricePerSecond),
+                    pricePerSecond: salePoint.pricePerSecond,
                     pricingTokenAddress: salePoint.pricingTokenAddress
                 }
             }) : [{
                 chainId: registryChain.id,
                 beneficiaryAddress: address0,
-                pricePerSecond: 0,
+                pricePerSecond: new BN(0),
                 pricingTokenAddress: getDataAddress(registryChain.id),
             }]
 

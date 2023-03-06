@@ -1,6 +1,6 @@
 import { AbiItem } from 'web3-utils'
 import { Contract } from 'web3-eth-contract'
-
+import BN from "bignumber.js"
 import getCoreConfig from "$app/src/getters/getCoreConfig"
 import { post } from "$shared/utils/api"
 import { call, getContract } from '$mp/utils/smartContract'
@@ -69,7 +69,7 @@ export type TheGraphProject = {
 export type PaymentDetails = {
     chainId: number,
     beneficiaryAddress: Address,
-    pricePerSecond: number,
+    pricePerSecond: BN,
     pricingTokenAddress: Address,
 }
 
@@ -110,7 +110,7 @@ export interface SmartContractProjectCreate extends SmartContractProject {
 
 type SmartContractPaymentDetails = {
     beneficiary: string,
-    pricePerSecond: number,
+    pricePerSecond: string,
     pricingTokenAddress: string,
 }
 
@@ -268,7 +268,7 @@ const getPaymentDetails = (paymentDetails: PaymentDetails[]): SmartContractPayme
     return paymentDetails.map((d) => ({
         beneficiary: d.beneficiaryAddress,
         pricingTokenAddress: d.pricingTokenAddress,
-        pricePerSecond: d.pricePerSecond,
+        pricePerSecond: d.pricePerSecond.toString(),
     }))
 }
 

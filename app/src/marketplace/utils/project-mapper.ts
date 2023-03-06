@@ -1,13 +1,15 @@
 import BN from "bignumber.js"
 import {TheGraphPaymentDetails, TheGraphProject} from "$app/src/services/projects"
 import {ChainName, Project, SalePoint} from "$mp/types/project-types"
-import {ProjectTypeEnum, projectTypes} from "$mp/utils/constants"
+import {ProjectTypeEnum} from "$mp/utils/constants"
 import {getConfigForChain} from "$shared/web3/config"
 import {getMostRelevantTimeUnit} from "$mp/utils/price"
 import {TimeUnit} from "$shared/types/common-types"
 import {timeUnitSecondsMultiplierMap} from "$shared/utils/constants"
+import {getTokenInformation} from "$mp/utils/web3"
+import {fromDecimals} from "$mp/utils/math"
 
-export const mapGraphProjectToDomainModel = (graphProject: TheGraphProject): Project => {
+export const mapGraphProjectToDomainModel = async (graphProject: TheGraphProject): Promise<Project> => {
     return {
         id: graphProject.id,
         type: mapProjectType(graphProject),
@@ -17,7 +19,7 @@ export const mapGraphProjectToDomainModel = (graphProject: TheGraphProject): Pro
         streams: graphProject.streams,
         termsOfUse: {...graphProject.metadata.termsOfUse},
         contact: {...graphProject.metadata.contactDetails},
-        salePoints: mapSalePoints(graphProject.paymentDetails)
+        salePoints: await mapSalePoints(graphProject.paymentDetails)
     }
 }
 
@@ -28,21 +30,22 @@ export const mapProjectType = (graphProject: TheGraphProject): ProjectTypeEnum =
         : ProjectTypeEnum.PAID_DATA
 }
 
-export const mapSalePoints = (paymentDetails: TheGraphPaymentDetails[]): Record<ChainName, SalePoint> => {
+export const mapSalePoints = async (paymentDetails: TheGraphPaymentDetails[]): Promise<Record<ChainName, SalePoint>> => {
     const salePoints: Record<ChainName, SalePoint> = {}
-    paymentDetails.forEach((paymentDetail) => {
+    await Promise.all(paymentDetails.map(async (paymentDetail) => {
         const chainConfig = getConfigForChain(Number(paymentDetail.domainId))
-        const pricePerSecondBN = new BN(paymentDetail.pricePerSecond)
-        const timeUnit: TimeUnit = getMostRelevantTimeUnit(pricePerSecondBN)
+        const tokenInfo = await getTokenInformation(paymentDetail.pricingTokenAddress, chainConfig.id)
+        const pricePerSecondFromDecimals = fromDecimals(paymentDetail.pricePerSecond, String(tokenInfo.decimals))
+        const timeUnit: TimeUnit = getMostRelevantTimeUnit(pricePerSecondFromDecimals)
         salePoints[chainConfig.name] = {
             chainId: chainConfig.id,
             pricingTokenAddress: paymentDetail.pricingTokenAddress.toLowerCase(),
-            pricePerSecond: paymentDetail.pricePerSecond,
+            pricePerSecond: new BN(paymentDetail.pricePerSecond),
             beneficiaryAddress: paymentDetail.beneficiary.toLowerCase(),
             timeUnit,
-            price: pricePerSecondBN.multipliedBy(timeUnitSecondsMultiplierMap.get(timeUnit)).toString()
+            price: pricePerSecondFromDecimals.multipliedBy(timeUnitSecondsMultiplierMap.get(timeUnit))
         }
-    })
+    }))
     return salePoints
 }
 
