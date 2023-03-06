@@ -15,7 +15,7 @@ export const validateSalePoint = (salePoint: SalePoint, isDataUnion?: boolean): 
         invalidFields.push('timeUnit')
     }
 
-    if (!isPriceValid(salePoint.price) || new BN(salePoint.price).isLessThanOrEqualTo(0)) {
+    if (!isPriceValid(salePoint.price)) {
         invalidFields.push('price')
     }
 

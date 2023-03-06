@@ -313,10 +313,10 @@ describe('product utils', () => {
             const defaultSalePointChainName = 'polygon'
             const defaultSalePoint: SalePoint = {
                 chainId: 12345,
-                pricePerSecond: '10',
+                pricePerSecond: new BN('10'),
                 pricingTokenAddress: '0xbAA81A0179015bE47Ad439566374F2Bae098686F',
                 beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
-                price: '3600',
+                price: new BN('3600'),
                 timeUnit: 'hour'
             };
             [
@@ -327,7 +327,7 @@ describe('product utils', () => {
                         salePoints: {
                             [defaultSalePointChainName] : {
                                 ...defaultSalePoint,
-                                pricePerSecond: '-10'
+                                pricePerSecond: new BN('-10')
                             }
                         }
                     },

@@ -1,4 +1,5 @@
 import React from "react"
+import BN from "bignumber.js"
 import {act, render} from "@testing-library/react"
 import {isHex, randomHex} from "web3-utils"
 import {Chain} from "@streamr/config"
@@ -82,8 +83,8 @@ const PROJECT_STUB: Project = {
             chainId: 1,
             beneficiaryAddress: randomHex(32),
             pricingTokenAddress: STUB_DATA_TOKEN_ADDRESS,
-            price: '2000',
-            pricePerSecond: '0.55555556',
+            price: new BN('2000'),
+            pricePerSecond: new BN('5555555555556'),
             timeUnit: 'hour'
         }
     },
@@ -176,7 +177,7 @@ describe('ProjectController', () => {
             paymentDetails: [{
                 chainId: PROJECT_STUB.salePoints['polygon'].chainId,
                 beneficiaryAddress: PROJECT_STUB.salePoints['polygon'].beneficiaryAddress,
-                pricePerSecond: Number(PROJECT_STUB.salePoints['polygon'].pricePerSecond),
+                pricePerSecond: PROJECT_STUB.salePoints['polygon'].pricePerSecond,
                 pricingTokenAddress: PROJECT_STUB.salePoints['polygon'].pricingTokenAddress
             }]
         }))
@@ -250,7 +251,7 @@ describe('ProjectController', () => {
             paymentDetails: [{
                 chainId: PROJECT_STUB.salePoints['polygon'].chainId,
                 beneficiaryAddress: PROJECT_STUB.salePoints['polygon'].beneficiaryAddress,
-                pricePerSecond: Number(PROJECT_STUB.salePoints['polygon'].pricePerSecond),
+                pricePerSecond: PROJECT_STUB.salePoints['polygon'].pricePerSecond,
                 pricingTokenAddress: PROJECT_STUB.salePoints['polygon'].pricingTokenAddress
             }]
         }))

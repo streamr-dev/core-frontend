@@ -13,7 +13,7 @@ const useLoadedProjectImplementation = (projectId: ProjectId): LoadedProjectStat
     useEffect(() => {
         const loadData = async () => {
             const theGraphProject = await getProject(projectId)
-            setMappedProject(mapGraphProjectToDomainModel(theGraphProject))
+            setMappedProject(await mapGraphProjectToDomainModel(theGraphProject))
         }
         loadData()
     }, [projectId])
