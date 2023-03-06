@@ -3,6 +3,7 @@ import type { Stream, StreamID } from 'streamr-client'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
+import { MarketplaceHelmet } from '$shared/components/Helmet'
 import { COLORS, DESKTOP, TABLET } from '$shared/utils/styled'
 import Button from '$shared/components/Button'
 import Layout from '$shared/components/Layout'
@@ -116,6 +117,7 @@ const NewStreamListingPage: React.FC = () => {
 
     return (
         <Layout>
+            <MarketplaceHelmet title="Streams" />
             <SearchBarWrap>
                 <SearchBar
                     value={search}

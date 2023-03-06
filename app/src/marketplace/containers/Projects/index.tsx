@@ -134,11 +134,11 @@ const ProjectsPage: FunctionComponent = () => {
                 dispatchPermissionsUpdate({projectId: project.id, userAddress: currentAuthSession.address, permissions})
             })
         }
-    }, [projects, currentAuthSession.address])
+    }, [projects, currentAuthSession.address, projectRegistry.chainId])
 
     return (
         <Layout className={styles.projectsListPage} framedClassName={styles.productsFramed} innerClassName={styles.productsInner} footer={false}>
-            <MarketplaceHelmet />
+            <MarketplaceHelmet title="Projects" />
             <ActionBar
                 filter={filter}
                 categories={[]}
