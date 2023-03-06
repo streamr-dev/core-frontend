@@ -259,7 +259,7 @@ function UnwrappedStreamPage({ children, loading = false, includeContainerBox = 
                 }}
             >
                 <Layout>
-                    <MarketplaceHelmet title={`Stream ${streamId}`} />
+                    <MarketplaceHelmet title={streamId ? `Stream ${streamId}` : 'New stream'} />
                     <DetailsPageHeader
                         backButtonLink={routes.streams.index()}
                         pageTitle={streamId}

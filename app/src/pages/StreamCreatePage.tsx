@@ -2,7 +2,6 @@ import React, { useRef } from 'react'
 import { StreamPermission } from 'streamr-client'
 import StreamContext from '$shared/contexts/StreamContext'
 import StreamPermissionsContext from '$shared/contexts/StreamPermissionsContext'
-import Display from '$shared/components/Display'
 import ValidationError from '$shared/errors/ValidationError'
 import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
 import StreamPage from './StreamPage'
@@ -37,7 +36,7 @@ export default function StreamCreatePage() {
             partitions: 1,
         },
     })
-    const { current: onValidate } = useRef(({ id }) => {
+    const { current: onValidate } = useRef(async ({ id }) => {
         if (!id) {
             throw new ValidationError('cannot be blank')
         }

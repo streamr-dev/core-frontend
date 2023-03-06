@@ -23,7 +23,7 @@ import reducer, { initialState, Init, SetBusy, Modify } from './reducer'
 
 type Props = {
     children?: React.ReactNode,
-    onValidate?: (params: any) => void,
+    onValidate?: (params: any) => Promise<void>,
 }
 
 export default function StreamModifier({ children, onValidate }: Props) {
@@ -84,7 +84,7 @@ export default function StreamModifier({ children, onValidate }: Props) {
         try {
             try {
                 if (typeof validate === 'function') {
-                    validate(newParams)
+                    await validate(newParams)
                 }
 
                 if (typeof validateNetworkRef.current === 'function') {
@@ -97,15 +97,19 @@ export default function StreamModifier({ children, onValidate }: Props) {
                 requireUninterrupted()
                 const innerStream = await (async () => {
                     if (!stream.id) {
+                        let existingStream = null
                         try {
-                            return client.createStream(newParams)
+                            existingStream = await client.getStream(newParams.id)
                         } catch (e) {
-                            if (e.code === 'DUPLICATE_NOT_ALLOWED') {
-                                throw new DuplicateError()
-                            }
-
-                            throw e
+                            // stream does not exist
                         }
+
+                        if (existingStream != null) {
+                            throw new DuplicateError()
+                        }
+
+                        const createdStream = await client.createStream(newParams)
+                        return createdStream
                     }
 
                     const copy = cloneDeep(stream)

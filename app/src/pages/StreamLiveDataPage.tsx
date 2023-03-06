@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 import { StreamPermission } from 'streamr-client'
-import { useHistory } from 'react-router-dom'
 
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
-import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
 import StreamPreview from '$shared/components/StreamPreview'
 import useStreamData from '$shared/hooks/useStreamData'
 import useStream from '$shared/hooks/useStream'
