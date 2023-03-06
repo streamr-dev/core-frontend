@@ -33,7 +33,7 @@ describe('projectMapper', () => {
             expect(salePoints[stubChainName].chainId).toEqual(666)
             expect(salePoints[stubChainName].beneficiaryAddress).toEqual(paymentDetailsStub[0].beneficiary)
             expect(salePoints[stubChainName].pricingTokenAddress).toEqual(paymentDetailsStub[0].pricingTokenAddress)
-            expect(salePoints[stubChainName].pricePerSecond.isEqualTo('0.000' + paymentDetailsStub[0].pricePerSecond)).toEqual(true)
+            expect(salePoints[stubChainName].pricePerSecond.isEqualTo(paymentDetailsStub[0].pricePerSecond)).toEqual(true)
             expect(salePoints[stubChainName].price).toEqual(expect.anything())
             expect(salePoints[stubChainName].timeUnit).toEqual(expect.any(String))
         })
