@@ -60,6 +60,9 @@ const PermissionsProvider = ({ resourceType, resourceId, children }) => {
     useEffect(() => {
         const fetch = async () => {
             try {
+                if (resourceId == null) {
+                    return
+                }
                 const stream = await client.getStream(resourceId)
                 const result = await stream.getPermissions()
 
