@@ -9,7 +9,7 @@ import {
     getDetailEditorDropdownMenuListStyles,
     getDetailEditorDropdownMenuStyles,
     getDetailEditorDropdownPlaceholderStyles, getDetailEditorDropdownOptionStyles
-} from './detailEditor.styles'
+} from './DetailEditor.styles'
 import EnterIcon from './enter.svg'
 
 export type DetailEditorSelectOption = {

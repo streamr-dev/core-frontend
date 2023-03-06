@@ -19,14 +19,19 @@ export const purchaseFlowSteps = {
 }
 export const productListPageSize = 20
 export const searchCharMax = 250
+
+/**
+ * @deprecated
+ */
 export const projectTypes = {
     NORMAL: 'NORMAL',
     DATAUNION: 'DATAUNION',
 }
 
-export enum projectTypeNames {
-    NORMAL = 'Data Project',
-    DATAUNION = 'Data Union'
+export const projectTypeNames: Record<ProjectTypeEnum, string> = {
+    OPEN_DATA: 'open data project',
+    PAID_DATA: 'paid data project',
+    DATA_UNION: 'Data Union'
 }
 
 // Hub project types

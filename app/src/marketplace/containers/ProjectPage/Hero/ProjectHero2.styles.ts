@@ -95,6 +95,24 @@ export const ProjectHeroDescriptionStyles = css`
     margin: 0 ${desktopSpacing} 24px;
   }
 `
+export const ProjectHeroMetadataContainer = styled.div`
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 4;
+  grid-row-end: 4;
+  display: flex;
+  gap: 10px;
+  margin-top: ${mobileSpacing};
+  
+  @media(${LAPTOP}) {
+    grid-column-start: 2;
+    grid-column-end: 2;
+    grid-row-start: 3;
+    grid-row-end: 3;
+    gap: 6px;
+    margin: ${desktopSpacing};
+  }
+`
 
 export const ProjectHeroSignalContainer = styled.div`
   grid-column-start: 1;

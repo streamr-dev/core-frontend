@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useClient } from 'streamr-client-react'
 import usePending from '$shared/hooks/usePending'
-export default function useLoadProductStreamsCallback({ setProductStreams }) {
+export default function useLoadProductStreamsCallback({ setProductStreams }): (streamIds: string[]) => void {
     const { wrap } = usePending('product.LOAD_PRODUCT_STREAMS')
     const client = useClient()
     return useCallback(

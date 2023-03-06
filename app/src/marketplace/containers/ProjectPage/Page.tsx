@@ -1,4 +1,4 @@
-import React, { useEffect} from 'react'
+import React, {FunctionComponent, useEffect} from 'react'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { useController } from '$mp/containers/ProductController'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
@@ -9,6 +9,7 @@ import ProjectPage, {
     ProjectPageContainer,
 } from '$shared/components/ProjectPage'
 import { getChainIdFromApiString } from '$shared/utils/chains'
+import {useLoadedProject} from "$mp/contexts/LoadedProjectContext"
 import useDataUnionServerStats from './useDataUnionServerStats'
 import Description from './Description'
 import DataUnionStats from './DataUnionStats'
@@ -16,39 +17,28 @@ import Streams from './Streams'
 import usePreviewStats from './usePreviewStats'
 import { ProjectHero2 } from './Hero/ProjectHero2'
 
-const ProjectDetailsPage = () => {
-    const { product } = useController()
-    const chainId = getChainIdFromApiString(product.chain)
-    const contractProduct = useContractProduct()
-    const { subscriberCount } = contractProduct || {}
-    const { created, adminFee, dataUnionDeployed, beneficiaryAddress } = product
-    const isDataUnion = !!(product && isDataUnionProduct(product))
-    const isDuDeployed = !!isDataUnion && !!dataUnionDeployed && isEthereumAddress(beneficiaryAddress)
-    const { startPolling, stopPolling, totalEarnings, memberCount } = useDataUnionServerStats()
-    const stats = usePreviewStats({
-        beneficiaryAddress,
-        created,
-        adminFee,
-        subscriberCount,
-        totalEarnings,
-        memberCount,
-    })
-    const dataUnion = useDataUnion()
-    useEffect(() => {
+const ProjectDetailsPage: FunctionComponent = () => {
+    const {loadedProject: project} = useLoadedProject()
+    const isDataUnion = !!(project && isDataUnionProduct(project))
+    // const isDuDeployed = !!isDataUnion && !!dataUnionDeployed && isEthereumAddress(beneficiaryAddress)
+    // const { startPolling, stopPolling, totalEarnings, memberCount } = useDataUnionServerStats()
+
+
+    /*useEffect(() => {
         if (isDataUnion) {
             startPolling(beneficiaryAddress, chainId)
             return () => stopPolling()
         }
 
         return () => {}
-    }, [startPolling, stopPolling, isDataUnion, beneficiaryAddress, chainId])
+    }, [startPolling, stopPolling, isDataUnion, beneficiaryAddress, chainId])*/
     return (
         <ProjectPage>
             <ProjectPageContainer>
-                <ProjectHero2 project={product}/>
-                <Description project={product} />
-                <Streams />
-                {isDataUnion && (
+                <ProjectHero2 project={project}/>
+                <Description project={project} />
+                <Streams project={project} />
+                {/*{isDataUnion && (
                     <DataUnionStats
                         showDeploying={!isDuDeployed}
                         stats={stats}
@@ -56,9 +46,9 @@ const ProjectDetailsPage = () => {
                         dataUnion={dataUnion}
                         chainId={chainId}
                     />
-                )}
+                )}*/}
 
-                <Terms product={product} />
+                <Terms product={project} />
             </ProjectPageContainer>
         </ProjectPage>
     )
