@@ -79,6 +79,15 @@ const NewStreamListingPage: React.FC = () => {
                 onlyCurrentUser: streamsSelection === StreamSelection.YOUR,
             })
 
+            requireUninterrupted()
+            setHasMore(hasMoreResults)
+
+            if (isFirstBatch) {
+                setStreams(newStreams)
+            } else {
+                setStreams((current = []) => [...current, ...newStreams])
+            }
+
             try {
                 const stats = await getStreamsFromIndexer(newStreams.map((s) => s.id))
 
@@ -92,16 +101,6 @@ const NewStreamListingPage: React.FC = () => {
             } catch (e) {
                 console.warn('Fetching stream stats failed', e)
             }
-
-            requireUninterrupted()
-            setHasMore(hasMoreResults)
-
-            if (isFirstBatch) {
-                setStreams(newStreams)
-                return
-            }
-
-            setStreams((current = []) => [...current, ...newStreams])
         } catch (e) {
             if (e instanceof InterruptionError) {
                 return

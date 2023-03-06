@@ -55,6 +55,15 @@ export const StreamSelector: FunctionComponent = () => {
                 onlyCurrentUser: true,
             })
 
+            requireUninterrupted()
+            setHasMore(hasMoreResults)
+
+            if (isFirstBatch) {
+                setStreams(newStreams)
+            } else {
+                setStreams((current = []) => [...current, ...newStreams])
+            }
+
             try {
                 const stats = await getStreamsFromIndexer(newStreams.map((s) => s.id))
 
@@ -68,16 +77,6 @@ export const StreamSelector: FunctionComponent = () => {
             } catch (e) {
                 console.warn('Fetching stream stats failed', e)
             }
-
-            requireUninterrupted()
-            setHasMore(hasMoreResults)
-
-            if (isFirstBatch) {
-                setStreams(newStreams)
-                return
-            }
-
-            setStreams((current = []) => [...current, ...newStreams])
         } catch (e) {
             if (e instanceof InterruptionError) {
                 return
