@@ -29,6 +29,7 @@ export type OwnProps = {
 
 export const MarketplaceProductTile = styled(UnstyledMarketplaceProductTile)`
     margin-top: 16px;
+    margin-bottom: 20px;
 `
 export const MarketplaceProjectRow = styled(Row)``
 export const MarketplaceProjectCol = styled(Col)`
