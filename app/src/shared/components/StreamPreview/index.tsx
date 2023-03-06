@@ -82,6 +82,7 @@ const UnstyledStreamPreview = ({
     return (
         <>
             <LoadingIndicator loading={!streamLoaded || !!loading} />
+            {!!subscriptionError && <Errors>{subscriptionError}</Errors>}
             <Feed
                 className={className}
                 inspectorFocused={inspectorFocused}
@@ -90,7 +91,6 @@ const UnstyledStreamPreview = ({
                 streamLoaded={streamLoaded}
                 errorComponent={
                     <Fragment>
-                        {!!subscriptionError && <Errors>{subscriptionError}</Errors>}
                         {!!dataError && <Errors>{dataError}</Errors>}
                     </Fragment>
                 }

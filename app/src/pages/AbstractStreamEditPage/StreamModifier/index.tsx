@@ -20,7 +20,13 @@ import routes from '$routes'
 import ConfirmExitModal from './ConfirmExitModal'
 import ChangeLossWatcher from './ChangeLossWatcher'
 import reducer, { initialState, Init, SetBusy, Modify } from './reducer'
-export default function StreamModifier({ children, onValidate }) {
+
+type Props = {
+    children?: React.ReactNode,
+    onValidate?: (params: any) => void,
+}
+
+export default function StreamModifier({ children, onValidate }: Props) {
     const stream = useStream()
     const [{ paramsModified, clean, busy }, dispatch] = useReducer(
         reducer,
