@@ -57,6 +57,7 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
     const [selectedLength, setSelectedLength] = useState<string>(null)
     const [selectedTimeUnit, setSelectedTimeUnit] = useState<string>(null)
     const [tokenSymbol, setTokenSymbol] = useState<string>(null)
+    const [tokenDecimals, setTokenDecimals] = useState<number>(null)
     const [currentStep, setCurrentStep] = useState<Step>(Step.SelectChain)
     const purchase = usePurchase()
 
@@ -141,10 +142,11 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
                             visible={currentStep === Step.ChooseAccessPeriod}
                             chainId={chainId}
                             paymentDetails={selectedPaymentDetails}
-                            onNextClicked={(length, unit, symbol) => {
+                            onNextClicked={(length, unit, symbol, decimals) => {
                                 setSelectedLength(length)
                                 setSelectedTimeUnit(unit)
                                 setTokenSymbol(symbol)
+                                setTokenDecimals(decimals)
                                 setCurrentStep(Step.CompleteAccess)
                             }}
                         />
@@ -155,6 +157,7 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
                             length={selectedLength}
                             timeUnit={selectedTimeUnit}
                             tokenSymbol={tokenSymbol}
+                            tokenDecimals={tokenDecimals}
                             projectName={project?.metadata.name || project?.id}
                             onPayClicked={onPurchase}
                         />

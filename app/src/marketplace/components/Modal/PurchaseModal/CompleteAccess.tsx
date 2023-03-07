@@ -10,6 +10,8 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import { getUsdRate } from '$shared/utils/coingecko'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 import { COLORS, MEDIUM } from '$shared/utils/styled'
+import { fromDecimals } from '$mp/utils/math'
+
 import { Currency, DialogContainer, DialogTitle, NextButton, Price, Usd } from './styles'
 
 type Props = {
@@ -19,6 +21,7 @@ type Props = {
     length: string,
     timeUnit: TimeUnit,
     tokenSymbol: string,
+    tokenDecimals: number,
     chainId: number,
     onPayClicked: () => void,
 }
@@ -66,14 +69,14 @@ export const Box = styled.div`
     letter-spacing: 0.05em;
 `
 
-const CompleteAccess = ({ visible,projectName, length, timeUnit, tokenSymbol, chainId, paymentDetails, onPayClicked }: Props) => {
+const CompleteAccess = ({ visible,projectName, length, timeUnit, tokenSymbol, tokenDecimals, chainId, paymentDetails, onPayClicked }: Props) => {
     const isMounted = useIsMounted()
     const { switchChain } = useSwitchChain()
     const tokenAddress = useMemo(() => paymentDetails?.pricingTokenAddress, [paymentDetails])
     const pricePerSecond = useMemo(() => paymentDetails?.pricePerSecond, [paymentDetails])
     const price = useMemo(() => (
-        (pricePerSecond && timeUnit) ? priceForTimeUnits(pricePerSecond, length, timeUnit) : new BN(0)
-    ), [length,  pricePerSecond, timeUnit])
+        (pricePerSecond && timeUnit) ?  fromDecimals(priceForTimeUnits(pricePerSecond, length, timeUnit), tokenDecimals) : new BN(0)
+    ), [length,  pricePerSecond, timeUnit, tokenDecimals])
     const [usdPrice, setUsdPrice] = useState<BN>(new BN(0))
 
     useEffect(() => {

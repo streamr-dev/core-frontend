@@ -16,6 +16,7 @@ import { priceForTimeUnits } from '$mp/utils/price'
 import { useAuthController } from '$app/src/auth/hooks/useAuthController'
 import { getUsdRate } from '$shared/utils/coingecko'
 import { COLORS } from '$shared/utils/styled'
+import { fromDecimals } from '$mp/utils/math'
 
 import { Currency, DetailsBox, DialogContainer, DialogTitle, NextButton, Price, Usd } from './styles'
 
@@ -23,7 +24,7 @@ type Props = {
     visible: boolean,
     chainId: number,
     paymentDetails: TheGraphPaymentDetails,
-    onNextClicked: (length: string, timeUnit: TimeUnit, tokenSymbol: string) => void,
+    onNextClicked: (length: string, timeUnit: TimeUnit, tokenSymbol: string, tokenDecimals: number) => void,
 }
 
 const Outer = styled.div`
@@ -97,12 +98,15 @@ const ChooseAccessPeriod = ({ visible, chainId, paymentDetails, onNextClicked }:
     const [myBalance, setMyBalance] = useState<BN>(new BN(0))
     const [usdPrice, setUsdPrice] = useState<BN>(new BN(0))
     const [tokenSymbol, setTokenSymbol] = useState<string>(null)
+    const [tokenDecimals, setTokenDecimals] = useState<number>(null)
     const { currentAuthSession } = useAuthController()
     const authenticatedUserAddress = currentAuthSession.address
 
     const tokenAddress = useMemo(() => paymentDetails?.pricingTokenAddress, [paymentDetails])
     const pricePerSecond = useMemo(() => paymentDetails?.pricePerSecond, [paymentDetails])
-    const price = useMemo(() => priceForTimeUnits(pricePerSecond, length, selectedUnit), [length,  pricePerSecond, selectedUnit])
+    const price = useMemo(() => (
+        fromDecimals(priceForTimeUnits(pricePerSecond, length, selectedUnit), new BN(tokenDecimals))
+    ), [length,  pricePerSecond, selectedUnit, tokenDecimals])
 
     useEffect(() => {
         const load = async () => {
@@ -124,6 +128,7 @@ const ChooseAccessPeriod = ({ visible, chainId, paymentDetails, onNextClicked }:
 
             if (isMounted()) {
                 setTokenSymbol(tokenInfo.symbol)
+                setTokenDecimals(tokenInfo.decimals)
             }
         }
 
@@ -199,7 +204,7 @@ const ChooseAccessPeriod = ({ visible, chainId, paymentDetails, onNextClicked }:
                 </DetailsContainer>
             </Outer>
             <NextButton
-                onClick={() => onNextClicked(length, selectedUnit, tokenSymbol)}
+                onClick={() => onNextClicked(length, selectedUnit, tokenSymbol, tokenDecimals)}
                 disabled={!price.isFinite()}
             >
                 Next
