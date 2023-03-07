@@ -4,20 +4,21 @@ import moment from 'moment'
 import { selectSubscriptions } from '$mp/modules/myPurchaseList/selectors'
 import { selectContractSubscription } from '$mp/modules/product/selectors'
 import { isActive } from '$mp/utils/time'
-import { useController } from '.'
-export default function useProductSubscription() {
-    const { product } = useController()
-    const productId = product && product.id
+import {useLoadedProject} from "$mp/contexts/LoadedProjectContext"
+
+export default function useProjectSubscription() {
+    const {loadedProject: project} = useLoadedProject()
+    const projectId = project && project.id
     const subscriptions = useSelector(selectSubscriptions)
     const contractSubscription = useSelector(selectContractSubscription)
     const isPurchased = useMemo(() => {
-        if (!productId || !subscriptions) {
+        if (!projectId || !subscriptions) {
             return false
         }
 
-        const subscription = subscriptions && subscriptions.find((s) => s.id === productId)
+        const subscription = subscriptions && subscriptions.find((s) => s.id === projectId)
         return !!subscription && isActive(subscription.endsAt || '')
-    }, [productId, subscriptions])
+    }, [projectId, subscriptions])
     const isContractSubscriptionValid = useMemo(
         () => (contractSubscription != null ? isActive(moment(contractSubscription.endTimestamp, 'X')) : false),
         [contractSubscription],

@@ -15,7 +15,7 @@ import { getChainIdFromApiString } from '$shared/utils/chains'
 import {useIsAuthenticated} from "$auth/hooks/useIsAuthenticated"
 import routes from '$routes'
 import ProductController, { useController } from '../ProductController'
-import useProductSubscription from '../ProductController/useProductSubscription'
+import useProjectSubscription from '../ProductController/useProjectSubscription'
 
 const PreviewModal = ({ onClose, ...previewProps }) => (
     <ModalPortal>
@@ -111,7 +111,7 @@ const PreviewWrap = ({ productId, streamId }) => {
     const { loadProductStreams } = useController()
     const isMounted = useIsMounted()
     const isLoggedIn = useIsAuthenticated()
-    const { isSubscriptionValid } = useProductSubscription()
+    const { isSubscriptionValid } = useProjectSubscription()
     const chainId = product && getChainIdFromApiString(product.chain)
     const targetStream = useMemo(() => streams && streams.find(({ id }) => id === streamId), [streamId, streams])
     const streamLoaded = !!targetStream

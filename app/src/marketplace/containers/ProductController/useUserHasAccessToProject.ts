@@ -1,13 +1,13 @@
-import { useController } from '$mp/containers/ProductController/index'
 import { isPaidProject } from '$mp/utils/product'
-import useProductSubscription from '$mp/containers/ProductController/useProductSubscription'
+import useProjectSubscription from '$mp/containers/ProductController/useProjectSubscription'
 import {useIsAuthenticated} from "$auth/hooks/useIsAuthenticated"
+import {useLoadedProject} from "$mp/contexts/LoadedProjectContext"
 
 export const useUserHasAccessToProject = (): boolean => {
-    const { product } = useController()
+    const { loadedProject: project } = useLoadedProject()
     const isLoggedIn = useIsAuthenticated()
-    const isPaid = isPaidProject(product)
-    const {isPurchased, isContractSubscriptionValid, isSubscriptionValid} = useProductSubscription()
+    const isPaid = isPaidProject(project)
+    const {isPurchased, isContractSubscriptionValid, isSubscriptionValid} = useProjectSubscription()
 
     if (!isPaid) {
         return true

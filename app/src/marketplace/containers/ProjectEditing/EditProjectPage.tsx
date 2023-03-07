@@ -14,6 +14,7 @@ import {ProjectEditor} from "$mp/containers/ProjectEditing/ProjectEditor"
 import {LoadedProjectContextProvider, useLoadedProject} from "$mp/contexts/LoadedProjectContext"
 import {mapProjectTypeName} from "$mp/utils/project-mapper"
 import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
+import {MarketplaceLoadingView} from "$mp/containers/ProjectPage/MarketplaceLoadingView"
 
 const UnstyledEditProjectPage: FunctionComponent = () => {
     const {state: project} = useContext(ProjectStateContext)
@@ -75,7 +76,7 @@ const LoadingIndicator = styled(PrestyledLoadingIndicator)`
 const EditProjectInnerContainer: FunctionComponent = (props) => {
     const {loadedProject} = useLoadedProject()
     if (!loadedProject) {
-        return <LoadingIndicator loading={true}/>
+        return <MarketplaceLoadingView />
     }
     return <ProjectStateContextProvider initState={loadedProject}>
         <ValidationContextProvider>

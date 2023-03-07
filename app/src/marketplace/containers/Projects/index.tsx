@@ -125,7 +125,7 @@ const ProjectsPage: FunctionComponent = () => {
 
     useEffect(() => {
         loadProjects()
-    }, [loadProjects])
+    }, [])
 
     useEffect(() => {
         if (currentAuthSession.address && projects?.length) {

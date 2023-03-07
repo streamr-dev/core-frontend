@@ -8,14 +8,14 @@ import Button from '$shared/components/Button'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import SelectField2 from '$mp/components/SelectField2'
-import { useController } from '$mp/containers/ProductController'
 import { StreamId } from '$shared/types/stream-types'
 import { textShortener } from '$shared/utils/text-shortener'
+import {useLoadedProject} from "$mp/contexts/LoadedProjectContext"
 
 export const StreamConnect: FunctionComponent = () => {
 
-    const { product } = useController()
-    const [streamId, setSelectedStream] = useState<StreamId>(product?.streams[0])
+    const {loadedProject: project} = useLoadedProject()
+    const [streamId, setSelectedStream] = useState<StreamId>(project?.streams[0])
     const [action, setAction] = useState<'subscribe' | 'publish'>('subscribe')
     const [nodeType, setNodeType] = useState<'lightNode' | 'brokerNode'>('lightNode')
     const [currentProtocol, setCurrentProtocol] = useState<'websocket' | 'http' | 'mqtt'>('websocket')
@@ -175,7 +175,7 @@ mqtt.subscribe('${streamId}', (msg) => {
                     noShrink={true}/>
                 <span>to</span>
                 <SelectField2 placeholder={''}
-                    options={product?.streams.map((streamId) => ({value: streamId, label: textShortener(streamId, 6, 6)}))}
+                    options={project?.streams.map((streamId) => ({value: streamId, label: textShortener(streamId, 6, 6)}))}
                     value={streamId}
                     isClearable={false}
                     onChange={(streamId) => {

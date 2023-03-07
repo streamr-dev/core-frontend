@@ -1,18 +1,14 @@
-import React, { FunctionComponent, ReactNode, useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { FunctionComponent, ReactNode, useMemo } from 'react'
 import styled from 'styled-components'
 import Nav from '$shared/components/Layout/Nav'
 import Layout from '$shared/components/Layout'
-import ProductController, { useController } from '$mp/containers/ProductController'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
-import usePending from '$shared/hooks/usePending'
 import PurchaseModal from '$mp/containers/ProjectPage/PurchaseModal'
 import { MarketplaceLoadingView } from '$mp/containers/ProjectPage/MarketplaceLoadingView'
 import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
-import LoadingIndicator from '$shared/components/LoadingIndicator'
 import { Connect } from '$mp/containers/ProjectPage/Connect'
 import styles from '$shared/components/Layout/layout.pcss'
-import { useLoadAdditionalProductData } from '$shared/hooks/useLoadAdditionalProductData'
+import {LoadedProjectContextProvider, useLoadedProject} from "$mp/contexts/LoadedProjectContext"
 import { getProjectDetailsLinkTabs, getProjectTitle } from './utils'
 
 const PageTitleText = styled.p`
@@ -23,47 +19,41 @@ const PageTitleText = styled.p`
 `
 
 const ProjectConnect: FunctionComponent = () => {
-    const { product } = useController()
-    const { isPending } = usePending('contractProduct.LOAD')
-    const { id: productId } = useParams<{id: string}>()
-    const linkTabs = useMemo(() => getProjectDetailsLinkTabs(productId), [productId])
-    useLoadAdditionalProductData()
+    const {loadedProject: project} = useLoadedProject()
+    const linkTabs = useMemo(() => getProjectDetailsLinkTabs(project.id), [project.id])
 
     const PageTitle = useMemo<ReactNode>(() => {
-        return <PageTitleText>{getProjectTitle(product)}</PageTitleText>
-    }, [product])
+        return <PageTitleText>{getProjectTitle(project)}</PageTitleText>
+    }, [project])
 
     return <Layout nav={<Nav/>} innerClassName={styles.greyInner}>
-        <MarketplaceHelmet title={product.name}/>
+        <MarketplaceHelmet title={project.name}/>
         <DetailsPageHeader
             pageTitle={PageTitle}
             linkTabs={linkTabs}
         />
-        <LoadingIndicator loading={isPending}/>
+        {/*<LoadingIndicator loading={isPending}/>*/}
         <Connect/>
         <PurchaseModal/>
     </Layout>
 }
 
 const ProjectConnectPageWrap = () => {
-    const { product, hasLoaded } = useController()
-    const { isPending: loadPending } = usePending('product.LOAD')
-    const { isPending: permissionsPending } = usePending('product.PERMISSIONS')
+    const {loadedProject: project} = useLoadedProject()
 
-    if (!hasLoaded || loadPending || permissionsPending) {
+    if (!project) {
         return <MarketplaceLoadingView />
     }
 
-    const key = (!!product && product.id) || ''
+    const key = (!!project && project.id) || ''
     return <ProjectConnect key={key} />
 }
 
 const ProjectConnectPage: FunctionComponent = () => {
-    const { id } = useParams<{id: string}>()
     return (
-        <ProductController key={id} ignoreUnauthorized requirePublished>
+        <LoadedProjectContextProvider>
             <ProjectConnectPageWrap />
-        </ProductController>
+        </LoadedProjectContextProvider>
     )
 }
 
