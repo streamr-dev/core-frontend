@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
 import { MarketplaceHelmet } from '$shared/components/Helmet'
-import { COLORS, DESKTOP, TABLET } from '$shared/utils/styled'
+import {COLORS, DESKTOP, MAX_BODY_WIDTH, TABLET} from '$shared/utils/styled'
 import Button from '$shared/components/Button'
 import Layout from '$shared/components/Layout'
 import SearchBar from '$shared/components/SearchBar'
@@ -14,8 +14,9 @@ import useFetchStreams from '$shared/hooks/useFetchStreams'
 import { getStreamsFromIndexer, IndexerStream } from '$app/src/services/streams'
 import {useIsAuthenticated} from "$auth/hooks/useIsAuthenticated"
 import InterruptionError from '$shared/errors/InterruptionError'
-import { FiltersBar, FiltersWrap, SearchBarWrap } from '$mp/components/ActionBar/actionBar.styles'
-
+import {ActionBarContainer, FiltersBar, FiltersWrap, SearchBarWrap} from '$mp/components/ActionBar/actionBar.styles'
+import {PageWrap} from "$shared/components/PageWrap"
+import styles from "$shared/components/Layout/layout.pcss"
 import routes from '$routes'
 import StreamTable from '../../shared/components/StreamTable'
 
@@ -49,7 +50,7 @@ const Container = styled.div`
     }
 
     @media ${DESKTOP} {
-        padding: 60px 78px 130px 78px;
+        padding: 60px 0 130px;
     }
 `
 
@@ -116,40 +117,44 @@ const NewStreamListingPage: React.FC = () => {
     }, [fetch, streamsSelection])
 
     return (
-        <Layout>
+        <Layout innerClassName={styles.greyInner}>
             <MarketplaceHelmet title="Streams" />
-            <SearchBarWrap>
-                <SearchBar
-                    value={search}
-                    onChange={(value) => {
-                        setSearch(value)
-                    }}
-                />
-            </SearchBarWrap>
-            <FiltersBar>
-                <FiltersWrap>
-                    <Tabs
-                        options={streamSelectionOptions(isUserAuthenticated)}
-                        onChange={(newValue) => setStreamsSelection(StreamSelection[newValue])}
-                        selectedOptionValue={streamsSelection}
+            <ActionBarContainer>
+                <SearchBarWrap>
+                    <SearchBar
+                        value={search}
+                        onChange={(value) => {
+                            setSearch(value)
+                        }}
                     />
-                </FiltersWrap>
-                <Button tag={Link} to={routes.streams.new()}>
-                    Create stream
-                </Button>
-            </FiltersBar>
-            <Container>
-                <TableContainer>
-                    <StreamTable
-                        title={`${streamsSelection === StreamSelection.ALL ? 'All' : 'Your'} Streams`}
-                        streams={streams}
-                        streamStats={streamStats}
-                        loadMore={fetch}
-                        hasMoreResults={hasMore}
-                        showGlobalStats={streamsSelection === StreamSelection.ALL}
-                    />
-                </TableContainer>
-            </Container>
+                </SearchBarWrap>
+                <FiltersBar>
+                    <FiltersWrap>
+                        <Tabs
+                            options={streamSelectionOptions(isUserAuthenticated)}
+                            onChange={(newValue) => setStreamsSelection(StreamSelection[newValue])}
+                            selectedOptionValue={streamsSelection}
+                        />
+                    </FiltersWrap>
+                    <Button tag={Link} to={routes.streams.new()}>
+                        Create stream
+                    </Button>
+                </FiltersBar>
+            </ActionBarContainer>
+            <PageWrap>
+                <Container>
+                    <TableContainer>
+                        <StreamTable
+                            title={`${streamsSelection === StreamSelection.ALL ? 'All' : 'Your'} Streams`}
+                            streams={streams}
+                            streamStats={streamStats}
+                            loadMore={fetch}
+                            hasMoreResults={hasMore}
+                            showGlobalStats={streamsSelection === StreamSelection.ALL}
+                        />
+                    </TableContainer>
+                </Container>
+            </PageWrap>
         </Layout>
     )
 }

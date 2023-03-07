@@ -7,8 +7,7 @@ import { formatDateTime } from '$mp/utils/time'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import useCopy from '$shared/hooks/useCopy'
-import { COLORS, TABLET } from '$shared/utils/styled'
-import { HEADER_WIDTH } from '$shared/components/DetailsPageHeader'
+import {COLORS, MAX_BODY_WIDTH, TABLET} from '$shared/utils/styled'
 import Button from '$shared/components/Button'
 import Layout from './Layout'
 import Cell from './Cell'
@@ -40,8 +39,8 @@ const Container = styled.div<ContainerProps>`
         grid-template-columns: auto 1fr 1fr auto;
     }
 
-    @media (min-width: ${HEADER_WIDTH}px) {
-        grid-template-columns: auto ${HEADER_WIDTH - 560}px 560px auto;
+    @media (min-width: ${MAX_BODY_WIDTH}px) {
+        grid-template-columns: auto ${MAX_BODY_WIDTH - 560}px 560px auto;
     }
 `
 

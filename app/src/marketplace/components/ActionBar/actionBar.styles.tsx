@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { COLORS, DESKTOP, MD, LG, MEDIUM, TABLET } from '$shared/utils/styled'
+import {COLORS, DESKTOP, MD, LG, MEDIUM, TABLET, MAX_BODY_WIDTH} from '$shared/utils/styled'
 import Button from '$shared/components/Button'
 
 export const SearchBarWrap = styled.div`
@@ -26,9 +26,11 @@ export const FiltersBar = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 0 30px 30px;
+  max-width: ${MAX_BODY_WIDTH}px;
+  margin: 0 auto;
 
   @media (${DESKTOP}) {
-    padding: 0 5em 30px;
+    padding: 0 0 30px;
   }
 `
 
