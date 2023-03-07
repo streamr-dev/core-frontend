@@ -91,6 +91,10 @@ export const validate = (project: Project): Partial<Record<RecursiveKeyOf<Projec
     invalidFields.imageUrl = !project.imageUrl && !project.newImageToUpload
     invalidFields.streams = !project.streams || project.streams.length <= 0
 
+    if (!project.creator || project.creator.length > 256) {
+        invalidFields.creator = true
+    }
+
     if (project.contact) {
         ['url', 'social1', 'social2', 'social3', 'social4'].forEach((field) => {
             if (project.contact[field as keyof ContactDetails] && project.contact[field as keyof ContactDetails].length > 0) {

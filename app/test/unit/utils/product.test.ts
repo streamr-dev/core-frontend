@@ -172,6 +172,7 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
+                creator: true,
                 imageUrl: true,
                 streams: true,
             })
@@ -184,6 +185,7 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
+                creator: true,
                 imageUrl: true,
                 streams: true,
                 salePoints: true,
@@ -197,6 +199,7 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
+                creator: true,
                 imageUrl: true,
                 streams: true,
                 adminFee: true,
@@ -214,6 +217,20 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: false,
                 description: false,
+                creator: true,
+                imageUrl: true,
+                streams: true,
+            })
+        })
+        it('validates creator name', () => {
+            expect(
+                all.validate({
+                    type: ProjectTypeEnum.OPEN_DATA,
+                    creator: 'Julius Cesar'
+                } as Project),
+            ).toStrictEqual({
+                name: true,
+                description: true,
                 imageUrl: true,
                 streams: true,
             })
@@ -227,6 +244,7 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
+                creator: true,
                 imageUrl: false,
                 streams: true,
             })
@@ -238,6 +256,7 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
+                creator: true,
                 imageUrl: false,
                 streams: true,
             })
@@ -251,6 +270,7 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
+                creator: true,
                 imageUrl: true,
                 streams: false,
             })
@@ -265,6 +285,7 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
+                creator: true,
                 imageUrl: true,
                 streams: true,
                 adminFee: false,
@@ -280,6 +301,7 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
+                creator: true,
                 imageUrl: true,
                 streams: true,
                 adminFee: false,
@@ -295,6 +317,7 @@ describe('product utils', () => {
             ).toStrictEqual({
                 name: true,
                 description: true,
+                creator: true,
                 imageUrl: true,
                 streams: true,
                 adminFee: true,
@@ -307,6 +330,7 @@ describe('product utils', () => {
             const expectedValidationResult = {
                 name: true,
                 description: true,
+                creator: true,
                 imageUrl: true,
                 streams: true,
             }

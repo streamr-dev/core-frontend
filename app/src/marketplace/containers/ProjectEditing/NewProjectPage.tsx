@@ -47,7 +47,7 @@ const UnstyledNewProjectPage = ({ className }: Props) => {
     }, [])
 
     const pageTitle = useMemo<ReactNode>(() => {
-        return <>{mapProjectTypeName(project.type)} by <strong>[CREATOR NAME HERE]</strong></>
+        return !!project.creator && <>{mapProjectTypeName(project.type)} by <strong> {project.creator} </strong></>
     }, [project])
 
     const linkTabs = useMemo(() => [

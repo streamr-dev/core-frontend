@@ -69,6 +69,7 @@ const PROJECT_STUB: Project = {
     newImageToUpload: new File([], 'testimage.jpg'),
     name: 'TestProject',
     description: 'Lorem ipsum dolor sit amet',
+    creator: 'John Doe',
     contact: {
         email: 'john@doe.com',
         url: 'https://localhost.com',

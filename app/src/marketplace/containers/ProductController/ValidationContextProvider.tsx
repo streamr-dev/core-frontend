@@ -27,6 +27,7 @@ export const ValidationContext = React.createContext<ValidationContextProps>({} 
 const validationErrors: Partial<Record<RecursiveKeyOf<Project>, string>> = {
     name: 'Product name cannot be empty',
     description: 'Product description cannot be empty',
+    creator: 'Missing or invalid creator\'s name',
     imageUrl: 'Product must have a cover image',
     streams: 'No streams selected',
     termsOfUse: 'Invalid URL for detailed terms',

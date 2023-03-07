@@ -31,9 +31,27 @@ const ProjectDetailsWrap = styled.div`
 
 export const ProjectDetails: FunctionComponent = () => {
     const { state: project } = useContext(ProjectStateContext)
-    const { updateContactUrl, updateContactEmail, updateSocialUrl } = useEditableProjectActions()
+    const { updateContactUrl, updateContactEmail, updateSocialUrl, updateCreator } = useEditableProjectActions()
 
     return <ProjectDetailsWrap>
+        <DetailEditor
+            className={'detail'}
+            defaultIcon={<ProjectDetailIcon name={'user'}/>}
+            unsetValueText={'Creator\'s name'}
+            instructionText={'Please provide your name'}
+            ctaButtonText={'creator\'s name'}
+            value={project?.creator}
+            onChange={(value) => updateCreator(value)}
+            showValue={true}
+            optional={false}
+            validation={[{
+                validator: (value) => {
+                    const schema = yup.string().trim().max(255)
+                    return !!schema.isValidSync(value)
+                },
+                message: 'Provided name is long'
+            }]}
+        />
         <DetailEditor
             className={'detail'}
             unsetValueText={'Site URL'}

@@ -28,6 +28,7 @@ export type EditableProjectActions = {
     updateContactUrl: (url: ContactDetails['url']) => void,
     updateContactEmail: (email: ContactDetails['email']) => void,
     updateSocialUrl: (platform: 'twitter' | 'telegram' | 'reddit' | 'linkedIn', url: string) => void,
+    updateCreator: (creatorName: string) => void
 }
 export const useEditableProjectActions = (): EditableProjectActions => {
     const {state, updateState} = useContext(ProjectStateContext)
@@ -148,6 +149,11 @@ export const useEditableProjectActions = (): EditableProjectActions => {
         setTouched(`contact.${platform}`)
     }, [updateState, state, setTouched])
 
+    const updateCreator = useCallback<EditableProjectActions['updateCreator']>((creatorName) => {
+        updateState({creator: creatorName})
+        setTouched('creator')
+    }, [updateState, setTouched])
+
     return useMemo<EditableProjectActions>(
         () => ({
             updateProject,
@@ -164,7 +170,8 @@ export const useEditableProjectActions = (): EditableProjectActions => {
             updateTermsOfUse,
             updateContactUrl,
             updateContactEmail,
-            updateSocialUrl
+            updateSocialUrl,
+            updateCreator
         }),
         [
             updateProject,
@@ -182,6 +189,7 @@ export const useEditableProjectActions = (): EditableProjectActions => {
             updateContactUrl,
             updateContactEmail,
             updateSocialUrl,
+            updateCreator
         ],
     )
 }

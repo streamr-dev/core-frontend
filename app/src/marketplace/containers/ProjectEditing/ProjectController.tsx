@@ -61,6 +61,7 @@ export const useProjectController = (): ProjectController => {
             name: project.name,
             description: project.description,
             imageUrl: project.imageUrl,
+            creator: project.creator,
             contactDetails: {
                 email: project.contact.email,
                 url: project.contact.url,

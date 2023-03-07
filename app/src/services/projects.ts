@@ -77,6 +77,7 @@ export type SmartContractProjectMetadata = {
     name: string,
     description: string,
     imageUrl: string,
+    creator: string,
     termsOfUse: {
         commercialUse: boolean
         redistribution: boolean
