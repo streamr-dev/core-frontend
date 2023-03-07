@@ -2,7 +2,7 @@ import React, { FunctionComponent, ReactNode } from 'react'
 import styled from 'styled-components'
 import { Link, useLocation } from 'react-router-dom'
 
-import {COLORS, DESKTOP, MAX_BODY_WIDTH, TABLET, XL} from '$shared/utils/styled'
+import {COLORS, DESKTOP, LAPTOP, MAX_BODY_WIDTH, TABLET} from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
 import LinkTabs, { LinkTabOptionProps } from '$shared/components/LinkTabs'
 
@@ -68,7 +68,7 @@ const DetailsPageHeaderContainer = styled.div`
 
 const DetailsPageHeaderBar = styled.div`
     display: block;
-    @media (${DESKTOP}) {
+    @media (${LAPTOP}) {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -84,7 +84,7 @@ const RightSideContainer = styled.div`
     display: flex;
     align-items: center;
     margin-top: 50px;
-    @media (${DESKTOP}) {
+    @media (${LAPTOP}) {
         margin-top: 0;
     }
 `
