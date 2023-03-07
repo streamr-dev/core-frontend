@@ -48,16 +48,17 @@ export const getStreamDetailsLinkTabs = (streamId?: string) => {
 }
 
 const Outer = styled.div`
+    width: 100%;
     padding: 24px 24px 80px 24px;
 
-    @media ${TABLET} {
+    @media ${TABLET} {        
         max-width: 1296px;
         margin: 0 auto;
         padding: 45px 40px 90px 40px;
     }
 
     @media ${DESKTOP} {
-        padding: 60px 78px 130px 78px;
+        padding: 60px 0px 130px 0px;
     }
 `
 

@@ -32,5 +32,6 @@ export enum COLORS {
     close = '#848484',
     link = '#0324FF',
     error = '#D90C25',
-    warning = '#FFF6F1'
+    warning = '#FFF6F1',
+    dialogBorder = '#F3F3F3',
 }

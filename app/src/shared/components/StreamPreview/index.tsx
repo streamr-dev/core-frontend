@@ -4,6 +4,7 @@ import SvgIcon from '$shared/components/SvgIcon'
 import { COLORS } from '$shared/utils/styled'
 import Errors from '$ui/Errors'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
+import Button from '$shared/components/Button'
 import IconButton from './IconButton'
 import Feed from './Feed'
 import Foot from './Foot'
@@ -47,13 +48,11 @@ type Props = {
     streamId?: string,
     navigableStreamIds?: Array<string>,
     onChange?: () => void,
-    onClose?: () => void,
     onPartitionChange?: (partition: number) => void,
     onStreamSettings?: () => void,
     stream?: any,
     streamData?: any,
-    subscriptionError?: string,
-    titlePrefix?: string,
+    hasSubscribePermission: boolean,
 }
 
 const UnstyledStreamPreview = ({
@@ -64,17 +63,15 @@ const UnstyledStreamPreview = ({
     streamId,
     navigableStreamIds = [streamId],
     onChange: onStreamChange,
-    onClose,
     onPartitionChange,
     onStreamSettings,
     stream,
     streamData,
-    subscriptionError,
-    titlePrefix,
+    hasSubscribePermission,
 }: Props) => {
     const [inspectorFocused, setInspectorFocused] = useState(false)
     const streamLoaded = !!(stream && stream.id === streamId)
-    const { description, partitions } = stream || {}
+    const { partitions } = stream || {}
     const partitionOptions = useMemo(
         () => (partitions ? [...new Array(partitions)].map((_, index) => index) : undefined),
         [partitions],
@@ -82,7 +79,6 @@ const UnstyledStreamPreview = ({
     return (
         <>
             <LoadingIndicator loading={!streamLoaded || !!loading} />
-            {!!subscriptionError && <Errors>{subscriptionError}</Errors>}
             <Feed
                 className={className}
                 inspectorFocused={inspectorFocused}
@@ -101,6 +97,7 @@ const UnstyledStreamPreview = ({
                 partitions={partitionOptions || []}
                 streamId={streamId}
                 streamIds={navigableStreamIds || []}
+                hasSubscribePermission={hasSubscribePermission}
             />
             <Foot>
                 <div>

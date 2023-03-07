@@ -7,8 +7,9 @@ import { formatDateTime } from '$mp/utils/time'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import useCopy from '$shared/hooks/useCopy'
-import { TABLET } from '$shared/utils/styled'
+import { COLORS, TABLET } from '$shared/utils/styled'
 import { HEADER_WIDTH } from '$shared/components/DetailsPageHeader'
+import Button from '$shared/components/Button'
 import Layout from './Layout'
 import Cell from './Cell'
 import Toolbar from './Toolbar'
@@ -43,6 +44,11 @@ const Container = styled.div<ContainerProps>`
         grid-template-columns: auto ${HEADER_WIDTH - 560}px 560px auto;
     }
 `
+
+const FillContainer = styled(Container)`
+    flex-grow: 1;
+`
+
 const LeftFiller = styled.div`
     background: #ffffff;
 `
@@ -133,6 +139,35 @@ const Rhs = styled(Side)`
         }
     }
 `
+
+const GetAccessDialog = styled.div`
+    padding: 32px 24px;
+    display: grid;
+    grid-template-rows: 40px 56px auto;
+    border: 1px solid ${COLORS.dialogBorder};
+    border-radius: 8px;
+    margin-top: 50px;
+    width: 560px;
+
+    > button {
+        width: fit-content;
+    }
+`
+
+const Title = styled.div`
+    font-size: 20px;
+    line-height: 24px;
+    letter-spacing: 0.01em;
+    color: #000000;
+`
+
+const Description = styled.div`
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.01em;
+    color: #000000;
+`
+
 const tz = moment.tz.guess()
 const TooltipTheme = Object.assign({}, Tooltip.BottomTheme, {
     left: 0,
@@ -154,6 +189,7 @@ type Props = {
     partitions: Array<any>,
     streamId: string,
     streamIds: Array<string>,
+    hasSubscribePermission: boolean,
 }
 
 const UnstyledFeed = ({
@@ -170,6 +206,7 @@ const UnstyledFeed = ({
     partitions = [],
     streamId,
     streamIds = [streamId],
+    hasSubscribePermission,
 }: Props) => {
     const [datapoint, setDatapoint] = useState()
     useEffect(() => {
@@ -316,6 +353,24 @@ const UnstyledFeed = ({
                 </Rhs>
                 <RightFiller />
             </Container>
+            <FillContainer inspectorFocused={inspectorFocused}>
+                <LeftFiller />
+                <Lhs>
+                    {!hasSubscribePermission && (
+                        <GetAccessDialog>
+                            <Title>Get access to unlock</Title>
+                            <Description>Please get access to this project to unlock stream live data</Description>
+                            <Button
+                                type="button"
+                            >
+                                TODO: Get access
+                            </Button>
+                        </GetAccessDialog>
+                    )}
+                </Lhs>
+                <Rhs />
+                <RightFiller />
+            </FillContainer>
         </div>
     )
 }
@@ -323,6 +378,8 @@ const UnstyledFeed = ({
 const Feed = styled(UnstyledFeed)`
     flex-grow: 1;
     position: relative;
+    display: flex;
+    flex-direction: column;
 
     ${Tooltip.Root} {
         display: inline;

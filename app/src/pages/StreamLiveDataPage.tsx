@@ -29,7 +29,7 @@ function UnwrappedStreamEditPage() {
                 activePartition={partition}
                 onPartitionChange={setPartition}
                 loading={stream == null}
-                subscriptionError={!canSubscribe ? "You don't have a permission to subscribe to this stream" : null}
+                hasSubscribePermission={canSubscribe}
             />
         </StreamPage>
     )
