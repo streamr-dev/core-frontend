@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Row, Container as RsContainer, Col } from 'reactstrap'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { MarketplaceProductTile as UnstyledMarketplaceProductTile } from '$shared/components/Tile'
-import { REGULAR, DESKTOP, COLORS, TABLET } from '$shared/utils/styled'
+import {REGULAR, DESKTOP, COLORS, TABLET, MAX_BODY_WIDTH, LAPTOP} from '$shared/utils/styled'
 import Button from '$shared/components/Button'
 import { TheGraphProject } from '$app/src/services/projects'
 import {ProjectsPermissionsState} from "$mp/modules/projectsPermissionsState/projectsPermissionsState"
@@ -29,17 +29,25 @@ export type OwnProps = {
 
 export const MarketplaceProductTile = styled(UnstyledMarketplaceProductTile)`
     margin-top: 16px;
-    margin-bottom: 20px;
 `
-export const MarketplaceProjectRow = styled(Row)``
-export const MarketplaceProjectCol = styled(Col)`
-    padding-left: 1em;
-    padding-right: 1em;
+export const MarketplaceProjectRow = styled.div`
+  display: grid;
+  grid-gap: 36px;
+  margin: 0;
+  grid-template-columns: 1fr;
+  @media(${TABLET}) {
+    grid-template-columns: 1fr 1fr;
+  }
+  @media(${LAPTOP}) {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+`
+export const MarketplaceProjectCol = styled.div`
+  padding: 0;
 `
 
 const listProjects = (
     projects,
-    cols,
     projectsPermissions: ProjectsPermissionsState,
     currentUserAddress: string,
     isFetching: boolean | null | undefined
@@ -59,19 +67,21 @@ const listProjects = (
         })}
     >
         {projects.map((project) => (
-            <MarketplaceProjectCol {...cols} key={project.key || project.id}>
+            <MarketplaceProjectCol key={project.key || project.id}>
                 <MarketplaceProductTile product={project} showDataUnionBadge={isDataUnionProduct(project.type)} showEditButton={isEditable(project.id)}/>
             </MarketplaceProjectCol>
         ))}
     </MarketplaceProjectRow>
 }
 
-export const ProjectsContainer = styled(RsContainer)`
+export const ProjectsContainer = styled.div`
     padding: 40px 30px 3.5em 30px;
     background-color: ${COLORS.secondary};
+    max-width: ${MAX_BODY_WIDTH}px;
+    margin: 0 auto;
 
     @media (${DESKTOP}) {
-        padding: 72px 5em 7em 5em;
+        padding: 72px 0 7em 0;
     }
 `
 export const ProjectsHeader = styled.h3`
@@ -105,7 +115,7 @@ const UnstyledProjects = ({
         {header && <ProjectsHeader>{header}</ProjectsHeader>}
         <Error source={error} />
         {isFetching || projects.length > 0
-            ? listProjects(projects, getCols(type), projectsPermissions, currentUserAddress, isFetching)
+            ? listProjects(projects, projectsPermissions, currentUserAddress, isFetching)
             : getErrorView(type)}
         {loadProducts && !isFetching && hasMoreSearchResults && <LoadMoreButton onClick={loadProducts} kind={'primary2'}>Load more</LoadMoreButton>}
         {isFetching && <ProductPageSpinner className={styles.spinner} />}

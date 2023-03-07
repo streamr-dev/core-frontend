@@ -14,6 +14,7 @@ export const TABLET = `(min-width: ${MD}px)`
 export const LAPTOP = `(min-width: ${MDLG}px)`
 export const DESKTOP = `(min-width: ${LG}px)`
 export const MAX_CONTENT_WIDTH = '678px'
+export const MAX_BODY_WIDTH = 1296
 export enum COLORS {
     primary = '#323232',
     primaryLight = '#525252',

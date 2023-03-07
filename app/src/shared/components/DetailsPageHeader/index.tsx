@@ -2,7 +2,7 @@ import React, { FunctionComponent, ReactNode } from 'react'
 import styled from 'styled-components'
 import { Link, useLocation } from 'react-router-dom'
 
-import { COLORS, DESKTOP, TABLET, XL } from '$shared/utils/styled'
+import {COLORS, DESKTOP, MAX_BODY_WIDTH, TABLET, XL} from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
 import LinkTabs, { LinkTabOptionProps } from '$shared/components/LinkTabs'
 
@@ -35,8 +35,6 @@ export const DetailsPageHeader: FunctionComponent<DetailsPageHeaderProps> = ({ b
     )
 }
 
-export const HEADER_WIDTH = 1360
-
 const DetailsPageHeaderBackground = styled.div`
     background-color: white;
     padding: 45px 0 22px;
@@ -47,22 +45,25 @@ const DetailsPageHeaderBackground = styled.div`
 `
 
 const DetailsPageHeaderContainer = styled.div`
-    margin: 0 auto;
-    padding: 0 24px;
-    & & {
-        padding: 0 24px;
-    }
-    @media (${DESKTOP}) {
-        padding: 0 32px;
-    }
-    @media (${TABLET}) {
-        max-width: ${HEADER_WIDTH}px;
-        padding: 0 24px;
+  max-width: ${MAX_BODY_WIDTH}px;
+  margin: 0 auto;
+  padding: 0 24px;
 
-        & & {
-            padding: 0;
-        }
+  & & {
+    padding: 0 24px;
+  }
+
+  @media (${TABLET}) {
+    padding: 0 40px;
+
+    & & {
+      padding: 0;
     }
+  }
+
+  @media (${DESKTOP}) {
+    padding: 0;
+  }
 `
 
 const DetailsPageHeaderBar = styled.div`
