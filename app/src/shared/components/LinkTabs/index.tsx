@@ -46,7 +46,7 @@ const LinkTabs: FunctionComponent<LinkTabsProps> = ({options, selectedOptionHref
                 }
                 title={option.disabled ? option.disabledReason : undefined}
             >
-                <Link to={option.href}>{option.label}</Link>
+                <Link to={option.disabled ? '#' : option.href}>{option.label}</Link>
             </LinkTabOption>
         })}
     </LinkTabList>
