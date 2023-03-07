@@ -85,7 +85,7 @@ function UnstyledUnwrappedLoginPage({ className }) {
                         <Logo />
                     </Link>
                 </div>
-                <TitleBar>Streamr Core</TitleBar>
+                <TitleBar>Streamr Hub</TitleBar>
                 <Panel>
                     <Auth>
                         <Auth.Panel>
