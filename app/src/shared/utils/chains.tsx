@@ -11,7 +11,7 @@ const chainNameToIdMapping = {
     AVALANCHE: 43114,
 }
 export const formatChainName = (apiChainName: string): string => {
-    switch (apiChainName) {
+    switch (apiChainName.toUpperCase()) {
         case 'ETHEREUM':
             return 'Ethereum'
 

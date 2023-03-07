@@ -7,11 +7,13 @@ import {
     ProjectHeroContainer,
     ProjectHeroDescriptionStyles,
     ProjectHeroImage,
+    ProjectHeroMetadataContainer,
     ProjectHeroSignalContainer,
     ProjectHeroTitle
 } from '$mp/containers/ProjectPage/Hero/ProjectHero2.styles'
-import Button from '$shared/components/Button'
 import { COLORS } from '$shared/utils/styled'
+import {DetailDisplay} from "$shared/components/DetailEditor/DetailDisplay"
+import {ProjectDetailIcon} from "$mp/containers/ProjectEditing/ProjectDetails.styles"
 
 export type ProjectHeroProps = {
     project: Project
@@ -47,6 +49,26 @@ export const ProjectHero2: FunctionComponent<ProjectHeroProps> = ({project}) => 
             readOnly={true}
             theme={customTheme}
         />
+        <ProjectHeroMetadataContainer>
+            {project.contact && <>
+                {project.contact.url && <DetailDisplay icon={<ProjectDetailIcon name={'web'}/>} value={project.contact.url} link={project.contact.url}/>}
+                {project.contact.email &&
+                <DetailDisplay icon={<ProjectDetailIcon name={'email'}/>} value={project.contact.email}
+                    link={'mailto:' + project.contact.email}/>}
+                {project.contact.twitter &&
+                <DetailDisplay icon={<ProjectDetailIcon name={'twitter'} className={'twitterColor'}/>}
+                    link={project.contact.twitter}/>}
+                {project.contact.telegram &&
+                <DetailDisplay icon={<ProjectDetailIcon name={'telegram'} className={'telegramColor'}/>}
+                    link={project.contact.telegram}/>}
+                {project.contact.reddit &&
+                <DetailDisplay icon={<ProjectDetailIcon name={'reddit'} className={'redditColor'}/>}
+                    link={project.contact.reddit}/>}
+                {project.contact.linkedIn &&
+                <DetailDisplay icon={<ProjectDetailIcon name={'linkedin'} className={'linkedInColor'}/>}
+                    link={project.contact.linkedIn}/>}
+            </>}
+        </ProjectHeroMetadataContainer>
         {/*<ProjectHeroSignalContainer>
             <p>
                 <span>Total signal</span>

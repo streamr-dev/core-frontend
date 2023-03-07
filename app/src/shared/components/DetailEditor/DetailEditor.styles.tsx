@@ -36,7 +36,7 @@ export const DetailEditorDropdown = styled(UncontrolledDropdown)`
   &.dropdown {
     display: grid;
 
-    > button {
+    > button, > a {
       font-family: ${SANS};
       font-weight: ${REGULAR};
       font-size: 14px;

@@ -4,7 +4,7 @@ import { LinkTabOptionProps } from '$shared/components/LinkTabs'
 import routes from '$routes'
 
 export const getProjectTitle = (project: Project): ReactNode => {
-    return <>{project.name} by <strong>{project.owner}</strong></>
+    return <>{project.name} by <strong>[PROJECT CREATOR HERE]</strong></>
 }
 
 export const getProjectDetailsLinkTabs = (projectId: string): LinkTabOptionProps[] => {
@@ -19,7 +19,9 @@ export const getProjectDetailsLinkTabs = (projectId: string): LinkTabOptionProps
         },
         {
             label: 'Live data',
-            href:  routes.marketplace.product.liveData({id: projectId})
+            href:  routes.marketplace.product.liveData({id: projectId}),
+            disabled: true,
+            disabledReason: 'Coming soon'
         }
     ]
 }

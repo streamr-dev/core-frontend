@@ -1,8 +1,12 @@
 import React, { useCallback, useMemo, useEffect, useState, FunctionComponent } from 'react'
+import {Stream, StreamID} from "streamr-client"
 import styled from 'styled-components'
-import { useController } from '$mp/containers/ProductController'
 import { TABLET } from '$shared/utils/styled'
 import StreamTable from '$shared/components/StreamTable'
+import {Project} from "$mp/types/project-types"
+import {getStreamsFromIndexer, IndexerStream} from "$app/src/services/streams"
+import useLoadProductStreamsCallback from "$mp/containers/ProductController/useLoadProductStreamsCallback"
+
 const PAGE_SIZE = 5
 const INITIAL_OFFSET = 2 * PAGE_SIZE
 
@@ -15,24 +19,42 @@ const StreamsContainer = styled.div`
   }
 `
 
-const Streams: FunctionComponent = () => {
-    const { product, productStreams: streams, loadProductStreams } = useController()
+const Streams: FunctionComponent<{project: Project}> = ({project}) => {
+    const [streams, setStreams] = useState<Stream[]>([])
+    const [streamStats, setStreamStats] = useState<Record<StreamID, IndexerStream>>({})
     const [offset, setOffset] = useState(INITIAL_OFFSET)
+    const loadStreams = useLoadProductStreamsCallback({setProductStreams: setStreams})
+
     useEffect(() => {
-        loadProductStreams(product.streams.slice(0, INITIAL_OFFSET))
-    }, [product.streams, loadProductStreams])
-    const hasMoreResults = useMemo(() => offset < product.streams.length, [offset, product.streams])
+        loadStreams(project.streams.slice(0, INITIAL_OFFSET))
+    }, [project.streams, loadStreams])
+
+    useEffect(() => {
+        const getStreamStats = async () => {
+            try {
+                const stats = await getStreamsFromIndexer(streams.map((s) => s.id))
+
+                if (stats && stats.length > 0) {
+                    setStreamStats((prev) => ({
+                        ...prev,
+                        ...Object.fromEntries(stats.map((is) => [is.id, is]))
+                    }))
+                }
+            } catch (e) {
+                console.warn('Fetching stream stats failed', e)
+            }
+        }
+        getStreamStats()
+    }, [streams])
+
+    const hasMoreResults = useMemo(() => offset < project.streams.length, [offset, project.streams])
     const onLoadMore = useCallback(() => {
-        loadProductStreams(product.streams.slice(offset, offset + PAGE_SIZE))
+        loadStreams(project.streams.slice(offset, offset + PAGE_SIZE))
         setOffset(offset + PAGE_SIZE)
-    }, [offset, setOffset, loadProductStreams, product.streams])
-    /**
-     * The conditions here are because of the faulty pre-populated data in streamer-docker-dev which
-     * was throwing errors here. So we are not displaying the streams table when the metadata of a stream is missing
-     */
+    }, [offset, setOffset, loadStreams, project.streams])
     return <>
-        {streams && streams.length > 0 && streams[0]?.metadata && <StreamsContainer>
-            <StreamTable streams={streams} loadMore={onLoadMore} hasMoreResults={hasMoreResults}/>
+        {streams && streams.length > 0 && <StreamsContainer>
+            <StreamTable streams={streams} loadMore={onLoadMore} hasMoreResults={hasMoreResults} streamStats={streamStats} showGlobalStats={false}/>
         </StreamsContainer>}
     </>
 }
