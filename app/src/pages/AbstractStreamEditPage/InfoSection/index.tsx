@@ -26,16 +26,11 @@ function UnwrappedInfoSection({ disabled, canEdit }) {
                 <Surround head=" " tail=" ">
                     The domain part can be your Ethereum address or an ENS name you own.
                 </Surround>
-                <Surround tail=".">
+                <Surround>
                     <a href={ENS_DOMAINS_URL} target="_blank" rel="nofollow noopener noreferrer">
                         Need an ENS name?
                     </a>
                 </Surround>
-                {!streamId && (
-                    <Surround head=" ">
-                        Choose your stream name &amp; create it in order to adjust stream settings.
-                    </Surround>
-                )}
             </Description>
             <Row>
                 <StreamIdComponent disabled={disabled} />
