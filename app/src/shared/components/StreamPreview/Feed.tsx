@@ -3,11 +3,15 @@ import styled, { css } from 'styled-components'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
 import { Tooltip } from '@streamr/streamr-layout'
+
 import { formatDateTime } from '$mp/utils/time'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import useCopy from '$shared/hooks/useCopy'
 import {COLORS, MAX_BODY_WIDTH, TABLET} from '$shared/utils/styled'
+import EmptyState from '$shared/components/EmptyState'
+import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
+import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import Button from '$shared/components/Button'
 import Layout from './Layout'
 import Cell from './Cell'
@@ -137,34 +141,6 @@ const Rhs = styled(Side)`
             grid-template-columns: 164px 1fr;
         }
     }
-`
-
-const GetAccessDialog = styled.div`
-    padding: 32px 24px;
-    display: grid;
-    grid-template-rows: 40px 56px auto;
-    border: 1px solid ${COLORS.dialogBorder};
-    border-radius: 8px;
-    margin-top: 50px;
-    width: 560px;
-
-    > button {
-        width: fit-content;
-    }
-`
-
-const Title = styled.div`
-    font-size: 20px;
-    line-height: 24px;
-    letter-spacing: 0.01em;
-    color: #000000;
-`
-
-const Description = styled.div`
-    font-size: 14px;
-    line-height: 20px;
-    letter-spacing: 0.01em;
-    color: #000000;
 `
 
 const tz = moment.tz.guess()
@@ -356,15 +332,11 @@ const UnstyledFeed = ({
                 <LeftFiller />
                 <Lhs>
                     {!hasSubscribePermission && (
-                        <GetAccessDialog>
-                            <Title>Get access to unlock</Title>
-                            <Description>Please get access to this project to unlock stream live data</Description>
-                            <Button
-                                type="button"
-                            >
-                                TODO: Get access
-                            </Button>
-                        </GetAccessDialog>
+                        <EmptyState image={<img src={emptyStateIcon} srcSet={`${emptyStateIcon2x} 2x`} alt="No permission to subscribe" />}>
+                            <p>
+                                <span>You do not have permission to<br/>subscribe to the stream.</span>
+                            </p>
+                        </EmptyState>
                     )}
                 </Lhs>
                 <Rhs />
