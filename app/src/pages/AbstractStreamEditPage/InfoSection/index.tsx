@@ -22,13 +22,13 @@ function UnwrappedInfoSection({ disabled, canEdit }) {
     return (
         <Fragment>
             <Description>
-                All streams require a unique path in the format <strong>domain/pathname</strong>.
+                All streams have a unique id in the format <strong>domain/pathname</strong>.
                 <Surround head=" " tail=" ">
-                    Your default domain will be an Ethereum address, but you can also use an existing ENS domain or
+                    The domain part can be your Ethereum address or an ENS name you own.
                 </Surround>
                 <Surround tail=".">
                     <a href={ENS_DOMAINS_URL} target="_blank" rel="nofollow noopener noreferrer">
-                        register a new one
+                        Need an ENS name?
                     </a>
                 </Surround>
                 {!streamId && (
