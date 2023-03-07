@@ -108,7 +108,11 @@ export default function StreamModifier({ children, onValidate }: Props) {
                             throw new DuplicateError()
                         }
 
-                        const createdStream = await client.createStream(newParams)
+                        const createParams = {
+                            id: newParams.id,
+                            ...newParams.metadata,
+                        }
+                        const createdStream = await client.createStream(createParams)
                         return createdStream
                     }
 
