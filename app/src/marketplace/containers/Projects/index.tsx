@@ -5,7 +5,7 @@ import ActionBar from '$mp/components/ActionBar'
 import Layout from '$shared/components/Layout'
 import Footer from '$shared/components/Layout/Footer'
 import useModal from '$shared/hooks/useModal'
-import CreateProductModal from '$mp/containers/CreateProductModal'
+import CreateProjectModal from '$mp/containers/CreateProjectModal'
 import type {SearchFilter} from '$mp/types/project-types'
 import {
     getProjects,
@@ -148,7 +148,7 @@ const ProjectsPage: FunctionComponent = () => {
                 onFilterByAuthorChange={onFilterByAuthorChange}
                 isUserAuthenticated={isUserAuthenticated}
             />
-            <CreateProductModal />
+            <CreateProjectModal />
             <ProjectsContainer fluid>
                 <ProjectsComponent
                     projects={projects}

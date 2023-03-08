@@ -9,7 +9,7 @@ import paidDataImage2x from '$mp/assets/paid-data@2x.png'
 import dataUnionImage from '$mp/assets/product_dataunion.png'
 import dataUnionImage2x from '$mp/assets/product_dataunion@2x.png'
 import SvgIcon from '$shared/components/SvgIcon'
-import { COLORS, DESKTOP, MEDIUM } from '$shared/utils/styled'
+import {COLORS, DESKTOP, MEDIUM, REGULAR} from '$shared/utils/styled'
 import { Radio } from '$shared/components/Radio'
 import useFetchStreams from '$shared/hooks/useFetchStreams'
 import docsLinks from '$app/src/docsLinks'
@@ -69,7 +69,8 @@ const ProductTitle = styled.div`
   line-height: 16px;
   font-size: 18px;
   letter-spacing: 0;
-  font-weight: ${MEDIUM};
+  font-weight: ${REGULAR};
+  color: ${COLORS.primary};
   margin: 24px 0 20px 20px;
   grid-column-start: 2;
   grid-column-end: 2;
@@ -191,7 +192,7 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
         </PageTitleContainer>
         <ProductChoices>
             <Product onClick={() => setSelectedProductType(ProjectTypeEnum.OPEN_DATA)}>
-                <ProductTitle>Open Data</ProductTitle>
+                <ProductTitle>Open data</ProductTitle>
                 <ProductImage>
                     <img src={openDataImage} srcSet={`${openDataImage2x} 2x`} alt="Open Data"/>
                 </ProductImage>
@@ -206,7 +207,7 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
                 </RadioWrap>
             </Product>
             <Product onClick={() => setSelectedProductType(ProjectTypeEnum.PAID_DATA)}>
-                <ProductTitle>Paid Data</ProductTitle>
+                <ProductTitle>Paid data</ProductTitle>
                 <ProductImage>
                     <img src={paidDataImage} srcSet={`${paidDataImage2x} 2x`} alt="Paid Data"/>
                 </ProductImage>

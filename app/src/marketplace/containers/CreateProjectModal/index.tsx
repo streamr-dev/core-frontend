@@ -7,34 +7,34 @@ import ModalDialog from '$shared/components/ModalDialog'
 type Props = {
     api: Record<string, any>
 }
-const StyledProductTypeChooser = styled(ProjectTypeChooser)`
+const StyledProjectTypeChooser = styled(ProjectTypeChooser)`
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 `
 
-const CreateProductModal = ({ api }: Props) => {
+const CreateProjectModal = ({ api }: Props) => {
     const onClose = useCallback(() => {
         api.close()
     }, [api])
     return (
         <ModalPortal>
             <ModalDialog onClose={onClose} fullpage>
-                <StyledProductTypeChooser onClose={onClose} />
+                <StyledProjectTypeChooser onClose={onClose} />
             </ModalDialog>
         </ModalPortal>
     )
 }
 
-const CreateProductModalWrap = () => {
+const CreateProjectModalWrap = () => {
     const { api, isOpen } = useModal('marketplace.createProduct')
 
     if (!isOpen) {
         return null
     }
 
-    return <CreateProductModal api={api} />
+    return <CreateProjectModal api={api} />
 }
 
-export default CreateProductModalWrap
+export default CreateProjectModalWrap

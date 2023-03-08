@@ -11,7 +11,7 @@ import ListContainer from '$shared/components/Container/List'
 import { isDataUnionProduct } from '$mp/utils/product'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useAllDataUnionStats from '$mp/modules/dataUnion/hooks/useAllDataUnionStats'
-import CreateProductModal from '$mp/containers/CreateProductModal'
+import CreateProjectModal from '$mp/containers/CreateProjectModal'
 import Button from '$shared/components/Button'
 import Grid from '$shared/components/Tile/Grid'
 import { ProductTile } from '$shared/components/Tile'
@@ -148,7 +148,7 @@ const ProductsPage: FunctionComponent = () => {
                 </Grid>
             </ListContainer>
             <DocsShortcuts />
-            <CreateProductModal />
+            <CreateProjectModal />
         </Layout>
     )
 }
