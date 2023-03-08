@@ -185,6 +185,7 @@ describe('ProjectController', () => {
         const expectedMetadata = {
             name: PROJECT_STUB.name,
             description: PROJECT_STUB.description,
+            creator: PROJECT_STUB.creator,
             imageUrl: STUB_UPLOADED_IMAGE_URL,
             contactDetails: {
                 email: PROJECT_STUB.contact.email,
@@ -260,6 +261,7 @@ describe('ProjectController', () => {
             name: PROJECT_STUB.name,
             description: PROJECT_STUB.description,
             imageUrl: STUB_UPLOADED_IMAGE_URL,
+            creator: PROJECT_STUB.creator,
             contactDetails: {
                 email: PROJECT_STUB.contact.email,
                 url: PROJECT_STUB.contact.url,

@@ -36,7 +36,7 @@ export const ProjectDetails: FunctionComponent = () => {
     return <ProjectDetailsWrap>
         <DetailEditor
             className={'detail'}
-            defaultIcon={<ProjectDetailIcon name={'user'}/>}
+            defaultIcon={<ProjectDetailIcon name={'userFull'}/>}
             unsetValueText={'Creator\'s name'}
             instructionText={'Please provide your name'}
             ctaButtonText={'creator\'s name'}

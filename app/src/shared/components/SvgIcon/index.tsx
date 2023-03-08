@@ -206,6 +206,15 @@ const sources = {
             </g>
         </svg>
     ),
+    userFull: (
+        <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M23 46C35.7025 46 46 35.7025 46 23C46 10.2975 35.7025 0 23 0C10.2975 0 0 10.2975 0 23C0 35.7025 10.2975 46 23 46Z" fill="currentColor"/>
+            <path d="M18.971 28.8528V29.705C18.971 32.0553 20.882 33.9606 23.2394 33.9606C25.5968 33.9606 27.5078 32.0553 27.5078 29.705V28.8528" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M19.3626 14.958C17.4573 16.5774 16.7666 19.2092 17.6321 21.5514C18.4976 23.8936 20.7358 25.4496 23.2394 25.4496C25.743 25.4496 27.9812 23.8936 28.8467 21.5514C29.7122 19.2092 29.0214 16.5774 27.1162 14.958" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path fillRule="evenodd" clipRule="evenodd" d="M25.8004 12.6826C24.2645 12.6835 22.9171 11.6619 22.5075 10.186C20.6608 10.277 19.1578 11.6997 18.971 13.5338C18.971 15.4141 20.8821 16.9382 23.2394 16.9382C25.5967 16.9382 27.5078 15.4141 27.5078 13.5338C27.5078 13.0637 27.1256 12.6826 26.6541 12.6826H25.8004Z" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M33.8011 35.6629C32.3186 31.0967 28.0533 28.0034 23.2394 28.0034C18.4255 28.0034 14.1602 31.0967 12.6777 35.6629" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+    ),
     imageUpload: <UploadIcon />,
     checkmark: <CheckmarkIcon />,
     error: (
