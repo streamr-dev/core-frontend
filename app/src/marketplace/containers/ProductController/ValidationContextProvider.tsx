@@ -107,7 +107,6 @@ function useValidationContextImplementation(): ValidationContextProps {
 
             const invalidFields = validateProduct(product)
             const result: Partial<Record<RecursiveKeyOf<Project>, {level: SeverityLevel, message: string}>> = {
-                ...status
             }
             Object.keys(validationErrors).forEach((field: RecursiveKeyOf<Project>) => {
                 if (invalidFields[field]) {
@@ -120,7 +119,7 @@ function useValidationContextImplementation(): ValidationContextProps {
             return result
 
         },
-        [setStatus, clearStatus, isMounted, isTouched, status],
+        [setStatus, clearStatus, isMounted, isTouched],
     )
     return useMemo<ValidationContextProps>(
         () => ({
