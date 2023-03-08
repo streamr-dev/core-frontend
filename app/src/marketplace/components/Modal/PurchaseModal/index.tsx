@@ -11,6 +11,9 @@ import usePurchase, { actionsTypes } from '$shared/hooks/usePurchase'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { transactionStates } from '$shared/utils/constants'
 import { getProject, getProjectFromRegistry, TheGraphPaymentDetails, TheGraphProject } from '$app/src/services/projects'
+import Dialog from '$shared/components/Dialog'
+import NoBalanceError from '$mp/errors/NoBalanceError'
+
 import SelectChain from './SelectChain'
 import ChooseAccessPeriod from './ChooseAccessPeriod'
 import CompleteAccess from './CompleteAccess'
@@ -22,6 +25,18 @@ const ModalContainer = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
+`
+
+const OverlayContainer = styled.div`
+    background: rgba(50, 50, 50, 0.5);
+    color: ${COLORS.primary};
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
 `
 
 const BackLink = styled(Link)`
@@ -59,6 +74,7 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
     const [tokenSymbol, setTokenSymbol] = useState<string>(null)
     const [tokenDecimals, setTokenDecimals] = useState<number>(null)
     const [currentStep, setCurrentStep] = useState<Step>(Step.SelectChain)
+    const [error, setError] = useState<Error>(null)
     const purchase = usePurchase()
 
     useEffect(() => {
@@ -115,7 +131,7 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
                 })
                 .start()
         } catch (e) {
-            console.error(e)
+            setError(e)
         }
     }, [purchase, project, selectedLength, selectedPaymentDetails, selectedTimeUnit, chainId, onClose])
 
@@ -163,8 +179,43 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
                         />
                     </Inner>
                 </ModalContainer>
+                {error != null && (
+                    <OverlayContainer>
+                        <ErrorDialog
+                            error={error}
+                            onClose={() => setError(null)}
+                        />
+                    </OverlayContainer>
+                )}
             </ModalDialog>
         </ModalPortal>
+    )
+}
+
+type ErrorDialogProps = {
+    error: Error,
+    onClose: () => void,
+}
+
+const ErrorDialog = ({ error, onClose }: ErrorDialogProps) => {
+    if (error instanceof NoBalanceError) {
+        return (
+            <Dialog
+                title="No balance"
+                onClose={onClose}
+            >
+                You don&apos;t have enough balance to purchase this project
+            </Dialog>
+        )
+    }
+
+    return (
+        <Dialog
+            title="Error"
+            onClose={onClose}
+        >
+            {error.message}
+        </Dialog>
     )
 }
 
