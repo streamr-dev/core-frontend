@@ -48,6 +48,7 @@ describe('projectMapper', () => {
                 metadata: {
                     name: 'lorem',
                     description: 'ipsum',
+                    creator: 'Satoshi Nakamoto',
                     contactDetails: {},
                     imageUrl: 'https://example.com/image.jpg',
                     termsOfUse: {
@@ -74,6 +75,7 @@ describe('projectMapper', () => {
                 type: ProjectTypeEnum.PAID_DATA,
                 name: stubGraphModel.metadata.name,
                 description: stubGraphModel.metadata.description,
+                creator: stubGraphModel.metadata.creator,
                 imageUrl: stubGraphModel.metadata.imageUrl,
                 streams: stubGraphModel.streams,
                 termsOfUse: stubGraphModel.metadata.termsOfUse,

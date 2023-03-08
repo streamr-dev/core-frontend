@@ -4,7 +4,7 @@ import { LinkTabOptionProps } from '$shared/components/LinkTabs'
 import routes from '$routes'
 
 export const getProjectTitle = (project: Project): ReactNode => {
-    return <>{project.name} by <strong>[PROJECT CREATOR HERE]</strong></>
+    return <>{project.name} {!!project.creator && <>by <strong>{project.creator}</strong></>}</>
 }
 
 export const getProjectDetailsLinkTabs = (projectId: string): LinkTabOptionProps[] => {

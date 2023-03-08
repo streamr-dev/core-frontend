@@ -47,6 +47,7 @@ export type Project = {
     type?: ProjectTypeEnum
     termsOfUse: TermsOfUse
     contact: ContactDetails | null | undefined
+    creator: string
     // Paid project & Data Union
     salePoints?: Record<ChainName, SalePoint>
     // Data union

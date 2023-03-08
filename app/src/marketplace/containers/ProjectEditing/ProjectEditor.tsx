@@ -29,7 +29,7 @@ const EditorOverlay = styled.div`
   position: absolute;
   width: 100%;
   height: 100%;
-  top: 0;
+  top: 2px;
   left: 0;
   background-color: white;
   opacity: 0.6;
