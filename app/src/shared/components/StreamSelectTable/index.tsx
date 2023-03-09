@@ -8,7 +8,7 @@ import { StreamId } from '$shared/types/stream-types'
 import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
 import Checkbox from '$shared/components/Checkbox'
 import { IndexerStream } from '$app/src/services/streams'
-import { truncate } from '$shared/utils/text'
+import {truncateStreamName} from '$shared/utils/text'
 import routes from '$routes'
 
 const ROW_HEIGHT = 88
@@ -254,7 +254,7 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
                         return (
                             <TableRow key={s.id}>
                                 <StreamDetails to={routes.streams.show({ id: s.id })}>
-                                    <StreamId title={s.id}>{truncate(s.id)}</StreamId>
+                                    <StreamId title={s.id}>{truncateStreamName(s.id, 40)}</StreamId>
                                     {'\n'}
                                     <StreamDescription notOnTablet>{s.getMetadata().description}</StreamDescription>
                                 </StreamDetails>

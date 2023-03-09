@@ -1,4 +1,4 @@
-import { numberToText, truncate } from '$shared/utils/text'
+import {numberToText, truncate, truncateStreamName} from '$shared/utils/text'
 describe('text utils', () => {
     describe('truncate', () => {
         it('does not truncate non-strings', () => {
@@ -75,6 +75,39 @@ describe('text utils', () => {
             expect(numberToText(111)).toBe('111')
             expect(numberToText(1012)).toBe('1012')
             expect(numberToText(65231)).toBe('65231')
+        })
+    })
+
+    describe('truncateStreamName', () => {
+        [
+            {
+                streamName: 'short.eth/loremipsum',
+                expectedOutput: 'short.eth/loremipsum'
+            },
+            {
+                streamName: '0x3b8fc939003AB15F66D340FdbD82F5f1E3763FA8/loremipsum',
+                expectedOutput: '0x3b8...63FA8/loremipsum'
+            },
+            {
+                streamName: 'shortaddress.eth/verylongstramnamewhichshouldbeshortenedinthiscase',
+                expectedOutput: 'shortaddress.eth/veryl...scase'
+            },
+            {
+                streamName: 'theverylongensnamewhichprobablywillnotoccurbutneverthelessweshouldtruncateitifitoccurrs.eth/loremipsum',
+                expectedOutput: 'theve...currs.eth/loremipsum'
+            },
+            {
+                streamName: '0x3b8fc939003AB15F66D340FdbD82F5f1E3763FA8/loremipsumdolorisametitsaverylongnamelikethis',
+                expectedOutput: '0x3b8...63FA8/lorem...ethis'
+            },
+            {
+                streamName: '0x3b8fc939003AB15F66D340FdbD82F5f1E3763FA8/loremipsum/dolor/sit/amet/its/a/very/long/name/like/this',
+                expectedOutput: '0x3b8...63FA8/lorem.../this'
+            },
+        ].forEach((testCase) => {
+            it(`should properly truncate the stream name: ${testCase.streamName}`, () => {
+                expect(truncateStreamName(testCase.streamName)).toEqual(testCase.expectedOutput)
+            })
         })
     })
 })
