@@ -6,17 +6,23 @@ import ModalDialog from '$shared/components/ModalDialog'
 import ModalPortal from '$shared/components/ModalPortal'
 import useModal, { ModalApi } from "$shared/hooks/useModal"
 import SvgIcon from '$shared/components/SvgIcon'
+import { TimeUnit } from '$shared/types/common-types'
 import { COLORS } from '$shared/utils/styled'
 import usePurchase, { actionsTypes } from '$shared/hooks/usePurchase'
+import useApproveAllowance from '$shared/hooks/useApproveAllowance'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { transactionStates } from '$shared/utils/constants'
-import { getProject, getProjectFromRegistry, TheGraphPaymentDetails, TheGraphProject } from '$app/src/services/projects'
+import { getProject, getProjectFromRegistry, SmartContractProject, TheGraphPaymentDetails, TheGraphProject } from '$app/src/services/projects'
 import Dialog from '$shared/components/Dialog'
 import NoBalanceError from '$mp/errors/NoBalanceError'
+import TransactionRejectedError from '$shared/errors/TransactionRejectedError'
+import TransactionError from '$shared/errors/TransactionError'
 
 import SelectChain from './SelectChain'
 import ChooseAccessPeriod from './ChooseAccessPeriod'
-import CompleteAccess from './CompleteAccess'
+import SetAllowance from './SetAllowance'
+import Purchase from './Purchase'
+import Complete from './Complete'
 
 const ModalContainer = styled.div`
     background: ${COLORS.secondary};
@@ -25,18 +31,6 @@ const ModalContainer = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
-`
-
-const OverlayContainer = styled.div`
-    background: rgba(50, 50, 50, 0.5);
-    color: ${COLORS.primary};
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    left: 0;
 `
 
 const BackLink = styled(Link)`
@@ -62,20 +56,22 @@ type Props = {
 enum Step {
     SelectChain,
     ChooseAccessPeriod,
-    CompleteAccess,
+    SetAllowance,
+    Purchase,
+    Complete,
 }
 
 export const PurchaseDialog = ({ projectId, api }: Props) => {
     const isMounted = useIsMounted()
     const [project, setProject] = useState<TheGraphProject>(null)
+    const [contractProject, setContractProject] = useState<SmartContractProject>(null)
     const [selectedPaymentDetails, setSelectedPaymentDetails] = useState<TheGraphPaymentDetails>(null)
+    const [selectedTimeUnit, setSelectedTimeUnit] = useState<TimeUnit>(null)
     const [selectedLength, setSelectedLength] = useState<string>(null)
-    const [selectedTimeUnit, setSelectedTimeUnit] = useState<string>(null)
-    const [tokenSymbol, setTokenSymbol] = useState<string>(null)
-    const [tokenDecimals, setTokenDecimals] = useState<number>(null)
     const [currentStep, setCurrentStep] = useState<Step>(Step.SelectChain)
     const [error, setError] = useState<Error>(null)
     const purchase = usePurchase()
+    const { needsAllowance, approve } = useApproveAllowance()
 
     useEffect(() => {
         const loadProject = async () => {
@@ -85,8 +81,23 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
             }
         }
 
-        loadProject()
+        if (projectId) {
+            loadProject()
+        }
     }, [projectId, isMounted])
+
+    useEffect(() => {
+        const loadContractProject = async () => {
+            const result = await getProjectFromRegistry(projectId, [selectedPaymentDetails.domainId], true)
+            if (isMounted() && result) {
+                setContractProject(result)
+            }
+        }
+
+        if (projectId && selectedPaymentDetails != null) {
+            loadContractProject()
+        }
+    }, [projectId, isMounted, selectedPaymentDetails])
 
     const chainId = useMemo(() => {
         if (selectedPaymentDetails != null) {
@@ -114,7 +125,6 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
 
     const onPurchase = useCallback(async () => {
         try {
-            const contractProject = await getProjectFromRegistry(project.id, [selectedPaymentDetails.domainId], true)
             const { queue } = await purchase({
                 contractProject: contractProject,
                 length: selectedLength,
@@ -123,7 +133,17 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
             })
 
             await queue
-                .subscribe('status', (id, nextStatus, hash) => {
+                .subscribe('status', (id, nextStatus, error) => {
+                    if (error instanceof TransactionRejectedError) {
+                        // Maybe do something different here?
+                        setError(error)
+                    } else if (error instanceof TransactionError) {
+                        // Maybe do something different here?
+                        setError(error)
+                    } else if (error instanceof Error) {
+                        // Maybe do something different here?
+                        setError(error)
+                    }
                     if (id === actionsTypes.SUBSCRIPTION && nextStatus === transactionStates.CONFIRMED) {
                         // Payment succeeded
                         onClose()
@@ -133,7 +153,7 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
         } catch (e) {
             setError(e)
         }
-    }, [purchase, project, selectedLength, selectedPaymentDetails, selectedTimeUnit, chainId, onClose])
+    }, [purchase, project, selectedPaymentDetails, selectedLength, selectedTimeUnit, chainId, onClose])
 
     return (
         <ModalPortal>
@@ -155,37 +175,58 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
                             }}
                         />
                         <ChooseAccessPeriod
-                            visible={currentStep === Step.ChooseAccessPeriod}
+                            // Show access period on background when purchasing
+                            visible={currentStep === Step.ChooseAccessPeriod || currentStep === Step.Purchase}
                             chainId={chainId}
                             paymentDetails={selectedPaymentDetails}
-                            onNextClicked={(length, unit, symbol, decimals) => {
+                            onPayClicked={async (length, unit) => {
                                 setSelectedLength(length)
                                 setSelectedTimeUnit(unit)
-                                setTokenSymbol(symbol)
-                                setTokenDecimals(decimals)
-                                setCurrentStep(Step.CompleteAccess)
+
+                                const shouldSetAllowance = await needsAllowance({
+                                    contractProject,
+                                    chainId,
+                                    length,
+                                    timeUnit: unit,
+                                })
+                                if (shouldSetAllowance) {
+                                    setCurrentStep(Step.SetAllowance)
+                                } else {
+                                    setCurrentStep(Step.Purchase)
+                                }
                             }}
                         />
-                        <CompleteAccess
-                            visible={currentStep === Step.CompleteAccess}
-                            paymentDetails={selectedPaymentDetails}
+                        <SetAllowance
+                            visible={currentStep === Step.SetAllowance}
                             chainId={chainId}
-                            length={selectedLength}
-                            timeUnit={selectedTimeUnit}
-                            tokenSymbol={tokenSymbol}
-                            tokenDecimals={tokenDecimals}
-                            projectName={project?.metadata.name || project?.id}
-                            onPayClicked={onPurchase}
+                            onConfirm={() => {
+                                console.log('conf')
+
+                                setCurrentStep(Step.Purchase)
+                            }}
+                        />
+                        <Complete
+                            visible={currentStep === Step.Complete}
+                            onConfirm={() => {
+                                onClose()
+                            }}
                         />
                     </Inner>
                 </ModalContainer>
                 {error != null && (
-                    <OverlayContainer>
-                        <ErrorDialog
-                            error={error}
-                            onClose={() => setError(null)}
-                        />
-                    </OverlayContainer>
+                    <ErrorDialog
+                        error={error}
+                        onClose={() => setError(null)}
+                    />
+                )}
+                {currentStep === Step.Purchase && (
+                    <Purchase
+                        onConfirm={() => {
+                            console.log('conf')
+
+                            setCurrentStep(Step.Complete)
+                        }}
+                    />
                 )}
             </ModalDialog>
         </ModalPortal>
@@ -203,6 +244,7 @@ const ErrorDialog = ({ error, onClose }: ErrorDialogProps) => {
             <Dialog
                 title="No balance"
                 onClose={onClose}
+                useDarkBackdrop
             >
                 You don&apos;t have enough balance to purchase this project
             </Dialog>
@@ -213,6 +255,7 @@ const ErrorDialog = ({ error, onClose }: ErrorDialogProps) => {
         <Dialog
             title="Error"
             onClose={onClose}
+            useDarkBackdrop
         >
             {error.message}
         </Dialog>

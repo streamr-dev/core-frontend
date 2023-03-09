@@ -38,7 +38,7 @@ export default function usePurchase() {
                 throw new Error('no length and/or time unit provided')
             }
 
-            const paymentDetails = contractProject.paymentDetails[0]
+            const paymentDetails = contractProject.paymentDetails[0] // contractProject has only chains we asked to load
             if (!paymentDetails) {
                 throw new Error('could not get payment details for selected chain')
             }

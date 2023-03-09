@@ -22,6 +22,7 @@ export type DialogProps = {
     containerClassname?: string
     actionsClassName?: string
     backdropClassName?: string
+    useDarkBackdrop?: boolean,
     titleClassName?: string
     onClose: () => void
     showCloseIcon?: boolean
@@ -42,6 +43,7 @@ class Dialog extends Component<DialogProps, State> {
         helpText: null,
         waiting: false,
         autoClose: false,
+        useDarkBackdrop: false,
     }
     static classNames = {
         dialog: styles.dialog,
@@ -105,6 +107,7 @@ class Dialog extends Component<DialogProps, State> {
             containerClassname,
             actionsClassName,
             backdropClassName,
+            useDarkBackdrop,
             titleClassName,
             onClose,
             showCloseIcon,
@@ -115,7 +118,7 @@ class Dialog extends Component<DialogProps, State> {
         return (
             <ModalDialog
                 className={classNames(styles.dialog, className)}
-                backdropClassName={classNames(styles.backdrop, backdropClassName)}
+                backdropClassName={classNames(styles.backdrop, backdropClassName, useDarkBackdrop ? styles.darkBackdrop : null)}
                 onClose={() => onClose && onClose()}
                 {...otherProps}
             >

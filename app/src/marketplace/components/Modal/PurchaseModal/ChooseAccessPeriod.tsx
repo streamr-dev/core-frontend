@@ -24,7 +24,7 @@ type Props = {
     visible: boolean,
     chainId: number,
     paymentDetails: TheGraphPaymentDetails,
-    onNextClicked: (length: string, timeUnit: TimeUnit, tokenSymbol: string, tokenDecimals: number) => void,
+    onPayClicked: (length: string, timeUnit: TimeUnit) => void,
 }
 
 const Outer = styled.div`
@@ -91,7 +91,7 @@ const options = [timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month]
     value: unit,
 }))
 
-const ChooseAccessPeriod = ({ visible, chainId, paymentDetails, onNextClicked }: Props) => {
+const ChooseAccessPeriod = ({ visible, chainId, paymentDetails, onPayClicked }: Props) => {
     const isMounted = useIsMounted()
     const [length, setLength] = useState<string>("1")
     const [selectedUnit, setSelectedUnit] = useState(timeUnits.hour)
@@ -204,10 +204,10 @@ const ChooseAccessPeriod = ({ visible, chainId, paymentDetails, onNextClicked }:
                 </DetailsContainer>
             </Outer>
             <NextButton
-                onClick={() => onNextClicked(length, selectedUnit, tokenSymbol, tokenDecimals)}
+                onClick={() => onPayClicked(length, selectedUnit)}
                 disabled={!price.isFinite()}
             >
-                Next
+                Pay now
             </NextButton>
         </DialogContainer>
     )
