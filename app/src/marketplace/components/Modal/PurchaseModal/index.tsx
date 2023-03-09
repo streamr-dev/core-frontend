@@ -10,7 +10,6 @@ import { TimeUnit } from '$shared/types/common-types'
 import { COLORS } from '$shared/utils/styled'
 import usePurchase, { actionsTypes } from '$shared/hooks/usePurchase'
 import useApproveAllowance from '$shared/hooks/useApproveAllowance'
-import useIsMounted from '$shared/hooks/useIsMounted'
 import { transactionStates } from '$shared/utils/constants'
 import { getProject, getProjectFromRegistry, SmartContractProject, TheGraphPaymentDetails, TheGraphProject } from '$app/src/services/projects'
 import Dialog from '$shared/components/Dialog'
@@ -18,6 +17,7 @@ import NoBalanceError from '$mp/errors/NoBalanceError'
 import TransactionRejectedError from '$shared/errors/TransactionRejectedError'
 import TransactionError from '$shared/errors/TransactionError'
 
+import { Step, usePurchaseStore } from './state'
 import SelectChain from './SelectChain'
 import ChooseAccessPeriod from './ChooseAccessPeriod'
 import SetAllowance from './SetAllowance'
@@ -53,51 +53,38 @@ type Props = {
     api: ModalApi,
 }
 
-enum Step {
-    SelectChain,
-    ChooseAccessPeriod,
-    SetAllowance,
-    Purchase,
-    Complete,
-}
-
 export const PurchaseDialog = ({ projectId, api }: Props) => {
-    const isMounted = useIsMounted()
-    const [project, setProject] = useState<TheGraphProject>(null)
-    const [contractProject, setContractProject] = useState<SmartContractProject>(null)
-    const [selectedPaymentDetails, setSelectedPaymentDetails] = useState<TheGraphPaymentDetails>(null)
     const [selectedTimeUnit, setSelectedTimeUnit] = useState<TimeUnit>(null)
     const [selectedLength, setSelectedLength] = useState<string>(null)
-    const [currentStep, setCurrentStep] = useState<Step>(Step.SelectChain)
     const [error, setError] = useState<Error>(null)
+
+    const [currentStep, setCurrentStep] = usePurchaseStore((state) => [state.currentStep, state.setCurrentStep])
+    const goBack = usePurchaseStore((state) => state.goBack)
+    const project = usePurchaseStore((state) => state.project)
+    const loadProject = usePurchaseStore((state) => state.loadProject)
+    const contractProject = usePurchaseStore((state) => state.contractProject)
+    const loadContractProject = usePurchaseStore((state) => state.loadContractProject)
+    const [selectedPaymentDetails, setSelectedPaymentDetails] = usePurchaseStore((state) => [
+        state.selectedPaymentDetails,
+        state.setSelectedPaymentDetails,
+    ])
+
+    console.log(usePurchaseStore())
+
     const purchase = usePurchase()
     const { needsAllowance, approve } = useApproveAllowance()
 
     useEffect(() => {
-        const loadProject = async () => {
-            const proj = await getProject(projectId)
-            if (isMounted() && proj) {
-                setProject(proj)
-            }
-        }
-
         if (projectId) {
-            loadProject()
+            loadProject(projectId)
         }
-    }, [projectId, isMounted])
+    }, [projectId, loadProject])
 
     useEffect(() => {
-        const loadContractProject = async () => {
-            const result = await getProjectFromRegistry(projectId, [selectedPaymentDetails.domainId], true)
-            if (isMounted() && result) {
-                setContractProject(result)
-            }
-        }
-
         if (projectId && selectedPaymentDetails != null) {
             loadContractProject()
         }
-    }, [projectId, isMounted, selectedPaymentDetails])
+    }, [projectId, loadContractProject, selectedPaymentDetails])
 
     const chainId = useMemo(() => {
         if (selectedPaymentDetails != null) {
@@ -115,13 +102,39 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
         api.close()
     }, [api])
 
-    const goBack = useCallback(() => {
-        if (currentStep === 0) {
+    useEffect(() => {
+        if (currentStep < 0) {
             onClose()
-        } else {
-            setCurrentStep((prev) => prev - 1)
         }
-    }, [onClose, currentStep])
+    }, [currentStep, onClose])
+
+    const setAllowance = useCallback(async () => {
+        try {
+            const approveTx = approve({
+                contractProject,
+                chainId,
+                length: selectedLength,
+                timeUnit: selectedTimeUnit,
+            })
+
+            approveTx
+                .onTransactionHash((hash) => {
+                    console.log('started', hash)
+                })
+                .onTransactionComplete(() => {
+                    console.log('complete')
+                    setCurrentStep(Step.Purchase)
+                })
+                .onError((error) => {
+                    setError(error)
+                    setCurrentStep(Step.ChooseAccessPeriod)
+                })
+        } catch (e) {
+            setError(e)
+            setCurrentStep(Step.ChooseAccessPeriod)
+            return
+        }
+    }, [approve, chainId, contractProject, selectedLength, selectedTimeUnit, setCurrentStep])
 
     const onPurchase = useCallback(async () => {
         try {
@@ -153,7 +166,7 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
         } catch (e) {
             setError(e)
         }
-    }, [purchase, project, selectedPaymentDetails, selectedLength, selectedTimeUnit, chainId, onClose])
+    }, [purchase, contractProject, selectedLength, selectedTimeUnit, chainId, onClose])
 
     return (
         <ModalPortal>
@@ -198,12 +211,7 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
                         />
                         <SetAllowance
                             visible={currentStep === Step.SetAllowance}
-                            chainId={chainId}
-                            onConfirm={() => {
-                                console.log('conf')
-
-                                setCurrentStep(Step.Purchase)
-                            }}
+                            onConfirm={setAllowance}
                         />
                         <Complete
                             visible={currentStep === Step.Complete}

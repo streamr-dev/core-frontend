@@ -1,15 +1,21 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 
 import { DialogContainer, DialogTitle, NextButton } from './styles'
 
 type Props = {
     visible: boolean,
-    chainId: number,
     onConfirm: () => void,
 }
 
-const SetAllowance = ({ visible, chainId, onConfirm }: Props) => {
+const SetAllowance = ({ visible, onConfirm }: Props) => {
+    useEffect(() => {
+        if (visible) {
+            // Fire allowance setting process straight away without user needing to click the button
+            onConfirm()
+        }
+    }, [onConfirm, visible])
+
     if (!visible) {
         return null
     }
@@ -19,9 +25,9 @@ const SetAllowance = ({ visible, chainId, onConfirm }: Props) => {
             <DialogTitle>Set Streamr Hub allowance</DialogTitle>
             <div>test</div>
             <NextButton
-                onClick={() => onConfirm()}
+                waiting
             >
-                Approve
+                Waiting
             </NextButton>
         </DialogContainer>
     )
