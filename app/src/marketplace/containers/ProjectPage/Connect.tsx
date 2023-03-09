@@ -29,7 +29,7 @@ export const Connect: FunctionComponent = () => {
             {
                 userHasAccess
                     ? <WhiteBox>
-                        <StreamConnect />
+                        <StreamConnect streams={project.streams}/>
                     </WhiteBox>
                     : <GetAccessContainer>
                         <img src={ProjectPng}/>

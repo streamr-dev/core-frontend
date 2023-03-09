@@ -23,7 +23,7 @@ import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
 import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
 import ShareSidebar from '$userpages/components/ShareSidebar'
-import { truncate } from '$shared/utils/text'
+import {truncate, truncateStreamName} from '$shared/utils/text'
 import Sidebar from '$shared/components/Sidebar'
 import useNativeTokenName from '$shared/hooks/useNativeTokenName'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
@@ -263,7 +263,7 @@ function UnwrappedStreamPage({ children, loading = false, includeContainerBox = 
                     <MarketplaceHelmet title={streamId ? `Stream ${streamId}` : 'New stream'} />
                     <DetailsPageHeader
                         backButtonLink={routes.streams.index()}
-                        pageTitle={streamId}
+                        pageTitle={<span title={streamId}>{truncateStreamName(streamId, 50)}</span>}
                         linkTabs={linkTabs}
                     />
                     {includeContainerBox ? (
