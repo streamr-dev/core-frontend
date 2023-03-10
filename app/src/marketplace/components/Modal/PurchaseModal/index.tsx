@@ -54,25 +54,32 @@ type Props = {
 }
 
 export const PurchaseDialog = ({ projectId, api }: Props) => {
-    const [selectedTimeUnit, setSelectedTimeUnit] = useState<TimeUnit>(null)
-    const [selectedLength, setSelectedLength] = useState<string>(null)
-    const [error, setError] = useState<Error>(null)
-
     const [currentStep, setCurrentStep] = usePurchaseStore((state) => [state.currentStep, state.setCurrentStep])
     const goBack = usePurchaseStore((state) => state.goBack)
     const project = usePurchaseStore((state) => state.project)
     const loadProject = usePurchaseStore((state) => state.loadProject)
     const contractProject = usePurchaseStore((state) => state.contractProject)
     const loadContractProject = usePurchaseStore((state) => state.loadContractProject)
+    const needsAllowance = usePurchaseStore((state) => state.needsAllowance)
+    const approveAllowance = usePurchaseStore((state) => state.approveAllowance)
     const [selectedPaymentDetails, setSelectedPaymentDetails] = usePurchaseStore((state) => [
         state.selectedPaymentDetails,
         state.setSelectedPaymentDetails,
     ])
+    const [selectedTimeUnit, setSelectedTimeUnit] = usePurchaseStore((state) => [
+        state.selectedTimeUnit,
+        state.setSelectedTimeUnit,
+    ])
+    const [selectedLength, setSelectedLength] = usePurchaseStore((state) => [
+        state.selectedLength,
+        state.setSelectedLength,
+    ])
+    const [error, setError] = usePurchaseStore((state) => [state.error, state.setError])
 
     console.log(usePurchaseStore())
 
     const purchase = usePurchase()
-    const { needsAllowance, approve } = useApproveAllowance()
+    const { needsAllowance: needsAllowanceCheck, approve } = useApproveAllowance()
 
     useEffect(() => {
         if (projectId) {
@@ -108,33 +115,14 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
         }
     }, [currentStep, onClose])
 
-    const setAllowance = useCallback(async () => {
-        try {
-            const approveTx = approve({
-                contractProject,
-                chainId,
-                length: selectedLength,
-                timeUnit: selectedTimeUnit,
-            })
-
-            approveTx
-                .onTransactionHash((hash) => {
-                    console.log('started', hash)
-                })
-                .onTransactionComplete(() => {
-                    console.log('complete')
-                    setCurrentStep(Step.Purchase)
-                })
-                .onError((error) => {
-                    setError(error)
-                    setCurrentStep(Step.ChooseAccessPeriod)
-                })
-        } catch (e) {
-            setError(e)
-            setCurrentStep(Step.ChooseAccessPeriod)
-            return
+    const onPay = useCallback(async () => {
+        const shouldSetAllowance = await needsAllowance(needsAllowanceCheck)
+        if (shouldSetAllowance) {
+            setCurrentStep(Step.SetAllowance)
+        } else {
+            setCurrentStep(Step.Purchase)
         }
-    }, [approve, chainId, contractProject, selectedLength, selectedTimeUnit, setCurrentStep])
+    }, [needsAllowance, needsAllowanceCheck, setCurrentStep])
 
     const onPurchase = useCallback(async () => {
         try {
@@ -166,7 +154,7 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
         } catch (e) {
             setError(e)
         }
-    }, [purchase, contractProject, selectedLength, selectedTimeUnit, chainId, onClose])
+    }, [purchase, contractProject, selectedLength, selectedTimeUnit, chainId, onClose, setError])
 
     return (
         <ModalPortal>
@@ -195,23 +183,12 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
                             onPayClicked={async (length, unit) => {
                                 setSelectedLength(length)
                                 setSelectedTimeUnit(unit)
-
-                                const shouldSetAllowance = await needsAllowance({
-                                    contractProject,
-                                    chainId,
-                                    length,
-                                    timeUnit: unit,
-                                })
-                                if (shouldSetAllowance) {
-                                    setCurrentStep(Step.SetAllowance)
-                                } else {
-                                    setCurrentStep(Step.Purchase)
-                                }
+                                onPay()
                             }}
                         />
                         <SetAllowance
                             visible={currentStep === Step.SetAllowance}
-                            onConfirm={setAllowance}
+                            onConfirm={() => approveAllowance(approve)}
                         />
                         <Complete
                             visible={currentStep === Step.Complete}
@@ -272,6 +249,14 @@ const ErrorDialog = ({ error, onClose }: ErrorDialogProps) => {
 
 const PurchaseModal = () => {
     const { isOpen, api, value } = useModal('purchaseProject')
+    const resetStore = usePurchaseStore((state) => state.reset)
+
+    useEffect(() => {
+        if (!isOpen) {
+            // Reset store after closing so that it's fresh next time
+            resetStore()
+        }
+    }, [isOpen, resetStore])
 
     if (!isOpen) {
         return null

@@ -7,6 +7,7 @@ import { Radio as UnstyledRadio } from '$shared/components/Radio'
 import { MEDIUM } from '$shared/utils/styled'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 import getChainId from '$utils/web3/getChainId'
+import useIsMounted from '$shared/hooks/useIsMounted'
 import { DialogContainer, DialogTitle, NextButton } from './styles'
 
 type Props = {
@@ -53,6 +54,7 @@ const Radio = styled(UnstyledRadio)`
 const SelectChain = ({ visible, paymentDetails, onNextClicked }: Props) => {
     const [selection, setSelection] = useState<TheGraphPaymentDetails | null>(null)
     const { switchChain } = useSwitchChain()
+    const isMounted = useIsMounted()
 
     const chainOptions = useMemo(() => {
         const values = Object.values(paymentDetails).map((p) => {
@@ -71,7 +73,7 @@ const SelectChain = ({ visible, paymentDetails, onNextClicked }: Props) => {
     useEffect(() => {
         const loadChainId = async () => {
             const chainId = await getChainId()
-            if (paymentDetails) {
+            if (isMounted() && paymentDetails) {
                 const chainPd = paymentDetails.find((p) => p.domainId === chainId.toString())
                 if (chainPd) {
                     // Set current chain as preselected value
@@ -81,7 +83,12 @@ const SelectChain = ({ visible, paymentDetails, onNextClicked }: Props) => {
         }
 
         loadChainId()
-    }, [paymentDetails])
+    }, [paymentDetails, isMounted])
+
+    const onNext = useCallback(async () => {
+        await switchChain(Number.parseInt(selection.domainId))
+        onNextClicked(selection)
+    }, [onNextClicked, selection, switchChain])
 
     if (!visible) {
         return null
@@ -107,10 +114,7 @@ const SelectChain = ({ visible, paymentDetails, onNextClicked }: Props) => {
                 ))}
             </ChainItems>
             <NextButton
-                onClick={async () => {
-                    await switchChain(Number.parseInt(selection.domainId))
-                    onNextClicked(selection)
-                }}
+                onClick={onNext}
                 disabled={selection == null}
             >
                 Next

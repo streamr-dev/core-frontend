@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 import { DialogContainer, DialogTitle, NextButton } from './styles'
@@ -9,10 +9,19 @@ type Props = {
 }
 
 const SetAllowance = ({ visible, onConfirm }: Props) => {
+    const confirmInProcess = useRef(false)
+
+    // We want to start processing allowance without user clicking button.
+    // The ref dance is needed for making sure we run it only once.
     useEffect(() => {
         if (visible) {
-            // Fire allowance setting process straight away without user needing to click the button
+            if (confirmInProcess.current) {
+                return
+            }
+            confirmInProcess.current = true
             onConfirm()
+        } else {
+            confirmInProcess.current = false
         }
     }, [onConfirm, visible])
 
