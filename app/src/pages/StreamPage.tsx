@@ -70,6 +70,10 @@ const Inner = styled.div`
     border-radius: 16px;
     background-color: white;
     padding: 24px;
+  
+    &.no-save-button {
+      grid-template-columns: auto;
+    }
 
     @media ${TABLET} {
         padding: 40px;
@@ -88,6 +92,7 @@ const SaveButton = styled(Button)`
 type ContainerBoxProps = {
     children?: React.ReactNode,
     disabled?: boolean,
+    showSaveButton?: boolean
 }
 
 const CopyButton = styled(Button)`
@@ -96,19 +101,19 @@ const CopyButton = styled(Button)`
   border-radius: 100%;
   margin-left: 10px;
 `
-const ContainerBox: React.FunctionComponent<ContainerBoxProps> = ({ children, disabled }) =>
+const ContainerBox: React.FunctionComponent<ContainerBoxProps> = ({ children, disabled, showSaveButton = true }) =>
     <Outer>
-        <Inner>
+        <Inner className={!showSaveButton && 'no-save-button'}>
             <div>
                 {children}
             </div>
-            <SaveButton
+            {showSaveButton && <SaveButton
                 kind="primary"
                 type="submit"
                 disabled={disabled}
             >
                 Save
-            </SaveButton>
+            </SaveButton>}
         </Inner>
     </Outer>
 
@@ -135,7 +140,7 @@ function StreamPageSidebar() {
     )
 }
 
-function UnwrappedStreamPage({ children, loading = false, includeContainerBox = true }) {
+function UnwrappedStreamPage({ children, loading = false, includeContainerBox = true , showSaveButton = true}) {
     const history = useHistory()
     const { commit, goBack } = useStreamModifier()
     const { busy, clean } = useStreamModifierStatusContext()
@@ -279,7 +284,7 @@ function UnwrappedStreamPage({ children, loading = false, includeContainerBox = 
                     <DetailsPageHeader
                         backButtonLink={routes.streams.index()}
                         pageTitle={<>
-                            <span title={streamId}>{truncateStreamName(streamId, 50)}</span>
+                            <span title={streamId}>{streamId ? truncateStreamName(streamId, 50) : ''}</span>
                             <CopyButton onClick={() => handleCopy(streamId)} type={'button'} kind={'secondary'} size={'mini'}>
                                 <SvgIcon name={'copy'}/>
                             </CopyButton>
@@ -287,7 +292,7 @@ function UnwrappedStreamPage({ children, loading = false, includeContainerBox = 
                         linkTabs={linkTabs}
                     />
                     {includeContainerBox ? (
-                        <ContainerBox disabled={clean || busy}>
+                        <ContainerBox disabled={clean || busy} showSaveButton={showSaveButton}>
                             {!loading && children}
                         </ContainerBox>
                     ) : (

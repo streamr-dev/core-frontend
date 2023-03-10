@@ -9,5 +9,5 @@ const stories = storiesOf('Shared/StreamConnect', module).addDecorator(
     }),
 )
 stories.add('default', () => (
-    <StreamConnect streamId={'0xdjsdgfjkj32k3j423dfsd'}/>
+    <StreamConnect streams={['0xdjsdgfjkj32k3j423dfsd']}/>
 ))
