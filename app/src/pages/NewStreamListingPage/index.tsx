@@ -17,6 +17,7 @@ import InterruptionError from '$shared/errors/InterruptionError'
 import {ActionBarContainer, FiltersBar, FiltersWrap, SearchBarWrap} from '$mp/components/ActionBar/actionBar.styles'
 import {PageWrap} from "$shared/components/PageWrap"
 import styles from "$shared/components/Layout/layout.pcss"
+import {useAuthController} from "$auth/hooks/useAuthController"
 import routes from '$routes'
 import StreamTable from '../../shared/components/StreamTable'
 
@@ -66,20 +67,20 @@ const NewStreamListingPage: React.FC = () => {
     const [streamStats, setStreamStats] = useState<Record<StreamID, IndexerStream>>({})
     const [hasMore, setHasMore] = useState<boolean>(false)
     const isUserAuthenticated = useIsAuthenticated()
+    const {currentAuthSession} = useAuthController()
 
     const itp = useInterrupt()
     const fetchStreams = useFetchStreams()
 
-    const fetch = useCallback(async () => {
+    const fetch = useCallback(async (resetSearch = false) => {
         const { requireUninterrupted } = itp(search)
-
         try {
             const allowPublic = streamsSelection === StreamSelection.ALL
             const [newStreams, hasMoreResults, isFirstBatch] = await fetchStreams(search, {
                 batchSize: PAGE_SIZE,
                 allowPublic,
                 onlyCurrentUser: streamsSelection === StreamSelection.YOUR,
-            })
+            }, resetSearch)
 
             requireUninterrupted()
             setHasMore(hasMoreResults)
@@ -110,11 +111,17 @@ const NewStreamListingPage: React.FC = () => {
 
             console.warn(e)
         }
-    }, [itp, search, fetchStreams, streamsSelection])
+    }, [itp, search, fetchStreams, streamsSelection, currentAuthSession.address])
 
     useEffect(() => {
         fetch()
     }, [fetch, streamsSelection])
+
+    useEffect(() => {
+        setHasMore(false)
+        setStreams([])
+        fetch(true)
+    }, [currentAuthSession.address])
 
     return (
         <Layout innerClassName={styles.greyInner}>

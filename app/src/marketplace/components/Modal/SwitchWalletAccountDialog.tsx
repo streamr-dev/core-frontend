@@ -2,6 +2,13 @@ import React from 'react'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 
+/**
+ * @deprecated
+ * @param onClose
+ * @param onContinue
+ * @param props
+ * @constructor
+ */
 const SwitchWalletAccountDialog = ({ onClose, onContinue, ...props }) => (
     <ModalPortal>
         <Dialog

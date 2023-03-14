@@ -125,7 +125,11 @@ const ProjectsPage: FunctionComponent = () => {
 
     useEffect(() => {
         loadProjects()
-    }, [])
+    }, [filter])
+
+    useEffect(() => {
+        setFilter((filter) => filter.owner ? {...filter, owner: currentAuthSession.address} : filter)
+    }, [currentAuthSession.address])
 
     useEffect(() => {
         if (currentAuthSession.address && projects?.length) {
