@@ -8,12 +8,13 @@ import useFetchPermission from '$shared/hooks/useFetchPermission'
 import formatAssignments from '$shared/components/PermissionsProvider/utils/formatAssignments'
 import { Operation } from '$shared/components/PermissionsProvider/operations'
 import useInterrupt from '$shared/hooks/useInterrupt'
-import getClientAddress from '$app/src/getters/getClientAddress'
+import {useAuthController} from "$auth/hooks/useAuthController"
 export default function useRemoveStream() {
     const { validateNetwork } = useRequireNetwork(networks.STREAMS, false)
     const fetchPermission = useFetchPermission()
     const itp = useInterrupt()
     const client = useClient()
+    const {currentAuthSession} = useAuthController()
     useEffect(() => {
         // Interrupt deletion/removal if `client` changed. `itp` does not change.
         itp().interruptAll()
@@ -45,20 +46,17 @@ export default function useRemoveStream() {
             if (canDelete) {
                 await client.deleteStream(streamId)
             } else {
-                const user = await getClientAddress(client, {
-                    suppressFailures: true,
-                })
                 requireUninterrupted()
                 await client.setPermissions({
                     streamId,
                     assignments: formatAssignments({
-                        [user]: Operation.None,
+                        [currentAuthSession.address]: Operation.None,
                     }),
                 })
             }
 
             return canDelete
         },
-        [itp, validateNetwork, fetchPermission, client],
+        [itp, validateNetwork, fetchPermission, client, currentAuthSession.address],
     )
 }

@@ -3,13 +3,13 @@ import { post } from '$shared/utils/api'
 import InterruptionError from '$shared/errors/InterruptionError'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
-import useClientAddress from '$shared/hooks/useClientAddress'
 import { truncate } from '$shared/utils/text'
+import {useAuthController} from "$auth/hooks/useAuthController"
 export const ADD_ENS_DOMAIN_VALUE = '::ens/add_domain'
 export default function useStreamOwnerOptions() {
     const [domains, setDomains] = useState()
     const [options, setOptions] = useState()
-    const user = useClientAddress()
+    const {currentAuthSession} = useAuthController()
     useEffect(() => {
         setDomains(undefined)
         let aborted = false
@@ -18,14 +18,14 @@ export default function useStreamOwnerOptions() {
             try {
                 const {
                     data: { domains: newDomains },
-                } = user
+                } = currentAuthSession.address
                     ? await post({
                         url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
                         data: {
                             query: `
                                 query {
                                     domains(
-                                        where: { owner_in: ["${user}"]}
+                                        where: { owner_in: ["${currentAuthSession.address}"]}
                                         orderBy: name
                                     ) {
                                         id
@@ -73,9 +73,9 @@ export default function useStreamOwnerOptions() {
         return () => {
             aborted = true
         }
-    }, [user])
+    }, [currentAuthSession.address])
     useEffect(() => {
-        if (!user) {
+        if (!currentAuthSession.address) {
             setOptions([])
             return
         }
@@ -97,10 +97,10 @@ export default function useStreamOwnerOptions() {
         })
         const ethAccountOptions = []
 
-        if (user) {
+        if (currentAuthSession.address) {
             ethAccountOptions.push({
-                value: user,
-                label: truncate(user),
+                value: currentAuthSession.address,
+                label: truncate(currentAuthSession.address),
             })
         }
 
@@ -114,6 +114,6 @@ export default function useStreamOwnerOptions() {
                 options: ethAccountOptions,
             },
         ])
-    }, [user, domains])
+    }, [currentAuthSession.address, domains])
     return options
 }

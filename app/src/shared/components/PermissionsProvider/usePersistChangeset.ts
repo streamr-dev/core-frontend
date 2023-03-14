@@ -2,11 +2,11 @@ import { useCallback, useRef, useEffect } from 'react'
 import { useClient } from 'streamr-client-react'
 import { usePermissionsState, usePermissionsDispatch } from '$shared/components/PermissionsProvider'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import useClientAddress from '$shared/hooks/useClientAddress'
 import useStreamPermissionsInvalidator from '$shared/hooks/useStreamPermissionsInvalidator'
 import useValidateNetwork from '$shared/hooks/useValidateNetwork'
 import { networks } from '$shared/utils/constants'
 import useInterrupt from '$shared/hooks/useInterrupt'
+import {useAuthController} from "$auth/hooks/useAuthController"
 import InterruptionError from '$shared/errors/InterruptionError'
 import reducer, { PERSIST, SET_PERMISSIONS, UNLOCK } from './utils/reducer'
 import formatAssignments from './utils/formatAssignments'
@@ -18,10 +18,10 @@ export default function usePersistChangeset() {
     const busyRef = useRef(false)
     const saveRef = useRef(() => {})
     const userRef = useRef()
-    const user = useClientAddress()
+    const {currentAuthSession} = useAuthController()
     useEffect(() => {
-        userRef.current = user
-    }, [user])
+        userRef.current = currentAuthSession.address
+    }, [currentAuthSession.address])
     const invalidatePermissions = useStreamPermissionsInvalidator()
     const invalidatePermissionsRef = useRef(invalidatePermissions)
     useEffect(() => {
