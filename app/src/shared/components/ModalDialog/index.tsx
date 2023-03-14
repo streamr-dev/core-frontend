@@ -9,6 +9,8 @@ export type Props = {
     className?: string
     backdropClassName?: string
     noScroll?: boolean
+    closeOnEsc?: boolean,
+    closeOnBackdropClick?: boolean
 }
 export type InternalProps = Props & {
     children: ReactNode
@@ -36,8 +38,9 @@ const ModalDialog = ({
     backdropClassName,
     fullpage,
     noScroll = false,
+    ...otherProps
 }: InternalProps) => (
-    <ReactModal2 onClose={onClose} backdropClassName={backdropClassName} modalClassName={className}>
+    <ReactModal2 onClose={onClose} backdropClassName={backdropClassName} modalClassName={className} {...otherProps}>
         <BodyClass className={NO_SCROLL} />
         {fullpage ? <Fullpage noScroll={noScroll}>{children}</Fullpage> : children}
     </ReactModal2>

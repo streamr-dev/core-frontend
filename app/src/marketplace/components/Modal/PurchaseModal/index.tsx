@@ -7,13 +7,18 @@ import ModalPortal from '$shared/components/ModalPortal'
 import useModal, { ModalApi } from "$shared/hooks/useModal"
 import SvgIcon from '$shared/components/SvgIcon'
 import { COLORS } from '$shared/utils/styled'
-import usePurchase, { actionsTypes } from '$shared/hooks/usePurchase'
-import useIsMounted from '$shared/hooks/useIsMounted'
-import { transactionStates } from '$shared/utils/constants'
-import { getProject, getProjectFromRegistry, TheGraphPaymentDetails, TheGraphProject } from '$app/src/services/projects'
+import Dialog from '$shared/components/Dialog'
+import NoBalanceError from '$mp/errors/NoBalanceError'
+import UnstyledLoadingIndicator from '$shared/components/LoadingIndicator'
+import PngIcon from '$shared/components/PngIcon'
+
+import { Step, usePurchaseStore } from './state'
 import SelectChain from './SelectChain'
 import ChooseAccessPeriod from './ChooseAccessPeriod'
-import CompleteAccess from './CompleteAccess'
+import SetAllowance from './SetAllowance'
+import Purchase from './Purchase'
+import Complete from './Complete'
+import Progress from './Progress'
 
 const ModalContainer = styled.div`
     background: ${COLORS.secondary};
@@ -24,9 +29,18 @@ const ModalContainer = styled.div`
     flex-direction: column;
 `
 
-const BackLink = styled(Link)`
+const LoadingIndicator = styled(UnstyledLoadingIndicator)`
+    height: 2px;
+`
+
+type BackLinkProps = {
+    $shouldShow: boolean,
+}
+
+const BackLink = styled(Link)<BackLinkProps>`
     line-height: 30px;
     margin-bottom: 50px;
+    visibility: ${({ $shouldShow }) => $shouldShow ? 'visible' : 'hidden'};
 `
 
 const BackButtonIcon = styled(SvgIcon)`
@@ -44,33 +58,37 @@ type Props = {
     api: ModalApi,
 }
 
-enum Step {
-    SelectChain,
-    ChooseAccessPeriod,
-    CompleteAccess,
-}
-
 export const PurchaseDialog = ({ projectId, api }: Props) => {
-    const isMounted = useIsMounted()
-    const [project, setProject] = useState<TheGraphProject>(null)
-    const [selectedPaymentDetails, setSelectedPaymentDetails] = useState<TheGraphPaymentDetails>(null)
-    const [selectedLength, setSelectedLength] = useState<string>(null)
-    const [selectedTimeUnit, setSelectedTimeUnit] = useState<string>(null)
-    const [tokenSymbol, setTokenSymbol] = useState<string>(null)
-    const [tokenDecimals, setTokenDecimals] = useState<number>(null)
-    const [currentStep, setCurrentStep] = useState<Step>(Step.SelectChain)
-    const purchase = usePurchase()
+    const [currentStep, setCurrentStep] = usePurchaseStore((state) => [state.currentStep, state.setCurrentStep])
+    const goBack = usePurchaseStore((state) => state.goBack)
+    const project = usePurchaseStore((state) => state.project)
+    const loadProject = usePurchaseStore((state) => state.loadProject)
+    const loadContractProject = usePurchaseStore((state) => state.loadContractProject)
+    const needsAllowance = usePurchaseStore((state) => state.needsAllowance)
+    const approveAllowance = usePurchaseStore((state) => state.approveAllowance)
+    const purchaseProject = usePurchaseStore((state) => state.purchase)
+    const [selectedPaymentDetails, setSelectedPaymentDetails] = usePurchaseStore((state) => [
+        state.selectedPaymentDetails,
+        state.setSelectedPaymentDetails,
+    ])
+    const setSelectedTimeUnit = usePurchaseStore((state) => state.setSelectedTimeUnit)
+    const setSelectedLength = usePurchaseStore((state) => state.setSelectedLength)
+    const tokenSymbol = usePurchaseStore((state) => state.tokenSymbol)
+    const tokenDecimals = usePurchaseStore((state) => state.tokenDecimals)
+    const isLoading = usePurchaseStore((state) => state.isLoading)
+    const [error, setError] = usePurchaseStore((state) => [state.error, state.setError])
 
     useEffect(() => {
-        const loadProject = async () => {
-            const proj = await getProject(projectId)
-            if (isMounted() && proj) {
-                setProject(proj)
-            }
+        if (projectId) {
+            loadProject(projectId)
         }
+    }, [projectId, loadProject])
 
-        loadProject()
-    }, [projectId, isMounted])
+    useEffect(() => {
+        if (projectId && selectedPaymentDetails != null) {
+            loadContractProject()
+        }
+    }, [projectId, loadContractProject, selectedPaymentDetails])
 
     const chainId = useMemo(() => {
         if (selectedPaymentDetails != null) {
@@ -88,46 +106,33 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
         api.close()
     }, [api])
 
-    const goBack = useCallback(() => {
-        if (currentStep === 0) {
+    useEffect(() => {
+        if (currentStep < 0) {
             onClose()
+        }
+    }, [currentStep, onClose])
+
+    const onPay = useCallback(async () => {
+        const shouldSetAllowance = await needsAllowance()
+        if (shouldSetAllowance) {
+            setCurrentStep(Step.SetAllowance)
         } else {
-            setCurrentStep((prev) => prev - 1)
+            setCurrentStep(Step.Purchase)
         }
-    }, [onClose, currentStep])
-
-    const onPurchase = useCallback(async () => {
-        try {
-            const contractProject = await getProjectFromRegistry(project.id, [selectedPaymentDetails.domainId], true)
-            const { queue } = await purchase({
-                contractProject: contractProject,
-                length: selectedLength,
-                timeUnit: selectedTimeUnit,
-                chainId: chainId,
-            })
-
-            await queue
-                .subscribe('status', (id, nextStatus, hash) => {
-                    if (id === actionsTypes.SUBSCRIPTION && nextStatus === transactionStates.CONFIRMED) {
-                        // Payment succeeded
-                        onClose()
-                    }
-                })
-                .start()
-        } catch (e) {
-            console.error(e)
-        }
-    }, [purchase, project, selectedLength, selectedPaymentDetails, selectedTimeUnit, chainId, onClose])
+    }, [needsAllowance, setCurrentStep])
 
     return (
         <ModalPortal>
             <ModalDialog
                 onClose={onClose}
                 fullpage
+                closeOnBackdropClick={false}
+                closeOnEsc={false}
             >
                 <ModalContainer>
+                    <LoadingIndicator loading={isLoading} />
                     <Inner>
-                        <BackLink to="#" onClick={goBack}>
+                        <BackLink to="#" onClick={goBack} $shouldShow={currentStep === Step.ChooseAccessPeriod}>
                             <BackButtonIcon name={'backArrow'}></BackButtonIcon>
                         </BackLink>
                         <SelectChain
@@ -137,39 +142,97 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
                                 setSelectedPaymentDetails(details)
                                 setCurrentStep(Step.ChooseAccessPeriod)
                             }}
+                            onCancelClicked={onClose}
                         />
                         <ChooseAccessPeriod
-                            visible={currentStep === Step.ChooseAccessPeriod}
+                            // Show access period on background when purchasing
+                            visible={currentStep === Step.ChooseAccessPeriod ||
+                                currentStep === Step.Purchase ||
+                                currentStep === Step.AccessProgress}
                             chainId={chainId}
-                            paymentDetails={selectedPaymentDetails}
-                            onNextClicked={(length, unit, symbol, decimals) => {
-                                setSelectedLength(length)
-                                setSelectedTimeUnit(unit)
-                                setTokenSymbol(symbol)
-                                setTokenDecimals(decimals)
-                                setCurrentStep(Step.CompleteAccess)
-                            }}
-                        />
-                        <CompleteAccess
-                            visible={currentStep === Step.CompleteAccess}
-                            paymentDetails={selectedPaymentDetails}
-                            chainId={chainId}
-                            length={selectedLength}
-                            timeUnit={selectedTimeUnit}
                             tokenSymbol={tokenSymbol}
                             tokenDecimals={tokenDecimals}
-                            projectName={project?.metadata.name || project?.id}
-                            onPayClicked={onPurchase}
+                            paymentDetails={selectedPaymentDetails}
+                            onPayClicked={async (length, unit) => {
+                                setSelectedLength(length)
+                                setSelectedTimeUnit(unit)
+                                onPay()
+                            }}
+                        />
+                        <SetAllowance
+                            visible={currentStep === Step.SetAllowance}
+                            tokenSymbol={tokenSymbol}
+                            onConfirm={() => approveAllowance()}
+                        />
+                        <Complete
+                            visible={currentStep === Step.Complete}
+                            onConfirm={() => { onClose() }}
                         />
                     </Inner>
                 </ModalContainer>
+                {error != null && (
+                    <ErrorDialog
+                        error={error}
+                        onClose={() => setError(null)}
+                    />
+                )}
+                {currentStep === Step.Purchase && (
+                    <Purchase
+                        onConfirm={() => {
+                            purchaseProject()
+                        }}
+                    />
+                )}
+                {currentStep === Step.AccessProgress && (
+                    <Progress />
+                )}
             </ModalDialog>
         </ModalPortal>
     )
 }
 
+type ErrorDialogProps = {
+    error: Error,
+    onClose: () => void,
+}
+
+const ErrorDialog = ({ error, onClose }: ErrorDialogProps) => {
+    if (error instanceof NoBalanceError) {
+        return (
+            <Dialog
+                title="No balance"
+                onClose={onClose}
+                useDarkBackdrop
+                centerTitle
+            >
+                You don&apos;t have enough balance to purchase this project
+            </Dialog>
+        )
+    }
+
+    return (
+        <Dialog
+            title="Error"
+            onClose={onClose}
+            useDarkBackdrop
+            centerTitle
+        >
+            <PngIcon name="walletError" />
+            {error.message}
+        </Dialog>
+    )
+}
+
 const PurchaseModal = () => {
     const { isOpen, api, value } = useModal('purchaseProject')
+    const resetStore = usePurchaseStore((state) => state.reset)
+
+    useEffect(() => {
+        if (!isOpen) {
+            // Reset store after closing so that it's fresh next time
+            resetStore()
+        }
+    }, [isOpen, resetStore])
 
     if (!isOpen) {
         return null

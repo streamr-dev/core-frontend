@@ -37,6 +37,7 @@ export const Price = styled.div`
     font-weight: ${LIGHT};
     font-size: 44px;
     line-height: 44px;
+    overflow: auto;
 `
 
 export const Currency = styled.span`
