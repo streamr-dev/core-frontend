@@ -14,6 +14,7 @@ type Props = {
     visible: boolean,
     paymentDetails: Array<TheGraphPaymentDetails>,
     onNextClicked: (paymentDetails: TheGraphPaymentDetails) => void,
+    onCancelClicked: () => void,
 }
 
 type ChainOption = TheGraphPaymentDetails & {
@@ -51,7 +52,12 @@ const Radio = styled(UnstyledRadio)`
     height: 20px;
 `
 
-const SelectChain = ({ visible, paymentDetails, onNextClicked }: Props) => {
+const ButtonContainer = styled.div`
+    display: inline-grid;
+    grid-template-columns: 1fr auto;
+`
+
+const SelectChain = ({ visible, paymentDetails, onNextClicked, onCancelClicked }: Props) => {
     const [selection, setSelection] = useState<TheGraphPaymentDetails | null>(null)
     const { switchChain } = useSwitchChain()
     const isMounted = useIsMounted()
@@ -113,12 +119,20 @@ const SelectChain = ({ visible, paymentDetails, onNextClicked }: Props) => {
                     </ChainItem>
                 ))}
             </ChainItems>
-            <NextButton
-                onClick={onNext}
-                disabled={selection == null}
-            >
-                Next
-            </NextButton>
+            <ButtonContainer>
+                <NextButton
+                    kind='link'
+                    onClick={onCancelClicked}
+                >
+                    Cancel
+                </NextButton>
+                <NextButton
+                    onClick={onNext}
+                    disabled={selection == null}
+                >
+                    Next
+                </NextButton>
+            </ButtonContainer>
         </DialogContainer>
     )
 }

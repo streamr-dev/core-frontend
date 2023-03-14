@@ -6,16 +6,11 @@ import ModalDialog from '$shared/components/ModalDialog'
 import ModalPortal from '$shared/components/ModalPortal'
 import useModal, { ModalApi } from "$shared/hooks/useModal"
 import SvgIcon from '$shared/components/SvgIcon'
-import { TimeUnit } from '$shared/types/common-types'
 import { COLORS } from '$shared/utils/styled'
-import usePurchase, { actionsTypes } from '$shared/hooks/usePurchase'
-import useApproveAllowance from '$shared/hooks/useApproveAllowance'
-import { transactionStates } from '$shared/utils/constants'
-import { getProject, getProjectFromRegistry, SmartContractProject, TheGraphPaymentDetails, TheGraphProject } from '$app/src/services/projects'
 import Dialog from '$shared/components/Dialog'
 import NoBalanceError from '$mp/errors/NoBalanceError'
-import TransactionRejectedError from '$shared/errors/TransactionRejectedError'
-import TransactionError from '$shared/errors/TransactionError'
+import UnstyledLoadingIndicator from '$shared/components/LoadingIndicator'
+import PngIcon from '$shared/components/PngIcon'
 
 import { Step, usePurchaseStore } from './state'
 import SelectChain from './SelectChain'
@@ -23,6 +18,7 @@ import ChooseAccessPeriod from './ChooseAccessPeriod'
 import SetAllowance from './SetAllowance'
 import Purchase from './Purchase'
 import Complete from './Complete'
+import Progress from './Progress'
 
 const ModalContainer = styled.div`
     background: ${COLORS.secondary};
@@ -33,9 +29,18 @@ const ModalContainer = styled.div`
     flex-direction: column;
 `
 
-const BackLink = styled(Link)`
+const LoadingIndicator = styled(UnstyledLoadingIndicator)`
+    height: 2px;
+`
+
+type BackLinkProps = {
+    $shouldShow: boolean,
+}
+
+const BackLink = styled(Link)<BackLinkProps>`
     line-height: 30px;
     margin-bottom: 50px;
+    visibility: ${({ $shouldShow }) => $shouldShow ? 'visible' : 'hidden'};
 `
 
 const BackButtonIcon = styled(SvgIcon)`
@@ -58,28 +63,20 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
     const goBack = usePurchaseStore((state) => state.goBack)
     const project = usePurchaseStore((state) => state.project)
     const loadProject = usePurchaseStore((state) => state.loadProject)
-    const contractProject = usePurchaseStore((state) => state.contractProject)
     const loadContractProject = usePurchaseStore((state) => state.loadContractProject)
     const needsAllowance = usePurchaseStore((state) => state.needsAllowance)
     const approveAllowance = usePurchaseStore((state) => state.approveAllowance)
+    const purchaseProject = usePurchaseStore((state) => state.purchase)
     const [selectedPaymentDetails, setSelectedPaymentDetails] = usePurchaseStore((state) => [
         state.selectedPaymentDetails,
         state.setSelectedPaymentDetails,
     ])
-    const [selectedTimeUnit, setSelectedTimeUnit] = usePurchaseStore((state) => [
-        state.selectedTimeUnit,
-        state.setSelectedTimeUnit,
-    ])
-    const [selectedLength, setSelectedLength] = usePurchaseStore((state) => [
-        state.selectedLength,
-        state.setSelectedLength,
-    ])
+    const setSelectedTimeUnit = usePurchaseStore((state) => state.setSelectedTimeUnit)
+    const setSelectedLength = usePurchaseStore((state) => state.setSelectedLength)
+    const tokenSymbol = usePurchaseStore((state) => state.tokenSymbol)
+    const tokenDecimals = usePurchaseStore((state) => state.tokenDecimals)
+    const isLoading = usePurchaseStore((state) => state.isLoading)
     const [error, setError] = usePurchaseStore((state) => [state.error, state.setError])
-
-    console.log(usePurchaseStore())
-
-    const purchase = usePurchase()
-    const { needsAllowance: needsAllowanceCheck, approve } = useApproveAllowance()
 
     useEffect(() => {
         if (projectId) {
@@ -116,55 +113,26 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
     }, [currentStep, onClose])
 
     const onPay = useCallback(async () => {
-        const shouldSetAllowance = await needsAllowance(needsAllowanceCheck)
+        const shouldSetAllowance = await needsAllowance()
         if (shouldSetAllowance) {
             setCurrentStep(Step.SetAllowance)
         } else {
             setCurrentStep(Step.Purchase)
         }
-    }, [needsAllowance, needsAllowanceCheck, setCurrentStep])
-
-    const onPurchase = useCallback(async () => {
-        try {
-            const { queue } = await purchase({
-                contractProject: contractProject,
-                length: selectedLength,
-                timeUnit: selectedTimeUnit,
-                chainId: chainId,
-            })
-
-            await queue
-                .subscribe('status', (id, nextStatus, error) => {
-                    if (error instanceof TransactionRejectedError) {
-                        // Maybe do something different here?
-                        setError(error)
-                    } else if (error instanceof TransactionError) {
-                        // Maybe do something different here?
-                        setError(error)
-                    } else if (error instanceof Error) {
-                        // Maybe do something different here?
-                        setError(error)
-                    }
-                    if (id === actionsTypes.SUBSCRIPTION && nextStatus === transactionStates.CONFIRMED) {
-                        // Payment succeeded
-                        onClose()
-                    }
-                })
-                .start()
-        } catch (e) {
-            setError(e)
-        }
-    }, [purchase, contractProject, selectedLength, selectedTimeUnit, chainId, onClose, setError])
+    }, [needsAllowance, setCurrentStep])
 
     return (
         <ModalPortal>
             <ModalDialog
                 onClose={onClose}
                 fullpage
+                closeOnBackdropClick={false}
+                closeOnEsc={false}
             >
                 <ModalContainer>
+                    <LoadingIndicator loading={isLoading} />
                     <Inner>
-                        <BackLink to="#" onClick={goBack}>
+                        <BackLink to="#" onClick={goBack} $shouldShow={currentStep === Step.ChooseAccessPeriod}>
                             <BackButtonIcon name={'backArrow'}></BackButtonIcon>
                         </BackLink>
                         <SelectChain
@@ -174,11 +142,16 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
                                 setSelectedPaymentDetails(details)
                                 setCurrentStep(Step.ChooseAccessPeriod)
                             }}
+                            onCancelClicked={onClose}
                         />
                         <ChooseAccessPeriod
                             // Show access period on background when purchasing
-                            visible={currentStep === Step.ChooseAccessPeriod || currentStep === Step.Purchase}
+                            visible={currentStep === Step.ChooseAccessPeriod ||
+                                currentStep === Step.Purchase ||
+                                currentStep === Step.AccessProgress}
                             chainId={chainId}
+                            tokenSymbol={tokenSymbol}
+                            tokenDecimals={tokenDecimals}
                             paymentDetails={selectedPaymentDetails}
                             onPayClicked={async (length, unit) => {
                                 setSelectedLength(length)
@@ -188,13 +161,12 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
                         />
                         <SetAllowance
                             visible={currentStep === Step.SetAllowance}
-                            onConfirm={() => approveAllowance(approve)}
+                            tokenSymbol={tokenSymbol}
+                            onConfirm={() => approveAllowance()}
                         />
                         <Complete
                             visible={currentStep === Step.Complete}
-                            onConfirm={() => {
-                                onClose()
-                            }}
+                            onConfirm={() => { onClose() }}
                         />
                     </Inner>
                 </ModalContainer>
@@ -207,11 +179,12 @@ export const PurchaseDialog = ({ projectId, api }: Props) => {
                 {currentStep === Step.Purchase && (
                     <Purchase
                         onConfirm={() => {
-                            console.log('conf')
-
-                            setCurrentStep(Step.Complete)
+                            purchaseProject()
                         }}
                     />
+                )}
+                {currentStep === Step.AccessProgress && (
+                    <Progress />
                 )}
             </ModalDialog>
         </ModalPortal>
@@ -230,6 +203,7 @@ const ErrorDialog = ({ error, onClose }: ErrorDialogProps) => {
                 title="No balance"
                 onClose={onClose}
                 useDarkBackdrop
+                centerTitle
             >
                 You don&apos;t have enough balance to purchase this project
             </Dialog>
@@ -241,7 +215,9 @@ const ErrorDialog = ({ error, onClose }: ErrorDialogProps) => {
             title="Error"
             onClose={onClose}
             useDarkBackdrop
+            centerTitle
         >
+            <PngIcon name="walletError" />
             {error.message}
         </Dialog>
     )
