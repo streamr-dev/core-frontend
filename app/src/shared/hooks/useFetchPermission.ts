@@ -3,11 +3,12 @@ import { StreamPermission } from 'streamr-client'
 import { useClient } from 'streamr-client-react'
 import NoClientError from '$shared/errors/NoClientError'
 import NoStreamIdError from '$shared/errors/NoStreamIdError'
-import getClientAddress from '$app/src/getters/getClientAddress'
 import useInterrupt from '$shared/hooks/useInterrupt'
+import {useAuthController} from "$auth/hooks/useAuthController"
 export default function useFetchPermission() {
     const client = useClient()
     const itp = useInterrupt()
+    const {currentAuthSession} = useAuthController()
     useEffect(() => {
         itp().interruptAll()
     }, [itp, client])
@@ -19,9 +20,7 @@ export default function useFetchPermission() {
                 throw new NoClientError()
             }
 
-            const user = await getClientAddress(client, {
-                suppressFailures: true,
-            })
+            const user = currentAuthSession.address
             requireUninterrupted()
 
             if (!streamId) {
@@ -64,6 +63,6 @@ export default function useFetchPermission() {
             requireUninterrupted()
             return false
         },
-        [itp, client],
+        [itp, client, currentAuthSession.address],
     )
 }

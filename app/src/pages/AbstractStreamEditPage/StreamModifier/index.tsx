@@ -10,12 +10,12 @@ import StreamModifierStatusContext from '$shared/contexts/StreamModifierStatusCo
 import useStream from '$shared/hooks/useStream'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import requirePositiveBalance from '$shared/utils/requirePositiveBalance'
-import getClientAddress from '$app/src/getters/getClientAddress'
 import InterruptionError from '$shared/errors/InterruptionError'
 import { networks } from '$shared/utils/constants'
 import DuplicateError from '$shared/errors/DuplicateError'
 import { useStreamSetter } from '$shared/contexts/StreamSetterContext'
 import useValidateNetwork from '$shared/hooks/useValidateNetwork'
+import {useAuthController} from "$auth/hooks/useAuthController"
 import routes from '$routes'
 import ConfirmExitModal from './ConfirmExitModal'
 import ChangeLossWatcher from './ChangeLossWatcher'
@@ -72,6 +72,7 @@ export default function StreamModifier({ children, onValidate }: Props) {
     useEffect(() => {
         validateNetworkRef.current = validateNetwork
     }, [validateNetwork])
+    const {currentAuthSession} = useAuthController()
     const commit = useCallback(async () => {
         dispatch({
             type: SetBusy,
@@ -90,8 +91,10 @@ export default function StreamModifier({ children, onValidate }: Props) {
                 if (typeof validateNetworkRef.current === 'function') {
                     await validateNetworkRef.current(networks.STREAMS)
                 }
-
-                const clientAddress = await getClientAddress(client)
+                const clientAddress = currentAuthSession.address
+                if (!clientAddress) {
+                    throw new Error('No wallet connected')
+                }
                 requireUninterrupted()
                 await requirePositiveBalance(clientAddress)
                 requireUninterrupted()
@@ -142,7 +145,7 @@ export default function StreamModifier({ children, onValidate }: Props) {
 
             throw e
         }
-    }, [itp, client, stream])
+    }, [itp, client, stream, currentAuthSession.address])
     const cleanRef = useRef(clean)
     useEffect(() => {
         cleanRef.current = clean

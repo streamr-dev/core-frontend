@@ -1,6 +1,5 @@
 import React, { Fragment, useMemo, useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
-import { randomHex } from 'web3-utils'
 
 import docsLinks from '$shared/../docsLinks'
 import { SM, MONO, MEDIUM } from '$shared/utils/styled'
@@ -20,9 +19,9 @@ import ValidationError from '$shared/errors/ValidationError'
 import { NotificationIcon } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
 import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
-import useClientAddress from '$shared/hooks/useClientAddress'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
-import { createProject, SmartContractProjectCreate, updateProject } from '$app/src/services/projects'
+import {useAuthController} from "$auth/hooks/useAuthController"
+import { SmartContractProjectCreate, updateProject } from '$app/src/services/projects'
 import useStreamOwnerOptions, { ADD_ENS_DOMAIN_VALUE } from './useStreamOwnerOptions'
 
 export const ENS_DOMAINS_URL = 'https://ens.domains'
@@ -119,13 +118,14 @@ export function EditableStreamId({ className, disabled }) {
     }, [ownerGroups])
     const isOwnersLoading = typeof owners === 'undefined'
     const { busy, clean } = useStreamModifierStatusContext()
-    const user = useClientAddress()
-    const [domain = '', setDomain] = useState()
+    const {currentAuthSession} = useAuthController()
+    const [domain, setDomain] = useState<string>()
+
     useEffect(() => {
         if (!domain) {
-            setDomain(user)
+            setDomain(currentAuthSession.address.toLowerCase())
         }
-    }, [user, domain])
+    }, [currentAuthSession.address, domain])
     const [pathname = '', setPathname] = useState()
     const { stage } = useStreamModifier()
     const stageRef = useRef(stage)
