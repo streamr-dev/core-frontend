@@ -5,7 +5,6 @@ import WithInputActions from '$shared/components/WithInputActions'
 import PopoverItem from '$shared/components/Popover/PopoverItem'
 import Text from '$ui/Text'
 import useCopy from '$shared/hooks/useCopy'
-import useAccountAddress from '$shared/hooks/useAccountAddress'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
@@ -13,6 +12,7 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import useValidation from '$mp/containers/ProductController/useValidation'
 import { SeverityLevel } from '$mp/containers/ProductController/ValidationContextProvider'
 import { Address } from '$shared/types/web3-types'
+import {useAuthController} from "$auth/hooks/useAuthController"
 
 const Heading = styled.p`
   font-size: 20px;
@@ -80,7 +80,8 @@ export const BeneficiaryAddress: FunctionComponent<BeneficiaryAddressProps> = ({
 }) => {
 
     const { copy } = useCopy()
-    const accountAddress = useAccountAddress()
+    const {currentAuthSession} = useAuthController()
+    const accountAddress = currentAuthSession.address
     const {setStatus, clearStatus, isValid} = useValidation(`salePoints.${chainName}.beneficiaryAddress`)
     const [defaultValueWasSet, setDefaultValueWasSet] = useState(false)
     const onCopy = useCallback(() => {

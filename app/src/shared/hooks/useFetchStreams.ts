@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useClient } from 'streamr-client-react'
 import type { Stream } from 'streamr-client'
-import getClientAddress from '$app/src/getters/getClientAddress'
 import useInterrupt from '$shared/hooks/useInterrupt'
+import {useAuthController} from "$auth/hooks/useAuthController"
 
 type FetchParameters = {
     batchSize?: number,
     allowPublic?: boolean,
     onlyCurrentUser?: boolean,
 }
-type FetchCallbackType = (search?: string, params?: FetchParameters) =>
+type FetchCallbackType = (search?: string, params?: FetchParameters, resetSearch?: boolean) =>
     Promise<[Stream[], boolean, boolean]>
 
 export default function useFetchStreams(): FetchCallbackType {
@@ -20,16 +20,21 @@ export default function useFetchStreams(): FetchCallbackType {
     const onlyCurrentUserRef = useRef<boolean>()
     const iteratorRef = useRef<AsyncIterable<Stream>>()
     const tailStreamRef = useRef<Stream>()
+    const {currentAuthSession} = useAuthController()
 
     useEffect(() => {
         itp().interruptAll()
     }, [itp, client])
 
     return useCallback<FetchCallbackType>(
-        async (search?: string, { batchSize = 1, allowPublic = false, onlyCurrentUser = true } = {}) => {
+        async (search?: string, { batchSize = 1, allowPublic = false, onlyCurrentUser = true } = {}, resetSearch = false) => {
             const { requireUninterrupted } = itp(search)
 
-            if (searchRef.current !== search || allowPublicRef.current !== allowPublic || onlyCurrentUserRef.current !== onlyCurrentUser) {
+            if (searchRef.current !== search
+                || allowPublicRef.current !== allowPublic
+                || onlyCurrentUserRef.current !== onlyCurrentUser
+                || resetSearch
+            ) {
                 searchRef.current = search
                 allowPublicRef.current = allowPublic
                 onlyCurrentUserRef.current = onlyCurrentUser
@@ -41,9 +46,7 @@ export default function useFetchStreams(): FetchCallbackType {
                 tailStreamRef.current = undefined
 
                 if (onlyCurrentUserRef.current) {
-                    const user = await getClientAddress(client, {
-                        suppressFailures: true,
-                    })
+                    const user =currentAuthSession.address
                     iteratorRef.current = client.searchStreams(search, {
                         user,
                         allowPublic,
@@ -89,6 +92,6 @@ export default function useFetchStreams(): FetchCallbackType {
 
             return [batch, hasMore, !prevTailStream]
         },
-        [itp, client],
+        [itp, client, currentAuthSession.address],
     )
 }

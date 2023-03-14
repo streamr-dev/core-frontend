@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState, Fragment, ReactNode, useContext} from 'react'
+import React, {useCallback, useEffect, useRef, ReactNode } from 'react'
 import { useDispatch } from 'react-redux'
 import type { Hash, Receipt } from '$shared/types/web3-types'
 import { setEthereumNetworkId } from '$mp/modules/global/actions'
@@ -10,12 +10,10 @@ import { useBalances } from '$shared/hooks/useBalances'
 import type { NumberString } from '$shared/types/common-types'
 import { isEthereumAddress } from '$mp/utils/validate'
 import {useAuthController} from "$auth/hooks/useAuthController"
-import useAccountAddress from '$shared/hooks/useAccountAddress'
-import SwitchAccountModal from './SwitchAccountModal'
+
 type Props = {
     children?: ReactNode
 }
-const LOGIN_POLL_INTERVAL = 1000 * 60 * 5 // 5min
 
 const ACCOUNT_BALANCE_POLL_INTERVAL = 1000 * 60 * 5 // 5min
 
@@ -23,7 +21,8 @@ const PENDING_TX_WAIT = 1000 // 1s
 
 export const GlobalInfoWatcher = ({ children }: Props) => {
     const dispatch = useDispatch()
-    const address = useAccountAddress()
+    const {currentAuthSession} = useAuthController()
+    const address = currentAuthSession.address
     // Poll transactions
     useEffect(() => {
         const transactionsTimeout = setTimeout(() => {
@@ -64,10 +63,8 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
         updateBalances()
         balanceTimeout.current = setTimeout(balancePoll, ACCOUNT_BALANCE_POLL_INTERVAL)
     }, [updateBalances])
-
-    const {currentAuthSession} = useAuthController()
     useEffect(() => {
-        if (!currentAuthSession.address || !isEthereumAddress(currentAuthSession.address)) {
+        if (!address || !isEthereumAddress(address)) {
             return () => {}
         }
 
@@ -76,7 +73,7 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
         return () => {
             clearTimeout(balanceTimeout.current)
         }
-    }, [balancePoll, currentAuthSession])
+    }, [balancePoll, address])
     // Poll network
     useEffect(() => {
         let currentNetworkId: NumberString
@@ -98,26 +95,9 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
             Web3Poller.unsubscribe(events.NETWORK_ERROR, onNetworkChange)
         }
     }, [dispatch])
-    const [accountChanged, setAccountChanged] = useState(false)
-    // show notice if Metamask account changes to a different account
-    useEffect(() => {
-        if (!currentAuthSession?.address || !address) {
-            return
-        }
 
-        setAccountChanged(address.toLowerCase() !== currentAuthSession?.address?.toLowerCase())
-    }, [address, currentAuthSession])
-    const onClose = useCallback(() => {
-        setAccountChanged(false)
-    }, [])
-    const onContinue = useCallback(() => {
-        setAccountChanged(false)
-    }, [dispatch])
     return (
-        <Fragment>
-            <SwitchAccountModal isOpen={accountChanged} onClose={onClose} onContinue={onContinue} />
-            {children || null}
-        </Fragment>
+        <>{children}</>
     )
 }
 export default GlobalInfoWatcher
