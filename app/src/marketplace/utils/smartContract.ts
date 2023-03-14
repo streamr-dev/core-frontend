@@ -11,6 +11,7 @@ import type { SmartContractCall, Address, SmartContractConfig, SmartContractTran
 import type { NumberString } from '$shared/types/common-types'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import Transaction from '$shared/utils/Transaction'
+import TransactionRejectedError from '$shared/errors/TransactionRejectedError'
 
 // TODO add typing
 export type Callable = {
@@ -77,7 +78,12 @@ export const send = (
                     if (error instanceof Error) {
                         errorHandler(error)
                     } else {
-                        errorHandler(new TransactionError('Transaction error', error))
+                        if ((error as any).code === 4001) {
+                            // User rejected the transaction in Metamask
+                            errorHandler(new TransactionRejectedError())
+                        } else {
+                            errorHandler(new TransactionError('Transaction error', error))
+                        }
                     }
                 })
                 .on('transactionHash', (hash) => {

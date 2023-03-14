@@ -7,12 +7,14 @@ import { Radio as UnstyledRadio } from '$shared/components/Radio'
 import { MEDIUM } from '$shared/utils/styled'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 import getChainId from '$utils/web3/getChainId'
+import useIsMounted from '$shared/hooks/useIsMounted'
 import { DialogContainer, DialogTitle, NextButton } from './styles'
 
 type Props = {
     visible: boolean,
     paymentDetails: Array<TheGraphPaymentDetails>,
     onNextClicked: (paymentDetails: TheGraphPaymentDetails) => void,
+    onCancelClicked: () => void,
 }
 
 type ChainOption = TheGraphPaymentDetails & {
@@ -50,9 +52,15 @@ const Radio = styled(UnstyledRadio)`
     height: 20px;
 `
 
-const SelectChain = ({ visible, paymentDetails, onNextClicked }: Props) => {
+const ButtonContainer = styled.div`
+    display: inline-grid;
+    grid-template-columns: 1fr auto;
+`
+
+const SelectChain = ({ visible, paymentDetails, onNextClicked, onCancelClicked }: Props) => {
     const [selection, setSelection] = useState<TheGraphPaymentDetails | null>(null)
     const { switchChain } = useSwitchChain()
+    const isMounted = useIsMounted()
 
     const chainOptions = useMemo(() => {
         const values = Object.values(paymentDetails).map((p) => {
@@ -71,7 +79,7 @@ const SelectChain = ({ visible, paymentDetails, onNextClicked }: Props) => {
     useEffect(() => {
         const loadChainId = async () => {
             const chainId = await getChainId()
-            if (paymentDetails) {
+            if (isMounted() && paymentDetails) {
                 const chainPd = paymentDetails.find((p) => p.domainId === chainId.toString())
                 if (chainPd) {
                     // Set current chain as preselected value
@@ -81,7 +89,12 @@ const SelectChain = ({ visible, paymentDetails, onNextClicked }: Props) => {
         }
 
         loadChainId()
-    }, [paymentDetails])
+    }, [paymentDetails, isMounted])
+
+    const onNext = useCallback(async () => {
+        await switchChain(Number.parseInt(selection.domainId))
+        onNextClicked(selection)
+    }, [onNextClicked, selection, switchChain])
 
     if (!visible) {
         return null
@@ -106,15 +119,20 @@ const SelectChain = ({ visible, paymentDetails, onNextClicked }: Props) => {
                     </ChainItem>
                 ))}
             </ChainItems>
-            <NextButton
-                onClick={async () => {
-                    await switchChain(Number.parseInt(selection.domainId))
-                    onNextClicked(selection)
-                }}
-                disabled={selection == null}
-            >
-                Next
-            </NextButton>
+            <ButtonContainer>
+                <NextButton
+                    kind='link'
+                    onClick={onCancelClicked}
+                >
+                    Cancel
+                </NextButton>
+                <NextButton
+                    onClick={onNext}
+                    disabled={selection == null}
+                >
+                    Next
+                </NextButton>
+            </ButtonContainer>
         </DialogContainer>
     )
 }

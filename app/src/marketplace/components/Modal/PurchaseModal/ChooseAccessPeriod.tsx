@@ -20,13 +20,6 @@ import { fromDecimals } from '$mp/utils/math'
 
 import { Currency, DetailsBox, DialogContainer, DialogTitle, NextButton, Price, Usd } from './styles'
 
-type Props = {
-    visible: boolean,
-    chainId: number,
-    paymentDetails: TheGraphPaymentDetails,
-    onNextClicked: (length: string, timeUnit: TimeUnit, tokenSymbol: string, tokenDecimals: number) => void,
-}
-
 const Outer = styled.div`
     gap: 12px;
     display: grid;
@@ -91,14 +84,21 @@ const options = [timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month]
     value: unit,
 }))
 
-const ChooseAccessPeriod = ({ visible, chainId, paymentDetails, onNextClicked }: Props) => {
+type Props = {
+    visible: boolean,
+    chainId: number,
+    paymentDetails: TheGraphPaymentDetails,
+    tokenSymbol: string,
+    tokenDecimals: number,
+    onPayClicked: (length: string, timeUnit: TimeUnit) => void,
+}
+
+const ChooseAccessPeriod = ({ visible, chainId, paymentDetails, tokenSymbol, tokenDecimals, onPayClicked }: Props) => {
     const isMounted = useIsMounted()
     const [length, setLength] = useState<string>("1")
     const [selectedUnit, setSelectedUnit] = useState(timeUnits.hour)
     const [myBalance, setMyBalance] = useState<BN>(new BN(0))
     const [usdPrice, setUsdPrice] = useState<BN>(new BN(0))
-    const [tokenSymbol, setTokenSymbol] = useState<string>(null)
-    const [tokenDecimals, setTokenDecimals] = useState<number>(null)
     const { currentAuthSession } = useAuthController()
     const authenticatedUserAddress = currentAuthSession.address
 
@@ -107,6 +107,12 @@ const ChooseAccessPeriod = ({ visible, chainId, paymentDetails, onNextClicked }:
     const price = useMemo(() => (
         fromDecimals(priceForTimeUnits(pricePerSecond, length, selectedUnit), new BN(tokenDecimals))
     ), [length,  pricePerSecond, selectedUnit, tokenDecimals])
+    const chainName = useMemo(() => {
+        if (chainId != null) {
+            return getConfigForChain(chainId).name
+        }
+        return ''
+    }, [chainId])
 
     useEffect(() => {
         const load = async () => {
@@ -121,21 +127,6 @@ const ChooseAccessPeriod = ({ visible, chainId, paymentDetails, onNextClicked }:
             load()
         }
     }, [chainId, tokenAddress, isMounted, authenticatedUserAddress])
-
-    useEffect(() => {
-        const load = async () => {
-            const tokenInfo = await getTokenInformation(tokenAddress, chainId)
-
-            if (isMounted()) {
-                setTokenSymbol(tokenInfo.symbol)
-                setTokenDecimals(tokenInfo.decimals)
-            }
-        }
-
-        if (tokenAddress) {
-            load()
-        }
-    }, [isMounted, tokenAddress, chainId])
 
     useEffect(() => {
         const load = async () => {
@@ -179,7 +170,7 @@ const ChooseAccessPeriod = ({ visible, chainId, paymentDetails, onNextClicked }:
                 <DetailsContainer>
                     <Chain>
                         <ChainIcon chainId={chainId} />
-                        <ChainName>{getConfigForChain(chainId).name}</ChainName>
+                        <ChainName>{chainName}</ChainName>
                     </Chain>
                     <DetailsGrid>
                         <DetailsBox>
@@ -204,10 +195,10 @@ const ChooseAccessPeriod = ({ visible, chainId, paymentDetails, onNextClicked }:
                 </DetailsContainer>
             </Outer>
             <NextButton
-                onClick={() => onNextClicked(length, selectedUnit, tokenSymbol, tokenDecimals)}
+                onClick={() => onPayClicked(length, selectedUnit)}
                 disabled={!price.isFinite()}
             >
-                Next
+                Pay now
             </NextButton>
         </DialogContainer>
     )
