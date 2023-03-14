@@ -211,7 +211,7 @@ export function EditableStreamId({ className, disabled }) {
                 ) : (
                     <Select
                         options={ownerGroups}
-                        value={owners.find(({ value }) => value === domain)}
+                        value={owners.find(({ value }) => value.toLowerCase() === domain)}
                         onChange={({ value }) => {
                             if (value === ADD_ENS_DOMAIN_VALUE) {
                                 window.open(ENS_DOMAINS_URL, '_blank', 'noopener noreferrer')
