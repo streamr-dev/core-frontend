@@ -27,6 +27,7 @@ import {truncate, truncateStreamName} from '$shared/utils/text'
 import Sidebar from '$shared/components/Sidebar'
 import useNativeTokenName from '$shared/hooks/useNativeTokenName'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
+import {useTransientStream} from "$shared/contexts/TransientStreamContext"
 import {COLORS, DESKTOP, TABLET} from '$shared/utils/styled'
 import useCopy from "$shared/hooks/useCopy"
 import routes from '$routes'
@@ -100,7 +101,17 @@ const CopyButton = styled(Button)`
   height: 32px;
   border-radius: 100%;
   margin-left: 10px;
+  display: grid;
+  svg {
+    width: 22px;
+  }
 `
+
+const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+`
+
 const ContainerBox: React.FunctionComponent<ContainerBoxProps> = ({ children, disabled, showSaveButton = true }) =>
     <Outer>
         <Inner className={!showSaveButton && 'no-save-button'}>
@@ -153,6 +164,7 @@ function UnwrappedStreamPage({ children, loading = false, includeContainerBox = 
     const [showGetCryptoDialog, setShowGetCryptoDialog] = useState(false)
     const linkTabs = useMemo(() => streamId ? getStreamDetailsLinkTabs(streamId) : [], [streamId])
     const {copy} = useCopy()
+    const {id: transientStreamId} = useTransientStream()
 
     async function save() {
         const { requireUninterrupted } = itp('save')
@@ -271,6 +283,11 @@ function UnwrappedStreamPage({ children, loading = false, includeContainerBox = 
         Notification.push({title: 'Copied!', description: 'The stream name was copied to your clipboard', icon: NotificationIcon.CHECKMARK})
     }, [])
 
+    const streamIdToDisplay = useMemo<string | undefined>(() =>
+        streamId || (!clean && !!transientStreamId) ? transientStreamId : undefined,
+    [streamId, clean, transientStreamId]
+    )
+
     return (
         <Fragment>
             <form
@@ -283,12 +300,12 @@ function UnwrappedStreamPage({ children, loading = false, includeContainerBox = 
                     <MarketplaceHelmet title={streamId ? `Stream ${streamId}` : 'New stream'} />
                     <DetailsPageHeader
                         backButtonLink={routes.streams.index()}
-                        pageTitle={<>
-                            <span title={streamId}>{streamId ? truncateStreamName(streamId, 50) : ''}</span>
-                            <CopyButton onClick={() => handleCopy(streamId)} type={'button'} kind={'secondary'} size={'mini'}>
+                        pageTitle={<TitleContainer>
+                            <span title={streamId}>{!!streamIdToDisplay ? truncateStreamName(streamIdToDisplay, 50) : 'domain/pathname'}</span>
+                            {streamId ? <CopyButton onClick={() => handleCopy(streamId)} type={'button'} kind={'secondary'} size={'mini'}>
                                 <SvgIcon name={'copy'}/>
-                            </CopyButton>
-                        </>}
+                            </CopyButton> : ''}
+                        </TitleContainer>}
                         linkTabs={linkTabs}
                     />
                     {includeContainerBox ? (

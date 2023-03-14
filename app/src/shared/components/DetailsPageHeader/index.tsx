@@ -27,7 +27,10 @@ export const DetailsPageHeader: FunctionComponent<DetailsPageHeaderProps> = ({ b
                         {!!pageTitle && <PageTitleContainer>{pageTitle}</PageTitleContainer>}
                     </LeftSideContainer>
                     <RightSideContainer>
-                        <LinkTabs selectedOptionHref={location.pathname} options={linkTabs} fullWidth={'mobileAndTablet'}></LinkTabs>
+                        {(linkTabs?.length > 0) ?
+                            <LinkTabs selectedOptionHref={location.pathname} options={linkTabs} fullWidth={'mobileAndTablet'}/>
+                            : ''
+                        }
                     </RightSideContainer>
                 </DetailsPageHeaderBar>
             </DetailsPageHeaderContainer>
