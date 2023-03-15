@@ -68,16 +68,32 @@ const TableRows = styled.div<TableRowsProps>`
 `
 
 const TableRow = styled(TableGrid)`
-    font-size: 16px;
-    line-height: 26px;
-    height: ${ROW_HEIGHT}px;
-    max-height: ${ROW_HEIGHT}px;
-    box-sizing: content-box;
-    color: ${COLORS.primaryLight};
+  font-size: 16px;
+  line-height: 26px;
+  height: ${ROW_HEIGHT}px;
+  max-height: ${ROW_HEIGHT}px;
+  box-sizing: content-box;
+  color: ${COLORS.primaryLight};
+  transition: background-color 100ms ease-in-out;
+  
+  &:hover {
+    background-color: ${COLORS.secondaryLight};
+  }
+  
+  &:active {
+    background-color: ${COLORS.click};
+  }
 
-    &:not(:last-child) {
-        border-bottom: 1px solid #f8f8f8;
-    }
+  &:not(:last-child) {
+    border-bottom: 1px solid #f8f8f8;
+  }
+
+  &:active,
+  &:link,
+  &:visited,
+  &:hover {
+    color: ${COLORS.primaryLight};
+  }
 `
 
 type GridCellProps = {
@@ -140,18 +156,11 @@ const NoStreams = styled.div`
     color: ${COLORS.primaryLight};
 `
 
-const StreamDetails = styled(Link)`
+const StreamDetails = styled.span`
     font-size: 16px;
     line-height: 26px;
     overflow: hidden;
-    text-overflow: ellipsis;    
-
-    &:active,
-    &:link,
-    &:visited,
-    &:hover {
-        color: ${COLORS.primaryLight};
-    }
+    text-overflow: ellipsis;
 `
 
 const StreamId = styled(GridCell)`
@@ -248,8 +257,8 @@ const StreamTable: React.FC<Props> = ({ title = "Streams", streams, streamStats,
                     {streams.map((s) => {
                         const stats = streamStats ? streamStats[s.id] : null
                         return (
-                            <TableRow key={s.id}>
-                                <StreamDetails to={routes.streams.show({ id: s.id })}>
+                            <TableRow key={s.id} as={Link} to={routes.streams.show({ id: s.id })}>
+                                <StreamDetails>
                                     <StreamId
                                         title={s.id}
                                     >
