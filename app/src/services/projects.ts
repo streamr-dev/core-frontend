@@ -94,7 +94,7 @@ export type SmartContractProjectMetadata = {
         reddit?: string | null | undefined
         linkedIn?: string | null | undefined
     } | undefined,
-    isDataUnion: boolean,
+    isDataUnion?: boolean,
 }
 
 export type SmartContractProject = {
