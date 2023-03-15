@@ -301,7 +301,7 @@ function UnwrappedStreamPage({ children, loading = false, includeContainerBox = 
                     <DetailsPageHeader
                         backButtonLink={routes.streams.index()}
                         pageTitle={<TitleContainer>
-                            <span title={streamId}>{!!streamIdToDisplay ? truncateStreamName(streamIdToDisplay, 50) : 'domain/pathname'}</span>
+                            <span title={streamId}>{!!streamIdToDisplay ? truncateStreamName(streamIdToDisplay, 50) : 'New stream'}</span>
                             {streamId ? <CopyButton onClick={() => handleCopy(streamId)} type={'button'} kind={'secondary'} size={'mini'}>
                                 <SvgIcon name={'copy'}/>
                             </CopyButton> : ''}
