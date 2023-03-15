@@ -275,7 +275,7 @@ const StreamTable: React.FC<Props> = ({ title = "Streams", streams, streamStats,
             {loadMore != null && (
                 <LoadMore
                     hasMoreSearchResults={!!hasMoreResults}
-                    onClick={loadMore}
+                    onClick={() => {loadMore()}}
                     preserveSpace
                 />
             )}

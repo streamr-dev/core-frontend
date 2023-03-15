@@ -46,7 +46,7 @@ export default function useFetchStreams(): FetchCallbackType {
                 tailStreamRef.current = undefined
 
                 if (onlyCurrentUserRef.current) {
-                    const user =currentAuthSession.address
+                    const user = currentAuthSession.address
                     iteratorRef.current = client.searchStreams(search, {
                         user,
                         allowPublic,

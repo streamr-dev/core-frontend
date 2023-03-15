@@ -17,6 +17,7 @@ import InterruptionError from '$shared/errors/InterruptionError'
 import {ActionBarContainer, FiltersBar, FiltersWrap, SearchBarWrap} from '$mp/components/ActionBar/actionBar.styles'
 import {PageWrap} from "$shared/components/PageWrap"
 import styles from "$shared/components/Layout/layout.pcss"
+import useIsMounted from "$shared/hooks/useIsMounted"
 import {useAuthController} from "$auth/hooks/useAuthController"
 import routes from '$routes'
 import StreamTable from '../../shared/components/StreamTable'
@@ -68,6 +69,7 @@ const NewStreamListingPage: React.FC = () => {
     const [hasMore, setHasMore] = useState<boolean>(false)
     const isUserAuthenticated = useIsAuthenticated()
     const {currentAuthSession} = useAuthController()
+    const isMounted = useIsMounted()
 
     const itp = useInterrupt()
     const fetchStreams = useFetchStreams()
@@ -118,9 +120,10 @@ const NewStreamListingPage: React.FC = () => {
     }, [fetch, streamsSelection])
 
     useEffect(() => {
-        setHasMore(false)
-        setStreams([])
-        fetch(true)
+        if (isMounted) {
+            setHasMore(false)
+            fetch(true)
+        }
     }, [currentAuthSession.address])
 
     return (
