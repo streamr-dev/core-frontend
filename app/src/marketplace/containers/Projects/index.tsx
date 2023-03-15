@@ -1,4 +1,6 @@
 import React, {FunctionComponent, useCallback, useEffect, useReducer, useRef, useState} from 'react'
+import { useInfiniteQuery } from '@tanstack/react-query'
+
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import ProjectsComponent, { ProjectsContainer } from '$mp/components/Projects'
 import ActionBar from '$mp/components/ActionBar'
@@ -6,25 +8,15 @@ import Layout from '$shared/components/Layout'
 import Footer from '$shared/components/Layout/Footer'
 import useModal from '$shared/hooks/useModal'
 import CreateProjectModal from '$mp/containers/CreateProjectModal'
-import type {SearchFilter} from '$mp/types/project-types'
-import {
-    getProjects,
-    getUserPermissionsForProject,
-    searchProjects,
-    TheGraphProject
-} from '$app/src/services/projects'
-import useIsMounted from '$shared/hooks/useIsMounted'
-import {useAuthController} from "$auth/hooks/useAuthController"
+import type { SearchFilter } from '$mp/types/project-types'
+import { getProjects, searchProjects } from '$app/src/services/projects'
+import { useAuthController } from '$auth/hooks/useAuthController'
 import useDeepEqualMemo from '$shared/hooks/useDeepEqualMemo'
-import {useIsAuthenticated} from "$auth/hooks/useIsAuthenticated"
-import getCoreConfig from "$app/src/getters/getCoreConfig"
-import {
-    projectsPermissionsReducer,
-    ProjectsPermissionsState
-} from "$mp/modules/projectsPermissionsState/projectsPermissionsState"
+import { useIsAuthenticated } from '$auth/hooks/useIsAuthenticated'
+
 import styles from './projects.pcss'
 
-const PAGE_SIZE = 12
+const PAGE_SIZE = 16
 
 type Filter = {
     search: string,
@@ -39,64 +31,25 @@ const EMPTY_FILTER: Filter = {
 }
 
 const ProjectsPage: FunctionComponent = () => {
-    const [projects, setProjects] = useState<TheGraphProject[]>([])
-    const [projectsError, setProjectsError] = useState<string | null>(null)
-    const [isFetching, setIsFetching] = useState(false)
     const [filterValue, setFilter] = useState(EMPTY_FILTER)
     const filter = useDeepEqualMemo(filterValue)
-    const [hasMoreSearchResults, setHasMoreSearchResults] = useState(false)
-    const {projectRegistry} = getCoreConfig()
-
     const { api: createProductModal } = useModal('marketplace.createProduct')
     const isUserAuthenticated = useIsAuthenticated()
-    const {currentAuthSession} = useAuthController()
-    const isMounted = useIsMounted()
-    const productsRef = useRef<TheGraphProject[]>()
-    productsRef.current = projects
-    const [projectsPermissions, dispatchPermissionsUpdate] = useReducer(projectsPermissionsReducer, {} as ProjectsPermissionsState)
+    const { currentAuthSession } = useAuthController()
 
-    const loadProjects = useCallback(async (replace = true) => {
-        const limit = PAGE_SIZE + 1 // +1 to determine if we should show "load more" button
-        const offset = replace ? 0 : productsRef.current && productsRef.current.length
-        setIsFetching(true)
-
-        let result = []
-
-        try {
+    const query = useInfiniteQuery({
+        queryKey: ["projects", filter.owner, filter.search],
+        queryFn: (ctx) => {
             if (filter.search != null && filter.search.length > 0) {
-                result = await searchProjects(filter.search, limit, offset)
+                return searchProjects(filter.search, PAGE_SIZE, ctx.pageParam)
             } else {
-                result = await getProjects(filter.owner, limit, offset)
+                return getProjects(filter.owner, PAGE_SIZE, ctx.pageParam)
             }
-            setProjectsError(null)
-        } catch (e) {
-            console.error(e)
-            setProjectsError(e)
-        }
-
-        if (isMounted()) {
-            setIsFetching(false)
-
-            if (result) {
-                const hasMore = result.length > PAGE_SIZE
-                setHasMoreSearchResults(hasMore)
-
-                if (hasMore) {
-                    // Splice to get rid of extra element from "load more" check
-                    result.splice(PAGE_SIZE, 1)
-                }
-
-                if (replace) {
-                    setProjects(result)
-                } else {
-                    setProjects((prev) => ([
-                        ...prev,
-                        ...result,
-                    ]))
-                }
-            }
-        }
-    }, [isMounted, filter])
+        },
+        getNextPageParam: (lastPage, pages) => {
+            return lastPage.hasNextPage ? pages.length : null
+        },
+    })
 
     const onFilterChange = useCallback((newFilter: Filter) => {
         setFilter((prev) => ({ ...prev, ...newFilter }))
@@ -113,32 +66,9 @@ const ProjectsPage: FunctionComponent = () => {
         }))
     }, [currentAuthSession])
 
-    const clearFiltersAndReloadProducts = useCallback(() => {
-        setFilter(EMPTY_FILTER)
-    }, [])
-
     useEffect(() => {
-        if (productsRef.current && productsRef.current.length === 0) {
-            clearFiltersAndReloadProducts()
-        }
-    }, [clearFiltersAndReloadProducts])
-
-    useEffect(() => {
-        loadProjects()
-    }, [filter])
-
-    useEffect(() => {
-        setFilter((filter) => filter.owner ? {...filter, owner: currentAuthSession.address} : filter)
+        setFilter((filter) => (filter.owner ? { ...filter, owner: currentAuthSession.address } : filter))
     }, [currentAuthSession.address])
-
-    useEffect(() => {
-        if (currentAuthSession.address && projects?.length) {
-            projects.forEach(async (project) => {
-                const permissions = await getUserPermissionsForProject(projectRegistry.chainId, project.id, currentAuthSession.address)
-                dispatchPermissionsUpdate({projectId: project.id, userAddress: currentAuthSession.address, permissions})
-            })
-        }
-    }, [projects, currentAuthSession.address, projectRegistry.chainId])
 
     return (
         <Layout className={styles.projectsListPage} framedClassName={styles.productsFramed} innerClassName={styles.productsInner} footer={false}>
@@ -153,16 +83,15 @@ const ProjectsPage: FunctionComponent = () => {
                 isUserAuthenticated={isUserAuthenticated}
             />
             <CreateProjectModal />
-            <ProjectsContainer fluid>
+            <ProjectsContainer>
                 <ProjectsComponent
-                    projects={projects}
-                    projectsPermissions={projectsPermissions}
+                    projects={query.data?.pages.flatMap((d) => d.projects) ?? []}
                     currentUserAddress={currentAuthSession?.address}
-                    error={projectsError}
+                    error={query.error}
                     type="projects"
-                    isFetching={isFetching}
-                    loadProducts={() => { loadProjects(false) }}
-                    hasMoreSearchResults={hasMoreSearchResults}
+                    isFetching={query.status === 'loading'}
+                    loadProducts={() => query.fetchNextPage()}
+                    hasMoreSearchResults={query.hasNextPage}
                 />
             </ProjectsContainer>
             <Footer />

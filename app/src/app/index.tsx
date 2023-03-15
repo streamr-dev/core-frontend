@@ -1,8 +1,10 @@
 import React from 'react'
-import { Router, Route as RouterRoute, Switch, Redirect, useParams } from 'react-router-dom'
+import { Router, Route as RouterRoute, Switch, Redirect } from 'react-router-dom'
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 import '$shared/assets/stylesheets'
 import '@ibm/plex/css/ibm-plex.css'
 import '$utils/setupSnippets'
+
 // Auth
 import StreamrClientProvider from '$shared/components/StreamrClientProvider'
 import LoginPage from '$app/src/pages/LoginPage'
@@ -22,15 +24,21 @@ import NewStreamListingPage from '$app/src/pages/NewStreamListingPage'
 import StreamLiveDataPage from '$app/src/pages/StreamLiveDataPage'
 import StreamConnectPage from '$app/src/pages/StreamConnectPage'
 import StreamEditPage from '$app/src/pages/StreamEditPage'
-import {AuthenticationControllerContextProvider} from "$auth/authenticationController"
+import { AuthenticationControllerContextProvider } from '$auth/authenticationController'
+
 import routes from '$routes'
 import history from '../history'
 import '../analytics'
+
 // Userpages
 import UserpagesRouter from './Userpages'
+
 // Docs
 import DocsRouter from './Docs'
 import MarketplaceRouter from './Marketplace'
+
+// Create client for 'react-query'
+const queryClient = new QueryClient()
 
 // Wrap authenticated components here instead of render() method
 // Wrap each Route to an ErrorBoundary
@@ -65,29 +73,31 @@ const HubRouter = () => [
 
 const App = () => (
     <Router history={history}>
-        <AuthenticationControllerContextProvider>
-            <StreamrClientProvider>
-                <ModalPortalProvider>
-                    <ModalProvider>
-                        <GlobalInfoWatcher>
-                            <ActivityResourceProvider>
-                                <Analytics />
-                                <Switch>
-                                    {AuthenticationRouter()}
-                                    {MarketplaceRouter()}
-                                    {DocsRouter()}
-                                    {UserpagesRouter()}
-                                    {HubRouter()}
-                                    {MiscRouter()}
-                                </Switch>
-                                <Notifications />
-                            </ActivityResourceProvider>
-                            <AnalyticsTracker />
-                        </GlobalInfoWatcher>
-                    </ModalProvider>
-                </ModalPortalProvider>
-            </StreamrClientProvider>
-        </AuthenticationControllerContextProvider>
+        <QueryClientProvider client={queryClient}>
+            <AuthenticationControllerContextProvider>
+                <StreamrClientProvider>
+                    <ModalPortalProvider>
+                        <ModalProvider>
+                            <GlobalInfoWatcher>
+                                <ActivityResourceProvider>
+                                    <Analytics />
+                                    <Switch>
+                                        {AuthenticationRouter()}
+                                        {MarketplaceRouter()}
+                                        {DocsRouter()}
+                                        {UserpagesRouter()}
+                                        {HubRouter()}
+                                        {MiscRouter()}
+                                    </Switch>
+                                    <Notifications />
+                                </ActivityResourceProvider>
+                                <AnalyticsTracker />
+                            </GlobalInfoWatcher>
+                        </ModalProvider>
+                    </ModalPortalProvider>
+                </StreamrClientProvider>
+            </AuthenticationControllerContextProvider>
+        </QueryClientProvider>
     </Router>
 )
 

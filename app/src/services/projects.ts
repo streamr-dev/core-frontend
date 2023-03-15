@@ -93,7 +93,8 @@ export type SmartContractProjectMetadata = {
         telegram?: string | null | undefined
         reddit?: string | null | undefined
         linkedIn?: string | null | undefined
-    } | undefined
+    } | undefined,
+    isDataUnion: boolean,
 }
 
 export type SmartContractProject = {
@@ -192,7 +193,30 @@ export const getProject = async (id: string): Promise<TheGraphProject | null> =>
     return null
 }
 
-export const getProjects = async (owner?: string, first = 20, skip = 0): Promise<TheGraphProject[]> => {
+const prepareProjectResult = (results: TheGraphProject[], pageSize: number): ProjectsResult => {
+    let hasNextPage = false
+
+    const projects: TheGraphProject[] = results.map((p) => mapProject(p))
+    if (projects.length > pageSize) {
+        hasNextPage = true
+        // Remove last item
+        projects.splice(pageSize, 1)
+    }
+
+    return {
+        projects,
+        hasNextPage,
+        lastId: projects.length === 0 ? null : projects[projects.length - 1].id,
+    }
+}
+
+export type ProjectsResult = {
+    projects: TheGraphProject[],
+    hasNextPage: boolean,
+    lastId: string,
+}
+
+export const getProjects = async (owner?: string, first = 20, skip = 0): Promise<ProjectsResult> => {
     const theGraphUrl = getGraphUrl()
 
     const ownerFilter = owner != null ? `permissions_: { userAddress: "${owner}", canGrant: true }` : null
@@ -204,7 +228,7 @@ export const getProjects = async (owner?: string, first = 20, skip = 0): Promise
             query: `
                 query {
                     projects(
-                        first: ${first},
+                        first: ${first + 1},
                         skip: ${skip},
                         ${allFilters != null && `where: { ${allFilters} }`},
                     ) {
@@ -216,13 +240,17 @@ export const getProjects = async (owner?: string, first = 20, skip = 0): Promise
     })
 
     if (result.data) {
-        return result.data.projects.map((p) => mapProject(p))
+        return prepareProjectResult(result.data.projects, first)
     }
 
-    return []
+    return {
+        projects: [],
+        hasNextPage: false,
+        lastId: null,
+    }
 }
 
-export const searchProjects = async (search: string, first = 20, skip = 0): Promise<TheGraphProject[]> => {
+export const searchProjects = async (search: string, first = 20, skip = 0): Promise<ProjectsResult> => {
     const theGraphUrl = getGraphUrl()
 
     const result = await post({
@@ -231,7 +259,7 @@ export const searchProjects = async (search: string, first = 20, skip = 0): Prom
             query: `
                 query {
                     projectSearch(
-                        first: ${first},
+                        first: ${first + 1},
                         skip: ${skip},
                         text: "${search}",
                     ) {
@@ -243,10 +271,14 @@ export const searchProjects = async (search: string, first = 20, skip = 0): Prom
     })
 
     if (result.data) {
-        return result.data.projectSearch.map((p) => mapProject(p))
+        return prepareProjectResult(result.data.projectSearch, first)
     }
 
-    return []
+    return {
+        projects: [],
+        hasNextPage: false,
+        lastId: null,
+    }
 }
 
 const projectRegistryContract = (usePublicNode = false, chainId: number): Contract => {
@@ -301,11 +333,11 @@ export const createProject = (project: SmartContractProjectCreate): SmartContrac
 export const getUserPermissionsForProject = async (
     chainId: number,
     projectId: ProjectId,
-    userAddress: Address
+    userAddress: Address,
 ): SmartContractCall<ProjectPermissions> => {
     const response = await projectRegistryContract(false, chainId).methods.getPermission(projectId, userAddress).call()
-    const {canDelete, canEdit, canGrant, canBuy} = response
-    return {canDelete, canEdit, canGrant, canBuy}
+    const { canDelete, canEdit, canGrant, canBuy } = response
+    return { canDelete, canEdit, canGrant, canBuy }
 }
 
 export const updateProject = (project: SmartContractProject): SmartContractTransaction => {

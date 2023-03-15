@@ -4,6 +4,7 @@ import type { NumberString } from '$shared/types/common-types'
 import { contractCurrencies as currencies, projectStates } from '$shared/utils/constants'
 import { RecursiveKeyOf } from '$utils/recursiveKeyOf'
 import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
+import { TheGraphProject } from '$app/src/services/projects'
 import type { ContactDetails, Project, ProjectId, ProjectType, SmartContractProduct } from '../types/project-types'
 import { ProjectState } from '../types/project-types'
 import { validateSalePoint } from './validate'
@@ -12,6 +13,13 @@ import { fromDecimals, toDecimals } from './math'
 import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from './smartContract'
 
 export const isPaidProject = (project: Project): boolean => project.type !== ProjectTypeEnum.OPEN_DATA
+
+export const isDataUnionProject = (project: TheGraphProject): boolean => {
+    if (project != null && project.metadata != null) {
+        return project.metadata.isDataUnion
+    }
+    return false
+}
 
 export const isDataUnionProduct = (productOrProductType?: Project | ProjectType): boolean => {
     const { type } =

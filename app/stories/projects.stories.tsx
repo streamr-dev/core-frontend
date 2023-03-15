@@ -9,17 +9,17 @@ const story = (name) => storiesOf(`Projects/${name}`, module).addDecorator(Story
 
 story('ProjectsList')
     .add('basic', () => (
-        <ProjectsContainer fluid>
+        <ProjectsContainer>
             <ProjectsComponent projects={exampleProjectsList as ProjectList} type="projects" />
         </ProjectsContainer>
     ))
     .add('no products', () => (
-        <ProjectsContainer fluid>
+        <ProjectsContainer>
             <ProjectsComponent projects={[]} type="projects" />
         </ProjectsContainer>
     ))
     .add('fetching', () => (
-        <ProjectsContainer fluid>
+        <ProjectsContainer>
             <ProjectsComponent projects={exampleProjectsList as ProjectList} type="projects" isFetching />
         </ProjectsContainer>
     ))

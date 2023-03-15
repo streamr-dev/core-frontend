@@ -1,23 +1,22 @@
 import React from 'react'
 import classnames from 'classnames'
 import styled from 'styled-components'
-import { Row, Container as RsContainer, Col } from 'reactstrap'
-import { isDataUnionProduct } from '$mp/utils/product'
+
+import { isDataUnionProject } from '$mp/utils/product'
 import { MarketplaceProductTile as UnstyledMarketplaceProductTile } from '$shared/components/Tile'
 import {REGULAR, DESKTOP, COLORS, TABLET, MAX_BODY_WIDTH, LAPTOP} from '$shared/utils/styled'
 import Button from '$shared/components/Button'
 import { TheGraphProject } from '$app/src/services/projects'
-import {ProjectsPermissionsState} from "$mp/modules/projectsPermissionsState/projectsPermissionsState"
+
 import ProductPageSpinner from '../ProductPageSpinner'
 import Error from '../Error'
-import { getErrorView, getCols } from './settings'
+import { getErrorView } from './settings'
 import styles from './projects.pcss'
 
 export type ProjectTilePropType = 'projects' | 'relatedProjects'
 
 export type OwnProps = {
     projects: TheGraphProject[],
-    projectsPermissions: ProjectsPermissionsState,
     currentUserAddress?: string,
     type: ProjectTilePropType
     error?: any
@@ -47,8 +46,7 @@ export const MarketplaceProjectCol = styled.div`
 `
 
 const listProjects = (
-    projects,
-    projectsPermissions: ProjectsPermissionsState,
+    projects: TheGraphProject[],
     currentUserAddress: string,
     isFetching: boolean | null | undefined
 ) => {
@@ -56,22 +54,33 @@ const listProjects = (
         if (!currentUserAddress) {
             return false
         }
-        return projectsPermissions
-            && projectsPermissions[projectId]
-            && projectsPermissions[projectId][currentUserAddress]
-            && projectsPermissions[projectId][currentUserAddress].canEdit
+        const project = projects.find((p) => p.id === projectId)
+        if (project != null) {
+            const perm = project.permissions.find((permission) => permission.userAddress.toLowerCase() === currentUserAddress.toLowerCase())
+            if (perm != null) {
+                return perm.canEdit
+            }
+            return false
+        }
+        return false
     }
-    return <MarketplaceProjectRow
-        className={classnames(styles.productsRow, {
-            [styles.fetching]: isFetching,
-        })}
-    >
-        {projects.map((project) => (
-            <MarketplaceProjectCol key={project.key || project.id}>
-                <MarketplaceProductTile product={project} showDataUnionBadge={isDataUnionProduct(project.type)} showEditButton={isEditable(project.id)}/>
-            </MarketplaceProjectCol>
-        ))}
-    </MarketplaceProjectRow>
+    return (
+        <MarketplaceProjectRow
+            className={classnames(styles.productsRow, {
+                [styles.fetching]: isFetching,
+            })}
+        >
+            {projects.map((project) => (
+                <MarketplaceProjectCol key={project.id}>
+                    <MarketplaceProductTile
+                        product={project}
+                        showDataUnionBadge={isDataUnionProject(project)}
+                        showEditButton={isEditable(project.id)}
+                    />
+                </MarketplaceProjectCol>
+            ))}
+        </MarketplaceProjectRow>
+    )
 }
 
 export const ProjectsContainer = styled.div`
@@ -107,7 +116,6 @@ const UnstyledProjects = ({
     loadProducts,
     hasMoreSearchResults,
     header,
-    projectsPermissions,
     currentUserAddress,
     ...props
 }: OwnProps) => (
@@ -115,7 +123,7 @@ const UnstyledProjects = ({
         {header && <ProjectsHeader>{header}</ProjectsHeader>}
         <Error source={error} />
         {isFetching || projects.length > 0
-            ? listProjects(projects, projectsPermissions, currentUserAddress, isFetching)
+            ? listProjects(projects, currentUserAddress, isFetching)
             : getErrorView(type)}
         {loadProducts && !isFetching && hasMoreSearchResults && <LoadMoreButton onClick={loadProducts} kind={'primary2'}>Load more</LoadMoreButton>}
         {isFetching && <ProductPageSpinner className={styles.spinner} />}
