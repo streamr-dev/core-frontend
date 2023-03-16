@@ -26,6 +26,16 @@ type ButtonProps = Omit<HTMLProps<HTMLButtonElement | HTMLAnchorElement> & Optio
 }
 const darkBgs = new Set(['primary', 'destructive'])
 
+const handleClick = (e: React.SyntheticEvent<EventTarget>, onClick: ButtonProps["onClick"] ) => {
+    if (e.currentTarget instanceof HTMLElement) {
+        // Make sure we make the button lose focus after click
+        e.currentTarget.blur()
+    }
+    if (onClick != null) {
+        onClick(e)
+    }
+}
+
 const Button: FunctionComponent<ButtonProps> = ({
     className,
     tag: Tag = 'button',
@@ -60,7 +70,7 @@ const Button: FunctionComponent<ButtonProps> = ({
             },
             className,
         )}
-        onClick={disabled ? (e: Event) => e.preventDefault() : onClick}
+        onClick={disabled ? (e: Event) => e.preventDefault() : (e: React.SyntheticEvent<EventTarget, Event>) => handleClick(e, onClick)}
         disabled={disabled || waiting}
         tabIndex={disabled ? -1 : 0}
     >
