@@ -24,6 +24,7 @@ export enum COLORS {
     secondaryHover = '#E7E7E7',
     secondaryLight = '#F8F8F8',
     focus = '#9BC1FB',
+    click = '#DEEBFF',
     selection = '#CCE9FD',
     separator = '#EFEFEF',
     disabled = '#ADADAD',
