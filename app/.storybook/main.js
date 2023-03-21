@@ -4,6 +4,9 @@ const appWebpackConfig = require('../webpack.config')
 const isProduction = require('../scripts/isProduction')
 
 module.exports = {
+    core: {
+        builder: 'webpack5',
+    },
     stories: [
         '../**/*.stories.tsx',
     ],
