@@ -1,5 +1,5 @@
 import getConfig from '$app/src/getters/getConfig'
-import g, {DEFAULT_CLIENT_CONFIG} from './getClientConfig'
+import g from './getClientConfig'
 // Filter out what's unexpected. FIXME: fix the client.
 jest.mock('$app/src/getters/getConfig', () => ({
     __esModule: true,
@@ -13,7 +13,6 @@ describe('getClientConfig', () => {
         const mods = {}
 
         expect(g()).toMatchObject({
-            ...DEFAULT_CLIENT_CONFIG,
             ...mods,
             metrics: false,
         })
@@ -36,12 +35,10 @@ describe('getClientConfig', () => {
             },
         }))
         expect(g()).toMatchObject({
-            ...DEFAULT_CLIENT_CONFIG,
             network: {
                 trackers: ['tracker1', 'tracker2'],
             },
             contracts: {
-                ...DEFAULT_CLIENT_CONFIG.contracts,
                 mainChainRPCs: 'mc chain rpc',
                 streamRegistryChainAddress: 'stream reg address',
                 streamRegistryChainRPCs: 'stream reg rpc',

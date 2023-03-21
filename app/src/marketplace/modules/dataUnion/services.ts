@@ -1,6 +1,7 @@
 import EventEmitter from 'events'
 import DataUnionClient, { ContractReceipt } from '@dataunions/client'
 import BN from 'bignumber.js'
+import {DataUnionClientConfig} from "@dataunions/client/types/src/Config"
 import { hexToNumber } from 'web3-utils'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
@@ -55,7 +56,7 @@ const createClient = (chainId: number) => {
             }
             : {}),
     })
-    return new DataUnionClient(clientConfig)
+    return new DataUnionClient(clientConfig as DataUnionClientConfig)
 }
 
 const getDataunionSubgraphUrlForChain = (chainId: number): string => {
