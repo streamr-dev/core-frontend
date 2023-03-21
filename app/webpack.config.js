@@ -243,7 +243,7 @@ module.exports = {
                 ? [
                     new CleanWebpackPlugin([dist]),
                     // Production plugins
-                    new webpack.optimize.OccurrenceOrderPlugin(),
+                    new webpack.optimize.OccurrenceOrderPlugin(true),
                     new webpack.EnvironmentPlugin({
                         NODE_ENV: 'production',
                     }),
