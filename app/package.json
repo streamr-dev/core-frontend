@@ -63,7 +63,7 @@
         "@sentry/webpack-plugin": "^1.15.1",
         "@storybook/addon-actions": "^6.5.16",
         "@storybook/addon-controls": "^6.5.16",
-        "@storybook/addon-links": "^6.5.13",
+        "@storybook/addon-links": "^6.5.16",
         "@storybook/addon-postcss": "^2.0.0",
         "@storybook/addon-viewport": "^6.5.16",
         "@storybook/addons": "^6.5.16",
