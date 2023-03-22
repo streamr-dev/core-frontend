@@ -108,7 +108,7 @@
         "bignumber.js": "^7.2.1",
         "bip39": "^3.0.3",
         "bootstrap": "^4.6.0",
-        "chromatic": "^5.6.1",
+        "chromatic": "^6.17.2",
         "classnames": "^2.2.6",
         "clean-css": "^4.2.3",
         "clean-webpack-plugin": "^0.1.19",
