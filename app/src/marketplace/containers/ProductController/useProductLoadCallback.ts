@@ -15,7 +15,7 @@ import { fromDecimals } from '$mp/utils/math'
 import { getAdminFee } from '$mp/modules/dataUnion/services'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import useFailure from '$shared/hooks/useFailure'
-import { useController } from '.'
+import useController from './useController'
 type LoadProps = {
     productId: ProjectId
     ignoreUnauthorized?: boolean
