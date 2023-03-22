@@ -1,9 +1,9 @@
 /* eslint-disable react/no-unused-state */
-import type { Context, ReactNode } from 'react'
+import { Context, ReactNode } from 'react'
 import React, { Component } from 'react'
 import t from 'prop-types'
 import useUndoBreadcrumbs from './useUndoBreadcrumbs'
-import type { UndoContextProps, Action } from './UndoContext'
+import { UndoContextProps, Action } from './UndoContext'
 import UndoContext, { initialAction } from './UndoContext'
 
 /*

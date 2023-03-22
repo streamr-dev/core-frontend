@@ -1,4 +1,4 @@
-import type { FunctionComponent, ReactNode } from 'react'
+import { FunctionComponent, ReactNode } from 'react'
 import React, { useEffect, useCallback, useRef, useState } from 'react'
 import cx from 'classnames'
 import styled from 'styled-components'

@@ -2,12 +2,12 @@ import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 import { categoriesSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'
-import type { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
+import { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
 import { EntitiesValue } from '$shared/modules/entities/types'
-import type { CategoryIdList } from '../../types/category-types'
+import { CategoryIdList } from '../../types/category-types'
 import * as api from './services'
 import { GET_CATEGORIES_REQUEST, GET_CATEGORIES_SUCCESS, GET_CATEGORIES_FAILURE } from './constants'
-import type { CategoriesActionCreator, CategoriesErrorActionCreator } from './types'
+import { CategoriesActionCreator, CategoriesErrorActionCreator } from './types'
 const getCategoriesRequest: ReduxActionCreator = createAction(GET_CATEGORIES_REQUEST)
 const getCategoriesSuccess: CategoriesActionCreator = createAction(GET_CATEGORIES_SUCCESS, (categories: CategoryIdList) => ({
     categories,

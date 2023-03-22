@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 import styled, { css } from 'styled-components'
-import type { ButtonActions } from '$shared/components/Buttons'
+import { ButtonActions } from '$shared/components/Buttons'
 import Buttons from '$shared/components/Buttons'
 import { MD } from '$shared/utils/styled'
 import ElevatedContainer from '$shared/components/ElevatedContainer'

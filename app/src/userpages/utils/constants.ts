@@ -1,4 +1,4 @@
-import type { SortOption } from '$userpages/types/common-types'
+import { SortOption } from '$userpages/types/common-types'
 export const defaultColumns = {
     xs: 12,
     sm: 6,

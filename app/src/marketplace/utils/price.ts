@@ -1,5 +1,5 @@
 import BN from 'bignumber.js'
-import type { TimeUnit, PaymentCurrency, ContractCurrency, NumberString } from '$shared/types/common-types'
+import { TimeUnit, PaymentCurrency, ContractCurrency, NumberString } from '$shared/types/common-types'
 import { timeUnits, contractCurrencies, paymentCurrencies } from '$shared/utils/constants'
 import { toSeconds, getAbbreviation } from './time'
 import { fromDecimals, toDecimals } from './math'

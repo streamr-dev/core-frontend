@@ -1,7 +1,7 @@
 import { $Keys } from 'utility-types'
 import EventEmitter from 'events'
 import uuid from 'uuid'
-import type { Hash } from '$shared/types/web3-types'
+import { Hash } from '$shared/types/web3-types'
 const emitter = new EventEmitter()
 export enum actionTypes {
     CREATE= 'CREATE',

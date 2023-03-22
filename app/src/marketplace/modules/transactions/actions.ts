@@ -1,15 +1,15 @@
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 import Notification from '$shared/utils/Notification'
-import type { TransactionType } from '$shared/types/common-types'
-import type { Hash, Receipt } from '$shared/types/web3-types'
+import { TransactionType } from '$shared/types/common-types'
+import { Hash, Receipt } from '$shared/types/web3-types'
 import { updateEntities } from '$shared/modules/entities/actions'
 import { transactionSchema } from '$shared/modules/entities/schema'
 import { transactionStates, transactionTypes } from '$shared/utils/constants'
-import type TransactionError from '$shared/errors/TransactionError'
+import TransactionError from '$shared/errors/TransactionError'
 import { addTransactionToSessionStorage, removeTransactionFromSessionStorage } from '$shared/utils/transactions'
 import { ADD_TRANSACTION, COMPLETE_TRANSACTION } from './constants'
-import type { TransactionIdActionCreator } from './types'
+import { TransactionIdActionCreator } from './types'
 const addTransactionRequest: TransactionIdActionCreator = createAction(ADD_TRANSACTION, (id: Hash) => ({
     id,
 }))

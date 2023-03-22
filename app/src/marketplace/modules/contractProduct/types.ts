@@ -1,6 +1,6 @@
-import type { ErrorFromApi, PayloadAction } from '$shared/types/common-types'
-import type { Address } from '$shared/types/web3-types'
-import type { ProjectId, WhitelistStatus } from '../../types/project-types'
+import { ErrorFromApi, PayloadAction } from '$shared/types/common-types'
+import { Address } from '$shared/types/web3-types'
+import { ProjectId, WhitelistStatus } from '../../types/project-types'
 export type ProductIdAction = PayloadAction<{
     id: ProjectId
 }>

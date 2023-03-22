@@ -1,4 +1,4 @@
-import type { Context, Node } from 'react'
+import { Context, Node } from 'react'
 import React, { useContext, useRef, useEffect } from 'react'
 type SidebarContextType = {
     open: (arg0: string, arg1: boolean | null | undefined) => void

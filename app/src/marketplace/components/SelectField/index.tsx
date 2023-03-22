@@ -1,9 +1,9 @@
 import React from 'react'
 import cx from 'classnames'
-import type { Props as SelectProps } from '$ui/Select'
+import { Props as SelectProps } from '$ui/Select'
 import Select from '$ui/Select'
 import Errors from '$ui/Errors'
-import type { LastErrorProps } from '$shared/hooks/useLastError'
+import { LastErrorProps } from '$shared/hooks/useLastError'
 import { useLastError } from '$shared/hooks/useLastError'
 import styles from './selectField.pcss'
 type SelectFieldProps = LastErrorProps &

@@ -5,7 +5,7 @@ import { ImageTile } from '$shared/components/Tile'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'
-import type { Project } from '$mp/types/project-types'
+import { Project } from '$mp/types/project-types'
 import '$mp/types/project-types'
 import styles from './confirmDeployDataUnionDialog.pcss'
 export type Props = {

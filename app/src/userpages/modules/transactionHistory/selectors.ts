@@ -1,8 +1,8 @@
 import { denormalize } from 'normalizr'
 import { createSelector } from 'reselect'
-import type { StoreState, EntitiesState } from '$shared/types/store-state'
-import type { TransactionHistoryState } from '$userpages/types/states/transaction-history-state'
-import type { HashList, EventLogList, TransactionEntityList } from '$shared/types/web3-types'
+import { StoreState, EntitiesState } from '$shared/types/store-state'
+import { TransactionHistoryState } from '$userpages/types/states/transaction-history-state'
+import { HashList, EventLogList, TransactionEntityList } from '$shared/types/web3-types'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { transactionsSchema } from '$shared/modules/entities/schema'
 

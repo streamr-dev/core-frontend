@@ -1,9 +1,9 @@
 import { createAction } from 'redux-actions'
 import { contractProductSchema } from '$shared/modules/entities/schema'
-import type { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
+import { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
 import { handleEntities } from '$shared/utils/entities'
-import type { Address } from '$shared/types/web3-types'
-import type { ProjectId } from '../../types/project-types'
+import { Address } from '$shared/types/web3-types'
+import { ProjectId } from '../../types/project-types'
 import {
     GET_PRODUCT_FROM_CONTRACT_FAILURE,
     GET_PRODUCT_FROM_CONTRACT_REQUEST,
@@ -14,7 +14,7 @@ import {
     CLEAR_CONTRACT_PRODUCT,
 } from './constants'
 import * as services from './services'
-import type { ProductIdActionCreator, ProductErrorActionCreator, WhiteListedAddressActionCreator, WhiteListedAddressesActionCreator } from './types'
+import { ProductIdActionCreator, ProductErrorActionCreator, WhiteListedAddressActionCreator, WhiteListedAddressesActionCreator } from './types'
 const getProductFromContractRequest: ProductIdActionCreator = createAction(GET_PRODUCT_FROM_CONTRACT_REQUEST, (id: ProjectId) => ({
     id,
 }))

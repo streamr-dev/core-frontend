@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { Project } from '$mp/types/project-types'
+import { Project } from '$mp/types/project-types'
 import { transactionStates } from '$shared/utils/constants'
 import useModal from '$shared/hooks/useModal'
 import { getProductById } from '$mp/modules/product/services'

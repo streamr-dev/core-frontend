@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import type { UseStateTuple } from '$shared/types/common-types'
+import { UseStateTuple } from '$shared/types/common-types'
 import '$shared/types/common-types'
 import useIsMounted from '$shared/hooks/useIsMounted'
 export default () => {

@@ -1,4 +1,4 @@
-import type { Context as ReactContext, ReactNode } from 'react'
+import { Context as ReactContext, ReactNode } from 'react'
 import React from 'react'
 export type ModalPortalContextModel = {
     isModalOpen: boolean
