@@ -243,7 +243,7 @@ module.exports = {
                 ? [
                     new CleanWebpackPlugin([dist]),
                     // Production plugins
-                    new webpack.optimize.OccurrenceOrderPlugin(true),
+                    // new webpack.optimize.OccurrenceOrderPlugin(), // commented out as it started throwing errors after update to webpack5
                     new webpack.EnvironmentPlugin({
                         NODE_ENV: 'production',
                     }),
