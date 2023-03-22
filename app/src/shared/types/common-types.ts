@@ -2,13 +2,13 @@ import { $Values } from 'utility-types'
 import {
     contractCurrencies,
     paymentCurrencies,
-    timeUnits,
+    TimeUnit,
     transactionStates,
     transactionTypes,
 } from '../utils/constants'
 export type ContractCurrency = $Values<typeof contractCurrencies>
 export type PaymentCurrency = $Values<typeof paymentCurrencies>
-export type TimeUnit = $Values<typeof timeUnits>
+export type { TimeUnit }
 export type NumberString = string // Must be parsable to BigNumber
 
 export type ErrorFromApi = {

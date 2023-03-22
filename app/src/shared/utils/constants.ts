@@ -1,8 +1,8 @@
+import { $Values } from 'utility-types'
 import getMainChainId from '$app/src/getters/getMainChainId'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { getConfigForChainByName } from '$shared/web3/config'
-import {TimeUnit} from "$shared/types/common-types"
 
 /*
     These are all type
@@ -116,3 +116,5 @@ export const StreamrClientRepositories = {
     [ProgrammingLanguages.JAVASCRIPT]: 'https://github.com/streamr-dev/network-monorepo',
     [ProgrammingLanguages.JAVA]: 'https://github.com/streamr-dev/streamr-client-java',
 }
+
+export type TimeUnit = $Values<typeof timeUnits>
