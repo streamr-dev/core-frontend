@@ -2,7 +2,6 @@ import React, {FunctionComponent, useMemo} from "react"
 import styled from "styled-components"
 import {projectTypeNames} from "$mp/utils/constants"
 import PaymentRate from "$mp/components/PaymentRate"
-import {timeUnits} from "$shared/utils/constants"
 import {formatChainName} from "$shared/utils/chains"
 import Button from "$shared/components/Button"
 import ProjectPng from "$shared/assets/images/project.png"
@@ -11,6 +10,7 @@ import {Project, SalePoint} from "$mp/types/project-types"
 import {getConfigForChain} from "$shared/web3/config"
 import useModal from "$shared/hooks/useModal"
 import PurchaseModal from "$mp/components/Modal/PurchaseModal"
+import {timeUnits} from "$shared/utils/timeUnit"
 
 export const GetAccess: FunctionComponent<{project: Project}> = ({project}) => {
     const { api: purchaseDialog } = useModal('purchaseProject')
