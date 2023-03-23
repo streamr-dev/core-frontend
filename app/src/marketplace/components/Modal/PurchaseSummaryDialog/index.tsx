@@ -2,7 +2,8 @@ import React, { useMemo } from 'react'
 import BN from 'bignumber.js'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
-import { TimeUnit, PaymentCurrency } from '$shared/types/common-types'
+import { PaymentCurrency } from '$shared/types/common-types'
+import {TimeUnit} from "$shared/utils/timeUnit"
 import { contractCurrencies } from '$shared/utils/constants'
 import styles from './purchaseSummaryDialog.pcss'
 export type Props = {

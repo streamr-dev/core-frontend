@@ -6,7 +6,7 @@ import { Project, ProjectId } from '$mp/types/project-types'
 import { getProductById } from '$mp/modules/product/services'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { isPaidProject, isDataUnionProduct } from '$mp/utils/product'
-import { timeUnits, DEFAULT_CURRENCY, projectStates } from '$shared/utils/constants'
+import { DEFAULT_CURRENCY, projectStates } from '$shared/utils/constants'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import { priceForTimeUnits } from '$mp/utils/price'
 import { isEthereumAddress } from '$mp/utils/validate'
@@ -15,6 +15,7 @@ import { fromDecimals } from '$mp/utils/math'
 import { getAdminFee } from '$mp/modules/dataUnion/services'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import useFailure from '$shared/hooks/useFailure'
+import {timeUnits} from "$shared/utils/timeUnit"
 import useController from './useController'
 type LoadProps = {
     productId: ProjectId

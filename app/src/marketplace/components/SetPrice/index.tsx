@@ -1,10 +1,10 @@
 import React, { ChangeEvent, useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import BN from 'bignumber.js'
-import { NumberString, TimeUnit } from '$shared/types/common-types'
-import { timeUnits } from '$shared/utils/constants'
+import { NumberString } from '$shared/types/common-types'
 import PriceField from '$mp/components/PriceField'
 import SelectField from '$mp/components/SelectField'
+import {TimeUnit, timeUnits} from "$shared/utils/timeUnit"
 import styles from './setPrice.pcss'
 type Props = {
     price: NumberString

@@ -3,7 +3,8 @@ import { priceForTimeUnits } from '$mp/utils/price'
 import { getTokenAllowance, setTokenAllowance } from '$app/src/services/marketplace'
 import { SmartContractProject } from '$app/src/services/projects'
 import Transaction from '$shared/utils/Transaction'
-import { NumberString, TimeUnit } from '../types/common-types'
+import {TimeUnit} from "$shared/utils/timeUnit"
+import { NumberString} from '../types/common-types'
 
 const REQUEST_INFITE_ALLOWANCE = true
 const INFINITE_ALLOWANCE = new BN(2).pow(256).minus(1)
