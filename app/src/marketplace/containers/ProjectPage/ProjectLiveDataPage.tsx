@@ -1,53 +1,62 @@
-import React, { FunctionComponent, ReactNode, useMemo } from 'react'
-import { useParams } from 'react-router-dom'
+import React, {FunctionComponent, useMemo} from 'react'
 import Nav from '$shared/components/Layout/Nav'
 import Layout from '$shared/components/Layout'
-import ProductController, { useController } from '$mp/containers/ProductController'
+import ProjectPage, { ProjectPageContainer } from '$shared/components/ProjectPage'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
-import usePending from '$shared/hooks/usePending'
 import { MarketplaceLoadingView } from '$mp/containers/ProjectPage/MarketplaceLoadingView'
 import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
-import LoadingIndicator from '$shared/components/LoadingIndicator'
-import {useLoadedProject} from "$mp/contexts/LoadedProjectContext"
+import {LoadedProjectContextProvider, useLoadedProject} from "$mp/contexts/LoadedProjectContext"
+import {GetAccess} from "$mp/components/GetAccess/GetAccess"
+import {WhiteBox} from "$shared/components/WhiteBox"
+import {ProjectPageTitle} from "$mp/components/PageTitle"
+import styles from '$shared/components/Layout/layout.pcss'
+import {useUserHasAccessToProject} from "$mp/containers/ProductController/useUserHasAccessToProject"
 import routes from '$routes'
-import { getProjectDetailsLinkTabs, getProjectTitle } from './utils'
+import { getProjectDetailsLinkTabs } from './utils'
 
 const ProjectLiveData: FunctionComponent = () => {
     const {loadedProject: project} = useLoadedProject()
-    const pageTitle = useMemo<ReactNode>(() => getProjectTitle(project), [project])
     const linkTabs = useMemo(() => getProjectDetailsLinkTabs(project.id), [project.id])
 
-    return <Layout nav={<Nav />}>
+    const userHasAccess: boolean = useUserHasAccessToProject()
+
+    return <Layout nav={<Nav />} innerClassName={styles.greyInner}>
         <MarketplaceHelmet title={project.name} />
         <DetailsPageHeader
             backButtonLink={routes.marketplace.index}
-            pageTitle={pageTitle}
+            pageTitle={<ProjectPageTitle/>}
             linkTabs={linkTabs}
         />
-        {/*<LoadingIndicator loading={isPending} />*/}
-        <p style={{color: 'black'}}>Live Data page content will be here</p>
+        {/*{permissionsLoading && <LoadingIndicator loading={permissionsLoading}/>}*/}
+        <ProjectPage>
+            <ProjectPageContainer>
+                {userHasAccess ?
+                    <WhiteBox>
+                        <p style={{color: 'black'}}>Live Data page content will be here
+                        </p>
+                    </WhiteBox>
+                    : <GetAccess project={project}/>}
+            </ProjectPageContainer>
+        </ProjectPage>
     </Layout>
 }
 
 const ProjectLiveDataPageWrap = () => {
-    const { product, hasLoaded } = useController()
-    const { isPending: loadPending } = usePending('product.LOAD')
-    const { isPending: permissionsPending } = usePending('product.PERMISSIONS')
+    const { loadedProject: project} = useLoadedProject()
 
-    if (!hasLoaded || loadPending || permissionsPending) {
+    if (!project) {
         return <MarketplaceLoadingView />
     }
 
-    const key = (!!product && product.id) || ''
+    const key = (!!project && project.id) || ''
     return <ProjectLiveData key={key} />
 }
 
 const ProjectLiveDataPage: FunctionComponent = () => {
-    const { id } = useParams<{id: string}>()
     return (
-        <ProductController key={id} ignoreUnauthorized requirePublished>
+        <LoadedProjectContextProvider>
             <ProjectLiveDataPageWrap />
-        </ProductController>
+        </LoadedProjectContextProvider>
     )
 }
 

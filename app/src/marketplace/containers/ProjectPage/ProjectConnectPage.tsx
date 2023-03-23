@@ -9,6 +9,7 @@ import { Connect } from '$mp/containers/ProjectPage/Connect'
 import styles from '$shared/components/Layout/layout.pcss'
 import {LoadedProjectContextProvider, useLoadedProject} from "$mp/contexts/LoadedProjectContext"
 import {ProjectPageTitle} from "$mp/components/PageTitle"
+import routes from "$routes"
 import { getProjectDetailsLinkTabs } from './utils'
 
 const ProjectConnect: FunctionComponent = () => {
@@ -18,6 +19,7 @@ const ProjectConnect: FunctionComponent = () => {
     return <Layout nav={<Nav/>} innerClassName={styles.greyInner}>
         <MarketplaceHelmet title={project.name}/>
         <DetailsPageHeader
+            backButtonLink={routes.marketplace.index}
             pageTitle={<ProjectPageTitle/>}
             linkTabs={linkTabs}
         />
