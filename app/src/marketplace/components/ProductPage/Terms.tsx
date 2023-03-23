@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { Optional } from 'utility-types'
-import type { Project, TermsOfUse } from '$mp/types/project-types'
+import { Project, TermsOfUse } from '$mp/types/project-types'
 import { DESKTOP, MEDIUM, REGULAR, TABLET } from '$shared/utils/styled'
 
 type Props = {

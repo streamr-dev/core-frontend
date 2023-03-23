@@ -1,9 +1,9 @@
 import { AbiItem } from 'web3-utils'
 import { TransactionReceipt } from 'web3-core'
-import type Transaction from '$shared/utils/Transaction'
-import type TransactionError from '$shared/errors/TransactionError'
-import type { ProjectId } from '$mp/types/project-types'
-import type { NumberString, TransactionState, TransactionType } from './common-types'
+import Transaction from '$shared/utils/Transaction'
+import TransactionError from '$shared/errors/TransactionError'
+import { ProjectId } from '$mp/types/project-types'
+import { NumberString, TransactionState, TransactionType } from './common-types'
 export type Hash = string
 export type Address = string
 export type Receipt = TransactionReceipt

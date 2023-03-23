@@ -1,8 +1,6 @@
-import { STREAM_CLIENT_DEFAULTS } from 'streamr-client'
 import getConfig from '$app/src/getters/getConfig'
 import g from './getClientConfig'
 // Filter out what's unexpected. FIXME: fix the client.
-const { ...DEFAULTS } = STREAM_CLIENT_DEFAULTS
 jest.mock('$app/src/getters/getConfig', () => ({
     __esModule: true,
     default: jest.fn(),
@@ -15,7 +13,6 @@ describe('getClientConfig', () => {
         const mods = {}
 
         expect(g()).toMatchObject({
-            ...DEFAULTS,
             ...mods,
             metrics: false,
         })
@@ -38,12 +35,10 @@ describe('getClientConfig', () => {
             },
         }))
         expect(g()).toMatchObject({
-            ...DEFAULTS,
             network: {
                 trackers: ['tracker1', 'tracker2'],
             },
             contracts: {
-                ...DEFAULTS.contracts,
                 mainChainRPCs: 'mc chain rpc',
                 streamRegistryChainAddress: 'stream reg address',
                 streamRegistryChainRPCs: 'stream reg rpc',

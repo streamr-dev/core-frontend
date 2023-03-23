@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import BN from 'bignumber.js'
-import type { TimeUnit } from '$shared/types/common-types'
 import { contractCurrencies as currencies } from '$shared/utils/constants'
 import { formatPrice } from '$mp/utils/price'
 import { getTokenInformation } from '$mp/utils/web3'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import {TimeUnit} from "$shared/utils/timeUnit"
+
 type Props = {
     amount: BN
     pricingTokenAddress: string

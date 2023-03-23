@@ -3,9 +3,9 @@ import { normalize } from 'normalizr'
 import debounce from 'lodash/debounce'
 import { productsSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'
-import type { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
-import type { Filter, ProjectIdList } from '../../types/project-types'
-import type { StoreState } from '../../types/store-state'
+import { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
+import { Filter, ProjectIdList } from '../../types/project-types'
+import { StoreState } from '../../types/store-state'
 import { selectFilter, selectPageSize, selectOffset } from './selectors'
 import {
     GET_PRODUCTS_REQUEST,
@@ -17,7 +17,7 @@ import {
     UPDATE_PROJECTS_AUTHOR_FILTER
 } from './constants'
 import * as api from './services'
-import type {
+import {
     ProductsActionCreator,
     ProductsErrorActionCreator,
     FilterActionCreator,

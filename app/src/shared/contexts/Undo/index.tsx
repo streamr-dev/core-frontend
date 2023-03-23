@@ -1,49 +1,10 @@
 /* eslint-disable react/no-unused-state */
-import type { Context, ReactNode } from 'react'
+import { Context, ReactNode } from 'react'
 import React, { Component } from 'react'
 import t from 'prop-types'
 import useUndoBreadcrumbs from './useUndoBreadcrumbs'
-type Action = {
-    type: string
-    [key: string]: any
-}
-type HistoryItem = {
-    action: Action
-    state: Record<string, any>
-}
-export type UndoContextProps = {
-    history: Array<HistoryItem>
-    pointer: number
-    undo: (...args: Array<any>) => any
-    redo: (...args: Array<any>) => any
-    push: (
-        action: Action | string,
-        fn: (...args: Array<any>) => any,
-        done?: ((...args: Array<any>) => any) | null | undefined,
-    ) => any
-    replace: (fn: (...args: Array<any>) => any, done?: ((...args: Array<any>) => any) | null | undefined) => any
-    reset: (...args: Array<any>) => any
-    action: Action
-    state: Record<string, any> | null | undefined
-    initialState?: any
-    setInitialState: (fn: (...args: Array<any>) => any, done?: ((...args: Array<any>) => any) | null | undefined) => any
-}
-export const initialAction = {
-    type: '__INIT',
-}
-const UndoContext: Context<UndoContextProps> = React.createContext({
-    action: initialAction,
-    initialState: undefined,
-    state: undefined,
-    history: [],
-    pointer: 0,
-    undo: () => {},
-    redo: () => {},
-    push: () => {},
-    replace: () => {},
-    reset: () => {},
-    setInitialState: () => {},
-})
+import { UndoContextProps, Action } from './UndoContext'
+import UndoContext, { initialAction } from './UndoContext'
 
 /*
  * History implemented as an array of states &

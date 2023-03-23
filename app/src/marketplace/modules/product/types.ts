@@ -1,5 +1,5 @@
-import type { ErrorFromApi, PayloadAction } from '$shared/types/common-types'
-import type { ProjectId, Subscription } from '../../types/project-types'
+import { ErrorFromApi, PayloadAction } from '$shared/types/common-types'
+import { ProjectId, Subscription } from '../../types/project-types'
 export type ProductIdAction = PayloadAction<{
     id: ProjectId
 }>

@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react'
+import { ComponentType } from 'react'
 import React, { useCallback, forwardRef } from 'react'
 import useIsMounted from '$shared/hooks/useIsMounted'
 export type Props = {

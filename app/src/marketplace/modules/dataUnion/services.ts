@@ -1,13 +1,14 @@
 import EventEmitter from 'events'
 import DataUnionClient, { ContractReceipt } from '@dataunions/client'
 import BN from 'bignumber.js'
+import {DataUnionClientConfig} from "@dataunions/client/types/src/Config"
 import { hexToNumber } from 'web3-utils'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { getConfigForChain, getConfigForChainByName } from '$shared/web3/config'
-import type { SmartContractTransaction, Address } from '$shared/types/web3-types'
-import type { ProjectId, DataUnionId } from '$mp/types/project-types'
-import type { ApiResult } from '$shared/types/common-types'
+import { SmartContractTransaction, Address } from '$shared/types/web3-types'
+import { ProjectId, DataUnionId } from '$mp/types/project-types'
+import { ApiResult } from '$shared/types/common-types'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 import { post, del, get, put } from '$shared/utils/api'
 import getWeb3 from '$utils/web3/getWeb3'
@@ -15,7 +16,7 @@ import TransactionError from '$shared/errors/TransactionError'
 import Transaction from '$shared/utils/Transaction'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import routes from '$routes'
-import type { Secret } from './types'
+import { Secret } from './types'
 
 const createClient = (chainId: number) => {
     const provider: any = getWeb3().currentProvider
@@ -55,7 +56,7 @@ const createClient = (chainId: number) => {
             }
             : {}),
     })
-    return new DataUnionClient(clientConfig)
+    return new DataUnionClient(clientConfig as DataUnionClientConfig)
 }
 
 const getDataunionSubgraphUrlForChain = (chainId: number): string => {

@@ -3,7 +3,7 @@ import cx from 'classnames'
 import SvgIcon from '$shared/components/SvgIcon'
 import EditableText from '$shared/components/EditableText'
 import UseState from '$shared/components/UseState'
-import type { SearchFilter } from '../../../types/project-types'
+import { SearchFilter } from '../../../types/project-types'
 import styles from './searchInput.pcss'
 type Props = {
     value: SearchFilter | null | undefined

@@ -1,12 +1,12 @@
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
-import type { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
+import { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
 import { productsSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'
-import type { ProjectId, ProjectIdList } from '../../types/project-types'
+import { ProjectId, ProjectIdList } from '../../types/project-types'
 import * as api from './services'
 import { GET_RELATED_PRODUCTS_REQUEST, GET_RELATED_PRODUCTS_SUCCESS, GET_RELATED_PRODUCTS_FAILURE } from './constants'
-import type { RelatedProductsActionCreator, RelatedProductsErrorActionCreator } from './types'
+import { RelatedProductsActionCreator, RelatedProductsErrorActionCreator } from './types'
 export const getRelatedProductsRequest: ReduxActionCreator = createAction(GET_RELATED_PRODUCTS_REQUEST)
 export const getRelatedProductsSuccess: RelatedProductsActionCreator = createAction(GET_RELATED_PRODUCTS_SUCCESS, (products: ProjectIdList) => ({
     products,

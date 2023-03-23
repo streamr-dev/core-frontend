@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import usePending from '$shared/hooks/usePending'
-import type { ProjectId } from '$mp/types/project-types'
+import { ProjectId } from '$mp/types/project-types'
 import { getRelatedProducts } from '../../modules/relatedProducts/actions'
 export default function useRelatedProductsLoadCallback() {
     const dispatch = useDispatch()

@@ -9,13 +9,13 @@ import Button from '$shared/components/Button'
 import { projectTypeNames } from '$mp/utils/constants'
 import PaymentRate from '$mp/components/PaymentRate'
 import { formatChainName } from '$shared/utils/chains'
-import { timeUnits } from '$shared/utils/constants'
 import { WhiteBox } from '$shared/components/WhiteBox'
 import useModal from '$shared/hooks/useModal'
 import PurchaseModal from '$mp/components/Modal/PurchaseModal'
 import {useLoadedProject} from "$mp/contexts/LoadedProjectContext"
 import {SalePoint} from "$mp/types/project-types"
 import {getConfigForChain} from "$shared/web3/config"
+import {timeUnits} from "$shared/utils/timeUnit"
 
 export const Connect: FunctionComponent = () => {
     const { api: purchaseDialog } = useModal('purchaseProject')

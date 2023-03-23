@@ -2,8 +2,8 @@ import { createAction } from 'redux-actions'
 import { denormalize } from 'normalizr'
 import { dataUnionSchema, dataUnionStatSchema, productsSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
-import type { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
-import type { DataUnionId, DataUnionSecretId, ProjectIdList } from '$mp/types/project-types'
+import { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
+import { DataUnionId, DataUnionSecretId, ProjectIdList } from '$mp/types/project-types'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { isEthereumAddress } from '$mp/utils/validate'
@@ -23,7 +23,7 @@ import {
     RESET_DATA_UNION,
     RESET_DATA_UNION_STATS,
 } from './constants'
-import type {
+import {
     DataUnionIdActionCreator,
     DataUnionIdsActionCreator,
     DataUnionErrorActionCreator,

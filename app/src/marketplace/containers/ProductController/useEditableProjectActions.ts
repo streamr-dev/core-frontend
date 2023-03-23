@@ -1,13 +1,13 @@
 import { useCallback, useContext, useMemo } from 'react'
 import BN from 'bignumber.js'
 import { pricePerSecondFromTimeUnit } from '$mp/utils/price'
-import { timeUnits } from '$shared/utils/constants'
-import type { ContactDetails, Project } from '$mp/types/project-types'
-import type { StreamIdList } from '$shared/types/stream-types'
+import { ContactDetails, Project } from '$mp/types/project-types'
+import { StreamIdList } from '$shared/types/stream-types'
 import { ValidationContext } from '$mp/containers/ProductController/ValidationContextProvider'
-import { NumberString, TimeUnit } from '$shared/types/common-types'
+import { NumberString} from '$shared/types/common-types'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { ProjectTypeEnum } from '$mp/utils/constants'
+import {TimeUnit, timeUnits} from "$shared/utils/timeUnit"
 
 const getPricePerSecond = (isFree: boolean, price: NumberString, timeUnit: TimeUnit, decimals: BN) =>
     isFree ? new BN(0) : pricePerSecondFromTimeUnit(new BN(price || 0), timeUnit || timeUnits.hour, decimals)

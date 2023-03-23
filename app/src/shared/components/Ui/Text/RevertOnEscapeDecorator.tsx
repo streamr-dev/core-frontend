@@ -1,6 +1,6 @@
-import type { ChangeEvent, ComponentType } from 'react'
+import { ChangeEvent, ComponentType } from 'react'
 import React, { useState, forwardRef, useEffect, useCallback } from 'react'
-import type { UseStateTuple } from '$shared/types/common-types'
+import { UseStateTuple } from '$shared/types/common-types'
 import '$shared/types/common-types'
 export type Props = {
     onChange?: ((arg0: React.SyntheticEvent<EventTarget>) => void) | null | undefined

@@ -11,8 +11,8 @@ import { Radio } from '$shared/components/Radio'
 import Text from '$ui/Text'
 import Button from '$shared/components/Button'
 import SelectField2 from '$mp/components/SelectField2'
-import { contractCurrencies, NotificationIcon, timeUnits } from '$shared/utils/constants'
-import { ContractCurrency, TimeUnit } from '$shared/types/common-types'
+import { contractCurrencies, NotificationIcon} from '$shared/utils/constants'
+import { ContractCurrency} from '$shared/types/common-types'
 import useValidation from '$mp/containers/ProductController/useValidation'
 import { SeverityLevel } from '$mp/containers/ProductController/ValidationContextProvider'
 import Notification from '$shared/utils/Notification'
@@ -20,6 +20,7 @@ import { Address } from '$shared/types/web3-types'
 import { PricingData, Project } from '$mp/types/project-types'
 import { RecursiveKeyOf } from '$utils/recursiveKeyOf'
 import { pricePerSecondFromTimeUnit } from '$mp/utils/price'
+import {TimeUnit, timeUnits} from "$shared/utils/timeUnit"
 
 const Container = styled.div`
   color: ${COLORS.primary};

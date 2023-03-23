@@ -1,6 +1,6 @@
 import { handleActions } from 'redux-actions'
-import type { UserState } from '$shared/types/store-state'
-import type { SetBalanceAction } from './types'
+import { UserState } from '$shared/types/store-state'
+import { SetBalanceAction } from './types'
 import {
     SET_BALANCE,
 } from './constants'

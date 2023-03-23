@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import type { ContractProductState } from '../../types/store-state'
+import { ContractProductState } from '../../types/store-state'
 import {
     GET_PRODUCT_FROM_CONTRACT_FAILURE,
     GET_PRODUCT_FROM_CONTRACT_REQUEST,
@@ -9,7 +9,7 @@ import {
     ADD_WHITELISTED_ADDRESS,
     REMOVE_WHITELISTED_ADDRESS,
 } from './constants'
-import type { ProductIdAction, ProductErrorAction, WhiteListedAddressAction, WhiteListedAddressesAction } from './types'
+import { ProductIdAction, ProductErrorAction, WhiteListedAddressAction, WhiteListedAddressesAction } from './types'
 
 type ContractProductActionsPayloads =
     ProductIdAction['payload']

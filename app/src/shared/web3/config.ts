@@ -1,5 +1,4 @@
 import { Chain, Chains } from '@streamr/config'
-import { AbiItem } from 'web3-utils'
 import getMainChainId from '$app/src/getters/getMainChainId'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import formatConfigUrl from '$utils/formatConfigUrl'

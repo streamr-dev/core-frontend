@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect, ReactNode } from 'react'
-import type { Ref } from '$shared/types/common-types'
+import { Ref } from '$shared/types/common-types'
 import '$shared/types/common-types'
 type TextControlRef = Ref<HTMLTextAreaElement | HTMLInputElement>
 type Props = {

@@ -1,4 +1,4 @@
-import type { Node } from 'react'
+import { Node } from 'react'
 import { useState } from 'react'
 type Props = {
     initialValue?: any

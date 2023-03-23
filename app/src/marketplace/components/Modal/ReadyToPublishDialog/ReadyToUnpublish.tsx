@@ -1,7 +1,7 @@
 import React from 'react'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
-import type { BaseProps as Props } from '.'
+import { BaseProps as Props } from '.'
 
 const ReadyToUnpublishDialog = ({ onCancel, onContinue, disabled }: Props) => (
     <ModalPortal>

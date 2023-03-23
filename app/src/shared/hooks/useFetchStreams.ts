@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useClient } from 'streamr-client-react'
-import type { Stream } from 'streamr-client'
+import { Stream } from 'streamr-client'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import {useAuthController} from "$auth/hooks/useAuthController"
 

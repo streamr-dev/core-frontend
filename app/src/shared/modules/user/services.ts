@@ -1,8 +1,8 @@
 import { $Values } from 'utility-types'
 import { post } from '$shared/utils/api'
-import type { ApiResult } from '$shared/types/common-types'
+import { ApiResult } from '$shared/types/common-types'
 import { BalanceType } from '$shared/types/user-types'
-import type { Address } from '$shared/types/web3-types'
+import { Address } from '$shared/types/web3-types'
 import { getDataTokenBalance, getNativeTokenBalance } from '$mp/utils/web3'
 const GRAPH_API_URL = 'https://api.thegraph.com/subgraphs/name/ensdomains/ens'
 

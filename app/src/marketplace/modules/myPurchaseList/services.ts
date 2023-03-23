@@ -1,8 +1,8 @@
 import { get } from '$shared/utils/api'
-import type { ApiResult } from '$shared/types/common-types'
+import { ApiResult } from '$shared/types/common-types'
 import routes from '$routes'
 import { mapProductFromApi } from '../../utils/product'
-import type { ProjectSubscription } from '../../types/project-types'
+import { ProjectSubscription } from '../../types/project-types'
 
 const mapProductSubscriptions = (subscriptions: Array<ProjectSubscription>): Array<ProjectSubscription> =>
     subscriptions.map((subscription: ProjectSubscription) => ({

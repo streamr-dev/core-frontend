@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions'
-import type { CategoryState } from '../../types/store-state'
+import { CategoryState } from '../../types/store-state'
 import { GET_CATEGORIES_REQUEST, GET_CATEGORIES_SUCCESS, GET_CATEGORIES_FAILURE } from './constants'
-import type { CategoriesAction, CategoriesErrorAction } from './types'
+import { CategoriesAction, CategoriesErrorAction } from './types'
 export const initialState: CategoryState = {
     ids: [],
     fetching: false,

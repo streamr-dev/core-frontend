@@ -10,7 +10,7 @@ import Label from '$ui/Label'
 import WithInputActions from '$shared/components/WithInputActions'
 import Text from '$ui/Text'
 import PopoverItem from '../Popover/PopoverItem'
-import type { LabelType } from './KeyFieldEditor'
+import { LabelType } from './KeyFieldEditor'
 import KeyFieldEditor, { keyValues } from './KeyFieldEditor'
 const KeyFieldContainer = styled.div`
     position: relative;

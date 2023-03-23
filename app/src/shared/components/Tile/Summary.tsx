@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import React from 'react'
 import styled, { css } from 'styled-components'
 import Skeleton from '$shared/components/Skeleton'

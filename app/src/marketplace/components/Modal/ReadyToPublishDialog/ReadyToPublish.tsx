@@ -7,7 +7,7 @@ import Checkbox from '$shared/components/Checkbox'
 import Buttons from '$shared/components/Buttons'
 import { PublishMode } from '$mp/containers/ProjectEditing/publishMode'
 import routes from '$routes'
-import type { Props } from '.'
+import { Props } from '.'
 const Footer = styled.div`
     border-top: 1px solid #f2f1f1;
     padding: 1.5rem;
