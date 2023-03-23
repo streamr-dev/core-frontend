@@ -7,12 +7,12 @@ import { REGULAR, TABLET } from '$shared/utils/styled'
 import Button from '$shared/components/Button'
 import { ProjectTypeEnum, projectTypeNames } from '$mp/utils/constants'
 import PaymentRate from '$mp/components/PaymentRate'
-import { formatChainName, getChainIdFromApiString } from '$shared/utils/chains'
-import { timeUnits } from '$shared/utils/constants'
+import { formatChainName } from '$shared/utils/chains'
 import useModal from '$shared/hooks/useModal'
 import { WhiteBox } from '$shared/components/WhiteBox'
 import PurchaseModal from '$mp/components/Modal/PurchaseModal'
 import {getConfigForChain} from "$shared/web3/config"
+import {timeUnits} from "$shared/utils/timeUnit"
 import routes from '$routes'
 
 const Description: FunctionComponent<{project: Project}> = ({project}) => {

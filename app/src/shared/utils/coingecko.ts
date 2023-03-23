@@ -1,5 +1,5 @@
 import request from '$shared/utils/request'
-import type { Address } from '$shared/types/web3-types'
+import { Address } from '$shared/types/web3-types'
 const BASE_URL = 'https://api.coingecko.com/api/v3'
 // Got from: https://api.coingecko.com/api/v3/asset_platforms
 const chainIdToNetworkMapping: {[key: string]: string} = {

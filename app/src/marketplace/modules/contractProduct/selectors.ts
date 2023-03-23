@@ -1,12 +1,12 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 import { selectEntities } from '$shared/modules/entities/selectors'
-import type { EntitiesState } from '$shared/types/store-state'
-import type { ErrorInUi } from '$shared/types/common-types'
-import type { ProjectId, SmartContractProduct, WhitelistedAddress } from '$mp/types/project-types'
+import { EntitiesState } from '$shared/types/store-state'
+import { ErrorInUi } from '$shared/types/common-types'
+import { ProjectId, SmartContractProduct, WhitelistedAddress } from '$mp/types/project-types'
 import { contractProductSchema, whiteListedAddressesSchema } from '$shared/modules/entities/schema'
-import type { Address } from '$shared/types/web3-types'
-import type { ContractProductState, StoreState } from '../../types/store-state'
+import { Address } from '$shared/types/web3-types'
+import { ContractProductState, StoreState } from '../../types/store-state'
 
 const selectContractProductState = (state: StoreState): ContractProductState => state.contractProduct
 

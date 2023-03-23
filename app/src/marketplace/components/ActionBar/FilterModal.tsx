@@ -4,9 +4,9 @@ import { Dropdown } from 'reactstrap'
 import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
 import useModal from '$shared/hooks/useModal'
-import type { AnyFilter } from '$mp/types/project-types'
+import { AnyFilter } from '$mp/types/project-types'
 import PopoverItem from '$shared/components/Popover/PopoverItem'
-import type { Options } from './FilterSelector'
+import { Options } from './FilterSelector'
 import './FilterSelector'
 type Props = {
     title: ReactNode

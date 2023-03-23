@@ -1,5 +1,5 @@
 import { $Keys } from 'utility-types'
-import type { ComponentType } from 'react'
+import { ComponentType } from 'react'
 import React from 'react'
 import UploadIcon from './ImageUploadIcon'
 import CheckmarkIcon from './CheckmarkIcon'

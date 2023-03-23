@@ -1,4 +1,4 @@
-import type { PayloadAction } from '$shared/types/common-types'
+import { PayloadAction } from '$shared/types/common-types'
 export type UpdateEntitiesParam = {
     entities: EntitiesValue
 }

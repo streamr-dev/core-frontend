@@ -1,6 +1,6 @@
-import type { ComponentType } from 'react'
+import { ComponentType } from 'react'
 import React, { useCallback, useState, forwardRef } from 'react'
-import type { UseStateTuple } from '$shared/types/common-types'
+import { UseStateTuple } from '$shared/types/common-types'
 import '$shared/types/common-types'
 export type Props = {
     flushHistoryOnBlur?: boolean

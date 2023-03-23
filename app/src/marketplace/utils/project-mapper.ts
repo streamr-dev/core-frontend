@@ -4,10 +4,9 @@ import {ChainName, Project, SalePoint} from "$mp/types/project-types"
 import {ProjectTypeEnum} from "$mp/utils/constants"
 import {getConfigForChain} from "$shared/web3/config"
 import {getMostRelevantTimeUnit} from "$mp/utils/price"
-import {TimeUnit} from "$shared/types/common-types"
-import {timeUnitSecondsMultiplierMap} from "$shared/utils/constants"
 import {getTokenInformation} from "$mp/utils/web3"
 import {fromDecimals} from "$mp/utils/math"
+import {TimeUnit, timeUnitSecondsMultiplierMap} from "$shared/utils/timeUnit"
 
 export const mapGraphProjectToDomainModel = async (graphProject: TheGraphProject): Promise<Project> => {
     return {

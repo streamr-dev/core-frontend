@@ -1,4 +1,4 @@
-import type { ComponentType, FunctionComponent, ReactNode } from 'react'
+import { ComponentType, FunctionComponent, ReactNode } from 'react'
 import React, { HTMLProps } from 'react'
 import cx from 'classnames'
 import { LinkProps } from 'react-router-dom'

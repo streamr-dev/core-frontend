@@ -5,7 +5,7 @@ import UnstyledEditableText from '$shared/components/EditableText'
 import SearchBar from '$shared/components/SearchBar'
 import UseState from '$shared/components/UseState'
 import { SM, MD, LG } from '$shared/utils/styled'
-import type { SearchFilter } from '$mp/types/project-types'
+import { SearchFilter } from '$mp/types/project-types'
 type Props = {
     value: SearchFilter | null | undefined
     onChange: (text: SearchFilter) => void

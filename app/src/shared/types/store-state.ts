@@ -1,10 +1,10 @@
-import type { CategoryEntities } from '$mp/types/category-types'
-import type { ProjectEntities, SmartContractProjectEntities } from '$mp/types/project-types'
-import type { TransactionEntities } from '$shared/types/web3-types'
-import type { StreamEntities } from '$shared/types/stream-types'
-import type { StoreState as MarketplaceStoreState } from '$mp/types/store-state'
-import type { StoreState as UserPagesStoreState } from '$userpages/types/states/store-state'
-import type { Balances } from '$shared/types/user-types'
+import { CategoryEntities } from '$mp/types/category-types'
+import { ProjectEntities, SmartContractProjectEntities } from '$mp/types/project-types'
+import { TransactionEntities } from '$shared/types/web3-types'
+import { StreamEntities } from '$shared/types/stream-types'
+import { StoreState as MarketplaceStoreState } from '$mp/types/store-state'
+import { StoreState as UserPagesStoreState } from '$userpages/types/states/store-state'
+import { Balances } from '$shared/types/user-types'
 
 // entities
 export type EntitiesState = {

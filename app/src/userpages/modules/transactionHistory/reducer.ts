@@ -1,4 +1,4 @@
-import type { TransactionHistoryState } from '$userpages/types/states/transaction-history-state'
+import { TransactionHistoryState } from '$userpages/types/states/transaction-history-state'
 import {
     GET_TRANSACTION_EVENTS_REQUEST,
     GET_TRANSACTION_EVENTS_SUCCESS,

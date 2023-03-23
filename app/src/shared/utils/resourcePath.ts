@@ -1,6 +1,6 @@
 import { $Keys } from 'utility-types'
 import routes from '$routes'
-import type { ResourceID } from './resourceUrl'
+import { ResourceID } from './resourceUrl'
 import { ResourceType } from './resourceUrl'
 
 const resourcePath = (resourceType: $Keys<typeof ResourceType>, id: ResourceID): string => {

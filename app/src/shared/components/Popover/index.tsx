@@ -1,4 +1,4 @@
-import type { FunctionComponent, ReactElement, ReactNode } from 'react'
+import { FunctionComponent, ReactElement, ReactNode } from 'react'
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { Dropdown as RsDropdown, DropdownToggle, DropdownMenu } from 'reactstrap'
 import { DropdownMenuProps } from 'reactstrap/lib/DropdownMenu'

@@ -1,4 +1,4 @@
-import type { FunctionComponent, ReactNode } from 'react'
+import { FunctionComponent, ReactNode } from 'react'
 import React from 'react'
 import cx from 'classnames'
 import { NavLink } from 'react-router-dom'

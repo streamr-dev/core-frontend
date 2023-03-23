@@ -1,6 +1,6 @@
 import axios from 'axios'
 import merge from 'lodash/merge'
-import type { ApiResult, RequestMethod } from '$shared/types/common-types'
+import { ApiResult, RequestMethod } from '$shared/types/common-types'
 import RequestError from '$shared/errors/RequestError'
 export const getData = ({ data }: { data: any }): any => data
 export type RequestParams = {

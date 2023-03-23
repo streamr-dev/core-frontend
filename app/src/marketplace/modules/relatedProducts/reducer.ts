@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions'
-import type { RelatedProductListState } from '../../types/store-state'
+import { RelatedProductListState } from '../../types/store-state'
 import { GET_RELATED_PRODUCTS_REQUEST, GET_RELATED_PRODUCTS_SUCCESS, GET_RELATED_PRODUCTS_FAILURE } from './constants'
-import type { RelatedProductsAction, RelatedProductsErrorAction } from './types'
+import { RelatedProductsAction, RelatedProductsErrorAction } from './types'
 export const initialState: RelatedProductListState = {
     ids: [],
     fetching: false,

@@ -1,4 +1,4 @@
-import type { TransactionHistoryState } from './transaction-history-state'
+import { TransactionHistoryState } from './transaction-history-state'
 export type StoreState = {
     transactionHistory: TransactionHistoryState
 }

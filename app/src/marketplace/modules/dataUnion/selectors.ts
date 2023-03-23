@@ -1,10 +1,10 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
-import type { EntitiesState } from '$shared/types/store-state'
+import { EntitiesState } from '$shared/types/store-state'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { dataUnionSchema, dataUnionSecretsSchema, dataUnionStatSchema, dataUnionStatsSchema } from '$shared/modules/entities/schema'
-import type { DataUnionId, DataUnion, DataUnionSecretId, DataUnionSecret, DataUnionStat } from '../../types/project-types'
-import type { DataUnionState, StoreState } from '../../types/store-state'
+import { DataUnionId, DataUnion, DataUnionSecretId, DataUnionSecret, DataUnionStat } from '../../types/project-types'
+import { DataUnionState, StoreState } from '../../types/store-state'
 
 const selectDataUnionState = (state: StoreState): DataUnionState => state.dataUnion
 

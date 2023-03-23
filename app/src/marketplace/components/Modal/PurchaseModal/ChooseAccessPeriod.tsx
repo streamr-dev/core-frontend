@@ -4,20 +4,19 @@ import BN from 'bignumber.js'
 
 import { getConfigForChain } from '$shared/web3/config'
 import NetworkIcon from '$shared/components/NetworkIcon'
-import { timeUnits } from '$shared/utils/constants'
-import { TimeUnit } from '$shared/types/common-types'
 import TokenLogo from '$shared/components/TokenLogo'
 import Text from '$ui/Text'
 import SelectField2 from '$mp/components/SelectField2'
 import { TheGraphPaymentDetails, } from '$app/src/services/projects'
-import { getCustomTokenBalance, getTokenInformation } from '$mp/utils/web3'
+import { getCustomTokenBalance } from '$mp/utils/web3'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { priceForTimeUnits } from '$mp/utils/price'
 import { useAuthController } from '$app/src/auth/hooks/useAuthController'
 import { getUsdRate } from '$shared/utils/coingecko'
 import { COLORS } from '$shared/utils/styled'
-import { fromDecimals } from '$mp/utils/math'
+import {TimeUnit, timeUnits} from "$shared/utils/timeUnit"
 
+import { fromDecimals } from '$mp/utils/math'
 import { Currency, DetailsBox, DialogContainer, DialogTitle, NextButton, Price, Usd } from './styles'
 
 const Outer = styled.div`

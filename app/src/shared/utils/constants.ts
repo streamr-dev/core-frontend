@@ -1,8 +1,7 @@
 import getMainChainId from '$app/src/getters/getMainChainId'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
-import { getConfigForChainByName } from '$shared/web3/config'
-import {TimeUnit} from "$shared/types/common-types"
+import {getConfigForChainByName} from '$shared/web3/config'
 
 /*
     These are all type
@@ -47,23 +46,6 @@ export const ethereumNetworks = {
     '100': 'Gnosis',
     '137': 'Polygon',
 }
-export const timeUnits = {
-    second: 'second',
-    minute: 'minute',
-    hour: 'hour',
-    day: 'day',
-    week: 'week',
-    month: 'month',
-}
-
-export const timeUnitSecondsMultiplierMap = new Map<TimeUnit, number>([
-    ['second', 1],
-    ['minute', 60],
-    ['hour', 3600],
-    ['day', 86400],
-    ['week', 604800],
-    ['month', 2.628e+6]
-])
 
 export const transactionStates = {
     STARTED: 'started',
@@ -116,3 +98,4 @@ export const StreamrClientRepositories = {
     [ProgrammingLanguages.JAVASCRIPT]: 'https://github.com/streamr-dev/network-monorepo',
     [ProgrammingLanguages.JAVA]: 'https://github.com/streamr-dev/streamr-client-java',
 }
+

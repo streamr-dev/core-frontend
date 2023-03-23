@@ -1,13 +1,13 @@
 import React, {useCallback, useEffect, useRef, ReactNode } from 'react'
 import { useDispatch } from 'react-redux'
-import type { Hash, Receipt } from '$shared/types/web3-types'
+import { Hash, Receipt } from '$shared/types/web3-types'
 import { setEthereumNetworkId } from '$mp/modules/global/actions'
 import { addTransaction, completeTransaction, transactionError } from '$mp/modules/transactions/actions'
 import { getTransactionsFromSessionStorage } from '$shared/utils/transactions'
 import TransactionError from '$shared/errors/TransactionError'
 import Web3Poller, { events } from '$shared/web3/Web3Poller'
 import { useBalances } from '$shared/hooks/useBalances'
-import type { NumberString } from '$shared/types/common-types'
+import { NumberString } from '$shared/types/common-types'
 import { isEthereumAddress } from '$mp/utils/validate'
 import {useAuthController} from "$auth/hooks/useAuthController"
 

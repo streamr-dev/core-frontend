@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import React from 'react'
 import get from 'lodash/get'
 import NoProductsView from '../NoProductsView'

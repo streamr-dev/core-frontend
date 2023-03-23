@@ -1,13 +1,13 @@
 import { useContext, useLayoutEffect, useRef } from 'react'
 import * as Sentry from '@sentry/browser'
-import { Context } from './index'
+import UndoContext from './UndoContext'
 /**
  * Logs changes to undo stack to Sentry.
  * TODO: include state diff.
  */
 
 export default function useUndoBreadcrumbs(enabled: boolean): void {
-    const { pointer, action } = useContext(Context)
+    const { pointer, action } = useContext(UndoContext)
     const lastPointerRef = useRef(pointer)
     const isEnabled = !!enabled
     useLayoutEffect(() => {

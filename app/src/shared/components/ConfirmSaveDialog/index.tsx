@@ -1,4 +1,4 @@
-import type { Node } from 'react'
+import { Node } from 'react'
 import React from 'react'
 import PngIcon from '$shared/components/PngIcon'
 import Dialog from '$shared/components/Dialog'

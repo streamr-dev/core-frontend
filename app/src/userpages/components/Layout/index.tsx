@@ -1,4 +1,4 @@
-import type { Node } from 'react'
+import { Node } from 'react'
 import React, { Component, ReactNode } from 'react'
 import CoreLayout from '$shared/components/Layout/Core'
 import coreLayoutStyles from '$shared/components/Layout/core.pcss'

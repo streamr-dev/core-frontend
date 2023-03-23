@@ -1,5 +1,5 @@
 import React from 'react'
-import type { ErrorInUi } from '$shared/types/common-types'
+import { ErrorInUi } from '$shared/types/common-types'
 import Web3NotSupportedError from '$shared/errors/Web3NotSupportedError'
 import WalletLockedError from '$shared/errors/WalletLockedError'
 import UnlockWalletDialog from './UnlockWalletDialog'

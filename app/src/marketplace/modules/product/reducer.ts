@@ -1,11 +1,11 @@
 import { handleActions } from 'redux-actions'
-import type { ProductState } from '../../types/store-state'
+import { ProductState } from '../../types/store-state'
 import {
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE,
 } from './constants'
-import type { ProductErrorAction, ProductSubscriptionAction } from './types'
+import { ProductErrorAction, ProductSubscriptionAction } from './types'
 export const initialState: ProductState = {
     fetchingContractSubscription: false,
     contractSubscriptionError: null,

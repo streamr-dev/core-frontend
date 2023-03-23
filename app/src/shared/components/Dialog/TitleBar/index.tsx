@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import React from 'react'
 import cx from 'classnames'
 import SvgIcon from '$shared/components/SvgIcon'

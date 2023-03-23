@@ -1,7 +1,7 @@
 import React from 'react'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
-import type { PngIconName } from '$shared/components/PngIcon'
+import { PngIconName } from '$shared/components/PngIcon'
 import PngIcon from '$shared/components/PngIcon'
 import { truncate } from '$shared/utils/text'
 import styles from './unlockWalletDialog.pcss'

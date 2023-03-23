@@ -1,6 +1,6 @@
-import type { Node } from 'react'
+import { Node } from 'react'
 import React, { useState, useCallback } from 'react'
-import type { SortableContainerProps } from 'react-sortable-hoc'
+import { SortableContainerProps } from 'react-sortable-hoc'
 import { SortableContainer } from 'react-sortable-hoc'
 import cx from 'classnames'
 import styled from 'styled-components'

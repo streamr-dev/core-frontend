@@ -1,14 +1,14 @@
 import { createAction } from 'redux-actions'
-import type { ErrorInUi } from '$shared/types/common-types'
+import { ErrorInUi } from '$shared/types/common-types'
 import { getMyPurchases } from '../myPurchaseList/actions'
-import type { ProjectId, Subscription } from '../../types/project-types'
+import { ProjectId, Subscription } from '../../types/project-types'
 import {
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE,
 } from './constants'
 import * as services from './services'
-import type { ProductIdActionCreator, ProductErrorActionCreator, ProductSubscriptionActionCreator } from './types'
+import { ProductIdActionCreator, ProductErrorActionCreator, ProductSubscriptionActionCreator } from './types'
 const getProductSubscriptionFromContractRequest: ProductIdActionCreator = createAction(
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
     (id: ProjectId) => ({

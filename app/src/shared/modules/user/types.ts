@@ -1,5 +1,5 @@
-import type { PayloadAction } from '$shared/types/common-types'
-import type { Balances } from '$shared/types/user-types'
+import { PayloadAction } from '$shared/types/common-types'
+import { Balances } from '$shared/types/user-types'
 
 export type SetBalanceAction = PayloadAction<{
     balances: Balances
