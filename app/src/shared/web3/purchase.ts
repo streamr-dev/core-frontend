@@ -6,7 +6,8 @@ import { toSeconds } from '$mp/utils/time'
 import { fromDecimals } from '$mp/utils/math'
 import { SmartContractProject } from '$app/src/services/projects'
 import Transaction from '$shared/utils/Transaction'
-import { NumberString, TimeUnit } from '../types/common-types'
+import {TimeUnit} from "$shared/utils/timeUnit"
+import { NumberString} from '../types/common-types'
 
 type PurchaseProps = {
     contractProject: SmartContractProject

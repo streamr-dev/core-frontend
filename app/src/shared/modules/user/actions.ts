@@ -1,11 +1,11 @@
 import { createAction } from 'redux-actions'
 import BN from 'bignumber.js'
-import type { Balances } from '$shared/types/user-types'
+import { Balances } from '$shared/types/user-types'
 import { BalanceType } from '$shared/types/user-types'
-import type { Address } from '$shared/types/web3-types'
+import { Address } from '$shared/types/web3-types'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { selectEthereumNetworkId } from '$mp/modules/global/selectors'
-import type { SetBalanceActionCreator } from './types'
+import { SetBalanceActionCreator } from './types'
 import * as services from './services'
 import {
     SET_BALANCE,

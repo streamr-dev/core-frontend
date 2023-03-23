@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import useModal from '$shared/hooks/useModal'
-import type { CategoryFilter, Filter, ProjectTypeFilter, SearchFilter } from '$mp/types/project-types'
+import { CategoryFilter, Filter, ProjectTypeFilter, SearchFilter } from '$mp/types/project-types'
 import SearchBar from '$shared/components/SearchBar'
 import {
     ActionBarContainer,
@@ -16,7 +16,7 @@ import {
 import Tabs from '$shared/components/Tabs'
 import SelectField2 from '$mp/components/SelectField2'
 import MobileFilter from '$shared/components/MobileFilter'
-import type { Category } from '../../types/category-types'
+import { Category } from '../../types/category-types'
 import { isValidSearchQuery } from '../../utils/validate'
 
 export type Props = {

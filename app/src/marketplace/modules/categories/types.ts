@@ -1,5 +1,5 @@
-import type { ErrorFromApi, PayloadAction } from '$shared/types/common-types'
-import type { CategoryIdList } from '../../types/category-types'
+import { ErrorFromApi, PayloadAction } from '$shared/types/common-types'
+import { CategoryIdList } from '../../types/category-types'
 export type CategoriesAction = PayloadAction<{
     categories: CategoryIdList
 }>

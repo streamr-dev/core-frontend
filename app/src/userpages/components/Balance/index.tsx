@@ -1,7 +1,7 @@
-import type { FunctionComponent, ReactNode } from 'react'
+import { FunctionComponent, ReactNode } from 'react'
 import React, { Fragment } from 'react'
 import cx from 'classnames'
-import type { NumberString } from '$shared/types/common-types'
+import { NumberString } from '$shared/types/common-types'
 import styles from './balance.pcss'
 
 type AccountProps = {

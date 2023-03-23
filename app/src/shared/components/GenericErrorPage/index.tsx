@@ -1,4 +1,4 @@
-import type { FunctionComponent, ReactNode } from 'react'
+import { FunctionComponent, ReactNode } from 'react'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Container } from 'reactstrap'

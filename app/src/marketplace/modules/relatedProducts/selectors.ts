@@ -1,11 +1,11 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
-import type { EntitiesState } from '$shared/types/store-state'
-import type { ErrorInUi } from '$shared/types/common-types'
+import { EntitiesState } from '$shared/types/store-state'
+import { ErrorInUi } from '$shared/types/common-types'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { productsSchema } from '$shared/modules/entities/schema'
-import type { ProjectIdList, ProjectList } from '../../types/project-types'
-import type { RelatedProductListState, StoreState } from '../../types/store-state'
+import { ProjectIdList, ProjectList } from '../../types/project-types'
+import { RelatedProductListState, StoreState } from '../../types/store-state'
 
 const selectRelatedProductListState = (state: StoreState): RelatedProductListState => state.relatedProducts
 

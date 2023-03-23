@@ -1,6 +1,6 @@
 import { $ElementType } from 'utility-types'
-import type { ErrorInUi } from '$shared/types/common-types'
-import type { User } from '$shared/types/user-types'
+import { ErrorInUi } from '$shared/types/common-types'
+import { User } from '$shared/types/user-types'
 export type ResourceType = 'PRODUCT'
 export type ResourceId = string
 // eslint-disable-next-line max-len

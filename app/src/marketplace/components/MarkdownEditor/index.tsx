@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react'
 import cx from 'classnames'
 import Text from '$ui/Text'
 import Errors from '$ui/Errors'
-import type { LastErrorProps } from '$shared/hooks/useLastError'
+import { LastErrorProps } from '$shared/hooks/useLastError'
 import { useLastError } from '$shared/hooks/useLastError'
 import styles from './markdownEditor.pcss'
 type Props = LastErrorProps & {

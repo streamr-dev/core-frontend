@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
-import type { Kind } from '$shared/components/Button'
+import { Kind } from '$shared/components/Button'
 import Button from '$shared/components/Button'
 import styles from './buttons.pcss'
 export type ButtonAction = {

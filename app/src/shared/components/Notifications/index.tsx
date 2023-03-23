@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 import NotificationSystem from 'react-notification-system'
 import { Context as ModalContext } from '$shared/contexts/ModalPortal'
-import type { Ref } from '$shared/types/common-types'
+import { Ref } from '$shared/types/common-types'
 import '$shared/types/common-types'
 import Notification from '$shared/utils/Notification'
 import TransactionNotification from './TransactionNotification'

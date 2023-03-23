@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useCallback, useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import type { Stream, StreamID } from 'streamr-client'
+import { Stream, StreamID } from 'streamr-client'
 
 import InterruptionError from '$shared/errors/InterruptionError'
 import useInterrupt from '$shared/hooks/useInterrupt'

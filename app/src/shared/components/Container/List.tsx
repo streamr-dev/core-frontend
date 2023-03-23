@@ -1,4 +1,4 @@
-import type { Node } from 'react'
+import { Node } from 'react'
 import React from 'react'
 import cx from 'classnames'
 import styles from './list.pcss'

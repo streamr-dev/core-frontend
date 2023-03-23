@@ -9,8 +9,9 @@ import { buyProject, getTokenAllowance, setTokenAllowance } from '$app/src/servi
 import { addTransaction } from '$mp/modules/transactions/actions'
 import { toSeconds } from '$mp/utils/time'
 import { fromDecimals } from '$mp/utils/math'
+import {TimeUnit} from "$shared/utils/timeUnit"
 import { SmartContractProject } from '$app/src/services/projects'
-import { NumberString, TimeUnit } from '../types/common-types'
+import { NumberString } from '../types/common-types'
 
 export const actionsTypes = {
     SET_ALLOWANCE: 'setAllowance',

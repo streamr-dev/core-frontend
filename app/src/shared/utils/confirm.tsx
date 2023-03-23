@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, unmountComponentAtNode } from 'react-dom'
-import type { Properties } from '$shared/components/ConfirmDialog'
+import { Properties } from '$shared/components/ConfirmDialog'
 import ConfirmDialog from '$shared/components/ConfirmDialog'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
 const CONFIRM_DIALOG_KEY = 'confirm.dialog'

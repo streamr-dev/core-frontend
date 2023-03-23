@@ -1,5 +1,5 @@
 import { $ElementType } from 'utility-types'
-import type { Webcomponent } from './webcomponent-types'
+import { Webcomponent } from './webcomponent-types'
 export type UiChannel = {
     id: string
     webcomponent: $ElementType<Webcomponent, 'type'>

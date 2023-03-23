@@ -1,6 +1,6 @@
-import type { ErrorInUi, PayloadAction } from '$shared/types/common-types'
-import type { Filter } from '$userpages/types/common-types'
-import type { ProjectIdList, ProjectSubscriptionIdList } from '../../types/project-types'
+import { ErrorInUi, PayloadAction } from '$shared/types/common-types'
+import { Filter } from '$userpages/types/common-types'
+import { ProjectIdList, ProjectSubscriptionIdList } from '../../types/project-types'
 export type MySubscriptionsAction = PayloadAction<{
     subscriptions: ProjectSubscriptionIdList
 }>

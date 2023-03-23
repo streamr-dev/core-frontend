@@ -1,10 +1,9 @@
 import { create } from 'zustand'
 import { getProject, getProjectFromRegistry, SmartContractProject, TheGraphPaymentDetails, TheGraphProject } from '$app/src/services/projects'
-import { TimeUnit } from '$shared/types/common-types'
-import Transaction from '$shared/utils/Transaction'
 import { purchaseProject } from '$shared/web3/purchase'
 import { approve, needsAllowance } from '$shared/web3/allowance'
 import { getTokenInformation } from '$app/src/marketplace/utils/web3'
+import {TimeUnit} from "$shared/utils/timeUnit"
 
 export enum Step {
     SelectChain,

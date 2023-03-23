@@ -1,8 +1,7 @@
 import { isAddress } from 'web3-utils'
-import BN from 'bignumber.js'
 import { SalePoint } from '$mp/types/project-types'
 import { isPriceValid } from '$mp/utils/price'
-import { timeUnits } from '$shared/utils/constants'
+import {timeUnits} from "$shared/utils/timeUnit"
 import { searchCharMax } from './constants'
 export const isValidSearchQuery = (value: string): boolean => value.length <= searchCharMax
 export const isEthereumAddress = (value: string): boolean => isAddress(value)

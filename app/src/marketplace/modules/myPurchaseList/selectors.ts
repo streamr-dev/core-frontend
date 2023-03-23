@@ -1,12 +1,12 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
-import type { EntitiesState } from '$shared/types/store-state'
-import type { ErrorInUi } from '$shared/types/common-types'
-import type { Filter } from '$userpages/types/common-types'
+import { EntitiesState } from '$shared/types/store-state'
+import { ErrorInUi } from '$shared/types/common-types'
+import { Filter } from '$userpages/types/common-types'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { productsSchema, subscriptionsSchema } from '$shared/modules/entities/schema'
-import type { ProjectIdList, ProjectList, ProjectSubscriptionList, ProjectSubscriptionIdList } from '../../types/project-types'
-import type { MyPurchaseListState, StoreState } from '../../types/store-state'
+import { ProjectIdList, ProjectList, ProjectSubscriptionList, ProjectSubscriptionIdList } from '../../types/project-types'
+import { MyPurchaseListState, StoreState } from '../../types/store-state'
 
 const selectMyPurchaseListState = (state: StoreState): MyPurchaseListState => state.myPurchaseList
 

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import routes from '$routes'
-import type { BaseProps as Props } from '.'
+import { BaseProps as Props } from '.'
 
 const UnpublishComplete = ({ onClose }: Props) => (
     <ModalPortal>

@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import type { ProductListState } from '../../types/store-state'
+import { ProductListState } from '../../types/store-state'
 import { productListPageSize } from '../../utils/constants'
 import {
     GET_PRODUCTS_REQUEST,
@@ -10,7 +10,7 @@ import {
     CLEAR_PRODUCT_LIST,
     UPDATE_PROJECTS_AUTHOR_FILTER
 } from './constants'
-import type { ProductsAction, ProductsErrorAction, FilterAction, ProjectsAuthorFilterAction } from './types'
+import { ProductsAction, ProductsErrorAction, FilterAction, ProjectsAuthorFilterAction } from './types'
 export const initialState: ProductListState = {
     ids: [],
     filter: {

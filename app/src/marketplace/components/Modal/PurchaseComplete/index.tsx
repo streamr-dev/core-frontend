@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import useCopy from '$shared/hooks/useCopy'
-import type { Address } from '$shared/types/web3-types'
+import { Address } from '$shared/types/web3-types'
 import { getTransactionLink } from '$shared/utils/blockexplorer'
 export type Props = {
     onClose: () => void

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
-import type { Stream, StreamID } from 'streamr-client'
+import { Stream, StreamID } from 'streamr-client'
 import { Link } from 'react-router-dom'
 
 import LoadMore from '$mp/components/LoadMore'

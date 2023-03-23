@@ -1,7 +1,7 @@
 import React, { useState, ReactNode, ChangeEvent } from 'react'
 import cx from 'classnames'
 import { Label, FormGroup } from 'reactstrap'
-import type { Kind } from '$shared/components/Button'
+import { Kind } from '$shared/components/Button'
 import Dialog from '$shared/components/Dialog'
 import ModalPortal from '$shared/components/ModalPortal'
 import Buttons from '$shared/components/Buttons'

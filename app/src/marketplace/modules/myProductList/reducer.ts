@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions'
-import type { MyProductListState } from '../../types/store-state'
+import { MyProductListState } from '../../types/store-state'
 import { GET_MY_PRODUCTS_REQUEST, GET_MY_PRODUCTS_SUCCESS, GET_MY_PRODUCTS_FAILURE } from './constants'
-import type { MyProductsAction, MyProductsErrorAction, MyProductIdAction, MyProductsFilterAction } from './types'
+import { MyProductsAction, MyProductsErrorAction, MyProductIdAction, MyProductsFilterAction } from './types'
 export const initialState: MyProductListState = {
     ids: [],
     fetching: false,

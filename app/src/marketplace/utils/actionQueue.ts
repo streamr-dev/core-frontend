@@ -1,6 +1,6 @@
 import EventEmitter from 'events'
 import { transactionStates } from '$shared/utils/constants'
-import type { Address } from '$shared/types/web3-types'
+import { Address } from '$shared/types/web3-types'
 export type QueuedAction = {
     id: string
     handler: (...args: Array<any>) => any

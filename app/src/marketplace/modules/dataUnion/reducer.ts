@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import type { DataUnionState } from '../../types/store-state'
+import { DataUnionState } from '../../types/store-state'
 import {
     GET_DATA_UNION_REQUEST,
     GET_DATA_UNION_SUCCESS,
@@ -14,7 +14,7 @@ import {
     RESET_DATA_UNION,
     RESET_DATA_UNION_STATS,
 } from './constants'
-import type { DataUnionIdAction, DataUnionIdsAction, DataUnionSecretsAction, DataUnionSecretAction } from './types'
+import { DataUnionIdAction, DataUnionIdsAction, DataUnionSecretsAction, DataUnionSecretAction } from './types'
 export const initialState: DataUnionState = {
     id: null,
     fetching: false,

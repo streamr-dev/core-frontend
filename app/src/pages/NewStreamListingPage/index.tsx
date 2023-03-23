@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import type { Stream, StreamID } from 'streamr-client'
+import { Stream, StreamID } from 'streamr-client'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 

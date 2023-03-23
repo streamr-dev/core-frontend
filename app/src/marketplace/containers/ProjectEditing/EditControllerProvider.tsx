@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback, useContext, useRef, Context, Rea
 import { DataUnionStats } from '@dataunions/client/types/src/DataUnion'
 import qs from 'query-string'
 import { useLocation, useHistory } from 'react-router-dom'
-import type { Project } from '$mp/types/project-types'
+import { Project } from '$mp/types/project-types'
 import { isDataUnionProduct } from '$mp/utils/product'
 import usePending from '$shared/hooks/usePending'
 import useIsMounted from '$shared/hooks/useIsMounted'
