@@ -7,7 +7,7 @@ describe(Notification, () => {
     })
     it('subscribes to PUSH events; emits PUSH event; unsubscribes from PUSH event', () => {
         const handler = jest.fn()
-        Notification.subscribe(handler)
+        Notification.subscribeToAdd(handler)
         Notification.push({
             title: 'Title',
         })
