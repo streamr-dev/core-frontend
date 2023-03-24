@@ -72,9 +72,13 @@ export default class Notification {
         return !!this.txHash
     }
 
-    close(delayMs: number): void {
-        setTimeout(() => {
+    close(delayMs?: number): void {
+        if (delayMs != null) {
+            setTimeout(() => {
+                emitter.emit(Notification.events.CLOSE, this)
+            }, delayMs)
+        } else {
             emitter.emit(Notification.events.CLOSE, this)
-        }, delayMs)
+        }
     }
 }

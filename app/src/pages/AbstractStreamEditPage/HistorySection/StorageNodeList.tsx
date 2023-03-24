@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react'
 import styled from 'styled-components'
-import { EthereumAddress } from 'streamr-client'
 import { useClient } from 'streamr-client-react'
 import useStreamId from '$shared/hooks/useStreamId'
 import Label from '$ui/Label'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
+import { useStreamEditorStore } from '../state'
 import StorageNodeItem from './StorageNodeItem'
 
 type Props = {
@@ -15,6 +15,7 @@ type Props = {
 function UnstyledStorageNodeList({ className, disabled }: Props) {
     const streamId = useStreamId()
     const [nodeAddresses, setNodeAddresses] = useState({})
+    const loadStreamStorageNodes = useStreamEditorStore((state) => state.loadStreamStorageNodes)
     const client = useClient()
     const { current: { storageNodes } } = useRef(getCoreConfig())
 
@@ -23,11 +24,7 @@ function UnstyledStorageNodeList({ className, disabled }: Props) {
 
         async function fn() {
             try {
-                let streamStorageNodes: EthereumAddress[] = []
-
-                if (streamId) {
-                    streamStorageNodes = await client.getStorageNodes(streamId)
-                }
+                const streamNodes = await loadStreamStorageNodes(streamId, client)
 
                 if (aborted) {
                     return
@@ -37,7 +34,7 @@ function UnstyledStorageNodeList({ className, disabled }: Props) {
                 storageNodes.forEach(({ address }) => {
                     result[address.toLowerCase()] = false
                 })
-                streamStorageNodes.forEach((address) => {
+                streamNodes.forEach((address) => {
                     result[address.toLowerCase()] = true
                 })
                 setNodeAddresses(result)
@@ -51,7 +48,7 @@ function UnstyledStorageNodeList({ className, disabled }: Props) {
         return () => {
             aborted = true
         }
-    }, [client, streamId, storageNodes])
+    }, [client, streamId, storageNodes, loadStreamStorageNodes])
 
     return (
         <div className={className}>

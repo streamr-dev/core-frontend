@@ -15,9 +15,9 @@ export default function usePersistChangeset() {
     const client = useClient()
     const dispatch = usePermissionsDispatch()
     const isMounted = useIsMounted()
-    const { changeset, resourceId } = usePermissionsState()
+    const { changeset } = usePermissionsState()
     const busyRef = useRef(false)
-    const saveRef = useRef<(onSuccess: () => void) => Promise<void>>(() => Promise.resolve())
+    const saveRef = useRef<(streamId: string, onSuccess: () => void) => Promise<void>>(() => Promise.resolve())
     const userRef = useRef<string>()
     const { currentAuthSession } = useAuthController()
 
@@ -35,12 +35,12 @@ export default function usePersistChangeset() {
     const validateNetwork = useValidateNetwork()
 
     useEffect(() => {
-        saveRef.current = async (onSuccess) => {
+        saveRef.current = async (streamId, onSuccess) => {
             const errors = {}
             const assignments = formatAssignments(changeset)
             await validateNetwork(networks.STREAMS)
             await client.setPermissions({
-                streamId: resourceId,
+                streamId,
                 assignments,
             })
             const { current: u } = userRef
@@ -52,7 +52,7 @@ export default function usePersistChangeset() {
                 invalidatePermissionsRef.current()
             }
 
-            const result = await client.getPermissions(resourceId)
+            const result = await client.getPermissions(streamId)
 
             if (!isMounted()) {
                 return
@@ -78,11 +78,11 @@ export default function usePersistChangeset() {
                 })
             }
         }
-    }, [changeset, client, dispatch, isMounted, resourceId, validateNetwork])
+    }, [changeset, client, dispatch, isMounted, validateNetwork])
 
     const itp = useInterrupt()
     return useCallback(
-        async (onSuccess?: () => void) => {
+        async (streamId: string, onSuccess?: () => void) => {
             const { requireUninterrupted } = itp('save')
 
             if (busyRef.current) {
@@ -95,7 +95,7 @@ export default function usePersistChangeset() {
 
             try {
                 try {
-                    await saveRef.current(onSuccess)
+                    await saveRef.current(streamId, onSuccess)
                 } finally {
                     requireUninterrupted()
                 }

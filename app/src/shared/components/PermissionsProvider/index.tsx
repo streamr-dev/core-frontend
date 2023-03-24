@@ -48,7 +48,6 @@ const PermissionsProvider = ({ resourceType, resourceId, children }) => {
         resourceId,
         resourceType,
     })
-    const memoState = useDeepEqualMemo(state)
     const mountRef = useRef(mountId(resourceType, resourceId))
     useEffect(() => {
         dispatch({
@@ -62,7 +61,7 @@ const PermissionsProvider = ({ resourceType, resourceId, children }) => {
     useEffect(() => {
         const fetch = async () => {
             try {
-                if (resourceId == null) {
+                if (resourceId == null || client == null) {
                     return
                 }
                 const stream = await client.getStream(resourceId)
@@ -83,10 +82,9 @@ const PermissionsProvider = ({ resourceType, resourceId, children }) => {
 
         fetch()
     }, [resourceType, resourceId, isMounted, client])
-    console.log(memoState)
     return (
         <DispatchContext.Provider value={dispatch}>
-            <StateContext.Provider value={memoState}>{children}</StateContext.Provider>
+            <StateContext.Provider value={state}>{children}</StateContext.Provider>
         </DispatchContext.Provider>
     )
 }

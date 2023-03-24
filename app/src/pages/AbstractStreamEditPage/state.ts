@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import StreamrClient from 'streamr-client'
 
 type Actions = {
+    loadStreamStorageNodes: (streamId: string, client: StreamrClient) => Promise<string[]>,
     addStorageNode: (address: string) => void,
     removeStorageNode: (address: string) => void,
     calculateStorageNodeOperations:  (streamId: string, client: StreamrClient) => Promise<void>,
@@ -25,25 +26,65 @@ type PersistOperation = {
 }
 
 type State = {
-    storageNodes: string[],
+    storageNodes: string[], // this is the UI state
+    streamStorageNodes: string[], // this is the stored state on Stream object
     streamSaveNeeded: boolean,
     permissionSaveNeeded: boolean,
     persistOperations: PersistOperation[],
+    hasStorageNodeChanges: boolean,
 }
 
 const initialState: State = {
     storageNodes: [],
+    streamStorageNodes: [],
     streamSaveNeeded: false,
     permissionSaveNeeded: false,
     persistOperations: [],
+    hasStorageNodeChanges: false,
+}
+
+const areArraysEqual = (arr1: Array<string>, arr2: Array<string>) => {
+    const set1 = new Set(arr1)
+    const set2 = new Set(arr2)
+    return arr1.every((item) => set2.has(item)) &&
+        arr2.every((item) => set1.has(item))
 }
 
 export const useStreamEditorStore = create<State & Actions>()((set, get) => ({
     ...initialState,
-    addStorageNode: (address) => set((state) => ({ storageNodes: [...state.storageNodes, address] })),
-    removeStorageNode: (address) => set((state) => ({ storageNodes: state.storageNodes.filter((node) => node !== address) })),
+    loadStreamStorageNodes: async (streamId, client) => {
+        if (streamId && client) {
+            const storageNodes = (await client.getStorageNodes(streamId)).map((a) => a.toLowerCase())
+            set({ streamStorageNodes: storageNodes })
+            return storageNodes
+        }
+        return []
+    },
+    addStorageNode: (address) => {
+        if (get().storageNodes.includes(address.toLowerCase())) {
+            return
+        }
+        set((state) => ({
+            storageNodes: [...state.storageNodes, address.toLowerCase()],
+        }))
+        set({
+            hasStorageNodeChanges: !areArraysEqual(get().streamStorageNodes, get().storageNodes),
+        })
+    },
+    removeStorageNode: (address) => {
+        set((state) => ({
+            storageNodes: state.storageNodes.filter((node) => node !== address.toLowerCase()),
+        }))
+        set({
+            hasStorageNodeChanges: !areArraysEqual(get().streamStorageNodes, get().storageNodes),
+        })
+    },
     calculateStorageNodeOperations: async (streamId, client) => {
-        const currentNodes = (await client.getStorageNodes(streamId)).map((a) => a.toLowerCase())
+        if (client == null) {
+            return
+        }
+
+        const currentNodes = get().streamStorageNodes
         const newNodes = get().storageNodes
         const addPersistOperation = get().addPersistOperation
 

@@ -155,10 +155,10 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
     const hasPersistOperations = useStreamEditorStore((state) => state.hasPersistOperations)
     const calculateStorageNodeOperations = useStreamEditorStore((state) => state.calculateStorageNodeOperations)
     const persistStorageNodes = useStreamEditorStore((state) => state.persistStorageNodes)
-    const storageNodes = useStreamEditorStore((state) => state.storageNodes)
+    const hasStorageNodeChanges = useStreamEditorStore((state) => state.hasStorageNodeChanges)
     const resetStore = useStreamEditorStore((state) => state.reset)
 
-    const clean = isStreamClean && storageNodes.length === 0 && Object.keys(changeset).length === 0
+    const clean = isStreamClean && !hasStorageNodeChanges && Object.keys(changeset).length === 0
     usePreventNavigatingAway('You have unsaved changes. Are you sure you want to leave?', () => !clean)
 
     useEffect(() => {
@@ -168,14 +168,15 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
     async function save() {
         const { requireUninterrupted } = itp('save')
         let transactionsToastNotification: Notification = null
+        let id = streamId
+        let wasStreamCreated = false
 
         try {
             try {
                 const streamNeedsSaving = isUpdateNeeded()
                 const hasPermissionChanges = Object.keys(changeset).length > 0
-                const hasStorageChanges = storageNodes.length > 0
 
-                if (!streamNeedsSaving && !hasPermissionChanges && !hasStorageChanges) {
+                if (!streamNeedsSaving && !hasPermissionChanges && !hasStorageNodeChanges) {
                     // Nothing changed
                     return
                 }
@@ -241,7 +242,6 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
                     state: 'inprogress',
                 })
 
-                let id = streamId
                 try {
                     if (streamNeedsSaving) {
                         ({ id } = await commit())
@@ -249,6 +249,7 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
                         updatePersistOperation('stream', {
                             state: 'complete',
                         })
+                        wasStreamCreated = isNew
                     }
                 } catch (e) {
                     updatePersistOperation('stream', {
@@ -268,7 +269,7 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
                         state: 'inprogress',
                     })
                     try {
-                        await persistPermissions()
+                        await persistPermissions(id)
                         requireUninterrupted()
                         updatePersistOperation('access', {
                             state: 'complete',
@@ -285,22 +286,6 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
                 // 3. Update storage nodes
                 await persistStorageNodes(id, client)
                 requireUninterrupted()
-
-                // Everything ok, reset store
-                resetStore()
-
-                // Give the notification some time before navigating away in the next step.
-                await new Promise((resolve) => {
-                    setTimeout(resolve, 300)
-                })
-
-                requireUninterrupted()
-                history.push(
-                    routes.streams.show({
-                        id,
-                        newStream: isNew ? 1 : undefined,
-                    }),
-                )
             } catch (e) {
                 requireUninterrupted()
                 throw e
@@ -313,8 +298,23 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
             console.error('Save failed', e)
         } finally {
             setBusy(false)
+
+            // Give the notification some time before navigating away in the next step.
+            await new Promise((resolve) => {
+                setTimeout(resolve, 3000)
+            })
+
             if (transactionsToastNotification != null) {
-                transactionsToastNotification.close(5000)
+                transactionsToastNotification.close()
+                resetStore()
+            }
+            if (wasStreamCreated) {
+                history.push(
+                    routes.streams.show({
+                        id,
+                        newStream: isNew ? 1 : undefined,
+                    }),
+                )
             }
         }
     }
