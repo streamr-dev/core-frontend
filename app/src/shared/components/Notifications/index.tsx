@@ -7,16 +7,21 @@ import Notification from '$shared/utils/Notification'
 import TransactionNotification from './TransactionNotification'
 import BasicNotification from './BasicNotification'
 import styles from './notificationStyles'
+import CustomNotification from './CustomNotification'
+
+type Dismissible = 'both' | 'click' | 'none'
+
 type System = {
     addNotification: (notificationParams: {
         uid: number,
         title: string,
         message: string,
+        dismissible: Dismissible,
         autoDismiss: number,
         position: string,
         level: string,
         onRemove: () => void,
-        children: ReactNode
+        children: ReactNode,
     }) => void
     clearNotifications: () => void
     state: {
@@ -30,16 +35,25 @@ type State = {
     notifications: Array<Notification>
 }
 
-const getNotificationComponent = (notification: Notification): ReactNode =>
-    notification.txHash ? (
-        <TransactionNotification txHash={notification.txHash} />
-    ) : (
+const getNotificationComponent = (notification: Notification): ReactNode => {
+    if (notification.txHash) {
+        return <TransactionNotification txHash={notification.txHash} />
+    } else if (notification.children != null) {
+        return (
+            <CustomNotification>
+                {notification.children}
+            </CustomNotification>
+        )
+    }
+
+    return (
         <BasicNotification
             title={notification.title || ''}
             icon={notification.icon}
             description={notification.description || ''}
         />
     )
+}
 
 class Notifications extends React.Component<Props, State> {
     static contextType = ModalContext
@@ -49,9 +63,15 @@ class Notifications extends React.Component<Props, State> {
     state = {
         notifications: [],
     }
+    system: Ref<NotificationSystem> = React.createRef()
 
     componentDidMount() {
-        Notification.subscribe(this.addNotification)
+        Notification.subscribeToAdd(this.addNotification)
+        Notification.subscribeToClose((n) => {
+            if (this.system.current) {
+                this.system.current.removeNotification(n.id)
+            }
+        })
     }
 
     componentDidUpdate() {
@@ -73,6 +93,7 @@ class Notifications extends React.Component<Props, State> {
                 title: notification.title,
                 message: notification.description,
                 autoDismiss: notification.autoDismissAfter,
+                dismissible: notification.dismissible ? 'both' : 'none',
                 position: 'bl',
                 level: 'info',
                 onRemove: () => {
@@ -82,17 +103,18 @@ class Notifications extends React.Component<Props, State> {
             })
         }
     }
+
     addNotification = (notification: Notification): void => {
         this.setState(({ notifications }) => ({
             notifications: [notification, ...notifications],
         }))
     }
+
     removeNotification = (id: number): void => {
         this.setState(({ notifications }) => ({
             notifications: notifications.filter((notification) => notification.id !== id),
         }))
     }
-    system: Ref<NotificationSystem> = React.createRef()
 
     render() {
         return (

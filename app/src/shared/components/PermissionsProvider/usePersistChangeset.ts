@@ -6,28 +6,34 @@ import useStreamPermissionsInvalidator from '$shared/hooks/useStreamPermissionsI
 import useValidateNetwork from '$shared/hooks/useValidateNetwork'
 import { networks } from '$shared/utils/constants'
 import useInterrupt from '$shared/hooks/useInterrupt'
-import {useAuthController} from "$auth/hooks/useAuthController"
+import { useAuthController } from '$auth/hooks/useAuthController'
 import InterruptionError from '$shared/errors/InterruptionError'
 import reducer, { PERSIST, SET_PERMISSIONS, UNLOCK } from './utils/reducer'
 import formatAssignments from './utils/formatAssignments'
+
 export default function usePersistChangeset() {
     const client = useClient()
     const dispatch = usePermissionsDispatch()
     const isMounted = useIsMounted()
     const { changeset, resourceId } = usePermissionsState()
     const busyRef = useRef(false)
-    const saveRef = useRef(() => {})
-    const userRef = useRef()
-    const {currentAuthSession} = useAuthController()
+    const saveRef = useRef<(onSuccess: () => void) => Promise<void>>(() => Promise.resolve())
+    const userRef = useRef<string>()
+    const { currentAuthSession } = useAuthController()
+
     useEffect(() => {
         userRef.current = currentAuthSession.address
     }, [currentAuthSession.address])
+
     const invalidatePermissions = useStreamPermissionsInvalidator()
     const invalidatePermissionsRef = useRef(invalidatePermissions)
+
     useEffect(() => {
         invalidatePermissionsRef.current = invalidatePermissions
     }, [invalidatePermissions])
+
     const validateNetwork = useValidateNetwork()
+
     useEffect(() => {
         saveRef.current = async (onSuccess) => {
             const errors = {}
@@ -73,9 +79,10 @@ export default function usePersistChangeset() {
             }
         }
     }, [changeset, client, dispatch, isMounted, resourceId, validateNetwork])
+
     const itp = useInterrupt()
     return useCallback(
-        async (onSuccess) => {
+        async (onSuccess?: () => void) => {
             const { requireUninterrupted } = itp('save')
 
             if (busyRef.current) {
@@ -100,6 +107,8 @@ export default function usePersistChangeset() {
                 dispatch({
                     type: UNLOCK,
                 })
+
+                throw e
             }
 
             busyRef.current = false

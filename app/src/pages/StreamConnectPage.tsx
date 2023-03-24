@@ -16,7 +16,7 @@ function UnwrappedStreamEditPage() {
     const loading = typeof canEdit === 'undefined'
     const streamId = useDecodedStreamId()
     return (
-        <StreamPage loading={loading} showSaveButton={false}>
+        <StreamPage loading={loading} showSaveButton={false} fullWidth>
             <StreamConnect streams={[streamId]}/>
         </StreamPage>
     )

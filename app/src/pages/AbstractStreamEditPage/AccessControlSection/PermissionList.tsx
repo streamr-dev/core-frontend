@@ -3,9 +3,6 @@ import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
 import { usePermissionsState } from '$shared/components/PermissionsProvider'
-import usePersistChangeset from '$shared/components/PermissionsProvider/usePersistChangeset'
-import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
 import useModal from '$shared/hooks/useModal'
 import address0 from '$utils/address0'
 import PermissionItem from './PermissionItem'
@@ -35,7 +32,6 @@ type Props = {
 const PermissionList: React.FunctionComponent<Props> = ({ disabled }) => {
     const { api: addModal } = useModal('accesscontrol.addaccount')
     const { changeset, combinations } = usePermissionsState()
-    const persist = usePersistChangeset()
     const permissions = useMemo(() => (
         Object.entries({ ...combinations, ...changeset }).filter((p) => p[0] !== address0)
     ), [combinations, changeset])
@@ -62,19 +58,6 @@ const PermissionList: React.FunctionComponent<Props> = ({ disabled }) => {
                     onClick={() => addModal.open()}
                 >
                     Add a new account
-                </Button>
-                <Button
-                    kind="primary"
-                    type="button"
-                    disabled={disabled || Object.entries(changeset).length === 0}
-                    onClick={() => persist(() => {
-                        Notification.push({
-                            title: 'Stream permissions updated',
-                            icon: NotificationIcon.CHECKMARK,
-                        })
-                    })}
-                >
-                    Save
                 </Button>
             </Footer>
             <AddAccountDialog />

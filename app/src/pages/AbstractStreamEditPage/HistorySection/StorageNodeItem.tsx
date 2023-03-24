@@ -8,8 +8,17 @@ import useInterrupt from '$shared/hooks/useInterrupt'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon, networks } from '$shared/utils/constants'
 import useValidateNetwork from '$shared/hooks/useValidateNetwork'
+import { useStreamEditorStore } from '../state'
 
-function UnstyledStorageNodeItem({ address, active: activeProp, className, disabled = false, children }) {
+type Props = {
+    address: string,
+    active: boolean,
+    className?: string,
+    disabled: boolean,
+    children: React.ReactNode,
+}
+
+function UnstyledStorageNodeItem({ address, active: activeProp, className, disabled = false, children }: Props) {
     const [{ active = activeProp, cache }, setActive] = useReducer(
         (state, newActive) => ({
             active: newActive,
@@ -17,6 +26,8 @@ function UnstyledStorageNodeItem({ address, active: activeProp, className, disab
         }),
         {},
     )
+    const addStorageNode = useStreamEditorStore((state) => state.addStorageNode)
+    const removeStorageNode = useStreamEditorStore((state) => state.removeStorageNode)
     useEffect(() => {
         setActive(activeProp)
     }, [activeProp])
@@ -26,6 +37,10 @@ function UnstyledStorageNodeItem({ address, active: activeProp, className, disab
     const [busy, setBusy] = useState(typeof active === 'undefined')
     const validateNetwork = useValidateNetwork()
     const onClick = useCallback(async () => {
+        if (disabled) {
+            return
+        }
+
         const { requireUninterrupted } = itp()
 
         if (typeof active === 'undefined') {
@@ -39,10 +54,11 @@ function UnstyledStorageNodeItem({ address, active: activeProp, className, disab
             try {
                 await validateNetwork(networks.STREAMS)
                 requireUninterrupted()
-                await (() =>
-                    active
-                        ? client.removeStreamFromStorageNode(streamId, address)
-                        : client.addStreamToStorageNode(streamId, address))()
+                if (active) {
+                    removeStorageNode(address)
+                } else {
+                    addStorageNode(address)
+                }
                 success = true
             } catch (e) {
                 console.warn(e)
@@ -60,14 +76,7 @@ function UnstyledStorageNodeItem({ address, active: activeProp, className, disab
         }
 
         setActive(success ? !active : active)
-
-        if (success) {
-            Notification.push({
-                title: `Storage node got ${active ? 'disabled' : 'enabled'}`,
-                icon: NotificationIcon.CHECKMARK,
-            })
-        }
-    }, [itp, client, address, streamId, active, validateNetwork])
+    }, [itp, address, active, validateNetwork, addStorageNode, removeStorageNode])
     useEffect(
         () => () => {
             // Ignore the result of any in-the-air toggling if conditions change.
@@ -79,7 +88,7 @@ function UnstyledStorageNodeItem({ address, active: activeProp, className, disab
         setBusy(typeof active === 'undefined')
     }, [active, cache])
     return (
-        <Root className={className} onClick={onClick} title={children} type="button" $active={active}>
+        <Root className={className} onClick={onClick} title={children} type="button" $active={active} disabled={disabled}>
             <div>{children}</div>
             {!disabled && !busy && (
                 <Checkbox.Tick checked={active} data-test-hook={active ? 'Checkbox on' : 'Checkbox off'} />
@@ -138,7 +147,7 @@ const Root = styled.button`
 
     :disabled,
     &[disabled] {
-        cursor: default;
+        cursor: not-allowed;
     }
 
     ${({ $active }) =>

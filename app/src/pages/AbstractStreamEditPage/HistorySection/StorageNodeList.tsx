@@ -1,24 +1,33 @@
 import React, { useEffect, useState, useRef } from 'react'
 import styled from 'styled-components'
+import { EthereumAddress } from 'streamr-client'
 import { useClient } from 'streamr-client-react'
 import useStreamId from '$shared/hooks/useStreamId'
 import Label from '$ui/Label'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import StorageNodeItem from './StorageNodeItem'
 
-function UnstyledStorageNodeList({ className, disabled }) {
+type Props = {
+    className?: string,
+    disabled?: boolean,
+}
+
+function UnstyledStorageNodeList({ className, disabled }: Props) {
     const streamId = useStreamId()
     const [nodeAddresses, setNodeAddresses] = useState({})
     const client = useClient()
-    const {
-        current: { storageNodes },
-    } = useRef(getCoreConfig())
+    const { current: { storageNodes } } = useRef(getCoreConfig())
+
     useEffect(() => {
         let aborted = false
 
         async function fn() {
             try {
-                const addresses = await client.getStorageNodes(streamId)
+                let streamStorageNodes: EthereumAddress[] = []
+
+                if (streamId) {
+                    streamStorageNodes = await client.getStorageNodes(streamId)
+                }
 
                 if (aborted) {
                     return
@@ -28,7 +37,7 @@ function UnstyledStorageNodeList({ className, disabled }) {
                 storageNodes.forEach(({ address }) => {
                     result[address.toLowerCase()] = false
                 })
-                addresses.forEach((address) => {
+                streamStorageNodes.forEach((address) => {
                     result[address.toLowerCase()] = true
                 })
                 setNodeAddresses(result)
@@ -37,14 +46,13 @@ function UnstyledStorageNodeList({ className, disabled }) {
             }
         }
 
-        if (streamId) {
-            fn()
-        }
+        fn()
 
         return () => {
             aborted = true
         }
     }, [client, streamId, storageNodes])
+
     return (
         <div className={className}>
             <Label>{disabled ? 'Storage nodes' : 'Choose storage nodes (one or more)'}</Label>
@@ -71,7 +79,6 @@ const StorageNodes = styled(UnstyledStorageNodeList)`
     ul {
         list-style: none;
         margin: 0;
-        max-width: 536px;
         padding: 0;
     }
 `

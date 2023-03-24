@@ -2,10 +2,11 @@ import React, { useReducer, createContext, useContext, useEffect, useRef, useMem
 import { useClient } from 'streamr-client-react'
 import address0 from '$utils/address0'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import {useAuthController} from "$auth/hooks/useAuthController"
+import { useAuthController } from '$auth/hooks/useAuthController'
+import useDeepEqualMemo from '$shared/hooks/useDeepEqualMemo'
 import reducer, { initialState, SET_RESOURCE, SET_PERMISSIONS } from './utils/reducer'
 
-const DispatchContext = createContext(() => {})
+const DispatchContext = createContext((value: any) => {})
 export const usePermissionsDispatch = () => useContext(DispatchContext)
 const StateContext = createContext(initialState)
 export const usePermissionsState = () => useContext(StateContext)
@@ -47,6 +48,7 @@ const PermissionsProvider = ({ resourceType, resourceId, children }) => {
         resourceId,
         resourceType,
     })
+    const memoState = useDeepEqualMemo(state)
     const mountRef = useRef(mountId(resourceType, resourceId))
     useEffect(() => {
         dispatch({
@@ -81,9 +83,10 @@ const PermissionsProvider = ({ resourceType, resourceId, children }) => {
 
         fetch()
     }, [resourceType, resourceId, isMounted, client])
+    console.log(memoState)
     return (
         <DispatchContext.Provider value={dispatch}>
-            <StateContext.Provider value={state}>{children}</StateContext.Provider>
+            <StateContext.Provider value={memoState}>{children}</StateContext.Provider>
         </DispatchContext.Provider>
     )
 }

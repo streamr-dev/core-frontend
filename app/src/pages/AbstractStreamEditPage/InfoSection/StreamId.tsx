@@ -33,34 +33,18 @@ export function ReadonlyStreamId({ className }) {
             icon: NotificationIcon.CHECKMARK,
         })
     })
-    const { truncatedDomain: domain, pathname } = getStreamPath(streamId)
     return (
         <StreamId className={className}>
-            {!!domain && (
-                <Fragment>
-                    <Domain>
-                        <Label>Domain</Label>
-                        <Text name="domain" readOnly value={domain} />
-                    </Domain>
-                    <div>
-                        <Label />
-                        <Separator />
-                    </div>
-                </Fragment>
-            )}
             <Pathname>
-                <Label>Path name</Label>
+                <Label>Stream ID</Label>
                 <PathnameField>
-                    <Text readOnly defaultValue={pathname} />
-                    <LockIcon>
-                        <SvgIcon name="lock" />
-                    </LockIcon>
+                    <Text readOnly defaultValue={streamId} disabled />
                 </PathnameField>
             </Pathname>
             <div>
                 <Label />
                 <Button kind="secondary" onClick={() => void copy(streamId)} type="button">
-                    {!isCopied && 'Copy Stream ID'}
+                    {!isCopied && 'Copy'}
                     {!!isCopied && 'Copied!'}
                 </Button>
             </div>
@@ -235,12 +219,6 @@ export function EditableStreamId({ className, disabled }) {
                     </Errors>
                 )}
             </Pathname>
-            <div>
-                <Label />
-                <Button disabled={clean || busy} kind="secondary" type="submit">
-                    Create stream
-                </Button>
-            </div>
         </StreamId>
     )
 }
@@ -249,7 +227,7 @@ const Domain = styled.div`
     flex-grow: 1;
 
     @media (min-width: ${SM}px) {
-        max-width: 176px;
+        max-width: 222px;
     }
 `
 const SeparatorAttrs = {

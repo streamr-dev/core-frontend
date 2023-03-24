@@ -1,0 +1,127 @@
+import { create } from 'zustand'
+import StreamrClient from 'streamr-client'
+
+type Actions = {
+    addStorageNode: (address: string) => void,
+    removeStorageNode: (address: string) => void,
+    calculateStorageNodeOperations:  (streamId: string, client: StreamrClient) => Promise<void>,
+    persistStorageNodes: (streamId: string, client: StreamrClient) => Promise<void>,
+    addPersistOperation: (operation: PersistOperation) => void,
+    updatePersistOperation: (id: string, operation: Partial<PersistOperation>) => void,
+    hasPersistOperations: () => boolean,
+    clearPersistOperations: () => void,
+    reset: () => void,
+}
+
+type PersistOperation = {
+    id: string,
+    name: string,
+    type: 'stream' | 'storage' | 'permissions',
+    state: 'notstarted' | 'inprogress' | 'complete' | 'error',
+    data?: {
+        address?: string,
+        type?: 'add' | 'remove',
+    },
+}
+
+type State = {
+    storageNodes: string[],
+    streamSaveNeeded: boolean,
+    permissionSaveNeeded: boolean,
+    persistOperations: PersistOperation[],
+}
+
+const initialState: State = {
+    storageNodes: [],
+    streamSaveNeeded: false,
+    permissionSaveNeeded: false,
+    persistOperations: [],
+}
+
+export const useStreamEditorStore = create<State & Actions>()((set, get) => ({
+    ...initialState,
+    addStorageNode: (address) => set((state) => ({ storageNodes: [...state.storageNodes, address] })),
+    removeStorageNode: (address) => set((state) => ({ storageNodes: state.storageNodes.filter((node) => node !== address) })),
+    calculateStorageNodeOperations: async (streamId, client) => {
+        const currentNodes = (await client.getStorageNodes(streamId)).map((a) => a.toLowerCase())
+        const newNodes = get().storageNodes
+        const addPersistOperation = get().addPersistOperation
+
+        const toRemove = newNodes.filter((n) => currentNodes.includes(n))
+        const toAdd = newNodes.filter((n) => !currentNodes.includes(n))
+
+        const ops = [
+            ...toRemove.map(
+                (addr) =>
+                    ({
+                        id: addr,
+                        name: `Remove storage node ${addr}`,
+                        state: 'notstarted',
+                        type: 'storage',
+                        data: { address: addr, type: 'remove' },
+                    } as PersistOperation),
+            ),
+            ...toAdd.map(
+                (addr) =>
+                    ({
+                        id: addr,
+                        name: `Add storage node ${addr}`,
+                        state: 'notstarted',
+                        type: 'storage',
+                        data: { address: addr, type: 'add' },
+                    } as PersistOperation),
+            ),
+        ]
+        for (let i = 0; i < ops.length; i++) {
+            const op = ops[i]
+            addPersistOperation(op)
+        }
+    },
+    persistStorageNodes: async (streamId, client) => {
+        const updatePersistOperation = get().updatePersistOperation
+        const ops = get().persistOperations.filter((op) => op.type === 'storage')
+
+        for (let i = 0; i < ops.length; i++) {
+            const operation = ops[i]
+
+            updatePersistOperation(operation.id, { state: 'inprogress' })
+            try {
+                if (operation.data && operation.data.type === 'remove') {
+                    await client.removeStreamFromStorageNode(streamId, operation.data.address)
+                } else if (operation.data && operation.data.type === 'add') {
+                    await client.addStreamToStorageNode(streamId, operation.data.address)
+                }
+                updatePersistOperation(operation.id, { state: 'complete' })
+            } catch (e) {
+                updatePersistOperation(operation.id, { state: 'error' })
+                throw e
+            }
+        }
+    },
+    addPersistOperation: (operation) => {
+        set((prev) => ({ persistOperations: [
+            ...prev.persistOperations,
+            operation,
+        ]}))
+    },
+    updatePersistOperation: (id, operation) => {
+        set((prev) => {
+            const persistOperations = [...prev.persistOperations]
+            const idx = persistOperations.findIndex((op) => op.id === id)
+            if (idx >= 0) {
+                persistOperations[idx] = {
+                    ...persistOperations[idx],
+                    ...operation,
+                }
+            }
+            return { persistOperations }
+        })
+    },
+    hasPersistOperations: () => {
+        return get().persistOperations.length > 0
+    },
+    clearPersistOperations: () => {
+        set({ persistOperations: [] })
+    },
+    reset: () => set(initialState),
+}))
