@@ -1,10 +1,8 @@
-import React, { useState } from 'react'
-import { StreamPermission } from 'streamr-client'
+import React from 'react'
 
+import { StreamPermission } from 'streamr-client'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
-import StreamPreview from '$shared/components/StreamPreview'
-import useStreamData from '$shared/hooks/useStreamData'
-import useStream from '$shared/hooks/useStream'
+import {StreamPreview2} from '$shared/components/StreamPreview'
 import useStreamId from '$shared/hooks/useStreamId'
 import StreamPage from './StreamPage'
 import AbstractStreamPage from './AbstractStreamPage'
@@ -14,23 +12,10 @@ function UnwrappedStreamEditPage() {
     const { [StreamPermission.EDIT]: canEdit, [StreamPermission.SUBSCRIBE]: canSubscribe } = useStreamPermissions()
     const loading = typeof canEdit === 'undefined'
     const streamId = useStreamId()
-    const stream = useStream()
-    const [partition, setPartition] = useState(0)
-    const data = useStreamData(streamId, {
-        tail: 20,
-    })
 
     return (
         <StreamPage loading={loading} includeContainerBox={false}>
-            <StreamPreview
-                streamId={streamId}
-                stream={stream}
-                streamData={data}
-                activePartition={partition}
-                onPartitionChange={setPartition}
-                loading={stream == null}
-                hasSubscribePermission={canSubscribe}
-            />
+            <StreamPreview2 streamsList={[streamId]} previewDisabled={!canSubscribe}/>
         </StreamPage>
     )
 }

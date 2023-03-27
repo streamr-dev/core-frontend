@@ -111,7 +111,7 @@ const UnstyledToolbar = ({
             <Rhs>
                 <div>
                     {typeof onSettingsButtonClick === 'function' && (
-                        <SettingsButton kind="secondary" onClick={() => onSettingsButtonClick(streamId)}>
+                        <SettingsButton kind="secondary" type={'button'} onClick={() => onSettingsButtonClick(streamId)}>
                             Stream Settings
                         </SettingsButton>
                     )}
