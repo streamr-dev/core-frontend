@@ -5,7 +5,7 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import useModal from '$shared/hooks/useModal'
 import { UPDATE_PERMISSION } from '$shared/components/PermissionsProvider/utils/reducer'
-import { usePermissionsDispatch } from '$shared/components/PermissionsProvider'
+import { usePermissionsDispatch, usePermissionsState } from '$shared/components/PermissionsProvider'
 import UnstyledButton from '$shared/components/Button'
 import UnstyledLabel from '$ui/Label'
 import Text from '$ui/Text'
@@ -51,6 +51,7 @@ const UnstyledAddAccountDialog = ({ onClose, ...props }) => {
     const [address, setAddress] = useState<string>('')
     const [error, setError] = useState<string>(null)
     const dispatch = usePermissionsDispatch()
+    const { combinations } = usePermissionsState()
 
     const persist = useCallback(() => {
         dispatch({
@@ -90,8 +91,18 @@ const UnstyledAddAccountDialog = ({ onClose, ...props }) => {
                     <Button
                         kind="primary"
                         onClick={() => {
+                            if (address.length === 0) {
+                                setError('Address required')
+                                return
+                            }
+
                             if (!isEthereumAddress(address)) {
                                 setError('Invalid address format')
+                                return
+                            }
+
+                            if (Object.keys(combinations).includes(address.toLowerCase())) {
+                                setError('Permissions for this address already exist')
                                 return
                             }
 

@@ -1,7 +1,9 @@
 import React, { useMemo, useCallback, useEffect, useReducer, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
+import StreamrClient from 'streamr-client'
 import { useClient } from 'streamr-client-react'
 import cloneDeep from 'lodash/cloneDeep'
+import isEqual from 'lodash/isEqual'
 import useModal from '$shared/hooks/useModal'
 import ValidationErrorProvider from '$shared/components/ValidationErrorProvider'
 import TransientStreamContext from '$shared/contexts/TransientStreamContext'
@@ -18,12 +20,11 @@ import useValidateNetwork from '$shared/hooks/useValidateNetwork'
 import {useAuthController} from "$auth/hooks/useAuthController"
 import routes from '$routes'
 import ConfirmExitModal from './ConfirmExitModal'
-import ChangeLossWatcher from './ChangeLossWatcher'
 import reducer, { initialState, Init, SetBusy, Modify } from './reducer'
 
 type Props = {
     children?: React.ReactNode,
-    onValidate?: (params: any) => Promise<void>,
+    onValidate?: (params: any, client: StreamrClient) => Promise<void>,
 }
 
 export default function StreamModifier({ children, onValidate }: Props) {
@@ -73,11 +74,25 @@ export default function StreamModifier({ children, onValidate }: Props) {
         validateNetworkRef.current = validateNetwork
     }, [validateNetwork])
     const {currentAuthSession} = useAuthController()
-    const commit = useCallback(async () => {
+
+    const isUpdateNeeded = useCallback(() => {
+        if (stream == null || stream.id == null) {
+            return true
+        }
+
+        const { current: newParams } = paramsModifiedRef
+        return !isEqual(stream.metadata, newParams.metadata)
+    }, [stream])
+
+    const setBusy = (busy: boolean) => {
         dispatch({
             type: SetBusy,
-            payload: true,
+            payload: busy,
         })
+    }
+
+    const commit = useCallback(async () => {
+        setBusy(true)
         const { current: newParams } = paramsModifiedRef
         const { requireUninterrupted } = itp()
         const { current: validate } = onValidateRef
@@ -85,7 +100,7 @@ export default function StreamModifier({ children, onValidate }: Props) {
         try {
             try {
                 if (typeof validate === 'function') {
-                    await validate(newParams)
+                    await validate(newParams, client)
                 }
 
                 if (typeof validateNetworkRef.current === 'function') {
@@ -119,10 +134,13 @@ export default function StreamModifier({ children, onValidate }: Props) {
                         return createdStream
                     }
 
-                    const copy = cloneDeep(stream)
-                    Object.assign(copy, newParams)
-                    await copy.update()
-                    return copy
+                    if (isUpdateNeeded()) {
+                        const copy = cloneDeep(stream)
+                        Object.assign(copy, newParams)
+                        await copy.update()
+                        return copy
+                    }
+                    return stream
                 })()
                 requireUninterrupted()
 
@@ -137,15 +155,14 @@ export default function StreamModifier({ children, onValidate }: Props) {
             }
         } catch (e) {
             if (!(e instanceof InterruptionError)) {
-                dispatch({
-                    type: SetBusy,
-                    payload: false,
-                })
+                setBusy(false)
             }
 
             throw e
+        } finally {
+            setBusy(false)
         }
-    }, [itp, client, stream, currentAuthSession.address])
+    }, [itp, client, stream, currentAuthSession.address, isUpdateNeeded])
     const cleanRef = useRef(clean)
     useEffect(() => {
         cleanRef.current = clean
@@ -183,8 +200,23 @@ export default function StreamModifier({ children, onValidate }: Props) {
 
                 fn()
             },
+            isUpdateNeeded,
+            validate: async () => {
+                const fn = onValidateRef.current
+                if (fn && paramsModifiedRef.current) {
+                    try {
+                        setBusy(true)
+                        await fn(paramsModifiedRef.current, client)
+                    } catch (e) {
+                        throw e
+                    } finally {
+                        setBusy(false)
+                    }
+                }
+            },
+            setBusy,
         }),
-        [itp, commit, history, confirmExitDialog],
+        [itp, commit, history, confirmExitDialog, isUpdateNeeded, client],
     )
     const status = useMemo(
         () => ({
@@ -199,7 +231,6 @@ export default function StreamModifier({ children, onValidate }: Props) {
                 <StreamModifierStatusContext.Provider value={status}>
                     <ValidationErrorProvider>{children}</ValidationErrorProvider>
                     <ConfirmExitModal />
-                    <ChangeLossWatcher />
                 </StreamModifierStatusContext.Provider>
             </TransientStreamContext.Provider>
         </StreamModifierContext.Provider>

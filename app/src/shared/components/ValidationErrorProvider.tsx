@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext } from 'react'
 const ValidationErrorContext = createContext({})
-const ValidationErrorSetterContext = createContext(() => {})
+const ValidationErrorSetterContext = createContext((value: any) => {})
 export function useValidationError() {
     return useContext(ValidationErrorContext)
 }

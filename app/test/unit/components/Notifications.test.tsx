@@ -12,10 +12,10 @@ describe(Notifications, () => {
     })
     describe('mounting/unmounting', () => {
         it('starts listening for notifications on mount', () => {
-            jest.spyOn(Notification, 'subscribe').mockImplementation()
+            jest.spyOn(Notification, 'subscribeToAdd').mockImplementation()
             const notifications: ShallowWrapper<any, any, Notifications> = shallow(<Notifications />)
-            expect(Notification.subscribe).toHaveBeenCalledTimes(1)
-            expect(Notification.subscribe).toBeCalledWith(notifications.instance().addNotification)
+            expect(Notification.subscribeToAdd).toHaveBeenCalledTimes(1)
+            expect(Notification.subscribeToAdd).toBeCalledWith(notifications.instance().addNotification)
         })
         it('stops listening for notifications before unmount', () => {
             jest.spyOn(Notification, 'unsubscribe').mockImplementation()

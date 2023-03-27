@@ -6,35 +6,41 @@ import useStreamPermissionsInvalidator from '$shared/hooks/useStreamPermissionsI
 import useValidateNetwork from '$shared/hooks/useValidateNetwork'
 import { networks } from '$shared/utils/constants'
 import useInterrupt from '$shared/hooks/useInterrupt'
-import {useAuthController} from "$auth/hooks/useAuthController"
+import { useAuthController } from '$auth/hooks/useAuthController'
 import InterruptionError from '$shared/errors/InterruptionError'
 import reducer, { PERSIST, SET_PERMISSIONS, UNLOCK } from './utils/reducer'
 import formatAssignments from './utils/formatAssignments'
+
 export default function usePersistChangeset() {
     const client = useClient()
     const dispatch = usePermissionsDispatch()
     const isMounted = useIsMounted()
-    const { changeset, resourceId } = usePermissionsState()
+    const { changeset } = usePermissionsState()
     const busyRef = useRef(false)
-    const saveRef = useRef(() => {})
-    const userRef = useRef()
-    const {currentAuthSession} = useAuthController()
+    const saveRef = useRef<(streamId: string, onSuccess: () => void) => Promise<void>>(() => Promise.resolve())
+    const userRef = useRef<string>()
+    const { currentAuthSession } = useAuthController()
+
     useEffect(() => {
         userRef.current = currentAuthSession.address
     }, [currentAuthSession.address])
+
     const invalidatePermissions = useStreamPermissionsInvalidator()
     const invalidatePermissionsRef = useRef(invalidatePermissions)
+
     useEffect(() => {
         invalidatePermissionsRef.current = invalidatePermissions
     }, [invalidatePermissions])
+
     const validateNetwork = useValidateNetwork()
+
     useEffect(() => {
-        saveRef.current = async (onSuccess) => {
+        saveRef.current = async (streamId, onSuccess) => {
             const errors = {}
             const assignments = formatAssignments(changeset)
             await validateNetwork(networks.STREAMS)
             await client.setPermissions({
-                streamId: resourceId,
+                streamId,
                 assignments,
             })
             const { current: u } = userRef
@@ -46,7 +52,7 @@ export default function usePersistChangeset() {
                 invalidatePermissionsRef.current()
             }
 
-            const result = await client.getPermissions(resourceId)
+            const result = await client.getPermissions(streamId)
 
             if (!isMounted()) {
                 return
@@ -72,10 +78,11 @@ export default function usePersistChangeset() {
                 })
             }
         }
-    }, [changeset, client, dispatch, isMounted, resourceId, validateNetwork])
+    }, [changeset, client, dispatch, isMounted, validateNetwork])
+
     const itp = useInterrupt()
     return useCallback(
-        async (onSuccess) => {
+        async (streamId: string, onSuccess?: () => void) => {
             const { requireUninterrupted } = itp('save')
 
             if (busyRef.current) {
@@ -88,7 +95,7 @@ export default function usePersistChangeset() {
 
             try {
                 try {
-                    await saveRef.current(onSuccess)
+                    await saveRef.current(streamId, onSuccess)
                 } finally {
                     requireUninterrupted()
                 }
@@ -100,6 +107,8 @@ export default function usePersistChangeset() {
                 dispatch({
                     type: UNLOCK,
                 })
+
+                throw e
             }
 
             busyRef.current = false

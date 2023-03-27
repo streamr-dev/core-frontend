@@ -9,6 +9,7 @@ import InfoSection from './AbstractStreamEditPage/InfoSection'
 import AccessControlSection from './AbstractStreamEditPage/AccessControlSection'
 import HistorySection from './AbstractStreamEditPage/HistorySection'
 import PartitionsSection from './AbstractStreamEditPage/PartitionsSection'
+import DeleteSection from './AbstractStreamEditPage/DeleteSection'
 
 function UnwrappedStreamEditPage() {
     const { busy } = useStreamModifierStatusContext()
@@ -21,6 +22,9 @@ function UnwrappedStreamEditPage() {
             <AccessControlSection disabled={busy} />
             <HistorySection disabled={busy} />
             <PartitionsSection disabled={busy} />
+            {canEdit && (
+                <DeleteSection />
+            )}
         </StreamPage>
     )
 }

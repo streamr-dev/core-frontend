@@ -1,7 +1,7 @@
-import React, { Fragment, useState, useCallback, useMemo } from 'react'
-import { StreamPermission } from 'streamr-client'
+import React, { useState, useCallback, useMemo, useEffect } from 'react'
+import { useClient } from 'streamr-client-react'
 import { useHistory } from 'react-router-dom'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import Layout from '$shared/components/Layout/Core'
 import Button from '$shared/components/Button'
@@ -19,19 +19,20 @@ import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
 import { useValidationErrorSetter } from '$shared/components/ValidationErrorProvider'
 import useStreamId from '$shared/hooks/useStreamId'
-import useStreamPermissions from '$shared/hooks/useStreamPermissions'
-import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
 import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
-import ShareSidebar from '$userpages/components/ShareSidebar'
-import {truncate, truncateStreamName} from '$shared/utils/text'
-import Sidebar from '$shared/components/Sidebar'
+import { truncateStreamName } from '$shared/utils/text'
 import useNativeTokenName from '$shared/hooks/useNativeTokenName'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
-import {useTransientStream} from "$shared/contexts/TransientStreamContext"
-import {COLORS, DESKTOP, TABLET} from '$shared/utils/styled'
-import useCopy from "$shared/hooks/useCopy"
+import { useTransientStream } from '$shared/contexts/TransientStreamContext'
+import { DESKTOP, TABLET } from '$shared/utils/styled'
+import PermissionsProvider, { usePermissionsState } from '$shared/components/PermissionsProvider'
+import usePersistChangeset from '$shared/components/PermissionsProvider/usePersistChangeset'
+import useCopy from '$shared/hooks/useCopy'
+import { TransactionList } from '$shared/components/TransactionList'
+import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import routes from '$routes'
 import SvgIcon from '../shared/components/SvgIcon'
+import { useStreamEditorStore } from './AbstractStreamEditPage/state'
 
 export const getStreamDetailsLinkTabs = (streamId?: string) => {
     return [
@@ -65,16 +66,20 @@ const Outer = styled.div`
     }
 `
 
-const Inner = styled.div`
+type InnerProps = {
+    fullWidth: boolean,
+}
+
+const Inner = styled.div<InnerProps>`
     display: grid;
     grid-template-columns: fit-content(680px) auto;
     border-radius: 16px;
     background-color: white;
     padding: 24px;
   
-    &.no-save-button {
-      grid-template-columns: auto;
-    }
+    ${({ fullWidth }) => fullWidth && css`
+        grid-template-columns: auto;
+    `}
 
     @media ${TABLET} {
         padding: 40px;
@@ -94,6 +99,7 @@ type ContainerBoxProps = {
     children?: React.ReactNode,
     disabled?: boolean,
     showSaveButton?: boolean
+    fullWidth?: boolean
 }
 
 const CopyButton = styled(Button)`
@@ -112,9 +118,9 @@ const TitleContainer = styled.div`
   align-items: center;
 `
 
-const ContainerBox: React.FunctionComponent<ContainerBoxProps> = ({ children, disabled, showSaveButton = true }) =>
+const ContainerBox: React.FunctionComponent<ContainerBoxProps> = ({ children, disabled, showSaveButton = true, fullWidth = false }) =>
     <Outer>
-        <Inner className={!showSaveButton && 'no-save-button'}>
+        <Inner fullWidth={fullWidth}>
             <div>
                 {children}
             </div>
@@ -128,168 +134,203 @@ const ContainerBox: React.FunctionComponent<ContainerBoxProps> = ({ children, di
         </Inner>
     </Outer>
 
-function StreamPageSidebar() {
-    const streamId = useStreamId()
-    const sidebar = useSidebar()
-    const onClose = useCallback(() => {
-        sidebar.close()
-    }, [sidebar])
-    return (
-        !!streamId && (
-            <Sidebar.WithErrorBoundary isOpen={sidebar.isOpen()} onClose={onClose}>
-                {sidebar.isOpen('share') && (
-                    <ShareSidebar
-                        sidebarName="share"
-                        resourceTitle={truncate(streamId)}
-                        resourceType="STREAM"
-                        resourceId={streamId}
-                        onClose={onClose}
-                    />
-                )}
-            </Sidebar.WithErrorBoundary>
-        )
-    )
-}
-
-function UnwrappedStreamPage({ children, loading = false, includeContainerBox = true , showSaveButton = true}) {
+function UnwrappedStreamPage({ children, streamId, loading = false, includeContainerBox = true , showSaveButton = true, fullWidth = false}) {
     const history = useHistory()
-    const { commit, goBack } = useStreamModifier()
-    const { busy, clean } = useStreamModifierStatusContext()
+    const { commit, isUpdateNeeded, validate, setBusy } = useStreamModifier()
+    const { busy, clean: isStreamClean } = useStreamModifierStatusContext()
     const itp = useInterrupt()
     const setValidationError = useValidationErrorSetter()
-    const { [StreamPermission.GRANT]: canGrant = false } = useStreamPermissions()
-    const streamId = useStreamId()
+    const client = useClient()
     const isNew = !streamId
     const nativeTokenName = useNativeTokenName()
     const [showGetCryptoDialog, setShowGetCryptoDialog] = useState(false)
     const linkTabs = useMemo(() => streamId ? getStreamDetailsLinkTabs(streamId) : [], [streamId])
-    const {copy} = useCopy()
+    const { copy } = useCopy()
     const {id: transientStreamId} = useTransientStream()
+    const persistPermissions = usePersistChangeset()
+    const { changeset } = usePermissionsState()
+    const clearPersistOperations = useStreamEditorStore((state) => state.clearPersistOperations)
+    const addPersistOperation = useStreamEditorStore((state) => state.addPersistOperation)
+    const updatePersistOperation = useStreamEditorStore((state) => state.updatePersistOperation)
+    const hasPersistOperations = useStreamEditorStore((state) => state.hasPersistOperations)
+    const calculateStorageNodeOperations = useStreamEditorStore((state) => state.calculateStorageNodeOperations)
+    const persistStorageNodes = useStreamEditorStore((state) => state.persistStorageNodes)
+    const hasStorageNodeChanges = useStreamEditorStore((state) => state.hasStorageNodeChanges)
+    const resetStore = useStreamEditorStore((state) => state.reset)
+
+    const clean = isStreamClean && !hasStorageNodeChanges && Object.keys(changeset).length === 0
+    usePreventNavigatingAway('You have unsaved changes. Are you sure you want to leave?', () => !clean)
+
+    useEffect(() => {
+        resetStore()
+    }, [resetStore])
 
     async function save() {
         const { requireUninterrupted } = itp('save')
+        let transactionsToastNotification: Notification = null
+        let id = streamId
+        let wasStreamCreated = false
 
         try {
             try {
-                const { id } = await commit()
+                const streamNeedsSaving = isUpdateNeeded()
+                const hasPermissionChanges = Object.keys(changeset).length > 0
+
+                if (!streamNeedsSaving && !hasPermissionChanges && !hasStorageNodeChanges) {
+                    // Nothing changed
+                    return
+                }
+
+                setBusy(true)
+                clearPersistOperations()
+
+                // First validate user input
+                try {
+                    await validate()
+                } catch (e) {
+                    if (e instanceof DuplicateError) {
+                        setValidationError({
+                            id: 'already exists, please try a different one',
+                        })
+                    } else if (e instanceof ValidationError) {
+                        setValidationError({
+                            id: e.message,
+                        })
+                    }
+                    return
+                }
+
+                // First gather info about operations we need to save the stream.
+                // We need to do this before showing the transaction list toast
+                // as otherwise it will not be displayed correctly sized.
+                if (streamNeedsSaving) {
+                    addPersistOperation({
+                        id: 'stream',
+                        name: `${isNew ? 'Create' : 'Update'} stream`,
+                        state: 'notstarted',
+                        type: 'stream',
+                    })
+                }
+
+                if (hasPermissionChanges) {
+                    addPersistOperation({
+                        id: 'access',
+                        name: 'Update access settings',
+                        state: 'notstarted',
+                        type: 'permissions',
+                    })
+                }
+
+                // This will add a persist operation for each storage node change user made
+                await calculateStorageNodeOperations(streamId, client)
+
+                if (!hasPersistOperations()) {
+                    // No changes so return
+                    return
+                }
+
+                // Show the toast notification with list of transactions we need
+                transactionsToastNotification = Notification.push({
+                    autoDismiss: false,
+                    dismissible: false,
+                    children: <TransactionList />,
+                })
+
+                // Now we can start actually making the transactions.
+                // 1. Create / update stream
+                updatePersistOperation('stream', {
+                    state: 'inprogress',
+                })
+
+                try {
+                    if (streamNeedsSaving) {
+                        ({ id } = await commit())
+                        requireUninterrupted()
+                        updatePersistOperation('stream', {
+                            state: 'complete',
+                        })
+                        wasStreamCreated = isNew
+                    }
+                } catch (e) {
+                    updatePersistOperation('stream', {
+                        state: 'error',
+                    })
+
+                    if (e instanceof InsufficientFundsError) {
+                        setShowGetCryptoDialog(true)
+                    } else {
+                        throw e
+                    }
+                }
+
+                // 2. Update stream permissions
+                if (hasPermissionChanges) {
+                    updatePersistOperation('access', {
+                        state: 'inprogress',
+                    })
+                    try {
+                        await persistPermissions(id)
+                        requireUninterrupted()
+                        updatePersistOperation('access', {
+                            state: 'complete',
+                        })
+                    } catch (e) {
+                        console.error('permissions failed', e)
+                        updatePersistOperation('access', {
+                            state: 'error',
+                        })
+                        throw e
+                    }
+                }
+
+                // 3. Update storage nodes
+                await persistStorageNodes(id, client)
                 requireUninterrupted()
-                const [notification, action] = isNew
-                    ? ['Stream created successfully', actionTypes.UPDATE]
-                    : ['Stream updated successfully', actionTypes.UPDATE]
-                Notification.push({
-                    title: notification,
-                    icon: NotificationIcon.CHECKMARK,
-                })
-                Activity.push({
-                    action,
-                    resourceId: id,
-                    resourceType: resourceTypes.STREAM,
-                })
-                // Give the notification some time before navigating away in the next step.
-                await new Promise((resolve) => {
-                    setTimeout(resolve, 300)
-                })
+            } catch (e) {
                 requireUninterrupted()
+                throw e
+            }
+        } catch (e) {
+            if (e instanceof InterruptionError) {
+                return
+            }
+
+            console.error('Save failed', e)
+        } finally {
+            setBusy(false)
+
+            // Give the notification some time before navigating away in the next step.
+            await new Promise((resolve) => {
+                setTimeout(resolve, 3000)
+            })
+
+            if (transactionsToastNotification != null) {
+                transactionsToastNotification.close()
+                resetStore()
+            }
+            if (wasStreamCreated) {
                 history.push(
                     routes.streams.show({
                         id,
                         newStream: isNew ? 1 : undefined,
                     }),
                 )
-            } catch (e) {
-                requireUninterrupted()
-                throw e
             }
-        } catch (e) {
-            let handled = false
-
-            if (e instanceof InterruptionError) {
-                return
-            }
-
-            if (e instanceof DuplicateError) {
-                setValidationError({
-                    id: 'already exists, please try a different one',
-                })
-                handled = true
-            }
-
-            if (e instanceof ValidationError) {
-                setValidationError({
-                    id: e.message,
-                })
-                handled = true
-            }
-
-            if (e instanceof InsufficientFundsError) {
-                setShowGetCryptoDialog(true)
-                handled = true
-            }
-
-            if (handled) {
-                return
-            }
-
-            console.warn(e)
-            Notification.push({
-                title: 'Save failed',
-                icon: NotificationIcon.ERROR,
-            })
         }
     }
 
-    const submitButtonLabel = isNew ? 'Create stream' : 'Save & exit'
-    const sidebar = useSidebar()
-
-    const buttons = (() => {
-        if (isNew) {
-            return {
-                cancel: {
-                    kind: 'link',
-                    onClick: () => void goBack(),
-                    outline: true,
-                    title: 'Cancel',
-                    type: 'button',
-                },
-                saveChanges: {
-                    disabled: clean || busy,
-                    kind: 'primary',
-                    title: submitButtonLabel,
-                    type: 'submit',
-                },
-            }
-        }
-
-        return {
-            share: {
-                disabled: busy || !canGrant,
-                kind: 'primary',
-                onClick: () => void sidebar.open('share'),
-                outline: true,
-                title: 'Share',
-                type: 'button',
-            },
-            saveChanges: {
-                disabled: clean || busy,
-                kind: 'primary',
-                title: submitButtonLabel,
-                type: 'submit',
-            },
-        }
-    })()
-
     const handleCopy = useCallback((streamId: string) => {
         copy(streamId)
-        Notification.push({title: 'Copied!', description: 'The stream name was copied to your clipboard', icon: NotificationIcon.CHECKMARK})
-    }, [])
+        Notification.push({ title: 'Copied!', description: 'The stream id was copied to your clipboard', icon: NotificationIcon.CHECKMARK })
+    }, [copy])
 
-    const streamIdToDisplay = useMemo<string | undefined>(() =>
-        streamId || (!clean && !!transientStreamId) ? transientStreamId : undefined,
-    [streamId, clean, transientStreamId]
+    const streamIdToDisplay = useMemo<string | undefined>(
+        () => (streamId || (!clean && !!transientStreamId) ? transientStreamId : undefined),
+        [streamId, clean, transientStreamId],
     )
 
     return (
-        <Fragment>
+        <>
             <form
                 onSubmit={(e) => {
                     save()
@@ -300,41 +341,49 @@ function UnwrappedStreamPage({ children, loading = false, includeContainerBox = 
                     <MarketplaceHelmet title={streamId ? `Stream ${streamId}` : 'New stream'} />
                     <DetailsPageHeader
                         backButtonLink={routes.streams.index()}
-                        pageTitle={<TitleContainer>
-                            <span title={streamId}>{!!streamIdToDisplay ? truncateStreamName(streamIdToDisplay, 50) : 'New stream'}</span>
-                            {streamId ? <CopyButton onClick={() => handleCopy(streamId)} type={'button'} kind={'secondary'} size={'mini'}>
-                                <SvgIcon name={'copy'}/>
-                            </CopyButton> : ''}
-                        </TitleContainer>}
+                        pageTitle={
+                            <TitleContainer>
+                                <span title={streamId}>{!!streamIdToDisplay ? truncateStreamName(streamIdToDisplay, 50) : 'New stream'}</span>
+                                {streamId ? (
+                                    <CopyButton onClick={() => handleCopy(streamId)} type={'button'} kind={'secondary'} size={'mini'}>
+                                        <SvgIcon name={'copy'} />
+                                    </CopyButton>
+                                ) : (
+                                    ''
+                                )}
+                            </TitleContainer>
+                        }
                         linkTabs={linkTabs}
+                        rightComponent={
+                            <div>
+                                {streamId == null && (
+                                    <Button disabled={busy || clean} kind="primary" type="submit">
+                                        Save
+                                    </Button>
+                                )}
+                            </div>
+                        }
                     />
                     {includeContainerBox ? (
-                        <ContainerBox disabled={clean || busy} showSaveButton={showSaveButton}>
+                        <ContainerBox disabled={busy || clean} showSaveButton={showSaveButton} fullWidth={fullWidth}>
                             {!loading && children}
                         </ContainerBox>
                     ) : (
-                        <>
-                            {!loading && children}
-                        </>
+                        <>{!loading && children}</>
                     )}
                 </Layout>
             </form>
-            {showGetCryptoDialog && (
-                <GetCryptoDialog
-                    onCancel={() => void setShowGetCryptoDialog(false)}
-                    nativeTokenName={nativeTokenName}
-                />
-            )}
-        </Fragment>
+            {showGetCryptoDialog && <GetCryptoDialog onCancel={() => void setShowGetCryptoDialog(false)} nativeTokenName={nativeTokenName} />}
+        </>
     )
 }
 
 export default function StreamPage(props) {
+    const streamId = useStreamId()
     return (
-        <SidebarProvider>
-            <UnwrappedStreamPage {...props} />
-            <StreamPageSidebar />
+        <PermissionsProvider resourceId={streamId} resourceType={'STREAM'}>
+            <UnwrappedStreamPage streamId={streamId} {...props} />
             <SwitchNetworkModal />
-        </SidebarProvider>
+        </PermissionsProvider>
     )
 }

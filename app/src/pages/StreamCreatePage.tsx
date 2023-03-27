@@ -3,6 +3,7 @@ import { StreamPermission } from 'streamr-client'
 import StreamContext from '$shared/contexts/StreamContext'
 import StreamPermissionsContext from '$shared/contexts/StreamPermissionsContext'
 import ValidationError from '$shared/errors/ValidationError'
+import DuplicateError from '$shared/errors/DuplicateError'
 import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
 import StreamPage from './StreamPage'
 import StreamModifier from './AbstractStreamEditPage/StreamModifier'
@@ -14,7 +15,7 @@ import PartitionsSection from './AbstractStreamEditPage/PartitionsSection'
 function UnwrappedStreamCreatePage() {
     const { busy } = useStreamModifierStatusContext()
     return (
-        <StreamPage title="Name your Stream">
+        <StreamPage title="Name your Stream" showSaveButton={false} fullWidth={false}>
             <InfoSection disabled={busy} />
             <AccessControlSection disabled={busy} />
             <HistorySection disabled={busy} />
@@ -36,9 +37,21 @@ export default function StreamCreatePage() {
             partitions: 1,
         },
     })
-    const { current: onValidate } = useRef(async ({ id }) => {
-        if (!id) {
+    const { current: onValidate } = useRef(async (stream, client) => {
+        if (!stream.id) {
             throw new ValidationError('cannot be blank')
+        }
+
+        // Check if stream already exists
+        let existingStream = null
+        try {
+            existingStream = await client.getStream(stream.id)
+        } catch (e) {
+            // stream does not exist
+        }
+
+        if (existingStream != null) {
+            throw new DuplicateError()
         }
     })
     const { current: permissions } = useRef({
