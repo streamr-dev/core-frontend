@@ -71,7 +71,7 @@ const sub = ws.connect(\`ws://my-streamr-node:7170/streams/${streamId}/subscribe
 sub.onmessage = (msg) => {
     // Handle incoming messages
 }`
-    }, [])
+    }, [streamId])
     const websocketSnippet = useMemo<string>(() => {
         return websocketSnippetHeader + (action === 'publish' ? websocketPublish : websocketSubscribe)
     }, [websocketSnippetHeader, websocketPublish, websocketSubscribe, action])
@@ -138,7 +138,7 @@ mqtt.subscribe('${streamId}', (msg) => {
                 break
         }
         return snippet
-    }, [currentProtocol])
+    }, [currentProtocol, httpSnippet, mqttSnippet, websocketSnippet])
 
     return <div className={'row'}>
         <div className={'col-lg-7'}>

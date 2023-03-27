@@ -23,7 +23,6 @@ const ProjectDetailsPage: FunctionComponent = () => {
     // const isDuDeployed = !!isDataUnion && !!dataUnionDeployed && isEthereumAddress(beneficiaryAddress)
     // const { startPolling, stopPolling, totalEarnings, memberCount } = useDataUnionServerStats()
 
-
     /*useEffect(() => {
         if (isDataUnion) {
             startPolling(beneficiaryAddress, chainId)

@@ -94,10 +94,14 @@ const customStyles: any = {
     }),
 }
 
-const Control: FunctionComponent<{className?: string, children?: ReactNode | ReactNode[], selectProps: any}> = ({ className, children, ...props }) => {
+const Control: FunctionComponent<{ className?: string; children?: ReactNode | ReactNode[]; selectProps: any }> = ({
+    className,
+    children,
+    ...props
+}) => {
     const { controlClassName } = props.selectProps
     return (
-        <components.Control {...props as any} className={cx(className, controlClassName)}>
+        <components.Control {...(props as any)} className={cx(className, controlClassName)}>
             {children}
         </components.Control>
     )
@@ -186,7 +190,7 @@ export const UnstyledSelect = ({ controlClassName, required = false, clearable =
 )
 
 const Select = styled(UnstyledSelect)`
-    font-size: 0.875rem;,
+    font-size: 0.875rem;
 `
 /**
  * @deprecated

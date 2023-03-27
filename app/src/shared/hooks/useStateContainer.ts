@@ -12,6 +12,8 @@ export const useStateContainer = <T>(defaultValue?: T): StateContainerProps<T> =
     const [state, dispatch] = useReducer(reducer, defaultValue || {} as T)
     const updateState = useCallback((value: Partial<T>) => {
         dispatch({payload: value})
+        // Disabled because: React Hook useCallback has a missing dependency: 'T'
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch])
 
     return {

@@ -8,8 +8,8 @@ type Props = {
     block?: boolean
 }
 
-const UnstyledSkeleton = ({ disabled, children, width, block, ...props }: Props) =>
-    disabled ? children || null : <span {...props}>&zwnj;</span>
+const UnstyledSkeleton: React.FunctionComponent<Props> = ({ disabled, children, width, block, ...props }: Props) =>
+    disabled ? children || null : <span {...props}>&zwnj;</span> as any
 
 const animation = keyframes`
     0% {
@@ -21,8 +21,7 @@ const animation = keyframes`
     }
 `
 
-// @ts-ignore: No idea what is wrong with this
-const Skeleton = styled(UnstyledSkeleton)`
+const Skeleton = styled(UnstyledSkeleton)<Props>`
     animation: ${animation} 1.2s ease-in-out infinite;
     background-color: #eeeeee;
     background-image: linear-gradient(90deg, #eeeeee, #f5f5f5, #eeeeee);
