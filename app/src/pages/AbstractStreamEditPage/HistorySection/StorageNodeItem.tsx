@@ -76,7 +76,7 @@ function UnstyledStorageNodeItem({ address, active: activeProp, className, disab
         }
 
         setActive(success ? !active : active)
-    }, [itp, address, active, validateNetwork, addStorageNode, removeStorageNode])
+    }, [itp, address, active, validateNetwork, addStorageNode, removeStorageNode, disabled])
     useEffect(
         () => () => {
             // Ignore the result of any in-the-air toggling if conditions change.

@@ -1,6 +1,5 @@
 import React, { useRef } from 'react'
 import { StreamPermission } from 'streamr-client'
-import { useClient } from 'streamr-client-react'
 import StreamContext from '$shared/contexts/StreamContext'
 import StreamPermissionsContext from '$shared/contexts/StreamPermissionsContext'
 import ValidationError from '$shared/errors/ValidationError'
