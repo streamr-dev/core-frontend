@@ -2,10 +2,11 @@ import React, { useReducer, createContext, useContext, useEffect, useRef, useMem
 import { useClient } from 'streamr-client-react'
 import address0 from '$utils/address0'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import {useAuthController} from "$auth/hooks/useAuthController"
+import { useAuthController } from '$auth/hooks/useAuthController'
+import useDeepEqualMemo from '$shared/hooks/useDeepEqualMemo'
 import reducer, { initialState, SET_RESOURCE, SET_PERMISSIONS } from './utils/reducer'
 
-const DispatchContext = createContext(() => {})
+const DispatchContext = createContext((value: any) => {})
 export const usePermissionsDispatch = () => useContext(DispatchContext)
 const StateContext = createContext(initialState)
 export const usePermissionsState = () => useContext(StateContext)
@@ -60,7 +61,7 @@ const PermissionsProvider = ({ resourceType, resourceId, children }) => {
     useEffect(() => {
         const fetch = async () => {
             try {
-                if (resourceId == null) {
+                if (resourceId == null || client == null) {
                     return
                 }
                 const stream = await client.getStream(resourceId)

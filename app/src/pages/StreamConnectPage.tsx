@@ -2,9 +2,7 @@ import React from 'react'
 import { StreamPermission } from 'streamr-client'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 import {StreamConnect} from "$shared/components/StreamConnect"
-import useStream from "$shared/hooks/useStream"
 import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
-import {WhiteBox} from "$shared/components/WhiteBox"
 import useDecodedStreamId from "$shared/hooks/useDecodedStreamId"
 import StreamPage from './StreamPage'
 import AbstractStreamPage from './AbstractStreamPage'
@@ -16,7 +14,7 @@ function UnwrappedStreamEditPage() {
     const loading = typeof canEdit === 'undefined'
     const streamId = useDecodedStreamId()
     return (
-        <StreamPage loading={loading} showSaveButton={false}>
+        <StreamPage loading={loading} showSaveButton={false} fullWidth>
             <StreamConnect streams={[streamId]}/>
         </StreamPage>
     )

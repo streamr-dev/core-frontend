@@ -1,7 +1,6 @@
 import React, {FunctionComponent, useMemo} from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import BN from 'bignumber.js'
 import {Project, SalePoint} from '$mp/types/project-types'
 import { REGULAR, TABLET } from '$shared/utils/styled'
 import Button from '$shared/components/Button'
@@ -20,39 +19,53 @@ const Description: FunctionComponent<{project: Project}> = ({project}) => {
     const firstSalePoint = useMemo<SalePoint>(() => Object.values(project.salePoints)[0], [project.salePoints])
     const firstSalePointChainName = useMemo<string>(() => getConfigForChain(firstSalePoint.chainId).name,[firstSalePoint])
     const moreSalePoints = useMemo<number>(() => Object.values(project.salePoints).length - 1, [project.salePoints])
-    return <WhiteBox>
-        <DescriptionContainer>
-            <p>
-                <span>The streams in this {projectTypeNames[project.type]}
-                    {project.type === ProjectTypeEnum.OPEN_DATA ? ' are public and ' : ''} can be accessed for&nbsp;
-                </span>
+    return (
+        <WhiteBox>
+            <DescriptionContainer>
+                <p>
+                    <span>
+                        The streams in this {projectTypeNames[project.type]}
+                        {project.type === ProjectTypeEnum.OPEN_DATA ? ' are public and ' : ''} can be accessed for&nbsp;
+                    </span>
 
-                <strong>
-                    {project.type === ProjectTypeEnum.OPEN_DATA ? 'free' :
-                        <PaymentRate
-                            amount={firstSalePoint.pricePerSecond}
-                            chainId={firstSalePoint.chainId}
-                            pricingTokenAddress={firstSalePoint.pricingTokenAddress}
-                            timeUnit={timeUnits.hour}
-                            tag={'span'}
-                        />
-                    }
-                </strong>
-                {(project.type !== ProjectTypeEnum.OPEN_DATA) && <>
-                    <span> on </span>
-                    <strong>{formatChainName(firstSalePointChainName)}</strong>
-                    {moreSalePoints > 0 && <span> [and on {moreSalePoints} other {moreSalePoints === 1 ? 'chain' : 'chains'}]</span>}
-                </>
-                }
-            </p>
-            {project.type === ProjectTypeEnum.OPEN_DATA &&
-                <Button tag={Link} to={routes.marketplace.product.connect({id: project.id})}>Connect</Button>}
-            {(project.type !== ProjectTypeEnum.OPEN_DATA) && (
-                <Button onClick={() => purchaseDialog.open({ projectId: project.id })}>Get Access</Button>
-            )}
-            <PurchaseModal />
-        </DescriptionContainer>
-    </WhiteBox>
+                    <strong>
+                        {project.type === ProjectTypeEnum.OPEN_DATA ? (
+                            'free'
+                        ) : (
+                            <PaymentRate
+                                amount={firstSalePoint.pricePerSecond}
+                                chainId={firstSalePoint.chainId}
+                                pricingTokenAddress={firstSalePoint.pricingTokenAddress}
+                                timeUnit={timeUnits.hour}
+                                tag={'span'}
+                            />
+                        )}
+                    </strong>
+                    {project.type !== ProjectTypeEnum.OPEN_DATA && (
+                        <>
+                            <span> on </span>
+                            <strong>{formatChainName(firstSalePointChainName)}</strong>
+                            {moreSalePoints > 0 && (
+                                <span>
+                                    {' '}
+                                    [and on {moreSalePoints} other {moreSalePoints === 1 ? 'chain' : 'chains'}]
+                                </span>
+                            )}
+                        </>
+                    )}
+                </p>
+                {project.type === ProjectTypeEnum.OPEN_DATA && (
+                    <Button tag={Link} to={routes.marketplace.product.connect({ id: project.id })}>
+                        Connect
+                    </Button>
+                )}
+                {project.type !== ProjectTypeEnum.OPEN_DATA && (
+                    <Button onClick={() => purchaseDialog.open({ projectId: project.id })}>Get Access</Button>
+                )}
+                <PurchaseModal />
+            </DescriptionContainer>
+        </WhiteBox>
+    )
 }
 
 export default Description

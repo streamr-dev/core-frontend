@@ -365,13 +365,6 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                             </NavLink>
                         </NavbarLinkDesktop>
                     </NavbarItem>
-                    <NavbarItem>
-                        <NavbarLinkDesktop highlight={current === 'docs'}>
-                            <NavLink as={Link} to={docsLinks.docs}>
-                                Docs
-                            </NavLink>
-                        </NavbarLinkDesktop>
-                    </NavbarItem>
                 </MenuGrid>
                 {!accountAddress && (
                     <Fragment>
@@ -472,11 +465,6 @@ const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className 
                 <NavbarLinkMobile highlight={current === 'network'}>
                     <NavLink as={Link} href={routes.networkExplorer()} rel="noopener noreferrer" target="_blank">
                         Network
-                    </NavLink>
-                </NavbarLinkMobile>
-                <NavbarLinkMobile highlight={current === 'docs'}>
-                    <NavLink as={Link} to={docsLinks.docs}>
-                        Docs
                     </NavLink>
                 </NavbarLinkMobile>
             </NavOverlay.Body>

@@ -10,9 +10,10 @@ export type DetailsPageHeaderProps = {
     backButtonLink?: string
     pageTitle?: ReactNode
     linkTabs: LinkTabOptionProps[]
+    rightComponent?: ReactNode
 }
 
-export const DetailsPageHeader: FunctionComponent<DetailsPageHeaderProps> = ({ backButtonLink, pageTitle, linkTabs }) => {
+export const DetailsPageHeader: FunctionComponent<DetailsPageHeaderProps> = ({ backButtonLink, pageTitle, linkTabs, rightComponent }) => {
     const location = useLocation()
     return (
         <DetailsPageHeaderBackground>
@@ -31,6 +32,7 @@ export const DetailsPageHeader: FunctionComponent<DetailsPageHeaderProps> = ({ b
                             <LinkTabs selectedOptionHref={location.pathname} options={linkTabs} fullWidth={'mobileAndTablet'}/>
                             : ''
                         }
+                        {rightComponent}
                     </RightSideContainer>
                 </DetailsPageHeaderBar>
             </DetailsPageHeaderContainer>

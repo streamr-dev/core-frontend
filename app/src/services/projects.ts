@@ -122,7 +122,6 @@ const projectFields = `
     domainIds
     score
     metadata
-    version
     streams
     minimumSubscriptionSeconds
     createdAt

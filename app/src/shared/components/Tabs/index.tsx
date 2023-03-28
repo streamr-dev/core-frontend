@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useRef, useState } from 'react'
+import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { COLORS, DESKTOP, TABLET } from '$shared/utils/styled'
 import { useWindowSize } from '$shared/hooks/useWindowSize'
@@ -26,7 +26,7 @@ const Tabs: FunctionComponent<TabsProps> = ({options, selectedOptionValue, onCha
     const list = useRef<HTMLUListElement>(null)
     const {width} = useWindowSize()
 
-    const handleMarkerResize = (): void => {
+    const handleMarkerResize = useCallback(() => {
         if (list.current && componentLoaded) {
             const elementIndex = options.findIndex((option) => option.value === selection)
             const element: HTMLLIElement = list.current.children[elementIndex + 1] as HTMLLIElement
@@ -35,9 +35,8 @@ const Tabs: FunctionComponent<TabsProps> = ({options, selectedOptionValue, onCha
             if (!markerLoaded) {
                 setTimeout(() => setMarkerLoaded(true), 0)
             }
-
         }
-    }
+    }, [componentLoaded, markerLoaded, options, selection])
 
     useEffect(() => {
         setSelection(selectedOptionValue)
@@ -45,7 +44,7 @@ const Tabs: FunctionComponent<TabsProps> = ({options, selectedOptionValue, onCha
 
     useEffect((): void => {
         handleMarkerResize()
-    }, [list, options, selection, componentLoaded, width])
+    }, [list, options, selection, componentLoaded, width, handleMarkerResize])
 
     useEffect(() => {
         setComponentLoaded(true)

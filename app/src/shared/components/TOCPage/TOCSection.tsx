@@ -43,7 +43,16 @@ export type TOCSectionProps = {
     disabled?: boolean,
     onlyDesktop?: boolean
 }
-export const UnstyledTOCSection: FunctionComponent<TOCSectionProps> = ({ id, title, status, children, disabled, linkTitle, onlyDesktop, ...props }) => {
+export const UnstyledTOCSection: FunctionComponent<TOCSectionProps> = ({
+    id,
+    title,
+    status,
+    children,
+    disabled,
+    linkTitle,
+    onlyDesktop,
+    ...props
+}) => {
     const isWithinNav = useIsWithinNav()
     const active = id === useBusLine().stop
 

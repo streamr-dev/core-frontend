@@ -11,19 +11,18 @@ import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
 import StorageNodeList from './StorageNodeList'
 
-function UnwrappedHistorySection({ disabled, canEdit }) {
+function UnwrappedHistorySection({ disabled }) {
     const streamId = useStreamId()
     const { stage } = useStreamModifier()
     const { metadata } = useTransientStream()
     const { storageDays } = metadata || {}
-    const canAssignStorageNodes = !!streamId && !!canEdit
     return (
         <Fragment>
             <Desc>
                 Enable storage to retain historical data in one or more geographic locations of your choice. You can
                 also choose how long to store your stream&apos;s historical data before auto-deletion.
             </Desc>
-            {canAssignStorageNodes && <StorageNodeList />}
+            <StorageNodeList disabled={disabled} />
             <Label htmlFor="storageAmount">Store historical data for</Label>
             <UnitizedQuantity
                 units={{
@@ -55,7 +54,7 @@ export default function HistorySection({ disabled: disabledProp, ...props }) {
     const isWithinNav = useIsWithinNav()
     return (
         <TOCSection disabled={disabled} id="historical-data" title="Data storage">
-            {!isWithinNav && <UnwrappedHistorySection {...props} disabled={disabled} canEdit={canEdit} />}
+            {!isWithinNav && <UnwrappedHistorySection {...props} disabled={disabled} />}
         </TOCSection>
     )
 }
