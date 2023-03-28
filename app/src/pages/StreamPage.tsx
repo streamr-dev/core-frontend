@@ -28,10 +28,10 @@ import Sidebar from '$shared/components/Sidebar'
 import useNativeTokenName from '$shared/hooks/useNativeTokenName'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
 import {useTransientStream} from "$shared/contexts/TransientStreamContext"
-import {COLORS, DESKTOP, TABLET} from '$shared/utils/styled'
+import {DESKTOP, TABLET} from '$shared/utils/styled'
 import useCopy from "$shared/hooks/useCopy"
+import {CopyButton} from "$shared/components/CopyButton/CopyButton"
 import routes from '$routes'
-import SvgIcon from '../shared/components/SvgIcon'
 
 export const getStreamDetailsLinkTabs = (streamId?: string) => {
     return [
@@ -95,17 +95,6 @@ type ContainerBoxProps = {
     disabled?: boolean,
     showSaveButton?: boolean
 }
-
-const CopyButton = styled(Button)`
-  width: 32px;
-  height: 32px;
-  border-radius: 100%;
-  margin-left: 10px;
-  display: grid;
-  svg {
-    width: 22px;
-  }
-`
 
 const TitleContainer = styled.div`
   display: flex;
@@ -278,11 +267,6 @@ function UnwrappedStreamPage({ children, loading = false, includeContainerBox = 
         }
     })()
 
-    const handleCopy = useCallback((streamId: string) => {
-        copy(streamId)
-        Notification.push({title: 'Copied!', description: 'The stream name was copied to your clipboard', icon: NotificationIcon.CHECKMARK})
-    }, [])
-
     const streamIdToDisplay = useMemo<string | undefined>(() =>
         streamId || (!clean && !!transientStreamId) ? transientStreamId : undefined,
     [streamId, clean, transientStreamId]
@@ -301,10 +285,12 @@ function UnwrappedStreamPage({ children, loading = false, includeContainerBox = 
                     <DetailsPageHeader
                         backButtonLink={routes.streams.index()}
                         pageTitle={<TitleContainer>
-                            <span title={streamId}>{!!streamIdToDisplay ? truncateStreamName(streamIdToDisplay, 50) : 'New stream'}</span>
-                            {streamId ? <CopyButton onClick={() => handleCopy(streamId)} type={'button'} kind={'secondary'} size={'mini'}>
-                                <SvgIcon name={'copy'}/>
-                            </CopyButton> : ''}
+                            <span title={streamId}>
+                                {!!streamIdToDisplay ? truncateStreamName(streamIdToDisplay, 50) : (streamId ? '' : 'New stream')}
+                            </span>
+                            {streamId
+                                ? <CopyButton valueToCopy={streamId} notificationDescription={'The stream name was copied to your clipboard'} />
+                                : ''}
                         </TitleContainer>}
                         linkTabs={linkTabs}
                     />

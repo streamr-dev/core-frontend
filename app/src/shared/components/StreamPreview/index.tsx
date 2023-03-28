@@ -50,7 +50,7 @@ type StreamPreviewPros = {
     previewDisabled?: boolean
 }
 
-const UnstyledStreamPreview2: FunctionComponent<StreamPreviewPros> = ({
+const UnstyledStreamPreview: FunctionComponent<StreamPreviewPros> = ({
     streamsList,
     activePartition = 0,
     className,
@@ -78,7 +78,7 @@ const UnstyledStreamPreview2: FunctionComponent<StreamPreviewPros> = ({
     /**
      * TEMPORARY
      */
-    /*const SendData = useCallback(() => {
+    const SendData = useCallback(() => {
         console.log('send', partition)
         if (!!partitionOptions && partitionOptions?.length) {
             client.publish(selectedStreamId, {
@@ -90,7 +90,6 @@ const UnstyledStreamPreview2: FunctionComponent<StreamPreviewPros> = ({
             })
         }
     }, [client, selectedStreamId, partition, partitionOptions])
-*/
     useEffect(() => {
         const loadStreamData = async () => {
             if (client) {
@@ -106,7 +105,7 @@ const UnstyledStreamPreview2: FunctionComponent<StreamPreviewPros> = ({
     return <>
         <LoadingIndicator loading={loading} />
         {!loading && <>
-            {/*<button type={"button"} onClick={SendData}>Send msg to {selectedStreamId}</button>*/}
+            <button type={"button"} onClick={SendData}>Send msg to {selectedStreamId}</button>
             <Feed
                 className={className}
                 inspectorFocused={inspectorFocused}
@@ -120,11 +119,11 @@ const UnstyledStreamPreview2: FunctionComponent<StreamPreviewPros> = ({
                 // }
                 onPartitionChange={setPartition}
                 onSettingsButtonClick={undefined}
-                onStreamChange={undefined}
+                onStreamChange={setSelectedStreamId}
                 partition={partition}
                 partitions={partitionOptions || []}
                 streamId={selectedStreamId}
-                streamIds={[selectedStreamId]}
+                streamIds={streamsList}
                 hasSubscribePermission={!previewDisabled}
             />
             <Foot>
@@ -161,7 +160,7 @@ const UnstyledStreamPreview2: FunctionComponent<StreamPreviewPros> = ({
     </>
 }
 
-export const StreamPreview2 = styled(UnstyledStreamPreview2)`
+export const StreamPreview = styled(UnstyledStreamPreview)`
     background: #ffffff;
     color: #323232;
     font-size: 14px;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, {useState, useEffect, useRef, useMemo} from 'react'
 import styled, { css } from 'styled-components'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
@@ -8,14 +8,17 @@ import { formatDateTime } from '$mp/utils/time'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import useCopy from '$shared/hooks/useCopy'
-import {COLORS, MAX_BODY_WIDTH, TABLET} from '$shared/utils/styled'
+import {DESKTOP, MAX_BODY_WIDTH, TABLET} from '$shared/utils/styled'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
-import Button from '$shared/components/Button'
+import SelectField2 from "$mp/components/SelectField2"
+import {CopyButton} from "$shared/components/CopyButton/CopyButton"
+import {truncateStreamName} from "$shared/utils/text"
 import Layout from './Layout'
 import Cell from './Cell'
 import Toolbar from './Toolbar'
+import {MobileStreamSelector} from "./MobileStreamSelector"
 
 const formatValue = (data) =>
     typeof data === 'object'
@@ -89,7 +92,7 @@ const Header = styled.div`
 `
 const Side = styled.div`
     height: 100%;
-    overflow: hidden;
+    //overflow: hidden;
 `
 
 const Lhs = styled(Side)`
@@ -150,6 +153,25 @@ const TooltipTheme = Object.assign({}, Tooltip.BottomTheme, {
     transform: 'none',
 })
 
+const StreamSelectorContainer = styled.div`
+  padding: 14px 16px;
+  .select-stream-label {
+    margin-bottom: 0;
+  }
+`
+
+const StreamSelector = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+const DesktopStreamSelector = styled.div`
+  display: none;
+  @media(${DESKTOP}) {
+    display: block;
+  }
+`
+
 type Props = {
     className?: string,
     errorComponent?: React.ReactNode,
@@ -159,7 +181,7 @@ type Props = {
     streamLoaded: boolean,
     onPartitionChange: (partition: number) => void,
     onSettingsButtonClick: (streamId: string) => void,
-    onStreamChange: () => void,
+    onStreamChange: (streamId: string) => void,
     partition: number,
     partitions: Array<any>,
     streamId: string,
@@ -194,6 +216,7 @@ const UnstyledFeed = ({
     const { copy } = useCopy()
     const rowRef = useRef(null)
     const copyText = 'ontouchstart' in window ? 'Tap to copy' : 'Copy'
+    const streamOptions = useMemo(() => streamIds.map((id) => ({value: id, label: truncateStreamName(id)})), [streamIds])
 
     const onCopyClick = (value) => (e) => {
         const prevRow = rowRef.current
@@ -218,17 +241,16 @@ const UnstyledFeed = ({
 
     return (
         <div className={className}>
+            <MobileStreamSelector streamIds={streamIds}/>
             <Container inspectorFocused={inspectorFocused}>
                 <LeftFiller />
                 <Lhs>
                     <Toolbar
                         onPartitionChange={onPartitionChange}
                         onSettingsButtonClick={onSettingsButtonClick}
-                        onStreamChange={onStreamChange}
                         partition={partition}
                         partitions={partitions || []}
                         streamId={streamId}
-                        streamIds={streamIds || []}
                     />
                 </Lhs>
                 <Rhs />
@@ -237,6 +259,21 @@ const UnstyledFeed = ({
             <Container inspectorFocused={inspectorFocused}>
                 <LeftFiller />
                 <Lhs>
+                    {streamOptions.length > 1 && <DesktopStreamSelector>
+                        <StreamSelectorContainer>
+                            <p className={"select-stream-label"}>Select a stream</p>
+                            <StreamSelector>
+                                <SelectField2
+                                    placeholder={'Select Stream'}
+                                    options={streamOptions}
+                                    onChange={onStreamChange}
+                                    isClearable={false}
+                                    value={streamId}
+                                />
+                                <CopyButton valueToCopy={streamId} notificationDescription={'The stream name was copied to your clipboard'} />
+                            </StreamSelector>
+                        </StreamSelectorContainer>
+                    </DesktopStreamSelector>}
                     <Header>
                         <Row>
                             <Layout.Pusher />

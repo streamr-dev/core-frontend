@@ -2,7 +2,7 @@ import React from 'react'
 
 import { StreamPermission } from 'streamr-client'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
-import {StreamPreview2} from '$shared/components/StreamPreview'
+import {StreamPreview} from '$shared/components/StreamPreview'
 import useStreamId from '$shared/hooks/useStreamId'
 import StreamPage from './StreamPage'
 import AbstractStreamPage from './AbstractStreamPage'
@@ -15,7 +15,7 @@ function UnwrappedStreamEditPage() {
 
     return (
         <StreamPage loading={loading} includeContainerBox={false}>
-            <StreamPreview2 streamsList={[streamId]} previewDisabled={!canSubscribe}/>
+            <StreamPreview streamsList={[streamId]} previewDisabled={!canSubscribe}/>
         </StreamPage>
     )
 }

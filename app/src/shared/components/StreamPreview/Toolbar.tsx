@@ -72,22 +72,18 @@ type Props = {
     className?: string,
     onPartitionChange: (partition: number) => void,
     onSettingsButtonClick: (streamId: string) => void,
-    onStreamChange: () => void,
     partition: number,
     partitions: Array<any>,
-    streamId: string,
-    streamIds: Array<string>,
+    streamId: string
 }
 
 const UnstyledToolbar = ({
     className,
     onPartitionChange,
     onSettingsButtonClick,
-    onStreamChange,
     partition,
     partitions = [],
-    streamId,
-    streamIds = [streamId],
+    streamId
 }: Props) => {
     const { copy, isCopied } = useCopy()
     return (
@@ -95,17 +91,12 @@ const UnstyledToolbar = ({
             <Lhs>
                 <Layout.Pusher />
                 <Inner>
-                    <div>
-                        <Selector title="Streams" options={streamIds} active={streamId} onChange={onStreamChange} />
-                    </div>
-                    <IfEnoughRoom>
-                        <Selector
-                            title="Partitions"
-                            options={partitions}
-                            active={partition}
-                            onChange={onPartitionChange}
-                        />
-                    </IfEnoughRoom>
+                    <Selector
+                        title="Partitions"
+                        options={partitions}
+                        active={partition}
+                        onChange={onPartitionChange}
+                    />
                 </Inner>
             </Lhs>
             <Rhs>
