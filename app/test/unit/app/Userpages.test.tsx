@@ -41,10 +41,6 @@ jest.mock('$mp/containers/ProjectEditing/EditProjectPage', () => ({
     __esModule: true,
     default: () => 'Edit product',
 }))
-jest.mock('$app/src/pages/StreamInspectorPage', () => ({
-    __esModule: true,
-    default: () => 'Stream inspector page'
-}))
 
 /* eslint-enable react/prop-types */
 describe('Userpages Routes', () => {

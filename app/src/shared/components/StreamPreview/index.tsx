@@ -1,10 +1,13 @@
-import React, { useState, useMemo, Fragment } from 'react'
+import React, {useState, useMemo, FunctionComponent, useEffect} from 'react'
+import {Stream} from "streamr-client"
+import {useClient} from "streamr-client-react"
 import styled, { css } from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
 import { COLORS } from '$shared/utils/styled'
 import Errors from '$ui/Errors'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
-import Button from '$shared/components/Button'
+import {StreamId} from "$shared/types/stream-types"
+import useStreamData from "$shared/hooks/useStreamData"
 import IconButton from './IconButton'
 import Feed from './Feed'
 import Foot from './Foot'
@@ -39,65 +42,72 @@ const InspectorButton = styled(IconButton)<InspectorButtonProps>`
             color: #525252;
         `}
 `
-
-type Props = {
+type StreamPreviewPros = {
+    streamsList: StreamId[],
     activePartition?: number,
     className?: string,
-    dataError?: string,
-    loading?: boolean,
-    streamId?: string,
-    navigableStreamIds?: Array<string>,
-    onChange?: () => void,
-    onPartitionChange?: (partition: number) => void,
-    onStreamSettings?: () => void,
-    stream?: any,
-    streamData?: any,
-    hasSubscribePermission: boolean,
+    preselectedStreamId?: StreamId,
+    previewDisabled?: boolean
 }
 
-const UnstyledStreamPreview = ({
+const UnstyledStreamPreview: FunctionComponent<StreamPreviewPros> = ({
+    streamsList,
     activePartition = 0,
     className,
-    dataError,
-    loading = false,
-    streamId,
-    navigableStreamIds = [streamId],
-    onChange: onStreamChange,
-    onPartitionChange,
-    onStreamSettings,
-    stream,
-    streamData,
-    hasSubscribePermission,
-}: Props) => {
-    const [inspectorFocused, setInspectorFocused] = useState(false)
-    const streamLoaded = !!(stream && stream.id === streamId)
-    const { partitions } = stream || {}
+    preselectedStreamId,
+    previewDisabled = false
+}) => {
+    const client = useClient()
+    const [inspectorFocused, setInspectorFocused] = useState<boolean>(false)
+    const [selectedStreamId, setSelectedStreamId] = useState<StreamId>(
+        !!preselectedStreamId && streamsList.includes(preselectedStreamId) ? preselectedStreamId : streamsList[0]
+    )
+    const [partition, setPartition] = useState<number>(activePartition)
+    const [loading, setIsLoading] = useState<boolean>()
+    const [stream, setStream] = useState<Stream>()
+    const { partitions } = stream?.getMetadata() || {}
     const partitionOptions = useMemo(
         () => (partitions ? [...new Array(partitions)].map((_, index) => index) : undefined),
         [partitions],
     )
-    return (
-        <>
-            <LoadingIndicator loading={!streamLoaded || !!loading} />
+    const streamData = useStreamData(selectedStreamId, {
+        tail: 20,
+        partition
+    })
+
+    useEffect(() => {
+        const loadStreamData = async () => {
+            if (client) {
+                setIsLoading(true)
+                const result = await client.getStream(selectedStreamId)
+                setIsLoading(false)
+                setStream(result)
+            }
+        }
+        loadStreamData()
+    }, [selectedStreamId, client])
+
+    return <>
+        <LoadingIndicator loading={loading} />
+        {!loading && <>
             <Feed
                 className={className}
                 inspectorFocused={inspectorFocused}
-                stream={stream}
                 streamData={streamData}
-                streamLoaded={streamLoaded}
-                errorComponent={
-                    <Fragment>
-                        {!!dataError && <Errors>{dataError}</Errors>}
-                    </Fragment>
-                }
-                onPartitionChange={onPartitionChange}
-                onSettingsButtonClick={onStreamSettings}
-                onStreamChange={onStreamChange}
-                partition={activePartition}
+                streamLoaded={!loading}
+                // errorComponent={
+                //     <Fragment>
+                //         {!!dataError && <Errors>{dataError}</Errors>}
+                //     </Fragment>
+                // }
+                onPartitionChange={setPartition}
+                onSettingsButtonClick={undefined}
+                onStreamChange={setSelectedStreamId}
+                partition={partition}
                 partitions={partitionOptions || []}
-                streamId={streamId}
-                streamIds={navigableStreamIds || []}
-                hasSubscribePermission={hasSubscribePermission}
+                streamId={selectedStreamId}
+                streamIds={streamsList}
+                hasSubscribePermission={!previewDisabled}
             />
             <Foot>
                 <div>
@@ -118,22 +128,22 @@ const UnstyledStreamPreview = ({
                         <SvgIcon name="listInspect" />
                     </InspectorButton>
                 </div>
-                {!inspectorFocused && !!streamLoaded && (
+                {!inspectorFocused && !loading && (
                     <div>
                         <Selector
                             title="Partitions"
                             options={partitionOptions || []}
-                            active={activePartition}
-                            onChange={onPartitionChange}
+                            active={partition}
+                            onChange={setPartition}
                         />
                     </div>
                 )}
             </Foot>
-        </>
-    )
+        </>}
+    </>
 }
 
-const StreamPreview = styled(UnstyledStreamPreview)`
+export const StreamPreview = styled(UnstyledStreamPreview)`
     background: #ffffff;
     color: #323232;
     font-size: 14px;
@@ -152,4 +162,3 @@ const StreamPreview = styled(UnstyledStreamPreview)`
         padding-bottom: 20px;
     }
 `
-export default StreamPreview

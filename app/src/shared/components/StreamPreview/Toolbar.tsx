@@ -72,22 +72,18 @@ type Props = {
     className?: string,
     onPartitionChange: (partition: number) => void,
     onSettingsButtonClick: (streamId: string) => void,
-    onStreamChange: () => void,
     partition: number,
     partitions: Array<any>,
-    streamId: string,
-    streamIds: Array<string>,
+    streamId: string
 }
 
 const UnstyledToolbar = ({
     className,
     onPartitionChange,
     onSettingsButtonClick,
-    onStreamChange,
     partition,
     partitions = [],
-    streamId,
-    streamIds = [streamId],
+    streamId
 }: Props) => {
     const { copy, isCopied } = useCopy()
     return (
@@ -95,23 +91,18 @@ const UnstyledToolbar = ({
             <Lhs>
                 <Layout.Pusher />
                 <Inner>
-                    <div>
-                        <Selector title="Streams" options={streamIds} active={streamId} onChange={onStreamChange} />
-                    </div>
-                    <IfEnoughRoom>
-                        <Selector
-                            title="Partitions"
-                            options={partitions}
-                            active={partition}
-                            onChange={onPartitionChange}
-                        />
-                    </IfEnoughRoom>
+                    <Selector
+                        title="Stream partitions"
+                        options={partitions}
+                        active={partition}
+                        onChange={onPartitionChange}
+                    />
                 </Inner>
             </Lhs>
             <Rhs>
                 <div>
                     {typeof onSettingsButtonClick === 'function' && (
-                        <SettingsButton kind="secondary" onClick={() => onSettingsButtonClick(streamId)}>
+                        <SettingsButton kind="secondary" type={'button'} onClick={() => onSettingsButtonClick(streamId)}>
                             Stream Settings
                         </SettingsButton>
                     )}
@@ -124,7 +115,10 @@ const UnstyledToolbar = ({
 const Toolbar = styled(UnstyledToolbar)`
     align-items: center;
     display: flex;
-    padding-top: 58px;
+    padding-top: ${(props) => {
+        return props.partitions.length > 1 ? '30px ' : '0'
+    }};
+    padding-bottom: 16px;
 `
 Object.assign(Toolbar, {
     Lhs,

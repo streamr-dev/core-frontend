@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { useClient } from 'streamr-client-react'
 import { useHistory } from 'react-router-dom'
 import styled, { css } from 'styled-components'
@@ -14,8 +14,6 @@ import DuplicateError from '$shared/errors/DuplicateError'
 import InterruptionError from '$shared/errors/InterruptionError'
 import Notification from '$shared/utils/Notification'
 import useInterrupt from '$shared/hooks/useInterrupt'
-import { NotificationIcon } from '$shared/utils/constants'
-import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
 import { useValidationErrorSetter } from '$shared/components/ValidationErrorProvider'
 import useStreamId from '$shared/hooks/useStreamId'
@@ -23,6 +21,7 @@ import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
 import { truncateStreamName } from '$shared/utils/text'
 import useNativeTokenName from '$shared/hooks/useNativeTokenName'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
+import {CopyButton} from "$shared/components/CopyButton/CopyButton"
 import { useTransientStream } from '$shared/contexts/TransientStreamContext'
 import { DESKTOP, TABLET } from '$shared/utils/styled'
 import PermissionsProvider, { usePermissionsState } from '$shared/components/PermissionsProvider'
@@ -31,7 +30,6 @@ import useCopy from '$shared/hooks/useCopy'
 import { TransactionList } from '$shared/components/TransactionList'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import routes from '$routes'
-import SvgIcon from '../shared/components/SvgIcon'
 import { useStreamEditorStore } from './AbstractStreamEditPage/state'
 
 export const getStreamDetailsLinkTabs = (streamId?: string) => {
@@ -101,17 +99,6 @@ type ContainerBoxProps = {
     showSaveButton?: boolean
     fullWidth?: boolean
 }
-
-const CopyButton = styled(Button)`
-  width: 32px;
-  height: 32px;
-  border-radius: 100%;
-  margin-left: 10px;
-  display: grid;
-  svg {
-    width: 22px;
-  }
-`
 
 const TitleContainer = styled.div`
   display: flex;
@@ -319,14 +306,9 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
         }
     }
 
-    const handleCopy = useCallback((streamId: string) => {
-        copy(streamId)
-        Notification.push({ title: 'Copied!', description: 'The stream id was copied to your clipboard', icon: NotificationIcon.CHECKMARK })
-    }, [copy])
-
-    const streamIdToDisplay = useMemo<string | undefined>(
-        () => (streamId || (!clean && !!transientStreamId) ? transientStreamId : undefined),
-        [streamId, clean, transientStreamId],
+    const streamIdToDisplay = useMemo<string | undefined>(() =>
+        streamId || (!clean && !!transientStreamId) ? transientStreamId : undefined,
+    [streamId, clean, transientStreamId]
     )
 
     return (
@@ -341,18 +323,14 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
                     <MarketplaceHelmet title={streamId ? `Stream ${streamId}` : 'New stream'} />
                     <DetailsPageHeader
                         backButtonLink={routes.streams.index()}
-                        pageTitle={
-                            <TitleContainer>
-                                <span title={streamId}>{!!streamIdToDisplay ? truncateStreamName(streamIdToDisplay, 50) : 'New stream'}</span>
-                                {streamId ? (
-                                    <CopyButton onClick={() => handleCopy(streamId)} type={'button'} kind={'secondary'} size={'mini'}>
-                                        <SvgIcon name={'copy'} />
-                                    </CopyButton>
-                                ) : (
-                                    ''
-                                )}
-                            </TitleContainer>
-                        }
+                        pageTitle={<TitleContainer>
+                            <span title={streamId}>
+                                {!!streamIdToDisplay ? truncateStreamName(streamIdToDisplay, 50) : (streamId ? '' : 'New stream')}
+                            </span>
+                            {streamId
+                                ? <CopyButton valueToCopy={streamId} notificationDescription={'The stream name was copied to your clipboard'} />
+                                : ''}
+                        </TitleContainer>}
                         linkTabs={linkTabs}
                         rightComponent={
                             <div>

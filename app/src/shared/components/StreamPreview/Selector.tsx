@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
-import { MEDIUM } from '$shared/utils/styled'
+import {COLORS, MEDIUM} from '$shared/utils/styled'
 import IconButton from './IconButton'
 const Button = styled(IconButton)`
     :not(:last-child) {
@@ -56,7 +56,10 @@ const UnstyledSelector = ({ active, onChange, options = [], title, ...props }) =
 
 const Selector = styled(UnstyledSelector)`
     align-items: center;
-    color: #525252;
+    color: ${COLORS.primary};
     display: flex;
+    button {
+      color: ${COLORS.primary};
+    }
 `
 export default Selector

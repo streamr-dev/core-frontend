@@ -20,8 +20,6 @@ export const getProjectDetailsLinkTabs = (projectId: string): LinkTabOptionProps
         {
             label: 'Live data',
             href:  routes.marketplace.product.liveData({id: projectId}),
-            disabled: true,
-            disabledReason: 'Coming soon'
         }
     ]
 }

@@ -4,7 +4,6 @@ import {UserIsAuthenticatedRoute} from '$auth/utils/userAuthenticated'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorPage from '$shared/components/ErrorPage'
 // Userpages
-import StreamInspectorPage from '$app/src/pages/StreamInspectorPage'
 import StreamCreatePage from '$app/src/pages/StreamCreatePage'
 import StreamListView from '$app/src/pages/StreamListPage'
 import StreamEditPage from '$app/src/pages/StreamEditPage'
@@ -45,7 +44,6 @@ const UserpagesRouter = () => [
         to={routes.streams.preview()}
         key="publicStreamPreviewPageRedir"
     />,
-    <Route exact path={routes.streams.preview()} component={StreamInspectorPage} key="streamPreviewPage" />,
     // <Route exact path={routes.streams.index()} component={StreamListViewAuth} key="StreamListView" />,
     <Route exact path={routes.transactions()} component={TransactionListAuth} key="TransactionList" />,
     <Route exact path={routes.subscriptions()} component={PurchasesPageAuth} key="PurchasesPage" />,
