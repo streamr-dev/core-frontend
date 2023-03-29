@@ -234,6 +234,11 @@ const sources = {
             />
         </svg>
     ),
+    checkMarkMono: (
+        <svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.76361 5.82623L4.25997 9.59981L12.5685 1.29131" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+    ),
     error: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
             <g fill="none" fillRule="evenodd">

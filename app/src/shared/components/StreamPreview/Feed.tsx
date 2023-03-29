@@ -8,7 +8,7 @@ import { formatDateTime } from '$mp/utils/time'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import useCopy from '$shared/hooks/useCopy'
-import {DESKTOP, MAX_BODY_WIDTH, TABLET} from '$shared/utils/styled'
+import {COLORS, DESKTOP, MAX_BODY_WIDTH, MEDIUM, TABLET} from '$shared/utils/styled'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
@@ -18,7 +18,7 @@ import {truncateStreamName} from "$shared/utils/text"
 import Layout from './Layout'
 import Cell from './Cell'
 import Toolbar from './Toolbar'
-import {MobileStreamSelector} from "./MobileStreamSelector"
+import {ModalStreamSelector} from "./ModalStreamSelector"
 
 const formatValue = (data) =>
     typeof data === 'object'
@@ -92,58 +92,72 @@ const Header = styled.div`
 `
 const Side = styled.div`
     height: 100%;
-    //overflow: hidden;
+    overflow: hidden;
+    &.no-overflow-desktop {
+      @media(${TABLET}) {
+        overflow: initial;
+      }
+    }
 `
 
 const Lhs = styled(Side)`
+  ${Row} {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    border-bottom: 1px solid ${COLORS.separator};
+  }
+  
+  ${Header} {
     ${Row} {
-        display: grid;
-        grid-template-columns: auto 1fr;
+      &:first-of-type {
+        border-top: 1px solid ${COLORS.separator};
+      }
     }
+  }
 
-    ${Inner} {
-        grid-template-columns: 224px 1fr;
-    }
+  ${Inner} {
+    grid-template-columns: 224px 1fr;
+  }
 
-    ${Viewport} ${Inner}:hover {
-        background: #fafafa;
-    }
+  ${Viewport} ${Inner}:hover {
+    background: #fafafa;
+  }
 
-    ${Inner} > div {
-        min-width: 0;
-    }
+  ${Inner} > div {
+    min-width: 0;
+  }
 `
 
 const Rhs = styled(Side)`
-    background: #fafafa;
-    border-left: 1px solid #efefef;    
+  background: #fafafa;
+  border-left: 1px solid #efefef;
+
+  ${Inner} {
+    grid-template-columns: 128px 1fr;
+    column-gap: 8px;
+    margin: 0 24px;
+  }
+
+  ${Viewport} ${Inner}:hover {
+    background: #f3f3f3;
+  }
+
+  ${Viewport} ${Inner} > div:first-child {
+    color: #a3a3a3;
+    text-transform: uppercase;
+  }
+
+  ${Viewport} ${Inner} {
+    border-bottom: 1px solid #efefef;
+  }
+
+  @media (${TABLET}) {
+    transition: none;
 
     ${Inner} {
-        grid-template-columns: 128px 1fr;
-        column-gap: 8px;
-        margin: 0 24px;        
+      grid-template-columns: 164px 1fr;
     }
-
-    ${Viewport} ${Inner}:hover {
-        background: #f3f3f3;
-    }
-
-    ${Viewport} ${Inner} > div:first-child {
-        color: #a3a3a3;
-        text-transform: uppercase;
-    }
-
-    ${Viewport} ${Inner} {
-        border-bottom: 1px solid #efefef;
-    }
-
-    @media (min-width: 668px) {
-        transition: none;
-
-        ${Inner} {
-            grid-template-columns: 164px 1fr;
-        }
-    }
+  }
 `
 
 const tz = moment.tz.guess()
@@ -157,6 +171,7 @@ const StreamSelectorContainer = styled.div`
   padding: 14px 16px;
   .select-stream-label {
     margin-bottom: 0;
+    font-weight: ${MEDIUM};
   }
 `
 
@@ -167,7 +182,31 @@ const StreamSelector = styled.div`
 
 const DesktopStreamSelector = styled.div`
   display: none;
-  @media(${DESKTOP}) {
+  @media(${TABLET}) {
+    display: block;
+  }
+`
+
+const MobileStreamSelector = styled.div`
+  background-color: ${COLORS.secondary};
+  padding: 24px;
+  @media(${TABLET}) {
+    display: none;
+  }
+  .label {
+    font-weight: ${MEDIUM};
+    margin-bottom: 8px;
+  }
+  .selector {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+`
+
+const DesktopToolbar = styled(Toolbar)`
+  display: none;
+  @media(${TABLET}) {
     display: block;
   }
 `
@@ -176,7 +215,6 @@ type Props = {
     className?: string,
     errorComponent?: React.ReactNode,
     inspectorFocused: boolean,
-    stream: any,
     streamData: any,
     streamLoaded: boolean,
     onPartitionChange: (partition: number) => void,
@@ -193,7 +231,6 @@ const UnstyledFeed = ({
     className,
     errorComponent = null,
     inspectorFocused = false,
-    stream,
     streamData,
     streamLoaded,
     onPartitionChange,
@@ -241,24 +278,16 @@ const UnstyledFeed = ({
 
     return (
         <div className={className}>
-            <MobileStreamSelector streamIds={streamIds}/>
+            <MobileStreamSelector>
+                <p className={'label'}>Select a Stream</p>
+                <div className={'selector'}>
+                    <ModalStreamSelector streamIds={streamIds} selectedStream={streamId} onChange={onStreamChange}/>
+                    <CopyButton valueToCopy={'aaa'} className={'white'}/>
+                </div>
+            </MobileStreamSelector>
             <Container inspectorFocused={inspectorFocused}>
                 <LeftFiller />
-                <Lhs>
-                    <Toolbar
-                        onPartitionChange={onPartitionChange}
-                        onSettingsButtonClick={onSettingsButtonClick}
-                        partition={partition}
-                        partitions={partitions || []}
-                        streamId={streamId}
-                    />
-                </Lhs>
-                <Rhs />
-                <RightFiller />
-            </Container>
-            <Container inspectorFocused={inspectorFocused}>
-                <LeftFiller />
-                <Lhs>
+                <Lhs className={'no-overflow-desktop'}>
                     {streamOptions.length > 1 && <DesktopStreamSelector>
                         <StreamSelectorContainer>
                             <p className={"select-stream-label"}>Select a stream</p>
@@ -274,6 +303,20 @@ const UnstyledFeed = ({
                             </StreamSelector>
                         </StreamSelectorContainer>
                     </DesktopStreamSelector>}
+                    <DesktopToolbar
+                        onPartitionChange={onPartitionChange}
+                        onSettingsButtonClick={onSettingsButtonClick}
+                        partition={partition}
+                        partitions={partitions || []}
+                        streamId={streamId}
+                    />
+                </Lhs>
+                <Rhs />
+                <RightFiller />
+            </Container>
+            <Container inspectorFocused={inspectorFocused}>
+                <LeftFiller />
+                <Lhs>
                     <Header>
                         <Row>
                             <Layout.Pusher />
@@ -388,6 +431,10 @@ const Feed = styled(UnstyledFeed)`
     position: relative;
     display: flex;
     flex-direction: column;
+    padding-bottom: 80px;
+    @media(${TABLET}) {
+      padding-bottom: 0;
+    }
 
     ${Tooltip.Root} {
         display: inline;

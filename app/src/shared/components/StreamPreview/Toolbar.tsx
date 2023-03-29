@@ -92,7 +92,7 @@ const UnstyledToolbar = ({
                 <Layout.Pusher />
                 <Inner>
                     <Selector
-                        title="Partitions"
+                        title="Stream partitions"
                         options={partitions}
                         active={partition}
                         onChange={onPartitionChange}
@@ -115,7 +115,10 @@ const UnstyledToolbar = ({
 const Toolbar = styled(UnstyledToolbar)`
     align-items: center;
     display: flex;
-    padding-top: 58px;
+    padding-top: ${(props) => {
+        return props.partitions.length > 1 ? '30px ' : '0'
+    }};
+    padding-bottom: 16px;
 `
 Object.assign(Toolbar, {
     Lhs,

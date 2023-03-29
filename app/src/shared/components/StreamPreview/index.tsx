@@ -1,4 +1,4 @@
-import React, {useState, useMemo, Fragment, FunctionComponent, useEffect, useCallback} from 'react'
+import React, {useState, useMemo, FunctionComponent, useEffect} from 'react'
 import {Stream} from "streamr-client"
 import {useClient} from "streamr-client-react"
 import styled, { css } from 'styled-components'
@@ -75,21 +75,6 @@ const UnstyledStreamPreview: FunctionComponent<StreamPreviewPros> = ({
         partition
     })
 
-    /**
-     * TEMPORARY
-     */
-    const SendData = useCallback(() => {
-        console.log('send', partition)
-        if (!!partitionOptions && partitionOptions?.length) {
-            client.publish(selectedStreamId, {
-                hello: 'world ' + Math.random(),
-            }, {partitionKey: partition})
-        } else {
-            client.publish(selectedStreamId, {
-                hello: 'world ' + Math.random(),
-            })
-        }
-    }, [client, selectedStreamId, partition, partitionOptions])
     useEffect(() => {
         const loadStreamData = async () => {
             if (client) {
@@ -105,11 +90,9 @@ const UnstyledStreamPreview: FunctionComponent<StreamPreviewPros> = ({
     return <>
         <LoadingIndicator loading={loading} />
         {!loading && <>
-            <button type={"button"} onClick={SendData}>Send msg to {selectedStreamId}</button>
             <Feed
                 className={className}
                 inspectorFocused={inspectorFocused}
-                stream={stream}
                 streamData={streamData}
                 streamLoaded={!loading}
                 // errorComponent={
