@@ -170,7 +170,7 @@ const TooltipTheme = Object.assign({}, Tooltip.BottomTheme, {
 const StreamSelectorContainer = styled.div`
   padding: 14px 16px;
   .select-stream-label {
-    margin-bottom: 0;
+    margin-bottom: 8px;
     font-weight: ${MEDIUM};
   }
 `

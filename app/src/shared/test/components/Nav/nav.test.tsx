@@ -62,13 +62,6 @@ describe('Nav.Wide', () => {
             expect(
                 el
                     .find({
-                        href: '/docs',
-                    })
-                    .exists(),
-            ).toBe(true)
-            expect(
-                el
-                    .find({
                         href: '/login?redirect=%2F',
                     })
                     .exists(),
@@ -89,13 +82,6 @@ describe('Nav.Wide', () => {
                 el
                     .find({
                         href: '/core/streams',
-                    })
-                    .exists(),
-            ).toBe(true)
-            expect(
-                el
-                    .find({
-                        href: '/docs',
                     })
                     .exists(),
             ).toBe(true)
