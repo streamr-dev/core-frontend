@@ -85,10 +85,10 @@ const getConfig = (): Config => {
                     },
                 }),
             },
-            [streamRegistryChainRPCs.chainId]: {
+            [streamRegistryChainRPCs?.chainId ?? 0]: {
                 getParams: () => ({
                     chainName: 'Streams chain (dev)',
-                    rpcUrls: [streamRegistryChainRPCs.rpcs[0].url],
+                    rpcUrls: [streamRegistryChainRPCs?.rpcs[0].url ?? ''],
                     blockExplorerUrls: [],
                     nativeCurrency: {
                         name: 'xDAI',

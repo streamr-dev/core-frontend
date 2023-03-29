@@ -9,6 +9,8 @@ import {Address, SmartContractCall, SmartContractTransaction} from "$shared/type
 import { getConfigForChain, getConfigForChainByName } from '$shared/web3/config'
 import projectRegistryAbi from '$shared/web3/abis/projectRegistry.json'
 import {ProjectId} from "$mp/types/project-types"
+import getPublicWeb3 from '../utils/web3/getPublicWeb3'
+import getDefaultWeb3Account from '../utils/web3/getDefaultWeb3Account'
 
 const getGraphUrl = () => {
     const { theGraphUrl, theHubGraphName } = getCoreConfig()
@@ -387,3 +389,46 @@ export const getProjectFromRegistry =
         }
         return project
     }
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+export const waitUntilProjectPurchased = async (id: string, timeoutSeconds = 60) => {
+    const waitBetweenChecks = 3000
+    const chainId = getProjectRegistryChainId()
+    const contract = projectRegistryContract(true, chainId)
+
+    const web3 = getPublicWeb3(chainId)
+    const myAddress = await getDefaultWeb3Account()
+    const currentBlock = await web3.eth.getBlockNumber() - 10 // take a couple of blocks back to be sure
+
+    let timedOut = false
+    let foundEvent = false
+    const startedAt = Date.now()
+
+    // Start polling and look for Subscribed events.
+    while (timedOut === false) {
+        const events = await contract.getPastEvents('Subscribed', {
+            fromBlock: currentBlock,
+            toBlock: 'latest',
+            filter: {
+                projectId: id,
+                subscriber: myAddress,
+            },
+        })
+
+        if (events.length > 0) {
+            foundEvent = true
+            return
+        }
+
+        if (Date.now() - startedAt > timeoutSeconds * 1000) {
+            timedOut = true
+        }
+
+        await sleep(waitBetweenChecks)
+    }
+
+    if (!foundEvent) {
+        throw new Error('Finding Subscribed event timed out!')
+    }
+}

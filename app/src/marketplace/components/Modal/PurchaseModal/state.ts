@@ -1,5 +1,12 @@
 import { create } from 'zustand'
-import { getProject, getProjectFromRegistry, SmartContractProject, TheGraphPaymentDetails, TheGraphProject } from '$app/src/services/projects'
+import {
+    getProject,
+    getProjectFromRegistry,
+    SmartContractProject,
+    TheGraphPaymentDetails,
+    TheGraphProject,
+    waitUntilProjectPurchased,
+} from '$app/src/services/projects'
 import { purchaseProject } from '$shared/web3/purchase'
 import { approve, needsAllowance } from '$shared/web3/allowance'
 import { getTokenInformation } from '$app/src/marketplace/utils/web3'
@@ -129,10 +136,12 @@ export const usePurchaseStore = create<State & Actions>()((set, get) => ({
             })
 
             purchaseTx
-                .onTransactionHash((hash) => {
+                .onTransactionHash(async (hash) => {
                     setCurrentStep(Step.AccessProgress)
-                })
-                .onTransactionComplete(() => {
+
+                    // Start watching for Subscribed event.
+                    // This will throw if timed out.
+                    await waitUntilProjectPurchased(contractProject.id)
                     setCurrentStep(Step.Complete)
                 })
                 .onError((error) => {

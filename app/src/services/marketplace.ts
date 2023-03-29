@@ -26,7 +26,7 @@ export const marketplaceContract = (usePublicNode = false, chainId: number): Con
 export const buyProject = (projectId: string, subscriptionSeconds: BN, chainId: number): SmartContractTransaction => {
     const methodToSend = marketplaceContract(false, chainId).methods.buy(
         projectId,
-        subscriptionSeconds,
+        subscriptionSeconds.dp(0, BN.ROUND_DOWN), // Round down to nearest full second, otherwise allowance could run out
     )
     return send(methodToSend, {
         network: chainId,
