@@ -16,6 +16,7 @@ import {
 import Tabs from '$shared/components/Tabs'
 import SelectField2 from '$mp/components/SelectField2'
 import MobileFilter from '$shared/components/MobileFilter'
+import {ProjectListingTypeFilter} from "$app/src/services/projects"
 import { Category } from '../../types/category-types'
 import { isValidSearchQuery } from '../../utils/validate'
 
@@ -71,13 +72,17 @@ const UnstyledActionBar = ({
     const productTypeOptions = useMemo(
         () => [
             {
-                value: 'normal',
-                label: 'Data Projects',
+                value: ProjectListingTypeFilter.openData,
+                label: 'Open data',
             },
             {
-                value: 'dataunion',
-                label: 'Data Unions',
+                value: ProjectListingTypeFilter.paidData,
+                label: 'Paid data'
             },
+            /*{
+                value: ProjectListingTypeFilter.dataUnion,
+                label: 'Data Unions',
+            },*/
         ],
         [],
     )
@@ -125,7 +130,7 @@ const UnstyledActionBar = ({
                     />
                     <DropdownFilters>
                         <span>Filter by</span>
-                        {categoryOptions != null && categoryOptions.length > 0 && (
+                        {/*{categoryOptions != null && categoryOptions.length > 0 && (
                             <SelectFieldWrap>
                                 <SelectField2
                                     placeholder={'Category'}
@@ -134,7 +139,7 @@ const UnstyledActionBar = ({
                                     onChange={onCategoryChange}
                                 />
                             </SelectFieldWrap>
-                        )}
+                        )}*/}
                         <SelectFieldWrap>
                             <SelectField2
                                 placeholder={'Project type'}
@@ -147,11 +152,11 @@ const UnstyledActionBar = ({
                     <MobileFilterWrap>
                         <MobileFilter
                             filters={[
-                                {
+                                /*{
                                     label: 'Category',
                                     value: 'category',
                                     options: categoryOptions
-                                },
+                                },*/
                                 {
                                     label: 'Project type',
                                     value: 'type',
