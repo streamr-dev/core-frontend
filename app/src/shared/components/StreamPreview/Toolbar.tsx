@@ -118,7 +118,9 @@ const Toolbar = styled(UnstyledToolbar)`
     padding-top: ${(props) => {
         return props.partitions.length > 1 ? '30px ' : '0'
     }};
-    padding-bottom: 16px;
+    padding-bottom: ${(props) => {
+        return props.partitions.length > 1 ? '16px ' : '0'
+    }};
 `
 Object.assign(Toolbar, {
     Lhs,
