@@ -1,25 +1,29 @@
 import React, {createContext, FunctionComponent, ReactNode, useContext, useEffect, useState} from "react"
 import {useParams} from "react-router-dom"
 import {Project, ProjectId} from "$mp/types/project-types"
-import {getProject} from "$app/src/services/projects"
+import {getProject, TheGraphProject} from "$app/src/services/projects"
 import {mapGraphProjectToDomainModel} from "$mp/utils/project-mapper"
 
 export type LoadedProjectState = {
     loadedProject: Project | undefined
+    theGraphProject: TheGraphProject | undefined
 }
 
 const useLoadedProjectImplementation = (projectId: ProjectId): LoadedProjectState => {
+    const [project, setProject] = useState<TheGraphProject>()
     const [mappedProject, setMappedProject] = useState<Project>()
     useEffect(() => {
         const loadData = async () => {
             const theGraphProject = await getProject(projectId)
+            setProject(theGraphProject)
             setMappedProject(await mapGraphProjectToDomainModel(theGraphProject))
         }
         loadData()
     }, [projectId])
 
     return {
-        loadedProject: mappedProject
+        loadedProject: mappedProject,
+        theGraphProject: project,
     }
 }
 

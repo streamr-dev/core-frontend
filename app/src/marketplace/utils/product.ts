@@ -14,6 +14,22 @@ import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from '
 
 export const isPaidProject = (project: Project): boolean => project.type !== ProjectTypeEnum.OPEN_DATA
 
+export const isProjectOwnedBy = (project: TheGraphProject, address: string): boolean => {
+    const userPermissions = project.permissions.find((p) => p.userAddress.toLowerCase() === address.toLowerCase())
+    if (userPermissions != null && userPermissions.canGrant === true) {
+        return true
+    }
+    return false
+}
+
+export const hasActiveProjectSubscription = (project: TheGraphProject, address: string): boolean => {
+    const userSubscription = project.subscriptions.find((s) => s.userAddress.toLowerCase() === address.toLowerCase())
+    if (userSubscription != null && Number.parseInt(userSubscription.endTimestamp) * 1000 >= Date.now()) {
+        return true
+    }
+    return false
+}
+
 export const isDataUnionProject = (project: TheGraphProject): boolean => {
     if (project != null && project.metadata != null) {
         return project.metadata.isDataUnion

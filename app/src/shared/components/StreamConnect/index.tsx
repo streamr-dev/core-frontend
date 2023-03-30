@@ -12,7 +12,6 @@ import { StreamId } from '$shared/types/stream-types'
 import {truncateStreamName} from "$shared/utils/text"
 
 export const StreamConnect: FunctionComponent<{streams: StreamId[]}> = ({streams}) => {
-
     const [streamId, setSelectedStream] = useState<StreamId>(streams[0])
     const [action, setAction] = useState<'subscribe' | 'publish'>('subscribe')
     const [nodeType, setNodeType] = useState<'lightNode' | 'brokerNode'>('lightNode')
@@ -140,97 +139,127 @@ mqtt.subscribe('${streamId}', (msg) => {
         return snippet
     }, [currentProtocol, httpSnippet, mqttSnippet, websocketSnippet])
 
-    return <div className={'row'}>
-        <div className={'col-lg-7'}>
-            <StreamConnectHeader>Connect</StreamConnectHeader>
-            <StreamConnectText>
-                Applications publish and subscribe to streams via Streamr nodes.
-                In other words, nodes are the access points to the Streamr Network.
-                To connect your application to streams, you interface it with a Streams node.
-            </StreamConnectText>
-            <StreamConnectSubHeader>
-                There are two strategies for interfacing applications with Streamr nodes:
-            </StreamConnectSubHeader>
-            <StreamConnectList>
-                <li>
-                    <strong>Light node: </strong>
-                    the node is imported to your application as a library and runs locally as part of your application
-                </li>
-                <li>
-                    <strong>Broker node: </strong>
-                    the node runs separately, and your application connects to it remotely using one of the supported protocols
-                </li>
-            </StreamConnectList>
+    return (
+        <div className={'row'}>
+            <div className={'col-lg-7'}>
+                <StreamConnectHeader>Connect</StreamConnectHeader>
+                <StreamConnectText>
+                    Applications publish and subscribe to streams via Streamr nodes. In other words, nodes are the access points to the Streamr
+                    Network. To connect your application to streams, you interface it with a Streams node.
+                </StreamConnectText>
+                <StreamConnectSubHeader>There are two strategies for interfacing applications with Streamr nodes:</StreamConnectSubHeader>
+                <StreamConnectList>
+                    <li>
+                        <strong>Light node: </strong>
+                        the node is imported to your application as a library and runs locally as part of your application
+                    </li>
+                    <li>
+                        <strong>Broker node: </strong>
+                        the node runs separately, and your application connects to it remotely using one of the supported protocols
+                    </li>
+                </StreamConnectList>
 
-            <SnippetSelectorContainer>
-                <SelectField2 placeholder={''}
-                    options={[{label: 'Subscribe', value: 'subscribe'}, {label: 'Publish', value: 'publish'}]}
-                    value={action}
-                    isClearable={false}
-                    onChange={(action: 'subscribe' | 'publish') => {
-                        setAction(action)
-                    }}
-                    noShrink={true}/>
-                <span>to</span>
-                <SelectField2 placeholder={''}
-                    options={streams.map((streamId) => ({value: streamId, label: truncateStreamName(streamId)}))}
-                    value={streamId}
-                    isClearable={false}
-                    onChange={(streamId) => {
-                        setSelectedStream(streamId)
-                    }}/>
-                <span>using</span>
-                <SelectField2 placeholder={''}
-                    options={[{label: 'Light node', value: 'lightNode'}, {label: 'Broker node', value: 'brokerNode'}]}
-                    value={nodeType}
-                    isClearable={false}
-                    onChange={(nodeType: 'lightNode' | 'brokerNode') => {
-                        setNodeType(nodeType)
-                    }}
-                    noShrink={true}/>
-            </SnippetSelectorContainer>
+                <SnippetSelectorContainer>
+                    <SelectContainer>
+                        <SelectField2
+                            placeholder={''}
+                            options={[
+                                { label: 'Subscribe', value: 'subscribe' },
+                                { label: 'Publish', value: 'publish' },
+                            ]}
+                            value={action}
+                            isClearable={false}
+                            onChange={(action: 'subscribe' | 'publish') => {
+                                setAction(action)
+                            }}
+                            noShrink={true}
+                            fullWidth
+                        />
+                    </SelectContainer>
+                    <span>to</span>
+                    <SelectContainer>
+                        <SelectField2
+                            placeholder={''}
+                            options={streams.map((streamId) => ({ value: streamId, label: truncateStreamName(streamId) }))}
+                            value={streamId}
+                            isClearable={false}
+                            onChange={(streamId) => {
+                                setSelectedStream(streamId)
+                            }}
+                            fullWidth
+                        />
+                    </SelectContainer>
+                    <span>using</span>
+                    <SelectContainer>
+                        <SelectField2
+                            placeholder={''}
+                            options={[
+                                { label: 'Light node', value: 'lightNode' },
+                                { label: 'Broker node', value: 'brokerNode' },
+                            ]}
+                            value={nodeType}
+                            isClearable={false}
+                            onChange={(nodeType: 'lightNode' | 'brokerNode') => {
+                                setNodeType(nodeType)
+                            }}
+                            noShrink={true}
+                            fullWidth
+                        />
+                    </SelectContainer>
+                </SnippetSelectorContainer>
 
-            {nodeType === 'lightNode' && <>
-                <StreamConnectLightNodeSnippetContainer>
-                    <CodeSnippet language={'javascript'}>{lightNodeSnippet}</CodeSnippet>
-                </StreamConnectLightNodeSnippetContainer>
-                <StreamConnectSnippetCopyContainer>
-                    <Button kind={'secondary'} onClick={() => handleCopy(lightNodeSnippet)}>Copy</Button>
-                </StreamConnectSnippetCopyContainer>
-            </>}
+                {nodeType === 'lightNode' && (
+                    <>
+                        <StreamConnectLightNodeSnippetContainer>
+                            <CodeSnippet language={'javascript'}>{lightNodeSnippet}</CodeSnippet>
+                        </StreamConnectLightNodeSnippetContainer>
+                        <StreamConnectSnippetCopyContainer>
+                            <Button kind={'secondary'} onClick={() => handleCopy(lightNodeSnippet)}>
+                                Copy
+                            </Button>
+                        </StreamConnectSnippetCopyContainer>
+                    </>
+                )}
 
-            {nodeType === 'brokerNode' && <BrokerNodeSnippetContainer>
-                <Tabs selected={'websocket'} onSelect={(tab) => setCurrentProtocol(tab)}>
-                    <Tabs.Item label={'Websocket'} value={'websocket'} key={0}>
-                        <CodeSnippet language={'javascript'}>{websocketSnippet}</CodeSnippet>
-                    </Tabs.Item>
-                    <Tabs.Item label={'HTTP'} value={'http'} key={1}>
-                        <CodeSnippet language={'javascript'}>{httpSnippet}</CodeSnippet>
-                    </Tabs.Item>
-                    <Tabs.Item label={'MQTT'} value={'mqtt'} key={2}>
-                        <CodeSnippet language={'javascript'}>{mqttSnippet}</CodeSnippet>
-                    </Tabs.Item>
-                </Tabs>
-                <StreamConnectSnippetCopyContainer>
-                    <Button kind={'secondary'} onClick={() => handleCopy(currentBrokerSnippet)}>Copy</Button>
-                </StreamConnectSnippetCopyContainer>
-            </BrokerNodeSnippetContainer>}
+                {nodeType === 'brokerNode' && (
+                    <BrokerNodeSnippetContainer>
+                        <Tabs selected={'websocket'} onSelect={(tab) => setCurrentProtocol(tab)}>
+                            <Tabs.Item label={'Websocket'} value={'websocket'} key={0}>
+                                <CodeSnippet language={'javascript'}>{websocketSnippet}</CodeSnippet>
+                            </Tabs.Item>
+                            <Tabs.Item label={'HTTP'} value={'http'} key={1}>
+                                <CodeSnippet language={'javascript'}>{httpSnippet}</CodeSnippet>
+                            </Tabs.Item>
+                            <Tabs.Item label={'MQTT'} value={'mqtt'} key={2}>
+                                <CodeSnippet language={'javascript'}>{mqttSnippet}</CodeSnippet>
+                            </Tabs.Item>
+                        </Tabs>
+                        <StreamConnectSnippetCopyContainer>
+                            <Button kind={'secondary'} onClick={() => handleCopy(currentBrokerSnippet)}>
+                                Copy
+                            </Button>
+                        </StreamConnectSnippetCopyContainer>
+                    </BrokerNodeSnippetContainer>
+                )}
+            </div>
+            <RightColumn className={'col-lg-4 offset-lg-1'}>
+                {/*
+                <StreamConnectLink href={'/'}>
+                    <span>Pattern of data integration</span>
+                    <SvgIcon name={'linkOut'} />
+                </StreamConnectLink>
+            */}
+                <StreamConnectLink href={'https://www.npmjs.com/package/@streamr/cli-tools'} target={'_blank'} rel={'noreferrer noopener'}>
+                    <span>Streamr command line tool</span>
+                    <SvgIcon name={'linkOut'} />
+                </StreamConnectLink>
+                <StreamConnectLink href={'https://www.npmjs.com/package/streamr-client'} target={'_blank'} rel={'noreferrer noopener'}>
+                    <span>Streamr JavaScript Client quickstart</span>
+                    <SvgIcon name={'linkOut'} />
+                </StreamConnectLink>
+            </RightColumn>
         </div>
-        <RightColumn className={'col-lg-4 offset-lg-1'}>
-            {/*<StreamConnectLink href={'/'}>
-            <span>Pattern of data integration</span>
-            <SvgIcon name={'linkOut'} />
-        </StreamConnectLink>*/}
-            <StreamConnectLink href={'https://www.npmjs.com/package/@streamr/cli-tools'} target={'_blank'} rel={'noreferrer noopener'}>
-                <span>Streamr command line tool</span>
-                <SvgIcon name={'linkOut'} />
-            </StreamConnectLink>
-            <StreamConnectLink href={'https://www.npmjs.com/package/streamr-client'} target={'_blank'} rel={'noreferrer noopener'}>
-                <span>Streamr JavaScript Client quickstart</span>
-                <SvgIcon name={'linkOut'} />
-            </StreamConnectLink>
-        </RightColumn>
-    </div>
+    )
 }
 
 const RightColumn = styled.div`
@@ -312,4 +341,8 @@ const SnippetSelectorContainer = styled.div`
 
 const BrokerNodeSnippetContainer = styled.div`
   margin-top: 30px;
+`
+
+const SelectContainer = styled.div`
+    min-width: 140px;
 `

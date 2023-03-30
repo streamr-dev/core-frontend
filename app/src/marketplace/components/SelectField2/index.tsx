@@ -78,7 +78,7 @@ const SelectField2: FunctionComponent<SelectFieldProps> = ({
         menuList: (styles) => getMenuListStyles(styles),
         option: (styles, props) => getOptionStyles(styles, props.isSelected),
         clearIndicator: (styles) => getClearIndicatorStyles(styles, isOpen)
-    }), [])
+    }), [disabled, fullWidth, isOpen, noShrink])
 
     const whiteVariantStyles = useMemo(() => ({
         placeholder: (styles) => getWhitePlaceholderStyles(styles),
@@ -86,7 +86,7 @@ const SelectField2: FunctionComponent<SelectFieldProps> = ({
         menu: (styles) => getWhiteMenuStyles(styles),
         menuList: (styles) => getWhiteMenuListStyles(styles),
         option: (styles, props) => getWhiteOptionStyles(styles, props.isSelected)
-    }), [])
+    }), [disabled, fullWidth, noShrink])
 
     useEffect(() => {
         setSelected(value)
