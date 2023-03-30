@@ -53,7 +53,6 @@ const Image = ({ lightbox, mobileSrc, src, highResSrc, alt, border, className, f
             <div className={imageStyles.lightboxWrapper}>
                 <Figure
                     className={cx(className, imageStyles.docsImage)}
-                    lightbox={lightbox}
                     mobileSrc={mobileSrc}
                     src={lightbox && highResSrc ? highResSrc : src}
                     highResSrc={highResSrc}

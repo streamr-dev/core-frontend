@@ -1,16 +1,13 @@
-import React, { useMemo, useState, useCallback, useEffect, useRef } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { MDXProvider } from '@mdx-js/react'
 import SimpleReactLightbox from 'simple-react-lightbox'
-import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { SM, MD, LG } from '$shared/utils/styled'
 import Layout from '$shared/components/Layout'
 import Components from '$docs/mdxConfig'
-import docsMap from '$docs/docsMap'
 import PageTurner from '$docs/components/PageTurner'
 import DocsContainer from '$shared/components/Container/Docs'
 import BusLine from '$shared/components/BusLine'
-import Button from '$shared/components/Button'
 import SvgIcon from '$shared/components/SvgIcon'
 import isEditableElement from '$shared/utils/isEditableElement'
 import Nav from '$shared/components/Layout/Nav'
@@ -180,25 +177,10 @@ const MobileNav = styled.div`
     }
 `
 
-const DocsLayout = ({ nav = <Nav />, staticContext, ...props }) => {
+const DocsLayout = ({ nav = <Nav />, ...props }) => {
     const [isSearching, setIsSearching] = useState(false)
     const [desktopSearchY, setDesktopSearchY] = useState(0)
     const desktopSearchRef = useRef(null)
-    const { pathname } = useLocation()
-    const editFilePath = useMemo(() => {
-        let path = null
-        Object.values(docsMap).some((doc) => {
-            const found = Object.values(doc).find((subdoc) => subdoc.path === pathname)
-
-            if (found) {
-                path = found.filePath
-                return true
-            }
-
-            return false
-        })
-        return path
-    }, [pathname])
     const toggleOverlay = useCallback(() => {
         setIsSearching((wasSearching) => !wasSearching)
     }, [])
