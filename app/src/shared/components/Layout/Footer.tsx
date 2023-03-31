@@ -8,8 +8,7 @@ import {
     SocialChannels,
 } from '@streamr/streamr-layout'
 
-import docsLinks from '$shared/../docsLinks'
-import { COLORS, DESKTOP, TABLET } from '$shared/utils/styled'
+import { COLORS } from '$shared/utils/styled'
 import routes from '$routes'
 
 const MadeBy = styled(UnstyledMadeBy)`
@@ -48,7 +47,7 @@ const Footer = ({ topBorder = false }) => (
                 <a href={routes.community.medium()}>Blog</a>
             </FooterColumn>
             <FooterColumn title="Developers">
-                <a href={docsLinks.docs}>Docs</a>
+                <a href="https://docs.streamr.network/">Docs</a>
                 <a href={routes.site.fund()}>Data Fund</a>
                 <a href={routes.site.design()}>Design Assets</a>
             </FooterColumn>

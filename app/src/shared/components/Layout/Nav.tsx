@@ -11,7 +11,6 @@ import {
     NavOverlay,
 } from '@streamr/streamr-layout'
 
-import docsLinks from '$shared/../docsLinks'
 import { MD as TABLET, LG as DESKTOP, COLORS, REGULAR, MEDIUM } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -21,16 +20,11 @@ import {useAuthController} from "$auth/hooks/useAuthController"
 import {truncate} from "$shared/utils/text"
 import routes from '$routes'
 import { Avatarless, Name, Username } from './User'
-import SiteSection from './SiteSection'
 import MetamaskIcon from './metamask.svg'
 import WalletconnectIcon from './walletConnect.svg'
 
 const MOBILE_LG = 576
 
-const icons: {[key: string]: any} = {
-    metamask: MetamaskIcon,
-    walletConnect: WalletconnectIcon,
-}
 const CaretDownIcon = styled(SvgIcon)`
     opacity: 1;
 `
@@ -650,7 +644,6 @@ const N: FunctionComponent<{children?: any, shadow?: any}> = ({ children, shadow
 
 Object.assign(N, {
     Container: NavContainer,
-    SiteSection,
 })
 
 export default N

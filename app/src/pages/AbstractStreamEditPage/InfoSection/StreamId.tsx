@@ -1,7 +1,5 @@
-import React, { Fragment, useMemo, useState, useEffect, useRef } from 'react'
+import React, { useMemo, useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
-
-import docsLinks from '$shared/../docsLinks'
 import { SM, MONO, MEDIUM } from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
 import Button from '$shared/components/Button'
@@ -11,7 +9,6 @@ import Label from '$ui/Label'
 import Text from '$ui/Text'
 import Select from '$ui/Select'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
-import getStreamPath from '$app/src/getters/getStreamPath'
 import useStreamId from '$shared/hooks/useStreamId'
 import useCopy from '$shared/hooks/useCopy'
 import Notification from '$shared/utils/Notification'
@@ -20,7 +17,7 @@ import { NotificationIcon } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
 import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
-import {useAuthController} from "$auth/hooks/useAuthController"
+import { useAuthController } from "$auth/hooks/useAuthController"
 import useStreamOwnerOptions, { ADD_ENS_DOMAIN_VALUE } from './useStreamOwnerOptions'
 
 export const ENS_DOMAINS_URL = 'https://ens.domains'
@@ -190,11 +187,7 @@ export function EditableStreamId({ className, disabled }) {
                             <p>Multi</p>
                             <pre>oxd93...52874/oracles/price</pre>
                             <p>
-                                For more information, see the{' '}
-                                <a href={docsLinks.streams} target="_blank" rel="noopener noreferrer">
-                                    docs
-                                </a>
-                                .
+                                For more information, see the <a href="https://docs.streamr.network/">docs</a>.
                             </p>
                         </Tooltip>
                     </Hint>

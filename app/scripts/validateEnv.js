@@ -8,7 +8,6 @@ const envSchema = object({
     PORT: nonNegativeNumberic(),
     SENTRY_DSN: string().optional().url(),
     SENTRY_ENVIRONMENT: string().required(),
-    SENTRY_INDEXER_DSN: string().required().url(),
     SENTRY_ORG: string().required(),
     SENTRY_PROJECT: string().required(),
 })

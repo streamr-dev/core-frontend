@@ -1,7 +1,5 @@
 import React, { FunctionComponent } from 'react'
-import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import docsLinks from '$shared/../docsLinks'
 import Button from '$shared/components/Button'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
@@ -43,7 +41,7 @@ const NoCreatedProductsView = () => (
             <Message>
                 Click the Create button above to get started.
                 <br />
-                If you need help, see the <Link to={docsLinks.creatingDataProducts}>docs</Link>.
+                If you need help, see the <a href="https://docs.streamr.network/">docs</a>.
             </Message>
             <MobileMessage>Use the app in a desktop browser to create one.</MobileMessage>
         </p>
