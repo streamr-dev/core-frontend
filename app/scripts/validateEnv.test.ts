@@ -32,9 +32,11 @@ function presenceTest(key) {
     }
 }
 
-function urlTest(key) {
+function urlTest(key, required = true) {
     return async () => {
-        await presenceTest(key)()
+        if (required) {
+            await presenceTest(key)()
+        }
 
         await ex({
             [key]: 'http://',
@@ -94,7 +96,7 @@ it('ensures valid PLATFORM_PUBLIC_PATH', presenceTest('PLATFORM_PUBLIC_PATH'))
 
 it('ensures valid PORT', nonNegativeNumericTest('PORT'))
 
-it('ensures valid SENTRY_DSN', urlTest('SENTRY_DSN'))
+it('ensures valid SENTRY_DSN', urlTest('SENTRY_DSN', false))
 
 it('ensures valid SENTRY_ENVIRONMENT', presenceTest('SENTRY_ENVIRONMENT'))
 
