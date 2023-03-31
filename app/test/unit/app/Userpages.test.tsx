@@ -8,10 +8,6 @@ jest.mock('$app/src/pages/StreamEditPage', () => ({
     __esModule: true,
     default: ({ match }) => `Stream ${match.params.id} view/edit page`,
 }))
-jest.mock('$app/src/pages/StreamListPage', () => ({
-    __esModule: true,
-    default: () => 'Stream list',
-}))
 jest.mock('$app/src/pages/StreamCreatePage', () => ({
     __esModule: true,
     default: () => 'New stream page',
@@ -92,14 +88,4 @@ describe('Userpages Routes', () => {
         )
         expect(el.text()).toBe('Edit product')
     })
-    /*
-    it('redirects to stream list on bad route', () => {
-        const el = mount(
-            <MemoryRouter initialEntries={['/core/some/route']}>
-                <Switch>{UserpagesRouter()}</Switch>
-            </MemoryRouter>,
-        )
-        expect(el.text()).toBe('Stream list')
-    })
-    */
 })

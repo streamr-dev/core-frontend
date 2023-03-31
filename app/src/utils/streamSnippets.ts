@@ -5,38 +5,6 @@ export interface StreamSnippet {
 
 export type StreamSnippetGetter = (streamData: {id: string}) => StreamSnippet
 
-export const subscribeSnippets: StreamSnippetGetter = ({ id }: {id: string}): StreamSnippet => ({
-    javascript: `
-        const StreamrClient = require('streamr-client')
-
-        const client = new StreamrClient({
-            auth: {
-                privateKey: 'YOUR-PRIVATE-KEY',
-            },
-        })
-
-        // Subscribe to a stream
-        client.subscribe({
-            stream: '${id}',
-        }, (message, metadata) => {
-            // Do something with the message here!
-            console.log(message)
-        })
-    `,
-    java: `
-        AuthenticationMethod method = new EthereumAuthenticationMethod("YOUR-PRIVATE-KEY");
-        StreamrClient client = new StreamrClient(method);
-        Stream stream = client.getStream("${id}");
-
-        Subscription sub = client.subscribe(stream, new MessageHandler() {
-            @Override
-            void onMessage(Subscription s, StreamMessage message) {
-                // Here you can react to the latest message
-                System.out.println(message.getPayload().toString());
-            }
-        });
-    `,
-})
 export const lightNodeSnippets: StreamSnippetGetter = ({ id }: {id: string}): StreamSnippet => ({
     javascript: `
         // Run a Streamr node right inside your JS app

@@ -90,12 +90,3 @@ export const NotificationIcon = {
     INFO: 'info',
     SPINNER: 'spinner',
 }
-export const ProgrammingLanguages = {
-    JAVASCRIPT: 'javascript',
-    JAVA: 'java',
-}
-export const StreamrClientRepositories = {
-    [ProgrammingLanguages.JAVASCRIPT]: 'https://github.com/streamr-dev/network-monorepo',
-    [ProgrammingLanguages.JAVA]: 'https://github.com/streamr-dev/streamr-client-java',
-}
-
