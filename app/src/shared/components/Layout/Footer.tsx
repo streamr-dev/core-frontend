@@ -54,8 +54,7 @@ const Footer = ({ topBorder = false }) => (
             </FooterColumn>
             <FooterColumn title="Apps">
                 <a href={routes.networkExplorer()}>Network Explorer</a>
-                <a href={routes.marketplace.index()}>Marketplace</a>
-                <a href={routes.core()}>Core</a>
+                <a href={routes.hub()}>Hub</a>
             </FooterColumn>
             <FooterColumn title="Contact">
                 <a href={routes.contact.general()}>General</a>

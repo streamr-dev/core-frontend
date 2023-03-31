@@ -11,7 +11,7 @@ const resourcePath = (resourceType: $Keys<typeof ResourceType>, id: ResourceID):
             })
 
         case ResourceType.PRODUCT:
-            return routes.products.edit({
+            return routes.projects.edit({
                 id,
             })
 

@@ -167,7 +167,7 @@ const UnstyledDesktopNav: FunctionComponent<{className?: string}> = ({ className
                 </Navbar.Item>
                 <Navbar.Item data-desktop-only>
                     {isAuthenticated && (
-                        <Button tag={Link} href={routes.core()} size="mini" outline>
+                        <Button tag={Link} href={routes.hub()} size="mini" outline>
                             Use Core
                         </Button>
                     )}
@@ -315,7 +315,7 @@ const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className 
             </NavOverlay.Body>
             <NavOverlay.Footer>
                 {isAuthenticated && (
-                    <Button tag={Link} href={routes.core()}>
+                    <Button tag={Link} href={routes.hub()}>
                         Use Core
                     </Button>
                 )}

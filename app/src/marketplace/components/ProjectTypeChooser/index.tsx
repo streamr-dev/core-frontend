@@ -172,7 +172,7 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
         if (!selectedProductType) {
             return null
         }
-        return routes.products.new({type: selectedProductType})
+        return routes.projects.new({type: selectedProductType})
     }, [selectedProductType])
 
     useEffect(() => {
@@ -185,7 +185,7 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
 
     return <Root className={className}>
         <PageTitleContainer>
-            <PageTitle>Choose your product type</PageTitle>
+            <PageTitle>Choose your project type</PageTitle>
             <CloseButton type="button" onClick={onClose}>
                 <SvgIcon name="crossMedium" />
             </CloseButton>

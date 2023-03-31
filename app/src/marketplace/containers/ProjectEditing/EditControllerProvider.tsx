@@ -89,12 +89,8 @@ function useEditController(product: Project) {
             return
         }
 
-        if (isDataUnionProduct(product)) {
-            history.replace(routes.dataunions.index())
-        } else {
-            history.replace(routes.products.index())
-        }
-    }, [isMounted, history, product])
+        history.replace(routes.projects.index())
+    }, [isMounted, history])
     const productId = product.id
     const redirectToProduct = useCallback(() => {
         if (!isMounted()) {
@@ -102,7 +98,7 @@ function useEditController(product: Project) {
         }
 
         history.replace(
-            routes.marketplace.product.overview({
+            routes.projects.overview({
                 id: productId,
             }),
         )

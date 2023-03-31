@@ -55,7 +55,7 @@ const Description: FunctionComponent<{project: Project}> = ({project}) => {
                     )}
                 </p>
                 {project.type === ProjectTypeEnum.OPEN_DATA && (
-                    <Button tag={Link} to={routes.marketplace.product.connect({ id: project.id })}>
+                    <Button tag={Link} to={routes.projects.connect({ id: project.id })}>
                         Connect
                     </Button>
                 )}

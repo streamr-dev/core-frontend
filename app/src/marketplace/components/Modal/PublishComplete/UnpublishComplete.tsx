@@ -21,7 +21,7 @@ const UnpublishComplete = ({ onClose }: Props) => (
             <p>
                 The product has been unpublished.
                 <br />
-                You can still see it in <Link to={routes.products.index()}>your products</Link>.
+                You can still see it in <Link to={routes.projects.index()}>your products</Link>.
             </p>
         </Dialog>
     </ModalPortal>

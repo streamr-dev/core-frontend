@@ -37,7 +37,7 @@ export const ProjectPageTitle: FunctionComponent = () => {
 
     return <PageTitleContainer>
         <span>{title}</span>
-        {canEdit && <EditButton tag={Link} to={routes.products.edit({id: project.id})} kind={'secondary'} size={'mini'}>
+        {canEdit && <EditButton tag={Link} to={routes.projects.edit({id: project.id})} kind={'secondary'} size={'mini'}>
             <SvgIcon name={'pencilFull'} />
         </EditButton>}
     </PageTitleContainer>
