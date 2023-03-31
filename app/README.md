@@ -1,7 +1,7 @@
 # Streamr Core frontend
 
 This is the Streamr Core application frontend, which includes tooling for creating and editing Streamr resources
-(streams, data unions, products), the data marketplace, and related documentation.
+(streams, data unions, products), and the data marketplace.
 
 The Core frontend runs against an API backend and Ethereum smart contracts. For more information see [Backend](#backend).
 
