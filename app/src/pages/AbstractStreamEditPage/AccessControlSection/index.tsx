@@ -20,7 +20,7 @@ const AccessControlSection: React.FunctionComponent<Props> = ({ disabled: disabl
         <TOCSection id="accessControl" title="Access control">
             <p>
                 You can make your stream public, or grant access to specific Ethereum accounts.
-                Learn more about stream access control from the docs.
+                Learn more about stream access control from the <a href="https://docs.streamr.network/">docs</a>.
             </p>
             <StreamTypeSelector disabled={disabled} />
             <PermissionList disabled={disabled} />

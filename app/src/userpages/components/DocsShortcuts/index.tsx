@@ -1,22 +1,18 @@
 import React, { FunctionComponent } from 'react'
-import docsLinks from '$shared/../docsLinks'
 import Link from '$shared/components/Link'
 import Onboarding from '$shared/components/Onboarding'
 import routes from '$routes'
 
 const DocsShortcuts: FunctionComponent = () => (
     <Onboarding title="Docs">
-        <Link to={docsLinks.gettingStarted} target="_blank" rel="noopener noreferrer">
-            Getting started
+        <Link href="https://docs.streamr.network/quickstart" target="_blank" rel="noopener noreferrer">
+            Quickstart
         </Link>
-        <Link to={docsLinks.streams} target="_blank" rel="noopener noreferrer">
-            Streams
+        <Link href="https://docs.streamr.network/usage" target="_blank" rel="noopener noreferrer">
+            Usage
         </Link>
-        <Link to={docsLinks.products} target="_blank" rel="noopener noreferrer">
-            Products
-        </Link>
-        <Link to={docsLinks.dataUnions} target="_blank" rel="noopener noreferrer">
-            Data Unions
+        <Link href="https://docs.streamr.network/streamr-network" target="_blank" rel="noopener noreferrer">
+            Streamr Network
         </Link>
         {null}
         <Link href={routes.community.discord()} target="_blank" rel="noopener noreferrer">
