@@ -330,10 +330,9 @@ const UserInfoMobile = styled.div`
 `
 
 const UnstyledDesktopNav: FunctionComponent = (props) => {
-    const { highlight: current } = NavProvider.useState()
     const { pathname } = useLocation()
-    const {currentAuthSession} = useAuthController()
-    const {address: accountAddress, ensName} = currentAuthSession
+    const { currentAuthSession } = useAuthController()
+    const { address: accountAddress, ensName } = currentAuthSession
 
     return (
         <div {...props}>
@@ -345,21 +344,21 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                 </NavbarItem>
                 <MenuGrid data-desktop-only>
                     <NavbarItem>
-                        <NavbarLinkDesktop highlight={current === 'marketplace'}>
-                            <NavLink as={Link} to={routes.marketplace.index()}>
+                        <NavbarLinkDesktop highlight={pathname.startsWith(routes.projects.index())}>
+                            <NavLink as={Link} to={routes.projects.index()}>
                                 Projects
                             </NavLink>
                         </NavbarLinkDesktop>
                     </NavbarItem>
                     <NavbarItem>
-                        <NavbarLinkDesktop highlight={current === 'core'}>
+                        <NavbarLinkDesktop highlight={pathname.startsWith(routes.streams.index())}>
                             <NavLink as={Link} to={routes.streams.index()}>
                                 Streams
                             </NavLink>
                         </NavbarLinkDesktop>
                     </NavbarItem>
                     <NavbarItem>
-                        <NavbarLinkDesktop highlight={current === 'network'}>
+                        <NavbarLinkDesktop highlight={false}>
                             <NavLink as={Link} href={routes.networkExplorer()} rel="noopener noreferrer" target="_blank">
                                 Network
                             </NavLink>
@@ -424,8 +423,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
 }
 
 const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className }) => {
-    const { highlight: current } = NavProvider.useState()
-    const {currentAuthSession} = useAuthController()
+    const { currentAuthSession } = useAuthController()
     const { pathname } = useLocation()
 
     return (
@@ -452,17 +450,17 @@ const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className 
                         </div>
                     </UserInfoMobile>
                 }
-                <NavbarLinkMobile highlight={current === 'marketplace'}>
-                    <NavLink as={Link} to={routes.marketplace.index()}>
+                <NavbarLinkMobile highlight={pathname.startsWith(routes.projects.index())}>
+                    <NavLink as={Link} to={routes.projects.index()}>
                         Projects
                     </NavLink>
                 </NavbarLinkMobile>
-                <NavbarLinkMobile highlight={current === 'core'}>
+                <NavbarLinkMobile highlight={pathname.startsWith(routes.streams.index())}>
                     <NavLink as={Link} to={routes.streams.index()}>
                         Streams
                     </NavLink>
                 </NavbarLinkMobile>
-                <NavbarLinkMobile highlight={current === 'network'}>
+                <NavbarLinkMobile highlight={false}>
                     <NavLink as={Link} href={routes.networkExplorer()} rel="noopener noreferrer" target="_blank">
                         Network
                     </NavLink>

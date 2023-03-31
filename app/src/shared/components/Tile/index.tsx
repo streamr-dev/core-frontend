@@ -229,7 +229,7 @@ const PurchaseTile = ({ expiresAt, now, numMembers, product, showDataUnionBadge,
             <Link
                 to={
                     product.id &&
-                    routes.marketplace.product.overview({
+                    routes.projects.overview({
                         id: product.id,
                     })
                 }
@@ -244,7 +244,7 @@ const PurchaseTile = ({ expiresAt, now, numMembers, product, showDataUnionBadge,
                         memberCount={numMembers}
                         linkTo={
                             product.id &&
-                            routes.marketplace.product.overview(
+                            routes.projects.overview(
                                 {
                                     id: product.id,
                                 },
@@ -259,7 +259,7 @@ const PurchaseTile = ({ expiresAt, now, numMembers, product, showDataUnionBadge,
         <Link
             to={
                 product.id &&
-                routes.marketplace.product.overview({
+                routes.projects.overview({
                     id: product.id,
                 })
             }
@@ -286,7 +286,7 @@ const ProductTile = ({ actions, deployed, published, numMembers, product, showDa
             <Link
                 to={
                     product.id &&
-                    routes.products.edit({
+                    routes.projects.edit({
                         id: product.id,
                     })
                 }
@@ -295,13 +295,13 @@ const ProductTile = ({ actions, deployed, published, numMembers, product, showDa
                     <TileThumbnail src={product.imageUrl || ''} />
                 </TileImageContainer>
             </Link>
-            {!!showDataUnionBadge && <DataUnionBadge top left memberCount={numMembers} linkTo={routes.dataunions.index()} />}
+            {!!showDataUnionBadge && <DataUnionBadge top left memberCount={numMembers} linkTo={routes.projects.index()} />}
             {!!showDeployingBadge && <DeployingBadge bottom right />}
         </TileImageContainer>
         <Link
             to={
                 product.id &&
-                routes.products.edit({
+                routes.projects.edit({
                     id: product.id,
                 })
             }
@@ -321,7 +321,7 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, showEditButton, .
     <Tile {...props}>
         <TileImageContainer>
             <Link
-                to={routes.marketplace.product.overview({
+                to={routes.projects.overview({
                     id: product.id,
                 })}
             >
@@ -334,7 +334,7 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, showEditButton, .
                     top
                     left
                     memberCount={product.members}
-                    linkTo={routes.marketplace.product.overview(
+                    linkTo={routes.projects.overview(
                         {
                             id: product.id,
                         },
@@ -343,13 +343,13 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, showEditButton, .
                 />
             )}
             {showEditButton && (
-                <EditButton to={routes.products.edit({ id: product.id })}>
+                <EditButton to={routes.projects.edit({ id: product.id })}>
                     <SvgIcon name={'pencilFull'} />
                 </EditButton>
             )}
         </TileImageContainer>
         <Link
-            to={routes.marketplace.product.overview({
+            to={routes.projects.overview({
                 id: product.id,
             })}
         >

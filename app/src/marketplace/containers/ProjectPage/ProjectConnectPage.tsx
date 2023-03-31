@@ -19,7 +19,7 @@ const ProjectConnect: FunctionComponent = () => {
     return <Layout nav={<Nav/>} innerClassName={styles.greyInner}>
         <MarketplaceHelmet title={project.name}/>
         <DetailsPageHeader
-            backButtonLink={routes.marketplace.index}
+            backButtonLink={routes.projects.index}
             pageTitle={<ProjectPageTitle/>}
             linkTabs={linkTabs}
         />

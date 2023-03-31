@@ -20,7 +20,7 @@ const ProjectLiveData: FunctionComponent = () => {
     return (
         <CoreLayout>
             <MarketplaceHelmet title={project.name} />
-            <DetailsPageHeader backButtonLink={routes.marketplace.index} pageTitle={<ProjectPageTitle />} linkTabs={linkTabs} />
+            <DetailsPageHeader backButtonLink={routes.projects.index} pageTitle={<ProjectPageTitle />} linkTabs={linkTabs} />
             {userHasAccess ? (
                 <StreamPreview streamsList={project.streams} />
             ) : (

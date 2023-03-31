@@ -36,7 +36,7 @@ export const getStreamDetailsLinkTabs = (streamId?: string) => {
     return [
         {
             label: 'Stream overview',
-            href:  routes.streams.show({id: streamId})
+            href:  routes.streams.overview({id: streamId})
         },
         {
             label: 'Connect',

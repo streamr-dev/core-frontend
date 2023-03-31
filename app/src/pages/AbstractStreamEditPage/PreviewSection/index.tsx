@@ -53,7 +53,7 @@ function UnwrappedPreviewSection() {
                     <Button
                         tag={Link}
                         kind="secondary"
-                        to={routes.streams.preview({
+                        to={routes.streams.liveData({
                             id: streamId,
                         })}
                         rel="noopener noreferrer"

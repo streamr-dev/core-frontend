@@ -45,24 +45,25 @@ describe('Nav.Wide', () => {
                     </Provider>
                 </MemoryRouter>,
             )
+            console.log(el.debug())
             expect(
                 el
                     .find({
-                        href: '/core/streams',
+                        href: '/hub/streams',
                     })
                     .exists(),
             ).toBe(true)
             expect(
                 el
                     .find({
-                        href: '/marketplace',
+                        href: '/hub/projects',
                     })
                     .exists(),
             ).toBe(true)
             expect(
                 el
                     .find({
-                        href: '/login?redirect=%2F',
+                        href: '/hub/login?redirect=%2F',
                     })
                     .exists(),
             ).toBe(true)
@@ -81,21 +82,21 @@ describe('Nav.Wide', () => {
             expect(
                 el
                     .find({
-                        href: '/core/streams',
+                        href: '/hub/streams',
                     })
                     .exists(),
             ).toBe(true)
             expect(
                 el
                     .find({
-                        href: '/login',
+                        href: '/hub/login',
                     })
                     .exists(),
             ).toBe(false)
             expect(
                 el
                     .find({
-                        href: '/logout',
+                        href: '/hub/logout',
                     })
                     .exists(),
             ).toBe(true)

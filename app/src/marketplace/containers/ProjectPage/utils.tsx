@@ -11,15 +11,15 @@ export const getProjectDetailsLinkTabs = (projectId: string): LinkTabOptionProps
     return [
         {
             label: 'Project overview',
-            href:  routes.marketplace.product.overview({id: projectId})
+            href:  routes.projects.overview({id: projectId})
         },
         {
             label: 'Connect',
-            href:  routes.marketplace.product.connect({id: projectId})
+            href:  routes.projects.connect({id: projectId})
         },
         {
             label: 'Live data',
-            href:  routes.marketplace.product.liveData({id: projectId}),
+            href:  routes.projects.liveData({id: projectId}),
         }
     ]
 }
