@@ -5,8 +5,7 @@ import Spinner from '$shared/components/Spinner'
 import useStreamId from '$shared/hooks/useStreamId'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import Notification from '$shared/utils/Notification'
-import { NotificationIcon, networks } from '$shared/utils/constants'
-import useValidateNetwork from '$shared/hooks/useValidateNetwork'
+import { NotificationIcon } from '$shared/utils/constants'
 import { useStreamEditorStore } from '../state'
 
 type Props = {
@@ -31,8 +30,7 @@ function UnstyledStorageNodeItem({ address, active: activeProp, className, disab
     const streamId = useStreamId()
     const itp = useInterrupt()
     const [busy, setBusy] = useState(typeof active === 'undefined')
-    const validateNetwork = useValidateNetwork()
-    const onClick = useCallback(async () => {
+    const onClick = useCallback(() => {
         if (disabled) {
             return
         }
@@ -48,7 +46,6 @@ function UnstyledStorageNodeItem({ address, active: activeProp, className, disab
 
         try {
             try {
-                await validateNetwork(networks.STREAMS)
                 requireUninterrupted()
                 if (active) {
                     removeStorageNode(address)
@@ -72,7 +69,7 @@ function UnstyledStorageNodeItem({ address, active: activeProp, className, disab
         }
 
         setActive(success ? !active : active)
-    }, [itp, address, active, validateNetwork, addStorageNode, removeStorageNode, disabled])
+    }, [itp, address, active, addStorageNode, removeStorageNode, disabled])
     useEffect(
         () => () => {
             // Ignore the result of any in-the-air toggling if conditions change.
