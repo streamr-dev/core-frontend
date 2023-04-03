@@ -8,10 +8,7 @@ import { formatDateTime } from '$mp/utils/time'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import useCopy from '$shared/hooks/useCopy'
-import {COLORS, DESKTOP, MAX_BODY_WIDTH, MEDIUM, TABLET} from '$shared/utils/styled'
-import EmptyState from '$shared/components/EmptyState'
-import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
-import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
+import {COLORS, MAX_BODY_WIDTH, MEDIUM, TABLET} from '$shared/utils/styled'
 import SelectField2 from "$mp/components/SelectField2"
 import {CopyButton} from "$shared/components/CopyButton/CopyButton"
 import {truncateStreamName} from "$shared/utils/text"
@@ -49,10 +46,6 @@ const Container = styled.div<ContainerProps>`
     @media (min-width: ${MAX_BODY_WIDTH}px) {
         grid-template-columns: auto ${MAX_BODY_WIDTH - 560}px 560px auto;
     }
-`
-
-const FillContainer = styled(Container)`
-    flex-grow: 1;
 `
 
 const LeftFiller = styled.div`
@@ -106,14 +99,6 @@ const Lhs = styled(Side)`
     grid-template-columns: auto 1fr;
     border-bottom: 1px solid ${COLORS.separator};
   }
-  
-  ${Header} {
-    ${Row} {
-      &:first-of-type {
-        border-top: 1px solid ${COLORS.separator};
-      }
-    }
-  }
 
   ${Inner} {
     grid-template-columns: 224px 1fr;
@@ -158,6 +143,10 @@ const Rhs = styled(Side)`
       grid-template-columns: 164px 1fr;
     }
   }
+`
+
+const ToolbarContainer = styled.div`
+    border-bottom: 1px solid ${COLORS.separator};
 `
 
 const tz = moment.tz.guess()
@@ -224,7 +213,6 @@ type Props = {
     partitions: Array<any>,
     streamId: string,
     streamIds: Array<string>,
-    hasSubscribePermission: boolean,
 }
 
 const UnstyledFeed = ({
@@ -240,7 +228,6 @@ const UnstyledFeed = ({
     partitions = [],
     streamId,
     streamIds = [streamId],
-    hasSubscribePermission,
 }: Props) => {
     const [datapoint, setDatapoint] = useState()
     useEffect(() => {
@@ -278,38 +265,49 @@ const UnstyledFeed = ({
 
     return (
         <div className={className}>
-            <MobileStreamSelector>
-                <p className={'label'}>Select a Stream</p>
-                <div className={'selector'}>
-                    <ModalStreamSelector streamIds={streamIds} selectedStream={streamId} onChange={onStreamChange}/>
-                    <CopyButton valueToCopy={'aaa'} className={'white'}/>
-                </div>
-            </MobileStreamSelector>
+            {streamOptions.length > 1 && (
+                <MobileStreamSelector>
+                    <p className={'label'}>Select a Stream</p>
+                    <div className={'selector'}>
+                        <ModalStreamSelector streamIds={streamIds} selectedStream={streamId} onChange={onStreamChange} />
+                        <CopyButton valueToCopy={'aaa'} className={'white'} />
+                    </div>
+                </MobileStreamSelector>
+            )}
             <Container inspectorFocused={inspectorFocused}>
                 <LeftFiller />
                 <Lhs className={'no-overflow-desktop'}>
-                    {streamOptions.length > 1 && <DesktopStreamSelector>
-                        <StreamSelectorContainer>
-                            <p className={"select-stream-label"}>Select a stream</p>
-                            <StreamSelector>
-                                <SelectField2
-                                    placeholder={'Select Stream'}
-                                    options={streamOptions}
-                                    onChange={onStreamChange}
-                                    isClearable={false}
-                                    value={streamId}
-                                />
-                                <CopyButton valueToCopy={streamId} notificationDescription={'The stream name was copied to your clipboard'} />
-                            </StreamSelector>
-                        </StreamSelectorContainer>
-                    </DesktopStreamSelector>}
-                    <DesktopToolbar
-                        onPartitionChange={onPartitionChange}
-                        onSettingsButtonClick={onSettingsButtonClick}
-                        partition={partition}
-                        partitions={partitions || []}
-                        streamId={streamId}
-                    />
+                    {(streamOptions.length > 1 || (partitions != null && partitions.length > 1)) && (
+                        <ToolbarContainer>
+                            {streamOptions.length > 1 && (
+                                <DesktopStreamSelector>
+                                    <StreamSelectorContainer>
+                                        <p className={'select-stream-label'}>Select a stream</p>
+                                        <StreamSelector>
+                                            <SelectField2
+                                                placeholder={'Select Stream'}
+                                                options={streamOptions}
+                                                onChange={onStreamChange}
+                                                isClearable={false}
+                                                value={streamId}
+                                            />
+                                            <CopyButton
+                                                valueToCopy={streamId}
+                                                notificationDescription={'The stream name was copied to your clipboard'}
+                                            />
+                                        </StreamSelector>
+                                    </StreamSelectorContainer>
+                                </DesktopStreamSelector>
+                            )}
+                            <DesktopToolbar
+                                onPartitionChange={onPartitionChange}
+                                onSettingsButtonClick={onSettingsButtonClick}
+                                partition={partition}
+                                partitions={partitions || []}
+                                streamId={streamId}
+                            />
+                        </ToolbarContainer>
+                    )}
                 </Lhs>
                 <Rhs />
                 <RightFiller />
@@ -348,12 +346,7 @@ const UnstyledFeed = ({
                                     >
                                         <Layout.Pusher />
                                         <Inner>
-                                            <Cell as={Tag}>
-                                                {formatDateTime(
-                                                    d.metadata && d.metadata.timestamp,
-                                                    tz,
-                                                )}
-                                            </Cell>
+                                            <Cell as={Tag}>{formatDateTime(d.metadata && d.metadata.timestamp, tz)}</Cell>
                                             <Cell as={Tag}>{JSON.stringify(d.data)}</Cell>
                                         </Inner>
                                     </Row>
@@ -408,20 +401,6 @@ const UnstyledFeed = ({
                 </Rhs>
                 <RightFiller />
             </Container>
-            <FillContainer inspectorFocused={inspectorFocused}>
-                <LeftFiller />
-                <Lhs>
-                    {!hasSubscribePermission && (
-                        <EmptyState image={<img src={emptyStateIcon} srcSet={`${emptyStateIcon2x} 2x`} alt="No permission to subscribe" />}>
-                            <p>
-                                <span>You do not have permission to<br/>subscribe to the stream.</span>
-                            </p>
-                        </EmptyState>
-                    )}
-                </Lhs>
-                <Rhs />
-                <RightFiller />
-            </FillContainer>
         </div>
     )
 }

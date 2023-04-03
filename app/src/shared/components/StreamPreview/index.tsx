@@ -8,6 +8,10 @@ import Errors from '$ui/Errors'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import {StreamId} from "$shared/types/stream-types"
 import useStreamData from "$shared/hooks/useStreamData"
+import EmptyState from '$shared/components/EmptyState'
+import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
+import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
+
 import IconButton from './IconButton'
 import Feed from './Feed'
 import Foot from './Foot'
@@ -89,26 +93,34 @@ const UnstyledStreamPreview: FunctionComponent<StreamPreviewPros> = ({
 
     return <>
         <LoadingIndicator loading={loading} />
+        {previewDisabled && (
+            <EmptyState image={<img src={emptyStateIcon} srcSet={`${emptyStateIcon2x} 2x`} alt="No permission to subscribe" />}>
+                <p>
+                    <span>You do not have permission to<br/>subscribe to the stream.</span>
+                </p>
+            </EmptyState>
+        )}
         {!loading && <>
-            <Feed
-                className={className}
-                inspectorFocused={inspectorFocused}
-                streamData={streamData}
-                streamLoaded={!loading}
-                // errorComponent={
-                //     <Fragment>
-                //         {!!dataError && <Errors>{dataError}</Errors>}
-                //     </Fragment>
-                // }
-                onPartitionChange={setPartition}
-                onSettingsButtonClick={undefined}
-                onStreamChange={setSelectedStreamId}
-                partition={partition}
-                partitions={partitionOptions || []}
-                streamId={selectedStreamId}
-                streamIds={streamsList}
-                hasSubscribePermission={!previewDisabled}
-            />
+            {!previewDisabled && (
+                <Feed
+                    className={className}
+                    inspectorFocused={inspectorFocused}
+                    streamData={streamData}
+                    streamLoaded={!loading}
+                    // errorComponent={
+                    //     <Fragment>
+                    //         {!!dataError && <Errors>{dataError}</Errors>}
+                    //     </Fragment>
+                    // }
+                    onPartitionChange={setPartition}
+                    onSettingsButtonClick={undefined}
+                    onStreamChange={setSelectedStreamId}
+                    partition={partition}
+                    partitions={partitionOptions || []}
+                    streamId={selectedStreamId}
+                    streamIds={streamsList}
+                />
+            )}
             <Foot>
                 <div>
                     <InspectorButton
