@@ -1,4 +1,4 @@
-import StreamrClient, { ExternalProvider } from 'streamr-client'
+import { type StreamrClient, type ExternalProvider } from 'streamr-client'
 import Web3 from 'web3'
 import getWeb3 from '../utils/web3/getWeb3'
 import getChainId from '../utils/web3/getChainId'
@@ -26,7 +26,7 @@ export default async function getTransactionalClient() {
 
     provider = currentProvider
 
-    streamrClient = new StreamrClient({
+    streamrClient = new (await require('streamr-client')).StreamrClient({
         auth: {
             ethereum: currentProvider as ExternalProvider,
         },
@@ -34,3 +34,6 @@ export default async function getTransactionalClient() {
 
     return streamrClient
 }
+
+// Load the client library proactively so that we don't have to wait later.
+getTransactionalClient()
