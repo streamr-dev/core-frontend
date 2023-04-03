@@ -293,15 +293,6 @@ export const searchProjects = async (search: string, first = 20, skip = 0, type?
         }
     })
 
-    console.log('search query', `projectSearch(
-                        first: ${first + 1},
-                        skip: ${skip},
-                        text: "${search}",
-                        ${typeFilter !== null ? `where: {${typeFilter}` : ''}
-                    ) {
-                        ${projectFields}
-                    }`)
-
     if (result.data) {
         return prepareProjectResult(result.data.projectSearch, first)
     }
