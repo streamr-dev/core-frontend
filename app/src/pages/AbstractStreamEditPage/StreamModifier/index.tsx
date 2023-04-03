@@ -17,10 +17,10 @@ import DuplicateError from '$shared/errors/DuplicateError'
 import { useStreamSetter } from '$shared/contexts/StreamSetterContext'
 import useValidateNetwork from '$shared/hooks/useValidateNetwork'
 import {useAuthController} from "$auth/hooks/useAuthController"
+import getTransactionalClient from '$app/src/getters/getTransactionalClient'
 import routes from '$routes'
 import ConfirmExitModal from './ConfirmExitModal'
 import reducer, { initialState, Init, SetBusy, Modify } from './reducer'
-import getTransactionalClient from '$app/src/getters/getTransactionalClient'
 
 type Props = {
     children?: React.ReactNode,

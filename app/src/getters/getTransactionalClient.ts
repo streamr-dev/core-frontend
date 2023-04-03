@@ -1,6 +1,6 @@
 import StreamrClient, { ExternalProvider } from 'streamr-client'
-import getWeb3 from '../utils/web3/getWeb3'
 import Web3 from 'web3'
+import getWeb3 from '../utils/web3/getWeb3'
 
 type ArgType<T> = T extends (arg: infer R) => any ? R : never
 

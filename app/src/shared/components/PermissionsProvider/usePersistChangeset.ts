@@ -7,9 +7,9 @@ import { networks } from '$shared/utils/constants'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import { useAuthController } from '$auth/hooks/useAuthController'
 import InterruptionError from '$shared/errors/InterruptionError'
+import getTransactionalClient from '$app/src/getters/getTransactionalClient'
 import reducer, { PERSIST, SET_PERMISSIONS, UNLOCK } from './utils/reducer'
 import formatAssignments from './utils/formatAssignments'
-import getTransactionalClient from '$app/src/getters/getTransactionalClient'
 
 export default function usePersistChangeset() {
     const dispatch = usePermissionsDispatch()

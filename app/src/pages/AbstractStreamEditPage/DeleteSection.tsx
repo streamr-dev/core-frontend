@@ -5,8 +5,8 @@ import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
 import Button from '$shared/components/Button'
 import useDecodedStreamId from '$shared/hooks/useDecodedStreamId'
-import routes from '$routes'
 import getTransactionalClient from '$app/src/getters/getTransactionalClient'
+import routes from '$routes'
 
 const Description = styled.p`
     margin-bottom: 3rem;
