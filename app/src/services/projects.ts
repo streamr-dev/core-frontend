@@ -251,7 +251,7 @@ export const getProjects = async (owner?: string, first = 20, skip = 0, type?: P
                     projects(
                         first: ${first + 1},
                         skip: ${skip},
-                        ${allFilters != null && `where: { ${allFilters} }`},
+                        ${allFilters != null ?  `where: { ${allFilters} }` : ''},
                     ) {
                         ${projectFields}
                     }
@@ -259,14 +259,6 @@ export const getProjects = async (owner?: string, first = 20, skip = 0, type?: P
             `,
         }
     })
-
-    console.log('listing query', `projects(
-                        first: ${first + 1},
-                        skip: ${skip},
-                        ${allFilters != null && `where: { ${allFilters} }`},
-                    ) {
-                        ${projectFields}
-                    }`)
 
     if (result.data) {
         return prepareProjectResult(result.data.projects, first)
@@ -292,7 +284,7 @@ export const searchProjects = async (search: string, first = 20, skip = 0, type?
                         first: ${first + 1},
                         skip: ${skip},
                         text: "${search}",
-                        ${typeFilter !== null && `where: {${typeFilter}`}
+                        ${typeFilter !== null ? `where: {${typeFilter}}` : ''}
                     ) {
                         ${projectFields}
                     }
@@ -305,7 +297,7 @@ export const searchProjects = async (search: string, first = 20, skip = 0, type?
                         first: ${first + 1},
                         skip: ${skip},
                         text: "${search}",
-                        ${typeFilter !== null && `where: {${typeFilter}`}
+                        ${typeFilter !== null ? `where: {${typeFilter}` : ''}
                     ) {
                         ${projectFields}
                     }`)

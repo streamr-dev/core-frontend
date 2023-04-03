@@ -38,7 +38,7 @@ const ProjectsPage: FunctionComponent = () => {
     const { currentAuthSession } = useAuthController()
 
     const query = useInfiniteQuery({
-        queryKey: ["projects", filter.owner, filter.search],
+        queryKey: ["projects", filter.owner, filter.search, filter.type],
         queryFn: (ctx) => {
             if (filter.search != null && filter.search.length > 0) {
                 return searchProjects(filter.search, PAGE_SIZE, ctx.pageParam, filter.type)
