@@ -1,8 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react'
-import { useClient } from 'streamr-client-react'
 import { useHistory } from 'react-router-dom'
 import styled, { css } from 'styled-components'
-
 import Layout from '$shared/components/Layout/Core'
 import Button from '$shared/components/Button'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
@@ -21,12 +19,11 @@ import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
 import { truncateStreamName } from '$shared/utils/text'
 import useNativeTokenName from '$shared/hooks/useNativeTokenName'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
-import {CopyButton} from "$shared/components/CopyButton/CopyButton"
+import { CopyButton } from "$shared/components/CopyButton/CopyButton"
 import { useTransientStream } from '$shared/contexts/TransientStreamContext'
 import { DESKTOP, TABLET } from '$shared/utils/styled'
 import PermissionsProvider, { usePermissionsState } from '$shared/components/PermissionsProvider'
 import usePersistChangeset from '$shared/components/PermissionsProvider/usePersistChangeset'
-import useCopy from '$shared/hooks/useCopy'
 import { TransactionList } from '$shared/components/TransactionList'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import routes from '$routes'
@@ -127,12 +124,10 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
     const { busy, clean: isStreamClean } = useStreamModifierStatusContext()
     const itp = useInterrupt()
     const setValidationError = useValidationErrorSetter()
-    const client = useClient()
     const isNew = !streamId
     const nativeTokenName = useNativeTokenName()
     const [showGetCryptoDialog, setShowGetCryptoDialog] = useState(false)
     const linkTabs = useMemo(() => streamId ? getStreamDetailsLinkTabs(streamId) : [], [streamId])
-    const { copy } = useCopy()
     const {id: transientStreamId} = useTransientStream()
     const persistPermissions = usePersistChangeset()
     const { changeset } = usePermissionsState()
@@ -209,7 +204,7 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
                 }
 
                 // This will add a persist operation for each storage node change user made
-                await calculateStorageNodeOperations(streamId, client)
+                await calculateStorageNodeOperations()
 
                 if (!hasPersistOperations()) {
                     // No changes so return
@@ -271,7 +266,7 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
                 }
 
                 // 3. Update storage nodes
-                await persistStorageNodes(id, client)
+                await persistStorageNodes(id)
                 requireUninterrupted()
             } catch (e) {
                 requireUninterrupted()

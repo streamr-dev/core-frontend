@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState, useReducer } from 'react'
-import { useClient } from 'streamr-client-react'
 import styled, { css } from 'styled-components'
 import Checkbox from '$shared/components/Checkbox'
 import Spinner from '$shared/components/Spinner'
@@ -19,19 +18,16 @@ type Props = {
 }
 
 function UnstyledStorageNodeItem({ address, active: activeProp, className, disabled = false, children }: Props) {
-    const [{ active = activeProp, cache }, setActive] = useReducer(
-        (state, newActive) => ({
-            active: newActive,
-            cache: (state.cache || 0) + 1,
-        }),
-        {},
-    )
+    const [{ active = activeProp, cache }, setActive] = useReducer((state: { active: boolean, cache: number }, active: boolean) => ({
+        active,
+        cache: state.cache + 1,
+    }), { active: false, cache: 0 })
+
     const addStorageNode = useStreamEditorStore((state) => state.addStorageNode)
     const removeStorageNode = useStreamEditorStore((state) => state.removeStorageNode)
     useEffect(() => {
         setActive(activeProp)
     }, [activeProp])
-    const client = useClient()
     const streamId = useStreamId()
     const itp = useInterrupt()
     const [busy, setBusy] = useState(typeof active === 'undefined')
@@ -82,13 +78,13 @@ function UnstyledStorageNodeItem({ address, active: activeProp, className, disab
             // Ignore the result of any in-the-air toggling if conditions change.
             itp().interruptAll()
         },
-        [itp, client, address, streamId, active],
+        [itp, address, streamId, active],
     )
     useEffect(() => {
         setBusy(typeof active === 'undefined')
     }, [active, cache])
     return (
-        <Root className={className} onClick={onClick} title={children} type="button" $active={active} disabled={disabled}>
+        <Root className={className} onClick={onClick} type="button" $active={active} disabled={disabled}>
             <div>{children}</div>
             {!disabled && !busy && (
                 <Checkbox.Tick checked={active} data-test-hook={active ? 'Checkbox on' : 'Checkbox off'} />
@@ -141,7 +137,7 @@ const StorageNodeItem = styled(UnstyledStorageNodeItem)`
         margin-left: 12px;
     }
 `
-const Root = styled.button`
+const Root = styled.button<{ $active: boolean }>`
     color: #cdcdcd;
     cursor: pointer;
 

@@ -1,12 +1,13 @@
 import { create } from 'zustand'
 import StreamrClient from 'streamr-client'
+import getTransactionalClient from '$app/src/getters/getTransactionalClient'
 
 type Actions = {
     loadStreamStorageNodes: (streamId: string, client: StreamrClient) => Promise<string[]>,
     addStorageNode: (address: string) => void,
     removeStorageNode: (address: string) => void,
-    calculateStorageNodeOperations:  (streamId: string, client: StreamrClient) => Promise<void>,
-    persistStorageNodes: (streamId: string, client: StreamrClient) => Promise<void>,
+    calculateStorageNodeOperations:  () => Promise<void>,
+    persistStorageNodes: (streamId: string) => Promise<void>,
     addPersistOperation: (operation: PersistOperation) => void,
     updatePersistOperation: (id: string, operation: Partial<PersistOperation>) => void,
     hasPersistOperations: () => boolean,
@@ -79,11 +80,7 @@ export const useStreamEditorStore = create<State & Actions>()((set, get) => ({
             hasStorageNodeChanges: !areArraysEqual(get().streamStorageNodes, get().storageNodes),
         })
     },
-    calculateStorageNodeOperations: async (streamId, client) => {
-        if (client == null) {
-            return
-        }
-
+    calculateStorageNodeOperations: async () => {
         const currentNodes = get().streamStorageNodes
         const newNodes = get().storageNodes
         const addPersistOperation = get().addPersistOperation
@@ -118,7 +115,8 @@ export const useStreamEditorStore = create<State & Actions>()((set, get) => ({
             addPersistOperation(op)
         }
     },
-    persistStorageNodes: async (streamId, client) => {
+    persistStorageNodes: async (streamId) => {
+        const client = getTransactionalClient()
         const updatePersistOperation = get().updatePersistOperation
         const ops = get().persistOperations.filter((op) => op.type === 'storage')
 
