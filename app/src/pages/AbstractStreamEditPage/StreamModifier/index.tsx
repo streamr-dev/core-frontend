@@ -141,10 +141,14 @@ export default function StreamModifier({ children, onValidate }: Props) {
                     }
 
                     if (isUpdateNeeded()) {
-                        const copy = cloneDeep(stream)
-                        Object.assign(copy, newParams)
-                        await copy.update()
-                        return copy
+                        client = await getTransactionalClient()
+
+                        const updatedStream = await client.updateStream({
+                            ...newParams,
+                            id: stream.id,
+                        })
+
+                        return updatedStream
                     }
                     return stream
                 })()
