@@ -77,20 +77,6 @@ module.exports = {
                 ],
             },
             {
-                test: /\.mdx$/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            rootMode: 'upward',
-                            cacheDirectory: !isProduction(),
-                            compact: isProduction(),
-                        },
-                    },
-                    '@mdx-js/loader',
-                ],
-            },
-            {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
                 include: [path.resolve(root, 'src'), path.resolve(root, 'scripts')],
@@ -271,7 +257,6 @@ module.exports = {
                             'src/shared/**/*.*',
                             'src/routes/**/*.*',
                             'src/userpages/**/*.*',
-                            'src/docs/**/*.*',
                             'src/*.*',
                         ],
                         exclude: [
@@ -287,11 +272,8 @@ module.exports = {
                             '**/stub.tsx',
                             // skip stories
                             '**/*.stories.*',
-                            // skip MD documentation
-                            'src/docs/docsEditingGuide.md',
                             // skip sketch files
                             '**/*.sketch',
-                            'src/docs/scripts/*.*',
                         ],
                     }),
                     new WebpackNotifierPlugin(),
@@ -349,7 +331,6 @@ module.exports = {
             // Make sure you set up aliases in flow and jest configs.
             $app: __dirname,
             $auth: path.resolve(__dirname, 'src/auth/'),
-            $docs: path.resolve(__dirname, 'src/docs/'),
             $mp: path.resolve(__dirname, 'src/marketplace/'),
             $userpages: path.resolve(__dirname, 'src/userpages/'),
             $shared: path.resolve(__dirname, 'src/shared/'),

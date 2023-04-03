@@ -40,14 +40,14 @@ export const EditorNav: FunctionComponent<{isNewProject: boolean, editedProductH
                 <h1>{isNewProject ? 'Creating' : 'Edit'} a project</h1>
             </FlexNavbarItem>
             <FlexNavbarItem>
-                <Button tag={Link} to={routes.marketplace.index()} kind={'transparent'}>Exit</Button>
+                <Button tag={Link} to={routes.projects.index()} kind={'transparent'}>Exit</Button>
                 <Button
                     disabled={publishInProgress || (!isNewProject && !editedProductHasChanged)}
                     onClick={() => {
                         const save = isNewProject ? create : update
                         save().then((success) => {
                             if (success) {
-                                history.push(routes.marketplace.index())
+                                history.push(routes.projects.index())
                             }
                         })
                     }}

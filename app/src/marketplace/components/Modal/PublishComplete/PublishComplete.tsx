@@ -50,7 +50,7 @@ const publishModes = {
 
 const PublishComplete = ({ onContinue, onClose, publishMode, productId }: Props) => {
     const { copy, isCopied } = useCopy()
-    const productLink = routes.marketplace.public.product.overview({
+    const productLink = routes.projects.public.overview({
         id: productId,
     })
     return (

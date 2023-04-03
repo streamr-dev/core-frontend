@@ -33,7 +33,7 @@ export const CreateProductButton: FunctionComponent = () => {
             className={styles.createProductButton}
             onClick={() => {
                 history.replace(
-                    routes.products.new({
+                    routes.projects.new({
                         type: projectTypes.NORMAL,
                     }),
                 )

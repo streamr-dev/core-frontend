@@ -38,18 +38,8 @@ export const CoreHelmet = ({
 }: Props) => (
     <Helmet {...props} title={title} image={image} description={description} suffix={suffix || 'Streamr Hub'} />
 )
-export const DocsHelmet = ({
-    description = 'Learn more and explore what you can do with Streamr',
-    image = 'https://streamr.network/resources/social/docs.png',
-    suffix,
-    title,
-    ...props
-}: Props) => (
-    <Helmet {...props} title={title} image={image} description={description} suffix={suffix || 'Streamr Docs'} />
-)
 Object.assign(Helmet, {
     Marketplace: MarketplaceHelmet,
     Core: CoreHelmet,
-    Docs: DocsHelmet,
 })
 export default Helmet

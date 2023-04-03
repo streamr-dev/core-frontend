@@ -12,7 +12,6 @@ import SvgIcon from '$shared/components/SvgIcon'
 import {COLORS, DESKTOP, MEDIUM, REGULAR} from '$shared/utils/styled'
 import { Radio } from '$shared/components/Radio'
 import useFetchStreams from '$shared/hooks/useFetchStreams'
-import docsLinks from '$app/src/docsLinks'
 import Button from '$shared/components/Button'
 import routes from '$routes'
 
@@ -172,7 +171,7 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
         if (!selectedProductType) {
             return null
         }
-        return routes.products.new({type: selectedProductType})
+        return routes.projects.new({type: selectedProductType})
     }, [selectedProductType])
 
     useEffect(() => {
@@ -185,7 +184,7 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
 
     return <Root className={className}>
         <PageTitleContainer>
-            <PageTitle>Choose your product type</PageTitle>
+            <PageTitle>Choose your project type</PageTitle>
             <CloseButton type="button" onClick={onClose}>
                 <SvgIcon name="crossMedium" />
             </CloseButton>
@@ -241,7 +240,7 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
         {streamsCount < 1 && <NoStreamsWarningBox>
             You have not created any streams yet.
             Please <Link to={routes.streams.new()}>create a stream</Link> to get started.
-            For help creating streams, see the <Link to={docsLinks.docs}>docs</Link>.
+            For help creating streams, see the <a href="https://docs.streamr.network/">docs</a>.
         </NoStreamsWarningBox>}
         <ButtonContainer>
             {(streamsCount < 1 || !link)

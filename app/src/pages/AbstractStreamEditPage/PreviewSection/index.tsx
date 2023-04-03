@@ -2,7 +2,6 @@ import React, { Fragment, useReducer, useState } from 'react'
 import styled from 'styled-components'
 import { useClient } from 'streamr-client-react'
 import { Link } from 'react-router-dom'
-import docsLinks from '$shared/../docsLinks'
 import useStreamId from '$shared/hooks/useStreamId'
 import Button from '$shared/components/Button'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -17,7 +16,7 @@ function DefaultDescription() {
     return (
         <Description>
             Live data in this stream is displayed below. For a more detailed view, you can open the Inspector. If you
-            need help pushing data to your stream, see the <Link to={docsLinks.gettingStarted}>docs</Link>.
+            need help pushing data to your stream, see the <a href="https://docs.streamr.network/">docs</a>.
         </Description>
     )
 }
@@ -53,7 +52,7 @@ function UnwrappedPreviewSection() {
                     <Button
                         tag={Link}
                         kind="secondary"
-                        to={routes.streams.preview({
+                        to={routes.streams.liveData({
                             id: streamId,
                         })}
                         rel="noopener noreferrer"

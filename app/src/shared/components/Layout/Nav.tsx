@@ -11,7 +11,6 @@ import {
     NavOverlay,
 } from '@streamr/streamr-layout'
 
-import docsLinks from '$shared/../docsLinks'
 import { MD as TABLET, LG as DESKTOP, COLORS, REGULAR, MEDIUM } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -21,16 +20,11 @@ import {useAuthController} from "$auth/hooks/useAuthController"
 import {truncate} from "$shared/utils/text"
 import routes from '$routes'
 import { Avatarless, Name, Username } from './User'
-import SiteSection from './SiteSection'
 import MetamaskIcon from './metamask.svg'
 import WalletconnectIcon from './walletConnect.svg'
 
 const MOBILE_LG = 576
 
-const icons: {[key: string]: any} = {
-    metamask: MetamaskIcon,
-    walletConnect: WalletconnectIcon,
-}
 const CaretDownIcon = styled(SvgIcon)`
     opacity: 1;
 `
@@ -330,10 +324,9 @@ const UserInfoMobile = styled.div`
 `
 
 const UnstyledDesktopNav: FunctionComponent = (props) => {
-    const { highlight: current } = NavProvider.useState()
     const { pathname } = useLocation()
-    const {currentAuthSession} = useAuthController()
-    const {address: accountAddress, ensName} = currentAuthSession
+    const { currentAuthSession } = useAuthController()
+    const { address: accountAddress, ensName } = currentAuthSession
 
     return (
         <div {...props}>
@@ -345,21 +338,21 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                 </NavbarItem>
                 <MenuGrid data-desktop-only>
                     <NavbarItem>
-                        <NavbarLinkDesktop highlight={current === 'marketplace'}>
-                            <NavLink as={Link} to={routes.marketplace.index()}>
+                        <NavbarLinkDesktop highlight={pathname.startsWith(routes.projects.index())}>
+                            <NavLink as={Link} to={routes.projects.index()}>
                                 Projects
                             </NavLink>
                         </NavbarLinkDesktop>
                     </NavbarItem>
                     <NavbarItem>
-                        <NavbarLinkDesktop highlight={current === 'core'}>
+                        <NavbarLinkDesktop highlight={pathname.startsWith(routes.streams.index())}>
                             <NavLink as={Link} to={routes.streams.index()}>
                                 Streams
                             </NavLink>
                         </NavbarLinkDesktop>
                     </NavbarItem>
                     <NavbarItem>
-                        <NavbarLinkDesktop highlight={current === 'network'}>
+                        <NavbarLinkDesktop highlight={false}>
                             <NavLink as={Link} href={routes.networkExplorer()} rel="noopener noreferrer" target="_blank">
                                 Network
                             </NavLink>
@@ -424,8 +417,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
 }
 
 const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className }) => {
-    const { highlight: current } = NavProvider.useState()
-    const {currentAuthSession} = useAuthController()
+    const { currentAuthSession } = useAuthController()
     const { pathname } = useLocation()
 
     return (
@@ -452,17 +444,17 @@ const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className 
                         </div>
                     </UserInfoMobile>
                 }
-                <NavbarLinkMobile highlight={current === 'marketplace'}>
-                    <NavLink as={Link} to={routes.marketplace.index()}>
+                <NavbarLinkMobile highlight={pathname.startsWith(routes.projects.index())}>
+                    <NavLink as={Link} to={routes.projects.index()}>
                         Projects
                     </NavLink>
                 </NavbarLinkMobile>
-                <NavbarLinkMobile highlight={current === 'core'}>
+                <NavbarLinkMobile highlight={pathname.startsWith(routes.streams.index())}>
                     <NavLink as={Link} to={routes.streams.index()}>
                         Streams
                     </NavLink>
                 </NavbarLinkMobile>
-                <NavbarLinkMobile highlight={current === 'network'}>
+                <NavbarLinkMobile highlight={false}>
                     <NavLink as={Link} href={routes.networkExplorer()} rel="noopener noreferrer" target="_blank">
                         Network
                     </NavLink>
@@ -652,7 +644,6 @@ const N: FunctionComponent<{children?: any, shadow?: any}> = ({ children, shadow
 
 Object.assign(N, {
     Container: NavContainer,
-    SiteSection,
 })
 
 export default N

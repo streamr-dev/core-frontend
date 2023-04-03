@@ -34,8 +34,7 @@ const Header = ({
                     <div className={styles.searchBar}>{searchComponent}</div>
                     <div className={styles.tabs}>
                         <Tab to={routes.streams.index()}>Streams</Tab>
-                        <Tab to={routes.products.index()}>Products</Tab>
-                        <Tab to={routes.dataunions.index()}>Data Unions</Tab>
+                        <Tab to={routes.projects.index()}>Projects</Tab>
                         <Tab to={routes.subscriptions()}>Subscriptions</Tab>
                         <Tab to={routes.transactions()}>Transactions</Tab>
                     </div>

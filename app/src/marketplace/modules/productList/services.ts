@@ -4,7 +4,7 @@ import routes from '$routes'
 import { Filter, ProjectListPageWrapper } from '../../types/project-types'
 import { mapProductFromApi } from '../../utils/product'
 export const getProducts = (filter: Filter, pageSize: number, offset: number): ApiResult<ProjectListPageWrapper> => {
-    const route = routes.api.products.index
+    const route = routes.api.projects.index
     const params: Record<string,any> = {}
     return get({
         url: route({

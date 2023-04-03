@@ -33,7 +33,7 @@ const NoAddedSubscriptionsView = withRouter(({ history }) => {
             <div onClick={handleLink}>
                 <span>You haven&apos;t subscribed to any products yet</span>
                 <small>
-                    Visit the <Link to={routes.marketplace.index()}>Marketplace</Link> to get started.
+                    Visit the <Link to={routes.projects.index()}>The Hub</Link> to get started.
                 </small>
             </div>
         </EmptyState>

@@ -18,11 +18,11 @@ const NotFoundPage = () => (
                 image={<img src={pageNotFoundPic} srcSet={`${pageNotFoundPic2x} 2x`} alt="Not found" />}
                 link={
                     <React.Fragment>
-                        <Button kind="special" tag={Link} to={routes.core()}>
-                            Go to core app
+                        <Button kind="special" tag={Link} to={routes.streams.index()}>
+                            Go to streams
                         </Button>
-                        <Button kind="special" tag={Link} to={routes.marketplace.index()}>
-                            Go to marketplace
+                        <Button kind="special" tag={Link} to={routes.projects.index()}>
+                            Go to projects
                         </Button>
                         <Button kind="special" tag={Link} to={routes.root()}>
                             Go to public site
