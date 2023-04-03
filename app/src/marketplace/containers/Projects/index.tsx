@@ -9,7 +9,7 @@ import Footer from '$shared/components/Layout/Footer'
 import useModal from '$shared/hooks/useModal'
 import CreateProjectModal from '$mp/containers/CreateProjectModal'
 import { SearchFilter } from '$mp/types/project-types'
-import { getProjects, searchProjects } from '$app/src/services/projects'
+import {getProjects, ProjectListingTypeFilter, searchProjects} from '$app/src/services/projects'
 import { useAuthController } from '$auth/hooks/useAuthController'
 import useDeepEqualMemo from '$shared/hooks/useDeepEqualMemo'
 import { useIsAuthenticated } from '$auth/hooks/useIsAuthenticated'
@@ -20,30 +20,30 @@ const PAGE_SIZE = 16
 
 type Filter = {
     search: string,
-    type: string,
+    type: ProjectListingTypeFilter | null,
     owner: string | null,
 }
 
 const EMPTY_FILTER: Filter = {
     search: '',
-    type: '',
+    type: null,
     owner: null,
 }
 
 const ProjectsPage: FunctionComponent = () => {
-    const [filterValue, setFilter] = useState(EMPTY_FILTER)
+    const [filterValue, setFilter] = useState<Filter>(EMPTY_FILTER)
     const filter = useDeepEqualMemo(filterValue)
     const { api: createProductModal } = useModal('marketplace.createProduct')
     const isUserAuthenticated = useIsAuthenticated()
     const { currentAuthSession } = useAuthController()
 
     const query = useInfiniteQuery({
-        queryKey: ["projects", filter.owner, filter.search],
+        queryKey: ["projects", filter.owner, filter.search, filter.type],
         queryFn: (ctx) => {
             if (filter.search != null && filter.search.length > 0) {
-                return searchProjects(filter.search, PAGE_SIZE, ctx.pageParam)
+                return searchProjects(filter.search, PAGE_SIZE, ctx.pageParam, filter.type)
             } else {
-                return getProjects(filter.owner, PAGE_SIZE, ctx.pageParam)
+                return getProjects(filter.owner, PAGE_SIZE, ctx.pageParam, filter.type)
             }
         },
         getNextPageParam: (lastPage, pages) => {

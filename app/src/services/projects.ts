@@ -9,6 +9,7 @@ import {Address, SmartContractCall, SmartContractTransaction} from "$shared/type
 import { getConfigForChain, getConfigForChainByName } from '$shared/web3/config'
 import projectRegistryAbi from '$shared/web3/abis/projectRegistry.json'
 import {ProjectId} from "$mp/types/project-types"
+import address0 from "$utils/address0"
 import getPublicWeb3 from '../utils/web3/getPublicWeb3'
 import getDefaultWeb3Account from '../utils/web3/getDefaultWeb3Account'
 
@@ -166,6 +167,12 @@ const mapProject = (project: any): TheGraphProject => {
     return project as TheGraphProject
 }
 
+export enum ProjectListingTypeFilter {
+    openData = 'openData',
+    paidData = 'paidData',
+    dataUnion = 'dataUnion'
+}
+
 export const getProject = async (id: string): Promise<TheGraphProject | null> => {
     const theGraphUrl = getGraphUrl()
 
@@ -217,11 +224,24 @@ export type ProjectsResult = {
     lastId: string,
 }
 
-export const getProjects = async (owner?: string, first = 20, skip = 0): Promise<ProjectsResult> => {
+const getProjectFilterQuery = (type: ProjectListingTypeFilter): string => {
+    switch (type) {
+        case ProjectListingTypeFilter.openData:
+            return `paymentDetails_: {beneficiary: "${address0}"}`
+        case ProjectListingTypeFilter.paidData:
+            return `paymentDetails_: {beneficiary_not: "${address0}"}`
+        case ProjectListingTypeFilter.dataUnion:
+            // TODO implement
+            return null
+    }
+}
+
+export const getProjects = async (owner?: string, first = 20, skip = 0, type?: ProjectListingTypeFilter): Promise<ProjectsResult> => {
     const theGraphUrl = getGraphUrl()
 
     const ownerFilter = owner != null ? `permissions_: { userAddress: "${owner}", canGrant: true }` : null
-    const allFilters = [ownerFilter].join(',')
+    const typeFilter = type != null ? getProjectFilterQuery(type) : null
+    const allFilters = [ownerFilter,typeFilter].filter((filter) => !!filter).join(',')
 
     const result = await post({
         url: theGraphUrl,
@@ -231,7 +251,7 @@ export const getProjects = async (owner?: string, first = 20, skip = 0): Promise
                     projects(
                         first: ${first + 1},
                         skip: ${skip},
-                        ${allFilters != null && `where: { ${allFilters} }`},
+                        ${allFilters != null ?  `where: { ${allFilters} }` : ''},
                     ) {
                         ${projectFields}
                     }
@@ -251,8 +271,9 @@ export const getProjects = async (owner?: string, first = 20, skip = 0): Promise
     }
 }
 
-export const searchProjects = async (search: string, first = 20, skip = 0): Promise<ProjectsResult> => {
+export const searchProjects = async (search: string, first = 20, skip = 0, type?: ProjectListingTypeFilter): Promise<ProjectsResult> => {
     const theGraphUrl = getGraphUrl()
+    const typeFilter = type != null ? getProjectFilterQuery(type) : null
 
     const result = await post({
         url: theGraphUrl,
@@ -263,6 +284,7 @@ export const searchProjects = async (search: string, first = 20, skip = 0): Prom
                         first: ${first + 1},
                         skip: ${skip},
                         text: "${search}",
+                        ${typeFilter !== null ? `where: {${typeFilter}}` : ''}
                     ) {
                         ${projectFields}
                     }
