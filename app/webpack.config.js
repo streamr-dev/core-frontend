@@ -77,6 +77,12 @@ module.exports = {
                 ],
             },
             {
+                test: /\.m?js$/,
+                resolve: {
+                    fullySpecified: false,
+                },            
+            },
+            {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
                 include: [path.resolve(root, 'src'), path.resolve(root, 'scripts')],
