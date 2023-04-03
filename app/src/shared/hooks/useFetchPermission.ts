@@ -13,7 +13,7 @@ export default function useFetchPermission() {
         itp().interruptAll()
     }, [itp, client])
     return useCallback(
-        async (streamId, permission) => {
+        async (streamId: string, permission: StreamPermission) => {
             const { requireUninterrupted } = itp(`${streamId}/${permission}`)
 
             if (!client) {
