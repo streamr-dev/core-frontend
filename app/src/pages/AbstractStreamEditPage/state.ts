@@ -88,7 +88,7 @@ export const useStreamEditorStore = create<State & Actions>()((set, get) => ({
         const newNodes = get().storageNodes
         const addPersistOperation = get().addPersistOperation
 
-        const toRemove = newNodes.filter((n) => currentNodes.includes(n))
+        const toRemove = currentNodes.filter((n) => !newNodes.includes(n))
         const toAdd = newNodes.filter((n) => !currentNodes.includes(n))
 
         const ops = [
