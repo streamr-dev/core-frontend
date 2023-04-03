@@ -18,8 +18,6 @@ export default async function getTransactionalClient() {
 
     const currentChainId = await getChainId()
 
-    console.log('current', currentChainId, 'prev', chainId)
-
     if (streamrClient && currentProvider === provider && currentChainId === chainId) {
         return streamrClient
     }
