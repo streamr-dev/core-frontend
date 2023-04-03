@@ -1,7 +1,6 @@
 import React, { useMemo, useCallback, useEffect, useReducer, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import StreamrClient from 'streamr-client'
-import { useClient } from 'streamr-client-react'
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
 import useModal from '$shared/hooks/useModal'
@@ -18,6 +17,7 @@ import DuplicateError from '$shared/errors/DuplicateError'
 import { useStreamSetter } from '$shared/contexts/StreamSetterContext'
 import useValidateNetwork from '$shared/hooks/useValidateNetwork'
 import {useAuthController} from "$auth/hooks/useAuthController"
+import getTransactionalClient from '$app/src/getters/getTransactionalClient'
 import routes from '$routes'
 import ConfirmExitModal from './ConfirmExitModal'
 import reducer, { initialState, Init, SetBusy, Modify } from './reducer'
@@ -53,7 +53,6 @@ export default function StreamModifier({ children, onValidate }: Props) {
         paramsModifiedRef.current = paramsModified
     }, [paramsModified])
     const itp = useInterrupt()
-    const client = useClient()
     const onValidateRef = useRef(onValidate)
     useEffect(() => {
         onValidateRef.current = onValidate
@@ -99,6 +98,8 @@ export default function StreamModifier({ children, onValidate }: Props) {
 
         try {
             try {
+                let client = await getTransactionalClient()
+                
                 if (typeof validate === 'function') {
                     await validate(newParams, client)
                 }
@@ -106,6 +107,7 @@ export default function StreamModifier({ children, onValidate }: Props) {
                 if (typeof validateNetworkRef.current === 'function') {
                     await validateNetworkRef.current(networks.STREAMS)
                 }
+
                 const clientAddress = currentAuthSession.address
                 if (!clientAddress) {
                     throw new Error('No wallet connected')
@@ -130,15 +132,23 @@ export default function StreamModifier({ children, onValidate }: Props) {
                             id: newParams.id,
                             ...newParams.metadata,
                         }
+
+                        client = await getTransactionalClient()
+
                         const createdStream = await client.createStream(createParams)
+
                         return createdStream
                     }
 
                     if (isUpdateNeeded()) {
-                        const copy = cloneDeep(stream)
-                        Object.assign(copy, newParams)
-                        await copy.update()
-                        return copy
+                        client = await getTransactionalClient()
+
+                        const updatedStream = await client.updateStream({
+                            ...newParams,
+                            id: stream.id,
+                        })
+
+                        return updatedStream
                     }
                     return stream
                 })()
@@ -162,7 +172,7 @@ export default function StreamModifier({ children, onValidate }: Props) {
         } finally {
             setBusy(false)
         }
-    }, [itp, client, stream, currentAuthSession.address, isUpdateNeeded])
+    }, [itp, stream, currentAuthSession.address, isUpdateNeeded])
     const cleanRef = useRef(clean)
     useEffect(() => {
         cleanRef.current = clean
@@ -203,6 +213,9 @@ export default function StreamModifier({ children, onValidate }: Props) {
             isUpdateNeeded,
             validate: async () => {
                 const fn = onValidateRef.current
+
+                const client = await getTransactionalClient()
+
                 if (fn && paramsModifiedRef.current) {
                     try {
                         setBusy(true)
@@ -216,7 +229,7 @@ export default function StreamModifier({ children, onValidate }: Props) {
             },
             setBusy,
         }),
-        [itp, commit, history, confirmExitDialog, isUpdateNeeded, client],
+        [itp, commit, history, confirmExitDialog, isUpdateNeeded],
     )
     const status = useMemo(
         () => ({

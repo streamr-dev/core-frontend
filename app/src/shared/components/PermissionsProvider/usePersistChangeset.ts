@@ -1,5 +1,4 @@
 import { useCallback, useRef, useEffect } from 'react'
-import { useClient } from 'streamr-client-react'
 import { usePermissionsState, usePermissionsDispatch } from '$shared/components/PermissionsProvider'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useStreamPermissionsInvalidator from '$shared/hooks/useStreamPermissionsInvalidator'
@@ -8,11 +7,11 @@ import { networks } from '$shared/utils/constants'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import { useAuthController } from '$auth/hooks/useAuthController'
 import InterruptionError from '$shared/errors/InterruptionError'
+import getTransactionalClient from '$app/src/getters/getTransactionalClient'
 import reducer, { PERSIST, SET_PERMISSIONS, UNLOCK } from './utils/reducer'
 import formatAssignments from './utils/formatAssignments'
 
 export default function usePersistChangeset() {
-    const client = useClient()
     const dispatch = usePermissionsDispatch()
     const isMounted = useIsMounted()
     const { changeset } = usePermissionsState()
@@ -39,6 +38,11 @@ export default function usePersistChangeset() {
             const errors = {}
             const assignments = formatAssignments(changeset)
             await validateNetwork(networks.STREAMS)
+
+            /**
+             * @FIXME: We have to validate if we're on the correct network.
+             */
+            const client = await getTransactionalClient()
             await client.setPermissions({
                 streamId,
                 assignments,
@@ -78,7 +82,7 @@ export default function usePersistChangeset() {
                 })
             }
         }
-    }, [changeset, client, dispatch, isMounted, validateNetwork])
+    }, [changeset, dispatch, isMounted, validateNetwork])
 
     const itp = useInterrupt()
     return useCallback(

@@ -3,6 +3,7 @@ import { useClient } from 'streamr-client-react'
 import Activity from '$shared/utils/Activity'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
+import getTransactionalClient from '$app/src/getters/getTransactionalClient'
 const storage = isLocalStorageAvailable() ? localStorage : null
 
 const Handler = () => {
@@ -27,6 +28,11 @@ const Handler = () => {
     }, [client, streamId])
     useEffect(() => {
         const createStream = async () => {
+            /**
+             * @FIXME: We have to validate if we're on the correct network.
+             */
+            const client = await getTransactionalClient()
+
             const stream = await client.createStream({
                 id: 'activity-stream',
                 description: 'Automatically created stream for storing user activity',
@@ -39,10 +45,10 @@ const Handler = () => {
             }
         }
 
-        if (client && streamId == null) {
+        if (streamId == null) {
             createStream()
         }
-    }, [client, streamId])
+    }, [streamId])
     return null
 }
 
