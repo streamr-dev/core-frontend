@@ -116,7 +116,10 @@ export const useStreamEditorStore = create<State & Actions>()((set, get) => ({
         }
     },
     persistStorageNodes: async (streamId) => {
-        const client = getTransactionalClient()
+        /**
+         * @FIXME: We have to validate if we're on the correct network.
+         */
+        const client = await getTransactionalClient()
         const updatePersistOperation = get().updatePersistOperation
         const ops = get().persistOperations.filter((op) => op.type === 'storage')
 

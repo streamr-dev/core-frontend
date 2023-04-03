@@ -38,7 +38,11 @@ export default function usePersistChangeset() {
             const errors = {}
             const assignments = formatAssignments(changeset)
             await validateNetwork(networks.STREAMS)
-            const client = getTransactionalClient()
+
+            /**
+             * @FIXME: We have to validate if we're on the correct network.
+             */
+            const client = await getTransactionalClient()
             await client.setPermissions({
                 streamId,
                 assignments,

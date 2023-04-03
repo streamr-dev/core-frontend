@@ -97,9 +97,9 @@ export default function StreamModifier({ children, onValidate }: Props) {
         const { current: validate } = onValidateRef
 
         try {
-            const client = getTransactionalClient()
-
             try {
+                let client = await getTransactionalClient()
+                
                 if (typeof validate === 'function') {
                     await validate(newParams, client)
                 }
@@ -107,6 +107,7 @@ export default function StreamModifier({ children, onValidate }: Props) {
                 if (typeof validateNetworkRef.current === 'function') {
                     await validateNetworkRef.current(networks.STREAMS)
                 }
+
                 const clientAddress = currentAuthSession.address
                 if (!clientAddress) {
                     throw new Error('No wallet connected')
@@ -131,7 +132,11 @@ export default function StreamModifier({ children, onValidate }: Props) {
                             id: newParams.id,
                             ...newParams.metadata,
                         }
+
+                        client = await getTransactionalClient()
+
                         const createdStream = await client.createStream(createParams)
+
                         return createdStream
                     }
 
@@ -205,7 +210,7 @@ export default function StreamModifier({ children, onValidate }: Props) {
             validate: async () => {
                 const fn = onValidateRef.current
 
-                const client = getTransactionalClient()
+                const client = await getTransactionalClient()
 
                 if (fn && paramsModifiedRef.current) {
                     try {

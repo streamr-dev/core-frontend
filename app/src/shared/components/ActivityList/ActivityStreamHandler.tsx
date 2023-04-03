@@ -28,7 +28,12 @@ const Handler = () => {
     }, [client, streamId])
     useEffect(() => {
         const createStream = async () => {
-            const stream = await getTransactionalClient().createStream({
+            /**
+             * @FIXME: We have to validate if we're on the correct network.
+             */
+            const client = await getTransactionalClient()
+
+            const stream = await client.createStream({
                 id: 'activity-stream',
                 description: 'Automatically created stream for storing user activity',
             })
