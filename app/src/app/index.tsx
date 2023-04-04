@@ -38,6 +38,7 @@ import routes from '$routes'
 import history from '../history'
 import '../analytics'
 import { Layer } from '../utils/Layer'
+import styled from 'styled-components'
 
 // Wrap authenticated components here instead of render() method
 // Wrap each Route to an ErrorBoundary
@@ -120,6 +121,7 @@ const App = () => (
                                     </Switch>
                                     <Notifications />
                                     <Container id={Layer.Modal} />
+                                    <ToastContainer id={Layer.Toast} />
                                 </ActivityResourceProvider>
                                 <AnalyticsTracker />
                             </GlobalInfoWatcher>
@@ -132,3 +134,13 @@ const App = () => (
 )
 
 export default App
+
+const ToastContainer = styled(Container)`
+    bottom: 0;
+    left: 0;
+    max-width: 100%;
+    padding-bottom: 24px;
+    padding-right: 24px;
+    position: fixed;
+    z-index: 10;
+`
