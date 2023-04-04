@@ -38,4 +38,10 @@ export default async function getTransactionalClient({ passiveNetworkCheck = fal
 }
 
 // Load the client library proactively so that we don't have to wait later.
-getTransactionalClient({ passiveNetworkCheck: true })
+setTimeout(async () => {
+    try {
+        await getTransactionalClient({ passiveNetworkCheck: true })
+    } catch (_) {
+        // Do nothing.
+    }
+}, 0)
