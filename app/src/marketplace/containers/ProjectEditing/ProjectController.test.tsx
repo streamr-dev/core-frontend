@@ -203,7 +203,7 @@ describe('ProjectController', () => {
         expect(isHex(argument.id)).toEqual(true)
         expect(Notification.push).toHaveBeenCalledWith({
             title: 'Published',
-            description: 'Your project was published!',
+            description: 'Your project is now live on the Hub',
             icon: NotificationIcon.CHECKMARK,
         })
     })

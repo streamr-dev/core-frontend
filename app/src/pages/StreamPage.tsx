@@ -318,14 +318,14 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
                     <MarketplaceHelmet title={streamId ? `Stream ${streamId}` : 'New stream'} />
                     <DetailsPageHeader
                         backButtonLink={routes.streams.index()}
-                        pageTitle={<TitleContainer>
-                            <span title={streamId}>
-                                {!!streamIdToDisplay ? truncateStreamName(streamIdToDisplay, 50) : (streamId ? '' : 'New stream')}
-                            </span>
-                            {streamId
-                                ? <CopyButton valueToCopy={streamId} notificationDescription={'The stream name was copied to your clipboard'} />
-                                : ''}
-                        </TitleContainer>}
+                        pageTitle={
+                            <TitleContainer>
+                                <span title={streamId}>
+                                    {!!streamIdToDisplay ? truncateStreamName(streamIdToDisplay, 50) : streamId ? '' : 'New stream'}
+                                </span>
+                                {streamId ? <CopyButton valueToCopy={streamId} /> : ''}
+                            </TitleContainer>
+                        }
                         linkTabs={linkTabs}
                         rightComponent={
                             <div>

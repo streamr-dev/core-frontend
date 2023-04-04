@@ -291,10 +291,7 @@ const UnstyledFeed = ({
                                                 isClearable={false}
                                                 value={streamId}
                                             />
-                                            <CopyButton
-                                                valueToCopy={streamId}
-                                                notificationDescription={'The stream name was copied to your clipboard'}
-                                            />
+                                            <CopyButton valueToCopy={streamId} />
                                         </StreamSelector>
                                     </StreamSelectorContainer>
                                 </DesktopStreamSelector>

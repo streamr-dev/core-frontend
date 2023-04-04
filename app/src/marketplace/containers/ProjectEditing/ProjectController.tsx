@@ -117,7 +117,7 @@ export const useProjectController = (): ProjectController => {
                 // todo fine tune the wording
                 Notification.push({
                     title: 'Published',
-                    description: 'Your project was published!',
+                    description: 'Your project is now live on the Hub',
                     icon: NotificationIcon.CHECKMARK,
                 })
                 resolve(true)
