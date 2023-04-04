@@ -1,6 +1,7 @@
 import React, { FunctionComponent, ReactNode } from 'react'
 import { Router, Route as RouterRoute, Switch, Redirect, useParams } from 'react-router-dom'
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
+import { Container } from 'toasterhea'
 import '$shared/assets/stylesheets'
 import '@ibm/plex/css/ibm-plex.css'
 import '$utils/setupSnippets'
@@ -36,6 +37,7 @@ import { UserIsAuthenticatedRoute } from '$auth/utils/userAuthenticated'
 import routes from '$routes'
 import history from '../history'
 import '../analytics'
+import { Layer } from '../utils/Layer'
 
 // Wrap authenticated components here instead of render() method
 // Wrap each Route to an ErrorBoundary
@@ -117,6 +119,7 @@ const App = () => (
                                         {MiscRouter()}
                                     </Switch>
                                     <Notifications />
+                                    <Container id={Layer.Modal} />
                                 </ActivityResourceProvider>
                                 <AnalyticsTracker />
                             </GlobalInfoWatcher>

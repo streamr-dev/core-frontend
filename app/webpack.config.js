@@ -60,7 +60,7 @@ module.exports = {
         strictExportPresence: true,
         rules: [
             {
-                test: /\.(ts|tsx)?$/,
+                test: /\.tsx?$/,
                 exclude: /node_modules/,
                 use: [
                     {
@@ -75,6 +75,12 @@ module.exports = {
                         },
                     },
                 ],
+            },
+            {
+                test: /\.m?js$/,
+                resolve: {
+                    fullySpecified: false,
+                },            
             },
             {
                 test: /.jsx?$/,
