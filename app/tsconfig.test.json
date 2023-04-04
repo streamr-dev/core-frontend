@@ -3,6 +3,7 @@
   "compilerOptions": {
     "types": ["jest", "node"],
     "module": "esnext",
+    "strict": false,
     "isolatedModules": false,
     "noImplicitAny": false,
     "paths": {
