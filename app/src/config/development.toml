@@ -16,6 +16,7 @@ mainnetInfuraUrl = "https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d2320
 dataUnionJoinServerUrl = "http://localhost:5555"
 theHubGraphName = "streamr-dev/hub-subgraph"
 streamIndexerUrl = ":4001/api"
+reverseRecordsAddress = "0x3671aE578E63FdF66ad4F3E12CC0c0d71Ac7510C"
 
 [[core.marketplaceContractCreationBlocks]]
 chainId = 8995

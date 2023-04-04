@@ -2,7 +2,7 @@ import React, {createContext, FunctionComponent, ReactNode, useCallback, useEffe
 import useIsMounted from "$shared/hooks/useIsMounted"
 import Web3Poller, {events} from "$shared/web3/Web3Poller"
 import {useStateContainer} from "$shared/hooks/useStateContainer"
-import {getEnsDomains} from "$shared/modules/user/services"
+import {lookupEnsName} from "$shared/modules/user/services"
 import {Authentication} from "./authModel"
 import {
     getAuthenticationFromStorage,
@@ -30,10 +30,8 @@ const useSessionController = (): AuthenticationController => {
         if (isMounted()) {
             let ensName: string
             if (session.address !== auth.address) {
-                const addressesResponse = await getEnsDomains({addresses: [session.address]})
-                ensName = addressesResponse.data.domains && addressesResponse.data.domains.length
-                    ? addressesResponse.data.domains[0].name
-                    : undefined
+                const addressesResponse = await lookupEnsName(session.address)
+                ensName = addressesResponse || undefined
             }
             setAuth({...session, ensName})
             setAuthenticationInStorage(session)
