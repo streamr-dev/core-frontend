@@ -49,11 +49,16 @@ export default async function networkPreflight(expectedChainId: number) {
     const provider = getWeb3().currentProvider as ExternalProvider
 
     try {
-        if ((await getChainId()) === expectedChainId) {
+        const currentChainId = await getChainId()
+
+        if (currentChainId === expectedChainId) {
             return false
         }
 
-        await toaster(SwitchNetworkModal, Layer.Modal).pop()
+        await toaster(SwitchNetworkModal, Layer.Modal).pop({
+            expectedNetwork: expectedChainId,
+            actualNetwork: currentChainId,
+        })
 
         await provider.request({
             method: 'wallet_switchEthereumChain',
