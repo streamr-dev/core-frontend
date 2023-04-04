@@ -28,9 +28,6 @@ const Handler = () => {
     }, [client, streamId])
     useEffect(() => {
         const createStream = async () => {
-            /**
-             * @FIXME: We have to validate if we're on the correct network.
-             */
             const client = await getTransactionalClient()
 
             const stream = await client.createStream({
