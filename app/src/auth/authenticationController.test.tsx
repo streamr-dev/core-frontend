@@ -20,7 +20,7 @@ jest.mock('./authenticationStorage', () => {
 })
 jest.mock('$shared/modules/user/services', () => {
     return {
-        getEnsDomains: async () => ({data: {domains: []}})
+        lookupEnsName: async () => ''
     }
 })
 
