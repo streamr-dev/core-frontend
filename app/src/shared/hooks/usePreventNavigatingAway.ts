@@ -1,28 +1,44 @@
-import { useRef, useEffect } from 'react'
-export default function usePreventNavigatingAway(message, fn) {
-    const fnRef = useRef(fn)
-    useEffect(() => {
-        fnRef.current = fn
-    }, [fn])
-    const messageRef = useRef()
-    useEffect(() => {
-        messageRef.current = message
-    }, [message])
-    useEffect(() => {
-        const onBeforeUnload = (e) => {
-            if (fnRef.current()) {
-                const event = e || window.event
-                event.returnValue = messageRef.current // Gecko + IE
+import { type UnregisterCallback } from 'history'
+import { useEffect, useCallback } from 'react'
+import { useHistory } from 'react-router-dom'
 
-                return messageRef.current // Webkit, Safari, Chrome etc.
-            }
+function useBeforeUnload(fn: (e: BeforeUnloadEvent) => void) {
+    useEffect(() => {
+        window.addEventListener('beforeunload', fn)
 
-            return ''
-        }
-
-        window.addEventListener('beforeunload', onBeforeUnload)
         return () => {
-            window.removeEventListener('beforeunload', onBeforeUnload)
+            window.removeEventListener('beforeunload', fn)
         }
-    }, [])
+    }, [fn])
+}
+
+export default function usePreventNavigatingAway(message: string, isDirty: () => boolean) {
+    const history = useHistory()
+
+    useEffect(() => {
+        let unblock: UnregisterCallback | undefined
+
+        if (isDirty()) {
+            unblock = history.block(message)
+        }
+
+        return () => {
+            unblock?.()
+        }
+    }, [history, isDirty])
+
+    useBeforeUnload(
+        useCallback(
+            (e) => {
+                if (isDirty()) {
+                    e.returnValue = message
+    
+                    return message
+                }
+
+                return ''
+            },
+            [isDirty],
+        ),
+    )
 }
