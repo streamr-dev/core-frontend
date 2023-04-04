@@ -150,6 +150,7 @@ export default function Modal({ title = 'Modal title', children, onReject, onBef
 
 const AnimatedWrap = styled.div<{ $dismissed?: boolean }>`
     animation: 300ms ${({ $dismissed = false }) => ($dismissed ? bringOut : bringIn)} ease-in-out 1;
+    backface-visibility: hidden;
 `
 
 const Root = styled.div<{ $dismissed?: boolean }>`
@@ -161,6 +162,7 @@ const Root = styled.div<{ $dismissed?: boolean }>`
     overflow: auto;
     position: fixed;
     top: 0;
+    transform: translate3d(0, 0, 0);
     width: 100%;
     z-index: 1;
 
