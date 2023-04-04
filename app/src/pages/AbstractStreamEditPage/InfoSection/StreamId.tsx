@@ -72,7 +72,7 @@ export function EditableStreamId({ className, disabled }) {
             setDomain(currentAuthSession.address.toLowerCase())
         }
     }, [currentAuthSession.address, domain])
-    const [pathname = '', setPathname] = useState()
+    const [pathname = '', setPathname] = useState<string>()
     const { stage } = useStreamModifier()
     const stageRef = useRef(stage)
     useEffect(() => {

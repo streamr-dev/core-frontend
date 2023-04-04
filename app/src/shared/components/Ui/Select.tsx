@@ -88,7 +88,7 @@ const customStyles: any = {
     singleValue: (provided: any) => ({
         ...provided,
         margin: 0,
-        overflow: 'visible',
+        overflow: 'hidden',
         display: 'flex',
         alignItems: 'center',
     }),
@@ -106,6 +106,16 @@ const Control: FunctionComponent<{ className?: string; children?: ReactNode | Re
         </components.Control>
     )
 }
+
+const EllipsisSpan = styled.span`
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+`
+
+const EllipsisSpanWithTickMargin = styled(EllipsisSpan)`
+    margin-right: 18px;
+`
 
 const UnstyledTick = (props: any) => <SvgIcon {...props} name="tick" />
 
@@ -126,7 +136,7 @@ const IconOption: FunctionComponent<{isSelected: boolean, data: {icon: ReactNode
     <components.Option {...props as any}>
         {props.isSelected && <Tick />}
         {props.data.icon != null && <OptionIconWrapper>{props.data.icon}</OptionIconWrapper>}
-        {props.data.label}
+        <EllipsisSpanWithTickMargin>{props.data.label}</EllipsisSpanWithTickMargin>
     </components.Option>
 )
 
@@ -161,7 +171,7 @@ const SingleValue = ({ children, ...props }) => {
     return (
         <components.SingleValue {...props as any}>
             {icon != null && <IconWrapper>{icon}</IconWrapper>}
-            {children}
+            <EllipsisSpan>{children}</EllipsisSpan>
         </components.SingleValue>
     )
 }

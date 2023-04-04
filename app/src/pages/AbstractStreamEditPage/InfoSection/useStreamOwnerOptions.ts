@@ -5,11 +5,14 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
 import {useAuthController} from "$auth/hooks/useAuthController"
+
 export const ADD_ENS_DOMAIN_VALUE = '::ens/add_domain'
+
 export default function useStreamOwnerOptions() {
-    const [domains, setDomains] = useState()
-    const [options, setOptions] = useState()
-    const {currentAuthSession} = useAuthController()
+    const [domains, setDomains] = useState([])
+    const [options, setOptions] = useState([])
+    const { currentAuthSession } = useAuthController()
+
     useEffect(() => {
         setDomains(undefined)
         let aborted = false
@@ -74,6 +77,7 @@ export default function useStreamOwnerOptions() {
             aborted = true
         }
     }, [currentAuthSession.address])
+
     useEffect(() => {
         if (!currentAuthSession.address) {
             setOptions([])
@@ -115,5 +119,6 @@ export default function useStreamOwnerOptions() {
             },
         ])
     }, [currentAuthSession.address, domains])
+
     return options
 }
