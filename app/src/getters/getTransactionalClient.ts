@@ -8,10 +8,9 @@ let streamrClient: StreamrClient | undefined
 let provider: ExternalProvider | undefined
 
 /**
- *
  * @param passiveNetworkCheck A boolean telling the utility if it should pop up the "Switch network" modal
  * if the provider is on the incorrect network. Default: `false`.
- * @returns
+ * @returns A StreamrClient instance.
  */
 export default async function getTransactionalClient({ passiveNetworkCheck = false }: { passiveNetworkCheck?: boolean } = {}) {
     const currentProvider = getWeb3().currentProvider as ExternalProvider
