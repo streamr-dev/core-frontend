@@ -33,6 +33,10 @@ export default async function getTransactionalClient({ passiveNetworkCheck = fal
         },
     })
 
+    if (!streamrClient) {
+        throw new Error('Failed to create new transactional client.')
+    }
+
     return streamrClient
 }
 
