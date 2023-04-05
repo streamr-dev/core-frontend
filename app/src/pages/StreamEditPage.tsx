@@ -13,7 +13,7 @@ import DeleteSection from './AbstractStreamEditPage/DeleteSection'
 
 function UnwrappedStreamEditPage() {
     const { busy } = useStreamModifierStatusContext()
-    const { [StreamPermission.EDIT]: canEdit } = useStreamPermissions()
+    const { [StreamPermission.EDIT]: canEdit, [StreamPermission.DELETE]: canDelete } = useStreamPermissions()
     const title = canEdit ? 'Set up your stream' : 'Read only stream'
     const loading = typeof canEdit === 'undefined'
     return (
@@ -22,7 +22,7 @@ function UnwrappedStreamEditPage() {
             <AccessControlSection disabled={busy} />
             <HistorySection disabled={busy} />
             <PartitionsSection disabled={busy} />
-            {canEdit && (
+            {canDelete && (
                 <DeleteSection />
             )}
         </StreamPage>
@@ -32,7 +32,7 @@ function UnwrappedStreamEditPage() {
 export default function StreamCreatePage() {
     return (
         <AbstractStreamPage
-            streamOperations={[StreamPermission.EDIT, StreamPermission.GRANT, StreamPermission.SUBSCRIBE]}
+            streamOperations={[StreamPermission.EDIT, StreamPermission.GRANT, StreamPermission.SUBSCRIBE, StreamPermission.DELETE]}
         >
             <StreamModifier>
                 <UnwrappedStreamEditPage />

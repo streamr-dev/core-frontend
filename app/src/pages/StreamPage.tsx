@@ -26,6 +26,7 @@ import PermissionsProvider, { usePermissionsState } from '$shared/components/Per
 import usePersistChangeset from '$shared/components/PermissionsProvider/usePersistChangeset'
 import { TransactionList } from '$shared/components/TransactionList'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
+import useStreamPermissionsInvalidator from '$shared/hooks/useStreamPermissionsInvalidator'
 import routes from '$routes'
 import { useStreamEditorStore } from './AbstractStreamEditPage/state'
 
@@ -127,10 +128,11 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
     const isNew = !streamId
     const nativeTokenName = useNativeTokenName()
     const [showGetCryptoDialog, setShowGetCryptoDialog] = useState(false)
-    const linkTabs = useMemo(() => streamId ? getStreamDetailsLinkTabs(streamId) : [], [streamId])
-    const {id: transientStreamId} = useTransientStream()
+    const linkTabs = useMemo(() => (streamId ? getStreamDetailsLinkTabs(streamId) : []), [streamId])
+    const { id: transientStreamId } = useTransientStream()
     const persistPermissions = usePersistChangeset()
     const { changeset } = usePermissionsState()
+    const invalidatePermissions = useStreamPermissionsInvalidator()
     const clearPersistOperations = useStreamEditorStore((state) => state.clearPersistOperations)
     const addPersistOperation = useStreamEditorStore((state) => state.addPersistOperation)
     const updatePersistOperation = useStreamEditorStore((state) => state.updatePersistOperation)
@@ -149,7 +151,7 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
 
     async function save() {
         const { requireUninterrupted } = itp('save')
-        let transactionsToastNotification: Notification = null
+        let transactionsToastNotification: Notification | null = null
         let id = streamId
         let wasStreamCreated = false
 
@@ -253,6 +255,10 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
                     try {
                         await persistPermissions(id)
                         requireUninterrupted()
+
+                        // Reload permissions to update e.g. showing of stream delete button
+                        invalidatePermissions()
+
                         updatePersistOperation('access', {
                             state: 'complete',
                         })
