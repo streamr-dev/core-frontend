@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useContext } from 'react'
+import React, {FunctionComponent, useContext} from 'react'
 import styled from 'styled-components'
 import { ProjectPageContainer } from '$shared/components/ProjectPage'
 import { ProjectHeroContainer } from '$mp/containers/ProjectPage/Hero/ProjectHero2.styles'
@@ -23,6 +23,7 @@ import DeleteProject from './DeleteProject'
 
 type ProjectEditorProps = {
     nonEditableSalePointChains?: number[] // array of chain ids
+    editMode?: boolean
 }
 
 const WhiteBoxWithMargin = styled(WhiteBox)`
@@ -44,7 +45,7 @@ const EditorOverlay = styled.div`
   opacity: 0.6;
 `
 
-export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({nonEditableSalePointChains = []}) => {
+export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({nonEditableSalePointChains = [], editMode = false}) => {
     const {state: project} = useContext(ProjectStateContext)
     const {publishInProgress} = useContext(ProjectControllerContext)
     const { chainId } = getCoreConfig().projectRegistry
@@ -64,10 +65,10 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({nonEditabl
         }
         {project?.type === ProjectType.DataUnion && <>
             <WhiteBox>
-                <DataUnionChainSelector/>
+                <DataUnionChainSelector editMode={editMode}/>
             </WhiteBox>
             <WhiteBoxWithMargin>
-                <DataUnionTokenSelector/>
+                <DataUnionTokenSelector editMode={editMode}/>
                 <DataUnionFee/>
             </WhiteBoxWithMargin>
         </>}

@@ -12,6 +12,8 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import { getDataUnionObject, getDataUnionsOwnedByInChain, TheGraphDataUnion } from '$mp/modules/dataUnion/services'
 import SelectField2 from '$mp/components/SelectField2'
 import { useWalletAccount } from '$app/src/shared/stores/wallet'
+import {truncate} from "$shared/utils/text"
+import {formatChainName} from "$shared/utils/chains"
 
 type DataUnionChainOptionProps = {
     index: number,
@@ -32,7 +34,7 @@ export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> 
     const isMounted = useIsMounted()
     const account = useWalletAccount()
     const [ownedDataUnions, setOwnedDataUnions] = useState<DataUnionWithMetadata[]>([])
-    const existingDUOptions = useMemo(() => ownedDataUnions.map((du) => ({label: du.name || du.id, value: du.id})), [ownedDataUnions])
+    const existingDUOptions = useMemo(() => ownedDataUnions.map((du) => ({label: truncate(du.name || du.id), value: du.id})), [ownedDataUnions])
     const [currentlySelectedOption] = useContext(DataUnionChainSelectorContext)
     const isSelected = useMemo(() => currentlySelectedOption === index, [currentlySelectedOption, index])
     const [deployNewDU, setDeployNewDU] = useState<boolean | undefined>(undefined)
@@ -80,21 +82,31 @@ export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> 
     }, [currentlySelectedOption, index, onChange])
 
     const handleExistingDUSelect = useCallback((dataUnionAddress?: string) => {
+        setDeployNewDU(false)
         if (dataUnionAddress) {
             setExistingDUAddress(dataUnionAddress)
         }
         onChange({
-            deployNewDU,
+            deployNewDU: false,
             existingDUAddress: dataUnionAddress
         })
 
-    }, [deployNewDU, onChange])
+    }, [onChange])
+
+    const handleSelectNewDU = useCallback(() => {
+        setExistingDUAddress(undefined)
+        setDeployNewDU(true)
+        onChange({
+            deployNewDU: true,
+            existingDUAddress: undefined
+        })
+    }, [onChange])
 
     return <DropdownWrap>
         <DropdownToggle onClick={handleSelect} className={isSelected ? 'is-open' : ''}>
             <label>
                 <StyledRadio
-                    name={'data-union-chane-option'}
+                    name={'data-union-chain-option'}
                     label={''}
                     value={''}
                     checked={isSelected}
@@ -104,7 +116,7 @@ export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> 
                     }}/>
             </label>
             <ChainIcon chainId={chain.id} />
-            <span>{chain.name}</span>
+            <span>{formatChainName(chain.name)}</span>
         </DropdownToggle>
         <DropdownOuter className={isSelected ? 'is-open' : ''}>
             <DropdownInner className={isSelected ? 'is-open' : ''}>
@@ -114,16 +126,16 @@ export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> 
                     <DeploymentSelectorRadioContainer>
                         <StyledRadio
                             name={`${chain.name}-deployment`}
-                            value={''}
+                            value={'new'}
                             label={'Deploy a new Data Union'}
                             checked={deployNewDU === true}
-                            onChange={handleSelect}
+                            onChange={handleSelectNewDU}
                         />
                     </DeploymentSelectorRadioContainer>
                     <DeploymentSelectorRadioContainer>
                         <StyledRadio
                             name={`${chain.name}-deployment`}
-                            value={''}
+                            value={'existing'}
                             label={'Connect an existing Data Union'}
                             checked={deployNewDU === false}
                             onChange={() => {
@@ -137,6 +149,7 @@ export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> 
                             disabled={deployNewDU === true || !existingDUOptions.length}
                             fullWidth={true}
                             value={existingDUAddress}
+                            isClearable={false}
                             onChange={(selectedDU) => {
                                 handleExistingDUSelect(selectedDU)
                             }}/>

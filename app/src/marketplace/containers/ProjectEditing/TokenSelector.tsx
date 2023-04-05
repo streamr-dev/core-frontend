@@ -133,7 +133,7 @@ const options = Object.values(timeUnits).map((unit: TimeUnit) => ({
 
 type Props = {
     disabled?: boolean,
-    chain: Chain,
+    chain?: Chain,
     onChange: (pricing: PricingData) => void,
     value?: PricingData | undefined,
     validationFieldName: ObjectPaths<Project>,
@@ -148,7 +148,8 @@ const TokenSelector: FunctionComponent<Props> = ({
     value,
     tokenChangeDisabled
 }) => {
-    const dataAddress = useMemo(() => getDataAddress(chain.id).toLowerCase(), [chain])
+    const chainId = useMemo(() => chain?.id, [chain])
+    const dataAddress = useMemo(() => chainId ? getDataAddress(chainId).toLowerCase() : '', [chainId])
     const isMounted = useIsMounted()
     const [selection, setSelection] = useState<ContractCurrency>(
         (value?.tokenAddress && value?.tokenAddress === dataAddress)
@@ -183,7 +184,7 @@ const TokenSelector: FunctionComponent<Props> = ({
     }, [pricingTokenAddress])
 
     useEffect(() => {
-        if (pricingTokenAddress && chain.id) {
+        if (pricingTokenAddress && chainId) {
             let loading = true
 
             const check = async () => {
@@ -195,7 +196,7 @@ const TokenSelector: FunctionComponent<Props> = ({
                     setCustomTokenAddress(pricingTokenAddress)
                 }
 
-                const info = await getTokenInformation(pricingTokenAddress, chain.id)
+                const info = await getTokenInformation(pricingTokenAddress, chainId)
                 if (!isMounted()) {
                     return
                 }
@@ -227,16 +228,16 @@ const TokenSelector: FunctionComponent<Props> = ({
                 loading = false
             }
         }
-    }, [pricingTokenAddress, isMounted, clearStatus, setStatus, chain.id, dataAddress])
+    }, [pricingTokenAddress, isMounted, clearStatus, setStatus, chainId, dataAddress])
 
     useEffect(() => {
 
-        if (!selection || !chain.id) {
+        if (!selection || !chainId) {
             return
         }
         if (selection === contractCurrencies.DATA) {
             setCustomTokenAddress('')
-            setSelectedTokenAddress(getDataAddress(chain.id))
+            setSelectedTokenAddress(getDataAddress(chainId))
             setIsEditable(false)
             setTokenSymbol(null)
         } else if (selection === contractCurrencies.PRODUCT_DEFINED) {
@@ -244,7 +245,7 @@ const TokenSelector: FunctionComponent<Props> = ({
             setIsEditable(customTokenAddress.length === 0)
             setTokenSymbol(null)
         } // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selection, chain.id])
+    }, [selection, chainId])
 
     const handleChange = useCallback((changes: Partial<PricingData>) => {
         const outputPrice = changes.price || price
@@ -280,7 +281,7 @@ const TokenSelector: FunctionComponent<Props> = ({
                 <RadioContainer className={'data-token-radio-container'}>
                     <Radio
                         id={'data-token'}
-                        name={'token-selector-' + chain.name}
+                        name={'token-selector-' + chain?.name}
                         label={<RadioLabel>
                             <span>DATA Token</span>
                             <SvgIcon name={'DATAColor'} className={'data-icon'} />
@@ -296,7 +297,7 @@ const TokenSelector: FunctionComponent<Props> = ({
                 <RadioContainer>
                     <Radio
                         id={'custom-token'}
-                        name={'token-selector-' + chain.name}
+                        name={'token-selector-' + chain?.name}
                         label={<RadioLabel>
                             <span>Custom Token</span>
                         </RadioLabel>}

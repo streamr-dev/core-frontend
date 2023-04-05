@@ -11,6 +11,7 @@ import { ProjectState } from '../types/project-types'
 import { validateSalePoint } from './validate'
 import { fromDecimals, toDecimals } from './math'
 import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from './smartContract'
+import {isAddress} from "web3-utils"
 
 export const isPaidProject = (project: Project): boolean => project.type !== ProjectType.OpenData
 
@@ -131,6 +132,7 @@ export const validate = (project: Project): Partial<Record<ObjectPaths<Project>,
     if (project.type === ProjectType.DataUnion) {
         invalidFields.adminFee = project.adminFee === undefined || +project.adminFee < 0 || +project.adminFee > 1
         invalidFields.dataUnionChainId = !project.dataUnionChainId
+        invalidFields.existingDUAddress = !project.isDeployingNewDU && (!project.existingDUAddress || !isAddress(project.existingDUAddress))
     }
 
     // applies to paid projects and data unions

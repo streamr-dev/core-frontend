@@ -56,6 +56,7 @@ export type Project = {
     dataUnionDeployed?: boolean
     existingDUAddress?: string
     dataUnionChainId?: number
+    isDeployingNewDU?: boolean // field used only when creating a new project
 }
 export type ProjectSubscriptionId = string
 export type ProjectSubscriptionIdList = Array<ProjectSubscriptionId>

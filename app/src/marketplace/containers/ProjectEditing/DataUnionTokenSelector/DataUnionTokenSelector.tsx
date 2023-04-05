@@ -6,7 +6,7 @@ import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { getConfigForChain } from '$shared/web3/config'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 
-export const DataUnionTokenSelector: FunctionComponent = () => {
+export const DataUnionTokenSelector: FunctionComponent<{editMode: boolean}> = ({editMode}) => {
     const {state: project} = useContext(ProjectStateContext)
     const {updateSalePoints} = useEditableProjectActions()
     const chain = useMemo<Chain>(() => {
@@ -20,8 +20,8 @@ export const DataUnionTokenSelector: FunctionComponent = () => {
             updateSalePoints({[chain.name]: {
                 chainId: chain.id,
                 pricingTokenAddress: pricingData.tokenAddress,
-                price: pricingData.price ? pricingData.price.toString() : undefined,
-                pricePerSecond: pricingData.pricePerSecond ? pricingData.pricePerSecond.toString() : undefined,
+                price: pricingData.price || undefined,
+                pricePerSecond: pricingData.pricePerSecond || undefined,
                 timeUnit: pricingData.timeUnit
             }})
         }
@@ -31,5 +31,6 @@ export const DataUnionTokenSelector: FunctionComponent = () => {
         onChange={handleChange}
         chain={chain}
         validationFieldName={`salePoints.${chain.name}`}
+        tokenChangeDisabled={editMode}
     />
 }
