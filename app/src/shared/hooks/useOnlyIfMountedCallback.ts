@@ -12,7 +12,8 @@ export function useOnlyIfMountedCallback(fn, deps) {
 
             return fnRef.current(...args)
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [fnRef, isMountedRef, ...deps],
-    ) // eslint-disable-line react-hooks/exhaustive-deps
+    )
 }
 export default useOnlyIfMountedCallback

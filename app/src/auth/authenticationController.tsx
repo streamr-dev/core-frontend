@@ -65,7 +65,7 @@ const useSessionController = (): AuthenticationController => {
             Web3Poller.unsubscribe(events.ACCOUNT, pollSuccessCallback)
             Web3Poller.unsubscribe(events.ACCOUNT_ERROR, pollErrorCallback)
         }
-    }, [])
+    }, [pollSuccessCallback, pollErrorCallback])
 
     return {
         currentAuthSession: auth,

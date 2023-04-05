@@ -45,7 +45,6 @@ describe('Nav.Wide', () => {
                     </Provider>
                 </MemoryRouter>,
             )
-            console.log(el.debug())
             expect(
                 el
                     .find({

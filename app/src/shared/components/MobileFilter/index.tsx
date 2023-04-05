@@ -1,9 +1,9 @@
-import React, { FunctionComponent, ReactNode, useEffect, useMemo, useState } from 'react'
+import React, { FunctionComponent, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import Button from '$shared/components/Button'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
-import { COLORS, PHONE, TABLET } from '$shared/utils/styled'
+import { COLORS, TABLET } from '$shared/utils/styled'
 import { ButtonActions } from '$shared/components/Buttons'
 import Faders from './Faders.svg'
 
@@ -22,16 +22,16 @@ const MobileFilter: FunctionComponent<MobileFilterProps> = ({filters, onChange, 
         if (selectedFilters && JSON.stringify(selectedFilters) !== JSON.stringify(selections)) {
             setSelections(selectedFilters)
         }
-    }, [selectedFilters])
+    }, [selectedFilters, selections])
 
     const handleSelection = (filter: string, value: string): void => {
         setSelections({...selections, [filter]: value})
     }
 
-    const saveSelection = (clear?: boolean) => {
+    const saveSelection = useCallback((clear?: boolean) => {
         onChange(clear ? {} : selections)
         setDialogOpen(false)
-    }
+    }, [onChange, selections])
 
     const modalActions = useMemo<ButtonActions>(() => {
         return {
@@ -50,7 +50,7 @@ const MobileFilter: FunctionComponent<MobileFilterProps> = ({filters, onChange, 
                 className: 'filter-save-button'
             }
         }
-    }, [selections])
+    }, [selections, saveSelection])
 
     return <>
         <Trigger

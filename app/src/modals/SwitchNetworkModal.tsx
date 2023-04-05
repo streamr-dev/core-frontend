@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import Modal, { Footer, Props as ModalProps, RejectReason } from '../shared/components/Modal'
-import PngIcon from '../shared/components/PngIcon'
 import Buttons from '$shared/components/Buttons'
-import { ethereumNetworks } from '../shared/utils/constants'
+import Modal, { Footer, Props as ModalProps, RejectReason } from '$shared/components/Modal'
+import PngIcon from '$shared/components/PngIcon'
+import { ethereumNetworks } from '$shared/utils/constants'
 
 interface Props extends Pick<ModalProps, 'onReject'> {
     expectedNetwork: number | string

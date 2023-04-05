@@ -99,7 +99,7 @@ export default function StreamModifier({ children, onValidate }: Props) {
         try {
             try {
                 let client = await getTransactionalClient()
-                
+
                 if (typeof validate === 'function') {
                     await validate(newParams, client)
                 }

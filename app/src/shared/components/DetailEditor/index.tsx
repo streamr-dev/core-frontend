@@ -82,7 +82,7 @@ export const DetailEditor: FunctionComponent<DetailsEditorProps> = ({
         if (!inputValue) {
             setValidationError('')
         }
-    }, [inputValue, inputTouched])
+    }, [inputValue, inputTouched, optional, validation])
 
     const handleSubmit = () => {
         if (!validationError) {

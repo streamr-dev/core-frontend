@@ -33,7 +33,7 @@ export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> 
     const isMounted = useIsMounted()
     const {currentAuthSession} = useContext(AuthenticationControllerContext)
     const [ownedDataUnions, setOwnedDataUnions] = useState<DataUnionWithMetadata[]>([])
-    const existingDUOptions = useMemo(() => ownedDataUnions.map((du) => ({label: du.name || du.id, value: du.id})), [])
+    const existingDUOptions = useMemo(() => ownedDataUnions.map((du) => ({label: du.name || du.id, value: du.id})), [ownedDataUnions])
     const [currentlySelectedOption] = useContext(DataUnionChainSelectorContext)
     const isSelected = useMemo(() => currentlySelectedOption === index, [currentlySelectedOption, index])
     const [deployNewDU, setDeployNewDU] = useState<boolean | undefined>(undefined)
@@ -66,7 +66,7 @@ export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> 
             }
         }
         load()
-    }, [currentUserName, chain, isMounted])
+    }, [chain, currentAuthSession.address, isMounted])
 
     const handleSelect = useCallback(() => {
         if (currentlySelectedOption === index) {
@@ -78,7 +78,7 @@ export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> 
         })
         setExistingDUAddress(undefined)
         setDeployNewDU(true)
-    }, [onChange])
+    }, [currentlySelectedOption, index, onChange])
 
     const handleExistingDUSelect = useCallback((dataUnionAddress?: string) => {
         if (dataUnionAddress) {
@@ -89,7 +89,7 @@ export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> 
             existingDUAddress: dataUnionAddress
         })
 
-    }, [deployNewDU])
+    }, [deployNewDU, onChange])
 
     return <DropdownWrap>
         <DropdownToggle onClick={handleSelect} className={isSelected ? 'is-open' : ''}>

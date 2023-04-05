@@ -25,7 +25,7 @@ export const DataUnionTokenSelector: FunctionComponent = () => {
                 timeUnit: pricingData.timeUnit
             }})
         }
-    }, [])
+    }, [chain, updateSalePoints])
     return <TokenSelector
         disabled={!project.dataUnionChainId}
         onChange={handleChange}

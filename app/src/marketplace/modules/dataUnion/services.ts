@@ -172,6 +172,7 @@ export const setAdminFee = (address: DataUnionId, chainId: number, adminFee: str
         }),
     ]).then(([dataUnion]) => {
         emitter.emit('transactionHash')
+        // eslint-disable-next-line promise/no-nesting
         dataUnion.setAdminFee(+adminFee).then((receipt) => {
             if (receipt.status === 0) {
                 errorHandler(new TransactionError('Transaction failed', receipt as any))
@@ -404,7 +405,7 @@ type EditSecret = {
 export const editSecret = async ({ dataUnionId, id, name, chainId }: EditSecret): Promise<Secret> => {
     const client = createClient(chainId)
     const dataUnion = await client.getDataUnion(dataUnionId)
-    // @ts-ignore
+    // @ts-expect-error 2339
     const result = await dataUnion.editSecret(id, name)
     return result
 }

@@ -119,7 +119,7 @@ function useValidationContextImplementation(): ValidationContextProps {
             return result
 
         },
-        [setStatus, clearStatus, isMounted, isTouched],
+        [setStatus, clearStatus, isMounted],
     )
     return useMemo<ValidationContextProps>(
         () => ({

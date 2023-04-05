@@ -54,7 +54,7 @@ export const useProjectController = (): ProjectController => {
         }
 
         return true
-    }, [project])
+    }, [project, validate])
 
     const getProjectMetadata = useCallback<() => Promise<SmartContractProjectMetadata>>(async () => {
         const metadata: SmartContractProjectMetadata = {
@@ -101,7 +101,7 @@ export const useProjectController = (): ProjectController => {
             }]
 
         }
-    }, [project, getProjectMetadata])
+    }, [getProjectMetadata, registryChain.id, project.streams, project.type, project.salePoints])
 
     const createNewProject = useCallback<() => Promise<boolean>>(async () => {
         const projectContractData: SmartContractProjectCreate = {
@@ -138,9 +138,8 @@ export const useProjectController = (): ProjectController => {
 
     const createNewDataUnion = useCallback<() => Promise<boolean>>(async () => {
         // TODO
-        console.log('DATA UNIONS PUBLISHING TO BE IMPLEMENTED')
         return true
-    }, [project, getProjectMetadata])
+    }, [])
 
     const updateExistingProject = useCallback(async (): Promise<boolean> => {
         const projectContractData = await getSmartContractProject(project.id)
@@ -174,9 +173,8 @@ export const useProjectController = (): ProjectController => {
 
     const updateExistingDataUnion = useCallback(async (): Promise<boolean> => {
         // todo implementation
-        console.log('DATA UNIONS UPDATING TO BE IMPLEMENTED')
         return true
-    }, [project])
+    }, [])
 
     const create = useCallback<ProjectController['create']>(async() => {
         if (checkValidationErrors()) {
@@ -202,7 +200,7 @@ export const useProjectController = (): ProjectController => {
             }
         }
         return true
-    }, [project, updateExistingProject, updateExistingDataUnion])
+    }, [checkValidationErrors, project.type, updateExistingProject, updateExistingDataUnion])
     return {
         create,
         update,

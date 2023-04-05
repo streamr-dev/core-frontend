@@ -40,11 +40,11 @@ const UnstyledNewProjectPage = ({ className }: Props) => {
     useEffect(() => {
         const typeIsValid = Object.values(ProjectTypeEnum).includes(type as ProjectTypeEnum)
         updateType( typeIsValid ? type as ProjectTypeEnum : ProjectTypeEnum.OPEN_DATA)
-    }, [type])
+    }, [type, updateType])
 
     useEffect(() => {
         resetTouched()
-    }, [])
+    }, [resetTouched])
 
     const pageTitle = useMemo<ReactNode>(() => {
         return !!project.creator && <>{mapProjectTypeName(project.type)} by <strong> {project.creator} </strong></>

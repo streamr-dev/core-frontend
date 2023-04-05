@@ -173,14 +173,14 @@ const TokenSelector: FunctionComponent<Props> = ({
 
     useEffect(() => {
         clearStatus()
-    }, [chain])
+    }, [chain, clearStatus])
 
     // Set default value to DATA
     useEffect(() => {
         if (!pricingTokenAddress) {
             setSelection('DATA')
         }
-    }, [])
+    }, [pricingTokenAddress])
 
     useEffect(() => {
         if (pricingTokenAddress && chain.id) {
@@ -227,7 +227,7 @@ const TokenSelector: FunctionComponent<Props> = ({
                 loading = false
             }
         }
-    }, [pricingTokenAddress, isMounted, clearStatus, setStatus])
+    }, [pricingTokenAddress, isMounted, clearStatus, setStatus, chain.id, dataAddress])
 
     useEffect(() => {
 
@@ -256,7 +256,7 @@ const TokenSelector: FunctionComponent<Props> = ({
                 : undefined
         }
         debouncedOnChange(output)
-    }, [price, timeUnit, selectedTokenAddress, selection, tokenDecimals])
+    }, [price, timeUnit, selectedTokenAddress, selection, tokenDecimals, debouncedOnChange])
 
     return (
         <Container>

@@ -101,7 +101,7 @@ export const BeneficiaryAddress: FunctionComponent<BeneficiaryAddressProps> = ({
             onChange(accountAddress)
             setDefaultValueWasSet(true)
         }
-    }, [accountAddress, beneficiaryAddress, onChange])
+    }, [accountAddress, beneficiaryAddress, onChange, defaultValueWasSet])
 
     const handleUpdate = (value: string): void => {
         onChange(value.toLowerCase())

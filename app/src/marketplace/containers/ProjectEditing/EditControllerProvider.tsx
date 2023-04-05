@@ -212,18 +212,7 @@ function useEditController(product: Project) {
                 redirectToProduct()
             }
         }
-    }, [
-        validate,
-        save,
-        publishDialog,
-        redirectToProductList,
-        redirectToProduct,
-        updateState,
-        isMounted,
-        dataUnionPublishMemberLimit,
-        dataUnionStats,
-        nextAddress
-    ])
+    }, [validate, save, publishDialog, redirectToProductList, redirectToProduct, isMounted, dataUnionPublishMemberLimit, dataUnionStats, nextAddress])
     /*const updateBeneficiary = useCallback(
         async (address) => {
             // const { beneficiaryAddress } = productRef.current

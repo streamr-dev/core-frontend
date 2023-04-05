@@ -41,14 +41,14 @@ export const SalePointSelector: FunctionComponent<Props> = ({nonEditableSalePoin
         const newSalePointsObject = {...(salePoints || {}), [chainName]: newSalePoint}
         updateSalePoints(newSalePointsObject)
 
-    }, [salePoints, updateSalePoints])
+    }, [nonEditableSalePointChains, salePoints, updateSalePoints])
 
     const handleToggle = useCallback((chainName: string, salePoint: SalePoint) => {
         if (!firstToggleDone && (!salePoints || (salePoints && !Object.values(salePoints).length))) {
             updateSalePoints({[chainName]: salePoint})
             setFirstToggleDone(true)
         }
-    }, [firstToggleDone, salePoints])
+    }, [firstToggleDone, salePoints, updateSalePoints])
 
     return <SalePointSelectorContainer>
         <Heading>Select chains</Heading>

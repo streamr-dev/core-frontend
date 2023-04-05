@@ -41,41 +41,53 @@ const customTheme = {
 }
 
 export const ProjectHero2: FunctionComponent<ProjectHeroProps> = ({project}) => {
-    return <ProjectHeroContainer>
-        <ProjectHeroImage src={project.imageUrl} alt={project.name} noBorderRadius={true}/>
-        <ProjectHeroTitle>{project.name}</ProjectHeroTitle>
-        <DescriptionEditor
-            value={project.description}
-            readOnly={true}
-            theme={customTheme}
-        />
-        <ProjectHeroMetadataContainer>
-            {project.contact && <>
-                {project.contact.url && <DetailDisplay icon={<ProjectDetailIcon name={'web'}/>} value={project.contact.url} link={project.contact.url}/>}
-                {project.contact.email &&
-                <DetailDisplay icon={<ProjectDetailIcon name={'email'}/>} value={project.contact.email}
-                    link={'mailto:' + project.contact.email}/>}
-                {project.contact.twitter &&
-                <DetailDisplay icon={<ProjectDetailIcon name={'twitter'} className={'twitterColor'}/>}
-                    link={project.contact.twitter}/>}
-                {project.contact.telegram &&
-                <DetailDisplay icon={<ProjectDetailIcon name={'telegram'} className={'telegramColor'}/>}
-                    link={project.contact.telegram}/>}
-                {project.contact.reddit &&
-                <DetailDisplay icon={<ProjectDetailIcon name={'reddit'} className={'redditColor'}/>}
-                    link={project.contact.reddit}/>}
-                {project.contact.linkedIn &&
-                <DetailDisplay icon={<ProjectDetailIcon name={'linkedin'} className={'linkedInColor'}/>}
-                    link={project.contact.linkedIn}/>}
-            </>}
-        </ProjectHeroMetadataContainer>
-        {/*<ProjectHeroSignalContainer>
+    return (
+        <ProjectHeroContainer>
+            <ProjectHeroImage src={project.imageUrl} alt={project.name} noBorderRadius={true} />
+            <ProjectHeroTitle>{project.name}</ProjectHeroTitle>
+            <DescriptionEditor value={project.description} readOnly={true} theme={customTheme} />
+            <ProjectHeroMetadataContainer>
+                {project.contact && (
+                    <>
+                        {project.contact.url && (
+                            <DetailDisplay icon={<ProjectDetailIcon name={'web'} />} value={project.contact.url} link={project.contact.url} />
+                        )}
+                        {project.contact.email && (
+                            <DetailDisplay
+                                icon={<ProjectDetailIcon name={'email'} />}
+                                value={project.contact.email}
+                                link={'mailto:' + project.contact.email}
+                            />
+                        )}
+                        {project.contact.twitter && (
+                            <DetailDisplay icon={<ProjectDetailIcon name={'twitter'} className={'twitterColor'} />} link={project.contact.twitter} />
+                        )}
+                        {project.contact.telegram && (
+                            <DetailDisplay
+                                icon={<ProjectDetailIcon name={'telegram'} className={'telegramColor'} />}
+                                link={project.contact.telegram}
+                            />
+                        )}
+                        {project.contact.reddit && (
+                            <DetailDisplay icon={<ProjectDetailIcon name={'reddit'} className={'redditColor'} />} link={project.contact.reddit} />
+                        )}
+                        {project.contact.linkedIn && (
+                            <DetailDisplay
+                                icon={<ProjectDetailIcon name={'linkedin'} className={'linkedInColor'} />}
+                                link={project.contact.linkedIn}
+                            />
+                        )}
+                    </>
+                )}
+            </ProjectHeroMetadataContainer>
+            {/*<ProjectHeroSignalContainer>
             <p>
                 <span>Total signal</span>
                 <strong>120k DATA</strong>
             </p>
             <Button kind={'primary'} outline>Signal</Button>
         </ProjectHeroSignalContainer>*/}
-    </ProjectHeroContainer>
+        </ProjectHeroContainer>
+    )
 }
 

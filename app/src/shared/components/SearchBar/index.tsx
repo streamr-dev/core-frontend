@@ -25,7 +25,7 @@ const SearchBar: FunctionComponent<SearchBarProps> = ({onChange, value, debounce
         return debounce((searchValue: string): void => {
             onChange(searchValue)
         }, debounceTime)
-    }, [])
+    }, [debounceTime, onChange])
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
         setInputValue(event.target.value)

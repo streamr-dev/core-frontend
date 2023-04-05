@@ -37,7 +37,7 @@ export const PricingOption: FunctionComponent<{
                 beneficiaryAddress: beneficiaryAddress
             })
         }
-    }, [onToggle, toggleDropdown, pricing, beneficiaryAddress])
+    }, [toggleDropdown, onToggle, chain.id, pricing.pricePerSecond, pricing.timeUnit, pricing.price, pricing.tokenAddress, beneficiaryAddress])
 
     useEffect(() => {
         const output = isSelected ? {
@@ -49,7 +49,7 @@ export const PricingOption: FunctionComponent<{
             beneficiaryAddress: beneficiaryAddress
         } : null
         onChange(output)
-    }, [isSelected, pricing, beneficiaryAddress])
+    }, [isSelected, pricing, beneficiaryAddress, chain.id, onChange])
 
     useEffect(() => {
         if (!!pricingData) {

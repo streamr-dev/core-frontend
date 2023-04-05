@@ -53,15 +53,11 @@ export const mapProjectTypeName = (projectType: ProjectTypeEnum): string => {
     switch (projectType) {
         case ProjectTypeEnum.OPEN_DATA:
             return 'Open data'
-            break
         case ProjectTypeEnum.DATA_UNION:
             return 'Data Union'
-            break
         case ProjectTypeEnum.PAID_DATA:
             return 'Paid data'
-            break
         default:
             return 'Project'
-            break
     }
 }

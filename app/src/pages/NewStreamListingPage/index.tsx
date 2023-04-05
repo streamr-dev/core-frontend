@@ -113,18 +113,18 @@ const NewStreamListingPage: React.FC = () => {
 
             console.warn(e)
         }
-    }, [itp, search, fetchStreams, streamsSelection, currentAuthSession.address])
+    }, [itp, search, fetchStreams, streamsSelection])
 
     useEffect(() => {
         fetch()
     }, [fetch, streamsSelection])
 
     useEffect(() => {
-        if (isMounted) {
+        if (isMounted()) {
             setHasMore(false)
             fetch(true)
         }
-    }, [currentAuthSession.address])
+    }, [currentAuthSession.address, fetch, isMounted])
 
     return (
         <Layout innerClassName={styles.greyInner}>

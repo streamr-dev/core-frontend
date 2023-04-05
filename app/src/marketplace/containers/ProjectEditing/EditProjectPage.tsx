@@ -28,7 +28,7 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
 
     useEffect(() => {
         resetTouched()
-    }, [])
+    }, [resetTouched])
 
     const pageTitle = useMemo<ReactNode>(() => {
         return !!project.creator && <>{mapProjectTypeName(project.type)} by <strong> {project.creator} </strong></>
@@ -47,7 +47,7 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
             label: 'Live Data',
             href: '',
             disabled: true,
-        }], [location])
+        }], [])
 
     return <Layout
         nav={<EditorNav isNewProject={false} editedProductHasChanged={!isEqual(loadedProject, project)}/>}

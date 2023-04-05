@@ -44,7 +44,7 @@ type CurrencyButtonProps = {
 }
 
 const CurrencyButton = (
-    { currency, selected, onChange, iconName, tokenSymbol }: CurrencyButtonProps, // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+    { currency, selected, onChange, iconName, tokenSymbol }: CurrencyButtonProps,
 ) => (
     <div
         key={currency}
