@@ -221,7 +221,7 @@ const prepareProjectResult = (results: TheGraphProject[], pageSize: number): Pro
 export type ProjectsResult = {
     projects: TheGraphProject[],
     hasNextPage: boolean,
-    lastId: string,
+    lastId: string | null,
 }
 
 const getProjectFilterQuery = (type: ProjectListingTypeFilter): string => {
@@ -251,6 +251,8 @@ export const getProjects = async (owner?: string, first = 20, skip = 0, type?: P
                     projects(
                         first: ${first + 1},
                         skip: ${skip},
+                        orderBy: score,
+                        orderDirection: desc,
                         ${allFilters != null ?  `where: { ${allFilters} }` : ''},
                     ) {
                         ${projectFields}
