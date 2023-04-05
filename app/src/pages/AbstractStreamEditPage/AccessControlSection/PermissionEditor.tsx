@@ -48,7 +48,7 @@ function UnstyledPermissionEditor({ address, permissionBits, disabled, onChange,
                 <Checkbox
                     operationName="Subscribe"
                     address={address}
-                    value={matchBits(permissionBits, Bits[StreamPermission.SUBSCRIBE])}
+                    value={matchBits(Bits[StreamPermission.SUBSCRIBE], permissionBits)}
                     onChange={(value) => onChange(StreamPermission.SUBSCRIBE, value)}
                     disabled={disabled}
                 />
@@ -58,7 +58,7 @@ function UnstyledPermissionEditor({ address, permissionBits, disabled, onChange,
                 <Checkbox
                     operationName="Publish"
                     address={address}
-                    value={matchBits(permissionBits, Bits[StreamPermission.PUBLISH])}
+                    value={matchBits(Bits[StreamPermission.PUBLISH], permissionBits)}
                     onChange={(value) => onChange(StreamPermission.PUBLISH, value)}
                     disabled={disabled}
                 />
@@ -68,21 +68,21 @@ function UnstyledPermissionEditor({ address, permissionBits, disabled, onChange,
                 <Checkbox
                     operationName="Grant"
                     address={address}
-                    value={matchBits(permissionBits, Bits[StreamPermission.GRANT])}
+                    value={matchBits(Bits[StreamPermission.GRANT], permissionBits)}
                     onChange={(value) => onChange(StreamPermission.GRANT, value)}
                     disabled={disabled}
                 />
                 <Checkbox
                     operationName="Edit"
                     address={address}
-                    value={matchBits(permissionBits, Bits[StreamPermission.EDIT])}
+                    value={matchBits(Bits[StreamPermission.EDIT], permissionBits)}
                     onChange={(value) => onChange(StreamPermission.EDIT, value)}
                     disabled={disabled}
                 />
                 <Checkbox
                     operationName="Delete"
                     address={address}
-                    value={matchBits(permissionBits, Bits[StreamPermission.DELETE])}
+                    value={matchBits(Bits[StreamPermission.DELETE], permissionBits)}
                     onChange={(value) => onChange(StreamPermission.DELETE, value)}
                     disabled={disabled}
                 />
