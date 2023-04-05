@@ -27,6 +27,7 @@ import getNativeTokenName from '$shared/utils/nativeToken'
 import { useAuthController } from '$auth/hooks/useAuthController'
 import { useInvalidateAbilities } from '$shared/stores/abilities'
 import routes from '$routes'
+import RelatedProjects from './AbstractStreamEditPage/RelatedProjects'
 
 export const getStreamDetailsLinkTabs = (streamId?: string, dirty?: boolean) => {
     return [
@@ -116,6 +117,7 @@ function ContainerBox({ children, disabled, showSaveButton = true, fullWidth = f
                     </SaveButton>
                 )}
             </Inner>
+            <RelatedProjects streamId={"0x9b3e47c99f06f49724f8527ed493d253d83becfc/007"} />
         </Outer>
     )
 }
