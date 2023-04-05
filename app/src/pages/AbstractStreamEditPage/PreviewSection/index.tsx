@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import useStreamId from '$shared/hooks/useStreamId'
 import Button from '$shared/components/Button'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import useIsSessionTokenReady from '$shared/hooks/useIsSessionTokenReady'
+import { useIsAuthenticated } from '$app/src/auth/hooks/useIsAuthenticated'
 import useStreamData from '$shared/hooks/useStreamData'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
@@ -25,7 +25,7 @@ function UnwrappedPreviewSection() {
     const streamId = useStreamId()
     const [isRunning, toggleIsRunning] = useReducer((current) => !current, true)
     const [dataError, setDataError] = useState(false)
-    const hasLoaded = useIsSessionTokenReady()
+    const hasLoaded = useIsAuthenticated()
     const client = useClient()
     const isMounted = useIsMounted()
     const streamData = useStreamData(streamId, {
