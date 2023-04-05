@@ -13,6 +13,7 @@ import { TABLET, COLORS } from '$shared/utils/styled'
 import { isEthereumAddress } from '$mp/utils/validate'
 import UnstyledErrors, { MarketplaceTheme } from '$ui/Errors'
 import PermissionEditor from './PermissionEditor'
+import address0 from '$app/src/utils/address0'
 
 const Container = styled.div`
     display: grid;
@@ -91,6 +92,11 @@ const UnstyledAddAccountDialog = ({ onClose, ...props }) => {
                     <Button
                         kind="primary"
                         onClick={() => {
+                            if (address.toLowerCase() === address0) {
+                                setError('Invalid address')
+                                return
+                            }
+
                             if (address.length === 0) {
                                 setError('Address required')
                                 return
