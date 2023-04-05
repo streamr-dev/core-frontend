@@ -22,8 +22,7 @@ import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
 import { CopyButton } from "$shared/components/CopyButton/CopyButton"
 import { useTransientStream } from '$shared/contexts/TransientStreamContext'
 import { DESKTOP, TABLET } from '$shared/utils/styled'
-import PermissionsProvider, { usePermissionsState } from '$shared/components/PermissionsProvider'
-import usePersistChangeset from '$shared/components/PermissionsProvider/usePersistChangeset'
+import { useStreamEditorStore as useStreamEditorStore2 } from '$shared/stores/streamEditor'
 import { TransactionList } from '$shared/components/TransactionList'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import useStreamPermissionsInvalidator from '$shared/hooks/useStreamPermissionsInvalidator'
@@ -127,7 +126,9 @@ const StreamTransactionList: FunctionComponent = () => {
     return <TransactionList operations={persistOperations}/>
 }
 
-function UnwrappedStreamPage({ children, streamId, loading = false, includeContainerBox = true , showSaveButton = true, fullWidth = false}) {
+export default function StreamPage({ children, loading = false, includeContainerBox = true , showSaveButton = true, fullWidth = false}) {
+    const streamId = useStreamId()
+
     const history = useHistory()
     const { commit, isUpdateNeeded, validate, setBusy } = useStreamModifier()
     const { busy, clean: isStreamClean } = useStreamModifierStatusContext()
@@ -136,10 +137,8 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
     const isNew = !streamId
     const nativeTokenName = useNativeTokenName()
     const [showGetCryptoDialog, setShowGetCryptoDialog] = useState(false)
-    const linkTabs = useMemo(() => (streamId ? getStreamDetailsLinkTabs(streamId) : []), [streamId])
-    const { id: transientStreamId } = useTransientStream()
-    const persistPermissions = usePersistChangeset()
-    const { changeset } = usePermissionsState()
+    const linkTabs = useMemo(() => streamId ? getStreamDetailsLinkTabs(streamId) : [], [streamId])
+    const {id: transientStreamId} = useTransientStream()
     const invalidatePermissions = useStreamPermissionsInvalidator()
     const clearPersistOperations = useStreamEditorStore((state) => state.clearPersistOperations)
     const addPersistOperation = useStreamEditorStore((state) => state.addPersistOperation)
@@ -150,8 +149,10 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
     const hasStorageNodeChanges = useStreamEditorStore((state) => state.hasStorageNodeChanges)
     const resetStore = useStreamEditorStore((state) => state.reset)
 
+    const assignments = useStreamEditorStore2(({ cache }) => streamId ? cache[streamId]?.permissionAssignments || [] : [])
 
-    const clean = isStreamClean && !hasStorageNodeChanges && Object.keys(changeset).length === 0
+    const clean = isStreamClean && !hasStorageNodeChanges && !assignments.length
+
     usePreventNavigatingAway({
         isDirty: () => !clean,
     })
@@ -169,7 +170,7 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
         try {
             try {
                 const streamNeedsSaving = isUpdateNeeded()
-                const hasPermissionChanges = Object.keys(changeset).length > 0
+                const hasPermissionChanges = !assignments.length
 
                 if (!streamNeedsSaving && !hasPermissionChanges && !hasStorageNodeChanges) {
                     // Nothing changed
@@ -264,7 +265,7 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
                         state: 'inprogress',
                     })
                     try {
-                        await persistPermissions(id)
+                        await Promise.reject('Not implemented')
                         requireUninterrupted()
 
                         // Reload permissions to update e.g. showing of stream delete button
@@ -364,16 +365,7 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
                 </Layout>
             </form>
             {showGetCryptoDialog && <GetCryptoDialog onCancel={() => void setShowGetCryptoDialog(false)} nativeTokenName={nativeTokenName} />}
-        </>
-    )
-}
-
-export default function StreamPage(props) {
-    const streamId = useStreamId()
-    return (
-        <PermissionsProvider resourceId={streamId} resourceType={'STREAM'}>
-            <UnwrappedStreamPage streamId={streamId} {...props} />
             <SwitchNetworkModal />
-        </PermissionsProvider>
+        </>
     )
 }

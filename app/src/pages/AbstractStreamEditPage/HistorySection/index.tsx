@@ -6,7 +6,7 @@ import useStreamId from '$shared/hooks/useStreamId'
 import { useTransientStream } from '$shared/contexts/TransientStreamContext'
 import UnitizedQuantity from '$shared/components/UnitizedQuantity'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
-import useStreamPermissions from '$shared/hooks/useStreamPermissions'
+import { useCurrentAbility } from '$shared/stores/abilities'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
 import StorageNodeList from './StorageNodeList'
@@ -49,8 +49,10 @@ const Desc = styled.p`
     margin-bottom: 3.125rem;
 `
 export default function HistorySection({ disabled: disabledProp, ...props }) {
-    const { [StreamPermission.EDIT]: canEdit = false } = useStreamPermissions()
+    const canEdit = !!useCurrentAbility(StreamPermission.EDIT)
+
     const disabled = disabledProp || !canEdit
+
     const isWithinNav = useIsWithinNav()
     return (
         <TOCSection disabled={disabled} id="historical-data" title="Data storage">

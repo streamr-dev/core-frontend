@@ -1,6 +1,6 @@
 import React from 'react'
 import { StreamPermission } from 'streamr-client'
-import useStreamPermissions from '$shared/hooks/useStreamPermissions'
+import { useCurrentAbility } from '../shared/stores/abilities'
 import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
 import StreamPage from './StreamPage'
 import AbstractStreamPage from './AbstractStreamPage'
@@ -12,10 +12,16 @@ import PartitionsSection from './AbstractStreamEditPage/PartitionsSection'
 import DeleteSection from './AbstractStreamEditPage/DeleteSection'
 
 function UnwrappedStreamEditPage() {
+    const canEdit = useCurrentAbility(StreamPermission.EDIT)
+
+    const canDelete = useCurrentAbility(StreamPermission.DELETE)
+
     const { busy } = useStreamModifierStatusContext()
-    const { [StreamPermission.EDIT]: canEdit, [StreamPermission.DELETE]: canDelete } = useStreamPermissions()
+
     const title = canEdit ? 'Set up your stream' : 'Read only stream'
+
     const loading = typeof canEdit === 'undefined'
+
     return (
         <StreamPage title={title} loading={loading}>
             <InfoSection disabled={busy} />
