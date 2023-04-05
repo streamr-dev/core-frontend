@@ -1,11 +1,10 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { truncate } from '$shared/utils/text'
 import SvgIcon from '$shared/components/SvgIcon'
 import { COLORS } from '$shared/utils/styled'
-import { Operation, checkOperation } from '$shared/components/PermissionsProvider/operations'
-import { usePermissionsDispatch } from '$shared/components/PermissionsProvider'
-import { UPDATE_PERMISSION } from '$shared/components/PermissionsProvider/utils/reducer'
+import useStreamId from '$app/src/shared/hooks/useStreamId'
+import { Bits, matchBits, setBits, unsetBits, useStreamEditorStore } from '$app/src/shared/stores/streamEditor'
 import {useAuthController} from "$auth/hooks/useAuthController"
 import UnstyledPermissionEditor from './PermissionEditor'
 
@@ -81,20 +80,14 @@ type Props = {
 
 const PermissionItem: React.FunctionComponent<Props> = ({ disabled, address, permissionBits }) => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
-    const dispatch = usePermissionsDispatch()
-    const {currentAuthSession} = useAuthController()
-    const operations = Object.keys(Operation).filter((item) => {
-        return isNaN(Number(item)) && Operation[item] !== Operation.None && checkOperation(permissionBits, Operation[item])
-    })
 
-    const onChange = useCallback((newValue: Operation) => {
-        dispatch({
-            type: UPDATE_PERMISSION,
-            user: address,
-            // eslint-disable-next-line no-bitwise
-            value: newValue,
-        })
-    }, [dispatch, address])
+    const {currentAuthSession} = useAuthController()
+
+    const operations = Object.keys(Bits).filter((permission) => matchBits(Bits[permission], permissionBits))
+
+    const streamId = useStreamId()
+
+    const setPermissions = useStreamEditorStore(({ setPermissions }) => setPermissions)
 
     return (
         <Container>
@@ -110,7 +103,7 @@ const PermissionItem: React.FunctionComponent<Props> = ({ disabled, address, per
                             <YouLabel>You</YouLabel>
                         )}
                         {operations.map((op) => (
-                            <Label key={op}>{op}</Label>
+                            <Label key={op}>{op.replace(/^\w/, (s) => s.toUpperCase())}</Label>
                         ))}
                     </Labels>
                 }
@@ -121,7 +114,13 @@ const PermissionItem: React.FunctionComponent<Props> = ({ disabled, address, per
                     address={address}
                     permissionBits={permissionBits}
                     disabled={disabled}
-                    onChange={onChange}
+                    onChange={(permission, enabled) => {
+                        if (!streamId) {
+                            return
+                        }
+
+                        setPermissions(streamId, address, (enabled ? setBits : unsetBits)(permissionBits, Bits[permission]))
+                    }}
                 />
             )}
         </Container>

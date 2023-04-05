@@ -6,7 +6,7 @@ import Label from '$ui/Label'
 import UnitizedQuantity from '$shared/components/UnitizedQuantity'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
 import { useTransientStream } from '$shared/contexts/TransientStreamContext'
-import useStreamPermissions from '$shared/hooks/useStreamPermissions'
+import { useCurrentAbility } from '$app/src/shared/stores/abilities'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 import useStreamActivityStatus from '$shared/hooks/useStreamActivityStatus'
 import useStream from '$shared/hooks/useStream'
@@ -59,10 +59,14 @@ const Description = styled.p`
     margin-bottom: 3rem;
 `
 export default function StatusSection({ disabled: disabledProp, ...props }) {
-    const { [StreamPermission.EDIT]: canEdit = false } = useStreamPermissions()
+    const canEdit = !!useCurrentAbility(StreamPermission.EDIT)
+
     const disabled = disabledProp || !canEdit
+
     const isWithinNav = useIsWithinNav()
+
     const [status, setStatus] = useState(StatusIcon.INVACTIVE)
+
     return (
         <TOCSection disabled={disabled} id="status" status={<StatusIcon tooltip status={status} />} title="Status">
             {!isWithinNav && (

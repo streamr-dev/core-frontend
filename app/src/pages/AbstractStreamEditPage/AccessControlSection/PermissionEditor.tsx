@@ -1,7 +1,7 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-
-import { Operation, setOperation, unsetOperation, checkOperation } from '$shared/components/PermissionsProvider/operations'
+import { StreamPermission } from 'streamr-client'
+import { Bits, matchBits } from '$app/src/shared/stores/streamEditor'
 import { MEDIUM, TABLET } from '$shared/utils/styled'
 import Checkbox from './Checkbox'
 
@@ -37,15 +37,10 @@ type Props = {
     permissionBits: number,
     disabled?: boolean,
     editor?: boolean,
-    onChange: (newValue: Operation) => void,
+    onChange: (permission: StreamPermission, enabled: boolean) => void,
 }
 
-const UnstyledPermissionEditor: React.FunctionComponent<Props> = ({ address, permissionBits, disabled, onChange: onChangeProp, ...props }) => {
-    const onChange = useCallback((value: boolean, flag: Operation) => {
-        const newPermissionBits = value ? setOperation(permissionBits, flag) : unsetOperation(permissionBits, flag)
-        onChangeProp(newPermissionBits)
-    }, [onChangeProp, permissionBits])
-
+function UnstyledPermissionEditor({ address, permissionBits, disabled, onChange, ...props }: Props) {
     return (
         <Container {...props}>
             <Column>
@@ -53,8 +48,8 @@ const UnstyledPermissionEditor: React.FunctionComponent<Props> = ({ address, per
                 <Checkbox
                     operationName="Subscribe"
                     address={address}
-                    value={checkOperation(permissionBits, Operation.Subscribe)}
-                    onChange={(value) => onChange(value, Operation.Subscribe)}
+                    value={matchBits(permissionBits, Bits[StreamPermission.SUBSCRIBE])}
+                    onChange={(value) => onChange(StreamPermission.SUBSCRIBE, value)}
                     disabled={disabled}
                 />
             </Column>
@@ -63,8 +58,8 @@ const UnstyledPermissionEditor: React.FunctionComponent<Props> = ({ address, per
                 <Checkbox
                     operationName="Publish"
                     address={address}
-                    value={checkOperation(permissionBits, Operation.Publish)}
-                    onChange={(value) => onChange(value, Operation.Publish)}
+                    value={matchBits(permissionBits, Bits[StreamPermission.PUBLISH])}
+                    onChange={(value) => onChange(StreamPermission.PUBLISH, value)}
                     disabled={disabled}
                 />
             </Column>
@@ -73,22 +68,22 @@ const UnstyledPermissionEditor: React.FunctionComponent<Props> = ({ address, per
                 <Checkbox
                     operationName="Grant"
                     address={address}
-                    value={checkOperation(permissionBits, Operation.Grant)}
-                    onChange={(value) => onChange(value, Operation.Grant)}
+                    value={matchBits(permissionBits, Bits[StreamPermission.GRANT])}
+                    onChange={(value) => onChange(StreamPermission.GRANT, value)}
                     disabled={disabled}
                 />
                 <Checkbox
                     operationName="Edit"
                     address={address}
-                    value={checkOperation(permissionBits, Operation.Edit)}
-                    onChange={(value) => onChange(value, Operation.Edit)}
+                    value={matchBits(permissionBits, Bits[StreamPermission.EDIT])}
+                    onChange={(value) => onChange(StreamPermission.EDIT, value)}
                     disabled={disabled}
                 />
                 <Checkbox
                     operationName="Delete"
                     address={address}
-                    value={checkOperation(permissionBits, Operation.Delete)}
-                    onChange={(value) => onChange(value, Operation.Delete)}
+                    value={matchBits(permissionBits, Bits[StreamPermission.DELETE])}
+                    onChange={(value) => onChange(StreamPermission.DELETE, value)}
                     disabled={disabled}
                 />
             </Column>
@@ -97,4 +92,5 @@ const UnstyledPermissionEditor: React.FunctionComponent<Props> = ({ address, per
 }
 
 const PermissionEditor = styled(UnstyledPermissionEditor)``
+
 export default PermissionEditor

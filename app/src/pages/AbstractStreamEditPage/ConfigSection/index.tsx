@@ -17,7 +17,7 @@ import useStreamId from '$shared/hooks/useStreamId'
 import useStream from '$shared/hooks/useStream'
 import { useTransientStream } from '$shared/contexts/TransientStreamContext'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
-import useStreamPermissions from '$shared/hooks/useStreamPermissions'
+import { useCurrentAbility } from '$shared/stores/abilities'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
 import NewFieldEditor, { types } from './NewFieldEditor'
@@ -30,6 +30,7 @@ import reducer, {
     DeleteField,
     Invalidate,
 } from './reducer'
+
 const fallbackConfig = {
     fields: [],
 }
@@ -269,9 +270,12 @@ const StyledFieldList = styled(FieldList)`
     z-index: 1;
 `
 export default function ConfigSection({ disabled: disabledProp, ...props }) {
-    const { [StreamPermission.EDIT]: canEdit = false } = useStreamPermissions()
+    const canEdit = useCurrentAbility(StreamPermission.EDIT)
+
     const disabled = disabledProp || !canEdit
+
     const isWithinNav = useIsWithinNav()
+
     return (
         <TOCSection disabled={disabled} id="configure" title="Fields">
             {!isWithinNav && <UnwrappedConfigSection {...props} disabled={disabled} canEdit={canEdit} />}

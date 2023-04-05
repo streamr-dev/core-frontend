@@ -1,10 +1,9 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-
 import { MEDIUM } from '$shared/utils/styled'
-import { usePermissionsDispatch, usePermissionsState } from '$shared/components/PermissionsProvider'
-import { UPDATE_PERMISSION } from '$shared/components/PermissionsProvider/utils/reducer'
-import { DEFAULTS } from '$shared/components/PermissionsProvider/groups'
+import { Bits, useStreamEditorStore } from '$app/src/shared/stores/streamEditor'
+import useStreamId from '$app/src/shared/hooks/useStreamId'
+import { StreamPermission } from 'streamr-client'
 import address0 from '$utils/address0'
 
 const Container = styled.div`
@@ -49,31 +48,22 @@ const Description = styled.div`
 `
 
 enum StreamType {
-    PUBLIC = 'PUBLIC',
-    PRIVATE = 'PRIVATE',
+    Public = 'public',
+    Private = 'private',
 }
 
 type Props = {
     disabled?: boolean,
 }
 
-const StreamTypeSelector: React.FunctionComponent<Props> = ({ disabled }: Props) => {
-    const dispatch = usePermissionsDispatch()
-    const { changeset, combinations, resourceType } = usePermissionsState()
+export default function StreamTypeSelector({ disabled }: Props) {
+    const setPermissions = useStreamEditorStore(({ setPermissions }) => setPermissions)
 
-    const anonCombination = ({}.hasOwnProperty.call(changeset, address0) ? changeset : combinations)[address0]
-    const streamType = anonCombination ? StreamType.PUBLIC : StreamType.PRIVATE
+    const streamId = useStreamId()
 
-    const onChange = useCallback(
-        (value: StreamType) => {
-            dispatch({
-                type: UPDATE_PERMISSION,
-                user: address0,
-                value: value === StreamType.PUBLIC ? DEFAULTS[resourceType] : undefined,
-            })
-        },
-        [dispatch, resourceType],
-    )
+    const bits = useStreamEditorStore(({ cache }) => streamId ? cache[streamId]?.permissions?.[address0]?.bits || null : null)
+
+    const streamType = bits ? StreamType.Public : StreamType.Private
 
     return (
         <Container>
@@ -83,9 +73,13 @@ const StreamTypeSelector: React.FunctionComponent<Props> = ({ disabled }: Props)
                         id="public"
                         type="radio"
                         name="streamType"
-                        checked={streamType === StreamType.PUBLIC}
+                        checked={streamType === StreamType.Public}
                         onChange={() => {
-                            onChange(StreamType.PUBLIC)
+                            if (!streamId) {
+                                return
+                            }
+
+                            setPermissions(streamId, address0, Bits[StreamPermission.SUBSCRIBE])
                         }}
                         disabled={disabled}
                     />
@@ -101,9 +95,13 @@ const StreamTypeSelector: React.FunctionComponent<Props> = ({ disabled }: Props)
                         id="private"
                         type="radio"
                         name="streamType"
-                        checked={streamType === StreamType.PRIVATE}
+                        checked={streamType === StreamType.Private}
                         onChange={() => {
-                            onChange(StreamType.PRIVATE)
+                            if (!streamId) {
+                                return
+                            }
+
+                            setPermissions(streamId, address0, null)
                         }}
                         disabled={disabled}
                     />
@@ -116,5 +114,3 @@ const StreamTypeSelector: React.FunctionComponent<Props> = ({ disabled }: Props)
         </Container>
     )
 }
-
-export default StreamTypeSelector

@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react'
+import React, { useEffect } from 'react'
+import { useClient } from 'streamr-client-react'
 import styled from 'styled-components'
-
 import Button from '$shared/components/Button'
-import { usePermissionsState } from '$shared/components/PermissionsProvider'
+import { useStreamEditorStore } from '$shared/stores/streamEditor'
+import useStreamId from '$shared/hooks/useStreamId'
 import useModal from '$shared/hooks/useModal'
 import address0 from '$utils/address0'
 import PermissionItem from './PermissionItem'
@@ -31,18 +32,40 @@ type Props = {
 
 const PermissionList: React.FunctionComponent<Props> = ({ disabled }) => {
     const { api: addModal } = useModal('accesscontrol.addaccount')
-    const { changeset, combinations } = usePermissionsState()
-    const permissions = useMemo(() => (
-        Object.entries({ ...combinations, ...changeset }).filter((p) => p[0] !== address0)
-    ), [combinations, changeset])
+
+    const fetchPermissions = useStreamEditorStore((store) => store.fetchPermissions)
+
+    const streamId = useStreamId()
+
+    const client = useClient()
+
+    useEffect(() => {
+        async function fn() {
+            if (!streamId || !client) {
+                return
+            }
+
+            try {
+                await fetchPermissions(streamId, client)
+            } catch (e) {
+                console.warn(e)
+            }
+        }
+
+        fn()
+    }, [fetchPermissions, streamId, client])
+
+    const permissions = useStreamEditorStore((store) => (
+        Object.entries(streamId ? store.cache[streamId]?.permissions || {} : {})
+    ))
 
     return (
         <Container>
-            {permissions.map(([key, value]) => (
+            {permissions.map(([key, { bits = null } = {}]) => key !== address0 && (
                 <PermissionItem
                     key={key}
                     address={key}
-                    permissionBits={value as number}
+                    permissionBits={bits || 0}
                     disabled={disabled}
                 />
             ))}

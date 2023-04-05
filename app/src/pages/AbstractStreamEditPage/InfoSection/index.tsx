@@ -7,7 +7,7 @@ import { useTransientStream } from '$shared/contexts/TransientStreamContext'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
 import Label from '$ui/Label'
 import Surround from '$shared/components/Surround'
-import useStreamPermissions from '$shared/hooks/useStreamPermissions'
+import { useCurrentAbility } from '$app/src/shared/stores/abilities'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
 import { ENS_DOMAINS_URL, ReadonlyStreamId, EditableStreamId } from './StreamId'
@@ -73,9 +73,12 @@ const Description = styled.p`
     margin-bottom: 3rem;
 `
 export default function InfoSection({ disabled: disabledProp, ...props }) {
-    const { [StreamPermission.EDIT]: canEdit = false } = useStreamPermissions()
+    const canEdit = !!useCurrentAbility(StreamPermission.EDIT)
+
     const disabled = disabledProp || !canEdit
+
     const isWithinNav = useIsWithinNav()
+    
     return (
         <TOCSection id="details" title="Details">
             {!isWithinNav && <UnwrappedInfoSection {...props} canEdit={canEdit} disabled={disabled} />}

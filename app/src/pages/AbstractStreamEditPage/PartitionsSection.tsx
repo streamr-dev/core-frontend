@@ -4,11 +4,12 @@ import styled from 'styled-components'
 import StatusLabel from '$shared/components/StatusLabel'
 import { useTransientStream } from '$shared/contexts/TransientStreamContext'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
-import useStreamPermissions from '$shared/hooks/useStreamPermissions'
+import { useCurrentAbility } from '$app/src/shared/stores/abilities'
 import Label from '$ui/Label'
 import Numeric from '$ui/Numeric'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
+
 const PARTITIONS_MIN = 1
 const PARTITIONS_MAX = 99
 const Init = 'init'
@@ -129,9 +130,12 @@ const Desc = styled.p`
     max-width: 660px;
 `
 export default function PartitionsSection({ disabled: disabledProp, ...props }) {
-    const { [StreamPermission.EDIT]: canEdit = false } = useStreamPermissions()
+    const canEdit = !!useCurrentAbility(StreamPermission.EDIT)
+
     const disabled = disabledProp || !canEdit
+
     const isWithinNav = useIsWithinNav()
+
     return (
         <TOCSection
             id="stream-partitions"
