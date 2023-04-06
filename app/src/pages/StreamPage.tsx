@@ -103,21 +103,24 @@ const TitleContainer = styled.div`
   align-items: center;
 `
 
-const ContainerBox: React.FunctionComponent<ContainerBoxProps> = ({ children, disabled, showSaveButton = true, fullWidth = false }) =>
-    <Outer>
-        <Inner fullWidth={fullWidth}>
-            <div>
-                {children}
-            </div>
-            {showSaveButton && <SaveButton
-                kind="primary"
-                type="submit"
-                disabled={disabled}
-            >
-                Save
-            </SaveButton>}
-        </Inner>
-    </Outer>
+function ContainerBox({ children, disabled, showSaveButton = true, fullWidth = false }: ContainerBoxProps) {
+    return (
+        <Outer>
+            <Inner fullWidth={fullWidth}>
+                <div>
+                    {children}
+                </div>
+                {showSaveButton && <SaveButton
+                    kind="primary"
+                    type="submit"
+                    disabled={disabled}
+                >
+                    Save
+                </SaveButton>}
+            </Inner>
+        </Outer>
+    )
+}
 
 function UnwrappedStreamPage({ children, streamId, loading = false, includeContainerBox = true , showSaveButton = true, fullWidth = false}) {
     const history = useHistory()
