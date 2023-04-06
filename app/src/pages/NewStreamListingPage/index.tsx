@@ -4,21 +4,21 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
 import { MarketplaceHelmet } from '$shared/components/Helmet'
-import {COLORS, DESKTOP, MAX_BODY_WIDTH, TABLET} from '$shared/utils/styled'
+import { COLORS, DESKTOP, MAX_BODY_WIDTH, TABLET } from '$shared/utils/styled'
 import Button from '$shared/components/Button'
 import Layout from '$shared/components/Layout'
 import SearchBar from '$shared/components/SearchBar'
 import Tabs from '$shared/components/Tabs'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import useFetchStreams from '$shared/hooks/useFetchStreams'
-import { getStreamsFromIndexer, IndexerStream } from '$app/src/services/streams'
-import {useIsAuthenticated} from "$auth/hooks/useIsAuthenticated"
+import { getStreamsFromIndexer, IndexerStream, getPublisherAndSubscriberCountForStreams, TheGraphStreamStats } from '$app/src/services/streams'
+import { useIsAuthenticated } from '$auth/hooks/useIsAuthenticated'
 import InterruptionError from '$shared/errors/InterruptionError'
-import {ActionBarContainer, FiltersBar, FiltersWrap, SearchBarWrap} from '$mp/components/ActionBar/actionBar.styles'
-import {PageWrap} from "$shared/components/PageWrap"
-import styles from "$shared/components/Layout/layout.pcss"
-import useIsMounted from "$shared/hooks/useIsMounted"
-import {useAuthController} from "$auth/hooks/useAuthController"
+import { ActionBarContainer, FiltersBar, FiltersWrap, SearchBarWrap } from '$mp/components/ActionBar/actionBar.styles'
+import { PageWrap } from '$shared/components/PageWrap'
+import styles from '$shared/components/Layout/layout.pcss'
+import useIsMounted from '$shared/hooks/useIsMounted'
+import { useAuthController } from '$auth/hooks/useAuthController'
 import routes from '$routes'
 import StreamTable from '../../shared/components/StreamTable'
 
@@ -36,7 +36,7 @@ const streamSelectionOptions = (isUserAuthenticated: boolean) => [
         label: 'Your streams',
         value: StreamSelection.YOUR,
         disabled: !isUserAuthenticated,
-        disabledReason: 'Connect your wallet to view your streams'
+        disabledReason: 'Connect your wallet to view your streams',
     },
 ]
 
@@ -68,52 +68,73 @@ const NewStreamListingPage: React.FC = () => {
     const [streamStats, setStreamStats] = useState<Record<StreamID, IndexerStream>>({})
     const [hasMore, setHasMore] = useState<boolean>(false)
     const isUserAuthenticated = useIsAuthenticated()
-    const {currentAuthSession} = useAuthController()
+    const { currentAuthSession } = useAuthController()
     const isMounted = useIsMounted()
 
     const itp = useInterrupt()
     const fetchStreams = useFetchStreams()
 
-    const fetch = useCallback(async (resetSearch = false) => {
-        const { requireUninterrupted } = itp(search)
-        try {
-            const allowPublic = streamsSelection === StreamSelection.ALL
-            const [newStreams, hasMoreResults, isFirstBatch] = await fetchStreams(search, {
-                batchSize: PAGE_SIZE,
-                allowPublic,
-                onlyCurrentUser: streamsSelection === StreamSelection.YOUR,
-            }, resetSearch)
-
-            requireUninterrupted()
-            setHasMore(hasMoreResults)
-
-            if (isFirstBatch) {
-                setStreams(newStreams)
-            } else {
-                setStreams((current = []) => [...current, ...newStreams])
-            }
-
+    const fetch = useCallback(
+        async (resetSearch = false) => {
+            const { requireUninterrupted } = itp(search)
             try {
-                const stats = await getStreamsFromIndexer(newStreams.map((s) => s.id))
+                const allowPublic = streamsSelection === StreamSelection.ALL
+                const [newStreams, hasMoreResults, isFirstBatch] = await fetchStreams(
+                    search,
+                    {
+                        batchSize: PAGE_SIZE,
+                        allowPublic,
+                        onlyCurrentUser: streamsSelection === StreamSelection.YOUR,
+                    },
+                    resetSearch,
+                )
 
                 requireUninterrupted()
-                if (stats && stats.length > 0) {
-                    setStreamStats((prev) => ({
-                        ...prev,
-                        ...Object.fromEntries(stats.map((is) => [is.id, is]))
-                    }))
+                setHasMore(hasMoreResults)
+
+                if (isFirstBatch) {
+                    setStreams(newStreams)
+                } else {
+                    setStreams((current = []) => [...current, ...newStreams])
+                }
+
+                try {
+                    // First load stats from indexer and display them immediately
+                    const indexerStats = await getStreamsFromIndexer(newStreams.map((s) => s.id))
+
+                    requireUninterrupted()
+                    if (indexerStats && indexerStats.length > 0) {
+                        setStreamStats((prev) => ({
+                            ...prev,
+                            ...Object.fromEntries(indexerStats.map((is) => [is.id, is])),
+                        }))
+                    }
+
+                    // Then load stats from The Graph and replace indexer stats with them.
+                    // This takes anything from 200-400 ms so we need to show indexer stats for a while
+                    // and then update the UI with stats from The Graph.
+                    const theGraphStats = await getPublisherAndSubscriberCountForStreams(newStreams.map((s) => s.id))
+
+                    requireUninterrupted()
+                    if (theGraphStats && theGraphStats.length > 0) {
+                        setStreamStats((prev) => ({
+                            ...prev,
+                            ...Object.fromEntries(theGraphStats.map((gs) => [gs.id, { ...prev[gs.id], ...gs }])),
+                        }))
+                    }
+                } catch (e) {
+                    console.warn('Fetching stream stats failed', e)
                 }
             } catch (e) {
-                console.warn('Fetching stream stats failed', e)
-            }
-        } catch (e) {
-            if (e instanceof InterruptionError) {
-                return
-            }
+                if (e instanceof InterruptionError) {
+                    return
+                }
 
-            console.warn(e)
-        }
-    }, [itp, search, fetchStreams, streamsSelection])
+                console.warn(e)
+            }
+        },
+        [itp, search, fetchStreams, streamsSelection],
+    )
 
     useEffect(() => {
         fetch()

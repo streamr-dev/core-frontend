@@ -11,6 +11,7 @@ projectsChain = 'polygon'
 theGraphUrl = "https://api.thegraph.com"
 mainnetInfuraUrl = "https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206"
 theHubGraphName = "streamr-dev/projects"
+streamsGraphName = "streamr-dev/streams"
 streamIndexerUrl = "https://stream-metrics.streamr.network/api"
 reverseRecordsAddress = "0x3671aE578E63FdF66ad4F3E12CC0c0d71Ac7510C"
 

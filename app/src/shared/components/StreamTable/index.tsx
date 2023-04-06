@@ -7,7 +7,7 @@ import LoadMore from '$mp/components/LoadMore'
 import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
 import { getGlobalStatsFromIndexer, GlobalStreamStats, IndexerStream } from '$app/src/services/streams'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import {truncateStreamName} from '$shared/utils/text'
+import { truncateStreamName } from '$shared/utils/text'
 import routes from '$routes'
 
 const ROW_HEIGHT = 88
@@ -68,32 +68,32 @@ const TableRows = styled.div<TableRowsProps>`
 `
 
 const TableRow = styled(TableGrid)`
-  font-size: 16px;
-  line-height: 26px;
-  height: ${ROW_HEIGHT}px;
-  max-height: ${ROW_HEIGHT}px;
-  box-sizing: content-box;
-  color: ${COLORS.primaryLight};
-  transition: background-color 100ms ease-in-out;
-  
-  &:hover {
-    background-color: ${COLORS.secondaryLight};
-  }
-  
-  &:active {
-    background-color: ${COLORS.click};
-  }
-
-  &:not(:last-child) {
-    border-bottom: 1px solid #f8f8f8;
-  }
-
-  &:active,
-  &:link,
-  &:visited,
-  &:hover {
+    font-size: 16px;
+    line-height: 26px;
+    height: ${ROW_HEIGHT}px;
+    max-height: ${ROW_HEIGHT}px;
+    box-sizing: content-box;
     color: ${COLORS.primaryLight};
-  }
+    transition: background-color 100ms ease-in-out;
+
+    &:hover {
+        background-color: ${COLORS.secondaryLight};
+    }
+
+    &:active {
+        background-color: ${COLORS.click};
+    }
+
+    &:not(:last-child) {
+        border-bottom: 1px solid #f8f8f8;
+    }
+
+    &:active,
+    &:link,
+    &:visited,
+    &:hover {
+        color: ${COLORS.primaryLight};
+    }
 `
 
 type GridCellProps = {
@@ -214,8 +214,8 @@ type Props = {
     showGlobalStats: boolean,
 }
 
-const StreamTable: React.FC<Props> = ({ title = "Streams", streams, streamStats, loadMore, hasMoreResults, showGlobalStats }: Props) => {
-    const [globalStats, setGlobalStats] = useState<GlobalStreamStats>(null)
+const StreamTable: React.FC<Props> = ({ title = 'Streams', streams, streamStats, loadMore, hasMoreResults, showGlobalStats }: Props) => {
+    const [globalStats, setGlobalStats] = useState<GlobalStreamStats | null>(null)
     const isMounted = useIsMounted()
 
     useEffect(() => {
@@ -238,8 +238,12 @@ const StreamTable: React.FC<Props> = ({ title = "Streams", streams, streamStats,
                 <Title>{title}</Title>
                 {showGlobalStats && globalStats != null && (
                     <>
-                        <Stat>Streams <strong>{globalStats.streamCount}</strong></Stat>
-                        <Stat>Msg/s <strong>{globalStats.messagesPerSecond.toFixed(0)}</strong></Stat>
+                        <Stat>
+                            Streams <strong>{globalStats.streamCount}</strong>
+                        </Stat>
+                        <Stat>
+                            Msg/s <strong>{globalStats.messagesPerSecond.toFixed(0)}</strong>
+                        </Stat>
                     </>
                 )}
             </Heading>
@@ -259,15 +263,9 @@ const StreamTable: React.FC<Props> = ({ title = "Streams", streams, streamStats,
                         return (
                             <TableRow key={s.id} as={Link} to={routes.streams.show({ id: s.id })}>
                                 <StreamDetails>
-                                    <StreamId
-                                        title={s.id}
-                                    >
-                                        {truncateStreamName(s.id, 40)}
-                                    </StreamId>
+                                    <StreamId title={s.id}>{truncateStreamName(s.id, 40)}</StreamId>
                                     {'\n'}
-                                    <StreamDescription notOnTablet>
-                                        {s.getMetadata().description}
-                                    </StreamDescription>
+                                    <StreamDescription notOnTablet>{s.getMetadata().description}</StreamDescription>
                                 </StreamDetails>
                                 <GridCell onlyTablet>{s.getMetadata().description}</GridCell>
                                 <GridCell onlyDesktop>{stats?.peerCount ?? '-'}</GridCell>
@@ -284,7 +282,9 @@ const StreamTable: React.FC<Props> = ({ title = "Streams", streams, streamStats,
             {loadMore != null && (
                 <LoadMore
                     hasMoreSearchResults={!!hasMoreResults}
-                    onClick={() => {loadMore()}}
+                    onClick={() => {
+                        loadMore()
+                    }}
                     preserveSpace
                 />
             )}
