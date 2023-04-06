@@ -33,7 +33,7 @@ function UnwrappedInfoSection({ disabled, canEdit }) {
                 </Surround>
             </Description>
             <Row>
-                <StreamIdComponent disabled={disabled} />
+                {streamId ? <ReadonlyStreamId /> : <EditableStreamId disabled={disabled} />}
             </Row>
             <Row>
                 <Label htmlFor="streamDescription">Description</Label>

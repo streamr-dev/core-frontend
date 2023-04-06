@@ -22,7 +22,7 @@ import useStreamOwnerOptions, { ADD_ENS_DOMAIN_VALUE } from './useStreamOwnerOpt
 
 export const ENS_DOMAINS_URL = 'https://ens.domains'
 
-export function ReadonlyStreamId({ className }) {
+export function ReadonlyStreamId() {
     const streamId = useStreamId()
     const { copy, isCopied } = useCopy(() => {
         Notification.push({
@@ -31,7 +31,7 @@ export function ReadonlyStreamId({ className }) {
         })
     })
     return (
-        <StreamId className={className}>
+        <StreamId>
             <Pathname>
                 <Label>Stream ID</Label>
                 <PathnameField>
@@ -49,7 +49,11 @@ export function ReadonlyStreamId({ className }) {
     )
 }
 
-export function EditableStreamId({ className, disabled }) {
+interface EditableStreamIdProps {
+    disabled?: boolean
+}
+
+export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
     const ownerGroups = useStreamOwnerOptions()
     const owners = useMemo(() => {
         const result = []
@@ -140,7 +144,7 @@ export function EditableStreamId({ className, disabled }) {
         }
     }, [domain, pathname])
     return (
-        <StreamId className={className}>
+        <StreamId>
             <Domain>
                 <Label>Domain</Label>
                 {disabled || isOwnersLoading ? (
