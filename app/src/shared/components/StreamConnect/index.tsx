@@ -145,7 +145,7 @@ mqtt.subscribe('${streamId}', (msg) => {
                 <StreamConnectHeader>Connect</StreamConnectHeader>
                 <StreamConnectText>
                     Applications publish and subscribe to streams via Streamr nodes. In other words, nodes are the access points to the Streamr
-                    Network. To connect your application to streams, you interface it with a Streams node.
+                    Network. To connect your application to streams, you interface it with a Streamr node.
                 </StreamConnectText>
                 <StreamConnectSubHeader>There are two strategies for interfacing applications with Streamr nodes:</StreamConnectSubHeader>
                 <StreamConnectList>
