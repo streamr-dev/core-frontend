@@ -18,12 +18,10 @@ function UnwrappedStreamEditPage() {
 
     const { busy } = useStreamModifierStatusContext()
 
-    const title = canEdit ? 'Set up your stream' : 'Read only stream'
-
     const loading = typeof canEdit === 'undefined'
 
     return (
-        <StreamPage title={title} loading={loading}>
+        <StreamPage loading={loading}>
             <InfoSection disabled={busy} />
             <AccessControlSection disabled={busy} />
             <HistorySection disabled={busy} />
@@ -37,9 +35,7 @@ function UnwrappedStreamEditPage() {
 
 export default function StreamCreatePage() {
     return (
-        <AbstractStreamPage
-            streamOperations={[StreamPermission.EDIT, StreamPermission.GRANT, StreamPermission.SUBSCRIBE, StreamPermission.DELETE]}
-        >
+        <AbstractStreamPage>
             <StreamModifier>
                 <UnwrappedStreamEditPage />
             </StreamModifier>
