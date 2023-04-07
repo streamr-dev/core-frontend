@@ -496,6 +496,16 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                 storageOperation.state = 'complete'
 
                 notify()
+            } catch (e) {
+                operations.forEach((op) => {
+                    if (op.state === 'ongoing') {
+                        op.state = 'error'
+                    }
+                })
+
+                notify()
+
+                throw e
             } finally {
                 setDraft(draftId, (draft) => {
                     draft.persisting = false
