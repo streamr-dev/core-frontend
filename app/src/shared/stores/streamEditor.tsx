@@ -9,6 +9,9 @@ import uniqueId from 'lodash/uniqueId'
 import address0 from '$app/src/utils/address0'
 import NoStreamIdError from '$shared/errors/NoStreamIdError'
 import getTransactionalClient from '$app/src/getters/getTransactionalClient'
+import { Toaster, toaster } from 'toasterhea'
+import { Layer } from '$app/src/utils/Layer'
+import TransactionListToast, { Operation } from '$shared/toasts/TransactionListToast'
 
 type ErrorKey = 'streamId' | keyof StreamMetadata
 
@@ -123,10 +126,12 @@ export function matchBits(bitsA: number, bitsB: number) {
     return (bitsA & bitsB) === bitsA
 }
 
-async function fake(title: string, ...args: any) {
-    console.log('FAKE', title, ...args)
+function formatStorageOperationLabel(current = 0, total = 0) {
+    if (total <= 1) {
+        return 'Update storage nodes'
+    }
 
-    await new Promise((resolve) => void setTimeout(resolve, 2500))
+    return `Update storage nodes (${current} of ${total})`
 }
 
 export const useStreamEditorStore = create<Actions & State>((set, get) => {
@@ -330,6 +335,71 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
 
             let client: StreamrClient | undefined
 
+            let toast: Toaster<typeof TransactionListToast> | undefined = toaster(TransactionListToast, Layer.Toast)
+
+            const updateOperation: Operation = {
+                id: uniqueId('operation-'),
+                label: streamId ? 'Update stream' : 'Create stream',
+            }
+
+            const permissionsOperation: Operation = {
+                id: uniqueId('operation-'),
+                label: 'Update access settings',
+            }
+
+            const storageOperation: Operation = {
+                id: uniqueId('operation-'),
+                label: '',
+            }
+
+            const operations: Operation[] = []
+
+            if (transientStreamId || metadataChanged) {
+                operations.push(updateOperation)
+            }
+
+            if (permissionAssignments.length) {
+                operations.push(permissionsOperation)
+            }
+
+            const storageNodeChanges: [string, boolean][] = Object.entries(storageNodes)
+                .filter(([, { enabled = false, persistedEnabled = false } = {}]) => !enabled !== !persistedEnabled)
+                .map(([address, { enabled = false } = {}]) => [address, !!enabled])
+
+            storageOperation.label = formatStorageOperationLabel(0, storageNodeChanges.length)
+
+            if (storageNodeChanges.length) {
+                operations.push(storageOperation)
+            }
+
+            if (operations.length === 0) {
+                return
+            }
+
+            function notify() {
+                setTimeout(async () => {
+                    try {
+                        if (!toast) {
+                            return
+                        }
+
+                        await toast.pop({ operations: [...operations] })
+                    } catch (_) {
+                        // Do nothing
+                    }
+                }, 0)
+            }
+
+            const firstOperation = operations[0]
+
+            firstOperation.state = 'ongoing'
+
+            if (firstOperation === storageOperation) {
+                firstOperation.label = formatStorageOperationLabel(0, storageNodeChanges.length)
+            }
+
+            notify()
+
             try {
                 setDraft(draftId, (draft) => {
                     draft.persisting = true
@@ -361,16 +431,10 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     client = await getTransactionalClient()
 
                     if (transientStreamId) {
-                        // return client.createStream({
-                        //     id: transientStreamId,
-                        //     ...metadata
-                        // })
-                        await fake('client.createStream', {
+                        return client.createStream({
                             id: transientStreamId,
                             ...metadata,
                         })
-
-                        return
                     }
 
                     if (!streamId) {
@@ -378,64 +442,70 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     }
 
                     if (metadataChanged) {
-                        // return client.updateStream({
-                        //     ...metadata,
-                        //     id: streamId,
-                        // })
-                        await fake('client.updateStream', {
+                        return client.updateStream({
                             ...metadata,
                             id: streamId,
                         })
-
-                        return
                     }
 
                     return client.getStream(streamId)
                 })()
 
+                updateOperation.state = 'complete'
+
+                permissionsOperation.state = 'ongoing'
+
+                notify()
+
                 if (permissionAssignments.length) {
                     client = await getTransactionalClient()
 
-                    // await client.setPermissions({
-                    //     streamId: stream.id,
-                    //     assignments: permissionAssignments,
-                    // })
-
-                    await fake('client.setPermissions', {
-                        streamId: 'STREAM_ID',
+                    await client.setPermissions({
+                        streamId: stream.id,
                         assignments: permissionAssignments,
                     })
                 }
 
-                for (let address in storageNodes) {
-                    if (!Object.prototype.hasOwnProperty.call(storageNodes, address)) {
-                        continue
-                    }
+                permissionsOperation.state = 'complete'
 
-                    const { enabled = false, persistedEnabled = false } = storageNodes[address] || {}
+                storageOperation.state = 'ongoing'
 
-                    if (!enabled === !persistedEnabled) {
-                        continue
+                notify()
+
+                for (let i = 0; i < storageNodeChanges.length; i++) {
+                    const [address, enabled] = storageNodeChanges[i]
+
+                    storageOperation.label = formatStorageOperationLabel(i + 1, storageNodeChanges.length)
+
+                    if (i !== 0) {
+                        // Already notifying above.
+                        notify()
                     }
 
                     client = await getTransactionalClient()
 
                     if (enabled) {
-                        // await client.addStreamToStorageNode(stream.id, address)
-
-                        await fake('client.addStreamToStorageNode', 'STREAM_ID', address)
+                        await client.addStreamToStorageNode(stream.id, address)
 
                         continue
                     }
 
-                    // await client.removeStreamFromStorageNode(stream.id, address)
-
-                    await fake('client.removeStreamFromStorageNode', 'STREAM_ID', address)
+                    await client.removeStreamFromStorageNode(stream.id, address)
                 }
+
+                storageOperation.state = 'complete'
+
+                notify()
             } finally {
                 setDraft(draftId, (draft) => {
                     draft.persisting = false
                 })
+
+                setTimeout(() => {
+                    toast?.discard()
+
+                    toast = undefined
+                }, 1000)
             }
         },
 

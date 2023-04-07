@@ -5,7 +5,7 @@ import { useLayoutEffect, useReducer, useRef, useState } from 'react'
 
 const toastIn = keyframes`
     from {
-        transform: translateX(100%) translateZ(0);
+        transform: translateX(-100%) translateZ(0);
     }
     to {
         transform: translateX(0) translateZ(0);
@@ -14,13 +14,13 @@ const toastIn = keyframes`
 
 const toastSqueeze = keyframes`
     from {
-        transform: translateX(100%) translateZ(0);
+        transform: translateX(-100%) translateZ(0);
     }
     to {
         height: 0;
         margin-top: 0;
         margin-left: 0;
-        transform: translateX(100%) translateZ(0);
+        transform: translateX(-100%) translateZ(0);
     }
 `
 
@@ -29,7 +29,7 @@ const toastOut = keyframes`
         transform: translateX(0) translateZ(0);
     }
     to {
-        transform: translateX(100%) translateZ(0);
+        transform: translateX(-100%) translateZ(0);
     }
 `
 
@@ -50,11 +50,11 @@ export default function AbstractToast({ children, ...props }: HTMLAttributes<HTM
         const { current: root } = ref
 
         root?.addEventListener('animationend', ({ animationName }: AnimationEvent) => {
-            if (animationName === 'toastOut') {
+            if (animationName === toastOut.getName()) {
                 squeeze()
             }
 
-            if (animationName === 'toastSqueeze') {
+            if (animationName === toastSqueeze.getName()) {
                 discard()
             }
         })
@@ -95,9 +95,13 @@ export default function AbstractToast({ children, ...props }: HTMLAttributes<HTM
 }
 
 const Root = styled.div<{ $hidden?: boolean; $squeezed?: boolean }>`
-    transition: 200ms height;
+    background: white;
+    box-shadow: 0 8px 12px 0 #52525226, 0 0 1px 0 #00000040;
+    border-radius: 8px;
+    color: #323232;
     margin-top: 12px;
     margin-left: 24px;
+    transition: 200ms height;
 
     ${({ $hidden, $squeezed }) => {
         if (!$hidden) {
