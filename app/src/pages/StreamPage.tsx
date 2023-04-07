@@ -113,7 +113,7 @@ export default function StreamPage({ children, loading = false, includeContainer
     const clean = useIsCurrentDraftClean()
 
     usePreventNavigatingAway({
-        isDirty: () => !clean,
+        isDirty: () => !clean && !busy,
     })
 
     const persist = usePersistCurrentDraft()
