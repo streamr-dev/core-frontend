@@ -794,3 +794,13 @@ export function usePersistCurrentDraft() {
         return persist(draftId)
     }, [draftId, persist])
 }
+
+export function usePersistingDraftIdsForStream(streamId: string | undefined) {
+    return useStreamEditorStore(({ cache }) =>
+        streamId
+            ? Object.entries(cache)
+                  .filter(([, draft]) => draft?.streamId === streamId && draft?.persisting)
+                  .map(([draftId]) => draftId)
+            : [],
+    )
+}
