@@ -1,13 +1,14 @@
 import type StreamrClient from 'streamr-client'
 import { create } from 'zustand'
 import produce from 'immer'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import isEqual from 'lodash/isEqual'
+import { useClient } from 'streamr-client-react'
 import { PermissionAssignment, Stream, StreamMetadata, StreamPermission } from 'streamr-client'
 import uniqueId from 'lodash/uniqueId'
 import address0 from '$app/src/utils/address0'
 import NoStreamIdError from '$shared/errors/NoStreamIdError'
-import { createContext, useCallback, useContext, useEffect, useState } from 'react'
-import isEqual from 'lodash/isEqual'
-import { useClient } from 'streamr-client-react'
+import getTransactionalClient from '$app/src/getters/getTransactionalClient'
 
 type ErrorKey = 'streamId' | keyof StreamMetadata
 
@@ -310,7 +311,90 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                 return
             }
 
-            throw new Error('Not implemented, eh?!')
+            const { transientStreamId = '', streamId, metadata, metadataChanged, permissionAssignments, storageNodes } = get().cache[draftId] || initialDraft
+
+            let stream: Stream | undefined
+
+            let client: StreamrClient | undefined
+
+            try {
+                setDraft(draftId, (draft) => {
+                    draft.persisting = true
+                })
+
+                if (!transientStreamId && !streamId) {
+                    throw new DraftValidationError('streamId', 'is required')
+                }
+
+                if (transientStreamId) {
+                    client = await getTransactionalClient({ passiveNetworkCheck: true })
+
+                    if (await client.getStream(transientStreamId)) {
+                        throw new DraftValidationError('streamId', 'already exists, please try a different one')
+                    }
+                }
+
+                // @TODO Check balance!
+
+                stream = await (async () => {
+                    client = await getTransactionalClient()
+
+                    if (transientStreamId) {
+                        return client.createStream({
+                            id: transientStreamId,
+                            ...metadata
+                        })
+                    }
+
+                    if (!streamId) {
+                        throw new DraftValidationError('streamId', 'is invalid')
+                    }
+
+                    if (metadataChanged) {
+                        return client.updateStream({
+                            ...metadata,
+                            id: streamId,
+                        })
+                    }
+
+                    return client.getStream(streamId)
+                })()
+
+                if (permissionAssignments) {
+                    client = await getTransactionalClient()
+
+                    await client.setPermissions({
+                        streamId: stream.id,
+                        assignments: permissionAssignments,
+                    })
+                }
+
+                for (let address in storageNodes) {
+                    if (!Object.prototype.hasOwnProperty.call(storageNodes, address)) {
+                        continue
+                    }
+
+                    const { enabled = false, persistedEnabled = false } = storageNodes[address] || {}
+
+                    if (!enabled === !persistedEnabled) {
+                        continue
+                    }
+
+                    client = await getTransactionalClient()
+
+                    if (enabled) {
+                        await client.addStreamToStorageNode(stream.id, address)
+
+                        continue
+                    }
+
+                    await client.removeStreamFromStorageNode(stream.id, address)
+                }
+            } finally {
+                setDraft(draftId, (draft) => {
+                    draft.persisting = false
+                })
+            }
         },
 
         setTransientStreamId(draftId, streamId) {
@@ -476,7 +560,7 @@ export function useIsCurrentDraftClean() {
         !metadataChanged &&
         !permissionAssignments.length &&
         !Object.values(storageNodes).some(
-            ({ enabled = false, persistedEnabled = false }: Partial<StorageNodeManifest> = {}) => !!enabled !== !!persistedEnabled,
+            ({ enabled = false, persistedEnabled = false }: Partial<StorageNodeManifest> = {}) => !enabled !== !persistedEnabled,
         )
     )
 }
@@ -557,4 +641,18 @@ export function useToggleCurrentStorageNode() {
         },
         [draftId, toggleStorageNode],
     )
+}
+
+export function usePersistCurrentDraft() {
+    const draftId = useDraftId()
+
+    const persist = useStreamEditorStore(({ persist }) => persist)
+
+    return useCallback(async () => {
+        if (!draftId) {
+            throw new Error('No draft id')
+        }
+
+        return persist(draftId)
+    }, [draftId, persist])
 }
