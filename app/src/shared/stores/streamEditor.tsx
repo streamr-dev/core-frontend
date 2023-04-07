@@ -40,7 +40,7 @@ interface Actions {
     setTransientStreamId: (draftId: string, streamId: string) => void
     toggleStorageNode: (draftId: string, address: string, fn: (enabled: boolean) => boolean) => void
     updateMetadata: (draftId: string, update: (chunk: StreamMetadata) => void) => void
-    teardown: (draftId: string) => void
+    teardown: (draftId: string, options?: { onlyAbandoned?: boolean }) => void
 }
 
 interface StorageNodeManifest {
@@ -49,6 +49,7 @@ interface StorageNodeManifest {
 }
 
 interface Draft {
+    abandoned: boolean
     errors: Partial<Record<'streamId' | keyof StreamMetadata, string>>
     fetchingStream: boolean
     loadedMetadata: StreamMetadata
@@ -91,6 +92,7 @@ const initialMetadata: StreamMetadata = {
 }
 
 const initialDraft: Draft = {
+    abandoned: false,
     errors: {},
     fetchingStream: false,
     loadedMetadata: initialMetadata,
@@ -516,6 +518,8 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
 
                     toast = undefined
                 }, 1000)
+
+                get().teardown(draftId, { onlyAbandoned: true })
             }
         },
 
@@ -625,10 +629,22 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
             })
         },
 
-        teardown(draftId) {
+        teardown(draftId, { onlyAbandoned = false } = {}) {
             set((store) =>
                 produce(store, ({ cache }) => {
-                    if (!cache[draftId]?.persisting) {
+                    const draft = cache[draftId]
+
+                    const { abandoned = false } = draft || {}
+
+                    if (draft) {
+                        draft.abandoned = true
+                    }
+
+                    if (!draft || draft.persisting) {
+                        return
+                    }
+
+                    if (!onlyAbandoned || abandoned) {
                         delete cache[draftId]
                     }
                 }),
