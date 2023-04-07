@@ -112,7 +112,7 @@ export default function StreamPage({ children, loading = false, includeContainer
 
     const clean = useIsCurrentDraftClean()
 
-    usePreventNavigatingAway('You have unsaved changes. Are you sure you want to leave?', () => !clean)
+    usePreventNavigatingAway('You have unsaved changes. Are you sure you want to leave?', () => !clean && !busy)
 
     const persist = usePersistCurrentDraft()
 
