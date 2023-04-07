@@ -1,10 +1,10 @@
-import { type StreamrClient, type StreamPermission, Stream } from 'streamr-client'
+import { type StreamrClient, StreamPermission, Stream } from 'streamr-client'
 import { create } from 'zustand'
 import { useClient } from 'streamr-client-react'
 import { useEffect } from 'react'
 import produce from 'immer'
 import { useAuthController } from '$app/src/auth/hooks/useAuthController'
-import useStreamId from '../hooks/useStreamId'
+import { useCurrentDraft } from './streamEditor'
 
 interface Actions {
     fetchPermission: (streamId: string, account: string, permission: StreamPermission, streamrClient: StreamrClient) => Promise<void>
@@ -156,9 +156,9 @@ export function useAbility(streamId: string | undefined, account: string | undef
 }
 
 export function useCurrentAbility(permission: StreamPermission) {
+    const { streamId } = useCurrentDraft()
+
     const { address } = useAuthController().currentAuthSession
 
-    const streamId = useStreamId()
-
-    return useAbility(streamId, address, permission)
+    return useAbility(streamId, address, permission) || (!streamId && (permission === StreamPermission.EDIT || permission === StreamPermission.GRANT))
 }

@@ -1,24 +1,20 @@
 import React from 'react'
-
 import { StreamPermission } from 'streamr-client'
 import { StreamPreview } from '$shared/components/StreamPreview'
 import { useCurrentAbility } from '../shared/stores/abilities'
-import useStreamId from '$shared/hooks/useStreamId'
 import StreamPage from './StreamPage'
-import AbstractStreamPage from './AbstractStreamPage'
-import StreamModifier from './AbstractStreamEditPage/StreamModifier'
+import useDecodedStreamId from '../shared/hooks/useDecodedStreamId'
+import { StreamDraftContext, useInitStreamDraft } from '../shared/stores/streamEditor'
 
-function UnwrappedStreamEditPage() {
-    const streamId = useStreamId()
-
-    const canEdit = useCurrentAbility(StreamPermission.EDIT)
-
+function UnwrappedStreamLiveDataPage() {
     const canSubscribe = useCurrentAbility(StreamPermission.SUBSCRIBE)
 
-    const loading = typeof canEdit === 'undefined'
+    const loading = typeof canSubscribe === 'undefined'
+
+    const streamId = useDecodedStreamId()
 
     return (
-        <StreamPage loading={loading} includeContainerBox={false}>
+        <StreamPage loading={loading} includeContainerBox={false} showSaveButton={false}>
             <StreamPreview streamsList={[streamId]} previewDisabled={!canSubscribe} />
         </StreamPage>
     )
@@ -26,10 +22,8 @@ function UnwrappedStreamEditPage() {
 
 export default function StreamLiveDataPage() {
     return (
-        <AbstractStreamPage>
-            <StreamModifier>
-                <UnwrappedStreamEditPage />
-            </StreamModifier>
-        </AbstractStreamPage>
+        <StreamDraftContext.Provider value={useInitStreamDraft(useDecodedStreamId())}>
+            <UnwrappedStreamLiveDataPage />
+        </StreamDraftContext.Provider>
     )
 }

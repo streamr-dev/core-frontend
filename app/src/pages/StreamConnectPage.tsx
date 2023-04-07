@@ -4,15 +4,12 @@ import { useCurrentAbility } from '$shared/stores/abilities'
 import { StreamConnect } from "$shared/components/StreamConnect"
 import useDecodedStreamId from "$shared/hooks/useDecodedStreamId"
 import StreamPage from './StreamPage'
-import AbstractStreamPage from './AbstractStreamPage'
-import StreamModifier from './AbstractStreamEditPage/StreamModifier'
+import { StreamDraftContext, useInitStreamDraft } from '../shared/stores/streamEditor'
 
-function UnwrappedStreamEditPage() {
+function UnwrappedStreamConnectPage() {
     const streamId = useDecodedStreamId()
 
-    const canEdit = useCurrentAbility(StreamPermission.EDIT)
-
-    const loading = typeof canEdit === 'undefined'
+    const loading = typeof useCurrentAbility(StreamPermission.EDIT) === 'undefined'
 
     return (
         <StreamPage loading={loading} showSaveButton={false} fullWidth>
@@ -23,10 +20,8 @@ function UnwrappedStreamEditPage() {
 
 export default function StreamConnectPage() {
     return (
-        <AbstractStreamPage>
-            <StreamModifier>
-                <UnwrappedStreamEditPage />
-            </StreamModifier>
-        </AbstractStreamPage>
+        <StreamDraftContext.Provider value={useInitStreamDraft(useDecodedStreamId())}>
+            <UnwrappedStreamConnectPage />
+        </StreamDraftContext.Provider>
     )
 }

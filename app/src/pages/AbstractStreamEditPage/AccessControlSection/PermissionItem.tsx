@@ -3,9 +3,8 @@ import styled from 'styled-components'
 import { truncate } from '$shared/utils/text'
 import SvgIcon from '$shared/components/SvgIcon'
 import { COLORS } from '$shared/utils/styled'
-import useStreamId from '$app/src/shared/hooks/useStreamId'
-import { Bits, matchBits, setBits, unsetBits, useStreamEditorStore } from '$app/src/shared/stores/streamEditor'
-import {useAuthController} from "$auth/hooks/useAuthController"
+import { Bits, matchBits, setBits, unsetBits, useDraftId, useStreamEditorStore } from '$app/src/shared/stores/streamEditor'
+import { useAuthController } from "$auth/hooks/useAuthController"
 import UnstyledPermissionEditor from './PermissionEditor'
 
 const Container = styled.div`
@@ -85,7 +84,7 @@ const PermissionItem: React.FunctionComponent<Props> = ({ disabled, address, per
 
     const operations = Object.keys(Bits).filter((permission) => matchBits(Bits[permission], permissionBits))
 
-    const streamId = useStreamId()
+    const draftId = useDraftId()
 
     const setPermissions = useStreamEditorStore(({ setPermissions }) => setPermissions)
 
@@ -115,11 +114,11 @@ const PermissionItem: React.FunctionComponent<Props> = ({ disabled, address, per
                     permissionBits={permissionBits}
                     disabled={disabled}
                     onChange={(permission, enabled) => {
-                        if (!streamId) {
+                        if (!draftId) {
                             return
                         }
 
-                        setPermissions(streamId, address, (enabled ? setBits : unsetBits)(permissionBits, Bits[permission]))
+                        setPermissions(draftId, address, (enabled ? setBits : unsetBits)(permissionBits, Bits[permission]))
                     }}
                 />
             )}

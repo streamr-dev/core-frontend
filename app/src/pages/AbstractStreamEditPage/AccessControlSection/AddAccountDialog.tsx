@@ -4,8 +4,7 @@ import styled from 'styled-components'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import useModal from '$shared/hooks/useModal'
-import useStreamId from '$shared/hooks/useStreamId'
-import { Bits, setBits, unsetBits, useStreamEditorStore } from '$shared/stores/streamEditor'
+import { Bits, setBits, unsetBits, useCurrentDraft, useDraftId, useStreamEditorStore } from '$shared/stores/streamEditor'
 import UnstyledButton from '$shared/components/Button'
 import UnstyledLabel from '$ui/Label'
 import Text from '$ui/Text'
@@ -48,28 +47,19 @@ const Errors = styled(UnstyledErrors)`
 `
 
 const UnstyledAddAccountDialog = ({ onClose, ...props }) => {
+    const draftId = useDraftId()
+
     const [permissions, setPermissions] = useState<number>(0)
+
     const [address, setAddress] = useState<string>('')
 
     const [error, setError] = useState<string | null>(null)
 
-    const streamId = useStreamId()
-
     const apply = useStreamEditorStore(({ setPermissions }) => setPermissions)
 
-    const currentBits = useStreamEditorStore(({ cache }) => {
-        if (!streamId) {
-            return null
-        }
+    const { bits = null, persistedBits = null } = useCurrentDraft().permissions?.[address.toLowerCase()] || {}
 
-        const { bits = null, persistedBits = null } = cache[streamId]?.permissions?.[address.toLowerCase()] || {}
-
-        if (persistedBits === null && bits === null) {
-            return null
-        }
-
-        return bits || 0
-    })
+    const currentBits = persistedBits === null && bits === null ? null : (bits || 0)
 
     return (
         <ModalPortal>
@@ -120,7 +110,9 @@ const UnstyledAddAccountDialog = ({ onClose, ...props }) => {
                                 return void setError('Permissions for this address already exist')
                             }
 
-                            apply(streamId, address, permissions)
+                            if (draftId) {
+                                apply(draftId, address, permissions)
+                            }
 
                             onClose()
                         }}

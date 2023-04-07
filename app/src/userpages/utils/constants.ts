@@ -145,11 +145,3 @@ export const getFilters = (resourceType: ResourceType): Record<string, SortOptio
         },
     }
 }
-export const fieldTypes = {
-    number: 'Number',
-    boolean: 'Boolean',
-    map: 'Object',
-    list: 'List',
-    string: 'String',
-    timestamp: 'Timestamp',
-}

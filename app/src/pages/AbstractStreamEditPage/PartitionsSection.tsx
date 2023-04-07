@@ -1,95 +1,26 @@
-import React, { Fragment, useEffect, useReducer, useRef } from 'react'
+import React, { Fragment, useState } from 'react'
 import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
 import StatusLabel from '$shared/components/StatusLabel'
-import { useTransientStream } from '$shared/contexts/TransientStreamContext'
-import useStreamModifier from '$shared/hooks/useStreamModifier'
 import { useCurrentAbility } from '$app/src/shared/stores/abilities'
 import Label from '$ui/Label'
 import Numeric from '$ui/Numeric'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
+import { useCurrentDraft, useUpdateCurrentMetadata } from '$app/src/shared/stores/streamEditor'
 
-const PARTITIONS_MIN = 1
-const PARTITIONS_MAX = 99
-const Init = 'init'
-const SetValue = 'set value'
-
-function reducer(state, { type, payload }) {
-    switch (type) {
-        case Init:
-            return {
-                cache: 0,
-                initializer: payload,
-                sanitizedValue: payload,
-                value: String(payload),
-            }
-
-        case SetValue:
-            return {
-                ...state,
-                cache: state.cache + 1,
-                value: String(payload),
-                sanitizedValue: (() => {
-                    const n = Number.parseInt(payload, 10)
-
-                    if (Number.isNaN(n)) {
-                        return state.sanitizedValue
-                    }
-
-                    return Math.max(PARTITIONS_MIN, Math.min(PARTITIONS_MAX, n))
-                })(),
-            }
-
-        default:
-    }
-
-    return state
+const PartitionRange = {
+    Min: 1,
+    Max: 99
 }
 
-function UnwrappedPartitionsSection({ disabled, canEdit }) {
-    const { metadata } = useTransientStream()
-    const { partitions = 1 } = metadata || {}
-    const [state, dispatch] = useReducer(
-        reducer,
-        reducer(undefined, {
-            type: Init,
-            payload: partitions,
-        }),
-    )
-    useEffect(() => {
-        dispatch({
-            type: Init,
-            payload: partitions,
-        })
-    }, [partitions])
-    const stateRef = useRef(state)
-    useEffect(() => {
-        stateRef.current = state
-    }, [state])
-    const { stage } = useStreamModifier()
-    const stageRef = useRef(stage)
-    useEffect(() => {
-        stageRef.current = stage
-    }, [stage])
-    const { cache } = state
-    useEffect(() => {
-        if (!cache && typeof stageRef.current !== 'function') {
-            return
-        }
+function UnwrappedPartitionsSection({ disabled = false }) {
+    const { metadata: { partitions } } = useCurrentDraft()
 
-        const {
-            current: { sanitizedValue, initializer },
-        } = stateRef
+    const [value, setValue] = useState(`${partitions}`)
 
-        if (sanitizedValue !== initializer) {
-            stageRef.current({
-                metadata: {
-                    partitions: sanitizedValue,
-                },
-            })
-        }
-    }, [cache])
+    const updateMetadata = useUpdateCurrentMetadata()
+
     return (
         <Fragment>
             <Desc>
@@ -99,21 +30,37 @@ function UnwrappedPartitionsSection({ disabled, canEdit }) {
             <Partitions>
                 <Label>Partitions</Label>
                 <Numeric
-                    min={PARTITIONS_MIN}
-                    max={PARTITIONS_MAX}
-                    value={state.value}
+                    min={PartitionRange.Min}
+                    max={PartitionRange.Max}
+                    value={value}
                     onChange={({ target }) => {
-                        dispatch({
-                            type: SetValue,
-                            payload: target.value,
+                        // @TODO Replace "as any" with a real type.
+                        const val: string = (target as any).value
+
+                        setValue(val)
+
+                        let sanitizedValue = partitions
+
+                        try {
+                            const n = Number.parseInt(val, 10)
+
+                            if (Number.isNaN(n)) {
+                                throw new Error('Not a number')
+                            }
+
+                            sanitizedValue = Math.max(PartitionRange.Min, Math.min(PartitionRange.Max, n))
+                        } catch (e) {
+                            // Do nothing.
+                        }
+
+                        updateMetadata((metadata) => {
+                            metadata.partitions = sanitizedValue
                         })
                     }}
-                    onBlur={() =>
-                        void dispatch({
-                            type: Init,
-                            payload: state.sanitizedValue,
-                        })
-                    }
+                    onBlur={() => {
+                        // Bring back the recently sanitized
+                        setValue(`${partitions}`)
+                    }}
                     disabled={disabled}
                     name="partitions"
                 />
@@ -130,7 +77,7 @@ const Desc = styled.p`
     max-width: 660px;
 `
 export default function PartitionsSection({ disabled: disabledProp, ...props }) {
-    const canEdit = !!useCurrentAbility(StreamPermission.EDIT)
+    const canEdit = useCurrentAbility(StreamPermission.EDIT)
 
     const disabled = disabledProp || !canEdit
 
@@ -144,7 +91,7 @@ export default function PartitionsSection({ disabled: disabledProp, ...props }) 
             status={<StatusLabel.Advanced />}
             disabled={disabled}
         >
-            {!isWithinNav && <UnwrappedPartitionsSection {...props} canEdit={canEdit} disabled={disabled} />}
+            {!isWithinNav && <UnwrappedPartitionsSection {...props} disabled={disabled} />}
         </TOCSection>
     )
 }
