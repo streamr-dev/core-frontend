@@ -9,6 +9,7 @@ import PartitionsSection from './AbstractStreamEditPage/PartitionsSection'
 import DeleteSection from './AbstractStreamEditPage/DeleteSection'
 import useDecodedStreamId from '../shared/hooks/useDecodedStreamId'
 import { StreamDraftContext, useInitStreamDraft, useIsCurrentDraftBusy } from '../shared/stores/streamEditor'
+import PersistanceAlert from './AbstractStreamEditPage/PersistanceAlert'
 
 function UnwrappedStreamEditPage() {
     const canEdit = useCurrentAbility(StreamPermission.EDIT)
@@ -21,6 +22,7 @@ function UnwrappedStreamEditPage() {
 
     return (
         <StreamPage loading={loading}>
+            <PersistanceAlert />
             <InfoSection disabled={disabled} />
             <AccessControlSection disabled={disabled} />
             <HistorySection disabled={disabled} />
