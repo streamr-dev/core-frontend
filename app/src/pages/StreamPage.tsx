@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import Layout from '$shared/components/Layout/Core'
 import Button from '$shared/components/Button'
@@ -7,7 +7,7 @@ import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
 import { truncateStreamName } from '$shared/utils/text'
 import { CopyButton } from "$shared/components/CopyButton/CopyButton"
 import { DESKTOP, TABLET } from '$shared/utils/styled'
-import { useCurrentDraft, useIsCurrentDraftBusy, useIsCurrentDraftClean, useStreamEditorStore } from '$shared/stores/streamEditor'
+import { DraftValidationError, useCurrentDraft, useIsCurrentDraftBusy, useIsCurrentDraftClean, usePersistCurrentDraft, useSetCurrentDraftError } from '$shared/stores/streamEditor'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import routes from '$routes'
 
@@ -106,12 +106,6 @@ function ContainerBox({ children, disabled, showSaveButton = true, fullWidth = f
 export default function StreamPage({ children, loading = false, includeContainerBox = true , showSaveButton = true, fullWidth = false}) {
     const { streamId, transientStreamId } = useCurrentDraft()
 
-    const l = Object.keys(useStreamEditorStore().cache).length
-
-    useEffect(() => {
-        console.log('Drafts:', l)
-    }, [l])
-
     const busy = useIsCurrentDraftBusy()
 
     const linkTabs = useMemo(() => streamId ? getStreamDetailsLinkTabs(streamId) : [], [streamId])
@@ -122,12 +116,25 @@ export default function StreamPage({ children, loading = false, includeContainer
         isDirty: () => !clean,
     })
 
+    const persist = usePersistCurrentDraft()
+
+    const setValidationError = useSetCurrentDraftError()
+
     return (
         <>
             <form
-                onSubmit={(e) => {
-                    // save()
+                onSubmit={async (e) => {
                     e.preventDefault()
+
+                    try {
+                        await persist()
+                    } catch (e) {
+                        if (e instanceof DraftValidationError) {
+                            return void setValidationError(e.key, e.message)
+                        }
+
+                        throw e
+                    }
                 }}
             >
                 <Layout>
