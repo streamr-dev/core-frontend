@@ -1,10 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useRef } from 'react'
 import styled from 'styled-components'
-import { useClient } from 'streamr-client-react'
-import useStreamId from '$shared/hooks/useStreamId'
 import Label from '$ui/Label'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
-import { useStreamEditorStore } from '../state'
 import StorageNodeItem from './StorageNodeItem'
 
 type Props = {
@@ -12,43 +9,8 @@ type Props = {
     disabled?: boolean,
 }
 
-function UnstyledStorageNodeList({ className, disabled }: Props) {
-    const streamId = useStreamId()
-    const [nodeAddresses, setNodeAddresses] = useState({})
-    const loadStreamStorageNodes = useStreamEditorStore((state) => state.loadStreamStorageNodes)
-    const client = useClient()
-    const { current: { storageNodes } } = useRef(getCoreConfig())
-
-    useEffect(() => {
-        let aborted = false
-
-        async function fn() {
-            try {
-                const streamNodes = await loadStreamStorageNodes(streamId, client)
-
-                if (aborted) {
-                    return
-                }
-
-                const result = {}
-                storageNodes.forEach(({ address }) => {
-                    result[address.toLowerCase()] = false
-                })
-                streamNodes.forEach((address) => {
-                    result[address.toLowerCase()] = true
-                })
-                setNodeAddresses(result)
-            } catch (e) {
-                console.warn(e)
-            }
-        }
-
-        fn()
-
-        return () => {
-            aborted = true
-        }
-    }, [client, streamId, storageNodes, loadStreamStorageNodes])
+function UnstyledStorageNodeList({ className, disabled = false }: Props) {
+    const { current: { storageNodes: storageNodes } } = useRef(getCoreConfig())
 
     return (
         <div className={className}>
@@ -58,7 +20,6 @@ function UnstyledStorageNodeList({ className, disabled }: Props) {
                     <li key={address}>
                         <StorageNodeItem
                             address={address}
-                            active={nodeAddresses[address.toLowerCase()]}
                             disabled={disabled}
                         >
                             {name}

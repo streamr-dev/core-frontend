@@ -1,89 +1,33 @@
-import React, { useCallback, useEffect, useState, useReducer } from 'react'
+import React from 'react'
 import styled, { css } from 'styled-components'
 import Checkbox from '$shared/components/Checkbox'
 import Spinner from '$shared/components/Spinner'
-import useStreamId from '$shared/hooks/useStreamId'
-import useInterrupt from '$shared/hooks/useInterrupt'
-import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
-import { useStreamEditorStore } from '../state'
+import { useCurrentDraft, useToggleCurrentStorageNode } from '$app/src/shared/stores/streamEditor'
 
 type Props = {
     address: string,
-    active: boolean,
     className?: string,
     disabled: boolean,
     children: React.ReactNode,
 }
 
-function UnstyledStorageNodeItem({ address, active: activeProp, className, disabled = false, children }: Props) {
-    const [{ active = activeProp, cache }, setActive] = useReducer((state: { active: boolean, cache: number }, active: boolean) => ({
-        active,
-        cache: state.cache + 1,
-    }), { active: false, cache: 0 })
+function UnstyledStorageNodeItem({ address, className, disabled = false, children }: Props) {
+    const active = !!useCurrentDraft().storageNodes[address.toLowerCase()]?.enabled
 
-    const addStorageNode = useStreamEditorStore((state) => state.addStorageNode)
-    const removeStorageNode = useStreamEditorStore((state) => state.removeStorageNode)
-    useEffect(() => {
-        setActive(activeProp)
-    }, [activeProp])
-    const streamId = useStreamId()
-    const itp = useInterrupt()
-    const [busy, setBusy] = useState(typeof active === 'undefined')
-    const onClick = useCallback(() => {
-        if (disabled) {
-            return
-        }
+    const busy = useCurrentDraft().fetchingStorageNodes
 
-        const { requireUninterrupted } = itp()
+    const toggleStorageNode = useToggleCurrentStorageNode()
 
-        if (typeof active === 'undefined') {
-            return
-        }
-
-        setBusy(true)
-        let success = false
-
-        try {
-            try {
-                requireUninterrupted()
-                if (active) {
-                    removeStorageNode(address)
-                } else {
-                    addStorageNode(address)
-                }
-                success = true
-            } catch (e) {
-                console.warn(e)
-                Notification.push({
-                    title: 'Failed to toggle a storage node',
-                    icon: NotificationIcon.ERROR,
-                })
-            }
-
-            requireUninterrupted()
-        } catch (e) {
-            // The only error that can happen above is the `InterruptionError`. No better moment
-            // to skip the rest.
-            return
-        }
-
-        setActive(success ? !active : active)
-    }, [itp, address, active, addStorageNode, removeStorageNode, disabled])
-    useEffect(
-        () => () => {
-            // Ignore the result of any in-the-air toggling if conditions change.
-            itp().interruptAll()
-        },
-        [itp, address, streamId, active],
-    )
-    useEffect(() => {
-        setBusy(typeof active === 'undefined')
-    }, [active, cache])
     return (
-        <Root className={className} onClick={onClick} type="button" $active={active} disabled={disabled}>
+        <Root
+            className={className}
+            onClick={() => void toggleStorageNode(address, (current) => !current)}
+            type="button"
+            $active={active}
+            disabled={disabled}
+        >
             <div>{children}</div>
-            {!disabled && !busy && (
+            {!disabled && (
                 <Checkbox.Tick checked={active} data-test-hook={active ? 'Checkbox on' : 'Checkbox off'} />
             )}
             {busy && <Spinner color="gray" />}

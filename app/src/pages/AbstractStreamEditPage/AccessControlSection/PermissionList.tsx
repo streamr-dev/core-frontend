@@ -2,8 +2,7 @@ import React, { useEffect } from 'react'
 import { useClient } from 'streamr-client-react'
 import styled from 'styled-components'
 import Button from '$shared/components/Button'
-import { useStreamEditorStore } from '$shared/stores/streamEditor'
-import useStreamId from '$shared/hooks/useStreamId'
+import { useCurrentDraft, useDraftId, useStreamEditorStore } from '$shared/stores/streamEditor'
 import useModal from '$shared/hooks/useModal'
 import address0 from '$utils/address0'
 import PermissionItem from './PermissionItem'
@@ -33,35 +32,15 @@ type Props = {
 const PermissionList: React.FunctionComponent<Props> = ({ disabled }) => {
     const { api: addModal } = useModal('accesscontrol.addaccount')
 
-    const fetchPermissions = useStreamEditorStore((store) => store.fetchPermissions)
+    const permissions = useCurrentDraft().permissions
 
-    const streamId = useStreamId()
+    const permissionList = Object.entries(permissions)
 
-    const client = useClient()
-
-    useEffect(() => {
-        async function fn() {
-            if (!streamId || !client) {
-                return
-            }
-
-            try {
-                await fetchPermissions(streamId, client)
-            } catch (e) {
-                console.warn(e)
-            }
-        }
-
-        fn()
-    }, [fetchPermissions, streamId, client])
-
-    const permissions = useStreamEditorStore((store) => (
-        Object.entries(streamId ? store.cache[streamId]?.permissions || {} : {})
-    ))
+    const count = permissionList.length - (permissions[address0] ? 1 : 0)
 
     return (
         <Container>
-            {permissions.map(([key, { bits = null } = {}]) => key !== address0 && (
+            {permissionList.map(([key, { bits = null } = {}]) => key !== address0 && (
                 <PermissionItem
                     key={key}
                     address={key}
@@ -71,7 +50,7 @@ const PermissionList: React.FunctionComponent<Props> = ({ disabled }) => {
             ))}
             <Footer>
                 <span>
-                    {permissions.length} Ethereum account{permissions.length === 1 ? '' : 's'}
+                    {count} Ethereum account{count === 1 ? '' : 's'}
                 </span>
                 <Button
                     kind="primary"

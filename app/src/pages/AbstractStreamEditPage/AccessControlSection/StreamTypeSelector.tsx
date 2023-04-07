@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { MEDIUM } from '$shared/utils/styled'
-import { Bits, useStreamEditorStore } from '$app/src/shared/stores/streamEditor'
+import { Bits, useCurrentDraft, useDraftId, useStreamEditorStore } from '$app/src/shared/stores/streamEditor'
 import useStreamId from '$app/src/shared/hooks/useStreamId'
 import { StreamPermission } from 'streamr-client'
 import address0 from '$utils/address0'
@@ -57,11 +57,11 @@ type Props = {
 }
 
 export default function StreamTypeSelector({ disabled }: Props) {
+    const draftId = useDraftId()
+
     const setPermissions = useStreamEditorStore(({ setPermissions }) => setPermissions)
 
-    const streamId = useStreamId()
-
-    const bits = useStreamEditorStore(({ cache }) => streamId ? cache[streamId]?.permissions?.[address0]?.bits || null : null)
+    const bits = useCurrentDraft().permissions?.[address0]?.bits || null
 
     const streamType = bits ? StreamType.Public : StreamType.Private
 
@@ -75,11 +75,11 @@ export default function StreamTypeSelector({ disabled }: Props) {
                         name="streamType"
                         checked={streamType === StreamType.Public}
                         onChange={() => {
-                            if (!streamId) {
+                            if (!draftId) {
                                 return
                             }
 
-                            setPermissions(streamId, address0, Bits[StreamPermission.SUBSCRIBE])
+                            setPermissions(draftId, address0, Bits[StreamPermission.SUBSCRIBE])
                         }}
                         disabled={disabled}
                     />
@@ -97,11 +97,11 @@ export default function StreamTypeSelector({ disabled }: Props) {
                         name="streamType"
                         checked={streamType === StreamType.Private}
                         onChange={() => {
-                            if (!streamId) {
+                            if (!draftId) {
                                 return
                             }
 
-                            setPermissions(streamId, address0, null)
+                            setPermissions(draftId, address0, null)
                         }}
                         disabled={disabled}
                     />
