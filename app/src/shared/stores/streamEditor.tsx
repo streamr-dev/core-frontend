@@ -123,6 +123,12 @@ export function matchBits(bitsA: number, bitsB: number) {
     return (bitsA & bitsB) === bitsA
 }
 
+async function fake(title: string, ...args: any) {
+    console.log('FAKE', title, ...args)
+
+    await new Promise((resolve) => void setTimeout(resolve, 2500))
+}
+
 export const useStreamEditorStore = create<Actions & State>((set, get) => {
     function isPersisting(draftId: string) {
         return get().cache[draftId]?.persisting === true
@@ -311,7 +317,14 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                 return
             }
 
-            const { transientStreamId = '', streamId, metadata, metadataChanged, permissionAssignments, storageNodes } = get().cache[draftId] || initialDraft
+            const {
+                transientStreamId = '',
+                streamId,
+                metadata,
+                metadataChanged,
+                permissionAssignments,
+                storageNodes,
+            } = get().cache[draftId] || initialDraft
 
             let stream: Stream | undefined
 
@@ -329,8 +342,16 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                 if (transientStreamId) {
                     client = await getTransactionalClient({ passiveNetworkCheck: true })
 
-                    if (await client.getStream(transientStreamId)) {
-                        throw new DraftValidationError('streamId', 'already exists, please try a different one')
+                    try {
+                        if (await client.getStream(transientStreamId)) {
+                            throw new DraftValidationError('streamId', 'already exists, please try a different one')
+                        }
+                    } catch (e) {
+                        if (e instanceof DraftValidationError) {
+                            throw e
+                        }
+
+                        // Ignore other errors.
                     }
                 }
 
@@ -340,10 +361,16 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     client = await getTransactionalClient()
 
                     if (transientStreamId) {
-                        return client.createStream({
+                        // return client.createStream({
+                        //     id: transientStreamId,
+                        //     ...metadata
+                        // })
+                        await fake('client.createStream', {
                             id: transientStreamId,
-                            ...metadata
+                            ...metadata,
                         })
+
+                        return
                     }
 
                     if (!streamId) {
@@ -351,20 +378,31 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     }
 
                     if (metadataChanged) {
-                        return client.updateStream({
+                        // return client.updateStream({
+                        //     ...metadata,
+                        //     id: streamId,
+                        // })
+                        await fake('client.updateStream', {
                             ...metadata,
                             id: streamId,
                         })
+
+                        return
                     }
 
                     return client.getStream(streamId)
                 })()
 
-                if (permissionAssignments) {
+                if (permissionAssignments.length) {
                     client = await getTransactionalClient()
 
-                    await client.setPermissions({
-                        streamId: stream.id,
+                    // await client.setPermissions({
+                    //     streamId: stream.id,
+                    //     assignments: permissionAssignments,
+                    // })
+
+                    await fake('client.setPermissions', {
+                        streamId: 'STREAM_ID',
                         assignments: permissionAssignments,
                     })
                 }
@@ -383,12 +421,16 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     client = await getTransactionalClient()
 
                     if (enabled) {
-                        await client.addStreamToStorageNode(stream.id, address)
+                        // await client.addStreamToStorageNode(stream.id, address)
+
+                        await fake('client.addStreamToStorageNode', 'STREAM_ID', address)
 
                         continue
                     }
 
-                    await client.removeStreamFromStorageNode(stream.id, address)
+                    // await client.removeStreamFromStorageNode(stream.id, address)
+
+                    await fake('client.removeStreamFromStorageNode', 'STREAM_ID', address)
                 }
             } finally {
                 setDraft(draftId, (draft) => {
