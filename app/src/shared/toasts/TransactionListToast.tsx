@@ -1,14 +1,17 @@
-import React from 'react'
+import React, { FC } from 'react'
 import AbstractToast from './AbstractToast'
 import styled, { css } from 'styled-components'
 import { COLORS, MEDIUM } from '../utils/styled'
 import SvgIcon from '../components/SvgIcon'
 import Spinner from '../components/Spinner'
 
+type State = 'ongoing' | 'complete' | 'error'
+
 export interface Operation {
     id: string
     label: string
-    state?: 'ongoing' | 'complete' | 'error'
+    state?: State
+    action?: FC<{ state: State | undefined }>
 }
 
 interface Props {
@@ -21,14 +24,19 @@ export default function TransactionListToast({ operations = [] }: Props) {
             <Container>
                 <Title>These transactions are needed to save your changes:</Title>
                 <ul>
-                    {operations.map((op, index) => (
-                        <Item key={op.id} $complete={op.state === 'complete' || op.state === 'error'} $ongoing={op.state === 'ongoing'}>
+                    {operations.map(({ id, state, label, action: Action }, index) => (
+                        <Item key={id} $complete={state === 'complete' || state === 'error'} $ongoing={state === 'ongoing'}>
                             <Number>{index + 1}</Number>
-                            <Name>{op.label}</Name>
+                            <Name>{label}</Name>
+                            {Action && (
+                                <ActionWrap>
+                                    <Action state={state} />
+                                </ActionWrap>
+                            )}
                             <IconContainer>
-                                {op.state === 'ongoing' && <Spinner size="small" color="blue" />}
-                                {op.state === 'complete' && <Icon name="checkmark" />}
-                                {op.state === 'error' && <Icon name="errorBadge" />}
+                                {state === 'ongoing' && <Spinner size="small" color="blue" />}
+                                {state === 'complete' && <Icon name="checkmark" />}
+                                {state === 'error' && <Icon name="errorBadge" />}
                             </IconContainer>
                         </Item>
                     ))}
@@ -61,15 +69,17 @@ const Title = styled.div`
 `
 
 const Item = styled.li<{ $complete: boolean; $ongoing: boolean }>`
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 8px;
     padding: 20px 16px;
     border: 1px solid ${COLORS.inputBackground};
     border-radius: 4px;
     align-items: center;
     font-size: 16px;
     line-height: 20px;
+    display: flex;
+
+    > * + * {
+        margin-left: 16px;
+    }
 
     ${({ $complete = false }) =>
         $complete &&
@@ -95,6 +105,7 @@ const Number = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 `
 
 const Name = styled.div`
@@ -103,6 +114,7 @@ const Name = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    flex-grow: 1;
 `
 
 const IconContainer = styled.div`
@@ -111,6 +123,7 @@ const IconContainer = styled.div`
     justify-content: center;
     height: 18px;
     width: 18px;
+    flex-shrink: 0;
 `
 
 const Icon = styled(SvgIcon)`
@@ -118,3 +131,5 @@ const Icon = styled(SvgIcon)`
     width: 100%;
     height: 100%;
 `
+
+const ActionWrap = styled.div``
