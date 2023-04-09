@@ -3,6 +3,7 @@ import AbstractToast from './AbstractToast'
 import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle'
 import InfoIcon from '@atlaskit/icon/glyph/info'
 import ErrorIcon from '@atlaskit/icon/glyph/error'
+import CrossIcon from '@atlaskit/icon/glyph/cross'
 import styled from 'styled-components'
 import { MEDIUM } from '../utils/styled'
 import Spinner from '../components/Spinner'
@@ -108,10 +109,31 @@ export default function Toast({
                         </Buttons>
                     )}
                 </Body>
+                {type !== ToastType.Processing && (
+                    <CloseButton onClick={() => void onReject?.()} type="button">
+                        <CrossIcon label="Dismiss" size="small" />
+                    </CloseButton>
+                )}
             </Form>
         </AbstractToast>
     )
 }
+
+const CloseButton = styled.button`
+    align-items: center;
+    appearance: none;
+    color: #525252;
+    display: flex;
+    flex-shrink: 0;
+    height: 24px;
+    justify-content: center;
+    margin-left: 16px;
+    width: 24px;
+    padding: 0;
+    outline: 0;
+    border: 0;
+    background: none;
+`
 
 const Dot = styled.div`
     background: #525252;
