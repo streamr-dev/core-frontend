@@ -25,20 +25,20 @@ export default function usePreventNavigatingAway(message: string, isDirty: () =>
         return () => {
             unblock?.()
         }
-    }, [history, isDirty])
+    }, [history, isDirty, message])
 
     useBeforeUnload(
         useCallback(
             (e) => {
                 if (isDirty()) {
                     e.returnValue = message
-    
+
                     return message
                 }
 
                 return ''
             },
-            [isDirty],
+            [isDirty, message],
         ),
     )
 }

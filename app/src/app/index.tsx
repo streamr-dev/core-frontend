@@ -6,6 +6,7 @@ import '$shared/assets/stylesheets'
 import '@ibm/plex/css/ibm-plex.css'
 import '$utils/setupSnippets'
 
+import styled from 'styled-components'
 import StreamrClientProvider from '$shared/components/StreamrClientProvider'
 import LoginPage from '$app/src/pages/LoginPage'
 import LogoutPage from '$app/src/pages/LogoutPage'
@@ -120,6 +121,7 @@ const App = () => (
                                     </Switch>
                                     <Notifications />
                                     <Container id={Layer.Modal} />
+                                    <ToastContainer id={Layer.Toast} />
                                 </ActivityResourceProvider>
                                 <AnalyticsTracker />
                             </GlobalInfoWatcher>
@@ -132,3 +134,13 @@ const App = () => (
 )
 
 export default App
+
+const ToastContainer = styled(Container)`
+    bottom: 0;
+    left: 0;
+    max-width: 100%;
+    padding-bottom: 24px;
+    padding-right: 24px;
+    position: fixed;
+    z-index: 10;
+`
