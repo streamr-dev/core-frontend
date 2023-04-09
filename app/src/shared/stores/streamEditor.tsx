@@ -41,6 +41,7 @@ interface Actions {
     toggleStorageNode: (draftId: string, address: string, fn: (enabled: boolean) => boolean) => void
     updateMetadata: (draftId: string, update: (chunk: StreamMetadata) => void) => void
     teardown: (draftId: string, options?: { onlyAbandoned?: boolean }) => void
+    abandon: (draftId: string) => void
 }
 
 interface StorageNodeManifest {
@@ -629,22 +630,32 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
             })
         },
 
+        abandon(draftId) {
+            set((store) => produce(store, ({ cache }) => {
+                const draft = cache[draftId]
+
+                if (!draft) {
+                    return
+                }
+
+                draft.abandoned = true
+
+                if (!draft.persisting) {
+                    store.teardown(draftId)
+                }
+            }))
+        },
+
         teardown(draftId, { onlyAbandoned = false } = {}) {
             set((store) =>
                 produce(store, ({ cache }) => {
                     const draft = cache[draftId]
 
-                    const { abandoned = false } = draft || {}
-
-                    if (draft) {
-                        draft.abandoned = true
-                    }
-
-                    if (!draft || draft.persisting) {
+                    if (!draft) {
                         return
                     }
 
-                    if (!onlyAbandoned || abandoned) {
+                    if (!onlyAbandoned || draft.abandoned) {
                         delete cache[draftId]
                     }
                 }),
@@ -656,7 +667,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
 export function useInitStreamDraft(streamId: Draft['streamId']) {
     const [draftId] = useState(() => uniqueId('draft-'))
 
-    const { init, teardown } = useStreamEditorStore(({ init, teardown }) => ({ init, teardown }))
+    const { init, abandon } = useStreamEditorStore(({ init, abandon }) => ({ init, abandon }))
 
     const client = useClient()
 
@@ -664,13 +675,13 @@ export function useInitStreamDraft(streamId: Draft['streamId']) {
         if (client) {
             init(draftId, streamId, client)
         }
-    }, [draftId, init, teardown, client])
+    }, [init, draftId, streamId, client])
 
     useEffect(
         () => () => {
-            teardown(draftId)
+            abandon(draftId)
         },
-        [draftId, teardown],
+        [abandon, draftId],
     )
 
     return draftId
