@@ -6,6 +6,7 @@ import '$shared/assets/stylesheets'
 import '@ibm/plex/css/ibm-plex.css'
 import '$utils/setupSnippets'
 
+import styled from 'styled-components'
 import StreamrClientProvider from '$shared/components/StreamrClientProvider'
 import LoginPage from '$app/src/pages/LoginPage'
 import LogoutPage from '$app/src/pages/LogoutPage'
@@ -38,7 +39,6 @@ import routes from '$routes'
 import history from '../history'
 import '../analytics'
 import { Layer } from '../utils/Layer'
-import styled from 'styled-components'
 
 // Wrap authenticated components here instead of render() method
 // Wrap each Route to an ErrorBoundary

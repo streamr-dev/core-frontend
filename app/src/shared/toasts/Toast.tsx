@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import AbstractToast from './AbstractToast'
 import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle'
 import InfoIcon from '@atlaskit/icon/glyph/info'
 import ErrorIcon from '@atlaskit/icon/glyph/error'
@@ -7,6 +6,7 @@ import CrossIcon from '@atlaskit/icon/glyph/cross'
 import styled from 'styled-components'
 import { MEDIUM } from '../utils/styled'
 import Spinner from '../components/Spinner'
+import AbstractToast from './AbstractToast'
 
 export enum ToastType {
     Info = 'info',
