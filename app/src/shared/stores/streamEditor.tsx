@@ -667,24 +667,25 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
 })
 
 export function useInitStreamDraft(streamId: Draft['streamId']) {
-    const [draftId] = useState(() => uniqueId('draft-'))
+    const draftId = useMemo(() => uniqueId('draft-'), [streamId])
 
     const { init, abandon } = useStreamEditorStore(({ init, abandon }) => ({ init, abandon }))
 
     const client = useClient()
 
     useEffect(() => {
-        if (client) {
-            init(draftId, streamId, client)
+        if (!client) {
+            return () => void 0
         }
-    }, [init, draftId, streamId, client])
 
-    useEffect(
-        () => () => {
+        console.log('INIT', draftId, streamId)
+        init(draftId, streamId, client)
+
+        return () => {
+            console.log('ABANDON', draftId)
             abandon(draftId)
-        },
-        [abandon, draftId],
-    )
+        }
+    }, [draftId, init, abandon, client])
 
     return draftId
 }
