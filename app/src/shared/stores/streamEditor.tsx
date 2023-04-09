@@ -810,7 +810,7 @@ export function usePersistingDraftIdsForStream(streamId: string | undefined) {
     return useStreamEditorStore(({ cache }) =>
         streamId
             ? Object.entries(cache)
-                  .filter(([, draft]) => draft?.streamId === streamId && draft?.persisting)
+                  .filter(([, draft]) => draft?.persisting && (draft.streamId === streamId || draft.transientStreamId === streamId))
                   .map(([draftId]) => draftId)
             : [],
     )

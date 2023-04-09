@@ -5,13 +5,15 @@ import { COLORS } from '$shared/utils/styled'
 import Spinner from '$app/src/shared/components/Spinner'
 
 export default function PersistanceAlert() {
-    const { streamId } = useCurrentDraft()
-
     const draftId = useDraftId()
 
-    const isBeingPersistedElsewhere = !!usePersistingDraftIdsForStream(streamId).filter((did) => did !== draftId).length
+    const { streamId, transientStreamId } = useCurrentDraft()
 
-    if (!isBeingPersistedElsewhere) {
+    const persistingDraftIds = [...usePersistingDraftIdsForStream(streamId), ...usePersistingDraftIdsForStream(transientStreamId)].filter(
+        (did) => did !== draftId,
+    )
+
+    if (!persistingDraftIds.length) {
         return null
     }
 
