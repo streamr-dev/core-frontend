@@ -1,7 +1,7 @@
 import type StreamrClient from 'streamr-client'
 import { create } from 'zustand'
 import produce from 'immer'
-import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import isEqual from 'lodash/isEqual'
 import { useClient } from 'streamr-client-react'
 import { PermissionAssignment, Stream, StreamMetadata, StreamPermission } from 'streamr-client'
@@ -12,6 +12,9 @@ import getTransactionalClient from '$app/src/getters/getTransactionalClient'
 import { Toaster, toaster } from 'toasterhea'
 import { Layer } from '$app/src/utils/Layer'
 import TransactionListToast, { Operation } from '$shared/toasts/TransactionListToast'
+import { Link, useRouteMatch } from 'react-router-dom'
+import styled from 'styled-components'
+import routes from '$app/src/routes'
 
 type ErrorKey = 'streamId' | keyof StreamMetadata
 
@@ -401,6 +404,10 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                 firstOperation.label = formatStorageOperationLabel(0, storageNodeChanges.length)
             }
 
+            if (streamId) {
+                updateOperation.action = getOpenStreamLink(streamId)
+            }
+
             notify()
 
             try {
@@ -453,6 +460,8 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
 
                     return client.getStream(streamId)
                 })()
+
+                updateOperation.action = getOpenStreamLink(transientStreamId || streamId)
 
                 updateOperation.state = 'complete'
 
@@ -817,4 +826,25 @@ export function usePersistingDraftIdsForStream(streamId: string | undefined) {
                   .map(([draftId]) => draftId)
             : [],
     )
+}
+
+const NewStreamLink = styled(Link)`
+    display: block;
+    font-size: 14px;
+
+    :hover {
+        text-decoration: underline;
+    }
+`
+
+function getOpenStreamLink(streamId: string | undefined) {
+    return function OpenStreamLink() {
+        const id: string = decodeURIComponent(useRouteMatch(routes.streams.show())?.params['id'] || '')
+
+        if (!streamId || id === streamId) {
+            return <></>
+        }
+
+        return <NewStreamLink to={routes.streams.overview({ id: streamId })}>Open</NewStreamLink>
+    }
 }
