@@ -9,4 +9,6 @@ export default function Globals() {
             return typeof destination === 'undefined' && isPersistingAnyStreamDraft
         }
     })
+
+    return null
 }
