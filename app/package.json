@@ -41,6 +41,7 @@
         "prosemirror-model": "1.13.3"
     },
     "dependencies": {
+        "@atlaskit/icon": "^21.11.5",
         "@babel/core": "^7.17.12",
         "@babel/plugin-proposal-class-properties": "^7.12.1",
         "@babel/plugin-proposal-export-namespace-from": "^7.12.1",
