@@ -114,14 +114,6 @@ export default function StreamPage({ children, loading = false, includeContainer
 
     usePreventNavigatingAway({
         isDirty(dest) {
-            if (typeof dest === 'undefined') {
-                /**
-                 * We're already handling "hard" navigation (reloads, etc.) in `Globals` (all drafts
-                 * at once). Here we care only about router/internal route changes.
-                 */
-                return false
-            }
-
             if (streamId) {
                 switch (dest) {
                     case routes.streams.overview({ id: streamId }):
@@ -131,7 +123,14 @@ export default function StreamPage({ children, loading = false, includeContainer
                 }
             }
 
-            return !clean && !busy
+            /**
+             * Undefined `dest` means it's a full URL change that's happening outside of the
+             * router, or it's a refresh. We block such things here only if the state is dirty.
+             *
+             * Internal route changes are allowed w/o questions as long as changes in the current
+             * draft are being persisted (see `busy`).
+             */
+            return !clean && (typeof dest === 'undefined' || !busy)
         }
     })
 
