@@ -102,6 +102,7 @@ const Root = styled.div<{ $hidden?: boolean; $squeezed?: boolean }>`
     margin-top: 12px;
     margin-left: 24px;
     transition: 200ms height;
+    width: max-content;
 
     ${({ $hidden, $squeezed }) => {
         if (!$hidden) {
