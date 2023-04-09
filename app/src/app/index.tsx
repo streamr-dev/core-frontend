@@ -21,8 +21,6 @@ import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import Analytics from '$shared/utils/Analytics'
 import GlobalInfoWatcher from '$mp/containers/GlobalInfoWatcher'
 import NewStreamListingPage from '$app/src/pages/NewStreamListingPage'
-import StreamLiveDataPage from '$app/src/pages/StreamLiveDataPage'
-import StreamConnectPage from '$app/src/pages/StreamConnectPage'
 import StreamEditPage from '$app/src/pages/StreamEditPage'
 import StreamCreatePage from '$app/src/pages/StreamCreatePage'
 import ProjectPage from '$mp/containers/ProjectPage'
@@ -33,6 +31,7 @@ import NewProjectPage from '$mp/containers/ProjectEditing/NewProjectPage'
 import EditProjectPage from '$mp/containers/ProjectEditing/EditProjectPage'
 import { AuthenticationControllerContextProvider } from '$auth/authenticationController'
 import { UserIsAuthenticatedRoute } from '$auth/utils/userAuthenticated'
+import Globals from '$shared/components/Globals'
 
 import routes from '$routes'
 import history from '../history'
@@ -95,9 +94,7 @@ const StreamsRouter = () => [
     <Route exact path={routes.streams.index()} component={NewStreamListingPage} key="NewStreamListingPage" />,
     <Route exact path={routes.streams.new()} component={StreamCreatePage} key="StreamCreatePage" />,
     <Route exact path={routes.streams.show()} component={StreamRedirect} key="StreamRedirect" />,
-    <Route exact path={routes.streams.overview()} component={StreamEditPage} key="StreamDetailsOverviewPage" />,
-    <Route exact path={routes.streams.connect()} component={StreamConnectPage} key="StreamDetailsConnectPage" />,
-    <Route exact path={routes.streams.liveData()} component={StreamLiveDataPage} key="StreamDetailsLiveDataPage" />,
+    <Route path={routes.streams.show()} component={StreamEditPage} key="ExistingStreamPage" />,
 ]
 
 // Create client for 'react-query'
@@ -113,6 +110,7 @@ const App = () => (
                             <GlobalInfoWatcher>
                                 <ActivityResourceProvider>
                                     <Analytics />
+                                    <Globals />
                                     <Switch>
                                         {AuthenticationRouter()}
                                         {ProjectsRouter()}

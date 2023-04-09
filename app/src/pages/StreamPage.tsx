@@ -11,10 +11,10 @@ import { DraftValidationError, useCurrentDraft, useIsCurrentDraftBusy, useIsCurr
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import routes from '$routes'
 
-export const getStreamDetailsLinkTabs = (streamId?: string) => {
+export const getStreamDetailsLinkTabs = (streamId?: string, dirty?: boolean) => {
     return [
         {
-            label: 'Stream overview',
+            label: `Stream overview${dirty ? '*' : ''}`,
             href:  routes.streams.overview({id: streamId})
         },
         {
@@ -108,11 +108,32 @@ export default function StreamPage({ children, loading = false, includeContainer
 
     const busy = useIsCurrentDraftBusy()
 
-    const linkTabs = useMemo(() => streamId ? getStreamDetailsLinkTabs(streamId) : [], [streamId])
-
     const clean = useIsCurrentDraftClean()
 
-    usePreventNavigatingAway('You have unsaved changes. Are you sure you want to leave?', () => !clean && !busy)
+    const linkTabs = useMemo(() => streamId ? getStreamDetailsLinkTabs(streamId, !clean) : [], [streamId, clean])
+
+    usePreventNavigatingAway({
+        isDirty(dest) {
+            if (typeof dest === 'undefined') {
+                /**
+                 * We're already handling "hard" navigation (reloads, etc.) in `Globals` (all drafts
+                 * at once). Here we care only about router/internal route changes.
+                 */
+                return false
+            }
+
+            if (streamId) {
+                switch (dest) {
+                    case routes.streams.overview({ id: streamId }):
+                    case routes.streams.connect({ id: streamId }):
+                    case routes.streams.liveData({ id: streamId }):
+                        return false
+                }
+            }
+
+            return !clean && !busy
+        }
+    })
 
     const persist = usePersistCurrentDraft()
 

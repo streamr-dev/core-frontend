@@ -20,7 +20,9 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
     const {state: project} = useContext(ProjectStateContext)
     const { isAnyTouched, resetTouched } = useContext(ValidationContext)
     const {publishInProgress} = useContext(ProjectControllerContext)
-    usePreventNavigatingAway('You have unsaved changes', isAnyTouched)
+    usePreventNavigatingAway({
+        isDirty: isAnyTouched,
+    })
     const {loadedProject} = useLoadedProject()
     const nonEditableSalePointChains = useMemo<number[]>(
         () => Object.values(loadedProject.salePoints).map((salePoint) => salePoint.chainId

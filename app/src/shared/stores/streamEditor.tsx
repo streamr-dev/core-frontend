@@ -828,6 +828,12 @@ export function usePersistingDraftIdsForStream(streamId: string | undefined) {
     )
 }
 
+export function useIsPersistingAnyStreamDraft() {
+    return useStreamEditorStore(({ cache }) => {
+        return Object.values(cache).some((draft) => draft?.persisting)
+    })
+}
+
 const NewStreamLink = styled(Link)`
     display: block;
     font-size: 14px;

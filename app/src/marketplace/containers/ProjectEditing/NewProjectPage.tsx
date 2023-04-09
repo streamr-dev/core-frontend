@@ -35,7 +35,9 @@ const UnstyledNewProjectPage = ({ className }: Props) => {
     const { type } = qs.parse(location.search)
     const { updateType } = useEditableProjectActions()
     const { isAnyTouched, resetTouched } = useContext(ValidationContext)
-    usePreventNavigatingAway('You have unsaved changes', isAnyTouched)
+    usePreventNavigatingAway({
+        isDirty: isAnyTouched,
+    })
 
     useEffect(() => {
         const typeIsValid = Object.values(ProjectTypeEnum).includes(type as ProjectTypeEnum)
