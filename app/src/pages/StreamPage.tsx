@@ -146,7 +146,9 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
     const resetStore = useStreamEditorStore((state) => state.reset)
 
     const clean = isStreamClean && !hasStorageNodeChanges && Object.keys(changeset).length === 0
-    usePreventNavigatingAway('You have unsaved changes. Are you sure you want to leave?', () => !clean)
+    usePreventNavigatingAway({
+        isDirty: () => !clean,
+    })
 
     useEffect(() => {
         resetStore()

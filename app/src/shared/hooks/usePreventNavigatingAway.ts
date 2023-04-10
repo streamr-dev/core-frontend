@@ -1,4 +1,3 @@
-import { type UnregisterCallback } from 'history'
 import { useEffect, useCallback } from 'react'
 import { useHistory } from 'react-router-dom'
 
@@ -12,20 +11,24 @@ function useBeforeUnload(fn: (e: BeforeUnloadEvent) => void) {
     }, [fn])
 }
 
-export default function usePreventNavigatingAway(message: string, isDirty: () => boolean) {
+export default function usePreventNavigatingAway({
+    message = 'You have unsaved changes. Are you sure you want to leave?',
+    isDirty,
+}: {
+    message?: string
+    isDirty: (destination?: string) => boolean
+}) {
     const history = useHistory()
 
-    useEffect(() => {
-        let unblock: UnregisterCallback | undefined
-
-        if (isDirty()) {
-            unblock = history.block(message)
-        }
-
-        return () => {
-            unblock?.()
-        }
-    }, [history, isDirty, message])
+    useEffect(
+        () =>
+            history.block(({ pathname }) => {
+                if (isDirty(pathname)) {
+                    return message
+                }
+            }),
+        [history, isDirty, message],
+    )
 
     useBeforeUnload(
         useCallback(
