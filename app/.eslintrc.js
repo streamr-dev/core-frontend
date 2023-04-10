@@ -62,6 +62,7 @@ module.exports = {
                 ],
             },
         ],
+        indent: 'warn',
         '@typescript-eslint/explicit-module-boundary-types': [
             'off', // TODO - change to 'error' in the future
             {

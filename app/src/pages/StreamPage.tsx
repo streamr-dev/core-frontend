@@ -103,21 +103,24 @@ const TitleContainer = styled.div`
   align-items: center;
 `
 
-const ContainerBox: React.FunctionComponent<ContainerBoxProps> = ({ children, disabled, showSaveButton = true, fullWidth = false }) =>
-    <Outer>
-        <Inner fullWidth={fullWidth}>
-            <div>
-                {children}
-            </div>
-            {showSaveButton && <SaveButton
-                kind="primary"
-                type="submit"
-                disabled={disabled}
-            >
-                Save
-            </SaveButton>}
-        </Inner>
-    </Outer>
+function ContainerBox({ children, disabled, showSaveButton = true, fullWidth = false }: ContainerBoxProps) {
+    return (
+        <Outer>
+            <Inner fullWidth={fullWidth}>
+                <div>
+                    {children}
+                </div>
+                {showSaveButton && <SaveButton
+                    kind="primary"
+                    type="submit"
+                    disabled={disabled}
+                >
+                    Save
+                </SaveButton>}
+            </Inner>
+        </Outer>
+    )
+}
 
 function UnwrappedStreamPage({ children, streamId, loading = false, includeContainerBox = true , showSaveButton = true, fullWidth = false}) {
     const history = useHistory()
@@ -143,7 +146,9 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
     const resetStore = useStreamEditorStore((state) => state.reset)
 
     const clean = isStreamClean && !hasStorageNodeChanges && Object.keys(changeset).length === 0
-    usePreventNavigatingAway('You have unsaved changes. Are you sure you want to leave?', () => !clean)
+    usePreventNavigatingAway({
+        isDirty: () => !clean,
+    })
 
     useEffect(() => {
         resetStore()
