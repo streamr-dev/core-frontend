@@ -12,8 +12,8 @@ import Text from '$ui/Text'
 import { TABLET, COLORS } from '$shared/utils/styled'
 import { isEthereumAddress } from '$mp/utils/validate'
 import UnstyledErrors, { MarketplaceTheme } from '$ui/Errors'
+import address0 from '$utils/address0'
 import PermissionEditor from './PermissionEditor'
-import address0 from '$app/src/utils/address0'
 
 const Container = styled.div`
     display: grid;
