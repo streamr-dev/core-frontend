@@ -4,11 +4,11 @@ import styled from 'styled-components'
 import Text from '$ui/Text'
 import Label from '$ui/Label'
 import Surround from '$shared/components/Surround'
-import { useCurrentAbility } from '$app/src/shared/stores/abilities'
+import { useCurrentAbility } from '$shared/stores/abilities'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
+import { useCurrentDraft, useUpdateCurrentMetadata } from '$shared/stores/streamEditor'
 import { ENS_DOMAINS_URL, ReadonlyStreamId, EditableStreamId } from './StreamId'
-import { useCurrentDraft, useUpdateCurrentMetadata } from '$app/src/shared/stores/streamEditor'
 
 function UnwrappedInfoSection({ disabled }) {
     const { streamId, metadata: { description = '' } } = useCurrentDraft()

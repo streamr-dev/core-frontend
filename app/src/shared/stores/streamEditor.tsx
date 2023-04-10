@@ -1,19 +1,19 @@
 import type StreamrClient from 'streamr-client'
 import { create } from 'zustand'
 import produce from 'immer'
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useMemo } from 'react'
 import isEqual from 'lodash/isEqual'
 import { useClient } from 'streamr-client-react'
 import { PermissionAssignment, Stream, StreamMetadata, StreamPermission } from 'streamr-client'
 import uniqueId from 'lodash/uniqueId'
+import { Link, useRouteMatch } from 'react-router-dom'
+import styled from 'styled-components'
+import { Toaster, toaster } from 'toasterhea'
 import address0 from '$app/src/utils/address0'
 import NoStreamIdError from '$shared/errors/NoStreamIdError'
 import getTransactionalClient from '$app/src/getters/getTransactionalClient'
-import { Toaster, toaster } from 'toasterhea'
 import { Layer } from '$app/src/utils/Layer'
 import TransactionListToast, { Operation } from '$shared/toasts/TransactionListToast'
-import { Link, useRouteMatch } from 'react-router-dom'
-import styled from 'styled-components'
 import routes from '$app/src/routes'
 
 type ErrorKey = 'streamId' | keyof StreamMetadata
@@ -676,7 +676,10 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
 })
 
 export function useInitStreamDraft(streamId: Draft['streamId']) {
-    const draftId = useMemo(() => uniqueId('draft-'), [streamId])
+    const draftId = useMemo(() => {
+        streamId // New streamId = new draftId.
+        return uniqueId('draft-')
+    }, [streamId])
 
     const { init, abandon } = useStreamEditorStore(({ init, abandon }) => ({ init, abandon }))
 
@@ -687,14 +690,14 @@ export function useInitStreamDraft(streamId: Draft['streamId']) {
             return () => void 0
         }
 
-        console.log('INIT', draftId, streamId)
+        console.info('INIT', draftId, streamId)
         init(draftId, streamId, client)
 
         return () => {
-            console.log('ABANDON', draftId)
+            console.info('ABANDON', draftId)
             abandon(draftId)
         }
-    }, [draftId, init, abandon, client])
+    }, [draftId, init, abandon, client, streamId])
 
     return draftId
 }
@@ -822,8 +825,8 @@ export function usePersistingDraftIdsForStream(streamId: string | undefined) {
     return useStreamEditorStore(({ cache }) =>
         streamId
             ? Object.entries(cache)
-                  .filter(([, draft]) => draft?.persisting && (draft.streamId === streamId || draft.transientStreamId === streamId))
-                  .map(([draftId]) => draftId)
+                .filter(([, draft]) => draft?.persisting && (draft.streamId === streamId || draft.transientStreamId === streamId))
+                .map(([draftId]) => draftId)
             : [],
     )
 }

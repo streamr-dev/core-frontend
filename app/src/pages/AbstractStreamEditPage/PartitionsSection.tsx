@@ -2,12 +2,12 @@ import React, { Fragment, useState } from 'react'
 import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
 import StatusLabel from '$shared/components/StatusLabel'
-import { useCurrentAbility } from '$app/src/shared/stores/abilities'
+import { useCurrentAbility } from '$shared/stores/abilities'
 import Label from '$ui/Label'
 import Numeric from '$ui/Numeric'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
-import { useCurrentDraft, useUpdateCurrentMetadata } from '$app/src/shared/stores/streamEditor'
+import { useCurrentDraft, useUpdateCurrentMetadata } from '$shared/stores/streamEditor'
 
 const PartitionRange = {
     Min: 1,

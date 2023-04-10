@@ -2,7 +2,7 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import Checkbox from '$shared/components/Checkbox'
 import Spinner from '$shared/components/Spinner'
-import { useCurrentDraft, useToggleCurrentStorageNode } from '$app/src/shared/stores/streamEditor'
+import { useCurrentDraft, useToggleCurrentStorageNode } from '$shared/stores/streamEditor'
 
 type Props = {
     address: string,

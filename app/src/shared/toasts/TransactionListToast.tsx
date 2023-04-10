@@ -1,9 +1,9 @@
 import React, { FC } from 'react'
-import AbstractToast from './AbstractToast'
 import styled, { css } from 'styled-components'
-import { COLORS, MEDIUM } from '../utils/styled'
-import SvgIcon from '../components/SvgIcon'
-import Spinner from '../components/Spinner'
+import { COLORS, MEDIUM } from '$shared/utils/styled'
+import SvgIcon from '$shared/components/SvgIcon'
+import Spinner from '$shared/components/Spinner'
+import AbstractToast from '$shared/toasts/AbstractToast'
 
 type State = 'ongoing' | 'complete' | 'error'
 

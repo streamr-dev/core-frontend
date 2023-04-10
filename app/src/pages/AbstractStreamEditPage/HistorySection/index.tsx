@@ -6,8 +6,8 @@ import UnitizedQuantity from '$shared/components/UnitizedQuantity'
 import { useCurrentAbility } from '$shared/stores/abilities'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
+import { useCurrentDraft, useUpdateCurrentMetadata } from '$shared/stores/streamEditor'
 import StorageNodeList from './StorageNodeList'
-import { useCurrentDraft, useUpdateCurrentMetadata } from '../../../shared/stores/streamEditor'
 
 function UnwrappedHistorySection({ disabled }) {
     const { metadata: { storageDays } } = useCurrentDraft()

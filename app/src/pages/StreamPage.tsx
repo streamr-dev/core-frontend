@@ -5,9 +5,16 @@ import Button from '$shared/components/Button'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
 import { truncateStreamName } from '$shared/utils/text'
-import { CopyButton } from "$shared/components/CopyButton/CopyButton"
+import { CopyButton } from '$shared/components/CopyButton/CopyButton'
 import { DESKTOP, TABLET } from '$shared/utils/styled'
-import { DraftValidationError, useCurrentDraft, useIsCurrentDraftBusy, useIsCurrentDraftClean, usePersistCurrentDraft, useSetCurrentDraftError } from '$shared/stores/streamEditor'
+import {
+    DraftValidationError,
+    useCurrentDraft,
+    useIsCurrentDraftBusy,
+    useIsCurrentDraftClean,
+    usePersistCurrentDraft,
+    useSetCurrentDraftError,
+} from '$shared/stores/streamEditor'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import routes from '$routes'
 
@@ -15,16 +22,16 @@ export const getStreamDetailsLinkTabs = (streamId?: string, dirty?: boolean) => 
     return [
         {
             label: `Stream overview${dirty ? '*' : ''}`,
-            href:  routes.streams.overview({id: streamId})
+            href: routes.streams.overview({ id: streamId }),
         },
         {
             label: 'Connect',
-            href:  routes.streams.connect({id: streamId})
+            href: routes.streams.connect({ id: streamId }),
         },
         {
             label: 'Live data',
-            href:  routes.streams.liveData({id: streamId})
-        }
+            href: routes.streams.liveData({ id: streamId }),
+        },
     ]
 }
 
@@ -44,7 +51,7 @@ const Outer = styled.div`
 `
 
 type InnerProps = {
-    fullWidth: boolean,
+    fullWidth: boolean
 }
 
 const Inner = styled.div<InnerProps>`
@@ -53,10 +60,12 @@ const Inner = styled.div<InnerProps>`
     border-radius: 16px;
     background-color: white;
     padding: 24px;
-  
-    ${({ fullWidth }) => fullWidth && css`
-        grid-template-columns: auto;
-    `}
+
+    ${({ fullWidth }) =>
+        fullWidth &&
+        css`
+            grid-template-columns: auto;
+        `}
 
     @media ${TABLET} {
         padding: 40px;
@@ -73,44 +82,40 @@ const SaveButton = styled(Button)`
 `
 
 type ContainerBoxProps = {
-    children?: React.ReactNode,
-    disabled?: boolean,
+    children?: React.ReactNode
+    disabled?: boolean
     showSaveButton?: boolean
     fullWidth?: boolean
 }
 
 const TitleContainer = styled.div`
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 `
 
 function ContainerBox({ children, disabled, showSaveButton = true, fullWidth = false }: ContainerBoxProps) {
     return (
         <Outer>
             <Inner fullWidth={fullWidth}>
-                <div>
-                    {children}
-                </div>
-                {showSaveButton && <SaveButton
-                    kind="primary"
-                    type="submit"
-                    disabled={disabled}
-                >
-                    Save
-                </SaveButton>}
+                <div>{children}</div>
+                {showSaveButton && (
+                    <SaveButton kind="primary" type="submit" disabled={disabled}>
+                        Save
+                    </SaveButton>
+                )}
             </Inner>
         </Outer>
     )
 }
 
-export default function StreamPage({ children, loading = false, includeContainerBox = true , showSaveButton = true, fullWidth = false}) {
+export default function StreamPage({ children, loading = false, includeContainerBox = true, showSaveButton = true, fullWidth = false }) {
     const { streamId, transientStreamId } = useCurrentDraft()
 
     const busy = useIsCurrentDraftBusy()
 
     const clean = useIsCurrentDraftClean()
 
-    const linkTabs = useMemo(() => streamId ? getStreamDetailsLinkTabs(streamId, !clean) : [], [streamId, clean])
+    const linkTabs = useMemo(() => (streamId ? getStreamDetailsLinkTabs(streamId, !clean) : []), [streamId, clean])
 
     usePreventNavigatingAway({
         isDirty(dest) {
@@ -131,7 +136,7 @@ export default function StreamPage({ children, loading = false, includeContainer
              * draft are being persisted (see `busy`).
              */
             return !clean && (typeof dest === 'undefined' || !busy)
-        }
+        },
     })
 
     const persist = usePersistCurrentDraft()
@@ -161,9 +166,7 @@ export default function StreamPage({ children, loading = false, includeContainer
                         backButtonLink={routes.streams.index()}
                         pageTitle={
                             <TitleContainer>
-                                <span title={streamId}>
-                                    {streamId ? truncateStreamName(streamId, 50) : (transientStreamId || 'New stream')}
-                                </span>
+                                <span title={streamId}>{streamId ? truncateStreamName(streamId, 50) : transientStreamId || 'New stream'}</span>
                                 {streamId ? <CopyButton valueToCopy={streamId} /> : ''}
                             </TitleContainer>
                         }

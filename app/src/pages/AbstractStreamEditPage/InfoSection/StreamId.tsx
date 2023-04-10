@@ -13,8 +13,8 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
 import { useAuthController } from "$auth/hooks/useAuthController"
+import { DraftValidationError, useCurrentDraftError, useSetCurrentDraftError, useSetCurrentDraftTransientStreamId } from '$shared/stores/streamEditor'
 import useStreamOwnerOptions, { ADD_ENS_DOMAIN_VALUE } from './useStreamOwnerOptions'
-import { DraftValidationError, useCurrentDraftError, useSetCurrentDraftError, useSetCurrentDraftTransientStreamId } from '$app/src/shared/stores/streamEditor'
 
 export const ENS_DOMAINS_URL = 'https://ens.domains'
 

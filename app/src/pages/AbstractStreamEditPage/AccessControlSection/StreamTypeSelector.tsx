@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { MEDIUM } from '$shared/utils/styled'
-import { Bits, useCurrentDraft, useDraftId, useStreamEditorStore } from '$app/src/shared/stores/streamEditor'
 import { StreamPermission } from 'streamr-client'
+import { MEDIUM } from '$shared/utils/styled'
+import { Bits, useCurrentDraft, useDraftId, useStreamEditorStore } from '$shared/stores/streamEditor'
 import address0 from '$utils/address0'
 
 const Container = styled.div`

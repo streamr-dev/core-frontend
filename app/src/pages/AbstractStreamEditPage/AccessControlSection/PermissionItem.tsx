@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { truncate } from '$shared/utils/text'
 import SvgIcon from '$shared/components/SvgIcon'
 import { COLORS } from '$shared/utils/styled'
-import { Bits, matchBits, setBits, unsetBits, useDraftId, useStreamEditorStore } from '$app/src/shared/stores/streamEditor'
+import { Bits, matchBits, setBits, unsetBits, useDraftId, useStreamEditorStore } from '$shared/stores/streamEditor'
 import { useAuthController } from "$auth/hooks/useAuthController"
 import UnstyledPermissionEditor from './PermissionEditor'
 

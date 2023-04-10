@@ -1,10 +1,10 @@
 import React from 'react'
+import { useInitStreamDraft, StreamDraftContext, useIsCurrentDraftBusy } from '$shared/stores/streamEditor'
 import StreamPage from './StreamPage'
 import InfoSection from './AbstractStreamEditPage/InfoSection'
 import AccessControlSection from './AbstractStreamEditPage/AccessControlSection'
 import HistorySection from './AbstractStreamEditPage/HistorySection'
 import PartitionsSection from './AbstractStreamEditPage/PartitionsSection'
-import { useInitStreamDraft, StreamDraftContext, useIsCurrentDraftBusy } from '../shared/stores/streamEditor'
 
 function UnwrappedStreamCreatePage() {
     const disabled = useIsCurrentDraftBusy()

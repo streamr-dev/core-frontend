@@ -1,6 +1,6 @@
 import React from 'react'
 import { StreamPermission } from 'streamr-client'
-import { useCurrentAbility } from '$app/src/shared/stores/abilities'
+import { useCurrentAbility } from '$shared/stores/abilities'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
 import StreamTypeSelector from './StreamTypeSelector'
 import PermissionList from './PermissionList'
