@@ -22,6 +22,7 @@ import { getConfigForChain } from '$shared/web3/config'
 import { getDataAddress } from '$mp/utils/web3'
 import address0 from "$utils/address0"
 import { formatChainName } from '$shared/utils/chains'
+import {ChainName, SalePoint} from "$mp/types/project-types"
 import routes from "$routes"
 
 export class ValidationError extends Error {
@@ -92,12 +93,12 @@ export const useProjectController = (): ProjectController => {
             imageIpfsCid: project.imageIpfsCid,
             creator: project.creator,
             contactDetails: {
-                email: project.contact.email,
-                url: project.contact.url,
-                twitter: project.contact.twitter,
-                telegram: project.contact.telegram,
-                reddit: project.contact.reddit,
-                linkedIn: project.contact.linkedIn
+                email: project?.contact?.email,
+                url: project?.contact?.url,
+                twitter: project?.contact?.twitter,
+                telegram: project?.contact?.telegram,
+                reddit: project?.contact?.reddit,
+                linkedIn: project?.contact?.linkedIn
             },
             termsOfUse: {...project.termsOfUse}
         }
