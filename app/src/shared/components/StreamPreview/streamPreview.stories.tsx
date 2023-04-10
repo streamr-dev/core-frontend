@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
 import { action } from '@storybook/addon-actions'
-import StreamPreview from './'
+import { StreamPreview } from './'
 const stories = storiesOf('Marketplace/StreamPreview', module)
     .addDecorator(
         styles({
