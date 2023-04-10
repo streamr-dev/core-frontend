@@ -1,6 +1,7 @@
-import { create } from 'zustand'
+import {create} from 'zustand'
 import StreamrClient from 'streamr-client'
 import getTransactionalClient from '$app/src/getters/getTransactionalClient'
+import {PersistOperation} from "$shared/types/common-types"
 
 type Actions = {
     loadStreamStorageNodes: (streamId: string, client: StreamrClient) => Promise<string[]>,
@@ -13,17 +14,6 @@ type Actions = {
     hasPersistOperations: () => boolean,
     clearPersistOperations: () => void,
     reset: () => void,
-}
-
-type PersistOperation = {
-    id: string,
-    name: string,
-    type: 'stream' | 'storage' | 'permissions',
-    state: 'notstarted' | 'inprogress' | 'complete' | 'error',
-    data?: {
-        address?: string,
-        type?: 'add' | 'remove',
-    },
 }
 
 type State = {
