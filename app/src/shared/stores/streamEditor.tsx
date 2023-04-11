@@ -37,7 +37,7 @@ interface Actions {
     fetchStorageNodes: (draftId: string, streamrClient: StreamrClient) => Promise<void>
     fetchStream: (draftId: string, streamrClient: StreamrClient) => Promise<void>
     init: (draftId: string, streamId: string | undefined, streamrClient: StreamrClient) => void
-    persist: (draftId: string) => Promise<void>
+    persist: (draftId: string, { onCreate }: { onCreate?: (streamId: string) => void }) => Promise<void>
     setError: (draftId: string, key: ErrorKey, message: string) => void
     setPermissions: (draftId: string, account: string, bits: number | null) => void
     setTransientStreamId: (draftId: string, streamId: string) => void
@@ -78,10 +78,12 @@ interface Draft {
 }
 
 interface State {
+    streamDraftMapping: Partial<Record<string, string>>
     cache: Partial<Record<string, Draft>>
 }
 
 const initialState: State = {
+    streamDraftMapping: {},
     cache: {},
 }
 
@@ -171,10 +173,14 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
         ...initialState,
 
         init(draftId, streamId, streamrClient) {
+            const recycled = !!get().cache[draftId]
+
             setDraft(
                 draftId,
-                (state) => {
-                    state.streamId = streamId
+                (draft) => {
+                    draft.streamId = streamId
+
+                    draft.abandoned = false
                 },
                 {
                     force: true,
@@ -182,6 +188,10 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
             )
 
             if (!streamId) {
+                return
+            }
+
+            if (recycled) {
                 return
             }
 
@@ -323,7 +333,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
             })
         },
 
-        async persist(draftId: string) {
+        async persist(draftId: string, { onCreate }) {
             if (isPersisting(draftId)) {
                 return
             }
@@ -476,6 +486,16 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
 
                     draft.metadataChanged = false
                 })
+
+                if (transientStreamId) {
+                    set((store) =>
+                        produce(store, ({ streamDraftMapping }) => {
+                            streamDraftMapping[currentStreamId] = draftId
+                        }),
+                    )
+
+                    onCreate?.(currentStreamId)
+                }
 
                 updateOperation.action = getOpenStreamLink(stream.id)
 
@@ -697,7 +717,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
 
         teardown(draftId, { onlyAbandoned = false } = {}) {
             set((store) =>
-                produce(store, ({ cache }) => {
+                produce(store, ({ streamDraftMapping, cache }) => {
                     const draft = cache[draftId]
 
                     if (!draft) {
@@ -705,6 +725,12 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     }
 
                     if (!onlyAbandoned || draft.abandoned) {
+                        const streamId = draft.streamId || draft.transientStreamId
+
+                        if (streamId) {
+                            delete streamDraftMapping[streamId]
+                        }
+
                         delete cache[draftId]
                     }
                 }),
@@ -713,11 +739,16 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
     }
 })
 
-export function useInitStreamDraft(streamId: Draft['streamId']) {
+function useRecyclableDraftId(streamId: string | undefined) {
+    return useStreamEditorStore(({ streamDraftMapping }) => (streamId ? streamDraftMapping[streamId] : undefined))
+}
+
+export function useInitStreamDraft(streamId: string | undefined) {
+    const recycledDraftId = useRecyclableDraftId(streamId)
+
     const draftId = useMemo(() => {
-        streamId // New streamId = new draftId.
-        return uniqueId('draft-')
-    }, [streamId])
+        return recycledDraftId || uniqueId('draft-')
+    }, [streamId, recycledDraftId])
 
     const { init, abandon } = useStreamEditorStore(({ init, abandon }) => ({ init, abandon }))
 
@@ -850,13 +881,16 @@ export function usePersistCurrentDraft() {
 
     const persist = useStreamEditorStore(({ persist }) => persist)
 
-    return useCallback(async () => {
-        if (!draftId) {
-            throw new Error('No draft id')
-        }
+    return useCallback(
+        async ({ onCreate }: { onCreate?: (streamId: string) => void }) => {
+            if (!draftId) {
+                throw new Error('No draft id')
+            }
 
-        return persist(draftId)
-    }, [draftId, persist])
+            return persist(draftId, { onCreate })
+        },
+        [draftId, persist],
+    )
 }
 
 export function usePersistingDraftIdsForStream(streamId: string | undefined) {

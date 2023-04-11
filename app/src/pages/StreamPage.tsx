@@ -17,6 +17,8 @@ import {
 } from '$shared/stores/streamEditor'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import routes from '$routes'
+import { useHistory } from 'react-router-dom'
+import useIsMounted from '../shared/hooks/useIsMounted'
 
 export const getStreamDetailsLinkTabs = (streamId?: string, dirty?: boolean) => {
     return [
@@ -143,6 +145,10 @@ export default function StreamPage({ children, loading = false, includeContainer
 
     const setValidationError = useSetCurrentDraftError()
 
+    const history = useHistory()
+
+    const isMounted = useIsMounted()
+
     return (
         <>
             <form
@@ -150,7 +156,24 @@ export default function StreamPage({ children, loading = false, includeContainer
                     e.preventDefault()
 
                     try {
-                        await persist()
+                        await persist({
+                            onCreate(id) {
+                                if (!isMounted()) {
+                                    /**
+                                     * Avoid redirecting to the new stream's edit page after either
+                                     * the stream page has been completely unmounted or the transient
+                                     * id changed in the meantime (different stream?).
+                                     */
+                                    return
+                                }
+
+                                history.push(
+                                    routes.streams.overview({
+                                        id,
+                                    }),
+                                )
+                            },
+                        })
                     } catch (e) {
                         if (e instanceof DraftValidationError) {
                             return void setValidationError(e.key, e.message)
