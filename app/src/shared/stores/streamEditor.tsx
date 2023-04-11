@@ -435,6 +435,14 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     throw new DraftValidationError('streamId', 'is required')
                 }
 
+                if (streamId) {
+                    set((store) =>
+                        produce(store, ({ streamDraftMapping }) => {
+                            streamDraftMapping[streamId] = draftId
+                        }),
+                    )
+                }
+
                 if (transientStreamId) {
                     client = await getTransactionalClient({ passiveNetworkCheck: true })
 
