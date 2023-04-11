@@ -22,9 +22,6 @@ const DeleteComponent = () => {
             <Button
                 kind='destructive'
                 onClick={async () => {
-                    /**
-                     * @FIXME: We have to validate if we're on the correct network.
-                     */
                     const client = await getTransactionalClient()
 
                     await client.deleteStream(streamId)

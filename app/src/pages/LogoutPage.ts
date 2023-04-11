@@ -1,14 +1,16 @@
-import {FunctionComponent, useContext} from "react"
 import { useHistory } from 'react-router-dom'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import {AuthenticationControllerContext} from "$auth/authenticationController"
+import { useAuthController } from '$auth/hooks/useAuthController'
 import useOnMount from '$shared/hooks/useOnMount'
 import routes from '$routes'
 
-const LogoutPage: FunctionComponent = () => {
+export default function LogoutPage() {
     const isMounted = useIsMounted()
+
     const history = useHistory()
-    const {removeAuthSession} = useContext(AuthenticationControllerContext)
+
+    const { removeAuthSession } = useAuthController()
+
     useOnMount(async () => {
         if (isMounted()) {
             removeAuthSession()
@@ -17,5 +19,3 @@ const LogoutPage: FunctionComponent = () => {
     })
     return null
 }
-
-export default LogoutPage

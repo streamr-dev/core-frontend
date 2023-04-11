@@ -1,12 +1,12 @@
-import React, {useContext, useMemo} from 'react'
+import React, { useMemo } from 'react'
 import Provider from 'streamr-client-react'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getWeb3 from '$utils/web3/getWeb3'
-import {AuthenticationControllerContext} from "$auth/authenticationController"
+import { useAuthController } from '$auth/hooks/useAuthController'
 
 export default function StreamrClientProvider({ children }) {
-    const {currentAuthSession} = useContext(AuthenticationControllerContext)
-    const token = currentAuthSession.address
+    const token = useAuthController().currentAuthSession.address
+
     const config = useMemo(() => {
         const nextConfig = getClientConfig()
 

@@ -1,4 +1,4 @@
-import React, {Fragment, useReducer, useRef, useCallback, FunctionComponent, useContext} from 'react'
+import React, { Fragment, useReducer, useRef, useCallback, FunctionComponent } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import { Logo, Auth, SignInMethod, LoadingIndicator } from '@streamr/streamr-layout'
 import { Link as PrestyledLink } from 'react-router-dom'
@@ -7,14 +7,14 @@ import { TABLET, MEDIUM } from '$shared/utils/styled'
 import {UserIsNotAuthenticatedRoute} from '$auth/utils/userAuthenticated'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import InterruptionError from '$shared/errors/InterruptionError'
-import {AuthenticationControllerContext} from "$auth/authenticationController"
+import { useAuthController } from '$app/src/auth/hooks/useAuthController'
 import methods from '$shared/reducers/session/methods'
 import routes from '$routes'
 import reducer, { Connect, Fail, initialState } from './reducer'
 
 function UnstyledUnwrappedLoginPage({ className }) {
     const [{ method, connecting, error }, trigger] = useReducer(reducer, initialState)
-    const {updateAuthSession} = useContext(AuthenticationControllerContext)
+    const {updateAuthSession} = useAuthController()
     const itp = useInterrupt()
     const cancelPromiseRef = useRef()
     const cancel = useCallback(() => {

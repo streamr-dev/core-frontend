@@ -12,7 +12,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 
 import { getDataUnionObject, getDataUnionsOwnedByInChain, TheGraphDataUnion } from '$mp/modules/dataUnion/services'
 import SelectField2 from '$mp/components/SelectField2'
-import {AuthenticationControllerContext} from "$auth/authenticationController"
+import { useAuthController } from '$app/src/auth/hooks/useAuthController'
 
 type DataUnionChainOptionProps = {
     index: number,
@@ -31,7 +31,7 @@ export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> 
     onChange,
 }) => {
     const isMounted = useIsMounted()
-    const {currentAuthSession} = useContext(AuthenticationControllerContext)
+    const {currentAuthSession} = useAuthController()
     const [ownedDataUnions, setOwnedDataUnions] = useState<DataUnionWithMetadata[]>([])
     const existingDUOptions = useMemo(() => ownedDataUnions.map((du) => ({label: du.name || du.id, value: du.id})), [ownedDataUnions])
     const [currentlySelectedOption] = useContext(DataUnionChainSelectorContext)
