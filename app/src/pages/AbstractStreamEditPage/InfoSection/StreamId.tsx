@@ -31,7 +31,7 @@ export function ReadonlyStreamId({ streamId }: { streamId: string }) {
             <Pathname>
                 <Label>Stream ID</Label>
                 <PathnameField>
-                    <Text readOnly defaultValue={streamId || ''} disabled />
+                    <Text readOnly value={streamId} disabled />
                 </PathnameField>
             </Pathname>
             <div>
