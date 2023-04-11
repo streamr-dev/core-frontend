@@ -11,6 +11,8 @@ import {useProjectState} from "$mp/contexts/ProjectStateContext"
 import Notification from '$shared/utils/Notification'
 import {ProjectTypeEnum} from "$mp/utils/constants"
 import {NotificationIcon} from "$shared/utils/constants"
+import {PersistOperation} from "$shared/types/common-types"
+import {useProjectEditorStore} from "$mp/containers/ProjectEditing/proejctEditor.state"
 import {ProjectController, useProjectController} from "./ProjectController"
 import Mock = jest.Mock
 
@@ -64,6 +66,10 @@ jest.mock('$shared/utils/constants', () => ({
     }
 }))
 
+jest.mock('react-router-dom', () => ({
+    useHistory: jest.fn().mockReturnValue({push: jest.fn()})
+}))
+
 const PROJECT_STUB: Project = {
     id: undefined,
     newImageToUpload: new File([], 'testimage.jpg'),
@@ -102,12 +108,14 @@ const PROJECT_STUB: Project = {
 
 describe('ProjectController', () => {
     let controller: ProjectController
+    let persistOperations: PersistOperation[] = []
 
     const prepareTestForProjectCreate = (
         createProjectResult: boolean,
         validationResult: Partial<Record<RecursiveKeyOf<Project>, {level: validationCtx.SeverityLevel, message: string}>>,
         state: Project,
     ) => {
+        persistOperations = [];
         (createProject as Mock).mockReset();
         (useProjectState as Mock).mockReset();
         (createProject as Mock).mockImplementation(() => ({
@@ -128,6 +136,7 @@ describe('ProjectController', () => {
         (useProjectState as Mock).mockImplementation(() => ({state, updateState: () => {}}))
         const Component = () => {
             controller = useProjectController()
+            persistOperations = useProjectEditorStore((state) => state.persistOperations)
             return <></>
         }
         render(<Component/>)
@@ -138,6 +147,7 @@ describe('ProjectController', () => {
         validationResult: Partial<Record<RecursiveKeyOf<Project>, {level: validationCtx.SeverityLevel, message: string}>>,
         state: Project,
     ) => {
+        persistOperations = [];
         (updateProject as Mock).mockReset();
         (useProjectState as Mock).mockReset();
         (updateProject as Mock).mockImplementation(() => ({
@@ -158,6 +168,7 @@ describe('ProjectController', () => {
         (useProjectState as Mock).mockImplementation(() => ({state, updateState: () => {}}))
         const Component = () => {
             controller = useProjectController()
+            persistOperations = useProjectEditorStore((state) => state.persistOperations)
             return <></>
         }
         render(<Component/>)
@@ -201,11 +212,8 @@ describe('ProjectController', () => {
         const argumentMetadata = JSON.parse(argument.metadata)
         expect(argumentMetadata).toEqual(expectedMetadata)
         expect(isHex(argument.id)).toEqual(true)
-        expect(Notification.push).toHaveBeenCalledWith({
-            title: 'Published',
-            description: 'Your project is now live on the Hub',
-            icon: NotificationIcon.CHECKMARK,
-        })
+        expect(persistOperations.length).toEqual(1)
+        expect(persistOperations[0].state).toEqual('complete')
     })
 
     it('should not call createProject function, when some field is invalid and error notifications should be displayed', async () => {
@@ -231,11 +239,8 @@ describe('ProjectController', () => {
         })
         expect(result).toBe(false)
         expect(createProject).toHaveBeenCalled()
-        expect(Notification.push).toHaveBeenCalledWith({
-            title: 'Error',
-            description: 'An error occurred and your project was not published',
-            icon: NotificationIcon.ERROR,
-        })
+        expect(persistOperations.length).toEqual(1)
+        expect(persistOperations[0].state).toEqual('error')
     })
 
     it('should update a project ', async () => {
@@ -276,10 +281,7 @@ describe('ProjectController', () => {
         const argumentMetadata = JSON.parse(argument.metadata)
         expect(argumentMetadata).toEqual(expectedMetadata)
         expect(isHex(argument.id)).toEqual(true)
-        expect(Notification.push).toHaveBeenCalledWith({
-            title: 'Published',
-            description: 'Your project was updated!',
-            icon: NotificationIcon.CHECKMARK,
-        })
+        expect(persistOperations.length).toEqual(1)
+        expect(persistOperations[0].state).toEqual('complete')
     })
 })

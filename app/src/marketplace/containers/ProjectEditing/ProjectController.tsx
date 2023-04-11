@@ -1,4 +1,5 @@
-import React, { createContext, FunctionComponent, ReactNode, useCallback, useState } from 'react'
+import React, {createContext, FunctionComponent, ReactNode, useCallback, useMemo, useState} from 'react'
+import {useHistory} from "react-router-dom"
 import BN from "bignumber.js"
 import {randomHex} from "web3-utils"
 import {useProjectState} from '$mp/contexts/ProjectStateContext'
@@ -20,6 +21,9 @@ import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { getConfigForChain } from '$shared/web3/config'
 import { getDataAddress } from '$mp/utils/web3'
 import address0 from "$utils/address0"
+import {useProjectEditorStore} from "$mp/containers/ProjectEditing/proejctEditor.state"
+import {TransactionList} from "$shared/components/TransactionList"
+import routes from "$routes"
 
 export type ProjectController = {
     create: () => Promise<boolean>,
@@ -27,12 +31,27 @@ export type ProjectController = {
     publishInProgress: boolean
 }
 
+const ProjectTransactionList = () => {
+    const persistOperations = useProjectEditorStore((state) => state.persistOperations)
+    return <TransactionList operations={persistOperations}/>
+}
 export const useProjectController = (): ProjectController => {
     const {state: project} = useProjectState()
     const {validate} = useValidationContext()
     const [publishInProgress, setPublishInProgress] = useState<boolean>(false)
     const {projectRegistry} = getCoreConfig()
     const registryChain = getConfigForChain(projectRegistry.chainId)
+    const history = useHistory()
+    const addPersistOperation = useProjectEditorStore((state) => state.addPersistOperation)
+    const updatePersistOperation = useProjectEditorStore((state) => state.updatePersistOperation)
+    const clearPersistOperations = useProjectEditorStore((state) => state.clearPersistOperations)
+    const TRANSACTION_LIST_TIMEOUT = 3000
+
+    const openTransactionNotification = (): Notification => Notification.push({
+        autoDismiss: false,
+        dismissible: false,
+        children: <ProjectTransactionList />,
+    })
 
     const checkValidationErrors = useCallback((): boolean => {
         // Notify missing/invalid fields
@@ -104,33 +123,42 @@ export const useProjectController = (): ProjectController => {
     }, [getProjectMetadata, registryChain.id, project.streams, project.type, project.salePoints])
 
     const createNewProject = useCallback<() => Promise<boolean>>(async () => {
+        clearPersistOperations()
+        let transactionsToastNotification: Notification | null = null
         const projectContractData: SmartContractProjectCreate = {
             ...(await getSmartContractProject()),
             isPublicPurchasable: project.type !== ProjectTypeEnum.OPEN_DATA,
         }
 
         setPublishInProgress(true)
+        addPersistOperation({id: 'createProject', name: 'Create project', type: 'project', state: 'notstarted'})
+
+        transactionsToastNotification = openTransactionNotification()
+
         return new Promise((resolve) => {
+            updatePersistOperation('createProject', {
+                state: 'inprogress',
+            })
             const transaction = createProject(projectContractData)
             transaction.onTransactionComplete(() => {
-                setPublishInProgress(false)
-                // todo fine tune the wording
-                Notification.push({
-                    title: 'Published',
-                    description: 'Your project is now live on the Hub',
-                    icon: NotificationIcon.CHECKMARK,
+                updatePersistOperation('createProject', {
+                    state: 'complete',
                 })
-                resolve(true)
+                setTimeout(() => {
+                    setPublishInProgress(false)
+                    history.push(routes.projects.index())
+                    transactionsToastNotification?.close()
+                    resolve(true)
+                }, TRANSACTION_LIST_TIMEOUT)
             })
             transaction.onError(() => {
                 setPublishInProgress(false)
-                // todo fine tune the wording
-                // more detailed error message?
-                Notification.push({
-                    title: 'Error',
-                    description: 'An error occurred and your project was not published',
-                    icon: NotificationIcon.ERROR,
+                updatePersistOperation('createProject', {
+                    state: 'error',
                 })
+                setTimeout(() => {
+                    transactionsToastNotification?.close()
+                }, TRANSACTION_LIST_TIMEOUT)
                 resolve(false)
             })
         })
@@ -142,30 +170,36 @@ export const useProjectController = (): ProjectController => {
     }, [])
 
     const updateExistingProject = useCallback(async (): Promise<boolean> => {
+        clearPersistOperations()
+        let transactionsToastNotification: Notification | null = null
         const projectContractData = await getSmartContractProject(project.id)
-
+        addPersistOperation({id: 'updateProject', name: 'Update project', type: 'project', state: 'notstarted'})
         setPublishInProgress(true)
+        transactionsToastNotification = openTransactionNotification()
         return new Promise((resolve) => {
+            updatePersistOperation('updateProject', {
+                state: 'inprogress',
+            })
             const transaction = updateProject(projectContractData)
             transaction.onTransactionComplete(() => {
-                setPublishInProgress(false)
-                // todo fine tune the wording
-                Notification.push({
-                    title: 'Published',
-                    description: 'Your project was updated!',
-                    icon: NotificationIcon.CHECKMARK,
+                updatePersistOperation('updateProject', {
+                    state: 'complete',
                 })
-                resolve(true)
+                setTimeout(() => {
+                    setPublishInProgress(false)
+                    history.push(routes.projects.index())
+                    transactionsToastNotification?.close()
+                    resolve(true)
+                }, TRANSACTION_LIST_TIMEOUT)
             })
             transaction.onError(() => {
                 setPublishInProgress(false)
-                // todo fine tune the wording
-                // more detailed error message?
-                Notification.push({
-                    title: 'Error',
-                    description: 'An error occurred and your project was not updated',
-                    icon: NotificationIcon.ERROR,
+                updatePersistOperation('updateProject', {
+                    state: 'error',
                 })
+                setTimeout(() => {
+                    transactionsToastNotification?.close()
+                }, TRANSACTION_LIST_TIMEOUT)
                 resolve(false)
             })
         })

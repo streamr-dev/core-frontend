@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, {useState, useMemo, useEffect, FunctionComponent} from 'react'
 import { useHistory } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import Layout from '$shared/components/Layout/Core'
@@ -122,6 +122,11 @@ function ContainerBox({ children, disabled, showSaveButton = true, fullWidth = f
     )
 }
 
+const StreamTransactionList: FunctionComponent = () => {
+    const persistOperations = useStreamEditorStore((state) => state.persistOperations)
+    return <TransactionList operations={persistOperations}/>
+}
+
 function UnwrappedStreamPage({ children, streamId, loading = false, includeContainerBox = true , showSaveButton = true, fullWidth = false}) {
     const history = useHistory()
     const { commit, isUpdateNeeded, validate, setBusy } = useStreamModifier()
@@ -144,6 +149,7 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
     const persistStorageNodes = useStreamEditorStore((state) => state.persistStorageNodes)
     const hasStorageNodeChanges = useStreamEditorStore((state) => state.hasStorageNodeChanges)
     const resetStore = useStreamEditorStore((state) => state.reset)
+
 
     const clean = isStreamClean && !hasStorageNodeChanges && Object.keys(changeset).length === 0
     usePreventNavigatingAway({
@@ -222,7 +228,7 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
                 transactionsToastNotification = Notification.push({
                     autoDismiss: false,
                     dismissible: false,
-                    children: <TransactionList />,
+                    children: <StreamTransactionList/>,
                 })
 
                 // Now we can start actually making the transactions.

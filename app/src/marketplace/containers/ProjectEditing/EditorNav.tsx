@@ -30,7 +30,6 @@ const FlexNavbarItem = styled(NavbarItem)`
 
 export const EditorNav: FunctionComponent<{isNewProject: boolean, editedProductHasChanged?: boolean}> = ({isNewProject, editedProductHasChanged}) => {
     const {create, publishInProgress, update} = useContext(ProjectControllerContext)
-    const history = useHistory()
     return <NavContainer>
         <FlexNavbar>
             <FlexNavbarItem>
@@ -44,12 +43,11 @@ export const EditorNav: FunctionComponent<{isNewProject: boolean, editedProductH
                 <Button
                     disabled={publishInProgress || (!isNewProject && !editedProductHasChanged)}
                     onClick={() => {
-                        const save = isNewProject ? create : update
-                        save().then((success) => {
-                            if (success) {
-                                history.push(routes.projects.index())
-                            }
-                        })
+                        if (isNewProject) {
+                            create()
+                        } else {
+                            update()
+                        }
                     }}
                 >
                     Publish

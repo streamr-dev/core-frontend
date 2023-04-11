@@ -1,10 +1,6 @@
-import { $Values } from 'utility-types'
-import {
-    contractCurrencies,
-    paymentCurrencies,
-    transactionStates,
-    transactionTypes,
-} from '../utils/constants'
+import {$Values} from 'utility-types'
+import {contractCurrencies, paymentCurrencies, transactionStates, transactionTypes,} from '../utils/constants'
+
 export type ContractCurrency = $Values<typeof contractCurrencies>
 export type PaymentCurrency = $Values<typeof paymentCurrencies>
 export type NumberString = string // Must be parsable to BigNumber
@@ -34,3 +30,14 @@ export type Ref<T> = {
     current: null | T
 }
 export type UseStateTuple<T> = [T, (arg0: ((arg0: T) => T) | T) => void]
+
+export type PersistOperation = {
+    id: string,
+    name: string,
+    type: 'stream' | 'storage' | 'permissions' | 'project',
+    state: 'notstarted' | 'inprogress' | 'complete' | 'error',
+    data?: {
+        address?: string,
+        type?: 'add' | 'remove',
+    },
+}

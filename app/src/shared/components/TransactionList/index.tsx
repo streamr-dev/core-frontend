@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 import { COLORS, MEDIUM } from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
 import Spinner from '$shared/components/Spinner'
-import { useStreamEditorStore } from '$app/src/pages/AbstractStreamEditPage/state'
+import {PersistOperation} from "$shared/types/common-types"
 
 const Container = styled.div`
     width: 469px;
@@ -80,14 +80,12 @@ const Icon = styled(SvgIcon)`
     height: 100%;
 `
 
-export const TransactionList: React.FunctionComponent = () => {
-    const persistOperations = useStreamEditorStore((state) => state.persistOperations)
-
+export const TransactionList: React.FunctionComponent<{operations: PersistOperation[]}> = ({operations}) => {
     return (
         <Container>
             <Title>These transactions are needed<br/>to save your changes:</Title>
             <List>
-                {persistOperations.map((op, index) => (
+                {operations.map((op, index) => (
                     <Item
                         key={index}
                         completed={op.state === 'complete' || op.state === 'error'}
