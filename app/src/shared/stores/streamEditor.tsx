@@ -15,7 +15,6 @@ import getTransactionalClient from '$app/src/getters/getTransactionalClient'
 import { Layer } from '$app/src/utils/Layer'
 import TransactionListToast, { Operation } from '$shared/toasts/TransactionListToast'
 import routes from '$app/src/routes'
-import getChainId from '$app/src/utils/web3/getChainId'
 import requirePositiveBalance from '$shared/utils/requirePositiveBalance'
 
 type ErrorKey = 'streamId' | keyof StreamMetadata
