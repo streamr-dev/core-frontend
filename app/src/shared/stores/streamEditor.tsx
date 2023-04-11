@@ -461,6 +461,22 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     return client.getStream(streamId)
                 })()
 
+                const currentStreamId = stream.id
+
+                const currentMetadata = stream.getMetadata()
+
+                setDraft(draftId, (draft) => {
+                    draft.streamId = currentStreamId
+
+                    draft.transientStreamId = ''
+
+                    draft.loadedMetadata = currentMetadata
+
+                    draft.metadata = currentMetadata
+
+                    draft.metadataChanged = false
+                })
+
                 updateOperation.action = getOpenStreamLink(stream.id)
 
                 updateOperation.state = 'complete'
@@ -475,6 +491,20 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     await client.setPermissions({
                         streamId: stream.id,
                         assignments: permissionAssignments,
+                    })
+
+                    setDraft(draftId, (draft) => {
+                        draft.permissionAssignments = []
+
+                        for (const addr in draft.permissions) {
+                            const cache = draft.permissions[addr]
+
+                            if (!cache || !Object.prototype.hasOwnProperty.call(draft.permissions, addr)) {
+                                continue
+                            }
+
+                            cache.persistedBits = cache.bits
+                        }
                     })
                 }
 
@@ -498,11 +528,19 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
 
                     if (enabled) {
                         await client.addStreamToStorageNode(stream.id, address)
-
-                        continue
+                    } else {
+                        await client.removeStreamFromStorageNode(stream.id, address)
                     }
 
-                    await client.removeStreamFromStorageNode(stream.id, address)
+                    setDraft(draftId, (draft) => {
+                        const node = draft.storageNodes[address]
+
+                        if (node) {
+                            node.enabled = enabled
+
+                            node.persistedEnabled = enabled
+                        }
+                    })
                 }
 
                 storageOperation.state = 'complete'
