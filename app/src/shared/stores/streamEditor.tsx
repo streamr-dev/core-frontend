@@ -687,12 +687,12 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     }
 
                     draft.abandoned = true
-
-                    if (!draft.persisting) {
-                        store.teardown(draftId)
-                    }
                 }),
             )
+
+            if (!isPersisting(draftId)) {
+                get().teardown(draftId)
+            }
         },
 
         teardown(draftId, { onlyAbandoned = false } = {}) {
