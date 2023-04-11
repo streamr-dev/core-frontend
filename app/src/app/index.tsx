@@ -5,7 +5,6 @@ import { Container } from 'toasterhea'
 import '$shared/assets/stylesheets'
 import '@ibm/plex/css/ibm-plex.css'
 import '$utils/setupSnippets'
-
 import styled from 'styled-components'
 import StreamrClientProvider from '$shared/components/StreamrClientProvider'
 import LoginPage from '$app/src/pages/LoginPage'
@@ -23,7 +22,6 @@ import Analytics from '$shared/utils/Analytics'
 import GlobalInfoWatcher from '$mp/containers/GlobalInfoWatcher'
 import NewStreamListingPage from '$app/src/pages/NewStreamListingPage'
 import StreamEditPage from '$app/src/pages/StreamEditPage'
-import StreamCreatePage from '$app/src/pages/StreamCreatePage'
 import ProjectPage from '$mp/containers/ProjectPage'
 import ProjectsPage from '$mp/containers/Projects'
 import ProjectConnectPage from '$mp/containers/ProjectPage/ProjectConnectPage'
@@ -33,7 +31,6 @@ import EditProjectPage from '$mp/containers/ProjectEditing/EditProjectPage'
 import { AuthenticationControllerContextProvider } from '$auth/authenticationController'
 import { UserIsAuthenticatedRoute } from '$auth/utils/userAuthenticated'
 import Globals from '$shared/components/Globals'
-
 import routes from '$routes'
 import history from '../history'
 import '../analytics'
@@ -85,15 +82,8 @@ const ProjectsRouter = (): ReactNode => [
     <Route exact path={routes.projects.liveData()} component={ProjectLiveDataPage} key="ProjectDetailsLiveDataPage" />,
 ]
 
-const StreamRedirect: FunctionComponent = () => {
-    const { id } = useParams<{id: string}>()
-    return <Redirect to={routes.streams.overview({id})}/>
-}
-
 const StreamsRouter = () => [
     <Route exact path={routes.streams.index()} component={NewStreamListingPage} key="NewStreamListingPage" />,
-    <Route exact path={routes.streams.new()} component={StreamCreatePage} key="StreamCreatePage" />,
-    <Route exact path={routes.streams.show()} component={StreamRedirect} key="StreamRedirect" />,
     <Route path={routes.streams.show()} component={StreamEditPage} key="ExistingStreamPage" />,
 ]
 

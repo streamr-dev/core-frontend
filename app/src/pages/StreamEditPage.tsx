@@ -1,6 +1,6 @@
 import React from 'react'
 import { StreamPermission } from 'streamr-client'
-import { Route, Switch } from 'react-router-dom'
+import { Redirect, Route, Switch, useParams } from 'react-router-dom'
 import { StreamPreview } from '$shared/components/StreamPreview'
 import { StreamConnect } from '$shared/components/StreamConnect'
 import { useCurrentAbility } from '$shared/stores/abilities'
@@ -14,6 +14,19 @@ import HistorySection from './AbstractStreamEditPage/HistorySection'
 import PartitionsSection from './AbstractStreamEditPage/PartitionsSection'
 import DeleteSection from './AbstractStreamEditPage/DeleteSection'
 import PersistanceAlert from './AbstractStreamEditPage/PersistanceAlert'
+
+function CreatePage() {
+    const disabled = useIsCurrentDraftBusy()
+
+    return (
+        <StreamPage showSaveButton={false} fullWidth={false}>
+            <InfoSection disabled={disabled} />
+            <AccessControlSection disabled={disabled} />
+            <HistorySection disabled={disabled} />
+            <PartitionsSection disabled={disabled} />
+        </StreamPage>
+    )
+}
 
 function EditPage() {
     const canEdit = useCurrentAbility(StreamPermission.EDIT)
@@ -62,10 +75,20 @@ function ConnectPage() {
     )
 }
 
+function StreamRedirect() {
+    const { id } = useParams<{ id: string }>()
+
+    return <Redirect to={routes.streams.overview({ id })} />
+}
+
 export default function StreamEditPage() {
+    const streamId = useDecodedStreamId()
+
     return (
-        <StreamDraftContext.Provider value={useInitStreamDraft(useDecodedStreamId())}>
+        <StreamDraftContext.Provider value={useInitStreamDraft(streamId === 'new' ? undefined : streamId)}>
             <Switch>
+                <Route exact path={routes.streams.new()} component={CreatePage} key="CreatePage" />,
+                <Route exact path={routes.streams.show()} component={StreamRedirect} key="Redirection" />,
                 <Route exact path={routes.streams.overview()} component={EditPage} key="EditPage" />,
                 <Route exact path={routes.streams.connect()} component={ConnectPage} key="ConnectPage" />,
                 <Route exact path={routes.streams.liveData()} component={LiveDataPage} key="LiveDataPage" />,
