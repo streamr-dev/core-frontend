@@ -24,6 +24,8 @@ import InsufficientFundsError from '$shared/errors/InsufficientFundsError'
 import { Layer } from '$utils/Layer'
 import getChainId from '$utils/web3/getChainId'
 import getNativeTokenName from '$shared/utils/nativeToken'
+import { useAuthController } from '$auth/hooks/useAuthController'
+import { useInvalidateAbilities } from '$shared/stores/abilities'
 import routes from '$routes'
 
 export const getStreamDetailsLinkTabs = (streamId?: string, dirty?: boolean) => {
@@ -157,6 +159,10 @@ export default function StreamPage({ children, loading = false, includeContainer
 
     const isMounted = useIsMounted()
 
+    const { address } = useAuthController().currentAuthSession
+
+    const invalidateAbilities = useInvalidateAbilities()
+
     return (
         <>
             <form
@@ -165,21 +171,35 @@ export default function StreamPage({ children, loading = false, includeContainer
 
                     try {
                         await persist({
-                            onCreate(id) {
+                            onCreate(streamId) {
                                 if (!isMounted()) {
                                     /**
-                                     * Avoid redirecting to the new stream's edit page after either
-                                     * the stream page has been completely unmounted or the transient
-                                     * id changed in the meantime (different stream?).
+                                     * Avoid redirecting to the new stream's edit page after the stream
+                                     * page has been unmounted.
                                      */
                                     return
                                 }
 
                                 history.push(
                                     routes.streams.overview({
-                                        id,
+                                        id: streamId,
                                     }),
                                 )
+                            },
+                            onPermissionsChange(streamId, assignments) {
+                                if (!address) {
+                                    return
+                                }
+
+                                if (
+                                    !assignments.some((assignment) => {
+                                        return 'user' in assignment && assignment.user.toLowerCase() === address.toLowerCase()
+                                    })
+                                ) {
+                                    return
+                                }
+
+                                invalidateAbilities(streamId, address)
                             },
                         })
                     } catch (e) {
@@ -193,7 +213,7 @@ export default function StreamPage({ children, loading = false, includeContainer
                                     const chainId = await getChainId()
 
                                     await getCryptoModal.pop({
-                                        tokenName: getNativeTokenName(chainId)
+                                        tokenName: getNativeTokenName(chainId),
                                     })
                                 } catch (_) {
                                     // Do nothing.

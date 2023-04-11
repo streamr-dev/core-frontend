@@ -38,7 +38,12 @@ interface Actions {
     fetchStorageNodes: (draftId: string, streamrClient: StreamrClient) => Promise<void>
     fetchStream: (draftId: string, streamrClient: StreamrClient) => Promise<void>
     init: (draftId: string, streamId: string | undefined, streamrClient: StreamrClient) => void
-    persist: (draftId: string, { onCreate }: { onCreate?: (streamId: string) => void }) => Promise<void>
+    persist: (
+        draftId: string,
+        {
+            onCreate,
+        }: { onCreate?: (streamId: string) => void; onPermissionsChange?: (streamId: string, assignments: PermissionAssignment[]) => void },
+    ) => Promise<void>
     setError: (draftId: string, key: ErrorKey, message: string) => void
     setPermissions: (draftId: string, account: string, bits: number | null) => void
     setTransientStreamId: (draftId: string, streamId: string) => void
@@ -334,7 +339,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
             })
         },
 
-        async persist(draftId: string, { onCreate }) {
+        async persist(draftId: string, { onCreate, onPermissionsChange }) {
             if (isPersisting(draftId)) {
                 return
             }
@@ -500,7 +505,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     onCreate?.(currentStreamId)
                 }
 
-                updateOperation.action = getOpenStreamLink(stream.id)
+                updateOperation.action = getOpenStreamLink(currentStreamId)
 
                 updateOperation.state = 'complete'
 
@@ -512,9 +517,11 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     client = await getTransactionalClient()
 
                     await client.setPermissions({
-                        streamId: stream.id,
+                        streamId: currentStreamId,
                         assignments: permissionAssignments,
                     })
+
+                    onPermissionsChange?.(currentStreamId, permissionAssignments)
 
                     setDraft(draftId, (draft) => {
                         draft.permissionAssignments = []
@@ -889,12 +896,18 @@ export function usePersistCurrentDraft() {
     const persist = useStreamEditorStore(({ persist }) => persist)
 
     return useCallback(
-        async ({ onCreate }: { onCreate?: (streamId: string) => void }) => {
+        ({
+            onCreate,
+            onPermissionsChange,
+        }: {
+            onCreate?: (streamId: string) => void
+            onPermissionsChange?: (streamId: string, assignments: PermissionAssignment[]) => void
+        }) => {
             if (!draftId) {
                 throw new Error('No draft id')
             }
 
-            return persist(draftId, { onCreate })
+            return persist(draftId, { onCreate, onPermissionsChange })
         },
         [draftId, persist],
     )

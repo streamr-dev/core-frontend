@@ -1,7 +1,7 @@
 import { type StreamrClient, StreamPermission, Stream } from 'streamr-client'
 import { create } from 'zustand'
 import { useClient } from 'streamr-client-react'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import produce from 'immer'
 import { useAuthController } from '$app/src/auth/hooks/useAuthController'
 import { useCurrentDraft } from './streamEditor'
@@ -161,4 +161,8 @@ export function useCurrentAbility(permission: StreamPermission) {
     const { address } = useAuthController().currentAuthSession
 
     return useAbility(streamId, address, permission) || (!streamId && (permission === StreamPermission.EDIT || permission === StreamPermission.GRANT))
+}
+
+export function useInvalidateAbilities() {
+    return useAbilitiesStore(({ invalidate }) => invalidate)
 }
