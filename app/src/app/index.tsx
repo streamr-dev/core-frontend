@@ -84,7 +84,7 @@ const ProjectsRouter = (): ReactNode => [
 
 const StreamsRouter = () => [
     <Route exact path={routes.streams.index()} component={NewStreamListingPage} key="NewStreamListingPage" />,
-    <Route path={routes.streams.show()} component={StreamEditPage} key="ExistingStreamPage" />,
+    <Route path={routes.streams.show()} component={StreamEditPage} key="StreamEditPage" />,
 ]
 
 // Create client for 'react-query'
