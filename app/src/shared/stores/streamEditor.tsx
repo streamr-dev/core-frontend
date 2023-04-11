@@ -15,6 +15,8 @@ import getTransactionalClient from '$app/src/getters/getTransactionalClient'
 import { Layer } from '$app/src/utils/Layer'
 import TransactionListToast, { Operation } from '$shared/toasts/TransactionListToast'
 import routes from '$app/src/routes'
+import getChainId from '$app/src/utils/web3/getChainId'
+import requirePositiveBalance from '$shared/utils/requirePositiveBalance'
 
 type ErrorKey = 'streamId' | keyof StreamMetadata
 
@@ -445,10 +447,12 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     }
                 }
 
-                // @TODO Check balance!
-
                 stream = await (async () => {
                     client = await getTransactionalClient()
+
+                    const address = await client.getAddress()
+
+                    await requirePositiveBalance(address)
 
                     if (transientStreamId) {
                         return client.createStream({

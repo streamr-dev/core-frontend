@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { useHistory } from 'react-router-dom'
+import { toaster } from 'toasterhea'
 import Layout from '$shared/components/Layout/Core'
 import Button from '$shared/components/Button'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
@@ -17,8 +18,13 @@ import {
     useSetCurrentDraftError,
 } from '$shared/stores/streamEditor'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
+import GetCryptoModal from '$app/src/modals/GetCryptoModal'
+import useIsMounted from '$shared/hooks/useIsMounted'
+import InsufficientFundsError from '$shared/errors/InsufficientFundsError'
+import { Layer } from '$utils/Layer'
+import getChainId from '$utils/web3/getChainId'
+import getNativeTokenName from '$shared/utils/nativeToken'
 import routes from '$routes'
-import useIsMounted from '../shared/hooks/useIsMounted'
 
 export const getStreamDetailsLinkTabs = (streamId?: string, dirty?: boolean) => {
     return [
@@ -94,6 +100,8 @@ const TitleContainer = styled.div`
     display: flex;
     align-items: center;
 `
+
+const getCryptoModal = toaster(GetCryptoModal, Layer.Modal)
 
 function ContainerBox({ children, disabled, showSaveButton = true, fullWidth = false }: ContainerBoxProps) {
     return (
@@ -177,6 +185,20 @@ export default function StreamPage({ children, loading = false, includeContainer
                     } catch (e) {
                         if (e instanceof DraftValidationError) {
                             return void setValidationError(e.key, e.message)
+                        }
+
+                        if (e instanceof InsufficientFundsError) {
+                            return void setTimeout(async () => {
+                                try {
+                                    const chainId = await getChainId()
+
+                                    await getCryptoModal.pop({
+                                        tokenName: getNativeTokenName(chainId)
+                                    })
+                                } catch (_) {
+                                    // Do nothing.
+                                }
+                            })
                         }
 
                         throw e
