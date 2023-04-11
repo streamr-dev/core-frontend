@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import styled, { css } from 'styled-components'
+import { useHistory } from 'react-router-dom'
 import Layout from '$shared/components/Layout/Core'
 import Button from '$shared/components/Button'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
@@ -17,7 +18,6 @@ import {
 } from '$shared/stores/streamEditor'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import routes from '$routes'
-import { useHistory } from 'react-router-dom'
 import useIsMounted from '../shared/hooks/useIsMounted'
 
 export const getStreamDetailsLinkTabs = (streamId?: string, dirty?: boolean) => {

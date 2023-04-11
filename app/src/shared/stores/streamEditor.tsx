@@ -748,6 +748,12 @@ export function useInitStreamDraft(streamId: string | undefined) {
 
     const draftId = useMemo(() => {
         return recycledDraftId || uniqueId('draft-')
+        /**
+         * We give each new stream id a new draft id (unless we recycle), thus we've gotta
+         * disable react-hooks/exhaustive-deps for the next line (`streamId` may seem redundant).
+         */
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [streamId, recycledDraftId])
 
     const { init, abandon } = useStreamEditorStore(({ init, abandon }) => ({ init, abandon }))
@@ -759,11 +765,9 @@ export function useInitStreamDraft(streamId: string | undefined) {
             return () => void 0
         }
 
-        console.info('INIT', draftId, streamId)
         init(draftId, streamId, client)
 
         return () => {
-            console.info('ABANDON', draftId)
             abandon(draftId)
         }
     }, [draftId, init, abandon, client, streamId])
