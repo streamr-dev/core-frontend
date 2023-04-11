@@ -461,7 +461,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     return client.getStream(streamId)
                 })()
 
-                updateOperation.action = getOpenStreamLink(transientStreamId || streamId)
+                updateOperation.action = getOpenStreamLink(stream.id)
 
                 updateOperation.state = 'complete'
 
@@ -846,7 +846,7 @@ const NewStreamLink = styled(Link)`
     }
 `
 
-function getOpenStreamLink(streamId: string | undefined) {
+function getOpenStreamLink(streamId: string) {
     return function OpenStreamLink() {
         const id: string = decodeURIComponent(useRouteMatch(routes.streams.show())?.params['id'] || '')
 
