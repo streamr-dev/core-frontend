@@ -1,8 +1,7 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-
 import Button from '$shared/components/Button'
-import { usePermissionsState } from '$shared/components/PermissionsProvider'
+import { useCurrentDraft } from '$shared/stores/streamEditor'
 import useModal from '$shared/hooks/useModal'
 import address0 from '$utils/address0'
 import PermissionItem from './PermissionItem'
@@ -31,24 +30,26 @@ type Props = {
 
 const PermissionList: React.FunctionComponent<Props> = ({ disabled }) => {
     const { api: addModal } = useModal('accesscontrol.addaccount')
-    const { changeset, combinations } = usePermissionsState()
-    const permissions = useMemo(() => (
-        Object.entries({ ...combinations, ...changeset }).filter((p) => p[0] !== address0)
-    ), [combinations, changeset])
+
+    const { permissions } = useCurrentDraft()
+
+    const permissionList = Object.entries(permissions)
+
+    const count = permissionList.length - (permissions[address0] ? 1 : 0)
 
     return (
         <Container>
-            {permissions.map(([key, value]) => (
+            {permissionList.map(([key, { bits = null } = {}]) => key !== address0 && (
                 <PermissionItem
                     key={key}
                     address={key}
-                    permissionBits={value as number}
+                    permissionBits={bits || 0}
                     disabled={disabled}
                 />
             ))}
             <Footer>
                 <span>
-                    {permissions.length} Ethereum account{permissions.length === 1 ? '' : 's'}
+                    {count} Ethereum account{count === 1 ? '' : 's'}
                 </span>
                 <Button
                     kind="primary"

@@ -1,49 +1,47 @@
-import React, {useState, useMemo, useEffect, FunctionComponent} from 'react'
-import { useHistory } from 'react-router-dom'
+import React, { useMemo } from 'react'
 import styled, { css } from 'styled-components'
+import { useHistory } from 'react-router-dom'
+import { toaster } from 'toasterhea'
 import Layout from '$shared/components/Layout/Core'
 import Button from '$shared/components/Button'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
-import SwitchNetworkModal from '$shared/components/SwitchNetworkModal'
-import useStreamModifier from '$shared/hooks/useStreamModifier'
-import ValidationError from '$shared/errors/ValidationError'
-import InsufficientFundsError from '$shared/errors/InsufficientFundsError'
-import DuplicateError from '$shared/errors/DuplicateError'
-import InterruptionError from '$shared/errors/InterruptionError'
-import Notification from '$shared/utils/Notification'
-import useInterrupt from '$shared/hooks/useInterrupt'
-import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
-import { useValidationErrorSetter } from '$shared/components/ValidationErrorProvider'
-import useStreamId from '$shared/hooks/useStreamId'
 import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
 import { truncateStreamName } from '$shared/utils/text'
-import useNativeTokenName from '$shared/hooks/useNativeTokenName'
-import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
-import { CopyButton } from "$shared/components/CopyButton/CopyButton"
-import { useTransientStream } from '$shared/contexts/TransientStreamContext'
+import { CopyButton } from '$shared/components/CopyButton/CopyButton'
 import { DESKTOP, TABLET } from '$shared/utils/styled'
-import PermissionsProvider, { usePermissionsState } from '$shared/components/PermissionsProvider'
-import usePersistChangeset from '$shared/components/PermissionsProvider/usePersistChangeset'
-import { TransactionList } from '$shared/components/TransactionList'
+import {
+    DraftValidationError,
+    useCurrentDraft,
+    useIsCurrentDraftBusy,
+    useIsCurrentDraftClean,
+    usePersistCurrentDraft,
+    useSetCurrentDraftError,
+} from '$shared/stores/streamEditor'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
-import useStreamPermissionsInvalidator from '$shared/hooks/useStreamPermissionsInvalidator'
+import GetCryptoModal from '$app/src/modals/GetCryptoModal'
+import useIsMounted from '$shared/hooks/useIsMounted'
+import InsufficientFundsError from '$shared/errors/InsufficientFundsError'
+import { Layer } from '$utils/Layer'
+import getChainId from '$utils/web3/getChainId'
+import getNativeTokenName from '$shared/utils/nativeToken'
+import { useAuthController } from '$auth/hooks/useAuthController'
+import { useInvalidateAbilities } from '$shared/stores/abilities'
 import routes from '$routes'
-import { useStreamEditorStore } from './AbstractStreamEditPage/state'
 
-export const getStreamDetailsLinkTabs = (streamId?: string) => {
+export const getStreamDetailsLinkTabs = (streamId?: string, dirty?: boolean) => {
     return [
         {
-            label: 'Stream overview',
-            href:  routes.streams.overview({id: streamId})
+            label: `Stream overview${dirty ? '*' : ''}`,
+            href: routes.streams.overview({ id: streamId }),
         },
         {
             label: 'Connect',
-            href:  routes.streams.connect({id: streamId})
+            href: routes.streams.connect({ id: streamId }),
         },
         {
             label: 'Live data',
-            href:  routes.streams.liveData({id: streamId})
-        }
+            href: routes.streams.liveData({ id: streamId }),
+        },
     ]
 }
 
@@ -51,7 +49,7 @@ const Outer = styled.div`
     width: 100%;
     padding: 24px 24px 80px 24px;
 
-    @media ${TABLET} {        
+    @media ${TABLET} {
         max-width: 1296px;
         margin: 0 auto;
         padding: 45px 40px 90px 40px;
@@ -63,7 +61,7 @@ const Outer = styled.div`
 `
 
 type InnerProps = {
-    fullWidth: boolean,
+    fullWidth: boolean
 }
 
 const Inner = styled.div<InnerProps>`
@@ -72,10 +70,12 @@ const Inner = styled.div<InnerProps>`
     border-radius: 16px;
     background-color: white;
     padding: 24px;
-  
-    ${({ fullWidth }) => fullWidth && css`
-        grid-template-columns: auto;
-    `}
+
+    ${({ fullWidth }) =>
+        fullWidth &&
+        css`
+            grid-template-columns: auto;
+        `}
 
     @media ${TABLET} {
         padding: 40px;
@@ -92,243 +92,137 @@ const SaveButton = styled(Button)`
 `
 
 type ContainerBoxProps = {
-    children?: React.ReactNode,
-    disabled?: boolean,
+    children?: React.ReactNode
+    disabled?: boolean
     showSaveButton?: boolean
     fullWidth?: boolean
 }
 
 const TitleContainer = styled.div`
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 `
+
+const getCryptoModal = toaster(GetCryptoModal, Layer.Modal)
 
 function ContainerBox({ children, disabled, showSaveButton = true, fullWidth = false }: ContainerBoxProps) {
     return (
         <Outer>
             <Inner fullWidth={fullWidth}>
-                <div>
-                    {children}
-                </div>
-                {showSaveButton && <SaveButton
-                    kind="primary"
-                    type="submit"
-                    disabled={disabled}
-                >
-                    Save
-                </SaveButton>}
+                <div>{children}</div>
+                {showSaveButton && (
+                    <SaveButton kind="primary" type="submit" disabled={disabled}>
+                        Save
+                    </SaveButton>
+                )}
             </Inner>
         </Outer>
     )
 }
 
-const StreamTransactionList: FunctionComponent = () => {
-    const persistOperations = useStreamEditorStore((state) => state.persistOperations)
-    return <TransactionList operations={persistOperations}/>
-}
+export default function StreamPage({ children, loading = false, includeContainerBox = true, showSaveButton = true, fullWidth = false }) {
+    const { streamId, transientStreamId } = useCurrentDraft()
 
-function UnwrappedStreamPage({ children, streamId, loading = false, includeContainerBox = true , showSaveButton = true, fullWidth = false}) {
-    const history = useHistory()
-    const { commit, isUpdateNeeded, validate, setBusy } = useStreamModifier()
-    const { busy, clean: isStreamClean } = useStreamModifierStatusContext()
-    const itp = useInterrupt()
-    const setValidationError = useValidationErrorSetter()
-    const isNew = !streamId
-    const nativeTokenName = useNativeTokenName()
-    const [showGetCryptoDialog, setShowGetCryptoDialog] = useState(false)
-    const linkTabs = useMemo(() => (streamId ? getStreamDetailsLinkTabs(streamId) : []), [streamId])
-    const { id: transientStreamId } = useTransientStream()
-    const persistPermissions = usePersistChangeset()
-    const { changeset } = usePermissionsState()
-    const invalidatePermissions = useStreamPermissionsInvalidator()
-    const clearPersistOperations = useStreamEditorStore((state) => state.clearPersistOperations)
-    const addPersistOperation = useStreamEditorStore((state) => state.addPersistOperation)
-    const updatePersistOperation = useStreamEditorStore((state) => state.updatePersistOperation)
-    const hasPersistOperations = useStreamEditorStore((state) => state.hasPersistOperations)
-    const calculateStorageNodeOperations = useStreamEditorStore((state) => state.calculateStorageNodeOperations)
-    const persistStorageNodes = useStreamEditorStore((state) => state.persistStorageNodes)
-    const hasStorageNodeChanges = useStreamEditorStore((state) => state.hasStorageNodeChanges)
-    const resetStore = useStreamEditorStore((state) => state.reset)
+    const busy = useIsCurrentDraftBusy()
 
+    const clean = useIsCurrentDraftClean()
 
-    const clean = isStreamClean && !hasStorageNodeChanges && Object.keys(changeset).length === 0
+    const linkTabs = useMemo(() => (streamId ? getStreamDetailsLinkTabs(streamId, !clean) : []), [streamId, clean])
+
     usePreventNavigatingAway({
-        isDirty: () => !clean,
+        isDirty(dest) {
+            if (streamId) {
+                switch (dest) {
+                    case routes.streams.overview({ id: streamId }):
+                    case routes.streams.connect({ id: streamId }):
+                    case routes.streams.liveData({ id: streamId }):
+                        return false
+                }
+            }
+
+            /**
+             * Undefined `dest` means it's a full URL change that's happening outside of the
+             * router, or it's a refresh. We block such things here only if the state is dirty.
+             *
+             * Internal route changes are allowed w/o questions as long as changes in the current
+             * draft are being persisted (see `busy`).
+             */
+            return !clean && (typeof dest === 'undefined' || !busy)
+        },
     })
 
-    useEffect(() => {
-        resetStore()
-    }, [resetStore])
+    const persist = usePersistCurrentDraft()
 
-    async function save() {
-        const { requireUninterrupted } = itp('save')
-        let transactionsToastNotification: Notification | null = null
-        let id = streamId
-        let wasStreamCreated = false
+    const setValidationError = useSetCurrentDraftError()
 
-        try {
-            try {
-                const streamNeedsSaving = isUpdateNeeded()
-                const hasPermissionChanges = Object.keys(changeset).length > 0
+    const history = useHistory()
 
-                if (!streamNeedsSaving && !hasPermissionChanges && !hasStorageNodeChanges) {
-                    // Nothing changed
-                    return
-                }
+    const isMounted = useIsMounted()
 
-                setBusy(true)
-                clearPersistOperations()
+    const { address } = useAuthController().currentAuthSession
 
-                // First validate user input
-                try {
-                    await validate()
-                } catch (e) {
-                    if (e instanceof DuplicateError) {
-                        setValidationError({
-                            id: 'already exists, please try a different one',
-                        })
-                    } else if (e instanceof ValidationError) {
-                        setValidationError({
-                            id: e.message,
-                        })
-                    }
-                    return
-                }
-
-                // First gather info about operations we need to save the stream.
-                // We need to do this before showing the transaction list toast
-                // as otherwise it will not be displayed correctly sized.
-                if (streamNeedsSaving) {
-                    addPersistOperation({
-                        id: 'stream',
-                        name: `${isNew ? 'Create' : 'Update'} stream`,
-                        state: 'notstarted',
-                        type: 'stream',
-                    })
-                }
-
-                if (hasPermissionChanges) {
-                    addPersistOperation({
-                        id: 'access',
-                        name: 'Update access settings',
-                        state: 'notstarted',
-                        type: 'permissions',
-                    })
-                }
-
-                // This will add a persist operation for each storage node change user made
-                await calculateStorageNodeOperations()
-
-                if (!hasPersistOperations()) {
-                    // No changes so return
-                    return
-                }
-
-                // Show the toast notification with list of transactions we need
-                transactionsToastNotification = Notification.push({
-                    autoDismiss: false,
-                    dismissible: false,
-                    children: <StreamTransactionList/>,
-                })
-
-                // Now we can start actually making the transactions.
-                // 1. Create / update stream
-                updatePersistOperation('stream', {
-                    state: 'inprogress',
-                })
-
-                try {
-                    if (streamNeedsSaving) {
-                        ({ id } = await commit())
-                        requireUninterrupted()
-                        updatePersistOperation('stream', {
-                            state: 'complete',
-                        })
-                        wasStreamCreated = isNew
-                    }
-                } catch (e) {
-                    updatePersistOperation('stream', {
-                        state: 'error',
-                    })
-
-                    if (e instanceof InsufficientFundsError) {
-                        setShowGetCryptoDialog(true)
-                    } else {
-                        throw e
-                    }
-                }
-
-                // 2. Update stream permissions
-                if (hasPermissionChanges) {
-                    updatePersistOperation('access', {
-                        state: 'inprogress',
-                    })
-                    try {
-                        await persistPermissions(id)
-                        requireUninterrupted()
-
-                        // Reload permissions to update e.g. showing of stream delete button
-                        invalidatePermissions()
-
-                        updatePersistOperation('access', {
-                            state: 'complete',
-                        })
-                    } catch (e) {
-                        console.error('permissions failed', e)
-                        updatePersistOperation('access', {
-                            state: 'error',
-                        })
-                        throw e
-                    }
-                }
-
-                // 3. Update storage nodes
-                await persistStorageNodes(id)
-                requireUninterrupted()
-            } catch (e) {
-                requireUninterrupted()
-                throw e
-            }
-        } catch (e) {
-            if (e instanceof InterruptionError) {
-                return
-            }
-
-            console.error('Save failed', e)
-        } finally {
-            setBusy(false)
-
-            // Give the notification some time before navigating away in the next step.
-            await new Promise((resolve) => {
-                setTimeout(resolve, 3000)
-            })
-
-            if (transactionsToastNotification != null) {
-                transactionsToastNotification.close()
-                resetStore()
-            }
-            if (wasStreamCreated) {
-                history.push(
-                    routes.streams.show({
-                        id,
-                        newStream: isNew ? 1 : undefined,
-                    }),
-                )
-            }
-        }
-    }
-
-    const streamIdToDisplay = useMemo<string | undefined>(() =>
-        streamId || (!clean && !!transientStreamId) ? transientStreamId : undefined,
-    [streamId, clean, transientStreamId]
-    )
+    const invalidateAbilities = useInvalidateAbilities()
 
     return (
         <>
             <form
-                onSubmit={(e) => {
-                    save()
+                onSubmit={async (e) => {
                     e.preventDefault()
+
+                    try {
+                        await persist({
+                            onCreate(streamId) {
+                                if (!isMounted()) {
+                                    /**
+                                     * Avoid redirecting to the new stream's edit page after the stream
+                                     * page has been unmounted.
+                                     */
+                                    return
+                                }
+
+                                history.push(
+                                    routes.streams.overview({
+                                        id: streamId,
+                                    }),
+                                )
+                            },
+                            onPermissionsChange(streamId, assignments) {
+                                if (!address) {
+                                    return
+                                }
+
+                                if (
+                                    !assignments.some((assignment) => {
+                                        return 'user' in assignment && assignment.user.toLowerCase() === address.toLowerCase()
+                                    })
+                                ) {
+                                    return
+                                }
+
+                                invalidateAbilities(streamId, address)
+                            },
+                        })
+                    } catch (e) {
+                        if (e instanceof DraftValidationError) {
+                            return void setValidationError(e.key, e.message)
+                        }
+
+                        if (e instanceof InsufficientFundsError) {
+                            return void setTimeout(async () => {
+                                try {
+                                    const chainId = await getChainId()
+
+                                    await getCryptoModal.pop({
+                                        tokenName: getNativeTokenName(chainId),
+                                    })
+                                } catch (_) {
+                                    // Do nothing.
+                                }
+                            })
+                        }
+
+                        throw e
+                    }
                 }}
             >
                 <Layout>
@@ -337,9 +231,7 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
                         backButtonLink={routes.streams.index()}
                         pageTitle={
                             <TitleContainer>
-                                <span title={streamId}>
-                                    {!!streamIdToDisplay ? truncateStreamName(streamIdToDisplay, 50) : streamId ? '' : 'New stream'}
-                                </span>
+                                <span title={streamId}>{streamId ? truncateStreamName(streamId, 50) : transientStreamId || 'New stream'}</span>
                                 {streamId ? <CopyButton valueToCopy={streamId} /> : ''}
                             </TitleContainer>
                         }
@@ -363,17 +255,6 @@ function UnwrappedStreamPage({ children, streamId, loading = false, includeConta
                     )}
                 </Layout>
             </form>
-            {showGetCryptoDialog && <GetCryptoDialog onCancel={() => void setShowGetCryptoDialog(false)} nativeTokenName={nativeTokenName} />}
         </>
-    )
-}
-
-export default function StreamPage(props) {
-    const streamId = useStreamId()
-    return (
-        <PermissionsProvider resourceId={streamId} resourceType={'STREAM'}>
-            <UnwrappedStreamPage streamId={streamId} {...props} />
-            <SwitchNetworkModal />
-        </PermissionsProvider>
     )
 }

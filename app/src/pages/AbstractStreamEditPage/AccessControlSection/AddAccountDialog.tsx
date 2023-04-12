@@ -1,11 +1,9 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import useModal from '$shared/hooks/useModal'
-import { UPDATE_PERMISSION } from '$shared/components/PermissionsProvider/utils/reducer'
-import { usePermissionsDispatch, usePermissionsState } from '$shared/components/PermissionsProvider'
+import { Bits, setBits, unsetBits, useCurrentDraft, useDraftId, useStreamEditorStore } from '$shared/stores/streamEditor'
 import UnstyledButton from '$shared/components/Button'
 import UnstyledLabel from '$ui/Label'
 import Text from '$ui/Text'
@@ -48,20 +46,19 @@ const Errors = styled(UnstyledErrors)`
 `
 
 const UnstyledAddAccountDialog = ({ onClose, ...props }) => {
-    const [permissions, setPermissions] = useState<number>(0)
-    const [address, setAddress] = useState<string>('')
-    const [error, setError] = useState<string>(null)
-    const dispatch = usePermissionsDispatch()
-    const { combinations } = usePermissionsState()
+    const draftId = useDraftId()
 
-    const persist = useCallback(() => {
-        dispatch({
-            type: UPDATE_PERMISSION,
-            user: address,
-            // eslint-disable-next-line no-bitwise
-            value: permissions,
-        })
-    }, [dispatch, address, permissions])
+    const [permissions, setPermissions] = useState<number>(0)
+
+    const [address, setAddress] = useState<string>('')
+
+    const [error, setError] = useState<string | null>(null)
+
+    const apply = useStreamEditorStore(({ setPermissions }) => setPermissions)
+
+    const { bits = null, persistedBits = null } = useCurrentDraft().permissions?.[address.toLowerCase()] || {}
+
+    const currentBits = persistedBits === null && bits === null ? null : (bits || 0)
 
     return (
         <ModalPortal>
@@ -87,7 +84,9 @@ const UnstyledAddAccountDialog = ({ onClose, ...props }) => {
                     <PermissionEditor
                         address={address}
                         permissionBits={permissions}
-                        onChange={(newValue) => setPermissions(newValue)}
+                        onChange={(permission, enabled) => {
+                            setPermissions((enabled ? setBits : unsetBits)(permissions, Bits[permission]))}
+                        }
                     />
                     <Button
                         kind="primary"
@@ -103,16 +102,17 @@ const UnstyledAddAccountDialog = ({ onClose, ...props }) => {
                             }
 
                             if (!isEthereumAddress(address)) {
-                                setError('Invalid address format')
-                                return
+                                return void setError('Invalid address format')
                             }
 
-                            if (Object.keys(combinations).includes(address.toLowerCase())) {
-                                setError('Permissions for this address already exist')
-                                return
+                            if (currentBits !== null) {
+                                return void setError('Permissions for this address already exist')
                             }
 
-                            persist()
+                            if (draftId) {
+                                apply(draftId, address, permissions)
+                            }
+
                             onClose()
                         }}
                     >

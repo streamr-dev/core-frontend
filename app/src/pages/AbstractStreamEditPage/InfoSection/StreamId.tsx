@@ -1,46 +1,42 @@
-import React, { useMemo, useState, useEffect, useRef } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { SM, MONO, MEDIUM } from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
 import Button from '$shared/components/Button'
 import Spinner from '$shared/components/Spinner'
-import { useValidationErrorSetter, useValidationError } from '$shared/components/ValidationErrorProvider'
 import Label from '$ui/Label'
 import Text from '$ui/Text'
 import Select from '$ui/Select'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
-import useStreamId from '$shared/hooks/useStreamId'
 import useCopy from '$shared/hooks/useCopy'
 import Notification from '$shared/utils/Notification'
-import ValidationError from '$shared/errors/ValidationError'
 import { NotificationIcon } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
-import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
-import useStreamModifier from '$shared/hooks/useStreamModifier'
 import { useAuthController } from "$auth/hooks/useAuthController"
+import { DraftValidationError, useCurrentDraftError, useSetCurrentDraftError, useSetCurrentDraftTransientStreamId } from '$shared/stores/streamEditor'
 import useStreamOwnerOptions, { ADD_ENS_DOMAIN_VALUE } from './useStreamOwnerOptions'
 
 export const ENS_DOMAINS_URL = 'https://ens.domains'
 
-export function ReadonlyStreamId({ className }) {
-    const streamId = useStreamId()
+export function ReadonlyStreamId({ streamId }: { streamId: string }) {
     const { copy, isCopied } = useCopy(() => {
         Notification.push({
             title: 'Stream ID copied',
             icon: NotificationIcon.CHECKMARK,
         })
     })
+
     return (
-        <StreamId className={className}>
+        <StreamId>
             <Pathname>
                 <Label>Stream ID</Label>
                 <PathnameField>
-                    <Text readOnly defaultValue={streamId} disabled />
+                    <Text readOnly value={streamId} disabled />
                 </PathnameField>
             </Pathname>
             <div>
                 <Label />
-                <Button kind="secondary" onClick={() => void copy(streamId)} type="button">
+                <Button kind="secondary" onClick={() => void copy(streamId || '')} type="button">
                     {!isCopied && 'Copy'}
                     {!!isCopied && 'Copied!'}
                 </Button>
@@ -49,8 +45,19 @@ export function ReadonlyStreamId({ className }) {
     )
 }
 
-export function EditableStreamId({ className, disabled }) {
+interface EditableStreamIdProps {
+    disabled?: boolean
+}
+
+export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
     const ownerGroups = useStreamOwnerOptions()
+
+    const validationError = useCurrentDraftError('streamId')
+
+    const setTransientStreamId = useSetCurrentDraftTransientStreamId()
+
+    const setValidationError = useSetCurrentDraftError()
+
     const owners = useMemo(() => {
         const result = []
 
@@ -62,9 +69,11 @@ export function EditableStreamId({ className, disabled }) {
 
         return result
     }, [ownerGroups])
+
     const isOwnersLoading = typeof owners === 'undefined'
-    const { busy, clean } = useStreamModifierStatusContext()
+
     const {currentAuthSession} = useAuthController()
+
     const [domain, setDomain] = useState<string>()
 
     useEffect(() => {
@@ -72,75 +81,47 @@ export function EditableStreamId({ className, disabled }) {
             setDomain(currentAuthSession.address.toLowerCase())
         }
     }, [currentAuthSession.address, domain])
-    const [pathname = '', setPathname] = useState<string>()
-    const { stage } = useStreamModifier()
-    const stageRef = useRef(stage)
-    useEffect(() => {
-        stageRef.current = stage
-    }, [stage])
-    const setValidationError = useValidationErrorSetter()
-    const setValidationErrorRef = useRef(setValidationError)
-    useEffect(() => {
-        setValidationErrorRef.current = setValidationError
-    }, [setValidationError])
-    const { id: validationError } = useValidationError()
-    useEffect(() => {
-        const id = `${domain}/${pathname}`
 
-        if (typeof stageRef.current === 'function') {
-            stageRef.current({
-                id: undefined,
-            })
-        }
+    const [pathname, setPathname] = useState('')
 
-        if (typeof setValidationErrorRef.current === 'function') {
-            setValidationErrorRef.current({
-                id: undefined,
-            })
-        }
+    function commit(newPathname: string) {
+        setTransientStreamId('')
 
-        if (!domain || /^\s*$/.test(pathname)) {
+        setValidationError('streamId', '')
+
+        if (!domain || newPathname === '') {
             return
         }
 
         try {
-            if (/^\//.test(pathname)) {
-                throw new ValidationError('cannot start with a slash')
+            if (/^\//.test(newPathname)) {
+                throw new DraftValidationError('streamId', 'cannot start with a slash')
             }
 
-            if (/\/{2,}/.test(pathname)) {
-                throw new ValidationError('cannot contain consecutive "/" characters')
+            if (/\/{2,}/.test(newPathname)) {
+                throw new DraftValidationError('streamId', 'cannot contain consecutive "/" characters')
             }
 
-            if (/[^\w]$/.test(pathname)) {
-                throw new ValidationError('must end with an alpha-numeric character')
+            if (/[^\w]$/.test(newPathname)) {
+                throw new DraftValidationError('streamId', 'must end with an alpha-numeric character')
             }
 
-            if (/[^\w.\-/_]/.test(pathname)) {
-                throw new ValidationError('may only contain alpha-numeric characters, underscores, and dashes')
+            if (/[^\w.\-/_]/.test(newPathname)) {
+                throw new DraftValidationError('streamId', 'may only contain alpha-numeric characters, underscores, and dashes')
             }
 
-            if (typeof stageRef.current === 'function') {
-                stageRef.current({
-                    id,
-                })
-            }
+            setTransientStreamId(`${domain}/${newPathname}`)
         } catch (e) {
-            if (e instanceof ValidationError) {
-                if (typeof setValidationErrorRef.current === 'function') {
-                    setValidationErrorRef.current({
-                        id: e.message,
-                    })
-                }
-
-                return
+            if (e instanceof DraftValidationError) {
+                return void setValidationError(e.key, e.message)
             }
 
             throw e
         }
-    }, [domain, pathname])
+    }
+
     return (
-        <StreamId className={className}>
+        <StreamId>
             <Domain>
                 <Label>Domain</Label>
                 {disabled || isOwnersLoading ? (
@@ -196,12 +177,23 @@ export function EditableStreamId({ className, disabled }) {
                     <Text
                         disabled={disabled}
                         invalid={!!validationError}
-                        onChange={({ target }) => void setPathname(target.value)}
+                        onChange={({ target }) => {
+                            setPathname(target.value)
+
+                            commit(target.value)
+                        }}
                         placeholder="Enter a unique stream path name"
                         value={pathname}
                     />
                     {pathname && !disabled && (
-                        <ClearButton type="button" onClick={() => void setPathname('')}>
+                        <ClearButton
+                            type="button"
+                            onClick={() => {
+                                setPathname('')
+
+                                commit('')
+                            }}
+                        >
                             <SvgIcon name="clear" />
                         </ClearButton>
                     )}
@@ -314,25 +306,6 @@ const Tooltip = styled.div`
 `
 const PathnameField = styled.div`
     position: relative;
-`
-const LockIcon = styled.div`
-    color: #989898;
-    height: 40px;
-    line-height: 12px;
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 40px;
-
-    svg {
-        display: block;
-        height: 12px;
-        left: 50%;
-        position: absolute;
-        top: 50%;
-        transform: translate(-50%, -50%) translateY(-1px);
-        width: 12px;
-    }
 `
 const DisabledDomain = styled.div`
     align-items: center;

@@ -2,23 +2,19 @@ import React, { Fragment } from 'react'
 import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
 import Text from '$ui/Text'
-import useStreamId from '$shared/hooks/useStreamId'
-import { useTransientStream } from '$shared/contexts/TransientStreamContext'
-import useStreamModifier from '$shared/hooks/useStreamModifier'
 import Label from '$ui/Label'
 import Surround from '$shared/components/Surround'
-import useStreamPermissions from '$shared/hooks/useStreamPermissions'
+import { useCurrentAbility } from '$shared/stores/abilities'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
+import { useCurrentDraft, useUpdateCurrentMetadata } from '$shared/stores/streamEditor'
 import { ENS_DOMAINS_URL, ReadonlyStreamId, EditableStreamId } from './StreamId'
 
-function UnwrappedInfoSection({ disabled, canEdit }) {
-    const streamId = useStreamId()
-    const StreamIdComponent = streamId ? ReadonlyStreamId : EditableStreamId
-    const { metadata } = useTransientStream()
-    const { description = '' } = metadata || {}
+function UnwrappedInfoSection({ disabled }) {
+    const { streamId, metadata: { description = '' } } = useCurrentDraft()
 
-    const { stage } = useStreamModifier()
+    const updateMetadata = useUpdateCurrentMetadata()
+
     return (
         <Fragment>
             <Description>
@@ -33,7 +29,7 @@ function UnwrappedInfoSection({ disabled, canEdit }) {
                 </Surround>
             </Description>
             <Row>
-                <StreamIdComponent disabled={disabled} />
+                {streamId ? <ReadonlyStreamId streamId={streamId} /> : <EditableStreamId disabled={disabled} />}
             </Row>
             <Row>
                 <Label htmlFor="streamDescription">Description</Label>
@@ -44,10 +40,8 @@ function UnwrappedInfoSection({ disabled, canEdit }) {
                     placeholder="Add a brief description"
                     value={description}
                     onChange={({ target }) =>
-                        void stage({
-                            metadata: {
-                                description: target.value || '',
-                            },
+                        void updateMetadata((metadata) => {
+                            metadata.description = target.value || ''
                         })
                     }
                     disabled={disabled}
@@ -73,12 +67,15 @@ const Description = styled.p`
     margin-bottom: 3rem;
 `
 export default function InfoSection({ disabled: disabledProp, ...props }) {
-    const { [StreamPermission.EDIT]: canEdit = false } = useStreamPermissions()
+    const canEdit = useCurrentAbility(StreamPermission.EDIT)
+
     const disabled = disabledProp || !canEdit
+
     const isWithinNav = useIsWithinNav()
+
     return (
         <TOCSection id="details" title="Details">
-            {!isWithinNav && <UnwrappedInfoSection {...props} canEdit={canEdit} disabled={disabled} />}
+            {!isWithinNav && <UnwrappedInfoSection {...props} disabled={disabled} />}
         </TOCSection>
     )
 }
