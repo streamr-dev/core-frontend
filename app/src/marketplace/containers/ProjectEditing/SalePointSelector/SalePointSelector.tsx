@@ -69,9 +69,9 @@ export const SalePointSelector: FunctionComponent<Props> = ({nonEditableSalePoin
             return <PricingOption
                 key={chain.id}
                 chain={chain}
-                onChange={(salePoint) => {handleSalePointChange(chain.name, salePoint)}}
+                onChange={handleSalePointChange}
                 pricingData={salePointData}
-                onToggle={(salePoint) => handleToggle(chain.name, salePoint)}
+                onToggle={handleToggle}
                 editingSelectionAndTokenDisabled={nonEditableSalePointChains.includes(chain.id)}
             />
         })}
