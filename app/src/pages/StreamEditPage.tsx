@@ -87,11 +87,11 @@ export default function StreamEditPage() {
     return (
         <StreamDraftContext.Provider value={useInitStreamDraft(streamId === 'new' ? undefined : streamId)}>
             <Switch>
-                <Route exact path={routes.streams.new()} component={CreatePage} key="CreatePage" />,
-                <Route exact path={routes.streams.show()} component={StreamRedirect} key="Redirection" />,
-                <Route exact path={routes.streams.overview()} component={EditPage} key="EditPage" />,
-                <Route exact path={routes.streams.connect()} component={ConnectPage} key="ConnectPage" />,
-                <Route exact path={routes.streams.liveData()} component={LiveDataPage} key="LiveDataPage" />,
+                <Route exact path={routes.streams.new()} component={CreatePage} key="CreatePage" />
+                <Route exact path={routes.streams.show()} component={StreamRedirect} key="Redirection" />
+                <Route exact path={routes.streams.overview()} component={EditPage} key="EditPage" />
+                <Route exact path={routes.streams.connect()} component={ConnectPage} key="ConnectPage" />
+                <Route exact path={routes.streams.liveData()} component={LiveDataPage} key="LiveDataPage" />
             </Switch>
         </StreamDraftContext.Provider>
     )
