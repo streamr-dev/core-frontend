@@ -31,7 +31,7 @@ type Props = {
 const PermissionList: React.FunctionComponent<Props> = ({ disabled }) => {
     const { api: addModal } = useModal('accesscontrol.addaccount')
 
-    const permissions = useCurrentDraft().permissions
+    const { permissions } = useCurrentDraft()
 
     const permissionList = Object.entries(permissions)
 

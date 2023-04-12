@@ -82,7 +82,7 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
         }
     }, [currentAuthSession.address, domain])
 
-    const [pathname, setPathname] = useState<string>('')
+    const [pathname, setPathname] = useState('')
 
     function commit(newPathname: string) {
         setTransientStreamId('')

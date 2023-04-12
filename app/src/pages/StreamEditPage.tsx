@@ -66,7 +66,7 @@ function LiveDataPage() {
 function ConnectPage() {
     const streamId = useDecodedStreamId()
 
-    const loading = typeof useCurrentAbility(StreamPermission.EDIT) === 'undefined'
+    const loading = useCurrentAbility(StreamPermission.EDIT) == null
 
     return (
         <StreamPage loading={loading} showSaveButton={false} fullWidth>

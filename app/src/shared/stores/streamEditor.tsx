@@ -394,7 +394,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                 operations.push(storageOperation)
             }
 
-            if (operations.length === 0) {
+            if (!operations.length) {
                 return
             }
 
@@ -409,16 +409,12 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     } catch (_) {
                         // Do nothing
                     }
-                }, 0)
+                })
             }
 
             const firstOperation = operations[0]
 
             firstOperation.state = 'ongoing'
-
-            if (firstOperation === storageOperation) {
-                firstOperation.label = formatStorageOperationLabel(0, storageNodeChanges.length)
-            }
 
             if (streamId) {
                 updateOperation.action = getOpenStreamLink(streamId)

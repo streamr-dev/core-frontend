@@ -1,9 +1,9 @@
 import { type StreamrClient, StreamPermission, Stream } from 'streamr-client'
 import { create } from 'zustand'
 import { useClient } from 'streamr-client-react'
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 import produce from 'immer'
-import { useAuthController } from '$app/src/auth/hooks/useAuthController'
+import { useAuthController } from '$auth/hooks/useAuthController'
 import { useCurrentDraft } from './streamEditor'
 
 interface Actions {
