@@ -16,10 +16,10 @@ export type ProjectType = $Values<typeof projectTypes>
 export type SalePoint = {
     chainId: number,
     beneficiaryAddress?: Address
-    pricePerSecond: BN // the value kept in this field should be multiplied by token's decimals
+    pricePerSecond: BN | undefined // the value kept in this field should be multiplied by token's decimals
     timeUnit: TimeUnit | null | undefined
-    price: BN
-    pricingTokenAddress: Address
+    price: BN | undefined
+    pricingTokenAddress: Address | undefined
 }
 export type TermsOfUse = {
     commercialUse: boolean
@@ -144,9 +144,9 @@ export type DataUnionSecret = {
 }
 
 export type PricingData = {
-    tokenAddress: Address,
-    price: BN,
-    pricePerSecond: BN,
-    timeUnit: TimeUnit,
-    beneficiaryAddress?: Address
+    tokenAddress: Address | undefined,
+    price: BN | undefined,
+    pricePerSecond: BN | undefined,
+    timeUnit: TimeUnit | undefined,
+    beneficiaryAddress?: Address | undefined
 }

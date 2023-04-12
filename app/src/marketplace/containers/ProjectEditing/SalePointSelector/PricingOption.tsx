@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react'
+import React, {ChangeEvent, FunctionComponent, useCallback, useEffect, useState} from 'react'
 import styled from 'styled-components'
 import { Chain } from '@streamr/config'
 import { COLORS } from '$shared/utils/styled'
@@ -11,24 +11,23 @@ import { BeneficiaryAddress } from '$mp/containers/ProjectEditing/BeneficiaryAdd
 import { Address } from '$shared/types/web3-types'
 
 export const PricingOption: FunctionComponent<{
-    onToggle?: (salePoint: SalePoint) => void,
+    onToggle?: (chainName: string, salePoint: SalePoint) => void,
     chain: Chain,
     pricingData?: PricingData
-    onChange: (pricingData: SalePoint | null) => void
+    onChange: (chainName: string, pricingData: SalePoint | null) => void
     editingSelectionAndTokenDisabled?: boolean
 }> = ({onToggle, chain, pricingData, onChange, editingSelectionAndTokenDisabled = false }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
     const [isSelected, setIsSelected] = useState<boolean>(!!pricingData)
-    const toggleDropdown = useCallback(() => setIsDropdownOpen(!isDropdownOpen), [isDropdownOpen])
     const [pricing, setPricing] = useState<PricingData>(pricingData || {} as PricingData)
     const [beneficiaryAddress, setBeneficiaryAddress] = useState<Address>(pricingData?.beneficiaryAddress)
 
     const handleToggleClick = useCallback(() => {
-        toggleDropdown()
+        setIsDropdownOpen((isOpen) => !isOpen)
         // this might seem a bit silly, but it's needed for the use case when we are toggling the first Option
         // while having none selected, then it will be marked as selected
         if (onToggle) {
-            onToggle({
+            onToggle(chain.name, {
                 chainId: chain.id,
                 pricePerSecond: pricing?.pricePerSecond,
                 timeUnit: pricing.timeUnit,
@@ -37,19 +36,34 @@ export const PricingOption: FunctionComponent<{
                 beneficiaryAddress: beneficiaryAddress
             })
         }
-    }, [toggleDropdown, onToggle, chain.id, pricing.pricePerSecond, pricing.timeUnit, pricing.price, pricing.tokenAddress, beneficiaryAddress])
+    }, [setIsSelected, onToggle, chain, pricing.pricePerSecond, pricing.timeUnit, pricing.price, pricing.tokenAddress, beneficiaryAddress])
 
-    useEffect(() => {
+    const handlePricingChange = useCallback((newPricing: PricingData) => {
         const output = isSelected ? {
             chainId: chain.id,
-            pricePerSecond: pricing?.pricePerSecond?.toString(),
+            pricePerSecond: newPricing?.pricePerSecond,
+            timeUnit: newPricing.timeUnit,
+            price: newPricing?.price,
+            pricingTokenAddress: newPricing.tokenAddress,
+            beneficiaryAddress: beneficiaryAddress
+        } : null
+        setPricing(newPricing)
+        onChange(chain.name, output)
+    }, [onChange, isSelected, beneficiaryAddress, chain, setPricing])
+
+    const handleCheckboxToggle = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+        const selected = event.target.checked
+        const output = selected ? {
+            chainId: chain.id,
+            pricePerSecond: pricing?.pricePerSecond,
             timeUnit: pricing.timeUnit,
-            price: pricing?.price?.toString(),
+            price: pricing?.price,
             pricingTokenAddress: pricing.tokenAddress,
             beneficiaryAddress: beneficiaryAddress
         } : null
-        onChange(output)
-    }, [isSelected, pricing, beneficiaryAddress, chain.id, onChange])
+        setIsSelected(selected)
+        onChange(chain.name, output)
+    }, [onChange, pricing, beneficiaryAddress, chain, setIsSelected])
 
     useEffect(() => {
         if (!!pricingData) {
@@ -64,9 +78,7 @@ export const PricingOption: FunctionComponent<{
                     value={isSelected}
                     disabled={editingSelectionAndTokenDisabled}
                     onClick={(event) => event.stopPropagation()}
-                    onChange={(event) => {
-                        setIsSelected(event.target.checked)
-                    }}/>
+                    onChange={handleCheckboxToggle}/>
             </label>
             <ChainIcon chainId={chain.id} />
             <span>{chain.name}</span>
@@ -77,14 +89,14 @@ export const PricingOption: FunctionComponent<{
                 <TokenSelector
                     disabled={!isSelected}
                     chain={chain}
-                    onChange={setPricing}
+                    onChange={handlePricingChange}
                     validationFieldName={`salePoints.${chain.name}`}
                     value={pricingData ? {
                         tokenAddress: pricingData.tokenAddress,
                         price: pricingData.price,
                         timeUnit: pricingData.timeUnit,
                         pricePerSecond: pricingData.pricePerSecond
-                    } : null}
+                    } : undefined}
                     tokenChangeDisabled={editingSelectionAndTokenDisabled}
                 />
                 <BeneficiaryAddress

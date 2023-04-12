@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
+import React, {FunctionComponent, useCallback, useEffect, useMemo, useState} from 'react'
 import { debounce } from 'lodash'
 import { Chain } from '@streamr/config'
 import styled from 'styled-components'
@@ -135,7 +135,7 @@ type Props = {
     disabled?: boolean,
     chain: Chain,
     onChange: (pricing: PricingData) => void,
-    value?: PricingData,
+    value?: PricingData | undefined,
     validationFieldName: RecursiveKeyOf<Project>,
     tokenChangeDisabled: boolean
 }
@@ -246,17 +246,28 @@ const TokenSelector: FunctionComponent<Props> = ({
         } // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selection, chain.id])
 
-    useEffect(() => {
+    const handleChange = useCallback((changes: Partial<PricingData>) => {
+        const outputPrice = changes.price || price
+        const outputTimeUnit = changes.timeUnit || timeUnit
         const output: PricingData = {
-            price: price ? new BN(price) : undefined,
-            timeUnit,
+            price: outputPrice ? new BN(outputPrice) : undefined,
+            timeUnit: outputTimeUnit,
             tokenAddress: selectedTokenAddress?.toLowerCase(),
-            pricePerSecond: (price && timeUnit && tokenDecimals)
-                ? new BN(pricePerSecondFromTimeUnit(new BN(price), timeUnit, new BN(tokenDecimals)))
+            pricePerSecond: (outputPrice && outputTimeUnit && tokenDecimals)
+                ? new BN(pricePerSecondFromTimeUnit(new BN(outputPrice), outputTimeUnit, new BN(tokenDecimals)))
                 : undefined
         }
         debouncedOnChange(output)
-    }, [price, timeUnit, selectedTokenAddress, selection, tokenDecimals, debouncedOnChange])
+    }, [price, selectedTokenAddress, timeUnit, tokenDecimals, debouncedOnChange])
+
+    useEffect(() => {
+        if (selection === contractCurrencies.PRODUCT_DEFINED && !selectedTokenAddress) {
+            return
+        }
+        if (selectedTokenAddress?.toUpperCase() !== value?.tokenAddress?.toUpperCase()) {
+            handleChange({})
+        }
+    }, [selectedTokenAddress, value, selection])
 
     return (
         <Container>
@@ -323,7 +334,10 @@ const TokenSelector: FunctionComponent<Props> = ({
                         <Text
                             className={'price-input'}
                             placeholder={'Set your price'}
-                            onChange={(event) => {setPrice(event.target.value)}}
+                            onChange={(event) => {
+                                handleChange({price: event.target.value})
+                                setPrice(event.target.value)
+                            }}
                             defaultValue={value?.price ? value.price.toString() : undefined}
                             disabled={disabled}
                         />
@@ -336,7 +350,10 @@ const TokenSelector: FunctionComponent<Props> = ({
                             options={options}
                             isClearable={false}
                             value={timeUnit}
-                            onChange={(selected) => {setTimeUnit(selected as TimeUnit)}}
+                            onChange={(selected) => {
+                                handleChange({timeUnit: selected})
+                                setTimeUnit(selected as TimeUnit)
+                            }}
                             disabled={disabled}
                         />
                     </SelectContainer>
