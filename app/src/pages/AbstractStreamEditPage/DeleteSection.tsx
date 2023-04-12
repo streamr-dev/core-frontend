@@ -20,6 +20,7 @@ const DeleteComponent = () => {
         <>
             <Description>Delete this stream forever. You can&apos;t undo this.</Description>
             <Button
+                type="button"
                 kind='destructive'
                 onClick={async () => {
                     const client = await getTransactionalClient()
