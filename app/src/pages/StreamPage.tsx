@@ -27,6 +27,7 @@ import getNativeTokenName from '$shared/utils/nativeToken'
 import { useAuthController } from '$auth/hooks/useAuthController'
 import { useInvalidateAbilities } from '$shared/stores/abilities'
 import Tabs, { Tab } from '$shared/components/Tabs'
+import { RouteMemoryKey, useKeep } from '$shared/stores/routeMemory'
 import routes from '$routes'
 import RelatedProjects from './AbstractStreamEditPage/RelatedProjects'
 
@@ -169,6 +170,8 @@ export default function StreamPage({
 
     const { pathname } = useLocation()
 
+    const keep = useKeep()
+
     return (
         <>
             <form
@@ -259,6 +262,11 @@ export default function StreamPage({
                                         tag={Link}
                                         to={routes.streams.overview({ id: streamId })}
                                         selected="to"
+                                        onClick={() =>
+                                            void keep(
+                                                RouteMemoryKey.lastStreamListingSelection(),
+                                            )
+                                        }
                                     >
                                         Stream overview
                                         {!clean && <Asterisk />}
@@ -268,6 +276,11 @@ export default function StreamPage({
                                         tag={Link}
                                         to={routes.streams.connect({ id: streamId })}
                                         selected="to"
+                                        onClick={() =>
+                                            void keep(
+                                                RouteMemoryKey.lastStreamListingSelection(),
+                                            )
+                                        }
                                     >
                                         Connect
                                     </Tab>
@@ -276,6 +289,11 @@ export default function StreamPage({
                                         tag={Link}
                                         to={routes.streams.liveData({ id: streamId })}
                                         selected="to"
+                                        onClick={() =>
+                                            void keep(
+                                                RouteMemoryKey.lastStreamListingSelection(),
+                                            )
+                                        }
                                     >
                                         Live data
                                     </Tab>
