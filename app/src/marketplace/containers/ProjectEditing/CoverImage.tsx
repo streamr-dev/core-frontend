@@ -69,7 +69,6 @@ export const CoverImage: FunctionComponent<Props> = ({ disabled }) => {
             const newImage = await cropImageDialog.open({
                 image,
             })
-
             if (newImage) {
                 updateImageFile(newImage)
             }
@@ -93,6 +92,7 @@ export const CoverImage: FunctionComponent<Props> = ({ disabled }) => {
                 dropZoneClassName={'imageUploadDropZone'}
                 disabled={!!disabled || isOpen}
                 className={'coverImageUpload'}
+                noPreview={true}
             />
             {hasError && !!message && <Errors overlap>{message}</Errors>}
             <CropImageModalWrap/>
