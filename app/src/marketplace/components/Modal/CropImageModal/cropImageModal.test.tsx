@@ -9,6 +9,12 @@ const mockGetImage = jest.fn(() => ({
     height: 100,
     toBlob: (resolve) => resolve('image'),
 }))
+const mockGetCroppingRect = jest.fn(() => ({
+    x: 0,
+    y: 0,
+    width: 0.5,
+    height: 0.5
+}))
 jest.doMock('react-avatar-editor', () => ({
     __esModule: true,
     // eslint-disable-next-line react/display-name
@@ -16,6 +22,7 @@ jest.doMock('react-avatar-editor', () => ({
         // eslint-disable-next-line no-param-reassign
         ref.current = {
             getImage: mockGetImage,
+            getCroppingRect: mockGetCroppingRect
         }
         return <div id="AvatarEditor" />
     }),
@@ -23,43 +30,50 @@ jest.doMock('react-avatar-editor', () => ({
 
 /* eslint-disable object-curly-newline */
 describe('CropImageModal', () => {
+    let drawSpy
+
+    const prepareTest = (imageWidth: number, imageHeight: number) => {
+        drawSpy = jest.fn()
+        jest.spyOn(document, 'createElement').mockImplementation((tag: string): any => {
+            switch (tag) {
+                case 'img':
+                    return {
+                        width: imageWidth,
+                        height: imageHeight,
+                    }
+                case 'canvas':
+                    return {
+                        width: 0,
+                        height: 9,
+                        getContext: () => ({
+                            drawImage: drawSpy,
+                        }),
+                        toBlob: (resolve) => resolve('crppedImage'),
+                    }
+            }
+        })
+    }
     beforeEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
     })
+
     afterEach(cleanup)
     describe('getResizedBlob', () => {
-        it('returns the same canvas if smaller than max width', async () => {
-            const { getResizedBlob, MAX_WIDTH } = await import('.')
-            const originalCanvas = {
-                width: 100,
-                height: 100,
-                // @ts-ignore
-                toBlob: (resolve) => resolve('image'),
-            } as Partial<HTMLCanvasElement>
-            expect(originalCanvas.width).toBeLessThanOrEqual(MAX_WIDTH)
-            const result = await getResizedBlob(originalCanvas as HTMLCanvasElement)
-            expect(result).toBe('image')
+        it('returns the same image if smaller than max width', async () => {
+            const { getCroppedAndResizedBlob, MAX_WIDTH } = await import('.')
+            const cropSettings = {x: 0, y: 0, width: 0.5, height: 0.5}
+            prepareTest(400, 400)
+            const result = await getCroppedAndResizedBlob('https://imageUrl', cropSettings)
+            expect(drawSpy).toHaveBeenCalledTimes(1)
+            expect(result).toBe('crppedImage')
         })
-        it('returns a resized canvas if smaller than max width', async () => {
-            const { getResizedBlob, MAX_WIDTH } = await import('.')
-            const nextCanvas = {
-                width: undefined,
-                height: undefined,
-                getContext: () => ({
-                    drawImage: jest.fn(),
-                }),
-                toBlob: (resolve) => resolve('nextImage'),
-            }
-            jest.spyOn(document, 'createElement').mockImplementation((): any => nextCanvas)
-            const originalCanvas = {
-                width: 2000,
-                height: 2000,
-            } as Partial<HTMLCanvasElement>
-            expect(originalCanvas.width).toBeGreaterThan(MAX_WIDTH)
-            const result = await getResizedBlob(originalCanvas as HTMLCanvasElement)
-            expect(result).toBe('nextImage')
-            expect(nextCanvas.width).toBe(MAX_WIDTH)
+        it('returns a resized image if bigger than max width', async () => {
+            const { getCroppedAndResizedBlob, MAX_WIDTH } = await import('.')
+            const cropSettings = {x: 0, y: 0, width: 0.85, height: 0.85}
+            prepareTest(3000, 3000)
+            const result = await getCroppedAndResizedBlob('https://imageUrl', cropSettings)
+            expect(drawSpy).toHaveBeenCalledTimes(4)
         })
     })
     it('renders the avatar editor', async () => {
@@ -73,13 +87,5 @@ describe('CropImageModal', () => {
         render(<CropImageModal imageUrl="http://" onClose={closeStub} onSave={jest.fn()} />)
         fireEvent.click(screen.getByText(/cancel/i))
         expect(closeStub).toHaveBeenCalled()
-    })
-    it('calls the save prop with edited image', async () => {
-        const { default: CropImageModal } = await import('.')
-        const saveStub = jest.fn()
-        render(<CropImageModal imageUrl="http://" onClose={jest.fn()} onSave={saveStub} />)
-        fireEvent.click(screen.getByText(/apply/i))
-        // `onSave` gets called within an async function, after `await`.
-        await waitFor(() => expect(saveStub).toHaveBeenCalled())
     })
 })

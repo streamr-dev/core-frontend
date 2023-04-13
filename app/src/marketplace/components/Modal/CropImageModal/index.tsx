@@ -11,7 +11,7 @@ type Props = {
 }
 export const MAX_WIDTH = 1024
 // only width is considered because images returned from the cropper will always be squared
-const getCroppedAndResizedBlob =  (imageUrl: string, cropInfo: CroppedRect): Promise<Blob> => {
+export const getCroppedAndResizedBlob =  (imageUrl: string, cropInfo: CroppedRect): Promise<Blob> => {
     const imageElement = document.createElement('img')
     imageElement.src = imageUrl
     let canvas = document.createElement('canvas')
