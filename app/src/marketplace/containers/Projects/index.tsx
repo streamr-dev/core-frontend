@@ -6,6 +6,7 @@ import ProjectsComponent, { ProjectsContainer } from '$mp/components/Projects'
 import ActionBar from '$mp/components/ActionBar'
 import Layout from '$shared/components/Layout'
 import Footer from '$shared/components/Layout/Footer'
+import LoadingIndicator from '$shared/components/LoadingIndicator'
 import useModal from '$shared/hooks/useModal'
 import CreateProjectModal from '$mp/containers/CreateProjectModal'
 import { SearchFilter } from '$mp/types/project-types'
@@ -47,8 +48,10 @@ const ProjectsPage: FunctionComponent = () => {
             }
         },
         getNextPageParam: (lastPage, pages) => {
-            return lastPage.hasNextPage ? pages.length : null
+            return lastPage.hasNextPage ? pages.flatMap((p) => p.projects).length : null
         },
+        staleTime: 60 * 1000, // 1 minute
+        keepPreviousData: true,
     })
 
     const onFilterChange = useCallback((newFilter: Filter) => {
@@ -82,6 +85,7 @@ const ProjectsPage: FunctionComponent = () => {
                 onFilterByAuthorChange={onFilterByAuthorChange}
                 isUserAuthenticated={isUserAuthenticated}
             />
+            <LoadingIndicator loading={query.isLoading}/>
             <CreateProjectModal />
             <ProjectsContainer>
                 <ProjectsComponent
