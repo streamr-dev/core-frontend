@@ -3,7 +3,6 @@ import styled, { css } from 'styled-components'
 import UnstyledSpinner from '$shared/components/Spinner'
 import SvgIcon from '$shared/components/SvgIcon'
 import Link from '$shared/components/Link'
-import NetworkIcon from '$shared/components/NetworkIcon'
 const SharedTheme = {
     backgroundColor: '#525252',
 }
@@ -113,23 +112,6 @@ const BadgeContainer = styled.div<BadgeContainerProps>`
 `
 const Badge = styled(BadgeContainer)``
 
-type StyledChainBadgeProps = {
-    children: ReactNode
-}
-const StyledChainBadge = styled(Badge)<StyledChainBadgeProps>`
-    font-size: 18px;
-    line-height: 18px;
-    background-color: transparent;
-
-    ${NetworkIcon} {
-        height: 24px;
-        width: 24px;
-    }
-
-    & span {
-        margin-left: 8px;
-    }
-`
 const Spinner = styled(UnstyledSpinner)`
     height: 10px;
     min-height: 0 !important;
@@ -174,13 +156,6 @@ const SharedBadge = (props) => (
     </BadgeContainer>
 )
 
-const ChainBadge = ({ chainId, chainName, ...props }) => (
-    <StyledChainBadge {...props}>
-        <NetworkIcon chainId={chainId} />
-        <span>{chainName}</span>
-    </StyledChainBadge>
-)
-
 const UnstyledIconBadge = ({ forwardAs, children, icon, ...props }) => (
     <BadgeContainer {...props} as={forwardAs}>
         <SingleBadge>
@@ -199,5 +174,5 @@ const IconBadge = styled(UnstyledIconBadge)`
 
 const BadgeLink = ({ ...props }) => <Link {...props} />
 
-export { DataUnionBadge, IconBadge, DeployingBadge, ChainBadge, SharedBadge, SharedTheme, BadgeLink }
+export { DataUnionBadge, IconBadge, DeployingBadge, SharedBadge, SharedTheme, BadgeLink }
 export default Badge

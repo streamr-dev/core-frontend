@@ -24,7 +24,7 @@ module.exports = {
         '/tests/',
     ],
     moduleNameMapper: {
-        '\\.svg$': '<rootDir>/src/userpages/tests/__mocks__/fileMock.ts',
+        '\\.svg$': '<rootDir>/test/test-utils/fileMock.ts',
         '\\.(pcss|scss|css|po|md)$': 'identity-obj-proxy',
         '\\.(png)$': '<rootDir>/scripts/emptyObject',
         '\\$config$': '<rootDir>/test/test-utils/testConfig.ts',

@@ -97,7 +97,6 @@
         "@typescript-eslint/eslint-plugin": "^5.39.0",
         "@typescript-eslint/parser": "^5.39.0",
         "@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",
-        "abi-decoder": "^2.4.0",
         "axios": "^0.21.2",
         "babel-core": "^6.26.3",
         "babel-eslint": "^8.2.6",

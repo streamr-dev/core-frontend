@@ -13,7 +13,7 @@ jest.mock('$auth/hooks/useAuthController', () => {
         useAuthController: jest.fn()
     }
 })
-jest.mock('$userpages/components/Header/AccountsBalance', () => ({__esModule: true, default: () => <></>}))
+jest.mock('$shared/components/AccountsBalance', () => ({__esModule: true, default: () => <></>}))
 
 /* eslint-disable object-curly-newline */
 describe('Nav.Wide', () => {

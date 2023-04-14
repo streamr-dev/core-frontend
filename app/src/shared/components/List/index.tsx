@@ -369,32 +369,5 @@ const MemberList = styled(List)`
         }
     }
 `
-const TransactionList = styled(List)`
-    ${Item}:nth-child(7) {
-        display: block;
 
-        & > * {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-    }
-
-    ${Row} {
-        grid-template-columns: minmax(0, 1fr) 16px;
-
-        @media (min-width: ${LG}px) {
-            grid-template-columns:
-                minmax(130px, 2fr)
-                minmax(80px, 1fr)
-                minmax(120px, 1fr)
-                minmax(100px, 1fr)
-                minmax(160px, 1fr)
-                minmax(120px, 1fr)
-                minmax(68px, 1fr)
-                32px;
-        }
-    }
-`
-export { List, StreamList, MemberList, TransactionList }
+export { List, StreamList, MemberList }
