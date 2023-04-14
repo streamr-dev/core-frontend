@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { CategoryFilter, Filter, ProjectTypeFilter, SearchFilter } from '$mp/types/project-types'
 import SearchBar from '$shared/components/SearchBar'
@@ -12,12 +12,17 @@ import {
     SearchBarWrap,
     SelectFieldWrap
 } from '$mp/components/ActionBar/actionBar.styles'
-import Tabs from '$shared/components/Tabs'
 import SelectField2 from '$mp/components/SelectField2'
 import MobileFilter from '$shared/components/MobileFilter'
 import { ProjectListingTypeFilter } from "$app/src/services/projects"
 import { Category } from '../../types/category-types'
 import { isValidSearchQuery } from '../../utils/validate'
+import Tabzzz, { Tab } from '$shared/components/Tabzzz'
+
+enum ProjectsScope {
+    Any = 'any',
+    Owned = 'owned',
+}
 
 export type Props = {
     filter: Filter
@@ -78,14 +83,12 @@ const UnstyledActionBar = ({
 
     const { categories: category, type } = filter
 
-    const onTabFilterChange = (value: string): void => {
-        onFilterByAuthorChange(value === 'your_projects')
-    }
-
     const handleMobileFilterChange = (filters: Record<string, string>): void => {
         onCategoryChange(filters.category)
         onProductTypeChange(filters.type)
     }
+
+    const [scope, setScope] = useState<ProjectsScope>(ProjectsScope.Any)
 
     return (
         <ActionBarContainer {...props}>
@@ -94,25 +97,22 @@ const UnstyledActionBar = ({
             </SearchBarWrap>
             <FiltersBar>
                 <FiltersWrap>
-                    <Tabs
-                        options={
-                            [
-                                {
-                                    label: 'All projects',
-                                    value: 'all_projects'
-                                },
-                                {
-                                    label: 'Your projects',
-                                    value: 'your_projects',
-                                    disabled: !isUserAuthenticated,
-                                    disabledReason: 'You need to be connected in to view your projects'
-                                }
-                            ]
-                        }
-                        selectedOptionValue={'all_projects'}
-                        onChange={onTabFilterChange}
-                        fullWidth={'onlyMobile'}
-                    />
+                    <Tabzzz
+                        selectedId={scope}
+                        onSelectionChange={(id) => {
+                            onFilterByAuthorChange(id === ProjectsScope.Owned)
+                            setScope(id as ProjectsScope)
+                        }}
+                    >
+                        <Tab id={ProjectsScope.Any}>All projects</Tab>
+                        <Tab
+                            id={ProjectsScope.Owned}
+                            disabled={!isUserAuthenticated}
+                            title={isUserAuthenticated ? undefined : 'You need to be connected in to view your projects'}
+                        >
+                            Your projects
+                        </Tab>
+                    </Tabzzz>
                     <DropdownFilters>
                         <span>Filter by</span>
                         <SelectFieldWrap>
