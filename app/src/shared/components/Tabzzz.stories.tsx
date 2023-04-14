@@ -1,6 +1,6 @@
-import React, { HTMLAttributes, ReactNode, useState } from 'react'
+import React, { HTMLAttributes, useState } from 'react'
 import { storiesOf } from '@storybook/react'
-import { Link, MemoryRouter, useLocation } from 'react-router-dom'
+import { Link, MemoryRouter } from 'react-router-dom'
 import styles from '@sambego/storybook-styles'
 import Tabzzz, { Tab } from './Tabzzz'
 

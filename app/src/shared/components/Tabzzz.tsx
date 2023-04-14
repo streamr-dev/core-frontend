@@ -18,11 +18,11 @@ interface InternalTabProps<P = unknown> {
     selected?: boolean | ((params: P) => boolean) | 'id' | keyof P
 }
 
-type InheritedProps<T extends keyof JSX.IntrinsicElements | JSXElementConstructor<any> = 'button'> = Omit<ComponentProps<T>, keyof InternalTabProps>
+type InheritedProps<T extends keyof JSX.IntrinsicElements | JSXElementConstructor<any>> = Omit<ComponentProps<T>, keyof InternalTabProps>
 
-type TabProps<T extends keyof JSX.IntrinsicElements | JSXElementConstructor<any> = 'button'> = { tag?: T } & InternalTabProps<
-    InheritedProps<T> & Pick<InternalTabProps, 'id'>
-> &
+type TabProps<T extends keyof JSX.IntrinsicElements | JSXElementConstructor<any>> = {
+    tag?: T
+} & InternalTabProps<InheritedProps<T> & Pick<InternalTabProps, 'id'>> &
     InheritedProps<T>
 
 export const Tab: <T extends keyof JSX.IntrinsicElements | JSXElementConstructor<any> = 'button'>(props: TabProps<T>) => null = () => null
