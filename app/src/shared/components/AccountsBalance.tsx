@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useMemo } from 'react'
 import BN from 'bignumber.js'
-import Balance, { Account } from '$userpages/components/Balance'
+import Balance, { Account } from '$shared/components/Balance'
 import { BalanceType } from '$shared/types/user-types'
 import { useBalances } from '$shared/hooks/useBalances'
 

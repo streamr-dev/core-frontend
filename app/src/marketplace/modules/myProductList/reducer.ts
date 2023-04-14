@@ -1,6 +1,4 @@
 import { handleActions } from 'redux-actions'
-import { MyProductListState } from '../../types/store-state'
-import { GET_MY_PRODUCTS_REQUEST, GET_MY_PRODUCTS_SUCCESS, GET_MY_PRODUCTS_FAILURE } from './constants'
 import { MyProductsAction, MyProductsErrorAction, MyProductIdAction, MyProductsFilterAction } from './types'
 export const initialState: MyProductListState = {
     ids: [],

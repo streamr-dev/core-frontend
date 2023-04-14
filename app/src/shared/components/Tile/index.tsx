@@ -6,7 +6,6 @@ import Logo from '$shared/components/Logo'
 import Skeleton from '$shared/components/Skeleton'
 import Rect from '$shared/components/Rect'
 import Link from '$shared/components/Link'
-import useExpiresIn, { formatRemainingTime } from '$shared/hooks/useExpiresIn'
 import SvgIcon from '$shared/components/SvgIcon'
 import { COLORS } from '$shared/utils/styled'
 import { TheGraphProject } from '$app/src/services/projects'
@@ -14,7 +13,7 @@ import routes from '$routes'
 import Label, { HAPPY, ANGRY, WORRIED } from './Label'
 import Summary from './Summary'
 import Menu from './Menu'
-import { DataUnionBadge, DeployingBadge, ChainBadge as UnstyledChainBadge } from './Badge'
+import { DataUnionBadge, DeployingBadge } from './Badge'
 
 const Image = styled(Img)`
     img& {
@@ -182,15 +181,6 @@ const ImageTile = ({ alt, height, showDataUnionBadge, src, noBorderRadius, ...pr
 export const touchedAgo = ({ updated, created }: any): string => `
     ${updated === created ? 'Created' : 'Updated'} ${ago(new Date(updated))}
 `
-type PurchaseTileProps = {
-    expiresAt: Date
-    now?: Date | null | undefined
-    numMembers?: number
-    product: any
-    showDataUnionBadge?: boolean
-    showDeployingBadge?: boolean
-}
-
 const remainingTimeToMood = (value: number) => {
     switch (true) {
         case value <= 0:
@@ -206,68 +196,6 @@ const remainingTimeToMood = (value: number) => {
             return HAPPY
     }
 }
-
-const ExpirationLabel = ({ expiresAt, now }: any) => {
-    const secondsLeft = useExpiresIn(expiresAt, now)
-    const mood = remainingTimeToMood(secondsLeft)
-    return <Label mood={mood}>{secondsLeft > 0 ? `Expires in ${formatRemainingTime(secondsLeft)}` : 'Expired'}</Label>
-}
-
-const ChainBadge = styled(UnstyledChainBadge)`
-    visibility: hidden;
-    transition-property: visibility;
-    transition: 40ms;
-
-    ${Tile}:hover & {
-        visibility: visible;
-    }
-`
-
-const PurchaseTile = ({ expiresAt, now, numMembers, product, showDataUnionBadge, showDeployingBadge, ...props }: PurchaseTileProps) => (
-    <Tile {...props}>
-        <TileImageContainer>
-            <Link
-                to={
-                    product.id &&
-                    routes.projects.overview({
-                        id: product.id,
-                    })
-                }
-            >
-                <TileImageContainer autoSize>
-                    <TileThumbnail src={product.imageUrl || ''} />
-                </TileImageContainer>
-                {!!showDataUnionBadge && (
-                    <DataUnionBadge
-                        top
-                        left
-                        memberCount={numMembers}
-                        linkTo={
-                            product.id &&
-                            routes.projects.overview(
-                                {
-                                    id: product.id,
-                                },
-                                'stats',
-                            )
-                        }
-                    />
-                )}
-                {!!showDeployingBadge && <DeployingBadge bottom right />}
-            </Link>
-        </TileImageContainer>
-        <Link
-            to={
-                product.id &&
-                routes.projects.overview({
-                    id: product.id,
-                })
-            }
-        >
-            <Summary name={product.name} description={product.owner} />
-        </Link>
-    </Tile>
-)
 
 type ProductTileProps = {
     actions?: any
@@ -361,5 +289,5 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, showEditButton, .
     </Tile>
 )
 
-export { ImageTile, MarketplaceProductTile, ProductTile, PurchaseTile }
+export { ImageTile, MarketplaceProductTile, ProductTile }
 export default Tile
