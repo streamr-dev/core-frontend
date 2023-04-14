@@ -183,15 +183,15 @@ function isPreventable(e: unknown): e is Event {
 }
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
-    selectedId?: string
-    onSelectionChange?: (selectedId: string) => void
+    selection?: string
+    onSelectionChange?: (selection: string) => void
     spreadEvenly?: boolean
 }
 
 export default function Tabs({
     children,
     onSelectionChange,
-    selectedId: selectedIdProp,
+    selection: selectionProp,
     spreadEvenly = false,
     ...props
 }: Props) {
@@ -213,13 +213,13 @@ export default function Tabs({
                 /**
                  * First we check it `selected` is a string. If it is then we use it as
                  * a peroperty key. We take its property value and check if it matches
-                 * `selectedId` passed to `Tabs`.
+                 * `selection` passed to `Tabs`.
                  */
                 if (typeof selected === 'string') {
                     return (
-                        typeof selectedIdProp !== 'undefined' &&
+                        typeof selectionProp !== 'undefined' &&
                         Object.prototype.hasOwnProperty.call(rest, selected) &&
-                        rest[selected] === selectedIdProp
+                        rest[selected] === selectionProp
                     )
                 }
 
@@ -229,7 +229,7 @@ export default function Tabs({
                  */
                 return typeof selected === 'function' ? selected(rest) : selected
             })?.id,
-        [tabs, selectedIdProp],
+        [tabs, selectionProp],
     )
 
     /**

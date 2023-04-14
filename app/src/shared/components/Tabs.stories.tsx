@@ -74,7 +74,7 @@ stories.add('all', () => (
         <Container title="With selection">
             <Stateful initialValue="connect">
                 {(value, setValue) => (
-                    <Tabs selectedId={value} onSelectionChange={setValue}>
+                    <Tabs selection={value} onSelectionChange={setValue}>
                         <Tab tag={Link} to="/overview" id="overview">
                             Entity overview
                         </Tab>
@@ -92,7 +92,7 @@ stories.add('all', () => (
         <Container title="With selection and items spread evenly">
             <Stateful initialValue="connect">
                 {(value, setValue) => (
-                    <Tabs selectedId={value} onSelectionChange={setValue} spreadEvenly>
+                    <Tabs selection={value} onSelectionChange={setValue} spreadEvenly>
                         <Tab tag={Link} to="/overview" id="overview">
                             Entity overview
                         </Tab>
@@ -111,7 +111,7 @@ stories.add('all', () => (
             <Stateful initialValue="connect">
                 {(value, setValue) => (
                     <Tabs
-                        selectedId={value}
+                        selection={value}
                         onSelectionChange={setValue}
                         spreadEvenly
                         style={{ width: '100%' }}

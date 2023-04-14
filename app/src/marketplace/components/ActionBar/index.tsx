@@ -98,7 +98,7 @@ const UnstyledActionBar = ({
             <FiltersBar>
                 <FiltersWrap>
                     <Tabs
-                        selectedId={scope}
+                        selection={scope}
                         onSelectionChange={(id) => {
                             onFilterByAuthorChange(id === ProjectsScope.Owned)
                             setScope(id as ProjectsScope)

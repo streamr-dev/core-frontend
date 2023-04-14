@@ -233,7 +233,7 @@ export default function StreamPage({ children, loading = false, includeContainer
                         }
                         rightComponent={
                             streamId ? (
-                                <Tabs selectedId={pathname}>
+                                <Tabs selection={pathname}>
                                     <Tab id="overview" tag={Link} to={routes.streams.overview({ id: streamId })} selected="to">
                                         Stream overview
                                         {!clean && <Asterisk />}

@@ -208,7 +208,7 @@ const NewStreamListingPage: React.FC = () => {
                 <FiltersBar>
                     <FiltersWrap>
                         <Tabs
-                            selectedId={streamsSelection}
+                            selection={streamsSelection}
                             onSelectionChange={(id) => void setStreamsSelection(id as StreamSelection)}
                         >
                             <Tab id={StreamSelection.All}>All streams</Tab>

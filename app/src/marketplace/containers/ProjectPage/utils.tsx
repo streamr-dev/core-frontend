@@ -16,7 +16,7 @@ export function ProjectLinkTabs({ projectId }: { projectId: string | undefined }
     }
 
     return (
-        <Tabs selectedId={pathname}>
+        <Tabs selection={pathname}>
             <Tab id="overview" tag={Link} to={routes.projects.overview({ id: projectId })} selected="to">
                 Project overview
             </Tab>
