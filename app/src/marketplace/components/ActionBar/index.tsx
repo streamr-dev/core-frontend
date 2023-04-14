@@ -15,9 +15,9 @@ import {
 import SelectField2 from '$mp/components/SelectField2'
 import MobileFilter from '$shared/components/MobileFilter'
 import { ProjectListingTypeFilter } from "$app/src/services/projects"
+import Tabs, { Tab } from '$shared/components/Tabs'
 import { Category } from '../../types/category-types'
 import { isValidSearchQuery } from '../../utils/validate'
-import Tabs, { Tab } from '$shared/components/Tabs'
 
 enum ProjectsScope {
     Any = 'any',

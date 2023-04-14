@@ -32,6 +32,11 @@ export const Tab: <
     props: TabProps<T>,
 ) => null = () => null
 
+/**
+ * Mainy used for type gating. This function checks if the given `child` is a `Tab`.
+ * @param child Any instance of a ReactNode.
+ * @returns `true` if the child is a `Tab`. `false` otherwise.
+ */
 function isTab<T extends keyof JSX.IntrinsicElements | JSXElementConstructor<any>>(
     child: ReactNode,
 ): child is ReactElement<TabProps<T>> {
@@ -162,9 +167,18 @@ const Rails = styled.div<{ $animated?: boolean }>`
         `}
 `
 
+/**
+ * @param e probably `Event` himself!
+ * @returns `true` if the given entity has the `preventDefault` function and the `defaultPrevented` flag.
+ */
 function isPreventable(e: unknown): e is Event {
     return (
-        typeof e === 'object' && !!e && 'preventDefault' in e && 'defaultPrevented' in e
+        typeof e === 'object' &&
+        !!e &&
+        'preventDefault' in e &&
+        typeof e.preventDefault === 'function' &&
+        'defaultPrevented' in e &&
+        typeof e.defaultPrevented === 'boolean'
     )
 }
 
@@ -181,6 +195,10 @@ export default function Tabs({
     spreadEvenly = false,
     ...props
 }: Props) {
+    /**
+     * Since `Tab` returns `null` its props is all we care about. It's a carrier. Remember
+     * Rick's butter passing robot? Yeah, this here passes props – that's its purpose.
+     */
     const tabs = useMemo(
         () =>
             React.Children.toArray(children)
@@ -189,41 +207,47 @@ export default function Tabs({
         [children],
     )
 
-    const widthSettersRef = useRef<
-        Partial<Record<string, (el: HTMLElement | null) => void>>
-    >({})
-
-    useEffect(() => {
-        widthSettersRef.current = {}
-    }, [children])
-
-    const [elements, setElement] = useState<[string, HTMLElement | null][]>([])
-
     const selectedId = useMemo(
         () =>
             tabs.find(({ selected = 'id', tag, ...rest }) => {
+                /**
+                 * First we check it `selected` is a string. If it is then we use it as
+                 * a peroperty key. We take its property value and check if it matches
+                 * `selectedId` passed to `Tabs`.
+                 */
                 if (typeof selected === 'string') {
                     return (
+                        typeof selectedIdProp !== 'undefined' &&
                         Object.prototype.hasOwnProperty.call(rest, selected) &&
                         rest[selected] === selectedIdProp
                     )
                 }
 
+                /**
+                 * If `selected` is a boolean then the situation is simple. If it's
+                 * a function though, we call it with current Tab's props.
+                 */
                 return typeof selected === 'function' ? selected(rest) : selected
             })?.id,
         [tabs, selectedIdProp],
     )
 
-    const [sizeCache, touchSize] = useReducer((x) => x + 1, 0)
+    /**
+     * `windowWidth` is listed as a dependency for the left and width calculation for
+     * the `Rails` component later or. It changes on window resize.
+     *
+     * We only use the width here because the height doesn't affect the component.
+     */
+    const [windowWidth, setWindowWidth] = useState(0)
 
     useEffect(() => {
         let mounted = true
 
         const onResize = throttle(() => {
             if (mounted) {
-                touchSize()
+                setWindowWidth(window.outerWidth)
             }
-        }, 50)
+        }, 200)
 
         window.addEventListener('resize', onResize)
 
@@ -234,11 +258,63 @@ export default function Tabs({
         }
     }, [])
 
+    /**
+     * We collect HTML elements associated with each tab using callback stored in a ref.
+     * The following is an index-to-callback map that holds the setters for each mounted
+     * element. There's a reason to this maddness.
+     *
+     * For one element, to avoid extensive updates on `ref`, we'd use `useCallback`. In our
+     * case we avoid it (as much as possible) using the following contraption.
+     *
+     * In other words, unless `children` change, 0th element will always set its ref
+     * using the callback at 0th index in the map, and so on. Simple as that.
+     */
+    const elementSettersRef = useRef<
+        Partial<Record<string, (el: HTMLElement | null) => void>>
+    >({})
+
+    useEffect(() => {
+        /**
+         * We reset the setters when the number of tabs change. Ideally we'd do it only when
+         * reducing the number of tabs, but that'd add complexity.
+         */
+        elementSettersRef.current = {}
+    }, [tabs.length])
+
+    /**
+     * `elements` is a list of mounted `Item` elements. We use it for left/width
+     * calculations later.
+     */
+    const [elements, setElement] = useState<[string, HTMLElement | null][]>([])
+
+    function setElementAt(id: string, index: number) {
+        let setter = elementSettersRef.current[index]
+
+        if (typeof setter !== 'function') {
+            setter = (el) => {
+                setElement((current) => {
+                    const newElements = [...current]
+
+                    newElements[index] = [id, el]
+
+                    return newElements
+                })
+            }
+
+            elementSettersRef.current[index] = setter
+        }
+
+        return setter
+    }
+
     const [left, width] = useMemo(() => {
         let left = 0
 
-        // Use `sizeCache` here to avoid ignoring `react-hooks/exhaustive-deps` rule.
-        sizeCache
+        /**
+         *  Use `windowWidth` here to avoid ignoring the `react-hooks/exhaustive-deps`
+         * rule. It's safer this way. Plus, pretty much costs nothing.
+         */
+        windowWidth
 
         let width = 0
 
@@ -256,37 +332,30 @@ export default function Tabs({
         }
 
         return [left, width]
-    }, [elements, selectedId, sizeCache])
+    }, [elements, selectedId, windowWidth])
 
+    /**
+     * Animation is tricky. We have to delay any of it before all the `Item` elements
+     * are mounted and we know at list the width of the current one.
+     */
     const canAnimate = width !== 0
 
+    /**
+     * We cannot enable animations immediately after having the width. We have to
+     * let components mount without transition first to avoid making them transition
+     * from an unknown location and 0 width.
+     */
     const [animated, enableAnimation] = useReducer(() => true, false)
 
     useEffect(() => {
         if (canAnimate) {
+            /**
+             * At this point we know the proper width is there and the components
+             * mounted. Let's give animations green light!
+             */
             enableAnimation()
         }
     }, [canAnimate])
-
-    function setElementAt(id: string, index: number) {
-        let setter = widthSettersRef.current[index]
-
-        if (typeof setter !== 'function') {
-            setter = (el) => {
-                setElement((current) => {
-                    const newElements = [...current]
-
-                    newElements[index] = [id, el]
-
-                    return newElements
-                })
-            }
-
-            widthSettersRef.current[index] = setter
-        }
-
-        return setter
-    }
 
     return (
         <Root {...props}>
@@ -335,11 +404,24 @@ export default function Tabs({
                                             e.preventDefault()
                                         }
 
+                                        /**
+                                         * If a Tab is disabled we don't go any further.
+                                         * Additionally, if `e` is a default-preventable,
+                                         * then at this point it's also taken care of.
+                                         */
                                         return
                                     }
 
+                                    /**
+                                     * Anything that the *og* onClick has given us we pass
+                                     * onto the `onClick` coming from the outside.
+                                     */
                                     onClick?.(e, ...otherArgs)
 
+                                    /**
+                                     * It is possible to prevent selection outside of the
+                                     * component. Just prevent event's default behaviour.
+                                     */
                                     if (preventable && e.defaultPrevented) {
                                         return
                                     }
