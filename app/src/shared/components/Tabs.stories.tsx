@@ -11,7 +11,11 @@ const stories = storiesOf('Shared/Tabs', module).addDecorator(
     }),
 )
 
-function Container({ title, children, ...props }: { title: string } & Omit<HTMLAttributes<HTMLDivElement>, 'style' | 'title'>) {
+function Container({
+    title,
+    children,
+    ...props
+}: { title: string } & Omit<HTMLAttributes<HTMLDivElement>, 'style' | 'title'>) {
     return (
         <MemoryRouter>
             <div {...props} style={{ marginTop: '32px' }}>
@@ -106,7 +110,12 @@ stories.add('all', () => (
         <Container title="Full width with selection and items spread evenly">
             <Stateful initialValue="connect">
                 {(value, setValue) => (
-                    <Tabs selectedId={value} onSelectionChange={setValue} spreadEvenly style={{ width: '100%' }}>
+                    <Tabs
+                        selectedId={value}
+                        onSelectionChange={setValue}
+                        spreadEvenly
+                        style={{ width: '100%' }}
+                    >
                         <Tab tag={Link} to="/overview" id="overview">
                             Entity overview
                         </Tab>

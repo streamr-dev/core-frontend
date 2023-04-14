@@ -18,16 +18,23 @@ interface InternalTabProps<P = unknown> {
     selected?: boolean | ((params: P) => boolean) | 'id' | keyof P
 }
 
-type InheritedProps<T extends keyof JSX.IntrinsicElements | JSXElementConstructor<any>> = Omit<ComponentProps<T>, keyof InternalTabProps>
+type InheritedProps<T extends keyof JSX.IntrinsicElements | JSXElementConstructor<any>> =
+    Omit<ComponentProps<T>, keyof InternalTabProps>
 
 type TabProps<T extends keyof JSX.IntrinsicElements | JSXElementConstructor<any>> = {
     tag?: T
 } & InternalTabProps<InheritedProps<T> & Pick<InternalTabProps, 'id'>> &
     InheritedProps<T>
 
-export const Tab: <T extends keyof JSX.IntrinsicElements | JSXElementConstructor<any> = 'button'>(props: TabProps<T>) => null = () => null
+export const Tab: <
+    T extends keyof JSX.IntrinsicElements | JSXElementConstructor<any> = 'button',
+>(
+    props: TabProps<T>,
+) => null = () => null
 
-function isTab<T extends keyof JSX.IntrinsicElements | JSXElementConstructor<any>>(child: ReactNode): child is ReactElement<TabProps<T>> {
+function isTab<T extends keyof JSX.IntrinsicElements | JSXElementConstructor<any>>(
+    child: ReactNode,
+): child is ReactElement<TabProps<T>> {
     return !!child && typeof child === 'object' && 'type' in child && child.type === Tab
 }
 
@@ -156,7 +163,9 @@ const Rails = styled.div<{ $animated?: boolean }>`
 `
 
 function isPreventable(e: unknown): e is Event {
-    return typeof e === 'object' && !!e && 'preventDefault' in e && 'defaultPrevented' in e
+    return (
+        typeof e === 'object' && !!e && 'preventDefault' in e && 'defaultPrevented' in e
+    )
 }
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
@@ -165,7 +174,13 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
     spreadEvenly?: boolean
 }
 
-export default function Tabs({ children, onSelectionChange, selectedId: selectedIdProp, spreadEvenly = false, ...props }: Props) {
+export default function Tabs({
+    children,
+    onSelectionChange,
+    selectedId: selectedIdProp,
+    spreadEvenly = false,
+    ...props
+}: Props) {
     const tabs = useMemo(
         () =>
             React.Children.toArray(children)
@@ -174,7 +189,9 @@ export default function Tabs({ children, onSelectionChange, selectedId: selected
         [children],
     )
 
-    const widthSettersRef = useRef<Partial<Record<string, (el: HTMLElement | null) => void>>>({})
+    const widthSettersRef = useRef<
+        Partial<Record<string, (el: HTMLElement | null) => void>>
+    >({})
 
     useEffect(() => {
         widthSettersRef.current = {}
@@ -186,7 +203,10 @@ export default function Tabs({ children, onSelectionChange, selectedId: selected
         () =>
             tabs.find(({ selected = 'id', tag, ...rest }) => {
                 if (typeof selected === 'string') {
-                    return Object.prototype.hasOwnProperty.call(rest, selected) && rest[selected] === selectedIdProp
+                    return (
+                        Object.prototype.hasOwnProperty.call(rest, selected) &&
+                        rest[selected] === selectedIdProp
+                    )
                 }
 
                 return typeof selected === 'function' ? selected(rest) : selected
@@ -285,38 +305,55 @@ export default function Tabs({ children, onSelectionChange, selectedId: selected
                     ))}
                 </Rails>
                 <Inner>
-                    {tabs.map(({ id, tag = 'button', onClick, disabled = false, selected, children, ...rest }, index) => (
-                        <Item
-                            {...rest}
-                            $flexBasis={spreadEvenly ? `${100 / tabs.length}%` : undefined}
-                            as={tag}
-                            key={id}
-                            ref={setElementAt(id, index)}
-                            disabled={disabled}
-                            onClick={(e: unknown, ...otherArgs: unknown[]) => {
-                                const preventable = isPreventable(e)
+                    {tabs.map(
+                        (
+                            {
+                                id,
+                                tag = 'button',
+                                onClick,
+                                disabled = false,
+                                selected,
+                                children,
+                                ...rest
+                            },
+                            index,
+                        ) => (
+                            <Item
+                                {...rest}
+                                $flexBasis={
+                                    spreadEvenly ? `${100 / tabs.length}%` : undefined
+                                }
+                                as={tag}
+                                key={id}
+                                ref={setElementAt(id, index)}
+                                disabled={disabled}
+                                onClick={(e: unknown, ...otherArgs: unknown[]) => {
+                                    const preventable = isPreventable(e)
 
-                                if (disabled) {
-                                    if (preventable) {
-                                        e.preventDefault()
+                                    if (disabled) {
+                                        if (preventable) {
+                                            e.preventDefault()
+                                        }
+
+                                        return
                                     }
 
-                                    return
-                                }
+                                    onClick?.(e, ...otherArgs)
 
-                                onClick?.(e, ...otherArgs)
+                                    if (preventable && e.defaultPrevented) {
+                                        return
+                                    }
 
-                                if (preventable && e.defaultPrevented) {
-                                    return
-                                }
-
-                                onSelectionChange?.(id)
-                            }}
-                            $selected={id === selectedId}
-                        >
-                            <ItemContent $truncate={spreadEvenly}>{children}</ItemContent>
-                        </Item>
-                    ))}
+                                    onSelectionChange?.(id)
+                                }}
+                                $selected={id === selectedId}
+                            >
+                                <ItemContent $truncate={spreadEvenly}>
+                                    {children}
+                                </ItemContent>
+                            </Item>
+                        ),
+                    )}
                 </Inner>
             </Outer>
         </Root>
