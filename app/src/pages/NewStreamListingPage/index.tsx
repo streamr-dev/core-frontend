@@ -1,46 +1,116 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { Stream, StreamID } from 'streamr-client'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 
 import { MarketplaceHelmet } from '$shared/components/Helmet'
-import { COLORS, DESKTOP, MAX_BODY_WIDTH, TABLET } from '$shared/utils/styled'
+import { COLORS, DESKTOP, TABLET } from '$shared/utils/styled'
 import Button from '$shared/components/Button'
 import Layout from '$shared/components/Layout'
 import SearchBar from '$shared/components/SearchBar'
 import Tabs from '$shared/components/Tabs'
-import useInterrupt from '$shared/hooks/useInterrupt'
-import useFetchStreams from '$shared/hooks/useFetchStreams'
-import { getStreamsFromIndexer, IndexerStream, getPublisherAndSubscriberCountForStreams, TheGraphStreamStats } from '$app/src/services/streams'
+import {
+    IndexerOrderBy,
+    IndexerOrderDirection,
+    IndexerResult,
+    TheGraphOrderBy,
+    TheGraphOrderDirection,
+    TheGraphStreamResult,
+    getPagedStreams,
+    getPagedStreamsFromIndexer,
+    getStreams,
+    getStreamsFromIndexer,
+} from '$app/src/services/streams'
 import { useIsAuthenticated } from '$auth/hooks/useIsAuthenticated'
-import InterruptionError from '$shared/errors/InterruptionError'
 import { ActionBarContainer, FiltersBar, FiltersWrap, SearchBarWrap } from '$mp/components/ActionBar/actionBar.styles'
 import { PageWrap } from '$shared/components/PageWrap'
 import styles from '$shared/components/Layout/layout.pcss'
-import useIsMounted from '$shared/hooks/useIsMounted'
+import StreamTable, { OrderBy, OrderDirection } from '$shared/components/StreamTable'
+import LoadingIndicator from '$shared/components/LoadingIndicator'
 import { useAuthController } from '$auth/hooks/useAuthController'
 import routes from '$routes'
-import StreamTable from '../../shared/components/StreamTable'
 
 enum StreamSelection {
-    ALL = 'ALL',
-    YOUR = 'YOUR',
+    All = "All",
+    Your = "Your",
 }
 
 const streamSelectionOptions = (isUserAuthenticated: boolean) => [
     {
         label: 'All streams',
-        value: StreamSelection.ALL,
+        value: StreamSelection.All.toString(),
     },
     {
         label: 'Your streams',
-        value: StreamSelection.YOUR,
+        value: StreamSelection.Your.toString(),
         disabled: !isUserAuthenticated,
         disabledReason: 'Connect your wallet to view your streams',
     },
 ]
 
 const PAGE_SIZE = 10
+const DEFAULT_ORDER_BY = OrderBy.MessagesPerSecond
+const DEFAULT_ORDER_DIRECTION = OrderDirection.Desc
+
+const mapOrderByToIndexer = (orderBy: OrderBy): IndexerOrderBy => {
+    switch (orderBy) {
+        case OrderBy.Id: {
+            return IndexerOrderBy.Id
+        }
+        case OrderBy.MessagesPerSecond: {
+            return IndexerOrderBy.MsgPerSecond
+        }
+        case OrderBy.PeerCount: {
+            return IndexerOrderBy.PeerCount
+        }
+        default:
+            return IndexerOrderBy.MsgPerSecond
+    }
+}
+
+const mapOrderDirectionToIndexer = (orderDirection: OrderDirection): IndexerOrderDirection => {
+    switch (orderDirection) {
+        case OrderDirection.Desc: {
+            return IndexerOrderDirection.Desc
+        }
+        case OrderDirection.Asc: {
+            return IndexerOrderDirection.Asc
+        }
+        default:
+            return IndexerOrderDirection.Asc
+    }
+}
+
+const mapOrderByToGraph = (orderBy: OrderBy): TheGraphOrderBy => {
+    switch (orderBy) {
+        case OrderBy.Id: {
+            return TheGraphOrderBy.Id
+        }
+        default:
+            return TheGraphOrderBy.Id
+    }
+}
+
+const mapOrderDirectionToGraph = (orderDirection: OrderDirection): TheGraphOrderDirection => {
+    switch (orderDirection) {
+        case OrderDirection.Desc: {
+            return TheGraphOrderDirection.Desc
+        }
+        case OrderDirection.Asc: {
+            return TheGraphOrderDirection.Asc
+        }
+        default:
+            return TheGraphOrderDirection.Asc
+    }
+}
+
+const shouldUseIndexer = (orderBy: OrderBy) => {
+    if (orderBy === OrderBy.MessagesPerSecond || orderBy === OrderBy.PeerCount) {
+        return true
+    }
+
+    return false
+}
 
 const Container = styled.div`
     background-color: ${COLORS.secondary};
@@ -63,89 +133,91 @@ const TableContainer = styled.div`
 
 const NewStreamListingPage: React.FC = () => {
     const [search, setSearch] = useState<string>('')
-    const [streamsSelection, setStreamsSelection] = useState<StreamSelection>(StreamSelection.ALL)
-    const [streams, setStreams] = useState<Array<Stream>>([])
-    const [streamStats, setStreamStats] = useState<Record<StreamID, IndexerStream>>({})
-    const [hasMore, setHasMore] = useState<boolean>(false)
+    const [orderBy, setOrderBy] = useState(DEFAULT_ORDER_BY)
+    const [orderDirection, setOrderDirection] = useState(DEFAULT_ORDER_DIRECTION)
+    const [streamsSelection, setStreamsSelection] = useState<StreamSelection>(StreamSelection.All)
     const isUserAuthenticated = useIsAuthenticated()
     const { currentAuthSession } = useAuthController()
-    const isMounted = useIsMounted()
 
-    const itp = useInterrupt()
-    const fetchStreams = useFetchStreams()
+    const streamsQuery = useInfiniteQuery({
+        queryKey: ["streams", search, streamsSelection, currentAuthSession.address, orderBy, orderDirection],
+        queryFn: async (ctx) => {
+            const owner = streamsSelection === StreamSelection.Your ? currentAuthSession.address : undefined
 
-    const fetch = useCallback(
-        async (resetSearch = false) => {
-            const { requireUninterrupted } = itp(search)
-            try {
-                const allowPublic = streamsSelection === StreamSelection.ALL
-                const [newStreams, hasMoreResults, isFirstBatch] = await fetchStreams(
+            let result: TheGraphStreamResult | IndexerResult
+            if (shouldUseIndexer(orderBy)) {
+                result = await getPagedStreamsFromIndexer(
+                    PAGE_SIZE,
+                    ctx.pageParam,
+                    owner,
                     search,
-                    {
-                        batchSize: PAGE_SIZE,
-                        allowPublic,
-                        onlyCurrentUser: streamsSelection === StreamSelection.YOUR,
-                    },
-                    resetSearch,
+                    mapOrderByToIndexer(orderBy),
+                    mapOrderDirectionToIndexer(orderDirection),
                 )
-
-                requireUninterrupted()
-                setHasMore(hasMoreResults)
-
-                if (isFirstBatch) {
-                    setStreams(newStreams)
-                } else {
-                    setStreams((current = []) => [...current, ...newStreams])
-                }
-
-                try {
-                    // First load stats from indexer and display them immediately
-                    const indexerStats = await getStreamsFromIndexer(newStreams.map((s) => s.id))
-
-                    requireUninterrupted()
-                    if (indexerStats && indexerStats.length > 0) {
-                        setStreamStats((prev) => ({
-                            ...prev,
-                            ...Object.fromEntries(indexerStats.map((is) => [is.id, is])),
-                        }))
-                    }
-
-                    // Then load stats from The Graph and replace indexer stats with them.
-                    // This takes anything from 200-400 ms so we need to show indexer stats for a while
-                    // and then update the UI with stats from The Graph.
-                    const theGraphStats = await getPublisherAndSubscriberCountForStreams(newStreams.map((s) => s.id))
-
-                    requireUninterrupted()
-                    if (theGraphStats && theGraphStats.length > 0) {
-                        setStreamStats((prev) => ({
-                            ...prev,
-                            ...Object.fromEntries(theGraphStats.map((gs) => [gs.id, { ...prev[gs.id], ...gs }])),
-                        }))
-                    }
-                } catch (e) {
-                    console.warn('Fetching stream stats failed', e)
-                }
-            } catch (e) {
-                if (e instanceof InterruptionError) {
-                    return
-                }
-
-                console.warn(e)
+            } else {
+                result = await getPagedStreams(
+                    PAGE_SIZE,
+                    ctx.pageParam,
+                    owner,
+                    search,
+                    mapOrderByToGraph(orderBy),
+                    mapOrderDirectionToGraph(orderDirection),
+                )
             }
+
+            // Fetch stats
+            statsQuery.fetchNextPage({
+                pageParam: {
+                    streamIds: result.streams.map((s) => s.id),
+                    useIndexer: !shouldUseIndexer(orderBy),
+                }
+            })
+
+            return result
         },
-        [itp, search, fetchStreams, streamsSelection],
-    )
+        getNextPageParam: (lastPage) => {
+            const theGraphResult = (lastPage as TheGraphStreamResult)
+            if (theGraphResult.lastId) {
+                return theGraphResult.hasNextPage ? theGraphResult.lastId : null
+            }
 
-    useEffect(() => {
-        fetch()
-    }, [fetch, streamsSelection])
+            const indexerResult = (lastPage as IndexerResult)
+            if (indexerResult.cursor) {
+                return indexerResult.hasNextPage ? indexerResult.cursor : null
+            }
 
+            return null
+        },
+        staleTime: 60 * 1000, // 1 minute
+        keepPreviousData: true,
+    })
+
+    const statsQuery = useInfiniteQuery({
+        queryKey: ["streamStats"],
+        queryFn: async (ctx) => {
+            if (ctx.pageParam == null) {
+                return
+            }
+
+            if (ctx.pageParam.useIndexer) {
+                const indexerStats = await getStreamsFromIndexer(ctx.pageParam.streamIds)
+                return indexerStats
+            }
+
+            const indexerStats = await getStreams(ctx.pageParam.streamIds)
+            return indexerStats
+        },
+        staleTime: 60 * 1000, // 1 minute
+        keepPreviousData: true,
+    })
+
+    // If indexer errors fall back to using The Graph
     useEffect(() => {
-        if (isMounted()) {
-            setHasMore(false)
-            fetch(true)
+        if (streamsQuery.isError && shouldUseIndexer(orderBy)) {
+            setOrderBy(OrderBy.Id)
+            setOrderDirection(OrderDirection.Asc)
         }
-    }, [currentAuthSession.address, fetch, isMounted])
+    }, [streamsQuery.isError, orderBy])
 
     return (
         <Layout innerClassName={styles.greyInner}>
@@ -172,16 +244,28 @@ const NewStreamListingPage: React.FC = () => {
                     </Button>
                 </FiltersBar>
             </ActionBarContainer>
+            <LoadingIndicator loading={streamsQuery.isLoading}/>
             <PageWrap>
                 <Container>
                     <TableContainer>
                         <StreamTable
-                            title={`${streamsSelection === StreamSelection.ALL ? 'All' : 'Your'} Streams`}
-                            streams={streams}
-                            streamStats={streamStats}
-                            loadMore={fetch}
-                            hasMoreResults={hasMore}
-                            showGlobalStats={streamsSelection === StreamSelection.ALL}
+                            title={`${streamsSelection === StreamSelection.All ? 'All' : 'Your'} Streams`}
+                            streams={streamsQuery.data?.pages.flatMap((d) => d.streams) ?? []}
+                            streamStats={Object.fromEntries(
+                                (statsQuery.data?.pages ?? [])
+                                    .filter((p) => p != null)
+                                    .flatMap((p) => p)
+                                    .map((s) => [s.id, s]),
+                            )}
+                            loadMore={() => streamsQuery.fetchNextPage()}
+                            hasMoreResults={streamsQuery.hasNextPage ?? false}
+                            showGlobalStats={streamsSelection === StreamSelection.All}
+                            orderBy={orderBy}
+                            orderDirection={orderDirection}
+                            onSortChange={(orderBy, orderDirection) => {
+                                setOrderBy(orderBy)
+                                setOrderDirection(orderDirection)
+                            }}
                         />
                     </TableContainer>
                 </Container>

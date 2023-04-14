@@ -1,16 +1,27 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
-import { Stream, StreamID } from 'streamr-client'
 import { Link } from 'react-router-dom'
 
 import LoadMore from '$mp/components/LoadMore'
 import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
-import { getGlobalStatsFromIndexer, GlobalStreamStats, IndexerStream } from '$app/src/services/streams'
+import { getGlobalStatsFromIndexer, GlobalStreamStats, IndexerStream, TheGraphStream } from '$app/src/services/streams'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { truncateStreamName } from '$shared/utils/text'
 import routes from '$routes'
+import SvgIcon from '../SvgIcon'
 
 const ROW_HEIGHT = 88
+
+export enum OrderBy {
+    MessagesPerSecond,
+    PeerCount,
+    Id,
+}
+
+export enum OrderDirection {
+    Asc,
+    Desc,
+}
 
 const Container = styled.div`
     padding-bottom: 80px;
@@ -100,12 +111,19 @@ type GridCellProps = {
     onlyDesktop?: boolean,
     onlyTablet?: boolean,
     notOnTablet?: boolean,
+    onClick?: () => void,
 }
 
 const GridCell = styled.span<GridCellProps>`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    ${({ onClick }) =>
+        typeof onClick === 'function' &&
+        css`
+            cursor: pointer;
+        `}
 
     ${({ onlyDesktop }) =>
         onlyDesktop &&
@@ -205,18 +223,59 @@ const Stat = styled.div`
     }
 `
 
-type Props = {
-    title?: string,
-    streams: Array<Stream>,
-    streamStats: Record<StreamID, IndexerStream>,
-    loadMore?: () => void | Promise<void>,
-    hasMoreResults?: boolean,
-    showGlobalStats: boolean,
+const OrderDirectionIcon = styled(SvgIcon)<{ direction: OrderDirection }>`
+    width: 12px;
+    transform: ${({ direction }) => direction === OrderDirection.Asc ? 'rotate(180deg)' : 'rotate(0deg)' };
+    transition: transform 180ms ease-in-out;
+    margin-left: 8px;
+`
+
+const DirectionDefaults: Record<OrderBy, OrderDirection> = {
+    [OrderBy.Id]: OrderDirection.Asc,
+    [OrderBy.PeerCount]: OrderDirection.Desc,
+    [OrderBy.MessagesPerSecond]: OrderDirection.Desc,
 }
 
-const StreamTable: React.FC<Props> = ({ title = 'Streams', streams, streamStats, loadMore, hasMoreResults, showGlobalStats }: Props) => {
+function isIndexerStream(stream: TheGraphStream | IndexerStream): stream is IndexerStream {
+    return (stream as IndexerStream).peerCount !== undefined
+}
+
+type Props = {
+    title?: string,
+    streams: Array<TheGraphStream | IndexerStream>,
+    streamStats: Record<string, TheGraphStream | IndexerStream>,
+    loadMore?: () => void,
+    hasMoreResults?: boolean,
+    showGlobalStats: boolean,
+    orderBy?: OrderBy,
+    orderDirection?: OrderDirection,
+    onSortChange?: (orderBy: OrderBy, orderDirection: OrderDirection) => void,
+}
+
+const StreamTable: React.FC<Props> = ({
+    title = 'Streams',
+    streams,
+    streamStats,
+    loadMore,
+    hasMoreResults,
+    showGlobalStats,
+    orderBy,
+    orderDirection,
+    onSortChange,
+}: Props) => {
     const [globalStats, setGlobalStats] = useState<GlobalStreamStats | null>(null)
     const isMounted = useIsMounted()
+
+    const handleHeaderClick = useCallback((field: OrderBy) => {
+        if (typeof onSortChange === 'function') {
+            let newDirection = DirectionDefaults[field] ?? OrderDirection.Desc
+            // If field was not changed, flip the direction
+            if (orderBy === field) {
+                newDirection = Number(!orderDirection) as OrderDirection
+            }
+            onSortChange(field, newDirection)
+        }
+    }, [onSortChange, orderDirection, orderBy])
 
     useEffect(() => {
         const loadStats = async () => {
@@ -249,30 +308,76 @@ const StreamTable: React.FC<Props> = ({ title = 'Streams', streams, streamStats,
             </Heading>
             <Table>
                 <TableHeader>
-                    <GridCell>Stream ID</GridCell>
+                    <GridCell onClick={() => handleHeaderClick(OrderBy.Id)}>
+                        Stream ID
+                        {orderBy === OrderBy.Id && (
+                            <OrderDirectionIcon name="caretDown" direction={orderDirection ?? OrderDirection.Asc} />
+                        )}
+                    </GridCell>
                     <GridCell onlyTablet>Description</GridCell>
-                    <GridCell onlyDesktop>Live peers</GridCell>
-                    <GridCell onlyDesktop>Msg/s</GridCell>
+                    <GridCell onlyDesktop onClick={() => handleHeaderClick(OrderBy.PeerCount)}>
+                        Live peers
+                        {orderBy === OrderBy.PeerCount && (
+                            <OrderDirectionIcon name="caretDown" direction={orderDirection ?? OrderDirection.Asc} />
+                        )}
+                    </GridCell>
+                    <GridCell onlyDesktop onClick={() => handleHeaderClick(OrderBy.MessagesPerSecond)}>
+                        Msg/s
+                        {orderBy === OrderBy.MessagesPerSecond && (
+                            <OrderDirectionIcon name="caretDown" direction={orderDirection ?? OrderDirection.Asc} />
+                        )}
+                    </GridCell>
                     <GridCell onlyDesktop>Access</GridCell>
                     <GridCell onlyDesktop>Publishers</GridCell>
                     <GridCell onlyDesktop>Subscribers</GridCell>
                 </TableHeader>
                 <TableRows rowCount={streams.length}>
                     {streams.map((s) => {
-                        const stats = streamStats ? streamStats[s.id] : null
+                        const stats = streamStats && streamStats[s.id] != null ? streamStats[s.id] : null
+                        let publisherCount: number | null | undefined
+                        let subscriberCount: number | null | undefined
+                        let description: string
+                        let peerCount: number | null | undefined
+                        let messagesPerSecond: number | null | undefined
+
+                        if (isIndexerStream(s)) {
+                            publisherCount = s.publisherCount
+                            subscriberCount = s.subscriberCount
+
+                            // For pub/sub count, show values from stats (The Graph) once the data is available.
+                            // Until that show (possibly wrong) value from the indexer. One exception is that
+                            // if we have more than 100 permissions, use indexer (because The Graph caps subentity count at 100).
+                            const graphStats = (stats as TheGraphStream)
+                            if (graphStats != null && graphStats?.publisherCount !== 100) {
+                                publisherCount = graphStats.publisherCount
+                            }
+                            if (graphStats != null && graphStats?.subscriberCount !== 100) {
+                                subscriberCount = graphStats.subscriberCount
+                            }
+                            description = s.description ?? ''
+                            peerCount = s.peerCount
+                            messagesPerSecond = s.messagesPerSecond
+                        } else {
+                            publisherCount = s.publisherCount
+                            subscriberCount = s.subscriberCount
+                            description = s.metadata?.description ?? ''
+                            peerCount = (stats as IndexerStream)?.peerCount
+                            messagesPerSecond = (stats as IndexerStream)?.messagesPerSecond
+                        }
+
                         return (
                             <TableRow key={s.id} as={Link} to={routes.streams.show({ id: s.id })}>
                                 <StreamDetails>
                                     <StreamId title={s.id}>{truncateStreamName(s.id, 40)}</StreamId>
                                     {'\n'}
-                                    <StreamDescription notOnTablet>{s.getMetadata().description}</StreamDescription>
+                                    <StreamDescription notOnTablet>{description}</StreamDescription>
                                 </StreamDetails>
-                                <GridCell onlyTablet>{s.getMetadata().description}</GridCell>
-                                <GridCell onlyDesktop>{stats?.peerCount ?? '-'}</GridCell>
-                                <GridCell onlyDesktop>{stats?.messagesPerSecond ?? '-'}</GridCell>
-                                <GridCell onlyDesktop>{stats == null ? '-' : stats.subscriberCount == null ? 'Public' : 'Private'}</GridCell>
-                                <GridCell onlyDesktop>{stats == null ? '-' : stats.publisherCount == null ? '∞' : stats.publisherCount}</GridCell>
-                                <GridCell onlyDesktop>{stats == null ? '-' : stats.subscriberCount == null ? '∞' : stats.subscriberCount}</GridCell>
+                                <GridCell onlyTablet>{description}</GridCell>
+                                <GridCell onlyDesktop>{peerCount ?? '-'}</GridCell>
+                                <GridCell onlyDesktop>{messagesPerSecond ?? '-'}</GridCell>
+                                <GridCell onlyDesktop>{subscriberCount == null ? 'Public' : 'Private'}</GridCell>
+                                <GridCell onlyDesktop>{publisherCount === null ? '∞' : publisherCount ?? '-'}</GridCell>
+                                <GridCell onlyDesktop>{subscriberCount === null ? '∞' : subscriberCount ?? '-'}</GridCell>
                             </TableRow>
                         )
                     })}
