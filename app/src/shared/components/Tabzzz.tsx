@@ -1,3 +1,4 @@
+import throttle from 'lodash/throttle'
 import React, {
     ComponentProps,
     HTMLAttributes,
@@ -30,7 +31,7 @@ function isTab<T extends keyof JSX.IntrinsicElements | JSXElementConstructor<any
     return !!child && typeof child === 'object' && 'type' in child && child.type === Tab
 }
 
-const Item = styled.button<{ $selected?: boolean }>`
+const Item = styled.button<{ $selected?: boolean; $flexBasis?: number }>`
     border: 0;
     background: none;
     height: 100%;
@@ -42,6 +43,9 @@ const Item = styled.button<{ $selected?: boolean }>`
     border-radius: 16px;
     flex-shrink: 0;
     font-size: inherit;
+    justify-content: center;
+    text-align: center;
+    min-width: 0;
 
     button& {
         appearance: none;
@@ -56,6 +60,27 @@ const Item = styled.button<{ $selected?: boolean }>`
         color: #323232 !important;
         text-decoration: none;
     }
+
+    :disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    ${({ $flexBasis }) =>
+        typeof $flexBasis === 'string' &&
+        css`
+            flex-basis: ${$flexBasis};
+        `}
+`
+
+const ItemContent = styled.div<{ $truncate?: boolean }>`
+    ${({ $truncate = false }) =>
+        $truncate &&
+        css`
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        `}
 `
 
 const Outer = styled.div`
@@ -79,6 +104,7 @@ const Root = styled.div`
     font-weight: 500;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.025);
     user-select: none;
+    overflow: hidden;
 `
 
 const Trolley = styled.div<{ $selected?: boolean }>`
@@ -96,6 +122,10 @@ const Trolley = styled.div<{ $selected?: boolean }>`
     transition-property: visibility, opacity;
     left: 50%;
     transform: translateX(-50%);
+    min-width: 0;
+    width: 100%;
+    justify-content: center;
+    text-align: center;
 
     ${({ $selected = false }) =>
         $selected &&
@@ -132,9 +162,10 @@ function isPreventable(e: unknown): e is Event {
 interface Props extends HTMLAttributes<HTMLDivElement> {
     selectedId?: string
     onSelectionChange?: (selectedId: string) => void
+    spreadEvenly?: boolean
 }
 
-export default function Tabzzz({ children, onSelectionChange, selectedId: selectedIdProp }: Props) {
+export default function Tabzzz({ children, onSelectionChange, selectedId: selectedIdProp, spreadEvenly = false, ...props }: Props) {
     const tabs = useMemo(
         () =>
             React.Children.toArray(children)
@@ -163,8 +194,31 @@ export default function Tabzzz({ children, onSelectionChange, selectedId: select
         [tabs, selectedIdProp],
     )
 
+    const [sizeCache, touchSize] = useReducer((x) => x + 1, 0)
+
+    useEffect(() => {
+        let mounted = true
+
+        const onResize = throttle(() => {
+            if (mounted) {
+                touchSize()
+            }
+        }, 50)
+
+        window.addEventListener('resize', onResize)
+
+        return () => {
+            mounted = false
+
+            window.removeEventListener('resize', onResize)
+        }
+    }, [])
+
     const [left, width] = useMemo(() => {
         let left = 0
+
+        // Use `sizeCache` here to avoid ignoring `react-hooks/exhaustive-deps` rule.
+        sizeCache
 
         let width = 0
 
@@ -182,7 +236,7 @@ export default function Tabzzz({ children, onSelectionChange, selectedId: select
         }
 
         return [left, width]
-    }, [elements, selectedId])
+    }, [elements, selectedId, sizeCache])
 
     const canAnimate = width !== 0
 
@@ -215,7 +269,7 @@ export default function Tabzzz({ children, onSelectionChange, selectedId: select
     }
 
     return (
-        <Root>
+        <Root {...props}>
             <Outer>
                 <Rails
                     $animated={animated}
@@ -224,19 +278,21 @@ export default function Tabzzz({ children, onSelectionChange, selectedId: select
                         width: `${width}px`,
                     }}
                 >
-                    {tabs.map(({ id, selected, children, ...rest }) => (
+                    {tabs.map(({ id, children }) => (
                         <Trolley key={id} $selected={id === selectedId}>
-                            {children}
+                            <ItemContent $truncate={spreadEvenly}>{children}</ItemContent>
                         </Trolley>
                     ))}
                 </Rails>
                 <Inner>
-                    {tabs.map(({ id, tag = 'button', onClick, disabled = false, selected, ...rest }, index) => (
+                    {tabs.map(({ id, tag = 'button', onClick, disabled = false, selected, children, ...rest }, index) => (
                         <Item
                             {...rest}
+                            $flexBasis={spreadEvenly ? `${100 / tabs.length}%` : undefined}
                             as={tag}
                             key={id}
                             ref={setElementAt(id, index)}
+                            disabled={disabled}
                             onClick={(e: unknown, ...otherArgs: unknown[]) => {
                                 const preventable = isPreventable(e)
 
@@ -257,7 +313,9 @@ export default function Tabzzz({ children, onSelectionChange, selectedId: select
                                 onSelectionChange?.(id)
                             }}
                             $selected={id === selectedId}
-                        />
+                        >
+                            <ItemContent $truncate={spreadEvenly}>{children}</ItemContent>
+                        </Item>
                     ))}
                 </Inner>
             </Outer>
