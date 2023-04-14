@@ -17,7 +17,7 @@ import MobileFilter from '$shared/components/MobileFilter'
 import { ProjectListingTypeFilter } from "$app/src/services/projects"
 import { Category } from '../../types/category-types'
 import { isValidSearchQuery } from '../../utils/validate'
-import Tabzzz, { Tab } from '$shared/components/Tabzzz'
+import Tabs, { Tab } from '$shared/components/Tabs'
 
 enum ProjectsScope {
     Any = 'any',
@@ -97,7 +97,7 @@ const UnstyledActionBar = ({
             </SearchBarWrap>
             <FiltersBar>
                 <FiltersWrap>
-                    <Tabzzz
+                    <Tabs
                         selectedId={scope}
                         onSelectionChange={(id) => {
                             onFilterByAuthorChange(id === ProjectsScope.Owned)
@@ -112,7 +112,7 @@ const UnstyledActionBar = ({
                         >
                             Your projects
                         </Tab>
-                    </Tabzzz>
+                    </Tabs>
                     <DropdownFilters>
                         <span>Filter by</span>
                         <SelectFieldWrap>

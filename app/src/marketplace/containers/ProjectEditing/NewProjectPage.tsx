@@ -22,7 +22,7 @@ import {
 } from '$mp/containers/ProjectEditing/ProjectController'
 import {mapProjectTypeName} from "$mp/utils/project-mapper"
 import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
-import Tabzzz, { Tab } from '$shared/components/Tabzzz'
+import Tabs, { Tab } from '$shared/components/Tabs'
 import { useEditableProjectActions } from '../ProductController/useEditableProjectActions'
 
 type Props = {
@@ -58,11 +58,11 @@ const UnstyledNewProjectPage = ({ className }: Props) => {
         <DetailsPageHeader
             pageTitle={pageTitle}
             rightComponent={
-                <Tabzzz>
+                <Tabs>
                     <Tab id="overview" tag={Link} selected to={location.pathname}>Project Overview</Tab>
                     <Tab id="connect" disabled>Connect</Tab>
                     <Tab id="liveData" disabled>Live data</Tab>
-                </Tabzzz>
+                </Tabs>
             }
         />
         <LoadingIndicator loading={publishInProgress}/>

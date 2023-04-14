@@ -26,7 +26,7 @@ import getChainId from '$utils/web3/getChainId'
 import getNativeTokenName from '$shared/utils/nativeToken'
 import { useAuthController } from '$auth/hooks/useAuthController'
 import { useInvalidateAbilities } from '$shared/stores/abilities'
-import Tabzzz, { Tab } from '$shared/components/Tabzzz'
+import Tabs, { Tab } from '$shared/components/Tabs'
 import routes from '$routes'
 import RelatedProjects from './AbstractStreamEditPage/RelatedProjects'
 
@@ -233,7 +233,7 @@ export default function StreamPage({ children, loading = false, includeContainer
                         }
                         rightComponent={
                             streamId ? (
-                                <Tabzzz selectedId={pathname}>
+                                <Tabs selectedId={pathname}>
                                     <Tab id="overview" tag={Link} to={routes.streams.overview({ id: streamId })} selected="to">
                                         Stream overview
                                         {!clean && <Asterisk />}
@@ -244,7 +244,7 @@ export default function StreamPage({ children, loading = false, includeContainer
                                     <Tab id="liveData" tag={Link} to={routes.streams.liveData({ id: streamId })} selected="to">
                                         Live data
                                     </Tab>
-                                </Tabzzz>
+                                </Tabs>
                             ) : (
                                 <div>
                                     <Button disabled={busy || clean} kind="primary" type="submit">

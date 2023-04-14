@@ -2,9 +2,9 @@ import React, { HTMLAttributes, useState } from 'react'
 import { storiesOf } from '@storybook/react'
 import { Link, MemoryRouter } from 'react-router-dom'
 import styles from '@sambego/storybook-styles'
-import Tabzzz, { Tab } from './Tabzzz'
+import Tabs, { Tab } from './Tabs'
 
-const stories = storiesOf('Shared/Tabzzz', module).addDecorator(
+const stories = storiesOf('Shared/Tabs', module).addDecorator(
     styles({
         padding: '2rem',
         color: '#000',
@@ -39,14 +39,14 @@ function Stateful({
 stories.add('all', () => (
     <>
         <Container title="Nothing selected">
-            <Tabzzz>
+            <Tabs>
                 <Tab id="overview">Overview</Tab>
                 <Tab id="connect">Connect</Tab>
                 <Tab id="liveData">Live data</Tab>
-            </Tabzzz>
+            </Tabs>
         </Container>
         <Container title="All disabled">
-            <Tabzzz>
+            <Tabs>
                 <Tab disabled id="overview">
                     Overview
                 </Tab>
@@ -56,21 +56,21 @@ stories.add('all', () => (
                 <Tab disabled id="liveData">
                     Live data
                 </Tab>
-            </Tabzzz>
+            </Tabs>
         </Container>
         <Container title="Some disabled">
-            <Tabzzz>
+            <Tabs>
                 <Tab id="overview">Overview</Tab>
                 <Tab disabled id="connect">
                     Connect
                 </Tab>
                 <Tab id="liveData">Live data</Tab>
-            </Tabzzz>
+            </Tabs>
         </Container>
         <Container title="With selection">
             <Stateful initialValue="connect">
                 {(value, setValue) => (
-                    <Tabzzz selectedId={value} onSelectionChange={setValue}>
+                    <Tabs selectedId={value} onSelectionChange={setValue}>
                         <Tab tag={Link} to="/overview" id="overview">
                             Entity overview
                         </Tab>
@@ -81,14 +81,14 @@ stories.add('all', () => (
                             Live data
                         </Tab>
                         <Tab id="lorem">Lorem ipsum dolor sit emat</Tab>
-                    </Tabzzz>
+                    </Tabs>
                 )}
             </Stateful>
         </Container>
         <Container title="With selection and items spread evenly">
             <Stateful initialValue="connect">
                 {(value, setValue) => (
-                    <Tabzzz selectedId={value} onSelectionChange={setValue} spreadEvenly>
+                    <Tabs selectedId={value} onSelectionChange={setValue} spreadEvenly>
                         <Tab tag={Link} to="/overview" id="overview">
                             Entity overview
                         </Tab>
@@ -99,14 +99,14 @@ stories.add('all', () => (
                             Live data
                         </Tab>
                         <Tab id="lorem">Lorem ipsum dolor sit emat</Tab>
-                    </Tabzzz>
+                    </Tabs>
                 )}
             </Stateful>
         </Container>
         <Container title="Full width with selection and items spread evenly">
             <Stateful initialValue="connect">
                 {(value, setValue) => (
-                    <Tabzzz selectedId={value} onSelectionChange={setValue} spreadEvenly style={{ width: '100%' }}>
+                    <Tabs selectedId={value} onSelectionChange={setValue} spreadEvenly style={{ width: '100%' }}>
                         <Tab tag={Link} to="/overview" id="overview">
                             Entity overview
                         </Tab>
@@ -117,7 +117,7 @@ stories.add('all', () => (
                             Live data
                         </Tab>
                         <Tab id="lorem">Lorem ipsum dolor sit emat</Tab>
-                    </Tabzzz>
+                    </Tabs>
                 )}
             </Stateful>
         </Container>

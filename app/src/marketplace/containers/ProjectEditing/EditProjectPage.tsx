@@ -16,7 +16,7 @@ import {LoadedProjectContextProvider, useLoadedProject} from "$mp/contexts/Loade
 import {mapProjectTypeName} from "$mp/utils/project-mapper"
 import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
 import {MarketplaceLoadingView} from "$mp/containers/ProjectPage/MarketplaceLoadingView"
-import Tabzzz, { Tab } from '$shared/components/Tabzzz'
+import Tabs, { Tab } from '$shared/components/Tabs'
 
 const UnstyledEditProjectPage: FunctionComponent = () => {
     const {state: project} = useContext(ProjectStateContext)
@@ -46,11 +46,11 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
         <DetailsPageHeader
             pageTitle={pageTitle}
             rightComponent={
-                <Tabzzz>
+                <Tabs>
                     <Tab id="overview" tag={Link} selected to={location.pathname}>Project Overview</Tab>
                     <Tab id="connect" disabled>Connect</Tab>
                     <Tab id="liveData" disabled>Live data</Tab>
-                </Tabzzz>
+                </Tabs>
             }
         />
         <LoadingIndicator loading={publishInProgress}/>

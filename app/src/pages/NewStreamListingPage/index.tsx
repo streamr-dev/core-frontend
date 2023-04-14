@@ -28,7 +28,7 @@ import StreamTable, { OrderBy, OrderDirection } from '$shared/components/StreamT
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import { useAuthController } from '$auth/hooks/useAuthController'
 import StreamTable from '$shared/components/StreamTable'
-import Tabzzz, { Tab } from '$shared/components/Tabzzz'
+import Tabs, { Tab } from '$shared/components/Tabs'
 import routes from '$routes'
 
 enum StreamSelection {
@@ -207,7 +207,7 @@ const NewStreamListingPage: React.FC = () => {
                 </SearchBarWrap>
                 <FiltersBar>
                     <FiltersWrap>
-                        <Tabzzz
+                        <Tabs
                             selectedId={streamsSelection}
                             onSelectionChange={(id) => void setStreamsSelection(id as StreamSelection)}
                         >
@@ -219,7 +219,7 @@ const NewStreamListingPage: React.FC = () => {
                             >
                                 Your streams
                             </Tab>
-                        </Tabzzz>
+                        </Tabs>
                     </FiltersWrap>
                     <Button tag={Link} to={routes.streams.new()}>
                         Create stream

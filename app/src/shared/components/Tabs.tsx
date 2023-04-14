@@ -165,7 +165,7 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
     spreadEvenly?: boolean
 }
 
-export default function Tabzzz({ children, onSelectionChange, selectedId: selectedIdProp, spreadEvenly = false, ...props }: Props) {
+export default function Tabs({ children, onSelectionChange, selectedId: selectedIdProp, spreadEvenly = false, ...props }: Props) {
     const tabs = useMemo(
         () =>
             React.Children.toArray(children)
