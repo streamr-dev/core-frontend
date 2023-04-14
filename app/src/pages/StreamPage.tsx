@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import styled, { css } from 'styled-components'
-import { useHistory } from 'react-router-dom'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 import { toaster } from 'toasterhea'
 import Layout from '$shared/components/Layout/Core'
 import Button from '$shared/components/Button'
@@ -26,25 +26,9 @@ import getChainId from '$utils/web3/getChainId'
 import getNativeTokenName from '$shared/utils/nativeToken'
 import { useAuthController } from '$auth/hooks/useAuthController'
 import { useInvalidateAbilities } from '$shared/stores/abilities'
+import Tabzzz, { Tab } from '$shared/components/Tabzzz'
 import routes from '$routes'
 import RelatedProjects from './AbstractStreamEditPage/RelatedProjects'
-
-export const getStreamDetailsLinkTabs = (streamId?: string, dirty?: boolean) => {
-    return [
-        {
-            label: `Stream overview${dirty ? '*' : ''}`,
-            href: routes.streams.overview({ id: streamId }),
-        },
-        {
-            label: 'Connect',
-            href: routes.streams.connect({ id: streamId }),
-        },
-        {
-            label: 'Live data',
-            href: routes.streams.liveData({ id: streamId }),
-        },
-    ]
-}
 
 const Outer = styled.div`
     width: 100%;
@@ -132,8 +116,6 @@ export default function StreamPage({ children, loading = false, includeContainer
 
     const clean = useIsCurrentDraftClean()
 
-    const linkTabs = useMemo(() => (streamId ? getStreamDetailsLinkTabs(streamId, !clean) : []), [streamId, clean])
-
     usePreventNavigatingAway({
         isDirty(dest) {
             if (streamId) {
@@ -167,6 +149,8 @@ export default function StreamPage({ children, loading = false, includeContainer
     const { address } = useAuthController().currentAuthSession
 
     const invalidateAbilities = useInvalidateAbilities()
+
+    const { pathname } = useLocation()
 
     return (
         <>
@@ -240,15 +224,26 @@ export default function StreamPage({ children, loading = false, includeContainer
                                 {streamId ? <CopyButton valueToCopy={streamId} /> : ''}
                             </TitleContainer>
                         }
-                        linkTabs={linkTabs}
                         rightComponent={
-                            <div>
-                                {streamId == null && (
+                            streamId ? (
+                                <Tabzzz selectedId={pathname}>
+                                    <Tab id="overview" tag={Link} to={routes.streams.overview({ id: streamId })} selected="to">
+                                        Stream overview{clean ? '' : '*'}
+                                    </Tab>
+                                    <Tab id="connect" tag={Link} to={routes.streams.connect({ id: streamId })} selected="to">
+                                        Connect
+                                    </Tab>
+                                    <Tab id="liveData" tag={Link} to={routes.streams.liveData({ id: streamId })} selected="to">
+                                        Live data
+                                    </Tab>
+                                </Tabzzz>
+                            ) : (
+                                <div>
                                     <Button disabled={busy || clean} kind="primary" type="submit">
                                         Save
                                     </Button>
-                                )}
-                            </div>
+                                </div>
+                            )
                         }
                     />
                     {includeContainerBox ? (

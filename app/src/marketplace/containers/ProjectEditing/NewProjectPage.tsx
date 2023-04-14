@@ -1,5 +1,5 @@
 import React, { ReactNode, useContext, useEffect, useMemo } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import qs from 'query-string'
 import '$mp/types/project-types'
@@ -22,6 +22,7 @@ import {
 } from '$mp/containers/ProjectEditing/ProjectController'
 import {mapProjectTypeName} from "$mp/utils/project-mapper"
 import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
+import Tabzzz, { Tab } from '$shared/components/Tabzzz'
 import { useEditableProjectActions } from '../ProductController/useEditableProjectActions'
 
 type Props = {
@@ -52,26 +53,17 @@ const UnstyledNewProjectPage = ({ className }: Props) => {
         return !!project.creator && <>{mapProjectTypeName(project.type)} by <strong> {project.creator} </strong></>
     }, [project])
 
-    const linkTabs = useMemo(() => [
-        {
-            label: 'Project Overview',
-            href: location.pathname,
-            disabled: false,
-        }, {
-            label: 'Connect',
-            href: '',
-            disabled: true,
-        }, {
-            label: 'Live Data',
-            href: '',
-            disabled: true,
-        }], [location])
-
     return <Layout nav={<EditorNav isNewProject={true}/>} innerClassName={styles.greyInner}>
         <MarketplaceHelmet title={'Create a new project'}/>
         <DetailsPageHeader
             pageTitle={pageTitle}
-            linkTabs={linkTabs}
+            rightComponent={
+                <Tabzzz>
+                    <Tab id="overview" tag={Link} selected to={location.pathname}>Project Overview</Tab>
+                    <Tab id="connect" disabled>Connect</Tab>
+                    <Tab id="liveData" disabled>Live data</Tab>
+                </Tabzzz>
+            }
         />
         <LoadingIndicator loading={publishInProgress}/>
         <ProjectEditor/>

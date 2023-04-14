@@ -1,20 +1,16 @@
 import React, { FunctionComponent, ReactNode } from 'react'
 import styled from 'styled-components'
-import { Link, useLocation } from 'react-router-dom'
-
-import {COLORS, DESKTOP, LAPTOP, MAX_BODY_WIDTH, TABLET} from '$shared/utils/styled'
+import { Link } from 'react-router-dom'
+import { COLORS, DESKTOP, LAPTOP, MAX_BODY_WIDTH, TABLET } from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
-import LinkTabs, { LinkTabOptionProps } from '$shared/components/LinkTabs'
 
 export type DetailsPageHeaderProps = {
     backButtonLink?: string
     pageTitle?: ReactNode
-    linkTabs: LinkTabOptionProps[]
     rightComponent?: ReactNode
 }
 
-export const DetailsPageHeader: FunctionComponent<DetailsPageHeaderProps> = ({ backButtonLink, pageTitle, linkTabs, rightComponent }) => {
-    const location = useLocation()
+export const DetailsPageHeader: FunctionComponent<DetailsPageHeaderProps> = ({ backButtonLink, pageTitle, rightComponent }) => {
     return (
         <DetailsPageHeaderBackground>
             <DetailsPageHeaderContainer>
@@ -28,10 +24,6 @@ export const DetailsPageHeader: FunctionComponent<DetailsPageHeaderProps> = ({ b
                         {!!pageTitle && <PageTitleContainer>{pageTitle}</PageTitleContainer>}
                     </LeftSideContainer>
                     <RightSideContainer>
-                        {(linkTabs?.length > 0) ?
-                            <LinkTabs selectedOptionHref={location.pathname} options={linkTabs} fullWidth={'mobileAndTablet'}/>
-                            : ''
-                        }
                         {rightComponent}
                     </RightSideContainer>
                 </DetailsPageHeaderBar>

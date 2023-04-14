@@ -1,6 +1,7 @@
 import React, {FunctionComponent, ReactNode, useContext, useEffect, useMemo} from "react"
 import styled from "styled-components"
 import {isEqual} from "lodash"
+import { Link } from "react-router-dom"
 import {ValidationContext, ValidationContextProvider} from "$mp/containers/ProductController/ValidationContextProvider"
 import {ProjectControllerContext, ProjectControllerProvider} from "$mp/containers/ProjectEditing/ProjectController"
 import {ProjectStateContext, ProjectStateContextProvider} from "$mp/contexts/ProjectStateContext"
@@ -15,6 +16,7 @@ import {LoadedProjectContextProvider, useLoadedProject} from "$mp/contexts/Loade
 import {mapProjectTypeName} from "$mp/utils/project-mapper"
 import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
 import {MarketplaceLoadingView} from "$mp/containers/ProjectPage/MarketplaceLoadingView"
+import Tabzzz, { Tab } from '$shared/components/Tabzzz'
 
 const UnstyledEditProjectPage: FunctionComponent = () => {
     const {state: project} = useContext(ProjectStateContext)
@@ -36,21 +38,6 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
         return !!project.creator && <>{mapProjectTypeName(project.type)} by <strong> {project.creator} </strong></>
     }, [project])
 
-    const linkTabs = useMemo(() => [
-        {
-            label: 'Project Overview',
-            href: location.pathname,
-            disabled: false,
-        }, {
-            label: 'Connect',
-            href: '',
-            disabled: true,
-        }, {
-            label: 'Live Data',
-            href: '',
-            disabled: true,
-        }], [])
-
     return <Layout
         nav={<EditorNav isNewProject={false} editedProductHasChanged={!isEqual(loadedProject, project)}/>}
         innerClassName={styles.greyInner}
@@ -58,7 +45,13 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
         <MarketplaceHelmet title={'Edit project'}/>
         <DetailsPageHeader
             pageTitle={pageTitle}
-            linkTabs={linkTabs}
+            rightComponent={
+                <Tabzzz>
+                    <Tab id="overview" tag={Link} selected to={location.pathname}>Project Overview</Tab>
+                    <Tab id="connect" disabled>Connect</Tab>
+                    <Tab id="liveData" disabled>Live data</Tab>
+                </Tabzzz>
+            }
         />
         <LoadingIndicator loading={publishInProgress}/>
         <ProjectEditor nonEditableSalePointChains={nonEditableSalePointChains}/>

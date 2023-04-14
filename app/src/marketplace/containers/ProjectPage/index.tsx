@@ -11,11 +11,10 @@ import routes from '$routes'
 import WhitelistRequestAccessModal from './WhitelistRequestAccessModal'
 import PurchaseModal from './PurchaseModal'
 import Page from './Page'
-import { getProjectDetailsLinkTabs } from './utils'
+import { ProjectLinkTabs } from './utils'
 
 const ProjectPage = () => {
     const {loadedProject: project} = useLoadedProject()
-    const linkTabs = useMemo(() => getProjectDetailsLinkTabs(project.id), [project])
 
     return (
         <Layout nav={<Nav />} innerClassName={styles.greyInner}>
@@ -23,7 +22,7 @@ const ProjectPage = () => {
             <DetailsPageHeader
                 backButtonLink={routes.projects.index}
                 pageTitle={<ProjectPageTitle/>}
-                linkTabs={linkTabs}
+                rightComponent={<ProjectLinkTabs projectId={project?.id || undefined} />}
             />
             <Page />
             <PurchaseModal />

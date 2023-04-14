@@ -8,7 +8,6 @@ import { COLORS, DESKTOP, TABLET } from '$shared/utils/styled'
 import Button from '$shared/components/Button'
 import Layout from '$shared/components/Layout'
 import SearchBar from '$shared/components/SearchBar'
-import Tabs from '$shared/components/Tabs'
 import {
     IndexerOrderBy,
     IndexerOrderDirection,
@@ -28,25 +27,14 @@ import styles from '$shared/components/Layout/layout.pcss'
 import StreamTable, { OrderBy, OrderDirection } from '$shared/components/StreamTable'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import { useAuthController } from '$auth/hooks/useAuthController'
+import StreamTable from '$shared/components/StreamTable'
+import Tabzzz, { Tab } from '$shared/components/Tabzzz'
 import routes from '$routes'
 
 enum StreamSelection {
     All = "All",
     Your = "Your",
 }
-
-const streamSelectionOptions = (isUserAuthenticated: boolean) => [
-    {
-        label: 'All streams',
-        value: StreamSelection.All.toString(),
-    },
-    {
-        label: 'Your streams',
-        value: StreamSelection.Your.toString(),
-        disabled: !isUserAuthenticated,
-        disabledReason: 'Connect your wallet to view your streams',
-    },
-]
 
 const PAGE_SIZE = 10
 const DEFAULT_ORDER_BY = OrderBy.MessagesPerSecond
@@ -219,11 +207,19 @@ const NewStreamListingPage: React.FC = () => {
                 </SearchBarWrap>
                 <FiltersBar>
                     <FiltersWrap>
-                        <Tabs
-                            options={streamSelectionOptions(isUserAuthenticated)}
-                            onChange={(newValue) => setStreamsSelection(StreamSelection[newValue])}
-                            selectedOptionValue={streamsSelection}
-                        />
+                        <Tabzzz
+                            selectedId={streamsSelection}
+                            onSelectionChange={(id) => void setStreamsSelection(id as StreamSelection)}
+                        >
+                            <Tab id={StreamSelection.All}>All streams</Tab>
+                            <Tab
+                                id={StreamSelection.Your}
+                                disabled={!isUserAuthenticated}
+                                title={isUserAuthenticated ? undefined : 'Connect your wallet to view your streams'}
+                            >
+                                Your streams
+                            </Tab>
+                        </Tabzzz>
                     </FiltersWrap>
                     <Button tag={Link} to={routes.streams.new()}>
                         Create stream
