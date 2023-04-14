@@ -45,6 +45,13 @@ const Outer = styled.div`
     }
 `
 
+const Asterisk = styled.span`
+    :after {
+        content: '*';
+        position: absolute;
+    }
+`
+
 type InnerProps = {
     fullWidth: boolean
 }
@@ -228,7 +235,8 @@ export default function StreamPage({ children, loading = false, includeContainer
                             streamId ? (
                                 <Tabzzz selectedId={pathname}>
                                     <Tab id="overview" tag={Link} to={routes.streams.overview({ id: streamId })} selected="to">
-                                        Stream overview{clean ? '' : '*'}
+                                        Stream overview
+                                        {!clean && <Asterisk />}
                                     </Tab>
                                     <Tab id="connect" tag={Link} to={routes.streams.connect({ id: streamId })} selected="to">
                                         Connect
