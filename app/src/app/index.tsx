@@ -12,7 +12,6 @@ import LogoutPage from '$app/src/pages/LogoutPage'
 import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
 import Notifications from '$shared/components/Notifications'
-import ActivityResourceProvider from '$shared/components/ActivityList/ActivityResourceProvider'
 import NotFoundPage from '$shared/components/NotFoundPage'
 import AnalyticsTracker from '$shared/components/AnalyticsTracker'
 import GenericErrorPage from '$shared/components/GenericErrorPage'
@@ -98,19 +97,17 @@ const App = () => (
                     <ModalPortalProvider>
                         <ModalProvider>
                             <GlobalInfoWatcher>
-                                <ActivityResourceProvider>
-                                    <Analytics />
-                                    <Globals />
-                                    <Switch>
-                                        {AuthenticationRouter()}
-                                        {ProjectsRouter()}
-                                        {StreamsRouter()}
-                                        {MiscRouter()}
-                                    </Switch>
-                                    <Notifications />
-                                    <Container id={Layer.Modal} />
-                                    <ToastContainer id={Layer.Toast} />
-                                </ActivityResourceProvider>
+                                <Analytics />
+                                <Globals />
+                                <Switch>
+                                    {AuthenticationRouter()}
+                                    {ProjectsRouter()}
+                                    {StreamsRouter()}
+                                    {MiscRouter()}
+                                </Switch>
+                                <Notifications />
+                                <Container id={Layer.Modal} />
+                                <ToastContainer id={Layer.Toast} />
                                 <AnalyticsTracker />
                             </GlobalInfoWatcher>
                         </ModalProvider>

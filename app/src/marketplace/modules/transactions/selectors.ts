@@ -12,11 +12,6 @@ export const selectPendingTransactionIds: (arg0: StoreState) => HashList = creat
     selectTransactionsState,
     (subState: TransactionsState): HashList => subState.pending,
 )
-export const selectPendingTransactions: (state: StoreState) => TransactionEntityList = createSelector(
-    selectPendingTransactionIds,
-    selectEntities,
-    (ids: HashList, entities: EntitiesState): TransactionEntityList => denormalize(ids, transactionsSchema, entities),
-)
 export const selectCompletedTransactionIds: (arg0: StoreState) => HashList = createSelector(
     selectTransactionsState,
     (subState: TransactionsState): HashList => subState.completed,

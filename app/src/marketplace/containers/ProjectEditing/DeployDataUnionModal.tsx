@@ -15,7 +15,6 @@ import { averageBlockTime } from '$shared/utils/web3'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
-import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 import { getChainIdFromApiString } from '$shared/utils/chains'
@@ -99,11 +98,6 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
                     // set it here to make sure we save it if the transaction wouldn't have time to complete
                     setAddress(contractAddress)
                     setStep(steps.COMPLETE)
-                    Activity.push({
-                        action: actionTypes.DEPLOY,
-                        resourceId: productId,
-                        resourceType: resourceTypes.PRODUCT,
-                    })
                     resolve()
                 })
                 .onTransactionComplete(({ contractAddress }) => {
