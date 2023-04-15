@@ -1,6 +1,5 @@
 import Metamask from './Metamask'
-import WalletConnect from './WalletConnect'
 
-const methods = [Metamask/*, WalletConnect*/]
+const methods = [Metamask]
 
 export default methods
