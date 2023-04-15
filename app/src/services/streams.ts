@@ -16,41 +16,6 @@ export type IndexerResult = {
     cursor: string,
 }
 
-export const getPagedStreamsFromIndexer = async (first: number, cursor?: string, owner?: string, search?: string): Promise<IndexerResult> => {
-    const { streamIndexerUrl } = getCoreConfig()
-
-    const ownerFilter = owner != null ? `owner: "${owner}"` : null
-    const searchFilter = search != null ? `searchTerm: "${search}"` : null
-    const cursorFilter = cursor != null ? `cursor: "${cursor}"` : null
-    const allFilters = [ownerFilter, searchFilter, cursorFilter].join(',')
-
-    const result = await post({
-        url: streamIndexerUrl,
-        data: {
-            query: `
-                {
-                    streams(
-                        pageSize: ${first},
-                        ${allFilters},
-                    ) {
-                        items {
-                          id
-                          description
-                          peerCount
-                          messagesPerSecond
-                          subscriberCount
-                          publisherCount
-                        }
-                        cursor
-                    }
-                }
-            `,
-        },
-    })
-
-    return result.data.streams
-}
-
 export const getStreamsFromIndexer = async (streamIds: Array<string>): Promise<Array<IndexerStream>> => {
     const { streamIndexerUrl } = getCoreConfig()
 
