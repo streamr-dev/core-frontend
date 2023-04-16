@@ -8,7 +8,6 @@ import { Row, Col } from 'reactstrap'
 import Toggle from '$shared/components/Toggle'
 import Checkbox from '$shared/components/Checkbox'
 import Dialog from '$shared/components/Dialog'
-import BackButton from '$shared/components/BackButton'
 import SvgIcon from '$shared/components/SvgIcon'
 import PngIcon from '$shared/components/PngIcon'
 import Slider from '$shared/components/Slider'
@@ -115,14 +114,6 @@ story('Dialog').add('basic', () => {
         </Dialog>
     )
 })
-story('BackButton')
-    .addDecorator(StoryRouter())
-    .add('basic', () => (
-        <div>
-            <BackButton />
-            <hr />
-        </div>
-    ))
 story('SvgIcon').add('all', () => (
     <Row>
         {SvgIcon.names.map((name) => (
