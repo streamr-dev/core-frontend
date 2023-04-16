@@ -1,6 +1,5 @@
 import { ChangeEvent, ComponentType } from 'react'
 import React, { useState, forwardRef, useEffect, useCallback } from 'react'
-import { UseStateTuple } from '$shared/types/common-types'
 import '$shared/types/common-types'
 export type Props = {
     onChange?: ((arg0: React.SyntheticEvent<EventTarget>) => void) | null | undefined
@@ -16,7 +15,7 @@ const RevertOnEscapeDecorator = (WrappedComponent: ComponentType<any>) => {
         { value: valueProp, onKeyDown: onKeyDownProp, onChange: onChangeProp, ...props }: Props,
         ref: any,
     ) => {
-        const [value, setValue]: UseStateTuple<string> = useState(sanitizeValue(valueProp))
+        const [value, setValue] = useState(sanitizeValue(valueProp))
         useEffect(() => {
             setValue(sanitizeValue(valueProp))
         }, [valueProp])

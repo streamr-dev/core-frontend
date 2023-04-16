@@ -1,7 +1,6 @@
 import React, { useState, ReactNode, FunctionComponent } from 'react'
 import styled, { css } from 'styled-components'
 import Popover from '$shared/components/Popover'
-import { UseStateTuple } from '$shared/types/common-types'
 import '$shared/types/common-types'
 const ActionContainer = styled.div<{open: boolean}>`
     display: inline-block;
@@ -24,7 +23,7 @@ type Props = {
 }
 
 const UnstyledWithInputActions: FunctionComponent<Props> = ({ actions, disabled, children = null, ...props }: Props) => {
-    const [open, setOpen]: UseStateTuple<boolean> = useState(false)
+    const [open, setOpen] = useState(false)
     return <>
         {!actions || !actions.length ? (
             children

@@ -20,7 +20,7 @@ import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
 import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDialog'
 import WrongNetworkSelectedDialog from '$shared/components/WrongNetworkSelectedDialog'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { Ref, UseStateTuple } from '$shared/types/common-types'
+import { Ref } from '$shared/types/common-types'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 import { isDataUnionProduct } from '$mp/utils/product'
 import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
@@ -62,7 +62,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     })
     const [balances, setBalances] = useState({})
     const purchase = usePurchase()
-    const [queue, setQueue]: UseStateTuple<any> = useState(undefined)
+    const [queue, setQueue] = useState<any>()
     const [currentAction, setCurrentAction] = useState(undefined)
     const [status, setStatus] = useState({})
     const [purchaseStarted, setPurchaseStarted] = useState(false)

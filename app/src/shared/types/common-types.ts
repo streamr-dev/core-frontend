@@ -29,8 +29,6 @@ export type TransactionType = $Values<typeof transactionTypes>
 export type Ref<T> = {
     current: null | T
 }
-export type UseStateTuple<T> = [T, (arg0: ((arg0: T) => T) | T) => void]
-
 export type PersistOperation = {
     id: string,
     name: string,
