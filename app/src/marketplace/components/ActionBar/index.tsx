@@ -1,6 +1,5 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
-import useModal from '$shared/hooks/useModal'
 import { CategoryFilter, Filter, ProjectTypeFilter, SearchFilter } from '$mp/types/project-types'
 import SearchBar from '$shared/components/SearchBar'
 import {
@@ -16,7 +15,7 @@ import {
 import Tabs from '$shared/components/Tabs'
 import SelectField2 from '$mp/components/SelectField2'
 import MobileFilter from '$shared/components/MobileFilter'
-import {ProjectListingTypeFilter} from "$app/src/services/projects"
+import { ProjectListingTypeFilter } from "$app/src/services/projects"
 import { Category } from '../../types/category-types'
 import { isValidSearchQuery } from '../../utils/validate'
 
@@ -30,6 +29,17 @@ export type Props = {
     isUserAuthenticated: boolean
 }
 
+const productTypeOptions = [
+    {
+        value: ProjectListingTypeFilter.openData,
+        label: 'Open data',
+    },
+    {
+        value: ProjectListingTypeFilter.paidData,
+        label: 'Paid data'
+    },
+]
+
 const UnstyledActionBar = ({
     filter,
     categories,
@@ -40,7 +50,6 @@ const UnstyledActionBar = ({
     isUserAuthenticated,
     ...props
 }: Props) => {
-    const { api: filterModal } = useModal('marketplace.filter')
     const onSearchChange = useCallback(
         (search: SearchFilter) => {
             if (isValidSearchQuery(search)) {
@@ -54,9 +63,8 @@ const UnstyledActionBar = ({
             onFilterChangeProp({
                 categories: category !== '__all' ? category : undefined,
             })
-            filterModal.close()
         },
-        [onFilterChangeProp, filterModal],
+        [onFilterChangeProp],
     )
 
     const onProductTypeChange = useCallback(
@@ -64,31 +72,8 @@ const UnstyledActionBar = ({
             onFilterChangeProp({
                 type,
             })
-            filterModal.close()
         },
-        [onFilterChangeProp, filterModal],
-    )
-
-    const productTypeOptions = useMemo(
-        () => [
-            {
-                value: ProjectListingTypeFilter.openData,
-                label: 'Open data',
-            },
-            {
-                value: ProjectListingTypeFilter.paidData,
-                label: 'Paid data'
-            },
-            /*{
-                value: ProjectListingTypeFilter.dataUnion,
-                label: 'Data Unions',
-            },*/
-        ],
-        [],
-    )
-    const categoryOptions = useMemo(
-        () => categories.map((category) => ({label: category.name, value: category.id})),
-        [categories],
+        [onFilterChangeProp],
     )
 
     const { categories: category, type } = filter
@@ -130,16 +115,6 @@ const UnstyledActionBar = ({
                     />
                     <DropdownFilters>
                         <span>Filter by</span>
-                        {/*{categoryOptions != null && categoryOptions.length > 0 && (
-                            <SelectFieldWrap>
-                                <SelectField2
-                                    placeholder={'Category'}
-                                    options={categoryOptions}
-                                    value={category}
-                                    onChange={onCategoryChange}
-                                />
-                            </SelectFieldWrap>
-                        )}*/}
                         <SelectFieldWrap>
                             <SelectField2
                                 placeholder={'Project type'}
@@ -152,11 +127,6 @@ const UnstyledActionBar = ({
                     <MobileFilterWrap>
                         <MobileFilter
                             filters={[
-                                /*{
-                                    label: 'Category',
-                                    value: 'category',
-                                    options: categoryOptions
-                                },*/
                                 {
                                     label: 'Project type',
                                     value: 'type',
@@ -164,7 +134,7 @@ const UnstyledActionBar = ({
                                 }
                             ]}
                             onChange={handleMobileFilterChange}
-                            selectedFilters={{category, type }}
+                            selectedFilters={{ category, type }}
                         >
                             <MobileFilterText>Filter</MobileFilterText>
                         </MobileFilter>
