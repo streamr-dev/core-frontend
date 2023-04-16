@@ -25,7 +25,9 @@ type Props = {
 
 const UnstyledElevatedContainer: FunctionComponent<Props> = ({ offset: offsetProp = 0, children, ...props }: Props) => {
     const [scrolled, setScrolled] = useState(false)
-    const offset = useInt(offsetProp)
+
+    const offset = Number.parseInt(`${offsetProp}`, 10)
+
     useEffect(() => {
         const onScroll = () => {
             setScrolled(window.scrollY > offset)
