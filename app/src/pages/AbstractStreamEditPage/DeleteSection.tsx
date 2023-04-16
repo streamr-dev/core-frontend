@@ -1,28 +1,35 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useHistory } from 'react-router-dom'
-import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
-import TOCSection from '$shared/components/TOCPage/TOCSection'
 import Button from '$shared/components/Button'
-import useDecodedStreamId from '$shared/hooks/useDecodedStreamId'
 import getTransactionalClient from '$app/src/getters/getTransactionalClient'
+import { useCurrentDraft } from '$shared/stores/streamEditor'
 import routes from '$routes'
+import Section from './Section'
 
 const Description = styled.p`
     margin-bottom: 3rem;
 `
 
-const DeleteComponent = () => {
+export default function DeleteSection() {
     const history = useHistory()
-    const streamId = useDecodedStreamId()
+
+    const { streamId } = useCurrentDraft()
 
     return (
-        <>
-            <Description>Delete this stream forever. You can&apos;t undo this.</Description>
+        <Section title="Delete stream">
+            <Description>
+                Delete this stream forever. You can&apos;t undo this.
+            </Description>
             <Button
                 type="button"
-                kind='destructive'
+                kind="destructive"
+                disabled={!streamId}
                 onClick={async () => {
+                    if (!streamId) {
+                        return
+                    }
+
                     const client = await getTransactionalClient()
 
                     await client.deleteStream(streamId)
@@ -36,19 +43,6 @@ const DeleteComponent = () => {
             >
                 Delete
             </Button>
-        </>
+        </Section>
     )
 }
-
-const DeleteSection = () => {
-    const isWithinNav = useIsWithinNav()
-    return (
-        <TOCSection id="delete" title="Delete stream">
-            {!isWithinNav && (
-                <DeleteComponent />
-            )}
-        </TOCSection>
-    )
-}
-
-export default DeleteSection

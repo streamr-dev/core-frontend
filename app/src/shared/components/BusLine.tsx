@@ -22,9 +22,7 @@ const BusLineContext = createContext<BusLineContextProps>({
     unlink: () => {},
     defaultStop: undefined
 })
-export const useBusLine = () => useContext(BusLineContext)
 export const BusStop: FunctionComponent<{name: string}> = ({ name, ...props }) => {
-    const { link, unlink } = useBusLine()
     const ref = useRef()
     useEffect(() => {
         link([name, ref])
