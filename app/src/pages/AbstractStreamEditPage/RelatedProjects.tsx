@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { MarketplaceProductTile } from '$mp/components/Projects'
 import { TABLET, PHONE } from '$shared/utils/styled'
 import { TheGraphProject, getProjects } from '$app/src/services/projects'
-import useIsMounted from '$shared/hooks/useIsMounted'
 
 const Container = styled.div`
     margin-top: 80px;
@@ -35,19 +34,26 @@ type Props = {
     streamId: string,
 }
 
-const RelatedProjects: React.FC<Props> = ({ streamId }) => {
-    const isMounted = useIsMounted()
+export default function RelatedProjects({ streamId }: Props) {
     const [projects, setProjects] = useState<TheGraphProject[]>([])
 
     useEffect(() => {
+        let mounted = true
+
         const loadProjects = async () => {
-            const result = await getProjects(null, 4, 0, null, streamId)
-            if (isMounted()) {
+            const result = await getProjects(undefined, 4, 0, undefined, streamId)
+
+            if (mounted) {
                 setProjects(result.projects)
             }
         }
+
         loadProjects()
-    }, [isMounted, streamId])
+
+        return () => {
+            mounted = false
+        }
+    }, [streamId])
 
     if (projects.length === 0) {
         return null
@@ -69,5 +75,3 @@ const RelatedProjects: React.FC<Props> = ({ streamId }) => {
         </Container>
     )
 }
-
-export default RelatedProjects

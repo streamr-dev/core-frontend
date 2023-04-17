@@ -95,6 +95,7 @@ const SaveButton = styled(Button)`
 type ContainerBoxProps = {
     children?: React.ReactNode
     disabled?: boolean
+    streamId?: string,
     showSaveButton?: boolean
     fullWidth?: boolean
 }
@@ -106,7 +107,7 @@ const TitleContainer = styled.div`
 
 const getCryptoModal = toaster(GetCryptoModal, Layer.Modal)
 
-function ContainerBox({ children, disabled, showSaveButton = true, fullWidth = false }: ContainerBoxProps) {
+function ContainerBox({ children, disabled, streamId, showSaveButton = true, fullWidth = false }: ContainerBoxProps) {
     return (
         <Outer>
             <Inner fullWidth={fullWidth}>
@@ -117,7 +118,9 @@ function ContainerBox({ children, disabled, showSaveButton = true, fullWidth = f
                     </SaveButton>
                 )}
             </Inner>
-            <RelatedProjects streamId={"0x9b3e47c99f06f49724f8527ed493d253d83becfc/007"} />
+            {streamId != null && (
+                <RelatedProjects streamId={streamId} />
+            )}
         </Outer>
     )
 }
@@ -249,7 +252,12 @@ export default function StreamPage({ children, loading = false, includeContainer
                         }
                     />
                     {includeContainerBox ? (
-                        <ContainerBox disabled={busy || clean} showSaveButton={showSaveButton} fullWidth={fullWidth}>
+                        <ContainerBox
+                            disabled={busy || clean}
+                            streamId={streamId}
+                            showSaveButton={showSaveButton}
+                            fullWidth={fullWidth}
+                        >
                             {!loading && children}
                         </ContainerBox>
                     ) : (

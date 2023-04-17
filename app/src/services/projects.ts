@@ -237,18 +237,24 @@ const getProjectFilterQuery = (type: ProjectListingTypeFilter): string => {
 }
 
 export const getProjects = async (
-    owner?: string | null,
+    owner?: string | undefined,
     first = 20,
     skip = 0,
-    type?: ProjectListingTypeFilter | null,
+    type?: ProjectListingTypeFilter | undefined,
     streamId?: string | null, // used to search projects which contain this stream
 ): Promise<ProjectsResult> => {
     const theGraphUrl = getGraphUrl()
 
-    const ownerFilter = owner != null ? `permissions_: { userAddress: "${owner}", canGrant: true }` : null
-    const typeFilter = type != null ? getProjectFilterQuery(type) : null
-    const streamIdFilter = streamId != null ? `streams_contains: ["${streamId}"]` : null
-    const allFilters = [ownerFilter, typeFilter, streamIdFilter].filter((filter) => !!filter).join(',')
+    const filters: string[] = []
+    if (owner) {
+        filters.push(`permissions_: { userAddress: "${owner}", canGrant: true }`)
+    }
+    if (type) {
+        filters.push(getProjectFilterQuery(type))
+    }
+    if (streamId) {
+        filters.push(`streams_contains: ["${streamId}"]`)
+    }
 
     const result = await post({
         url: theGraphUrl,
@@ -260,7 +266,7 @@ export const getProjects = async (
                         skip: ${skip},
                         orderBy: score,
                         orderDirection: desc,
-                        ${allFilters != null ? `where: { ${allFilters} }` : ''},
+                        ${filters.length > 0 ? `where: { ${filters} }` : ''},
                     ) {
                         ${projectFields}
                     }
