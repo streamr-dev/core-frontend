@@ -49,7 +49,7 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
             pageTitle={pageTitle}
             rightComponent={
                 <Tabs>
-                    <Tab id="overview" tag={Link} selected to={location.pathname}>Project Overview</Tab>
+                    <Tab id="overview" tag={Link} selected to={location.pathname}>Project overview</Tab>
                     <Tab id="connect" disabled>Connect</Tab>
                     <Tab id="liveData" disabled>Live data</Tab>
                 </Tabs>
