@@ -1,20 +1,39 @@
 import React, { ReactNode } from 'react'
+import styled from "styled-components"
 import { Link, useLocation } from 'react-router-dom'
 import { Project } from '$mp/types/project-types'
 import Tabs, { Tab } from '$shared/components/Tabs'
 import isPreventable from '$app/src/utils/isPreventable'
+import {mapProjectTypeName} from "$mp/utils/project-mapper"
 import routes from '$routes'
+
+const ProjectTitlePart = styled.strong`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+`
 
 export const getProjectTitle = (project: Project): ReactNode => {
     return (
         <>
-            {project.name}{' '}
+            <ProjectTitlePart as={'span'}>{project.name}{' '}</ProjectTitlePart>
             {!!project.creator && (
                 <>
-                    by <strong>{project.creator}</strong>
+                    by&nbsp;<ProjectTitlePart>{project.creator}</ProjectTitlePart>
                 </>
             )}
         </>
+    )
+}
+
+export const getProjectTitleForEditor = (project: Project): ReactNode => {
+    return (
+        !!project.creator && (
+            <>
+                {mapProjectTypeName(project.type)} by&nbsp;
+                <strong> {project.creator} </strong>
+            </>
+        )
     )
 }
 

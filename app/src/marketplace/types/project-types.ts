@@ -45,7 +45,7 @@ export type Project = {
     imageUrl?: string | null | undefined
     newImageToUpload?: File | null | undefined
     streams: StreamIdList
-    type?: ProjectTypeEnum
+    type: ProjectTypeEnum
     termsOfUse: TermsOfUse
     contact: ContactDetails | null | undefined
     creator: string

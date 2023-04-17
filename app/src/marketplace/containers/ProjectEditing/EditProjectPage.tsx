@@ -16,6 +16,7 @@ import {mapProjectTypeName} from "$mp/utils/project-mapper"
 import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
 import {MarketplaceLoadingView} from "$mp/containers/ProjectPage/MarketplaceLoadingView"
 import { InactiveProjectLinkTabs } from "../ProjectPage/utils"
+import {getProjectTitleForEditor} from "$mp/containers/ProjectPage/utils"
 
 const UnstyledEditProjectPage: FunctionComponent = () => {
     const {state: project} = useContext(ProjectStateContext)
@@ -36,7 +37,7 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
     }, [resetTouched])
 
     const pageTitle = useMemo<ReactNode>(() => {
-        return !!project.creator && <>{mapProjectTypeName(project.type)} by <strong> {project.creator} </strong></>
+        return getProjectTitleForEditor(project)
     }, [project])
 
     return <Layout

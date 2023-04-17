@@ -83,6 +83,8 @@ const DetailsPageHeaderBar = styled.div`
 const LeftSideContainer = styled.div`
     display: flex;
     align-items: center;
+    flex-grow: 1;
+    overflow: hidden;
 `
 
 const RightSideContainer = styled.div`
@@ -104,7 +106,6 @@ const BackButtonIcon = styled(SvgIcon)`
 `
 
 const PageTitleContainer = styled.div`
-    padding-left: 10px;
     margin-top: 3px;
     color: ${COLORS.primary};
     font-size: 16px;
@@ -112,4 +113,5 @@ const PageTitleContainer = styled.div`
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    padding-right: 20px;
 `
