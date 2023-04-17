@@ -19,22 +19,22 @@ export interface AuthenticationController {
 const useSessionController = (): AuthenticationController => {
     const storedAuth = getAuthenticationFromStorage()
     const initialState: Authentication = {
-        method: storedAuth ? storedAuth.method : undefined,
-        address: storedAuth ? storedAuth.address : undefined,
-        ensName: storedAuth ? storedAuth.ensName : undefined
+        method: storedAuth ? storedAuth.method : '',
+        address: storedAuth ? storedAuth.address : '',
+        ensName: storedAuth ? storedAuth.ensName : ''
     }
     const isMounted = useIsMounted()
     const {state: auth, updateState: setAuth} = useStateContainer<Authentication>(initialState)
 
     const updateSession = useCallback<(session: Authentication) => Promise<void>>(async (session) => {
         if (isMounted()) {
-            let ensName: string
-            if (session.address !== auth.address) {
+            const newSession = {...session}
+            if (session.address !== auth?.address) {
                 const addressesResponse = await lookupEnsName(session.address)
-                ensName = addressesResponse || undefined
+                newSession.ensName = addressesResponse || ''
             }
-            setAuth({...session, ensName})
-            setAuthenticationInStorage(session)
+            setAuth(newSession)
+            setAuthenticationInStorage(newSession)
 
         }
     }, [setAuth, isMounted, auth])
@@ -48,7 +48,7 @@ const useSessionController = (): AuthenticationController => {
 
     const pollSuccessCallback = useCallback<(address: string) => void>((address) => {
         if (auth?.address) {
-            updateSession({method: 'metamask', address})
+            updateSession({method: 'metamask', address, ensName: auth.ensName})
         }
     }, [updateSession, auth])
 
