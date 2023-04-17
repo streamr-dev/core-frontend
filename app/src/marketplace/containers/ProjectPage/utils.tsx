@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { Project } from '$mp/types/project-types'
 import Tabs, { Tab } from '$shared/components/Tabs'
 import routes from '$routes'
+import isPreventable from '$app/src/utils/isPreventable'
 
 export const getProjectTitle = (project: Project): ReactNode => {
     return (
@@ -64,6 +65,11 @@ export function InactiveProjectLinkTabs() {
                 tag={Link}
                 selected
                 to={pathname}
+                onClick={(e: unknown) => {
+                    if (isPreventable(e)) {
+                        e.preventDefault()
+                    }
+                }}
             >
                 Project overview
             </Tab>
