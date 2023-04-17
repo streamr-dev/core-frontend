@@ -12,11 +12,10 @@ import {MarketplaceHelmet} from "$shared/components/Helmet"
 import {DetailsPageHeader} from "$shared/components/DetailsPageHeader"
 import {ProjectEditor} from "$mp/containers/ProjectEditing/ProjectEditor"
 import {LoadedProjectContextProvider, useLoadedProject} from "$mp/contexts/LoadedProjectContext"
-import {mapProjectTypeName} from "$mp/utils/project-mapper"
 import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
 import {MarketplaceLoadingView} from "$mp/containers/ProjectPage/MarketplaceLoadingView"
-import { InactiveProjectLinkTabs } from "../ProjectPage/utils"
 import {getProjectTitleForEditor} from "$mp/containers/ProjectPage/utils"
+import { InactiveProjectLinkTabs } from "../ProjectPage/utils"
 
 const UnstyledEditProjectPage: FunctionComponent = () => {
     const {state: project} = useContext(ProjectStateContext)

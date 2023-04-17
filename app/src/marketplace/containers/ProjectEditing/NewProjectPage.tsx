@@ -20,11 +20,10 @@ import {
     ProjectControllerContext,
     ProjectControllerProvider
 } from '$mp/containers/ProjectEditing/ProjectController'
-import {mapProjectTypeName} from "$mp/utils/project-mapper"
 import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
+import {getProjectTitleForEditor} from "$mp/containers/ProjectPage/utils"
 import { useEditableProjectActions } from '../ProductController/useEditableProjectActions'
 import { InactiveProjectLinkTabs } from '../ProjectPage/utils'
-import {getProjectTitleForEditor} from "$mp/containers/ProjectPage/utils"
 
 type Props = {
     className?: string | null | undefined
