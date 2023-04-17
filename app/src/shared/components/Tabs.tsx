@@ -157,6 +157,7 @@ const Rails = styled.div<{ $animated?: boolean }>`
     transition-property: visiblilty, opecity;
     visibility: visible;
     opacity: 1;
+    pointer-events: none;
     z-index: 1;
 
     ${({ $animated = false }) =>
