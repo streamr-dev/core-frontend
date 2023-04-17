@@ -29,6 +29,7 @@ import LoadingIndicator from '$shared/components/LoadingIndicator'
 import { useAuthController } from '$auth/hooks/useAuthController'
 import StreamTable from '$shared/components/StreamTable'
 import Tabs, { Tab } from '$shared/components/Tabs'
+import { RouteMemoryKey, useRecall, useRemember } from '$shared/stores/routeMemory'
 import routes from '$routes'
 
 enum StreamSelection {
@@ -109,9 +110,17 @@ const NewStreamListingPage: React.FC = () => {
     const [search, setSearch] = useState<string>('')
     const [orderBy, setOrderBy] = useState(DEFAULT_ORDER_BY)
     const [orderDirection, setOrderDirection] = useState(DEFAULT_ORDER_DIRECTION)
-    const [streamsSelection, setStreamsSelection] = useState<StreamSelection>(StreamSelection.All)
+    const [streamsSelection, setStreamsSelection] = useState<StreamSelection>(
+        useRecall(RouteMemoryKey.lastStreamListingSelection()) as StreamSelection || StreamSelection.All
+    )
     const isUserAuthenticated = useIsAuthenticated()
     const { currentAuthSession } = useAuthController()
+
+    const remember = useRemember()
+
+    useEffect(() => {
+        remember(RouteMemoryKey.lastStreamListingSelection(), streamsSelection)
+    }, [remember, streamsSelection])
 
     const streamsQuery = useInfiniteQuery({
         queryKey: ["streams", search, streamsSelection, currentAuthSession.address, orderBy, orderDirection],

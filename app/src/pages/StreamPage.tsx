@@ -27,6 +27,7 @@ import getNativeTokenName from '$shared/utils/nativeToken'
 import { useAuthController } from '$auth/hooks/useAuthController'
 import { useInvalidateAbilities } from '$shared/stores/abilities'
 import Tabs, { Tab } from '$shared/components/Tabs'
+import { RouteMemoryKey, useKeep } from '$shared/stores/routeMemory'
 import routes from '$routes'
 import RelatedProjects from './AbstractStreamEditPage/RelatedProjects'
 
@@ -86,7 +87,7 @@ const SaveButton = styled(Button)`
 type ContainerBoxProps = {
     children?: React.ReactNode
     disabled?: boolean
-    streamId?: string,
+    streamId?: string
     showSaveButton?: boolean
     fullWidth?: boolean
 }
@@ -98,7 +99,13 @@ const TitleContainer = styled.div`
 
 const getCryptoModal = toaster(GetCryptoModal, Layer.Modal)
 
-function ContainerBox({ children, disabled, streamId, showSaveButton = true, fullWidth = false }: ContainerBoxProps) {
+function ContainerBox({
+    children,
+    disabled,
+    streamId,
+    showSaveButton = true,
+    fullWidth = false,
+}: ContainerBoxProps) {
     return (
         <Outer>
             <Inner fullWidth={fullWidth}>
@@ -109,14 +116,18 @@ function ContainerBox({ children, disabled, streamId, showSaveButton = true, ful
                     </SaveButton>
                 )}
             </Inner>
-            {streamId != null && (
-                <RelatedProjects streamId={streamId} />
-            )}
+            {streamId != null && <RelatedProjects streamId={streamId} />}
         </Outer>
     )
 }
 
-export default function StreamPage({ children, loading = false, includeContainerBox = true, showSaveButton = true, fullWidth = false }) {
+export default function StreamPage({
+    children,
+    loading = false,
+    includeContainerBox = true,
+    showSaveButton = true,
+    fullWidth = false,
+}) {
     const { streamId, transientStreamId } = useCurrentDraft()
 
     const busy = useIsCurrentDraftBusy()
@@ -159,6 +170,8 @@ export default function StreamPage({ children, loading = false, includeContainer
 
     const { pathname } = useLocation()
 
+    const keep = useKeep()
+
     return (
         <>
             <form
@@ -189,7 +202,11 @@ export default function StreamPage({ children, loading = false, includeContainer
 
                                 if (
                                     !assignments.some((assignment) => {
-                                        return 'user' in assignment && assignment.user.toLowerCase() === address.toLowerCase()
+                                        return (
+                                            'user' in assignment &&
+                                            assignment.user.toLowerCase() ===
+                                                address.toLowerCase()
+                                        )
                                     })
                                 ) {
                                     return
@@ -222,32 +239,72 @@ export default function StreamPage({ children, loading = false, includeContainer
                 }}
             >
                 <Layout>
-                    <MarketplaceHelmet title={streamId ? `Stream ${streamId}` : 'New stream'} />
+                    <MarketplaceHelmet
+                        title={streamId ? `Stream ${streamId}` : 'New stream'}
+                    />
                     <DetailsPageHeader
                         backButtonLink={routes.streams.index()}
                         pageTitle={
                             <TitleContainer>
-                                <span title={streamId}>{streamId ? truncateStreamName(streamId, 50) : transientStreamId || 'New stream'}</span>
+                                <span title={streamId}>
+                                    {streamId
+                                        ? truncateStreamName(streamId, 50)
+                                        : transientStreamId || 'New stream'}
+                                </span>
                                 {streamId ? <CopyButton valueToCopy={streamId} /> : ''}
                             </TitleContainer>
                         }
                         rightComponent={
                             streamId ? (
                                 <Tabs selection={pathname}>
-                                    <Tab id="overview" tag={Link} to={routes.streams.overview({ id: streamId })} selected="to">
+                                    <Tab
+                                        id="overview"
+                                        tag={Link}
+                                        to={routes.streams.overview({ id: streamId })}
+                                        selected="to"
+                                        onClick={() =>
+                                            void keep(
+                                                RouteMemoryKey.lastStreamListingSelection(),
+                                            )
+                                        }
+                                    >
                                         Stream overview
                                         {!clean && <Asterisk />}
                                     </Tab>
-                                    <Tab id="connect" tag={Link} to={routes.streams.connect({ id: streamId })} selected="to">
+                                    <Tab
+                                        id="connect"
+                                        tag={Link}
+                                        to={routes.streams.connect({ id: streamId })}
+                                        selected="to"
+                                        onClick={() =>
+                                            void keep(
+                                                RouteMemoryKey.lastStreamListingSelection(),
+                                            )
+                                        }
+                                    >
                                         Connect
                                     </Tab>
-                                    <Tab id="liveData" tag={Link} to={routes.streams.liveData({ id: streamId })} selected="to">
+                                    <Tab
+                                        id="liveData"
+                                        tag={Link}
+                                        to={routes.streams.liveData({ id: streamId })}
+                                        selected="to"
+                                        onClick={() =>
+                                            void keep(
+                                                RouteMemoryKey.lastStreamListingSelection(),
+                                            )
+                                        }
+                                    >
                                         Live data
                                     </Tab>
                                 </Tabs>
                             ) : (
                                 <div>
-                                    <Button disabled={busy || clean} kind="primary" type="submit">
+                                    <Button
+                                        disabled={busy || clean}
+                                        kind="primary"
+                                        type="submit"
+                                    >
                                         Save
                                     </Button>
                                 </div>

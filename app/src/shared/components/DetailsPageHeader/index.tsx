@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { COLORS, DESKTOP, LAPTOP, MAX_BODY_WIDTH, TABLET } from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
+import { RouteMemoryKey, useKeep } from '$shared/stores/routeMemory'
 
 export type DetailsPageHeaderProps = {
     backButtonLink?: string
@@ -11,13 +12,20 @@ export type DetailsPageHeaderProps = {
 }
 
 export const DetailsPageHeader: FunctionComponent<DetailsPageHeaderProps> = ({ backButtonLink, pageTitle, rightComponent }) => {
+    const keep = useKeep()
+
     return (
         <DetailsPageHeaderBackground>
             <DetailsPageHeaderContainer>
                 <DetailsPageHeaderBar>
                     <LeftSideContainer>
                         {!!backButtonLink && (
-                            <BackLink to={backButtonLink}>
+                            <BackLink
+                                to={backButtonLink}
+                                onClick={() => {
+                                    keep(RouteMemoryKey.lastStreamListingSelection())
+                                }}
+                            >
                                 <BackButtonIcon name={'backArrow'}></BackButtonIcon>
                             </BackLink>
                         )}
