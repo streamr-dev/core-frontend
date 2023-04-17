@@ -2,6 +2,225 @@ import getCoreConfig from '$app/src/getters/getCoreConfig'
 import address0 from '$utils/address0'
 import { post } from '$shared/utils/api'
 
+const getGraphUrl = () => {
+    const { theGraphUrl, streamsGraphName } = getCoreConfig()
+    return `${theGraphUrl}/subgraphs/name/${streamsGraphName}`
+}
+
+export enum TheGraphOrderBy {
+    Id = 'id',
+    CreatedAt = 'createdAt',
+    UpdatedAt = 'updatedAt',
+}
+
+export enum TheGraphOrderDirection {
+    Asc = 'asc',
+    Desc = 'desc'
+}
+
+export type TheGraphStreamPermission = {
+    userAddress: string,
+    canEdit: boolean,
+    canGrant: boolean,
+    canDelete: boolean,
+    subscribeExpiration: number,
+    publishExpiration: number,
+}
+
+export type TheGraphStreamMetadata = {
+    description?: string,
+}
+
+export type TheGraphStream = {
+    id: string,
+    metadata?: TheGraphStreamMetadata,
+    subscriberCount: number | null | undefined,
+    publisherCount: number | null | undefined,
+    permissions: TheGraphStreamPermission[]
+}
+
+export type TheGraphStreamResult = {
+    streams: Array<TheGraphStream>,
+    hasNextPage: boolean,
+    lastId: string | null,
+}
+
+const calculatePubSubCount = (permissions: TheGraphStreamPermission[]) => {
+    let publisherCount: number | null = 0
+    let subscriberCount: number | null = 0
+
+    permissions.forEach((perm) => {
+        // If stream has public permissions (zero address), return null for counts which means that anyone can
+        // publish or subscribe
+        if (perm.userAddress === address0) {
+            if (perm.subscribeExpiration >= Math.round(Date.now() / 1000)) {
+                subscriberCount = null
+            }
+            if (perm.publishExpiration >= Math.round(Date.now() / 1000)) {
+                publisherCount = null
+            }
+        }
+
+        if (perm.subscribeExpiration >= Math.round(Date.now() / 1000) && subscriberCount != null) {
+            subscriberCount += 1
+        }
+
+        if (perm.publishExpiration >= Math.round(Date.now() / 1000) && publisherCount != null) {
+            publisherCount += 1
+        }
+    })
+
+    return {
+        publisherCount,
+        subscriberCount,
+    }
+}
+
+const mapStream = (stream: TheGraphStream): TheGraphStream => {
+    const result = { ...stream }
+
+    // Get publisher and subscriber counts
+    const counts = calculatePubSubCount(stream.permissions)
+    result.publisherCount = counts.publisherCount
+    result.subscriberCount = counts.subscriberCount
+
+    // Try to parse metadata JSON
+    if (stream.metadata != null) {
+        try {
+            const metadata = JSON.parse(stream.metadata as string)
+            result.metadata = metadata
+        } catch (e) {
+            console.error(`Could not parse metadata for stream ${stream.id}`, e)
+            result.metadata = {}
+        }
+    }
+
+    return result
+}
+
+const prepareStreamResult = (result: TheGraphStream[], pageSize: number): TheGraphStreamResult => {
+    let hasNextPage = false
+
+    const streams: TheGraphStream[] = result.map((p) => mapStream(p))
+    if (streams.length > pageSize) {
+        hasNextPage = true
+        // Remove last item
+        streams.splice(pageSize, 1)
+    }
+
+    return {
+        streams,
+        hasNextPage,
+        lastId: streams[streams.length - 1]?.id,
+    }
+}
+
+export const getStreams = async (streamIds: Array<string>): Promise<TheGraphStream[]> => {
+    const theGraphUrl = getGraphUrl()
+
+    const result = await post({
+        url: theGraphUrl,
+        data: {
+            query: `
+                {
+                    streams(
+                        where: { id_in: [${streamIds.map((s) => `"${s}"`).join(',')}] }
+                    ) {
+                        id
+                        metadata
+                        permissions {
+                            userAddress
+                            canEdit
+                            canGrant
+                            canDelete
+                            subscribeExpiration
+                            publishExpiration
+                        }
+                    }
+                }
+            `,
+        },
+    })
+
+    if (result && result.data && result.data.streams && result.data.streams.length > 0) {
+        return result.data.streams.map((s) => mapStream(s))
+    }
+
+    return []
+}
+
+export const getPagedStreams = async (
+    first: number,
+    lastId?: string,
+    owner?: string,
+    search?: string,
+    orderBy?: TheGraphOrderBy,
+    orderDirection?: TheGraphOrderDirection,
+): Promise<TheGraphStreamResult> => {
+    const theGraphUrl = getGraphUrl()
+
+    // NOTE: Searching is done through subentity "permissions" because we cannot do id_contains
+    // as it's not techically stored as a string on The Graph.
+    const searchFilter = search != null && search.length > 0 ? `stream_contains: "${search}"` : null
+    const ownerFilter = owner != null ? `userAddress: "${owner.toLowerCase()}", canEdit: true` : null
+    const allPermissionFilters = [ownerFilter, searchFilter].filter((filter) => !!filter).join(',')
+    const permissionFilter = allPermissionFilters.length > 0 && `permissions_: { ${allPermissionFilters} }`
+    const comparisonOperator = orderDirection === TheGraphOrderDirection.Asc ? 'gt' : 'lt'
+    const cursorFilter = lastId != null ? `id_${comparisonOperator}: "${lastId}"` : null
+    const allFilters = [cursorFilter, permissionFilter].filter((filter) => !!filter).join(',')
+
+    const result = await post({
+        url: theGraphUrl,
+        data: {
+            query: `
+                {
+                    streams(
+                        first: ${first + 1},
+                        orderBy: ${orderBy?.toString() ?? TheGraphOrderBy.Id.toString()},
+                        orderDirection: ${orderDirection?.toString() ?? TheGraphOrderDirection.Asc.toString()},
+                        ${allFilters != null ? `where: { ${allFilters} }` : ''},
+                    ) {
+                        id
+                        metadata
+                        permissions {
+                            userAddress
+                            canEdit
+                            canGrant
+                            canDelete
+                            subscribeExpiration
+                            publishExpiration
+                        }
+                    }
+                }
+            `,
+        },
+    })
+
+    if (result && result.data && result.data.streams && result.data.streams.length > 0) {
+        return prepareStreamResult(result.data.streams, first)
+    }
+
+    return {
+        streams: [],
+        hasNextPage: false,
+        lastId: null,
+    }
+}
+
+export enum IndexerOrderBy {
+    Id = 'ID',
+    Description = 'DESCRIPTION',
+    PeerCount = 'PEER_COUNT',
+    MsgPerSecond = 'MESSAGES_PER_SECOND',
+    SubscriberCount = 'SUBSCRIBER_COUNT',
+    PublisherCount = 'PUBLISHER_COUNT',
+}
+
+export enum IndexerOrderDirection {
+    Asc = 'ASC',
+    Desc = 'DESC'
+}
+
 export type IndexerStream = {
     id: string,
     description: string | null | undefined,
@@ -12,17 +231,25 @@ export type IndexerStream = {
 }
 
 export type IndexerResult = {
-    items: Array<IndexerStream>,
-    cursor: string,
+    streams: Array<IndexerStream>,
+    cursor: string | null | undefined,
+    hasNextPage: boolean,
 }
 
-export const getPagedStreamsFromIndexer = async (first: number, cursor?: string, owner?: string, search?: string): Promise<IndexerResult> => {
+export const getPagedStreamsFromIndexer = async (
+    first: number,
+    cursor?: string,
+    owner?: string,
+    search?: string,
+    orderBy?: IndexerOrderBy,
+    orderDirection?: IndexerOrderDirection,
+): Promise<IndexerResult> => {
     const { streamIndexerUrl } = getCoreConfig()
 
     const ownerFilter = owner != null ? `owner: "${owner}"` : null
-    const searchFilter = search != null ? `searchTerm: "${search}"` : null
+    const searchFilter = search != null && search.length > 0 ? `searchTerm: "${search}"` : null
     const cursorFilter = cursor != null ? `cursor: "${cursor}"` : null
-    const allFilters = [ownerFilter, searchFilter, cursorFilter].join(',')
+    const allFilters = [ownerFilter, searchFilter, cursorFilter].filter((filter) => !!filter).join(',')
 
     const result = await post({
         url: streamIndexerUrl,
@@ -31,6 +258,8 @@ export const getPagedStreamsFromIndexer = async (first: number, cursor?: string,
                 {
                     streams(
                         pageSize: ${first},
+                        orderBy: ${orderBy?.toString() ?? IndexerOrderBy.MsgPerSecond.toString()},
+                        orderDirection: ${orderDirection?.toString() ?? IndexerOrderDirection.Desc.toString()},
                         ${allFilters},
                     ) {
                         items {
@@ -46,15 +275,31 @@ export const getPagedStreamsFromIndexer = async (first: number, cursor?: string,
                 }
             `,
         },
+        options: {
+            timeout: 2000, // apply timeout so we fall back to using The Graph faster
+        }
     })
 
-    return result.data.streams
+    const resultObj = result.data.streams
+    if (resultObj) {
+        return {
+            streams: resultObj.items,
+            cursor: resultObj.cursor,
+            hasNextPage: resultObj.cursor != null,
+        }
+    }
+
+    return {
+        streams: [],
+        cursor: null,
+        hasNextPage: false,
+    }
 }
 
 export const getStreamsFromIndexer = async (streamIds: Array<string>): Promise<Array<IndexerStream>> => {
     const { streamIndexerUrl } = getCoreConfig()
 
-    if (streamIds.length === 0) {
+    if (streamIds == null || streamIds.length === 0) {
         return []
     }
 
@@ -104,87 +349,4 @@ export const getGlobalStatsFromIndexer = async (): Promise<GlobalStreamStats> =>
     })
 
     return result.data.summary
-}
-
-const getGraphUrl = () => {
-    const { theGraphUrl, streamsGraphName } = getCoreConfig()
-    return `${theGraphUrl}/subgraphs/name/${streamsGraphName}`
-}
-
-const buildGraphStats = (permissions: any): TheGraphStreamStats[] => {
-    const stats: Record<string, { subscriberCount: number | null, publisherCount: number | null}> = {}
-
-    permissions.forEach((perm) => {
-        if (perm.stream == null) {
-            return
-        }
-        const streamId = perm.stream.id
-
-        // Add new entry if it does not exist already
-        if (stats[streamId] == null) {
-            stats[streamId] = {
-                subscriberCount: 0,
-                publisherCount: 0,
-            }
-        }
-
-        // If stream has public permissions (zero address), return null for counts which means that anyone can
-        // publish or subscribe
-        if (perm.userAddress === address0) {
-            stats[streamId].subscriberCount = perm.subscribeExpiration >= Math.round(Date.now() / 1000) ? null : 0
-            stats[streamId].publisherCount = perm.publishExpiration >= Math.round(Date.now() / 1000) ? null : 0
-        }
-
-        if (perm.subscribeExpiration >= Math.round(Date.now() / 1000) && stats[streamId].subscriberCount != null) {
-            // @ts-expect-error 2531
-            stats[streamId].subscriberCount += 1
-        }
-
-        if (perm.publishExpiration >= Math.round(Date.now() / 1000) && stats[streamId].publisherCount != null) {
-            // @ts-expect-error 2531
-            stats[streamId].publisherCount += 1
-        }
-    })
-
-    return Object.entries(stats).map(([k, v]) => ({ id: k, ...v }))
-}
-
-export type TheGraphStreamStats = {
-    id: string,
-    subscriberCount: number | null,
-    publisherCount: number | null,
-}
-
-export const getPublisherAndSubscriberCountForStreams = async (streamIds: Array<string>): Promise<TheGraphStreamStats[]> => {
-    const theGraphUrl = getGraphUrl()
-
-    const result = await post({
-        url: theGraphUrl,
-        data: {
-            query: `
-                {
-                    permissions(
-                        where: {
-                            or: [
-                                ${streamIds.map((s) => `{ stream: "${s}" }`).join(',')}
-                            ]
-                        }
-                    ) {
-                        userAddress
-                        subscribeExpiration
-                        publishExpiration
-                        stream {
-                          id
-                        }
-                    }
-                }
-            `,
-        },
-    })
-
-    if (result && result.data && result.data.permissions.length > 0) {
-        return buildGraphStats(result.data.permissions)
-    }
-
-    return []
 }
