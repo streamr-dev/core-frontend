@@ -7,7 +7,6 @@ import { subscriptionsSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'
 import { StoreState } from '$shared/types/store-state'
 import { Filter } from '$userpages/types/common-types'
-import { getFilters } from '$userpages/utils/constants'
 import { isActive } from '$mp/utils/time'
 import { ProjectSubscription, ProjectIdList, ProjectSubscriptionIdList, ProjectSubscriptionList } from '../../types/project-types'
 import { Project } from '../../types/project-types'
@@ -85,7 +84,7 @@ const filterPurchases = (data: ProjectSubscriptionList, filter: Filter | null | 
 
         // Match key-value filters
         if (filter && filter.key && filter.value) {
-            const filterConstants = getFilters('product')
+            // const filterConstants = …
             const activeFilter = filterConstants.ACTIVE
             const expiredFilter = filterConstants.EXPIRED
 

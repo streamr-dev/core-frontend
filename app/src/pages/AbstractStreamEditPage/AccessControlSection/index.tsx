@@ -1,7 +1,7 @@
 import React from 'react'
 import { StreamPermission } from 'streamr-client'
 import { useCurrentAbility } from '$shared/stores/abilities'
-import TOCSection from '$shared/components/TOCPage/TOCSection'
+import Section from '../Section'
 import StreamTypeSelector from './StreamTypeSelector'
 import PermissionList from './PermissionList'
 
@@ -15,14 +15,14 @@ const AccessControlSection: React.FunctionComponent<Props> = ({ disabled: disabl
     const disabled = disabledProp || !canEdit
 
     return (
-        <TOCSection id="accessControl" title="Access control">
+        <Section title="Access control">
             <p>
                 You can make your stream public, or grant access to specific Ethereum accounts.
                 Learn more about stream access control from the <a href="https://docs.streamr.network/">docs</a>.
             </p>
             <StreamTypeSelector disabled={disabled} />
             <PermissionList disabled={disabled} />
-        </TOCSection>
+        </Section>
     )
 }
 

@@ -37,11 +37,3 @@ export type TransactionEntity = {
 }
 export type TransactionEntityList = Array<TransactionEntity>
 export type TransactionEntities = Record<Hash, TransactionEntity>
-export type EventLog = {
-    id: string
-    transactionHash: Hash
-    blockHash: Hash
-    blockNumber: number
-    type: string
-}
-export type EventLogList = Array<EventLog>

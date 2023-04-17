@@ -15,7 +15,7 @@ import { MD as TABLET, LG as DESKTOP, COLORS, REGULAR, MEDIUM } from '$shared/ut
 import Link from '$shared/components/Link'
 import SvgIcon from '$shared/components/SvgIcon'
 import AvatarImage from '$shared/components/AvatarImage'
-import AccountsBalance from '$userpages/components/Header/AccountsBalance'
+import AccountsBalance from '$shared/components/AccountsBalance'
 import {useAuthController} from "$auth/hooks/useAuthController"
 import {truncate} from "$shared/utils/text"
 import routes from '$routes'

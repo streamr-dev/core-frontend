@@ -12,7 +12,6 @@ import { NotificationIcon, projectStates } from '$shared/utils/constants'
 import { numberToText } from '$shared/utils/text'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { areAddressesEqual } from '$mp/utils/smartContract'
-import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import useModal from '$shared/hooks/useModal'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
@@ -144,11 +143,6 @@ function useEditController(product: Project) {
                     nextProduct.id || '',
                 )*/
                 resetTouched()
-                Activity.push({
-                    action: actionTypes.UPDATE,
-                    resourceId: nextProduct.id,
-                    resourceType: resourceTypes.PRODUCT,
-                })
                 // TODO: handle saving errors
                 return true
             })

@@ -3,11 +3,11 @@ import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
 import { action } from '@storybook/addon-actions'
 import sample from './sample.stories.png'
-import Badge, { DeployingBadge, DataUnionBadge, SharedBadge, ChainBadge, BadgeLink } from './Badge'
+import { DeployingBadge, DataUnionBadge, SharedBadge, BadgeLink } from './Badge'
 import Grid from './Grid'
 import Summary from './Summary'
 import Menu, { MenuItem } from './Menu'
-import Tile, {touchedAgo, PurchaseTile, TileImageContainer, TileThumbnail} from './'
+import Tile, { touchedAgo, TileImageContainer, TileThumbnail } from './'
 
 const stories = storiesOf('Shared/Tile', module)
     .addDecorator(
@@ -131,7 +131,6 @@ stories.add('with Data Union badge being a link', () => (
                     target="_blank"
                     memberCount={16}
                 />
-                <ChainBadge bottom left chainId={1} chainName="Ethereum" />
             </TileImageContainer>
         </Tile>
     </Grid>
@@ -174,46 +173,5 @@ stories.add('elastic grid', () => (
                 </Tile>
             ),
         )}
-    </Grid>
-))
-const now = new Date()
-stories.add('purchase tile', () => (
-    <Grid>
-        <PurchaseTile
-            expiresAt={new Date(now.getTime() + 299 * 1000)}
-            now={now}
-            numMembers={10}
-            product={{
-                imageUrl: sample,
-                name: 'Product that expires in <5 minutes',
-            }}
-            showDataUnionBadge
-        />
-        <PurchaseTile
-            expiresAt={new Date(now.getTime() + 3599 * 1000)}
-            now={now}
-            product={{
-                imageUrl: sample,
-                name: 'Product that expires in <1hr',
-            }}
-            showDataUnionBadge
-            showDeployingBadge
-        />
-        <PurchaseTile
-            expiresAt={new Date(now.getTime() + 3601 * 1000)}
-            now={now}
-            product={{
-                imageUrl: sample,
-                name: 'Product that expires in 1hr+',
-            }}
-        />
-        <PurchaseTile
-            expiresAt={now}
-            now={now}
-            product={{
-                imageUrl: sample,
-                name: 'Expired product',
-            }}
-        />
     </Grid>
 ))
