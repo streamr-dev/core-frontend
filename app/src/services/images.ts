@@ -3,18 +3,18 @@ import { post } from '$shared/utils/api'
 
 export const postImage = async (image: File): Promise<string> => {
     const config = getCoreConfig()
-    const {projectId, apiSecretKey, ipfsUploadEndpoint, ipfsResourceGetBaseUrl} = config.ipfs
+    const { projectId, apiSecretKey, ipfsUploadEndpoint, ipfsResourceGetBaseUrl } = config.ipfs
     const options = {
         headers: {
             'Content-Type': 'multipart/form-data',
         },
         auth: {
             username: projectId,
-            password: apiSecretKey
-        }
+            password: apiSecretKey,
+        },
     }
     const data = new FormData()
     data.append('file', image, image.name)
-    const uploadResult = await post({url: ipfsUploadEndpoint, options, data})
-    return (!!uploadResult && uploadResult.Hash) ? ipfsResourceGetBaseUrl + uploadResult.Hash : null
+    const uploadResult = await post({ url: ipfsUploadEndpoint, options, data })
+    return !!uploadResult && uploadResult.Hash ? ipfsResourceGetBaseUrl + uploadResult.Hash : null
 }

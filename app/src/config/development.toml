@@ -39,7 +39,7 @@ address = "0xde1112f631486CfC759A50196853011528bC5FA0"
 projectId = "2KjYUpR265h6R5M5njkSue5RGm7"
 apiSecretKey = "c39492773b28820c8b3654178bf26946"
 ipfsUploadEndpoint = "https://ipfs.infura.io:5001/api/v0/add"
-ipfsResourceGetBaseUrl = "https://ipfs.io/ipfs/"
+ipfsResourceGetBaseUrl = "https://streamr-hub.infura-ipfs.io/ipfs/"
 
 [core.projectRegistry]
 chainId = 8997
