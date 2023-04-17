@@ -9,8 +9,6 @@ import Text from '$ui/Text'
 import Select from '$ui/Select'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
 import useCopy from '$shared/hooks/useCopy'
-import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
 import { useAuthController } from "$auth/hooks/useAuthController"
 import { DraftValidationError, useCurrentDraftError, useSetCurrentDraftError, useSetCurrentDraftTransientStreamId } from '$shared/stores/streamEditor'
@@ -19,12 +17,7 @@ import useStreamOwnerOptions, { ADD_ENS_DOMAIN_VALUE } from './useStreamOwnerOpt
 export const ENS_DOMAINS_URL = 'https://ens.domains'
 
 export function ReadonlyStreamId({ streamId }: { streamId: string }) {
-    const { copy, isCopied } = useCopy(() => {
-        Notification.push({
-            title: 'Stream ID copied',
-            icon: NotificationIcon.CHECKMARK,
-        })
-    })
+    const { copy, isCopied } = useCopy()
 
     return (
         <StreamId>
@@ -36,9 +29,14 @@ export function ReadonlyStreamId({ streamId }: { streamId: string }) {
             </Pathname>
             <div>
                 <Label />
-                <Button kind="secondary" onClick={() => void copy(streamId || '')} type="button">
-                    {!isCopied && 'Copy'}
-                    {!!isCopied && 'Copied!'}
+                <Button
+                    kind="secondary"
+                    onClick={() => void copy(streamId || '', {
+                        toastMessage: 'Stream ID copied',
+                    })}
+                    type="button"
+                >
+                    {isCopied ? 'Copied!' : 'Copy'}
                 </Button>
             </div>
         </StreamId>

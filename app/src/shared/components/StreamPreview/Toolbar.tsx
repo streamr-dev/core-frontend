@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import useCopy from '$shared/hooks/useCopy'
 import PrestyledButton from '$shared/components/Button'
 import { SM, LG } from '$shared/utils/styled'
 import Selector from './Selector'
@@ -60,13 +59,6 @@ const Inner = styled.div`
         width: calc(100vw - var(--LiveDataInspectorWidth) - var(--LiveDataMinMargin) - 16px);
     }
 `
-const IfEnoughRoom = styled.div`
-    display: none;
-
-    @media (min-width: 668px) {
-        display: block;
-    }
-`
 
 type Props = {
     className?: string,
@@ -85,7 +77,6 @@ const UnstyledToolbar = ({
     partitions = [],
     streamId
 }: Props) => {
-    const { copy, isCopied } = useCopy()
     return (
         <div className={className}>
             <Lhs>
