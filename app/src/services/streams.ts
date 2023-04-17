@@ -18,13 +18,25 @@ export enum TheGraphOrderDirection {
     Desc = 'desc'
 }
 
+export type TheGraphStreamPermission = {
+    userAddress: string,
+    canEdit: boolean,
+    canGrant: boolean,
+    canDelete: boolean,
+    subscribeExpiration: number,
+    publishExpiration: number,
+}
+
+export type TheGraphStreamMetadata = {
+    description?: string,
+}
+
 export type TheGraphStream = {
     id: string,
-    metadata?: {
-        description?: string,
-    },
+    metadata?: TheGraphStreamMetadata,
     subscriberCount: number | null | undefined,
     publisherCount: number | null | undefined,
+    permissions: TheGraphStreamPermission[]
 }
 
 export type TheGraphStreamResult = {
@@ -33,7 +45,7 @@ export type TheGraphStreamResult = {
     lastId: string | null,
 }
 
-const calculatePubSubCount = (permissions: any[]) => {
+const calculatePubSubCount = (permissions: TheGraphStreamPermission[]) => {
     let publisherCount: number | null = 0
     let subscriberCount: number | null = 0
 
@@ -64,8 +76,8 @@ const calculatePubSubCount = (permissions: any[]) => {
     }
 }
 
-const mapStream = (stream: any): TheGraphStream => {
-    const result: TheGraphStream = { ...stream }
+const mapStream = (stream: TheGraphStream): TheGraphStream => {
+    const result = { ...stream }
 
     // Get publisher and subscriber counts
     const counts = calculatePubSubCount(stream.permissions)
@@ -73,12 +85,14 @@ const mapStream = (stream: any): TheGraphStream => {
     result.subscriberCount = counts.subscriberCount
 
     // Try to parse metadata JSON
-    try {
-        const metadata = JSON.parse(stream.metadata)
-        result.metadata = metadata
-    } catch (e) {
-        console.error(`Could not parse metadata for stream ${stream.id}`, e)
-        result.metadata = {}
+    if (stream.metadata != null) {
+        try {
+            const metadata = JSON.parse(stream.metadata as string)
+            result.metadata = metadata
+        } catch (e) {
+            console.error(`Could not parse metadata for stream ${stream.id}`, e)
+            result.metadata = {}
+        }
     }
 
     return result
@@ -97,7 +111,7 @@ const prepareStreamResult = (result: TheGraphStream[], pageSize: number): TheGra
     return {
         streams,
         hasNextPage,
-        lastId: streams.length === 0 ? null : streams[streams.length - 1].id,
+        lastId: streams[streams.length - 1]?.id,
     }
 }
 

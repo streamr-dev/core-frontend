@@ -69,16 +69,11 @@ const mapOrderByToIndexer = (orderBy: OrderBy): IndexerOrderBy => {
 }
 
 const mapOrderDirectionToIndexer = (orderDirection: OrderDirection): IndexerOrderDirection => {
-    switch (orderDirection) {
-        case OrderDirection.Desc: {
-            return IndexerOrderDirection.Desc
-        }
-        case OrderDirection.Asc: {
-            return IndexerOrderDirection.Asc
-        }
-        default:
-            return IndexerOrderDirection.Asc
+    if (orderDirection === OrderDirection.Desc) {
+        return IndexerOrderDirection.Desc
     }
+
+    return IndexerOrderDirection.Asc
 }
 
 const mapOrderByToGraph = (orderBy: OrderBy): TheGraphOrderBy => {
@@ -92,24 +87,15 @@ const mapOrderByToGraph = (orderBy: OrderBy): TheGraphOrderBy => {
 }
 
 const mapOrderDirectionToGraph = (orderDirection: OrderDirection): TheGraphOrderDirection => {
-    switch (orderDirection) {
-        case OrderDirection.Desc: {
-            return TheGraphOrderDirection.Desc
-        }
-        case OrderDirection.Asc: {
-            return TheGraphOrderDirection.Asc
-        }
-        default:
-            return TheGraphOrderDirection.Asc
+    if (orderDirection === OrderDirection.Desc) {
+        return TheGraphOrderDirection.Desc
     }
+
+    return TheGraphOrderDirection.Asc
 }
 
 const shouldUseIndexer = (orderBy: OrderBy) => {
-    if (orderBy === OrderBy.MessagesPerSecond || orderBy === OrderBy.PeerCount) {
-        return true
-    }
-
-    return false
+    return orderBy === OrderBy.MessagesPerSecond || orderBy === OrderBy.PeerCount
 }
 
 const Container = styled.div`
