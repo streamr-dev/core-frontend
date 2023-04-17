@@ -2,8 +2,6 @@ import React, { FunctionComponent, useCallback } from 'react'
 import styled from 'styled-components'
 import Button from '$shared/components/Button'
 import useCopy from '$shared/hooks/useCopy'
-import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
 import SvgIcon from '$shared/components/SvgIcon'
 
 const Btn = styled(Button)`
@@ -23,21 +21,20 @@ const Btn = styled(Button)`
 type CopyButtonProps = {
     valueToCopy: string
     notificationTitle?: string
-    notificationDescription?: string
     className?: string
 }
 
 export const CopyButton: FunctionComponent<CopyButtonProps> = ({
     valueToCopy,
     notificationTitle = 'Stream ID copied',
-    notificationDescription,
     className,
 }) => {
     const { copy } = useCopy()
     const handleCopy = useCallback(() => {
-        copy(valueToCopy)
-        Notification.push({ title: notificationTitle, description: notificationDescription, icon: NotificationIcon.CHECKMARK })
-    }, [copy, notificationDescription, notificationTitle, valueToCopy])
+        copy(valueToCopy, {
+            toastMessage: notificationTitle,
+        })
+    }, [copy, notificationTitle, valueToCopy])
     return (
         <Btn onClick={handleCopy} type={'button'} kind={'secondary'} size={'mini'} className={className}>
             <SvgIcon name={'copy'} />

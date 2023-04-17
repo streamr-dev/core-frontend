@@ -5,7 +5,7 @@ import { useLayoutEffect, useReducer, useRef, useState } from 'react'
 
 const toastIn = keyframes`
     from {
-        transform: translateX(-100%) translateZ(0);
+        transform: translateX(-100%) translateX(-24px) translateZ(0);
     }
     to {
         transform: translateX(0) translateZ(0);
@@ -14,13 +14,13 @@ const toastIn = keyframes`
 
 const toastSqueeze = keyframes`
     from {
-        transform: translateX(-100%) translateZ(0);
+        transform: translateX(-100%) translateX(-24px) translateZ(0);
     }
     to {
         height: 0;
         margin-top: 0;
         margin-left: 0;
-        transform: translateX(-100%) translateZ(0);
+        transform: translateX(-100%) translateX(-24px) translateZ(0);
     }
 `
 
@@ -29,7 +29,7 @@ const toastOut = keyframes`
         transform: translateX(0) translateZ(0);
     }
     to {
-        transform: translateX(-100%) translateZ(0);
+        transform: translateX(-100%) translateX(-24px) translateZ(0);
     }
 `
 

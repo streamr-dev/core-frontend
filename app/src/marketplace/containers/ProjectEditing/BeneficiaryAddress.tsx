@@ -5,8 +5,6 @@ import WithInputActions from '$shared/components/WithInputActions'
 import PopoverItem from '$shared/components/Popover/PopoverItem'
 import Text from '$ui/Text'
 import useCopy from '$shared/hooks/useCopy'
-import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
 import { isEthereumAddress } from '$mp/utils/validate'
 import useValidation from '$mp/containers/ProductController/useValidation'
@@ -89,10 +87,8 @@ export const BeneficiaryAddress: FunctionComponent<BeneficiaryAddressProps> = ({
             return
         }
 
-        copy(beneficiaryAddress)
-        Notification.push({
-            title: 'Copied',
-            icon: NotificationIcon.CHECKMARK,
+        copy(beneficiaryAddress, {
+            toastMessage: 'Copied',
         })
     }, [copy, beneficiaryAddress])
 

@@ -1,15 +1,13 @@
 import React, { FunctionComponent, useMemo, useState } from 'react'
 import { CodeSnippet, Tabs } from '@streamr/streamr-layout'
 import styled from 'styled-components'
-import copy from 'copy-to-clipboard'
 import { COLORS, MEDIUM } from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
 import Button from '$shared/components/Button'
-import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
 import SelectField2 from '$mp/components/SelectField2'
 import { StreamId } from '$shared/types/stream-types'
 import {truncateStreamName} from "$shared/utils/text"
+import useCopy from '$shared/hooks/useCopy'
 
 export const StreamConnect: FunctionComponent<{streams: StreamId[]}> = ({streams}) => {
     const [streamId, setSelectedStream] = useState<StreamId>(streams[0])
@@ -118,10 +116,7 @@ mqtt.subscribe('${streamId}', (msg) => {
         return mqttSnippetHeader + (action === 'publish' ? mqttPublish : mqttSubscribe)
     }, [mqttSnippetHeader, mqttPublish, mqttSubscribe, action])
 
-    const handleCopy = (snippet: string): void => {
-        copy(snippet)
-        Notification.push({title: 'Copied!', icon: NotificationIcon.CHECKMARK})
-    }
+    const { copy } = useCopy()
 
     const currentBrokerSnippet = useMemo(() => {
         let snippet: string
@@ -214,7 +209,12 @@ mqtt.subscribe('${streamId}', (msg) => {
                             <CodeSnippet language={'javascript'}>{lightNodeSnippet}</CodeSnippet>
                         </StreamConnectLightNodeSnippetContainer>
                         <StreamConnectSnippetCopyContainer>
-                            <Button kind={'secondary'} onClick={() => handleCopy(lightNodeSnippet)}>
+                            <Button
+                                kind="secondary"
+                                onClick={() => void copy(currentBrokerSnippet, {
+                                    toastMessage: 'Copied',
+                                })}
+                            >
                                 Copy
                             </Button>
                         </StreamConnectSnippetCopyContainer>
@@ -235,7 +235,12 @@ mqtt.subscribe('${streamId}', (msg) => {
                             </Tabs.Item>
                         </Tabs>
                         <StreamConnectSnippetCopyContainer>
-                            <Button kind={'secondary'} onClick={() => handleCopy(currentBrokerSnippet)}>
+                            <Button
+                                kind="secondary"
+                                onClick={() => void copy(currentBrokerSnippet, {
+                                    toastMessage: 'Copied',
+                                })}
+                            >
                                 Copy
                             </Button>
                         </StreamConnectSnippetCopyContainer>

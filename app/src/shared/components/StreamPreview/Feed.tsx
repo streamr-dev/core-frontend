@@ -5,8 +5,6 @@ import stringifyObject from 'stringify-object'
 import { Tooltip } from '@streamr/streamr-layout'
 
 import { formatDateTime } from '$mp/utils/time'
-import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
 import useCopy from '$shared/hooks/useCopy'
 import {COLORS, MAX_BODY_WIDTH, MEDIUM, TABLET} from '$shared/utils/styled'
 import SelectField2 from "$mp/components/SelectField2"
@@ -256,10 +254,8 @@ const UnstyledFeed = ({
             return
         }
 
-        copy(value)
-        Notification.push({
-            title: 'Field data copied to clipboard',
-            icon: NotificationIcon.CHECKMARK,
+        copy(value, {
+            toastMessage: 'Field data copied to clipboard',
         })
     }
 
