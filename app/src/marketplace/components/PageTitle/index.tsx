@@ -36,7 +36,7 @@ export const ProjectPageTitle: FunctionComponent = () => {
     }, [project, currentAuthSession, projectRegistry])
 
     return <PageTitleContainer>
-        <span>{title}</span>
+        <>{title}</>
         {canEdit && <EditButton tag={Link} to={routes.projects.edit({id: project.id})} kind={'secondary'} size={'mini'}>
             <SvgIcon name={'pencilFull'} />
         </EditButton>}

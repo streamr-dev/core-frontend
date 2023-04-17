@@ -12,9 +12,9 @@ import {MarketplaceHelmet} from "$shared/components/Helmet"
 import {DetailsPageHeader} from "$shared/components/DetailsPageHeader"
 import {ProjectEditor} from "$mp/containers/ProjectEditing/ProjectEditor"
 import {LoadedProjectContextProvider, useLoadedProject} from "$mp/contexts/LoadedProjectContext"
-import {mapProjectTypeName} from "$mp/utils/project-mapper"
 import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
 import {MarketplaceLoadingView} from "$mp/containers/ProjectPage/MarketplaceLoadingView"
+import {getProjectTitleForEditor} from "$mp/containers/ProjectPage/utils"
 import { InactiveProjectLinkTabs } from "../ProjectPage/utils"
 
 const UnstyledEditProjectPage: FunctionComponent = () => {
@@ -36,7 +36,7 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
     }, [resetTouched])
 
     const pageTitle = useMemo<ReactNode>(() => {
-        return !!project.creator && <>{mapProjectTypeName(project.type)} by <strong> {project.creator} </strong></>
+        return getProjectTitleForEditor(project)
     }, [project])
 
     return <Layout

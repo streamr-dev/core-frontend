@@ -20,8 +20,8 @@ import {
     ProjectControllerContext,
     ProjectControllerProvider
 } from '$mp/containers/ProjectEditing/ProjectController'
-import {mapProjectTypeName} from "$mp/utils/project-mapper"
 import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
+import {getProjectTitleForEditor} from "$mp/containers/ProjectPage/utils"
 import { useEditableProjectActions } from '../ProductController/useEditableProjectActions'
 import { InactiveProjectLinkTabs } from '../ProjectPage/utils'
 
@@ -50,7 +50,7 @@ const UnstyledNewProjectPage = ({ className }: Props) => {
     }, [resetTouched])
 
     const pageTitle = useMemo<ReactNode>(() => {
-        return !!project.creator && <>{mapProjectTypeName(project.type)} by <strong> {project.creator} </strong></>
+        return getProjectTitleForEditor(project)
     }, [project])
 
     return <Layout nav={<EditorNav isNewProject={true}/>} innerClassName={styles.greyInner}>
