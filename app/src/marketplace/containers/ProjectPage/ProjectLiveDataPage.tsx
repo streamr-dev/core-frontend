@@ -10,17 +10,20 @@ import { ProjectPageTitle } from '$mp/components/PageTitle'
 import { useUserHasAccessToProject } from '$mp/containers/ProductController/useUserHasAccessToProject'
 import { StreamPreview } from '$shared/components/StreamPreview'
 import routes from '$routes'
-import { getProjectDetailsLinkTabs } from './utils'
+import { ProjectLinkTabs } from './utils'
 
 const ProjectLiveData: FunctionComponent = () => {
     const { loadedProject: project } = useLoadedProject()
-    const linkTabs = useMemo(() => getProjectDetailsLinkTabs(project.id), [project.id])
     const userHasAccess = useUserHasAccessToProject()
 
     return (
         <CoreLayout>
             <MarketplaceHelmet title={project.name} />
-            <DetailsPageHeader backButtonLink={routes.projects.index} pageTitle={<ProjectPageTitle />} linkTabs={linkTabs} />
+            <DetailsPageHeader
+                backButtonLink={routes.projects.index}
+                pageTitle={<ProjectPageTitle />}
+                rightComponent={<ProjectLinkTabs projectId={project?.id || undefined} />}
+            />
             {userHasAccess ? (
                 <StreamPreview streamsList={project.streams} />
             ) : (
