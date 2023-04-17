@@ -230,7 +230,7 @@ const NewStreamListingPage: React.FC = () => {
                     </Button>
                 </FiltersBar>
             </ActionBarContainer>
-            <LoadingIndicator loading={streamsQuery.isLoading}/>
+            <LoadingIndicator loading={streamsQuery.isLoading || streamsQuery.isFetching || streamsQuery.isFetchingNextPage} />
             <PageWrap>
                 <Container>
                     <TableContainer>

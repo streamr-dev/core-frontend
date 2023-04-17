@@ -44,7 +44,7 @@ const ProjectsPage: FunctionComponent = () => {
             if (filter.search != null && filter.search.length > 0) {
                 return searchProjects(filter.search, PAGE_SIZE, ctx.pageParam, filter.type)
             } else {
-                return getProjects(filter.owner, PAGE_SIZE, ctx.pageParam, filter.type)
+                return getProjects(filter.owner ?? undefined, PAGE_SIZE, ctx.pageParam, filter.type ?? undefined)
             }
         },
         getNextPageParam: (lastPage, pages) => {
@@ -85,7 +85,7 @@ const ProjectsPage: FunctionComponent = () => {
                 onFilterByAuthorChange={onFilterByAuthorChange}
                 isUserAuthenticated={isUserAuthenticated}
             />
-            <LoadingIndicator loading={query.isLoading}/>
+            <LoadingIndicator loading={query.isLoading || query.isFetching || query.isFetchingNextPage}/>
             <CreateProjectModal />
             <ProjectsContainer>
                 <ProjectsComponent
