@@ -1,7 +1,6 @@
 import React, {FunctionComponent, ReactNode, useContext, useEffect, useMemo} from "react"
 import styled from "styled-components"
 import {isEqual} from "lodash"
-import { Link } from "react-router-dom"
 import {ValidationContext, ValidationContextProvider} from "$mp/containers/ProductController/ValidationContextProvider"
 import {ProjectControllerContext, ProjectControllerProvider} from "$mp/containers/ProjectEditing/ProjectController"
 import {ProjectStateContext, ProjectStateContextProvider} from "$mp/contexts/ProjectStateContext"
@@ -16,7 +15,7 @@ import {LoadedProjectContextProvider, useLoadedProject} from "$mp/contexts/Loade
 import {mapProjectTypeName} from "$mp/utils/project-mapper"
 import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
 import {MarketplaceLoadingView} from "$mp/containers/ProjectPage/MarketplaceLoadingView"
-import Tabs, { Tab } from '$shared/components/Tabs'
+import { InactiveProjectLinkTabs } from "../ProjectPage/utils"
 
 const UnstyledEditProjectPage: FunctionComponent = () => {
     const {state: project} = useContext(ProjectStateContext)
@@ -47,13 +46,7 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
         <MarketplaceHelmet title={'Edit project'}/>
         <DetailsPageHeader
             pageTitle={pageTitle}
-            rightComponent={
-                <Tabs>
-                    <Tab id="overview" tag={Link} selected to={location.pathname}>Project overview</Tab>
-                    <Tab id="connect" disabled>Connect</Tab>
-                    <Tab id="liveData" disabled>Live data</Tab>
-                </Tabs>
-            }
+            rightComponent={<InactiveProjectLinkTabs />}
         />
         <LoadingIndicator loading={publishInProgress}/>
         <ProjectEditor nonEditableSalePointChains={nonEditableSalePointChains}/>

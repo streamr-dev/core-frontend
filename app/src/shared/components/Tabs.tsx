@@ -12,6 +12,7 @@ import React, {
     useState,
 } from 'react'
 import styled, { css } from 'styled-components'
+import isPreventable from '$utils/isPreventable'
 
 interface InternalTabProps<P = unknown> {
     id: string
@@ -167,21 +168,6 @@ const Rails = styled.div<{ $animated?: boolean }>`
             transition-property: visiblilty, opecity, transform, width;
         `}
 `
-
-/**
- * @param e probably `Event` himself!
- * @returns `true` if the given entity has the `preventDefault` function and the `defaultPrevented` flag.
- */
-function isPreventable(e: unknown): e is Event {
-    return (
-        typeof e === 'object' &&
-        !!e &&
-        'preventDefault' in e &&
-        typeof e.preventDefault === 'function' &&
-        'defaultPrevented' in e &&
-        typeof e.defaultPrevented === 'boolean'
-    )
-}
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
     selection?: string

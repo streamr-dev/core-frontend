@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Project } from '$mp/types/project-types'
 import Tabs, { Tab } from '$shared/components/Tabs'
+import isPreventable from '$app/src/utils/isPreventable'
 import routes from '$routes'
 
 export const getProjectTitle = (project: Project): ReactNode => {
@@ -48,6 +49,34 @@ export function ProjectLinkTabs({ projectId }: { projectId: string | undefined }
                 to={routes.projects.liveData({ id: projectId })}
                 selected="to"
             >
+                Live data
+            </Tab>
+        </Tabs>
+    )
+}
+
+export function InactiveProjectLinkTabs() {
+    const { pathname } = useLocation()
+
+    return (
+        <Tabs>
+            <Tab
+                id="overview"
+                tag={Link}
+                selected
+                to={pathname}
+                onClick={(e: unknown) => {
+                    if (isPreventable(e)) {
+                        e.preventDefault()
+                    }
+                }}
+            >
+                Project overview
+            </Tab>
+            <Tab id="connect" disabled>
+                Connect
+            </Tab>
+            <Tab id="liveData" disabled>
                 Live data
             </Tab>
         </Tabs>
