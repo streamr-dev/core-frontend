@@ -53,3 +53,26 @@ export function ProjectLinkTabs({ projectId }: { projectId: string | undefined }
         </Tabs>
     )
 }
+
+export function InactiveProjectLinkTabs() {
+    const { pathname } = useLocation()
+
+    return (
+        <Tabs>
+            <Tab
+                id="overview"
+                tag={Link}
+                selected
+                to={pathname}
+            >
+                Project overview
+            </Tab>
+            <Tab id="connect" disabled>
+                Connect
+            </Tab>
+            <Tab id="liveData" disabled>
+                Live data
+            </Tab>
+        </Tabs>
+    )
+}

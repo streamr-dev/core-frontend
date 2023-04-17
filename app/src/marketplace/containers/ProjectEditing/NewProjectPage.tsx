@@ -1,5 +1,5 @@
 import React, { ReactNode, useContext, useEffect, useMemo } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import qs from 'query-string'
 import '$mp/types/project-types'
@@ -22,8 +22,8 @@ import {
 } from '$mp/containers/ProjectEditing/ProjectController'
 import {mapProjectTypeName} from "$mp/utils/project-mapper"
 import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
-import Tabs, { Tab } from '$shared/components/Tabs'
 import { useEditableProjectActions } from '../ProductController/useEditableProjectActions'
+import { InactiveProjectLinkTabs } from '../ProjectPage/utils'
 
 type Props = {
     className?: string | null | undefined
@@ -57,13 +57,7 @@ const UnstyledNewProjectPage = ({ className }: Props) => {
         <MarketplaceHelmet title={'Create a new project'}/>
         <DetailsPageHeader
             pageTitle={pageTitle}
-            rightComponent={
-                <Tabs>
-                    <Tab id="overview" tag={Link} selected to={location.pathname}>Project overview</Tab>
-                    <Tab id="connect" disabled>Connect</Tab>
-                    <Tab id="liveData" disabled>Live data</Tab>
-                </Tabs>
-            }
+            rightComponent={<InactiveProjectLinkTabs />}
         />
         <LoadingIndicator loading={publishInProgress}/>
         <ProjectEditor/>
