@@ -68,8 +68,8 @@ describe('AuthenticationController', () => {
         render(<AuthenticationControllerContextProvider>
             <TestComponent/>
         </AuthenticationControllerContextProvider>)
-        expect(controller.currentAuthSession).toEqual({address: undefined, method: undefined})
-        const newSession = {address: address0, method: 'SomeMethod'}
+        expect(controller.currentAuthSession).toEqual({address: '', method: '', ensName: ''})
+        const newSession = {address: address0, method: 'SomeMethod', ensName: ''}
         await act(async () => await controller.updateAuthSession(newSession))
         expect(controller.currentAuthSession).toEqual(newSession)
         expect(setAuthenticationInStorage).toHaveBeenCalledWith(newSession)
@@ -81,7 +81,7 @@ describe('AuthenticationController', () => {
             <TestComponent/>
         </AuthenticationControllerContextProvider>)
         act(() => controller.removeAuthSession())
-        expect(controller.currentAuthSession).toEqual({address: undefined, method: undefined})
+        expect(controller.currentAuthSession).toEqual({address: undefined, method: undefined, ensName: undefined})
         expect(removeAuthenticationFromStorage).toHaveBeenCalled()
     })
 })
