@@ -27,6 +27,7 @@ import getNativeTokenName from '$shared/utils/nativeToken'
 import { useAuthController } from '$auth/hooks/useAuthController'
 import { useInvalidateAbilities } from '$shared/stores/abilities'
 import routes from '$routes'
+import RelatedProjects from './AbstractStreamEditPage/RelatedProjects'
 
 export const getStreamDetailsLinkTabs = (streamId?: string, dirty?: boolean) => {
     return [
@@ -94,6 +95,7 @@ const SaveButton = styled(Button)`
 type ContainerBoxProps = {
     children?: React.ReactNode
     disabled?: boolean
+    streamId?: string,
     showSaveButton?: boolean
     fullWidth?: boolean
 }
@@ -105,7 +107,7 @@ const TitleContainer = styled.div`
 
 const getCryptoModal = toaster(GetCryptoModal, Layer.Modal)
 
-function ContainerBox({ children, disabled, showSaveButton = true, fullWidth = false }: ContainerBoxProps) {
+function ContainerBox({ children, disabled, streamId, showSaveButton = true, fullWidth = false }: ContainerBoxProps) {
     return (
         <Outer>
             <Inner fullWidth={fullWidth}>
@@ -116,6 +118,9 @@ function ContainerBox({ children, disabled, showSaveButton = true, fullWidth = f
                     </SaveButton>
                 )}
             </Inner>
+            {streamId != null && (
+                <RelatedProjects streamId={streamId} />
+            )}
         </Outer>
     )
 }
@@ -247,7 +252,12 @@ export default function StreamPage({ children, loading = false, includeContainer
                         }
                     />
                     {includeContainerBox ? (
-                        <ContainerBox disabled={busy || clean} showSaveButton={showSaveButton} fullWidth={fullWidth}>
+                        <ContainerBox
+                            disabled={busy || clean}
+                            streamId={streamId}
+                            showSaveButton={showSaveButton}
+                            fullWidth={fullWidth}
+                        >
                             {!loading && children}
                         </ContainerBox>
                     ) : (

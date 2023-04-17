@@ -236,12 +236,25 @@ const getProjectFilterQuery = (type: ProjectListingTypeFilter): string => {
     }
 }
 
-export const getProjects = async (owner?: string, first = 20, skip = 0, type?: ProjectListingTypeFilter): Promise<ProjectsResult> => {
+export const getProjects = async (
+    owner?: string | undefined,
+    first = 20,
+    skip = 0,
+    type?: ProjectListingTypeFilter | undefined,
+    streamId?: string | null, // used to search projects which contain this stream
+): Promise<ProjectsResult> => {
     const theGraphUrl = getGraphUrl()
 
-    const ownerFilter = owner != null ? `permissions_: { userAddress: "${owner}", canGrant: true }` : null
-    const typeFilter = type != null ? getProjectFilterQuery(type) : null
-    const allFilters = [ownerFilter,typeFilter].filter((filter) => !!filter).join(',')
+    const filters: string[] = []
+    if (owner) {
+        filters.push(`permissions_: { userAddress: "${owner}", canGrant: true }`)
+    }
+    if (type) {
+        filters.push(getProjectFilterQuery(type))
+    }
+    if (streamId) {
+        filters.push(`streams_contains: ["${streamId}"]`)
+    }
 
     const result = await post({
         url: theGraphUrl,
@@ -253,13 +266,13 @@ export const getProjects = async (owner?: string, first = 20, skip = 0, type?: P
                         skip: ${skip},
                         orderBy: score,
                         orderDirection: desc,
-                        ${allFilters != null ?  `where: { ${allFilters} }` : ''},
+                        ${filters.length > 0 ? `where: { ${filters} }` : ''},
                     ) {
                         ${projectFields}
                     }
                 }
             `,
-        }
+        },
     })
 
     if (result.data) {
@@ -273,7 +286,7 @@ export const getProjects = async (owner?: string, first = 20, skip = 0, type?: P
     }
 }
 
-export const searchProjects = async (search: string, first = 20, skip = 0, type?: ProjectListingTypeFilter): Promise<ProjectsResult> => {
+export const searchProjects = async (search: string, first = 20, skip = 0, type?: ProjectListingTypeFilter | null): Promise<ProjectsResult> => {
     const theGraphUrl = getGraphUrl()
     const typeFilter = type != null ? getProjectFilterQuery(type) : null
 
