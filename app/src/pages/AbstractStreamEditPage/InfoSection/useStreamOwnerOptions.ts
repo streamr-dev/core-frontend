@@ -28,7 +28,7 @@ export default function useStreamOwnerOptions() {
                             query: `
                                 query {
                                     domains(
-                                        where: { owner_in: ["${currentAuthSession.address}"]}
+                                        where: { owner_in: ["${currentAuthSession.address.toLowerCase()}"]}
                                         orderBy: name
                                     ) {
                                         id
