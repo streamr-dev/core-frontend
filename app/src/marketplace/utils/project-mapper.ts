@@ -35,6 +35,7 @@ export const mapGraphProjectToDomainModel = async (graphProject: TheGraphProject
         description: graphProject.metadata.description,
         creator: graphProject.metadata.creator,
         imageUrl: mapImageUrl(graphProject),
+        imageIpfsCid: graphProject.metadata.imageIpfsCid,
         streams: graphProject.streams,
         termsOfUse: {...graphProject.metadata.termsOfUse},
         contact: {...graphProject.metadata.contactDetails},
