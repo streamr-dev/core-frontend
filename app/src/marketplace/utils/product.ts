@@ -15,19 +15,15 @@ import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from '
 export const isPaidProject = (project: Project): boolean => project.type !== ProjectTypeEnum.OPEN_DATA
 
 export const isProjectOwnedBy = (project: TheGraphProject, address: string): boolean => {
-    const userPermissions = project.permissions.find((p) => p.userAddress.toLowerCase() === address.toLowerCase())
-    if (userPermissions != null && userPermissions.canGrant === true) {
-        return true
-    }
-    return false
+    const { canGrant = false } = project.permissions.find((p) => p.userAddress.toLowerCase() === address.toLowerCase()) || {}
+
+    return !!canGrant
 }
 
 export const hasActiveProjectSubscription = (project: TheGraphProject, address: string): boolean => {
-    const userSubscription = project.subscriptions.find((s) => s.userAddress.toLowerCase() === address.toLowerCase())
-    if (userSubscription != null && Number.parseInt(userSubscription.endTimestamp) * 1000 >= Date.now()) {
-        return true
-    }
-    return false
+    const { endTimestamp = '0' } = project.subscriptions.find((s) => s.userAddress.toLowerCase() === address.toLowerCase()) || {}
+
+    return Number.parseInt(endTimestamp, 10) * 1000 >= Date.now()
 }
 
 export const isDataUnionProject = (project: TheGraphProject): boolean => {
