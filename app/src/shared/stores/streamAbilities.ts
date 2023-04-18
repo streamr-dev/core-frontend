@@ -6,12 +6,6 @@ import produce from 'immer'
 import { useAuthController } from '$auth/hooks/useAuthController'
 import { useCurrentDraft } from './streamEditor'
 
-interface Actions {
-    fetchPermission: (streamId: string, account: string, permission: StreamPermission, streamrClient: StreamrClient) => Promise<void>
-
-    invalidate: (streamId: string, account: string) => void
-}
-
 type PermissionManifest = Partial<
     Record<
         StreamPermission,
@@ -23,6 +17,13 @@ type PermissionManifest = Partial<
 >
 
 interface Store {
+    fetchPermission: (
+        streamId: string,
+        account: string,
+        permission: StreamPermission,
+        streamrClient: StreamrClient,
+    ) => Promise<void>
+    invalidate: (streamId: string, account: string) => void
     fetching: Partial<
         Record<
             string, // [streamrId, account, permission]
@@ -37,11 +38,6 @@ interface Store {
     >
 }
 
-const initialState: Store = {
-    permissions: {},
-    fetching: {},
-}
-
 function accountKey(streamId: string, account: string) {
     return JSON.stringify([streamId, account.toLowerCase()])
 }
@@ -50,12 +46,19 @@ function permissionKey(streamId: string, account: string, permission: StreamPerm
     return JSON.stringify([streamId, account.toLowerCase(), permission])
 }
 
-const useAbilitiesStore = create<Store & Actions>((set, get) => {
-    function toggleFetching(streamId: string, account: string, permission: StreamPermission, newValue: boolean) {
+const useStreamAbilitiesStore = create<Store>((set, get) => {
+    function toggleFetching(
+        streamId: string,
+        account: string,
+        permission: StreamPermission,
+        newValue: boolean,
+    ) {
         set((store) =>
             produce(store, (draft) => {
                 if (!newValue) {
-                    return void delete draft.fetching[permissionKey(streamId, account, permission)]
+                    return void delete draft.fetching[
+                        permissionKey(streamId, account, permission)
+                    ]
                 }
 
                 draft.fetching[permissionKey(streamId, account, permission)] = true
@@ -64,7 +67,9 @@ const useAbilitiesStore = create<Store & Actions>((set, get) => {
     }
 
     return {
-        ...initialState,
+        permissions: {},
+
+        fetching: {},
 
         async fetchPermission(streamId, account, permission, streamrClient) {
             const pkey = permissionKey(streamId, account, permission)
@@ -128,13 +133,23 @@ const useAbilitiesStore = create<Store & Actions>((set, get) => {
     }
 })
 
-export function useAbility(streamId: string | undefined, account: string | undefined, permission: StreamPermission) {
+function useStreamAbility(
+    streamId: string | undefined,
+    account: string | undefined,
+    permission: StreamPermission,
+) {
     const client = useClient()
 
-    const fetchPermission = useAbilitiesStore(({ fetchPermission }) => fetchPermission)
+    const fetchPermission = useStreamAbilitiesStore(
+        ({ fetchPermission }) => fetchPermission,
+    )
 
     const { value, cache } =
-        useAbilitiesStore(({ permissions }) => (streamId && account ? permissions[accountKey(streamId, account)]?.[permission] : undefined)) || {}
+        useStreamAbilitiesStore(({ permissions }) =>
+            streamId && account
+                ? permissions[accountKey(streamId, account)]?.[permission]
+                : undefined,
+        ) || {}
 
     useEffect(() => {
         async function fetch() {
@@ -155,14 +170,19 @@ export function useAbility(streamId: string | undefined, account: string | undef
     return value
 }
 
-export function useCurrentAbility(permission: StreamPermission) {
+export function useCurrentStreamAbility(permission: StreamPermission) {
     const { streamId } = useCurrentDraft()
 
     const { address } = useAuthController().currentAuthSession
 
-    return useAbility(streamId, address, permission) || (!streamId && (permission === StreamPermission.EDIT || permission === StreamPermission.GRANT))
+    return (
+        useStreamAbility(streamId, address, permission) ||
+        (!streamId &&
+            (permission === StreamPermission.EDIT ||
+                permission === StreamPermission.GRANT))
+    )
 }
 
-export function useInvalidateAbilities() {
-    return useAbilitiesStore(({ invalidate }) => invalidate)
+export function useInvalidateStreamAbilities() {
+    return useStreamAbilitiesStore(({ invalidate }) => invalidate)
 }

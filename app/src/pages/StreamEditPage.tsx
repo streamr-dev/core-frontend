@@ -3,7 +3,7 @@ import { StreamPermission } from 'streamr-client'
 import { Redirect, Route, Switch, useParams } from 'react-router-dom'
 import { StreamPreview } from '$shared/components/StreamPreview'
 import { StreamConnect } from '$shared/components/StreamConnect'
-import { useCurrentAbility } from '$shared/stores/abilities'
+import { useCurrentStreamAbility } from '$shared/stores/streamAbilities'
 import { StreamDraftContext, useInitStreamDraft, useIsCurrentDraftBusy } from '$shared/stores/streamEditor'
 import useDecodedStreamId from '$shared/hooks/useDecodedStreamId'
 import routes from '$routes'
@@ -29,9 +29,9 @@ function CreatePage() {
 }
 
 function EditPage() {
-    const canEdit = useCurrentAbility(StreamPermission.EDIT)
+    const canEdit = useCurrentStreamAbility(StreamPermission.EDIT)
 
-    const canDelete = useCurrentAbility(StreamPermission.DELETE)
+    const canDelete = useCurrentStreamAbility(StreamPermission.DELETE)
 
     const disabled = useIsCurrentDraftBusy()
 
@@ -50,7 +50,7 @@ function EditPage() {
 }
 
 function LiveDataPage() {
-    const canSubscribe = useCurrentAbility(StreamPermission.SUBSCRIBE)
+    const canSubscribe = useCurrentStreamAbility(StreamPermission.SUBSCRIBE)
 
     const loading = typeof canSubscribe === 'undefined'
 
@@ -66,7 +66,7 @@ function LiveDataPage() {
 function ConnectPage() {
     const streamId = useDecodedStreamId()
 
-    const loading = useCurrentAbility(StreamPermission.EDIT) == null
+    const loading = useCurrentStreamAbility(StreamPermission.EDIT) == null
 
     return (
         <StreamPage loading={loading} showSaveButton={false} fullWidth>
