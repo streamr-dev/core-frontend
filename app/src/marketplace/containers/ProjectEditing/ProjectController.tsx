@@ -79,7 +79,7 @@ export const useProjectController = (): ProjectController => {
         const metadata: SmartContractProjectMetadata = {
             name: project.name,
             description: project.description,
-            imageUrl: project.imageUrl,
+            imageIpfsCid: project.imageIpfsCid,
             creator: project.creator,
             contactDetails: {
                 email: project.contact.email,
@@ -92,7 +92,7 @@ export const useProjectController = (): ProjectController => {
             termsOfUse: {...project.termsOfUse}
         }
         if (project.newImageToUpload) {
-            metadata.imageUrl = await postImage(project.newImageToUpload)
+            metadata.imageIpfsCid = await postImage(project.newImageToUpload)
         }
         return metadata
     }, [project])

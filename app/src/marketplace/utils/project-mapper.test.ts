@@ -2,6 +2,7 @@ import BN from "bn.js"
 import {TheGraphPaymentDetails, TheGraphProject} from "$app/src/services/projects"
 import {mapGraphProjectToDomainModel, mapSalePoints} from "$mp/utils/project-mapper"
 import {ProjectTypeEnum} from "$mp/utils/constants"
+import getCoreConfig from '$app/src/getters/getCoreConfig'
 
 const stubChainName = 'localChain'
 
@@ -50,7 +51,7 @@ describe('projectMapper', () => {
                     description: 'ipsum',
                     creator: 'Satoshi Nakamoto',
                     contactDetails: {},
-                    imageUrl: 'https://example.com/image.jpg',
+                    imageIpfsCid: 'IPFS_ID',
                     termsOfUse: {
                         commercialUse: false,
                         reselling: false,
@@ -70,13 +71,17 @@ describe('projectMapper', () => {
                 subscriptions: []
             }
             const model = await mapGraphProjectToDomainModel(stubGraphModel)
+
+            const { ipfs } = getCoreConfig()
+            const { ipfsGatewayUrl } = ipfs
+
             expect(model).toMatchObject({
                 id: stubGraphModel.id,
                 type: ProjectTypeEnum.PAID_DATA,
                 name: stubGraphModel.metadata.name,
                 description: stubGraphModel.metadata.description,
                 creator: stubGraphModel.metadata.creator,
-                imageUrl: stubGraphModel.metadata.imageUrl,
+                imageUrl:  ipfsGatewayUrl + stubGraphModel.metadata.imageIpfsCid,
                 streams: stubGraphModel.streams,
                 termsOfUse: stubGraphModel.metadata.termsOfUse,
                 contact: stubGraphModel.metadata.contactDetails,

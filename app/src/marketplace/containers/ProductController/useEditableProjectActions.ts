@@ -16,7 +16,6 @@ export type EditableProjectActions = {
     updateProject: (project: Partial<Project>) => void,
     updateName: (name: Project['name']) => void,
     updateDescription: (description: Project['description']) => void,
-    updateImageUrl: (image: Project['imageUrl']) => void,
     updateImageFile: (image: File) => void,
     updateStreams: (streams: StreamIdList) => void,
     updateAdminFee: (fee: Project['adminFee']) => void,
@@ -67,13 +66,6 @@ export const useEditableProjectActions = (): EditableProjectActions => {
         setTouched('salePoints')
     }, [updateState, setTouched])
 
-    const updateImageUrl = useCallback<EditableProjectActions['updateImageUrl']>(
-        (image: string) => {
-            updateState({imageUrl: image })
-            setTouched('imageUrl')
-        },
-        [updateState, setTouched],
-    )
     const updateImageFile = useCallback<EditableProjectActions['updateImageFile']>(
         (image: File) => {
             updateState({newImageToUpload: image})
@@ -161,7 +153,6 @@ export const useEditableProjectActions = (): EditableProjectActions => {
             updateDescription,
             updateDataUnionChainId,
             updateSalePoints,
-            updateImageUrl,
             updateImageFile,
             updateStreams,
             updateAdminFee,
@@ -179,7 +170,6 @@ export const useEditableProjectActions = (): EditableProjectActions => {
             updateDescription,
             updateDataUnionChainId,
             updateSalePoints,
-            updateImageUrl,
             updateImageFile,
             updateStreams,
             updateAdminFee,

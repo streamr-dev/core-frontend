@@ -79,7 +79,7 @@ export type PaymentDetails = {
 export type SmartContractProjectMetadata = {
     name: string,
     description: string,
-    imageUrl: string,
+    imageIpfsCid: string | null | undefined,
     creator: string,
     termsOfUse: {
         commercialUse: boolean

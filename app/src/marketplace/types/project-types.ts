@@ -43,6 +43,7 @@ export type Project = {
     name: string
     description: string
     imageUrl?: string | null | undefined
+    imageIpfsCid?: string | null | undefined
     newImageToUpload?: File | null | undefined
     streams: StreamIdList
     type: ProjectTypeEnum
@@ -104,6 +105,7 @@ export type CategoryFilter = CategoryId
 export type SortByFilter = string
 export type ProjectTypeFilter = string
 export type MaxPriceFilter = NumberString
+export type AnyFilter = SearchFilter | CategoryFilter | SortByFilter | ProjectTypeFilter
 export type Filter = {
     search?: SearchFilter | null | undefined
     categories?: CategoryFilter | null | undefined

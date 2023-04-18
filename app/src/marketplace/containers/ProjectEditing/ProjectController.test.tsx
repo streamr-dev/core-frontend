@@ -21,7 +21,7 @@ const STUB_REGISTRY_CHAIN: Partial<Chain> = {
     name: 'TestChain',
 }
 const STUB_DATA_TOKEN_ADDRESS = '0x3a9A81d576d83FF21f26f325066054540720fC34'
-const STUB_UPLOADED_IMAGE_URL = 'https://streamr.network/image.jpg'
+const STUB_UPLOADED_IMAGE_CID = 'IPFS_CID'
 
 jest.mock('$shared/web3/config', () =>({
     getConfigForChain: () => STUB_REGISTRY_CHAIN
@@ -32,7 +32,7 @@ jest.mock('$mp/utils/web3', () => ({
 }))
 
 jest.mock('$app/src/services/images', () => ({
-    postImage: async () => STUB_UPLOADED_IMAGE_URL
+    postImage: async () => STUB_UPLOADED_IMAGE_CID
 }))
 
 jest.mock('$app/src/getters/getCoreConfig', () => ({
@@ -197,7 +197,7 @@ describe('ProjectController', () => {
             name: PROJECT_STUB.name,
             description: PROJECT_STUB.description,
             creator: PROJECT_STUB.creator,
-            imageUrl: STUB_UPLOADED_IMAGE_URL,
+            imageIpfsCid: STUB_UPLOADED_IMAGE_CID,
             contactDetails: {
                 email: PROJECT_STUB.contact.email,
                 url: PROJECT_STUB.contact.url,
@@ -265,7 +265,7 @@ describe('ProjectController', () => {
         const expectedMetadata = {
             name: PROJECT_STUB.name,
             description: PROJECT_STUB.description,
-            imageUrl: STUB_UPLOADED_IMAGE_URL,
+            imageIpfsCid: STUB_UPLOADED_IMAGE_CID,
             creator: PROJECT_STUB.creator,
             contactDetails: {
                 email: PROJECT_STUB.contact.email,

@@ -9,6 +9,7 @@ import Link from '$shared/components/Link'
 import SvgIcon from '$shared/components/SvgIcon'
 import { COLORS } from '$shared/utils/styled'
 import { TheGraphProject } from '$app/src/services/projects'
+import { mapImageUrl } from '$mp/utils/project-mapper'
 import routes from '$routes'
 import Label, { HAPPY, ANGRY, WORRIED } from './Label'
 import Summary from './Summary'
@@ -220,7 +221,7 @@ const ProductTile = ({ actions, deployed, published, numMembers, product, showDa
                 }
             >
                 <TileImageContainer autoSize>
-                    <TileThumbnail src={product.imageUrl || ''} />
+                    <TileThumbnail src={mapImageUrl(product) || ''} />
                 </TileImageContainer>
             </Link>
             {!!showDataUnionBadge && <DataUnionBadge top left memberCount={numMembers} linkTo={routes.projects.index()} />}
@@ -254,7 +255,7 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, showEditButton, .
                 })}
             >
                 <TileImageContainer autoSize>
-                    <TileThumbnail src={(product.metadata && product.metadata.imageUrl) || ''} />
+                    <TileThumbnail src={mapImageUrl(product) || ''} />
                 </TileImageContainer>
             </Link>
             {!!showDataUnionBadge && (

@@ -7,6 +7,25 @@ import {getMostRelevantTimeUnit} from "$mp/utils/price"
 import {getTokenInformation} from "$mp/utils/web3"
 import {fromDecimals} from "$mp/utils/math"
 import {TimeUnit, timeUnitSecondsMultiplierMap} from "$shared/utils/timeUnit"
+import getCoreConfig from '$app/src/getters/getCoreConfig'
+
+export const mapImageUrl = (graphProject: TheGraphProject) => {
+    const { ipfs } = getCoreConfig()
+    const { ipfsGatewayUrl } = ipfs
+
+    // @ts-expect-error 2339: Metadata might contain old imageUrl property
+    let imageUrl = graphProject.metadata.imageUrl as string
+    if (graphProject.metadata.imageIpfsCid) {
+        imageUrl = ipfsGatewayUrl + graphProject.metadata.imageIpfsCid
+    }
+
+    // Replace old ipfs.io references with new IPFS gateway
+    if (imageUrl != null && imageUrl.startsWith('https://ipfs.io/ipfs/')) {
+        imageUrl = imageUrl.replace("https://ipfs.io/ipfs/", ipfsGatewayUrl)
+    }
+
+    return imageUrl
+}
 
 export const mapGraphProjectToDomainModel = async (graphProject: TheGraphProject): Promise<Project> => {
     return {
@@ -15,7 +34,7 @@ export const mapGraphProjectToDomainModel = async (graphProject: TheGraphProject
         name: graphProject.metadata.name,
         description: graphProject.metadata.description,
         creator: graphProject.metadata.creator,
-        imageUrl: graphProject.metadata.imageUrl,
+        imageUrl: mapImageUrl(graphProject),
         streams: graphProject.streams,
         termsOfUse: {...graphProject.metadata.termsOfUse},
         contact: {...graphProject.metadata.contactDetails},
