@@ -12,11 +12,7 @@ import {ProjectId} from "$mp/types/project-types"
 import address0 from "$utils/address0"
 import getPublicWeb3 from '../utils/web3/getPublicWeb3'
 import getDefaultWeb3Account from '../utils/web3/getDefaultWeb3Account'
-
-const getGraphUrl = () => {
-    const { theGraphUrl, theHubGraphName } = getCoreConfig()
-    return `${theGraphUrl}/subgraphs/name/${theHubGraphName}`
-}
+import { getGraphUrl } from '../getters'
 
 const getProjectRegistryChainId = () => {
     const { projectsChain } = getCoreConfig()
