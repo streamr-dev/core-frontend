@@ -1,6 +1,6 @@
 import React from 'react'
 import { StreamPermission } from 'streamr-client'
-import { useCurrentAbility } from '$shared/stores/abilities'
+import { useCurrentStreamAbility } from '$shared/stores/streamAbilities'
 import Section from '../Section'
 import StreamTypeSelector from './StreamTypeSelector'
 import PermissionList from './PermissionList'
@@ -10,7 +10,7 @@ export type Props = {
 }
 
 const AccessControlSection: React.FunctionComponent<Props> = ({ disabled: disabledProp }) => {
-    const canEdit = useCurrentAbility(StreamPermission.EDIT)
+    const canEdit = useCurrentStreamAbility(StreamPermission.EDIT)
 
     const disabled = disabledProp || !canEdit
 

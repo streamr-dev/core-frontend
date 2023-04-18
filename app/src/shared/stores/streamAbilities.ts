@@ -128,7 +128,7 @@ const useAbilitiesStore = create<Store & Actions>((set, get) => {
     }
 })
 
-export function useAbility(streamId: string | undefined, account: string | undefined, permission: StreamPermission) {
+function useStreamAbility(streamId: string | undefined, account: string | undefined, permission: StreamPermission) {
     const client = useClient()
 
     const fetchPermission = useAbilitiesStore(({ fetchPermission }) => fetchPermission)
@@ -155,14 +155,14 @@ export function useAbility(streamId: string | undefined, account: string | undef
     return value
 }
 
-export function useCurrentAbility(permission: StreamPermission) {
+export function useCurrentStreamAbility(permission: StreamPermission) {
     const { streamId } = useCurrentDraft()
 
     const { address } = useAuthController().currentAuthSession
 
-    return useAbility(streamId, address, permission) || (!streamId && (permission === StreamPermission.EDIT || permission === StreamPermission.GRANT))
+    return useStreamAbility(streamId, address, permission) || (!streamId && (permission === StreamPermission.EDIT || permission === StreamPermission.GRANT))
 }
 
-export function useInvalidateAbilities() {
+export function useInvalidateStreamAbilities() {
     return useAbilitiesStore(({ invalidate }) => invalidate)
 }

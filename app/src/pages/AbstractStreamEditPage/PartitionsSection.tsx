@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
 import { Advanced } from '$shared/components/StatusLabel'
-import { useCurrentAbility } from '$shared/stores/abilities'
+import { useCurrentStreamAbility } from '$shared/stores/streamAbilities'
 import Label from '$ui/Label'
 import Numeric from '$ui/Numeric'
 import { useCurrentDraft, useUpdateCurrentMetadata } from '$shared/stores/streamEditor'
@@ -23,7 +23,7 @@ const Desc = styled.p`
 `
 
 export default function PartitionsSection({ disabled: disabledProp = false }) {
-    const canEdit = useCurrentAbility(StreamPermission.EDIT)
+    const canEdit = useCurrentStreamAbility(StreamPermission.EDIT)
 
     const disabled = disabledProp || !canEdit
 

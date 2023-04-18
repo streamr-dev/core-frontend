@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import Text from '$ui/Text'
 import Label from '$ui/Label'
 import Surround from '$shared/components/Surround'
-import { useCurrentAbility } from '$shared/stores/abilities'
+import { useCurrentStreamAbility } from '$shared/stores/streamAbilities'
 import { useCurrentDraft, useUpdateCurrentMetadata } from '$shared/stores/streamEditor'
 import Section from '../Section'
 import { ENS_DOMAINS_URL, ReadonlyStreamId, EditableStreamId } from './StreamId'
@@ -26,7 +26,7 @@ const Description = styled.p`
 `
 
 export default function InfoSection({ disabled: disabledProp = false }) {
-    const canEdit = useCurrentAbility(StreamPermission.EDIT)
+    const canEdit = useCurrentStreamAbility(StreamPermission.EDIT)
 
     const disabled = disabledProp || !canEdit
 
