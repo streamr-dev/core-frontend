@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { Link } from 'react-router-dom'
+import { Stream } from 'streamr-client'
 
 import LoadMore from '$mp/components/LoadMore'
 import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
@@ -236,13 +237,13 @@ const DirectionDefaults: Record<OrderBy, OrderDirection> = {
     [OrderBy.MessagesPerSecond]: OrderDirection.Desc,
 }
 
-function isIndexerStream(stream: TheGraphStream | IndexerStream): stream is IndexerStream {
+function isIndexerStream(stream: TheGraphStream | IndexerStream | Stream): stream is IndexerStream {
     return (stream as IndexerStream).peerCount !== undefined
 }
 
 type Props = {
     title?: string,
-    streams: Array<TheGraphStream | IndexerStream>,
+    streams: Array<TheGraphStream | IndexerStream | Stream>,
     streamStats: Record<string, TheGraphStream | IndexerStream>,
     loadMore?: () => void,
     hasMoreResults?: boolean,
@@ -340,7 +341,14 @@ const StreamTable: React.FC<Props> = ({
                         let peerCount: number | null | undefined
                         let messagesPerSecond: number | null | undefined
 
-                        if (isIndexerStream(s)) {
+                        if (s instanceof Stream) {
+                            const indexerStats = stats as IndexerStream
+                            description = s.getMetadata().description ?? ''
+                            publisherCount = indexerStats?.publisherCount
+                            subscriberCount = indexerStats?.subscriberCount
+                            peerCount = indexerStats?.peerCount
+                            messagesPerSecond = indexerStats?.messagesPerSecond
+                        } else if (isIndexerStream(s)) {
                             publisherCount = s.publisherCount
                             subscriberCount = s.subscriberCount
 

@@ -160,7 +160,7 @@ export const getPagedStreams = async (
     const theGraphUrl = getGraphUrl()
 
     // NOTE: Searching is done through subentity "permissions" because we cannot do id_contains
-    // as it's not techically stored as a string on The Graph.
+    // as it's not technically stored as a string on The Graph.
     const searchFilter = search != null && search.length > 0 ? `stream_contains: "${search}"` : null
     const ownerFilter = owner != null ? `userAddress: "${owner.toLowerCase()}", canEdit: true` : null
     const allPermissionFilters = [ownerFilter, searchFilter].filter((filter) => !!filter).join(',')
