@@ -6,7 +6,7 @@ import { StreamIdList } from '$shared/types/stream-types'
 import { ValidationContext } from '$mp/containers/ProductController/ValidationContextProvider'
 import { NumberString} from '$shared/types/common-types'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
-import { ProjectTypeEnum } from '$mp/utils/constants'
+import { ProjectType } from '$shared/types'
 import {TimeUnit, timeUnits} from "$shared/utils/timeUnit"
 
 const getPricePerSecond = (isFree: boolean, price: NumberString, timeUnit: TimeUnit, decimals: BN) =>
@@ -22,7 +22,7 @@ export type EditableProjectActions = {
     updateDataUnionChainId: (chainId: number) => void,
     updateSalePoints: (salePoints: Project['salePoints']) => void,
     updateExistingDUAddress: (address: string, touched?: boolean) => void,
-    updateType: (type: ProjectTypeEnum) => void,
+    updateType: (type: ProjectType) => void,
     updateTermsOfUse: (termsOfUse: Project['termsOfUse']) => void,
     updateContactUrl: (url: ContactDetails['url']) => void,
     updateContactEmail: (email: ContactDetails['email']) => void,
@@ -100,7 +100,7 @@ export const useEditableProjectActions = (): EditableProjectActions => {
         [updateState, setTouched],
     )
     const updateType = useCallback<EditableProjectActions['updateType']>(
-        (type: ProjectTypeEnum) => {
+        (type: ProjectType) => {
             updateState({type })
             setTouched('type')
         },

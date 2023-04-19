@@ -20,7 +20,7 @@ import useSwitchChain from '$shared/hooks/useSwitchChain'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import getNativeTokenName from '$shared/utils/nativeToken'
 import { PublishMode } from '$mp/containers/ProjectEditing/publishMode'
-import { ProjectTypeEnum } from '$mp/utils/constants'
+import { ProjectType } from '$shared/types'
 
 type Props = {
     product: Project
@@ -33,7 +33,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     publishRef.current = publish
     const isMounted = useIsMounted()
     // TODO - check if this chainId value assignment is correct
-    const chainId = (product.type === ProjectTypeEnum.DATA_UNION) ? product.dataUnionChainId : getChainIdFromApiString('polygon')
+    const chainId = (product.type === ProjectType.DataUnion) ? product.dataUnionChainId : getChainIdFromApiString('polygon')
     const nativeTokenName = getNativeTokenName(chainId)
     const [queue, setQueue] = useState(undefined)
     const [mode, setMode] = useState(null)

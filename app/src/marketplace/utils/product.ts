@@ -5,14 +5,14 @@ import { contractCurrencies as currencies, projectStates } from '$shared/utils/c
 import { RecursiveKeyOf } from '$utils/recursiveKeyOf'
 import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
 import { TheGraphProject } from '$app/src/services/projects'
-import { ContactDetails, Project, ProjectId, ProjectType, SmartContractProduct } from '../types/project-types'
+import { ProjectType } from '$shared/types'
+import { ContactDetails, Project, ProjectId, SmartContractProduct } from '../types/project-types'
 import { ProjectState } from '../types/project-types'
 import { validateSalePoint } from './validate'
-import { ProjectTypeEnum, projectTypes } from './constants'
 import { fromDecimals, toDecimals } from './math'
 import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from './smartContract'
 
-export const isPaidProject = (project: Project): boolean => project.type !== ProjectTypeEnum.OPEN_DATA
+export const isPaidProject = (project: Project): boolean => project.type !== ProjectType.OpenData
 
 export const isProjectOwnedBy = ({ permissions }: Pick<TheGraphProject, 'permissions'>, address: string) => {
     const { canGrant = false } = permissions.find((p) => p.userAddress.toLowerCase() === address.toLowerCase()) || {}
@@ -39,7 +39,8 @@ export const isDataUnionProduct = (productOrProductType?: Project | ProjectType)
                 type: productOrProductType,
             }
             : (productOrProductType || {}) as Project
-    return type === projectTypes.DATAUNION
+
+    return type === ProjectType.DataUnion
 }
 
 export const validateProductPriceCurrency = (priceCurrency: string): void => {
@@ -128,20 +129,20 @@ export const validate = (project: Project): Partial<Record<RecursiveKeyOf<Projec
     }
 
     // applies only to data union
-    if (project.type === ProjectTypeEnum.DATA_UNION) {
+    if (project.type === ProjectType.DataUnion) {
         invalidFields.adminFee = project.adminFee === undefined || +project.adminFee < 0 || +project.adminFee > 1
         invalidFields.dataUnionChainId = !project.dataUnionChainId
     }
 
     // applies to paid projects and data unions
-    if ([ProjectTypeEnum.PAID_DATA, ProjectTypeEnum.DATA_UNION].includes(project.type)) {
+    if ([ProjectType.PaidData, ProjectType.DataUnion].includes(project.type)) {
         if (!project?.salePoints || !Object.values(project?.salePoints || {}).length) {
             invalidFields.salePoints = true
         }
         if (Object.keys(project?.salePoints || {}).length) {
             Object.keys(project?.salePoints || {}).forEach((chainName) => {
                 const salePoint = project.salePoints[chainName]
-                const invalidSalePointFields = validateSalePoint(salePoint, project.type === ProjectTypeEnum.DATA_UNION)
+                const invalidSalePointFields = validateSalePoint(salePoint, project.type === ProjectType.DataUnion)
                 if (!!invalidSalePointFields && invalidSalePointFields.length) {
                     invalidSalePointFields.forEach((field) => {
                         invalidFields[`salePoints.${chainName}.${field}`] = true

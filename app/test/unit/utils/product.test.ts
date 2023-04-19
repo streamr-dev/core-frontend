@@ -1,19 +1,19 @@
 import BN from 'bignumber.js'
 import * as all from '$mp/utils/product'
 import { Project, SalePoint } from '$mp/types/project-types'
-import { ProjectTypeEnum } from '$mp/utils/constants'
+import { ProjectType } from '$shared/types'
 
 describe('product utils', () => {
     describe('isPaidProduct', () => {
         it('detects a free product', () => {
             const product = {
-                type: ProjectTypeEnum.OPEN_DATA
+                type: ProjectType.OpenData
             } as Project
             expect(all.isPaidProject(product)).toBe(false)
         })
         it('detects a paid product', () => {
             const product = {
-                type: ProjectTypeEnum.PAID_DATA
+                type: ProjectType.PaidData
             } as Project
             expect(all.isPaidProject(product)).toBe(true)
         })
@@ -22,7 +22,7 @@ describe('product utils', () => {
         it('detects data union product from object', () => {
             const product1 = {
                 id: 'text',
-                type: 'DATAUNION',
+                type: ProjectType.DataUnion,
             } as any
             expect(all.isDataUnionProduct(product1)).toBe(true)
             const product2 = {
@@ -35,7 +35,7 @@ describe('product utils', () => {
             expect(all.isDataUnionProduct({} as any)).toBe(false)
         })
         it('detects data union product from value', () => {
-            expect(all.isDataUnionProduct('DATAUNION')).toBe(true)
+            expect(all.isDataUnionProduct(ProjectType.DataUnion)).toBe(true)
             expect(all.isDataUnionProduct('NORMAL')).toBe(false)
         })
         it('detects data union product from empty value', () => {
@@ -167,7 +167,7 @@ describe('product utils', () => {
         it('validates empty product free data product', () => {
             expect(
                 all.validate({
-                    type: ProjectTypeEnum.OPEN_DATA,
+                    type: ProjectType.OpenData,
                 } as Project),
             ).toStrictEqual({
                 name: true,
@@ -180,7 +180,7 @@ describe('product utils', () => {
         it('validates empty product paid data product', () => {
             expect(
                 all.validate({
-                    type: ProjectTypeEnum.PAID_DATA,
+                    type: ProjectType.PaidData,
                 } as Project),
             ).toStrictEqual({
                 name: true,
@@ -194,7 +194,7 @@ describe('product utils', () => {
         it('validates empty product paid data union', () => {
             expect(
                 all.validate({
-                    type: ProjectTypeEnum.DATA_UNION,
+                    type: ProjectType.DataUnion,
                 } as Project),
             ).toStrictEqual({
                 name: true,
@@ -210,7 +210,7 @@ describe('product utils', () => {
         it('validates name & description', () => {
             expect(
                 all.validate({
-                    type: ProjectTypeEnum.OPEN_DATA,
+                    type: ProjectType.OpenData,
                     name: 'new name',
                     description: 'new description',
                 } as Project),
@@ -225,7 +225,7 @@ describe('product utils', () => {
         it('validates creator name', () => {
             expect(
                 all.validate({
-                    type: ProjectTypeEnum.OPEN_DATA,
+                    type: ProjectType.OpenData,
                     creator: 'Julius Cesar'
                 } as Project),
             ).toStrictEqual({
@@ -238,7 +238,7 @@ describe('product utils', () => {
         it('validates image', () => {
             expect(
                 all.validate({
-                    type: ProjectTypeEnum.OPEN_DATA,
+                    type: ProjectType.OpenData,
                     imageUrl: 'http://...',
                 } as Project),
             ).toStrictEqual({
@@ -250,7 +250,7 @@ describe('product utils', () => {
             })
             expect(
                 all.validate({
-                    type: ProjectTypeEnum.OPEN_DATA,
+                    type: ProjectType.OpenData,
                     newImageToUpload: new File(['loremipsum'], 'foobar'),
                 } as Project),
             ).toStrictEqual({
@@ -264,7 +264,7 @@ describe('product utils', () => {
         it('validates streams', () => {
             expect(
                 all.validate({
-                    type: ProjectTypeEnum.OPEN_DATA,
+                    type: ProjectType.OpenData,
                     streams: ['1', '2'],
                 } as Project),
             ).toStrictEqual({
@@ -278,7 +278,7 @@ describe('product utils', () => {
         it('validates data union required fields', () => {
             expect(
                 all.validate({
-                    type: ProjectTypeEnum.DATA_UNION,
+                    type: ProjectType.DataUnion,
                     adminFee: '0.3',
                     dataUnionChainId: 123
                 } as Project),
@@ -294,7 +294,7 @@ describe('product utils', () => {
             })
             expect(
                 all.validate({
-                    type: ProjectTypeEnum.DATA_UNION,
+                    type: ProjectType.DataUnion,
                     adminFee: '0',
                     dataUnionChainId: 123
                 } as Project),
@@ -310,7 +310,7 @@ describe('product utils', () => {
             })
             expect(
                 all.validate({
-                    type: ProjectTypeEnum.DATA_UNION,
+                    type: ProjectType.DataUnion,
                     adminFee: '1.1',
                     dataUnionChainId: null
                 } as Project),
@@ -347,7 +347,7 @@ describe('product utils', () => {
                 {
                     description: 'invalid pricePerSecond',
                     project: {
-                        type: ProjectTypeEnum.PAID_DATA,
+                        type: ProjectType.PaidData,
                         salePoints: {
                             [defaultSalePointChainName] : {
                                 ...defaultSalePoint,
@@ -360,7 +360,7 @@ describe('product utils', () => {
                 {
                     description: 'invalid beneficiaryAddress',
                     project: {
-                        type: ProjectTypeEnum.PAID_DATA,
+                        type: ProjectType.PaidData,
                         salePoints: {
                             [defaultSalePointChainName] : {
                                 ...defaultSalePoint,

@@ -9,7 +9,7 @@ import * as validationCtx from "$mp/containers/ProductController/ValidationConte
 import {createProject, SmartContractProjectCreate, updateProject} from "$app/src/services/projects"
 import {useProjectState} from "$mp/contexts/ProjectStateContext"
 import Notification from '$shared/utils/Notification'
-import {ProjectTypeEnum} from "$mp/utils/constants"
+import { ProjectType } from '$shared/types'
 import {NotificationIcon} from "$shared/utils/constants"
 import {PersistOperation} from "$shared/types/common-types"
 import {useProjectEditorStore} from "$mp/containers/ProjectEditing/proejctEditor.state"
@@ -84,7 +84,7 @@ const PROJECT_STUB: Project = {
         twitter: 'https://twitter.com',
         telegram: 'https://telegram.com'
     },
-    type: ProjectTypeEnum.PAID_DATA,
+    type: ProjectType.PaidData,
     salePoints: {
         'polygon': {
             chainId: 1,

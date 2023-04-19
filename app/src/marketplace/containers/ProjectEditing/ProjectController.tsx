@@ -9,7 +9,7 @@ import {
 } from '$mp/containers/ProductController/ValidationContextProvider'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
-import { ProjectTypeEnum } from '$mp/utils/constants'
+import { ProjectType } from '$shared/types'
 import { postImage } from '$app/src/services/images'
 import {
     createProject,
@@ -105,7 +105,7 @@ export const useProjectController = (): ProjectController => {
             id: id || randomHex(32),
             minimumSubscriptionInSeconds: 0,
             streams: [...project.streams],
-            paymentDetails: project.type === ProjectTypeEnum.PAID_DATA ? Object.values(project.salePoints).map((salePoint) => {
+            paymentDetails: project.type === ProjectType.PaidData ? Object.values(project.salePoints).map((salePoint) => {
                 return {
                     chainId: salePoint.chainId,
                     beneficiaryAddress: salePoint.beneficiaryAddress,
@@ -127,7 +127,7 @@ export const useProjectController = (): ProjectController => {
         let transactionsToastNotification: Notification | null = null
         const projectContractData: SmartContractProjectCreate = {
             ...(await getSmartContractProject()),
-            isPublicPurchasable: project.type !== ProjectTypeEnum.OPEN_DATA,
+            isPublicPurchasable: project.type !== ProjectType.OpenData,
         }
 
         setPublishInProgress(true)
@@ -213,10 +213,10 @@ export const useProjectController = (): ProjectController => {
     const create = useCallback<ProjectController['create']>(async() => {
         if (checkValidationErrors()) {
             switch (project.type) {
-                case ProjectTypeEnum.PAID_DATA:
-                case ProjectTypeEnum.OPEN_DATA:
+                case ProjectType.PaidData:
+                case ProjectType.OpenData:
                     return await createNewProject()
-                case ProjectTypeEnum.DATA_UNION:
+                case ProjectType.DataUnion:
                     return await createNewDataUnion()
             }
         }
@@ -226,10 +226,10 @@ export const useProjectController = (): ProjectController => {
     const update = useCallback<ProjectController['update']>(async () => {
         if (checkValidationErrors()) {
             switch (project.type) {
-                case ProjectTypeEnum.PAID_DATA:
-                case ProjectTypeEnum.OPEN_DATA:
+                case ProjectType.PaidData:
+                case ProjectType.OpenData:
                     return await updateExistingProject()
-                case ProjectTypeEnum.DATA_UNION:
+                case ProjectType.DataUnion:
                     return await updateExistingDataUnion()
             }
         }

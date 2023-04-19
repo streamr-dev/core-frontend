@@ -1,7 +1,7 @@
 import BN from "bn.js"
 import {TheGraphPaymentDetails, TheGraphProject} from "$app/src/services/projects"
 import {mapGraphProjectToDomainModel, mapSalePoints} from "$mp/utils/project-mapper"
-import {ProjectTypeEnum} from "$mp/utils/constants"
+import { ProjectType } from '$shared/types'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 
 const stubChainName = 'localChain'
@@ -77,7 +77,7 @@ describe('projectMapper', () => {
 
             expect(model).toMatchObject({
                 id: stubGraphModel.id,
-                type: ProjectTypeEnum.PAID_DATA,
+                type: ProjectType.PaidData,
                 name: stubGraphModel.metadata.name,
                 description: stubGraphModel.metadata.description,
                 creator: stubGraphModel.metadata.creator,

@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import qs from 'query-string'
 import '$mp/types/project-types'
-import { ProjectTypeEnum } from '$mp/utils/constants'
+import { ProjectType } from '$shared/types'
 import Layout from '$shared/components/Layout'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
@@ -41,8 +41,8 @@ const UnstyledNewProjectPage = ({ className }: Props) => {
     })
 
     useEffect(() => {
-        const typeIsValid = Object.values(ProjectTypeEnum).includes(type as ProjectTypeEnum)
-        updateType( typeIsValid ? type as ProjectTypeEnum : ProjectTypeEnum.OPEN_DATA)
+        const typeIsValid = Object.values(ProjectType).includes(type as ProjectType)
+        updateType( typeIsValid ? type as ProjectType : ProjectType.OpenData)
     }, [type, updateType])
 
     useEffect(() => {

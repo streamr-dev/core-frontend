@@ -1,11 +1,11 @@
 import { Project } from '$mp/types/project-types'
-import { ProjectTypeEnum } from '$mp/utils/constants'
+import { ProjectType } from '$shared/types'
 
 export class EmptyProject implements Project {
     id: undefined
     name: undefined
     adminFee = undefined
-    type = ProjectTypeEnum.OPEN_DATA
+    type = ProjectType.OpenData
     contact = {}
     imageUrl = undefined
     streams = []
