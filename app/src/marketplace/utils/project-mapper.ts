@@ -9,6 +9,9 @@ import {fromDecimals} from "$mp/utils/math"
 import {TimeUnit, timeUnitSecondsMultiplierMap} from "$shared/utils/timeUnit"
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 
+/**
+ * @deprecated Use `getProjectImageUrl`.
+ */
 export const mapImageUrl = (graphProject: TheGraphProject) => {
     const { ipfs } = getCoreConfig()
     const { ipfsGatewayUrl } = ipfs
@@ -27,6 +30,9 @@ export const mapImageUrl = (graphProject: TheGraphProject) => {
     return imageUrl
 }
 
+/**
+ * @deprecated Use `projectEditor` to obtain both the graph projects and their local reflections.
+ */
 export const mapGraphProjectToDomainModel = async (graphProject: TheGraphProject): Promise<Project> => {
     return {
         id: graphProject.id,
@@ -43,6 +49,9 @@ export const mapGraphProjectToDomainModel = async (graphProject: TheGraphProject
     }
 }
 
+/**
+ * @deprecated Use `projectEditor` to obtain both the graph projects and their local reflections.
+ */
 export const mapProjectType = (graphProject: TheGraphProject): ProjectType => {
     // TODO when the TheGraphProject will have field which determines if it's a Data Union - implement a check here
     return graphProject.paymentDetails.length === 1 && graphProject.paymentDetails[0].pricePerSecond == '0'
@@ -50,6 +59,9 @@ export const mapProjectType = (graphProject: TheGraphProject): ProjectType => {
         : ProjectType.PaidData
 }
 
+/**
+ * @deprecated Use `projectEditor` to obtain both the graph projects and their local reflections.
+ */
 export const mapSalePoints = async (paymentDetails: TheGraphPaymentDetails[]): Promise<Record<ChainName, SalePoint>> => {
     const salePoints: Record<ChainName, SalePoint> = {}
     await Promise.all(paymentDetails.map(async (paymentDetail) => {
@@ -67,17 +79,4 @@ export const mapSalePoints = async (paymentDetails: TheGraphPaymentDetails[]): P
         }
     }))
     return salePoints
-}
-
-export const mapProjectTypeName = (projectType: ProjectType): string => {
-    switch (projectType) {
-        case ProjectType.OpenData:
-            return 'Open data'
-        case ProjectType.DataUnion:
-            return 'Data Union'
-        case ProjectType.PaidData:
-            return 'Paid data'
-        default:
-            return 'Project'
-    }
 }

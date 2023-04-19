@@ -109,7 +109,7 @@ export const usePurchaseStore = create<State & Actions>()((set, get) => ({
         if (project != null && pd != null) {
             try {
                 set({ isLoading: true })
-                const proj = await getProjectFromRegistry(project.id, [pd.domainId], true)
+                const proj = await getProjectFromRegistry(project.id, [pd.domainId])
                 set({ isLoading: false })
                 set({ contractProject: proj })
             } catch (e) {
