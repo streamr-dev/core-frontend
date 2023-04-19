@@ -16,10 +16,10 @@ const ProjectTitlePart = styled.strong`
 export const getProjectTitle = (project: Project): ReactNode => {
     return (
         <>
-            <ProjectTitlePart as={'span'}>{project.name}{' '}</ProjectTitlePart>
+            <ProjectTitlePart as={'span'}>{project.name}</ProjectTitlePart>
             {!!project.creator && (
                 <>
-                    by&nbsp;<ProjectTitlePart>{project.creator}</ProjectTitlePart>
+                    &nbsp;by&nbsp;<ProjectTitlePart>{project.creator}</ProjectTitlePart>
                 </>
             )}
         </>
@@ -30,8 +30,8 @@ export const getProjectTitleForEditor = (project: Project): ReactNode => {
     return (
         !!project.creator && (
             <>
-                {mapProjectTypeName(project.type)} by&nbsp;
-                <strong> {project.creator} </strong>
+                {mapProjectTypeName(project.type)} by
+                <strong>&nbsp;{project.creator} </strong>
             </>
         )
     )
