@@ -21,3 +21,25 @@ export function getProjectRegistryContract(chainId: number, web3: Web3) {
 
     return new web3.eth.Contract(projectRegistryAbi as AbiItem[], contractAddress)
 }
+
+export function getProjectImageUrl({
+    imageUrl,
+    imageIpfsCid,
+}: {
+    imageUrl?: string
+    imageIpfsCid?: string
+}) {
+    const {
+        ipfs: { ipfsGatewayUrl },
+    } = getCoreConfig()
+
+    if (imageIpfsCid) {
+        return `${ipfsGatewayUrl}${imageIpfsCid}`
+    }
+
+    if (!imageUrl) {
+        return
+    }
+
+    return `${imageUrl.replace(/^https:\/\/ipfs\.io\/ipfs\//, ipfsGatewayUrl)}`
+}
