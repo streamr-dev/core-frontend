@@ -1,18 +1,16 @@
-import { AbiItem } from 'web3-utils'
-import { Contract } from 'web3-eth-contract'
 import BN from "bignumber.js"
 import getCoreConfig from "$app/src/getters/getCoreConfig"
 import { post } from "$shared/utils/api"
-import { call, getContract } from '$mp/utils/smartContract'
+import { call } from '$mp/utils/smartContract'
 import { send } from '$mp/utils/smartContract'
-import {Address, SmartContractCall, SmartContractTransaction} from "$shared/types/web3-types"
-import { getConfigForChain, getConfigForChainByName } from '$shared/web3/config'
-import projectRegistryAbi from '$shared/web3/abis/projectRegistry.json'
 import {ProjectId} from "$mp/types/project-types"
+import { Address, SmartContractCall, SmartContractTransaction } from "$shared/types/web3-types"
+import { getConfigForChainByName } from '$shared/web3/config'
 import address0 from "$utils/address0"
-import getPublicWeb3 from '../utils/web3/getPublicWeb3'
-import getDefaultWeb3Account from '../utils/web3/getDefaultWeb3Account'
-import { getGraphUrl } from '../getters'
+import getPublicWeb3 from '$utils/web3/getPublicWeb3'
+import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
+import getWeb3 from '$utils/web3/getWeb3'
+import { getGraphUrl, getProjectRegistryContract } from '../getters'
 
 const getProjectRegistryChainId = () => {
     const { projectsChain } = getCoreConfig()
@@ -315,18 +313,6 @@ export const searchProjects = async (search: string, first = 20, skip = 0, type?
     }
 }
 
-const projectRegistryContract = (usePublicNode = false, chainId: number): Contract => {
-    const { contracts } = getConfigForChain(chainId)
-    const address = contracts.ProjectRegistryV1 || contracts.ProjectRegistry
-
-    if (address == null) {
-        throw new Error(`No ProjectRegistry contract address found for chain ${chainId}`)
-    }
-
-    const contract = getContract({ abi: projectRegistryAbi as AbiItem[], address}, usePublicNode, chainId)
-    return contract
-}
-
 const getDomainIds = (paymentDetails: PaymentDetails[]): number[] => {
     return paymentDetails.map((p) => p.chainId)
 }
@@ -350,7 +336,7 @@ export const createProject = (project: SmartContractProjectCreate): SmartContrac
         metadata,
     } = project
 
-    const methodToSend = projectRegistryContract(false, chainId).methods.createProject(
+    const methodToSend = getProjectRegistryContract(chainId, getWeb3()).methods.createProject(
         id,
         getDomainIds(paymentDetails),
         getPaymentDetails(paymentDetails),
@@ -369,7 +355,7 @@ export const getUserPermissionsForProject = async (
     projectId: ProjectId,
     userAddress: Address,
 ): SmartContractCall<ProjectPermissions> => {
-    const response = await projectRegistryContract(true, chainId).methods.getPermission(projectId, userAddress).call()
+    const response = await getProjectRegistryContract(chainId, getPublicWeb3(chainId)).methods.getPermission(projectId, userAddress).call()
     const { canDelete, canEdit, canGrant, canBuy } = response
     return { canDelete, canEdit, canGrant, canBuy }
 }
@@ -384,7 +370,7 @@ export const updateProject = (project: SmartContractProject): SmartContractTrans
         metadata,
     } = project
 
-    const methodToSend = projectRegistryContract(false, chainId).methods.updateProject(
+    const methodToSend = getProjectRegistryContract(chainId, getWeb3()).methods.updateProject(
         id,
         getDomainIds(paymentDetails),
         getPaymentDetails(paymentDetails),
@@ -403,7 +389,7 @@ export const deleteProject = (project: SmartContractProject): SmartContractTrans
         id
     } = project
 
-    const methodToSend = projectRegistryContract(false, chainId).methods.deleteProject(
+    const methodToSend = getProjectRegistryContract(chainId, getWeb3()).methods.deleteProject(
         id,
     )
     return send(methodToSend, {
@@ -412,9 +398,9 @@ export const deleteProject = (project: SmartContractProject): SmartContractTrans
 }
 
 export const getProjectFromRegistry =
-    async (id: string, domainIds: Array<string>, usePublicNode = true): SmartContractCall<SmartContractProject> => {
+    async (id: string, domainIds: Array<string>): SmartContractCall<SmartContractProject> => {
         const chainId = getProjectRegistryChainId()
-        const result = await call(projectRegistryContract(usePublicNode, chainId).methods.getProject(id, domainIds))
+        const result = await call(getProjectRegistryContract(chainId, getPublicWeb3(chainId)).methods.getProject(id, domainIds))
         const project: SmartContractProject = {
             ...result,
             id: id,
@@ -428,7 +414,7 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 export const waitUntilProjectPurchased = async (id: string, timeoutSeconds = 60) => {
     const waitBetweenChecks = 3000
     const chainId = getProjectRegistryChainId()
-    const contract = projectRegistryContract(true, chainId)
+    const contract = getProjectRegistryContract(chainId, getPublicWeb3(chainId))
 
     const web3 = getPublicWeb3(chainId)
     const myAddress = await getDefaultWeb3Account()
