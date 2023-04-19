@@ -36,7 +36,7 @@ const ProjectDetailsPage: FunctionComponent = () => {
             <ProjectPageContainer>
                 <ProjectHero2 project={project}/>
                 <Description project={project} />
-                <Streams project={project} />
+                <Streams streams={project?.streams || []} />
                 {/*{isDataUnion && (
                     <DataUnionStats
                         showDeploying={!isDuDeployed}
