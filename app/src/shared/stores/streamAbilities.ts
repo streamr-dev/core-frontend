@@ -75,12 +75,12 @@ const useStreamAbilitiesStore = create<Store>((set, get) => {
         async fetchPermission(streamId, account, permission, streamrClient) {
             const pkey = permissionKey(streamId, account, permission)
 
-            try {
-                if (get().fetching[pkey]) {
-                    // Already fetching, skip.
-                    return
-                }
+            if (get().fetching[pkey]) {
+                // Already fetching, skip.
+                return
+            }
 
+            try {
                 toggleFetching(streamId, account, permission, true)
 
                 let stream: Stream | undefined

@@ -15,7 +15,7 @@ import {LoadedProjectContextProvider, useLoadedProject} from "$mp/contexts/Loade
 import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
 import {MarketplaceLoadingView} from "$mp/containers/ProjectPage/MarketplaceLoadingView"
 import {getProjectTitleForEditor} from "$mp/containers/ProjectPage/utils"
-import { InactiveProjectLinkTabs } from "../ProjectPage/utils"
+import ProjectLinkTabs from '$app/src/pages/ProjectPage/ProjectLinkTabs'
 
 const UnstyledEditProjectPage: FunctionComponent = () => {
     const {state: project} = useContext(ProjectStateContext)
@@ -46,7 +46,7 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
         <MarketplaceHelmet title={'Edit project'}/>
         <DetailsPageHeader
             pageTitle={pageTitle}
-            rightComponent={<InactiveProjectLinkTabs />}
+            rightComponent={<ProjectLinkTabs />}
         />
         <LoadingIndicator loading={publishInProgress}/>
         <ProjectEditor nonEditableSalePointChains={nonEditableSalePointChains}/>

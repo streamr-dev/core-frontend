@@ -2,7 +2,7 @@ import BN from "bignumber.js"
 import * as all from '$mp/utils/validate'
 import { validateSalePoint } from '$mp/utils/validate'
 import * as constants from '$mp/utils/constants'
-import { ProjectTypeEnum } from '$mp/utils/constants'
+import { ProjectType } from '$shared/types'
 import { SalePoint } from '$mp/types/project-types'
 
 describe('validate utils', () => {
@@ -40,7 +40,7 @@ describe('validate utils', () => {
             {
                 description: 'invalid pricePerSecond',
                 project: {
-                    projectType: ProjectTypeEnum.PAID_DATA,
+                    projectType: ProjectType.PaidData,
                     salePoint: {
                         ...defaultSalePoint,
                         pricePerSecond: new BN('-10')
@@ -51,7 +51,7 @@ describe('validate utils', () => {
             {
                 description: 'invalid beneficiaryAddress',
                 project: {
-                    projectType: ProjectTypeEnum.PAID_DATA,
+                    projectType: ProjectType.PaidData,
                     salePoint: {
                         ...defaultSalePoint,
                         beneficiaryAddress: 'loremIpsum'
@@ -62,7 +62,7 @@ describe('validate utils', () => {
             {
                 description: 'invalid existance of beneficiaryAddress for a DU Sale Point',
                 project: {
-                    projectType: ProjectTypeEnum.DATA_UNION,
+                    projectType: ProjectType.DataUnion,
                     salePoint: {
                         ...defaultSalePoint,
                         beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10'
@@ -73,7 +73,7 @@ describe('validate utils', () => {
             {
                 description: 'invalid pricingTokenAddress',
                 project: {
-                    projectType: ProjectTypeEnum.PAID_DATA,
+                    projectType: ProjectType.PaidData,
                     salePoint: {
                         ...defaultSalePoint,
                         pricingTokenAddress: '0xa3934kd'
@@ -84,7 +84,7 @@ describe('validate utils', () => {
             {
                 description: 'invalid chain',
                 project: {
-                    projectType: ProjectTypeEnum.PAID_DATA,
+                    projectType: ProjectType.PaidData,
                     salePoint: {
                         ...defaultSalePoint,
                         chainId: undefined
@@ -95,7 +95,7 @@ describe('validate utils', () => {
             {
                 description: 'invalid price',
                 project: {
-                    projectType: ProjectTypeEnum.PAID_DATA,
+                    projectType: ProjectType.PaidData,
                     salePoint: {
                         ...defaultSalePoint,
                         price: new BN('0')
@@ -106,7 +106,7 @@ describe('validate utils', () => {
             {
                 description: 'invalid timeUnit',
                 project: {
-                    projectType: ProjectTypeEnum.PAID_DATA,
+                    projectType: ProjectType.PaidData,
                     salePoint: {
                         ...defaultSalePoint,
                         timeUnit: '5',
@@ -117,7 +117,7 @@ describe('validate utils', () => {
             {
                 description: 'invalid timeUnit AND pricingTokenAddress for a DU',
                 project: {
-                    projectType: ProjectTypeEnum.DATA_UNION,
+                    projectType: ProjectType.DataUnion,
                     salePoint: {
                         ...defaultSalePoint,
                         timeUnit: '5',
@@ -130,7 +130,7 @@ describe('validate utils', () => {
         ].forEach((testCase) => {
             it(`should properly validate the SalePoint's ${testCase.description}`, () => {
                 expect(
-                    all.validateSalePoint(testCase.project.salePoint, testCase.project.projectType === ProjectTypeEnum.DATA_UNION)
+                    all.validateSalePoint(testCase.project.salePoint, testCase.project.projectType === ProjectType.DataUnion)
                 ).toEqual(testCase.expectedInvalidFields)
             })
         })

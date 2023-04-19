@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom'
 import {Project, SalePoint} from '$mp/types/project-types'
 import { REGULAR, TABLET } from '$shared/utils/styled'
 import Button from '$shared/components/Button'
-import { ProjectTypeEnum, projectTypeNames } from '$mp/utils/constants'
+import { projectTypeNames } from '$mp/utils/constants'
+import { ProjectType } from '$shared/types'
 import PaymentRate from '$mp/components/PaymentRate'
 import { formatChainName } from '$shared/utils/chains'
 import useModal from '$shared/hooks/useModal'
@@ -25,11 +26,11 @@ const Description: FunctionComponent<{project: Project}> = ({project}) => {
                 <p>
                     <span>
                         The streams in this {projectTypeNames[project.type]}
-                        {project.type === ProjectTypeEnum.OPEN_DATA ? ' are public and ' : ''} can be accessed for&nbsp;
+                        {project.type === ProjectType.OpenData ? ' are public and ' : ''} can be accessed for&nbsp;
                     </span>
 
                     <strong>
-                        {project.type === ProjectTypeEnum.OPEN_DATA ? (
+                        {project.type === ProjectType.OpenData ? (
                             'free'
                         ) : (
                             <PaymentRate
@@ -41,7 +42,7 @@ const Description: FunctionComponent<{project: Project}> = ({project}) => {
                             />
                         )}
                     </strong>
-                    {project.type !== ProjectTypeEnum.OPEN_DATA && (
+                    {project.type !== ProjectType.OpenData && (
                         <>
                             <span> on </span>
                             <strong>{formatChainName(firstSalePointChainName)}</strong>
@@ -54,12 +55,12 @@ const Description: FunctionComponent<{project: Project}> = ({project}) => {
                         </>
                     )}
                 </p>
-                {project.type === ProjectTypeEnum.OPEN_DATA && (
+                {project.type === ProjectType.OpenData && (
                     <Button tag={Link} to={routes.projects.connect({ id: project.id })}>
                         Connect
                     </Button>
                 )}
-                {project.type !== ProjectTypeEnum.OPEN_DATA && (
+                {project.type !== ProjectType.OpenData && (
                     <Button onClick={() => purchaseDialog.open({ projectId: project.id })}>Get Access</Button>
                 )}
                 <PurchaseModal />

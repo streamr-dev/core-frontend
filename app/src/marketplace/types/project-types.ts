@@ -1,7 +1,7 @@
 import BN from 'bignumber.js'
 import { $ElementType, $Keys, $Values } from 'utility-types'
 import { projectStates } from '$shared/utils/constants'
-import { ProjectTypeEnum, projectTypes } from '$mp/utils/constants'
+import { ProjectType } from '$shared/types'
 import { StreamIdList } from '$shared/types/stream-types'
 import { NumberString, PaymentCurrency } from '$shared/types/common-types'
 import { Address } from '$shared/types/web3-types'
@@ -11,7 +11,6 @@ import { CategoryId } from './category-types'
 export type ProjectId = string
 export type ChainName = string
 export type ProjectState = $Keys<typeof projectStates>
-export type ProjectType = $Values<typeof projectTypes>
 
 export type SalePoint = {
     chainId: number,
@@ -46,7 +45,7 @@ export type Project = {
     imageIpfsCid?: string | null | undefined
     newImageToUpload?: File | null | undefined
     streams: StreamIdList
-    type: ProjectTypeEnum
+    type: ProjectType
     termsOfUse: TermsOfUse
     contact: ContactDetails | null | undefined
     creator: string

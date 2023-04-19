@@ -19,15 +19,19 @@ const StreamsContainer = styled.div`
     }
 `
 
-const Streams: FunctionComponent<{ project: Project }> = ({ project }) => {
+interface Props {
+    streams: string[]
+}
+
+export default function Streams({ streams: streamsProp }: Props) {
     const [streams, setStreams] = useState<Stream[]>([])
     const [streamStats, setStreamStats] = useState<Record<StreamID, IndexerStream>>({})
     const [offset, setOffset] = useState(INITIAL_OFFSET)
     const loadStreams = useLoadProductStreamsCallback({ setProductStreams: setStreams })
 
     useEffect(() => {
-        loadStreams(project.streams.slice(0, INITIAL_OFFSET))
-    }, [project.streams, loadStreams])
+        loadStreams(streamsProp.slice(0, INITIAL_OFFSET))
+    }, [streamsProp, loadStreams])
 
     useEffect(() => {
         const getStreamStats = async () => {
@@ -47,12 +51,12 @@ const Streams: FunctionComponent<{ project: Project }> = ({ project }) => {
         getStreamStats()
     }, [streams])
 
-    const hasMoreResults = useMemo(() => offset < project.streams.length, [offset, project.streams])
+    const hasMoreResults = useMemo(() => offset < streamsProp.length, [offset, streamsProp])
 
     const onLoadMore = useCallback(() => {
-        loadStreams(project.streams.slice(offset, offset + PAGE_SIZE))
+        loadStreams(streamsProp.slice(offset, offset + PAGE_SIZE))
         setOffset(offset + PAGE_SIZE)
-    }, [offset, setOffset, loadStreams, project.streams])
+    }, [offset, setOffset, loadStreams, streamsProp])
 
     return (
         <>
@@ -70,5 +74,3 @@ const Streams: FunctionComponent<{ project: Project }> = ({ project }) => {
         </>
     )
 }
-
-export default Streams

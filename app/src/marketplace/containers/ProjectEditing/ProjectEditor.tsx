@@ -8,7 +8,7 @@ import ProjectDescription from '$mp/containers/ProjectEditing/ProjectDescription
 import { ProjectDetails } from '$mp/containers/ProjectEditing/ProjectDetails'
 import { WhiteBox } from '$shared/components/WhiteBox'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
-import { ProjectTypeEnum } from '$mp/utils/constants'
+import { ProjectType } from '$shared/types'
 import { StreamSelector } from '$mp/containers/ProjectEditing/StreamSelector'
 import { TermsOfUse } from '$mp/containers/ProjectEditing/TermsOfUse'
 import { SalePointSelector } from '$mp/containers/ProjectEditing/SalePointSelector/SalePointSelector'
@@ -46,12 +46,12 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({nonEditabl
             <ProjectDescription/>
             <ProjectDetails/>
         </ProjectHeroContainer>
-        {project.type === ProjectTypeEnum.PAID_DATA &&
+        {project.type === ProjectType.PaidData &&
             <WhiteBox>
                 <SalePointSelector nonEditableSalePointChains={nonEditableSalePointChains}/>
             </WhiteBox>
         }
-        {project.type === ProjectTypeEnum.DATA_UNION && <>
+        {project.type === ProjectType.DataUnion && <>
             <WhiteBox>
                 <DataUnionChainSelector/>
             </WhiteBox>

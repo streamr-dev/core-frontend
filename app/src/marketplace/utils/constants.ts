@@ -1,3 +1,4 @@
+import { ProjectType } from '$shared/types'
 /*
     These are all type
     {
@@ -20,23 +21,8 @@ export const purchaseFlowSteps = {
 export const productListPageSize = 20
 export const searchCharMax = 250
 
-/**
- * @deprecated
- */
-export const projectTypes = {
-    NORMAL: 'NORMAL',
-    DATAUNION: 'DATAUNION',
-}
-
-export const projectTypeNames: Record<ProjectTypeEnum, string> = {
-    OPEN_DATA: 'open data project',
-    PAID_DATA: 'paid data project',
-    DATA_UNION: 'Data Union'
-}
-
-// Hub project types
-export enum ProjectTypeEnum {
-    OPEN_DATA = 'OPEN_DATA',
-    PAID_DATA = 'PAID_DATA',
-    DATA_UNION = 'DATA_UNION'
+export const projectTypeNames: Record<ProjectType, string> = {
+    [ProjectType.OpenData]: 'open data project',
+    [ProjectType.PaidData]: 'paid data project',
+    [ProjectType.DataUnion]: 'Data Union'
 }

@@ -1,29 +1,30 @@
-import { hasActiveProjectSubscription, isPaidProject, isProjectOwnedBy } from '$mp/utils/product'
-import { useIsAuthenticated } from '$auth/hooks/useIsAuthenticated'
+import {
+    hasActiveProjectSubscription,
+    isPaidProject,
+    isProjectOwnedBy,
+} from '$mp/utils/product'
 import { useLoadedProject } from '$mp/contexts/LoadedProjectContext'
 import { useAuthController } from '$app/src/auth/hooks/useAuthController'
 
 export const useUserHasAccessToProject = (): boolean => {
     const { loadedProject: project, theGraphProject } = useLoadedProject()
-    const isLoggedIn = useIsAuthenticated()
-    const isPaid = isPaidProject(project)
-    const { currentAuthSession } = useAuthController()
 
-    if (!isPaid) {
-        return true
-    }
+    const { currentAuthSession: { address = undefined } = {} } = useAuthController() || {}
 
-    if (!isLoggedIn) {
+    if (!theGraphProject || !project) {
         return false
     }
 
-    if (currentAuthSession != null && isProjectOwnedBy(theGraphProject, currentAuthSession.address)) {
+    if (!isPaidProject(project)) {
         return true
     }
 
-    if (currentAuthSession != null && hasActiveProjectSubscription(theGraphProject, currentAuthSession.address)) {
-        return true
+    if (!address) {
+        return false
     }
 
-    return false
+    return (
+        isProjectOwnedBy(theGraphProject, address) ||
+        hasActiveProjectSubscription(theGraphProject, address)
+    )
 }

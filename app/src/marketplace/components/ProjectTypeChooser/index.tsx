@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { ProjectTypeEnum } from '$mp/utils/constants'
+import { ProjectType } from '$shared/types'
 import openDataImage from '$mp/assets/open-data.png'
 import openDataImage2x from '$mp/assets/open-data@2x.png'
 import paidDataImage from '$mp/assets/paid-data.png'
@@ -165,7 +165,7 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
     const fetchStreams = useFetchStreams()
     const [streamsCount, setStreamsCount] = useState<number>()
 
-    const [selectedProductType, setSelectedProductType] = useState<ProjectTypeEnum>()
+    const [selectedProductType, setSelectedProductType] = useState<ProjectType>()
 
     const link = useMemo<string>(() => {
         if (!selectedProductType) {
@@ -190,7 +190,7 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
             </CloseButton>
         </PageTitleContainer>
         <ProductChoices>
-            <Product onClick={() => setSelectedProductType(ProjectTypeEnum.OPEN_DATA)}>
+            <Product onClick={() => setSelectedProductType(ProjectType.OpenData)}>
                 <ProductTitle>Open data</ProductTitle>
                 <ProductImage>
                     <img src={openDataImage} srcSet={`${openDataImage2x} 2x`} alt="Open Data"/>
@@ -200,12 +200,12 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
                         name={'productType'}
                         size={'large'}
                         label={''}
-                        value={ProjectTypeEnum.OPEN_DATA}
+                        value={ProjectType.OpenData}
                         onChange={setSelectedProductType}
-                        checked={selectedProductType === ProjectTypeEnum.OPEN_DATA}/>
+                        checked={selectedProductType === ProjectType.OpenData}/>
                 </RadioWrap>
             </Product>
-            <Product onClick={() => setSelectedProductType(ProjectTypeEnum.PAID_DATA)}>
+            <Product onClick={() => setSelectedProductType(ProjectType.PaidData)}>
                 <ProductTitle>Paid data</ProductTitle>
                 <ProductImage>
                     <img src={paidDataImage} srcSet={`${paidDataImage2x} 2x`} alt="Paid Data"/>
@@ -215,12 +215,12 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
                         name={'productType'}
                         size={'large'}
                         label={''}
-                        value={ProjectTypeEnum.PAID_DATA}
+                        value={ProjectType.PaidData}
                         onChange={setSelectedProductType}
-                        checked={selectedProductType === ProjectTypeEnum.PAID_DATA}/>
+                        checked={selectedProductType === ProjectType.PaidData}/>
                 </RadioWrap>
             </Product>
-            <Product disabled={true} onClick={() => setSelectedProductType(ProjectTypeEnum.DATA_UNION)} title={'Available soon'}>
+            <Product disabled={true} onClick={() => setSelectedProductType(ProjectType.DataUnion)} title={'Available soon'}>
                 <ProductTitle>Data Union</ProductTitle>
                 <ProductImage>
                     <img src={dataUnionImage} srcSet={`${dataUnionImage2x} 2x`} alt="Data Union"/>
@@ -230,10 +230,10 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
                         name={'productType'}
                         size={'large'}
                         label={''}
-                        value={ProjectTypeEnum.DATA_UNION}
+                        value={ProjectType.DataUnion}
                         onChange={setSelectedProductType}
                         disabled={true}
-                        checked={selectedProductType === ProjectTypeEnum.DATA_UNION}/>
+                        checked={selectedProductType === ProjectType.DataUnion}/>
                 </RadioWrap>
             </Product>
         </ProductChoices>

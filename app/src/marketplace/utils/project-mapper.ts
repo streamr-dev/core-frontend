@@ -1,7 +1,7 @@
 import BN from "bignumber.js"
 import {TheGraphPaymentDetails, TheGraphProject} from "$app/src/services/projects"
 import {ChainName, Project, SalePoint} from "$mp/types/project-types"
-import {ProjectTypeEnum} from "$mp/utils/constants"
+import { ProjectType } from '$shared/types'
 import {getConfigForChain} from "$shared/web3/config"
 import {getMostRelevantTimeUnit} from "$mp/utils/price"
 import {getTokenInformation} from "$mp/utils/web3"
@@ -43,11 +43,11 @@ export const mapGraphProjectToDomainModel = async (graphProject: TheGraphProject
     }
 }
 
-export const mapProjectType = (graphProject: TheGraphProject): ProjectTypeEnum => {
+export const mapProjectType = (graphProject: TheGraphProject): ProjectType => {
     // TODO when the TheGraphProject will have field which determines if it's a Data Union - implement a check here
     return graphProject.paymentDetails.length === 1 && graphProject.paymentDetails[0].pricePerSecond == '0'
-        ? ProjectTypeEnum.OPEN_DATA
-        : ProjectTypeEnum.PAID_DATA
+        ? ProjectType.OpenData
+        : ProjectType.PaidData
 }
 
 export const mapSalePoints = async (paymentDetails: TheGraphPaymentDetails[]): Promise<Record<ChainName, SalePoint>> => {
@@ -69,13 +69,13 @@ export const mapSalePoints = async (paymentDetails: TheGraphPaymentDetails[]): P
     return salePoints
 }
 
-export const mapProjectTypeName = (projectType: ProjectTypeEnum): string => {
+export const mapProjectTypeName = (projectType: ProjectType): string => {
     switch (projectType) {
-        case ProjectTypeEnum.OPEN_DATA:
+        case ProjectType.OpenData:
             return 'Open data'
-        case ProjectTypeEnum.DATA_UNION:
+        case ProjectType.DataUnion:
             return 'Data Union'
-        case ProjectTypeEnum.PAID_DATA:
+        case ProjectType.PaidData:
             return 'Paid data'
         default:
             return 'Project'
