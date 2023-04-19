@@ -1,6 +1,6 @@
-import {useContext} from "react"
-import {AuthenticationController, AuthenticationControllerContext} from "$auth/authenticationController"
+import { useContext } from 'react'
+import { AuthenticationControllerContext } from '$auth/authenticationController'
 
-export const useAuthController = (): AuthenticationController => {
+export function useAuthController() {
     return useContext(AuthenticationControllerContext)
 }
