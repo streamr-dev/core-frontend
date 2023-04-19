@@ -37,6 +37,7 @@
     "projects": {
         "index": "/hub/projects",
         "show": "/hub/projects/:id",
+        "showTab": "/hub/projects/:id/:tab(overview|connect|live-data)",
         "new": "/hub/projects/new",
         "edit": "/hub/projects/:id/edit",
         "overview": "/hub/projects/:id/overview",

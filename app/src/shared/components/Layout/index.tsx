@@ -1,3 +1,4 @@
+import styled, { css } from 'styled-components'
 import { ThemeProvider } from 'styled-components'
 import { NavProvider } from '@streamr/streamr-layout'
 import React, { FunctionComponent, ReactNode } from 'react'
@@ -7,13 +8,15 @@ import useCurrentLocation from '$shared/hooks/useCurrentLocation'
 import Nav from './Nav'
 import Footer from './Footer'
 import styles from './layout.pcss'
-type Props = {
-    theme?: any
-    footer?: boolean
-    nav?: any
-    framedClassname?: string
-    innerClassname?: string
-}
+
+const Inner = styled.div<{ $gray?: boolean }>`
+    background-color: white;
+
+    ${({ $gray = false }) => $gray && css`
+        background-color: #F5F5F5;
+    `}
+`
+
 const DefaultTheme = {}
 
 type LayoutProps = {
@@ -24,13 +27,16 @@ type LayoutProps = {
     innerClassName?: string,
     children?: ReactNode | ReactNode[],
     className?: string
+    gray?: boolean
 }
+
 const Layout: FunctionComponent<LayoutProps> = ({
     theme = DefaultTheme,
     footer = true,
     nav = <Nav />,
     framedClassName,
     innerClassName,
+    gray = false,
     ...props
 }: LayoutProps = {}) => {
     useScrollToTop()
@@ -39,10 +45,10 @@ const Layout: FunctionComponent<LayoutProps> = ({
         <ThemeProvider theme={theme}>
             <NavProvider highlight={current}>
                 <div className={cx(styles.framed, framedClassName)}>
-                    <div className={cx(styles.inner, innerClassName)}>
+                    <Inner className={cx(styles.inner, innerClassName)} $gray={gray}>
                         {nav}
                         <div {...props} />
-                    </div>
+                    </Inner>
                     {!!footer && <Footer />}
                 </div>
             </NavProvider>

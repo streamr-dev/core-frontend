@@ -40,41 +40,48 @@ const customTheme = {
     text: COLORS.primaryLight
 }
 
-export const ProjectHero2: FunctionComponent<ProjectHeroProps> = ({project}) => {
+interface Props {
+    name: string
+    description: string
+    imageUrl: string | undefined
+    contact: Project['contact']
+}
+
+export default function ProjectHero2({ name, description, imageUrl, contact = {} }: Props) {
     return (
         <ProjectHeroContainer>
-            <ProjectHeroImage src={project.imageUrl} alt={project.name} noBorderRadius={true} />
-            <ProjectHeroTitle>{project.name}</ProjectHeroTitle>
-            <DescriptionEditor value={project.description} readOnly={true} theme={customTheme} />
+            <ProjectHeroImage src={imageUrl} alt={name} noBorderRadius={true} key={imageUrl || ''} />
+            <ProjectHeroTitle>{name}</ProjectHeroTitle>
+            <DescriptionEditor value={description} readOnly={true} theme={customTheme} />
             <ProjectHeroMetadataContainer>
-                {project.contact && (
+                {contact && (
                     <>
-                        {project.contact.url && (
-                            <DetailDisplay icon={<ProjectDetailIcon name={'web'} />} value={project.contact.url} link={project.contact.url} />
+                        {contact.url && (
+                            <DetailDisplay icon={<ProjectDetailIcon name={'web'} />} value={contact.url} link={contact.url} />
                         )}
-                        {project.contact.email && (
+                        {contact.email && (
                             <DetailDisplay
                                 icon={<ProjectDetailIcon name={'email'} />}
-                                value={project.contact.email}
-                                link={'mailto:' + project.contact.email}
+                                value={contact.email}
+                                link={'mailto:' + contact.email}
                             />
                         )}
-                        {project.contact.twitter && (
-                            <DetailDisplay icon={<ProjectDetailIcon name={'twitter'} className={'twitterColor'} />} link={project.contact.twitter} />
+                        {contact.twitter && (
+                            <DetailDisplay icon={<ProjectDetailIcon name={'twitter'} className={'twitterColor'} />} link={contact.twitter} />
                         )}
-                        {project.contact.telegram && (
+                        {contact.telegram && (
                             <DetailDisplay
                                 icon={<ProjectDetailIcon name={'telegram'} className={'telegramColor'} />}
-                                link={project.contact.telegram}
+                                link={contact.telegram}
                             />
                         )}
-                        {project.contact.reddit && (
-                            <DetailDisplay icon={<ProjectDetailIcon name={'reddit'} className={'redditColor'} />} link={project.contact.reddit} />
+                        {contact.reddit && (
+                            <DetailDisplay icon={<ProjectDetailIcon name={'reddit'} className={'redditColor'} />} link={contact.reddit} />
                         )}
-                        {project.contact.linkedIn && (
+                        {contact.linkedIn && (
                             <DetailDisplay
                                 icon={<ProjectDetailIcon name={'linkedin'} className={'linkedInColor'} />}
-                                link={project.contact.linkedIn}
+                                link={contact.linkedIn}
                             />
                         )}
                     </>
