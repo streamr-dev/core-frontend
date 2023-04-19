@@ -4,6 +4,7 @@ import { useClient } from 'streamr-client-react'
 import { useEffect } from 'react'
 import produce from 'immer'
 import { useAuthController } from '$auth/hooks/useAuthController'
+import address0 from '$utils/address0'
 import { useCurrentDraft } from './streamEditor'
 
 type PermissionManifest = Partial<
@@ -94,7 +95,10 @@ const useStreamAbilitiesStore = create<Store>((set, get) => {
                     throw new Error('Stream not found')
                 }
 
-                const value = await stream.hasPermission({
+                const value = await stream.hasPermission(account === address0 ? {
+                    permission,
+                    public: true,
+                } : {
                     user: account,
                     permission,
                     allowPublic: true,
@@ -146,19 +150,19 @@ function useStreamAbility(
 
     const { value, cache } =
         useStreamAbilitiesStore(({ permissions }) =>
-            streamId && account
-                ? permissions[accountKey(streamId, account)]?.[permission]
+            streamId
+                ? permissions[accountKey(streamId, account || address0)]?.[permission]
                 : undefined,
         ) || {}
 
     useEffect(() => {
         async function fetch() {
-            if (!client || !streamId || !account) {
+            if (!client || !streamId) {
                 return
             }
 
             try {
-                await fetchPermission(streamId, account, permission, client)
+                await fetchPermission(streamId, account || address0, permission, client)
             } catch (e) {
                 console.warn(e)
             }
@@ -175,12 +179,14 @@ export function useCurrentStreamAbility(permission: StreamPermission) {
 
     const { address } = useAuthController().currentAuthSession
 
-    return (
-        useStreamAbility(streamId, address, permission) ||
-        (!streamId &&
-            (permission === StreamPermission.EDIT ||
-                permission === StreamPermission.GRANT))
-    )
+    const hasPermission = useStreamAbility(streamId, address || undefined, permission)
+
+    if (!streamId) {
+        return (permission === StreamPermission.EDIT ||
+            permission === StreamPermission.GRANT)
+    }
+
+    return hasPermission
 }
 
 export function useInvalidateStreamAbilities() {
