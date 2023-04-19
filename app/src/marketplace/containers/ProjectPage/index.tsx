@@ -7,11 +7,11 @@ import { MarketplaceLoadingView } from '$mp/containers/ProjectPage/MarketplaceLo
 import styles from '$shared/components/Layout/layout.pcss'
 import {LoadedProjectContextProvider, useLoadedProject} from "$mp/contexts/LoadedProjectContext"
 import {ProjectPageTitle} from "$mp/components/PageTitle"
+import ProjectLinkTabs from '$app/src/pages/ProjectPage/ProjectLinkTabs'
 import routes from '$routes'
 import WhitelistRequestAccessModal from './WhitelistRequestAccessModal'
 import PurchaseModal from './PurchaseModal'
 import Page from './Page'
-import { ProjectLinkTabs } from './utils'
 
 const ProjectPage = () => {
     const {loadedProject: project} = useLoadedProject()

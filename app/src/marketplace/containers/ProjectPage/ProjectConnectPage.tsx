@@ -9,8 +9,8 @@ import { Connect } from '$mp/containers/ProjectPage/Connect'
 import styles from '$shared/components/Layout/layout.pcss'
 import {LoadedProjectContextProvider, useLoadedProject} from "$mp/contexts/LoadedProjectContext"
 import {ProjectPageTitle} from "$mp/components/PageTitle"
+import ProjectLinkTabs from '$app/src/pages/ProjectPage/ProjectLinkTabs'
 import routes from "$routes"
-import { ProjectLinkTabs } from './utils'
 
 const ProjectConnect: FunctionComponent = () => {
     const {loadedProject: project} = useLoadedProject()

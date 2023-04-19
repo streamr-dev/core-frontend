@@ -22,8 +22,8 @@ import {
 } from '$mp/containers/ProjectEditing/ProjectController'
 import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
 import {getProjectTitleForEditor} from "$mp/containers/ProjectPage/utils"
+import ProjectLinkTabs from '$app/src/pages/ProjectPage/ProjectLinkTabs'
 import { useEditableProjectActions } from '../ProductController/useEditableProjectActions'
-import { InactiveProjectLinkTabs } from '../ProjectPage/utils'
 
 type Props = {
     className?: string | null | undefined
@@ -57,7 +57,7 @@ const UnstyledNewProjectPage = ({ className }: Props) => {
         <MarketplaceHelmet title={'Create a new project'}/>
         <DetailsPageHeader
             pageTitle={pageTitle}
-            rightComponent={<InactiveProjectLinkTabs />}
+            rightComponent={<ProjectLinkTabs />}
         />
         <LoadingIndicator loading={publishInProgress}/>
         <ProjectEditor/>

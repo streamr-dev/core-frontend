@@ -9,8 +9,8 @@ import { GetAccess } from '$mp/components/GetAccess/GetAccess'
 import { ProjectPageTitle } from '$mp/components/PageTitle'
 import { useUserHasAccessToProject } from '$mp/containers/ProductController/useUserHasAccessToProject'
 import { StreamPreview } from '$shared/components/StreamPreview'
+import ProjectLinkTabs from '$app/src/pages/ProjectPage/ProjectLinkTabs'
 import routes from '$routes'
-import { ProjectLinkTabs } from './utils'
 
 const ProjectLiveData: FunctionComponent = () => {
     const { loadedProject: project } = useLoadedProject()
