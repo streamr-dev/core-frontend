@@ -414,9 +414,9 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 export const waitUntilProjectPurchased = async (id: string, timeoutSeconds = 60) => {
     const waitBetweenChecks = 3000
     const chainId = getProjectRegistryChainId()
-    const contract = getProjectRegistryContract(chainId, getPublicWeb3(chainId))
-
     const web3 = getPublicWeb3(chainId)
+    const contract = getProjectRegistryContract(chainId, web3)
+
     const myAddress = await getDefaultWeb3Account()
     const currentBlock = await web3.eth.getBlockNumber() - 10 // take a couple of blocks back to be sure
 
