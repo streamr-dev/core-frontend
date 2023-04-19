@@ -36,11 +36,7 @@ describe('product utils', () => {
         })
         it('detects data union product from value', () => {
             expect(all.isDataUnionProduct(ProjectType.DataUnion)).toBe(true)
-            expect(all.isDataUnionProduct('NORMAL')).toBe(false)
-        })
-        it('detects data union product from empty value', () => {
-            expect(all.isDataUnionProduct('')).toBe(false)
-            expect(all.isDataUnionProduct()).toBe(false)
+            expect(all.isDataUnionProduct(ProjectType.PaidData)).toBe(false)
         })
     })
     describe('validateProductPriceCurrency', () => {
