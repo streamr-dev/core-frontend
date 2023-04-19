@@ -120,7 +120,7 @@ const Root = styled.div`
     overflow: hidden;
 `
 
-const Trolley = styled.div<{ $selected?: boolean }>`
+const Trolley = styled.div<{ $selected?: boolean; $animated?: boolean }>`
     height: 100%;
     display: flex;
     align-items: center;
@@ -131,14 +131,19 @@ const Trolley = styled.div<{ $selected?: boolean }>`
     left: 0;
     padding: 0 20px;
     white-space: nowrap;
-    transition: 200ms ease-out;
-    transition-property: visibility, opacity;
     left: 50%;
     transform: translateX(-50%);
     min-width: 0;
     width: 100%;
     justify-content: center;
     text-align: center;
+
+    ${({ $animated = false }) =>
+        $animated &&
+        css`
+            transition: 200ms ease-out;
+            transition-property: visibility, opacity;
+        `}
 
     ${({ $selected = false }) =>
         $selected &&
@@ -355,7 +360,7 @@ export default function Tabs({
                     }}
                 >
                     {tabs.map(({ id, children }) => (
-                        <Trolley key={id} $selected={id === selectedId}>
+                        <Trolley key={id} $selected={id === selectedId} $animated={animated}>
                             <ItemContent $truncate={spreadEvenly}>{children}</ItemContent>
                         </Trolley>
                     ))}
