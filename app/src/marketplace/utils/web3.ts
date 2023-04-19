@@ -178,11 +178,11 @@ export const getTokenInformation = async (
         }
 
         const name = await contract.name().call()
-        const decimals = await contract.decimals().call()
+        const decimals: number | string = await contract.decimals().call()
         const infoObj: TokenInformation = {
             symbol,
             name,
-            decimals,
+            decimals: Number.parseInt(`${decimals}`, 10),
         }
         tokenInformationCache[cacheKey] = infoObj
         return infoObj
