@@ -68,3 +68,25 @@ export async function getAllowance(
         }
     }
 }
+
+export function getProjectImageUrl({
+    imageUrl,
+    imageIpfsCid,
+}: {
+    imageUrl?: string
+    imageIpfsCid?: string
+}) {
+    const {
+        ipfs: { ipfsGatewayUrl },
+    } = getCoreConfig()
+
+    if (imageIpfsCid) {
+        return `${ipfsGatewayUrl}${imageIpfsCid}`
+    }
+
+    if (!imageUrl) {
+        return
+    }
+
+    return `${imageUrl.replace(/^https:\/\/ipfs\.io\/ipfs\//, ipfsGatewayUrl)}`
+}
