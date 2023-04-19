@@ -1,4 +1,4 @@
-import { type StreamrClient, StreamPermission, Stream, UserPermissionQuery, PublicPermissionQuery } from 'streamr-client'
+import { type StreamrClient, StreamPermission, Stream } from 'streamr-client'
 import { create } from 'zustand'
 import { useClient } from 'streamr-client-react'
 import { useEffect } from 'react'
