@@ -47,7 +47,7 @@ const ProjectDetailsPage: FunctionComponent = () => {
                     />
                 )}*/}
 
-                <Terms product={project} />
+                <Terms terms={project?.termsOfUse || {}} />
             </ProjectPageContainer>
         </ProjectPage>
     )
