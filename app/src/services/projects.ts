@@ -373,7 +373,7 @@ export const getUserPermissionsForProject = async (
     projectId: ProjectId,
     userAddress: Address,
 ): SmartContractCall<ProjectPermissions> => {
-    const response = await projectRegistryContract(false, chainId).methods.getPermission(projectId, userAddress).call()
+    const response = await projectRegistryContract(true, chainId).methods.getPermission(projectId, userAddress).call()
     const { canDelete, canEdit, canGrant, canBuy } = response
     return { canDelete, canEdit, canGrant, canBuy }
 }
