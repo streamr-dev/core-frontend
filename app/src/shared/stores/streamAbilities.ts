@@ -1,4 +1,4 @@
-import { type StreamrClient, StreamPermission, Stream } from 'streamr-client'
+import { type StreamrClient, StreamPermission, Stream, UserPermissionQuery, PublicPermissionQuery } from 'streamr-client'
 import { create } from 'zustand'
 import { useClient } from 'streamr-client-react'
 import { useEffect } from 'react'
@@ -19,7 +19,7 @@ type PermissionManifest = Partial<
 interface Store {
     fetchPermission: (
         streamId: string,
-        account: string,
+        account: string | undefined,
         permission: StreamPermission,
         streamrClient: StreamrClient,
     ) => Promise<void>
@@ -38,18 +38,18 @@ interface Store {
     >
 }
 
-function accountKey(streamId: string, account: string) {
-    return JSON.stringify([streamId, account.toLowerCase()])
+function accountKey(streamId: string, account: string | undefined) {
+    return JSON.stringify([streamId, account != undefined ? account.toLowerCase() : ''])
 }
 
-function permissionKey(streamId: string, account: string, permission: StreamPermission) {
-    return JSON.stringify([streamId, account.toLowerCase(), permission])
+function permissionKey(streamId: string, account: string | undefined, permission: StreamPermission) {
+    return JSON.stringify([streamId, account != undefined ? account.toLowerCase() : '', permission])
 }
 
 const useStreamAbilitiesStore = create<Store>((set, get) => {
     function toggleFetching(
         streamId: string,
-        account: string,
+        account: string | undefined,
         permission: StreamPermission,
         newValue: boolean,
     ) {
@@ -94,11 +94,19 @@ const useStreamAbilitiesStore = create<Store>((set, get) => {
                     throw new Error('Stream not found')
                 }
 
-                const value = await stream.hasPermission({
-                    user: account,
+                let permissionQueryParams: Omit<UserPermissionQuery, 'streamId'> | Omit<PublicPermissionQuery, 'streamId'> = {
                     permission,
-                    allowPublic: true,
-                })
+                    public: true,
+                }
+                if (account != undefined) {
+                    permissionQueryParams= {
+                        user: account,
+                        permission,
+                        allowPublic: true,
+                    }
+                }
+
+                const value = await stream.hasPermission(permissionQueryParams)
 
                 set((state) =>
                     produce(state, (draft) => {
@@ -146,14 +154,14 @@ function useStreamAbility(
 
     const { value, cache } =
         useStreamAbilitiesStore(({ permissions }) =>
-            streamId && account
+            streamId
                 ? permissions[accountKey(streamId, account)]?.[permission]
                 : undefined,
         ) || {}
 
     useEffect(() => {
         async function fetch() {
-            if (!client || !streamId || !account) {
+            if (!client || !streamId) {
                 return
             }
 
@@ -175,12 +183,14 @@ export function useCurrentStreamAbility(permission: StreamPermission) {
 
     const { address } = useAuthController().currentAuthSession
 
-    return (
-        useStreamAbility(streamId, address, permission) ||
-        (!streamId &&
-            (permission === StreamPermission.EDIT ||
-                permission === StreamPermission.GRANT))
-    )
+    const hasPermission = useStreamAbility(streamId, address == null || address.length === 0 ? undefined : address, permission)
+
+    if (!streamId) {
+        return (permission === StreamPermission.EDIT ||
+            permission === StreamPermission.GRANT)
+    }
+
+    return hasPermission
 }
 
 export function useInvalidateStreamAbilities() {
