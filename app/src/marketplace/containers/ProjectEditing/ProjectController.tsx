@@ -15,20 +15,25 @@ import {
     createProject,
     SmartContractProject,
     SmartContractProjectCreate,
-    SmartContractProjectMetadata, updateProject
+    SmartContractProjectMetadata,
+    updateProject,
+    deleteProject as deleteProjectService,
 } from '$app/src/services/projects'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { getConfigForChain } from '$shared/web3/config'
 import { getDataAddress } from '$mp/utils/web3'
 import address0 from "$utils/address0"
 import {useProjectEditorStore} from "$mp/containers/ProjectEditing/proejctEditor.state"
+import useSwitchChain from '$shared/hooks/useSwitchChain'
+import { errorToast, successToast } from '$utils/toast'
 import {TransactionList} from "$shared/components/TransactionList"
 import routes from "$routes"
 
 export type ProjectController = {
     create: () => Promise<boolean>,
     update: () => Promise<boolean>,
-    publishInProgress: boolean
+    deleteProject: () => Promise<void>,
+    publishInProgress: boolean,
 }
 
 const ProjectTransactionList = () => {
@@ -41,6 +46,7 @@ export const useProjectController = (): ProjectController => {
     const [publishInProgress, setPublishInProgress] = useState<boolean>(false)
     const {projectRegistry} = getCoreConfig()
     const registryChain = getConfigForChain(projectRegistry.chainId)
+    const { switchChain } = useSwitchChain()
     const history = useHistory()
     const addPersistOperation = useProjectEditorStore((state) => state.addPersistOperation)
     const updatePersistOperation = useProjectEditorStore((state) => state.updatePersistOperation)
@@ -162,7 +168,7 @@ export const useProjectController = (): ProjectController => {
                 resolve(false)
             })
         })
-    }, [project, getSmartContractProject])
+    }, [clearPersistOperations, getSmartContractProject, project.type, addPersistOperation, updatePersistOperation, history])
 
     const createNewDataUnion = useCallback<() => Promise<boolean>>(async () => {
         // TODO
@@ -203,7 +209,7 @@ export const useProjectController = (): ProjectController => {
                 resolve(false)
             })
         })
-    }, [project, getSmartContractProject])
+    }, [clearPersistOperations, getSmartContractProject, project.id, addPersistOperation, updatePersistOperation, history])
 
     const updateExistingDataUnion = useCallback(async (): Promise<boolean> => {
         // todo implementation
@@ -235,9 +241,45 @@ export const useProjectController = (): ProjectController => {
         }
         return true
     }, [checkValidationErrors, project.type, updateExistingProject, updateExistingDataUnion])
+
+    const deleteProject = useCallback(async () => {
+        if (project != null && project.id) {
+            clearPersistOperations()
+            let transactionsToastNotification: Notification | null = null
+            addPersistOperation({id: 'deleteProject', name: 'Delete project', type: 'project', state: 'notstarted'})
+            transactionsToastNotification = openTransactionNotification()
+
+            await switchChain(registryChain.id)
+
+            updatePersistOperation('deleteProject', {
+                state: 'inprogress',
+            })
+            deleteProjectService(project.id)
+                .onTransactionComplete(() => {
+                    updatePersistOperation('deleteProject', {
+                        state: 'complete',
+                    })
+                    setTimeout(() => {
+                        history.push(routes.projects.index())
+                        transactionsToastNotification?.close()
+                    }, TRANSACTION_LIST_TIMEOUT)
+                })
+                .onError((e) => {
+                    console.error('Could not delete project', e)
+                    updatePersistOperation('deleteProject', {
+                        state: 'error',
+                    })
+                    setTimeout(() => {
+                        transactionsToastNotification?.close()
+                    }, TRANSACTION_LIST_TIMEOUT)
+                })
+        }
+    }, [addPersistOperation, clearPersistOperations, history, project, registryChain, switchChain, updatePersistOperation])
+
     return {
         create,
         update,
+        deleteProject,
         publishInProgress
     }
 }
