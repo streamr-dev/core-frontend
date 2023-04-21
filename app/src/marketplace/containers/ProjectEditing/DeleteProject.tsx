@@ -24,8 +24,14 @@ const DeleteProject = () => {
             <Title>Delete project</Title>
             <Description>Delete this project forever. You can&apos;t undo this.</Description>
             <Button
-                kind='destructive'
-                onClick={async () => { deleteProject() }}
+                kind="destructive"
+                onClick={async () => {
+                    try {
+                        await deleteProject()
+                    } catch (e) {
+                        console.warn('Could not delete project', e)
+                    }
+                }}
             >
                 Delete
             </Button>
