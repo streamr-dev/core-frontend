@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import Buttons from '$shared/components/Buttons'
-import Modal, { Footer, Props as ModalProps, RejectReason } from '$shared/components/Modal'
+import Modal, { Footer, Props as ModalProps, RejectReason } from './Modal'
 import PngIcon from '$shared/components/PngIcon'
 import { ethereumNetworks } from '$shared/utils/constants'
 

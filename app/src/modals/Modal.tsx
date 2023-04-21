@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useReducer, useRef } from 'react'
 import styled, { css, keyframes } from 'styled-components'
 import { useDiscardableEffect } from 'toasterhea'
 import gsap from 'gsap'
-import { SANS } from '../utils/styled'
+import { SANS } from '$shared/utils/styled'
 
 const bringIn = keyframes`
     from {
