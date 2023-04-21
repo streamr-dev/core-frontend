@@ -16,6 +16,7 @@ import { DataUnionChainSelector } from '$mp/containers/ProjectEditing/DataUnionC
 import { DataUnionTokenSelector } from '$mp/containers/ProjectEditing/DataUnionTokenSelector/DataUnionTokenSelector'
 import { DataUnionFee } from '$mp/containers/ProjectEditing/DataUnionFee'
 import {ProjectControllerContext} from "$mp/containers/ProjectEditing/ProjectController"
+import DeleteProject from './DeleteProject'
 
 type ProjectEditorProps = {
     nonEditableSalePointChains?: number[] // array of chain ids
@@ -23,6 +24,11 @@ type ProjectEditorProps = {
 
 const WhiteBoxWithMargin = styled(WhiteBox)`
   margin-top: 24px;
+`
+
+const TransparentBoxWithMargin = styled(WhiteBoxWithMargin)`
+  background-color: transparent;
+  border: 1px solid #CDCDCD;
 `
 
 const EditorOverlay = styled.div`
@@ -66,6 +72,9 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({nonEditabl
         <WhiteBoxWithMargin>
             <TermsOfUse/>
         </WhiteBoxWithMargin>
+        <TransparentBoxWithMargin>
+            <DeleteProject />
+        </TransparentBoxWithMargin>
         {publishInProgress && <EditorOverlay/>}
     </ProjectPageContainer>
 }

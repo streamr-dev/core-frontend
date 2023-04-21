@@ -383,14 +383,10 @@ export const updateProject = (project: SmartContractProject): SmartContractTrans
     })
 }
 
-export const deleteProject = (project: SmartContractProject): SmartContractTransaction => {
+export const deleteProject = (projectId: string): SmartContractTransaction => {
     const chainId = getProjectRegistryChainId()
-    const {
-        id
-    } = project
-
     const methodToSend = getProjectRegistryContract(chainId, getWeb3()).methods.deleteProject(
-        id,
+        projectId,
     )
     return send(methodToSend, {
         network: chainId,
