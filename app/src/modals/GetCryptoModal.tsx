@@ -1,10 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import Modal, { Footer } from './Modal'
 import PngIcon from '$shared/components/PngIcon'
 import Button from '$shared/components/Button'
 import Link from '$shared/components/Link'
 import Buttons from '$shared/components/Buttons'
+import Modal, { Footer } from './Modal'
 
 interface Props {
     onReject?: (reason?: unknown) => void

@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import Button from '$shared/components/Button'
-import ProjectModal from './ProjectModal'
 import SvgIcon from '$shared/components/SvgIcon'
 import { LIGHT } from '$shared/utils/styled'
+import ProjectModal from './ProjectModal'
 
 const Box = styled.div`
     background: #ffffff;
@@ -69,7 +69,7 @@ export default function PurchaseCompleteModal({ onResolve, onReject }: Props) {
         return () => {
             window.removeEventListener('keydown', onKeyDown)
         }
-    }, [onReject])
+    }, [onResolve])
 
     return (
         <ProjectModal onReject={onReject}>

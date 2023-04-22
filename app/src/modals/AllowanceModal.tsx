@@ -1,10 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 import { COLORS } from '$shared/utils/styled'
-import ProjectModal, { Actions } from './ProjectModal'
 import SvgIcon from '$shared/components/SvgIcon'
-import routes from '$routes'
 import Button from '$shared/components/Button'
+import routes from '$routes'
+import ProjectModal, { Actions } from './ProjectModal'
 
 const Box = styled.div`
     background: #ffffff;

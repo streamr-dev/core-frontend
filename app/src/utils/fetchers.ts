@@ -1,7 +1,7 @@
+import { z } from 'zod'
 import { getGraphUrl } from '$app/src/getters'
 import { post } from '$shared/utils/api'
 import { GraphProject } from '$shared/consts'
-import { z } from 'zod'
 
 export async function fetchGraphProjectForPurchase(projectId: string) {
     const result = await post({

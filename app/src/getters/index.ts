@@ -8,8 +8,8 @@ import { call } from '$mp/utils/smartContract'
 import { erc20TokenContractMethods } from '$mp/utils/web3'
 import { marketplaceContract } from '$app/src/services/marketplace'
 import Toast, { ToastType } from '$shared/toasts/Toast'
-import getCoreConfig from './getCoreConfig'
 import { Layer } from '$utils/Layer'
+import getCoreConfig from './getCoreConfig'
 
 export function getGraphUrl() {
     const { theGraphUrl, theHubGraphName } = getCoreConfig()

@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import PngIcon from '$shared/components/PngIcon'
+import Buttons from '$shared/components/Buttons'
 import Modal, { Footer, RejectReason } from './Modal'
-import Buttons from '../shared/components/Buttons'
 
 const Content = styled.div`
     padding: 64px 0;
