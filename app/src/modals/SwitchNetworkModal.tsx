@@ -45,7 +45,7 @@ export default function SwitchNetworkModal({ expectedNetwork, actualNetwork, onR
                     actions={{
                         cancel: {
                             title: 'Cancel',
-                            onClick: () => void onReject?.(),
+                            onClick: () => void onReject?.(RejectReason.Cancel),
                             kind: 'link',
                         },
                         add: {

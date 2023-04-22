@@ -37,6 +37,7 @@ export const RejectReason = {
     CloseButton: Symbol('close button'),
     Backdrop: Symbol('backdrop'),
     EscapeKey: Symbol('escape key'),
+    Cancel: Symbol('cancel'),
 }
 
 export interface Props {

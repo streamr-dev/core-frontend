@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect } from 'react'
 import styled from 'styled-components'
-import { useDiscardableEffect } from 'toasterhea'
+import { Reason, useDiscardableEffect } from 'toasterhea'
 import { COLORS } from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
 
@@ -14,7 +14,10 @@ export function isAbandonment(e: unknown) {
     return (
         e === RejectionReason.BackButton ||
         e === RejectionReason.CancelButton ||
-        e === RejectionReason.EscapeKey
+        e === RejectionReason.EscapeKey ||
+        e === Reason.Host ||
+        e === Reason.Unmount ||
+        e === Reason.Update
     )
 }
 

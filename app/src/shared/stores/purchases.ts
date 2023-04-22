@@ -23,6 +23,8 @@ import ConfirmPurchaseModal from '$app/src/modals/ConfirmPurchaseModal'
 import { toSeconds } from '$mp/utils/time'
 import AccessingProjectModal from '$app/src/modals/AccessingProjectModal'
 import { getAllowance } from '$app/src/getters'
+import { RejectReason } from '$app/src/modals/Modal'
+import FailedPurchaseModal from '$app/src/modals/FailedPurchaseModal'
 
 interface Store {
     inProgress: Record<string, true | undefined>
@@ -106,14 +108,6 @@ const usePurchaseStore = create<Store>((set, get) => {
                     }
 
                     let allowanceModal: Toaster<typeof AllowanceModal> | undefined
-
-                    let confirmPurchaseModal:
-                        | Toaster<typeof ConfirmPurchaseModal>
-                        | undefined
-
-                    let accessingProjectModal:
-                        | Toaster<typeof AccessingProjectModal>
-                        | undefined
 
                     let startOver = false
 
@@ -248,20 +242,19 @@ const usePurchaseStore = create<Store>((set, get) => {
                                 await setAllowance()
                             }
 
-                            confirmPurchaseModal = toaster(
-                                ConfirmPurchaseModal,
-                                Layer.Modal,
-                            )
-
-                            accessingProjectModal = toaster(
-                                AccessingProjectModal,
-                                Layer.Modal,
-                            )
-
                             const seconds = toSeconds(new BigNumber(quantity), unit)
 
                             async function buy() {
                                 while (true) {
+                                    let confirmPurchaseModal:
+                                        | Toaster<typeof ConfirmPurchaseModal>
+                                        | undefined
+
+                                    confirmPurchaseModal = toaster(
+                                        ConfirmPurchaseModal,
+                                        Layer.Modal,
+                                    )
+
                                     try {
                                         setTimeout(async () => {
                                             try {
@@ -277,58 +270,62 @@ const usePurchaseStore = create<Store>((set, get) => {
 
                                         await networkPreflight(selectedChainId)
 
-                                        await marketplaceContract(false, selectedChainId)
-                                            .methods.buy(
-                                                projectId,
-                                                // Round down to nearest full second, otherwise allowance could run out
-                                                seconds.dp(0, BigNumber.ROUND_DOWN),
-                                            )
-                                            .send({
-                                                gas: 2e5 + streams.length * 1e5,
-                                                from: account,
-                                                maxPriorityFeePerGas: null,
-                                                maxFeePerGas: null,
-                                            })
-                                            .once(
-                                                'error',
-                                                (...args: unknown[]) =>
-                                                    void console.warn('error', ...args),
-                                            )
-                                            .once(
-                                                'receipt',
-                                                (...args: unknown[]) =>
-                                                    void console.warn('receipt', ...args),
-                                            )
-                                            .once('transactionHash', async () => {
-                                                confirmPurchaseModal?.discard()
+                                        let accessingProjectModal:
+                                            | Toaster<typeof AccessingProjectModal>
+                                            | undefined
 
-                                                try {
-                                                    await accessingProjectModal?.pop()
-                                                } catch (e) {
-                                                    if (!isAbandonment(e)) {
-                                                        console.warn(e)
+                                        accessingProjectModal = toaster(
+                                            AccessingProjectModal,
+                                            Layer.Modal,
+                                        )
+
+                                        try {
+                                            await marketplaceContract(false, selectedChainId)
+                                                .methods.buy(
+                                                    projectId,
+                                                    // Round down to nearest full second, otherwise allowance could run out
+                                                    seconds.dp(0, BigNumber.ROUND_DOWN),
+                                                )
+                                                .send({
+                                                    gas: 2e5 + streams.length * 1e5,
+                                                    from: account,
+                                                    maxPriorityFeePerGas: null,
+                                                    maxFeePerGas: null,
+                                                })
+                                                .once('transactionHash', async () => {
+                                                    confirmPurchaseModal?.discard()
+
+                                                    try {
+                                                        await accessingProjectModal?.pop()
+                                                    } catch (e) {
+                                                        if (!isAbandonment(e)) {
+                                                            console.warn(e)
+                                                        }
                                                     }
-                                                }
-                                            })
+                                                })
+                                        } finally {
+                                            accessingProjectModal?.discard()
+
+                                            accessingProjectModal = undefined
+                                        }
 
                                         break
                                     } catch (e) {
+                                        if (
+                                            e === RejectReason.Cancel ||
+                                            e === RejectReason.EscapeKey
+                                        ) {
+                                            throw e
+                                        }
+
                                         if (isCodedError(e) && e.code === 4001) {
                                             throw e
                                         }
 
                                         confirmPurchaseModal?.discard()
 
-                                        accessingProjectModal?.discard()
-
                                         try {
-                                            await toaster(Toast, Layer.Toast).pop({
-                                                title: 'Buying project failed',
-                                                type: ToastType.Warning,
-                                                desc: 'Would you like to try again?',
-                                                okLabel: 'Yes',
-                                                cancelLabel: 'No',
-                                            })
+                                            await toaster(FailedPurchaseModal, Layer.Modal).pop()
 
                                             continue
                                         } catch (_) {
@@ -338,10 +335,6 @@ const usePurchaseStore = create<Store>((set, get) => {
                                         confirmPurchaseModal?.discard()
 
                                         confirmPurchaseModal = undefined
-
-                                        accessingProjectModal?.discard()
-
-                                        accessingProjectModal = undefined
                                     }
                                 }
                             }
