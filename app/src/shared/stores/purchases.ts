@@ -250,9 +250,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                 while (true) {
                                     let confirmPurchaseModal:
                                         | Toaster<typeof ConfirmPurchaseModal>
-                                        | undefined
-
-                                    confirmPurchaseModal = toaster(
+                                        | undefined = toaster(
                                         ConfirmPurchaseModal,
                                         Layer.Modal,
                                     )
@@ -274,9 +272,7 @@ const usePurchaseStore = create<Store>((set, get) => {
 
                                         let accessingProjectModal:
                                             | Toaster<typeof AccessingProjectModal>
-                                            | undefined
-
-                                        accessingProjectModal = toaster(
+                                            | undefined = toaster(
                                             AccessingProjectModal,
                                             Layer.Modal,
                                         )
