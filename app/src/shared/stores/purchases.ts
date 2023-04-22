@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import produce from 'immer'
 import { Toaster, toaster } from 'toasterhea'
 import BigNumber from 'bignumber.js'
+import { useCallback } from 'react'
 import ChainSelectorModal, {
     ChainSelectorResult,
 } from '$app/src/modals/ChainSelectorModal'
@@ -25,6 +26,7 @@ import AccessingProjectModal from '$app/src/modals/AccessingProjectModal'
 import { getAllowance } from '$app/src/getters'
 import { RejectReason } from '$app/src/modals/Modal'
 import FailedPurchaseModal from '$app/src/modals/FailedPurchaseModal'
+import { useAuthController } from '$app/src/auth/hooks/useAuthController'
 
 interface Store {
     inProgress: Record<string, true | undefined>
@@ -280,7 +282,10 @@ const usePurchaseStore = create<Store>((set, get) => {
                                         )
 
                                         try {
-                                            await marketplaceContract(false, selectedChainId)
+                                            await marketplaceContract(
+                                                false,
+                                                selectedChainId,
+                                            )
                                                 .methods.buy(
                                                     projectId,
                                                     // Round down to nearest full second, otherwise allowance could run out
@@ -325,7 +330,10 @@ const usePurchaseStore = create<Store>((set, get) => {
                                         confirmPurchaseModal?.discard()
 
                                         try {
-                                            await toaster(FailedPurchaseModal, Layer.Modal).pop()
+                                            await toaster(
+                                                FailedPurchaseModal,
+                                                Layer.Modal,
+                                            ).pop()
 
                                             continue
                                         } catch (_) {
@@ -381,7 +389,14 @@ const usePurchaseStore = create<Store>((set, get) => {
 })
 
 export function usePurchaseCallback() {
-    return usePurchaseStore().purchase
+    const { purchase } = usePurchaseStore()
+
+    const { address: account } = useAuthController().currentAuthSession
+
+    return useCallback(
+        (projectId: string) => purchase(projectId, account),
+        [purchase, account],
+    )
 }
 
 export function useIsProjectBeingPurchased(projectId: string) {

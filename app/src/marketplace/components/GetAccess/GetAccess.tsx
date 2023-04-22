@@ -11,12 +11,18 @@ import {getConfigForChain} from "$shared/web3/config"
 import useModal from "$shared/hooks/useModal"
 import PurchaseModal from "$mp/components/Modal/PurchaseModal"
 import {timeUnits} from "$shared/utils/timeUnit"
+import { usePurchaseCallback, useIsProjectBeingPurchased } from "$shared/stores/purchases"
 
 export const GetAccess: FunctionComponent<{project: Project}> = ({project}) => {
     const { api: purchaseDialog } = useModal('purchaseProject')
     const firstSalePoint = useMemo<SalePoint>(() => Object.values(project.salePoints)[0], [project.salePoints])
     const firstSalePointChainName = useMemo<string>(() => getConfigForChain(firstSalePoint.chainId).name,[firstSalePoint])
     const moreSalePoints = useMemo<number>(() => Object.values(project.salePoints).length - 1, [project.salePoints])
+
+    const purchase = usePurchaseCallback()
+
+    const isBeingPurchased = useIsProjectBeingPurchased(project?.id || '')
+
     return <>
         <GetAccessContainer>
             <img src={ProjectPng}/>
@@ -36,7 +42,22 @@ export const GetAccess: FunctionComponent<{project: Project}> = ({project}) => {
                 <strong>{formatChainName(firstSalePointChainName)}</strong>
                 {moreSalePoints > 0 && <span> [and on {moreSalePoints} other {moreSalePoints === 1 ? 'chain' : 'chains'}]</span>}
             </p>
-            <Button onClick={() => { purchaseDialog.open({ projectId: project.id }) }}>Get Access</Button>
+            <Button
+                disabled={isBeingPurchased}
+                onClick={async () => {
+                    try {
+                        if (!project?.id) {
+                            return
+                        }
+
+                        await purchase(project.id)
+                    } catch (e) {
+                        console.warn('Purchase failed', e)
+                    }
+                }}
+            >
+                Get Access
+            </Button>
         </GetAccessContainer>
         <PurchaseModal />
     </>
