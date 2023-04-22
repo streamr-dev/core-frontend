@@ -27,6 +27,8 @@ import { getAllowance } from '$app/src/getters'
 import { RejectReason } from '$app/src/modals/Modal'
 import FailedPurchaseModal from '$app/src/modals/FailedPurchaseModal'
 import { useAuthController } from '$app/src/auth/hooks/useAuthController'
+import { ensureGasMonies } from '$app/src/utils'
+import InsufficientFundsError from '../errors/InsufficientFundsError'
 
 interface Store {
     inProgress: Record<string, true | undefined>
@@ -182,6 +184,14 @@ const usePurchaseStore = create<Store>((set, get) => {
                                 async function setAllowance() {
                                     while (true) {
                                         try {
+                                            await ensureGasMonies(
+                                                selectedChainId,
+                                                account,
+                                                {
+                                                    recover: true,
+                                                },
+                                            )
+
                                             await networkPreflight(selectedChainId)
 
                                             await erc20TokenContractMethods(
@@ -219,6 +229,14 @@ const usePurchaseStore = create<Store>((set, get) => {
                                             break
                                         } catch (e: unknown) {
                                             console.warn('Setting allowance failed', e)
+
+                                            if (e instanceof InsufficientFundsError) {
+                                                /**
+                                                 * The user had a chance to react to the gas balance
+                                                 * check and dismissed the toast. Pass on.
+                                                 */
+                                                throw e
+                                            }
 
                                             if (isCodedError(e) && e.code === 4001) {
                                                 throw e
@@ -266,7 +284,9 @@ const usePurchaseStore = create<Store>((set, get) => {
                                             }
                                         })
 
-                                        // @TODO Do a balance check.
+                                        await ensureGasMonies(selectedChainId, account, {
+                                            recover: true,
+                                        })
 
                                         await networkPreflight(selectedChainId)
 
@@ -316,6 +336,14 @@ const usePurchaseStore = create<Store>((set, get) => {
                                             e === RejectReason.Cancel ||
                                             e === RejectReason.EscapeKey
                                         ) {
+                                            throw e
+                                        }
+
+                                        if (e instanceof InsufficientFundsError) {
+                                            /**
+                                             * The user had a chance to react to the gas balance
+                                             * check and dismissed the toast. Pass on.
+                                             */
                                             throw e
                                         }
 
