@@ -45,9 +45,10 @@ export interface Props {
     title?: string
     onReject?: (reason?: any) => void
     onBeforeAbort?: (reason?: any) => boolean | null | void
+    darkBackdrop?: boolean
 }
 
-export default function Modal({ title = 'Modal title', children, onReject, onBeforeAbort }: Props) {
+export default function Modal({ title = 'Modal title', children, onReject, onBeforeAbort, darkBackdrop }: Props) {
     const [dismissed, dismiss] = useReducer(() => true, false)
 
     const rootRef = useRef<HTMLDivElement>(null)
@@ -127,7 +128,7 @@ export default function Modal({ title = 'Modal title', children, onReject, onBef
     }, [])
 
     return (
-        <Root ref={rootRef} $dismissed={dismissed}>
+        <Root ref={rootRef} $dismissed={dismissed} $dark={darkBackdrop}>
             <Backdrop onMouseDown={() => void close(RejectReason.Backdrop)} />
             <OuterWrap>
                 <InnerWrap>
@@ -154,7 +155,7 @@ const AnimatedWrap = styled.div<{ $dismissed?: boolean }>`
     backface-visibility: hidden;
 `
 
-const Root = styled.div<{ $dismissed?: boolean }>`
+const Root = styled.div<{ $dismissed?: boolean, $dark?: boolean }>`
     backdrop-filter: blur(8px);
     background-color: rgba(255, 255, 255, 0.9);
     height: 100%;
@@ -172,6 +173,10 @@ const Root = styled.div<{ $dismissed?: boolean }>`
         css`
             animation: 300ms ${fadeAway} ease-in-out 1;
         `}
+
+    ${({ $dark = false }) => $dark && css`
+        background-color: rgba(50, 50, 50, 0.5);
+    `}
 `
 
 const Backdrop = styled.div`

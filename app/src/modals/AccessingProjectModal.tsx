@@ -32,7 +32,7 @@ const LoadingIndicator = styled(PrestyledLoadingIndicator)`
 
 export default function AccessingProjectModal() {
     return (
-        <Modal title="Accessing project" onBeforeAbort={() => false}>
+        <Modal title="Accessing project" onBeforeAbort={() => false} darkBackdrop>
             <Content>
                 <p>Accessing…</p>
                 <LoadingIndicator loading />

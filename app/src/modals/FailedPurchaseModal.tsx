@@ -33,7 +33,7 @@ interface Props {
 
 export default function FailedPurchaseModal({ onReject, onResolve }: Props) {
     return (
-        <Modal title="Access failed" onReject={onReject}>
+        <Modal title="Access failed" onReject={onReject} darkBackdrop>
             <Content>
                 <IconWrap>
                     <PngIcon name="walletError" width="110" height="110" />

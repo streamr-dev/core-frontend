@@ -11,7 +11,7 @@ const Content = styled.p`
 
 export default function ConfirmPurchaseModal() {
     return (
-        <Modal title="Payment confirmation" onBeforeAbort={() => false}>
+        <Modal title="Payment confirmation" onBeforeAbort={() => false} darkBackdrop>
             <Content>
                 You need to confirm the transaction in your wallet to access this project
             </Content>
