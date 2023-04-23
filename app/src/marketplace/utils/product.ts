@@ -20,11 +20,6 @@ export const isProjectOwnedBy = ({ permissions }: Pick<TheGraphProject, 'permiss
     return !!canGrant
 }
 
-export const hasActiveProjectSubscription = ({ subscriptions }: Pick<TheGraphProject, 'subscriptions'>, address: string): boolean => {
-    const { endTimestamp = '0' } = subscriptions.find((s) => s.userAddress.toLowerCase() === address.toLowerCase()) || {}
-
-    return Number.parseInt(endTimestamp, 10) * 1000 >= Date.now()}
-
 export const isDataUnionProject = (project: TheGraphProject): boolean => {
     if (project != null && project.metadata != null) {
         return project.metadata.isDataUnion

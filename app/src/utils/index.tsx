@@ -7,6 +7,7 @@ import Toast, { ToastType } from '$shared/toasts/Toast'
 import { fromAtto } from '$mp/utils/math'
 import { Layer } from './Layer'
 import getPublicWeb3 from './web3/getPublicWeb3'
+import { getProjectRegistryContract } from '../getters'
 
 export async function ensureGasMonies(
     chainId: number,
@@ -52,4 +53,45 @@ export async function ensureGasMonies(
             throw e
         }
     }
+}
+
+/**
+ * Scouts for the `Subscribed` event associated with the Project Registry contract
+ * and explodes if it can't find one after given number of tries.
+ * @param chainId The chain id related to the purchase.
+ * @param projectId Project id.
+ * @param account Account who made the purchase.
+ * @param options.attempts Number of tries (with 3s delay between each).
+ * @returns Nothing important. Watch for 'splosions tho.
+ */
+export async function waitForPurchasePropagation(
+    chainId: number,
+    projectId: string,
+    account: string,
+    { attempts = 30 }: { attempts?: number } = {},
+) {
+    const web3 = getPublicWeb3(chainId)
+
+    const contract = getProjectRegistryContract(chainId, web3)
+
+    const params = {
+        fromBlock: await web3.eth.getBlockNumber() - 10, // take a couple of blocks back to be sure
+        toBlock: 'latest',
+        filter: {
+            projectId,
+            subscriber: account,
+        },
+    }
+
+    for (let i = 0; i < attempts; i++) {
+        const events = await contract.getPastEvents('Subscribed', params)
+
+        if (events.length) {
+            return
+        }
+
+        await new Promise((resolve) => void setTimeout(resolve, 3000))
+    }
+
+    throw new Error('Finding `Subscribed` event timed out')
 }

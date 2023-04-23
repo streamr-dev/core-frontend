@@ -1,13 +1,16 @@
 import { create } from 'zustand'
-import produce from 'immer'
+import produce, { current } from 'immer'
 import { Toaster, toaster } from 'toasterhea'
 import BigNumber from 'bignumber.js'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import ChainSelectorModal, {
     ChainSelectorResult,
 } from '$app/src/modals/ChainSelectorModal'
 import { Layer } from '$utils/Layer'
-import { fetchGraphProjectForPurchase } from '$app/src/utils/fetchers'
+import {
+    fetchGraphProjectForPurchase,
+    fetchGraphProjectSubscriptions,
+} from '$app/src/utils/fetchers'
 import AccessPeriodModal, { AccessPeriod } from '$app/src/modals/AccessPeriodModal'
 import { isAbandonment } from '$app/src/modals/ProjectModal'
 import AllowanceModal from '$app/src/modals/AllowanceModal'
@@ -27,12 +30,23 @@ import { getAllowance } from '$app/src/getters'
 import { RejectReason } from '$app/src/modals/Modal'
 import FailedPurchaseModal from '$app/src/modals/FailedPurchaseModal'
 import { useAuthController } from '$app/src/auth/hooks/useAuthController'
-import { ensureGasMonies } from '$app/src/utils'
-import InsufficientFundsError from '../errors/InsufficientFundsError'
+import { ensureGasMonies, waitForPurchasePropagation } from '$app/src/utils'
+import InsufficientFundsError from '$shared/errors/InsufficientFundsError'
 
 interface Store {
     inProgress: Record<string, true | undefined>
     purchase: (projectId: string, account: string) => Promise<void>
+    fetchingSubscriptions: Record<string, true | undefined>
+    subscriptions: Record<
+        string,
+        | {
+              cache: number | undefined
+              entries: Awaited<ReturnType<typeof fetchGraphProjectSubscriptions>>
+          }
+        | undefined
+    >
+    fetchSubscriptions: (projectId: string) => Promise<void>
+    invalidateSubscription: (projectId: string) => void
 }
 
 const usePurchaseStore = create<Store>((set, get) => {
@@ -42,6 +56,57 @@ const usePurchaseStore = create<Store>((set, get) => {
 
     return {
         inProgress: {},
+
+        subscriptions: {},
+
+        fetchingSubscriptions: {},
+
+        async fetchSubscriptions(projectId) {
+            if (!!get().fetchingSubscriptions[projectId]) {
+                return
+            }
+
+            set((current) =>
+                produce(current, (next) => {
+                    next.fetchingSubscriptions[projectId] = true
+                }),
+            )
+
+            try {
+                const entries = await fetchGraphProjectSubscriptions(projectId)
+
+                set((current) =>
+                    produce(current, (next) => {
+                        const { cache } = next.subscriptions[projectId] || {}
+
+                        next.subscriptions[projectId] = {
+                            cache,
+                            entries,
+                        }
+                    }),
+                )
+            } finally {
+                set((current) =>
+                    produce(current, (next) => {
+                        delete next.fetchingSubscriptions[projectId]
+                    }),
+                )
+            }
+        },
+
+        invalidateSubscription(projectId) {
+            set((current) =>
+                produce(current, (next) => {
+                    const { cache = 0, entries = [] } =
+                        next.subscriptions[projectId] || {}
+
+                    next.subscriptions[projectId] = {
+                        cache: cache + 1,
+                        entries,
+                    }
+                }),
+            )
+        },
 
         async purchase(projectId, account) {
             if (isInProgress(projectId)) {
@@ -324,6 +389,12 @@ const usePurchaseStore = create<Store>((set, get) => {
                                                         }
                                                     }
                                                 })
+
+                                            await waitForPurchasePropagation(
+                                                selectedChainId,
+                                                projectId,
+                                                account,
+                                            )
                                         } finally {
                                             accessingProjectModal?.discard()
 
@@ -408,6 +479,8 @@ const usePurchaseStore = create<Store>((set, get) => {
                     }),
                 )
             }
+
+            get().invalidateSubscription(projectId)
         },
     }
 })
@@ -430,4 +503,42 @@ export function useIsProjectBeingPurchased(projectId: string) {
         Object.prototype.hasOwnProperty.call(inProgress, projectId) &&
         !!inProgress[projectId]
     )
+}
+
+export function useHasActiveProjectSubscription(
+    projectId: string | undefined,
+    account: string | undefined,
+) {
+    const { subscriptions, fetchSubscriptions } = usePurchaseStore()
+
+    const { cache, entries = [] } = (projectId && subscriptions[projectId]) || {}
+
+    useEffect(() => {
+        if (projectId) {
+            fetchSubscriptions(projectId)
+        }
+    }, [cache, fetchSubscriptions, projectId])
+
+    if (!projectId || !account) {
+        return false
+    }
+
+    const { endTimestamp = '0' } =
+        entries.find((s) => s.userAddress.toLowerCase() === account.toLowerCase()) || {}
+
+    return Number.parseInt(endTimestamp, 10) * 1000 >= Date.now()
+}
+
+export function useInvalidateProjectSubscriptionsCallback() {
+    /**
+     * @TODO It'd be best to invalidate permissions on each visit to project's page just
+     * to be sure the user's looking at the latest state.
+     */
+    return usePurchaseStore().invalidateSubscription
+}
+
+export function useIsFetchingProjectSubscriptions(projectId: string | undefined) {
+    const { fetchingSubscriptions } = usePurchaseStore()
+
+    return (projectId && fetchingSubscriptions[projectId]) || false
 }

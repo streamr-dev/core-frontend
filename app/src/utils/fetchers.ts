@@ -12,7 +12,6 @@ export async function fetchGraphProjectForPurchase(projectId: string) {
                     projects(
                         where: { id: "${projectId.toLowerCase()}" }
                     ) {
-                        id
                         streams
                         paymentDetails {
                             domainId
@@ -41,4 +40,42 @@ export async function fetchGraphProjectForPurchase(projectId: string) {
     } catch (e) {
         console.warn(e)
     }
+}
+
+export async function fetchGraphProjectSubscriptions(projectId: string) {
+    const result = await post({
+        url: getGraphUrl(),
+        data: {
+            query: `
+                query {
+                    projects(
+                        where: { id: "${projectId.toLowerCase()}" }
+                    ) {
+                        subscriptions {
+                            userAddress
+                            endTimestamp
+                        }
+                    }
+                }
+            `,
+        },
+    })
+
+    try {
+        const [project = undefined] = z
+            .object({
+                data: z.object({
+                    projects: z.array(
+                        GraphProject.pick({ subscriptions: true }),
+                    ),
+                }),
+            })
+            .parse(result).data.projects
+
+        return project?.subscriptions || []
+    } catch (e) {
+        console.warn(e)
+    }
+
+    return []
 }
