@@ -150,7 +150,7 @@ export const getMyCustomTokenBalance = async (pricingTokenAddress: Address): Sma
 type TokenInformation = {
     symbol: string,
     name: string,
-    decimals: number,
+    decimals: string,
 }
 const tokenInformationCache: Record<string, TokenInformation> = {}
 export const getTokenInformation = async (
@@ -178,11 +178,11 @@ export const getTokenInformation = async (
         }
 
         const name = await contract.name().call()
-        const decimals: number | string = await contract.decimals().call()
+        const decimals = await contract.decimals().call()
         const infoObj: TokenInformation = {
             symbol,
             name,
-            decimals: Number.parseInt(`${decimals}`, 10),
+            decimals,
         }
         tokenInformationCache[cacheKey] = infoObj
         return infoObj

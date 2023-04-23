@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle'
 import InfoIcon from '@atlaskit/icon/glyph/info'
 import ErrorIcon from '@atlaskit/icon/glyph/error'
@@ -17,7 +17,7 @@ export enum ToastType {
 
 interface Props {
     cancelLabel?: string
-    desc?: string
+    desc?: ReactNode
     okLabel?: string
     onReject?: (reason?: any) => void
     onResolve?: () => void

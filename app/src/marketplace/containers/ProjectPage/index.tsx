@@ -10,7 +10,6 @@ import {ProjectPageTitle} from "$mp/components/PageTitle"
 import ProjectLinkTabs from '$app/src/pages/ProjectPage/ProjectLinkTabs'
 import routes from '$routes'
 import WhitelistRequestAccessModal from './WhitelistRequestAccessModal'
-import PurchaseModal from './PurchaseModal'
 import Page from './Page'
 
 const ProjectPage = () => {
@@ -25,7 +24,6 @@ const ProjectPage = () => {
                 rightComponent={<ProjectLinkTabs projectId={project?.id || undefined} />}
             />
             <Page />
-            <PurchaseModal />
             <WhitelistRequestAccessModal />
         </Layout>
     )

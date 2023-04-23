@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 import Buttons from '$shared/components/Buttons'
-import Modal, { Footer, Props as ModalProps, RejectReason } from '$shared/components/Modal'
 import PngIcon from '$shared/components/PngIcon'
 import { ethereumNetworks } from '$shared/utils/constants'
+import Modal, { Footer, Props as ModalProps, RejectReason } from './Modal'
 
 interface Props extends Pick<ModalProps, 'onReject'> {
     expectedNetwork: number | string
@@ -45,7 +45,7 @@ export default function SwitchNetworkModal({ expectedNetwork, actualNetwork, onR
                     actions={{
                         cancel: {
                             title: 'Cancel',
-                            onClick: () => void onReject?.(),
+                            onClick: () => void onReject?.(RejectReason.Cancel),
                             kind: 'link',
                         },
                         add: {

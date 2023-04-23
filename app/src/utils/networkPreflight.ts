@@ -48,6 +48,10 @@ export const Matic: Chain = [
 export default async function networkPreflight(expectedChainId: number) {
     const provider = getWeb3().currentProvider as ExternalProvider
 
+    if (typeof provider.request === 'undefined') {
+        throw new Error('Bad provider, bad!')
+    }
+
     try {
         const currentChainId = await getChainId()
 

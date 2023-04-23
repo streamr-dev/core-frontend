@@ -338,7 +338,6 @@ const PurchaseModal = () => {
 }
 
 /**
- * @deprecated
- * Replaced by $mp/components/Modal/PurchaseModal
+ * @deprecated Replaced by `usePurchaseCallback` and modals in shared/modals/.
  */
 export default PurchaseModal
