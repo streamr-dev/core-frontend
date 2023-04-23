@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
+import { z } from 'zod'
 import Button from '$shared/components/Button'
 import NetworkIcon from '$shared/components/NetworkIcon'
 import { MEDIUM } from '$shared/utils/styled'
 import { getConfigForChain } from '$shared/web3/config'
 import { formatChainName } from '$shared/utils/chains'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { fetchGraphProjectPaymentDetails } from '$utils/fetchers'
 import { getCustomTokenBalance, getTokenInformation } from '$mp/utils/web3'
 import { getUsdRate } from '$shared/utils/coingecko'
+import { ProjectDetail } from '../shared/consts'
 import ProjectModal, { Actions, RejectionReason } from './ProjectModal'
 
 const ChainIcon = styled(NetworkIcon)`
@@ -109,7 +110,7 @@ interface Props {
     onReject?: (reason?: unknown) => void
     chainIds?: number[]
     selectedChainId?: number
-    paymentDetails?: Awaited<ReturnType<typeof fetchGraphProjectPaymentDetails>>
+    paymentDetails?: z.infer<typeof ProjectDetail>[]
     account?: string
 }
 

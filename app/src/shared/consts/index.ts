@@ -1,15 +1,15 @@
 import { z } from 'zod'
 
+export const ProjectDetail = z.object({
+    domainId: z.string(),
+    beneficiary: z.string(),
+    pricingTokenAddress: z.string(),
+    pricePerSecond: z.string(),
+})
+
 export const GraphProject = z.object({
     id: z.string(),
-    paymentDetails: z.array(
-        z.object({
-            domainId: z.string(),
-            beneficiary: z.string(),
-            pricingTokenAddress: z.string(),
-            pricePerSecond: z.string(),
-        }),
-    ),
+    paymentDetails: z.array(ProjectDetail),
     minimumSubscriptionSeconds: z.string(),
     subscriptions: z.array(
         z.object({
