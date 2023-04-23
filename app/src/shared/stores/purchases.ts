@@ -5,6 +5,7 @@ import BigNumber from 'bignumber.js'
 import { useCallback, useEffect } from 'react'
 import ChainSelectorModal, {
     ChainSelectorResult,
+    getPurchasePreconditions,
 } from '$app/src/modals/ChainSelectorModal'
 import { Layer } from '$utils/Layer'
 import {
@@ -129,23 +130,37 @@ const usePurchaseStore = create<Store>((set, get) => {
 
                 let chainId: number | undefined = chainIds[0]
 
-                while (true) {
-                    let chainSelectorResult: ChainSelectorResult | undefined
+                const skipChainSelector = !!chainId && chainIds.length === 1
 
+                let chainSelectorResult: ChainSelectorResult | undefined
+
+                while (true) {
                     try {
-                        chainSelectorResult = await toaster(
-                            ChainSelectorModal,
-                            Layer.Modal,
-                        ).pop({
-                            account,
-                            chainIds,
-                            paymentDetails,
-                            projectId,
-                            selectedChainId: chainId,
-                        })
+                        if (skipChainSelector) {
+                            if (!chainSelectorResult) {
+                                chainSelectorResult = await getPurchasePreconditions({
+                                    chainId,
+                                    account,
+                                    paymentDetails,
+                                })
+                            }
+                        } else {
+                            chainSelectorResult = undefined
+
+                            chainSelectorResult = await toaster(
+                                ChainSelectorModal,
+                                Layer.Modal,
+                            ).pop({
+                                account,
+                                chainIds,
+                                paymentDetails,
+                                projectId,
+                                selectedChainId: chainId,
+                            })
+                        }
                     } catch (e: unknown) {
                         if (isAbandonment(e)) {
-                            break
+                            throw new Error('User cancelled the purchase')
                         }
 
                         throw e
@@ -190,7 +205,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                     Layer.Modal,
                                 ).pop({
                                     account,
-                                    backable: true,
+                                    backable: !skipChainSelector,
                                     balance,
                                     chainId: selectedChainId,
                                     pricePerSecond,
@@ -203,6 +218,12 @@ const usePurchaseStore = create<Store>((set, get) => {
                                 })
                             } catch (e: unknown) {
                                 if (isAbandonment(e)) {
+                                    if (skipChainSelector) {
+                                        bail = true
+
+                                        throw new Error('User cancelled the purchase')
+                                    }
+
                                     startOver = true
 
                                     break

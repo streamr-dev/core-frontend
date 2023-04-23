@@ -104,13 +104,55 @@ export interface ChainSelectorResult {
     tokenSymbol: string
 }
 
+type PaymentDetails = z.infer<typeof ProjectDetail>[]
+
+export async function getPurchasePreconditions({
+    chainId,
+    account,
+    paymentDetails,
+}: {
+    chainId: number
+    account: string
+    paymentDetails: PaymentDetails
+}) {
+    const paymentDetail = paymentDetails.find(
+        ({ domainId }) => Number(domainId) === chainId,
+    )
+
+    if (!paymentDetail) {
+        throw new Error('No matching payment detail')
+    }
+
+    const { pricingTokenAddress: tokenAddress, pricePerSecond } = paymentDetail
+
+    const tokenInfo = await getTokenInformation(tokenAddress, chainId)
+
+    if (!tokenInfo) {
+        throw new Error('Failed to load token information')
+    }
+
+    const balance = await getCustomTokenBalance(tokenAddress, account, true, chainId)
+
+    const usdRate = await getUsdRate(tokenAddress, chainId)
+
+    return {
+        balance: balance.toString(),
+        chainId,
+        pricePerSecond,
+        tokenAddress,
+        tokenDecimals: String(tokenInfo.decimals),
+        tokenSymbol: tokenInfo.symbol,
+        usdRate,
+    }
+}
+
 interface Props {
     projectId?: string
     onResolve?: (result: ChainSelectorResult) => void
     onReject?: (reason?: unknown) => void
     chainIds?: number[]
     selectedChainId?: number
-    paymentDetails?: z.infer<typeof ProjectDetail>[]
+    paymentDetails?: PaymentDetails
     account?: string
 }
 
@@ -170,44 +212,13 @@ export default function ProjectChainSelectorModal({
                             throw new Error('No account')
                         }
 
-                        const paymentDetail = paymentDetails.find(
-                            ({ domainId }) => Number(domainId) === selectedChainId,
-                        )
-
-                        if (!paymentDetail) {
-                            throw new Error('No matching payment detail')
-                        }
-
-                        const { pricingTokenAddress: tokenAddress, pricePerSecond } =
-                            paymentDetail
-
-                        const tokenInfo = await getTokenInformation(
-                            tokenAddress,
-                            selectedChainId,
-                        )
-
-                        if (!tokenInfo) {
-                            throw new Error('Failed to load token information')
-                        }
-
-                        const balance = await getCustomTokenBalance(
-                            tokenAddress,
-                            account,
-                            true,
-                            selectedChainId,
-                        )
-
-                        const usdRate = await getUsdRate(tokenAddress, selectedChainId)
-
-                        onResolve?.({
-                            balance: balance.toString(),
+                        const preconditions = await getPurchasePreconditions({
                             chainId: selectedChainId,
-                            pricePerSecond,
-                            tokenAddress,
-                            tokenDecimals: String(tokenInfo.decimals),
-                            tokenSymbol: tokenInfo.symbol,
-                            usdRate,
+                            paymentDetails,
+                            account,
                         })
+
+                        onResolve?.(preconditions)
                     } catch (e) {
                         onReject?.(e)
                     } finally {
