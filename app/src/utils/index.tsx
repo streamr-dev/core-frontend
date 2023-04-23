@@ -5,9 +5,9 @@ import InsufficientFundsError from '$shared/errors/InsufficientFundsError'
 import getNativeTokenName from '$shared/utils/nativeToken'
 import Toast, { ToastType } from '$shared/toasts/Toast'
 import { fromAtto } from '$mp/utils/math'
-import { Layer } from './Layer'
-import getPublicWeb3 from './web3/getPublicWeb3'
-import { getProjectRegistryContract } from '../getters'
+import { getProjectRegistryContract } from '$app/src/getters'
+import { Layer } from '$utils/Layer'
+import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 
 export async function ensureGasMonies(
     chainId: number,
@@ -75,7 +75,7 @@ export async function waitForPurchasePropagation(
     const contract = getProjectRegistryContract(chainId, web3)
 
     const params = {
-        fromBlock: await web3.eth.getBlockNumber() - 10, // take a couple of blocks back to be sure
+        fromBlock: (await web3.eth.getBlockNumber()) - 10, // take a couple of blocks back to be sure
         toBlock: 'latest',
         filter: {
             projectId,
