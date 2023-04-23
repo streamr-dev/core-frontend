@@ -2,7 +2,6 @@ import BN from "bignumber.js"
 import getCoreConfig from "$app/src/getters/getCoreConfig"
 import { post } from "$shared/utils/api"
 import { send } from '$mp/utils/smartContract'
-import {ProjectId} from "$mp/types/project-types"
 import { Address, SmartContractCall, SmartContractTransaction } from "$shared/types/web3-types"
 import { getConfigForChainByName } from '$shared/web3/config'
 import address0 from "$utils/address0"
@@ -346,16 +345,6 @@ export const createProject = (project: SmartContractProjectCreate): SmartContrac
     return send(methodToSend, {
         network: chainId,
     })
-}
-
-export const getUserPermissionsForProject = async (
-    chainId: number,
-    projectId: ProjectId,
-    userAddress: Address,
-): SmartContractCall<ProjectPermissions> => {
-    const response = await getProjectRegistryContract(chainId, getPublicWeb3(chainId)).methods.getPermission(projectId, userAddress).call()
-    const { canDelete, canEdit, canGrant, canBuy } = response
-    return { canDelete, canEdit, canGrant, canBuy }
 }
 
 export const updateProject = (project: SmartContractProject): SmartContractTransaction => {

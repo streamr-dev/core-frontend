@@ -704,7 +704,7 @@ export function useHasActiveProjectSubscription(
 ) {
     const { subscriptions, fetchSubscriptions } = usePurchaseStore()
 
-    const { cache, entries = [] } = (projectId && subscriptions[projectId]) || {}
+    const { cache } = (projectId && subscriptions[projectId]) || {}
 
     useEffect(() => {
         if (projectId) {
@@ -714,6 +714,12 @@ export function useHasActiveProjectSubscription(
 
     if (!projectId || !account) {
         return false
+    }
+
+    const { entries } = subscriptions[projectId] || {}
+
+    if (!entries) {
+        return
     }
 
     const { endTimestamp = '0' } =

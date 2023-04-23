@@ -21,10 +21,8 @@ import Analytics from '$shared/utils/Analytics'
 import GlobalInfoWatcher from '$mp/containers/GlobalInfoWatcher'
 import NewStreamListingPage from '$app/src/pages/NewStreamListingPage'
 import StreamEditPage from '$app/src/pages/StreamEditPage'
-import ProjectPage from '$mp/containers/ProjectPage'
+import ProjectPage from '$app/src/pages/ProjectPage'
 import ProjectsPage from '$mp/containers/Projects'
-import ProjectConnectPage from '$mp/containers/ProjectPage/ProjectConnectPage'
-import ProjectLiveDataPage from '$mp/containers/ProjectPage/ProjectLiveDataPage'
 import NewProjectPage from '$mp/containers/ProjectEditing/NewProjectPage'
 import EditProjectPage from '$mp/containers/ProjectEditing/EditProjectPage'
 import { AuthenticationControllerContextProvider } from '$auth/authenticationController'
@@ -66,19 +64,11 @@ const NewProjectPageAuth = (props) => {
     </UserIsAuthenticatedRoute>
 }
 
-const ProjectRedirect: FunctionComponent = () => {
-    const { id } = useParams<{id: string}>()
-    return <Redirect to={routes.projects.overview({id})}/>
-}
-
 const ProjectsRouter = (): ReactNode => [
     <Route exact path={routes.projects.index()} component={ProjectsPage} key="Projects" />,
     <Route exact path={routes.projects.new()} component={NewProjectPageAuth} key="NewProjectPage" />,
-    <Route exact path={routes.projects.show()} component={ProjectRedirect} key="ProjectRedirect"/>,
     <Route exact path={routes.projects.edit()} component={EditProjectPage} key="EditProjectPage" />,
-    <Route exact path={routes.projects.overview()} component={ProjectPage} key="ProjectDetailsOverviewPage" />,
-    <Route exact path={routes.projects.connect()} component={ProjectConnectPage} key="ProjectDetailsConnectPage" />,
-    <Route exact path={routes.projects.liveData()} component={ProjectLiveDataPage} key="ProjectDetailsLiveDataPage" />,
+    <Route path={routes.projects.show()} component={ProjectPage} key="Tabbed" />,
 ]
 
 const StreamsRouter = () => [

@@ -29,7 +29,7 @@ const PaymentRate = (props: Props) => {
                 if (isMounted() && info) {
                     setCurrency(currencies.PRODUCT_DEFINED)
                     setSymbol(info.symbol)
-                    setDecimals(info.decimals)
+                    setDecimals(new BN(info.decimals))
                 }
             }
         }

@@ -9,7 +9,7 @@ import Link from '$shared/components/Link'
 import SvgIcon from '$shared/components/SvgIcon'
 import { COLORS } from '$shared/utils/styled'
 import { TheGraphProject } from '$app/src/services/projects'
-import { mapImageUrl } from '$mp/utils/project-mapper'
+import { getProjectImageUrl } from '$app/src/getters'
 import routes from '$routes'
 import Label, { HAPPY, ANGRY, WORRIED } from './Label'
 import Summary from './Summary'
@@ -43,7 +43,7 @@ type ThumbnailProps = {
 }
 
 const UnstyledThumbnail = ({ src, skeletonize, alt, ...props }: ThumbnailProps) =>
-    src != null &&
+    !!src &&
     (skeletonize ? (
         <Image {...props} as={Skeleton} block />
     ) : (
@@ -221,7 +221,7 @@ const ProductTile = ({ actions, deployed, published, numMembers, product, showDa
                 }
             >
                 <TileImageContainer autoSize>
-                    <TileThumbnail src={mapImageUrl(product) || ''} />
+                    <TileThumbnail src={getProjectImageUrl(product.metadata) || ''} />
                 </TileImageContainer>
             </Link>
             {!!showDataUnionBadge && <DataUnionBadge top left memberCount={numMembers} linkTo={routes.projects.index()} />}
@@ -255,7 +255,12 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, showEditButton, .
                 })}
             >
                 <TileImageContainer autoSize>
-                    <TileThumbnail src={mapImageUrl(product) || ''} />
+                    <TileThumbnail
+                        src={getProjectImageUrl({
+                            ...product.metadata,
+                            imageIpfsCid: product.metadata.imageIpfsCid || undefined,
+                        }) || ''}
+                    />
                 </TileImageContainer>
             </Link>
             {!!showDataUnionBadge && (

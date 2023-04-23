@@ -2,6 +2,7 @@ import Web3 from 'web3'
 import { AbiItem } from 'web3-utils'
 import BigNumber from 'bignumber.js'
 import { toaster } from 'toasterhea'
+import { z } from 'zod'
 import { getConfigForChain } from '$shared/web3/config'
 import projectRegistryAbi from '$shared/web3/abis/projectRegistry.json'
 import { call } from '$mp/utils/smartContract'
@@ -9,6 +10,8 @@ import { erc20TokenContractMethods } from '$mp/utils/web3'
 import { marketplaceContract } from '$app/src/services/marketplace'
 import Toast, { ToastType } from '$shared/toasts/Toast'
 import { Layer } from '$utils/Layer'
+import getPublicWeb3 from '$utils/web3/getPublicWeb3'
+import { ProjectType } from '$shared/types'
 import getCoreConfig from './getCoreConfig'
 
 export function getGraphUrl() {
@@ -67,4 +70,69 @@ export async function getAllowance(
             }
         }
     }
+}
+
+export async function getProjectPermissions(
+    chainId: number,
+    projectId: string,
+    account: string,
+) {
+    const response = await getProjectRegistryContract(chainId, getPublicWeb3(chainId))
+        .methods.getPermission(projectId, account)
+        .call()
+
+    const [canBuy = false, canDelete = false, canEdit = false, canGrant = false] = z
+        .array(z.boolean())
+        .parse(response)
+
+    return {
+        canBuy,
+        canDelete,
+        canEdit,
+        canGrant,
+    }
+}
+
+export function getProjectTypeName(projectType: ProjectType) {
+    switch (projectType) {
+        case ProjectType.DataUnion:
+            return 'Data Union'
+        case ProjectType.OpenData:
+            return 'open data project'
+        case ProjectType.PaidData:
+            return 'paid data project'
+    }
+}
+
+export function getProjectTypeTitle(projectType: ProjectType) {
+    switch (projectType) {
+        case ProjectType.DataUnion:
+            return 'Data Union'
+        case ProjectType.OpenData:
+            return 'Open Data'
+        case ProjectType.PaidData:
+            return 'Paid Data'
+    }
+}
+
+export function getProjectImageUrl({
+    imageUrl,
+    imageIpfsCid,
+}: {
+    imageUrl?: string
+    imageIpfsCid?: string
+}) {
+    const {
+        ipfs: { ipfsGatewayUrl },
+    } = getCoreConfig()
+
+    if (imageIpfsCid) {
+        return `${ipfsGatewayUrl}${imageIpfsCid}`
+    }
+
+    if (!imageUrl) {
+        return
+    }
+
+    return `${imageUrl.replace(/^https:\/\/ipfs\.io\/ipfs\//, ipfsGatewayUrl)}`
 }
