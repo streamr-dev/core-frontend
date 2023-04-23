@@ -2,7 +2,6 @@ import React, { FunctionComponent, useMemo } from 'react'
 import Nav from '$shared/components/Layout/Nav'
 import Layout from '$shared/components/Layout'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
-import PurchaseModal from '$mp/containers/ProjectPage/PurchaseModal'
 import { MarketplaceLoadingView } from '$mp/containers/ProjectPage/MarketplaceLoadingView'
 import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
 import { Connect } from '$mp/containers/ProjectPage/Connect'
@@ -24,7 +23,6 @@ const ProjectConnect: FunctionComponent = () => {
         />
         {/*<LoadingIndicator loading={isPending}/>*/}
         <Connect/>
-        <PurchaseModal/>
     </Layout>
 }
 

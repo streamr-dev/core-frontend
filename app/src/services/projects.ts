@@ -1,14 +1,12 @@
 import BN from "bignumber.js"
 import getCoreConfig from "$app/src/getters/getCoreConfig"
 import { post } from "$shared/utils/api"
-import { call } from '$mp/utils/smartContract'
 import { send } from '$mp/utils/smartContract'
 import {ProjectId} from "$mp/types/project-types"
 import { Address, SmartContractCall, SmartContractTransaction } from "$shared/types/web3-types"
 import { getConfigForChainByName } from '$shared/web3/config'
 import address0 from "$utils/address0"
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
-import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import getWeb3 from '$utils/web3/getWeb3'
 import { getGraphUrl, getProjectRegistryContract } from '../getters'
 
@@ -391,59 +389,4 @@ export const deleteProject = (projectId: string): SmartContractTransaction => {
     return send(methodToSend, {
         network: chainId,
     })
-}
-
-export const getProjectFromRegistry =
-    async (id: string, domainIds: Array<string>): SmartContractCall<SmartContractProject> => {
-        const chainId = getProjectRegistryChainId()
-        const result = await call(getProjectRegistryContract(chainId, getPublicWeb3(chainId)).methods.getProject(id, domainIds))
-        const project: SmartContractProject = {
-            ...result,
-            id: id,
-            chainId: chainId,
-        }
-        return project
-    }
-
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-
-export const waitUntilProjectPurchased = async (id: string, timeoutSeconds = 60) => {
-    const waitBetweenChecks = 3000
-    const chainId = getProjectRegistryChainId()
-    const web3 = getPublicWeb3(chainId)
-    const contract = getProjectRegistryContract(chainId, web3)
-
-    const myAddress = await getDefaultWeb3Account()
-    const currentBlock = await web3.eth.getBlockNumber() - 10 // take a couple of blocks back to be sure
-
-    let timedOut = false
-    let foundEvent = false
-    const startedAt = Date.now()
-
-    // Start polling and look for Subscribed events.
-    while (timedOut === false) {
-        const events = await contract.getPastEvents('Subscribed', {
-            fromBlock: currentBlock,
-            toBlock: 'latest',
-            filter: {
-                projectId: id,
-                subscriber: myAddress,
-            },
-        })
-
-        if (events.length > 0) {
-            foundEvent = true
-            return
-        }
-
-        if (Date.now() - startedAt > timeoutSeconds * 1000) {
-            timedOut = true
-        }
-
-        await sleep(waitBetweenChecks)
-    }
-
-    if (!foundEvent) {
-        throw new Error('Finding Subscribed event timed out!')
-    }
 }

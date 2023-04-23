@@ -8,16 +8,13 @@ import { projectTypeNames } from '$mp/utils/constants'
 import { ProjectType } from '$shared/types'
 import PaymentRate from '$mp/components/PaymentRate'
 import { formatChainName } from '$shared/utils/chains'
-import useModal from '$shared/hooks/useModal'
 import { WhiteBox } from '$shared/components/WhiteBox'
-import PurchaseModal from '$mp/components/Modal/PurchaseModal'
 import {getConfigForChain} from "$shared/web3/config"
 import {timeUnits} from "$shared/utils/timeUnit"
 import { usePurchaseCallback, useIsProjectBeingPurchased } from '$shared/stores/purchases'
 import routes from '$routes'
 
 const Description: FunctionComponent<{project: Project}> = ({project}) => {
-    const { api: purchaseDialog } = useModal('purchaseProject')
     const firstSalePoint = useMemo<SalePoint>(() => Object.values(project.salePoints)[0], [project.salePoints])
     const firstSalePointChainName = useMemo<string>(() => getConfigForChain(firstSalePoint.chainId).name,[firstSalePoint])
     const moreSalePoints = useMemo<number>(() => Object.values(project.salePoints).length - 1, [project.salePoints])
@@ -84,7 +81,6 @@ const Description: FunctionComponent<{project: Project}> = ({project}) => {
                         Get Access
                     </Button>
                 )}
-                <PurchaseModal />
             </DescriptionContainer>
         </WhiteBox>
     )

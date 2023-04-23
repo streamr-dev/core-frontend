@@ -8,13 +8,10 @@ import ProjectPng from "$shared/assets/images/project.png"
 import {MEDIUM} from "$shared/utils/styled"
 import {Project, SalePoint} from "$mp/types/project-types"
 import {getConfigForChain} from "$shared/web3/config"
-import useModal from "$shared/hooks/useModal"
-import PurchaseModal from "$mp/components/Modal/PurchaseModal"
 import {timeUnits} from "$shared/utils/timeUnit"
 import { usePurchaseCallback, useIsProjectBeingPurchased } from "$shared/stores/purchases"
 
 export const GetAccess: FunctionComponent<{project: Project}> = ({project}) => {
-    const { api: purchaseDialog } = useModal('purchaseProject')
     const firstSalePoint = useMemo<SalePoint>(() => Object.values(project.salePoints)[0], [project.salePoints])
     const firstSalePointChainName = useMemo<string>(() => getConfigForChain(firstSalePoint.chainId).name,[firstSalePoint])
     const moreSalePoints = useMemo<number>(() => Object.values(project.salePoints).length - 1, [project.salePoints])
@@ -59,7 +56,6 @@ export const GetAccess: FunctionComponent<{project: Project}> = ({project}) => {
                 Get Access
             </Button>
         </GetAccessContainer>
-        <PurchaseModal />
     </>
 }
 
