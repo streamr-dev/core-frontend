@@ -136,6 +136,17 @@ const usePurchaseStore = create<Store>((set, get) => {
 
                 while (true) {
                     try {
+                        /**
+                         * The following ifelse dance makes sure we
+                         * - don't open the Chain Selector for single-chain projects,
+                         * - recycle existing `chainSelectorResult` in a single-chain
+                         *   project scenario.
+                         *
+                         * For multi-chain projects we display the modal and let users
+                         * choose their preference.
+                         *
+                         * The Chain Selector modal uses `getPurchasePreconditions` internally.
+                         */
                         if (skipChainSelector) {
                             if (!chainSelectorResult) {
                                 chainSelectorResult = await getPurchasePreconditions({
@@ -159,6 +170,10 @@ const usePurchaseStore = create<Store>((set, get) => {
                             })
                         }
                     } catch (e: unknown) {
+                        /**
+                         * Any error we catch here terminates the purchase flow. We're
+                         * at an early stage so it's not a big deal.
+                         */
                         if (isAbandonment(e)) {
                             throw new Error('User cancelled the purchase')
                         }
@@ -170,6 +185,11 @@ const usePurchaseStore = create<Store>((set, get) => {
                         throw new Error('World flipped upside down')
                     }
 
+                    /**
+                     * Store the selected chain id so that we can show it next time
+                     * we show the Chain Selector modal (if we loop back to it within
+                     * this purchase).
+                     */
                     chainId = chainSelectorResult.chainId
 
                     const selectedChainId = chainId
@@ -219,16 +239,30 @@ const usePurchaseStore = create<Store>((set, get) => {
                             } catch (e: unknown) {
                                 if (isAbandonment(e)) {
                                     if (skipChainSelector) {
+                                        /**
+                                         * Chain Selector has been skipped so there's nothing
+                                         * to go back. Raised `bail` flag makes sure the following
+                                         * exception terminates the purchase.
+                                         */
                                         bail = true
 
                                         throw new Error('User cancelled the purchase')
                                     }
 
+                                    /**
+                                     * The user abandoned the Access Period modal. We break the current
+                                     * phase and tell the workflow to take us back to the Chain Selector.
+                                     */
                                     startOver = true
 
                                     break
                                 }
 
+                                /**
+                                 * Something 'sploded in the Access Period and we end up here. Tell
+                                 * the workflow to terminate the purchase with the exception that
+                                 * brought us here.
+                                 */
                                 bail = true
 
                                 throw e
@@ -240,13 +274,28 @@ const usePurchaseStore = create<Store>((set, get) => {
 
                             const { quantity, unit, exceedsAllowance } = accessPeriod
 
+                            /**
+                             * Store the latest access range so that next time we loop back
+                             * to the Access Period modal we can prepopulate it with the recent
+                             * set of properties.
+                             */
                             Object.assign(initialAccessRange, accessPeriod)
 
                             if (exceedsAllowance) {
+                                /**
+                                 * Only show the Allowance modal if there's need for it. Access
+                                 * Period modal calculates it for us.
+                                 */
                                 allowanceModal = toaster(AllowanceModal, Layer.Modal)
 
                                 setTimeout(async () => {
                                     try {
+                                        /**
+                                         * Open the Allowance modal asynchronously so that
+                                         * it does not block. We do it in a `setTimeout` so
+                                         * that we can react to exceptions in a clean and
+                                         * predictable way.
+                                         */
                                         await allowanceModal?.pop({
                                             tokenSymbol,
                                         })
@@ -270,6 +319,10 @@ const usePurchaseStore = create<Store>((set, get) => {
                                 async function setAllowance() {
                                     while (true) {
                                         try {
+                                            /**
+                                             * Make sure the user can affort gas. Empty wallets
+                                             * take a walk.
+                                             */
                                             await ensureGasMonies(
                                                 selectedChainId,
                                                 account,
@@ -280,6 +333,13 @@ const usePurchaseStore = create<Store>((set, get) => {
 
                                             await networkPreflight(selectedChainId)
 
+                                            /**
+                                             * Send the `approve` method on the selected
+                                             * ERC-20 token contract.
+                                             *
+                                             * This step is required so that the contract
+                                             * itself can spend user's funds.
+                                             */
                                             await erc20TokenContractMethods(
                                                 tokenAddress,
                                                 false,
@@ -299,6 +359,14 @@ const usePurchaseStore = create<Store>((set, get) => {
                                                     maxFeePerGas: null,
                                                 })
 
+                                            /**
+                                             * Wallets do not force users to set the requested
+                                             * allowance amounts. Users can set more – that's ok,
+                                             * but also less (too little).
+                                             *
+                                             * In the next steps we verify if the allowance
+                                             * is set properly.
+                                             */
                                             const allowance = await getAllowance(
                                                 selectedChainId,
                                                 tokenAddress,
@@ -309,25 +377,46 @@ const usePurchaseStore = create<Store>((set, get) => {
                                             )
 
                                             if (allowance.isLessThan(total)) {
+                                                /**
+                                                 * If `total` exceeds `allowance` we loop back to top
+                                                 * and make the wallet pop up the allowance box again.
+                                                 */
                                                 continue
                                             }
 
+                                            /**
+                                             * If the allowance is set properly we can move on. Let's
+                                             * break the loop and let the function return.
+                                             */
                                             break
                                         } catch (e: unknown) {
                                             console.warn('Setting allowance failed', e)
 
                                             if (e instanceof InsufficientFundsError) {
                                                 /**
-                                                 * The user had a chance to react to the gas balance
-                                                 * check and dismissed the toast. Pass on.
+                                                 * The user had a chance to react to the gas money
+                                                 * check and dismissed the Insufficient Funds
+                                                 * toast. Pass the exception on!
+                                                 *
+                                                 * This will take us back to the Access Period
+                                                 * modal (bail = false).
                                                  */
                                                 throw e
                                             }
 
                                             if (isCodedError(e) && e.code === 4001) {
+                                                /**
+                                                 * The user rejected the transaction signature, thus
+                                                 * does not wanna continue. Go back to the Access
+                                                 * Period modal.
+                                                 */
                                                 throw e
                                             }
 
+                                            /**
+                                             * Something unexpected happened. Ask the user if they want
+                                             * to try setting the allowance again.
+                                             */
                                             try {
                                                 await toaster(Toast, Layer.Toast).pop({
                                                     title: 'Setting allowance failed',
@@ -337,8 +426,18 @@ const usePurchaseStore = create<Store>((set, get) => {
                                                     cancelLabel: 'No',
                                                 })
 
+                                                /**
+                                                 * She said yaaas! Take the user back to the top and make
+                                                 * the wallet pop up the allowance setting box again.
+                                                 */
                                                 continue
                                             } catch (_) {
+                                                /**
+                                                 * The user does not want to retry thus we pass the exception
+                                                 * on and finish terminate the allowance track.
+                                                 *
+                                                 * This takes us back to the Access Period modal.
+                                                 */
                                                 throw e
                                             }
                                         }
@@ -362,6 +461,11 @@ const usePurchaseStore = create<Store>((set, get) => {
                                     try {
                                         setTimeout(async () => {
                                             try {
+                                                /**
+                                                 * Open the Confirm Purchase modal in the background (i.e. via
+                                                 * `setTimeout`). This allows the main thread to continue with
+                                                 * the important stuff.
+                                                 */
                                                 await confirmPurchaseModal?.pop()
                                             } catch (e) {
                                                 if (!isAbandonment(e)) {
@@ -370,6 +474,10 @@ const usePurchaseStore = create<Store>((set, get) => {
                                             }
                                         })
 
+                                        /**
+                                         * Make sure the user can affort gas. Empty wallets
+                                         * take a walk.
+                                         */
                                         await ensureGasMonies(selectedChainId, account, {
                                             recover: true,
                                         })
@@ -384,6 +492,11 @@ const usePurchaseStore = create<Store>((set, get) => {
                                         )
 
                                         try {
+                                            /**
+                                             * The following is the actual buying call emitted into the
+                                             * network. Note that the gas limit is dynamic and depends
+                                             * on the number of streams associated with the project.
+                                             */
                                             await marketplaceContract(
                                                 false,
                                                 selectedChainId,
@@ -400,8 +513,18 @@ const usePurchaseStore = create<Store>((set, get) => {
                                                     maxFeePerGas: null,
                                                 })
                                                 .once('transactionHash', async () => {
+                                                    /**
+                                                     * Once we receive the transaction hash we can safely close the Confirm
+                                                     * Purchase modal and carry on.
+                                                     */
                                                     confirmPurchaseModal?.discard()
 
+                                                    /**
+                                                     * We pop up the Accessing Project modal at this point. It does not
+                                                     * have to be extra-detached cause we're already in an event handler
+                                                     * which is sort of detached. In short, nothing is being blocked
+                                                     * by the `await ….pop()`.
+                                                     */
                                                     try {
                                                         await accessingProjectModal?.pop()
                                                     } catch (e) {
@@ -411,6 +534,13 @@ const usePurchaseStore = create<Store>((set, get) => {
                                                     }
                                                 })
 
+                                            /**
+                                             * `Buy` transaction is done and now we wait for the `Subscribe` event
+                                             * to propagate through.
+                                             *
+                                             * We may want to either separate it from `buy` function, or wrap it with
+                                             * another `try…catch`, and pop up a "retry" toast on a timeout.
+                                             */
                                             await waitForPurchasePropagation(
                                                 selectedChainId,
                                                 projectId,
@@ -428,18 +558,29 @@ const usePurchaseStore = create<Store>((set, get) => {
                                             e === RejectReason.Cancel ||
                                             e === RejectReason.EscapeKey
                                         ) {
-                                            throw e
+                                            throw new Error(
+                                                'User decided to stay on the invalid network',
+                                            )
                                         }
 
                                         if (e instanceof InsufficientFundsError) {
                                             /**
-                                             * The user had a chance to react to the gas balance
-                                             * check and dismissed the toast. Pass on.
+                                             * The user had a chance to react to the gas money
+                                             * check and dismissed the Insufficient Funds
+                                             * toast. Pass the exception on!
+                                             *
+                                             * This will take us back to the Access Period
+                                             * modal (bail = false).
                                              */
                                             throw e
                                         }
 
                                         if (isCodedError(e) && e.code === 4001) {
+                                            /**
+                                             * The user rejected the transaction signature, thus
+                                             * does not wanna continue. Go back to the Access
+                                             * Period modal.
+                                             */
                                             throw e
                                         }
 
@@ -451,8 +592,18 @@ const usePurchaseStore = create<Store>((set, get) => {
                                                 Layer.Modal,
                                             ).pop()
 
+                                            /**
+                                             * The user clicked "Try again" in the Failed Purchase
+                                             * modal. Loop back to the top and try to buy the
+                                             * product again.
+                                             */
                                             continue
                                         } catch (_) {
+                                            /**
+                                             * The user click "Go back" in the Failed Purchase
+                                             * modal which loops the workflow back to the Access
+                                             * Period modal.
+                                             */
                                             throw e
                                         }
                                     } finally {
@@ -466,9 +617,17 @@ const usePurchaseStore = create<Store>((set, get) => {
                             await buy()
                         } catch (e) {
                             if (bail) {
+                                /**
+                                 * Exceptions that happen along the raised `bail` flag terminate
+                                 * the purchase.
+                                 */
                                 throw e
                             }
 
+                            /**
+                             * Exceptions that happen with lowered `bail` flag take users back
+                             * to the Access Period modal.
+                             */
                             continue
                         } finally {
                             allowanceModal?.discard()
@@ -476,6 +635,10 @@ const usePurchaseStore = create<Store>((set, get) => {
                             allowanceModal = undefined
                         }
 
+                        /**
+                         * The user bought! Now we have to show the Purchase Complete modal,
+                         * which blocks the flow. Last stop!
+                         */
                         break
                     }
 
@@ -491,6 +654,9 @@ const usePurchaseStore = create<Store>((set, get) => {
                         }
                     }
 
+                    /**
+                     * Settle and finalize.
+                     */
                     break
                 }
             } finally {
@@ -501,6 +667,12 @@ const usePurchaseStore = create<Store>((set, get) => {
                 )
             }
 
+            /**
+             * After the following invalidation all mounted `useHasActiveProjectSubscription`
+             * hooks are gonna update. This will cause both the Connect and the Live data
+             * pages change from the "Get access" placeholder view to their
+             * actual views. All in place!
+             */
             get().invalidateSubscription(projectId)
         },
     }
