@@ -248,7 +248,7 @@ export default function ProjectChainSelectorModal({
                     >
                         Cancel
                     </Button>
-                    <Button type="submit" disabled={disabled} waiting={disabled}>
+                    <Button type="submit" disabled={disabled} waiting={isSubmitting}>
                         Next
                     </Button>
                 </Actions>
