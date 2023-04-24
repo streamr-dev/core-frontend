@@ -5,7 +5,7 @@ import { LogoLink, Navbar, NavbarItem, NavContainer } from '$shared/components/L
 import Logo from '$shared/components/Logo'
 import Button from '$shared/components/Button'
 import { REGULAR } from '$shared/utils/styled'
-import { ProjectControllerContext } from '$mp/containers/ProjectEditing/ProjectController'
+import { ProjectControllerContext, ValidationError } from '$mp/containers/ProjectEditing/ProjectController'
 import { errorToast } from '$utils/toast'
 import routes from '$routes'
 
@@ -52,7 +52,16 @@ export const EditorNav: FunctionComponent<{isNewProject: boolean, editedProductH
                             await update()
                         } catch (e) {
                             errorToast({
-                                title: 'Failed to publish'
+                                title: 'Failed to publish',
+                                desc: e instanceof ValidationError && (
+                                    <ul>
+                                        {e.messages.map((message, index) => (
+                                            <li key={index}>
+                                                {message}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )
                             })
                         }
                     }}

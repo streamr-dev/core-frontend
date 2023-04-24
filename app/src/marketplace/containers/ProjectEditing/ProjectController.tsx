@@ -24,6 +24,20 @@ import { getDataAddress } from '$mp/utils/web3'
 import address0 from "$utils/address0"
 import routes from "$routes"
 
+export class ValidationError extends Error {
+    name = 'ValidationError'
+
+    constructor(readonly messages: string[]) {
+        super(messages.join(', '))
+
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, ValidationError)
+        }
+
+        Object.setPrototypeOf(this, ValidationError.prototype)
+    }
+}
+
 export type ProjectController = {
     create: () => Promise<void>,
     update: () => Promise<void>,
@@ -40,26 +54,20 @@ export const useProjectController = (): ProjectController => {
 
     const { id: projectId, type: projectType } = project || {}
 
-    const checkValidationErrors = useCallback((): boolean => {
-        // Notify missing/invalid fields
-        const validationResult = validate(project)
-        const errors = Object.keys(validationResult)
-            .filter((key) => validationResult[key] && validationResult[key].level === SeverityLevel.ERROR)
-            .map((key) => ({
-                key,
-                message: validationResult[key].message,
-            }))
-        if (errors.length > 0) {
-            errors.forEach(({ message }) => {
-                Notification.push({
-                    title: message,
-                    icon: NotificationIcon.ERROR,
-                })
-            })
-            return false
+    const checkValidationErrors = useCallback(() => {
+        if (!project) {
+            throw new Error('No project')
         }
 
-        return true
+        const validationResult = validate(project)
+
+        const errors = Object.keys(validationResult)
+            .filter((key) => validationResult[key] && validationResult[key].level === SeverityLevel.ERROR)
+            .map((key) => validationResult[key].message)
+
+        if (errors.length) {
+            throw new ValidationError(errors)
+        }
     }, [project, validate])
 
     const getProjectMetadata = useCallback<() => Promise<SmartContractProjectMetadata>>(async () => {
@@ -165,9 +173,7 @@ export const useProjectController = (): ProjectController => {
     }, [])
 
     const create = useCallback<ProjectController['create']>(async () => {
-        if (!checkValidationErrors()) {
-            throw new Error('Invalid project data')
-        }
+        checkValidationErrors()
 
         switch (projectType) {
             case ProjectType.PaidData:
@@ -181,9 +187,7 @@ export const useProjectController = (): ProjectController => {
     }, [projectType, checkValidationErrors, createNewProject, createNewDataUnion])
 
     const update = useCallback<ProjectController['update']>(async () => {
-        if (!checkValidationErrors()) {
-            throw new Error('Invalid project data')
-        }
+        checkValidationErrors()
 
         switch (projectType) {
             case ProjectType.PaidData:
