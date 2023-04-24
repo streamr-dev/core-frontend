@@ -72,9 +72,11 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({nonEditabl
         <WhiteBoxWithMargin>
             <TermsOfUse/>
         </WhiteBoxWithMargin>
-        <TransparentBoxWithMargin>
-            <DeleteProject />
-        </TransparentBoxWithMargin>
+        {project.id && (
+            <TransparentBoxWithMargin>
+                <DeleteProject />
+            </TransparentBoxWithMargin>
+        )}
         {publishInProgress && <EditorOverlay/>}
     </ProjectPageContainer>
 }
