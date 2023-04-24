@@ -8,11 +8,7 @@ import {Project} from "$mp/types/project-types"
 import * as validationCtx from "$mp/containers/ProductController/ValidationContextProvider"
 import {createProject, SmartContractProjectCreate, updateProject} from "$app/src/services/projects"
 import {useProjectState} from "$mp/contexts/ProjectStateContext"
-import Notification from '$shared/utils/Notification'
 import { ProjectType } from '$shared/types'
-import {NotificationIcon} from "$shared/utils/constants"
-import {PersistOperation} from "$shared/types/common-types"
-import {useProjectEditorStore} from "$mp/containers/ProjectEditing/proejctEditor.state"
 import {ProjectController, useProjectController} from "./ProjectController"
 import Mock = jest.Mock
 
@@ -40,13 +36,6 @@ jest.mock('$app/src/getters/getCoreConfig', () => ({
     default: () => ({projectRegistry: {chainId: 1}})
 }))
 
-jest.mock('$shared/utils/Notification', () => ({
-    __esModule: true,
-    default: {
-        push: jest.fn()
-    }
-}))
-
 jest.mock('$app/src/services/projects', () => ({
     createProject: jest.fn(),
     updateProject: jest.fn()
@@ -56,15 +45,7 @@ jest.mock('$mp/contexts/ProjectStateContext', () => ({
     useProjectState: jest.fn()
 }))
 
-jest.mock('$shared/utils/constants', () => ({
-    NotificationIcon: {
-        CHECKMARK: 'checkmark',
-        ERROR: 'error',
-        WARNING: 'warning',
-        INFO: 'info',
-        SPINNER: 'spinner',
-    }
-}))
+jest.mock('$shared/utils/constants', () => ({}))
 
 jest.mock('react-router-dom', () => ({
     useHistory: jest.fn().mockReturnValue({push: jest.fn()})
@@ -108,35 +89,23 @@ const PROJECT_STUB: Project = {
 
 describe('ProjectController', () => {
     let controller: ProjectController
-    let persistOperations: PersistOperation[] = []
 
     const prepareTestForProjectCreate = (
         createProjectResult: boolean,
         validationResult: Partial<Record<RecursiveKeyOf<Project>, {level: validationCtx.SeverityLevel, message: string}>>,
         state: Project,
     ) => {
-        persistOperations = [];
         (createProject as Mock).mockReset();
         (useProjectState as Mock).mockReset();
-        (createProject as Mock).mockImplementation(() => ({
-            onTransactionComplete: ((cb: () => void) => {
-                if (createProjectResult === true) {
-                    cb()
-                }
-            }),
-            onError: ((cb: () => void) => {
-                if (createProjectResult === false) {
-                    cb()
-                }
-            })
-        } as any))
+        (createProject as Mock).mockImplementation(() => new Promise<void>((resolve, reject) => {
+            createProjectResult ? resolve() : reject()
+        }))
         jest.spyOn(validationCtx, 'useValidationContext').mockImplementation(() => ({
             validate: () => validationResult
         }) as any);
         (useProjectState as Mock).mockImplementation(() => ({state, updateState: () => {}}))
         const Component = () => {
             controller = useProjectController()
-            persistOperations = useProjectEditorStore((state) => state.persistOperations)
             return <></>
         }
         render(<Component/>)
@@ -147,28 +116,17 @@ describe('ProjectController', () => {
         validationResult: Partial<Record<RecursiveKeyOf<Project>, {level: validationCtx.SeverityLevel, message: string}>>,
         state: Project,
     ) => {
-        persistOperations = [];
         (updateProject as Mock).mockReset();
         (useProjectState as Mock).mockReset();
-        (updateProject as Mock).mockImplementation(() => ({
-            onTransactionComplete: ((cb: () => void) => {
-                if (updateProjectResult === true) {
-                    cb()
-                }
-            }),
-            onError: ((cb: () => void) => {
-                if (updateProjectResult === false) {
-                    cb()
-                }
-            })
-        } as any))
+        (updateProject as Mock).mockImplementation(() => new Promise<void>((resolve, reject) => {
+            updateProjectResult ? resolve() : reject()
+        }))
         jest.spyOn(validationCtx, 'useValidationContext').mockImplementation(() => ({
             validate: () => validationResult
         }) as any);
         (useProjectState as Mock).mockImplementation(() => ({state, updateState: () => {}}))
         const Component = () => {
             controller = useProjectController()
-            persistOperations = useProjectEditorStore((state) => state.persistOperations)
             return <></>
         }
         render(<Component/>)
@@ -176,10 +134,17 @@ describe('ProjectController', () => {
 
     it('should create a project with proper data ', async () => {
         prepareTestForProjectCreate(true, {}, PROJECT_STUB)
-        let result: boolean
+        let result = false
+
         await act(async () => {
-            result = await controller.create()
+            try {
+                await controller.create()
+                result = true
+            } catch (e) {
+                // Do nothing.
+            }
         })
+
         expect(result).toBe(true)
         expect(createProject).toHaveBeenCalledWith(expect.objectContaining({
             isPublicPurchasable: true,
@@ -212,44 +177,59 @@ describe('ProjectController', () => {
         const argumentMetadata = JSON.parse(argument.metadata)
         expect(argumentMetadata).toEqual(expectedMetadata)
         expect(isHex(argument.id)).toEqual(true)
-        expect(persistOperations.length).toEqual(1)
-        expect(persistOperations[0].state).toEqual('complete')
     })
 
     it('should not call createProject function, when some field is invalid and error notifications should be displayed', async () => {
         const errorText = 'Invalid project name'
         prepareTestForProjectCreate(true, {name: {level: validationCtx.SeverityLevel.ERROR, message: errorText}}, {...PROJECT_STUB})
-        let result: boolean
+        let result: boolean | undefined
+
+        let messages: string[] = []
+
         await act(async () => {
-            result = await controller.create()
+            try {
+                await controller.create()
+            } catch (e) {
+                messages = e.messages
+                result = false
+            }
         })
+
         expect(result).toBe(false)
         expect(createProject).not.toHaveBeenCalled()
-        expect(Notification.push).toHaveBeenCalledWith({
-            title: errorText,
-            icon: NotificationIcon.ERROR,
-        })
+        expect(messages[0]).toEqual(errorText)
     })
 
     it('should display an error notification when an error occurs while publishing', async () => {
         prepareTestForProjectCreate(false, {}, {...PROJECT_STUB})
-        let result: boolean
+        let result: boolean | undefined
+
         await act(async () => {
-            result = await controller.create()
+            try {
+                await controller.create()
+            } catch (e) {
+                result = false
+            }
         })
+
         expect(result).toBe(false)
         expect(createProject).toHaveBeenCalled()
-        expect(persistOperations.length).toEqual(1)
-        expect(persistOperations[0].state).toEqual('error')
     })
 
     it('should update a project ', async () => {
         const stubProjectId = '1234'
         prepareTestForProjectUpdate(true, {}, {...PROJECT_STUB, id: stubProjectId})
-        let result: boolean
+        let result = false
+
         await act(async () => {
-            result = await controller.update()
+            try {
+                await controller.update()
+                result = true
+            } catch (e) {
+                // Do nothing.
+            }
         })
+
         expect(result).toBe(true)
         expect(updateProject).toHaveBeenCalledWith(expect.objectContaining({
             chainId: STUB_REGISTRY_CHAIN.id,
@@ -281,7 +261,5 @@ describe('ProjectController', () => {
         const argumentMetadata = JSON.parse(argument.metadata)
         expect(argumentMetadata).toEqual(expectedMetadata)
         expect(isHex(argument.id)).toEqual(true)
-        expect(persistOperations.length).toEqual(1)
-        expect(persistOperations[0].state).toEqual('complete')
     })
 })

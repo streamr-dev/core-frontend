@@ -190,6 +190,7 @@ const Body = styled.div`
     ol {
         margin: 8px 0 0;
         line-height: 20px;
+        padding: 0;
     }
 
     h4 {

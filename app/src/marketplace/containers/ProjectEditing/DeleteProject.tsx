@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import Button from '$shared/components/Button'
-import { useProjectController } from "./ProjectController"
+import { useProjectState } from '$mp/contexts/ProjectStateContext'
+import { deleteProject } from '$app/src/services/projects'
 
 const Title = styled.p`
   font-size: 34px;
@@ -17,7 +18,7 @@ const Description = styled.p`
 `
 
 const DeleteProject = () => {
-    const { deleteProject } = useProjectController()
+    const { state: project } = useProjectState()
 
     return (
         <div>
@@ -27,7 +28,7 @@ const DeleteProject = () => {
                 kind="destructive"
                 onClick={async () => {
                     try {
-                        await deleteProject()
+                        await deleteProject(project?.id || undefined)
                     } catch (e) {
                         console.warn('Could not delete project', e)
                     }

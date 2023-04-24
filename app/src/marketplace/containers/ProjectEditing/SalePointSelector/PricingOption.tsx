@@ -9,6 +9,7 @@ import { PricingData, SalePoint } from '$mp/types/project-types'
 import TokenSelector from '$mp/containers/ProjectEditing/TokenSelector'
 import { BeneficiaryAddress } from '$mp/containers/ProjectEditing/BeneficiaryAddress'
 import { Address } from '$shared/types/web3-types'
+import { formatChainName } from '$shared/utils/chains'
 
 export const PricingOption: FunctionComponent<{
     onToggle?: (chainName: string, salePoint: SalePoint) => void,
@@ -81,7 +82,7 @@ export const PricingOption: FunctionComponent<{
                     onChange={handleCheckboxToggle}/>
             </label>
             <ChainIcon chainId={chain.id} />
-            <span>{chain.name}</span>
+            <span>{formatChainName(chain.name)}</span>
             <PlusSymbol name={'plus'} className={isDropdownOpen ? 'is-open' : ''}/>
         </DropdownToggle>
         <DropdownOuter className={isDropdownOpen ? 'is-open' : ''}>

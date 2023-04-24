@@ -1,13 +1,17 @@
 import BN from "bignumber.js"
+import { Toaster, toaster } from "toasterhea"
+import uniqueId from "lodash/uniqueId"
 import getCoreConfig from "$app/src/getters/getCoreConfig"
 import { post } from "$shared/utils/api"
-import { send } from '$mp/utils/smartContract'
-import { Address, SmartContractCall, SmartContractTransaction } from "$shared/types/web3-types"
+import { Address } from "$shared/types/web3-types"
 import { getConfigForChainByName } from '$shared/web3/config'
 import address0 from "$utils/address0"
-import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import getWeb3 from '$utils/web3/getWeb3'
-import { getGraphUrl, getProjectRegistryContract } from '../getters'
+import TransactionListToast, { Operation, notify } from "$shared/toasts/TransactionListToast"
+import { Layer } from "$utils/Layer"
+import getDefaultWeb3Account from "$utils/web3/getDefaultWeb3Account"
+import { getGraphUrl, getProjectRegistryContract } from '$app/src/getters'
+import networkPreflight from "$utils/networkPreflight"
 
 const getProjectRegistryChainId = () => {
     const { projectsChain } = getCoreConfig()
@@ -322,60 +326,128 @@ const getPaymentDetails = (paymentDetails: PaymentDetails[]): SmartContractPayme
     }))
 }
 
-export const createProject = (project: SmartContractProjectCreate): SmartContractTransaction => {
-    const chainId = getProjectRegistryChainId()
-    const {
-        id,
-        paymentDetails,
-        streams,
-        minimumSubscriptionInSeconds,
-        isPublicPurchasable,
-        metadata,
-    } = project
-
-    const methodToSend = getProjectRegistryContract(chainId, getWeb3()).methods.createProject(
-        id,
-        getDomainIds(paymentDetails),
-        getPaymentDetails(paymentDetails),
-        streams,
-        minimumSubscriptionInSeconds,
-        isPublicPurchasable,
-        metadata,
+async function toastedProjectOperation(label: string, fn?: () => Promise<void>) {
+    let toast: Toaster<typeof TransactionListToast> | undefined = toaster(
+        TransactionListToast,
+        Layer.Toast,
     )
-    return send(methodToSend, {
-        network: chainId,
+
+    const operation: Operation = {
+        id: uniqueId('operation-'),
+        label: label,
+        state: 'ongoing',
+    }
+
+    const operations = [operation]
+
+    try {
+        notify(toast, operations)
+
+        await fn?.()
+
+        operation.state = 'complete'
+
+        notify(toast, operations)
+    } catch (e) {
+        operations.forEach((op) => {
+            if (op.state === 'ongoing') {
+                op.state = 'error'
+            }
+        })
+
+        notify(toast, operations)
+
+        throw e
+    } finally {
+        setTimeout(() => {
+            toast?.discard()
+
+            toast = undefined
+        }, 3000)
+    }
+}
+
+export async function createProject(project: SmartContractProjectCreate) {
+    await toastedProjectOperation('Create project', async () => {
+        const chainId = getProjectRegistryChainId()
+
+        const {
+            id,
+            paymentDetails,
+            streams,
+            minimumSubscriptionInSeconds,
+            isPublicPurchasable,
+            metadata,
+        } = project
+
+        const from = await getDefaultWeb3Account()
+
+        await networkPreflight(chainId)
+
+        await getProjectRegistryContract(chainId, getWeb3())
+            .methods.createProject(
+                id,
+                getDomainIds(paymentDetails),
+                getPaymentDetails(paymentDetails),
+                streams,
+                minimumSubscriptionInSeconds,
+                isPublicPurchasable,
+                metadata,
+            )
+            .send({
+                from,
+                maxPriorityFeePerGas: null,
+                maxFeePerGas: null,
+            })
     })
 }
 
-export const updateProject = (project: SmartContractProject): SmartContractTransaction => {
-    const chainId = getProjectRegistryChainId()
-    const {
-        id,
-        paymentDetails,
-        streams,
-        minimumSubscriptionInSeconds,
-        metadata,
-    } = project
+export async function updateProject(project: SmartContractProject) {
+    await toastedProjectOperation('Update project', async () => {
+        const chainId = getProjectRegistryChainId()
 
-    const methodToSend = getProjectRegistryContract(chainId, getWeb3()).methods.updateProject(
-        id,
-        getDomainIds(paymentDetails),
-        getPaymentDetails(paymentDetails),
-        streams,
-        minimumSubscriptionInSeconds,
-        metadata,
-    )
-    return send(methodToSend, {
-        network: chainId,
+        const { id, paymentDetails, streams, minimumSubscriptionInSeconds, metadata } =
+            project
+
+        const from = await getDefaultWeb3Account()
+
+        await networkPreflight(chainId)
+
+        await getProjectRegistryContract(chainId, getWeb3())
+            .methods.updateProject(
+                id,
+                getDomainIds(paymentDetails),
+                getPaymentDetails(paymentDetails),
+                streams,
+                minimumSubscriptionInSeconds,
+                metadata,
+            )
+            .send({
+                from,
+                maxPriorityFeePerGas: null,
+                maxFeePerGas: null,
+            })
     })
 }
 
-export const deleteProject = (projectId: string): SmartContractTransaction => {
-    const chainId = getProjectRegistryChainId()
-    const methodToSend = getProjectRegistryContract(chainId, getWeb3()).methods.deleteProject(
-        projectId,
-    )
-    return send(methodToSend, {
-        network: chainId,
+export async function deleteProject(projectId: string | undefined) {
+    await toastedProjectOperation('Delete project', async () => {
+        if (!projectId) {
+            throw new Error('No project')
+        }
+
+        const chainId = getProjectRegistryChainId()
+
+        const from = await getDefaultWeb3Account()
+
+        await networkPreflight(chainId)
+
+        await getProjectRegistryContract(chainId, getWeb3())
+            .methods.deleteProject(projectId)
+            .send({
+                from,
+                maxPriorityFeePerGas: null,
+                maxFeePerGas: null,
+            })
     })
 }

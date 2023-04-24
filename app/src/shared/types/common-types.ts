@@ -29,13 +29,3 @@ export type TransactionType = $Values<typeof transactionTypes>
 export type Ref<T> = {
     current: null | T
 }
-export type PersistOperation = {
-    id: string,
-    name: string,
-    type: 'stream' | 'storage' | 'permissions' | 'project',
-    state: 'notstarted' | 'inprogress' | 'complete' | 'error',
-    data?: {
-        address?: string,
-        type?: 'add' | 'remove',
-    },
-}
