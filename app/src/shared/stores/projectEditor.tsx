@@ -514,3 +514,11 @@ export function useDoesUserHaveAccess() {
 
     return isProjectOwnedBy(graph, address) || hasActiveProjectSubscription
 }
+
+export function useIsCurrentProjectDraftClean() {
+    return true
+}
+
+export function useIsNewProject() {
+    return typeof useProject().id === 'undefined'
+}

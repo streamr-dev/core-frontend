@@ -3,12 +3,9 @@ import { Redirect, Route, Switch, useParams } from 'react-router-dom'
 import { ProjectDraftContext, useInitProject } from '$shared/stores/projectEditor'
 import routes from '$routes'
 import TabbedPage from './TabbedPage'
+import ProjectEditorPage from './ProjectEditorPage'
 
 function NewProjectPage(): JSX.Element {
-    throw new Error('Not implemented.')
-}
-
-function EditProjectPage(): JSX.Element {
     throw new Error('Not implemented.')
 }
 
@@ -36,15 +33,16 @@ export default function ProjectPage() {
                 />
                 <Route
                     exact
+                    path={routes.projects.edit()}
+                    component={ProjectEditorPage}
+                    key="EditProjectPage"
+                />
+
+                <Route
+                    exact
                     path={routes.projects.show()}
                     component={ProjectRedirect}
                     key="ProjectRedirect"
-                />
-                <Route
-                    exact
-                    path={routes.projects.edit()}
-                    component={EditProjectPage}
-                    key="EditProjectPage"
                 />
                 <Route
                     exact
