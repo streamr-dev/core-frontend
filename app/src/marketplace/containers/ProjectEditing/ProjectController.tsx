@@ -2,6 +2,7 @@ import React, {createContext, FunctionComponent, ReactNode, useCallback, useStat
 import {useHistory} from "react-router-dom"
 import BN from "bignumber.js"
 import {randomHex} from "web3-utils"
+import { z } from 'zod'
 import {useProjectState} from '$mp/contexts/ProjectStateContext'
 import {
     SeverityLevel,
@@ -20,6 +21,7 @@ import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { getConfigForChain } from '$shared/web3/config'
 import { getDataAddress } from '$mp/utils/web3'
 import address0 from "$utils/address0"
+import { formatChainName } from '$shared/utils/chains'
 import routes from "$routes"
 
 export class ValidationError extends Error {
@@ -42,6 +44,13 @@ export type ProjectController = {
     publishInProgress: boolean,
 }
 
+const SalePointSchema = z.object({
+    chainId: z.number(),
+    beneficiaryAddress: z.string(),
+    pricePerSecond: z.instanceof(BN),
+    pricingTokenAddress: z.string(),
+})
+
 export const useProjectController = (): ProjectController => {
     const {state: project} = useProjectState()
     const {validate} = useValidationContext()
@@ -62,6 +71,14 @@ export const useProjectController = (): ProjectController => {
         const errors = Object.keys(validationResult)
             .filter((key) => validationResult[key] && validationResult[key].level === SeverityLevel.ERROR)
             .map((key) => validationResult[key].message)
+
+        const { salePoints = {} } = project
+
+        Object.entries(salePoints).forEach(([networkName, salePoint]) => {
+            if (!SalePointSchema.safeParse(salePoint).success) {
+                errors.push(`Incomplete pricing information for ${formatChainName(networkName)}`)
+            }
+        })
 
         if (errors.length) {
             throw new ValidationError(errors)
