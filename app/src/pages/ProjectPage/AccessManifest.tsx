@@ -14,6 +14,7 @@ import { getProjectTypeName } from '$app/src/getters'
 import { useIsProjectBeingPurchased, usePurchaseCallback } from '$shared/stores/purchases'
 import { errorToast } from '$utils/toast'
 import { useDoesUserHaveAccess } from '$shared/stores/projectEditor'
+import { isAbandonment } from '$app/src/modals/ProjectModal'
 import routes from '$routes'
 
 const DescriptionContainer = styled.div`
@@ -114,6 +115,10 @@ export default function AccessManifest({ projectId, projectType, salePoints }: P
                             try {
                                 await purchase(projectId)
                             } catch (e) {
+                                if (isAbandonment(e)) {
+                                    return
+                                }
+
                                 console.warn('Purchase failed', e)
 
                                 errorToast({

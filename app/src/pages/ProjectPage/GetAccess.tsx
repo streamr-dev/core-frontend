@@ -15,6 +15,7 @@ import {
     usePurchaseCallback
 } from '$app/src/shared/stores/purchases'
 import { errorToast } from '$utils/toast'
+import { isAbandonment } from '$app/src/modals/ProjectModal'
 
 const GetAccessContainer = styled.div`
     display: flex;
@@ -103,6 +104,10 @@ export default function GetAccess({
                         try {
                             await purchase(projectId)
                         } catch (e) {
+                            if (isAbandonment(e)) {
+                                return
+                            }
+
                             console.warn('Purchase failed', e)
 
                             errorToast({
