@@ -1,13 +1,20 @@
 import { useIsPersistingAnyStreamDraft } from '$shared/stores/streamEditor'
-import usePreventNavigatingAway from '../hooks/usePreventNavigatingAway'
-import { useRouteMemoryWipeEffect } from '../stores/routeMemory'
+import { useIsAnyPurchaseInProgress } from '$shared/stores/purchases'
+import { useRouteMemoryWipeEffect } from '$shared/stores/routeMemory'
+import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 
 export default function Globals() {
     const isPersistingAnyStreamDraft = useIsPersistingAnyStreamDraft()
 
+    const isAnyPurchaseInProgress = useIsAnyPurchaseInProgress()
+
     usePreventNavigatingAway({
         isDirty(destination) {
-            return typeof destination === 'undefined' && isPersistingAnyStreamDraft
+            if (typeof destination !== 'undefined') {
+                return false
+            }
+
+            return isPersistingAnyStreamDraft || isAnyPurchaseInProgress
         }
     })
 
