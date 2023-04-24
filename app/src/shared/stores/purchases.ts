@@ -136,50 +136,38 @@ const usePurchaseStore = create<Store>((set, get) => {
                 let chainSelectorResult: ChainSelectorResult | undefined
 
                 while (true) {
-                    try {
-                        /**
-                         * The following ifelse dance makes sure we
-                         * - don't open the Chain Selector for single-chain projects,
-                         * - recycle existing `chainSelectorResult` in a single-chain
-                         *   project scenario.
-                         *
-                         * For multi-chain projects we display the modal and let users
-                         * choose their preference.
-                         *
-                         * The Chain Selector modal uses `getPurchasePreconditions` internally.
-                         */
-                        if (skipChainSelector) {
-                            if (!chainSelectorResult) {
-                                chainSelectorResult = await getPurchasePreconditions({
-                                    chainId,
-                                    account,
-                                    paymentDetails,
-                                })
-                            }
-                        } else {
-                            chainSelectorResult = undefined
-
-                            chainSelectorResult = await toaster(
-                                ChainSelectorModal,
-                                Layer.Modal,
-                            ).pop({
+                    /**
+                     * The following ifelse dance makes sure we
+                     * - don't open the Chain Selector for single-chain projects,
+                     * - recycle existing `chainSelectorResult` in a single-chain
+                     *   project scenario.
+                     *
+                     * For multi-chain projects we display the modal and let users
+                     * choose their preference.
+                     *
+                     * The Chain Selector modal uses `getPurchasePreconditions` internally.
+                     */
+                    if (skipChainSelector) {
+                        if (!chainSelectorResult) {
+                            chainSelectorResult = await getPurchasePreconditions({
+                                chainId,
                                 account,
-                                chainIds,
                                 paymentDetails,
-                                projectId,
-                                selectedChainId: chainId,
                             })
                         }
-                    } catch (e: unknown) {
-                        /**
-                         * Any error we catch here terminates the purchase flow. We're
-                         * at an early stage so it's not a big deal.
-                         */
-                        if (isAbandonment(e)) {
-                            throw new Error('User cancelled the purchase')
-                        }
+                    } else {
+                        chainSelectorResult = undefined
 
-                        throw e
+                        chainSelectorResult = await toaster(
+                            ChainSelectorModal,
+                            Layer.Modal,
+                        ).pop({
+                            account,
+                            chainIds,
+                            paymentDetails,
+                            projectId,
+                            selectedChainId: chainId,
+                        })
                     }
 
                     if (!chainSelectorResult) {
@@ -238,18 +226,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                     usdRate,
                                 })
                             } catch (e: unknown) {
-                                if (isAbandonment(e)) {
-                                    if (skipChainSelector) {
-                                        /**
-                                         * Chain Selector has been skipped so there's nothing
-                                         * to go back. Raised `bail` flag makes sure the following
-                                         * exception terminates the purchase.
-                                         */
-                                        bail = true
-
-                                        throw new Error('User cancelled the purchase')
-                                    }
-
+                                if (isAbandonment(e) && !skipChainSelector) {
                                     /**
                                      * The user abandoned the Access Period modal. We break the current
                                      * phase and tell the workflow to take us back to the Chain Selector.
