@@ -17,47 +17,28 @@ import {
     SmartContractProjectCreate,
     SmartContractProjectMetadata,
     updateProject,
-    deleteProject as deleteProjectService,
 } from '$app/src/services/projects'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { getConfigForChain } from '$shared/web3/config'
 import { getDataAddress } from '$mp/utils/web3'
 import address0 from "$utils/address0"
-import {useProjectEditorStore} from "$mp/containers/ProjectEditing/proejctEditor.state"
-import useSwitchChain from '$shared/hooks/useSwitchChain'
-import { errorToast, successToast } from '$utils/toast'
-import {TransactionList} from "$shared/components/TransactionList"
 import routes from "$routes"
 
 export type ProjectController = {
-    create: () => Promise<boolean>,
-    update: () => Promise<boolean>,
-    deleteProject: () => Promise<void>,
+    create: () => Promise<void>,
+    update: () => Promise<void>,
     publishInProgress: boolean,
 }
 
-const ProjectTransactionList = () => {
-    const persistOperations = useProjectEditorStore((state) => state.persistOperations)
-    return <TransactionList operations={persistOperations}/>
-}
 export const useProjectController = (): ProjectController => {
     const {state: project} = useProjectState()
     const {validate} = useValidationContext()
     const [publishInProgress, setPublishInProgress] = useState<boolean>(false)
     const {projectRegistry} = getCoreConfig()
     const registryChain = getConfigForChain(projectRegistry.chainId)
-    const { switchChain } = useSwitchChain()
     const history = useHistory()
-    const addPersistOperation = useProjectEditorStore((state) => state.addPersistOperation)
-    const updatePersistOperation = useProjectEditorStore((state) => state.updatePersistOperation)
-    const clearPersistOperations = useProjectEditorStore((state) => state.clearPersistOperations)
-    const TRANSACTION_LIST_TIMEOUT = 3000
 
-    const openTransactionNotification = (): Notification => Notification.push({
-        autoDismiss: false,
-        dismissible: false,
-        children: <ProjectTransactionList />,
-    })
+    const { id: projectId, type: projectType } = project || {}
 
     const checkValidationErrors = useCallback((): boolean => {
         // Notify missing/invalid fields
@@ -111,7 +92,7 @@ export const useProjectController = (): ProjectController => {
             id: id || randomHex(32),
             minimumSubscriptionInSeconds: 0,
             streams: [...project.streams],
-            paymentDetails: project.type === ProjectType.PaidData ? Object.values(project.salePoints).map((salePoint) => {
+            paymentDetails: projectType === ProjectType.PaidData ? Object.values(project.salePoints).map((salePoint) => {
                 return {
                     chainId: salePoint.chainId,
                     beneficiaryAddress: salePoint.beneficiaryAddress,
@@ -126,160 +107,98 @@ export const useProjectController = (): ProjectController => {
             }]
 
         }
-    }, [getProjectMetadata, registryChain.id, project.streams, project.type, project.salePoints])
+    }, [getProjectMetadata, registryChain.id, project.streams, projectType, project.salePoints])
 
-    const createNewProject = useCallback<() => Promise<boolean>>(async () => {
-        clearPersistOperations()
-        let transactionsToastNotification: Notification | null = null
-        const projectContractData: SmartContractProjectCreate = {
-            ...(await getSmartContractProject()),
-            isPublicPurchasable: project.type !== ProjectType.OpenData,
+    const createNewProject = useCallback<() => Promise<void>>(async () => {
+        if (!projectType) {
+            throw new Error('Invalid project')
         }
 
         setPublishInProgress(true)
-        addPersistOperation({id: 'createProject', name: 'Create project', type: 'project', state: 'notstarted'})
 
-        transactionsToastNotification = openTransactionNotification()
-
-        return new Promise((resolve) => {
-            updatePersistOperation('createProject', {
-                state: 'inprogress',
-            })
-            const transaction = createProject(projectContractData)
-            transaction.onTransactionComplete(() => {
-                updatePersistOperation('createProject', {
-                    state: 'complete',
-                })
-                setTimeout(() => {
-                    setPublishInProgress(false)
-                    history.push(routes.projects.index())
-                    transactionsToastNotification?.close()
-                    resolve(true)
-                }, TRANSACTION_LIST_TIMEOUT)
-            })
-            transaction.onError(() => {
-                setPublishInProgress(false)
-                updatePersistOperation('createProject', {
-                    state: 'error',
-                })
-                setTimeout(() => {
-                    transactionsToastNotification?.close()
-                }, TRANSACTION_LIST_TIMEOUT)
-                resolve(false)
-            })
-        })
-    }, [clearPersistOperations, getSmartContractProject, project.type, addPersistOperation, updatePersistOperation, history])
-
-    const createNewDataUnion = useCallback<() => Promise<boolean>>(async () => {
-        // TODO
-        return true
-    }, [])
-
-    const updateExistingProject = useCallback(async (): Promise<boolean> => {
-        clearPersistOperations()
-        let transactionsToastNotification: Notification | null = null
-        const projectContractData = await getSmartContractProject(project.id)
-        addPersistOperation({id: 'updateProject', name: 'Update project', type: 'project', state: 'notstarted'})
-        setPublishInProgress(true)
-        transactionsToastNotification = openTransactionNotification()
-        return new Promise((resolve) => {
-            updatePersistOperation('updateProject', {
-                state: 'inprogress',
-            })
-            const transaction = updateProject(projectContractData)
-            transaction.onTransactionComplete(() => {
-                updatePersistOperation('updateProject', {
-                    state: 'complete',
-                })
-                setTimeout(() => {
-                    setPublishInProgress(false)
-                    history.push(routes.projects.index())
-                    transactionsToastNotification?.close()
-                    resolve(true)
-                }, TRANSACTION_LIST_TIMEOUT)
-            })
-            transaction.onError(() => {
-                setPublishInProgress(false)
-                updatePersistOperation('updateProject', {
-                    state: 'error',
-                })
-                setTimeout(() => {
-                    transactionsToastNotification?.close()
-                }, TRANSACTION_LIST_TIMEOUT)
-                resolve(false)
-            })
-        })
-    }, [clearPersistOperations, getSmartContractProject, project.id, addPersistOperation, updatePersistOperation, history])
-
-    const updateExistingDataUnion = useCallback(async (): Promise<boolean> => {
-        // todo implementation
-        return true
-    }, [])
-
-    const create = useCallback<ProjectController['create']>(async() => {
-        if (checkValidationErrors()) {
-            switch (project.type) {
-                case ProjectType.PaidData:
-                case ProjectType.OpenData:
-                    return await createNewProject()
-                case ProjectType.DataUnion:
-                    return await createNewDataUnion()
+        try {
+            const projectContractData: SmartContractProjectCreate = {
+                ...(await getSmartContractProject()),
+                isPublicPurchasable: projectType !== ProjectType.OpenData,
             }
+
+            await createProject(projectContractData)
+
+            /**
+             * @FIXME Prevent navigating to the project listing page if… the user
+             * has already moved on.
+             */
+            history.push(routes.projects.index())
+        } finally {
+            setPublishInProgress(false)
         }
-        return false
-    }, [project, checkValidationErrors, createNewProject, createNewDataUnion])
+    }, [getSmartContractProject, projectType, history])
+
+    const createNewDataUnion = useCallback<() => Promise<void>>(async () => {
+        throw new Error('Not implemented')
+    }, [])
+
+    const updateExistingProject = useCallback(async () => {
+        if (!projectId) {
+            throw new Error('No project')
+        }
+
+        setPublishInProgress(true)
+
+        try {
+            const projectContractData = await getSmartContractProject(projectId)
+
+            await updateProject(projectContractData)
+
+            /**
+             * @FIXME Prevent navigating to the project listing page if… the user
+             * has already moved on.
+             */
+            history.push(routes.projects.index())
+        } finally {
+            setPublishInProgress(false)
+        }
+    }, [getSmartContractProject, projectId, history])
+
+    const updateExistingDataUnion = useCallback(async (): Promise<void> => {
+        throw new Error('Not implemented')
+    }, [])
+
+    const create = useCallback<ProjectController['create']>(async () => {
+        if (!checkValidationErrors()) {
+            throw new Error('Invalid project data')
+        }
+
+        switch (projectType) {
+            case ProjectType.PaidData:
+            case ProjectType.OpenData:
+                return createNewProject()
+            case ProjectType.DataUnion:
+                return createNewDataUnion()
+        }
+
+        throw new Error('Invalid project type')
+    }, [projectType, checkValidationErrors, createNewProject, createNewDataUnion])
 
     const update = useCallback<ProjectController['update']>(async () => {
-        if (checkValidationErrors()) {
-            switch (project.type) {
-                case ProjectType.PaidData:
-                case ProjectType.OpenData:
-                    return await updateExistingProject()
-                case ProjectType.DataUnion:
-                    return await updateExistingDataUnion()
-            }
+        if (!checkValidationErrors()) {
+            throw new Error('Invalid project data')
         }
-        return true
-    }, [checkValidationErrors, project.type, updateExistingProject, updateExistingDataUnion])
 
-    const deleteProject = useCallback(async () => {
-        if (project != null && project.id) {
-            clearPersistOperations()
-            let transactionsToastNotification: Notification | null = null
-            addPersistOperation({id: 'deleteProject', name: 'Delete project', type: 'project', state: 'notstarted'})
-            transactionsToastNotification = openTransactionNotification()
-
-            await switchChain(registryChain.id)
-
-            updatePersistOperation('deleteProject', {
-                state: 'inprogress',
-            })
-            deleteProjectService(project.id)
-                .onTransactionComplete(() => {
-                    updatePersistOperation('deleteProject', {
-                        state: 'complete',
-                    })
-                    setTimeout(() => {
-                        history.push(routes.projects.index())
-                        transactionsToastNotification?.close()
-                    }, TRANSACTION_LIST_TIMEOUT)
-                })
-                .onError((e) => {
-                    console.error('Could not delete project', e)
-                    updatePersistOperation('deleteProject', {
-                        state: 'error',
-                    })
-                    setTimeout(() => {
-                        transactionsToastNotification?.close()
-                    }, TRANSACTION_LIST_TIMEOUT)
-                })
+        switch (projectType) {
+            case ProjectType.PaidData:
+            case ProjectType.OpenData:
+                return updateExistingProject()
+            case ProjectType.DataUnion:
+                return updateExistingDataUnion()
         }
-    }, [addPersistOperation, clearPersistOperations, history, project, registryChain, switchChain, updatePersistOperation])
+
+        throw new Error('Invalid project type')
+    }, [projectType, checkValidationErrors, updateExistingProject, updateExistingDataUnion])
 
     return {
         create,
         update,
-        deleteProject,
         publishInProgress
     }
 }
