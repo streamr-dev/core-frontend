@@ -8,9 +8,7 @@ import {Project} from "$mp/types/project-types"
 import * as validationCtx from "$mp/containers/ProductController/ValidationContextProvider"
 import {createProject, SmartContractProjectCreate, updateProject} from "$app/src/services/projects"
 import {useProjectState} from "$mp/contexts/ProjectStateContext"
-import Notification from '$shared/utils/Notification'
 import { ProjectType } from '$shared/types'
-import {NotificationIcon} from "$shared/utils/constants"
 import {ProjectController, useProjectController} from "./ProjectController"
 import Mock = jest.Mock
 
@@ -38,13 +36,6 @@ jest.mock('$app/src/getters/getCoreConfig', () => ({
     default: () => ({projectRegistry: {chainId: 1}})
 }))
 
-jest.mock('$shared/utils/Notification', () => ({
-    __esModule: true,
-    default: {
-        push: jest.fn()
-    }
-}))
-
 jest.mock('$app/src/services/projects', () => ({
     createProject: jest.fn(),
     updateProject: jest.fn()
@@ -54,15 +45,7 @@ jest.mock('$mp/contexts/ProjectStateContext', () => ({
     useProjectState: jest.fn()
 }))
 
-jest.mock('$shared/utils/constants', () => ({
-    NotificationIcon: {
-        CHECKMARK: 'checkmark',
-        ERROR: 'error',
-        WARNING: 'warning',
-        INFO: 'info',
-        SPINNER: 'spinner',
-    }
-}))
+jest.mock('$shared/utils/constants', () => ({}))
 
 jest.mock('react-router-dom', () => ({
     useHistory: jest.fn().mockReturnValue({push: jest.fn()})
@@ -200,21 +183,21 @@ describe('ProjectController', () => {
         const errorText = 'Invalid project name'
         prepareTestForProjectCreate(true, {name: {level: validationCtx.SeverityLevel.ERROR, message: errorText}}, {...PROJECT_STUB})
         let result: boolean | undefined
+        
+        let messages: string[] = []
 
         await act(async () => {
             try {
                 await controller.create()
             } catch (e) {
+                messages = e.messages
                 result = false
             }
         })
 
         expect(result).toBe(false)
         expect(createProject).not.toHaveBeenCalled()
-        expect(Notification.push).toHaveBeenCalledWith({
-            title: errorText,
-            icon: NotificationIcon.ERROR,
-        })
+        expect(messages[0]).toEqual(errorText)
     })
 
     it('should display an error notification when an error occurs while publishing', async () => {
