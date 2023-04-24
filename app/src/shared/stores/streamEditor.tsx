@@ -13,7 +13,7 @@ import address0 from '$app/src/utils/address0'
 import NoStreamIdError from '$shared/errors/NoStreamIdError'
 import getTransactionalClient from '$app/src/getters/getTransactionalClient'
 import { Layer } from '$app/src/utils/Layer'
-import TransactionListToast, { Operation } from '$shared/toasts/TransactionListToast'
+import TransactionListToast, { Operation, notify } from '$shared/toasts/TransactionListToast'
 import routes from '$app/src/routes'
 import requirePositiveBalance from '$shared/utils/requirePositiveBalance'
 
@@ -398,20 +398,6 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                 return
             }
 
-            function notify() {
-                setTimeout(async () => {
-                    try {
-                        if (!toast) {
-                            return
-                        }
-
-                        await toast.pop({ operations: [...operations] })
-                    } catch (_) {
-                        // Do nothing
-                    }
-                })
-            }
-
             const firstOperation = operations[0]
 
             firstOperation.state = 'ongoing'
@@ -420,7 +406,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                 updateOperation.action = getOpenStreamLink(streamId)
             }
 
-            notify()
+            notify(toast, operations)
 
             try {
                 setDraft(draftId, (draft) => {
@@ -515,7 +501,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
 
                 permissionsOperation.state = 'ongoing'
 
-                notify()
+                notify(toast, operations)
 
                 if (permissionAssignments.length) {
                     client = await getTransactionalClient()
@@ -546,7 +532,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
 
                 storageOperation.state = 'ongoing'
 
-                notify()
+                notify(toast, operations)
 
                 for (let i = 0; i < storageNodeChanges.length; i++) {
                     const [address, enabled] = storageNodeChanges[i]
@@ -555,7 +541,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
 
                     if (i !== 0) {
                         // Already notifying above.
-                        notify()
+                        notify(toast, operations)
                     }
 
                     client = await getTransactionalClient()
@@ -579,7 +565,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
 
                 storageOperation.state = 'complete'
 
-                notify()
+                notify(toast, operations)
             } catch (e) {
                 operations.forEach((op) => {
                     if (op.state === 'ongoing') {
@@ -587,7 +573,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     }
                 })
 
-                notify()
+                notify(toast, operations)
 
                 throw e
             } finally {

@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
 import styled, { css } from 'styled-components'
+import { Toaster } from 'toasterhea'
 import { COLORS, MEDIUM } from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
 import Spinner from '$shared/components/Spinner'
@@ -44,6 +45,20 @@ export default function TransactionListToast({ operations = [] }: Props) {
             </Container>
         </AbstractToast>
     )
+}
+
+export function notify(toast: Toaster<typeof TransactionListToast> | undefined, operations: Operation[]) {
+    setTimeout(async () => {
+        try {
+            if (!toast) {
+                return
+            }
+
+            await toast.pop({ operations: [...operations] })
+        } catch (_) {
+            // Do nothing
+        }
+    })
 }
 
 const Container = styled.div`
