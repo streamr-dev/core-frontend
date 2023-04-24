@@ -103,7 +103,7 @@
         "babel-jest": "^25.5.1",
         "babel-loader": "^8.2.5",
         "babel-plugin-dynamic-import-node": "^2.3.3",
-        "bignumber.js": "^7.2.1",
+        "bignumber.js": "^9.1.1",
         "bip39": "^3.0.3",
         "bootstrap": "^4.6.0",
         "chromatic": "^6.17.2",
