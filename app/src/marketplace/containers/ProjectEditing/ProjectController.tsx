@@ -1,4 +1,4 @@
-import React, {createContext, FunctionComponent, ReactNode, useCallback, useMemo, useState} from 'react'
+import React, {createContext, FunctionComponent, ReactNode, useCallback, useState} from 'react'
 import {useHistory} from "react-router-dom"
 import BN from "bignumber.js"
 import {randomHex} from "web3-utils"
@@ -7,8 +7,6 @@ import {
     SeverityLevel,
     useValidationContext,
 } from '$mp/containers/ProductController/ValidationContextProvider'
-import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
 import { ProjectType } from '$shared/types'
 import { postImage } from '$app/src/services/images'
 import {

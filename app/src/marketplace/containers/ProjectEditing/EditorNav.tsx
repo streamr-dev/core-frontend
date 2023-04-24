@@ -1,6 +1,6 @@
-import React, { FunctionComponent, useContext } from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
-import {Link, useHistory} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import { LogoLink, Navbar, NavbarItem, NavContainer } from '$shared/components/Layout/Nav'
 import Logo from '$shared/components/Logo'
 import Button from '$shared/components/Button'
@@ -31,7 +31,12 @@ const FlexNavbarItem = styled(NavbarItem)`
   }
 `
 
-export const EditorNav: FunctionComponent<{isNewProject: boolean, editedProductHasChanged?: boolean}> = ({isNewProject, editedProductHasChanged}) => {
+interface Props {
+    isNewProject?: boolean
+    editedProductHasChanged?: boolean
+}
+
+export function EditorNav({ isNewProject = false, editedProductHasChanged = false }: Props) {
     const {create, publishInProgress, update} = useContext(ProjectControllerContext)
     return <NavContainer>
         <FlexNavbar>
