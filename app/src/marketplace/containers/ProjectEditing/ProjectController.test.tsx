@@ -183,7 +183,7 @@ describe('ProjectController', () => {
         const errorText = 'Invalid project name'
         prepareTestForProjectCreate(true, {name: {level: validationCtx.SeverityLevel.ERROR, message: errorText}}, {...PROJECT_STUB})
         let result: boolean | undefined
-        
+
         let messages: string[] = []
 
         await act(async () => {
