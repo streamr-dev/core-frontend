@@ -4,10 +4,10 @@ import { Reason, useDiscardableEffect } from 'toasterhea'
 import { COLORS } from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
 
-export enum RejectionReason {
-    BackButton,
-    EscapeKey,
-    CancelButton,
+export const RejectionReason = {
+    BackButton: Symbol('back button'),
+    EscapeKey: Symbol('escape key'),
+    CancelButton: Symbol('cancel button'),
 }
 
 export function isAbandonment(e: unknown) {
