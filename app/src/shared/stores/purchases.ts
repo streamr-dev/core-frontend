@@ -1,7 +1,8 @@
 import { create } from 'zustand'
-import produce, { current } from 'immer'
+import produce from 'immer'
 import { Toaster, toaster } from 'toasterhea'
 import BigNumber from 'bignumber.js'
+import { toBN } from 'web3-utils'
 import { useCallback, useEffect } from 'react'
 import ChainSelectorModal, {
     ChainSelectorResult,
@@ -350,7 +351,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                                         false,
                                                         selectedChainId,
                                                     ).options.address,
-                                                    total,
+                                                    toBN(total.toString()),
                                                 )
                                                 .send({
                                                     gas: gasLimits.APPROVE,
@@ -623,6 +624,8 @@ const usePurchaseStore = create<Store>((set, get) => {
                                  */
                                 throw e
                             }
+
+                            console.warn('Unsuccessful purchase attempt. Trying again.', e)
 
                             /**
                              * Exceptions that happen with lowered `bail` flag take users back
