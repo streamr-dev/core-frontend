@@ -505,7 +505,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                                 .methods.buy(
                                                     projectId,
                                                     // Round down to nearest full second, otherwise allowance could run out
-                                                    seconds.dp(0, BigNumber.ROUND_DOWN),
+                                                    toBN(seconds.dp(0, BigNumber.ROUND_DOWN).toString()),
                                                 )
                                                 .send({
                                                     gas: 2e5 + streams.length * 1e5,
