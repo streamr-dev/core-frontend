@@ -8,6 +8,5 @@ export default function getProviderChainId(): number {
         return 0
     }
 
-    const providerChainId = hexToNumber((provider as any).chainId)
-    return providerChainId
+    return Number(hexToNumber((provider as any).chainId))
 }
