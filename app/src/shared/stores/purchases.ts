@@ -741,3 +741,7 @@ export function useIsFetchingProjectSubscriptions(projectId: string | undefined)
 
     return (projectId && fetchingSubscriptions[projectId]) || false
 }
+
+export function useIsAnyPurchaseInProgress() {
+    return !!Object.keys(usePurchaseStore().inProgress).length
+}
