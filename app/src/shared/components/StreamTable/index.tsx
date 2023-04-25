@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, {FunctionComponent, useCallback, useEffect, useState} from 'react'
 import styled, { css } from 'styled-components'
 import { Link } from 'react-router-dom'
 import { Stream } from 'streamr-client'
@@ -406,3 +406,45 @@ const StreamTable: React.FC<Props> = ({
 }
 
 export default StreamTable
+
+export const StreamTableLight: FunctionComponent<{streamIds: string[], title?: string}> = ({streamIds, title = 'Streams'}) => {
+    return (
+        <Container>
+            <Heading>
+                <Title>{title}</Title>
+            </Heading>
+            <Table>
+                <TableHeader>
+                    <GridCell>Stream ID</GridCell>
+                    <GridCell onlyTablet>Description</GridCell>
+                    <GridCell onlyDesktop>Live peers</GridCell>
+                    <GridCell onlyDesktop>Msg/s</GridCell>
+                    <GridCell onlyDesktop>Access</GridCell>
+                    <GridCell onlyDesktop>Publishers</GridCell>
+                    <GridCell onlyDesktop>Subscribers</GridCell>
+                </TableHeader>
+                <TableRows rowCount={streamIds.length}>
+                    {streamIds.map((streamId) => (
+                        <TableRow
+                            key={streamId}
+                            as={Link}
+                            to={routes.streams.show({ id: streamId })}
+                        >
+                            <StreamDetails>
+                                <StreamId title={streamId}>
+                                    {truncateStreamName(streamId, 40)}
+                                </StreamId>
+                            </StreamDetails>
+                            <GridCell onlyTablet/>
+                            <GridCell onlyDesktop>-</GridCell>
+                            <GridCell onlyDesktop>-</GridCell>
+                            <GridCell onlyDesktop>-</GridCell>
+                            <GridCell onlyDesktop>-</GridCell>
+                            <GridCell onlyDesktop>-</GridCell>
+                        </TableRow>
+                    ))}
+                </TableRows>
+            </Table>
+        </Container>
+    )
+}
