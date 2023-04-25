@@ -142,7 +142,11 @@ export const DetailEditor: FunctionComponent<DetailsEditorProps> = ({
                             setInputTouched(true)
                             setInputIsFocused(true)
                         }}
-                        onBlur={() => setInputIsFocused(false)}
+                        onBlur={(event) => {
+                            setInputValue(event.target.value)
+                            setInputIsFocused(false)
+                            handleSubmit()
+                        }}
                         placeholder={placeholder}
                         className={'text-input ' + (validationError ? 'invalid-input' : '')}
                         defaultValue={inputValue}
