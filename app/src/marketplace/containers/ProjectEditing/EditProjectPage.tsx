@@ -1,6 +1,7 @@
 import React, {FunctionComponent, ReactNode, useContext, useEffect, useMemo} from "react"
 import styled from "styled-components"
 import {isEqual} from "lodash"
+import {useHistory} from "react-router-dom"
 import {ValidationContext, ValidationContextProvider} from "$mp/containers/ProductController/ValidationContextProvider"
 import {ProjectControllerContext, ProjectControllerProvider} from "$mp/containers/ProjectEditing/ProjectController"
 import {ProjectStateContext, ProjectStateContextProvider} from "$mp/contexts/ProjectStateContext"
@@ -16,6 +17,11 @@ import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
 import {MarketplaceLoadingView} from "$mp/containers/ProjectPage/MarketplaceLoadingView"
 import {getProjectTitleForEditor} from "$mp/containers/ProjectPage/utils"
 import ProjectLinkTabs from '$app/src/pages/ProjectPage/ProjectLinkTabs'
+import {ProjectPermission, useProjectAbility} from "$shared/stores/projectAbilities"
+import {useAuthController} from "$auth/hooks/useAuthController"
+import getCoreConfig from "$app/src/getters/getCoreConfig"
+import useIsMounted from "$shared/hooks/useIsMounted"
+import routes from "$routes"
 
 const UnstyledEditProjectPage: FunctionComponent = () => {
     const {state: project} = useContext(ProjectStateContext)
@@ -30,6 +36,21 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
     const nonEditableSalePointChains = useMemo<number[]>(
         () => Object.values(loadedProject.salePoints).map((salePoint) => salePoint.chainId
         ), [loadedProject])
+
+    const isMounted = useIsMounted()
+    const { chainId } = getCoreConfig().projectRegistry
+    const canEdit = useProjectAbility(chainId, project.id, useAuthController()?.currentAuthSession?.address, ProjectPermission.Edit)
+    const history = useHistory()
+
+    useEffect(() => {
+        if (isMounted() && canEdit === false) {
+            history.replace(
+                routes.projects.overview({
+                    id: project.id,
+                }),
+            )
+        }
+    }, [canEdit])
 
     useEffect(() => {
         resetTouched()
