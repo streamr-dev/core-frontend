@@ -16,6 +16,9 @@ import { DataUnionChainSelector } from '$mp/containers/ProjectEditing/DataUnionC
 import { DataUnionTokenSelector } from '$mp/containers/ProjectEditing/DataUnionTokenSelector/DataUnionTokenSelector'
 import { DataUnionFee } from '$mp/containers/ProjectEditing/DataUnionFee'
 import {ProjectControllerContext} from "$mp/containers/ProjectEditing/ProjectController"
+import getCoreConfig from "$app/src/getters/getCoreConfig"
+import {ProjectPermission, useProjectAbility} from "$shared/stores/projectAbilities"
+import {useAuthController} from "$auth/hooks/useAuthController"
 import DeleteProject from './DeleteProject'
 
 type ProjectEditorProps = {
@@ -44,6 +47,8 @@ const EditorOverlay = styled.div`
 export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({nonEditableSalePointChains = []}) => {
     const {state: project} = useContext(ProjectStateContext)
     const {publishInProgress} = useContext(ProjectControllerContext)
+    const { chainId } = getCoreConfig().projectRegistry
+    const canDelete = useProjectAbility(chainId, project.id, useAuthController()?.currentAuthSession?.address, ProjectPermission.Delete)
 
     return <ProjectPageContainer>
         <ProjectHeroContainer overflowVisible={true}>
@@ -72,7 +77,7 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({nonEditabl
         <WhiteBoxWithMargin>
             <TermsOfUse/>
         </WhiteBoxWithMargin>
-        {project.id && (
+        {project.id && canDelete && (
             <TransparentBoxWithMargin>
                 <DeleteProject />
             </TransparentBoxWithMargin>
