@@ -116,7 +116,7 @@ function ContainerBox({
                     </SaveButton>
                 )}
             </Inner>
-            {streamId != null && <RelatedProjects streamId={streamId} />}
+            {streamId != null && children && <RelatedProjects streamId={streamId} />}
         </Outer>
     )
 }
