@@ -211,7 +211,7 @@
         "smooth-scroll-into-view-if-needed": "^1.1.29",
         "storybook-react-router": "^1.0.8",
         "stream-browserify": "^3.0.0",
-        "streamr-client": "^8.0.3",
+        "streamr-client": "^8.2.1",
         "streamr-client-protocol": "^13.0.0",
         "streamr-client-react": "^3.0.0-beta.9",
         "stringify-object": "^3.3.0",
