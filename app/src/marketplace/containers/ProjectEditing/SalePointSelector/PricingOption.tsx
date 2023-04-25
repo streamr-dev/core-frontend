@@ -37,7 +37,7 @@ export const PricingOption: FunctionComponent<{
                 beneficiaryAddress: beneficiaryAddress
             })
         }
-    }, [setIsSelected, onToggle, chain, pricing.pricePerSecond, pricing.timeUnit, pricing.price, pricing.tokenAddress, beneficiaryAddress])
+    }, [onToggle, chain, pricing.pricePerSecond, pricing.timeUnit, pricing.price, pricing.tokenAddress, beneficiaryAddress])
 
     const handlePricingChange = useCallback((newPricing: PricingData) => {
         const output = isSelected ? {

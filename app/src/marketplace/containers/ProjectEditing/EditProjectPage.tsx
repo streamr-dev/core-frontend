@@ -54,7 +54,7 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
                 }),
             )
         }
-    }, [canEdit])
+    }, [isMounted, canEdit, history, project.id])
 
     useEffect(() => {
         resetTouched()
