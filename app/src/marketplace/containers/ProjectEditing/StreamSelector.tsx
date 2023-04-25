@@ -1,18 +1,16 @@
-import React, { FunctionComponent, useCallback, useContext, useEffect, useState } from 'react'
+import React, { FunctionComponent, useContext, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { Stream, StreamID } from 'streamr-client'
 
-import InterruptionError from '$shared/errors/InterruptionError'
-import useInterrupt from '$shared/hooks/useInterrupt'
-import useFetchStreams from '$app/src/shared/hooks/useFetchStreams'
-import { getStreamsFromIndexer, IndexerStream } from '$app/src/services/streams'
+import { getStreamsOwnedBy, getStreamsFromIndexer, IndexerStream, TheGraphStream } from '$app/src/services/streams'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 import { StreamSelectTable } from '$shared/components/StreamSelectTable'
 import SearchBar from '$shared/components/SearchBar'
 import { DESKTOP, TABLET } from '$shared/utils/styled'
+import { useAuthController } from '$auth/hooks/useAuthController'
+import { ProjectType } from '$app/src/shared/types'
 
-const BATCH_SIZE = 10
+const PAGE_SIZE = 10
 
 const Heading = styled.div`
   display: grid;
@@ -40,34 +38,39 @@ export const StreamSelector: FunctionComponent = () => {
     const {state: project} = useContext(ProjectStateContext)
     const {updateStreams} = useEditableProjectActions()
     const [search, setSearch] = useState<string>('')
-    const itp = useInterrupt()
-    const fetchStreams = useFetchStreams()
-    const [streams, setStreams] = useState<Array<Stream>>([])
-    const [streamStats, setStreamStats] = useState<Record<StreamID, IndexerStream>>({})
-    const [hasMore, setHasMore] = useState<boolean>(false)
-    const fetch = useCallback(async () => {
-        const { requireUninterrupted } = itp(search)
+    const [streams, setStreams] = useState<Array<TheGraphStream>>([])
+    const [streamStats, setStreamStats] = useState<Record<string, IndexerStream>>({})
+    const { currentAuthSession } = useAuthController()
+    const projectType = project?.type
+    const [page, setPage] = useState(0)
 
-        try {
-            const [newStreams, hasMoreResults, isFirstBatch] = await fetchStreams(search, {
-                batchSize: BATCH_SIZE,
-                allowPublic: false,
-                onlyCurrentUser: true,
-            })
+    const visibleStreams = useMemo(
+        () => streams.slice(0, (page + 1) * PAGE_SIZE),
+        [streams, page],
+    )
 
-            requireUninterrupted()
-            setHasMore(hasMoreResults)
+    const hasMore = useMemo(
+        () => streams.length > visibleStreams.length,
+        [streams.length, visibleStreams.length],
+    )
 
-            if (isFirstBatch) {
-                setStreams(newStreams)
-            } else {
-                setStreams((current = []) => [...current, ...newStreams])
-            }
+    useEffect(() => {
+        const load = async () => {
+            const res = await getStreamsOwnedBy(currentAuthSession.address, search, projectType === ProjectType.OpenData)
+            setStreams(res)
+        }
 
+        load()
+    }, [currentAuthSession.address, projectType, search])
+
+    useEffect(() => {
+        const loadStats = async () => {
             try {
-                const stats = await getStreamsFromIndexer(newStreams.map((s) => s.id))
+                const start = page * PAGE_SIZE
+                const end = start + PAGE_SIZE
+                const newPageStreams = streams.slice(start, end)
+                const stats = await getStreamsFromIndexer(newPageStreams.map((s) => s.id))
 
-                requireUninterrupted()
                 if (stats && stats.length > 0) {
                     setStreamStats((prev) => ({
                         ...prev,
@@ -77,18 +80,15 @@ export const StreamSelector: FunctionComponent = () => {
             } catch (e) {
                 console.warn('Fetching stream stats failed', e)
             }
-        } catch (e) {
-            if (e instanceof InterruptionError) {
-                return
-            }
-
-            console.warn(e)
         }
-    }, [itp, fetchStreams, search])
+
+        loadStats()
+    }, [page, streams])
 
     useEffect(() => {
-        fetch()
-    }, [fetch])
+        // Reset current page when needed
+        setPage(0)
+    }, [search, projectType, currentAuthSession.address])
 
     return <div>
         <Heading>
@@ -102,12 +102,12 @@ export const StreamSelector: FunctionComponent = () => {
             }}
         />
         <StreamSelectTable
-            streams={streams}
+            streams={visibleStreams}
             streamStats={streamStats}
-            loadMore={fetch}
+            loadMore={() => setPage((prev) => prev + 1)}
             hasMoreResults={hasMore}
             onSelectionChange={updateStreams}
-            selected={project.streams}
+            selected={project?.streams ?? []}
         />
     </div>
 }

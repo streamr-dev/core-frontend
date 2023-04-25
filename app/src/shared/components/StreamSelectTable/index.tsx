@@ -7,7 +7,7 @@ import LoadMore from '$mp/components/LoadMore'
 import { StreamId } from '$shared/types/stream-types'
 import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
 import Checkbox from '$shared/components/Checkbox'
-import { IndexerStream } from '$app/src/services/streams'
+import { IndexerStream, TheGraphStream } from '$app/src/services/streams'
 import {truncateStreamName} from '$shared/utils/text'
 import routes from '$routes'
 
@@ -160,7 +160,7 @@ const StreamDescription = styled(GridCell)`
 `
 
 type Props = {
-    streams: Array<Stream>
+    streams: Array<TheGraphStream>
     streamStats: Record<StreamID, IndexerStream>
     loadMore?: () => void | Promise<void>
     hasMoreResults?: boolean
@@ -256,9 +256,9 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
                                 <StreamDetails to={routes.streams.show({ id: s.id })}>
                                     <StreamId title={s.id}>{truncateStreamName(s.id, 40)}</StreamId>
                                     {'\n'}
-                                    <StreamDescription notOnTablet>{s.getMetadata().description}</StreamDescription>
+                                    <StreamDescription notOnTablet>{s.metadata?.description ?? ''}</StreamDescription>
                                 </StreamDetails>
-                                <GridCell onlyTablet>{s.getMetadata().description}</GridCell>
+                                <GridCell onlyTablet>{s.metadata?.description ?? ''}</GridCell>
                                 <GridCell onlyDesktop>{stats?.peerCount ?? '-'}</GridCell>
                                 <GridCell onlyDesktop>{stats?.messagesPerSecond ?? '-'}</GridCell>
                                 <GridCell onlyDesktop>{stats == null ? '-' : stats.subscriberCount == null ? 'Public' : 'Private'}</GridCell>

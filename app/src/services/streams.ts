@@ -159,10 +159,10 @@ export const getPagedStreams = async (
 ): Promise<TheGraphStreamResult> => {
     const theGraphUrl = getGraphUrl()
 
-    // NOTE: Searching is done through subentity "permissions" because we cannot do id_contains
-    // as it's not technically stored as a string on The Graph.
+    // NOTE: Stream name fulltext search is done through subentity "permissions" because we cannot
+    // use "id_contains" in query as it's not technically stored as a string on The Graph.
     const searchFilter = search != null && search.length > 0 ? `stream_contains: "${search}"` : null
-    const ownerFilter = owner != null ? `userAddress: "${owner.toLowerCase()}", canEdit: true` : null
+    const ownerFilter = owner != null ? `userAddress: "${owner.toLowerCase()}", canGrant: true` : null
     const allPermissionFilters = [ownerFilter, searchFilter].filter((filter) => !!filter).join(',')
     const permissionFilter = allPermissionFilters.length > 0 && `permissions_: { ${allPermissionFilters} }`
     const comparisonOperator = orderDirection === TheGraphOrderDirection.Asc ? 'gt' : 'lt'
@@ -349,4 +349,25 @@ export const getGlobalStatsFromIndexer = async (): Promise<GlobalStreamStats> =>
     })
 
     return result.data.summary
+}
+
+export const getStreamsOwnedBy = async (owner?: string, search?: string, onlyPublic?: boolean): Promise<TheGraphStream[]> => {
+    const allOwnedStreams = await getPagedStreams(
+        999,
+        undefined,
+        owner,
+        search,
+        TheGraphOrderBy.Id,
+        TheGraphOrderDirection.Asc,
+    )
+
+    let result = allOwnedStreams.streams
+
+    if (onlyPublic) {
+        result = result.filter((s) =>
+            s.permissions.find((p) => p.userAddress.toLowerCase() === address0.toLowerCase()) != null,
+        )
+    }
+
+    return result
 }
