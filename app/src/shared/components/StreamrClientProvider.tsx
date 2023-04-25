@@ -1,24 +1,47 @@
-import React, { useMemo } from 'react'
-import { ExternalProvider } from 'streamr-client'
+import React, { useEffect, useState } from 'react'
+import { StreamrClientConfig } from 'streamr-client'
 import Provider from 'streamr-client-react'
 import getClientConfig from '$app/src/getters/getClientConfig'
-import getWeb3 from '$utils/web3/getWeb3'
-import { useAuthController } from '$auth/hooks/useAuthController'
+import { getWalletProvider, useWalletAccount } from '../stores/wallet'
 
 export default function StreamrClientProvider({ children }) {
-    const token = useAuthController().currentAuthSession.address
+    const account = useWalletAccount()
 
-    const config = useMemo(() => {
-        const nextConfig = getClientConfig()
+    const [config, setConfig] = useState<StreamrClientConfig>(getClientConfig())
 
-        if (token) {
-            nextConfig.auth = {
-                ...nextConfig.auth,
-                ethereum: getWeb3().currentProvider as ExternalProvider,
+    useEffect(() => {
+        let mounted = true
+
+        async function fn() {
+            if (!account) {
+                return
+            }
+
+            try {
+                const provider = await getWalletProvider()
+
+                if (!mounted) {
+                    return
+                }
+
+                setConfig((current) => ({
+                    ...current,
+                    auth: {
+                        ...(current.auth || {}),
+                        ethereum: provider,
+                    },
+                }))
+            } catch (e) {
+                console.warn('Failed to update config', e)
             }
         }
 
-        return nextConfig
-    }, [token])
+        fn()
+
+        return () => {
+            mounted = false
+        }
+    }, [account])
+
     return <Provider {...config}>{children}</Provider>
 }

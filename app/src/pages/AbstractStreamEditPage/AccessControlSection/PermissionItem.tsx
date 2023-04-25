@@ -4,7 +4,7 @@ import { truncate } from '$shared/utils/text'
 import SvgIcon from '$shared/components/SvgIcon'
 import { COLORS } from '$shared/utils/styled'
 import { Bits, matchBits, setBits, unsetBits, useDraftId, useStreamEditorStore } from '$shared/stores/streamEditor'
-import { useAuthController } from "$auth/hooks/useAuthController"
+import { useWalletAccount } from '$shared/stores/wallet'
 import UnstyledPermissionEditor from './PermissionEditor'
 
 const Container = styled.div`
@@ -80,7 +80,7 @@ type Props = {
 const PermissionItem: React.FunctionComponent<Props> = ({ disabled, address, permissionBits }) => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
 
-    const {currentAuthSession} = useAuthController()
+    const account = useWalletAccount()
 
     const operations = Object.keys(Bits).filter((permission) => matchBits(Bits[permission], permissionBits))
 
@@ -95,10 +95,7 @@ const PermissionItem: React.FunctionComponent<Props> = ({ disabled, address, per
                 {isOpen ?
                     <div /> :
                     <Labels>
-                        {currentAuthSession.address != null
-                        && address != null
-                        && currentAuthSession.address.toLowerCase() === address.toLowerCase()
-                        && (
+                        {account?.toLowerCase() === address.toLowerCase() && (
                             <YouLabel>You</YouLabel>
                         )}
                         {operations.map((op) => (

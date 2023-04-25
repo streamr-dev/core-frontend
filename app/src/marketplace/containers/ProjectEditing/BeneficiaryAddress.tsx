@@ -10,7 +10,7 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import useValidation from '$mp/containers/ProductController/useValidation'
 import { SeverityLevel } from '$mp/containers/ProductController/ValidationContextProvider'
 import { Address } from '$shared/types/web3-types'
-import {useAuthController} from "$auth/hooks/useAuthController"
+import { useWalletAccount } from '$shared/stores/wallet'
 
 const Heading = styled.p`
   font-size: 20px;
@@ -78,8 +78,7 @@ export const BeneficiaryAddress: FunctionComponent<BeneficiaryAddressProps> = ({
 }) => {
 
     const { copy } = useCopy()
-    const {currentAuthSession} = useAuthController()
-    const accountAddress = currentAuthSession.address
+    const accountAddress = useWalletAccount()
     const {setStatus, clearStatus, isValid} = useValidation(`salePoints.${chainName}.beneficiaryAddress`)
     const [defaultValueWasSet, setDefaultValueWasSet] = useState(false)
     const inputRef = useRef<HTMLInputElement>()
@@ -125,7 +124,12 @@ export const BeneficiaryAddress: FunctionComponent<BeneficiaryAddressProps> = ({
                         <PopoverItem
                             key="useCurrent"
                             onClick={() => {
+                                if (!accountAddress) {
+                                    return
+                                }
+
                                 handleUpdate(accountAddress)
+
                                 if (inputRef.current) {
                                     inputRef.current.value = accountAddress
                                 }

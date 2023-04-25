@@ -1,6 +1,5 @@
 import React, {FunctionComponent, useCallback, useEffect, useReducer, useRef, useState} from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
-
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import ProjectsComponent, { ProjectsContainer } from '$mp/components/Projects'
 import ActionBar from '$mp/components/ActionBar'
@@ -11,9 +10,8 @@ import useModal from '$shared/hooks/useModal'
 import CreateProjectModal from '$mp/containers/CreateProjectModal'
 import { SearchFilter } from '$mp/types/project-types'
 import {getProjects, ProjectListingTypeFilter, searchProjects} from '$app/src/services/projects'
-import { useAuthController } from '$auth/hooks/useAuthController'
 import useDeepEqualMemo from '$shared/hooks/useDeepEqualMemo'
-import { useIsAuthenticated } from '$auth/hooks/useIsAuthenticated'
+import { useWalletAccount } from '$shared/stores/wallet'
 
 import styles from './projects.pcss'
 
@@ -35,8 +33,8 @@ const ProjectsPage: FunctionComponent = () => {
     const [filterValue, setFilter] = useState<Filter>(EMPTY_FILTER)
     const filter = useDeepEqualMemo(filterValue)
     const { api: createProductModal } = useModal('marketplace.createProduct')
-    const isUserAuthenticated = useIsAuthenticated()
-    const { currentAuthSession } = useAuthController()
+    const account = useWalletAccount()
+    const isUserAuthenticated = account
 
     const query = useInfiniteQuery({
         queryKey: ["projects", filter.owner, filter.search, filter.type],
@@ -65,13 +63,13 @@ const ProjectsPage: FunctionComponent = () => {
     const onFilterByAuthorChange = useCallback((myProjects: boolean): void => {
         setFilter((prev) => ({
             ...prev,
-            owner: myProjects ? currentAuthSession.address : null,
+            owner: myProjects && account ? account : null,
         }))
-    }, [currentAuthSession])
+    }, [account])
 
     useEffect(() => {
-        setFilter((filter) => (filter.owner ? { ...filter, owner: currentAuthSession.address } : filter))
-    }, [currentAuthSession.address])
+        setFilter((filter) => (filter.owner && account ? { ...filter, owner: account } : filter))
+    }, [account])
 
     return (
         <Layout className={styles.projectsListPage} framedClassName={styles.productsFramed} innerClassName={styles.productsInner} footer={false}>
@@ -83,14 +81,14 @@ const ProjectsPage: FunctionComponent = () => {
                 onSearchChange={onSearchChange}
                 onCreateProject={() => createProductModal.open()}
                 onFilterByAuthorChange={onFilterByAuthorChange}
-                isUserAuthenticated={isUserAuthenticated}
+                isUserAuthenticated={!!account}
             />
             <LoadingIndicator loading={query.isLoading || query.isFetching || query.isFetchingNextPage}/>
             <CreateProjectModal />
             <ProjectsContainer>
                 <ProjectsComponent
                     projects={query.data?.pages.flatMap((d) => d.projects) ?? []}
-                    currentUserAddress={currentAuthSession?.address}
+                    currentUserAddress={account}
                     error={query.error}
                     type="projects"
                     isFetching={query.status === 'loading'}

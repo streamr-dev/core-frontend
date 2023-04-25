@@ -1,21 +1,18 @@
+import { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import useIsMounted from '$shared/hooks/useIsMounted'
-import { useAuthController } from '$auth/hooks/useAuthController'
-import useOnMount from '$shared/hooks/useOnMount'
+import { errorToast } from '$utils/toast'
 import routes from '$routes'
 
 export default function LogoutPage() {
-    const isMounted = useIsMounted()
-
     const history = useHistory()
 
-    const { removeAuthSession } = useAuthController()
+    useEffect(() => {
+        errorToast({
+            title: 'Not implemented',
+        })
 
-    useOnMount(async () => {
-        if (isMounted()) {
-            removeAuthSession()
-            history.push(routes.root())
-        }
-    })
+        history.push(routes.root())
+    }, [history])
+
     return null
 }

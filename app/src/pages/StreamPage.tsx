@@ -24,10 +24,10 @@ import InsufficientFundsError from '$shared/errors/InsufficientFundsError'
 import { Layer } from '$utils/Layer'
 import getChainId from '$utils/web3/getChainId'
 import getNativeTokenName from '$shared/utils/nativeToken'
-import { useAuthController } from '$auth/hooks/useAuthController'
 import { useInvalidateStreamAbilities } from '$shared/stores/streamAbilities'
 import Tabs, { Tab } from '$shared/components/Tabs'
 import { RouteMemoryKey, useKeep } from '$shared/stores/routeMemory'
+import { useWalletAccount } from '$shared/stores/wallet'
 import routes from '$routes'
 import RelatedProjects from './AbstractStreamEditPage/RelatedProjects'
 
@@ -164,7 +164,7 @@ export default function StreamPage({
 
     const isMounted = useIsMounted()
 
-    const { address } = useAuthController().currentAuthSession
+    const address = useWalletAccount()
 
     const invalidateAbilities = useInvalidateStreamAbilities()
 

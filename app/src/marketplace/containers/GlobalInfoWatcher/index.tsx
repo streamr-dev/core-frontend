@@ -8,8 +8,7 @@ import TransactionError from '$shared/errors/TransactionError'
 import Web3Poller, { events } from '$shared/web3/Web3Poller'
 import { useBalances } from '$shared/hooks/useBalances'
 import { NumberString } from '$shared/types/common-types'
-import { isEthereumAddress } from '$mp/utils/validate'
-import {useAuthController} from "$auth/hooks/useAuthController"
+import { useWalletAccount } from '$shared/stores/wallet'
 
 type Props = {
     children?: ReactNode
@@ -21,8 +20,7 @@ const PENDING_TX_WAIT = 1000 // 1s
 
 export const GlobalInfoWatcher = ({ children }: Props) => {
     const dispatch = useDispatch()
-    const {currentAuthSession} = useAuthController()
-    const address = currentAuthSession.address
+    const address = useWalletAccount()
     // Poll transactions
     useEffect(() => {
         const transactionsTimeout = setTimeout(() => {
@@ -64,7 +62,7 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
         balanceTimeout.current = setTimeout(balancePoll, ACCOUNT_BALANCE_POLL_INTERVAL)
     }, [updateBalances])
     useEffect(() => {
-        if (!address || !isEthereumAddress(address)) {
+        if (!address) {
             return () => {}
         }
 

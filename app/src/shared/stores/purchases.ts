@@ -31,13 +31,13 @@ import AccessingProjectModal from '$app/src/modals/AccessingProjectModal'
 import { getAllowance } from '$app/src/getters'
 import { RejectReason } from '$app/src/modals/Modal'
 import FailedPurchaseModal from '$app/src/modals/FailedPurchaseModal'
-import { useAuthController } from '$app/src/auth/hooks/useAuthController'
 import { ensureGasMonies, waitForPurchasePropagation } from '$app/src/utils'
 import InsufficientFundsError from '$shared/errors/InsufficientFundsError'
+import { useWalletAccount } from './wallet'
 
 interface Store {
     inProgress: Record<string, true | undefined>
-    purchase: (projectId: string, account: string) => Promise<void>
+    purchase: (projectId: string, account: string | undefined) => Promise<void>
     fetchingSubscriptions: Record<string, true | undefined>
     subscriptions: Record<
         string,
@@ -114,6 +114,12 @@ const usePurchaseStore = create<Store>((set, get) => {
             if (isInProgress(projectId)) {
                 return
             }
+
+            if (!account) {
+                throw new Error('No account')
+            }
+
+            const currentAccount = account
 
             try {
                 set((current) =>
@@ -303,7 +309,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                              */
                                             await ensureGasMonies(
                                                 selectedChainId,
-                                                account,
+                                                currentAccount,
                                                 {
                                                     recover: true,
                                                 },
@@ -348,7 +354,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                             const allowance = await getAllowance(
                                                 selectedChainId,
                                                 tokenAddress,
-                                                account,
+                                                currentAccount,
                                                 {
                                                     recover: true,
                                                 },
@@ -456,9 +462,13 @@ const usePurchaseStore = create<Store>((set, get) => {
                                          * Make sure the user can affort gas. Empty wallets
                                          * take a walk.
                                          */
-                                        await ensureGasMonies(selectedChainId, account, {
-                                            recover: true,
-                                        })
+                                        await ensureGasMonies(
+                                            selectedChainId,
+                                            currentAccount,
+                                            {
+                                                recover: true,
+                                            },
+                                        )
 
                                         await networkPreflight(selectedChainId)
 
@@ -482,7 +492,11 @@ const usePurchaseStore = create<Store>((set, get) => {
                                                 .methods.buy(
                                                     projectId,
                                                     // Round down to nearest full second, otherwise allowance could run out
-                                                    toBN(seconds.dp(0, BigNumber.ROUND_DOWN).toString()),
+                                                    toBN(
+                                                        seconds
+                                                            .dp(0, BigNumber.ROUND_DOWN)
+                                                            .toString(),
+                                                    ),
                                                 )
                                                 .send({
                                                     gas: 2e5 + streams.length * 1e5,
@@ -522,7 +536,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                             await waitForPurchasePropagation(
                                                 selectedChainId,
                                                 projectId,
-                                                account,
+                                                currentAccount,
                                             )
                                         } finally {
                                             accessingProjectModal?.discard()
@@ -602,7 +616,10 @@ const usePurchaseStore = create<Store>((set, get) => {
                                 throw e
                             }
 
-                            console.warn('Unsuccessful purchase attempt. Trying again.', e)
+                            console.warn(
+                                'Unsuccessful purchase attempt. Trying again.',
+                                e,
+                            )
 
                             /**
                              * Exceptions that happen with lowered `bail` flag take users back
@@ -661,7 +678,7 @@ const usePurchaseStore = create<Store>((set, get) => {
 export function usePurchaseCallback() {
     const { purchase } = usePurchaseStore()
 
-    const { address: account } = useAuthController().currentAuthSession
+    const account = useWalletAccount()
 
     return useCallback(
         (projectId: string) => purchase(projectId, account),

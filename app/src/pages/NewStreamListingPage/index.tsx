@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
-
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import { COLORS, DESKTOP, TABLET } from '$shared/utils/styled'
 import Button from '$shared/components/Button'
@@ -20,16 +19,15 @@ import {
     getStreams,
     getStreamsFromIndexer,
 } from '$app/src/services/streams'
-import { useIsAuthenticated } from '$auth/hooks/useIsAuthenticated'
 import { ActionBarContainer, FiltersBar, FiltersWrap, SearchBarWrap } from '$mp/components/ActionBar/actionBar.styles'
 import { PageWrap } from '$shared/components/PageWrap'
 import styles from '$shared/components/Layout/layout.pcss'
 import StreamTable, { OrderBy, OrderDirection } from '$shared/components/StreamTable'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
-import { useAuthController } from '$auth/hooks/useAuthController'
 import StreamTable from '$shared/components/StreamTable'
 import Tabs, { Tab } from '$shared/components/Tabs'
 import { RouteMemoryKey, useRecall, useRemember } from '$shared/stores/routeMemory'
+import { useWalletAccount } from '$shared/stores/wallet'
 import routes from '$routes'
 
 enum StreamSelection {
@@ -113,8 +111,7 @@ const NewStreamListingPage: React.FC = () => {
     const [streamsSelection, setStreamsSelection] = useState<StreamSelection>(
         useRecall(RouteMemoryKey.lastStreamListingSelection()) as StreamSelection || StreamSelection.All
     )
-    const isUserAuthenticated = useIsAuthenticated()
-    const { currentAuthSession } = useAuthController()
+    const account = useWalletAccount()
 
     const remember = useRemember()
 
@@ -123,9 +120,9 @@ const NewStreamListingPage: React.FC = () => {
     }, [remember, streamsSelection])
 
     const streamsQuery = useInfiniteQuery({
-        queryKey: ["streams", search, streamsSelection, currentAuthSession.address, orderBy, orderDirection],
+        queryKey: ["streams", search, streamsSelection, account, orderBy, orderDirection],
         queryFn: async (ctx) => {
-            const owner = streamsSelection === StreamSelection.Your ? currentAuthSession.address : undefined
+            const owner = streamsSelection === StreamSelection.Your ? account : undefined
 
             let result: TheGraphStreamResult | IndexerResult
             if (shouldUseIndexer(orderBy)) {
@@ -223,8 +220,8 @@ const NewStreamListingPage: React.FC = () => {
                             <Tab id={StreamSelection.All}>All streams</Tab>
                             <Tab
                                 id={StreamSelection.Your}
-                                disabled={!isUserAuthenticated}
-                                title={isUserAuthenticated ? undefined : 'Connect your wallet to view your streams'}
+                                disabled={!account}
+                                title={account ? undefined : 'Connect your wallet to view your streams'}
                             >
                                 Your streams
                             </Tab>

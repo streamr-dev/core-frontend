@@ -3,9 +3,9 @@ import { create } from 'zustand'
 import { useClient } from 'streamr-client-react'
 import { useEffect } from 'react'
 import produce from 'immer'
-import { useAuthController } from '$auth/hooks/useAuthController'
 import address0 from '$utils/address0'
 import { useCurrentDraft } from './streamEditor'
+import { useWalletAccount } from './wallet'
 
 type PermissionManifest = Partial<
     Record<
@@ -177,9 +177,9 @@ function useStreamAbility(
 export function useCurrentStreamAbility(permission: StreamPermission) {
     const { streamId } = useCurrentDraft()
 
-    const { address } = useAuthController().currentAuthSession
+    const account = useWalletAccount()
 
-    const hasPermission = useStreamAbility(streamId, address || undefined, permission)
+    const hasPermission = useStreamAbility(streamId, account, permission)
 
     if (!streamId) {
         return (permission === StreamPermission.EDIT ||

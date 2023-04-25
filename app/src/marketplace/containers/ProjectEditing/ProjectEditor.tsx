@@ -18,7 +18,7 @@ import { DataUnionFee } from '$mp/containers/ProjectEditing/DataUnionFee'
 import {ProjectControllerContext} from "$mp/containers/ProjectEditing/ProjectController"
 import getCoreConfig from "$app/src/getters/getCoreConfig"
 import {ProjectPermission, useProjectAbility} from "$shared/stores/projectAbilities"
-import {useAuthController} from "$auth/hooks/useAuthController"
+import { useWalletAccount } from '$shared/stores/wallet'
 import DeleteProject from './DeleteProject'
 
 type ProjectEditorProps = {
@@ -48,7 +48,7 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({nonEditabl
     const {state: project} = useContext(ProjectStateContext)
     const {publishInProgress} = useContext(ProjectControllerContext)
     const { chainId } = getCoreConfig().projectRegistry
-    const canDelete = useProjectAbility(chainId, project.id, useAuthController()?.currentAuthSession?.address, ProjectPermission.Delete)
+    const canDelete = useProjectAbility(chainId, project?.id || undefined, useWalletAccount(), ProjectPermission.Delete)
 
     return <ProjectPageContainer>
         <ProjectHeroContainer overflowVisible={true}>
@@ -57,12 +57,12 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({nonEditabl
             <ProjectDescription/>
             <ProjectDetails/>
         </ProjectHeroContainer>
-        {project.type === ProjectType.PaidData &&
+        {project?.type === ProjectType.PaidData &&
             <WhiteBox>
                 <SalePointSelector nonEditableSalePointChains={nonEditableSalePointChains}/>
             </WhiteBox>
         }
-        {project.type === ProjectType.DataUnion && <>
+        {project?.type === ProjectType.DataUnion && <>
             <WhiteBox>
                 <DataUnionChainSelector/>
             </WhiteBox>
@@ -77,7 +77,7 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({nonEditabl
         <WhiteBoxWithMargin>
             <TermsOfUse/>
         </WhiteBoxWithMargin>
-        {project.id && canDelete && (
+        {project?.id && canDelete && (
             <TransparentBoxWithMargin>
                 <DeleteProject />
             </TransparentBoxWithMargin>

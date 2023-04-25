@@ -10,8 +10,8 @@ import Select from '$ui/Select'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
 import useCopy from '$shared/hooks/useCopy'
 import { truncate } from '$shared/utils/text'
-import { useAuthController } from "$auth/hooks/useAuthController"
 import { DraftValidationError, useCurrentDraftError, useSetCurrentDraftError, useSetCurrentDraftTransientStreamId } from '$shared/stores/streamEditor'
+import { useWalletAccount } from '$shared/stores/wallet'
 import useStreamOwnerOptions, { ADD_ENS_DOMAIN_VALUE } from './useStreamOwnerOptions'
 
 export const ENS_DOMAINS_URL = 'https://ens.domains'
@@ -70,15 +70,15 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
 
     const isOwnersLoading = typeof owners === 'undefined'
 
-    const {currentAuthSession} = useAuthController()
+    const account = useWalletAccount()
 
     const [domain, setDomain] = useState<string>()
 
     useEffect(() => {
-        if (!domain) {
-            setDomain(currentAuthSession.address.toLowerCase())
+        if (!domain && account) {
+            setDomain(account.toLowerCase())
         }
-    }, [currentAuthSession.address, domain])
+    }, [account, domain])
 
     const [pathname, setPathname] = useState('')
 

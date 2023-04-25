@@ -9,10 +9,9 @@ import {
 } from '$mp/containers/ProjectEditing/DataUnionChainSelector/DataUnionChainSelectorContext'
 import { Address } from '$shared/types/web3-types'
 import useIsMounted from '$shared/hooks/useIsMounted'
-
 import { getDataUnionObject, getDataUnionsOwnedByInChain, TheGraphDataUnion } from '$mp/modules/dataUnion/services'
 import SelectField2 from '$mp/components/SelectField2'
-import { useAuthController } from '$app/src/auth/hooks/useAuthController'
+import { useWalletAccount } from '$app/src/shared/stores/wallet'
 
 type DataUnionChainOptionProps = {
     index: number,
@@ -31,7 +30,7 @@ export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> 
     onChange,
 }) => {
     const isMounted = useIsMounted()
-    const {currentAuthSession} = useAuthController()
+    const account = useWalletAccount()
     const [ownedDataUnions, setOwnedDataUnions] = useState<DataUnionWithMetadata[]>([])
     const existingDUOptions = useMemo(() => ownedDataUnions.map((du) => ({label: du.name || du.id, value: du.id})), [ownedDataUnions])
     const [currentlySelectedOption] = useContext(DataUnionChainSelectorContext)
@@ -41,9 +40,9 @@ export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> 
 
     useEffect(() => {
         const load = async () => {
-            if (currentAuthSession.address && chain.id) {
+            if (account && chain.id) {
                 const dataUnionsWithMetadata = []
-                const dataUnionsOwned = await getDataUnionsOwnedByInChain(currentAuthSession.address, chain.id)
+                const dataUnionsOwned = await getDataUnionsOwnedByInChain(account, chain.id)
 
                 for (const du of dataUnionsOwned) {
                     let duWithMetadata: DataUnionWithMetadata = du
@@ -66,7 +65,7 @@ export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> 
             }
         }
         load()
-    }, [chain, currentAuthSession.address, isMounted])
+    }, [chain, account, isMounted])
 
     const handleSelect = useCallback(() => {
         if (currentlySelectedOption === index) {
