@@ -141,9 +141,9 @@ export default function ConnectModal({ onReject, onResolve }: Props) {
 
     useEffect(() => {
         if (account) {
-            onReject?.()
+            onResolve?.()
         }
-    }, [onReject, account])
+    }, [onResolve, account])
 
     return (
         <Root>
