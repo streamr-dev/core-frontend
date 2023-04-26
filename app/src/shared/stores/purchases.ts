@@ -324,24 +324,32 @@ const usePurchaseStore = create<Store>((set, get) => {
                                              * This step is required so that the contract
                                              * itself can spend user's funds.
                                              */
-                                            await erc20TokenContractMethods(
-                                                tokenAddress,
-                                                false,
-                                                selectedChainId,
-                                            )
-                                                .approve(
-                                                    marketplaceContract(
-                                                        false,
-                                                        selectedChainId,
-                                                    ).options.address,
-                                                    toBN(total.toString()),
+                                            await new Promise<void>((resolve, reject) => {
+                                                erc20TokenContractMethods(
+                                                    tokenAddress,
+                                                    false,
+                                                    selectedChainId,
                                                 )
-                                                .send({
-                                                    gas: gasLimits.APPROVE,
-                                                    from: account,
-                                                    maxPriorityFeePerGas: null,
-                                                    maxFeePerGas: null,
-                                                })
+                                                    .approve(
+                                                        marketplaceContract(
+                                                            false,
+                                                            selectedChainId,
+                                                        ).options.address,
+                                                        toBN(total.toString()),
+                                                    )
+                                                    .send({
+                                                        gas: gasLimits.APPROVE,
+                                                        from: account,
+                                                        maxPriorityFeePerGas: null,
+                                                        maxFeePerGas: null,
+                                                    })
+                                                    .on('confirmation', () => {
+                                                        resolve()
+                                                    })
+                                                    .on('error', (e: unknown) => {
+                                                        reject(e)
+                                                    })
+                                            })
 
                                             /**
                                              * Wallets do not force users to set the requested
@@ -485,46 +493,57 @@ const usePurchaseStore = create<Store>((set, get) => {
                                              * network. Note that the gas limit is dynamic and depends
                                              * on the number of streams associated with the project.
                                              */
-                                            await marketplaceContract(
-                                                false,
-                                                selectedChainId,
-                                            )
-                                                .methods.buy(
-                                                    projectId,
-                                                    // Round down to nearest full second, otherwise allowance could run out
-                                                    toBN(
-                                                        seconds
-                                                            .dp(0, BigNumber.ROUND_DOWN)
-                                                            .toString(),
-                                                    ),
+                                            await new Promise<void>((resolve, reject) => {
+                                                marketplaceContract(
+                                                    false,
+                                                    selectedChainId,
                                                 )
-                                                .send({
-                                                    gas: 2e5 + streams.length * 1e5,
-                                                    from: account,
-                                                    maxPriorityFeePerGas: null,
-                                                    maxFeePerGas: null,
-                                                })
-                                                .once('transactionHash', async () => {
-                                                    /**
-                                                     * Once we receive the transaction hash we can safely close the Confirm
-                                                     * Purchase modal and carry on.
-                                                     */
-                                                    confirmPurchaseModal?.discard()
+                                                    .methods.buy(
+                                                        projectId,
+                                                        // Round down to nearest full second, otherwise allowance could run out
+                                                        toBN(
+                                                            seconds
+                                                                .dp(
+                                                                    0,
+                                                                    BigNumber.ROUND_DOWN,
+                                                                )
+                                                                .toString(),
+                                                        ),
+                                                    )
+                                                    .send({
+                                                        gas: 2e5 + streams.length * 1e5,
+                                                        from: account,
+                                                        maxPriorityFeePerGas: null,
+                                                        maxFeePerGas: null,
+                                                    })
+                                                    .once('transactionHash', async () => {
+                                                        /**
+                                                         * Once we receive the transaction hash we can safely close the Confirm
+                                                         * Purchase modal and carry on.
+                                                         */
+                                                        confirmPurchaseModal?.discard()
 
-                                                    /**
-                                                     * We pop up the Accessing Project modal at this point. It does not
-                                                     * have to be extra-detached cause we're already in an event handler
-                                                     * which is sort of detached. In short, nothing is being blocked
-                                                     * by the `await ….pop()`.
-                                                     */
-                                                    try {
-                                                        await accessingProjectModal?.pop()
-                                                    } catch (e) {
-                                                        if (!isAbandonment(e)) {
-                                                            console.warn(e)
+                                                        /**
+                                                         * We pop up the Accessing Project modal at this point. It does not
+                                                         * have to be extra-detached cause we're already in an event handler
+                                                         * which is sort of detached. In short, nothing is being blocked
+                                                         * by the `await ….pop()`.
+                                                         */
+                                                        try {
+                                                            await accessingProjectModal?.pop()
+                                                        } catch (e) {
+                                                            if (!isAbandonment(e)) {
+                                                                console.warn(e)
+                                                            }
                                                         }
-                                                    }
-                                                })
+                                                    })
+                                                    .on('confirmation', () => {
+                                                        resolve()
+                                                    })
+                                                    .on('error', (e: unknown) => {
+                                                        reject(e)
+                                                    })
+                                            })
 
                                             /**
                                              * `Buy` transaction is done and now we wait for the `Subscribe` event
