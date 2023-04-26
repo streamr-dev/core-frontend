@@ -384,21 +384,29 @@ export async function createProject(project: SmartContractProjectCreate) {
 
         await networkPreflight(chainId)
 
-        await getProjectRegistryContract(chainId, getWeb3())
-            .methods.createProject(
-                id,
-                getDomainIds(paymentDetails),
-                getPaymentDetails(paymentDetails),
-                streams,
-                minimumSubscriptionInSeconds,
-                isPublicPurchasable,
-                metadata,
-            )
-            .send({
-                from,
-                maxPriorityFeePerGas: null,
-                maxFeePerGas: null,
-            })
+        return new Promise((resolve, reject) => {
+            getProjectRegistryContract(chainId, getWeb3())
+                .methods.createProject(
+                    id,
+                    getDomainIds(paymentDetails),
+                    getPaymentDetails(paymentDetails),
+                    streams,
+                    minimumSubscriptionInSeconds,
+                    isPublicPurchasable,
+                    metadata,
+                )
+                .send({
+                    from,
+                    maxPriorityFeePerGas: null,
+                    maxFeePerGas: null,
+                })
+                .on('error', (error) => {
+                    reject(error)
+                })
+                .once('confirmation', () => {
+                    resolve()
+                })
+        })
     })
 }
 
@@ -413,20 +421,28 @@ export async function updateProject(project: SmartContractProject) {
 
         await networkPreflight(chainId)
 
-        await getProjectRegistryContract(chainId, getWeb3())
-            .methods.updateProject(
-                id,
-                getDomainIds(paymentDetails),
-                getPaymentDetails(paymentDetails),
-                streams,
-                minimumSubscriptionInSeconds,
-                metadata,
-            )
-            .send({
-                from,
-                maxPriorityFeePerGas: null,
-                maxFeePerGas: null,
-            })
+        return new Promise((resolve, reject) => {
+            getProjectRegistryContract(chainId, getWeb3())
+                .methods.updateProject(
+                    id,
+                    getDomainIds(paymentDetails),
+                    getPaymentDetails(paymentDetails),
+                    streams,
+                    minimumSubscriptionInSeconds,
+                    metadata,
+                )
+                .send({
+                    from,
+                    maxPriorityFeePerGas: null,
+                    maxFeePerGas: null,
+                })
+                .on('error', (error) => {
+                    reject(error)
+                })
+                .once('confirmation', () => {
+                    resolve()
+                })
+        })
     })
 }
 
@@ -442,12 +458,20 @@ export async function deleteProject(projectId: string | undefined) {
 
         await networkPreflight(chainId)
 
-        await getProjectRegistryContract(chainId, getWeb3())
-            .methods.deleteProject(projectId)
-            .send({
-                from,
-                maxPriorityFeePerGas: null,
-                maxFeePerGas: null,
-            })
+        return new Promise((resolve, reject) => {
+            getProjectRegistryContract(chainId, getWeb3())
+                .methods.deleteProject(projectId)
+                .send({
+                    from,
+                    maxPriorityFeePerGas: null,
+                    maxFeePerGas: null,
+                })
+                .on('error', (error) => {
+                    reject(error)
+                })
+                .once('confirmation', () => {
+                    resolve()
+                })
+        })
     })
 }
