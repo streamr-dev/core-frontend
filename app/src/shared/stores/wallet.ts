@@ -2,6 +2,7 @@ import detectProvider from '@metamask/detect-provider'
 import produce from 'immer'
 import { z } from 'zod'
 import { create } from 'zustand'
+import { MetaMaskInpageProvider } from '@metamask/providers'
 import { lookupEnsName } from '$shared/modules/user/services'
 import { isEthereumAddress } from '$app/src/marketplace/utils/validate'
 
@@ -10,16 +11,8 @@ interface RequestArguments {
     readonly params?: readonly unknown[] | object
 }
 
-interface MetaMaskProvider {
-    isMetaMask?: boolean
+interface MetaMaskProvider extends MetaMaskInpageProvider {
     providers?: MetaMaskProvider[]
-    isConnected?: () => boolean
-    request: <T = unknown>(args: RequestArguments) => Promise<T>
-    on: (eventName: string | symbol, listener: (...args: unknown[]) => void) => this
-    removeListener: (
-        eventName: string | symbol,
-        listener: (...args: unknown[]) => void,
-    ) => this
 }
 
 function isStringArray(value: unknown): value is string[] {
@@ -74,11 +67,11 @@ export async function getWalletAccount({
     const provider = await getWalletProvider()
 
     if (!connect) {
-        const [account = undefined] = await provider.request<string[]>({
+        const accounts = await provider.request<string[]>({
             method: 'eth_accounts',
         })
 
-        return account
+        return accounts?.[0]
     }
 
     const existingPromise: Promise<string | undefined> | undefined =
@@ -95,7 +88,7 @@ export async function getWalletAccount({
                     method: 'eth_requestAccounts',
                 })
 
-                resolve(accounts[0])
+                resolve(accounts?.[0])
             } catch (e) {
                 reject(e)
             }
