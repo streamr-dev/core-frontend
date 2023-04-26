@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { z } from 'zod'
+import { toaster } from 'toasterhea'
 import Button from '$shared/components/Button'
 import NetworkIcon from '$shared/components/NetworkIcon'
 import { MEDIUM } from '$shared/utils/styled'
@@ -9,8 +10,10 @@ import { formatChainName } from '$shared/utils/chains'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { getCustomTokenBalance, getTokenInformation } from '$mp/utils/web3'
 import { getUsdRate } from '$shared/utils/coingecko'
+import { Layer } from '$utils/Layer'
 import { ProjectDetail } from '../shared/consts'
 import ProjectModal, { Actions, RejectionReason } from './ProjectModal'
+import ConnectModal from './ConnectModal'
 
 const ChainIcon = styled(NetworkIcon)`
     width: 40px;
@@ -95,24 +98,23 @@ const Placeholder = styled.div`
 `
 
 export interface ChainSelectorResult {
-    chainId: number
+    account: string
     balance: string
-    usdRate: number
+    chainId: number
     pricePerSecond: string
     tokenAddress: string
     tokenDecimals: string
     tokenSymbol: string
+    usdRate: number
 }
 
 type PaymentDetails = z.infer<typeof ProjectDetail>[]
 
 export async function getPurchasePreconditions({
     chainId,
-    account,
     paymentDetails,
 }: {
     chainId: number
-    account: string
     paymentDetails: PaymentDetails
 }) {
     const paymentDetail = paymentDetails.find(
@@ -131,11 +133,18 @@ export async function getPurchasePreconditions({
         throw new Error('Failed to load token information')
     }
 
+    const account = await toaster(ConnectModal, Layer.Modal).pop()
+
+    if (!account) {
+        throw new Error('No account')
+    }
+
     const balance = await getCustomTokenBalance(tokenAddress, account, true, chainId)
 
     const usdRate = await getUsdRate(tokenAddress, chainId)
 
     return {
+        account,
         balance: balance.toString(),
         chainId,
         pricePerSecond,
@@ -215,7 +224,6 @@ export default function ProjectChainSelectorModal({
                         const preconditions = await getPurchasePreconditions({
                             chainId: selectedChainId,
                             paymentDetails,
-                            account,
                         })
 
                         onResolve?.(preconditions)

@@ -7,7 +7,7 @@ import { MEDIUM, TABLET } from '$shared/utils/styled'
 import Button from '$shared/components/Button'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import TimeoutError from '$shared/errors/TimeoutError'
-import { connect, useWalletAccount } from '$shared/stores/wallet'
+import { getWalletAccount, useWalletAccount } from '$shared/stores/wallet'
 import isCodedError from '$utils/isCodedError'
 import routes from '$routes'
 
@@ -85,12 +85,12 @@ const Footer = styled.div`
 `
 
 interface Props {
-    onResolve?: () => void
+    onResolve?: (account: string | undefined) => void
     onReject?: (reason?: unknown) => void
 }
 
 export default function ConnectModal({ onReject, onResolve }: Props) {
-    const [connectDeferral, setConnectDeferral] = useState<Deferral>()
+    const [connectDeferral, setConnectDeferral] = useState<Deferral<string | undefined>>()
 
     const connecting = !!connectDeferral
 
@@ -141,7 +141,7 @@ export default function ConnectModal({ onReject, onResolve }: Props) {
 
     useEffect(() => {
         if (account) {
-            onResolve?.()
+            onResolve?.(account)
         }
     }, [onResolve, account])
 
@@ -163,16 +163,18 @@ export default function ConnectModal({ onReject, onResolve }: Props) {
                         }
 
                         try {
-                            const deferral = defer()
+                            const deferral = defer<string | undefined>()
 
                             setError(undefined)
 
                             setConnectDeferral(deferral)
 
-                            await Promise.race([
-                                connect(),
+                            const currentAccount = await Promise.race([
+                                getWalletAccount({
+                                    connect: true,
+                                }),
                                 deferral.promise,
-                                new Promise(
+                                new Promise<string | undefined>(
                                     (resolve, reject) =>
                                         void setTimeout(
                                             () => void reject(new TimeoutError()),
@@ -181,7 +183,7 @@ export default function ConnectModal({ onReject, onResolve }: Props) {
                                 ),
                             ])
 
-                            onResolve?.()
+                            onResolve?.(currentAccount)
                         } catch (e) {
                             console.warn('Wallet connecting failed', e)
 
@@ -207,9 +209,7 @@ export default function ConnectModal({ onReject, onResolve }: Props) {
                                         disabled={connecting}
                                         type="submit"
                                         theme={
-                                            error
-                                                ? SignInMethod.themes.Error
-                                                : undefined
+                                            error ? SignInMethod.themes.Error : undefined
                                         }
                                     >
                                         <SignInMethod.Title>{label()}</SignInMethod.Title>
@@ -236,7 +236,9 @@ export default function ConnectModal({ onReject, onResolve }: Props) {
                                             <Button
                                                 kind="link"
                                                 size="mini"
-                                                onClick={() => void connectDeferral.reject()}
+                                                onClick={() =>
+                                                    void connectDeferral.reject()
+                                                }
                                                 type="button"
                                             >
                                                 Cancel

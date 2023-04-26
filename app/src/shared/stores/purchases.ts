@@ -37,7 +37,7 @@ import { useWalletAccount } from './wallet'
 
 interface Store {
     inProgress: Record<string, true | undefined>
-    purchase: (projectId: string, account: string | undefined) => Promise<void>
+    purchase: (projectId: string) => Promise<void>
     fetchingSubscriptions: Record<string, true | undefined>
     subscriptions: Record<
         string,
@@ -110,16 +110,10 @@ const usePurchaseStore = create<Store>((set, get) => {
             )
         },
 
-        async purchase(projectId, account) {
+        async purchase(projectId) {
             if (isInProgress(projectId)) {
                 return
             }
-
-            if (!account) {
-                throw new Error('No account')
-            }
-
-            const currentAccount = account
 
             try {
                 set((current) =>
@@ -157,7 +151,6 @@ const usePurchaseStore = create<Store>((set, get) => {
                         if (!chainSelectorResult) {
                             chainSelectorResult = await getPurchasePreconditions({
                                 chainId,
-                                account,
                                 paymentDetails,
                             })
                         }
@@ -168,7 +161,6 @@ const usePurchaseStore = create<Store>((set, get) => {
                             ChainSelectorModal,
                             Layer.Modal,
                         ).pop({
-                            account,
                             chainIds,
                             paymentDetails,
                             projectId,
@@ -190,6 +182,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                     const selectedChainId = chainId
 
                     const {
+                        account,
                         balance,
                         pricePerSecond,
                         tokenAddress,
@@ -309,7 +302,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                              */
                                             await ensureGasMonies(
                                                 selectedChainId,
-                                                currentAccount,
+                                                account,
                                                 {
                                                     recover: true,
                                                 },
@@ -362,7 +355,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                             const allowance = await getAllowance(
                                                 selectedChainId,
                                                 tokenAddress,
-                                                currentAccount,
+                                                account,
                                                 {
                                                     recover: true,
                                                 },
@@ -472,7 +465,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                          */
                                         await ensureGasMonies(
                                             selectedChainId,
-                                            currentAccount,
+                                            account,
                                             {
                                                 recover: true,
                                             },
@@ -555,7 +548,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                             await waitForPurchasePropagation(
                                                 selectedChainId,
                                                 projectId,
-                                                currentAccount,
+                                                account,
                                             )
                                         } finally {
                                             accessingProjectModal?.discard()
@@ -695,14 +688,7 @@ const usePurchaseStore = create<Store>((set, get) => {
 })
 
 export function usePurchaseCallback() {
-    const { purchase } = usePurchaseStore()
-
-    const account = useWalletAccount()
-
-    return useCallback(
-        (projectId: string) => purchase(projectId, account),
-        [purchase, account],
-    )
+    return usePurchaseStore().purchase
 }
 
 export function useIsProjectBeingPurchased(projectId: string) {

@@ -58,48 +58,63 @@ export function getWalletProvider() {
     return providerPromise
 }
 
-const promiseMap = new Map<MetaMaskProvider, Promise<unknown>>()
+const promiseMap = new Map<MetaMaskProvider, Promise<string | undefined>>()
 
 /**
- * Pops up MetaMask and asks the user to unlock it. It recycles promises,
- * so that consecutive account list requests don't fail but fall back to
- * the leading promise.
+ * @param options.connect a flag that instructs the function to either 
+ * - get the account discreetly using `eth_accounts` (if `false`) - default, or
+ * - trigger the unlocking with `eth_requestAccounts`.
  *
- * @returns a promise for the leading `eth_requestAccounts` call.
+ * @returns an account address (a string), or `undefined` if there are
+ * no available accounts.
  */
-export async function connect() {
+export async function getWalletAccount({
+    connect = false,
+}: { connect?: boolean } = {}): Promise<string | undefined> {
     const provider = await getWalletProvider()
 
-    if (!promiseMap.get(provider)) {
-        const promise = provider.request({ method: 'eth_requestAccounts' })
-
-        promiseMap.set(provider, promise)
-
-        setTimeout(async () => {
-            try {
-                await promise
-            } catch (e) {
-                // Do nothing.
-            } finally {
-                promiseMap.delete(provider)
-            }
+    if (!connect) {
+        const [account = undefined] = await provider.request<string[]>({
+            method: 'eth_accounts',
         })
+
+        return account
     }
 
-    return promiseMap.get(provider)
-}
+    const existingPromise: Promise<string | undefined> | undefined =
+        promiseMap.get(provider)
 
-/**
- * @returns account address (a string), or `undefined` if there are no available accounts.
- */
-export async function getWalletAccount() {
-    const provider = await getWalletProvider()
+    if (existingPromise) {
+        return existingPromise
+    }
 
-    const [account = undefined] = await provider.request<string[]>({
-        method: 'eth_accounts',
+    const promise = new Promise<string | undefined>((resolve, reject) => {
+        setTimeout(async () => {
+            try {
+                const accounts = await provider.request<string[]>({
+                    method: 'eth_requestAccounts',
+                })
+
+                resolve(accounts[0])
+            } catch (e) {
+                reject(e)
+            }
+        })
     })
 
-    return account
+    promiseMap.set(provider, promise)
+
+    setTimeout(async () => {
+        try {
+            await promise
+        } catch (e) {
+            // Do nothing.
+        } finally {
+            promiseMap.delete(provider)
+        }
+    })
+
+    return promise
 }
 
 interface WalletStore {
