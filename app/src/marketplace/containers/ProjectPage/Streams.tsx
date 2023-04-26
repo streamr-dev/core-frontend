@@ -27,7 +27,15 @@ export default function Streams({ streams: streamsProp }: Props) {
     const [streams, setStreams] = useState<Stream[]>([])
     const [streamStats, setStreamStats] = useState<Record<StreamID, IndexerStream>>({})
     const [offset, setOffset] = useState(INITIAL_OFFSET)
-    const loadStreams = useLoadProductStreamsCallback({ setProductStreams: setStreams })
+
+    const appendStreams = useCallback((streams: Stream[]) => {
+        setStreams((prev) => ([
+            ...prev,
+            ...streams
+        ]))
+    }, [])
+
+    const loadStreams = useLoadProductStreamsCallback({ setProductStreams: appendStreams })
 
     useEffect(() => {
         loadStreams(streamsProp.slice(0, INITIAL_OFFSET))
