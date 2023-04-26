@@ -10,7 +10,6 @@ import {
     NavOverlay,
 } from '@streamr/streamr-layout'
 import { toaster } from 'toasterhea'
-
 import { MD as TABLET, LG as DESKTOP, COLORS, REGULAR, MEDIUM } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -20,6 +19,7 @@ import {truncate} from "$shared/utils/text"
 import ConnectModal from '$app/src/modals/ConnectModal'
 import { Layer } from '$app/src/utils/Layer'
 import { useEns, useWalletAccount } from '$shared/stores/wallet'
+import toast from '$app/src/utils/toast'
 import routes from '$routes'
 import { Avatarless, Name, Username } from './User'
 
@@ -404,7 +404,11 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                             </MenuItemAvatarContainer>
                                         </MenuItem>
                                         <MenuDivider />
-                                        <MenuItem className={'disconnect'} as={Link} to={routes.auth.logout()}>
+                                        <MenuItem className="disconnect" onClick={() => {
+                                            toast({
+                                                title: 'Use the "Lock" button in your wallet.',
+                                            })
+                                        }}>
                                             <div className={'disconnect-text'}>
                                                 <span>Disconnect</span>
                                                 <SvgIcon name={'disconnect'}/>
@@ -469,15 +473,23 @@ const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className 
             </NavOverlay.Body>
             <NavOverlay.Footer>
                 {!!account ? (
-                    <Button tag={Link} to={routes.auth.logout()} kind="secondary" size="normal">
+                    <Button kind="secondary" size="normal" type="button" onClick={() => {
+                        toast({
+                            title: 'Use the "Lock" button in your wallet.',
+                        })
+                    }}>
                         Disconnect
                     </Button>
                 ) : (
                     <Button
-                        tag="a"
-                        href={routes.auth.login({
-                            redirect: pathname,
-                        })}
+                        type="button"
+                        onClick={async () => {
+                            try {
+                                await toaster(ConnectModal, Layer.Modal).pop()
+                            } catch (e) {
+                                console.warn('Wallet connecting failed', e)
+                            }
+                        }}
                         kind="primary"
                         size="normal"
                     >

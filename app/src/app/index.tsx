@@ -66,7 +66,6 @@ const App = () => (
                             <Analytics />
                             <Globals />
                             <Switch>
-                                <Route exact path={routes.auth.logout()} component={LogoutPage} />
                                 {ProjectsRouter()}
                                 {StreamsRouter()}
                                 {MiscRouter()}
