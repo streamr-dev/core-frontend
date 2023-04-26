@@ -9,6 +9,14 @@ import { getProjectRegistryContract } from '$app/src/getters'
 import { Layer } from '$utils/Layer'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 
+/**
+ * Gas money checker.
+ * @param chainId Chain id.
+ * @param account Account address.
+ * @param options.recover If `true`, the function will pop up a "try
+ * again" toast on failure. Default: `false`.
+ * @throws `InsufficientFundsError` if the balance turns out to be 0.
+ */
 export async function ensureGasMonies(
     chainId: number,
     account: string,
@@ -72,7 +80,7 @@ export async function waitForPurchasePropagation(
 ) {
     const web3 = getPublicWeb3(chainId)
 
-    const contract = getProjectRegistryContract(chainId, web3)
+    const contract = getProjectRegistryContract({ chainId, web3 })
 
     const params = {
         fromBlock: (await web3.eth.getBlockNumber()) - 10, // take a couple of blocks back to be sure

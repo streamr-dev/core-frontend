@@ -2,6 +2,7 @@ import detectProvider from '@metamask/detect-provider'
 import produce from 'immer'
 import { z } from 'zod'
 import { create } from 'zustand'
+import Web3 from 'web3'
 import { MetaMaskInpageProvider } from '@metamask/providers'
 import { lookupEnsName } from '$shared/modules/user/services'
 import { isEthereumAddress } from '$app/src/marketplace/utils/validate'
@@ -51,10 +52,16 @@ export function getWalletProvider() {
     return providerPromise
 }
 
+export async function getWalletWeb3Provider() {
+    const provider = await getWalletProvider()
+
+    return new Web3(provider as any)
+}
+
 const promiseMap = new Map<MetaMaskProvider, Promise<string | undefined>>()
 
 /**
- * @param options.connect a flag that instructs the function to either 
+ * @param options.connect a flag that instructs the function to either
  * - get the account discreetly using `eth_accounts` (if `false`) - default, or
  * - trigger the unlocking with `eth_requestAccounts`.
  *

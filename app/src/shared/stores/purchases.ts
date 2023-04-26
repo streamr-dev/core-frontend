@@ -3,7 +3,7 @@ import produce from 'immer'
 import { Toaster, toaster } from 'toasterhea'
 import BigNumber from 'bignumber.js'
 import { toBN } from 'web3-utils'
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 import ChainSelectorModal, {
     ChainSelectorResult,
     getPurchasePreconditions,
@@ -17,23 +17,26 @@ import AccessPeriodModal, { AccessPeriod } from '$app/src/modals/AccessPeriodMod
 import { isAbandonment } from '$app/src/modals/ProjectModal'
 import AllowanceModal from '$app/src/modals/AllowanceModal'
 import PurchaseCompleteModal from '$app/src/modals/PurchaseCompleteModal'
-import { erc20TokenContractMethods } from '$mp/utils/web3'
+import { getMarketplaceAddress } from '$mp/utils/web3'
 import { priceForTimeUnits } from '$mp/utils/price'
 import networkPreflight from '$app/src/utils/networkPreflight'
 import { timeUnits } from '$shared/utils/timeUnit'
 import Toast, { ToastType } from '$shared/toasts/Toast'
-import { marketplaceContract } from '$app/src/services/marketplace'
 import { gasLimits } from '$shared/utils/constants'
 import isCodedError from '$utils/isCodedError'
 import ConfirmPurchaseModal from '$app/src/modals/ConfirmPurchaseModal'
 import { toSeconds } from '$mp/utils/time'
 import AccessingProjectModal from '$app/src/modals/AccessingProjectModal'
-import { getAllowance } from '$app/src/getters'
+import {
+    getAllowance,
+    getERC20TokenContract,
+    getMarketplaceContract,
+} from '$app/src/getters'
 import { RejectReason } from '$app/src/modals/Modal'
 import FailedPurchaseModal from '$app/src/modals/FailedPurchaseModal'
 import { ensureGasMonies, waitForPurchasePropagation } from '$app/src/utils'
 import InsufficientFundsError from '$shared/errors/InsufficientFundsError'
-import { useWalletAccount } from './wallet'
+import { getWalletWeb3Provider } from './wallet'
 
 interface Store {
     inProgress: Record<string, true | undefined>
@@ -310,6 +313,8 @@ const usePurchaseStore = create<Store>((set, get) => {
 
                                             await networkPreflight(selectedChainId)
 
+                                            const web3 = await getWalletWeb3Provider()
+
                                             /**
                                              * Send the `approve` method on the selected
                                              * ERC-20 token contract.
@@ -318,16 +323,14 @@ const usePurchaseStore = create<Store>((set, get) => {
                                              * itself can spend user's funds.
                                              */
                                             await new Promise<void>((resolve, reject) => {
-                                                erc20TokenContractMethods(
+                                                getERC20TokenContract({
                                                     tokenAddress,
-                                                    false,
-                                                    selectedChainId,
-                                                )
-                                                    .approve(
-                                                        marketplaceContract(
-                                                            false,
+                                                    web3,
+                                                })
+                                                    .methods.approve(
+                                                        getMarketplaceAddress(
                                                             selectedChainId,
-                                                        ).options.address,
+                                                        ),
                                                         toBN(total.toString()),
                                                     )
                                                     .send({
@@ -463,15 +466,13 @@ const usePurchaseStore = create<Store>((set, get) => {
                                          * Make sure the user can affort gas. Empty wallets
                                          * take a walk.
                                          */
-                                        await ensureGasMonies(
-                                            selectedChainId,
-                                            account,
-                                            {
-                                                recover: true,
-                                            },
-                                        )
+                                        await ensureGasMonies(selectedChainId, account, {
+                                            recover: true,
+                                        })
 
                                         await networkPreflight(selectedChainId)
+
+                                        const web3 = await getWalletWeb3Provider()
 
                                         let accessingProjectModal:
                                             | Toaster<typeof AccessingProjectModal>
@@ -487,10 +488,10 @@ const usePurchaseStore = create<Store>((set, get) => {
                                              * on the number of streams associated with the project.
                                              */
                                             await new Promise<void>((resolve, reject) => {
-                                                marketplaceContract(
-                                                    false,
-                                                    selectedChainId,
-                                                )
+                                                getMarketplaceContract({
+                                                    chainId: selectedChainId,
+                                                    web3,
+                                                })
                                                     .methods.buy(
                                                         projectId,
                                                         // Round down to nearest full second, otherwise allowance could run out

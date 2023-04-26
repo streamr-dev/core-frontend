@@ -6,12 +6,13 @@ import { z } from 'zod'
 import { getConfigForChain } from '$shared/web3/config'
 import projectRegistryAbi from '$shared/web3/abis/projectRegistry.json'
 import { call } from '$mp/utils/smartContract'
-import { erc20TokenContractMethods } from '$mp/utils/web3'
+import { getMarketplaceAbiAndAddress } from '$mp/utils/web3'
 import { marketplaceContract } from '$app/src/services/marketplace'
 import Toast, { ToastType } from '$shared/toasts/Toast'
 import { Layer } from '$utils/Layer'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import { ProjectType } from '$shared/types'
+import tokenAbi from '$shared/web3/abis/token.json'
 import address0 from '$utils/address0'
 import getCoreConfig from './getCoreConfig'
 
@@ -21,7 +22,13 @@ export function getGraphUrl() {
     return `${theGraphUrl}/subgraphs/name/${theHubGraphName}`
 }
 
-export function getProjectRegistryContract(chainId: number, web3: Web3) {
+export function getProjectRegistryContract({
+    chainId,
+    web3,
+}: {
+    chainId: number
+    web3: Web3
+}) {
     const { contracts } = getConfigForChain(chainId)
 
     const contractAddress = contracts.ProjectRegistryV1 || contracts.ProjectRegistry
@@ -31,6 +38,28 @@ export function getProjectRegistryContract(chainId: number, web3: Web3) {
     }
 
     return new web3.eth.Contract(projectRegistryAbi as AbiItem[], contractAddress)
+}
+
+export function getERC20TokenContract({
+    tokenAddress,
+    web3,
+}: {
+    tokenAddress: string
+    web3: Web3
+}) {
+    return new web3.eth.Contract(tokenAbi as AbiItem[], tokenAddress)
+}
+
+export function getMarketplaceContract({
+    chainId,
+    web3,
+}: {
+    chainId: number
+    web3: Web3
+}) {
+    const { abi, address } = getMarketplaceAbiAndAddress(chainId)
+
+    return new web3.eth.Contract(abi, address)
 }
 
 export async function getAllowance(
@@ -43,7 +72,10 @@ export async function getAllowance(
         try {
             return new BigNumber(
                 await call(
-                    erc20TokenContractMethods(tokenAddress, true, chainId).allowance(
+                    getERC20TokenContract({
+                        tokenAddress,
+                        web3: getPublicWeb3(chainId),
+                    }).methods.allowance(
                         account,
                         marketplaceContract(true, chainId).options.address,
                     ),
@@ -87,7 +119,10 @@ export async function getProjectPermissions(
         }
     }
 
-    const response = await getProjectRegistryContract(chainId, getPublicWeb3(chainId))
+    const response = await getProjectRegistryContract({
+        chainId,
+        web3: getPublicWeb3(chainId),
+    })
         .methods.getPermission(projectId, account)
         .call()
 

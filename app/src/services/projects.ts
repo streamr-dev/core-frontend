@@ -1,17 +1,20 @@
-import BN from "bignumber.js"
-import { Toaster, toaster } from "toasterhea"
-import uniqueId from "lodash/uniqueId"
-import getCoreConfig from "$app/src/getters/getCoreConfig"
-import { post } from "$shared/utils/api"
-import { Address } from "$shared/types/web3-types"
+import BN from 'bignumber.js'
+import { Toaster, toaster } from 'toasterhea'
+import uniqueId from 'lodash/uniqueId'
+import getCoreConfig from '$app/src/getters/getCoreConfig'
+import { post } from '$shared/utils/api'
+import { Address } from '$shared/types/web3-types'
 import { getConfigForChainByName } from '$shared/web3/config'
-import address0 from "$utils/address0"
-import getWeb3 from '$utils/web3/getWeb3'
-import TransactionListToast, { Operation, notify } from "$shared/toasts/TransactionListToast"
-import { Layer } from "$utils/Layer"
-import getDefaultWeb3Account from "$utils/web3/getDefaultWeb3Account"
+import address0 from '$utils/address0'
+import { getWalletWeb3Provider } from '$shared/stores/wallet'
+import TransactionListToast, {
+    Operation,
+    notify,
+} from '$shared/toasts/TransactionListToast'
+import { Layer } from '$utils/Layer'
+import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import { getGraphUrl, getProjectRegistryContract } from '$app/src/getters'
-import networkPreflight from "$utils/networkPreflight"
+import networkPreflight from '$utils/networkPreflight'
 
 const getProjectRegistryChainId = () => {
     const { projectsChain } = getCoreConfig()
@@ -20,98 +23,102 @@ const getProjectRegistryChainId = () => {
 }
 
 export type TheGraphPaymentDetails = {
-    domainId: string,
-    beneficiary: string,
-    pricingTokenAddress: string,
-    pricePerSecond: string,
+    domainId: string
+    beneficiary: string
+    pricingTokenAddress: string
+    pricePerSecond: string
 }
 
 export type TheGraphSubscription = {
-    userAddress: string,
-    endTimestamp: string,
+    userAddress: string
+    endTimestamp: string
 }
 
 export type ProjectPermissions = {
-    canBuy: boolean,
-    canDelete: boolean,
-    canEdit: boolean,
-    canGrant: boolean,
+    canBuy: boolean
+    canDelete: boolean
+    canEdit: boolean
+    canGrant: boolean
 }
 
 export type TheGraphPermission = ProjectPermissions & {
-    userAddress: string,
+    userAddress: string
 }
 
 export type TheGraphPurchase = {
-    subscriber: string,
-    subscriptionSeconds: string,
-    price: string,
-    fee: string,
+    subscriber: string
+    subscriptionSeconds: string
+    price: string
+    fee: string
 }
 
 export type TheGraphProject = {
-    id: string,
-    paymentDetails: TheGraphPaymentDetails[],
-    minimumSubscriptionSeconds: string,
-    subscriptions: TheGraphSubscription[],
-    metadata: SmartContractProjectMetadata,
-    version: number | null,
-    streams: string[],
-    permissions: TheGraphPermission[],
-    createdAt: string,
-    updatedAt: string,
-    purchases: TheGraphPurchase[],
-    purchasesCount: number,
+    id: string
+    paymentDetails: TheGraphPaymentDetails[]
+    minimumSubscriptionSeconds: string
+    subscriptions: TheGraphSubscription[]
+    metadata: SmartContractProjectMetadata
+    version: number | null
+    streams: string[]
+    permissions: TheGraphPermission[]
+    createdAt: string
+    updatedAt: string
+    purchases: TheGraphPurchase[]
+    purchasesCount: number
 }
 
 export type PaymentDetails = {
-    chainId: number,
-    beneficiaryAddress: Address,
-    pricePerSecond: BN,
-    pricingTokenAddress: Address,
+    chainId: number
+    beneficiaryAddress: Address
+    pricePerSecond: BN
+    pricingTokenAddress: Address
 }
 
 export type SmartContractProjectMetadata = {
-    name: string,
-    description: string,
-    imageIpfsCid: string | null | undefined,
-    creator: string,
-    termsOfUse: {
-        commercialUse: boolean
-        redistribution: boolean
-        reselling: boolean
-        storage: boolean
-        termsName: string | null | undefined
-        termsUrl: string | null | undefined
-    } | undefined,
-    contactDetails: {
-        url?: string | null | undefined
-        email?: string | null | undefined
-        twitter?: string | null | undefined
-        telegram?: string | null | undefined
-        reddit?: string | null | undefined
-        linkedIn?: string | null | undefined
-    } | undefined,
-    isDataUnion?: boolean,
+    name: string
+    description: string
+    imageIpfsCid: string | null | undefined
+    creator: string
+    termsOfUse:
+        | {
+              commercialUse: boolean
+              redistribution: boolean
+              reselling: boolean
+              storage: boolean
+              termsName: string | null | undefined
+              termsUrl: string | null | undefined
+          }
+        | undefined
+    contactDetails:
+        | {
+              url?: string | null | undefined
+              email?: string | null | undefined
+              twitter?: string | null | undefined
+              telegram?: string | null | undefined
+              reddit?: string | null | undefined
+              linkedIn?: string | null | undefined
+          }
+        | undefined
+    isDataUnion?: boolean
 }
 
 export type SmartContractProject = {
-    id: string,
-    paymentDetails: PaymentDetails[],
-    minimumSubscriptionInSeconds: number,
-    metadata: string,
-    chainId: number,
-    streams: string[],
+    id: string
+    paymentDetails: PaymentDetails[]
+    minimumSubscriptionInSeconds: number
+    metadata: string
+    chainId: number
+    streams: string[]
 }
 
 export interface SmartContractProjectCreate extends SmartContractProject {
-    isPublicPurchasable: boolean,
+    isPublicPurchasable: boolean
 }
 
 type SmartContractPaymentDetails = {
-    beneficiary: string,
-    pricePerSecond: string,
-    pricingTokenAddress: string,
+    beneficiary: string
+    pricePerSecond: string
+    pricingTokenAddress: string
 }
 
 const projectFields = `
@@ -165,7 +172,7 @@ const mapProject = (project: any): TheGraphProject => {
 export enum ProjectListingTypeFilter {
     openData = 'openData',
     paidData = 'paidData',
-    dataUnion = 'dataUnion'
+    dataUnion = 'dataUnion',
 }
 
 export const getProject = async (id: string): Promise<TheGraphProject | null> => {
@@ -183,7 +190,7 @@ export const getProject = async (id: string): Promise<TheGraphProject | null> =>
                     }
                 }
             `,
-        }
+        },
     })
 
     if (result.data) {
@@ -196,7 +203,10 @@ export const getProject = async (id: string): Promise<TheGraphProject | null> =>
     return null
 }
 
-const prepareProjectResult = (results: TheGraphProject[], pageSize: number): ProjectsResult => {
+const prepareProjectResult = (
+    results: TheGraphProject[],
+    pageSize: number,
+): ProjectsResult => {
     let hasNextPage = false
 
     const projects: TheGraphProject[] = results.map((p) => mapProject(p))
@@ -214,9 +224,9 @@ const prepareProjectResult = (results: TheGraphProject[], pageSize: number): Pro
 }
 
 export type ProjectsResult = {
-    projects: TheGraphProject[],
-    hasNextPage: boolean,
-    lastId: string | null,
+    projects: TheGraphProject[]
+    hasNextPage: boolean
+    lastId: string | null
 }
 
 const getProjectFilterQuery = (type: ProjectListingTypeFilter): string => {
@@ -281,7 +291,12 @@ export const getProjects = async (
     }
 }
 
-export const searchProjects = async (search: string, first = 20, skip = 0, type?: ProjectListingTypeFilter | null): Promise<ProjectsResult> => {
+export const searchProjects = async (
+    search: string,
+    first = 20,
+    skip = 0,
+    type?: ProjectListingTypeFilter | null,
+): Promise<ProjectsResult> => {
     const theGraphUrl = getGraphUrl()
     const typeFilter = type != null ? getProjectFilterQuery(type) : null
 
@@ -300,7 +315,7 @@ export const searchProjects = async (search: string, first = 20, skip = 0, type?
                     }
                 }
             `,
-        }
+        },
     })
 
     if (result.data) {
@@ -318,7 +333,9 @@ const getDomainIds = (paymentDetails: PaymentDetails[]): number[] => {
     return paymentDetails.map((p) => p.chainId)
 }
 
-const getPaymentDetails = (paymentDetails: PaymentDetails[]): SmartContractPaymentDetails[] => {
+const getPaymentDetails = (
+    paymentDetails: PaymentDetails[],
+): SmartContractPaymentDetails[] => {
     return paymentDetails.map((d) => ({
         beneficiary: d.beneficiaryAddress,
         pricingTokenAddress: d.pricingTokenAddress,
@@ -384,8 +401,10 @@ export async function createProject(project: SmartContractProjectCreate) {
 
         await networkPreflight(chainId)
 
-        return new Promise((resolve, reject) => {
-            getProjectRegistryContract(chainId, getWeb3())
+        const web3 = await getWalletWeb3Provider()
+
+        await new Promise<void>((resolve, reject) => {
+            getProjectRegistryContract({ chainId, web3 })
                 .methods.createProject(
                     id,
                     getDomainIds(paymentDetails),
@@ -400,7 +419,7 @@ export async function createProject(project: SmartContractProjectCreate) {
                     maxPriorityFeePerGas: null,
                     maxFeePerGas: null,
                 })
-                .on('error', (error) => {
+                .on('error', (error: unknown) => {
                     reject(error)
                 })
                 .once('confirmation', () => {
@@ -421,8 +440,10 @@ export async function updateProject(project: SmartContractProject) {
 
         await networkPreflight(chainId)
 
-        return new Promise((resolve, reject) => {
-            getProjectRegistryContract(chainId, getWeb3())
+        const web3 = await getWalletWeb3Provider()
+
+        await new Promise<void>((resolve, reject) => {
+            getProjectRegistryContract({ chainId, web3 })
                 .methods.updateProject(
                     id,
                     getDomainIds(paymentDetails),
@@ -436,7 +457,7 @@ export async function updateProject(project: SmartContractProject) {
                     maxPriorityFeePerGas: null,
                     maxFeePerGas: null,
                 })
-                .on('error', (error) => {
+                .on('error', (error: unknown) => {
                     reject(error)
                 })
                 .once('confirmation', () => {
@@ -458,15 +479,17 @@ export async function deleteProject(projectId: string | undefined) {
 
         await networkPreflight(chainId)
 
-        return new Promise((resolve, reject) => {
-            getProjectRegistryContract(chainId, getWeb3())
+        const web3 = await getWalletWeb3Provider()
+
+        await new Promise<void>((resolve, reject) => {
+            getProjectRegistryContract({ chainId, web3 })
                 .methods.deleteProject(projectId)
                 .send({
                     from,
                     maxPriorityFeePerGas: null,
                     maxFeePerGas: null,
                 })
-                .on('error', (error) => {
+                .on('error', (error: unknown) => {
                     reject(error)
                 })
                 .once('confirmation', () => {

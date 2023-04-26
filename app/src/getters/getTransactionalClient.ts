@@ -1,7 +1,7 @@
 import { type StreamrClient, type ExternalProvider } from 'streamr-client'
-import getWeb3 from '$utils/web3/getWeb3'
+import { getWalletProvider } from '$shared/stores/wallet'
 import getChainId from '$utils/web3/getChainId'
-import networkPreflight, { Matic } from '../utils/networkPreflight'
+import networkPreflight, { Matic } from '$utils/networkPreflight'
 
 let streamrClient: StreamrClient | undefined
 
@@ -13,7 +13,7 @@ let provider: ExternalProvider | undefined
  * @returns A StreamrClient instance.
  */
 export default async function getTransactionalClient({ passiveNetworkCheck = false }: { passiveNetworkCheck?: boolean } = {}) {
-    const currentProvider = getWeb3().currentProvider as ExternalProvider
+    const currentProvider = await getWalletProvider() as any
 
     const [chainId] = Matic
 
