@@ -12,6 +12,7 @@ import Toast, { ToastType } from '$shared/toasts/Toast'
 import { Layer } from '$utils/Layer'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import { ProjectType } from '$shared/types'
+import address0 from '$utils/address0'
 import getCoreConfig from './getCoreConfig'
 
 export function getGraphUrl() {
@@ -77,6 +78,15 @@ export async function getProjectPermissions(
     projectId: string,
     account: string,
 ) {
+    if (account === address0) {
+        return {
+            canBuy: false,
+            canDelete: false,
+            canEdit: false,
+            canGrant: false,
+        }
+    }
+
     const response = await getProjectRegistryContract(chainId, getPublicWeb3(chainId))
         .methods.getPermission(projectId, account)
         .call()
