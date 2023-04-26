@@ -66,6 +66,9 @@ export const getMarketplaceAbiAndAddress = (chainId: number): SmartContractConfi
     abi: marketplaceAbi as AbiItem[],
     address: getMarketplaceAddress(chainId),
 })
+/**
+ * @deprecated Use `getMarketplaceContract`.
+ */
 export const marketplaceContract = (usePublicNode = false, chainId: number): Contract =>
     getContract(getMarketplaceAbiAndAddress(chainId), usePublicNode, chainId)
 export const getDataTokenAbiAndAddress = (chainId: number): SmartContractConfig => ({
@@ -81,6 +84,9 @@ export const daiTokenContractMethods = (usePublicNode = false, chainId: number):
     }
     return getContract(instance, usePublicNode, chainId).methods
 }
+/**
+ * @deprecated Use `getERC20TokenContract(…).methods` explicitly.
+ */
 export const erc20TokenContractMethods = (address: Address, usePublicNode = false, chainId: number): any => {
     const instance: SmartContractConfig = {
         abi: tokenAbi as AbiItem[],
