@@ -11,18 +11,18 @@ import * as web3Utils from '$shared/utils/web3'
 import Web3Poller, { events } from '$shared/web3/Web3Poller'
 import * as useBalances from '$shared/hooks/useBalances'
 import GlobalInfoWatcher from '$mp/containers/GlobalInfoWatcher'
-import {useAuthController} from "$auth/hooks/useAuthController"
-import {authenticationControllerStub} from "$auth/authenticationController.stub"
-import Mock = jest.Mock
-jest.mock('$auth/hooks/useAuthController', () => {
-    return {
-        useAuthController: jest.fn()
-    }
-})
+import { useWalletAccount } from '$shared/stores/wallet'
+
+jest.mock('$shared/stores/wallet', () => ({
+    __esModule: true,
+    useWalletAccount: jest.fn(),
+}))
+
 describe('GlobalInfoWatcher', () => {
     beforeEach(() => {
-        (useAuthController as Mock).mockReturnValue(authenticationControllerStub)
+        (useWalletAccount as any).mockImplementation(() => '0xIMSOAUTHENTICATED')
     })
+
     const { location } = window
     beforeAll(() => {
         delete window.location
