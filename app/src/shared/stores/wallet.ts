@@ -13,12 +13,13 @@ interface RequestArguments {
 interface MetaMaskProvider {
     isMetaMask?: boolean
     providers?: MetaMaskProvider[]
-    request<T = unknown>(args: RequestArguments): Promise<T>
-    on(eventName: string | symbol, listener: (...args: unknown[]) => void): this
-    removeListener(
+    isConnected?: () => boolean
+    request: <T = unknown>(args: RequestArguments) => Promise<T>
+    on: (eventName: string | symbol, listener: (...args: unknown[]) => void) => this
+    removeListener: (
         eventName: string | symbol,
         listener: (...args: unknown[]) => void,
-    ): this
+    ) => this
 }
 
 function isStringArray(value: unknown): value is string[] {
@@ -122,11 +123,7 @@ const useWalletStore = create<WalletStore>((set, get) => {
 
         lastKnownAccount = addr
 
-        if (
-            addr &&
-            typeof get().ens[addr] === 'undefined' &&
-            !ensLookups[addr]
-        ) {
+        if (addr && typeof get().ens[addr] === 'undefined' && !ensLookups[addr]) {
             ensLookups[addr] = true
 
             setTimeout(async () => {
