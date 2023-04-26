@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FunctionComponent, useCallback, useEffect, useState } from 'react'
+import React, {FunctionComponent, useCallback, useEffect, useRef, useState} from 'react'
 import styled from 'styled-components'
 import { COLORS, MAX_CONTENT_WIDTH } from '$shared/utils/styled'
 import WithInputActions from '$shared/components/WithInputActions'
@@ -82,6 +82,7 @@ export const BeneficiaryAddress: FunctionComponent<BeneficiaryAddressProps> = ({
     const accountAddress = currentAuthSession.address
     const {setStatus, clearStatus, isValid} = useValidation(`salePoints.${chainName}.beneficiaryAddress`)
     const [defaultValueWasSet, setDefaultValueWasSet] = useState(false)
+    const inputRef = useRef<HTMLInputElement>()
     const onCopy = useCallback(() => {
         if (!beneficiaryAddress) {
             return
@@ -109,37 +110,57 @@ export const BeneficiaryAddress: FunctionComponent<BeneficiaryAddressProps> = ({
         }
     }
 
-    return <>
-        <Heading>Set beneficiary</Heading>
-        <DescriptionText>This wallet address receives the payments for this product on {chainName} chain.</DescriptionText>
-        <Container>
-            <WithInputActions
-                disabled={disabled}
-                className={'beneficiary-address-input'}
-                actions={[
-                    <PopoverItem key="useCurrent" onClick={() => {
-                        onChange(accountAddress)
-                    }} disabled={!accountAddress}>
-                        <AddressItem name="wallet address" address={accountAddress || 'Wallet locked'} />
-                    </PopoverItem>,
-                    <PopoverItem key="copy" disabled={!beneficiaryAddress} onClick={onCopy}>
-                        Copy
-                    </PopoverItem>,
-                ]}
-            >
-                <Text
-                    id="beneficiaryAddress"
-                    autoComplete="off"
-                    value={beneficiaryAddress || ''}
-                    onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                        handleUpdate(event.target.value)
-                    }}
-                    placeholder={'i.e. 0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1'}
+    return (
+        <>
+            <Heading>Set beneficiary</Heading>
+            <DescriptionText>
+                This wallet address receives the payments for this product on {chainName}{' '}
+                chain.
+            </DescriptionText>
+            <Container>
+                <WithInputActions
                     disabled={disabled}
-                    invalid={!isValid}
-                    selectAllOnFocus
-                />
-            </WithInputActions>
-        </Container>
-    </>
+                    className={'beneficiary-address-input'}
+                    actions={[
+                        <PopoverItem
+                            key="useCurrent"
+                            onClick={() => {
+                                handleUpdate(accountAddress)
+                                if (inputRef.current) {
+                                    inputRef.current.value = accountAddress
+                                }
+                            }}
+                            disabled={!accountAddress}
+                        >
+                            <AddressItem
+                                name="wallet address"
+                                address={accountAddress || 'Wallet locked'}
+                            />
+                        </PopoverItem>,
+                        <PopoverItem
+                            key="copy"
+                            disabled={!beneficiaryAddress}
+                            onClick={onCopy}
+                        >
+                            Copy
+                        </PopoverItem>,
+                    ]}
+                >
+                    <Text
+                        ref={(input: HTMLInputElement) => inputRef.current = input}
+                        id="beneficiaryAddress"
+                        autoComplete="off"
+                        defaultValue={beneficiaryAddress || ''}
+                        onCommit={(value) => {
+                            handleUpdate(value)
+                        }}
+                        placeholder={'i.e. 0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1'}
+                        disabled={disabled}
+                        invalid={!isValid}
+                        selectAllOnFocus
+                    />
+                </WithInputActions>
+            </Container>
+        </>
+    )
 }
