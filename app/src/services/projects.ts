@@ -368,24 +368,24 @@ async function toastedProjectOperation(label: string, fn?: () => Promise<void>) 
 }
 
 export async function createProject(project: SmartContractProjectCreate) {
-    await toastedProjectOperation('Create project', () => {
-        return new Promise(async (resolve, reject) => {
-            const chainId = getProjectRegistryChainId()
+    await toastedProjectOperation('Create project', async () => {
+        const chainId = getProjectRegistryChainId()
 
-            const {
-                id,
-                paymentDetails,
-                streams,
-                minimumSubscriptionInSeconds,
-                isPublicPurchasable,
-                metadata,
-            } = project
+        const {
+            id,
+            paymentDetails,
+            streams,
+            minimumSubscriptionInSeconds,
+            isPublicPurchasable,
+            metadata,
+        } = project
 
-            const from = await getDefaultWeb3Account()
+        const from = await getDefaultWeb3Account()
 
-            await networkPreflight(chainId)
+        await networkPreflight(chainId)
 
-            const tx = getProjectRegistryContract(chainId, getWeb3())
+        return new Promise((resolve, reject) => {
+            getProjectRegistryContract(chainId, getWeb3())
                 .methods.createProject(
                     id,
                     getDomainIds(paymentDetails),
@@ -400,33 +400,29 @@ export async function createProject(project: SmartContractProjectCreate) {
                     maxPriorityFeePerGas: null,
                     maxFeePerGas: null,
                 })
-
-            tx
                 .on('error', (error) => {
                     reject(error)
                 })
-                .on('confirmation', () => {
+                .once('confirmation', () => {
                     resolve()
                 })
-
-            return tx
         })
     })
 }
 
 export async function updateProject(project: SmartContractProject) {
-    await toastedProjectOperation('Update project', () => {
-        return new Promise(async (resolve, reject) => {
-            const chainId = getProjectRegistryChainId()
+    await toastedProjectOperation('Update project', async () => {
+        const chainId = getProjectRegistryChainId()
 
-            const { id, paymentDetails, streams, minimumSubscriptionInSeconds, metadata } =
-                project
+        const { id, paymentDetails, streams, minimumSubscriptionInSeconds, metadata } =
+            project
 
-            const from = await getDefaultWeb3Account()
+        const from = await getDefaultWeb3Account()
 
-            await networkPreflight(chainId)
+        await networkPreflight(chainId)
 
-            const tx = getProjectRegistryContract(chainId, getWeb3())
+        return new Promise((resolve, reject) => {
+            getProjectRegistryContract(chainId, getWeb3())
                 .methods.updateProject(
                     id,
                     getDomainIds(paymentDetails),
@@ -440,50 +436,42 @@ export async function updateProject(project: SmartContractProject) {
                     maxPriorityFeePerGas: null,
                     maxFeePerGas: null,
                 })
-
-            tx
                 .on('error', (error) => {
                     reject(error)
                 })
-                .on('confirmation', () => {
+                .once('confirmation', () => {
                     resolve()
                 })
-
-            return tx
         })
     })
 }
 
 export async function deleteProject(projectId: string | undefined) {
-    await toastedProjectOperation('Delete project', () => {
-        return new Promise(async (resolve, reject) => {
-            if (!projectId) {
-                throw new Error('No project')
-            }
+    await toastedProjectOperation('Delete project', async () => {
+        if (!projectId) {
+            throw new Error('No project')
+        }
 
-            const chainId = getProjectRegistryChainId()
+        const chainId = getProjectRegistryChainId()
 
-            const from = await getDefaultWeb3Account()
+        const from = await getDefaultWeb3Account()
 
-            await networkPreflight(chainId)
+        await networkPreflight(chainId)
 
-            const tx = getProjectRegistryContract(chainId, getWeb3())
+        return new Promise((resolve, reject) => {
+            getProjectRegistryContract(chainId, getWeb3())
                 .methods.deleteProject(projectId)
                 .send({
                     from,
                     maxPriorityFeePerGas: null,
                     maxFeePerGas: null,
                 })
-
-            tx
                 .on('error', (error) => {
                     reject(error)
                 })
-                .on('confirmation', () => {
+                .once('confirmation', () => {
                     resolve()
                 })
-
-            return tx
         })
     })
 }
