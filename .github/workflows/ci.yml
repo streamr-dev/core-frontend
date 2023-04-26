@@ -27,7 +27,7 @@ jobs:
       - name: Run Stylelint
         run: npm run stylelint
       - name: Hadolint for linting Dockerfile
-        uses: hadolint/hadolint-action@v2.1.0
+        uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: ./app/Dockerfile
           config: ./.hadolint.yaml
@@ -118,7 +118,7 @@ jobs:
         with:
           services-to-start: "mysql redis core-api cassandra parity-node0 parity-sidechain-node0 bridge broker-node-storage-1 nginx smtp"
       - name: Run Cypress tests
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v5
         with:
           browser: chrome
           headless: true
