@@ -30,6 +30,10 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
     const {loadedProject} = useLoadedProject()
     usePreventNavigatingAway({
         isDirty: () => {
+            if (publishInProgress) {
+               return false
+            }
+
             return !isEqual(loadedProject, project) && isAnyTouched()
         },
     })

@@ -37,7 +37,13 @@ const UnstyledNewProjectPage = ({ className }: Props) => {
     const { updateType } = useEditableProjectActions()
     const { isAnyTouched, resetTouched } = useContext(ValidationContext)
     usePreventNavigatingAway({
-        isDirty: isAnyTouched,
+        isDirty: () => {
+            if (publishInProgress) {
+                return false
+            }
+
+            return isAnyTouched()
+        },
     })
 
     useEffect(() => {
