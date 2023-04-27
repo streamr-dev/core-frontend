@@ -43,7 +43,6 @@ jobs:
           SENTRY_DSN: https://d8374218c009438e961ba15b07c7f893@o151964.ingest.sentry.io/4504950164946944
           TEST_HOOKS: off
         run: |
-          npm run build-index
           npm run build --if-present
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
