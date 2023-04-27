@@ -6,6 +6,7 @@ import { StreamConnect } from '$shared/components/StreamConnect'
 import { useCurrentStreamAbility } from '$shared/stores/streamAbilities'
 import {
     StreamDraftContext,
+    useCurrentDraft,
     useInitStreamDraft,
     useIsCurrentDraftBusy,
 } from '$shared/stores/streamEditor'
@@ -20,22 +21,9 @@ import PartitionsSection from './AbstractStreamEditPage/PartitionsSection'
 import DeleteSection from './AbstractStreamEditPage/DeleteSection'
 import PersistanceAlert from './AbstractStreamEditPage/PersistanceAlert'
 
-function CreatePage() {
-    const disabled = useIsCurrentDraftBusy()
-
-    const busy = useIsCurrentDraftBusy()
-
-    return (
-        <StreamPage showSaveButton={false} fullWidth={false} loading={busy}>
-            <InfoSection disabled={disabled} />
-            <AccessControlSection disabled={disabled} />
-            <HistorySection disabled={disabled} />
-            <PartitionsSection disabled={disabled} />
-        </StreamPage>
-    )
-}
-
 function EditPage() {
+    const { streamId } = useCurrentDraft()
+
     const canEdit = useCurrentStreamAbility(StreamPermission.EDIT)
 
     const canDelete = useCurrentStreamAbility(StreamPermission.DELETE)
@@ -45,7 +33,7 @@ function EditPage() {
     const loading = typeof canEdit === 'undefined' || busy
 
     return (
-        <StreamPage loading={loading}>
+        <StreamPage showSaveButton={!streamId} loading={loading}>
             <PersistanceAlert />
             <InfoSection disabled={busy} />
             <AccessControlSection disabled={busy} />
@@ -107,7 +95,7 @@ export default function StreamEditPage() {
                 <Route
                     exact
                     path={routes.streams.new()}
-                    component={CreatePage}
+                    component={EditPage}
                     key="CreatePage"
                 />
                 <Route
