@@ -1,7 +1,7 @@
 {
     "name": "core-frontend",
-    "version": "3.0.9",
-    "description": "The Streamr Core App",
+    "version": "4.0.0",
+    "description": "Streamr Hub",
     "main": "src/index.jsx",
     "scripts": {
         "cypress": "cypress run --headless",
