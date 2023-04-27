@@ -15,7 +15,7 @@ export default function Globals() {
             }
 
             return isPersistingAnyStreamDraft || isAnyPurchaseInProgress
-        }
+        },
     })
 
     useRouteMemoryWipeEffect()

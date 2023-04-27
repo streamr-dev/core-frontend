@@ -3,7 +3,7 @@ import produce from 'immer'
 import { Toaster, toaster } from 'toasterhea'
 import BigNumber from 'bignumber.js'
 import { toBN } from 'web3-utils'
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 import ChainSelectorModal, {
     ChainSelectorResult,
     getPurchasePreconditions,
@@ -17,27 +17,30 @@ import AccessPeriodModal, { AccessPeriod } from '$app/src/modals/AccessPeriodMod
 import { isAbandonment } from '$app/src/modals/ProjectModal'
 import AllowanceModal from '$app/src/modals/AllowanceModal'
 import PurchaseCompleteModal from '$app/src/modals/PurchaseCompleteModal'
-import { erc20TokenContractMethods } from '$mp/utils/web3'
+import { getMarketplaceAddress } from '$mp/utils/web3'
 import { priceForTimeUnits } from '$mp/utils/price'
 import networkPreflight from '$app/src/utils/networkPreflight'
 import { timeUnits } from '$shared/utils/timeUnit'
 import Toast, { ToastType } from '$shared/toasts/Toast'
-import { marketplaceContract } from '$app/src/services/marketplace'
 import { gasLimits } from '$shared/utils/constants'
 import isCodedError from '$utils/isCodedError'
 import ConfirmPurchaseModal from '$app/src/modals/ConfirmPurchaseModal'
 import { toSeconds } from '$mp/utils/time'
 import AccessingProjectModal from '$app/src/modals/AccessingProjectModal'
-import { getAllowance } from '$app/src/getters'
+import {
+    getAllowance,
+    getERC20TokenContract,
+    getMarketplaceContract,
+} from '$app/src/getters'
 import { RejectReason } from '$app/src/modals/Modal'
 import FailedPurchaseModal from '$app/src/modals/FailedPurchaseModal'
-import { useAuthController } from '$app/src/auth/hooks/useAuthController'
 import { ensureGasMonies, waitForPurchasePropagation } from '$app/src/utils'
 import InsufficientFundsError from '$shared/errors/InsufficientFundsError'
+import { getWalletWeb3Provider } from './wallet'
 
 interface Store {
     inProgress: Record<string, true | undefined>
-    purchase: (projectId: string, account: string) => Promise<void>
+    purchase: (projectId: string) => Promise<void>
     fetchingSubscriptions: Record<string, true | undefined>
     subscriptions: Record<
         string,
@@ -110,7 +113,7 @@ const usePurchaseStore = create<Store>((set, get) => {
             )
         },
 
-        async purchase(projectId, account) {
+        async purchase(projectId) {
             if (isInProgress(projectId)) {
                 return
             }
@@ -151,7 +154,6 @@ const usePurchaseStore = create<Store>((set, get) => {
                         if (!chainSelectorResult) {
                             chainSelectorResult = await getPurchasePreconditions({
                                 chainId,
-                                account,
                                 paymentDetails,
                             })
                         }
@@ -162,7 +164,6 @@ const usePurchaseStore = create<Store>((set, get) => {
                             ChainSelectorModal,
                             Layer.Modal,
                         ).pop({
-                            account,
                             chainIds,
                             paymentDetails,
                             projectId,
@@ -184,6 +185,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                     const selectedChainId = chainId
 
                     const {
+                        account,
                         balance,
                         pricePerSecond,
                         tokenAddress,
@@ -311,6 +313,8 @@ const usePurchaseStore = create<Store>((set, get) => {
 
                                             await networkPreflight(selectedChainId)
 
+                                            const web3 = await getWalletWeb3Provider()
+
                                             /**
                                              * Send the `approve` method on the selected
                                              * ERC-20 token contract.
@@ -318,24 +322,30 @@ const usePurchaseStore = create<Store>((set, get) => {
                                              * This step is required so that the contract
                                              * itself can spend user's funds.
                                              */
-                                            await erc20TokenContractMethods(
-                                                tokenAddress,
-                                                false,
-                                                selectedChainId,
-                                            )
-                                                .approve(
-                                                    marketplaceContract(
-                                                        false,
-                                                        selectedChainId,
-                                                    ).options.address,
-                                                    toBN(total.toString()),
-                                                )
-                                                .send({
-                                                    gas: gasLimits.APPROVE,
-                                                    from: account,
-                                                    maxPriorityFeePerGas: null,
-                                                    maxFeePerGas: null,
+                                            await new Promise<void>((resolve, reject) => {
+                                                getERC20TokenContract({
+                                                    tokenAddress,
+                                                    web3,
                                                 })
+                                                    .methods.approve(
+                                                        getMarketplaceAddress(
+                                                            selectedChainId,
+                                                        ),
+                                                        toBN(total.toString()),
+                                                    )
+                                                    .send({
+                                                        gas: gasLimits.APPROVE,
+                                                        from: account,
+                                                        maxPriorityFeePerGas: null,
+                                                        maxFeePerGas: null,
+                                                    })
+                                                    .on('confirmation', () => {
+                                                        resolve()
+                                                    })
+                                                    .on('error', (e: unknown) => {
+                                                        reject(e)
+                                                    })
+                                            })
 
                                             /**
                                              * Wallets do not force users to set the requested
@@ -462,6 +472,8 @@ const usePurchaseStore = create<Store>((set, get) => {
 
                                         await networkPreflight(selectedChainId)
 
+                                        const web3 = await getWalletWeb3Provider()
+
                                         let accessingProjectModal:
                                             | Toaster<typeof AccessingProjectModal>
                                             | undefined = toaster(
@@ -475,42 +487,57 @@ const usePurchaseStore = create<Store>((set, get) => {
                                              * network. Note that the gas limit is dynamic and depends
                                              * on the number of streams associated with the project.
                                              */
-                                            await marketplaceContract(
-                                                false,
-                                                selectedChainId,
-                                            )
-                                                .methods.buy(
-                                                    projectId,
-                                                    // Round down to nearest full second, otherwise allowance could run out
-                                                    toBN(seconds.dp(0, BigNumber.ROUND_DOWN).toString()),
-                                                )
-                                                .send({
-                                                    gas: 2e5 + streams.length * 1e5,
-                                                    from: account,
-                                                    maxPriorityFeePerGas: null,
-                                                    maxFeePerGas: null,
+                                            await new Promise<void>((resolve, reject) => {
+                                                getMarketplaceContract({
+                                                    chainId: selectedChainId,
+                                                    web3,
                                                 })
-                                                .once('transactionHash', async () => {
-                                                    /**
-                                                     * Once we receive the transaction hash we can safely close the Confirm
-                                                     * Purchase modal and carry on.
-                                                     */
-                                                    confirmPurchaseModal?.discard()
+                                                    .methods.buy(
+                                                        projectId,
+                                                        // Round down to nearest full second, otherwise allowance could run out
+                                                        toBN(
+                                                            seconds
+                                                                .dp(
+                                                                    0,
+                                                                    BigNumber.ROUND_DOWN,
+                                                                )
+                                                                .toString(),
+                                                        ),
+                                                    )
+                                                    .send({
+                                                        gas: 2e5 + streams.length * 1e5,
+                                                        from: account,
+                                                        maxPriorityFeePerGas: null,
+                                                        maxFeePerGas: null,
+                                                    })
+                                                    .once('transactionHash', async () => {
+                                                        /**
+                                                         * Once we receive the transaction hash we can safely close the Confirm
+                                                         * Purchase modal and carry on.
+                                                         */
+                                                        confirmPurchaseModal?.discard()
 
-                                                    /**
-                                                     * We pop up the Accessing Project modal at this point. It does not
-                                                     * have to be extra-detached cause we're already in an event handler
-                                                     * which is sort of detached. In short, nothing is being blocked
-                                                     * by the `await ….pop()`.
-                                                     */
-                                                    try {
-                                                        await accessingProjectModal?.pop()
-                                                    } catch (e) {
-                                                        if (!isAbandonment(e)) {
-                                                            console.warn(e)
+                                                        /**
+                                                         * We pop up the Accessing Project modal at this point. It does not
+                                                         * have to be extra-detached cause we're already in an event handler
+                                                         * which is sort of detached. In short, nothing is being blocked
+                                                         * by the `await ….pop()`.
+                                                         */
+                                                        try {
+                                                            await accessingProjectModal?.pop()
+                                                        } catch (e) {
+                                                            if (!isAbandonment(e)) {
+                                                                console.warn(e)
+                                                            }
                                                         }
-                                                    }
-                                                })
+                                                    })
+                                                    .on('confirmation', () => {
+                                                        resolve()
+                                                    })
+                                                    .on('error', (e: unknown) => {
+                                                        reject(e)
+                                                    })
+                                            })
 
                                             /**
                                              * `Buy` transaction is done and now we wait for the `Subscribe` event
@@ -602,7 +629,10 @@ const usePurchaseStore = create<Store>((set, get) => {
                                 throw e
                             }
 
-                            console.warn('Unsuccessful purchase attempt. Trying again.', e)
+                            console.warn(
+                                'Unsuccessful purchase attempt. Trying again.',
+                                e,
+                            )
 
                             /**
                              * Exceptions that happen with lowered `bail` flag take users back
@@ -659,14 +689,7 @@ const usePurchaseStore = create<Store>((set, get) => {
 })
 
 export function usePurchaseCallback() {
-    const { purchase } = usePurchaseStore()
-
-    const { address: account } = useAuthController().currentAuthSession
-
-    return useCallback(
-        (projectId: string) => purchase(projectId, account),
-        [purchase, account],
-    )
+    return usePurchaseStore().purchase
 }
 
 export function useIsProjectBeingPurchased(projectId: string) {

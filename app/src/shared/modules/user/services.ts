@@ -1,14 +1,10 @@
 import { $Values } from 'utility-types'
-import { post } from '$shared/utils/api'
-import { ApiResult } from '$shared/types/common-types'
 import { BalanceType } from '$shared/types/user-types'
 import {Abi, Address} from '$shared/types/web3-types'
 import { getDataTokenBalance, getNativeTokenBalance } from '$mp/utils/web3'
 import reverseRecordsAbi from '$shared/web3/abis/reverseRecords.json'
 import {call, getContract} from "$mp/utils/smartContract"
 import getCoreConfig from "$app/src/getters/getCoreConfig"
-
-const GRAPH_API_URL = 'https://api.thegraph.com/subgraphs/name/ensdomains/ens'
 
 const config = getCoreConfig()
 
@@ -35,32 +31,6 @@ export async function getBalance({ address, type, usePublicNode = false, chainId
 
     return balance
 }
-type Domains = {
-    data: {
-        domains: Array<{
-            name: string
-        }>
-    }
-}
-export const getEnsDomains = ({ addresses }: { addresses: Array<Address> }): ApiResult<Domains> =>
-    post({
-        url: GRAPH_API_URL,
-        data: {
-            query: `
-            query {
-                domains(
-                    where: { owner_in: [${(addresses || []).map((address) => `"${address.toLowerCase()}"`).join(', ')}]}
-                    orderBy: name
-                ) {
-                    id
-                    name
-                    labelName
-                    labelhash
-                }
-            }
-        `,
-        }
-    })
 
 export const lookupEnsName = async (address: Address): Promise<string> => {
     const contract = getContract({abi: reverseRecordsAbi as Abi, address: config.reverseRecordsAddress}, true, 1)

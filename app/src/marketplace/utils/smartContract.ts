@@ -32,6 +32,10 @@ export const getUnprefixedHexString = (hex: string): string => hex.replace(/^0x|
  * @returns {boolean}
  */
 export const isValidHexString = (hex: string): boolean => (typeof hex === 'string') && isHex(hex)
+/**
+ * @deprecated Use `web3.eth.Contract` directly. The main reason why this is a utility function
+ * is the `usePublicNode` flag. It's going away (work in progress).
+ */
 export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode = false, chainId?: number): Contract => {
     if (usePublicNode && chainId == null) {
         throw new Error('ChainId must be provided!')

@@ -9,7 +9,6 @@ The Core frontend runs against an API backend and Ethereum smart contracts. For 
 
 Although the frontend consists of a single app, the code is structured into different folders based on the different functionalities of the app. The code is under the `src` folder:
 
--   `auth` contains components for login
 -   `marketplace` contains the data marketplace
 -   `shared` has shared code and utilities
 -   `userpages` contains the views for managing a user's Streamr resources

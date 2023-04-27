@@ -29,7 +29,6 @@ module.exports = {
         '\\.(png)$': '<rootDir>/scripts/emptyObject',
         '\\$config$': '<rootDir>/test/test-utils/testConfig.ts',
         '\\$app/(.*)$': '<rootDir>/$1',
-        '\\$auth/(.*)$': '<rootDir>/src/auth/$1',
         '\\$mp/(.*)$': '<rootDir>/src/marketplace/$1',
         '\\$userpages/(.*)$': '<rootDir>/src/userpages/$1',
         '\\$routes$': '<rootDir>/src/routes',

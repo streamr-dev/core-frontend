@@ -12,11 +12,11 @@ import { getConfigForChain } from '$shared/web3/config'
 import { getTokenInformation } from '$mp/utils/web3'
 import { fromDecimals } from '$mp/utils/math'
 import { getMostRelevantTimeUnit } from '$mp/utils/price'
-import { useAuthController } from '$app/src/auth/hooks/useAuthController'
 import { isProjectOwnedBy } from '$app/src/marketplace/utils/product'
 import { ProjectType, Project } from '$shared/types'
 import { GraphProject } from '$shared/consts'
 import { useHasActiveProjectSubscription } from './purchases'
+import { useWalletAccount } from './wallet'
 
 type GraphProject = z.infer<typeof GraphProject>
 
@@ -496,7 +496,7 @@ export function useDoesUserHaveAccess() {
         project: { cold, graph },
     } = useDraft() || initialDraft
 
-    const { currentAuthSession: { address = undefined } = {} } = useAuthController() || {}
+    const address = useWalletAccount()
 
     const hasActiveProjectSubscription = useHasActiveProjectSubscription(cold.id, address)
 

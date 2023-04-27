@@ -7,21 +7,21 @@ import {
     Logo,
     Menu as UnstyledMenu,
     NavDropdown,
-    NavProvider,
     NavOverlay,
 } from '@streamr/streamr-layout'
-
+import { toaster } from 'toasterhea'
 import { MD as TABLET, LG as DESKTOP, COLORS, REGULAR, MEDIUM } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import SvgIcon from '$shared/components/SvgIcon'
 import AvatarImage from '$shared/components/AvatarImage'
 import AccountsBalance from '$shared/components/AccountsBalance'
-import {useAuthController} from "$auth/hooks/useAuthController"
 import {truncate} from "$shared/utils/text"
+import ConnectModal from '$app/src/modals/ConnectModal'
+import { Layer } from '$app/src/utils/Layer'
+import { useEns, useWalletAccount } from '$shared/stores/wallet'
+import toast from '$app/src/utils/toast'
 import routes from '$routes'
 import { Avatarless, Name, Username } from './User'
-import MetamaskIcon from './metamask.svg'
-import WalletconnectIcon from './walletConnect.svg'
 
 const MOBILE_LG = 576
 
@@ -325,8 +325,10 @@ const UserInfoMobile = styled.div`
 
 const UnstyledDesktopNav: FunctionComponent = (props) => {
     const { pathname } = useLocation()
-    const { currentAuthSession } = useAuthController()
-    const { address: accountAddress, ensName } = currentAuthSession
+
+    const account = useWalletAccount()
+
+    const ensName = useEns(account)
 
     return (
         <div {...props}>
@@ -359,24 +361,28 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                         </NavbarLinkDesktop>
                     </NavbarItem>
                 </MenuGrid>
-                {!accountAddress && (
+                {!account && (
                     <Fragment>
                         <NavbarItemAccount>
                             <Button
-                                tag="a"
-                                href={routes.auth.login({
-                                    redirect: pathname,
-                                })}
                                 kind="primary"
                                 size="mini"
                                 outline
+                                type="button"
+                                onClick={async () => {
+                                    try {
+                                        await toaster(ConnectModal, Layer.Modal).pop()
+                                    } catch (e) {
+                                        console.warn('Wallet connecting failed', e)
+                                    }
+                                }}
                             >
                                 Connect
                             </Button>
                         </NavbarItemAccount>
                     </Fragment>
                 )}
-                {!!accountAddress && (
+                {!!account && (
                     <Fragment>
                         <NavbarItemAccount>
                             <SignedInUserMenu
@@ -384,21 +390,25 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                 alignMenu="right"
                                 nodeco
                                 toggle={
-                                    <Avatar username={accountAddress} />
+                                    <Avatar username={account} />
                                 }
                                 menu={
                                     <Menu>
                                         <MenuItem className={'user-info'}>
                                             <MenuItemAvatarContainer>
-                                                <Avatar username={accountAddress} />
+                                                <Avatar username={account} />
                                                 <WalletAddress>
                                                     {!!ensName && <span className={'ens-name'}>{truncate(ensName)}</span>}
-                                                    <span>{truncate(accountAddress)}</span>
+                                                    <span>{truncate(account)}</span>
                                                 </WalletAddress>
                                             </MenuItemAvatarContainer>
                                         </MenuItem>
                                         <MenuDivider />
-                                        <MenuItem className={'disconnect'} as={Link} to={routes.auth.logout()}>
+                                        <MenuItem className="disconnect" onClick={() => {
+                                            toast({
+                                                title: 'Use the "Lock" button in your wallet.',
+                                            })
+                                        }}>
                                             <div className={'disconnect-text'}>
                                                 <span>Disconnect</span>
                                                 <SvgIcon name={'disconnect'}/>
@@ -417,7 +427,8 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
 }
 
 const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className }) => {
-    const { currentAuthSession } = useAuthController()
+    const account = useWalletAccount()
+
     const { pathname } = useLocation()
 
     return (
@@ -435,11 +446,11 @@ const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className 
                 </Navbar>
             </NavOverlay.Head>
             <NavOverlay.Body>
-                {!!currentAuthSession.address &&
+                {!!account &&
                     <UserInfoMobile>
-                        <Avatar username={currentAuthSession.address} />
+                        <Avatar username={account} />
                         <div>
-                            <Avatarless source={currentAuthSession.address} />
+                            <Avatarless source={account} />
                             <AccountsBalance />
                         </div>
                     </UserInfoMobile>
@@ -461,16 +472,24 @@ const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className 
                 </NavbarLinkMobile>
             </NavOverlay.Body>
             <NavOverlay.Footer>
-                {!!currentAuthSession.address ? (
-                    <Button tag={Link} to={routes.auth.logout()} kind="secondary" size="normal">
+                {!!account ? (
+                    <Button kind="secondary" size="normal" type="button" onClick={() => {
+                        toast({
+                            title: 'Use the "Lock" button in your wallet.',
+                        })
+                    }}>
                         Disconnect
                     </Button>
                 ) : (
                     <Button
-                        tag="a"
-                        href={routes.auth.login({
-                            redirect: pathname,
-                        })}
+                        type="button"
+                        onClick={async () => {
+                            try {
+                                await toaster(ConnectModal, Layer.Modal).pop()
+                            } catch (e) {
+                                console.warn('Wallet connecting failed', e)
+                            }
+                        }}
                         kind="primary"
                         size="normal"
                     >

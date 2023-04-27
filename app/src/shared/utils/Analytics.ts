@@ -2,15 +2,17 @@
  * Configure analytics data from app state.
  */
 import * as Sentry from '@sentry/browser'
-import {useAuthController} from "$auth/hooks/useAuthController"
+import { useWalletAccount } from '../stores/wallet'
 
 function Analytics(): null {
-    const {currentAuthSession} = useAuthController()
-    if (currentAuthSession.address) {
+    const account = useWalletAccount()
+
+    if (account) {
         Sentry.configureScope((scope) => {
-            scope.setUser({id: currentAuthSession.address})
+            scope.setUser({id: account})
         })
     }
+
     return null
 }
 

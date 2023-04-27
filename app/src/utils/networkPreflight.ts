@@ -1,9 +1,8 @@
-import { type ExternalProvider } from 'streamr-client'
 import { toaster } from 'toasterhea'
-import SwitchNetworkModal from '../modals/SwitchNetworkModal'
-import getChainId from './web3/getChainId'
-import getWeb3 from './web3/getWeb3'
-import { Layer } from './Layer'
+import SwitchNetworkModal from '$app/src/modals/SwitchNetworkModal'
+import getChainId from '$utils/web3/getChainId'
+import { Layer } from '$utils/Layer'
+import { getWalletProvider } from '$shared/stores/wallet'
 
 interface Currency {
     decimals: number
@@ -46,11 +45,7 @@ export const Matic: Chain = [
  * @returns `true` if the utility changed the network, and `false` if it did nothing (we're already on the correct network).
  */
 export default async function networkPreflight(expectedChainId: number) {
-    const provider = getWeb3().currentProvider as ExternalProvider
-
-    if (typeof provider.request === 'undefined') {
-        throw new Error('Bad provider, bad!')
-    }
+    const provider = await getWalletProvider()
 
     try {
         const currentChainId = await getChainId()

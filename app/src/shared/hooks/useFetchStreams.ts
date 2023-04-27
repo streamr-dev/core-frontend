@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import { useClient } from 'streamr-client-react'
 import { Stream } from 'streamr-client'
 import useInterrupt from '$shared/hooks/useInterrupt'
-import {useAuthController} from "$auth/hooks/useAuthController"
+import { useWalletAccount } from '$shared/stores/wallet'
 
 type FetchParameters = {
     batchSize?: number,
@@ -20,7 +20,8 @@ export default function useFetchStreams(): FetchCallbackType {
     const onlyCurrentUserRef = useRef<boolean>()
     const iteratorRef = useRef<AsyncIterable<Stream>>()
     const tailStreamRef = useRef<Stream>()
-    const {currentAuthSession} = useAuthController()
+
+    const account = useWalletAccount()
 
     useEffect(() => {
         itp().interruptAll()
@@ -46,7 +47,7 @@ export default function useFetchStreams(): FetchCallbackType {
                 tailStreamRef.current = undefined
 
                 if (onlyCurrentUserRef.current) {
-                    const user = currentAuthSession.address
+                    const user = account
                     iteratorRef.current = client.searchStreams(search, {
                         user,
                         allowPublic,
@@ -92,6 +93,6 @@ export default function useFetchStreams(): FetchCallbackType {
 
             return [batch, hasMore, !prevTailStream]
         },
-        [itp, client, currentAuthSession.address],
+        [itp, client, account],
     )
 }

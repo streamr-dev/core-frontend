@@ -1,11 +1,11 @@
 import { create } from 'zustand'
 import { useEffect } from 'react'
 import produce from 'immer'
-import { useAuthController } from '$auth/hooks/useAuthController'
 import { getProjectPermissions } from '$app/src/getters'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { useProject } from '$shared/stores/projectEditor'
 import address0 from "$utils/address0"
+import { useWalletAccount } from './wallet'
 
 export enum ProjectPermission {
     Buy,
@@ -142,7 +142,7 @@ export function useCurrentProjectAbility(permission: ProjectPermission) {
 
     const { id } = useProject()
 
-    const { address } = useAuthController().currentAuthSession
+    const address = useWalletAccount()
 
     return useProjectAbility(chainId, id, address, permission)
 }

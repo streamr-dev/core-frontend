@@ -1,8 +1,4 @@
 {
-    "auth": {
-        "login": "/hub/login",
-        "logout": "/hub/logout"
-    },
     "community": {
         "blog": "https://blog.streamr.network/",
         "discord": "https://discord.gg/gZAm8P7hK8",

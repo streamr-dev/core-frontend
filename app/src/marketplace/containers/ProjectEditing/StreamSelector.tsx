@@ -7,8 +7,9 @@ import { useEditableProjectActions } from '$mp/containers/ProductController/useE
 import { StreamSelectTable } from '$shared/components/StreamSelectTable'
 import SearchBar from '$shared/components/SearchBar'
 import { DESKTOP, TABLET } from '$shared/utils/styled'
-import { useAuthController } from '$auth/hooks/useAuthController'
 import { ProjectType } from '$app/src/shared/types'
+import { useWalletAccount } from '$shared/stores/wallet'
+import address0 from '$app/src/utils/address0'
 
 const PAGE_SIZE = 10
 
@@ -40,9 +41,9 @@ export const StreamSelector: FunctionComponent = () => {
     const [search, setSearch] = useState<string>('')
     const [streams, setStreams] = useState<Array<TheGraphStream>>([])
     const [streamStats, setStreamStats] = useState<Record<string, IndexerStream>>({})
-    const { currentAuthSession } = useAuthController()
     const projectType = project?.type
     const [page, setPage] = useState(0)
+    const account = useWalletAccount() || address0
 
     const visibleStreams = useMemo(
         () => streams.slice(0, (page + 1) * PAGE_SIZE),
@@ -56,12 +57,12 @@ export const StreamSelector: FunctionComponent = () => {
 
     useEffect(() => {
         const load = async () => {
-            const res = await getStreamsOwnedBy(currentAuthSession.address, search, projectType === ProjectType.OpenData)
+            const res = await getStreamsOwnedBy(account, search, projectType === ProjectType.OpenData)
             setStreams(res)
         }
 
         load()
-    }, [currentAuthSession.address, projectType, search])
+    }, [account, projectType, search])
 
     useEffect(() => {
         const loadStats = async () => {
@@ -88,7 +89,7 @@ export const StreamSelector: FunctionComponent = () => {
     useEffect(() => {
         // Reset current page when needed
         setPage(0)
-    }, [search, projectType, currentAuthSession.address])
+    }, [search, projectType, account])
 
     return <div>
         <Heading>
