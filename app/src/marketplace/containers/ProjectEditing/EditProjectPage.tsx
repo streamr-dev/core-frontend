@@ -1,4 +1,4 @@
-import React, {FunctionComponent, ReactNode, useContext, useEffect, useMemo} from "react"
+import React, {FunctionComponent, ReactNode, useCallback, useContext, useEffect, useMemo} from "react"
 import styled from "styled-components"
 import {isEqual} from "lodash"
 import {useHistory} from "react-router-dom"
@@ -30,13 +30,13 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
     const {loadedProject} = useLoadedProject()
 
     usePreventNavigatingAway({
-        isDirty: () => {
+        isDirty: useCallback(() => {
             if (publishInProgress) {
                return false
             }
 
             return !isEqual(loadedProject, project) && isAnyTouched()
-        },
+        }, [publishInProgress, loadedProject, project, isAnyTouched]),
     })
 
     const nonEditableSalePointChains = useMemo<number[]>(

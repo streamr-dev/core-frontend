@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext, useEffect, useMemo } from 'react'
+import React, { ReactNode, useCallback, useContext, useEffect, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import qs from 'query-string'
@@ -38,13 +38,13 @@ const UnstyledNewProjectPage = ({ className }: Props) => {
     const { isAnyTouched, resetTouched } = useContext(ValidationContext)
 
     usePreventNavigatingAway({
-        isDirty: () => {
+        isDirty: useCallback(() => {
             if (publishInProgress) {
                 return false
             }
 
             return isAnyTouched()
-        },
+        }, [publishInProgress, isAnyTouched]),
     })
 
     useEffect(() => {
