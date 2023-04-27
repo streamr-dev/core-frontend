@@ -80,6 +80,8 @@ const useStreamAbilitiesStore = create<Store>((set, get) => {
                 return
             }
 
+            let result = false
+
             try {
                 toggleFetching(streamId, account, permission, true)
 
@@ -95,15 +97,19 @@ const useStreamAbilitiesStore = create<Store>((set, get) => {
                     throw new Error('Stream not found')
                 }
 
-                const value = await stream.hasPermission(account === address0 ? {
-                    permission,
-                    public: true,
-                } : {
-                    user: account,
-                    permission,
-                    allowPublic: true,
-                })
-
+                result = await stream.hasPermission(
+                    account === address0
+                        ? {
+                              permission,
+                              public: true,
+                          }
+                        : {
+                              user: account,
+                              permission,
+                              allowPublic: true,
+                          },
+                )
+            } finally {
                 set((state) =>
                     produce(state, (draft) => {
                         const key = accountKey(streamId, account)
@@ -115,14 +121,14 @@ const useStreamAbilitiesStore = create<Store>((set, get) => {
                             value: false,
                         }
 
-                        cache.value = value
+                        cache.value = result
 
                         group[permission] = cache
 
                         draft.permissions[key] = group
                     }),
                 )
-            } finally {
+
                 toggleFetching(streamId, account, permission, false)
             }
         },
