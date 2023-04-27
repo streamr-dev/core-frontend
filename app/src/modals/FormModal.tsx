@@ -89,15 +89,16 @@ const Head = styled.div`
     font-family: ${SANS};
     font-size: 24px;
     font-weight: normal;
-    height: 80px;
+    height: 100px;
     line-height: normal;
     margin: 0;
     position: relative;
-    padding: 0 40px;
+    padding: 20px 40px 0;
     width: 100%;
 
     @media ${TABLET} {
         height: 120px;
+        padding-top: 0;
     }
 `
 
