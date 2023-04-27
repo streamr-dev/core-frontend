@@ -201,6 +201,16 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                 return
             }
 
+            async function fetchStream() {
+                try {
+                    await get().fetchStream(draftId, streamrClient)
+                } catch (e) {
+                    console.warn('Could not load stream', e)
+                }
+            }
+
+            fetchStream()
+
             async function fetchStorageNodes() {
                 try {
                     await get().fetchStorageNodes(draftId, streamrClient)
