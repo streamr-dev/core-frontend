@@ -1,8 +1,16 @@
 import { handleActions } from 'redux-actions'
-import type { ProductListState } from '../../types/store-state'
+import { ProductListState } from '../../types/store-state'
 import { productListPageSize } from '../../utils/constants'
-import { GET_PRODUCTS_REQUEST, GET_PRODUCTS_SUCCESS, GET_PRODUCTS_FAILURE, UPDATE_FILTER, CLEAR_FILTERS, CLEAR_PRODUCT_LIST } from './constants'
-import type { ProductsAction, ProductsErrorAction, FilterAction } from './types'
+import {
+    GET_PRODUCTS_REQUEST,
+    GET_PRODUCTS_SUCCESS,
+    GET_PRODUCTS_FAILURE,
+    UPDATE_FILTER,
+    CLEAR_FILTERS,
+    CLEAR_PRODUCT_LIST,
+    UPDATE_PROJECTS_AUTHOR_FILTER
+} from './constants'
+import { ProductsAction, ProductsErrorAction, FilterAction, ProjectsAuthorFilterAction } from './types'
 export const initialState: ProductListState = {
     ids: [],
     filter: {
@@ -17,6 +25,7 @@ export const initialState: ProductListState = {
     pageSize: productListPageSize,
     offset: 0,
     hasMoreSearchResults: undefined,
+    projectAuthor: 'all'
 }
 export type ProductListActionPayloads = ProductsAction['payload'] | ProductsErrorAction['payload'] | FilterAction['payload'] | object
 const reducer = handleActions<ProductListState, ProductListActionPayloads>(
@@ -53,6 +62,10 @@ const reducer = handleActions<ProductListState, ProductListActionPayloads>(
             offset: 0,
             hasMoreSearchResults: undefined,
         }),
+        [UPDATE_PROJECTS_AUTHOR_FILTER]: (state: ProductListState, action: ProjectsAuthorFilterAction) => ({
+            ...state,
+            projectAuthor: action.payload.onlyMyProjects ? 'currentUser' : 'all'
+        })
     },
     initialState,
 )

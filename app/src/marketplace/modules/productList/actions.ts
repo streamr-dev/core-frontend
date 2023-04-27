@@ -3,15 +3,28 @@ import { normalize } from 'normalizr'
 import debounce from 'lodash/debounce'
 import { productsSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'
-import type { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
-import type { Filter, ProductIdList } from '../../types/product-types'
-import type { StoreState } from '../../types/store-state'
+import { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
+import { Filter, ProjectIdList } from '../../types/project-types'
+import { StoreState } from '../../types/store-state'
 import { selectFilter, selectPageSize, selectOffset } from './selectors'
-import { GET_PRODUCTS_REQUEST, GET_PRODUCTS_SUCCESS, GET_PRODUCTS_FAILURE, UPDATE_FILTER, CLEAR_FILTERS, CLEAR_PRODUCT_LIST } from './constants'
+import {
+    GET_PRODUCTS_REQUEST,
+    GET_PRODUCTS_SUCCESS,
+    GET_PRODUCTS_FAILURE,
+    UPDATE_FILTER,
+    CLEAR_FILTERS,
+    CLEAR_PRODUCT_LIST,
+    UPDATE_PROJECTS_AUTHOR_FILTER
+} from './constants'
 import * as api from './services'
-import type { ProductsActionCreator, ProductsErrorActionCreator, FilterActionCreator } from './types'
+import {
+    ProductsActionCreator,
+    ProductsErrorActionCreator,
+    FilterActionCreator,
+    ProjectsAuthorFilterActionCreator
+} from './types'
 const getProductsRequest: ReduxActionCreator = createAction(GET_PRODUCTS_REQUEST)
-const getProductsSuccess: ProductsActionCreator = createAction(GET_PRODUCTS_SUCCESS, (products: ProductIdList, hasMore: boolean) => ({
+const getProductsSuccess: ProductsActionCreator = createAction(GET_PRODUCTS_SUCCESS, (products: ProjectIdList, hasMore: boolean) => ({
     products,
     hasMore,
 }))
@@ -20,7 +33,11 @@ const getProductsFailure: ProductsErrorActionCreator = createAction(GET_PRODUCTS
 }))
 const clearProductList: ReduxActionCreator = createAction(CLEAR_PRODUCT_LIST)
 
-const doGetProducts = (replace: boolean | null | undefined = false, dispatch: (...args: Array<any>) => any, getState: () => StoreState) => {
+const doGetProducts = (
+    replace: boolean | null | undefined = false,
+    dispatch: (...args: Array<any>) => any,
+    getState: () => StoreState,
+) => {
     const state = getState()
     const filter = selectFilter(state)
     const pageSize = selectPageSize(state)
@@ -68,9 +85,11 @@ const doGetProductsDebounced = debounce(
 // TODO add typing
 export const getProductsDebounced = (options: GetProducts): any => doGetProductsDebounced.bind(null, options)
 export const getProducts = (
-    replace: boolean | null | undefined
+    replace?: boolean | null | undefined
 ): (dispatch: (...args: Array<any>) => any, getState: () => StoreState) => Promise<any> => doGetProducts.bind(null, replace)
 export const updateFilter: FilterActionCreator = createAction(UPDATE_FILTER, (filter: Filter) => ({
     filter,
 }))
 export const clearFilters: ReduxActionCreator = createAction(CLEAR_FILTERS)
+export const updateProjectsAuthorFilter: ProjectsAuthorFilterActionCreator
+    = createAction(UPDATE_PROJECTS_AUTHOR_FILTER, (onlyMyProjects: boolean) => ({onlyMyProjects}))

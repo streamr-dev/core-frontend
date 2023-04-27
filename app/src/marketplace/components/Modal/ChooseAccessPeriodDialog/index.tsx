@@ -9,23 +9,24 @@ import LoadingIndicator from '$shared/components/LoadingIndicator'
 import SelectField from '$mp/components/SelectField'
 import { uniswapDATAtoETH, uniswapDATAtoDAI, uniswapETHtoDATA, getDataAddress } from '$mp/utils/web3'
 import { priceForTimeUnits } from '$mp/utils/price'
-import { timeUnits, contractCurrencies, paymentCurrencies, DEFAULT_CURRENCY, MIN_UNISWAP_AMOUNT_USD } from '$shared/utils/constants'
-import type { Product, AccessPeriod } from '$mp/types/product-types'
-import type { PaymentCurrency, NumberString, TimeUnit } from '$shared/types/common-types'
+import { contractCurrencies, paymentCurrencies, DEFAULT_CURRENCY, MIN_UNISWAP_AMOUNT_USD } from '$shared/utils/constants'
+import { Project, AccessPeriod } from '$mp/types/project-types'
+import { PaymentCurrency, NumberString} from '$shared/types/common-types'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
 import { getUsdRate } from '$shared/utils/coingecko'
 import { fromDecimals } from '$mp/utils/math'
+import {TimeUnit, timeUnits} from "$shared/utils/timeUnit"
 import CurrencySelector from './CurrencySelector'
 import styles from './chooseAccessPeriod.pcss'
 
 export type Balances = Record<$Values<typeof paymentCurrencies>, NumberString>
 
 export type Props = {
-    pricePerSecond: $ElementType<Product, 'pricePerSecond'>
-    pricingTokenAddress: $ElementType<Product, 'pricingTokenAddress'>
-    pricingTokenDecimals: $ElementType<Product, 'pricingTokenDecimals'>
+    pricePerSecond: $ElementType<Project, 'pricePerSecond'>
+    pricingTokenAddress: $ElementType<Project, 'pricingTokenAddress'>
+    pricingTokenDecimals: $ElementType<Project, 'pricingTokenDecimals'>
     tokenSymbol: string
     chainId: number
     balances: Balances

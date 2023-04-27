@@ -10,9 +10,9 @@ const getFirstElement = (value: string | string[]): string => {
     }
 }
 
-function useNewProductMode() {
+function useNewProductMode(): {isNew: boolean, dataUnionAddress: string, chainId: number} {
     const location = useLocation()
-    return useMemo(() => {
+    return useMemo<{isNew: boolean, dataUnionAddress: string, chainId: number}>(() => {
         const query = qs.parse(location.search)
         return {
             isNew: !!(query.newProduct || ''),

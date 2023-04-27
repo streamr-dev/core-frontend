@@ -1,6 +1,5 @@
 .modalContentArea {
-  padding: 24px 1.5um;
-  border-top: 1px solid #F2F1F1;
+  padding: 24px;
   font-size: 16px;
   border-radius: inherit;
   flex: 1;
@@ -9,6 +8,10 @@
   align-items: center;
   justify-content: center;
   word-break: break-word;
+
+  @media (--md-up) {
+    padding: 24px 48px;
+  }
 }
 
 @media (--xs) {

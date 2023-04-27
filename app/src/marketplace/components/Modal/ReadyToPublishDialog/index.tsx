@@ -1,5 +1,5 @@
 import React from 'react'
-import { PublishMode } from '$mp/containers/EditProductPage/usePendingChanges'
+import { PublishMode } from '$mp/containers/ProjectEditing/publishMode'
 import ReadyToPublish from './ReadyToPublish'
 import ReadyToUnpublish from './ReadyToUnpublish'
 

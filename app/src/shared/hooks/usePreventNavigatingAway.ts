@@ -1,28 +1,47 @@
-import { useRef, useEffect } from 'react'
-export default function usePreventNavigatingAway(message, fn) {
-    const fnRef = useRef(fn)
-    useEffect(() => {
-        fnRef.current = fn
-    }, [fn])
-    const messageRef = useRef()
-    useEffect(() => {
-        messageRef.current = message
-    }, [message])
-    useEffect(() => {
-        const onBeforeUnload = (e) => {
-            if (fnRef.current()) {
-                const event = e || window.event
-                event.returnValue = messageRef.current // Gecko + IE
+import { useEffect, useCallback } from 'react'
+import { useHistory } from 'react-router-dom'
 
-                return messageRef.current // Webkit, Safari, Chrome etc.
-            }
+function useBeforeUnload(fn: (e: BeforeUnloadEvent) => void) {
+    useEffect(() => {
+        window.addEventListener('beforeunload', fn)
 
-            return ''
-        }
-
-        window.addEventListener('beforeunload', onBeforeUnload)
         return () => {
-            window.removeEventListener('beforeunload', onBeforeUnload)
+            window.removeEventListener('beforeunload', fn)
         }
-    }, [])
+    }, [fn])
+}
+
+export default function usePreventNavigatingAway({
+    message = 'You have unsaved changes. Are you sure you want to leave?',
+    isDirty,
+}: {
+    message?: string
+    isDirty: (destination?: string) => boolean
+}) {
+    const history = useHistory()
+
+    useEffect(
+        () =>
+            history.block(({ pathname }) => {
+                if (isDirty(pathname)) {
+                    return message
+                }
+            }),
+        [history, isDirty, message],
+    )
+
+    useBeforeUnload(
+        useCallback(
+            (e) => {
+                if (isDirty()) {
+                    e.returnValue = message
+
+                    return message
+                }
+
+                return ''
+            },
+            [isDirty, message],
+        ),
+    )
 }

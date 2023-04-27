@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
-import type { Subscription } from '../../types/product-types'
-import type { ProductState, StoreState } from '../../types/store-state'
+import { Subscription } from '../../types/project-types'
+import { ProductState, StoreState } from '../../types/store-state'
 
 const selectProductState = (state: StoreState): ProductState => state.product
 

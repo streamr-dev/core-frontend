@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react'
-import AvatarEditor from 'react-avatar-editor'
+import AvatarEditor, {CroppedRect} from 'react-avatar-editor'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Slider from '$shared/components/Slider'
@@ -10,18 +10,28 @@ type Props = {
     onSave: (arg0: File) => void
 }
 export const MAX_WIDTH = 1024
-// only width is considered because images returned from the cropper will always be wider than taller
-export function getResizedBlob(originalCanvas: HTMLCanvasElement): Promise<Blob> {
-    let canvas = originalCanvas
+// only width is considered because images returned from the cropper will always be squared
+export const getCroppedAndResizedBlob =  (imageUrl: string, cropInfo: CroppedRect): Promise<Blob> => {
+    const imageElement = document.createElement('img')
+    imageElement.src = imageUrl
+    let canvas = document.createElement('canvas')
+    const cropCanvasContext = canvas.getContext('2d') as CanvasRenderingContext2D
+    const x = Math.round(imageElement.width * cropInfo.x)
+    const y = Math.round(imageElement.height * cropInfo.y)
+    const width = Math.round(imageElement.width * cropInfo.width)
+    const height = Math.round(imageElement.height * cropInfo.height)
+    canvas.width = width
+    canvas.height = height
+    cropCanvasContext.drawImage(imageElement, x, y, width, height, 0, 0, width, height)
 
-    if (originalCanvas.width > MAX_WIDTH) {
+    if (canvas.width > MAX_WIDTH) {
         const resizedCanvas = document.createElement('canvas')
         const resizedCanvasContext = resizedCanvas.getContext('2d')
         // Start with original image size
-        resizedCanvas.width = originalCanvas.width
-        resizedCanvas.height = originalCanvas.height
+        resizedCanvas.width = canvas.width
+        resizedCanvas.height = canvas.height
         // Draw the original image on the (temp) resizing canvas
-        resizedCanvasContext.drawImage(originalCanvas, 0, 0)
+        resizedCanvasContext.drawImage(canvas, 0, 0)
 
         // Quickly reduce the size by 50% each time in few iterations until the size is less then
         // 2x time the target size - the motivation for it, is to reduce the aliasing that would have been
@@ -35,8 +45,8 @@ export function getResizedBlob(originalCanvas: HTMLCanvasElement): Promise<Blob>
         // Now do final resize for the resizingCanvas to meet the dimension requirments
         // directly to the output canvas, that will output the final image
         resizedCanvas.width = MAX_WIDTH
-        resizedCanvas.height = (resizedCanvas.width * originalCanvas.height) / originalCanvas.width
-        resizedCanvasContext.drawImage(originalCanvas, 0, 0, resizedCanvas.width, resizedCanvas.height)
+        resizedCanvas.height = (resizedCanvas.width * canvas.height) / canvas.width
+        resizedCanvasContext.drawImage(canvas, 0, 0, resizedCanvas.width, resizedCanvas.height)
         canvas = resizedCanvas
     }
 
@@ -44,16 +54,15 @@ export function getResizedBlob(originalCanvas: HTMLCanvasElement): Promise<Blob>
 }
 
 const CropImageModal = ({ imageUrl, onClose, onSave: onSaveProp }: Props) => {
-    // TODO add typing
-    const editorRef = useRef<any>()
-    const [sliderValue, setSliderValue] = useState(1)
+    const editorRef = useRef<AvatarEditor>()
+    const [sliderValue, setSliderValue] = useState<number>(1)
     const onSave = useCallback(async () => {
         if (editorRef.current) {
-            const blob = await getResizedBlob(editorRef.current.getImage())
+            const blob = await getCroppedAndResizedBlob(imageUrl, editorRef.current.getCroppingRect())
             const file = new File([blob], 'coverImage.png')
             onSaveProp(file)
         }
-    }, [onSaveProp])
+    }, [onSaveProp, editorRef, imageUrl])
     return (
         <ModalPortal>
             <Dialog
@@ -78,8 +87,8 @@ const CropImageModal = ({ imageUrl, onClose, onSave: onSaveProp }: Props) => {
                         ref={editorRef}
                         className={styles.editor}
                         image={imageUrl}
-                        width={540}
-                        height={340}
+                        width={528}
+                        height={528}
                         border={[0, 0]}
                         borderRadius={0}
                         color={[255, 255, 255, 0.6]} // RGBA

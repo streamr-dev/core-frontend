@@ -1,5 +1,5 @@
-import type { ErrorInUi, PayloadAction } from '$shared/types/common-types'
-import type { DataUnionId, DataUnionSecretId } from '$mp/types/product-types'
+import { ErrorInUi, PayloadAction } from '$shared/types/common-types'
+import { DataUnionId, DataUnionSecretId } from '$mp/types/project-types'
 export type DataUnionIdAction = PayloadAction<{
     id: DataUnionId
 }>

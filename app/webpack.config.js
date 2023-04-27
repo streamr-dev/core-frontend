@@ -8,7 +8,7 @@ const ImageminPlugin = require('imagemin-webpack-plugin').default
 const StyleLintPlugin = require('stylelint-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
-const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin')
+const DeadCodePlugin = require('webpack-deadcode-plugin')
 const cssProcessor = require('clean-css')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -51,7 +51,7 @@ module.exports = {
     ],
     output: {
         path: dist,
-        filename: 'bundle_[hash:8].js',
+        filename: 'bundle_[name]_[hash:8].js',
         chunkFilename: '[name].bundle_[contenthash:8].js',
         sourceMapFilename: '[name]_[hash:8].map',
         publicPath,
@@ -60,7 +60,7 @@ module.exports = {
         strictExportPresence: true,
         rules: [
             {
-                test: /\.(ts|tsx)?$/,
+                test: /\.tsx?$/,
                 exclude: /node_modules/,
                 use: [
                     {
@@ -77,18 +77,10 @@ module.exports = {
                 ],
             },
             {
-                test: /\.mdx$/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            rootMode: 'upward',
-                            cacheDirectory: !isProduction(),
-                            compact: isProduction(),
-                        },
-                    },
-                    '@mdx-js/loader',
-                ],
+                test: /\.m?js$/,
+                resolve: {
+                    fullySpecified: false,
+                },            
             },
             {
                 test: /.jsx?$/,
@@ -229,14 +221,21 @@ module.exports = {
             ]
             : []),
         // Ignore all locale files of moment.js
-        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+        new webpack.IgnorePlugin({
+            resourceRegExp: /^\.\/locale$/,
+            contextRegExp: /moment$/,
+        }),
+        // Fix process is not defined error
+        new webpack.ProvidePlugin({
+            process: 'process/browser',
+        }),
     ]
         .concat(
             isProduction()
                 ? [
                     new CleanWebpackPlugin([dist]),
                     // Production plugins
-                    new webpack.optimize.OccurrenceOrderPlugin(),
+                    // new webpack.optimize.OccurrenceOrderPlugin(), // commented out as it started throwing errors after update to webpack5
                     new webpack.EnvironmentPlugin({
                         NODE_ENV: 'production',
                     }),
@@ -258,36 +257,30 @@ module.exports = {
                 ]
                 : [
                     // Dev plugins
-                    new UnusedFilesWebpackPlugin({
+                    new DeadCodePlugin({
                         patterns: [
                             'src/marketplace/**/*.*',
                             'src/shared/**/*.*',
                             'src/routes/**/*.*',
                             'src/userpages/**/*.*',
-                            'src/docs/**/*.*',
                             'src/*.*',
-                        ].filter(Boolean),
-                        globOptions: {
-                            ignore: [
-                                'node_modules/**/*.*',
-                                // skip tests
-                                '**/tests/*.*',
-                                '**/tests/**/*.*',
-                                '**/test/*.*',
-                                '**/test/**/*.*',
-                                '**/*.test.ts',
-                                '**/*.test.tsx',
-                                // skip conditional stubs
-                                '**/stub.tsx',
-                                // skip stories
-                                '**/*.stories.*',
-                                // skip MD documentation
-                                'src/docs/docsEditingGuide.md',
-                                // skip sketch files
-                                '**/*.sketch',
-                                'src/docs/scripts/*.*',
-                            ],
-                        },
+                        ],
+                        exclude: [
+                            'node_modules/**/*.*',
+                            // skip tests
+                            '**/tests/*.*',
+                            '**/tests/**/*.*',
+                            '**/test/*.*',
+                            '**/test/**/*.*',
+                            '**/*.test.ts',
+                            '**/*.test.tsx',
+                            // skip conditional stubs
+                            '**/stub.tsx',
+                            // skip stories
+                            '**/*.stories.*',
+                            // skip sketch files
+                            '**/*.sketch',
+                        ],
                     }),
                     new WebpackNotifierPlugin(),
                 ],
@@ -339,11 +332,10 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
         symlinks: false,
+        fallback: { "stream": require.resolve("stream-browserify") },
         alias: {
             // Make sure you set up aliases in flow and jest configs.
             $app: __dirname,
-            $auth: path.resolve(__dirname, 'src/auth/'),
-            $docs: path.resolve(__dirname, 'src/docs/'),
             $mp: path.resolve(__dirname, 'src/marketplace/'),
             $userpages: path.resolve(__dirname, 'src/userpages/'),
             $shared: path.resolve(__dirname, 'src/shared/'),

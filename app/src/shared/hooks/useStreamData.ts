@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
-import { useSubscription } from 'streamr-client-react'
+import { useSubscribe } from 'streamr-client-react'
+import { MessageID } from 'streamr-client'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { Message } from '$shared/utils/SubscriptionEvents'
 
@@ -14,8 +15,8 @@ function getEmptyData() {
     return []
 }
 
-function areMessagesSame(a, b) {
-    return a.streamMessage.messageId.toMessageRef().compareTo(b.streamMessage.messageId.toMessageRef()) === 0
+function areMessagesSame(a: MessageID, b: MessageID) {
+    return a.toMessageRef().compareTo(b.toMessageRef()) === 0
 }
 
 export default function useStreamData(
@@ -35,39 +36,29 @@ export default function useStreamData(
     useEffect(() => {
         onErrorRef.current = onErrorProp
     }, [onErrorProp])
-    useSubscription(
+    useSubscribe({ id: streamId, partition: partition },
         {
-            stream: streamId,
-            partition,
-        },
-        {
-            onMessage(message, metadata) {
+            disabled: !activeFn(),
+            onError: (e) => {
+                console.warn(e)
+                if (typeof onErrorRef.current === 'function') {
+                    onErrorRef.current()
+                }
+            },
+            onMessage(msg) {
                 if (!isMounted()) {
                     return
                 }
 
-                switch ((message as any).type) {
-                    case Message.Done:
-                    case Message.Notification:
-                    case Message.Warning:
-                        return
-
-                    case Message.Error:
-                        if (typeof onErrorRef.current === 'function') {
-                            onErrorRef.current()
-                        }
-
-                        return
-
-                    default:
-                }
-
                 const dataPoint = {
-                    data: message,
-                    metadata,
+                    data: msg.parsedContent,
+                    metadata: {
+                        messageId: msg.getMessageID(),
+                        timestamp: msg.getTimestamp(),
+                    },
                 }
                 const { current: cache } = cacheRef
-                const existingMessage = cache.find((d) => areMessagesSame(d.metadata, metadata))
+                const existingMessage = cache.find((d) => areMessagesSame(d.metadata.messageId, dataPoint.metadata.messageId))
 
                 if (existingMessage) {
                     // Duplicate message -> skip it
@@ -78,8 +69,6 @@ export default function useStreamData(
                 cache.length = Math.min(cache.length, tail)
                 setData([...cache])
             },
-
-            isActive: !!activeFn(),
         },
     )
     const firstRunRef = useRef(true)

@@ -12,6 +12,7 @@ module.exports = {
     },
     plugins: ['react-hooks', 'import', 'react', 'jsx-a11y'],
     rules: {
+        'prefer-const': 'warn',
         'react-hooks/rules-of-hooks': 'error',
         'react-hooks/exhaustive-deps': 'warn',
         'no-unused-vars': 'off', // as we prefer the typescript version of this rule
@@ -34,7 +35,7 @@ module.exports = {
         "react/no-unknown-property": ['error', { ignore: ['css'] }],
         'import/extensions': 'off',
         'import/order': [
-            'error',
+            'warn',
             {
                 groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object'],
                 pathGroups: [
@@ -61,8 +62,9 @@ module.exports = {
                 ],
             },
         ],
+        indent: 'off',
         '@typescript-eslint/explicit-module-boundary-types': [
-            'warn', // TODO - change to 'error' in the future
+            'off', // TODO - change to 'error' in the future
             {
                 allowArgumentsExplicitlyTypedAsAny: true,
             },

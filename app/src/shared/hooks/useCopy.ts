@@ -1,50 +1,64 @@
 import { useState, useCallback, useEffect, useMemo, useReducer, useRef } from 'react'
 import copyToClipboard from 'copy-to-clipboard'
+import { successToast } from '$app/src/utils/toast'
 
-const SUSTAIN_IN_MILLIS = 3000
+const SUSTAIN_FOR = 3000 // ms
 
-const useCopy = (onAfterCopied?: (value: string) => void): { copy: (value: string) => void; isCopied: boolean } => {
+export default function useCopy() {
     const [isCopied, setIsCopied] = useState(false)
-    const onAfterCopiedRef = useRef(onAfterCopied)
-    useEffect(() => {
-        onAfterCopiedRef.current = onAfterCopied
-    }, [onAfterCopied])
+
     const [copiedAt, touch] = useReducer(
         (
             current: number,
             now: number, // Throttle updates to `copiedAt`.
-        ) => (current + SUSTAIN_IN_MILLIS > now ? current : now),
+        ) => (current + SUSTAIN_FOR > now ? current : now),
         Number.NEGATIVE_INFINITY,
     )
-    const copy = useCallback((value: string) => {
-        copyToClipboard(value)
 
-        if (typeof onAfterCopiedRef.current === 'function') {
-            onAfterCopiedRef.current(value)
-        }
+    const copy = useCallback(
+        (
+            value: string,
+            {
+                onAfterCopied,
+                toastMessage,
+            }: {
+                onAfterCopied?: (value: string) => void
+                toastMessage?: string
+            } = {},
+        ) => {
+            copyToClipboard(value)
 
-        touch(Date.now())
-    }, [])
+            onAfterCopied?.(value)
+
+            if (typeof toastMessage === 'string') {
+                successToast({
+                    title: toastMessage,
+                })
+            }
+
+            touch(Date.now())
+        },
+        [],
+    )
+
     useEffect(() => {
         if (copiedAt < 0) {
             return () => {}
         }
 
         setIsCopied(true)
+
         const timeout = setTimeout(() => {
             setIsCopied(false)
-        }, SUSTAIN_IN_MILLIS)
+        }, SUSTAIN_FOR)
+
         return () => {
             clearTimeout(timeout)
         }
     }, [copiedAt])
-    return useMemo(
-        () => ({
-            copy,
-            isCopied,
-        }),
-        [copy, isCopied],
-    )
-}
 
-export default useCopy
+    return {
+        copy,
+        isCopied,
+    }
+}

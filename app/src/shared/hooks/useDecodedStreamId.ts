@@ -1,4 +1,6 @@
 import { useParams } from 'react-router-dom'
 export default function useDecodedStreamId({ paramName = 'id' } = {}) {
-    return decodeURIComponent(useParams()[paramName])
+    const paramValue = useParams()[paramName]
+
+    return typeof paramValue !== 'undefined' ? decodeURIComponent(paramValue) : ''
 }

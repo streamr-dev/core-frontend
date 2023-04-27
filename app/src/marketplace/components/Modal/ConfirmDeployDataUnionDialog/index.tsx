@@ -5,11 +5,11 @@ import { ImageTile } from '$shared/components/Tile'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'
-import type { Product } from '$mp/types/product-types'
-import '$mp/types/product-types'
+import { Project } from '$mp/types/project-types'
+import '$mp/types/project-types'
 import styles from './confirmDeployDataUnionDialog.pcss'
 export type Props = {
-    product: Product
+    product: Project
     onClose: () => void
     onContinue: () => Promise<void>
     onShowGuidedDialog: () => void

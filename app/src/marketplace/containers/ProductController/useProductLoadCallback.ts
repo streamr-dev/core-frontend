@@ -2,12 +2,11 @@ import BN from 'bignumber.js'
 import { useCallback } from 'react'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import usePending from '$shared/hooks/usePending'
-import { canHandleLoadError, handleLoadError } from '$auth/utils/loginInterceptor'
-import type { Product, ProductId } from '$mp/types/product-types'
+import { Project, ProjectId } from '$mp/types/project-types'
 import { getProductById } from '$mp/modules/product/services'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
-import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
-import { timeUnits, DEFAULT_CURRENCY, productStates } from '$shared/utils/constants'
+import { isPaidProject, isDataUnionProduct } from '$mp/utils/product'
+import { DEFAULT_CURRENCY, projectStates } from '$shared/utils/constants'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import { priceForTimeUnits } from '$mp/utils/price'
 import { isEthereumAddress } from '$mp/utils/validate'
@@ -16,39 +15,29 @@ import { fromDecimals } from '$mp/utils/math'
 import { getAdminFee } from '$mp/modules/dataUnion/services'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import useFailure from '$shared/hooks/useFailure'
-import useEditableState from '$shared/contexts/Undo/useEditableState'
-import * as State from '../EditProductPage/state'
-import { useController } from '.'
+import {timeUnits} from "$shared/utils/timeUnit"
+import useController from './useController'
 type LoadProps = {
-    productId: ProductId
+    productId: ProjectId
     ignoreUnauthorized?: boolean
     requirePublished?: boolean
-    useAuthorization?: boolean
 }
 export default function useProductLoadCallback() {
-    const productUpdater = useEditableState()
     const { wrap } = usePending('product.LOAD')
     const isMounted = useIsMounted()
     const fail = useFailure()
     const { setProduct } = useController()
     const load = useCallback(
-        async ({ productId, ignoreUnauthorized, requirePublished, useAuthorization = true }: LoadProps) =>
+        async ({ productId, ignoreUnauthorized, requirePublished }: LoadProps) =>
             wrap(async () => {
                 let product
 
                 try {
                     // $FlowFixMe: possibly missing property beneficiaryAddress in Promise
-                    product = await getProductById(productId, useAuthorization)
+                    product = await getProductById(productId)
                 } catch (error) {
                     if (!isMounted()) {
                         return
-                    }
-
-                    if (canHandleLoadError(error)) {
-                        await handleLoadError({
-                            error,
-                            ignoreUnauthorized,
-                        })
                     }
 
                     throw error
@@ -63,7 +52,7 @@ export default function useProductLoadCallback() {
                 // bail if the product is not actually published - this is an edge case
                 // because this should only happen with user's own products, otherwise
                 // the product load will fail due to permissions
-                if (!!requirePublished && product.state !== productStates.DEPLOYED) {
+                if (!!requirePublished && product.state !== projectStates.DEPLOYED) {
                     throw new ResourceNotFoundError(ResourceType.PRODUCT, product.id)
                 }
 
@@ -85,18 +74,12 @@ export default function useProductLoadCallback() {
                 }
 
                 // Fetch status from contract product and adjust pending changes
-                let requiresWhitelist = false
                 let pricingTokenAddress = null
                 let pricePerSecond = null
 
                 try {
                     const contractProduct = await getProductFromContract(productId, true, chainId)
-                    ;({ requiresWhitelist, pricingTokenAddress, pricePerSecond } = contractProduct)
-
-                    // remove from pending changes if requiresWhitelist setting is correct
-                    if (product.pendingChanges && requiresWhitelist === product.pendingChanges.requiresWhitelist) {
-                        delete product.pendingChanges.requiresWhitelist
-                    }
+                    ;({ pricingTokenAddress, pricePerSecond } = contractProduct)
 
                     // remove from pending changes if pricingTokenAddress setting is correct
                     if (product.pendingChanges && pricingTokenAddress === product.pendingChanges.pricingTokenAddress) {
@@ -104,7 +87,6 @@ export default function useProductLoadCallback() {
                     }
                 } catch (e) {
                     // ignore error, assume product is not published
-                    requiresWhitelist = product && product.pendingChanges && product.pendingChanges.requiresWhitelist
                     pricingTokenAddress = product && product.pendingChanges && product.pendingChanges.pricingTokenAddress
                 }
 
@@ -124,9 +106,9 @@ export default function useProductLoadCallback() {
                     return
                 }
 
-                const nextProduct: Product = {
+                const nextProduct: Project = {
                     ...product,
-                    isFree: !!product.isFree || !isPaidProduct(product),
+                    isFree: !!product.isFree || !isPaidProject(product),
                     timeUnit: timeUnits.hour,
                     priceCurrency: product.priceCurrency || DEFAULT_CURRENCY,
                     price:
@@ -137,15 +119,13 @@ export default function useProductLoadCallback() {
                         ).toString(),
                     adminFee: currentAdminFee,
                     dataUnionDeployed,
-                    requiresWhitelist,
                     pricingTokenAddress,
                     pricingTokenDecimals: new BN(pricingTokenDecimals).toNumber(),
                     pricePerSecond: pricePerSecond || product.pricePerSecond,
                 }
                 setProduct({ ...nextProduct, pendingChanges: null })
-                productUpdater.replaceState(() => State.withPendingChanges(nextProduct))
             }),
-        [wrap, setProduct, productUpdater, isMounted],
+        [wrap, setProduct, isMounted],
     )
     return useCallback(
         async (props: LoadProps) => {

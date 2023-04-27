@@ -1,6 +1,5 @@
 import EventEmitter from 'events'
 import { PromiEvent, TransactionReceipt } from 'web3-core'
-import { Eth } from 'web3-eth'
 import { Contract } from 'web3-eth-contract'
 import { isHex } from 'web3-utils'
 import BN from 'bignumber.js'
@@ -8,12 +7,11 @@ import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import TransactionError from '$shared/errors/TransactionError'
-import type { SmartContractCall, Address, SmartContractConfig, SmartContractTransaction } from '$shared/types/web3-types'
-import type { NumberString } from '$shared/types/common-types'
+import { SmartContractCall, Address, SmartContractConfig, SmartContractTransaction } from '$shared/types/web3-types'
+import { NumberString } from '$shared/types/common-types'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import Transaction from '$shared/utils/Transaction'
-import type { Product, SmartContractProduct } from '../types/product-types'
-import { arePricesEqual } from '../utils/price'
+import TransactionRejectedError from '$shared/errors/TransactionRejectedError'
 
 // TODO add typing
 export type Callable = {
@@ -34,6 +32,10 @@ export const getUnprefixedHexString = (hex: string): string => hex.replace(/^0x|
  * @returns {boolean}
  */
 export const isValidHexString = (hex: string): boolean => (typeof hex === 'string') && isHex(hex)
+/**
+ * @deprecated Use `web3.eth.Contract` directly. The main reason why this is a utility function
+ * is the `usePublicNode` flag. It's going away (work in progress).
+ */
 export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode = false, chainId?: number): Contract => {
     if (usePublicNode && chainId == null) {
         throw new Error('ChainId must be provided!')
@@ -42,14 +44,7 @@ export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode
     const web3 = usePublicNode ? getPublicWeb3(chainId) : getWeb3()
     return new web3.eth.Contract(abi, address)
 }
-export const isContractProductUpdateRequired = (contractProduct: SmartContractProduct, editProduct: Product): boolean => {
-    const hasPriceChanged = !arePricesEqual(contractProduct.pricePerSecond, editProduct.pricePerSecond)
-    const hasBeneficiaryChanged = !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress)
-    const hasPricingTokenChanged =
-        editProduct.pricingTokenAddress != null && !areAddressesEqual(contractProduct.pricingTokenAddress, editProduct.pricingTokenAddress)
-    const hasWhitelistChanged = editProduct.requiresWhitelist != null && contractProduct.requiresWhitelist !== editProduct.requiresWhitelist
-    return hasPriceChanged || hasBeneficiaryChanged || hasPricingTokenChanged || hasWhitelistChanged
-}
+
 export const call = (method: Callable): SmartContractCall<any> => method.call()
 export const send = (
     method: Sendable,
@@ -87,7 +82,12 @@ export const send = (
                     if (error instanceof Error) {
                         errorHandler(error)
                     } else {
-                        errorHandler(new TransactionError('Transaction error', error))
+                        if ((error as any).code === 4001) {
+                            // User rejected the transaction in Metamask
+                            errorHandler(new TransactionRejectedError())
+                        } else {
+                            errorHandler(new TransactionError('Transaction error', error))
+                        }
                     }
                 })
                 .on('transactionHash', (hash) => {

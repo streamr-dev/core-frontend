@@ -1,6 +1,6 @@
 import * as all from '$mp/modules/contractProduct/services'
 import * as utils from '$mp/utils/smartContract'
-import { SmartContractProduct } from '$mp/types/product-types'
+import { SmartContractProduct } from '$mp/types/project-types'
 describe('Product services', () => {
     beforeEach(() => {})
     afterEach(() => {
@@ -42,8 +42,7 @@ describe('Product services', () => {
                 chainId: 8995,
                 pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76', // DATA,
                 pricingTokenDecimals: 10,
-                state: 'DEPLOYED',
-                requiresWhitelist: false
+                state: 'DEPLOYED'
             }
         })
         it('must fail if no id', (done) => {
@@ -165,8 +164,7 @@ describe('Product services', () => {
                 chainId: 8995,
                 pricingTokenAddress: '0x123',
                 pricingTokenDecimals: 10,
-                state: 'DEPLOYED',
-                requiresWhitelist: false
+                state: 'DEPLOYED'
             }
         })
         it('must fail if no id', (done) => {

@@ -48,4 +48,7 @@ describe('productList - selectors', () => {
     it('selects has more results', () => {
         expect(all.selectHasMoreSearchResults(state as StoreState)).toStrictEqual(false)
     })
+    it('selects projectAuthor', () => {
+        expect(all.selectProjectsAuthorFilter(state as StoreState)).toStrictEqual('all')
+    })
 })

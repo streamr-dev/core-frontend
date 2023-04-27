@@ -20,7 +20,7 @@ export type Props = {
     controlClassName?: string
 }
 // TODO add typing
-const customStyles = {
+const customStyles: any = {
     control: (provided: any, state: any) => ({
         ...provided,
         padding: '0',
@@ -75,6 +75,8 @@ const customStyles = {
     placeholder: () => ({
         color: '#CDCDCD',
         lineHeight: '1rem',
+        position: 'absolute',
+        left: '16px'
     }),
     valueContainer: (provided: any) => ({
         ...provided,
@@ -86,20 +88,34 @@ const customStyles = {
     singleValue: (provided: any) => ({
         ...provided,
         margin: 0,
-        overflow: 'visible',
+        overflow: 'hidden',
         display: 'flex',
         alignItems: 'center',
     }),
 }
 
-const Control: FunctionComponent<{className?: string, children?: ReactNode | ReactNode[], selectProps: any}> = ({ className, children, ...props }) => {
+const Control: FunctionComponent<{ className?: string; children?: ReactNode | ReactNode[]; selectProps: any }> = ({
+    className,
+    children,
+    ...props
+}) => {
     const { controlClassName } = props.selectProps
     return (
-        <components.Control {...props} className={cx(className, controlClassName)}>
+        <components.Control {...(props as any)} className={cx(className, controlClassName)}>
             {children}
         </components.Control>
     )
 }
+
+const EllipsisSpan = styled.span`
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+`
+
+const EllipsisSpanWithTickMargin = styled(EllipsisSpan)`
+    margin-right: 18px;
+`
 
 const UnstyledTick = (props: any) => <SvgIcon {...props} name="tick" />
 
@@ -117,10 +133,10 @@ const OptionIconWrapper = styled.div`
 `
 
 const IconOption: FunctionComponent<{isSelected: boolean, data: {icon: ReactNode, label: string}}> = (props) => (
-    <components.Option {...props}>
+    <components.Option {...props as any}>
         {props.isSelected && <Tick />}
         {props.data.icon != null && <OptionIconWrapper>{props.data.icon}</OptionIconWrapper>}
-        {props.data.label}
+        <EllipsisSpanWithTickMargin>{props.data.label}</EllipsisSpanWithTickMargin>
     </components.Option>
 )
 
@@ -153,14 +169,16 @@ const IconWrapper = styled.div`
 const SingleValue = ({ children, ...props }) => {
     const { icon } = props.getValue()[0] || {}
     return (
-        <components.SingleValue {...props}>
+        <components.SingleValue {...props as any}>
             {icon != null && <IconWrapper>{icon}</IconWrapper>}
-            {children}
+            <EllipsisSpan>{children}</EllipsisSpan>
         </components.SingleValue>
     )
 }
 
-const UnstyledSelect = ({ controlClassName, required = false, clearable = true, disabled, ...props }: Props) => (
+const ClearIndicator = () => (<></>)
+
+export const UnstyledSelect = ({ controlClassName, required = false, clearable = true, disabled, ...props }: Props) => (
     <ReactSelect
         styles={customStyles}
         components={{
@@ -169,10 +187,12 @@ const UnstyledSelect = ({ controlClassName, required = false, clearable = true, 
             Option: IconOption,
             DropdownIndicator,
             SingleValue,
+            ClearIndicator
         }}
-        controlClassName={controlClassName}
+        isMulti={false}
+        className={controlClassName}
         required={required}
-        clearable={clearable}
+        isClearable={clearable}
         isDisabled={disabled}
         isSearchable={false} // $FlowFixMe potential override necessary.
         {...props}
@@ -182,4 +202,8 @@ const UnstyledSelect = ({ controlClassName, required = false, clearable = true, 
 const Select = styled(UnstyledSelect)`
     font-size: 0.875rem;
 `
+/**
+ * @deprecated
+ * Replaced by SelectField2 due to redesign of the Hub
+ */
 export default Select

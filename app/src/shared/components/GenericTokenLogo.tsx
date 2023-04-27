@@ -22,7 +22,6 @@ const Circle = styled.div<CircleProps>`
     border-radius: 50%;
     color: ${({ tokenColor }) => Color(tokenColor).isDark() ? '#ffffff' : '#000000'};
     background-color: ${({ tokenColor }) => tokenColor};
-    margin-right: 0.5rem;
 `
 
 const hashCode = (str: string) => {

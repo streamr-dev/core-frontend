@@ -3,12 +3,11 @@
   "compilerOptions": {
     "types": ["jest", "node"],
     "module": "esnext",
+    "strict": false,
     "isolatedModules": false,
     "noImplicitAny": false,
     "paths": {
       "$app/*": ["*"],
-      "$auth/*": ["src/auth/*"],
-      "$docs/*": ["src/docs/*"],
       "$mp/*": ["src/marketplace/*"],
       "$userpages/*": ["src/userpages/*"],
       "$routes/*": ["src/routes/*"],

@@ -1,45 +1,35 @@
-import React, { Fragment, FunctionComponent } from 'react'
-import styled from 'styled-components'
-import { useSelector } from 'react-redux'
+import React, {Fragment, FunctionComponent} from 'react'
+import styled, { css } from 'styled-components'
 import { useLocation } from 'react-router-dom'
 import {
     Button,
     HamburgerButton,
     Logo,
-    LogoLink,
     Menu as UnstyledMenu,
-    Navbar,
     NavDropdown,
-    NavProvider,
-    NavLink,
     NavOverlay,
 } from '@streamr/streamr-layout'
-import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
+import { toaster } from 'toasterhea'
+import { MD as TABLET, LG as DESKTOP, COLORS, REGULAR, MEDIUM } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
-import { DevelopersMenu } from '$docs/components/DocsLayout/DocsNav'
-import { selectUserData } from '$shared/modules/user/selectors'
 import SvgIcon from '$shared/components/SvgIcon'
-import ActivityList from '$shared/components/ActivityList'
-import { useSessionMethod } from '$shared/reducers/session'
-import ActivityListItems from '$shared/components/ActivityList/ActivityListItems'
+import AvatarImage from '$shared/components/AvatarImage'
+import AccountsBalance from '$shared/components/AccountsBalance'
+import {truncate} from "$shared/utils/text"
+import ConnectModal from '$app/src/modals/ConnectModal'
+import { Layer } from '$app/src/utils/Layer'
+import { useEns, useWalletAccount } from '$shared/stores/wallet'
+import toast from '$app/src/utils/toast'
 import routes from '$routes'
-import User, { Avatarless, Name, Username, UsernameCopy } from './User'
-import SiteSection from './SiteSection'
-import MetamaskIcon from './metamask.svg'
-import WalletconnectIcon from './walletConnect.svg'
-const icons: {[key: string]: any} = {
-    metamask: MetamaskIcon,
-    walletConnect: WalletconnectIcon,
-}
+import { Avatarless, Name, Username } from './User'
+
+const MOBILE_LG = 576
+
 const CaretDownIcon = styled(SvgIcon)`
     opacity: 1;
 `
 const CaretUpIcon = styled(SvgIcon)`
     opacity: 0;
-`
-const BellIcon = styled(SvgIcon)`
-    height: 20px;
-    width: 16px;
 `
 const DropdownToggle = styled.div`
     background: #f8f8f8;
@@ -59,27 +49,54 @@ const DropdownToggle = styled.div`
         transition: 200ms opacity;
     }
 `
-const Menu = styled(UnstyledMenu)``
-const UnpaddedMenu = styled(Menu)`
-    padding: 0 !important;
+const Menu = styled(UnstyledMenu)`
 `
+const MenuItem = styled(Menu.Item)`
+  &.user-info {
+    padding: 0 16px !important;
+  }
+  &.disconnect {
+    padding: 0 !important;
+    .disconnect-text {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+`
+
+const MenuDivider = styled(Menu.Divider)`
+  margin: 0;
+`
+
+const WalletAddress = styled.div`
+  margin-left: 13px;
+  display: flex;
+  flex-direction: column;
+  span {
+    font-size: 14px;
+    line-height: 18px;
+    user-select: none;
+    color: ${COLORS.primary};
+    font-weight: 400;
+    &.ens-name {
+      font-weight: 500;
+    }
+  }
+`
+
 const SignedInUserMenu = styled(NavDropdown)`
     ${Menu} {
-        padding-top: 4px;
+        width: 260px;
+        padding: 0;
 
         ${Menu.Item}:first-child {
             padding: 0 4px;
             margin-bottom: 10px;
         }
 
-        ${Avatarless} {
-            text-align: center;
-            background: #f8f8f8;
-            border-radius: 4px;
-            padding: 16px 6px;
-            width: 160px;
-            user-select: none;
-        }
+        ${Avatarless} {}
 
         ${Name},
         ${Username} {
@@ -99,165 +116,308 @@ const SignedInUserMenu = styled(NavDropdown)`
         }
     }
 `
+export const Navbar = styled.div`
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+`
+const MenuGrid = styled.div`
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    justify-content: center;
+    align-items: center;
+`
+const NavLink = styled.a``
+export const NavbarItem = styled.div`
+    ${MenuGrid} & + & {
+        margin-left: 16px;
+    }
+`
+const LinkWrapper = styled.div`
+    ${NavLink} {
+        display: block;
+        color: ${COLORS.primaryLight};
+        text-transform: uppercase;
+        font-weight: ${MEDIUM};
+        letter-spacing: 2px;
+        white-space: nowrap;
+        text-decoration: none !important;
+    }
+    
+    &:hover {
+        ${NavLink} {
+            color: ${COLORS.primary};
+        }
+    }
+`
 
-const UnstyledNavDivider: FunctionComponent = (props) => (
-    <div {...props}>
-        <div />
-    </div>
-)
+type UnstyledNavbarLinkProps = {
+    highlight?: boolean
+    children: any
+}
 
-const NavDivider = styled(UnstyledNavDivider)`
-    height: 16px;
-    opacity: 0.6;
-    padding: 0 8px;
+const UnstyledNavbarLink: FunctionComponent<UnstyledNavbarLinkProps> = ({highlight, children, ...props}) => {
+    return (
+        <LinkWrapper {...props}>
+            {children}
+        </LinkWrapper>
+    )
+}
 
-    > div {
-        background-color: currentColor;
+const NavbarLinkDesktop = styled(UnstyledNavbarLink)<{ highlight: boolean }>`
+    position: relative;
+    
+    ${NavLink} {
+        font-size: 12px;
+        padding: 0 10px;
+        height: 40px;
+        line-height: 40px;
+    }
+    
+    &:after {
+        display: block;
         content: '';
-        height: 100%;
-        width: 1px;
+        position: absolute;
+        bottom: 2px;
+        left: 50%;
+        transition: width 0.2s ease-out;
+        width: 0;
+        height: 2px;
+        background-color: ${COLORS.primary};
+        transform: translateX(-50%);
+    }
+
+    &:hover {
+        &:after {
+            transition: width 0.2s ease-in;
+            width: 20px;
+        }
+    }
+    
+    ${({ highlight }) => highlight && css`
+        &:after {
+            left: 50%;
+            width: 20px;
+        }
+
+        ${NavLink} {
+            color: ${COLORS.primary};
+        }
+    `}
+`
+
+const NavbarLinkMobile = styled(UnstyledNavbarLink)<{ highlight: boolean }>`
+    position: relative;
+    border-bottom: 1px solid #efefef;
+
+    ${NavLink} {
+        font-size: 18px;
+        line-height: 100px;
+    }
+    
+    ${({ highlight }) => highlight && css`
+        &:after {
+            display: block;
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: -24px;
+            width: 3px;
+            height: 32px;
+            background-color: ${COLORS.primary};
+        }
+
+        ${NavLink} {
+            color: ${COLORS.primary};
+        }
+
+        @media (min-width: ${MOBILE_LG}px) {
+            &:after {
+                left: -64px;
+            }
+        }
+    `}
+`
+
+const NavbarItemAccount = styled.div`
+    margin-left: auto;
+    margin-right: 15px;
+
+    @media (min-width: ${TABLET}px) {
+        margin-right: 0;
+    }
+`
+
+const UnstyledLogoLink: FunctionComponent<{children?: any, href: string}> = ({children, ...props}) => {
+    return (
+        <a {...props}>{children}</a>
+    )
+}
+
+export const LogoLink = styled(UnstyledLogoLink)`
+    color: #f65f0a !important;
+    display: block;
+    max-width: 64px;
+    width: 32px;
+
+    @media (min-width: ${DESKTOP}px) {
+        width: 40px;
+    }
+`
+
+const Avatar = styled(AvatarImage)`
+    width: 32px;
+    height: 32px;
+    border: 1px solid #F3F3F3;
+    border-radius: 50%;
+    background-color: white;
+
+    @media (min-width: ${DESKTOP}px) {
+        width: 40px;
+        height: 40px;
+    }
+`
+
+const MenuItemAvatarContainer = styled.div`
+    background-color: ${COLORS.secondaryLight};
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    margin: 16px 0;
+`
+
+const UserInfoMobile = styled.div`
+    background-color: #f8f8f8;
+    padding: 8px;
+    display: flex;
+    justify-content: flex-start;
+    border-radius: 4px;
+    
+    ${Avatar} {
+        width: 45px;
+        height: 45px;
+        background-color: #fff;
+        margin-right: 8px;
+    }
+    
+    ${Avatarless} {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        
+        ${Name} {
+            font-size: 14px;
+            font-weight: ${REGULAR};
+            line-height: 1.25em;
+        }
+        ${Username} {
+            padding: 3px;
+            font-size: 12px;
+            font-weight: ${MEDIUM};
+            background-color: #fff;
+            color: #848484;
+            margin: 3px 0;
+        }
     }
 `
 
 const UnstyledDesktopNav: FunctionComponent = (props) => {
-    const { highlight: current } = NavProvider.useState()
     const { pathname } = useLocation()
-    const currentUser = useSelector(selectUserData)
+
+    const account = useWalletAccount()
+
+    const ensName = useEns(account)
+
     return (
         <div {...props}>
             <Navbar>
-                <Navbar.Item spread>
+                <NavbarItem>
                     <LogoLink href={routes.root()}>
                         <Logo />
                     </LogoLink>
-                </Navbar.Item>
-                <Navbar.Item data-mobile-only>
-                    <SiteSection>{current}</SiteSection>
-                </Navbar.Item>
-                <Navbar.Item data-desktop-only>
-                    <NavDropdown
-                        highlight={current === 'core'}
-                        toggle={<NavLink>Core</NavLink>}
-                        menu={
-                            <Menu>
-                                <Menu.Item as={Link} to={routes.streams.index()}>
-                                    Streams
-                                </Menu.Item>
-                                <Menu.Item as={Link} to={routes.products.index()}>
-                                    Products
-                                </Menu.Item>
-                                <Menu.Item as={Link} to={routes.dataunions.index()}>
-                                    Data Unions
-                                </Menu.Item>
-                                <Menu.Item as={Link} to={routes.subscriptions()}>
-                                    Subscriptions
-                                </Menu.Item>
-                                <Menu.Item as={Link} to={routes.transactions()}>
-                                    Transactions
-                                </Menu.Item>
-                            </Menu>
-                        }
-                    />
-                </Navbar.Item>
-                <Navbar.Item data-desktop-only>
-                    <NavDropdown
-                        highlight={current === 'marketplace'}
-                        toggle={
-                            <NavLink as={Link} to={routes.marketplace.index()}>
-                                Marketplace
+                </NavbarItem>
+                <MenuGrid data-desktop-only>
+                    <NavbarItem>
+                        <NavbarLinkDesktop highlight={pathname.startsWith(routes.projects.index())}>
+                            <NavLink as={Link} to={routes.projects.index()}>
+                                Projects
                             </NavLink>
-                        }
-                    />
-                </Navbar.Item>
-                <Navbar.Item data-desktop-only>
-                    <NavDropdown
-                        highlight={current === 'docs'}
-                        toggle={<NavLink>Developers</NavLink>}
-                        menu={<DevelopersMenu />}
-                    />
-                </Navbar.Item>
-                {!currentUser && (
+                        </NavbarLinkDesktop>
+                    </NavbarItem>
+                    <NavbarItem>
+                        <NavbarLinkDesktop highlight={pathname.startsWith(routes.streams.index())}>
+                            <NavLink as={Link} to={routes.streams.index()}>
+                                Streams
+                            </NavLink>
+                        </NavbarLinkDesktop>
+                    </NavbarItem>
+                    <NavbarItem>
+                        <NavbarLinkDesktop highlight={false}>
+                            <NavLink as={Link} href={routes.networkExplorer()} rel="noopener noreferrer" target="_blank">
+                                Network
+                            </NavLink>
+                        </NavbarLinkDesktop>
+                    </NavbarItem>
+                </MenuGrid>
+                {!account && (
                     <Fragment>
-                        <Navbar.Item
-                            style={{
-                                marginLeft: '4px',
-                            }}
-                            data-desktop-only
-                        >
-                            <NavDivider />
-                        </Navbar.Item>
-                        <Navbar.Item data-desktop-only>
+                        <NavbarItemAccount>
                             <Button
-                                tag="a"
-                                href={routes.auth.login({
-                                    redirect: pathname,
-                                })}
                                 kind="primary"
                                 size="mini"
                                 outline
+                                type="button"
+                                onClick={async () => {
+                                    try {
+                                        await toaster(ConnectModal, Layer.Modal).pop()
+                                    } catch (e) {
+                                        console.warn('Wallet connecting failed', e)
+                                    }
+                                }}
                             >
-                                Connect Wallet
+                                Connect
                             </Button>
-                        </Navbar.Item>
+                        </NavbarItemAccount>
                     </Fragment>
                 )}
-                {!!currentUser && (
+                {!!account && (
                     <Fragment>
-                        <Navbar.Item data-desktop-only>
-                            <ActivityList>
-                                <NavDropdown
-                                    alignMenu="right"
-                                    nodeco
-                                    toggle={
-                                        <NavLink>
-                                            <BellIcon name="alarmBell" />
-                                        </NavLink>
-                                    }
-                                    menu={
-                                        <UnpaddedMenu>
-                                            <ActivityListItems />
-                                        </UnpaddedMenu>
-                                    }
-                                />
-                            </ActivityList>
-                        </Navbar.Item>
-                        <Navbar.Item data-desktop-only>
-                            <UsernameCopy username={currentUser.username} />
-                        </Navbar.Item>
-                        <Navbar.Item
-                            style={{
-                                marginLeft: 0,
-                            }}
-                            data-desktop-only
-                        >
+                        <NavbarItemAccount>
                             <SignedInUserMenu
                                 edge
                                 alignMenu="right"
                                 nodeco
                                 toggle={
-                                    <NavLink>
-                                        <DropdownToggle>
-                                            <CaretDownIcon name="caretDown" />
-                                            <CaretUpIcon name="caretUp" />
-                                        </DropdownToggle>
-                                    </NavLink>
+                                    <Avatar username={account} />
                                 }
                                 menu={
                                     <Menu>
-                                        <Menu.Item>
-                                            <Avatarless source={currentUser} />
-                                        </Menu.Item>
-                                        <Menu.Item as={Link} to={routes.profile()}>
-                                            Settings
-                                        </Menu.Item>
-                                        <Menu.Divider />
-                                        <Menu.Item as={Link} to={routes.auth.logout()}>
-                                            Sign out
-                                        </Menu.Item>
+                                        <MenuItem className={'user-info'}>
+                                            <MenuItemAvatarContainer>
+                                                <Avatar username={account} />
+                                                <WalletAddress>
+                                                    {!!ensName && <span className={'ens-name'}>{truncate(ensName)}</span>}
+                                                    <span>{truncate(account)}</span>
+                                                </WalletAddress>
+                                            </MenuItemAvatarContainer>
+                                        </MenuItem>
+                                        <MenuDivider />
+                                        <MenuItem className="disconnect" onClick={() => {
+                                            toast({
+                                                title: 'Use the "Lock" button in your wallet.',
+                                            })
+                                        }}>
+                                            <div className={'disconnect-text'}>
+                                                <span>Disconnect</span>
+                                                <SvgIcon name={'disconnect'}/>
+                                            </div>
+                                        </MenuItem>
                                     </Menu>
                                 }
                             />
-                        </Navbar.Item>
+                        </NavbarItemAccount>
                     </Fragment>
                 )}
                 <HamburgerButton idle />
@@ -266,123 +426,70 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
     )
 }
 
-const ConnectedWith = styled.div`
-    background-color: #f8f8f8;
-    display: none;
-    height: 32px;
-    line-height: 32px;
-    border-radius: 4px;
-    font-weight: var(--normal);
-    font-size: 12px;
-    text-align: center;
-    color: #323232;
-    padding: 0 8px;
-
-    img {
-        width: 1em;
-    }
-
-    strong {
-        display: none;
-    }
-
-    @media (min-width: 268px) {
-        display: block;
-    }
-
-    @media (min-width: 310px) {
-        span {
-            margin-right: 0.1em;
-        }
-
-        span::before {
-            content: 'Using ';
-        }
-    }
-
-    @media (min-width: 346px) {
-        span::before {
-            content: 'Connected with ';
-        }
-    }
-
-    @media (min-width: 424px) {
-        span {
-            margin-right: 0;
-        }
-
-        img {
-            display: none;
-        }
-
-        strong {
-            display: inline;
-        }
-    }
-`
-const methods: {[key: string]: any} = {
-    metamask: 'MetaMask',
-    walletConnect: 'WalletConnect',
-}
-
 const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className }) => {
-    const currentUser = useSelector(selectUserData)
-    const method = useSessionMethod()
+    const account = useWalletAccount()
+
     const { pathname } = useLocation()
+
     return (
         <NavOverlay className={className}>
             <NavOverlay.Head>
                 <Navbar>
-                    <Navbar.Item spread>
+                    <NavbarItem>
                         <LogoLink href={routes.root()}>
                             <Logo />
                         </LogoLink>
-                    </Navbar.Item>
-                    {currentUser ? (
-                        <Navbar.Item>
-                            <ConnectedWith>
-                                <span>&zwnj;</span>
-                                <img src={icons[method]} alt="" />
-                                <strong>{methods[method]}</strong>
-                            </ConnectedWith>
-                        </Navbar.Item>
-                    ) : (
-                        <Navbar.Item />
-                    )}
-                    <Navbar.Item>
+                    </NavbarItem>
+                    <NavbarItem>
                         <HamburgerButton />
-                    </Navbar.Item>
+                    </NavbarItem>
                 </Navbar>
             </NavOverlay.Head>
             <NavOverlay.Body>
-                <NavOverlay.Link as={Link} to={routes.core()}>
-                    Core
-                </NavOverlay.Link>
-                <NavOverlay.Link as={Link} to={routes.marketplace.index()}>
-                    Marketplace
-                </NavOverlay.Link>
-                <NavOverlay.Link as={Link} to="/docs">
-                    Docs
-                </NavOverlay.Link>
-                {!currentUser ? (
-                    <NavOverlay.Link>Settings</NavOverlay.Link>
-                ) : (
-                    <NavOverlay.Link as={Link} to={routes.profile()}>
-                        Settings
-                    </NavOverlay.Link>
-                )}
+                {!!account &&
+                    <UserInfoMobile>
+                        <Avatar username={account} />
+                        <div>
+                            <Avatarless source={account} />
+                            <AccountsBalance />
+                        </div>
+                    </UserInfoMobile>
+                }
+                <NavbarLinkMobile highlight={pathname.startsWith(routes.projects.index())}>
+                    <NavLink as={Link} to={routes.projects.index()}>
+                        Projects
+                    </NavLink>
+                </NavbarLinkMobile>
+                <NavbarLinkMobile highlight={pathname.startsWith(routes.streams.index())}>
+                    <NavLink as={Link} to={routes.streams.index()}>
+                        Streams
+                    </NavLink>
+                </NavbarLinkMobile>
+                <NavbarLinkMobile highlight={false}>
+                    <NavLink as={Link} href={routes.networkExplorer()} rel="noopener noreferrer" target="_blank">
+                        Network
+                    </NavLink>
+                </NavbarLinkMobile>
             </NavOverlay.Body>
             <NavOverlay.Footer>
-                {currentUser ? (
-                    <Button tag={Link} to={routes.auth.logout()} kind="secondary" size="normal">
-                        Sign out
+                {!!account ? (
+                    <Button kind="secondary" size="normal" type="button" onClick={() => {
+                        toast({
+                            title: 'Use the "Lock" button in your wallet.',
+                        })
+                    }}>
+                        Disconnect
                     </Button>
                 ) : (
                     <Button
-                        tag="a"
-                        href={routes.auth.login({
-                            redirect: pathname,
-                        })}
+                        type="button"
+                        onClick={async () => {
+                            try {
+                                await toaster(ConnectModal, Layer.Modal).pop()
+                            } catch (e) {
+                                console.warn('Wallet connecting failed', e)
+                            }
+                        }}
                         kind="primary"
                         size="normal"
                     >
@@ -398,17 +505,17 @@ const DesktopNav = styled(UnstyledDesktopNav)`
     position: relative;
 
     ${Navbar} {
-        > ${Navbar.Item}:first-child {
+        > ${NavbarItem}:first-child {
             flex-grow: initial;
         }
 
-        > ${Navbar.Item}:nth-child(2) {
+        > ${NavbarItem}:nth-child(2) {
             flex-grow: 1;
         }
     }
 
     @media (min-width: ${DESKTOP}px) {
-        ${Navbar} > ${Navbar.Item}:first-child {
+        ${Navbar} > ${NavbarItem}:first-child {
             flex-grow: 1;
         }
     }
@@ -431,19 +538,60 @@ const DesktopNav = styled(UnstyledDesktopNav)`
         font-size: 12px;
     }
 `
-const MobileNav = styled(UnstyledMobileNav)`
-    ${UsernameCopy},
-    ${ConnectedWith} {
-        margin-right: 16px;
-    }
 
+const MobileNav = styled(UnstyledMobileNav)`
     ${NavLink}:not([href]) {
         color: #cdcdcd;
     }
 
-    @media (min-width: ${TABLET}px) {
-        ${User} {
-            padding: 16px 64px 48px 64px;
+    ${HamburgerButton} {
+        margin-left: auto;
+    }
+  
+    ${NavOverlay.Body} {
+        padding: 36px 24px 0 24px;
+
+        ${UserInfoMobile} {
+            margin-bottom: 24px;
+        }
+        
+        ${NavbarLinkMobile} {
+            border-top: 1px solid #efefef;
+            
+            + ${NavbarLinkMobile} {
+                border-top: none;
+            }
+        }
+
+        >:first-child {
+            border-top: none;
+        }
+    }
+
+    ${NavOverlay.Footer} {
+        background-color: #ffffff;
+        padding: 24px;
+
+        ${Button} {
+            width: 100%;
+        }
+    }
+
+    @media (min-width: ${MOBILE_LG}px) {
+        ${NavOverlay.Body} {
+            padding: 36px 64px 0 64px;
+
+            ${UserInfoMobile} {
+                margin-bottom: 64px;
+            }
+        }
+
+        ${NavOverlay.Footer} {
+            padding: 64px;
+
+            ${Button} {
+                width: auto;
+            }
         }
     }
 `
@@ -453,28 +601,28 @@ const UnstyledContainer: FunctionComponent = (props) => <div {...props} />
 export const NavContainer = styled(UnstyledContainer)`
     background-color: #ffffff;
     color: #323232;
+  
+    ${HamburgerButton} {
+      background-color: #F8F8F8;
+    }
 
     ${Navbar} {
         padding: 20px 24px;
 
         @media (min-width: ${TABLET}px) {
-            padding: 16px 24px;
+            padding: 20px 24px;
         }
 
         @media (min-width: ${DESKTOP}px) {
-            padding: 16px 24px;
+            padding: 20px 40px;
         }
 
         > ${HamburgerButton} {
             display: flex;
         }
 
-        ${Navbar.Item}:empty {
+        ${NavbarItem}:empty {
             display: none;
-        }
-
-        > [data-mobile-only='true'] {
-            display: block;
         }
 
         > [data-desktop-only='true'] {
@@ -486,18 +634,23 @@ export const NavContainer = styled(UnstyledContainer)`
         padding: 0 16px;
     }
 
-    @media (min-width: ${DESKTOP}px) {
-        ${Navbar} > [data-mobile-only=true] {
-            display: none;
-        }
+    > [data-mobile-only='true'] {
+       display: block;
+    }
 
-        ${Navbar} > [data-desktop-only=true] {
-            display: block;
+    @media (min-width: ${TABLET}px) {
+
+        ${Navbar} > [data-desktop-only='true'] {
+            display: grid;
         }
 
         ${Navbar} > ${HamburgerButton} {
             display: none;
         }
+
+      > [data-mobile-only='true'] {
+        display: none;
+      }
     }
 `
 
@@ -510,6 +663,6 @@ const N: FunctionComponent<{children?: any, shadow?: any}> = ({ children, shadow
 
 Object.assign(N, {
     Container: NavContainer,
-    SiteSection,
 })
+
 export default N

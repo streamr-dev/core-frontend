@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
 import { action } from '@storybook/addon-actions'
-import StreamPreview from './'
+import { StreamPreview } from './'
 const stories = storiesOf('Marketplace/StreamPreview', module)
     .addDecorator(
         styles({
@@ -65,20 +65,14 @@ const streamData = {
 const streamIds = streamList.map(({ id }) => id)
 stories.add('loading stream', () => (
     <StreamPreview
-        streamId="1234"
-        stream={undefined}
-        onStreamSettings={action('onStreamSettings')}
-        onClose={action('onClose')}
+        streamsList={['0x4855a3caa2d338349feb918fc65b4d7184540dbe/lorem292929']}
     />
 ))
 stories.add(
     'loading stream (tablet)',
     () => (
         <StreamPreview
-            streamId="1234"
-            stream={undefined}
-            onStreamSettings={action('onStreamSettings')}
-            onClose={action('onClose')}
+            streamsList={['0x4855a3caa2d338349feb918fc65b4d7184540dbe/lorem292929']}
         />
     ),
     {
@@ -91,10 +85,7 @@ stories.add(
     'loading stream (iPhone)',
     () => (
         <StreamPreview
-            streamId="1234"
-            stream={undefined}
-            onStreamSettings={action('onStreamSettings')}
-            onClose={action('onClose')}
+            streamsList={['0x4855a3caa2d338349feb918fc65b4d7184540dbe/lorem292929']}
         />
     ),
     {
@@ -108,11 +99,7 @@ const ActiveStream = () => {
     const [streamId, setStreamId] = useState(streamIds[0])
     return (
         <StreamPreview
-            streamId={streamId}
-            stream={undefined}
-            navigableStreamIds={streamIds}
-            onChange={setStreamId}
-            onClose={action('onClose')}
+            streamsList={['0x4855a3caa2d338349feb918fc65b4d7184540dbe/lorem292929']}
         />
     )
 }
@@ -138,15 +125,7 @@ const PrefixedPreview = () => {
     }, [streamId])
     return (
         <StreamPreview
-            streamId={streamId}
-            stream={streamList.find(({ id }) => id === streamId)}
-            navigableStreamIds={streamIds}
-            onChange={setStreamId}
-            titlePrefix={'Tram Data'}
-            onStreamSettings={linkToStreamSettings && action('onStreamSettings')}
-            activePartition={activePartition}
-            onPartitionChange={setActivePartition}
-            onClose={action('onClose')}
+            streamsList={['0x4855a3caa2d338349feb918fc65b4d7184540dbe/lorem292929']}
         />
     )
 }
@@ -171,14 +150,7 @@ const DefaultPreview = () => {
     }, [streamId])
     return (
         <StreamPreview
-            streamId={streamId}
-            stream={streamList.find(({ id }) => id === streamId)}
-            navigableStreamIds={streamIds}
-            onChange={setStreamId}
-            streamData={streamData[streamId]}
-            activePartition={activePartition}
-            onPartitionChange={setActivePartition}
-            onClose={action('onClose')}
+            streamsList={['0x4855a3caa2d338349feb918fc65b4d7184540dbe/lorem292929']}
         />
     )
 }
@@ -197,11 +169,7 @@ stories.add('default (iPhone)', () => <DefaultPreview />, {
 
 const ErrorView = () => (
     <StreamPreview
-        streamId={streamList[0].id}
-        stream={streamList[0]}
-        subscriptionError="Error loading client"
-        dataError="Failed to subscribe to stream."
-        onClose={action('onClose')}
+        streamsList={['0x4855a3caa2d338349feb918fc65b4d7184540dbe/lorem292929']}
     />
 )
 

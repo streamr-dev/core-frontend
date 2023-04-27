@@ -1,6 +1,6 @@
-import type { ChangeEvent, ComponentType } from 'react'
+import { ChangeEvent, ComponentType } from 'react'
 import React, { useCallback, useRef, forwardRef } from 'react'
-import type { Ref } from '$shared/types/common-types'
+import { Ref } from '$shared/types/common-types'
 import '$shared/types/common-types'
 
 const sanitise = (value: string): string => (value == null ? '' : value)

@@ -1,23 +1,19 @@
 /**
  * Configure analytics data from app state.
  */
-import { connect } from 'react-redux'
 import * as Sentry from '@sentry/browser'
-import { selectUserData } from '$shared/modules/user/selectors'
-import { User } from "$shared/types/user-types"
-import { StoreState } from "$shared/types/store-state"
+import { useWalletAccount } from '../stores/wallet'
 
-export const mapStateToProps = (state: StoreState): {user: User} => ({
-    user: selectUserData(state),
-})
+function Analytics(): null {
+    const account = useWalletAccount()
 
-function Analytics({ user }: {user: User}): null {
-    if (user) {
+    if (account) {
         Sentry.configureScope((scope) => {
-            scope.setUser({...user, id: (user.username || 'no username').toString()})
+            scope.setUser({id: account})
         })
     }
+
     return null
 }
 
-export default connect(mapStateToProps, null)(Analytics)
+export default Analytics

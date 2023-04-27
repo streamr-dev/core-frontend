@@ -1,4 +1,4 @@
-import type { Node } from 'react'
+import { Node } from 'react'
 import React, { useState, useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { Label, FormGroup } from 'reactstrap'
@@ -8,8 +8,8 @@ import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'
 import Checkbox from '$shared/components/Checkbox'
 import { ProductTile, ImageTile } from '$shared/components/Tile'
-import type { Product } from '$mp/types/product-types'
-import '$mp/types/product-types'
+import { Project } from '$mp/types/project-types'
+import '$mp/types/project-types'
 import { numberToText } from '$shared/utils/text'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import dataUnionStats from '$mp/assets/deploy-modal-stats.png'
@@ -51,7 +51,7 @@ const ProductCard = ({ name, image: imageUrl, className }: ProductCardProps) => 
 )
 
 export type Props = {
-    product: Product
+    product: Project
     onClose: () => void
     onContinue: (arg0: boolean) => Promise<void>
     dontShowAgain?: boolean

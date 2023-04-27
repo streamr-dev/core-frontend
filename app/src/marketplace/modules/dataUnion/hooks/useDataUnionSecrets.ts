@@ -1,7 +1,7 @@
 import { useMemo, useCallback, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { dataUnionSecretSchema, dataUnionSecretsSchema } from '$shared/modules/entities/schema'
-import type { DataUnionId } from '$mp/types/product-types'
+import { DataUnionId } from '$mp/types/project-types'
 import useEntities from '$shared/hooks/useEntities'
 import { setDataUnionSecrets, addDataUnionSecret, removeDataUnionSecret } from '../actions'
 import { selectDataUnionSecrets } from '../selectors'

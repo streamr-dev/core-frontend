@@ -1,5 +1,4 @@
 import { Chain, Chains } from '@streamr/config'
-import { AbiItem } from 'web3-utils'
 import getMainChainId from '$app/src/getters/getMainChainId'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import formatConfigUrl from '$utils/formatConfigUrl'
@@ -86,10 +85,10 @@ const getConfig = (): Config => {
                     },
                 }),
             },
-            [streamRegistryChainRPCs.chainId]: {
+            [streamRegistryChainRPCs?.chainId ?? 0]: {
                 getParams: () => ({
                     chainName: 'Streams chain (dev)',
-                    rpcUrls: [streamRegistryChainRPCs.rpcs[0].url],
+                    rpcUrls: [streamRegistryChainRPCs?.rpcs[0].url ?? ''],
                     blockExplorerUrls: [],
                     nativeCurrency: {
                         name: 'xDAI',

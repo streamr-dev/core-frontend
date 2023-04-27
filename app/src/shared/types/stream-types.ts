@@ -25,7 +25,6 @@ export type Stream = {
     requireSignedData: boolean
     storageDays: number
     uiChannel: boolean
-    requireSignedData: boolean
     requireEncryptedData: boolean
 }
 export type StreamIdList = Array<StreamId>

@@ -1,87 +1,33 @@
-import React, { useCallback, useEffect, useState, useReducer } from 'react'
-import { useClient } from 'streamr-client-react'
+import React from 'react'
 import styled, { css } from 'styled-components'
 import Checkbox from '$shared/components/Checkbox'
 import Spinner from '$shared/components/Spinner'
-import useStreamId from '$shared/hooks/useStreamId'
-import useInterrupt from '$shared/hooks/useInterrupt'
-import Notification from '$shared/utils/Notification'
-import { NotificationIcon, networks } from '$shared/utils/constants'
-import useValidateNetwork from '$shared/hooks/useValidateNetwork'
+import { useCurrentDraft, useToggleCurrentStorageNode } from '$shared/stores/streamEditor'
 
-function UnstyledStorageNodeItem({ address, active: activeProp, className, disabled = false, children }) {
-    const [{ active = activeProp, cache }, setActive] = useReducer(
-        (state, newActive) => ({
-            active: newActive,
-            cache: (state.cache || 0) + 1,
-        }),
-        {},
-    )
-    useEffect(() => {
-        setActive(activeProp)
-    }, [activeProp])
-    const client = useClient()
-    const streamId = useStreamId()
-    const itp = useInterrupt()
-    const [busy, setBusy] = useState(typeof active === 'undefined')
-    const validateNetwork = useValidateNetwork()
-    const onClick = useCallback(async () => {
-        const { requireUninterrupted } = itp()
+type Props = {
+    address: string,
+    className?: string,
+    disabled: boolean,
+    children: React.ReactNode,
+}
 
-        if (typeof active === 'undefined') {
-            return
-        }
+function UnstyledStorageNodeItem({ address, className, disabled = false, children }: Props) {
+    const active = !!useCurrentDraft().storageNodes[address.toLowerCase()]?.enabled
 
-        setBusy(true)
-        let success = false
+    const busy = useCurrentDraft().fetchingStorageNodes
 
-        try {
-            try {
-                await validateNetwork(networks.STREAMS)
-                requireUninterrupted()
-                await (() =>
-                    active
-                        ? client.removeStreamFromStorageNode(streamId, address)
-                        : client.addStreamToStorageNode(streamId, address))()
-                success = true
-            } catch (e) {
-                console.warn(e)
-                Notification.push({
-                    title: 'Failed to toggle a storage node',
-                    icon: NotificationIcon.ERROR,
-                })
-            }
+    const toggleStorageNode = useToggleCurrentStorageNode()
 
-            requireUninterrupted()
-        } catch (e) {
-            // The only error that can happen above is the `InterruptionError`. No better moment
-            // to skip the rest.
-            return
-        }
-
-        setActive(success ? !active : active)
-
-        if (success) {
-            Notification.push({
-                title: `Storage node got ${active ? 'disabled' : 'enabled'}`,
-                icon: NotificationIcon.CHECKMARK,
-            })
-        }
-    }, [itp, client, address, streamId, active, validateNetwork])
-    useEffect(
-        () => () => {
-            // Ignore the result of any in-the-air toggling if conditions change.
-            itp().interruptAll()
-        },
-        [itp, client, address, streamId, active],
-    )
-    useEffect(() => {
-        setBusy(typeof active === 'undefined')
-    }, [active, cache])
     return (
-        <Root className={className} onClick={onClick} title={children} type="button" $active={active}>
+        <Root
+            className={className}
+            onClick={() => void toggleStorageNode(address, (current) => !current)}
+            type="button"
+            $active={active}
+            disabled={disabled}
+        >
             <div>{children}</div>
-            {!disabled && !busy && (
+            {!disabled && (
                 <Checkbox.Tick checked={active} data-test-hook={active ? 'Checkbox on' : 'Checkbox off'} />
             )}
             {busy && <Spinner color="gray" />}
@@ -132,13 +78,13 @@ const StorageNodeItem = styled(UnstyledStorageNodeItem)`
         margin-left: 12px;
     }
 `
-const Root = styled.button`
+const Root = styled.button<{ $active: boolean }>`
     color: #cdcdcd;
     cursor: pointer;
 
     :disabled,
     &[disabled] {
-        cursor: default;
+        cursor: not-allowed;
     }
 
     ${({ $active }) =>

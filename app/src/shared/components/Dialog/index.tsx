@@ -1,8 +1,8 @@
 import React, { Component, ReactNode } from 'react'
 import classNames from 'classnames'
-import type { Props as ButtonsProps, ButtonActions } from '$shared/components/Buttons'
+import { Props as ButtonsProps, ButtonActions } from '$shared/components/Buttons'
 import Buttons from '$shared/components/Buttons'
-import type { Props as ModalDialogProps } from '$shared/components/ModalDialog'
+import { Props as ModalDialogProps } from '$shared/components/ModalDialog'
 import ModalDialog from '$shared/components/ModalDialog'
 import { dialogAutoCloseTimeout } from '$shared/utils/constants'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
@@ -11,6 +11,7 @@ import TitleBar from './TitleBar'
 import ContentArea from './ContentArea'
 import HelpToggle from './HelpToggle'
 import styles from './dialog.pcss'
+
 export type DialogProps = {
     title?: ReactNode
     children?: ReactNode
@@ -22,7 +23,9 @@ export type DialogProps = {
     containerClassname?: string
     actionsClassName?: string
     backdropClassName?: string
+    useDarkBackdrop?: boolean,
     titleClassName?: string
+    centerTitle?: boolean,
     onClose: () => void
     showCloseIcon?: boolean
     autoCloseAfter?: number
@@ -30,8 +33,8 @@ export type DialogProps = {
     autoClose?: boolean
     // use this to close the dialog after default timeout
     renderActions?: (arg0: ButtonActions) => ReactNode
-} & ButtonsProps &
-    ModalDialogProps
+} & ButtonsProps & ModalDialogProps
+
 type State = {
     isHelpOpen: boolean
 }
@@ -42,6 +45,8 @@ class Dialog extends Component<DialogProps, State> {
         helpText: null,
         waiting: false,
         autoClose: false,
+        useDarkBackdrop: false,
+        centerTitle: false,
     }
     static classNames = {
         dialog: styles.dialog,
@@ -105,7 +110,9 @@ class Dialog extends Component<DialogProps, State> {
             containerClassname,
             actionsClassName,
             backdropClassName,
+            useDarkBackdrop,
             titleClassName,
+            centerTitle,
             onClose,
             showCloseIcon,
             renderActions,
@@ -115,7 +122,7 @@ class Dialog extends Component<DialogProps, State> {
         return (
             <ModalDialog
                 className={classNames(styles.dialog, className)}
-                backdropClassName={classNames(styles.backdrop, backdropClassName)}
+                backdropClassName={classNames(styles.backdrop, backdropClassName, useDarkBackdrop ? styles.darkBackdrop : null)}
                 onClose={() => onClose && onClose()}
                 {...otherProps}
             >
@@ -123,7 +130,7 @@ class Dialog extends Component<DialogProps, State> {
                     <TitleBar
                         showCloseIcon={showCloseIcon}
                         onClose={onClose}
-                        className={classNames(styles.title, titleClassName)}
+                        className={classNames(styles.title, titleClassName, centerTitle ? styles.center : null)}
                     >
                         {title}
                         {!!helpText && <HelpToggle active={isHelpOpen} onToggle={this.onHelpToggle} />}

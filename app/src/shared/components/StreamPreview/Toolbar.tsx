@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import useCopy from '$shared/hooks/useCopy'
 import PrestyledButton from '$shared/components/Button'
 import { SM, LG } from '$shared/utils/styled'
 import Selector from './Selector'
@@ -50,8 +49,7 @@ const Rhs = styled.div`
     }
 `
 const Inner = styled.div`
-    display: grid;
-    grid-template-columns: auto 1fr;
+    display: flex;
     min-width: 0;
     padding: 0 16px;
 
@@ -61,71 +59,44 @@ const Inner = styled.div`
         width: calc(100vw - var(--LiveDataInspectorWidth) - var(--LiveDataMinMargin) - 16px);
     }
 `
-const IfEnoughRoom = styled.div`
-    display: none;
-
-    @media (min-width: 668px) {
-        display: block;
-    }
-`
 
 type Props = {
     className?: string,
     onPartitionChange: (partition: number) => void,
     onSettingsButtonClick: (streamId: string) => void,
-    onStreamChange: () => void,
     partition: number,
     partitions: Array<any>,
-    streamId: string,
-    streamIds: Array<string>,
+    streamId: string
 }
 
 const UnstyledToolbar = ({
     className,
     onPartitionChange,
     onSettingsButtonClick,
-    onStreamChange,
     partition,
     partitions = [],
-    streamId,
-    streamIds = [streamId],
+    streamId
 }: Props) => {
-    const { copy, isCopied } = useCopy()
     return (
         <div className={className}>
             <Lhs>
                 <Layout.Pusher />
                 <Inner>
-                    <div>
-                        <Selector title="Streams" options={streamIds} active={streamId} onChange={onStreamChange} />
-                    </div>
-                    <IfEnoughRoom>
-                        <Selector
-                            title="Partitions"
-                            options={partitions}
-                            active={partition}
-                            onChange={onPartitionChange}
-                        />
-                    </IfEnoughRoom>
+                    <Selector
+                        title="Stream partitions"
+                        options={partitions}
+                        active={partition}
+                        onChange={onPartitionChange}
+                    />
                 </Inner>
             </Lhs>
             <Rhs>
                 <div>
                     {typeof onSettingsButtonClick === 'function' && (
-                        <SettingsButton kind="secondary" onClick={() => onSettingsButtonClick(streamId)}>
+                        <SettingsButton kind="secondary" type={'button'} onClick={() => onSettingsButtonClick(streamId)}>
                             Stream Settings
                         </SettingsButton>
                     )}
-                    <Button kind="secondary" onClick={() => copy(streamId)}>
-                        {isCopied ? (
-                            'Copied!'
-                        ) : (
-                            <React.Fragment>
-                                <TabletText>Copy Stream ID</TabletText>
-                                <MobileText>Copy Id</MobileText>
-                            </React.Fragment>
-                        )}
-                    </Button>
                 </div>
             </Rhs>
         </div>
@@ -134,10 +105,13 @@ const UnstyledToolbar = ({
 
 const Toolbar = styled(UnstyledToolbar)`
     align-items: center;
-    background: #fdfdfd;
     display: flex;
-    height: 64px;
-    padding: 0 16px 0 0;
+    padding-top: ${(props) => {
+        return props.partitions.length > 1 ? '30px ' : '0'
+    }};
+    padding-bottom: ${(props) => {
+        return props.partitions.length > 1 ? '16px ' : '0'
+    }};
 `
 Object.assign(Toolbar, {
     Lhs,

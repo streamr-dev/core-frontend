@@ -7,7 +7,7 @@ describe(Notification, () => {
     })
     it('subscribes to PUSH events; emits PUSH event; unsubscribes from PUSH event', () => {
         const handler = jest.fn()
-        Notification.subscribe(handler)
+        Notification.subscribeToAdd(handler)
         Notification.push({
             title: 'Title',
         })
@@ -23,7 +23,7 @@ describe(Notification, () => {
         expect(new Notification({}).autoDismissAfter).toBeGreaterThan(0)
         expect(
             new Notification({
-                autoDismiss: true,
+                autoDismiss: 1000,
             }).autoDismissAfter,
         ).toBeGreaterThan(0)
         expect(

@@ -12,7 +12,7 @@ const LoadingIndicator: FunctionComponent<Props> = ({ loading: loadingProp, clas
     const isLoading = !!loadingProp
     const [loadingState, setLoadingState] = useState<boolean>(isLoading)
     // debounce loading flag changes to avoid flickering loading indicator
-    const updateLoading = useDebouncedCallback((value) => setLoadingState(value), 1000)
+    const updateLoading = useDebouncedCallback((value) => setLoadingState(value), 500)
     useEffect(() => {
         updateLoading(isLoading)
     }, [isLoading, setLoadingState, updateLoading])

@@ -1,3 +1,4 @@
+import { ProjectType } from '$shared/types'
 /*
     These are all type
     {
@@ -19,7 +20,9 @@ export const purchaseFlowSteps = {
 }
 export const productListPageSize = 20
 export const searchCharMax = 250
-export const productTypes = {
-    NORMAL: 'NORMAL',
-    DATAUNION: 'DATAUNION',
+
+export const projectTypeNames: Record<ProjectType, string> = {
+    [ProjectType.OpenData]: 'open data project',
+    [ProjectType.PaidData]: 'paid data project',
+    [ProjectType.DataUnion]: 'Data Union'
 }

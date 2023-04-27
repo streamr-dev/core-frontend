@@ -4,11 +4,9 @@ import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import { usePending } from '$shared/hooks/usePending'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { getChainIdFromApiString } from '$shared/utils/chains'
-import { Provider as PermissionsProvider } from './useProductPermissions'
-import { Provider as ValidationContextProvider } from './ValidationContextProvider'
+import {ValidationContextProvider} from "../ProductController/ValidationContextProvider"
 import useProductLoadCallback from './useProductLoadCallback'
 import useContractProductLoadCallback from './useContractProductLoadCallback'
-import useProductValidationEffect from './useProductValidationEffect'
 import useLoadCategoriesCallback from './useLoadCategoriesCallback'
 import useLoadProductStreamsCallback from './useLoadProductStreamsCallback'
 import useDataUnionLoadCallback from './useDataUnionLoadCallback'
@@ -19,8 +17,8 @@ import useResetDataUnionCallback from './useResetDataUnionCallback'
 import useController, { ProductControllerContext } from './useController'
 export { useController }
 
-type UseProductLoadEffectParams = {ignoreUnauthorized: boolean, requirePublished: boolean, useAuthorization: boolean};
-function useProductLoadEffect({ ignoreUnauthorized, requirePublished, useAuthorization }: UseProductLoadEffectParams) {
+type UseProductLoadEffectParams = {ignoreUnauthorized?: boolean, requirePublished?: boolean};
+function useProductLoadEffect({ ignoreUnauthorized, requirePublished }: UseProductLoadEffectParams) {
     const [loadedOnce, setLoadedOnce] = useState(false)
     const loadProduct = useProductLoadCallback()
     const loadContractProduct = useContractProductLoadCallback()
@@ -28,7 +26,8 @@ function useProductLoadEffect({ ignoreUnauthorized, requirePublished, useAuthori
     const isMounted = useIsMounted()
     const { id: urlId } = useParams<{id: string}>()
     const { product } = useController()
-    const chainId = product && getChainIdFromApiString(product.chain)
+    // TODO check if this chainId assigment is correct
+    const chainId = product.dataUnionChainId || getChainIdFromApiString('polygon')
     useEffect(() => {
         if (urlId && !loadedOnce && !isPending) {
             // load product if needed and not already loading
@@ -36,11 +35,10 @@ function useProductLoadEffect({ ignoreUnauthorized, requirePublished, useAuthori
                 productId: urlId,
                 ignoreUnauthorized,
                 requirePublished,
-                useAuthorization,
             })
             setLoadedOnce(true)
         }
-    }, [urlId, loadedOnce, loadProduct, isPending, ignoreUnauthorized, useAuthorization, requirePublished, isMounted])
+    }, [urlId, loadedOnce, loadProduct, isPending, ignoreUnauthorized, requirePublished, isMounted])
     useEffect(() => {
         if (urlId && chainId) {
             loadContractProduct(urlId, chainId)
@@ -48,13 +46,11 @@ function useProductLoadEffect({ ignoreUnauthorized, requirePublished, useAuthori
     }, [urlId, chainId, loadContractProduct])
 }
 
-function ProductEffects({ ignoreUnauthorized, requirePublished, useAuthorization }: UseProductLoadEffectParams): null {
+function ProductEffects({ ignoreUnauthorized, requirePublished }: UseProductLoadEffectParams): null {
     useProductLoadEffect({
         ignoreUnauthorized,
         requirePublished,
-        useAuthorization,
     })
-    useProductValidationEffect()
     return null
 }
 
@@ -180,19 +176,15 @@ const ProductController: FunctionComponent<{children?: ReactNode | ReactNode[]} 
     children,
     ignoreUnauthorized = false,
     requirePublished = false,
-    useAuthorization = true,
 }) => (
     <PendingProvider name="product">
         <ValidationContextProvider>
             <ControllerProvider>
-                <PermissionsProvider autoLoadPermissions={!!useAuthorization}>
-                    <ProductEffects
-                        ignoreUnauthorized={ignoreUnauthorized}
-                        requirePublished={requirePublished}
-                        useAuthorization={!!useAuthorization}
-                    />
-                    {children || null}
-                </PermissionsProvider>
+                <ProductEffects
+                    ignoreUnauthorized={ignoreUnauthorized}
+                    requirePublished={requirePublished}
+                />
+                {children || null}
             </ControllerProvider>
         </ValidationContextProvider>
     </PendingProvider>

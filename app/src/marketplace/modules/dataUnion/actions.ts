@@ -2,8 +2,8 @@ import { createAction } from 'redux-actions'
 import { denormalize } from 'normalizr'
 import { dataUnionSchema, dataUnionStatSchema, productsSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
-import type { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
-import type { DataUnionId, DataUnionSecretId, ProductIdList } from '$mp/types/product-types'
+import { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
+import { DataUnionId, DataUnionSecretId, ProjectIdList } from '$mp/types/project-types'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { isEthereumAddress } from '$mp/utils/validate'
@@ -23,7 +23,7 @@ import {
     RESET_DATA_UNION,
     RESET_DATA_UNION_STATS,
 } from './constants'
-import type {
+import {
     DataUnionIdActionCreator,
     DataUnionIdsActionCreator,
     DataUnionErrorActionCreator,
@@ -107,7 +107,7 @@ export const cancelDataUnionStatsFetch = () => {
     dataUnionStatsCancel()
 }
 export const startUpdateDataUnionStats =
-    (productIds: ProductIdList) => (dispatch: (...args: Array<any>) => any, getState: (...args: Array<any>) => any) => {
+    (productIds: ProjectIdList) => (dispatch: (...args: Array<any>) => any, getState: (...args: Array<any>) => any) => {
         let cancelled = false
         const state = getState()
         const entities = selectEntities(state)
@@ -138,7 +138,7 @@ export const startUpdateDataUnionStats =
         }
     }
 export const updateDataUnionStats =
-    (productIds: ProductIdList) => (dispatch: (...args: Array<any>) => any, getState: (...args: Array<any>) => any) => {
+    (productIds: ProjectIdList) => (dispatch: (...args: Array<any>) => any, getState: (...args: Array<any>) => any) => {
         dataUnionStatsCancel()
         const state = getState()
         const entities = selectEntities(state)

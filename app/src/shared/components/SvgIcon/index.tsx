@@ -1,5 +1,5 @@
 import { $Keys } from 'utility-types'
-import type { ComponentType } from 'react'
+import { ComponentType } from 'react'
 import React from 'react'
 import UploadIcon from './ImageUploadIcon'
 import CheckmarkIcon from './CheckmarkIcon'
@@ -22,16 +22,20 @@ const sources = {
             />
         </svg>
     ),
+    backArrow: (
+        <svg width="23" height="18" viewBox="0 0 23 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M8.1895 17.4096C8.57392 17.794 9.1972 17.794 9.58162 17.4096C9.96604 17.0251 9.96604 16.4019 9.58162 16.0174L3.8364 10.2722L21.8796 10.2722C22.4232 10.2722 22.8639 9.83151 22.8639 9.28785C22.8639 8.74419 22.4232 8.30348 21.8796 8.30348L3.83846 8.30348L9.58162 2.56032C9.96604 2.17589 9.96604 1.55262 9.58162 1.1682C9.19719 0.783777 8.57392 0.783778 8.1895 1.1682L0.774414 8.58329C0.760749 8.59662 0.74747 8.61035 0.734597 8.62446C0.380737 9.01071 0.390831 9.61089 0.764879 9.98494L8.1895 17.4096Z"
+                fill="currentColor"
+            />
+        </svg>
+    ),
     forward: (
         <svg viewBox="0 0 8 14" xmlns="http://www.w3.org/2000/svg">
             <g fill="none" fillRule="evenodd">
-                <path
-                    d="M1 1.342l5.66 5.66-5.656 5.656"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.5"
-                />
+                <path d="M1 1.342l5.66 5.66-5.656 5.656" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
             </g>
         </svg>
     ),
@@ -58,6 +62,20 @@ const sources = {
                 fillRule="evenodd"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+            />
+        </svg>
+    ),
+    close: (
+        <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7.46875 1.57343L1.53125 7.51092" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            <path d="M1.53125 1.57343L7.46875 7.51092" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+    ),
+    disconnect: (
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M11.1242 6.31172L8.82734 8.60859C8.74336 8.68887 8.6318 8.73388 8.51562 8.73438C8.42887 8.73423 8.34412 8.7083 8.27214 8.65987C8.20016 8.61145 8.14421 8.54271 8.11138 8.46241C8.07856 8.38211 8.07035 8.29386 8.0878 8.20888C8.10525 8.1239 8.14756 8.04603 8.20937 7.98516L9.75703 6.4375H4.6875C4.57147 6.4375 4.46019 6.39141 4.37814 6.30936C4.29609 6.22731 4.25 6.11603 4.25 6C4.25 5.88397 4.29609 5.77269 4.37814 5.69064C4.46019 5.60859 4.57147 5.5625 4.6875 5.5625H9.75703L8.20937 4.01484C8.1267 3.9329 8.07997 3.82146 8.07946 3.70506C8.07894 3.58865 8.12469 3.47681 8.20664 3.39414C8.28859 3.31147 8.40002 3.26473 8.51643 3.26422C8.63283 3.26371 8.74467 3.30946 8.82734 3.39141L11.1242 5.68828C11.2064 5.77123 11.2525 5.88325 11.2525 6C11.2525 6.11675 11.2064 6.22877 11.1242 6.31172ZM4.6875 10.375H1.625V1.625H4.6875C4.80353 1.625 4.91481 1.57891 4.99686 1.49686C5.07891 1.41481 5.125 1.30353 5.125 1.1875C5.125 1.07147 5.07891 0.960188 4.99686 0.878141C4.91481 0.796094 4.80353 0.75 4.6875 0.75H1.625C1.39294 0.75 1.17038 0.842187 1.00628 1.00628C0.842187 1.17038 0.75 1.39294 0.75 1.625V10.375C0.75 10.6071 0.842187 10.8296 1.00628 10.9937C1.17038 11.1578 1.39294 11.25 1.625 11.25H4.6875C4.80353 11.25 4.91481 11.2039 4.99686 11.1219C5.07891 11.0398 5.125 10.9285 5.125 10.8125C5.125 10.6965 5.07891 10.5852 4.99686 10.5031C4.91481 10.4211 4.80353 10.375 4.6875 10.375Z"
+                fill="currentColor"
             />
         </svg>
     ),
@@ -105,26 +123,20 @@ const sources = {
             </g>
         </svg>
     ),
+    linkOut: (
+        <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M27.8906 24.5684V14.0684H17.3906" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M27.8906 14.0684L13.4531 28.5059" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    ),
     play: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-            <path
-                d="M12 22l10-6-10-6z"
-                strokeLinejoin="round"
-                fill="none"
-                fillRule="evenodd"
-                className={styles.default}
-            />
+            <path d="M12 22l10-6-10-6z" strokeLinejoin="round" fill="none" fillRule="evenodd" className={styles.default} />
         </svg>
     ),
     pause: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-            <path
-                d="M11 10h3v12h-3zm7 0h3v12h-3z"
-                strokeLinejoin="round"
-                fill="none"
-                fillRule="evenodd"
-                className={styles.default}
-            />
+            <path d="M11 10h3v12h-3zm7 0h3v12h-3z" strokeLinejoin="round" fill="none" fillRule="evenodd" className={styles.default} />
         </svg>
     ),
     minus: (
@@ -150,14 +162,7 @@ const sources = {
     ),
     plusSmall: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
-            <path
-                fill="none"
-                fillRule="evenodd"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeWidth="2"
-                d="M1 5h8M5 1v8"
-            />
+            <path fill="none" fillRule="evenodd" stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M1 5h8M5 1v8" />
         </svg>
     ),
     user: (
@@ -178,19 +183,67 @@ const sources = {
             </g>
         </svg>
     ),
+    userFull: (
+        <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M23 46C35.7025 46 46 35.7025 46 23C46 10.2975 35.7025 0 23 0C10.2975 0 0 10.2975 0 23C0 35.7025 10.2975 46 23 46Z"
+                fill="currentColor"
+            />
+            <path
+                d="M18.971 28.8528V29.705C18.971 32.0553 20.882 33.9606 23.2394 33.9606C25.5968 33.9606 27.5078 32.0553 27.5078 29.705V28.8528"
+                stroke="white"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            <path
+                d="M19.3626 14.958C17.4573 16.5774 16.7666 19.2092 17.6321 21.5514C18.4976 23.8936 20.7358 25.4496 23.2394 25.4496C25.743 25.4496 27.9812 23.8936 28.8467 21.5514C29.7122 19.2092 29.0214 16.5774 27.1162 14.958"
+                stroke="white"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M25.8004 12.6826C24.2645 12.6835 22.9171 11.6619 22.5075 10.186C20.6608 10.277 19.1578 11.6997 18.971 13.5338C18.971 15.4141 20.8821 16.9382 23.2394 16.9382C25.5967 16.9382 27.5078 15.4141 27.5078 13.5338C27.5078 13.0637 27.1256 12.6826 26.6541 12.6826H25.8004Z"
+                stroke="white"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            <path
+                d="M33.8011 35.6629C32.3186 31.0967 28.0533 28.0034 23.2394 28.0034C18.4255 28.0034 14.1602 31.0967 12.6777 35.6629"
+                stroke="white"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    ),
     imageUpload: <UploadIcon />,
     checkmark: <CheckmarkIcon />,
+    checkmarkOutline: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 112 113" fill="none">
+            <circle opacity=".1" cx="56" cy="56.5" r="56" fill="#0EAC1B" />
+            <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M101.833 56.5c0 25.313-20.52 45.833-45.834 45.833-25.313 0-45.833-20.52-45.833-45.833s20.52-45.833 45.833-45.833 45.834 20.52 45.834 45.833Zm-57.831-4.267c.56.24 1.065.589 1.488 1.027l5.926 5.926 15.093-15.093a4.583 4.583 0 1 1 6.48 6.48L54.657 68.908a4.583 4.583 0 0 1-6.48 0l-9.167-9.166a4.585 4.585 0 0 1 3.224-7.88c.608.005 1.21.131 1.769.372Z"
+                fill="#0EAC1B"
+            />
+        </svg>
+    ),
+    checkMarkMono: (
+        <svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.76361 5.82623L4.25997 9.59981L12.5685 1.29131" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+    ),
     error: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
             <g fill="none" fillRule="evenodd">
                 <circle cx="10" cy="10" r="10" fill="#FF5C00" fillRule="nonzero" />
-                <path
-                    stroke="#FFF"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.5"
-                    d="M10 11.562V5M10 14.562v-.052"
-                />
+                <path stroke="#FFF" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M10 11.562V5M10 14.562v-.052" />
             </g>
         </svg>
     ),
@@ -227,14 +280,7 @@ const sources = {
     arrowhead: <MapIcons.ArrowHeadIcon />,
     keyboard: (
         <svg viewBox="0 0 24 14" xmlns="http://www.w3.org/2000/svg">
-            <g
-                stroke="currentColor"
-                strokeWidth="1.5"
-                fill="none"
-                fillRule="evenodd"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            >
+            <g stroke="currentColor" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
                 <rect x=".75" y=".25" width="22.5" height="12" rx="3" />
                 <path d="M6.75 3.25h1.5M15.75 3.25h1.5M11.25 3.25h1.5M4.5 6.25H6M9 6.25h1.5M13.5 6.25H15M18 6.25h1.5M6.75 9.25h10.5" />
             </g>
@@ -346,16 +392,22 @@ const sources = {
             </g>
         </svg>
     ),
-    lockOutline: (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 24">
-            <g
-                fill="none"
-                fillRule="evenodd"
-                stroke="currentColor"
+    outlineQuestionMark2: (
+        <svg viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8.25 16.5a8.25 8.25 0 1 0 0-16.5 8.25 8.25 0 0 0 0 16.5Z" fill="#A3A3A3" />
+            <path fillRule="evenodd" clipRule="evenodd" d="M8.435 11.41a1.05 1.05 0 1 0 0 2.1 1.05 1.05 0 0 0 0-2.1Z" fill="#fff" />
+            <path
+                d="M6.225 5.853a2.21 2.21 0 1 1 2.947 2.085 1.105 1.105 0 0 0-.737 1.042v.465"
+                stroke="#fff"
+                strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth="1.5"
-            >
+            />
+        </svg>
+    ),
+    lockOutline: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 24">
+            <g fill="none" fillRule="evenodd" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
                 <rect width="16.5" height="13.5" x="0.75" y="9.75" rx="1.5" />
                 <path d="M3.75 9.75V6a5.25 5.25 0 1110.5 0v3.75M9 15v3" />
             </g>
@@ -363,14 +415,7 @@ const sources = {
     ),
     lock: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 25">
-            <g
-                fill="none"
-                fillRule="evenodd"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-                transform="translate(1 1)"
-            >
+            <g fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" transform="translate(1 1)">
                 <path stroke="currentColor" d="M3 9V5.25a5.25 5.25 0 1110.5 0" />
                 <rect width="16.5" height="13.5" y="9" fill="currentColor" stroke="currentColor" rx="1.5" />
                 <path stroke="#FFF" d="M8.5 14v3" />
@@ -379,14 +424,7 @@ const sources = {
     ),
     checkBadgeOutline: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <g
-                fill="none"
-                fillRule="evenodd"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-            >
+            <g fill="none" fillRule="evenodd" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
                 <path d="M15.75 9.749l-3.981 5.308a.75.75 0 01-1.13.08L8.25 12.749" />
                 {/* eslint-disable-next-line max-len */}
                 <path d="M10.73 1.357a1.63 1.63 0 012.54 0l1.512 1.881c.348.434.893.66 1.446.6l2.4-.261a1.63 1.63 0 011.8 1.8l-.261 2.4c-.06.553.166 1.098.6 1.446l1.881 1.512a1.63 1.63 0 010 2.54l-1.887 1.505a1.63 1.63 0 00-.6 1.447l.261 2.4a1.629 1.629 0 01-1.8 1.8l-2.4-.261a1.628 1.628 0 00-1.446.6L13.27 22.64a1.629 1.629 0 01-2.54 0l-1.511-1.88a1.631 1.631 0 00-1.447-.6l-2.4.261a1.628 1.628 0 01-1.8-1.8l.261-2.4a1.631 1.631 0 00-.6-1.447l-1.88-1.511a1.629 1.629 0 010-2.54l1.88-1.512c.434-.348.66-.893.6-1.446l-.261-2.4a1.629 1.629 0 011.8-1.8l2.4.261a1.632 1.632 0 001.447-.6l1.511-1.869z" />
@@ -413,13 +451,7 @@ const sources = {
                     fill="#0324FF"
                     d="M8 14.88l-1.56.966-1.073-1.49-1.812.296-.42-1.787-1.787-.42.296-1.812L.154 9.56 1.12 8 .154 6.44l1.49-1.073-.296-1.812 1.787-.42.42-1.787 1.812.296L6.44.154 8 1.12 9.56.154l1.073 1.49 1.812-.296.42 1.787 1.787.42-.296 1.812 1.49 1.072L14.88 8l.966 1.56-1.49 1.073.296 1.812-1.787.42-.42 1.787-1.812-.296-1.072 1.49z"
                 />
-                <path
-                    stroke="#FFF"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4.865 8.172l1.65 1.792 4.243-4.243"
-                />
+                <path stroke="#FFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" d="M4.865 8.172l1.65 1.792 4.243-4.243" />
             </g>
         </svg>
     ),
@@ -439,13 +471,7 @@ const sources = {
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
             <g fill="none" fillRule="evenodd" transform="matrix(1 0 0 -1 0 16)">
                 <circle cx="8" cy="8" r="8" fill="#0324FF" />
-                <path
-                    stroke="#FFF"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M8 11.5v.1m0-2.8V4"
-                />
+                <path stroke="#FFF" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 11.5v.1m0-2.8V4" />
             </g>
         </svg>
     ),
@@ -453,13 +479,7 @@ const sources = {
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
             <g fill="none" fillRule="evenodd">
                 <circle cx="8" cy="8" r="8" fill="#FF5C00" />
-                <path
-                    stroke="#FFF"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M8 11.5v.1m0-2.8V4"
-                />
+                <path stroke="#FFF" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 11.5v.1m0-2.8V4" />
             </g>
         </svg>
     ),
@@ -467,13 +487,7 @@ const sources = {
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
             <g fill="none" fillRule="evenodd">
                 <circle cx="8" cy="8" r="8" fill="#FF0F2D" />
-                <path
-                    stroke="#FFF"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4.606 4.606l6.788 6.788m0-6.788l-6.788 6.788"
-                />
+                <path stroke="#FFF" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.606 4.606l6.788 6.788m0-6.788l-6.788 6.788" />
             </g>
         </svg>
     ),
@@ -510,6 +524,7 @@ const sources = {
             />
         </svg>
     ),
+    // TODO check if is used and delete if not
     x: (
         <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
             <g stroke="#A3A3A3" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round">
@@ -552,11 +567,7 @@ const sources = {
     DATA: (
         <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg">
             <g fill="none" fillRule="evenodd">
-                <path
-                    d="M12 24C5.372 24 0 18.628 0 12S5.372 0 12 0s12 5.372 12 12-5.372 12-12 12z"
-                    fill="#CDCDCD"
-                    fillRule="nonzero"
-                />
+                <path d="M12 24C5.372 24 0 18.628 0 12S5.372 0 12 0s12 5.372 12 12-5.372 12-12 12z" fill="#CDCDCD" fillRule="nonzero" />
                 <path
                     d="M13.878 5.193v-.432a.26.26 0 00-.271-.26 5.63 5.63 0 00-5.355 5.393c.006.182.154.23.241.23h.44a.26.26 0 00.26-.248 4.693 4.693 0 014.444-4.438c.183-.023.241-.123.241-.245m-3.953 4.931h.42a.26.26 0 00.258-.242 3.285 3.285 0 013.055-3.035.235.235 0 00.22-.248V6.17a.261.261 0 00-.279-.26 4.224 4.224 0 00-3.935 3.934c-.01.15.11.279.26.279m3.954-2.541v.43c0 .176-.152.239-.227.248a1.878 1.878 0 00-1.635 1.63.262.262 0 01-.26.233h-.42a.26.26 0 01-.259-.284 2.816 2.816 0 012.518-2.517.26.26 0 01.283.26zm4.929 6.282c-.122 0-.222-.058-.245-.241a4.693 4.693 0 00-4.439-4.444.26.26 0 01-.248-.26v-.44c0-.086.048-.234.23-.24a5.631 5.631 0 015.395 5.353.26.26 0 01-.26.272h-.433zm-4.932-3.953c0-.151.128-.27.28-.26a4.224 4.224 0 013.934 3.934c.01.15-.109.28-.26.28h-.428a.235.235 0 01-.248-.221 3.285 3.285 0 00-3.035-3.055.26.26 0 01-.243-.258v-.42zm2.542 3.953h-.43c-.176 0-.24-.153-.248-.227a1.878 1.878 0 00-1.632-1.635.262.262 0 01-.232-.26v-.42a.26.26 0 01.284-.259 2.816 2.816 0 012.518 2.517.26.26 0 01-.26.284zM5.193 10.123c.122 0 .222.059.245.241a4.693 4.693 0 004.439 4.444.26.26 0 01.248.26v.44c0 .086-.048.234-.23.24A5.631 5.631 0 014.5 10.395a.26.26 0 01.26-.272h.433zm4.932 3.953c0 .151-.128.27-.28.26a4.224 4.224 0 01-3.934-3.934.261.261 0 01.26-.28h.428c.189 0 .244.149.248.222a3.285 3.285 0 003.035 3.054.26.26 0 01.243.258v.42zm-2.542-3.953h.43c.176 0 .24.153.248.227.103.853.779 1.53 1.632 1.635a.262.262 0 01.232.26v.42a.26.26 0 01-.284.259 2.816 2.816 0 01-2.518-2.517.26.26 0 01.26-.284zm2.543 8.684c0-.122.059-.222.241-.245a4.693 4.693 0 004.445-4.438.26.26 0 01.26-.248h.44c.086 0 .234.048.24.23a5.631 5.631 0 01-5.354 5.394.26.26 0 01-.272-.26v-.433zm3.954-4.931c.151 0 .27.128.26.28a4.224 4.224 0 01-3.935 3.934.261.261 0 01-.28-.26V17.4c0-.189.149-.243.222-.248a3.285 3.285 0 003.055-3.035.26.26 0 01.257-.242h.42zm-3.954 2.541v-.43c0-.176.153-.239.227-.248a1.878 1.878 0 001.636-1.63.262.262 0 01.259-.233h.42a.26.26 0 01.26.284 2.816 2.816 0 01-2.518 2.517.26.26 0 01-.284-.26z"
                     fill="#FFF"
@@ -583,11 +594,7 @@ const sources = {
                     fill="#CDCDCD"
                 />
                 <g opacity=".497">
-                    <path
-                        d="M12.373 3v6.652l5.623 2.513L12.374 3zm0 13.476v4.52L18 13.212l-5.627 3.264z"
-                        fillOpacity=".298"
-                        fill="#000"
-                    />
+                    <path d="M12.373 3v6.652l5.623 2.513L12.374 3zm0 13.476v4.52L18 13.212l-5.627 3.264z" fillOpacity=".298" fill="#000" />
                     <path fill="#525252" d="M12.373 15.43l5.623-3.265-5.622-2.511z" />
                     <path fill="#ADADAD" d="M6.75 12.165l5.623 3.265V9.654z" />
                 </g>
@@ -607,36 +614,39 @@ const sources = {
     ),
     unknownToken: (
         <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M11.942 23.885c6.596 0 11.943-5.347 11.943-11.943C23.885 5.347 18.538 0 11.942 0 5.347 0 0 5.347 0 11.942c0 6.596 5.347 11.943 11.942 11.943Z" fill="#CDCDCD" />
-            <path d="M15.833 8.167a.572.572 0 0 0-.585-.138 10.257 10.257 0 0 1-6.496 0 .571.571 0 0 0-.723.723 10.256 10.256 0 0 1 0 6.496.571.571 0 0 0 .723.723 10.337 10.337 0 0 1 6.496 0 .571.571 0 0 0 .723-.723 10.257 10.257 0 0 1 0-6.496.572.572 0 0 0-.138-.585ZM12 14.305c-.874 0-1.749.099-2.601.297a11.393 11.393 0 0 0 0-5.203 11.391 11.391 0 0 0 5.202 0 11.394 11.394 0 0 0 0 5.203A11.498 11.498 0 0 0 12 14.305Z" fill="#fff" />
-            <path fillRule="evenodd" clipRule="evenodd" d="M12 2.7c-5.042 0-9.3 4.222-9.3 9.3 0 5.042 4.222 9.3 9.3 9.3 5.042 0 9.3-4.222 9.3-9.3 0-5.042-4.222-9.3-9.3-9.3Zm0 17.113c-4.232 0-7.813-3.58-7.813-7.813 0-4.232 3.581-7.813 7.813-7.813 4.232 0 7.814 3.58 7.814 7.813 0 4.232-3.582 7.813-7.814 7.813ZM9.882 3.261A8.717 8.717 0 0 1 12 3c4.912 0 9 4.123 9 9 0 4.17-2.973 7.747-6.855 8.732C18.028 19.748 21 16.171 21 12c0-4.877-4.088-9-9-9-.726 0-1.436.09-2.118.261ZM12 20.113c-4.398 0-8.113-3.715-8.113-8.113 0-3.747 2.697-6.999 6.216-7.88-3.519.881-6.216 4.133-6.216 7.88 0 4.398 3.715 8.113 8.113 8.113Z" fill="#fff" />
+            <path
+                d="M11.942 23.885c6.596 0 11.943-5.347 11.943-11.943C23.885 5.347 18.538 0 11.942 0 5.347 0 0 5.347 0 11.942c0 6.596 5.347 11.943 11.942 11.943Z"
+                fill="#CDCDCD"
+            />
+            <path
+                d="M15.833 8.167a.572.572 0 0 0-.585-.138 10.257 10.257 0 0 1-6.496 0 .571.571 0 0 0-.723.723 10.256 10.256 0 0 1 0 6.496.571.571 0 0 0 .723.723 10.337 10.337 0 0 1 6.496 0 .571.571 0 0 0 .723-.723 10.257 10.257 0 0 1 0-6.496.572.572 0 0 0-.138-.585ZM12 14.305c-.874 0-1.749.099-2.601.297a11.393 11.393 0 0 0 0-5.203 11.391 11.391 0 0 0 5.202 0 11.394 11.394 0 0 0 0 5.203A11.498 11.498 0 0 0 12 14.305Z"
+                fill="#fff"
+            />
+            <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M12 2.7c-5.042 0-9.3 4.222-9.3 9.3 0 5.042 4.222 9.3 9.3 9.3 5.042 0 9.3-4.222 9.3-9.3 0-5.042-4.222-9.3-9.3-9.3Zm0 17.113c-4.232 0-7.813-3.58-7.813-7.813 0-4.232 3.581-7.813 7.813-7.813 4.232 0 7.814 3.58 7.814 7.813 0 4.232-3.582 7.813-7.814 7.813ZM9.882 3.261A8.717 8.717 0 0 1 12 3c4.912 0 9 4.123 9 9 0 4.17-2.973 7.747-6.855 8.732C18.028 19.748 21 16.171 21 12c0-4.877-4.088-9-9-9-.726 0-1.436.09-2.118.261ZM12 20.113c-4.398 0-8.113-3.715-8.113-8.113 0-3.747 2.697-6.999 6.216-7.88-3.519.881-6.216 4.133-6.216 7.88 0 4.398 3.715 8.113 8.113 8.113Z"
+                fill="#fff"
+            />
         </svg>
     ),
     console: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 20">
-            <g
-                fill="none"
-                fillRule="evenodd"
-                stroke="#A3A3A3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-            >
+            <g fill="none" fillRule="evenodd" stroke="#A3A3A3" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
                 <path d="M2.525 18.775a1.35 1.35 0 01-1.35-1.35V2.678a1.458 1.458 0 011.453-1.453h17.35a1.45 1.45 0 011.447 1.446v14.65a1.458 1.458 0 01-1.454 1.454H2.525zm18.9-13.5H1.175m10.8 6.75h4.05" />
                 <path d="M6.575 9.325l2.7 2.7-2.7 2.7" />
             </g>
         </svg>
     ),
+    copy: (
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fillRule="evenodd" clipRule="evenodd" d="M23 5H13C11.6193 5 10.5 6.11929 10.5 7.5V8.5H9.5C8.11929 8.5 7 9.61929 7 11V24C7 25.3807 8.11929 26.5 9.5 26.5H19.5C20.8807 26.5 22 25.3807 22 24V23H23C24.3807 23 25.5 21.8807 25.5 20.5V7.5C25.5 6.11929 24.3807 5 23 5ZM20.5 23H13C11.6193 23 10.5 21.8807 10.5 20.5V10H9.5C8.94772 10 8.5 10.4477 8.5 11V24C8.5 24.5523 8.94772 25 9.5 25H19.5C20.0523 25 20.5 24.5523 20.5 24V23ZM12 7.5C12 6.94772 12.4477 6.5 13 6.5H23C23.5523 6.5 24 6.94772 24 7.5V20.5C24 21.0523 23.5523 21.5 23 21.5H13C12.4477 21.5 12 21.0523 12 20.5V7.5Z" fill="currentColor"/>
+        </svg>
+
+    ),
     alarmBell: (
         <svg viewBox="0 0 16 20" xmlns="http://www.w3.org/2000/svg">
-            <g
-                strokeWidth="1.5"
-                stroke="currentColor"
-                fill="none"
-                fillRule="evenodd"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            >
+            <g strokeWidth="1.5" stroke="currentColor" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6.444 17.917a1.623 1.623 0 003.115 0M8 3.333v-1.75M8 3.333a5.833 5.833 0 015.833 5.834c0 5.48 1.167 6.416 1.167 6.416H1s1.167-1.49 1.167-6.416A5.833 5.833 0 018 3.333z" />
             </g>
         </svg>
@@ -669,13 +679,7 @@ const sources = {
             </defs>
             <g fill="none" fillRule="evenodd">
                 <use fill="#97BAC0" xlinkHref="#a" />
-                <g
-                    transform="translate(9 9)"
-                    stroke="#FFF"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.5"
-                >
+                <g transform="translate(9 9)" stroke="#FFF" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
                     <circle cx="2.5" cy="11.497" r="2.25" />
                     <path d="M.205 5.126a6.807 6.807 0 018.4 9.36M.359.445a11.279 11.279 0 0113 14.08" />
                 </g>
@@ -720,16 +724,7 @@ const sources = {
     ),
     list: (
         <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <rect
-                fill="none"
-                x=".75"
-                y=".75"
-                width="18.5"
-                height="18.5"
-                rx="1.25"
-                stroke="currentColor"
-                strokeWidth="1.5"
-            />
+            <rect fill="none" x=".75" y=".75" width="18.5" height="18.5" rx="1.25" stroke="currentColor" strokeWidth="1.5" />
             <path
                 stroke="currentColor"
                 strokeWidth="1.5"
@@ -801,20 +796,8 @@ const sources = {
     ),
     externalLink: (
         <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-                d="M22.0008 13.4286V10H18.5723"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            />
-            <path
-                d="M21.9994 10L14.2852 17.7143"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            />
+            <path d="M22.0008 13.4286V10H18.5723" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M21.9994 10L14.2852 17.7143" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             <path
                 d="M15.5 12.5713H10.7857C10.3518 12.5713 10 12.9231 10 13.357V21.2141C10 21.6481 10.3518 21.9999 10.7857 21.9999H18.6429C19.0768 21.9999 19.4286 21.6481 19.4286 21.2141V16.4999"
                 stroke="currentColor"
@@ -833,19 +816,15 @@ const sources = {
                 strokeLinecap="round"
                 strokeLinejoin="round"
             />
+            <path d="M18.8652 9.93994L22.0597 13.1344" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M10.1016 18.7031L13.2991 21.8951" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    ),
+    pencilFull: (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
-                d="M18.8652 9.93994L22.0597 13.1344"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            />
-            <path
-                d="M10.1016 18.7031L13.2991 21.8951"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                d="M14.0833 5.43734L10.5417 1.93734L11.7083 0.770671C12.0278 0.451226 12.4203 0.291504 12.8858 0.291504C13.3508 0.291504 13.7431 0.451226 14.0625 0.770671L15.2292 1.93734C15.5486 2.25678 15.7153 2.64234 15.7292 3.094C15.7431 3.54511 15.5903 3.93039 15.2708 4.24984L14.0833 5.43734ZM1.33333 15.4998C1.09722 15.4998 0.899445 15.4198 0.74 15.2598C0.58 15.1004 0.5 14.9026 0.5 14.6665V12.3123C0.5 12.2012 0.520833 12.0937 0.5625 11.9898C0.604167 11.8854 0.666667 11.7915 0.75 11.7082L9.33333 3.12484L12.875 6.6665L4.29167 15.2498C4.20833 15.3332 4.11472 15.3957 4.01083 15.4373C3.90639 15.479 3.79861 15.4998 3.6875 15.4998H1.33333Z"
+                fill="currentColor"
             />
         </svg>
     ),
@@ -865,6 +844,32 @@ const sources = {
                 strokeLinecap="round"
                 strokeLinejoin="round"
             />
+        </svg>
+    ),
+    ellipse: (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="2" />
+        </svg>
+    ),
+    email: (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clipPath="url(#clip0_1889_4457)">
+                <g clipPath="url(#clip1_1889_4457)">
+                    <circle cx="8" cy="8" r="8" fill="currentColor" />
+                    <path
+                        d="M3.33203 5.5013C3.33203 5.28029 3.43036 5.06833 3.6054 4.91205C3.78043 4.75577 4.01783 4.66797 4.26536 4.66797H11.732C11.9796 4.66797 12.217 4.75577 12.392 4.91205C12.567 5.06833 12.6654 5.28029 12.6654 5.5013V10.5013C12.6654 10.7223 12.567 10.9343 12.392 11.0906C12.217 11.2468 11.9796 11.3346 11.732 11.3346H4.26536C4.01783 11.3346 3.78043 11.2468 3.6054 11.0906C3.43036 10.9343 3.33203 10.7223 3.33203 10.5013V5.5013ZM4.97423 5.5013L7.9987 7.86422L11.0232 5.5013H4.9747H4.97423ZM11.732 6.05505L8.30623 8.73172C8.22113 8.79829 8.11184 8.83499 7.9987 8.83499C7.88555 8.83499 7.77626 8.79829 7.69116 8.73172L4.26536 6.05505V10.5013H11.732V6.05505Z"
+                        fill="white"
+                    />
+                </g>
+            </g>
+            <defs>
+                <clipPath id="clip0_1889_4457">
+                    <rect width="16" height="16" fill="white" />
+                </clipPath>
+                <clipPath id="clip1_1889_4457">
+                    <rect width="16" height="16" fill="white" />
+                </clipPath>
+            </defs>
         </svg>
     ),
     github: <SocialIcons.GitHub />,

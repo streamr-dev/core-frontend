@@ -1,15 +1,11 @@
-const getNativeTokenName = (chainId: number): string => {
-    switch (`${chainId}`) {
-        case '137':
-        case '8997':
-            return 'MATIC'
+const mapping = {
+    137: 'MATIC',
+    8997: 'MATIC',
+    100: 'xDai'
+}
 
-        case '100':
-            return 'xDai'
-
-        default:
-            return 'Ether'
-    }
+const getNativeTokenName = (chainId: string | number) => {
+    return mapping[chainId] || 'Ether'
 }
 
 export default getNativeTokenName

@@ -5,6 +5,7 @@
     "module": "es6",
     "target": "es2017",
     "jsx": "react",
+    "strict": true,
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",

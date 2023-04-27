@@ -1,134 +1,106 @@
 import React from 'react'
-import { MemoryRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
+import { MemoryRouter } from 'react-router-dom'
 import { mount } from 'enzyme'
+import { jest } from '@jest/globals'
 import mockStore from '$app/test/test-utils/mockStoreProvider'
-// eslint-disable-next-line import/order
 import Nav from '$shared/components/Layout/Nav'
-import { Avatarless, UsernameCopy } from '$shared/components/Layout/User'
+import { useWalletAccount, useEns } from '$shared/stores/wallet'
+
+jest.mock('$shared/components/AccountsBalance', () => ({
+    __esModule: true,
+    default: () => <></>,
+}))
+
+jest.mock('$shared/stores/wallet', () => ({
+    __esModule: true,
+    useWalletAccount: jest.fn(),
+    useEns: jest.fn(),
+}))
+
+function mountNav() {
+    return mount(
+        <MemoryRouter>
+            <Provider store={mockStore({})}>
+                <Nav />
+            </Provider>
+        </MemoryRouter>,
+    )
+}
 
 /* eslint-disable object-curly-newline */
 describe('Nav.Wide', () => {
+    beforeEach(() => {})
+
     it('renders logo', () => {
-        const store = {
-            user: {},
-        }
-        const el = mount(
-            <MemoryRouter>
-                <Provider store={mockStore(store)}>
-                    <Nav />
-                </Provider>
-            </MemoryRouter>,
-        )
-        expect(el.find('Logo').exists()).toBe(true)
+        expect(mountNav().find('Logo').exists()).toBe(true)
     })
-    describe('When the user is not signed in', () => {
+
+    it('renders the menu links', () => {
+        const el = mountNav()
+
+        expect(
+            el
+                .find({
+                    href: '/hub/streams',
+                })
+                .exists(),
+        ).toBe(true)
+
+        expect(
+            el
+                .find({
+                    href: '/hub/projects',
+                })
+                .exists(),
+        ).toBe(true)
+    })
+
+    it('renders the Connect button', () => {
+        expect(
+            mountNav()
+                .find('button')
+                .findWhere((node) => node.text() === 'Connect')
+                .exists(),
+        ).toBe(true)
+    })
+
+    describe.only('When the user is signed in', () => {
+        beforeEach(() => {
+            (useWalletAccount as any).mockImplementation(() => '0xADDR');
+            (useEns as any).mockImplementation(() => '')
+        })
+
         it('renders the menu links', () => {
-            const store = {
-                user: {},
-            }
-            const el = mount(
-                <MemoryRouter>
-                    <Provider store={mockStore(store)}>
-                        <Nav />
-                    </Provider>
-                </MemoryRouter>,
-            )
             expect(
-                el
+                mountNav()
                     .find({
-                        href: '/core/streams',
-                    })
-                    .exists(),
-            ).toBe(true)
-            expect(
-                el
-                    .find({
-                        href: '/marketplace',
-                    })
-                    .exists(),
-            ).toBe(true)
-            expect(
-                el
-                    .find({
-                        href: '/docs',
-                    })
-                    .exists(),
-            ).toBe(true)
-            expect(
-                el
-                    .find({
-                        href: '/login?redirect=%2F',
+                        href: '/hub/streams',
                     })
                     .exists(),
             ).toBe(true)
         })
-    })
-    describe('When the user is signed in', () => {
-        it('renders the menu links', () => {
-            const store = {
-                user: {
-                    user: {
-                        id: '1',
-                        username: 'tester1@streamr.com',
-                    },
-                },
-            }
-            const el = mount(
-                <MemoryRouter>
-                    <Provider store={mockStore(store)}>
-                        <Nav />
-                    </Provider>
-                </MemoryRouter>,
-            )
+
+        it('does not render the Connect button', () => {
             expect(
-                el
-                    .find({
-                        href: '/core/streams',
-                    })
-                    .exists(),
-            ).toBe(true)
-            expect(
-                el
-                    .find({
-                        href: '/docs',
-                    })
-                    .exists(),
-            ).toBe(true)
-            expect(
-                el
-                    .find({
-                        href: '/login',
-                    })
+                mountNav()
+                    .find('button')
+                    .findWhere((node) => node.text() === 'Connect')
                     .exists(),
             ).toBe(false)
+        })
+
+        it('renders the Disconnect button', () => {
             expect(
-                el
-                    .find({
-                        href: '/logout',
-                    })
+                mountNav()
+                    .find('button')
+                    .findWhere((node) => node.text() === 'Disconnect')
                     .exists(),
             ).toBe(true)
         })
+
         it('renders the user avatar', () => {
-            const store = {
-                user: {
-                    user: {
-                        id: '1',
-                        username: 'tester1@streamr.com',
-                    },
-                },
-            }
-            const el = mount(
-                <MemoryRouter>
-                    <Provider store={mockStore(store)}>
-                        <Nav />
-                    </Provider>
-                </MemoryRouter>,
-            )
-            expect(el.find(Avatarless).exists()).toBe(true)
-            expect(el.find(UsernameCopy).text()).toMatch(/tester1@streamr\.com/)
+            expect(mountNav().find('UnstyledAvatarImage').exists()).toBe(true)
         })
     })
 })
-/* eslint-enable object-curly-newline */

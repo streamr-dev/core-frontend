@@ -1,48 +1,13 @@
 import { $Values } from 'utility-types'
-import { get, post, put, del } from '$shared/utils/api'
-import type { ApiResult } from '$shared/types/common-types'
-import type { User, Challenge } from '$shared/types/user-types'
 import { BalanceType } from '$shared/types/user-types'
-import type { Address } from '$shared/types/web3-types'
+import {Abi, Address} from '$shared/types/web3-types'
 import { getDataTokenBalance, getNativeTokenBalance } from '$mp/utils/web3'
-import routes from '$routes'
-const GRAPH_API_URL = 'https://api.thegraph.com/subgraphs/name/ensdomains/ens'
-export const getUserData = (): ApiResult<User> =>
-    get({
-        url: routes.api.currentUser.index({
-            noCache: Date.now(),
-        }),
-    })
-export const putUser = (user: User): ApiResult<User> =>
-    put({
-        url: routes.api.currentUser.index(),
-        data: user,
-    })
-export const uploadProfileAvatar = (image: File): Promise<any> => {
-    const options = {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
-    }
-    const data = new FormData()
-    data.append('file', image, image.name)
-    return post({
-        url: routes.api.currentUser.image(),
-        data,
-        options,
-    })
-}
-export const deleteUserAccount = (): ApiResult<null> =>
-    del({
-        url: routes.api.currentUser.index(),
-    })
-export const createChallenge = (account: Address): ApiResult<Challenge> =>
-    post({
-        url: routes.api.loginChallenge({
-            account,
-        }),
-        useAuthorization: false,
-    })
+import reverseRecordsAbi from '$shared/web3/abis/reverseRecords.json'
+import {call, getContract} from "$mp/utils/smartContract"
+import getCoreConfig from "$app/src/getters/getCoreConfig"
+
+const config = getCoreConfig()
+
 type GetBalance = {
     address: Address
     type: $Values<typeof BalanceType>
@@ -66,30 +31,9 @@ export async function getBalance({ address, type, usePublicNode = false, chainId
 
     return balance
 }
-type Domains = {
-    data: {
-        domains: Array<{
-            name: string
-        }>
-    }
+
+export const lookupEnsName = async (address: Address): Promise<string> => {
+    const contract = getContract({abi: reverseRecordsAbi as Abi, address: config.reverseRecordsAddress}, true, 1)
+    const response = await call(contract.methods.getNames([address]))
+    return response[0]
 }
-export const getEnsDomains = ({ addresses }: { addresses: Array<Address> }): ApiResult<Domains> =>
-    post({
-        url: GRAPH_API_URL,
-        data: {
-            query: `
-            query {
-                domains(
-                    where: { owner_in: [${(addresses || []).map((address) => `"${address}"`).join(', ')}]}
-                    orderBy: name
-                ) {
-                    id
-                    name
-                    labelName
-                    labelhash
-                }
-            }
-        `,
-        },
-        useAuthorization: false,
-    })

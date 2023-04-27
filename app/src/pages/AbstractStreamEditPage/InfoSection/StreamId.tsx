@@ -1,73 +1,73 @@
-import React, { Fragment, useMemo, useState, useEffect, useRef } from 'react'
+import React, { useMemo, useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
-import docsLinks from '$shared/../docsLinks'
 import { SM, MONO, MEDIUM } from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
 import Button from '$shared/components/Button'
 import Spinner from '$shared/components/Spinner'
-import { useValidationErrorSetter, useValidationError } from '$shared/components/ValidationErrorProvider'
 import Label from '$ui/Label'
 import Text from '$ui/Text'
 import Select from '$ui/Select'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
-import getStreamPath from '$app/src/getters/getStreamPath'
-import useStreamId from '$shared/hooks/useStreamId'
 import useCopy from '$shared/hooks/useCopy'
-import Notification from '$shared/utils/Notification'
-import ValidationError from '$shared/errors/ValidationError'
-import { NotificationIcon } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
-import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
-import useClientAddress from '$shared/hooks/useClientAddress'
-import useStreamModifier from '$shared/hooks/useStreamModifier'
-import useStreamOwnerOptions, { ADD_ENS_DOMAIN_VALUE } from './useStreamOwnerOptions'
+import {
+    DraftValidationError,
+    useCurrentDraftError,
+    useSetCurrentDraftError,
+    useSetCurrentDraftTransientStreamId,
+} from '$shared/stores/streamEditor'
+import { useWalletAccount } from '$shared/stores/wallet'
+import useStreamOwnerOptionGroups, {
+    ADD_ENS_DOMAIN_VALUE,
+    OptionGroup,
+} from './useStreamOwnerOptionGroups'
+
 export const ENS_DOMAINS_URL = 'https://ens.domains'
-export function ReadonlyStreamId({ className }) {
-    const streamId = useStreamId()
-    const { copy, isCopied } = useCopy(() => {
-        Notification.push({
-            title: 'Stream ID copied',
-            icon: NotificationIcon.CHECKMARK,
-        })
-    })
-    const { truncatedDomain: domain, pathname } = getStreamPath(streamId)
+
+export function ReadonlyStreamId({ streamId }: { streamId: string }) {
+    const { copy, isCopied } = useCopy()
+
     return (
-        <StreamId className={className}>
-            {!!domain && (
-                <Fragment>
-                    <Domain>
-                        <Label>Domain</Label>
-                        <Text name="domain" readOnly value={domain} />
-                    </Domain>
-                    <div>
-                        <Label />
-                        <Separator />
-                    </div>
-                </Fragment>
-            )}
+        <StreamId>
             <Pathname>
-                <Label>Path name</Label>
+                <Label>Stream ID</Label>
                 <PathnameField>
-                    <Text readOnly defaultValue={pathname} />
-                    <LockIcon>
-                        <SvgIcon name="lock" />
-                    </LockIcon>
+                    <Text readOnly value={streamId} disabled />
                 </PathnameField>
             </Pathname>
             <div>
                 <Label />
-                <Button kind="secondary" onClick={() => void copy(streamId)} type="button">
-                    {!isCopied && 'Copy Stream ID'}
-                    {!!isCopied && 'Copied!'}
+                <Button
+                    kind="secondary"
+                    onClick={() =>
+                        void copy(streamId || '', {
+                            toastMessage: 'Stream ID copied',
+                        })
+                    }
+                    type="button"
+                >
+                    {isCopied ? 'Copied!' : 'Copy'}
                 </Button>
             </div>
         </StreamId>
     )
 }
-export function EditableStreamId({ className, disabled }) {
-    const ownerGroups = useStreamOwnerOptions()
+
+interface EditableStreamIdProps {
+    disabled?: boolean
+}
+
+export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
+    const ownerGroups = useStreamOwnerOptionGroups()
+
+    const validationError = useCurrentDraftError('streamId')
+
+    const setTransientStreamId = useSetCurrentDraftTransientStreamId()
+
+    const setValidationError = useSetCurrentDraftError()
+
     const owners = useMemo(() => {
-        const result = []
+        const result: OptionGroup['options'] = []
 
         if (ownerGroups) {
             ownerGroups.forEach(({ options }) => {
@@ -77,108 +77,109 @@ export function EditableStreamId({ className, disabled }) {
 
         return result
     }, [ownerGroups])
-    const isOwnersLoading = typeof owners === 'undefined'
-    const { busy, clean } = useStreamModifierStatusContext()
-    const user = useClientAddress()
-    const [domain = '', setDomain] = useState()
-    useEffect(() => {
-        if (!domain) {
-            setDomain(user)
-        }
-    }, [user, domain])
-    const [pathname = '', setPathname] = useState()
-    const { stage } = useStreamModifier()
-    const stageRef = useRef(stage)
-    useEffect(() => {
-        stageRef.current = stage
-    }, [stage])
-    const setValidationError = useValidationErrorSetter()
-    const setValidationErrorRef = useRef(setValidationError)
-    useEffect(() => {
-        setValidationErrorRef.current = setValidationError
-    }, [setValidationError])
-    const { id: validationError } = useValidationError()
-    useEffect(() => {
-        const id = `${domain}/${pathname}`
 
-        if (typeof stageRef.current === 'function') {
-            stageRef.current({
-                id: undefined,
-            })
-        }
+    const isOwnersLoading = typeof ownerGroups === 'undefined'
 
-        if (typeof setValidationErrorRef.current === 'function') {
-            setValidationErrorRef.current({
-                id: undefined,
-            })
-        }
+    const account = useWalletAccount()
 
-        if (!domain || /^\s*$/.test(pathname)) {
+    const [domain, setDomain] = useState<string>()
+
+    const [pathname, setPathname] = useState('')
+
+    const pathnameRef = useRef(pathname)
+
+    useEffect(() => {
+        pathnameRef.current = pathname
+    }, [pathname])
+
+    const commitRef = useRef(function commit(
+        newDomain: string | undefined,
+        newPathname: string,
+    ) {
+        setTransientStreamId('')
+
+        setValidationError('streamId', '')
+
+        if (!newDomain || newPathname === '') {
             return
         }
 
         try {
-            if (/^\//.test(pathname)) {
-                throw new ValidationError('cannot start with a slash')
+            if (/^\//.test(newPathname)) {
+                throw new DraftValidationError('streamId', 'cannot start with a slash')
             }
 
-            if (/\/{2,}/.test(pathname)) {
-                throw new ValidationError('cannot contain consecutive "/" characters')
+            if (/\/{2,}/.test(newPathname)) {
+                throw new DraftValidationError(
+                    'streamId',
+                    'cannot contain consecutive "/" characters',
+                )
             }
 
-            if (/[^\w]$/.test(pathname)) {
-                throw new ValidationError('must end with an alpha-numeric character')
+            if (/[^\w]$/.test(newPathname)) {
+                throw new DraftValidationError(
+                    'streamId',
+                    'must end with an alpha-numeric character',
+                )
             }
 
-            if (/[^\w.\-/_]/.test(pathname)) {
-                throw new ValidationError('may only contain alpha-numeric characters, underscores, and dashes')
+            if (/[^\w.\-/_]/.test(newPathname)) {
+                throw new DraftValidationError(
+                    'streamId',
+                    'may only contain alpha-numeric characters, underscores, and dashes',
+                )
             }
 
-            if (typeof stageRef.current === 'function') {
-                stageRef.current({
-                    id,
-                })
-            }
+            setTransientStreamId(`${newDomain}/${newPathname}`)
         } catch (e) {
-            if (e instanceof ValidationError) {
-                if (typeof setValidationErrorRef.current === 'function') {
-                    setValidationErrorRef.current({
-                        id: e.message,
-                    })
-                }
-
-                return
+            if (e instanceof DraftValidationError) {
+                return void setValidationError(e.key, e.message)
             }
 
             throw e
         }
-    }, [domain, pathname])
+    })
+
+    useEffect(() => {
+        setDomain(undefined)
+
+        commitRef.current(account, pathnameRef.current)
+    }, [account])
+
     return (
-        <StreamId className={className}>
+        <StreamId>
             <Domain>
                 <Label>Domain</Label>
-                {disabled || isOwnersLoading ? (
+                {disabled || isOwnersLoading || !account ? (
                     <DisabledDomain>
                         {isOwnersLoading ? (
-                            <React.Fragment>
-                                <span>Loading domains</span>
-                                <Spinner size="small" color="blue" />
-                            </React.Fragment>
+                            <>
+                                <span>Loading domains…</span>
+                                {!disabled && <Spinner size="small" color="blue" />}
+                            </>
                         ) : (
-                            <span>{truncate(domain)}</span>
+                            <span>{truncate(domain || account || 'No account')}</span>
                         )}
                     </DisabledDomain>
                 ) : (
                     <Select
                         options={ownerGroups}
-                        value={owners.find(({ value }) => value === domain)}
+                        value={owners.find(
+                            ({ value }) => value.toLowerCase() === (domain || account),
+                        )}
                         onChange={({ value }) => {
                             if (value === ADD_ENS_DOMAIN_VALUE) {
-                                window.open(ENS_DOMAINS_URL, '_blank', 'noopener noreferrer')
+                                window.open(
+                                    ENS_DOMAINS_URL,
+                                    '_blank',
+                                    'noopener noreferrer',
+                                )
                                 return
                             }
 
                             setDomain(value)
+
+                            commitRef.current(value || account, pathname)
                         }}
                         disabled={disabled}
                         name="domain"
@@ -202,10 +203,7 @@ export function EditableStreamId({ className, disabled }) {
                             <pre>oxd93...52874/oracles/price</pre>
                             <p>
                                 For more information, see the{' '}
-                                <a href={docsLinks.streams} target="_blank" rel="noopener noreferrer">
-                                    docs
-                                </a>
-                                .
+                                <a href="https://docs.streamr.network/">docs</a>.
                             </p>
                         </Tooltip>
                     </Hint>
@@ -214,12 +212,23 @@ export function EditableStreamId({ className, disabled }) {
                     <Text
                         disabled={disabled}
                         invalid={!!validationError}
-                        onChange={({ target }) => void setPathname(target.value)}
+                        onChange={({ target }) => {
+                            setPathname(target.value)
+
+                            commitRef.current(domain || account, target.value)
+                        }}
                         placeholder="Enter a unique stream path name"
                         value={pathname}
                     />
                     {pathname && !disabled && (
-                        <ClearButton type="button" onClick={() => void setPathname('')}>
+                        <ClearButton
+                            type="button"
+                            onClick={() => {
+                                setPathname('')
+
+                                commitRef.current(domain || account, '')
+                            }}
+                        >
                             <SvgIcon name="clear" />
                         </ClearButton>
                     )}
@@ -230,20 +239,15 @@ export function EditableStreamId({ className, disabled }) {
                     </Errors>
                 )}
             </Pathname>
-            <div>
-                <Label />
-                <Button disabled={clean || busy} kind="secondary" type="submit">
-                    Create stream
-                </Button>
-            </div>
         </StreamId>
     )
 }
+
 const Domain = styled.div`
     flex-grow: 1;
 
     @media (min-width: ${SM}px) {
-        max-width: 176px;
+        max-width: 222px;
     }
 `
 const SeparatorAttrs = {
@@ -337,25 +341,6 @@ const Tooltip = styled.div`
 `
 const PathnameField = styled.div`
     position: relative;
-`
-const LockIcon = styled.div`
-    color: #989898;
-    height: 40px;
-    line-height: 12px;
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 40px;
-
-    svg {
-        display: block;
-        height: 12px;
-        left: 50%;
-        position: absolute;
-        top: 50%;
-        transform: translate(-50%, -50%) translateY(-1px);
-        width: 12px;
-    }
 `
 const DisabledDomain = styled.div`
     align-items: center;

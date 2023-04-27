@@ -1,9 +1,8 @@
 import { useState, useCallback } from 'react'
-import type { UseStateTuple } from '$shared/types/common-types'
 import '$shared/types/common-types'
 import useIsMounted from '$shared/hooks/useIsMounted'
 export default () => {
-    const [failure, setFailure]: UseStateTuple<any> = useState()
+    const [failure, setFailure] = useState<any>()
     const isMounted = useIsMounted()
 
     if (failure) {

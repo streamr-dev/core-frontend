@@ -1,20 +1,21 @@
 import { get } from '$shared/utils/api'
-import type { ApiResult } from '$shared/types/common-types'
+import { ApiResult } from '$shared/types/common-types'
 import routes from '$routes'
-import type { Filter, ProductListPageWrapper } from '../../types/product-types'
+import { Filter, ProjectListPageWrapper } from '../../types/project-types'
 import { mapProductFromApi } from '../../utils/product'
-export const getProducts = (filter: Filter, pageSize: number, offset: number): ApiResult<ProductListPageWrapper> =>
-    get({
-        url: routes.api.products.index({
+export const getProducts = (filter: Filter, pageSize: number, offset: number): ApiResult<ProjectListPageWrapper> => {
+    const route = routes.api.projects.index
+    const params: Record<string,any> = {}
+    return get({
+        url: route({
             ...filter,
-            publicAccess: true,
-            grantedAccess: false,
+            ...params,
             max: pageSize + 1,
             // query 1 extra element to determine if we should show "load more" button
             offset,
         }),
-        useAuthorization: false,
     }).then((products) => ({
         products: products.splice(0, pageSize).map(mapProductFromApi),
         hasMoreProducts: products.length > 0,
     }))
+}

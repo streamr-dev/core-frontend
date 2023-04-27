@@ -4,7 +4,7 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import ProgressBar from '$shared/components/ProgressBar'
 import { transactionStates } from '$shared/utils/constants'
-import { PublishMode } from '$mp/containers/EditProductPage/usePendingChanges'
+import { PublishMode } from '$mp/containers/ProjectEditing/publishMode'
 import PendingTasks from '../PendingTasks'
 export type Status = Record<string, string>
 export type Props = {

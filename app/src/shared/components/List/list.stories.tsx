@@ -11,7 +11,6 @@ import {
     List,
     StreamList as StreamListComponent,
     MemberList as MemberListComponent,
-    TransactionList as TransactionListComponent,
 } from '.'
 const stories = storiesOf('Shared/List', module).addDecorator(
     styles({
@@ -384,65 +383,6 @@ stories.add('members (tablet)', () => <MemberList />, {
     },
 })
 stories.add('members (mobile)', () => <MemberList />, {
-    viewport: {
-        defaultViewport: 'xs',
-    },
-})
-const transactions = [
-    {
-        id: '1',
-        title: 'Data Product',
-        type: 'Payment',
-        hash: '0xda3f...497863',
-        when: '2 months ago',
-        value: '+1.05 DATA',
-        gas: '186347 / 500000',
-        status: StatusIcon.OK,
-    },
-]
-
-const TransactionList = () => (
-    <Container>
-        <TransactionListComponent>
-            <List.Header>
-                <List.HeaderItem>Name</List.HeaderItem>
-                <List.HeaderItem>Type</List.HeaderItem>
-                <List.HeaderItem>Transaction</List.HeaderItem>
-                <List.HeaderItem>When</List.HeaderItem>
-                <List.HeaderItem>Value</List.HeaderItem>
-                <List.HeaderItem>Gas</List.HeaderItem>
-                <List.HeaderItem center>Status</List.HeaderItem>
-                <List.HeaderItem />
-            </List.Header>
-            {transactions.map(({ id, title, type, hash, when, value, gas, status }) => (
-                <List.Row id={id} key={id} onClick={action('onClick')}>
-                    <List.Title description={`${type} ${value} (gas: ${gas})`} moreInfo={when}>
-                        {title}
-                    </List.Title>
-                    <List.Item>{type}</List.Item>
-                    <List.Item>{hash}</List.Item>
-                    <List.Item>{when}</List.Item>
-                    <List.Item>{value}</List.Item>
-                    <List.Item>{gas}</List.Item>
-                    <List.Item center>
-                        <StatusIcon status={status} tooltip />
-                    </List.Item>
-                    <List.Actions>
-                        <Meatball alt="actions" />
-                    </List.Actions>
-                </List.Row>
-            ))}
-        </TransactionListComponent>
-    </Container>
-)
-
-stories.add('transactions', () => <TransactionList />)
-stories.add('transactions (tablet)', () => <TransactionList />, {
-    viewport: {
-        defaultViewport: 'md',
-    },
-})
-stories.add('transactions (mobile)', () => <TransactionList />, {
     viewport: {
         defaultViewport: 'xs',
     },

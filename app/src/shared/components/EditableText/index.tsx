@@ -1,7 +1,7 @@
-import type { Node } from 'react'
+import { ReactNode } from 'react'
 import React, { useState, useCallback, Fragment, useEffect, useRef } from 'react'
 import cx from 'classnames'
-import type { Ref } from '$shared/types/common-types'
+import { Ref } from '$shared/types/common-types'
 import '$shared/types/common-types'
 import TextControl from '../TextControl'
 import styles from './editableText.pcss'
@@ -20,11 +20,13 @@ type Props = {
     onCommit?: (arg0: string) => void
     onModeChange?: ((arg0: boolean) => void) | null | undefined
     placeholder?: string | null | undefined
-    probe?: Node
+    probe?: ReactNode
     setEditing: (arg0: boolean) => void
     hidePlaceholderOnFocus?: boolean
     immediateCommit?: boolean
+    commitEmpty?: boolean
     theme?: Record<string, any>
+    value?: string
 }
 
 function isBlank(str) {
@@ -69,7 +71,7 @@ const EditableText = ({
         setHasFocus(true)
     }, [setHasFocus])
     const onChange = useCallback(
-        ({ target: { value: val } }: React.SyntheticEvent<EventTarget>) => {
+        ({ target: { value: val }}: React.ChangeEvent<HTMLInputElement>) => {
             setValue(val)
 
             if (onChangeProp) {
@@ -151,7 +153,7 @@ const EditableText = ({
                             onFocus={onFocus}
                             placeholder={placeholder}
                             disabled={disabled}
-                            tabIndex="-1"
+                            tabIndex={-1}
                         />
                     </React.Fragment>
                 )}

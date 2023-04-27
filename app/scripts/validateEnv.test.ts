@@ -7,7 +7,6 @@ const VALID_ENV = {
     PORT: '12345',
     SENTRY_DSN: 'https://user@pass.ingest.sentry.io/1337',
     SENTRY_ENVIRONMENT: 'production',
-    SENTRY_INDEXER_DSN: 'https://user@pass.ingest.sentry.io/42',
     SENTRY_ORG: 'streamr',
     SENTRY_PROJECT: 'marketplace',
 }
@@ -32,9 +31,11 @@ function presenceTest(key) {
     }
 }
 
-function urlTest(key) {
+function urlTest(key, required = true) {
     return async () => {
-        await presenceTest(key)()
+        if (required) {
+            await presenceTest(key)()
+        }
 
         await ex({
             [key]: 'http://',
@@ -94,11 +95,9 @@ it('ensures valid PLATFORM_PUBLIC_PATH', presenceTest('PLATFORM_PUBLIC_PATH'))
 
 it('ensures valid PORT', nonNegativeNumericTest('PORT'))
 
-it('ensures valid SENTRY_DSN', urlTest('SENTRY_DSN'))
+it('ensures valid SENTRY_DSN', urlTest('SENTRY_DSN', false))
 
 it('ensures valid SENTRY_ENVIRONMENT', presenceTest('SENTRY_ENVIRONMENT'))
-
-it('ensures valid SENTRY_INDEXER_DSN', urlTest('SENTRY_INDEXER_DSN'))
 
 it('ensures valid SENTRY_ORG', presenceTest('SENTRY_ORG'))
 

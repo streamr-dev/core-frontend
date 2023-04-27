@@ -1,3 +1,4 @@
+import '$shared/styles/pcss'
 import '$shared/assets/stylesheets/bootstrap.scss'
 import '@streamr/streamr-icons/styles.css'
 import './variables.css'

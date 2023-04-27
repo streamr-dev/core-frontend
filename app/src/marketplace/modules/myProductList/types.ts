@@ -1,14 +1,14 @@
-import type { ErrorInUi, PayloadAction } from '$shared/types/common-types'
-import type { Filter } from '$userpages/types/common-types'
-import type { ProductId, ProductIdList } from '../../types/product-types'
+import { ErrorInUi, PayloadAction } from '$shared/types/common-types'
+import { Filter } from '$userpages/types/common-types'
+import { ProjectId, ProjectIdList } from '../../types/project-types'
 export type MyProductIdAction = PayloadAction<{
-    id: ProductIdList
+    id: ProjectIdList
 }>
-export type MyProductIdActionCreator = (arg0: ProductId) => MyProductIdAction
+export type MyProductIdActionCreator = (arg0: ProjectId) => MyProductIdAction
 export type MyProductsAction = PayloadAction<{
-    products: ProductIdList
+    products: ProjectIdList
 }>
-export type MyProductsActionCreator = (products: ProductIdList) => MyProductsAction
+export type MyProductsActionCreator = (products: ProjectIdList) => MyProductsAction
 export type MyProductsErrorAction = PayloadAction<{
     error: ErrorInUi
 }>

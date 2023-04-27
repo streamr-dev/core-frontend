@@ -1,4 +1,4 @@
-import type { FunctionComponent, ReactNode } from 'react'
+import { FunctionComponent, ReactNode } from 'react'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Container } from 'reactstrap'
@@ -42,11 +42,8 @@ const GenericErrorPage: FunctionComponent = () => (
     <Layout className={styles.genericErrorPage}>
         <BodyClass className={PAGE_SECONDARY} />
         <ErrorPageContent>
-            <Button kind="special" tag={Link} to={routes.marketplace.index()}>
-                Marketplace top
-            </Button>
-            <Button kind="special" tag={Link} to={routes.products.index()} className="d-none d-md-flex">
-                Products
+            <Button kind="special" tag={Link} to={routes.projects.index()} className="d-none d-md-flex">
+                Projects
             </Button>
         </ErrorPageContent>
     </Layout>

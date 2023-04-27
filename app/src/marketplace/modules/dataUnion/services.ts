@@ -1,13 +1,14 @@
 import EventEmitter from 'events'
 import DataUnionClient, { ContractReceipt } from '@dataunions/client'
 import BN from 'bignumber.js'
+import {DataUnionClientConfig} from "@dataunions/client/types/src/Config"
 import { hexToNumber } from 'web3-utils'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { getConfigForChain, getConfigForChainByName } from '$shared/web3/config'
-import type { SmartContractTransaction, Address } from '$shared/types/web3-types'
-import type { ProductId, DataUnionId } from '$mp/types/product-types'
-import type { ApiResult } from '$shared/types/common-types'
+import { SmartContractTransaction, Address } from '$shared/types/web3-types'
+import { ProjectId, DataUnionId } from '$mp/types/project-types'
+import { ApiResult } from '$shared/types/common-types'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 import { post, del, get, put } from '$shared/utils/api'
 import getWeb3 from '$utils/web3/getWeb3'
@@ -15,7 +16,7 @@ import TransactionError from '$shared/errors/TransactionError'
 import Transaction from '$shared/utils/Transaction'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import routes from '$routes'
-import type { Secret } from './types'
+import { Secret } from './types'
 
 const createClient = (chainId: number) => {
     const provider: any = getWeb3().currentProvider
@@ -55,7 +56,7 @@ const createClient = (chainId: number) => {
             }
             : {}),
     })
-    return new DataUnionClient(clientConfig)
+    return new DataUnionClient(clientConfig as DataUnionClientConfig)
 }
 
 const getDataunionSubgraphUrlForChain = (chainId: number): string => {
@@ -117,7 +118,7 @@ export const getDataUnion = async (id: DataUnionId, chainId: number): ApiResult<
 // transactions
 // ----------------------
 type DeployDataUnion = {
-    productId: ProductId
+    productId: ProjectId
     adminFee: string
     chainId: number
 }
@@ -171,6 +172,7 @@ export const setAdminFee = (address: DataUnionId, chainId: number, adminFee: str
         }),
     ]).then(([dataUnion]) => {
         emitter.emit('transactionHash')
+        // eslint-disable-next-line promise/no-nesting
         dataUnion.setAdminFee(+adminFee).then((receipt) => {
             if (receipt.status === 0) {
                 errorHandler(new TransactionError('Transaction failed', receipt as any))
@@ -226,8 +228,7 @@ export const getDataUnionStatistics = async (id: DataUnionId, chainId: number, f
                     }
                 }
             `,
-        },
-        useAuthorization: false,
+        }
     })
     return result.data.dataUnionStatsBuckets
 }
@@ -275,8 +276,7 @@ export const getDataUnionsOwnedByInChain = async (user: Address, chainId: number
                     }
                 }
             `,
-        },
-        useAuthorization: false,
+        }
     })
 
     if (result.data.dataUnions.length > 0) {
@@ -302,8 +302,7 @@ export const getDataUnionMembers = async (id: DataUnionId, chainId: number, limi
                     }
                 }
             `,
-        },
-        useAuthorization: false,
+        }
     })
 
     if (result.data.dataUnions.length > 0) {
@@ -327,8 +326,7 @@ export const searchDataUnionMembers = async (id: DataUnionId, query: string, cha
                     }
                 }
             `,
-        },
-        useAuthorization: false,
+        }
     })
 
     if (result && result.data && result.data.members) {
@@ -407,7 +405,7 @@ type EditSecret = {
 export const editSecret = async ({ dataUnionId, id, name, chainId }: EditSecret): Promise<Secret> => {
     const client = createClient(chainId)
     const dataUnion = await client.getDataUnion(dataUnionId)
-    // @ts-ignore
+    // @ts-expect-error 2339
     const result = await dataUnion.editSecret(id, name)
     return result
 }

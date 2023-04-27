@@ -6,9 +6,8 @@ const nonNegativeNumberic = () =>
 const envSchema = object({
     PLATFORM_PUBLIC_PATH: string().required().url(),
     PORT: nonNegativeNumberic(),
-    SENTRY_DSN: string().required().url(),
+    SENTRY_DSN: string().optional().url(),
     SENTRY_ENVIRONMENT: string().required(),
-    SENTRY_INDEXER_DSN: string().required().url(),
     SENTRY_ORG: string().required(),
     SENTRY_PROJECT: string().required(),
 })

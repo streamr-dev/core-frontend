@@ -1,6 +1,5 @@
-import type { ComponentType } from 'react'
+import { ComponentType } from 'react'
 import React, { useCallback, useState, forwardRef } from 'react'
-import type { UseStateTuple } from '$shared/types/common-types'
 import '$shared/types/common-types'
 export type Props = {
     flushHistoryOnBlur?: boolean
@@ -9,7 +8,7 @@ export type Props = {
 
 const FlushHistoryDecorator = (WrappedComponent: ComponentType<any>) => {
     const FlushHistoryDecoratorWrapper = ({ onBlur: onBlurProp, ...props }: Props, ref: any) => {
-        const [blurCount, setBlurCount]: UseStateTuple<number> = useState(0)
+        const [blurCount, setBlurCount] = useState(0)
         const onBlur = useCallback(
             (e: React.FocusEvent<EventTarget>) => {
                 // `blurCount` is used as `key` of the actual control. Changing it replaces the control

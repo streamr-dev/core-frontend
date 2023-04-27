@@ -1,14 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
 import {
-    Footer as LayoutFooter,
+    Footer as UnstyledLayoutFooter,
     FooterColumn,
     FooterColumns as UnstyledFooterColumns,
     MadeBy as UnstyledMadeBy,
     SocialChannels,
 } from '@streamr/streamr-layout'
-import docsLinks from '$shared/../docsLinks'
+
+import { COLORS } from '$shared/utils/styled'
 import routes from '$routes'
+
 const MadeBy = styled(UnstyledMadeBy)`
     padding: 0 0 32px;
     text-align: center;
@@ -18,6 +20,11 @@ const MadeBy = styled(UnstyledMadeBy)`
         text-align: left;
     }
 `
+
+const LayoutFooter = styled(UnstyledLayoutFooter)`
+    background-color: ${COLORS.secondary};
+`
+
 const FooterColumns = styled(UnstyledFooterColumns)`
     border-top: ${({ separate }) => (separate ? '1px' : '0')} solid #d8d8d8;
 `
@@ -40,14 +47,13 @@ const Footer = ({ topBorder = false }) => (
                 <a href={routes.community.medium()}>Blog</a>
             </FooterColumn>
             <FooterColumn title="Developers">
-                <a href={docsLinks.docs}>Docs</a>
+                <a href="https://docs.streamr.network/">Docs</a>
                 <a href={routes.site.fund()}>Data Fund</a>
                 <a href={routes.site.design()}>Design Assets</a>
             </FooterColumn>
             <FooterColumn title="Apps">
                 <a href={routes.networkExplorer()}>Network Explorer</a>
-                <a href={routes.marketplace.index()}>Marketplace</a>
-                <a href={routes.core()}>Core</a>
+                <a href={routes.hub()}>Hub</a>
             </FooterColumn>
             <FooterColumn title="Contact">
                 <a href={routes.contact.general()}>General</a>

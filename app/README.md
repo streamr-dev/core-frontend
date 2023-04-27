@@ -1,7 +1,7 @@
 # Streamr Core frontend
 
 This is the Streamr Core application frontend, which includes tooling for creating and editing Streamr resources
-(streams, data unions, products), the data marketplace, and related documentation.
+(streams, data unions, products), and the data marketplace.
 
 The Core frontend runs against an API backend and Ethereum smart contracts. For more information see [Backend](#backend).
 
@@ -9,8 +9,6 @@ The Core frontend runs against an API backend and Ethereum smart contracts. For 
 
 Although the frontend consists of a single app, the code is structured into different folders based on the different functionalities of the app. The code is under the `src` folder:
 
--   `auth` contains components for login
--   `docs` contains the Streamr documentation
 -   `marketplace` contains the data marketplace
 -   `shared` has shared code and utilities
 -   `userpages` contains the views for managing a user's Streamr resources
@@ -30,12 +28,6 @@ npm start
 ```
 
 Webpack is configured with live reloading and will be served on http://localhost once the backend stack is running on Docker (see [Backend](#backend)).
-
-### Documentation
-
-The live documentation can be found at [streamr.network/docs](https://streamr.network/docs).
-The documentation content files are held in `/src/docs/content` as MDX files (jsx flavoured markdown).
-Community contributions are encouraged, please see the [Docs Editing Guide](https://github.com/streamr-dev/streamr-platform/app/src/docs/docsEditingGuide.md) for more information.
 
 ### Environment & Smart contract configuration
 
@@ -66,8 +58,6 @@ Use `.travis.yml` to set the production values.
 Marketplace: [/marketplace](/marketplace)
 
 Core Pages: [/core](/core)
-
-Docs: [/docs](/docs)
 
 ### Backend
 

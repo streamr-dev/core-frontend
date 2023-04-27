@@ -1,216 +1,332 @@
-import React, { Fragment, useState, useCallback } from 'react'
-import { StreamPermission } from 'streamr-client'
-import { useHistory } from 'react-router-dom'
-import BackButton from '$shared/components/BackButton'
+import React, { useMemo } from 'react'
+import styled, { css } from 'styled-components'
+import { Link, useHistory, useLocation } from 'react-router-dom'
+import { toaster } from 'toasterhea'
 import Layout from '$shared/components/Layout/Core'
-import TOCPage from '$shared/components/TOCPage'
-import Toolbar from '$shared/components/Toolbar'
-import SwitchNetworkModal from '$shared/components/SwitchNetworkModal'
-import useStreamModifier from '$shared/hooks/useStreamModifier'
-import ValidationError from '$shared/errors/ValidationError'
+import Button from '$shared/components/Button'
+import { MarketplaceHelmet } from '$shared/components/Helmet'
+import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
+import { truncateStreamName } from '$shared/utils/text'
+import { CopyButton } from '$shared/components/CopyButton/CopyButton'
+import { DESKTOP, TABLET } from '$shared/utils/styled'
+import {
+    DraftValidationError,
+    useCurrentDraft,
+    useIsCurrentDraftBusy,
+    useIsCurrentDraftClean,
+    usePersistCurrentDraft,
+    useSetCurrentDraftError,
+} from '$shared/stores/streamEditor'
+import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
+import GetCryptoModal from '$app/src/modals/GetCryptoModal'
+import useIsMounted from '$shared/hooks/useIsMounted'
 import InsufficientFundsError from '$shared/errors/InsufficientFundsError'
-import DuplicateError from '$shared/errors/DuplicateError'
-import InterruptionError from '$shared/errors/InterruptionError'
-import Notification from '$shared/utils/Notification'
-import useInterrupt from '$shared/hooks/useInterrupt'
-import { NotificationIcon } from '$shared/utils/constants'
-import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
-import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
-import { useValidationErrorSetter } from '$shared/components/ValidationErrorProvider'
-import useStreamId from '$shared/hooks/useStreamId'
-import useStreamPermissions from '$shared/hooks/useStreamPermissions'
-import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
-import ShareSidebar from '$userpages/components/ShareSidebar'
-import { truncate } from '$shared/utils/text'
-import Sidebar from '$shared/components/Sidebar'
-import useNativeTokenName from '$shared/hooks/useNativeTokenName'
-import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
+import { Layer } from '$utils/Layer'
+import getChainId from '$utils/web3/getChainId'
+import getNativeTokenName from '$shared/utils/nativeToken'
+import { useInvalidateStreamAbilities } from '$shared/stores/streamAbilities'
+import Tabs, { Tab } from '$shared/components/Tabs'
+import { RouteMemoryKey, useKeep } from '$shared/stores/routeMemory'
+import { useWalletAccount } from '$shared/stores/wallet'
+import LoadingIndicator from '$shared/components/LoadingIndicator'
 import routes from '$routes'
+import RelatedProjects from './AbstractStreamEditPage/RelatedProjects'
 
-function StreamPageSidebar() {
-    const streamId = useStreamId()
-    const sidebar = useSidebar()
-    const onClose = useCallback(() => {
-        sidebar.close()
-    }, [sidebar])
-    return (
-        !!streamId && (
-            <Sidebar.WithErrorBoundary isOpen={sidebar.isOpen()} onClose={onClose}>
-                {sidebar.isOpen('share') && (
-                    <ShareSidebar
-                        sidebarName="share"
-                        resourceTitle={truncate(streamId)}
-                        resourceType="STREAM"
-                        resourceId={streamId}
-                        onClose={onClose}
-                    />
-                )}
-            </Sidebar.WithErrorBoundary>
-        )
-    )
-}
+const Outer = styled.div`
+    width: 100%;
+    padding: 24px 24px 80px 24px;
 
-function UnwrappedStreamPage({ title, children, loading = false }) {
-    const history = useHistory()
-    const { commit, goBack } = useStreamModifier()
-    const { busy, clean } = useStreamModifierStatusContext()
-    const itp = useInterrupt()
-    const setValidationError = useValidationErrorSetter()
-    const { [StreamPermission.GRANT]: canGrant = false } = useStreamPermissions()
-    const isNew = !useStreamId()
-    const nativeTokenName = useNativeTokenName()
-    const [showGetCryptoDialog, setShowGetCryptoDialog] = useState(false)
-
-    async function save() {
-        const { requireUninterrupted } = itp('save')
-
-        try {
-            try {
-                const { id } = await commit()
-                requireUninterrupted()
-                const [notification, action] = isNew
-                    ? ['Stream created successfully', actionTypes.UPDATE]
-                    : ['Stream updated successfully', actionTypes.UPDATE]
-                Notification.push({
-                    title: notification,
-                    icon: NotificationIcon.CHECKMARK,
-                })
-                Activity.push({
-                    action,
-                    resourceId: id,
-                    resourceType: resourceTypes.STREAM,
-                })
-                // Give the notification some time before navigating away in the next step.
-                await new Promise((resolve) => {
-                    setTimeout(resolve, 300)
-                })
-                requireUninterrupted()
-                history.push(
-                    routes.streams.show({
-                        id,
-                        newStream: isNew ? 1 : undefined,
-                    }),
-                )
-            } catch (e) {
-                requireUninterrupted()
-                throw e
-            }
-        } catch (e) {
-            let handled = false
-
-            if (e instanceof InterruptionError) {
-                return
-            }
-
-            if (e instanceof DuplicateError) {
-                setValidationError({
-                    id: 'already exists, please try a different one',
-                })
-                handled = true
-            }
-
-            if (e instanceof ValidationError) {
-                setValidationError({
-                    id: e.message,
-                })
-                handled = true
-            }
-
-            if (e instanceof InsufficientFundsError) {
-                setShowGetCryptoDialog(true)
-                handled = true
-            }
-
-            if (handled) {
-                return
-            }
-
-            console.warn(e)
-            Notification.push({
-                title: 'Save failed',
-                icon: NotificationIcon.ERROR,
-            })
-        }
+    @media ${TABLET} {
+        max-width: 1296px;
+        margin: 0 auto;
+        padding: 45px 40px 90px 40px;
     }
 
-    const submitButtonLabel = isNew ? 'Create stream' : 'Save & exit'
-    const sidebar = useSidebar()
+    @media ${DESKTOP} {
+        padding: 60px 0px 130px 0px;
+    }
+`
 
-    const buttons = (() => {
-        if (isNew) {
-            return {
-                cancel: {
-                    kind: 'link',
-                    onClick: () => void goBack(),
-                    outline: true,
-                    title: 'Cancel',
-                    type: 'button',
-                },
-                saveChanges: {
-                    disabled: clean || busy,
-                    kind: 'primary',
-                    title: submitButtonLabel,
-                    type: 'submit',
-                },
-            }
-        }
+const Asterisk = styled.span`
+    :after {
+        content: '*';
+        position: absolute;
+    }
+`
 
-        return {
-            share: {
-                disabled: busy || !canGrant,
-                kind: 'primary',
-                onClick: () => void sidebar.open('share'),
-                outline: true,
-                title: 'Share',
-                type: 'button',
-            },
-            saveChanges: {
-                disabled: clean || busy,
-                kind: 'primary',
-                title: submitButtonLabel,
-                type: 'submit',
-            },
-        }
-    })()
+type InnerProps = {
+    fullWidth: boolean
+}
 
+const Inner = styled.div<InnerProps>`
+    display: grid;
+    grid-template-columns: fit-content(680px) auto;
+    border-radius: 16px;
+    background-color: white;
+    padding: 24px;
+
+    ${({ fullWidth }) =>
+        fullWidth &&
+        css`
+            grid-template-columns: auto;
+        `}
+
+    @media ${TABLET} {
+        padding: 40px;
+    }
+
+    @media ${DESKTOP} {
+        padding: 52px;
+    }
+`
+
+const SaveButton = styled(Button)`
+    width: fit-content;
+    justify-self: right;
+`
+
+type ContainerBoxProps = {
+    children?: React.ReactNode
+    disabled?: boolean
+    streamId?: string
+    showSaveButton?: boolean
+    fullWidth?: boolean
+}
+
+const TitleContainer = styled.div`
+    display: flex;
+    align-items: center;
+`
+
+const getCryptoModal = toaster(GetCryptoModal, Layer.Modal)
+
+function ContainerBox({
+    children,
+    disabled,
+    streamId,
+    showSaveButton = true,
+    fullWidth = false,
+}: ContainerBoxProps) {
     return (
-        <Fragment>
-            <form
-                onSubmit={(e) => {
-                    save()
-                    e.preventDefault()
-                }}
-            >
-                <Layout
-                    nav={false}
-                    navComponent={
-                        <Toolbar
-                            altMobileLayout
-                            loading={loading || busy}
-                            left={<BackButton onBack={goBack} />}
-                            actions={buttons}
-                        />
-                    }
-                >
-                    {!loading && <TOCPage title={title}>{children}</TOCPage>}
-                </Layout>
-            </form>
-            {showGetCryptoDialog && (
-                <GetCryptoDialog
-                    onCancel={() => void setShowGetCryptoDialog(false)}
-                    nativeTokenName={nativeTokenName}
-                />
-            )}
-        </Fragment>
+        <Outer>
+            <Inner fullWidth={fullWidth}>
+                <div>{children}</div>
+                {showSaveButton && (
+                    <SaveButton kind="primary" type="submit" disabled={disabled}>
+                        Save
+                    </SaveButton>
+                )}
+            </Inner>
+            {streamId != null && children && <RelatedProjects streamId={streamId} />}
+        </Outer>
     )
 }
 
-export default function StreamPage(props) {
+export default function StreamPage({
+    children,
+    loading = false,
+    includeContainerBox = true,
+    showSaveButton = true,
+    fullWidth = false,
+}) {
+    const { streamId, transientStreamId } = useCurrentDraft()
+
+    const busy = useIsCurrentDraftBusy()
+
+    const clean = useIsCurrentDraftClean()
+
+    usePreventNavigatingAway({
+        isDirty(dest) {
+            if (streamId) {
+                switch (dest) {
+                    case routes.streams.overview({ id: streamId }):
+                    case routes.streams.connect({ id: streamId }):
+                    case routes.streams.liveData({ id: streamId }):
+                        return false
+                }
+            }
+
+            /**
+             * Undefined `dest` means it's a full URL change that's happening outside of the
+             * router, or it's a refresh. We block such things here only if the state is dirty.
+             *
+             * Internal route changes are allowed w/o questions as long as changes in the current
+             * draft are being persisted (see `busy`).
+             */
+            return !clean && (typeof dest === 'undefined' || !busy)
+        },
+    })
+
+    const persist = usePersistCurrentDraft()
+
+    const setValidationError = useSetCurrentDraftError()
+
+    const history = useHistory()
+
+    const isMounted = useIsMounted()
+
+    const address = useWalletAccount()
+
+    const invalidateAbilities = useInvalidateStreamAbilities()
+
+    const { pathname } = useLocation()
+
+    const keep = useKeep()
+
     return (
-        <SidebarProvider>
-            <UnwrappedStreamPage {...props} />
-            <StreamPageSidebar />
-            <SwitchNetworkModal />
-        </SidebarProvider>
+        <>
+            <form
+                onSubmit={async (e) => {
+                    e.preventDefault()
+
+                    try {
+                        await persist({
+                            onCreate(streamId) {
+                                if (!isMounted()) {
+                                    /**
+                                     * Avoid redirecting to the new stream's edit page after the stream
+                                     * page has been unmounted.
+                                     */
+                                    return
+                                }
+
+                                history.push(
+                                    routes.streams.overview({
+                                        id: streamId,
+                                    }),
+                                )
+                            },
+                            onPermissionsChange(streamId, assignments) {
+                                if (!address) {
+                                    return
+                                }
+
+                                if (
+                                    !assignments.some((assignment) => {
+                                        return (
+                                            'user' in assignment &&
+                                            assignment.user.toLowerCase() ===
+                                                address.toLowerCase()
+                                        )
+                                    })
+                                ) {
+                                    return
+                                }
+
+                                invalidateAbilities(streamId, address)
+                            },
+                        })
+                    } catch (e) {
+                        if (e instanceof DraftValidationError) {
+                            return void setValidationError(e.key, e.message)
+                        }
+
+                        if (e instanceof InsufficientFundsError) {
+                            return void setTimeout(async () => {
+                                try {
+                                    const chainId = await getChainId()
+
+                                    await getCryptoModal.pop({
+                                        tokenName: getNativeTokenName(chainId),
+                                    })
+                                } catch (_) {
+                                    // Do nothing.
+                                }
+                            })
+                        }
+
+                        throw e
+                    }
+                }}
+            >
+                <Layout>
+                    <MarketplaceHelmet
+                        title={streamId ? `Stream ${streamId}` : 'New stream'}
+                    />
+                    <DetailsPageHeader
+                        backButtonLink={routes.streams.index()}
+                        pageTitle={
+                            <TitleContainer>
+                                <span title={streamId}>
+                                    {streamId
+                                        ? truncateStreamName(streamId, 50)
+                                        : transientStreamId || 'New stream'}
+                                </span>
+                                {streamId ? <CopyButton valueToCopy={streamId} /> : ''}
+                            </TitleContainer>
+                        }
+                        rightComponent={
+                            streamId ? (
+                                <Tabs selection={pathname}>
+                                    <Tab
+                                        id="overview"
+                                        tag={Link}
+                                        to={routes.streams.overview({ id: streamId })}
+                                        selected="to"
+                                        onClick={() =>
+                                            void keep(
+                                                RouteMemoryKey.lastStreamListingSelection(),
+                                            )
+                                        }
+                                    >
+                                        Stream overview
+                                        {!clean && <Asterisk />}
+                                    </Tab>
+                                    <Tab
+                                        id="connect"
+                                        tag={Link}
+                                        to={routes.streams.connect({ id: streamId })}
+                                        selected="to"
+                                        onClick={() =>
+                                            void keep(
+                                                RouteMemoryKey.lastStreamListingSelection(),
+                                            )
+                                        }
+                                    >
+                                        Connect
+                                    </Tab>
+                                    <Tab
+                                        id="liveData"
+                                        tag={Link}
+                                        to={routes.streams.liveData({ id: streamId })}
+                                        selected="to"
+                                        onClick={() =>
+                                            void keep(
+                                                RouteMemoryKey.lastStreamListingSelection(),
+                                            )
+                                        }
+                                    >
+                                        Live data
+                                    </Tab>
+                                </Tabs>
+                            ) : (
+                                <div>
+                                    <Button
+                                        disabled={busy || clean}
+                                        kind="primary"
+                                        type="submit"
+                                    >
+                                        Save
+                                    </Button>
+                                </div>
+                            )
+                        }
+                    />
+                    <LoadingIndicator loading={loading} />
+                    {includeContainerBox ? (
+                        <ContainerBox
+                            disabled={busy || clean}
+                            streamId={streamId}
+                            showSaveButton={showSaveButton}
+                            fullWidth={fullWidth}
+                        >
+                            {children}
+                        </ContainerBox>
+                    ) : (
+                        <>{children}</>
+                    )}
+                </Layout>
+            </form>
+        </>
     )
 }

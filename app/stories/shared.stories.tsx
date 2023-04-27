@@ -5,14 +5,9 @@ import { action } from '@storybook/addon-actions'
 import StoryRouter from 'storybook-react-router'
 import styles from '@sambego/storybook-styles'
 import { Row, Col } from 'reactstrap'
-import { arrayMove } from 'react-sortable-hoc'
 import Toggle from '$shared/components/Toggle'
 import Checkbox from '$shared/components/Checkbox'
-import SortableList from '$shared/components/SortableList'
-import FieldList from '$shared/components/FieldList'
-import FieldItem from '$shared/components/FieldList/FieldItem'
 import Dialog from '$shared/components/Dialog'
-import BackButton from '$shared/components/BackButton'
 import SvgIcon from '$shared/components/SvgIcon'
 import PngIcon from '$shared/components/PngIcon'
 import Slider from '$shared/components/Slider'
@@ -22,7 +17,6 @@ import Notifications from '$shared/components/Notifications'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import Spinner from '$shared/components/Spinner'
-import Text from '$ui/Text'
 import sharedStyles from './shared.pcss'
 
 const story = (name: string) =>
@@ -87,66 +81,6 @@ story('Checkbox')
     .add('unchecked', () => <Checkbox value={false} />)
     .add('changeable', () => <CheckboxContainer />)
 
-class SortableListContainer extends React.Component {
-    state = {
-        items: Array(5)
-            .fill(true)
-            .map((v, i) => `Item #${i}${i === 0 ? ' (Drag me!)' : ''}`),
-    }
-    onSortEnd = ({ newIndex, oldIndex }) => {
-        this.setState(({ items }) => ({
-            items: arrayMove(items, oldIndex, newIndex),
-        }))
-    }
-
-    render() {
-        const { items } = this.state
-        return (
-            <SortableList onSortEnd={this.onSortEnd} lockAxis="y">
-                {items.map((item) => (
-                    <span key={item}>{item}</span>
-                ))}
-            </SortableList>
-        )
-    }
-}
-
-class FieldListContainer extends React.Component {
-    state = {
-        items: ['Name', 'Price', 'Comment', 'Created at', 'Updated at'],
-    }
-    onSortEnd = ({ newIndex, oldIndex }) => {
-        this.setState(({ items }) => ({
-            items: arrayMove(items, oldIndex, newIndex),
-        }))
-    }
-
-    render() {
-        const { items } = this.state
-        return (
-            <div className={sharedStyles.fieldList}>
-                <FieldList onSortEnd={this.onSortEnd} lockAxis="y">
-                    {items.map((item) => (
-                        <FieldItem key={item} name={item}>
-                            <Text defaultValue={item} />
-                        </FieldItem>
-                    ))}
-                </FieldList>
-            </div>
-        )
-    }
-}
-
-story('Sortable list')
-    .add('basic', () => (
-        <SortableListContainer>
-            <div>Item 1</div>
-            <div>Item 2</div>
-            <div>Item 3</div>
-            <div>Item 4</div>
-        </SortableListContainer>
-    ))
-    .add('field list', () => <FieldListContainer />)
 story('Dialog').add('basic', () => {
     const actions = {}
 
@@ -180,14 +114,6 @@ story('Dialog').add('basic', () => {
         </Dialog>
     )
 })
-story('BackButton')
-    .addDecorator(StoryRouter())
-    .add('basic', () => (
-        <div>
-            <BackButton />
-            <hr />
-        </div>
-    ))
 story('SvgIcon').add('all', () => (
     <Row>
         {SvgIcon.names.map((name) => (

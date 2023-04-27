@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions'
-import type { TransactionsState } from '../../types/store-state'
+import { TransactionsState } from '../../types/store-state'
 import { ADD_TRANSACTION, COMPLETE_TRANSACTION } from './constants'
-import type { TransactionIdAction } from './types'
+import { TransactionIdAction } from './types'
 export const initialState: TransactionsState = {
     pending: [],
     completed: [],

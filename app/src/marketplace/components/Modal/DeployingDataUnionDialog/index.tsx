@@ -2,13 +2,13 @@ import React from 'react'
 import cx from 'classnames'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
-import type { Product } from '$mp/types/product-types'
-import '$mp/types/product-types'
+import { Project } from '$mp/types/project-types'
+import '$mp/types/project-types'
 import DeploySpinner from '$shared/components/DeploySpinner'
 import Buttons from '$shared/components/Buttons'
 import styles from './deployingDataUnionDialog.pcss'
 export type Props = {
-    product: Product
+    product: Project
     estimate: number
     onClose: () => void
     onContinue: () => void

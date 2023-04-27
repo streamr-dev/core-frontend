@@ -1,25 +1,22 @@
 import axios from 'axios'
 import merge from 'lodash/merge'
-import type { ApiResult, RequestMethod } from '$shared/types/common-types'
+import { ApiResult, RequestMethod } from '$shared/types/common-types'
 import RequestError from '$shared/errors/RequestError'
-import getAuthorizationHeader from './getAuthorizationHeader'
 export const getData = ({ data }: { data: any }): any => data
 export type RequestParams = {
     url: string
     method?: RequestMethod
     data?: any
     options?: Record<string, any>
-    useAuthorization?: boolean
 }
 export default function request({
     url,
     options,
     method = 'get',
-    data = null,
-    useAuthorization = true,
+    data = null
 }: RequestParams): ApiResult<any> {
     const defaultOptions: {headers: {[key: string]: string}} = {
-        headers: { ...(useAuthorization ? getAuthorizationHeader() : {}) },
+        headers: {},
     }
 
     if (data !== null) {

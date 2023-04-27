@@ -1,38 +1,64 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useClient } from 'streamr-client-react'
-import getClientAddress from '$app/src/getters/getClientAddress'
+import { Stream } from 'streamr-client'
 import useInterrupt from '$shared/hooks/useInterrupt'
-export default function useFetchStreams() {
+import { useWalletAccount } from '$shared/stores/wallet'
+
+type FetchParameters = {
+    batchSize?: number,
+    allowPublic?: boolean,
+    onlyCurrentUser?: boolean,
+}
+type FetchCallbackType = (search?: string, params?: FetchParameters, resetSearch?: boolean) =>
+    Promise<[Stream[], boolean, boolean]>
+
+export default function useFetchStreams(): FetchCallbackType {
     const client = useClient()
     const itp = useInterrupt()
-    const searchRef = useRef()
-    const iteratorRef = useRef()
-    const tailStreamRef = useRef()
+    const searchRef = useRef<string>()
+    const allowPublicRef = useRef<boolean>()
+    const onlyCurrentUserRef = useRef<boolean>()
+    const iteratorRef = useRef<AsyncIterable<Stream>>()
+    const tailStreamRef = useRef<Stream>()
+
+    const account = useWalletAccount()
+
     useEffect(() => {
         itp().interruptAll()
     }, [itp, client])
-    return useCallback(
-        async (search, { batchSize = 1 } = {}) => {
+
+    return useCallback<FetchCallbackType>(
+        async (search?: string, { batchSize = 1, allowPublic = false, onlyCurrentUser = true } = {}, resetSearch = false) => {
             const { requireUninterrupted } = itp(search)
 
-            if (searchRef.current !== search) {
+            if (searchRef.current !== search
+                || allowPublicRef.current !== allowPublic
+                || onlyCurrentUserRef.current !== onlyCurrentUser
+                || resetSearch
+            ) {
                 searchRef.current = search
+                allowPublicRef.current = allowPublic
+                onlyCurrentUserRef.current = onlyCurrentUser
                 iteratorRef.current = undefined
             }
 
             if (typeof iteratorRef.current === 'undefined') {
-                const user = await getClientAddress(client, {
-                    suppressFailures: true,
-                })
                 requireUninterrupted()
                 tailStreamRef.current = undefined
-                iteratorRef.current = client.searchStreams(search, {
-                    user,
-                })
+
+                if (onlyCurrentUserRef.current) {
+                    const user = account
+                    iteratorRef.current = client.searchStreams(search, {
+                        user,
+                        allowPublic,
+                    })
+                } else {
+                    iteratorRef.current = client.searchStreams(search, undefined)
+                }
             }
 
             let i = 0
-            const batch = []
+            const batch: Array<Stream> = []
             let hasMore = false
             const { current: iterator } = iteratorRef
             // We load 1 extra entry to determine if we show "Load more" button.
@@ -62,11 +88,11 @@ export default function useFetchStreams() {
             }
 
             if (prevTailStream) {
-                return [[prevTailStream, ...batch], hasMore]
+                return [[prevTailStream, ...batch], hasMore, false]
             }
 
             return [batch, hasMore, !prevTailStream]
         },
-        [itp, client],
+        [itp, client, account],
     )
 }

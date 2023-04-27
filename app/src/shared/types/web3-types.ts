@@ -1,9 +1,9 @@
 import { AbiItem } from 'web3-utils'
 import { TransactionReceipt } from 'web3-core'
-import type Transaction from '$shared/utils/Transaction'
-import type TransactionError from '$shared/errors/TransactionError'
-import type { ProductId } from '$mp/types/product-types'
-import type { NumberString, TransactionState, TransactionType } from './common-types'
+import Transaction from '$shared/utils/Transaction'
+import TransactionError from '$shared/errors/TransactionError'
+import { ProjectId } from '$mp/types/project-types'
+import { NumberString, TransactionState, TransactionType } from './common-types'
 export type Hash = string
 export type Address = string
 export type Receipt = TransactionReceipt
@@ -32,16 +32,8 @@ export type TransactionEntity = {
     value?: NumberString
     gasUsed?: number
     gasPrice?: number
-    productId?: ProductId
+    productId?: ProjectId
     timestamp?: number
 }
 export type TransactionEntityList = Array<TransactionEntity>
 export type TransactionEntities = Record<Hash, TransactionEntity>
-export type EventLog = {
-    id: string
-    transactionHash: Hash
-    blockHash: Hash
-    blockNumber: number
-    type: string
-}
-export type EventLogList = Array<EventLog>

@@ -1,5 +1,5 @@
 import React from 'react'
-import type { ErrorInUi } from '$shared/types/common-types'
+import { ErrorInUi } from '$shared/types/common-types'
 import styles from './error.pcss'
 type Props = {
     source: ErrorInUi | null | undefined

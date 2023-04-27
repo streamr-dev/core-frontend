@@ -1,7 +1,7 @@
 import getMainChainId from '$app/src/getters/getMainChainId'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
-import { getConfigForChainByName } from '$shared/web3/config'
+import {getConfigForChainByName} from '$shared/web3/config'
 
 /*
     These are all type
@@ -25,7 +25,7 @@ export const paymentCurrencies = {
 export const DEFAULT_CURRENCY = contractCurrencies.DATA
 export const MIN_UNISWAP_AMOUNT_USD = 0.1
 // The order of these must be the same than in the smart contract
-export const productStates = {
+export const projectStates = {
     NOT_DEPLOYED: 'NOT_DEPLOYED',
     DEPLOYED: 'DEPLOYED',
     DEPLOYING: 'DEPLOYING',
@@ -37,7 +37,7 @@ export const networks = {
 }
 export const ethereumNetworks = {
     [getMainChainId()]: 'Local mainchain',
-    [getClientConfig().contracts.streamRegistryChainRPCs.chainId]: 'Local streams chain',
+    [getClientConfig().contracts?.streamRegistryChainRPCs?.chainId ?? 0]: 'Local streams chain',
     '1': 'Mainnet',
     '3': 'Ropsten',
     '4': 'Rinkeby',
@@ -46,14 +46,7 @@ export const ethereumNetworks = {
     '100': 'Gnosis',
     '137': 'Polygon',
 }
-export const timeUnits = {
-    second: 'second',
-    minute: 'minute',
-    hour: 'hour',
-    day: 'day',
-    week: 'week',
-    month: 'month',
-}
+
 export const transactionStates = {
     STARTED: 'started',
     // transaction started
@@ -96,12 +89,4 @@ export const NotificationIcon = {
     WARNING: 'warning',
     INFO: 'info',
     SPINNER: 'spinner',
-}
-export const ProgrammingLanguages = {
-    JAVASCRIPT: 'javascript',
-    JAVA: 'java',
-}
-export const StreamrClientRepositories = {
-    [ProgrammingLanguages.JAVASCRIPT]: 'https://github.com/streamr-dev/network-monorepo',
-    [ProgrammingLanguages.JAVA]: 'https://github.com/streamr-dev/streamr-client-java',
 }

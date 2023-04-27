@@ -8,10 +8,11 @@ import styles from './basic.pcss'
 
 type Props = {
     title: string
+    description?: string
     icon?: $Values<typeof NotificationIcon> | null | undefined
 }
 
-const BasicNotification: FunctionComponent<Props> = ({ title, icon }: Props) => (
+const BasicNotification: FunctionComponent<Props> = ({ title, icon, description }: Props) => (
     <div className={styles.container}>
         {icon && icon === NotificationIcon.CHECKMARK && (
             <SvgIcon name="checkmark" className={styles.icon} />
@@ -27,7 +28,10 @@ const BasicNotification: FunctionComponent<Props> = ({ title, icon }: Props) => 
             /* warning icon for now */
             <SvgIcon name="warning" className={cx(styles.icon, styles.iconSize)} />
         )}
-        <span className={styles.title}>{title}</span>
+        <div className={styles.textBlock}>
+            <span className={styles.title}>{title}</span>
+            {description && <span className={styles.description}>{description}</span>}
+        </div>
     </div>
 )
 

@@ -25,9 +25,6 @@ describe('relatedProducts - selectors', () => {
     it('selects related product ids', () => {
         expect(all.selectRelatedProductListIds(state as StoreState)).toStrictEqual(state.relatedProducts.ids)
     })
-    it('selects all related products', () => {
-        expect(all.selectRelatedProductList(state as StoreState)).toStrictEqual(relatedProducts)
-    })
     it('selects fetching status for related products', () => {
         expect(all.selectFetchingRelatedProductList(state as StoreState)).toStrictEqual(false)
     })

@@ -1,14 +1,7 @@
 import { $Values } from 'utility-types'
-import type { NumberString } from '$shared/types/common-types'
-export type UserId = string
-export type User = {
-    id?: number
-    email: string
-    name: string
-    username: string
-    imageUrlSmall: string
-    imageUrlLarge: string
-}
+import { NumberString } from '$shared/types/common-types'
+import {Address} from "$shared/types/web3-types"
+export type UserAddress = Address
 export type Challenge = {
     challenge: string
     expires: Date

@@ -10,9 +10,14 @@ web3TransactionConfirmationBlocks = 1
 marketplaceChains = ['dev0', 'dev1']
 dataunionChains = ['dev1']
 streamChains = ['dev1']
+projectsChain = 'dev1'
 theGraphUrl = ":8000"
 mainnetInfuraUrl = "https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206"
 dataUnionJoinServerUrl = "http://localhost:5555"
+theHubGraphName = "streamr-dev/hub-subgraph"
+streamsGraphName = "streamr-dev/streams"
+streamIndexerUrl = ":4001/api"
+reverseRecordsAddress = "0x3671aE578E63FdF66ad4F3E12CC0c0d71Ac7510C"
 
 [[core.marketplaceContractCreationBlocks]]
 chainId = 8995
@@ -29,6 +34,15 @@ name = "streamr-dev/dataunion"
 [[core.storageNodes]]
 name = "Local (broker-node-storage-1)"
 address = "0xde1112f631486CfC759A50196853011528bC5FA0"
+
+[core.ipfs]
+projectId = "2KjYUpR265h6R5M5njkSue5RGm7"
+apiSecretKey = "c39492773b28820c8b3654178bf26946"
+ipfsUploadEndpoint = "https://ipfs.infura.io:5001/api/v0/add"
+ipfsGatewayUrl = "https://streamr-hub.infura-ipfs.io/ipfs/"
+
+[core.projectRegistry]
+chainId = 8997
 
 [client]
 graphUrl = ":8000/subgraphs/name/streamr-dev/network-contracts"

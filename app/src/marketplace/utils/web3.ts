@@ -6,9 +6,9 @@ import NoBalanceError from '$mp/errors/NoBalanceError'
 import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import { SmartContractConfig } from '$shared/types/web3-types'
-import type { SmartContractCall, Address } from '$shared/types/web3-types'
-import { gasLimits, paymentCurrencies } from '$shared/utils/constants'
-import type { PaymentCurrency } from '$shared/types/common-types'
+import { SmartContractCall, Address } from '$shared/types/web3-types'
+import { gasLimits } from '$shared/utils/constants'
+import { PaymentCurrency } from '$shared/types/common-types'
 import { getConfigForChain } from '$shared/web3/config'
 import getChainId from '$utils/web3/getChainId'
 import tokenAbi from '$shared/web3/abis/token.json'
@@ -54,10 +54,11 @@ export const getDataAddress = (chainId: number): Address => {
 }
 export const getMarketplaceAddress = (chainId: number): Address => {
     const { contracts } = getConfigForChain(chainId)
-    const marketplaceAddress = contracts.MarketplaceV3 || contracts.Marketplace
+    // Use Marketplace or RemoteMarketplace depending on chain. MarketplaceV3 is just a fallback for tests (they run on "dev0" chain)
+    const marketplaceAddress = contracts.MarketplaceV4 || contracts.RemoteMarketplaceV1 || contracts.MarketplaceV3
 
     if (marketplaceAddress == null) {
-        throw new Error('No contract address for Marketplace provided!')
+        throw new Error('Could not find contract address for MarketplaceV4 or RemoteMarketplaceV1!')
     }
 
     return marketplaceAddress
@@ -66,6 +67,9 @@ export const getMarketplaceAbiAndAddress = (chainId: number): SmartContractConfi
     abi: marketplaceAbi as AbiItem[],
     address: getMarketplaceAddress(chainId),
 })
+/**
+ * @deprecated Use `getMarketplaceContract`.
+ */
 export const marketplaceContract = (usePublicNode = false, chainId: number): Contract =>
     getContract(getMarketplaceAbiAndAddress(chainId), usePublicNode, chainId)
 export const getDataTokenAbiAndAddress = (chainId: number): SmartContractConfig => ({
@@ -81,6 +85,9 @@ export const daiTokenContractMethods = (usePublicNode = false, chainId: number):
     }
     return getContract(instance, usePublicNode, chainId).methods
 }
+/**
+ * @deprecated Use `getERC20TokenContract(…).methods` explicitly.
+ */
 export const erc20TokenContractMethods = (address: Address, usePublicNode = false, chainId: number): any => {
     const instance: SmartContractConfig = {
         abi: tokenAbi as AbiItem[],
@@ -147,11 +154,16 @@ export const getMyCustomTokenBalance = async (pricingTokenAddress: Address): Sma
     const chainId = await getChainId()
     return getCustomTokenBalance(pricingTokenAddress, myAccount, false, chainId)
 }
-const tokenInformationCache: Record<string, any> = {}
+type TokenInformation = {
+    symbol: string,
+    name: string,
+    decimals: string,
+}
+const tokenInformationCache: Record<string, TokenInformation> = {}
 export const getTokenInformation = async (
     address: Address,
     chainId?: number,
-): Promise<Record<string, any> | null | undefined> => {
+): Promise<TokenInformation | null | undefined> => {
     const actualChainId = chainId || (await getChainId())
     // Check from cache first
     const cacheKey = `${address ? address.toString().toLowerCase() : 'noaddress'}-${
@@ -174,7 +186,7 @@ export const getTokenInformation = async (
 
         const name = await contract.name().call()
         const decimals = await contract.decimals().call()
-        const infoObj = {
+        const infoObj: TokenInformation = {
             symbol,
             name,
             decimals,
@@ -280,7 +292,6 @@ export const uniswapETHtoDATA = async (ethQuantity: string, usePublicNode = fals
 }
 type ValidateBalance = {
     price: BN
-    paymentCurrency: PaymentCurrency
     pricingTokenAddress: Address
     includeGasForSetAllowance?: boolean
     includeGasForResetAllowance?: boolean
@@ -289,10 +300,8 @@ type ValidateBalance = {
 /* eslint-disable object-curly-newline */
 export const validateBalanceForPurchase = async ({
     price,
-    paymentCurrency,
     pricingTokenAddress,
     includeGasForSetAllowance = false,
-    includeGasForResetAllowance = false,
 }: ValidateBalance): Promise<void> => {
     const nativeTokenBalance = await getMyNativeTokenBalance()
     let requiredGas = fromAtto(String(gasLimits.BUY_PRODUCT))
@@ -301,94 +310,20 @@ export const validateBalanceForPurchase = async ({
         requiredGas = requiredGas.plus(fromAtto(String(gasLimits.APPROVE)))
     }
 
-    if (includeGasForResetAllowance) {
-        requiredGas = requiredGas.plus(fromAtto(String(gasLimits.APPROVE)))
-    }
+    const tokenBalance = await getMyCustomTokenBalance(pricingTokenAddress)
 
-    switch (paymentCurrency) {
-        case paymentCurrencies.PRODUCT_DEFINED: {
-            const tokenBalance = await getMyCustomTokenBalance(pricingTokenAddress)
-
-            if (nativeTokenBalance.isLessThan(requiredGas) || tokenBalance.isLessThan(price)) {
-                throw new NoBalanceError({
-                    message: 'It looks like you don’t have enough balance to subscribe to this product.',
-                    required: {
-                        gas: requiredGas,
-                        productToken: price,
-                    },
-                    balances: {
-                        native: nativeTokenBalance,
-                        productToken: tokenBalance,
-                    },
-                })
-            }
-
-            break
-        }
-
-        case paymentCurrencies.ETH: {
-            const ethPrice = await uniswapDATAtoETH(price.toString())
-            const requiredEth = new BN(ethPrice).plus(requiredGas)
-
-            if (nativeTokenBalance.isLessThan(requiredEth)) {
-                throw new NoBalanceError({
-                    message: 'It looks like you don’t have enough balance to subscribe to this product.',
-                    required: {
-                        gas: requiredGas,
-                        native: requiredEth,
-                    },
-                    balances: {
-                        native: nativeTokenBalance,
-                    },
-                })
-            }
-
-            break
-        }
-
-        case paymentCurrencies.DATA: {
-            const dataBalance = await getMyDataTokenBalance()
-
-            if (nativeTokenBalance.isLessThan(requiredGas) || dataBalance.isLessThan(price)) {
-                throw new NoBalanceError({
-                    message: 'It looks like you don’t have enough balance to subscribe to this product.',
-                    required: {
-                        gas: requiredGas,
-                        data: price,
-                    },
-                    balances: {
-                        native: nativeTokenBalance,
-                        data: dataBalance,
-                    },
-                })
-            }
-
-            break
-        }
-
-        case paymentCurrencies.DAI: {
-            const daiBalance = await getMyDaiTokenBalance()
-            const daiPrice = await uniswapDATAtoDAI(price.toString())
-
-            if (nativeTokenBalance.isLessThan(requiredGas) || daiBalance.isLessThan(daiPrice)) {
-                throw new NoBalanceError({
-                    message: 'It looks like you don’t have enough balance to subscribe to this product.',
-                    required: {
-                        gas: requiredGas,
-                        dai: price,
-                    },
-                    balances: {
-                        native: nativeTokenBalance,
-                        dai: daiBalance,
-                    },
-                })
-            }
-
-            break
-        }
-
-        default:
-            break
+    if (nativeTokenBalance.isLessThan(requiredGas) || tokenBalance.isLessThan(price)) {
+        throw new NoBalanceError({
+            message: 'It looks like you don’t have enough balance to subscribe to this product.',
+            required: {
+                gas: requiredGas,
+                productToken: price,
+            },
+            balances: {
+                native: nativeTokenBalance,
+                productToken: tokenBalance,
+            },
+        })
     }
 }
 /* eslint-enable object-curly-newline */
