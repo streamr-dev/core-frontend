@@ -18,8 +18,10 @@ import PersistanceAlert from './AbstractStreamEditPage/PersistanceAlert'
 function CreatePage() {
     const disabled = useIsCurrentDraftBusy()
 
+    const busy = useIsCurrentDraftBusy()
+
     return (
-        <StreamPage showSaveButton={false} fullWidth={false}>
+        <StreamPage showSaveButton={false} fullWidth={false} loading={busy}>
             <InfoSection disabled={disabled} />
             <AccessControlSection disabled={disabled} />
             <HistorySection disabled={disabled} />
@@ -33,17 +35,17 @@ function EditPage() {
 
     const canDelete = useCurrentStreamAbility(StreamPermission.DELETE)
 
-    const disabled = useIsCurrentDraftBusy()
+    const busy = useIsCurrentDraftBusy()
 
-    const loading = typeof canEdit === 'undefined'
+    const loading = typeof canEdit === 'undefined' || busy
 
     return (
         <StreamPage loading={loading}>
             <PersistanceAlert />
-            <InfoSection disabled={disabled} />
-            <AccessControlSection disabled={disabled} />
-            <HistorySection disabled={disabled} />
-            <PartitionsSection disabled={disabled} />
+            <InfoSection disabled={busy} />
+            <AccessControlSection disabled={busy} />
+            <HistorySection disabled={busy} />
+            <PartitionsSection disabled={busy} />
             {canDelete && <DeleteSection />}
         </StreamPage>
     )

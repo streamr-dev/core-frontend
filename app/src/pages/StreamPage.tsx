@@ -28,6 +28,7 @@ import { useInvalidateStreamAbilities } from '$shared/stores/streamAbilities'
 import Tabs, { Tab } from '$shared/components/Tabs'
 import { RouteMemoryKey, useKeep } from '$shared/stores/routeMemory'
 import { useWalletAccount } from '$shared/stores/wallet'
+import LoadingIndicator from '$shared/components/LoadingIndicator'
 import routes from '$routes'
 import RelatedProjects from './AbstractStreamEditPage/RelatedProjects'
 
@@ -311,6 +312,7 @@ export default function StreamPage({
                             )
                         }
                     />
+                    <LoadingIndicator loading={loading} />
                     {includeContainerBox ? (
                         <ContainerBox
                             disabled={busy || clean}
@@ -318,10 +320,10 @@ export default function StreamPage({
                             showSaveButton={showSaveButton}
                             fullWidth={fullWidth}
                         >
-                            {!loading && children}
+                            {children}
                         </ContainerBox>
                     ) : (
-                        <>{!loading && children}</>
+                        <>{children}</>
                     )}
                 </Layout>
             </form>
