@@ -28,6 +28,7 @@ import StreamTable from '$shared/components/StreamTable'
 import Tabs, { Tab } from '$shared/components/Tabs'
 import { RouteMemoryKey, useRecall, useRemember } from '$shared/stores/routeMemory'
 import { useWalletAccount } from '$shared/stores/wallet'
+import address0 from '$app/src/utils/address0'
 import routes from '$routes'
 
 enum StreamSelection {
@@ -122,7 +123,7 @@ const NewStreamListingPage: React.FC = () => {
     const streamsQuery = useInfiniteQuery({
         queryKey: ["streams", search, streamsSelection, account, orderBy, orderDirection],
         queryFn: async (ctx) => {
-            const owner = streamsSelection === StreamSelection.Your ? account : undefined
+            const owner = streamsSelection === StreamSelection.Your ? (account || address0) : undefined
 
             let result: TheGraphStreamResult | IndexerResult
             if (shouldUseIndexer(orderBy)) {

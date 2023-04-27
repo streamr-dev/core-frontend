@@ -9,6 +9,7 @@ import SearchBar from '$shared/components/SearchBar'
 import { DESKTOP, TABLET } from '$shared/utils/styled'
 import { ProjectType } from '$app/src/shared/types'
 import { useWalletAccount } from '$shared/stores/wallet'
+import address0 from '$app/src/utils/address0'
 
 const PAGE_SIZE = 10
 
@@ -42,7 +43,7 @@ export const StreamSelector: FunctionComponent = () => {
     const [streamStats, setStreamStats] = useState<Record<string, IndexerStream>>({})
     const projectType = project?.type
     const [page, setPage] = useState(0)
-    const account = useWalletAccount()
+    const account = useWalletAccount() || address0
 
     const visibleStreams = useMemo(
         () => streams.slice(0, (page + 1) * PAGE_SIZE),
