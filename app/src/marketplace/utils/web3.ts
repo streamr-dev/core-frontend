@@ -54,7 +54,8 @@ export const getDataAddress = (chainId: number): Address => {
 }
 export const getMarketplaceAddress = (chainId: number): Address => {
     const { contracts } = getConfigForChain(chainId)
-    const marketplaceAddress = contracts.MarketplaceV4 || contracts.RemoteMarketplaceV1
+    // Use Marketplace or RemoteMarketplace depending on chain. MarketplaceV3 is just a fallback for tests (they run on "dev0" chain)
+    const marketplaceAddress = contracts.MarketplaceV4 || contracts.RemoteMarketplaceV1 || contracts.MarketplaceV3
 
     if (marketplaceAddress == null) {
         throw new Error('Could not find contract address for MarketplaceV4 or RemoteMarketplaceV1!')
