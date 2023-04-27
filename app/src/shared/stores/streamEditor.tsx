@@ -842,11 +842,14 @@ export function useInitStreamDraft(streamId: string | undefined) {
         }
 
         init(draftId, streamId, client)
+    }, [draftId, init, client, streamId])
 
-        return () => {
+    useEffect(
+        () => () => {
             abandon(draftId)
-        }
-    }, [draftId, init, abandon, client, streamId])
+        },
+        [draftId, abandon],
+    )
 
     return draftId
 }
