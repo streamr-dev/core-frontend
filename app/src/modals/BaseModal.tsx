@@ -2,6 +2,7 @@ import React, { ReactNode, useEffect, useReducer, useRef } from 'react'
 import styled, { css, keyframes } from 'styled-components'
 import { useDiscardableEffect } from 'toasterhea'
 import gsap from 'gsap'
+import { TABLET } from '$shared/utils/styled'
 
 const bringIn = keyframes`
     from {
@@ -223,11 +224,24 @@ const Wigglable = styled.div`
     min-height: 160px;
 `
 
-export const Footer = styled.div`
+export const Footer = styled.div<{ $borderless?: boolean; $spacious?: boolean }>`
     align-items: center;
-    border-top: 1px solid #f3f3f3;
     display: flex;
     height: 80px;
     padding: 0 40px;
     width: 100%;
+
+    ${({ $borderless = false }) =>
+        !$borderless &&
+        css`
+            border-top: 1px solid #f3f3f3;
+        `}
+
+    ${({ $spacious = false }) =>
+        $spacious &&
+        css`
+            @media ${TABLET} {
+                height: 120px;
+            }
+        `}
 `

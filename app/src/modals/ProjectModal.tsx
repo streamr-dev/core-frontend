@@ -8,7 +8,9 @@ import { RejectionReason } from './BaseModal'
 export function isAbandonment(e: unknown) {
     return (
         e === RejectionReason.BackButton ||
+        e === RejectionReason.Backdrop ||
         e === RejectionReason.CancelButton ||
+        e === RejectionReason.CloseButton ||
         e === RejectionReason.EscapeKey ||
         e === Reason.Host ||
         e === Reason.Unmount ||
