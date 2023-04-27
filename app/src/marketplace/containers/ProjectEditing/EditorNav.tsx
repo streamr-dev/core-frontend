@@ -6,7 +6,7 @@ import Logo from '$shared/components/Logo'
 import Button from '$shared/components/Button'
 import { REGULAR } from '$shared/utils/styled'
 import { ProjectControllerContext, ValidationError } from '$mp/containers/ProjectEditing/ProjectController'
-import { RejectReason } from '$app/src/modals/Modal'
+import { RejectionReason } from '$app/src/modals/BaseModal'
 import { errorToast } from '$utils/toast'
 import isCodedError from '$utils/isCodedError'
 import routes from '$routes'
@@ -77,7 +77,7 @@ export function EditorNav({ isNewProject = false, editedProductHasChanged = fals
                                 return
                             }
 
-                            if (e === RejectReason.Cancel || e === RejectReason.EscapeKey) {
+                            if (e === RejectionReason.Cancel || e === RejectionReason.EscapeKey) {
                                 return
                             }
 

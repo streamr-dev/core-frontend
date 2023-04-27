@@ -2,7 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import PngIcon from '$shared/components/PngIcon'
 import Buttons from '$shared/components/Buttons'
-import Modal, { Footer, RejectReason } from './Modal'
+import Modal from './Modal'
+import { Footer, RejectionReason } from './BaseModal'
 
 const Content = styled.div`
     padding: 64px 0;
@@ -50,7 +51,7 @@ export default function FailedPurchaseModal({ onReject, onResolve }: Props) {
                             title: 'Go back',
                             kind: 'link',
                             onClick() {
-                                onReject?.(RejectReason.Cancel)
+                                onReject?.(RejectionReason.CancelButton)
                             },
                         },
                         ok: {

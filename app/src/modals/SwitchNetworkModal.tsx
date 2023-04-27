@@ -3,9 +3,10 @@ import styled from 'styled-components'
 import Buttons from '$shared/components/Buttons'
 import PngIcon from '$shared/components/PngIcon'
 import { ethereumNetworks } from '$shared/utils/constants'
-import Modal, { Footer, Props as ModalProps, RejectReason } from './Modal'
+import Modal, { ModalProps } from './Modal'
+import { Footer, RejectionReason } from './BaseModal'
 
-interface Props extends Pick<ModalProps, 'onReject'> {
+interface Props extends Pick<ModalProps, 'onReject' | 'darkBackdrop'> {
     expectedNetwork: number | string
     actualNetwork: number | string
     onResolve?: () => void
@@ -15,7 +16,13 @@ function getChainName(chainId: number | string) {
     return ethereumNetworks[chainId] || `#${chainId}`
 }
 
-export default function SwitchNetworkModal({ expectedNetwork, actualNetwork, onReject, onResolve, ...props }: Props) {
+export default function SwitchNetworkModal({
+    expectedNetwork,
+    actualNetwork,
+    onReject,
+    onResolve,
+    ...props
+}: Props) {
     return (
         <Modal
             {...props}
@@ -27,7 +34,7 @@ export default function SwitchNetworkModal({ expectedNetwork, actualNetwork, onR
                  * in this case. Enforce intentional cancellation via the Cancel button
                  * or the Escape key.
                  */
-                return reason !== RejectReason.Backdrop
+                return reason !== RejectionReason.Backdrop
             }}
         >
             <Content>
@@ -35,7 +42,8 @@ export default function SwitchNetworkModal({ expectedNetwork, actualNetwork, onR
                     <PngIcon name="wallet" alt="Switch network" />
                 </IconWrap>
                 <P>
-                    Please switch to the <em>{getChainName(expectedNetwork)}</em> network in your Ethereum wallet. It&apos;s currently in{' '}
+                    Please switch to the <em>{getChainName(expectedNetwork)}</em> network
+                    in your Ethereum wallet. It&apos;s currently in{' '}
                     <em>{getChainName(actualNetwork)}</em>
                     &nbsp;network.
                 </P>
@@ -45,7 +53,7 @@ export default function SwitchNetworkModal({ expectedNetwork, actualNetwork, onR
                     actions={{
                         cancel: {
                             title: 'Cancel',
-                            onClick: () => void onReject?.(RejectReason.Cancel),
+                            onClick: () => void onReject?.(RejectionReason.CancelButton),
                             kind: 'link',
                         },
                         add: {

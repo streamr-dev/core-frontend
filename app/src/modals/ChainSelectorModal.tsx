@@ -12,8 +12,9 @@ import { getCustomTokenBalance, getTokenInformation } from '$mp/utils/web3'
 import { getUsdRate } from '$shared/utils/coingecko'
 import { Layer } from '$utils/Layer'
 import { ProjectDetail } from '../shared/consts'
-import ProjectModal, { Actions, RejectionReason } from './ProjectModal'
+import ProjectModal, { Actions } from './ProjectModal'
 import ConnectModal from './ConnectModal'
+import { RejectionReason } from './BaseModal'
 
 const ChainIcon = styled(NetworkIcon)`
     width: 40px;

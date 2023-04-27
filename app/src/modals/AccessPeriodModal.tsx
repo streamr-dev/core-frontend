@@ -15,7 +15,8 @@ import { priceForTimeUnits } from '$mp/utils/price'
 import address0 from '$utils/address0'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { getAllowance } from '$app/src/getters'
-import ProjectModal, { Actions, RejectionReason } from './ProjectModal'
+import ProjectModal, { Actions } from './ProjectModal'
+import { RejectionReason } from './BaseModal'
 
 const options = [timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month].map(
     (unit: TimeUnit) => ({
