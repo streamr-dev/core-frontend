@@ -60,7 +60,7 @@ export default function NewStreamPermissionsModal({
 
     const [error, setError] = useState('')
 
-    const cancelLabel = address ? 'Cancel' : undefined
+    const cancelLabel = address || permissionBits !== 0 ? 'Cancel' : undefined
 
     return (
         <FormModal
