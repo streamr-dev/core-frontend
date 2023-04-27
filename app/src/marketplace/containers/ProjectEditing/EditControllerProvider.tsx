@@ -50,9 +50,11 @@ function useEditController(product: Project) {
     const { updateState, state } = useContext(ProjectStateContext)
     const [dataUnionStats, setDataUnionStats] = useState<DataUnionStats>(null)
     const [publishAttempted, setPublishAttempted] = useState(!!(qs.parse(location.search).publishAttempted || ''))
+
     usePreventNavigatingAway({
         isDirty: isAnyTouched,
     })
+
     const { dataUnionPublishMemberLimit } = getCoreConfig()
     const productRef = useRef(product)
     productRef.current = product

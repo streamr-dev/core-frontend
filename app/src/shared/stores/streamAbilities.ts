@@ -182,8 +182,9 @@ export function useCurrentStreamAbility(permission: StreamPermission) {
     const hasPermission = useStreamAbility(streamId, account, permission)
 
     if (!streamId) {
-        return (permission === StreamPermission.EDIT ||
-            permission === StreamPermission.GRANT)
+        return (
+            permission === StreamPermission.EDIT || permission === StreamPermission.GRANT
+        )
     }
 
     return hasPermission

@@ -36,6 +36,7 @@ const UnstyledNewProjectPage = ({ className }: Props) => {
     const { type } = qs.parse(location.search)
     const { updateType } = useEditableProjectActions()
     const { isAnyTouched, resetTouched } = useContext(ValidationContext)
+
     usePreventNavigatingAway({
         isDirty: () => {
             if (publishInProgress) {

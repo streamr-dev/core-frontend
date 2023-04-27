@@ -28,7 +28,7 @@ export default function StreamrClientProvider({ children }) {
                     ...current,
                     auth: {
                         ...(current.auth || {}),
-                        ethereum: provider,
+                        ethereum: provider as any,
                     },
                 }))
             } catch (e) {

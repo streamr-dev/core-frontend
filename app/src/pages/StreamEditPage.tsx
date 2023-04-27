@@ -4,7 +4,11 @@ import { Redirect, Route, Switch, useParams } from 'react-router-dom'
 import { StreamPreview } from '$shared/components/StreamPreview'
 import { StreamConnect } from '$shared/components/StreamConnect'
 import { useCurrentStreamAbility } from '$shared/stores/streamAbilities'
-import { StreamDraftContext, useInitStreamDraft, useIsCurrentDraftBusy } from '$shared/stores/streamEditor'
+import {
+    StreamDraftContext,
+    useInitStreamDraft,
+    useIsCurrentDraftBusy,
+} from '$shared/stores/streamEditor'
 import useDecodedStreamId from '$shared/hooks/useDecodedStreamId'
 import routes from '$routes'
 import StreamPage from './StreamPage'
@@ -89,11 +93,36 @@ export default function StreamEditPage() {
     return (
         <StreamDraftContext.Provider value={useInitStreamDraft(streamId === 'new' ? undefined : streamId)}>
             <Switch>
-                <Route exact path={routes.streams.new()} component={CreatePage} key="CreatePage" />
-                <Route exact path={routes.streams.show()} component={StreamRedirect} key="Redirection" />
-                <Route exact path={routes.streams.overview()} component={EditPage} key="EditPage" />
-                <Route exact path={routes.streams.connect()} component={ConnectPage} key="ConnectPage" />
-                <Route exact path={routes.streams.liveData()} component={LiveDataPage} key="LiveDataPage" />
+                <Route
+                    exact
+                    path={routes.streams.new()}
+                    component={CreatePage}
+                    key="CreatePage"
+                />
+                <Route
+                    exact
+                    path={routes.streams.show()}
+                    component={StreamRedirect}
+                    key="Redirection"
+                />
+                <Route
+                    exact
+                    path={routes.streams.overview()}
+                    component={EditPage}
+                    key="EditPage"
+                />
+                <Route
+                    exact
+                    path={routes.streams.connect()}
+                    component={ConnectPage}
+                    key="ConnectPage"
+                />
+                <Route
+                    exact
+                    path={routes.streams.liveData()}
+                    component={LiveDataPage}
+                    key="LiveDataPage"
+                />
             </Switch>
         </StreamDraftContext.Provider>
     )

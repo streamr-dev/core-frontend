@@ -4,7 +4,12 @@ import produce from 'immer'
 import React, { createContext, useCallback, useContext, useEffect, useMemo } from 'react'
 import isEqual from 'lodash/isEqual'
 import { useClient } from 'streamr-client-react'
-import { PermissionAssignment, Stream, StreamMetadata, StreamPermission } from 'streamr-client'
+import {
+    PermissionAssignment,
+    Stream,
+    StreamMetadata,
+    StreamPermission,
+} from 'streamr-client'
 import uniqueId from 'lodash/uniqueId'
 import { Link, useRouteMatch } from 'react-router-dom'
 import styled from 'styled-components'
@@ -13,7 +18,10 @@ import address0 from '$app/src/utils/address0'
 import NoStreamIdError from '$shared/errors/NoStreamIdError'
 import getTransactionalClient from '$app/src/getters/getTransactionalClient'
 import { Layer } from '$app/src/utils/Layer'
-import TransactionListToast, { Operation, notify } from '$shared/toasts/TransactionListToast'
+import TransactionListToast, {
+    Operation,
+    notify,
+} from '$shared/toasts/TransactionListToast'
 import routes from '$app/src/routes'
 import requirePositiveBalance from '$shared/utils/requirePositiveBalance'
 
@@ -37,17 +45,31 @@ interface Actions {
     fetchPermissions(draftId: string, streamrClient: StreamrClient): Promise<void>
     fetchStorageNodes: (draftId: string, streamrClient: StreamrClient) => Promise<void>
     fetchStream: (draftId: string, streamrClient: StreamrClient) => Promise<void>
-    init: (draftId: string, streamId: string | undefined, streamrClient: StreamrClient) => void
+    init: (
+        draftId: string,
+        streamId: string | undefined,
+        streamrClient: StreamrClient,
+    ) => void
     persist: (
         draftId: string,
         {
             onCreate,
-        }: { onCreate?: (streamId: string) => void; onPermissionsChange?: (streamId: string, assignments: PermissionAssignment[]) => void },
+        }: {
+            onCreate?: (streamId: string) => void
+            onPermissionsChange?: (
+                streamId: string,
+                assignments: PermissionAssignment[],
+            ) => void
+        },
     ) => Promise<void>
     setError: (draftId: string, key: ErrorKey, message: string) => void
     setPermissions: (draftId: string, account: string, bits: number | null) => void
     setTransientStreamId: (draftId: string, streamId: string) => void
-    toggleStorageNode: (draftId: string, address: string, fn: (enabled: boolean) => boolean) => void
+    toggleStorageNode: (
+        draftId: string,
+        address: string,
+        fn: (enabled: boolean) => boolean,
+    ) => void
     updateMetadata: (draftId: string, update: (chunk: StreamMetadata) => void) => void
     teardown: (draftId: string, options?: { onlyAbandoned?: boolean }) => void
     abandon: (draftId: string) => void
@@ -163,14 +185,21 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
         return streamId
     }
 
-    function setDraft(draftId: string, update: (draft: Draft) => void, { force = false }: { force?: boolean } = {}) {
+    function setDraft(
+        draftId: string,
+        update: (draft: Draft) => void,
+        { force = false }: { force?: boolean } = {},
+    ) {
         set((draft) =>
             produce(draft, (state) => {
                 if (!state.cache[draftId] && !force) {
                     return
                 }
 
-                state.cache[draftId] = produce(state.cache[draftId] || initialDraft, update)
+                state.cache[draftId] = produce(
+                    state.cache[draftId] || initialDraft,
+                    update,
+                )
             }),
         )
     }
@@ -307,7 +336,11 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
             }
         },
 
-        toggleStorageNode(draftId: string, address: string, fn: (enabled: boolean) => boolean) {
+        toggleStorageNode(
+            draftId: string,
+            address: string,
+            fn: (enabled: boolean) => boolean,
+        ) {
             if (isPersisting(draftId)) {
                 return
             }
@@ -367,7 +400,10 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
 
             let client: StreamrClient | undefined
 
-            let toast: Toaster<typeof TransactionListToast> | undefined = toaster(TransactionListToast, Layer.Toast)
+            let toast: Toaster<typeof TransactionListToast> | undefined = toaster(
+                TransactionListToast,
+                Layer.Toast,
+            )
 
             const updateOperation: Operation = {
                 id: uniqueId('operation-'),
@@ -395,10 +431,16 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
             }
 
             const storageNodeChanges: [string, boolean][] = Object.entries(storageNodes)
-                .filter(([, { enabled = false, persistedEnabled = false } = {}]) => !enabled !== !persistedEnabled)
+                .filter(
+                    ([, { enabled = false, persistedEnabled = false } = {}]) =>
+                        !enabled !== !persistedEnabled,
+                )
                 .map(([address, { enabled = false } = {}]) => [address, !!enabled])
 
-            storageOperation.label = formatStorageOperationLabel(0, storageNodeChanges.length)
+            storageOperation.label = formatStorageOperationLabel(
+                0,
+                storageNodeChanges.length,
+            )
 
             if (storageNodeChanges.length) {
                 operations.push(storageOperation)
@@ -440,7 +482,10 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
 
                     try {
                         if (await client.getStream(transientStreamId)) {
-                            throw new DraftValidationError('streamId', 'already exists, please try a different one')
+                            throw new DraftValidationError(
+                                'streamId',
+                                'already exists, please try a different one',
+                            )
                         }
                     } catch (e) {
                         if (e instanceof DraftValidationError) {
@@ -529,7 +574,13 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                         for (const addr in draft.permissions) {
                             const cache = draft.permissions[addr]
 
-                            if (!cache || !Object.prototype.hasOwnProperty.call(draft.permissions, addr)) {
+                            if (
+                                !cache ||
+                                !Object.prototype.hasOwnProperty.call(
+                                    draft.permissions,
+                                    addr,
+                                )
+                            ) {
                                 continue
                             }
 
@@ -547,7 +598,10 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                 for (let i = 0; i < storageNodeChanges.length; i++) {
                     const [address, enabled] = storageNodeChanges[i]
 
-                    storageOperation.label = formatStorageOperationLabel(i + 1, storageNodeChanges.length)
+                    storageOperation.label = formatStorageOperationLabel(
+                        i + 1,
+                        storageNodeChanges.length,
+                    )
 
                     if (i !== 0) {
                         // Already notifying above.
@@ -631,7 +685,10 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                         persistedBits: 0,
                     }
 
-                    cache.bits = pa.permissions.reduce((memo, permission) => memo | Bits[permission], cache.bits || 0)
+                    cache.bits = pa.permissions.reduce(
+                        (memo, permission) => memo | Bits[permission],
+                        cache.bits || 0,
+                    )
 
                     cache.persistedBits = cache.bits
 
@@ -671,27 +728,31 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
 
                 const assignments: PermissionAssignment[] = []
 
-                Object.entries(state.permissions).forEach(([account, { bits = null, persistedBits = null } = {}]) => {
-                    if (bits === persistedBits || (!bits && !persistedBits)) {
-                        return
-                    }
+                Object.entries(state.permissions).forEach(
+                    ([account, { bits = null, persistedBits = null } = {}]) => {
+                        if (bits === persistedBits || (!bits && !persistedBits)) {
+                            return
+                        }
 
-                    const permissions: StreamPermission[] = !bits
-                        ? []
-                        : (Object.keys(Bits).filter((perm) => matchBits(Bits[perm], bits)) as StreamPermission[])
+                        const permissions: StreamPermission[] = !bits
+                            ? []
+                            : (Object.keys(Bits).filter((perm) =>
+                                  matchBits(Bits[perm], bits),
+                              ) as StreamPermission[])
 
-                    if (account === address0) {
-                        return void assignments.push({
-                            public: true,
+                        if (account === address0) {
+                            return void assignments.push({
+                                public: true,
+                                permissions,
+                            })
+                        }
+
+                        assignments.push({
+                            user: account,
                             permissions,
                         })
-                    }
-
-                    assignments.push({
-                        user: account,
-                        permissions,
-                    })
-                })
+                    },
+                )
 
                 state.permissionAssignments = assignments
             })
@@ -750,7 +811,9 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
 })
 
 function useRecyclableDraftId(streamId: string | undefined) {
-    return useStreamEditorStore(({ streamDraftMapping }) => (streamId ? streamDraftMapping[streamId] : undefined))
+    return useStreamEditorStore(({ streamDraftMapping }) =>
+        streamId ? streamDraftMapping[streamId] : undefined,
+    )
 }
 
 export function useInitStreamDraft(streamId: string | undefined) {
@@ -766,7 +829,10 @@ export function useInitStreamDraft(streamId: string | undefined) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [streamId, recycledDraftId])
 
-    const { init, abandon } = useStreamEditorStore(({ init, abandon }) => ({ init, abandon }))
+    const { init, abandon } = useStreamEditorStore(({ init, abandon }) => ({
+        init,
+        abandon,
+    }))
 
     const client = useClient()
 
@@ -794,26 +860,33 @@ export function useDraftId() {
 export function useCurrentDraft() {
     const draftId = useDraftId()
 
-    const cache = useStreamEditorStore(({ cache }) => (draftId ? cache[draftId] : undefined)) || initialDraft
+    const cache =
+        useStreamEditorStore(({ cache }) => (draftId ? cache[draftId] : undefined)) ||
+        initialDraft
 
     return cache
 }
 
 export function useIsCurrentDraftClean() {
-    const { metadataChanged, permissionAssignments, storageNodes, transientStreamId } = useCurrentDraft()
+    const { metadataChanged, permissionAssignments, storageNodes, transientStreamId } =
+        useCurrentDraft()
 
     return (
         !transientStreamId &&
         !metadataChanged &&
         !permissionAssignments.length &&
         !Object.values(storageNodes).some(
-            ({ enabled = false, persistedEnabled = false }: Partial<StorageNodeManifest> = {}) => !enabled !== !persistedEnabled,
+            ({
+                enabled = false,
+                persistedEnabled = false,
+            }: Partial<StorageNodeManifest> = {}) => !enabled !== !persistedEnabled,
         )
     )
 }
 
 export function useIsCurrentDraftBusy() {
-    const { fetchingStream, persisting, fetchingPermissions, fetchingStorageNodes } = useCurrentDraft()
+    const { fetchingStream, persisting, fetchingPermissions, fetchingStorageNodes } =
+        useCurrentDraft()
 
     return fetchingStream || persisting || fetchingPermissions || fetchingStorageNodes
 }
@@ -859,7 +932,9 @@ export function useCurrentDraftError(key: ErrorKey) {
 export function useSetCurrentDraftTransientStreamId() {
     const draftId = useDraftId()
 
-    const setTransientStreamId = useStreamEditorStore(({ setTransientStreamId }) => setTransientStreamId)
+    const setTransientStreamId = useStreamEditorStore(
+        ({ setTransientStreamId }) => setTransientStreamId,
+    )
 
     return useCallback(
         (streamId: string) => {
@@ -876,7 +951,9 @@ export function useSetCurrentDraftTransientStreamId() {
 export function useToggleCurrentStorageNode() {
     const draftId = useDraftId()
 
-    const toggleStorageNode = useStreamEditorStore(({ toggleStorageNode }) => toggleStorageNode)
+    const toggleStorageNode = useStreamEditorStore(
+        ({ toggleStorageNode }) => toggleStorageNode,
+    )
 
     return useCallback(
         (address: string, fn: (enabled: boolean) => boolean) => {
@@ -901,7 +978,10 @@ export function usePersistCurrentDraft() {
             onPermissionsChange,
         }: {
             onCreate?: (streamId: string) => void
-            onPermissionsChange?: (streamId: string, assignments: PermissionAssignment[]) => void
+            onPermissionsChange?: (
+                streamId: string,
+                assignments: PermissionAssignment[],
+            ) => void
         }) => {
             if (!draftId) {
                 throw new Error('No draft id')
@@ -917,8 +997,13 @@ export function usePersistingDraftIdsForStream(streamId: string | undefined) {
     return useStreamEditorStore(({ cache }) =>
         streamId
             ? Object.entries(cache)
-                .filter(([, draft]) => draft?.persisting && (draft.streamId === streamId || draft.transientStreamId === streamId))
-                .map(([draftId]) => draftId)
+                  .filter(
+                      ([, draft]) =>
+                          draft?.persisting &&
+                          (draft.streamId === streamId ||
+                              draft.transientStreamId === streamId),
+                  )
+                  .map(([draftId]) => draftId)
             : [],
     )
 }
@@ -940,12 +1025,18 @@ const NewStreamLink = styled(Link)`
 
 function getOpenStreamLink(streamId: string) {
     return function OpenStreamLink() {
-        const id: string = decodeURIComponent(useRouteMatch(routes.streams.show())?.params['id'] || '')
+        const id: string = decodeURIComponent(
+            useRouteMatch(routes.streams.show())?.params['id'] || '',
+        )
 
         if (!streamId || id === streamId) {
             return <></>
         }
 
-        return <NewStreamLink to={routes.streams.overview({ id: streamId })}>Open</NewStreamLink>
+        return (
+            <NewStreamLink to={routes.streams.overview({ id: streamId })}>
+                Open
+            </NewStreamLink>
+        )
     }
 }
