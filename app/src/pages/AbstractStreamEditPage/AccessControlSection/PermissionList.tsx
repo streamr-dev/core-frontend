@@ -5,9 +5,9 @@ import Button from '$shared/components/Button'
 import { useCurrentDraft, useDraftId, useStreamEditorStore } from '$shared/stores/streamEditor'
 import address0 from '$utils/address0'
 import NewStreamPermissionsModal from '$app/src/modals/NewStreamPermissionsModal'
+import { isAbandonment } from '$app/src/modals/ProjectModal'
 import { Layer } from '$utils/Layer'
 import PermissionItem from './PermissionItem'
-import { isAbandonment } from '$app/src/modals/ProjectModal'
 
 const Container = styled.div`
     background: #f1f1f1;

@@ -60,6 +60,8 @@ export default function NewStreamPermissionsModal({
 
     const [error, setError] = useState('')
 
+    const cancelLabel = address ? 'Cancel' : undefined
+
     return (
         <FormModal
             {...props}
@@ -103,6 +105,7 @@ export default function NewStreamPermissionsModal({
             }}
             canSubmit={!!address}
             submitLabel="Add new account"
+            cancelLabel={cancelLabel}
         >
             <div>
                 <Label>Wallet address</Label>
