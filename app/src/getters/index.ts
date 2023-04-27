@@ -6,8 +6,7 @@ import { z } from 'zod'
 import { getConfigForChain } from '$shared/web3/config'
 import projectRegistryAbi from '$shared/web3/abis/projectRegistry.json'
 import { call } from '$mp/utils/smartContract'
-import { getMarketplaceAbiAndAddress } from '$mp/utils/web3'
-import { marketplaceContract } from '$app/src/services/marketplace'
+import { getMarketplaceAbiAndAddress, getMarketplaceAddress } from '$mp/utils/web3'
 import Toast, { ToastType } from '$shared/toasts/Toast'
 import { Layer } from '$utils/Layer'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
@@ -77,7 +76,7 @@ export async function getAllowance(
                         web3: getPublicWeb3(chainId),
                     }).methods.allowance(
                         account,
-                        marketplaceContract(true, chainId).options.address,
+                        getMarketplaceAddress(chainId),
                     ),
                 ),
             )
