@@ -64,3 +64,7 @@ export const GraphProject = z.object({
         }),
     ),
 })
+
+export const ObjectWithMessage = z.object({
+    message: z.string(),
+})

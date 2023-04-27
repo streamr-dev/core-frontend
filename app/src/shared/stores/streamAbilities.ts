@@ -3,6 +3,8 @@ import { create } from 'zustand'
 import { useClient } from 'streamr-client-react'
 import { useEffect } from 'react'
 import produce from 'immer'
+import StreamNotFoundError from '$shared/errors/StreamNotFoundError'
+import { isMessagedObject } from '$app/src/utils'
 import address0 from '$utils/address0'
 import { useCurrentDraft } from './streamEditor'
 import { useWalletAccount } from './wallet'
@@ -11,8 +13,8 @@ type PermissionManifest = Partial<
     Record<
         StreamPermission,
         {
-            cache: number
-            value: boolean
+            cache: number | undefined
+            value: boolean | undefined
         }
     >
 >
@@ -85,16 +87,18 @@ const useStreamAbilitiesStore = create<Store>((set, get) => {
             try {
                 toggleFetching(streamId, account, permission, true)
 
-                let stream: Stream | undefined
+                let stream: Stream | null | undefined
 
                 try {
-                    stream = await streamrClient.getStream(streamId)
+                    stream = await streamrClient.getStream(
+                        streamId,
+                    )
                 } catch (e) {
-                    // Do nothing here.
-                }
+                    if (isMessagedObject(e) && /not_found/i.test(e.message)) {
+                        throw new StreamNotFoundError(streamId)
+                    }
 
-                if (!stream) {
-                    throw new Error('Stream not found')
+                    throw e
                 }
 
                 result = await stream.hasPermission(
@@ -116,14 +120,12 @@ const useStreamAbilitiesStore = create<Store>((set, get) => {
 
                         const group: PermissionManifest = draft.permissions[key] || {}
 
-                        const cache = group[permission] || {
-                            cache: 0,
-                            value: false,
+                        const { cache } = group[permission] || {}
+
+                        group[permission] = {
+                            cache,
+                            value: result,
                         }
-
-                        cache.value = result
-
-                        group[permission] = cache
 
                         draft.permissions[key] = group
                     }),
@@ -150,9 +152,7 @@ function useStreamAbility(
 ) {
     const client = useClient()
 
-    const fetchPermission = useStreamAbilitiesStore(
-        ({ fetchPermission }) => fetchPermission,
-    )
+    const { fetchPermission } = useStreamAbilitiesStore()
 
     const { value, cache } =
         useStreamAbilitiesStore(({ permissions }) =>

@@ -24,6 +24,8 @@ import TransactionListToast, {
 } from '$shared/toasts/TransactionListToast'
 import routes from '$app/src/routes'
 import requirePositiveBalance from '$shared/utils/requirePositiveBalance'
+import StreamNotFoundError from '$shared/errors/StreamNotFoundError'
+import { isMessagedObject } from '$app/src/utils'
 
 type ErrorKey = 'streamId' | keyof StreamMetadata
 
@@ -49,6 +51,7 @@ interface Actions {
         draftId: string,
         streamId: string | undefined,
         streamrClient: StreamrClient,
+        options?: { onLoadError?: (streamId: string, error: unknown) => void },
     ) => void
     persist: (
         draftId: string,
@@ -207,7 +210,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
     return {
         ...initialState,
 
-        init(draftId, streamId, streamrClient) {
+        init(draftId, streamId, streamrClient, { onLoadError } = {}) {
             const recycled = !!get().cache[draftId]
 
             setDraft(
@@ -230,11 +233,24 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                 return
             }
 
+            const currentStreamId = streamId
+
             async function fetchStream() {
                 try {
                     await get().fetchStream(draftId, streamrClient)
-                } catch (e) {
-                    console.warn('Could not load stream', e)
+                } catch (e: unknown) {
+                    if (!onLoadError) {
+                        console.warn('Could not load stream', currentStreamId, e)
+                    }
+
+                    if (isMessagedObject(e) && /not_found/i.test(e.message)) {
+                        return void onLoadError?.(
+                            currentStreamId,
+                            new StreamNotFoundError(currentStreamId),
+                        )
+                    }
+
+                    onLoadError?.(currentStreamId, e)
                 }
             }
 
@@ -271,14 +287,10 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     state.fetchingStream = true
                 })
 
-                try {
-                    stream = await streamrClient.getStream(streamId)
-                } catch (e) {
-                    // Do nothing.
-                }
+                stream = await streamrClient.getStream(streamId)
 
                 if (!stream) {
-                    throw new Error('Stream could not be loaded')
+                    throw new StreamNotFoundError(streamId)
                 }
             } finally {
                 setDraft(draftId, (state) => {
@@ -816,7 +828,10 @@ function useRecyclableDraftId(streamId: string | undefined) {
     )
 }
 
-export function useInitStreamDraft(streamId: string | undefined) {
+export function useInitStreamDraft(
+    streamId: string | undefined,
+    { onLoadError }: { onLoadError?: (streamId: string, error: unknown) => void } = {},
+) {
     const recycledDraftId = useRecyclableDraftId(streamId)
 
     const draftId = useMemo(() => {
@@ -841,15 +856,12 @@ export function useInitStreamDraft(streamId: string | undefined) {
             return () => void 0
         }
 
-        init(draftId, streamId, client)
-    }, [draftId, init, client, streamId])
+        init(draftId, streamId, client, {
+            onLoadError,
+        })
+    }, [draftId, init, client, streamId, onLoadError])
 
-    useEffect(
-        () => () => {
-            abandon(draftId)
-        },
-        [draftId, abandon],
-    )
+    useEffect(() => () => void abandon(draftId), [draftId, abandon])
 
     return draftId
 }

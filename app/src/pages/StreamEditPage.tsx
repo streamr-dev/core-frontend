@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { StreamPermission } from 'streamr-client'
 import { Redirect, Route, Switch, useParams } from 'react-router-dom'
 import { StreamPreview } from '$shared/components/StreamPreview'
@@ -10,6 +10,7 @@ import {
     useIsCurrentDraftBusy,
 } from '$shared/stores/streamEditor'
 import useDecodedStreamId from '$shared/hooks/useDecodedStreamId'
+import StreamNotFoundError from '$shared/errors/StreamNotFoundError'
 import routes from '$routes'
 import StreamPage from './StreamPage'
 import InfoSection from './AbstractStreamEditPage/InfoSection'
@@ -90,8 +91,18 @@ function StreamRedirect() {
 export default function StreamEditPage() {
     const streamId = useDecodedStreamId()
 
+    const draftId = useInitStreamDraft(streamId === 'new' ? undefined : streamId, {
+        onLoadError: useCallback((id: string, error: unknown) => {
+            if (error instanceof StreamNotFoundError) {
+                return void console.warn('Not found', id)
+            }
+
+            console.warn('Could not load stream', id)
+        }, []),
+    })
+
     return (
-        <StreamDraftContext.Provider value={useInitStreamDraft(streamId === 'new' ? undefined : streamId)}>
+        <StreamDraftContext.Provider value={draftId}>
             <Switch>
                 <Route
                     exact
