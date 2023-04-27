@@ -54,10 +54,10 @@ export const getDataAddress = (chainId: number): Address => {
 }
 export const getMarketplaceAddress = (chainId: number): Address => {
     const { contracts } = getConfigForChain(chainId)
-    const marketplaceAddress = contracts.MarketplaceV3 || contracts.Marketplace
+    const marketplaceAddress = contracts.MarketplaceV4 || contracts.RemoteMarketplaceV1
 
     if (marketplaceAddress == null) {
-        throw new Error('No contract address for Marketplace provided!')
+        throw new Error('Could not find contract address for MarketplaceV4 or RemoteMarketplaceV1!')
     }
 
     return marketplaceAddress

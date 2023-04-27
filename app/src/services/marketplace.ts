@@ -5,20 +5,13 @@ import BN from 'bignumber.js'
 import { getContract } from '$mp/utils/smartContract'
 import { send, call } from '$mp/utils/smartContract'
 import { Address, SmartContractCall, SmartContractTransaction } from "$shared/types/web3-types"
-import { getConfigForChain } from '$shared/web3/config'
 import marketplaceAbi from '$shared/web3/abis/marketplace.json'
-import { erc20TokenContractMethods } from '$mp/utils/web3'
+import { erc20TokenContractMethods, getMarketplaceAddress } from '$mp/utils/web3'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import { gasLimits } from '$shared/utils/constants'
 
 export const marketplaceContract = (usePublicNode = false, chainId: number): Contract => {
-    const { contracts } = getConfigForChain(chainId)
-    const address = contracts.MarketplaceV4 || contracts.RemoteMarketplace
-
-    if (address == null) {
-        throw new Error(`No MarketplaceV4 or RemoteMarketplace contract address found for chain ${chainId}`)
-    }
-
+    const address = getMarketplaceAddress(chainId)
     const contract = getContract({ abi: marketplaceAbi as AbiItem[], address}, usePublicNode, chainId)
     return contract
 }
