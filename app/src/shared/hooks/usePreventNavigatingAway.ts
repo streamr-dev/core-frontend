@@ -6,7 +6,7 @@ import { create } from 'zustand'
 
 type Blocker = {
     message: string
-    isDirty?: (destination?: string) => boolean
+    isDirty: (destination?: string) => boolean
 }
 
 interface BlockerStore {
@@ -97,7 +97,7 @@ export function useBlockHistoryEffect() {
          */
         return history.block(({ pathname }) => {
             const blocker = Object.values(blockers).find((blocker) => {
-                return blocker?.isDirty?.(pathname)
+                return blocker?.isDirty(pathname)
             })
 
             if (blocker) {
