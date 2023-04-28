@@ -47,7 +47,7 @@ import getNativeTokenName from '$shared/utils/nativeToken'
 import getChainId from '$utils/web3/getChainId'
 import { Layer } from '$utils/Layer'
 import GetCryptoModal from '$app/src/modals/GetCryptoModal'
-import { NotFoundPageContent } from '$shared/components/NotFoundPage'
+import NotFoundPage, { NotFoundPageContent } from '$shared/components/NotFoundPage'
 import { GenericErrorPageContent } from '$shared/components/GenericErrorPage'
 import routes from '$routes'
 import InfoSection from './AbstractStreamEditPage/InfoSection'
@@ -312,6 +312,7 @@ export default function StreamPage() {
                 <Route exact path={routes.streams.new()} component={StreamPageSwitch} />
                 <Route exact path={routes.streams.show()} component={StreamRedirect} />
                 <Route exact path={routes.streams.view()} component={StreamPageSwitch} />
+                <Route component={NotFoundPage} key="NotFoundPage" />
             </Switch>
         </StreamDraftContext.Provider>
     )

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Redirect, Route, Switch, useParams } from 'react-router-dom'
 import { ProjectDraftContext, useInitProject } from '$shared/stores/projectEditor'
+import NotFoundPage from '$shared/components/NotFoundPage'
 import routes from '$routes'
 import TabbedPage from './TabbedPage'
 import ProjectEditorPage from './ProjectEditorPage'
@@ -50,6 +51,7 @@ export default function ProjectPage() {
                     component={TabbedPage}
                     key="TabbedPage"
                 />
+                <Route component={NotFoundPage} key="NotFoundPage" />
             </Switch>
         </ProjectDraftContext.Provider>
     )
