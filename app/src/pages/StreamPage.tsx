@@ -47,6 +47,8 @@ import getNativeTokenName from '$shared/utils/nativeToken'
 import getChainId from '$utils/web3/getChainId'
 import { Layer } from '$utils/Layer'
 import GetCryptoModal from '$app/src/modals/GetCryptoModal'
+import { NotFoundPageContent } from '$shared/components/NotFoundPage'
+import { GenericErrorPageContent } from '$shared/components/GenericErrorPage'
 import routes from '$routes'
 import InfoSection from './AbstractStreamEditPage/InfoSection'
 import AccessControlSection from './AbstractStreamEditPage/AccessControlSection'
@@ -139,7 +141,7 @@ function StreamPageSwitch() {
 
     const isNew = !id && !view
 
-    const { streamId } = useCurrentDraft()
+    const { streamId, loadError } = useCurrentDraft()
 
     const busy = useIsCurrentDraftBusy()
 
@@ -173,8 +175,8 @@ function StreamPageSwitch() {
                  * Undefined `dest` means it's a full URL change that's happening outside of the
                  * router, or it's a refresh. We block such things here only if the state is dirty.
                  *
-                 * Internal route changes are allowed w/o questions as long as changes in the current
-                 * draft are being persisted (see `busy`).
+                 * Internal route changes are allowed w/o questions as long as modifications to the
+                 * current draft are being persisted (see `busy`).
                  */
                 return !clean && (typeof dest === 'undefined' || !busy)
             },
@@ -242,6 +244,47 @@ function StreamPageSwitch() {
 
             throw e
         }
+    }
+
+    if (typeof loadError === 'undefined') {
+        /**
+         * We don't know if the stream loaded or not. `loadError` means
+         * - still determining if `undefined`,
+         * - all good if `null`,
+         * - something broke down if anything other than the above 2.
+         */
+        return (
+            <form onSubmit={defaultFormEventHandler}>
+                <Layout>
+                    <Header />
+                    <LoadingIndicator loading />
+                </Layout>
+            </form>
+        )
+    }
+
+    if (loadError instanceof StreamNotFoundError) {
+        return (
+            <form onSubmit={defaultFormEventHandler}>
+                <Layout>
+                    <Header />
+                    <LoadingIndicator />
+                    <NotFoundPageContent />
+                </Layout>
+            </form>
+        )
+    }
+
+    if (loadError) {
+        return (
+            <form onSubmit={defaultFormEventHandler}>
+                <Layout>
+                    <Header />
+                    <LoadingIndicator />
+                    <GenericErrorPageContent />
+                </Layout>
+            </form>
+        )
     }
 
     const editView = view === 'overview' || isNew

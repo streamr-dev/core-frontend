@@ -10,42 +10,49 @@ import appCrashedImage2x from '$shared/assets/images/app_crashed@2x.png'
 import Button from '$shared/components/Button'
 import routes from '$routes'
 import styles from './genericErrorPage.pcss'
-type Props = {
-    children?: ReactNode
+
+export function GenericErrorPageContent() {
+    return (
+        <Container>
+            <EmptyState
+                image={
+                    <img
+                        className={styles.image}
+                        src={appCrashedImage}
+                        srcSet={`${appCrashedImage2x} 2x`}
+                        alt="App crashed"
+                        height="238"
+                        width="281"
+                    />
+                }
+                link={
+                    <Button
+                        kind="special"
+                        tag={Link}
+                        to={routes.projects.index()}
+                        className="d-none d-md-flex"
+                    >
+                        Projects
+                    </Button>
+                }
+                linkOnMobile
+            >
+                <p>
+                    Oops. Something has broken down here.
+                    <br />
+                    Please try one of the links below
+                    <br />
+                    to get things back on track.
+                </p>
+            </EmptyState>
+        </Container>
+    )
 }
-export const ErrorPageContent = ({ children }: Props) => (
-    <Container>
-        <EmptyState
-            image={
-                <img
-                    className={styles.image}
-                    src={appCrashedImage}
-                    srcSet={`${appCrashedImage2x} 2x`}
-                    alt="App crashed"
-                />
-            }
-            link={children}
-            linkOnMobile
-        >
-            <p>
-                Oops. Something has broken down here.
-                <br />
-                Please try one of the links below
-                <br />
-                to get things back on track.
-            </p>
-        </EmptyState>
-    </Container>
-)
 
 const GenericErrorPage: FunctionComponent = () => (
     <Layout className={styles.genericErrorPage}>
         <BodyClass className={PAGE_SECONDARY} />
-        <ErrorPageContent>
-            <Button kind="special" tag={Link} to={routes.projects.index()} className="d-none d-md-flex">
-                Projects
-            </Button>
-        </ErrorPageContent>
+        <GenericErrorPageContent />
     </Layout>
 )
 

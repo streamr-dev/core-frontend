@@ -227,6 +227,10 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
             )
 
             if (!streamId) {
+                setDraft(draftId, (next) => {
+                    next.loadError = null
+                })
+
                 return
             }
 
@@ -272,6 +276,10 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                 if (!stream) {
                     throw new StreamNotFoundError(streamId)
                 }
+
+                setDraft(draftId, (next) => {
+                    next.loadError = null
+                })
             } catch (e: unknown) {
                 if (isMessagedObject(e) && /not_found/i.test(e.message)) {
                     return void setDraft(draftId, (next) => {
