@@ -48,9 +48,15 @@ export const ProjectHeroImageStyles = css`
     grid-row-start: 1;
     grid-row-end: 4;
     width: 500px;
+    padding: ${tabletSpacing}
   }
 `
-export const ProjectHeroImage = styled(ImageTile)`${ProjectHeroImageStyles}`
+export const ProjectHeroImage = styled(ImageTile)`
+  ${ProjectHeroImageStyles}
+  img {
+    border-radius: 16px;
+  }
+`
 
 export const ProjectHeroTitleStyles = css`
   grid-column-start: 1;
@@ -72,11 +78,13 @@ export const ProjectHeroTitleStyles = css`
     grid-column-end: 2;
     grid-row-start: 1;
     grid-row-end: 1;
-    margin: ${desktopSpacing} ${desktopSpacing} 24px;
+    margin: ${desktopSpacing} ${desktopSpacing} ${mobileSpacing} 0;
     height: fit-content;
   }
 `
-export const ProjectHeroTitle = styled.h1`${ProjectHeroTitleStyles}`
+export const ProjectHeroTitle = styled.h1`
+  ${ProjectHeroTitleStyles}
+`
 
 export const ProjectHeroDescriptionStyles = css`
   grid-column-start: 1;
@@ -92,7 +100,7 @@ export const ProjectHeroDescriptionStyles = css`
     grid-column-end: 2;
     grid-row-start: 2;
     grid-row-end: 2;
-    margin: 0 ${desktopSpacing} 24px;
+    margin: 0 ${desktopSpacing} 24px 0;
   }
 `
 export const ProjectHeroMetadataContainer = styled.div`
@@ -110,7 +118,7 @@ export const ProjectHeroMetadataContainer = styled.div`
     grid-row-start: 3;
     grid-row-end: 3;
     gap: 6px;
-    margin: ${desktopSpacing};
+    margin: ${desktopSpacing} ${desktopSpacing} ${desktopSpacing} 0;
   }
 `
 

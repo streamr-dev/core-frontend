@@ -18,9 +18,6 @@ type Props = {
 
 const Container = styled.div`
   ${ProjectHeroImageStyles};
-  @media(${LAPTOP}) {
-    width: 366px;
-  }
   
   .coverImageUpload {
     background-color: ${COLORS.primaryLight};

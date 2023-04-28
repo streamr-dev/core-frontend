@@ -20,7 +20,7 @@ const ProjectDetailsWrap = styled.div`
     grid-column-end: 2;
     grid-row-start: 3;
     grid-row-end: 3;
-    margin: 50px;
+    margin: 50px 50px 50px 0;
   }
   
   .detail {
