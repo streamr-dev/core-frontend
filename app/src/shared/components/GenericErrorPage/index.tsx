@@ -21,8 +21,6 @@ export function GenericErrorPageContent() {
                         src={appCrashedImage}
                         srcSet={`${appCrashedImage2x} 2x`}
                         alt="App crashed"
-                        height="238"
-                        width="281"
                     />
                 }
                 link={

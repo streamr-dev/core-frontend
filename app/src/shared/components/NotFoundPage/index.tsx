@@ -19,8 +19,6 @@ export function NotFoundPageContent() {
                         src={pageNotFoundPic}
                         srcSet={`${pageNotFoundPic2x} 2x`}
                         alt="Not found"
-                        height="365"
-                        width="670"
                     />
                 }
                 link={
