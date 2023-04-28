@@ -10,12 +10,17 @@ import Button from '$shared/components/Button'
 import routes from '$routes'
 import styles from './notFoundPage.pcss'
 
-const NotFoundPage = () => (
-    <Layout className={styles.notFoundPage}>
-        <BodyClass className={PAGE_SECONDARY} />
+export function NotFoundPageContent() {
+    return (
         <Container>
             <EmptyState
-                image={<img src={pageNotFoundPic} srcSet={`${pageNotFoundPic2x} 2x`} alt="Not found" />}
+                image={
+                    <img
+                        src={pageNotFoundPic}
+                        srcSet={`${pageNotFoundPic2x} 2x`}
+                        alt="Not found"
+                    />
+                }
                 link={
                     <React.Fragment>
                         <Button kind="special" tag={Link} to={routes.streams.index()}>
@@ -38,6 +43,13 @@ const NotFoundPage = () => (
                 </p>
             </EmptyState>
         </Container>
+    )
+}
+
+const NotFoundPage = () => (
+    <Layout className={styles.notFoundPage}>
+        <BodyClass className={PAGE_SECONDARY} />
+        <NotFoundPageContent />
     </Layout>
 )
 

@@ -1,6 +1,7 @@
 import React from 'react'
 import { toaster } from 'toasterhea'
 import BigNumber from 'bignumber.js'
+import { z } from 'zod'
 import InsufficientFundsError from '$shared/errors/InsufficientFundsError'
 import getNativeTokenName from '$shared/utils/nativeToken'
 import Toast, { ToastType } from '$shared/toasts/Toast'
@@ -8,6 +9,7 @@ import { fromAtto } from '$mp/utils/math'
 import { getProjectRegistryContract } from '$app/src/getters'
 import { Layer } from '$utils/Layer'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
+import { ObjectWithMessage } from '$shared/consts'
 
 /**
  * Gas money checker.
@@ -102,4 +104,8 @@ export async function waitForPurchasePropagation(
     }
 
     throw new Error('Finding `Subscribed` event timed out')
+}
+
+export function isMessagedObject(e: unknown): e is z.infer<typeof ObjectWithMessage> {
+    return ObjectWithMessage.safeParse(e).success
 }

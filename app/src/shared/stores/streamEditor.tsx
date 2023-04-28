@@ -24,6 +24,8 @@ import TransactionListToast, {
 } from '$shared/toasts/TransactionListToast'
 import routes from '$app/src/routes'
 import requirePositiveBalance from '$shared/utils/requirePositiveBalance'
+import StreamNotFoundError from '$shared/errors/StreamNotFoundError'
+import { isMessagedObject } from '$app/src/utils'
 
 type ErrorKey = 'streamId' | keyof StreamMetadata
 
@@ -85,6 +87,7 @@ interface Draft {
     errors: Partial<Record<'streamId' | keyof StreamMetadata, string>>
     fetchingStream: boolean
     loadedMetadata: StreamMetadata
+    loadError: unknown
     metadata: StreamMetadata
     metadataChanged: boolean
     permissionAssignments: PermissionAssignment[]
@@ -130,6 +133,7 @@ const initialDraft: Draft = {
     errors: {},
     fetchingStream: false,
     loadedMetadata: initialMetadata,
+    loadError: undefined,
     metadata: initialMetadata,
     metadataChanged: false,
     permissionAssignments: [],
@@ -223,6 +227,10 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
             )
 
             if (!streamId) {
+                setDraft(draftId, (next) => {
+                    next.loadError = null
+                })
+
                 return
             }
 
@@ -230,15 +238,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                 return
             }
 
-            async function fetchStream() {
-                try {
-                    await get().fetchStream(draftId, streamrClient)
-                } catch (e) {
-                    console.warn('Could not load stream', e)
-                }
-            }
-
-            fetchStream()
+            get().fetchStream(draftId, streamrClient)
 
             async function fetchStorageNodes() {
                 try {
@@ -271,15 +271,25 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     state.fetchingStream = true
                 })
 
-                try {
-                    stream = await streamrClient.getStream(streamId)
-                } catch (e) {
-                    // Do nothing.
-                }
+                stream = await streamrClient.getStream(streamId)
 
                 if (!stream) {
-                    throw new Error('Stream could not be loaded')
+                    throw new StreamNotFoundError(streamId)
                 }
+
+                setDraft(draftId, (next) => {
+                    next.loadError = null
+                })
+            } catch (e: unknown) {
+                if (isMessagedObject(e) && /not_found/i.test(e.message)) {
+                    return void setDraft(draftId, (next) => {
+                        next.loadError = new StreamNotFoundError(streamId)
+                    })
+                }
+
+                setDraft(draftId, (next) => {
+                    next.loadError = e
+                })
             } finally {
                 setDraft(draftId, (state) => {
                     if (stream) {
@@ -844,12 +854,7 @@ export function useInitStreamDraft(streamId: string | undefined) {
         init(draftId, streamId, client)
     }, [draftId, init, client, streamId])
 
-    useEffect(
-        () => () => {
-            abandon(draftId)
-        },
-        [draftId, abandon],
-    )
+    useEffect(() => () => void abandon(draftId), [draftId, abandon])
 
     return draftId
 }
