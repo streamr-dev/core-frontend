@@ -48,6 +48,7 @@
     "streams": {
         "index": "/hub/streams",
         "show": "/hub/streams/:id",
+        "view": "/hub/streams/:id/:view(overview|connect|live-data)",
         "new": "/hub/streams/new",
         "overview": "/hub/streams/:id/overview",
         "connect": "/hub/streams/:id/connect",

@@ -1,50 +1,373 @@
-import React, { useMemo } from 'react'
+import React, { FormEvent, useCallback } from 'react'
+import { StreamPermission } from 'streamr-client'
+import {
+    Link,
+    Redirect,
+    Route,
+    Switch,
+    useHistory,
+    useLocation,
+    useParams,
+} from 'react-router-dom'
 import styled, { css } from 'styled-components'
-import { Link, useHistory, useLocation } from 'react-router-dom'
 import { toaster } from 'toasterhea'
-import Layout from '$shared/components/Layout/Core'
-import Button from '$shared/components/Button'
-import { MarketplaceHelmet } from '$shared/components/Helmet'
-import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
-import { truncateStreamName } from '$shared/utils/text'
-import { CopyButton } from '$shared/components/CopyButton/CopyButton'
-import { DESKTOP, TABLET } from '$shared/utils/styled'
+import { StreamPreview } from '$shared/components/StreamPreview'
+import { StreamConnect } from '$shared/components/StreamConnect'
+import {
+    useCurrentStreamAbility,
+    useInvalidateStreamAbilities,
+} from '$shared/stores/streamAbilities'
 import {
     DraftValidationError,
+    StreamDraftContext,
     useCurrentDraft,
+    useInitStreamDraft,
     useIsCurrentDraftBusy,
     useIsCurrentDraftClean,
     usePersistCurrentDraft,
     useSetCurrentDraftError,
 } from '$shared/stores/streamEditor'
-import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
-import GetCryptoModal from '$app/src/modals/GetCryptoModal'
-import useIsMounted from '$shared/hooks/useIsMounted'
-import InsufficientFundsError from '$shared/errors/InsufficientFundsError'
-import { Layer } from '$utils/Layer'
-import getChainId from '$utils/web3/getChainId'
-import getNativeTokenName from '$shared/utils/nativeToken'
-import { useInvalidateStreamAbilities } from '$shared/stores/streamAbilities'
+import useDecodedStreamId from '$shared/hooks/useDecodedStreamId'
+import StreamNotFoundError from '$shared/errors/StreamNotFoundError'
+import Layout from '$shared/components/Layout/Core'
+import { MarketplaceHelmet } from '$shared/components/Helmet'
+import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
+import { truncateStreamName } from '$shared/utils/text'
+import { CopyButton } from '$shared/components/CopyButton/CopyButton'
 import Tabs, { Tab } from '$shared/components/Tabs'
 import { RouteMemoryKey, useKeep } from '$shared/stores/routeMemory'
-import { useWalletAccount } from '$shared/stores/wallet'
+import Button from '$shared/components/Button'
+import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
+import { DESKTOP, TABLET } from '$shared/utils/styled'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
+import useIsMounted from '$shared/hooks/useIsMounted'
+import { useWalletAccount } from '$shared/stores/wallet'
+import InsufficientFundsError from '$shared/errors/InsufficientFundsError'
+import getNativeTokenName from '$shared/utils/nativeToken'
+import getChainId from '$utils/web3/getChainId'
+import { Layer } from '$utils/Layer'
+import GetCryptoModal from '$app/src/modals/GetCryptoModal'
 import routes from '$routes'
+import InfoSection from './AbstractStreamEditPage/InfoSection'
+import AccessControlSection from './AbstractStreamEditPage/AccessControlSection'
+import HistorySection from './AbstractStreamEditPage/HistorySection'
+import PartitionsSection from './AbstractStreamEditPage/PartitionsSection'
+import DeleteSection from './AbstractStreamEditPage/DeleteSection'
+import PersistanceAlert from './AbstractStreamEditPage/PersistanceAlert'
 import RelatedProjects from './AbstractStreamEditPage/RelatedProjects'
 
-const Outer = styled.div`
-    width: 100%;
-    padding: 24px 24px 80px 24px;
+const getCryptoModal = toaster(GetCryptoModal, Layer.Modal)
 
-    @media ${TABLET} {
-        max-width: 1296px;
-        margin: 0 auto;
-        padding: 45px 40px 90px 40px;
+function EditPage({ isNew = false }: { isNew?: boolean }) {
+    const { streamId } = useCurrentDraft()
+
+    const canEdit = useCurrentStreamAbility(StreamPermission.EDIT)
+
+    const canDelete = useCurrentStreamAbility(StreamPermission.DELETE)
+
+    const busy = useIsCurrentDraftBusy()
+
+    const clean = useIsCurrentDraftClean()
+
+    const disabled = typeof canEdit === 'undefined' || busy
+
+    return (
+        <>
+            <LoadingIndicator loading={disabled} />
+            <ContainerBox
+                disabled={disabled || clean}
+                showRelatedProjects={!!streamId}
+                showSaveButton={!isNew}
+                streamId={streamId}
+            >
+                <PersistanceAlert />
+                <InfoSection disabled={disabled} />
+                <AccessControlSection disabled={disabled} />
+                <HistorySection disabled={disabled} />
+                <PartitionsSection disabled={disabled} />
+                {canDelete && <DeleteSection />}
+            </ContainerBox>
+        </>
+    )
+}
+
+function LiveDataPage() {
+    const canSubscribe = useCurrentStreamAbility(StreamPermission.SUBSCRIBE)
+
+    const loading = typeof canSubscribe === 'undefined'
+
+    const streamId = useDecodedStreamId()
+
+    return (
+        <>
+            <LoadingIndicator loading={loading} />
+            <StreamPreview streamsList={[streamId]} previewDisabled={!canSubscribe} />
+        </>
+    )
+}
+
+function ConnectPage() {
+    const streamId = useDecodedStreamId()
+
+    const loading = useCurrentStreamAbility(StreamPermission.EDIT) == null
+
+    return (
+        <>
+            <LoadingIndicator loading={loading} />
+            <ContainerBox fullWidth showRelatedProjects streamId={streamId}>
+                <StreamConnect streams={[streamId]} />
+            </ContainerBox>
+        </>
+    )
+}
+
+function StreamRedirect() {
+    const { id } = useParams<{ id: string }>()
+
+    return <Redirect to={routes.streams.overview({ id })} />
+}
+
+function defaultFormEventHandler(e: FormEvent) {
+    e.preventDefault()
+}
+
+function StreamPageSwitch() {
+    const { id, view } = useParams<{
+        view: 'overview' | 'connect' | 'live-data'
+        id: string
+    }>()
+
+    const isNew = !id && !view
+
+    const { streamId } = useCurrentDraft()
+
+    const busy = useIsCurrentDraftBusy()
+
+    const clean = useIsCurrentDraftClean()
+
+    const persist = usePersistCurrentDraft()
+
+    const setValidationError = useSetCurrentDraftError()
+
+    const history = useHistory()
+
+    const isMounted = useIsMounted()
+
+    const address = useWalletAccount()
+
+    const invalidateAbilities = useInvalidateStreamAbilities()
+
+    usePreventNavigatingAway({
+        isDirty: useCallback(
+            (dest?: string) => {
+                if (streamId) {
+                    switch (dest) {
+                        case routes.streams.overview({ id: streamId }):
+                        case routes.streams.connect({ id: streamId }):
+                        case routes.streams.liveData({ id: streamId }):
+                            return false
+                    }
+                }
+
+                /**
+                 * Undefined `dest` means it's a full URL change that's happening outside of the
+                 * router, or it's a refresh. We block such things here only if the state is dirty.
+                 *
+                 * Internal route changes are allowed w/o questions as long as changes in the current
+                 * draft are being persisted (see `busy`).
+                 */
+                return !clean && (typeof dest === 'undefined' || !busy)
+            },
+            [clean, busy, streamId],
+        ),
+    })
+
+    async function onSubmit(e: FormEvent) {
+        defaultFormEventHandler(e)
+
+        try {
+            await persist({
+                onCreate(streamId) {
+                    if (!isMounted()) {
+                        /**
+                         * Avoid redirecting to the new stream's edit page after the stream
+                         * page has been unmounted.
+                         */
+                        return
+                    }
+
+                    history.push(
+                        routes.streams.overview({
+                            id: streamId,
+                        }),
+                    )
+                },
+                onPermissionsChange(streamId, assignments) {
+                    if (!address) {
+                        return
+                    }
+
+                    if (
+                        !assignments.some((assignment) => {
+                            return (
+                                'user' in assignment &&
+                                assignment.user.toLowerCase() === address.toLowerCase()
+                            )
+                        })
+                    ) {
+                        return
+                    }
+
+                    invalidateAbilities(streamId, address)
+                },
+            })
+        } catch (e) {
+            if (e instanceof DraftValidationError) {
+                return void setValidationError(e.key, e.message)
+            }
+
+            if (e instanceof InsufficientFundsError) {
+                return void setTimeout(async () => {
+                    try {
+                        const chainId = await getChainId()
+
+                        await getCryptoModal.pop({
+                            tokenName: getNativeTokenName(chainId),
+                        })
+                    } catch (_) {
+                        // Do nothing.
+                    }
+                })
+            }
+
+            throw e
+        }
     }
 
-    @media ${DESKTOP} {
-        padding: 60px 0px 130px 0px;
-    }
+    const editView = view === 'overview' || isNew
+
+    return (
+        <form onSubmit={editView ? onSubmit : defaultFormEventHandler}>
+            <Layout>
+                <Header isNew={isNew} />
+                {editView && <EditPage isNew={isNew} />}
+                {view === 'connect' && <ConnectPage />}
+                {view === 'live-data' && <LiveDataPage />}
+            </Layout>
+        </form>
+    )
+}
+
+export default function StreamEditPage() {
+    const streamId = useDecodedStreamId()
+
+    const draftId = useInitStreamDraft(streamId === 'new' ? undefined : streamId, {
+        onLoadError: useCallback((id: string, error: unknown) => {
+            if (error instanceof StreamNotFoundError) {
+                return void console.warn('Not found', id)
+            }
+
+            console.warn('Could not load stream', id)
+        }, []),
+    })
+
+    return (
+        <StreamDraftContext.Provider value={draftId}>
+            <Switch>
+                <Route exact path={routes.streams.new()} component={StreamPageSwitch} />
+                <Route exact path={routes.streams.show()} component={StreamRedirect} />
+                <Route exact path={routes.streams.view()} component={StreamPageSwitch} />
+            </Switch>
+        </StreamDraftContext.Provider>
+    )
+}
+
+function Header({ isNew = false }: { isNew?: boolean }) {
+    const { streamId, transientStreamId } = useCurrentDraft()
+
+    const { pathname } = useLocation()
+
+    const keep = useKeep()
+
+    const busy = useIsCurrentDraftBusy()
+
+    const clean = useIsCurrentDraftClean()
+
+    return (
+        <>
+            <MarketplaceHelmet title={streamId ? `Stream ${streamId}` : 'New stream'} />
+            <DetailsPageHeader
+                backButtonLink={routes.streams.index()}
+                pageTitle={
+                    <TitleContainer>
+                        <span title={streamId}>
+                            {streamId
+                                ? truncateStreamName(streamId, 50)
+                                : transientStreamId || 'New stream'}
+                        </span>
+                        {streamId ? <CopyButton valueToCopy={streamId} /> : ''}
+                    </TitleContainer>
+                }
+                rightComponent={
+                    streamId ? (
+                        <Tabs selection={pathname}>
+                            <Tab
+                                id="overview"
+                                tag={Link}
+                                to={routes.streams.overview({
+                                    id: streamId,
+                                })}
+                                selected="to"
+                                onClick={() =>
+                                    void keep(RouteMemoryKey.lastStreamListingSelection())
+                                }
+                            >
+                                Stream overview
+                                {!clean && <Asterisk />}
+                            </Tab>
+                            <Tab
+                                id="connect"
+                                tag={Link}
+                                to={routes.streams.connect({
+                                    id: streamId,
+                                })}
+                                selected="to"
+                                onClick={() =>
+                                    void keep(RouteMemoryKey.lastStreamListingSelection())
+                                }
+                            >
+                                Connect
+                            </Tab>
+                            <Tab
+                                id="liveData"
+                                tag={Link}
+                                to={routes.streams.liveData({
+                                    id: streamId,
+                                })}
+                                selected="to"
+                                onClick={() =>
+                                    void keep(RouteMemoryKey.lastStreamListingSelection())
+                                }
+                            >
+                                Live data
+                            </Tab>
+                        </Tabs>
+                    ) : isNew ? (
+                        <div>
+                            <Button disabled={busy || clean} kind="primary" type="submit">
+                                Save
+                            </Button>
+                        </div>
+                    ) : null
+                }
+            />
+        </>
+    )
+}
+
+const TitleContainer = styled.div`
+    display: flex;
+    align-items: center;
 `
 
 const Asterisk = styled.span`
@@ -54,19 +377,15 @@ const Asterisk = styled.span`
     }
 `
 
-type InnerProps = {
-    fullWidth: boolean
-}
-
-const Inner = styled.div<InnerProps>`
+const Inner = styled.div<{ $fullWidth?: boolean }>`
     display: grid;
     grid-template-columns: fit-content(680px) auto;
     border-radius: 16px;
     background-color: white;
     padding: 24px;
 
-    ${({ fullWidth }) =>
-        fullWidth &&
+    ${({ $fullWidth = false }) =>
+        $fullWidth &&
         css`
             grid-template-columns: auto;
         `}
@@ -91,25 +410,35 @@ type ContainerBoxProps = {
     streamId?: string
     showSaveButton?: boolean
     fullWidth?: boolean
+    showRelatedProjects?: boolean
 }
 
-const TitleContainer = styled.div`
-    display: flex;
-    align-items: center;
-`
+const Outer = styled.div`
+    width: 100%;
+    padding: 24px 24px 80px 24px;
 
-const getCryptoModal = toaster(GetCryptoModal, Layer.Modal)
+    @media ${TABLET} {
+        max-width: 1296px;
+        margin: 0 auto;
+        padding: 45px 40px 90px 40px;
+    }
+
+    @media ${DESKTOP} {
+        padding: 60px 0px 130px 0px;
+    }
+`
 
 function ContainerBox({
     children,
     disabled,
     streamId,
-    showSaveButton = true,
+    showSaveButton = false,
     fullWidth = false,
+    showRelatedProjects = false,
 }: ContainerBoxProps) {
     return (
         <Outer>
-            <Inner fullWidth={fullWidth}>
+            <Inner $fullWidth={fullWidth}>
                 <div>{children}</div>
                 {showSaveButton && (
                     <SaveButton kind="primary" type="submit" disabled={disabled}>
@@ -117,216 +446,7 @@ function ContainerBox({
                     </SaveButton>
                 )}
             </Inner>
-            {streamId != null && children && <RelatedProjects streamId={streamId} />}
+            {showRelatedProjects && streamId && <RelatedProjects streamId={streamId} />}
         </Outer>
-    )
-}
-
-export default function StreamPage({
-    children,
-    loading = false,
-    includeContainerBox = true,
-    showSaveButton = true,
-    fullWidth = false,
-}) {
-    const { streamId, transientStreamId } = useCurrentDraft()
-
-    const busy = useIsCurrentDraftBusy()
-
-    const clean = useIsCurrentDraftClean()
-
-    usePreventNavigatingAway({
-        isDirty(dest) {
-            if (streamId) {
-                switch (dest) {
-                    case routes.streams.overview({ id: streamId }):
-                    case routes.streams.connect({ id: streamId }):
-                    case routes.streams.liveData({ id: streamId }):
-                        return false
-                }
-            }
-
-            /**
-             * Undefined `dest` means it's a full URL change that's happening outside of the
-             * router, or it's a refresh. We block such things here only if the state is dirty.
-             *
-             * Internal route changes are allowed w/o questions as long as changes in the current
-             * draft are being persisted (see `busy`).
-             */
-            return !clean && (typeof dest === 'undefined' || !busy)
-        },
-    })
-
-    const persist = usePersistCurrentDraft()
-
-    const setValidationError = useSetCurrentDraftError()
-
-    const history = useHistory()
-
-    const isMounted = useIsMounted()
-
-    const address = useWalletAccount()
-
-    const invalidateAbilities = useInvalidateStreamAbilities()
-
-    const { pathname } = useLocation()
-
-    const keep = useKeep()
-
-    return (
-        <>
-            <form
-                onSubmit={async (e) => {
-                    e.preventDefault()
-
-                    try {
-                        await persist({
-                            onCreate(streamId) {
-                                if (!isMounted()) {
-                                    /**
-                                     * Avoid redirecting to the new stream's edit page after the stream
-                                     * page has been unmounted.
-                                     */
-                                    return
-                                }
-
-                                history.push(
-                                    routes.streams.overview({
-                                        id: streamId,
-                                    }),
-                                )
-                            },
-                            onPermissionsChange(streamId, assignments) {
-                                if (!address) {
-                                    return
-                                }
-
-                                if (
-                                    !assignments.some((assignment) => {
-                                        return (
-                                            'user' in assignment &&
-                                            assignment.user.toLowerCase() ===
-                                                address.toLowerCase()
-                                        )
-                                    })
-                                ) {
-                                    return
-                                }
-
-                                invalidateAbilities(streamId, address)
-                            },
-                        })
-                    } catch (e) {
-                        if (e instanceof DraftValidationError) {
-                            return void setValidationError(e.key, e.message)
-                        }
-
-                        if (e instanceof InsufficientFundsError) {
-                            return void setTimeout(async () => {
-                                try {
-                                    const chainId = await getChainId()
-
-                                    await getCryptoModal.pop({
-                                        tokenName: getNativeTokenName(chainId),
-                                    })
-                                } catch (_) {
-                                    // Do nothing.
-                                }
-                            })
-                        }
-
-                        throw e
-                    }
-                }}
-            >
-                <Layout>
-                    <MarketplaceHelmet
-                        title={streamId ? `Stream ${streamId}` : 'New stream'}
-                    />
-                    <DetailsPageHeader
-                        backButtonLink={routes.streams.index()}
-                        pageTitle={
-                            <TitleContainer>
-                                <span title={streamId}>
-                                    {streamId
-                                        ? truncateStreamName(streamId, 50)
-                                        : transientStreamId || 'New stream'}
-                                </span>
-                                {streamId ? <CopyButton valueToCopy={streamId} /> : ''}
-                            </TitleContainer>
-                        }
-                        rightComponent={
-                            streamId ? (
-                                <Tabs selection={pathname}>
-                                    <Tab
-                                        id="overview"
-                                        tag={Link}
-                                        to={routes.streams.overview({ id: streamId })}
-                                        selected="to"
-                                        onClick={() =>
-                                            void keep(
-                                                RouteMemoryKey.lastStreamListingSelection(),
-                                            )
-                                        }
-                                    >
-                                        Stream overview
-                                        {!clean && <Asterisk />}
-                                    </Tab>
-                                    <Tab
-                                        id="connect"
-                                        tag={Link}
-                                        to={routes.streams.connect({ id: streamId })}
-                                        selected="to"
-                                        onClick={() =>
-                                            void keep(
-                                                RouteMemoryKey.lastStreamListingSelection(),
-                                            )
-                                        }
-                                    >
-                                        Connect
-                                    </Tab>
-                                    <Tab
-                                        id="liveData"
-                                        tag={Link}
-                                        to={routes.streams.liveData({ id: streamId })}
-                                        selected="to"
-                                        onClick={() =>
-                                            void keep(
-                                                RouteMemoryKey.lastStreamListingSelection(),
-                                            )
-                                        }
-                                    >
-                                        Live data
-                                    </Tab>
-                                </Tabs>
-                            ) : (
-                                <div>
-                                    <Button
-                                        disabled={busy || clean}
-                                        kind="primary"
-                                        type="submit"
-                                    >
-                                        Save
-                                    </Button>
-                                </div>
-                            )
-                        }
-                    />
-                    <LoadingIndicator loading={loading} />
-                    {includeContainerBox ? (
-                        <ContainerBox
-                            disabled={busy || clean}
-                            streamId={streamId}
-                            showSaveButton={showSaveButton}
-                            fullWidth={fullWidth}
-                        >
-                            {children}
-                        </ContainerBox>
-                    ) : (
-                        <>{children}</>
-                    )}
-                </Layout>
-            </form>
-        </>
     )
 }

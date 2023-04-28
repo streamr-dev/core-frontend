@@ -7,7 +7,6 @@ import '@ibm/plex/css/ibm-plex.css'
 import '$utils/setupSnippets'
 import styled from 'styled-components'
 import StreamrClientProvider from '$shared/components/StreamrClientProvider'
-import LogoutPage from '$app/src/pages/LogoutPage'
 import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
 import Notifications from '$shared/components/Notifications'
@@ -19,16 +18,16 @@ import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import Analytics from '$shared/utils/Analytics'
 import GlobalInfoWatcher from '$mp/containers/GlobalInfoWatcher'
 import NewStreamListingPage from '$app/src/pages/NewStreamListingPage'
-import StreamEditPage from '$app/src/pages/StreamEditPage'
+import StreamPage from '$app/src/pages/StreamPage'
 import ProjectPage from '$app/src/pages/ProjectPage'
 import ProjectsPage from '$mp/containers/Projects'
 import NewProjectPage from '$mp/containers/ProjectEditing/NewProjectPage'
 import EditProjectPage from '$mp/containers/ProjectEditing/EditProjectPage'
 import Globals from '$shared/components/Globals'
+import { Layer } from '$utils/Layer'
+import history from '$app/src/history'
 import routes from '$routes'
-import history from '../history'
 import '../analytics'
-import { Layer } from '../utils/Layer'
 
 // Wrap authenticated components here instead of render() method
 // Wrap each Route to an ErrorBoundary
@@ -50,7 +49,7 @@ const ProjectsRouter = (): ReactNode => [
 
 const StreamsRouter = () => [
     <Route exact path={routes.streams.index()} component={NewStreamListingPage} key="NewStreamListingPage" />,
-    <Route path={routes.streams.show()} component={StreamEditPage} key="StreamPage" />,
+    <Route path={routes.streams.show()} component={StreamPage} key="StreamPage" />,
 ]
 
 // Create client for 'react-query'
