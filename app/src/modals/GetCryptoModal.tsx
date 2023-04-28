@@ -4,7 +4,8 @@ import PngIcon from '$shared/components/PngIcon'
 import Button from '$shared/components/Button'
 import Link from '$shared/components/Link'
 import Buttons from '$shared/components/Buttons'
-import Modal, { Footer } from './Modal'
+import Modal from './Modal'
+import { Footer } from './BaseModal'
 
 interface Props {
     onReject?: (reason?: unknown) => void
@@ -22,13 +23,28 @@ export default function GetCryptoModal({ tokenName, onReject }: Props) {
                 <p>Please get some and try again</p>
             </Copy>
             <Exchanges>
-                <Button kind="secondary" tag={Link} href="https://ramp.network/" target="_blank">
+                <Button
+                    kind="secondary"
+                    tag={Link}
+                    href="https://ramp.network/"
+                    target="_blank"
+                >
                     Ramp
                 </Button>
-                <Button kind="secondary" tag={Link} href="https://coinbase.com" target="_blank">
+                <Button
+                    kind="secondary"
+                    tag={Link}
+                    href="https://coinbase.com"
+                    target="_blank"
+                >
                     Coinbase
                 </Button>
-                <Button kind="secondary" tag={Link} href="https://binance.com" target="_blank">
+                <Button
+                    kind="secondary"
+                    tag={Link}
+                    href="https://binance.com"
+                    target="_blank"
+                >
                     Binance
                 </Button>
             </Exchanges>
@@ -49,7 +65,7 @@ export default function GetCryptoModal({ tokenName, onReject }: Props) {
 
 const Copy = styled.div`
     padding: 48px 40px 40px;
-    
+
     p {
         margin: 0;
         text-align: center;

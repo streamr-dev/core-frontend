@@ -32,7 +32,7 @@ import {
     getERC20TokenContract,
     getMarketplaceContract,
 } from '$app/src/getters'
-import { RejectReason } from '$app/src/modals/Modal'
+import { RejectionReason } from '$app/src/modals/BaseModal'
 import FailedPurchaseModal from '$app/src/modals/FailedPurchaseModal'
 import { ensureGasMonies, waitForPurchasePropagation } from '$app/src/utils'
 import InsufficientFundsError from '$shared/errors/InsufficientFundsError'
@@ -560,8 +560,8 @@ const usePurchaseStore = create<Store>((set, get) => {
                                         break
                                     } catch (e) {
                                         if (
-                                            e === RejectReason.Cancel ||
-                                            e === RejectReason.EscapeKey
+                                            e === RejectionReason.CancelButton ||
+                                            e === RejectionReason.EscapeKey
                                         ) {
                                             throw new Error(
                                                 'User decided to stay on the invalid network',

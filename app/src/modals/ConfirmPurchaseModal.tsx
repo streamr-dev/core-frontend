@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import Buttons from '$shared/components/Buttons'
-import Modal, { Footer } from './Modal'
+import Modal from './Modal'
+import { Footer } from './BaseModal'
 
 const Content = styled.p`
     margin: 56px 0;

@@ -3,7 +3,8 @@ import styled from 'styled-components'
 import Buttons from '$shared/components/Buttons'
 import PrestyledLoadingIndicator from '$shared/components/LoadingIndicator'
 import { COLORS } from '$shared/utils/styled'
-import Modal, { Footer } from './Modal'
+import Modal from './Modal'
+import { Footer } from './BaseModal'
 
 const Content = styled.div`
     margin: 0 auto;
