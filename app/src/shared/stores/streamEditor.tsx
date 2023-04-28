@@ -51,7 +51,6 @@ interface Actions {
         draftId: string,
         streamId: string | undefined,
         streamrClient: StreamrClient,
-        options?: { onLoadError?: (streamId: string, error: unknown) => void },
     ) => void
     persist: (
         draftId: string,
@@ -88,6 +87,7 @@ interface Draft {
     errors: Partial<Record<'streamId' | keyof StreamMetadata, string>>
     fetchingStream: boolean
     loadedMetadata: StreamMetadata
+    loadError: unknown
     metadata: StreamMetadata
     metadataChanged: boolean
     permissionAssignments: PermissionAssignment[]
@@ -133,6 +133,7 @@ const initialDraft: Draft = {
     errors: {},
     fetchingStream: false,
     loadedMetadata: initialMetadata,
+    loadError: undefined,
     metadata: initialMetadata,
     metadataChanged: false,
     permissionAssignments: [],
@@ -210,7 +211,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
     return {
         ...initialState,
 
-        init(draftId, streamId, streamrClient, { onLoadError } = {}) {
+        init(draftId, streamId, streamrClient) {
             const recycled = !!get().cache[draftId]
 
             setDraft(
@@ -233,28 +234,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                 return
             }
 
-            const currentStreamId = streamId
-
-            async function fetchStream() {
-                try {
-                    await get().fetchStream(draftId, streamrClient)
-                } catch (e: unknown) {
-                    if (!onLoadError) {
-                        console.warn('Could not load stream', currentStreamId, e)
-                    }
-
-                    if (isMessagedObject(e) && /not_found/i.test(e.message)) {
-                        return void onLoadError?.(
-                            currentStreamId,
-                            new StreamNotFoundError(currentStreamId),
-                        )
-                    }
-
-                    onLoadError?.(currentStreamId, e)
-                }
-            }
-
-            fetchStream()
+            get().fetchStream(draftId, streamrClient)
 
             async function fetchStorageNodes() {
                 try {
@@ -292,6 +272,16 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                 if (!stream) {
                     throw new StreamNotFoundError(streamId)
                 }
+            } catch (e: unknown) {
+                if (isMessagedObject(e) && /not_found/i.test(e.message)) {
+                    return void setDraft(draftId, (next) => {
+                        next.loadError = new StreamNotFoundError(streamId)
+                    })
+                }
+
+                setDraft(draftId, (next) => {
+                    next.loadError = e
+                })
             } finally {
                 setDraft(draftId, (state) => {
                     if (stream) {
@@ -828,10 +818,7 @@ function useRecyclableDraftId(streamId: string | undefined) {
     )
 }
 
-export function useInitStreamDraft(
-    streamId: string | undefined,
-    { onLoadError }: { onLoadError?: (streamId: string, error: unknown) => void } = {},
-) {
+export function useInitStreamDraft(streamId: string | undefined) {
     const recycledDraftId = useRecyclableDraftId(streamId)
 
     const draftId = useMemo(() => {
@@ -856,10 +843,8 @@ export function useInitStreamDraft(
             return () => void 0
         }
 
-        init(draftId, streamId, client, {
-            onLoadError,
-        })
-    }, [draftId, init, client, streamId, onLoadError])
+        init(draftId, streamId, client)
+    }, [draftId, init, client, streamId])
 
     useEffect(() => () => void abandon(draftId), [draftId, abandon])
 

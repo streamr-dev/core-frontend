@@ -258,18 +258,10 @@ function StreamPageSwitch() {
     )
 }
 
-export default function StreamEditPage() {
+export default function StreamPage() {
     const streamId = useDecodedStreamId()
 
-    const draftId = useInitStreamDraft(streamId === 'new' ? undefined : streamId, {
-        onLoadError: useCallback((id: string, error: unknown) => {
-            if (error instanceof StreamNotFoundError) {
-                return void console.warn('Not found', id)
-            }
-
-            console.warn('Could not load stream', id)
-        }, []),
-    })
+    const draftId = useInitStreamDraft(streamId === 'new' ? undefined : streamId)
 
     return (
         <StreamDraftContext.Provider value={draftId}>
