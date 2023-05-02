@@ -57,6 +57,7 @@ import PartitionsSection from './AbstractStreamEditPage/PartitionsSection'
 import DeleteSection from './AbstractStreamEditPage/DeleteSection'
 import PersistanceAlert from './AbstractStreamEditPage/PersistanceAlert'
 import RelatedProjects from './AbstractStreamEditPage/RelatedProjects'
+import CreateProjectHint from './AbstractStreamEditPage/CreateProjectHint'
 
 const getCryptoModal = toaster(GetCryptoModal, Layer.Modal)
 
@@ -66,6 +67,8 @@ function EditPage({ isNew = false }: { isNew?: boolean }) {
     const canEdit = useCurrentStreamAbility(StreamPermission.EDIT)
 
     const canDelete = useCurrentStreamAbility(StreamPermission.DELETE)
+
+    const canGrant = useCurrentStreamAbility(StreamPermission.GRANT)
 
     const busy = useIsCurrentDraftBusy()
 
@@ -81,6 +84,7 @@ function EditPage({ isNew = false }: { isNew?: boolean }) {
                 showRelatedProjects={!!streamId}
                 showSaveButton={!isNew}
                 streamId={streamId}
+                showProjectCreateHint={canGrant}
             >
                 <PersistanceAlert />
                 <InfoSection disabled={disabled} />
@@ -447,6 +451,7 @@ type ContainerBoxProps = {
     showSaveButton?: boolean
     fullWidth?: boolean
     showRelatedProjects?: boolean
+    showProjectCreateHint?: boolean
 }
 
 const Outer = styled.div`
@@ -471,6 +476,7 @@ function ContainerBox({
     showSaveButton = false,
     fullWidth = false,
     showRelatedProjects = false,
+    showProjectCreateHint = false,
 }: ContainerBoxProps) {
     return (
         <Outer>
@@ -483,6 +489,7 @@ function ContainerBox({
                 )}
             </Inner>
             {showRelatedProjects && streamId && <RelatedProjects streamId={streamId} />}
+            {showProjectCreateHint && <CreateProjectHint streamId={streamId} />}
         </Outer>
     )
 }
