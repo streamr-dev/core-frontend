@@ -43,7 +43,7 @@ const ProjectDescription: FunctionComponent<Props> = ({ disabled }) => {
             disableExtensions={["table", "td", "th", "tr", "emoji", "container_notice", "image", "hr",
                 "embed", "checkbox_item", "checkbox_list", "heading", "placeholder", "highlight" ]}
             onChange={(getValue) => {
-                updateDescription(getValue())
+                updateDescription(getValue().trim())
             }
             }/>
     )

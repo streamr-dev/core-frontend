@@ -97,12 +97,16 @@ export const getValidId = (id: string, prefix = true): string => {
 
 const urlValidator = yup.string().trim().url()
 const emailValidator = yup.string().trim().email()
+const descriptionRegExp = new RegExp(/^(\\+\n?)*$/)
 
 export const validate = (project: Project): Partial<Record<RecursiveKeyOf<Project>, boolean>> => {
     const invalidFields: {[key: string]: boolean}= {};
     ['name', 'description'].forEach((field) => {
         invalidFields[field] = !project[field as keyof Project]
     })
+    if (!!project.description && descriptionRegExp.test(project.description)) {
+        invalidFields.description = true
+    }
     invalidFields.imageUrl = !project.imageUrl && !project.newImageToUpload
     invalidFields.streams = !project.streams || project.streams.length <= 0
 
