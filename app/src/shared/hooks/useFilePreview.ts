@@ -1,21 +1,24 @@
 import { useState, useMemo, useEffect, useCallback } from 'react'
 
+const toBase64 = (file: File) => new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = reject
+})
+
 function useFilePreview() {
     const [preview, setPreview] = useState(undefined)
     useEffect(() => {
         if (!preview) {
             return () => {}
         }
-
-        return () => {
-            URL.revokeObjectURL(preview)
-        }
     }, [preview])
-    const createPreview = useCallback((file: File) => {
+    const createPreview = useCallback(async (file: File) => {
         let imagePreview
 
         if (file) {
-            imagePreview = URL.createObjectURL(file)
+            imagePreview = await toBase64(file)
         }
 
         setPreview(imagePreview)
