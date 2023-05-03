@@ -1,9 +1,9 @@
 import { useState, useMemo, useEffect, useCallback } from 'react'
 
-const toBase64 = (file: File) => new Promise((resolve, reject) => {
+export const toBase64 = (file: File) => new Promise<string>((resolve, reject) => {
     const reader = new FileReader()
     reader.readAsDataURL(file)
-    reader.onload = () => resolve(reader.result)
+    reader.onload = () => resolve(reader.result as string)
     reader.onerror = reject
 })
 
