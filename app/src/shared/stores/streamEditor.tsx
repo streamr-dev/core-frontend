@@ -1,6 +1,6 @@
 import type StreamrClient from 'streamr-client'
 import { create } from 'zustand'
-import produce from 'immer'
+import { produce } from 'immer'
 import React, { createContext, useCallback, useContext, useEffect, useMemo } from 'react'
 import isEqual from 'lodash/isEqual'
 import { useClient } from 'streamr-client-react'

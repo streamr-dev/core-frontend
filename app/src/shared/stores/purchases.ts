@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import produce from 'immer'
+import { produce } from 'immer'
 import { Toaster, toaster } from 'toasterhea'
 import BigNumber from 'bignumber.js'
 import { toBN } from 'web3-utils'

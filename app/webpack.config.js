@@ -12,7 +12,7 @@ const DeadCodePlugin = require('webpack-deadcode-plugin')
 const cssProcessor = require('clean-css')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const GitRevisionPlugin = require('git-revision-webpack-plugin')
+const { GitRevisionPlugin } = require('git-revision-webpack-plugin')
 const SentryPlugin = require('@sentry/webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const createStyledComponentsTransformer = require('typescript-plugin-styled-components').default
@@ -131,10 +131,11 @@ module.exports = {
                     {
                         loader: 'css-loader',
                         options: {
-                            modules: true,
+                            modules: {
+                                localIdentRegExp: /app\/src\/([^/]+)/i,
+                                localIdentName: isProduction() ? '[local]_[hash:base64:8]' : '[1]_[name]_[local]',
+                            },
                             importLoaders: 1,
-                            localIdentRegExp: /app\/src\/([^/]+)/i,
-                            localIdentName: isProduction() ? '[local]_[hash:base64:8]' : '[1]_[name]_[local]',
                         },
                     },
                     'postcss-loader',
@@ -149,7 +150,9 @@ module.exports = {
                     {
                         loader: 'sass-loader',
                         options: {
-                            includePaths: [path.resolve(__dirname, 'src/shared/assets/stylesheets')],
+                            sassOptions: {
+                                includePaths: [path.resolve(__dirname, 'src/shared/assets/stylesheets')],
+                            }
                         },
                     },
                 ],
@@ -312,15 +315,20 @@ module.exports = {
         ),
     devtool: isProduction() ? 'source-map' : 'eval-source-map',
     devServer: {
+        client: {
+            overlay: {
+                warnings: false,
+                errors: true,
+            },
+        },
         historyApiFallback: {
             index: publicPath,
             disableDotRule: true,
         },
         hot: true,
-        inline: true,
-        progress: true,
+        // inline: true,
+        // progress: true,
         port: process.env.PORT || 3333,
-        publicPath,
     },
     // automatically creates a vendor chunk & also
     // seems to prevent out of memory errors during dev ??

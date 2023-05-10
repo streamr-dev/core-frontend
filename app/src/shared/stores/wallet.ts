@@ -1,8 +1,8 @@
 import detectProvider from '@metamask/detect-provider'
-import produce from 'immer'
 import { z } from 'zod'
 import { create } from 'zustand'
 import Web3 from 'web3'
+import {produce} from "immer"
 import { MetaMaskInpageProvider } from '@metamask/providers'
 import { lookupEnsName } from '$shared/modules/user/services'
 import { isEthereumAddress } from '$app/src/marketplace/utils/validate'
