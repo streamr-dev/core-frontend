@@ -31,7 +31,7 @@ const validationErrors: Partial<Record<ObjectPaths<Project>, string>> = {
     imageUrl: 'Product must have a cover image',
     streams: 'No streams selected',
     termsOfUse: 'Invalid URL for detailed terms',
-    adminFee: 'Admin fee cannot be empty',
+    adminFee: 'Invalid admin fee',
     existingDUAddress: 'No Data Union address selected',
     'contact.url': 'Invalid URL',
     'contact.twitter': 'Invalid URL',

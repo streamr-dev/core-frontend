@@ -47,7 +47,6 @@ interface RegularProject {
 interface DataUnionProject extends Omit<RegularProject, 'type'> {
     type: ProjectType.DataUnion
     adminFee: string | undefined
-    dataUnionDeployed: boolean
     existingDUAddress: string | undefined
     dataUnionChainId: number | undefined
 }

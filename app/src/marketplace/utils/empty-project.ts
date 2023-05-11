@@ -11,7 +11,6 @@ export class EmptyProject implements Project {
     imageUrl = undefined
     streams = []
     description = ''
-    dataUnionDeployed = undefined
     newImageToUpload = undefined
     termsOfUse = {
         commercialUse: false,

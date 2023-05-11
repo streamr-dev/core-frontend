@@ -64,9 +64,12 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({nonEditabl
             </WhiteBox>
         }
         {project?.type === ProjectType.DataUnion && <>
-            <WhiteBox>
-                <DataUnionChainSelector editMode={editMode}/>
-            </WhiteBox>
+            {/* Show chain selector only for new projects as it cannot be changed */}
+            {project?.id == null && (
+                <WhiteBox>
+                    <DataUnionChainSelector editMode={editMode}/>
+                </WhiteBox>
+            )}
             <WhiteBoxWithMargin>
                 <DataUnionTokenSelector editMode={editMode}/>
                 <DataUnionFee/>

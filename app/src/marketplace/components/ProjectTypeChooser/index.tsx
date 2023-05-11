@@ -220,7 +220,7 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
                         checked={selectedProductType === ProjectType.PaidData}/>
                 </RadioWrap>
             </Product>
-            <Product disabled={true} onClick={() => setSelectedProductType(ProjectType.DataUnion)} title={'Available soon'}>
+            <Product onClick={() => setSelectedProductType(ProjectType.DataUnion)} title={'Available soon'}>
                 <ProductTitle>Data Union</ProductTitle>
                 <ProductImage>
                     <img src={dataUnionImage} srcSet={`${dataUnionImage2x} 2x`} alt="Data Union"/>
@@ -232,18 +232,17 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
                         label={''}
                         value={ProjectType.DataUnion}
                         onChange={setSelectedProductType}
-                        disabled={true}
                         checked={selectedProductType === ProjectType.DataUnion}/>
                 </RadioWrap>
             </Product>
         </ProductChoices>
-        {streamsCount < 1 && <NoStreamsWarningBox>
+        {streamsCount != null && streamsCount < 1 && <NoStreamsWarningBox>
             You have not created any streams yet.
             Please <Link onClick={onClose} to={routes.streams.new()}>create a stream</Link> to get started.
             For help creating streams, see the <a href="https://docs.streamr.network/">docs</a>.
         </NoStreamsWarningBox>}
         <ButtonContainer>
-            {(streamsCount < 1 || !link)
+            {(streamsCount != null && streamsCount < 1 || !link)
                 ? <Button disabled={true}>Start building</Button>
                 : <Button tag={Link} to={link} onClick={onClose}>Start building</Button>
             }

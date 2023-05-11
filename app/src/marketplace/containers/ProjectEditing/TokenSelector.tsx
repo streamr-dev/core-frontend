@@ -161,11 +161,11 @@ const TokenSelector: FunctionComponent<Props> = ({
             ? value.tokenAddress
             : ''
     )
-    const [selectedTokenAddress, setSelectedTokenAddress] = useState<Address>(value?.tokenAddress?.toLowerCase())
-    const [tokenSymbol, setTokenSymbol] = useState<string>(null)
-    const [price, setPrice] = useState<string>(value?.price?.toString())
+    const [selectedTokenAddress, setSelectedTokenAddress] = useState<Address | undefined>(value?.tokenAddress?.toLowerCase())
+    const [tokenSymbol, setTokenSymbol] = useState<string | null>(null)
+    const [price, setPrice] = useState<string | undefined>(value?.price?.toString())
     const [timeUnit, setTimeUnit] = useState<TimeUnit>(value?.timeUnit || timeUnits.day)
-    const [tokenDecimals, setTokenDecimals] = useState<number>(18)
+    const [tokenDecimals, setTokenDecimals] = useState<number | null>(18)
     const [isEditable, setIsEditable] = useState<boolean>(false)
     const {setStatus, clearStatus, isValid} = useValidation(validationFieldName)
     const pricingTokenAddress = value?.tokenAddress?.toLowerCase()
@@ -188,7 +188,6 @@ const TokenSelector: FunctionComponent<Props> = ({
             let loading = true
 
             const check = async () => {
-
                 if (pricingTokenAddress === dataAddress) {
                     setSelection(contractCurrencies.DATA)
                 } else if (pricingTokenAddress != null) {
@@ -231,7 +230,6 @@ const TokenSelector: FunctionComponent<Props> = ({
     }, [pricingTokenAddress, isMounted, clearStatus, setStatus, chainId, dataAddress])
 
     useEffect(() => {
-
         if (!selection || !chainId) {
             return
         }
@@ -241,7 +239,7 @@ const TokenSelector: FunctionComponent<Props> = ({
             setIsEditable(false)
             setTokenSymbol(null)
         } else if (selection === contractCurrencies.PRODUCT_DEFINED) {
-            setSelectedTokenAddress(null)
+            setSelectedTokenAddress(undefined)
             setIsEditable(customTokenAddress.length === 0)
             setTokenSymbol(null)
         } // eslint-disable-next-line react-hooks/exhaustive-deps

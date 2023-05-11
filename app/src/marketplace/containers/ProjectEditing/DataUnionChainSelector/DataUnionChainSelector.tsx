@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback, useContext, useMemo } from 'react'
+import React, { FunctionComponent, useCallback, useContext, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { Chain } from '@streamr/config'
 import { REGULAR } from '$shared/utils/styled'
@@ -16,12 +16,19 @@ const getChainOptions = (chains: Array<string>): Chain[] =>
     chains.map((c) => getConfigForChainByName(c))
 
 const DUChainSelector: FunctionComponent<{editMode: boolean}> = ({editMode}) => {
-    const [currentlySelectedIndex, setCurrentlySelectedIndex] = useContext(DataUnionChainSelectorContext)
+    const [currentlySelectedIndex, setCurrentlySelectedIndex] = useContext(
+        DataUnionChainSelectorContext,
+    )
     const { dataunionChains } = getCoreConfig()
     const chainOptions: Chain[] = useMemo(() => {
         return getChainOptions(dataunionChains)
     }, [dataunionChains])
-    const {updateDataUnionChainId, updateExistingDUAddress, updateSalePoints, updateIsDeployingNewDU } = useEditableProjectActions()
+    const {
+        updateDataUnionChainId,
+        updateExistingDUAddress,
+        updateSalePoints,
+        updateIsDeployingNewDU,
+    } = useEditableProjectActions()
 
     const handleDataUnionOptionChange = useCallback((
         index: number,

@@ -11,7 +11,7 @@ export const StyledCaretIcon = styled(SvgIcon)<SvgIconProps>`
   height: 8px;
   width: 10px;
   transition: all ${transitionTime}ms ease-in-out;
-  color: ${COLORS.primaryLight}
+  color: ${COLORS.primaryLight};
   &.rotated {
     transform: rotate(180deg);
     color: ${COLORS.primaryContrast}
@@ -26,7 +26,7 @@ export const StyledDropdownIndicator = styled(components.DropdownIndicator)`
 `
 
 export const StyledCloseIcon = styled(SvgIcon)`
-  color: ${COLORS.primaryLight}
+  color: ${COLORS.primaryLight};
   &.menu-is-open {
     color: ${COLORS.primaryContrast}
   }
@@ -160,7 +160,7 @@ export const getMenuStyles = (styles: CSSObjectWithLabel): CSSObjectWithLabel =>
         color: COLORS.primary,
         width: '280px',
         marginTop: '8px',
-        padding: 0
+        padding: 0,
     }
 }
 

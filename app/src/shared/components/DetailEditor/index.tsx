@@ -150,6 +150,7 @@ export const DetailEditor: FunctionComponent<DetailsEditorProps> = ({
                         placeholder={placeholder}
                         className={'text-input ' + (validationError ? 'invalid-input' : '')}
                         defaultValue={inputValue}
+                        autoFocus
                     />
                     <img
                         src={EnterIcon}
