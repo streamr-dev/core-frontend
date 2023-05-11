@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { useEffect } from 'react'
-import { produce } from 'immer'
+import produce from 'immer'
 import { getProjectPermissions } from '$app/src/getters'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { useProject } from '$shared/stores/projectEditor'

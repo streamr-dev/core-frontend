@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { produce } from 'immer'
+import produce from 'immer'
 import isEqual from 'lodash/isEqual'
 import { z } from 'zod'
 import uniqueId from 'lodash/uniqueId'

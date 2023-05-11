@@ -9,7 +9,7 @@
  */
 
 import { create } from 'zustand'
-import { produce } from 'immer'
+import produce from 'immer'
 import { useHistory } from 'react-router-dom'
 import { useEffect } from 'react'
 

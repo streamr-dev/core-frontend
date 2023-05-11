@@ -1,4 +1,4 @@
-import { produce } from 'immer'
+import produce from 'immer'
 import uniqueId from 'lodash/uniqueId'
 import { useEffect, useCallback } from 'react'
 import { useHistory } from 'react-router-dom'
@@ -95,7 +95,9 @@ export function useBlockHistoryEffect() {
          * On each change to `blockers` we reblock history using the new set
          * of potential blockers.
          */
+
         return history.block(({ pathname }) => {
+            console.log('inside blocks', blockers)
             const blocker = Object.values(blockers).find((blocker) => {
                 return blocker?.isDirty(pathname)
             })
