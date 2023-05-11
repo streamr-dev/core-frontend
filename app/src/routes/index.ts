@@ -34,11 +34,11 @@ export const define =
                     hash: undefined,
                     ...(options || {}),
                 }
-                const toPath = compile(path)
-                const uri = `${toPath(params, {
+                const toPath = compile(path, {
                     encode: (value) => (encode ? encodeURIComponent(value) : value),
                     validate: !!validate,
-                })}?${qs.stringify(pick(params, queryKeys))}`.replace(/\?$/, '')
+                })
+                const uri = `${toPath(params)}?${qs.stringify(pick(params, queryKeys))}`.replace(/\?$/, '')
                 path = hash ? `${uri}#${hash}` : uri
             }
 
