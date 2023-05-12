@@ -17,7 +17,6 @@ const useLoadedProjectImplementation = (projectId: ProjectId): LoadedProjectStat
             const theGraphProject = await getProject(projectId)
             setProject(theGraphProject)
             setMappedProject(await mapGraphProjectToDomainModel(theGraphProject))
-            console.log('useLoadedProjectImplementation')
         }
 
         try {

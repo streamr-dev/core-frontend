@@ -45,6 +45,12 @@ jest.mock('$mp/contexts/ProjectStateContext', () => ({
     useProjectState: jest.fn()
 }))
 
+jest.mock('$mp/containers/ProductController/useEditableProjectActions', () => ({
+    useEditableProjectActions: () => ({
+        updateExistingDUAddress: jest.fn(),
+    }),
+}))
+
 jest.mock('$shared/utils/constants', () => ({}))
 
 jest.mock('react-router-dom', () => ({
@@ -181,6 +187,7 @@ describe('ProjectController', () => {
                 linkedIn: PROJECT_STUB.contact.linkedIn
             },
             termsOfUse: {...PROJECT_STUB.termsOfUse},
+            isDataUnion: false,
         }
         const argument = (createProject as Mock).mock.lastCall[0] as SmartContractProjectCreate
         const argumentMetadata = JSON.parse(argument.metadata)
@@ -265,6 +272,7 @@ describe('ProjectController', () => {
                 linkedIn: PROJECT_STUB.contact.linkedIn
             },
             termsOfUse: {...PROJECT_STUB.termsOfUse},
+            isDataUnion: false,
         }
         const argument = (createProject as Mock).mock.lastCall[0] as SmartContractProjectCreate
         const argumentMetadata = JSON.parse(argument.metadata)

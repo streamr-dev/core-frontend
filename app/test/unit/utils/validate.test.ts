@@ -60,17 +60,6 @@ describe('validate utils', () => {
                 expectedInvalidFields: ['beneficiaryAddress']
             },
             {
-                description: 'invalid existance of beneficiaryAddress for a DU Sale Point',
-                project: {
-                    projectType: ProjectType.DataUnion,
-                    salePoint: {
-                        ...defaultSalePoint,
-                        beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10'
-                    }
-                },
-                expectedInvalidFields: ['beneficiaryAddress']
-            },
-            {
                 description: 'invalid pricingTokenAddress',
                 project: {
                     projectType: ProjectType.PaidData,

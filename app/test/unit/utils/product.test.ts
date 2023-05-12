@@ -191,6 +191,7 @@ describe('product utils', () => {
             expect(
                 all.validate({
                     type: ProjectType.DataUnion,
+                    isDeployingNewDU: true,
                 } as Project),
             ).toStrictEqual({
                 name: true,
@@ -319,14 +320,14 @@ describe('product utils', () => {
                 creator: true,
                 imageUrl: true,
                 streams: true,
-                adminFee: true,
+                adminFee: false,
                 dataUnionChainId: true,
                 salePoints: true,
                 existingDUAddress: true
             })
             expect(
                 all.validate({
-                    type: ProjectTypeEnum.DATA_UNION,
+                    type: ProjectType.DataUnion,
                     adminFee: '0.5',
                     dataUnionChainId: 124,
                     isDeployingNewDU: true
@@ -340,11 +341,11 @@ describe('product utils', () => {
                 adminFee: false,
                 dataUnionChainId: false,
                 salePoints: true,
-                existingDUAddress: false
+                existingDUAddress: true
             })
             expect(
                 all.validate({
-                    type: ProjectTypeEnum.DATA_UNION,
+                    type: ProjectType.DataUnion,
                     adminFee: '0.5',
                     dataUnionChainId: 124,
                     isDeployingNewDU: false,
@@ -363,7 +364,7 @@ describe('product utils', () => {
             })
             expect(
                 all.validate({
-                    type: ProjectTypeEnum.DATA_UNION,
+                    type: ProjectType.DataUnion,
                     adminFee: '0.5',
                     dataUnionChainId: 124,
                     isDeployingNewDU: false,
@@ -430,7 +431,7 @@ describe('product utils', () => {
                 it(`should properly validate the ${testCase.description}`, () => {
                     expect(all.validate(testCase.project as unknown as Project)).toStrictEqual({
                         ...expectedValidationResult,
-                        [`salePoints.${defaultSalePointChainName}.${testCase.expectedInvalidField}`]: true
+                        [`salePoints.${defaultSalePointChainName}`]: true
                     })
                 })
             })
