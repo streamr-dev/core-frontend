@@ -16,7 +16,7 @@ describe('useFilePreview', () => {
         mount(<Test />)
         expect(result.preview).toBeFalsy()
     })
-    it('creates a preview', () => {
+    it('creates a preview', async () => {
         jest.spyOn(preview, 'toBase64').mockImplementation(async () => 'base64')
         let result
 
@@ -26,7 +26,7 @@ describe('useFilePreview', () => {
         }
 
         mount(<Test />)
-        act(async () => {
+        await act(async () => {
             await result.createPreview(new File(['foo'], 'filename'))
             expect(result.preview).toBe('base64')
         })
