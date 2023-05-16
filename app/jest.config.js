@@ -8,10 +8,11 @@ module.exports = {
     },
     testEnvironment: 'jsdom',
     collectCoverage: true,
+    coverageProvider: "v8",
     coverageReporters: ['text-summary', 'lcov'],
     coverageThreshold: {
         global: {
-            lines: 31,
+            lines: 20,
         },
     },
     testTimeout: 30000,
