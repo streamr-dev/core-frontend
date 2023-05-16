@@ -18,7 +18,7 @@ import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import routes from '$routes'
 import { Secret } from './types'
 
-const createClient = (chainId: number) => {
+const createClient = async (chainId: number): Promise<DataUnionClient> => {
     const provider: any = getWeb3().currentProvider
     const config = getConfigForChain(chainId)
     const { dataUnionJoinServerUrl } = getCoreConfig()
@@ -31,12 +31,23 @@ const createClient = (chainId: number) => {
 
     const providerChainId = hexToNumber(provider.chainId)
     const isProviderInCorrectChain = providerChainId === chainId
+
+    // Account needs to be unlocked so that DataUnionClient works as expected
+    let isLocked = true
+    try {
+        await getDefaultWeb3Account()
+        isLocked = false
+    } catch (e) {
+        // account was locked
+    }
+    const isInCorrectChainAndUnlocked = isProviderInCorrectChain && !isLocked
+
     const clientConfig = getClientConfig({
         auth: {
             // If MetaMask is in right chain, use it to enable signing
-            ethereum: isProviderInCorrectChain ? provider : undefined,
+            ethereum: isInCorrectChainAndUnlocked ? provider : undefined,
             // Otherwise use a throwaway private key to authenticate and allow read-only mode
-            privateKey: !isProviderInCorrectChain ? '531479d5645596f264e7e3cbe80c4a52a505d60fad45193d1f6b8e4724bf0304' : undefined,
+            privateKey: !isInCorrectChainAndUnlocked ? '531479d5645596f264e7e3cbe80c4a52a505d60fad45193d1f6b8e4724bf0304' : undefined,
         },
         network: {
             chainId,
@@ -76,7 +87,7 @@ const getDataunionSubgraphUrlForChain = (chainId: number): string => {
 // smart contract queries
 // ----------------------
 export const getDataUnionObject = async (address: string, chainId: number) => {
-    const client = createClient(chainId)
+    const client = await createClient(chainId)
     const dataUnion = await client.getDataUnion(address)
     return dataUnion
 }
@@ -135,9 +146,9 @@ export const deployDataUnion = ({ productId, adminFee, chainId }: DeployDataUnio
         checkEthereumNetworkIsCorrect({
             network: chainId,
         }),
+        createClient(chainId),
     ])
-        .then(() => {
-            const client = createClient(chainId)
+        .then(([_, __, client]) => {
             return client.deployDataUnion({
                 dataUnionName: productId,
                 adminFee: +adminFee,
@@ -381,7 +392,7 @@ export async function getSelectedMemberStatuses(id: DataUnionId, members: Array<
 }
 
 async function* getMemberStatusesWithClient(id: DataUnionId, members: Array<string>, chainId: number): AsyncGenerator {
-    const client = createClient(chainId)
+    const client = await createClient(chainId)
 
     /* eslint-disable no-restricted-syntax, no-await-in-loop */
     for (const memberAddress of members) {
@@ -407,7 +418,7 @@ type GetSecrets = {
 }
 
 export const getSecrets = async ({ dataUnionId, chainId }: GetSecrets): Promise<Array<Secret>> => {
-    const client = createClient(chainId)
+    const client = await createClient(chainId)
     const dataUnion = await client.getDataUnion(dataUnionId)
     const secrets = await dataUnion.listSecrets()
     return secrets
@@ -420,7 +431,7 @@ type CreateSecret = {
 }
 
 export const createSecret = async ({ dataUnionId, name, chainId }: CreateSecret): Promise<Secret> => {
-    const client = createClient(chainId)
+    const client = await createClient(chainId)
     const dataUnion = await client.getDataUnion(dataUnionId)
     const secret = await dataUnion.createSecret(name)
     return secret
@@ -434,7 +445,7 @@ type EditSecret = {
 }
 
 export const editSecret = async ({ dataUnionId, id, name, chainId }: EditSecret): Promise<Secret> => {
-    const client = createClient(chainId)
+    const client = await createClient(chainId)
     const dataUnion = await client.getDataUnion(dataUnionId)
     // @ts-expect-error 2339
     const result = await dataUnion.editSecret(id, name)
@@ -448,7 +459,7 @@ type DeleteSecrect = {
 }
 
 export const deleteSecret = async ({ dataUnionId, id, chainId }: DeleteSecrect): Promise<void> => {
-    const client = createClient(chainId)
+    const client = await createClient(chainId)
     const dataUnion = await client.getDataUnion(dataUnionId)
     await dataUnion.deleteSecret(id)
 }

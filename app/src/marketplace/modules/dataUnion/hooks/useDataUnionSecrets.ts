@@ -11,7 +11,9 @@ function useDataUnionSecrets() {
     const dispatch = useDispatch()
     const secrets = useSelector(selectDataUnionSecrets)
     const { update } = useEntities()
-    const [isLoading, setIsLoading] = useState(null)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isLoaded, setIsLoaded] = useState<boolean>(false)
+
     const load = useCallback(
         async (dataUnionId: DataUnionId, chainId: number) => {
             try {
@@ -25,6 +27,7 @@ function useDataUnionSecrets() {
                     schema: dataUnionSecretsSchema,
                 })
                 dispatch(setDataUnionSecrets(dataUnionId, result))
+                setIsLoaded(true)
             } catch (e) {
                 console.warn(e)
                 throw e
@@ -34,6 +37,7 @@ function useDataUnionSecrets() {
         },
         [dispatch, update],
     )
+
     const add = useCallback(
         async ({ dataUnionId, name, chainId }: { dataUnionId: DataUnionId; name: string; chainId: number }) => {
             try {
@@ -54,6 +58,7 @@ function useDataUnionSecrets() {
         },
         [dispatch, update],
     )
+
     const edit = useCallback(
         async ({ dataUnionId, id, name, chainId }: { dataUnionId: DataUnionId; id: string; name: string; chainId: number }) => {
             try {
@@ -74,6 +79,7 @@ function useDataUnionSecrets() {
         },
         [update],
     )
+
     const remove = useCallback(
         async ({ dataUnionId, id, chainId }: { dataUnionId: DataUnionId; id: string; chainId: number }) => {
             try {
@@ -90,12 +96,14 @@ function useDataUnionSecrets() {
         },
         [dispatch],
     )
+
     const reset = useCallback(
         async (dataUnionId: DataUnionId) => {
             dispatch(setDataUnionSecrets(dataUnionId, []))
         },
         [dispatch],
     )
+
     return useMemo(
         () => ({
             load,
@@ -105,8 +113,9 @@ function useDataUnionSecrets() {
             remove,
             reset,
             isLoading,
+            isLoaded,
         }),
-        [load, secrets, add, edit, remove, reset, isLoading],
+        [load, secrets, add, edit, remove, reset, isLoading, isLoaded],
     )
 }
 

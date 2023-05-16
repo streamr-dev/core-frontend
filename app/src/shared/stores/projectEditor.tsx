@@ -264,8 +264,12 @@ async function getProjectFromGraphProject({
         let chainId: number | undefined = undefined
 
         if (duAddress) {
-            chainId = await getDataUnionChainIdByAddress(duAddress)
-            adminFee = await getAdminFee(duAddress, chainId)
+            try {
+                chainId = await getDataUnionChainIdByAddress(duAddress)
+                adminFee = await getAdminFee(duAddress, chainId)
+            } catch (e) {
+                console.error('Could not load Data Union details', e)
+            }
         }
 
         result = {

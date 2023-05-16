@@ -20,6 +20,7 @@ import getCoreConfig from "$app/src/getters/getCoreConfig"
 import {ProjectPermission, useProjectAbility} from "$shared/stores/projectAbilities"
 import { useWalletAccount } from '$shared/stores/wallet'
 import DeleteProject from './DeleteProject'
+import { DataUnionSecrets } from './DataUnionSecrets'
 
 type ProjectEditorProps = {
     nonEditableSalePointChains?: number[] // array of chain ids
@@ -81,6 +82,11 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({nonEditabl
         <WhiteBoxWithMargin>
             <TermsOfUse/>
         </WhiteBoxWithMargin>
+        {project?.type === ProjectType.DataUnion && project.existingDUAddress != null && (
+            <WhiteBoxWithMargin>
+                <DataUnionSecrets />
+            </WhiteBoxWithMargin>
+        )}
         {project?.id && canDelete && (
             <TransparentBoxWithMargin>
                 <DeleteProject />
