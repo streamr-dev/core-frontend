@@ -108,6 +108,7 @@
         "bignumber.js": "^9.1.1",
         "bip39": "^3.0.3",
         "bootstrap": "^4.6.0",
+        "buffer": "^6.0.3",
         "chromatic": "^6.17.2",
         "classnames": "^2.2.6",
         "clean-css": "^4.2.3",
