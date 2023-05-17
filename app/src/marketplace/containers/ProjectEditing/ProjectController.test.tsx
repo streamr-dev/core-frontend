@@ -51,6 +51,15 @@ jest.mock('react-router-dom', () => ({
     useHistory: jest.fn().mockReturnValue({push: jest.fn()})
 }))
 
+jest.mock('$routes', () => ({
+    __esModule: true,
+    default: {
+        projects: {
+            index: jest.fn(() => 'projects')
+        }
+    }
+}))
+
 const PROJECT_STUB: Project = {
     id: undefined,
     newImageToUpload: new File([], 'testimage.jpg'),

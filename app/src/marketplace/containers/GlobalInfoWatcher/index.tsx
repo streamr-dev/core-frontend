@@ -26,7 +26,7 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
         const transactionsTimeout = setTimeout(() => {
             const pendingTransactions = getTransactionsFromSessionStorage()
             Object.keys(pendingTransactions).forEach((txHash) => {
-                dispatch(addTransaction(txHash, pendingTransactions[txHash]))
+                dispatch(addTransaction(txHash, pendingTransactions[txHash]) as any) // quick & dirty typing patch
             })
         }, PENDING_TX_WAIT)
         return () => {
@@ -35,13 +35,13 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
     }, [dispatch])
     const handleTransactionComplete = useCallback(
         (id: Hash, receipt: Receipt) => {
-            dispatch(completeTransaction(id, receipt))
+            dispatch(completeTransaction(id, receipt) as any) // quick & dirty typing patch
         },
         [dispatch],
     )
     const handleTransactionError = useCallback(
         (id: Hash, error: TransactionError) => {
-            dispatch(transactionError(id, error))
+            dispatch(transactionError(id, error) as any ) // quick & dirty typing patch
         },
         [dispatch],
     )

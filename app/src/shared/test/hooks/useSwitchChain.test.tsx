@@ -1,5 +1,5 @@
 import React from 'react'
-import { mount } from 'enzyme'
+import { render } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 import * as getConfig from '$shared/web3/config'
@@ -39,7 +39,7 @@ describe('useSwitchChain', () => {
             return null
         }
 
-        mount(<Test />)
+        render(<Test />)
         jest.spyOn(getConfig, 'default').mockImplementation((): any => ({
             metamask: {
                 '123': {},
@@ -75,7 +75,7 @@ describe('useSwitchChain', () => {
             return null
         }
 
-        mount(<Test />)
+        render(<Test />)
         jest.spyOn(getConfig, 'default').mockImplementation((): any => ({
             metamask: {
                 '123': {
@@ -138,7 +138,7 @@ describe('useSwitchChain', () => {
             return null
         }
 
-        mount(<Test />)
+        render(<Test />)
         mockGetWeb3({})
         jest.spyOn(getConfig, 'default').mockImplementation((): any => ({
             metamask: {
@@ -158,7 +158,7 @@ describe('useSwitchChain', () => {
             return null
         }
 
-        mount(<Test />)
+        render(<Test />)
         const requestStub = jest.fn(({ method }) => {
             const error = new Error(method)
             throw error
@@ -189,7 +189,7 @@ describe('useSwitchChain', () => {
             return null
         }
 
-        mount(<Test />)
+        render(<Test />)
         const requestStub = jest.fn(({ method }) => {
             const error = new Error(method);
             (error as any).code = 4902
@@ -226,7 +226,7 @@ describe('useSwitchChain', () => {
             return null
         }
 
-        mount(<Test />)
+        render(<Test />)
         jest.spyOn(getConfig, 'default').mockImplementation((): any => ({
             metamask: {
                 '123': {},
@@ -264,7 +264,7 @@ describe('useSwitchChain', () => {
             return null
         }
 
-        mount(<Test />)
+        render(<Test />)
         jest.spyOn(getConfig, 'default').mockImplementation((): any => ({
             metamask: {
                 '123': {},

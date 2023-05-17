@@ -30,7 +30,7 @@ const GetDataTokensDialog = ({ onCancel }: Props) => (
             )}
         >
             <img className={styles.icon} src={NoDataPng} srcSet={`${NoDataPng2x} 2x`} alt="Wallet error" />
-            <p className={styles.message}>
+            <p className={styles.message} data-testid={'get-data-tokens-dialog'}>
                 DATA is currently required to subscribe to products on the Marketplace. Please purchase some and try
                 again
             </p>

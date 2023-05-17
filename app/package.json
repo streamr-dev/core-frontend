@@ -97,7 +97,7 @@
         "precss": "^4.0.0",
         "prop-types": "^15.8.1",
         "prosemirror-model": "^1.19.0",
-        "query-string": "^8.1.0",
+        "query-string": "^6.13.8",
         "react": "^18.2.0",
         "react-avatar-editor": "^13.0.0",
         "react-dom": "^18.2.0",

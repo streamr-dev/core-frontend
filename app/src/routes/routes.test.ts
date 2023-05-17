@@ -4,12 +4,10 @@ describe('route utils', () => {
         const routes = buildRoutes(
             {
                 resource: '/resource/:id',
-                external: 'https://domain.com/route/:id',
                 site: '<site>/api/resource/:id',
                 slashed: '<slashed>/api/resource/:id',
                 namespace: {
                     resource: '/ns/resource/:id',
-                    external: 'https://domain.com/ns/route/:id',
                     site: '<site>/ns/api/resource/:id',
                     slashed: '<slashed>/ns/api/resource/:id',
                     deep: {
@@ -42,22 +40,6 @@ describe('route utils', () => {
                     id: 13,
                 }),
             ).toEqual('/ns/resource/13')
-        })
-        it('generates an external route', () => {
-            expect(routes.external()).toEqual('https://domain.com/route/:id')
-            expect(
-                routes.external({
-                    id: 13,
-                }),
-            ).toEqual('https://domain.com/route/13')
-        })
-        it('generates an external namespaced route', () => {
-            expect(routes.namespace.external()).toEqual('https://domain.com/ns/route/:id')
-            expect(
-                routes.namespace.external({
-                    id: 13,
-                }),
-            ).toEqual('https://domain.com/ns/route/13')
         })
         it('generates a deeply namespaced route', () => {
             expect(routes.namespace.deep.deep.deep.resource()).toEqual('/deep/resource/:id')

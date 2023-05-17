@@ -13,7 +13,7 @@ export function useBalances() {
     // Fetches & updates account balances to redux state
     const update = useCallback(() => {
         if (account) {
-            dispatch(updateBalances(account))
+            dispatch(updateBalances(account) as any) // quick & dirty typing patch
         }
     }, [dispatch, account])
     return useMemo(

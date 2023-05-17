@@ -1,6 +1,6 @@
 import React from 'react'
 import * as yup from 'yup'
-import { fireEvent, render, waitFor } from '@testing-library/react'
+import { fireEvent, render, waitFor, act } from '@testing-library/react'
 import NetworkIcon from '$shared/components/NetworkIcon'
 import { DetailEditor } from '$shared/components/DetailEditor/index'
 import Mock = jest.Mock
@@ -43,12 +43,18 @@ describe('DetailEditor', () => {
         }
 
         const element = render(<TestComponent/>)
-        element.queryByTestId('detailEditorToggle').click()
-        fireEvent.keyDown(element.container.querySelector('[class$="-control"]'), {key: 'ArrowDown'})
+        act(() => {
+            fireEvent.click(element.queryByTestId('detailEditorToggle'))
+        })
+        act(() => {
+            fireEvent.keyDown(element.container.querySelector('[class$="-control"]'), {key: 'ArrowDown'})
+        })
         expect(element.queryByTestId('chain0')).toBeTruthy()
         expect(element.queryByTestId('chain1')).toBeTruthy()
         expect(element.queryByTestId('chain2')).toBeTruthy()
-        element.queryByTestId('chain1').click()
+        act(() => {
+            element.queryByTestId('chain1').click()
+        })
         expect(onChangeSpy).toHaveBeenCalledWith('ethereum')
         expect(element.queryByTestId('detailEditorInstructionText').textContent).toEqual(instructionText)
         expect(element.queryByTestId('detailEditorOptional').textContent).toBeFalsy()
@@ -78,7 +84,9 @@ describe('DetailEditor', () => {
         }
         const element = render(<TestComponent/>)
 
-        element.queryByTestId('detailEditorToggle').click()
+        act(() => {
+            fireEvent.click(element.queryByTestId('detailEditorToggle'))
+        })
 
         const inputElement = await waitFor(() => {
             return element.queryByTestId('detailEditorInput')
@@ -88,15 +96,21 @@ describe('DetailEditor', () => {
         expect(element.queryByTestId('detailEditorOptional').textContent).toEqual('Optional')
         expect(element.queryByTestId('detailEditorInstructionText').textContent).toEqual(instructionText)
         // Provide invalid value
-        fireEvent.change(inputElement, {target: {value: 'invalidValue'}})
+        act(() => {
+            fireEvent.change(inputElement, {target: {value: 'invalidValue'}})
+        })
         expect(element.queryByTestId('detailEditorValidationError').textContent).toEqual(invalidEmailMessage)
         expect(element.queryByTestId('detailEditorAddCTA')).toBeFalsy()
         // Provide a proper value
-        fireEvent.change(inputElement, {target: {value: 'john.doe@example.com'}})
+        act(() => {
+            fireEvent.change(inputElement, {target: {value: 'john.doe@example.com'}})
+        })
         expect(element.queryByTestId('detailEditorValidationError')).toBeFalsy()
         expect(element.queryByTestId('detailEditorAddCTA').lastChild.textContent).toEqual(`Add ${cta}`)
         // submit by clicking the CTA button
-        element.queryByTestId('detailEditorAddCTA').click()
+        act(() => {
+            element.queryByTestId('detailEditorAddCTA').click()
+        })
         expect(onChangeSpy).toHaveBeenCalledWith('john.doe@example.com')
     })
 })

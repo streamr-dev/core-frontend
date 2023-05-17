@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
-import { shallow, mount } from 'enzyme'
+import { render } from '@testing-library/react'
 import { Context as ModalPortalContext, Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import ModalPortal from '$shared/components/ModalPortal'
 describe(ModalPortalProvider, () => {
@@ -20,21 +20,23 @@ describe(ModalPortalProvider, () => {
         jest.restoreAllMocks()
     })
     it('renders #app', () => {
-        expect(shallow(<ModalPortalProvider><></></ModalPortalProvider>).find('#app')).toHaveLength(1)
+        const result = render(<ModalPortalProvider><></></ModalPortalProvider>)
+        expect(result.container.querySelectorAll('#app')).toHaveLength(1)
+        result.unmount()
     })
     it('renders children', () => {
-        const el = mount(
+        const result = render(
             <ModalPortalProvider>
                 <div className="child" />
                 <div className="child" />
             </ModalPortalProvider>,
         )
-        expect(el.find('#app .child')).toHaveLength(2)
+        expect(result.container.querySelectorAll('#app .child')).toHaveLength(2)
     })
     it('provides current modal root to context consumers', () => {
         const consume = jest.fn()
         expect(
-            mount(
+            render(
                 <ModalPortalProvider>
                     <ModalPortalContext.Consumer>{consume}</ModalPortalContext.Consumer>
                 </ModalPortalProvider>,
@@ -46,42 +48,40 @@ describe(ModalPortalProvider, () => {
     })
     it('provides a flag indicating that a modal is open', () => {
         const consume = jest.fn()
-        const el = mount(
+        const result = render(
             <ModalPortalProvider>
                 <React.Fragment>
-                    <ModalPortal><p>Foo</p></ModalPortal>
-                    <ModalPortal><p>Foo</p></ModalPortal>
+                    <ModalPortal><p data-testid={'modal-portal-content'}>Foo</p></ModalPortal>
+                    <ModalPortal><p data-testid={'modal-portal-content'}>Foo</p></ModalPortal>
                     <ModalPortalContext.Consumer>{consume}</ModalPortalContext.Consumer>
                 </React.Fragment>
             </ModalPortalProvider>,
         )
-        expect(el.find(ModalPortal).length).toEqual(2)
+        expect(result.getAllByTestId('modal-portal-content').length).toEqual(2)
         expect(consume).toHaveBeenCalledTimes(2)
         expect(consume.mock.calls[0][0].isModalOpen).toBe(false)
         expect(consume.mock.calls[1][0].isModalOpen).toBe(true)
     })
     it('resets the flag indicating that the modal is open when modals are gone', () => {
         const consume = jest.fn()
-        const el = mount(
+        const result = render(
             <ModalPortalProvider>
                 <React.Fragment>
-                    <ModalPortal><></></ModalPortal>
+                    <ModalPortal><p data-testid={'modal-portal-content'}>boom</p></ModalPortal>
                     <ModalPortalContext.Consumer>{consume}</ModalPortalContext.Consumer>
                 </React.Fragment>
             </ModalPortalProvider>,
         )
-        expect(el.find(ModalPortal).length).toEqual(1)
+        expect(result.getAllByTestId('modal-portal-content').length).toEqual(1)
         expect(consume).toHaveBeenCalledTimes(2)
         expect(consume.mock.calls[0][0].isModalOpen).toBe(false)
         expect(consume.mock.calls[1][0].isModalOpen).toBe(true)
-        el.setProps({
-            children: (
-                <React.Fragment>
-                    <ModalPortalContext.Consumer>{consume}</ModalPortalContext.Consumer>
-                </React.Fragment>
-            ),
-        })
-        expect(el.find(ModalPortal).length).toEqual(0)
+        result.rerender(<ModalPortalProvider>
+            <React.Fragment>
+                <ModalPortalContext.Consumer>{consume}</ModalPortalContext.Consumer>
+            </React.Fragment>
+        </ModalPortalProvider>,)
+        expect(result.queryAllByTestId('modal-portal-content').length).toEqual(0)
         expect(consume).toHaveBeenCalledTimes(4)
         // Before being unmounted…
         expect(consume.mock.calls[2][0].isModalOpen).toBe(true)

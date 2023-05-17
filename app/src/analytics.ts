@@ -1,8 +1,8 @@
 import * as Sentry from '@sentry/browser'
 import { RewriteFrames } from '@sentry/integrations'
 import LogRocket from 'logrocket'
-import { Severity } from '@sentry/browser'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
+
 type ErrorServiceId = string
 type ErrorService = {
     id: ErrorServiceId
@@ -71,7 +71,7 @@ if (process.env.SENTRY_DSN) {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 integrations: [new RewriteFrames()],
-                whitelistUrls: [
+                allowUrls: [
                     window.location.origin,
                     process.env.PLATFORM_PUBLIC_PATH,
                     platformOriginUrl,
@@ -103,7 +103,7 @@ if (process.env.SENTRY_DSN) {
                     scope.setExtras(extra)
                 }
 
-                scope.setLevel(Severity.Warning)
+                scope.setLevel("warning")
                 Sentry.captureException(error)
             })
         },

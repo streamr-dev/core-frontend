@@ -1,6 +1,6 @@
 import EventEmitter from 'events'
 import React from 'react'
-import { mount } from 'enzyme'
+import { render } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
 import Web3Poller, { events } from '$shared/web3/Web3Poller'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
@@ -43,8 +43,7 @@ describe('useWeb3Status', () => {
             })
             return null
         }
-
-        mount(<Test />)
+        render(<Test />)
         expect(result.account).toBeFalsy()
         expect(result.web3Error).toBeFalsy()
         expect(result.checkingWeb3).toBeFalsy()
@@ -64,7 +63,7 @@ describe('useWeb3Status', () => {
         const stub = mockDefaultAccount(account)
         const validateWeb3Stub = mockValidateWeb3(() => {})
         await act(async () => {
-            mount(<Test />)
+            render(<Test />)
         })
         expect(result.account).toBe(account)
         expect(stub).toHaveBeenCalledTimes(1)
@@ -87,7 +86,7 @@ describe('useWeb3Status', () => {
             throw new Error('unlocked')
         })
         await act(async () => {
-            mount(<Test />)
+            render(<Test />)
         })
         expect(result.account).toBeFalsy()
         expect(result.web3Error).toBeTruthy()
@@ -109,7 +108,7 @@ describe('useWeb3Status', () => {
         const stub = (getDefaultWeb3Account as jest.Mock).mockImplementation(() => Promise.reject(new Error('no account')))
         const validateWeb3Stub = mockValidateWeb3(() => {})
         await act(async () => {
-            mount(<Test />)
+            render(<Test />)
         })
         expect(result.account).toBeFalsy()
         expect(result.web3Error).toBeTruthy()
@@ -133,7 +132,7 @@ describe('useWeb3Status', () => {
             throw new Error('unlocked')
         })
         await act(async () => {
-            mount(<Test />)
+            render(<Test />)
         })
         expect(result.account).toBeFalsy()
         expect(result.web3Error).toBeTruthy()
@@ -156,7 +155,7 @@ describe('useWeb3Status', () => {
         })
         let el
         await act(async () => {
-            el = mount(<Test />)
+            el = render(<Test />)
         })
         expect(result.account).toBeFalsy()
         expect(result.web3Error).toBeTruthy()
@@ -188,7 +187,7 @@ describe('useWeb3Status', () => {
             throw new Error('unlocked')
         })
         await act(async () => {
-            mount(<Test />)
+            render(<Test />)
         })
         expect(result.account).toBeFalsy()
         expect(result.web3Error).toBeTruthy()
@@ -228,7 +227,7 @@ describe('useWeb3Status', () => {
             throw new Error('wrong network')
         })
         await act(async () => {
-            mount(<Test />)
+            render(<Test />)
         })
         expect(result.account).toBeFalsy()
         expect(result.web3Error).toBeTruthy()
@@ -264,7 +263,7 @@ describe('useWeb3Status', () => {
         }
 
         await act(async () => {
-            mount(<Test />)
+            render(<Test />)
         })
         expect(result.account).toBe(account)
         expect(result.web3Error).toBeFalsy()
@@ -293,7 +292,7 @@ describe('useWeb3Status', () => {
         mockDefaultAccount(account)
         mockValidateWeb3()
         await act(async () => {
-            mount(<Test />)
+            render(<Test />)
         })
         expect(result.account).toBe(account)
         expect(result.web3Error).toBeFalsy()
@@ -321,12 +320,12 @@ describe('useWeb3Status', () => {
         }
 
         mockValidateWeb3()
-        let el
+        let renderResult
         await act(async () => {
-            el = mount(<Test />)
+            renderResult = render(<Test />)
         })
         await act(async () => {
-            el.unmount()
+            renderResult.unmount()
         })
         expect(unsubscribeStub).toBeCalledWith(events.ACCOUNT_ERROR, handlers[events.ACCOUNT_ERROR])
     })

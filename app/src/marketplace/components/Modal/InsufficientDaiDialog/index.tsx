@@ -13,7 +13,7 @@ const InsufficientDaiDialog = ({ onCancel }: Props) => (
         <Dialog title="Insufficient DAI" onClose={onCancel}>
             {/* TODO: Change to more DAI related no wallet IMG */}
             <img className={styles.icon} src={WalletNoEthPng} srcSet={`${WalletNoEthPng2x} 2x`} alt="Wallet error" />
-            <p>
+            <p data-testid={'insufficient-dai-dialog'}>
                 You don&apos;t have enough DAI to subscribe
                 <br />
                 to this product. Please get some and try again

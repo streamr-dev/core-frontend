@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { MemoryRouter, withRouter } from 'react-router-dom'
-import { mount } from 'enzyme'
-import { act } from 'react-dom/test-utils'
+import { render, act } from '@testing-library/react'
 import { Context as ModalContext, Provider as ModalContextProvider } from '$shared/contexts/ModalApi'
 describe('ModalContext', () => {
     it('has no modals defined by default', () => {
@@ -12,7 +11,7 @@ describe('ModalContext', () => {
             return null
         }
 
-        mount(
+        render(
             <MemoryRouter>
                 <ModalContextProvider>
                     <Test />
@@ -29,7 +28,7 @@ describe('ModalContext', () => {
             return null
         }
 
-        mount(
+        render(
             <MemoryRouter>
                 <ModalContextProvider>
                     <Test />
@@ -53,7 +52,7 @@ describe('ModalContext', () => {
             return null
         }
 
-        mount(
+        render(
             <MemoryRouter>
                 <ModalContextProvider>
                     <Test />
@@ -83,7 +82,7 @@ describe('ModalContext', () => {
             return null
         }
 
-        mount(
+        render(
             <MemoryRouter>
                 <ModalContextProvider>
                     <Test />
@@ -114,7 +113,7 @@ describe('ModalContext', () => {
             history = routerHistory
             return null
         })
-        mount(
+        render(
             <MemoryRouter>
                 <ModalContextProvider>
                     <Test />
