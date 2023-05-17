@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useCallback, useEffect, useState} from 'react'
+import React, {FunctionComponent, ReactNode, useCallback, useEffect, useState} from 'react'
 import styled, { css } from 'styled-components'
 import { Link } from 'react-router-dom'
 import { Stream } from 'streamr-client'
@@ -251,6 +251,7 @@ type Props = {
     orderBy?: OrderBy,
     orderDirection?: OrderDirection,
     onSortChange?: (orderBy: OrderBy, orderDirection: OrderDirection) => void,
+    noStreamsText?: ReactNode
 }
 
 const StreamTable: React.FC<Props> = ({
@@ -263,6 +264,7 @@ const StreamTable: React.FC<Props> = ({
     orderBy,
     orderDirection,
     onSortChange,
+    noStreamsText = 'No streams that match your query'
 }: Props) => {
     const [globalStats, setGlobalStats] = useState<GlobalStreamStats | null>(null)
     const isMounted = useIsMounted()
@@ -389,7 +391,7 @@ const StreamTable: React.FC<Props> = ({
                             </TableRow>
                         )
                     })}
-                    {streams.length === 0 && <NoStreams>No streams that match your query</NoStreams>}
+                    {streams.length === 0 && <NoStreams>{noStreamsText}</NoStreams>}
                 </TableRows>
             </Table>
             {loadMore != null && (
