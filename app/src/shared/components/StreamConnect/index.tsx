@@ -373,6 +373,7 @@ const StreamConnectLink = styled.a`
 `
 
 const SnippetSelectorContainer = styled.div`
+    height: 40px;
     display: flex;
     flex-wrap: nowrap;
     margin-top: 20px;
@@ -391,5 +392,6 @@ const BrokerNodeSnippetContainer = styled.div`
 `
 
 const SelectContainer = styled.div`
+    height: 100%;
     min-width: 140px;
 `
