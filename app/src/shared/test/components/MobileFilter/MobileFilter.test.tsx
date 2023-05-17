@@ -1,5 +1,5 @@
 import React from 'react'
-import { mount, ReactWrapper } from 'enzyme'
+import {act, screen, fireEvent, render, RenderResult, waitFor} from '@testing-library/react'
 import MobileFilter from '$shared/components/MobileFilter'
 import { ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import Mock = jest.Mock
@@ -29,7 +29,7 @@ const filters = [{
 }]
 describe('MobileFilter', () => {
     let spy: Mock = jest.fn()
-    let element: ReactWrapper
+    let renderResult: RenderResult
     const TestComponent = () => {
         return <div>
             <ModalPortalProvider>
@@ -46,23 +46,36 @@ describe('MobileFilter', () => {
 
     beforeEach(() => {
         spy = jest.fn()
-        element = mount(<TestComponent/>, {attachTo: document.body})
+        renderResult = render(<TestComponent/>)
     })
 
     afterEach(() => {
-        element.detach()
+        renderResult.unmount()
     })
 
-    it('should open the filter modal', () => {
-        element.find('#mobile-filter-trigger').first().simulate('click')
-        expect(element.find('.options-list').exists()).toBe(true)
+    it('should open the filter modal', async () => {
+        await act(() => {
+            fireEvent.click(screen.getByTestId('mobile-filter-trigger'))
+        })
+        await waitFor(async () => {
+            const optionsList = await screen.getAllByTestId('options-list')
+            expect(optionsList).toBeTruthy()
+        })
     })
 
-    // TODO - try to fix it in the future
-    it.skip('should select a filter', () => {
-        element.find('#mobile-filter-trigger').first().simulate('click')
-        element.find({htmlFor: 'category-business'}).simulate('click')
-        element.find('.filter-save-button').first().simulate('click')
+    it('should select a filter', async () => {
+        await act(() => {
+            fireEvent.click(screen.getByTestId('mobile-filter-trigger'))
+        })
+
+        await act(() => {
+            fireEvent.click(screen.getAllByTestId('filter-element')[0])
+        })
+
+        await act(() => {
+            fireEvent.click(screen.getByText('Save'))
+        })
+
         expect(spy).toHaveBeenCalledWith({category: 'business'})
     })
 

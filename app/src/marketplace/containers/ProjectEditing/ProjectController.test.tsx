@@ -3,12 +3,12 @@ import BN from "bignumber.js"
 import {act, render} from "@testing-library/react"
 import {isHex, randomHex} from "web3-utils"
 import {Chain} from "@streamr/config"
-import {RecursiveKeyOf} from "$utils/recursiveKeyOf"
 import {Project} from "$mp/types/project-types"
 import * as validationCtx from "$mp/containers/ProductController/ValidationContextProvider"
 import {createProject, SmartContractProjectCreate, updateProject} from "$app/src/services/projects"
 import {useProjectState} from "$mp/contexts/ProjectStateContext"
 import { ProjectType } from '$shared/types'
+import { ObjectPaths } from '$utils/objectPaths'
 import {ProjectController, useProjectController} from "./ProjectController"
 import Mock = jest.Mock
 
@@ -92,7 +92,7 @@ describe('ProjectController', () => {
 
     const prepareTestForProjectCreate = (
         createProjectResult: boolean,
-        validationResult: Partial<Record<RecursiveKeyOf<Project>, {level: validationCtx.SeverityLevel, message: string}>>,
+        validationResult: Partial<Record<ObjectPaths<Project>, {level: validationCtx.SeverityLevel, message: string}>>,
         state: Project,
     ) => {
         (createProject as Mock).mockReset();
@@ -113,7 +113,7 @@ describe('ProjectController', () => {
 
     const prepareTestForProjectUpdate = (
         updateProjectResult: boolean,
-        validationResult: Partial<Record<RecursiveKeyOf<Project>, {level: validationCtx.SeverityLevel, message: string}>>,
+        validationResult: Partial<Record<ObjectPaths<Project>, {level: validationCtx.SeverityLevel, message: string}>>,
         state: Project,
     ) => {
         (updateProject as Mock).mockReset();

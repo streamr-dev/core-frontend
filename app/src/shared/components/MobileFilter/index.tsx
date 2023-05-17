@@ -55,6 +55,7 @@ const MobileFilter: FunctionComponent<MobileFilterProps> = ({filters, onChange, 
     return <>
         <Trigger
             id={'mobile-filter-trigger'}
+            data-testid={'mobile-filter-trigger'}
             onClick={() => setDialogOpen(true)}
             kind={'secondary'}
         >
@@ -76,23 +77,46 @@ const MobileFilter: FunctionComponent<MobileFilterProps> = ({filters, onChange, 
                         <p className={'filter-name'}>By {filter.label.toLowerCase()}</p>
                         <form
                             className={'options-list'}
+                            data-testid={'options-list'}
                             onSubmit={(event) => event.preventDefault()}
                             data-can-have-columns={filter.options.length > 8}
                         >
                             {filter.options.map((filterOption, optionIndex) => {
-                                return <div key={filterOption.value + optionIndex}>
-                                    <label htmlFor={filter.value + '-' + filterOption.value} className={'filter-option'}>
-                                        <input
-                                            type={'radio'}
-                                            id={filter.value + '-' + filterOption.value}
-                                            name={filter.value}
-                                            value={filterOption.value}
-                                            onChange={() => handleSelection(filter.value, filterOption.value)}
-                                            checked={selections[filter.value] === filterOption.value}
-                                        />
-                                        <span className={'filter-options-label'}>{filterOption.label}</span>
-                                    </label>
-                                </div>
+                                return (
+                                    <div key={filterOption.value + optionIndex}>
+                                        <label
+                                            htmlFor={
+                                                filter.value + '-' + filterOption.value
+                                            }
+                                            data-testid={'filter-element'}
+                                            className={'filter-option'}
+                                        >
+                                            <input
+                                                type={'radio'}
+                                                id={
+                                                    filter.value +
+                                                    '-' +
+                                                    filterOption.value
+                                                }
+                                                name={filter.value}
+                                                value={filterOption.value}
+                                                onChange={() =>
+                                                    handleSelection(
+                                                        filter.value,
+                                                        filterOption.value,
+                                                    )
+                                                }
+                                                checked={
+                                                    selections[filter.value] ===
+                                                    filterOption.value
+                                                }
+                                            />
+                                            <span className={'filter-options-label'}>
+                                                {filterOption.label}
+                                            </span>
+                                        </label>
+                                    </div>
+                                )
                             })}
                         </form>
                     </FilterSection>

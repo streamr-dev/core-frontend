@@ -331,11 +331,11 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
     const ensName = useEns(account)
 
     return (
-        <div {...props}>
+        <div {...props} data-testid={'desktop-nav'}>
             <Navbar>
                 <NavbarItem>
                     <LogoLink href={routes.root()}>
-                        <Logo />
+                        <Logo data-testid={'logo'} />
                     </LogoLink>
                 </NavbarItem>
                 <MenuGrid data-desktop-only>
@@ -450,7 +450,7 @@ const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className 
                     <UserInfoMobile>
                         <Avatar username={account} />
                         <div>
-                            <Avatarless source={account} />
+                            <Avatarless data-testid={'avatarless'} source={account} />
                             <AccountsBalance />
                         </div>
                     </UserInfoMobile>

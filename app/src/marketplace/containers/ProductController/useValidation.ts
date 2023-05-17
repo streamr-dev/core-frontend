@@ -1,9 +1,9 @@
 import { useContext, useMemo, useCallback } from 'react'
-import { RecursiveKeyOf } from '$utils/recursiveKeyOf'
 import { Project } from '$mp/types/project-types'
+import {ObjectPaths} from "$utils/objectPaths"
 import { SeverityLevel, ValidationContext } from './ValidationContextProvider'
 
-const useValidation = (fieldName: RecursiveKeyOf<Project>): {
+const useValidation = (fieldName: ObjectPaths<Project>): {
     isValid: boolean,
     level: SeverityLevel,
     message: string,

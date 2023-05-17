@@ -163,7 +163,7 @@ const ButtonContainer = styled.div`
 
 export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose: () => void}> = ({className, onClose}) => {
     const fetchStreams = useFetchStreams()
-    const [streamsCount, setStreamsCount] = useState(0)
+    const [streamsCount, setStreamsCount] = useState<number>()
 
     const [selectedProductType, setSelectedProductType] = useState<ProjectType>()
 

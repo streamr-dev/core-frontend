@@ -1,6 +1,5 @@
-import React from 'react'
-import { mount, shallow, ShallowWrapper } from 'enzyme'
-import NotificationSystem from 'react-notification-system'
+import React, { createRef } from 'react'
+import {act, render} from '@testing-library/react'
 import Notification from '$shared/utils/Notification'
 import Notifications from '$shared/components/Notifications'
 import BasicNotification from '$shared/components/Notifications/BasicNotification'
@@ -13,14 +12,15 @@ describe(Notifications, () => {
     describe('mounting/unmounting', () => {
         it('starts listening for notifications on mount', () => {
             jest.spyOn(Notification, 'subscribeToAdd').mockImplementation()
-            const notifications: ShallowWrapper<any, any, Notifications> = shallow(<Notifications />)
+            const instanceRef = createRef<Notifications>()
+            render(<Notifications ref={instanceRef} />)
             expect(Notification.subscribeToAdd).toHaveBeenCalledTimes(1)
-            expect(Notification.subscribeToAdd).toBeCalledWith(notifications.instance().addNotification)
+            expect(Notification.subscribeToAdd).toBeCalledWith(instanceRef.current.addNotification)
         })
         it('stops listening for notifications before unmount', () => {
             jest.spyOn(Notification, 'unsubscribe').mockImplementation()
-            const notifications = shallow(<Notifications />)
-            notifications.unmount()
+            const {unmount} = render(<Notifications />)
+            unmount()
             expect(Notification.unsubscribe).toHaveBeenCalledTimes(1)
         })
     })
@@ -28,22 +28,26 @@ describe(Notifications, () => {
         let addNotification
         let notifications
         beforeEach(() => {
-            notifications = shallow(<Notifications />)
-            ;({ addNotification } = notifications.instance())
+            const instanceRef = createRef<Notifications>()
+            render(<Notifications ref={instanceRef} />)
+            notifications = instanceRef.current
+            ;({ addNotification } = instanceRef.current)
         })
         it('prepends notification collection with the new entries', () => {
-            expect(notifications.state('notifications')).toHaveLength(0)
-            addNotification(
-                new Notification({
-                    title: 'Message 1',
-                }),
-            )
-            addNotification(
-                new Notification({
-                    title: 'Message 2',
-                }),
-            )
-            const items = notifications.state('notifications')
+            expect(notifications.state['notifications']).toHaveLength(0)
+            act(() => {
+                addNotification(
+                    new Notification({
+                        title: 'Message 1',
+                    }),
+                )
+                addNotification(
+                    new Notification({
+                        title: 'Message 2',
+                    }),
+                )
+            })
+            const items = notifications.state['notifications']
             expect(items).toHaveLength(2)
             expect(items[0]).toMatchObject({
                 title: 'Message 2',
@@ -53,15 +57,16 @@ describe(Notifications, () => {
             })
         })
         it('triggers showNotification', () => {
-            const instance = notifications.instance()
-            jest.spyOn(instance, 'showNotification').mockImplementation()
-            addNotification(
-                new Notification({
-                    title: 'Message',
-                }),
-            )
-            expect(instance.showNotification).toHaveBeenCalledTimes(1)
-            expect(instance.showNotification.mock.calls[0][0]).toMatchObject({
+            jest.spyOn(notifications, 'showNotification').mockImplementation()
+            act(() => {
+                addNotification(
+                    new Notification({
+                        title: 'Message',
+                    }),
+                )
+            })
+            expect(notifications.showNotification).toHaveBeenCalledTimes(1)
+            expect(notifications.showNotification.mock.calls[0][0]).toMatchObject({
                 title: 'Message',
             })
         })
@@ -70,11 +75,13 @@ describe(Notifications, () => {
         let showNotification
         let notifications
         beforeEach(() => {
-            notifications = mount(<Notifications />)
-            ;({ showNotification } = notifications.instance())
+            const instanceRef = createRef<Notifications>()
+            render(<Notifications ref={instanceRef} />)
+            notifications = instanceRef.current
+            ;({ showNotification } = instanceRef.current)
         })
         it('shows a basic notification', () => {
-            const system = notifications.find(NotificationSystem).instance()
+            const system = notifications.system.current
             const notification = new Notification({
                 title: 'Message',
             })
@@ -93,7 +100,7 @@ describe(Notifications, () => {
             })
         })
         it('shows a transaction notification', () => {
-            const system = notifications.find(NotificationSystem).instance()
+            const system = notifications.system.current
             const notification = new Notification({
                 txHash: '0x1403',
                 autoDismiss: false,
@@ -117,8 +124,10 @@ describe(Notifications, () => {
         let removeNotification
         let notifications
         beforeEach(() => {
-            notifications = mount(<Notifications />)
-            ;({ removeNotification } = notifications.instance())
+            const instanceRef = createRef<Notifications>()
+            render(<Notifications ref={instanceRef} />)
+            notifications = instanceRef.current
+            ;({ removeNotification } = instanceRef.current)
         })
         it('removes correct notification from the collection', () => {
             const notification0 = new Notification({
@@ -129,12 +138,16 @@ describe(Notifications, () => {
                 title: 'Message 1',
             })
             notification0.id = 1403
-            notifications.setState({
-                notifications: [notification0, notification1],
+            act(() => {
+                notifications.setState({
+                    notifications: [notification0, notification1],
+                })
             })
-            expect(notifications.state('notifications')).toHaveLength(2)
-            removeNotification(1403)
-            const items = notifications.state('notifications')
+            expect(notifications.state['notifications']).toHaveLength(2)
+            act(() => {
+                removeNotification(1403)
+            })
+            const items = notifications.state['notifications']
             expect(items).toHaveLength(1)
             expect(items[0].title).toEqual('Message 1')
         })

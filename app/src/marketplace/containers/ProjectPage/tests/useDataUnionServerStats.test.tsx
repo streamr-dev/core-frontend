@@ -1,19 +1,25 @@
 import React from 'react'
-import { mount } from 'enzyme'
+import { render } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
 import * as services from '$mp/modules/dataUnion/services'
 import useDataUnionServerStats from '../useDataUnionServerStats'
-jest.mock('$mp/modules/dataUnion/services')
-jest.useFakeTimers()
-const getDataUnionStatsMock = jest.fn().mockResolvedValue({
-    totalEarnings: 123,
-    memberCount: {
-        total: 10,
-        active: 5,
-    },
+jest.mock('$mp/modules/dataUnion/services', () => {
+    return {
+        getDataUnionStats: jest.fn()
+    }
 })
+jest.useFakeTimers()
 describe('useDataUnionServerStats', () => {
+    let getDataUnionStatsMock
     beforeEach(() => {
+        getDataUnionStatsMock = jest.spyOn(services, 'getDataUnionStats')
+        getDataUnionStatsMock.mockResolvedValue({
+            totalEarnings: 123,
+            memberCount: {
+                total: 10,
+                active: 5,
+            },
+        })
         jest.spyOn(console, 'warn').mockImplementation(() => {})
     })
     afterEach(() => {
@@ -28,7 +34,7 @@ describe('useDataUnionServerStats', () => {
             return null
         }
 
-        mount(<Test />)
+        render(<Test />)
         expect(result.totalEarnings).toStrictEqual(undefined)
         expect(result.memberCount).toStrictEqual(undefined)
     })
@@ -40,7 +46,7 @@ describe('useDataUnionServerStats', () => {
             return null
         }
 
-        mount(<Test />)
+        render(<Test />)
         expect(result.startPolling()).rejects.toThrow()
     })
     it('returns stats', async () => {
@@ -51,8 +57,7 @@ describe('useDataUnionServerStats', () => {
             return null
         }
 
-        mount(<Test />);
-        (services.getDataUnionStats as any).mockImplementation(getDataUnionStatsMock)
+        render(<Test />)
         await act(async () => {
             await result.startPolling('0x123', 8995)
         })
@@ -71,8 +76,8 @@ describe('useDataUnionServerStats', () => {
             return null
         }
 
-        mount(<Test />)
-        const getDataUnionStatsMock = jest.fn(async () => {
+        render(<Test />)
+        getDataUnionStatsMock = jest.fn(async () => {
             throw new Error('something happened')
         });
         (services.getDataUnionStats as any).mockImplementation(getDataUnionStatsMock)
@@ -93,8 +98,8 @@ describe('useDataUnionServerStats', () => {
             return null
         }
 
-        mount(<Test />)
-        const getDataUnionStatsMock = jest.fn(async () => {
+        render(<Test />)
+        getDataUnionStatsMock = jest.fn(async () => {
             const responseError = new Error('something happened');
             (responseError as any).statusCode = 404
             throw responseError
