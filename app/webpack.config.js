@@ -232,6 +232,11 @@ module.exports = {
         new webpack.ProvidePlugin({
             process: 'process/browser',
         }),
+        // Work around for Buffer is undefined:
+        // https://github.com/webpack/changelog-v5/issues/10
+        new webpack.ProvidePlugin({
+            Buffer: ['buffer', 'Buffer'],
+        })
     ]
         .concat(
             isProduction()
@@ -340,7 +345,10 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
         symlinks: false,
-        fallback: { "stream": require.resolve("stream-browserify") },
+        fallback: {
+            "stream": require.resolve("stream-browserify"),
+            "buffer": require.resolve("buffer"),
+        },
         alias: {
             // Make sure you set up aliases in flow and jest configs.
             $app: __dirname,

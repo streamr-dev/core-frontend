@@ -1,5 +1,6 @@
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const webpack = require('webpack')
 const appWebpackConfig = require('../webpack.config')
 const isProduction = require('../scripts/isProduction')
 
@@ -35,6 +36,13 @@ module.exports = {
                 filename: isProduction() ? '[name].css' : '[name].[hash].css',
                 chunkFilename: isProduction() ? '[id].css' : '[id].[hash].css',
             }),            
+        )
+        config.plugins.push(
+            // Work around for Buffer is undefined:
+            // https://github.com/webpack/changelog-v5/issues/10
+            new webpack.ProvidePlugin({
+                Buffer: ['buffer', 'Buffer'],
+            })
         )
         return config
     },
