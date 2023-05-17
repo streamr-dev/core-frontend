@@ -40,11 +40,11 @@ export const MarketplaceProjectRow = styled.div`
     margin: 0;
     grid-template-columns: 1fr;
 
-    @media (${TABLET}) {
+    @media ${TABLET} {
         grid-template-columns: 1fr 1fr;
     }
 
-    @media (${LAPTOP}) {
+    @media ${LAPTOP} {
         grid-template-columns: 1fr 1fr 1fr 1fr;
     }
 `
@@ -100,7 +100,7 @@ export const ProjectsContainer = styled.div`
     max-width: ${MAX_BODY_WIDTH}px;
     margin: 0 auto;
 
-    @media (${DESKTOP}) {
+    @media ${DESKTOP} {
         padding: 72px 0 7em 0;
     }
 `
@@ -110,7 +110,7 @@ export const ProjectsHeader = styled.h3`
     font-weight: ${REGULAR};
     margin-bottom: 16px;
 
-    @media (${TABLET}) {
+    @media ${TABLET} {
         margin-bottom: 40px;
     }
 `
