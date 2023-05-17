@@ -1,13 +1,18 @@
 import React from 'react'
 import classnames from 'classnames'
 import styled from 'styled-components'
-
 import { isDataUnionProject } from '$mp/utils/product'
 import { MarketplaceProductTile as UnstyledMarketplaceProductTile } from '$shared/components/Tile'
-import {REGULAR, DESKTOP, COLORS, TABLET, MAX_BODY_WIDTH, LAPTOP} from '$shared/utils/styled'
+import {
+    REGULAR,
+    DESKTOP,
+    COLORS,
+    TABLET,
+    MAX_BODY_WIDTH,
+    LAPTOP,
+} from '$shared/utils/styled'
 import Button from '$shared/components/Button'
 import { TheGraphProject } from '$app/src/services/projects'
-
 import ProductPageSpinner from '../ProductPageSpinner'
 import Error from '../Error'
 import { getErrorView } from './settings'
@@ -16,8 +21,8 @@ import styles from './projects.pcss'
 export type ProjectTilePropType = 'projects' | 'relatedProjects'
 
 export type OwnProps = {
-    projects: TheGraphProject[],
-    currentUserAddress?: string,
+    projects: TheGraphProject[]
+    currentUserAddress?: string
     type: ProjectTilePropType
     error?: any
     isFetching?: boolean
@@ -30,25 +35,27 @@ export const MarketplaceProductTile = styled(UnstyledMarketplaceProductTile)`
     margin-top: 16px;
 `
 export const MarketplaceProjectRow = styled.div`
-  display: grid;
-  grid-gap: 36px;
-  margin: 0;
-  grid-template-columns: 1fr;
-  @media(${TABLET}) {
-    grid-template-columns: 1fr 1fr;
-  }
-  @media(${LAPTOP}) {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-  }
+    display: grid;
+    grid-gap: 36px;
+    margin: 0;
+    grid-template-columns: 1fr;
+
+    @media (${TABLET}) {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    @media (${LAPTOP}) {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
 `
 export const MarketplaceProjectCol = styled.div`
-  padding: 0;
+    padding: 0;
 `
 
 const listProjects = (
     projects: TheGraphProject[],
     currentUserAddress: string,
-    isFetching: boolean | null | undefined
+    isFetching: boolean | null | undefined,
 ) => {
     const isEditable = (projectId: string) => {
         if (!currentUserAddress) {
@@ -56,7 +63,11 @@ const listProjects = (
         }
         const project = projects.find((p) => p.id === projectId)
         if (project != null) {
-            const perm = project.permissions.find((permission) => permission.userAddress.toLowerCase() === currentUserAddress.toLowerCase())
+            const perm = project.permissions.find(
+                (permission) =>
+                    permission.userAddress.toLowerCase() ===
+                    currentUserAddress.toLowerCase(),
+            )
             if (perm != null) {
                 return perm.canEdit
             }
@@ -98,14 +109,15 @@ export const ProjectsHeader = styled.h3`
     line-height: 34px;
     font-weight: ${REGULAR};
     margin-bottom: 16px;
-    @media(${TABLET}) {
-      margin-bottom: 40px;
+
+    @media (${TABLET}) {
+        margin-bottom: 40px;
     }
 `
 
 export const LoadMoreButton = styled(Button)`
-  display: block !important;
-  margin: 130px auto 80px;
+    display: block !important;
+    margin: 130px auto 80px;
 `
 
 const UnstyledProjects = ({
@@ -125,7 +137,11 @@ const UnstyledProjects = ({
         {isFetching || projects.length > 0
             ? listProjects(projects, currentUserAddress, isFetching)
             : getErrorView(type)}
-        {loadProducts && !isFetching && hasMoreSearchResults && <LoadMoreButton onClick={loadProducts} kind={'primary2'}>Load more</LoadMoreButton>}
+        {loadProducts && !isFetching && hasMoreSearchResults && (
+            <LoadMoreButton onClick={loadProducts} kind={'primary2'}>
+                Load more
+            </LoadMoreButton>
+        )}
         {isFetching && <ProductPageSpinner className={styles.spinner} />}
     </div>
 )
