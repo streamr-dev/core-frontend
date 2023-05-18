@@ -18,9 +18,9 @@ import { SeverityLevel } from '$mp/containers/ProductController/ValidationContex
 import Notification from '$shared/utils/Notification'
 import { Address } from '$shared/types/web3-types'
 import { PricingData, Project } from '$mp/types/project-types'
-import { RecursiveKeyOf } from '$utils/recursiveKeyOf'
 import { pricePerSecondFromTimeUnit } from '$mp/utils/price'
-import {TimeUnit, timeUnits} from "$shared/utils/timeUnit"
+import { TimeUnit, timeUnits } from '$shared/utils/timeUnit'
+import { ObjectPaths } from '$utils/objectPaths'
 
 const Container = styled.div`
   color: ${COLORS.primary};
@@ -136,7 +136,7 @@ type Props = {
     chain: Chain,
     onChange: (pricing: PricingData) => void,
     value?: PricingData | undefined,
-    validationFieldName: RecursiveKeyOf<Project>,
+    validationFieldName: ObjectPaths<Project>,
     tokenChangeDisabled: boolean
 }
 

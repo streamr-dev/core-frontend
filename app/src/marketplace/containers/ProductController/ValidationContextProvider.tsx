@@ -1,8 +1,8 @@
 import React, {useMemo, useCallback, useState, FunctionComponent, ReactNode, useContext} from 'react'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { validate as validateProduct } from '$mp/utils/product'
-import { RecursiveKeyOf } from '$utils/recursiveKeyOf'
 import { Project } from '$mp/types/project-types'
+import {ObjectPaths} from "$utils/objectPaths"
 
 export enum SeverityLevel {
     INFO = 'info',
@@ -11,20 +11,20 @@ export enum SeverityLevel {
 }
 
 export type ValidationContextProps = {
-    setStatus: (name: RecursiveKeyOf<Project>, severity: SeverityLevel, message: string) => void,
-    clearStatus: (name: RecursiveKeyOf<Project>) => void,
-    status: Partial<Record<RecursiveKeyOf<Project>, {level: SeverityLevel, message: string}>>,
-    isValid: (fieldName: RecursiveKeyOf<Project>) => boolean,
-    validate: (project: Project) => Partial<Record<RecursiveKeyOf<Project>, {level: SeverityLevel, message: string}>>,
-    touched: Partial<Record<RecursiveKeyOf<Project>, boolean>>,
-    setTouched: (fieldName: RecursiveKeyOf<Project>, isTouched?: boolean) => void,
-    isTouched: (fieldName: RecursiveKeyOf<Project>) => boolean,
+    setStatus: (name: ObjectPaths<Project>, severity: SeverityLevel, message: string) => void,
+    clearStatus: (name: ObjectPaths<Project>) => void,
+    status: Partial<Record<ObjectPaths<Project>, {level: SeverityLevel, message: string}>>,
+    isValid: (fieldName: ObjectPaths<Project>) => boolean,
+    validate: (project: Project) => Partial<Record<ObjectPaths<Project>, {level: SeverityLevel, message: string}>>,
+    touched: Partial<Record<ObjectPaths<Project>, boolean>>,
+    setTouched: (fieldName: ObjectPaths<Project>, isTouched?: boolean) => void,
+    isTouched: (fieldName: ObjectPaths<Project>) => boolean,
     isAnyTouched: () => boolean,
     resetTouched: () => void,
 }
 export const ValidationContext = React.createContext<ValidationContextProps>({} as ValidationContextProps)
 
-const validationErrors: Partial<Record<RecursiveKeyOf<Project>, string>> = {
+const validationErrors: Partial<Record<ObjectPaths<Project>, string>> = {
     name: 'Product name cannot be empty',
     description: 'Product description cannot be empty',
     creator: 'Missing or invalid creator\'s name',
@@ -51,8 +51,8 @@ const validationErrors: Partial<Record<RecursiveKeyOf<Project>, string>> = {
 }
 
 function useValidationContextImplementation(): ValidationContextProps {
-    const [status, setStatusState] = useState<Partial<Record<RecursiveKeyOf<Project>, {level: SeverityLevel, message: string}>>>({})
-    const [touched, setTouchedState] = useState<Partial<Record<RecursiveKeyOf<Project>, boolean>>>({})
+    const [status, setStatusState] = useState<Partial<Record<ObjectPaths<Project>, {level: SeverityLevel, message: string}>>>({})
+    const [touched, setTouchedState] = useState<Partial<Record<ObjectPaths<Project>, boolean>>>({})
     const setTouched = useCallback(
         (name: string, value = true) => {
             setTouchedState((existing) => ({ ...existing, [name]: !!value }))
@@ -85,7 +85,7 @@ function useValidationContextImplementation(): ValidationContextProps {
         [setStatusState, isMounted],
     )
     const clearStatus = useCallback(
-        (name: RecursiveKeyOf<Project>) => {
+        (name: ObjectPaths<Project>) => {
             if (!isMounted()) {
                 return
             }
@@ -100,15 +100,15 @@ function useValidationContextImplementation(): ValidationContextProps {
     )
     const isValid = useCallback((name: string) => !status[name], [status])
     const validate = useCallback(
-        (product: Project): Partial<Record<RecursiveKeyOf<Project>, {level: SeverityLevel, message: string}>> => {
+        (product: Project): Partial<Record<ObjectPaths<Project>, {level: SeverityLevel, message: string}>> => {
             if (!isMounted() || !product) {
                 return
             }
 
             const invalidFields = validateProduct(product)
-            const result: Partial<Record<RecursiveKeyOf<Project>, {level: SeverityLevel, message: string}>> = {
+            const result: Partial<Record<ObjectPaths<Project>, {level: SeverityLevel, message: string}>> = {
             }
-            Object.keys(validationErrors).forEach((field: RecursiveKeyOf<Project>) => {
+            Object.keys(validationErrors).forEach((field: ObjectPaths<Project>) => {
                 if (invalidFields[field]) {
                     setStatus(field, SeverityLevel.ERROR, validationErrors[field])
                     result[field] = {level: SeverityLevel.ERROR, message: validationErrors[field]}

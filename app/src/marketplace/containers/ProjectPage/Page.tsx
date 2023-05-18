@@ -14,7 +14,6 @@ import useDataUnionServerStats from './useDataUnionServerStats'
 import Description from './Description'
 import DataUnionStats from './DataUnionStats'
 import Streams from './Streams'
-import usePreviewStats from './usePreviewStats'
 import { ProjectHero2 } from './Hero/ProjectHero2'
 
 const ProjectDetailsPage: FunctionComponent = () => {

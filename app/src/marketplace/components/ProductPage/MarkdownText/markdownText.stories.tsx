@@ -1,15 +1,6 @@
 import React from 'react'
-import { storiesOf } from '@storybook/react'
-import styles from '@sambego/storybook-styles'
+import {Meta} from "@storybook/react"
 import MarkdownText from '.'
-const stories = storiesOf('Marketplace/MarkdownText', module)
-    .addDecorator(
-        styles({
-            color: '#323232',
-            padding: '5rem',
-            background: '#F8F8F8',
-        }),
-    )
 
 /* eslint-disable max-len */
 const shortText = [
@@ -201,14 +192,60 @@ const markdownWithNumberedList = `Normal & numbered list:
 Bullets should align with dots, same text left align.
 `
 
-/* eslint-enable max-len */
-stories.add('short', () => <MarkdownText text={shortText} />)
-stories.add('medium', () => <MarkdownText text={mediumText} />)
-stories.add('long', () => <MarkdownText text={longText} />)
-stories.add('markdown', () => <MarkdownText text={markdown} />)
-stories.add('numbered list', () => <MarkdownText text={markdownWithNumberedList} />)
-stories.add('numbered list (mobile)', () => <MarkdownText text={markdownWithNumberedList} />, {
-    viewport: {
-        defaultViewport: 'xs',
+export const Short = () => <MarkdownText text={shortText} />
+
+const meta: Meta<typeof Short> = {
+    title: 'Marketplace/MarkdownText',
+    component: Short,
+    decorators: [(Story) => {
+        return <div style={{
+            color: '#323232',
+            padding: '5rem',
+            background: '#F8F8F8',
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta
+
+Short.story = {
+    name: 'short',
+}
+
+export const Medium = () => <MarkdownText text={mediumText} />
+
+Medium.story = {
+    name: 'medium',
+}
+
+export const Long = () => <MarkdownText text={longText} />
+
+Long.story = {
+    name: 'long',
+}
+
+export const Markdown = () => <MarkdownText text={markdown} />
+
+Markdown.story = {
+    name: 'markdown',
+}
+
+export const NumberedList = () => <MarkdownText text={markdownWithNumberedList} />
+
+NumberedList.story = {
+    name: 'numbered list',
+}
+
+export const NumberedListMobile = () => <MarkdownText text={markdownWithNumberedList} />
+
+NumberedListMobile.story = {
+    name: 'numbered list (mobile)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'xs',
+        },
     },
-})
+}

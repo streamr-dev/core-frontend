@@ -43,7 +43,7 @@ const GetCryptoDialog = ({ onCancel, nativeTokenName }: Props) => (
             )}
         >
             <PngIcon className={styles.icon} name="walletError" alt={`No ${nativeTokenName} balance`} />
-            <Message>
+            <Message data-testid={'get-crypto-dialog'}>
                 <span>{nativeTokenName} is needed for gas, </span>
                 <span>but you don&apos;t have any. </span>
             </Message>

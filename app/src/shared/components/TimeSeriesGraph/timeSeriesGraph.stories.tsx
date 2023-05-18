@@ -1,17 +1,9 @@
 import React, { useState } from 'react'
-import { storiesOf } from '@storybook/react'
-import styles from '@sambego/storybook-styles'
+import {Meta} from "@storybook/react"
 import DaysPopover from '$shared/components/DaysPopover'
 import ProductStat from '$shared/components/ProductStat'
 import TimeSeriesGraph from '.'
-const stories = storiesOf('Shared/TimeSeriesGraph', module)
-    .addDecorator(
-        styles({
-            color: '#323232',
-            padding: '5rem',
-            background: '#F8F8F8',
-        }),
-    )
+
 const MSEC_DAILY = 86400000
 const today = new Date('2035-01-01').getTime() + Math.floor(MSEC_DAILY * 0.5)
 const graphData = [
@@ -44,10 +36,37 @@ const graphData = [
         y: 32,
     },
 ]
-stories.add('default', () => <TimeSeriesGraph graphData={graphData} shownDays={7} />)
-stories.add('loading', () => <TimeSeriesGraph graphData={graphData} shownDays={7} isLoading />)
+export const Default = () => <TimeSeriesGraph graphData={graphData} shownDays={7} />
 
-const WithShownDays = ({ data }) => {
+Default.story = {
+    name: 'default',
+}
+
+const meta: Meta<typeof Default> = {
+    title: 'Shared/TimeSeriesGraph',
+    component: Default,
+    decorators: [(Story) => {
+        return <div style={{
+            color: '#323232',
+            padding: '5rem',
+            background: '#F8F8F8',
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta
+
+export const Loading = () => (
+    <TimeSeriesGraph graphData={graphData} shownDays={7} isLoading />
+)
+
+Loading.story = {
+    name: 'loading',
+}
+
+const WithShownDaysComponent = ({ data }) => {
     const [days, setDays] = useState(7)
     return (
         <div>
@@ -60,7 +79,12 @@ const WithShownDays = ({ data }) => {
     )
 }
 
-stories.add('with shown days', () => <WithShownDays data={graphData} />)
+export const WithShownDays = () => <WithShownDaysComponent data={graphData} />
+
+WithShownDays.story = {
+    name: 'with shown days',
+}
+
 const graphDataLarge = [
     {
         x: today,
@@ -91,4 +115,8 @@ const graphDataLarge = [
         y: 13400,
     },
 ]
-stories.add('large values', () => <WithShownDays data={graphDataLarge} />)
+export const LargeValues = () => <WithShownDays data={graphDataLarge} />
+
+LargeValues.story = {
+    name: 'large values',
+}

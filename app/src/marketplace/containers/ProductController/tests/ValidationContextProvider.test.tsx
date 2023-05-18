@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { mount } from 'enzyme'
+import { render } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
 import { ValidationContextProvider, ValidationContext } from '../ValidationContextProvider'
 describe('validation context2', () => {
@@ -15,7 +15,7 @@ describe('validation context2', () => {
             return null
         }
 
-        mount(
+        render(
             <ValidationContextProvider>
                 <Test />
             </ValidationContextProvider>,
@@ -32,7 +32,7 @@ describe('validation context2', () => {
                 return null
             }
 
-            mount(
+            render(
                 <ValidationContextProvider>
                     <Test />
                 </ValidationContextProvider>,
@@ -53,7 +53,7 @@ describe('validation context2', () => {
                 return null
             }
 
-            mount(
+            render(
                 <ValidationContextProvider>
                     <Test />
                 </ValidationContextProvider>,
@@ -73,7 +73,7 @@ describe('validation context2', () => {
                 return null
             }
 
-            mount(
+            render(
                 <ValidationContextProvider>
                     <Test />
                 </ValidationContextProvider>,
@@ -92,7 +92,7 @@ describe('validation context2', () => {
                 return null
             }
 
-            mount(
+            render(
                 <ValidationContextProvider>
                     <Test />
                 </ValidationContextProvider>,
@@ -118,7 +118,7 @@ describe('validation context2', () => {
                 return null
             }
 
-            mount(
+            render(
                 <ValidationContextProvider>
                     <Test />
                 </ValidationContextProvider>,
@@ -142,7 +142,7 @@ describe('validation context2', () => {
                 return null
             }
 
-            mount(
+            render(
                 <ValidationContextProvider>
                     <Test />
                 </ValidationContextProvider>,
@@ -155,7 +155,7 @@ describe('validation context2', () => {
                 }
             })
         })
-        it('does nothing when calling setStatus() and unmounted', () => {
+        it('does nothing when calling setStatus() and unrendered', () => {
             let currentContext
 
             function Test() {
@@ -163,7 +163,7 @@ describe('validation context2', () => {
                 return null
             }
 
-            const result = mount(
+            const result = render(
                 <ValidationContextProvider>
                     <Test />
                 </ValidationContextProvider>,
@@ -182,7 +182,7 @@ describe('validation context2', () => {
                 return null
             }
 
-            mount(
+            render(
                 <ValidationContextProvider>
                     <Test />
                 </ValidationContextProvider>,
@@ -202,7 +202,7 @@ describe('validation context2', () => {
                 return null
             }
 
-            mount(
+            render(
                 <ValidationContextProvider>
                     <Test />
                 </ValidationContextProvider>,
@@ -215,7 +215,7 @@ describe('validation context2', () => {
                 }
             })
         })
-        it('does nothing if unmounted and calling clearStatus()', () => {
+        it('does nothing if unrendered and calling clearStatus()', () => {
             let currentContext
 
             function Test() {
@@ -223,7 +223,7 @@ describe('validation context2', () => {
                 return null
             }
 
-            const result = mount(
+            const result = render(
                 <ValidationContextProvider>
                     <Test />
                 </ValidationContextProvider>,
@@ -250,7 +250,7 @@ describe('validation context2', () => {
                 return null
             }
 
-            mount(
+            render(
                 <ValidationContextProvider>
                     <Test />
                 </ValidationContextProvider>,
@@ -275,7 +275,7 @@ describe('validation context2', () => {
                 return null
             }
 
-            mount(
+            render(
                 <ValidationContextProvider>
                     <Test />
                 </ValidationContextProvider>,
@@ -286,7 +286,7 @@ describe('validation context2', () => {
             })
             expect(currentContext.status).toStrictEqual({})
         })
-        it('does nothing if unmounted', () => {
+        it('does nothing if unrendered', () => {
             let currentContext
 
             function Test() {
@@ -294,7 +294,7 @@ describe('validation context2', () => {
                 return null
             }
 
-            const result = mount(
+            const result = render(
                 <ValidationContextProvider>
                     <Test />
                 </ValidationContextProvider>,

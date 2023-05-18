@@ -13,7 +13,7 @@ const InsufficientTokenDialog = ({ onCancel, tokenSymbol }: Props) => (
     <ModalPortal>
         <Dialog title={`Insufficient ${tokenSymbol}`} onClose={onCancel}>
             <img className={styles.icon} src={WalletNoEthPng} srcSet={`${WalletNoEthPng2x} 2x`} alt="Wallet error" />
-            <p className={styles.message}>
+            <p className={styles.message} data-testid={'insufficient-token-dialog'}>
                 You don&apos;t have enough {tokenSymbol} to subscribe
                 <br />
                 to this product. Please get some and try again

@@ -48,6 +48,9 @@ export default function useFetchStreams(): FetchCallbackType {
 
                 if (onlyCurrentUserRef.current) {
                     const user = account
+                    if (!user) {
+                        return [[], false, false]
+                    }
                     iteratorRef.current = client.searchStreams(search, {
                         user,
                         allowPublic,

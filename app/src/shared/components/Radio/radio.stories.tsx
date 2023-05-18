@@ -1,15 +1,9 @@
 import React from 'react'
-import { storiesOf } from '@storybook/react'
+import {Meta} from "@storybook/react"
 import { action } from '@storybook/addon-actions'
-import styles from '@sambego/storybook-styles'
 import { Radio } from '.'
-const stories = storiesOf('Shared/Radio', module).addDecorator(
-    styles({
-        color: '#323232',
-        padding: '2rem',
-    }),
-)
-stories.add('default', () => (
+
+export const Default = () => (
     <div>
         <form>
             <p>Default:</p>
@@ -68,5 +62,23 @@ stories.add('default', () => (
             />
         </form>
     </div>
+)
 
-))
+Default.story = {
+    name: 'default',
+}
+
+const meta: Meta<typeof Default> = {
+    title: 'Shared/Radio',
+    component: Default,
+    decorators: [(Story) => {
+        return <div style={{
+            color: '#323232',
+            padding: '2rem',
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta

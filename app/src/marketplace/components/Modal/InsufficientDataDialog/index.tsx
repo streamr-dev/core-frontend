@@ -11,7 +11,7 @@ const InsufficientDataDialog = ({ onCancel }: Props) => (
     <ModalPortal>
         <Dialog title="Insufficient DATA" onClose={onCancel}>
             <PngIcon className={styles.icon} name="walletNoData" alt="Insufficient DATA" />
-            <p className={styles.message}>
+            <p className={styles.message} data-testid={'insufficient-data-dialog'}>
                 You don&apos;t have enough DATA to subscribe
                 <br />
                 to this product. Please get some and try again

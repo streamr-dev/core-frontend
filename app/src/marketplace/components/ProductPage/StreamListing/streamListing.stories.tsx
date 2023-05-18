@@ -1,19 +1,11 @@
 import React, { useReducer, useMemo, useCallback } from 'react'
-import { storiesOf } from '@storybook/react'
-import styles from '@sambego/storybook-styles'
+import {Meta} from "@storybook/react"
 import { action } from '@storybook/addon-actions'
 import styled from 'styled-components'
 import StreamListingWithContainer, { StreamListing } from './'
 const Container = styled.div`
     padding: 3rem;
 `
-const stories = storiesOf('Marketplace/StreamListing', module)
-    .addDecorator(
-        styles({
-            color: '#323232',
-            fontSize: '16px',
-        }),
-    )
 const streamList = [
     {
         id: 'test-stream-1',
@@ -36,7 +28,8 @@ const streamList = [
     {
         id: 'test-stream-3',
         name: 'Third stream',
-        description: 'Description that is really long and will break the layout if it goes long enough over the screen',
+        description:
+            'Description that is really long and will break the layout if it goes long enough over the screen',
         requireEncryptedData: false,
         requireSignedData: true,
         partitions: 5,
@@ -66,17 +59,50 @@ const DefaultView = () => {
     )
 }
 
-stories.add('default', () => <DefaultView />)
-stories.add('default (tablet)', () => <DefaultView />, {
-    viewport: {
-        defaultViewport: 'sm',
+const meta: Meta<typeof DefaultView> = {
+    title: 'Marketplace/StreamListing',
+    component: DefaultView,
+    decorators: [(Story) => {
+        return <div style={{
+            color: '#323232',
+            fontSize: '16px',
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta
+
+export const Default = () => <DefaultView />
+
+Default.story = {
+    name: 'Default',
+}
+
+export const DefaultTablet = () => <DefaultView />
+
+DefaultTablet.story = {
+    name: 'Default (tablet)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'sm',
+        },
     },
-})
-stories.add('default (iPhone)', () => <DefaultView />, {
-    viewport: {
-        defaultViewport: 'iPhone',
+}
+
+export const DefaultIPhone = () => <DefaultView />
+
+DefaultIPhone.story = {
+    name: 'Default (iPhone)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
     },
-})
+}
 
 const FetchingView = () => {
     const showPreview = true
@@ -92,17 +118,35 @@ const FetchingView = () => {
     )
 }
 
-stories.add('fetching streams', () => <FetchingView />)
-stories.add('fetching streams (tablet)', () => <FetchingView />, {
-    viewport: {
-        defaultViewport: 'sm',
+export const FetchingStreams = () => <FetchingView />
+
+FetchingStreams.story = {
+    name: 'Fetching streams',
+}
+
+export const FetchingStreamsTablet = () => <FetchingView />
+
+FetchingStreamsTablet.story = {
+    name: 'Fetching streams (tablet)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'sm',
+        },
     },
-})
-stories.add('fetching streams (iPhone)', () => <FetchingView />, {
-    viewport: {
-        defaultViewport: 'iPhone',
+}
+
+export const FetchingStreamsIPhone = () => <FetchingView />
+
+FetchingStreamsIPhone.story = {
+    name: 'Fetching streams (iPhone)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
     },
-})
+}
 
 const EmptyView = () => {
     const showPreview = true
@@ -118,17 +162,35 @@ const EmptyView = () => {
     )
 }
 
-stories.add('empty', () => <EmptyView />)
-stories.add('empty (tablet)', () => <EmptyView />, {
-    viewport: {
-        defaultViewport: 'sm',
+export const Empty = () => <EmptyView />
+
+Empty.story = {
+    name: 'Empty',
+}
+
+export const EmptyTablet = () => <EmptyView />
+
+EmptyTablet.story = {
+    name: 'Empty (tablet)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'sm',
+        },
     },
-})
-stories.add('empty (iPhone)', () => <EmptyView />, {
-    viewport: {
-        defaultViewport: 'iPhone',
+}
+
+export const EmptyIPhone = () => <EmptyView />
+
+EmptyIPhone.story = {
+    name: 'Empty (iPhone)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
     },
-})
+}
 
 const LongListView = () => {
     const showPreview = true
@@ -143,17 +205,35 @@ const LongListView = () => {
     )
 }
 
-stories.add('long list', () => <LongListView />)
-stories.add('long list (tablet)', () => <LongListView />, {
-    viewport: {
-        defaultViewport: 'sm',
+export const LongList = () => <LongListView />
+
+LongList.story = {
+    name: 'Long list',
+}
+
+export const LongListTablet = () => <LongListView />
+
+LongListTablet.story = {
+    name: 'Long list (tablet)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'sm',
+        },
     },
-})
-stories.add('long list (iPhone)', () => <LongListView />, {
-    viewport: {
-        defaultViewport: 'iPhone',
+}
+
+export const LongListIPhone = () => <LongListView />
+
+LongListIPhone.story = {
+    name: 'Long list (iPhone)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
     },
-})
+}
 
 const LockedView = () => {
     const showPreview = true
@@ -169,17 +249,35 @@ const LockedView = () => {
     )
 }
 
-stories.add('locked', () => <LockedView />)
-stories.add('locked (tablet)', () => <LockedView />, {
-    viewport: {
-        defaultViewport: 'sm',
+export const Locked = () => <LockedView />
+
+Locked.story = {
+    name: 'Locked',
+}
+
+export const LockedTablet = () => <LockedView />
+
+LockedTablet.story = {
+    name: 'Locked (tablet)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'sm',
+        },
     },
-})
-stories.add('locked (iPhone)', () => <LockedView />, {
-    viewport: {
-        defaultViewport: 'iPhone',
+}
+
+export const LockedIPhone = () => <LockedView />
+
+LockedIPhone.story = {
+    name: 'Locked (iPhone)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
     },
-})
+}
 
 const WithoutContainerView = () => {
     const showPreview = true
@@ -196,17 +294,36 @@ const WithoutContainerView = () => {
     )
 }
 
-stories.add('without container', () => <WithoutContainerView />)
-stories.add('without container (tablet)', () => <WithoutContainerView />, {
-    viewport: {
-        defaultViewport: 'sm',
+export const WithoutContainer = () => <WithoutContainerView />
+
+WithoutContainer.story = {
+    name: 'Without container',
+}
+
+export const WithoutContainerTablet = () => <WithoutContainerView />
+
+WithoutContainerTablet.story = {
+    name: 'Without container (tablet)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'sm',
+        },
     },
-})
-stories.add('without container (iPhone)', () => <WithoutContainerView />, {
-    viewport: {
-        defaultViewport: 'iPhone',
+}
+
+export const WithoutContainerIPhone = () => <WithoutContainerView />
+
+WithoutContainerIPhone.story = {
+    name: 'Without container (iPhone)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
     },
-})
+}
+
 const PAGE_SIZE = 100
 
 const LoadingMoreListView = () => {
@@ -232,14 +349,32 @@ const LoadingMoreListView = () => {
     )
 }
 
-stories.add('loading more', () => <LoadingMoreListView />)
-stories.add('loading more (tablet)', () => <LoadingMoreListView />, {
-    viewport: {
-        defaultViewport: 'sm',
+export const LoadingMore = () => <LoadingMoreListView />
+
+LoadingMore.story = {
+    name: 'Loading more',
+}
+
+export const LoadingMoreTablet = () => <LoadingMoreListView />
+
+LoadingMoreTablet.story = {
+    name: 'Loading more (tablet)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'sm',
+        },
     },
-})
-stories.add('loading more (iPhone)', () => <LoadingMoreListView />, {
-    viewport: {
-        defaultViewport: 'iPhone',
+}
+
+export const LoadingMoreIPhone = () => <LoadingMoreListView />
+
+LoadingMoreIPhone.story = {
+    name: 'Loading more (iPhone)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
     },
-})
+}

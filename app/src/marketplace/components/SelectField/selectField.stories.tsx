@@ -1,16 +1,6 @@
 import React, { useState, useMemo } from 'react'
-import { storiesOf } from '@storybook/react'
-// import { action } from '@storybook/addon-actions'
-import styles from '@sambego/storybook-styles'
+import {Meta} from "@storybook/react"
 import SelectField from '.'
-const stories = storiesOf('Marketplace/SelectField', module)
-    .addDecorator(
-        styles({
-            color: '#323232',
-            padding: '5rem',
-            background: '#F8F8F8',
-        }),
-    )
 
 const options = [
     {
@@ -33,7 +23,10 @@ type SetPriceControllerProps = {
 
 const SelectFieldController = ({ error, disabled }: SetPriceControllerProps) => {
     const [value, setValue] = useState()
-    const selectedValue = useMemo(() => options.find(({ value: optionValue }) => optionValue === value), [value])
+    const selectedValue = useMemo(
+        () => options.find(({ value: optionValue }) => optionValue === value),
+        [value],
+    )
     return (
         <SelectField
             placeholder="Select"
@@ -46,6 +39,36 @@ const SelectFieldController = ({ error, disabled }: SetPriceControllerProps) => 
     )
 }
 
-stories.add('basic', () => <SelectFieldController />)
-stories.add('disabled', () => <SelectFieldController disabled />)
-stories.add('with error', () => <SelectFieldController error="Something went wrong" />)
+export const Basic = () => <SelectFieldController />
+
+const meta: Meta<typeof Basic> = {
+    title: 'Marketplace/SelectField',
+    component: Basic,
+    decorators: [(Story) => {
+        return <div style={{
+            color: '#323232',
+            padding: '5rem',
+            background: '#F8F8F8',
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta
+
+Basic.story = {
+    name: 'basic',
+}
+
+export const Disabled = () => <SelectFieldController disabled />
+
+Disabled.story = {
+    name: 'disabled',
+}
+
+export const WithError = () => <SelectFieldController error="Something went wrong" />
+
+WithError.story = {
+    name: 'with error',
+}

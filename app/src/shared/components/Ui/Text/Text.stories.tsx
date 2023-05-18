@@ -1,19 +1,21 @@
 import React from 'react'
-import { storiesOf } from '@storybook/react'
-import styles from '@sambego/storybook-styles'
+import {Meta} from "@storybook/react"
 import { action } from '@storybook/addon-actions'
 import Text from '.'
-const stories = storiesOf('Shared/Text', module)
-    .addDecorator(
-        styles({
-            background: 'white',
-            color: '#323232',
-            margin: '3rem',
-        }),
-    )
-stories.add('native', () => <input />)
-stories.add('no events', () => <Text />)
-stories.add('default', () => (
+
+export const Native = () => <input />
+
+Native.story = {
+    name: 'native',
+}
+
+export const NoEvents = () => <Text />
+
+NoEvents.story = {
+    name: 'no events',
+}
+
+export const Default = () => (
     <Text
         smartCommit={false}
         onChange={action('onChange')}
@@ -21,4 +23,24 @@ stories.add('default', () => (
         noEmptyCommit={false}
         revertOnEscape={false}
     />
-))
+)
+
+Default.story = {
+    name: 'default',
+}
+
+const meta: Meta<typeof Default> = {
+    title: 'Shared/Text',
+    component: Default,
+    decorators: [(Story) => {
+        return <div style={{
+            background: 'white',
+            color: '#323232',
+            margin: '3rem',
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta

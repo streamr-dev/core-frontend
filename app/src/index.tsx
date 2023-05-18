@@ -1,16 +1,16 @@
 import React from 'react'
-import { render } from 'react-dom'
 import { Provider } from 'react-redux'
+import {createRoot} from "react-dom/client"
 import App from './app'
 import store from './store'
-const root = document.getElementById('root')
+const container = document.getElementById('root')
+const root = createRoot(container as HTMLElement)
 
-if (root) {
-    render(
+if (container) {
+    root.render(
         <Provider store={store}>
             <App />
         </Provider>,
-        root,
     )
 } else {
     throw new Error('Root element could not be found.')

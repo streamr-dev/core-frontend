@@ -1,7 +1,7 @@
 import React from 'react'
 import { Provider } from 'react-redux'
-import { MemoryRouter } from 'react-router-dom'
-import { mount } from 'enzyme'
+import {MemoryRouter} from 'react-router-dom'
+import {render, RenderResult, screen} from '@testing-library/react'
 import { jest } from '@jest/globals'
 import mockStore from '$app/test/test-utils/mockStoreProvider'
 import Nav from '$shared/components/Layout/Nav'
@@ -18,89 +18,73 @@ jest.mock('$shared/stores/wallet', () => ({
     useEns: jest.fn(),
 }))
 
-function mountNav() {
-    return mount(
+jest.mock('$app/src/modals/ConnectModal', () => ({
+    __esModule: true,
+    default: () => <></>,
+}))
+
+jest.mock('$routes', () => ({
+    __esModule: true,
+    default: {
+        root: jest.fn(),
+        projects: {
+            index: jest.fn()
+        },
+        streams: {
+            index: jest.fn()
+        },
+        networkExplorer: jest.fn()
+    },
+}))
+
+function mountNav(): RenderResult {
+    return render(
         <MemoryRouter>
             <Provider store={mockStore({})}>
                 <Nav />
             </Provider>
-        </MemoryRouter>,
+        </MemoryRouter>
     )
 }
 
 /* eslint-disable object-curly-newline */
 describe('Nav.Wide', () => {
-    beforeEach(() => {})
 
     it('renders logo', () => {
-        expect(mountNav().find('Logo').exists()).toBe(true)
+        mountNav()
+        expect(screen.getByTestId('logo')).toBeTruthy()
     })
 
     it('renders the menu links', () => {
-        const el = mountNav()
-
-        expect(
-            el
-                .find({
-                    href: '/hub/streams',
-                })
-                .exists(),
-        ).toBe(true)
-
-        expect(
-            el
-                .find({
-                    href: '/hub/projects',
-                })
-                .exists(),
-        ).toBe(true)
+        mountNav()
+        expect(screen.getAllByText('Streams').length).toBeGreaterThan(0)
+        expect(screen.getAllByText('Projects').length).toBeGreaterThan(0)
     })
 
     it('renders the Connect button', () => {
-        expect(
-            mountNav()
-                .find('button')
-                .findWhere((node) => node.text() === 'Connect')
-                .exists(),
-        ).toBe(true)
+        mountNav()
+        expect(screen.getAllByText('Connect').length).toBeGreaterThan(0)
     })
 
-    describe.only('When the user is signed in', () => {
+    describe('When the user is signed in', () => {
         beforeEach(() => {
             (useWalletAccount as any).mockImplementation(() => '0xADDR');
             (useEns as any).mockImplementation(() => '')
         })
 
-        it('renders the menu links', () => {
-            expect(
-                mountNav()
-                    .find({
-                        href: '/hub/streams',
-                    })
-                    .exists(),
-            ).toBe(true)
-        })
-
         it('does not render the Connect button', () => {
-            expect(
-                mountNav()
-                    .find('button')
-                    .findWhere((node) => node.text() === 'Connect')
-                    .exists(),
-            ).toBe(false)
+            mountNav()
+            expect(screen.queryAllByText('Connect').length).toEqual(0)
         })
 
         it('renders the Disconnect button', () => {
-            expect(
-                mountNav()
-                    .find('button')
-                    .findWhere((node) => node.text() === 'Disconnect')
-                    .exists(),
-            ).toBe(true)
+            mountNav()
+            expect(screen.getAllByText('Disconnect').length).toBeGreaterThan(0)
         })
 
         it('renders the user avatar', () => {
-            expect(mountNav().find('UnstyledAvatarImage').exists()).toBe(true)
+            mountNav()
+            expect(screen.queryByTestId('avatarless')).toBeTruthy()
         })
     })
 })

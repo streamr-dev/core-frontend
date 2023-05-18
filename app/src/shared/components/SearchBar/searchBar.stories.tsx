@@ -1,22 +1,35 @@
-import React, { useState } from 'react'
-import { storiesOf } from '@storybook/react'
+import React from 'react'
+import {Meta} from "@storybook/react"
 import { action } from '@storybook/addon-actions'
-import styles from '@sambego/storybook-styles'
 import SearchBar from '.'
-const stories = storiesOf('Shared/SearchBar', module).addDecorator(
-    styles({
-        padding: '2rem',
-    }),
-)
-stories.add('default', () => (
-    <SearchBar
-        onChange={action('inputChange')}
-    />
-))
 
-stories.add('custom placeholder', () => (
+export const Default = () => <SearchBar onChange={action('inputChange')} />
+
+Default.story = {
+    name: 'default',
+}
+
+const meta: Meta<typeof Default> = {
+    title: 'Shared/SearchBar',
+    component: Default,
+    decorators: [(Story) => {
+        return <div style={{
+            padding: '2rem',
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta
+
+export const CustomPlaceholder = () => (
     <SearchBar
         placeholder={'Enter a phrase and try to search for something'}
         onChange={action('inputChange')}
     />
-))
+)
+
+CustomPlaceholder.story = {
+    name: 'custom placeholder',
+}

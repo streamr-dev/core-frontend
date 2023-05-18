@@ -239,13 +239,13 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
         </ProductChoices>
         {streamsCount < 1 && <NoStreamsWarningBox>
             You have not created any streams yet.
-            Please <Link to={routes.streams.new()}>create a stream</Link> to get started.
+            Please <Link onClick={onClose} to={routes.streams.new()}>create a stream</Link> to get started.
             For help creating streams, see the <a href="https://docs.streamr.network/">docs</a>.
         </NoStreamsWarningBox>}
         <ButtonContainer>
             {(streamsCount < 1 || !link)
                 ? <Button disabled={true}>Start building</Button>
-                : <Button tag={Link} to={link}>Start building</Button>
+                : <Button tag={Link} to={link} onClick={onClose}>Start building</Button>
             }
 
         </ButtonContainer>

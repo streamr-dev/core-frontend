@@ -2,10 +2,10 @@ import BN from 'bignumber.js'
 import * as yup from 'yup'
 import { NumberString } from '$shared/types/common-types'
 import { contractCurrencies as currencies, projectStates } from '$shared/utils/constants'
-import { RecursiveKeyOf } from '$utils/recursiveKeyOf'
 import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
 import { TheGraphProject } from '$app/src/services/projects'
 import { ProjectType } from '$shared/types'
+import { ObjectPaths } from '$utils/objectPaths'
 import { ContactDetails, Project, ProjectId, SmartContractProduct } from '../types/project-types'
 import { ProjectState } from '../types/project-types'
 import { validateSalePoint } from './validate'
@@ -99,7 +99,7 @@ const urlValidator = yup.string().trim().url()
 const emailValidator = yup.string().trim().email()
 const descriptionRegExp = new RegExp(/^(\\+\n?)*$/)
 
-export const validate = (project: Project): Partial<Record<RecursiveKeyOf<Project>, boolean>> => {
+export const validate = (project: Project): Partial<Record<ObjectPaths<Project>, boolean>> => {
     const invalidFields: {[key: string]: boolean}= {};
     ['name', 'description'].forEach((field) => {
         invalidFields[field] = !project[field as keyof Project]

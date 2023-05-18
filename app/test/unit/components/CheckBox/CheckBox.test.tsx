@@ -1,15 +1,16 @@
 import React from 'react'
-import { mount } from 'enzyme'
+import { render } from '@testing-library/react'
 import Checkbox from '$shared/components/Checkbox'
 describe('Checkbox', () => {
-    let wrapper
+    let container
     beforeEach(() => {
-        wrapper = mount(<Checkbox value />)
+        const renderResult = render(<Checkbox value />)
+        container = renderResult.container
     })
     it('renders the component', () => {
-        expect(wrapper.find('input[type="checkbox"]').exists()).toBe(true)
+        expect(container.querySelector('input[type="checkbox"]')).toBeTruthy()
     })
     it('sets input value correctly', () => {
-        expect(wrapper.find('input[type="checkbox"]').prop('checked')).toEqual(true)
+        expect(container.querySelector('input[type="checkbox"]').getAttribute('checked')).not.toBeNull()
     })
 })
