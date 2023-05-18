@@ -241,7 +241,7 @@ module.exports = {
         .concat(
             isProduction()
                 ? [
-                    new CleanWebpackPlugin([dist]),
+                    new CleanWebpackPlugin({cleanOnceBeforeBuildPatterns: [dist]}),
                     // Production plugins
                     // new webpack.optimize.OccurrenceOrderPlugin(), // commented out as it started throwing errors after update to webpack5
                     new webpack.EnvironmentPlugin({
