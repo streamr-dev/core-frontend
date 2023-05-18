@@ -66,7 +66,7 @@ Loading.story = {
     name: 'loading',
 }
 
-const WithShownDays = ({ data }) => {
+const WithShownDaysComponent = ({ data }) => {
     const [days, setDays] = useState(7)
     return (
         <div>
@@ -79,9 +79,9 @@ const WithShownDays = ({ data }) => {
     )
 }
 
-export const _WithShownDays = () => <WithShownDays data={graphData} />
+export const WithShownDays = () => <WithShownDaysComponent data={graphData} />
 
-_WithShownDays.story = {
+WithShownDays.story = {
     name: 'with shown days',
 }
 

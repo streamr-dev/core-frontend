@@ -50,16 +50,6 @@ module.exports = {
             }),
         )
 
-        /*config.module.rules.push({
-            test: /\.stories\.[tj]sx?$/,
-            use: [
-                {
-                    loader: require.resolve('@storybook/source-loader'),
-                    options: {} /!* your sourceLoaderOptions here *!/,
-                },
-            ],
-            enforce: 'pre',
-        });*/
         return config
     },
     framework: {

@@ -28,7 +28,7 @@ class SliderContainer extends React.Component {
     }
 }
 
-export const Basic = () => <SliderContainer />;
+export const Basic = () => <SliderContainer />
 Basic.story = {
     name: 'basic'
 }
