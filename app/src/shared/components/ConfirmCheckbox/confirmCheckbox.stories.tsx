@@ -1,24 +1,45 @@
 import React from 'react'
-import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import styles from '@sambego/storybook-styles'
+import {Meta} from "@storybook/react"
 import ConfirmCheckbox from '.'
-const stories = storiesOf('Shared/ConfirmCheckbox', module)
-    .addDecorator(
-        styles({
+
+export const Default = () => (
+    <ConfirmCheckbox
+        title="Are you sure?"
+        subtitle="This is an unrecoverable action"
+        onToggle={action('onToggle')}
+    />
+)
+
+const meta: Meta<typeof Default> = {
+    title: 'Shared/ConfirmCheckbox',
+    component: Default,
+    decorators: [(Story) => {
+        return <div style={{
             color: '#323232',
             padding: '1rem',
             fontSize: '16px',
-        }),
-    )
-stories.add('default', () => (
-    <ConfirmCheckbox title="Are you sure?" subtitle="This is an unrecoverable action" onToggle={action('onToggle')} />
-))
-stories.add('disabled', () => (
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta
+
+Default.story = {
+    name: 'default',
+}
+
+export const Disabled = () => (
     <ConfirmCheckbox
         title="Are you sure?"
         subtitle="This is an unrecoverable action"
         onToggle={action('onToggle')}
         disabled
     />
-))
+)
+
+Disabled.story = {
+    name: 'disabled',
+}

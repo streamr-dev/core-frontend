@@ -1,15 +1,6 @@
 import React, { useState } from 'react'
-import { storiesOf } from '@storybook/react'
-import styles from '@sambego/storybook-styles'
+import {Meta} from "@storybook/react"
 import EditorNav, { statuses } from '.'
-const stories = storiesOf('Marketplace/ProductPage/EditorNav', module)
-    .addDecorator(
-        styles({
-            color: '#323232',
-            padding: '5rem',
-            background: '#F8F8F8',
-        }),
-    )
 const sections = [
     {
         id: 'name',
@@ -70,6 +61,37 @@ const EditNavController = (props) => {
     )
 }
 
-stories.add('basic', () => <EditNavController />)
-stories.add('with errors', () => <EditNavController showErrors />)
-stories.add('with errors & tracking', () => <EditNavController showErrors trackScrolling />)
+const meta: Meta<typeof EditNavController> = {
+    title: 'Marketplace/ProductPage/EditorNav',
+    component: EditNavController,
+    decorators: [(Story) => {
+        return <div style={{
+            color: '#323232',
+            padding: '5rem',
+            background: '#F8F8F8',
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta
+
+export const Basic = () => <EditNavController />
+
+Basic.story = {
+    name: 'Basic'
+}
+
+export const WithErrors = () => <EditNavController showErrors />
+
+WithErrors.story = {
+    name: 'With errors',
+}
+
+export const WithErrorsTracking = () => <EditNavController showErrors trackScrolling />
+
+WithErrorsTracking.story = {
+    name: 'With errors & tracking',
+}
+

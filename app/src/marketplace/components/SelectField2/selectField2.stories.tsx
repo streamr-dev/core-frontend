@@ -1,16 +1,7 @@
 import React, { useState, useMemo } from 'react'
-import { storiesOf } from '@storybook/react'
+import {Meta} from "@storybook/react"
 import { action } from '@storybook/addon-actions'
-import styles from '@sambego/storybook-styles'
 import SelectField2 from '.'
-const stories = storiesOf('Marketplace/SelectField2', module)
-    .addDecorator(
-        styles({
-            padding: '5rem',
-            backgroundColor: 'ghostwhite',
-            color: 'black'
-        }),
-    )
 
 const options = [
     {
@@ -27,16 +18,19 @@ const options = [
     },
 ]
 type SetPriceControllerProps = {
-    disabled?: boolean,
+    disabled?: boolean
     value?: string
 }
 
 const SelectFieldController = ({ disabled, value: val }: SetPriceControllerProps) => {
     const [value, setValue] = useState(val)
-    const selectedValue = useMemo(() => options.find(({ value: optionValue }) => optionValue === value)?.value, [value])
+    const selectedValue = useMemo(
+        () => options.find(({ value: optionValue }) => optionValue === value)?.value,
+        [value],
+    )
     return (
         <>
-            <div style={{marginBottom: '30px'}}>
+            <div style={{ marginBottom: '30px' }}>
                 <p>Default:</p>
                 <SelectField2
                     placeholder="Select category"
@@ -60,12 +54,47 @@ const SelectFieldController = ({ disabled, value: val }: SetPriceControllerProps
                     onChange={(nextValue) => {
                         setValue(nextValue)
                         action('dropdownChange')(nextValue)
-                    }}/>
+                    }}
+                />
             </div>
         </>
     )
 }
 
-stories.add('basic', () => <SelectFieldController />)
-stories.add('with preselected value', () => <SelectFieldController value={'entertainment'} />)
-stories.add('disabled', () => <SelectFieldController disabled={true} value={'entertainment'} />)
+export const Basic = () => <SelectFieldController />
+
+const meta: Meta<typeof Basic> = {
+    title: 'Marketplace/SelectField2',
+    component: Basic,
+    decorators: [(Story) => {
+        return <div style={{
+            padding: '5rem',
+            backgroundColor: 'ghostwhite',
+            color: 'black',
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta
+
+Basic.story = {
+    name: 'basic',
+}
+
+export const WithPreselectedValue = () => (
+    <SelectFieldController value={'entertainment'} />
+)
+
+WithPreselectedValue.story = {
+    name: 'with preselected value',
+}
+
+export const Disabled = () => (
+    <SelectFieldController disabled={true} value={'entertainment'} />
+)
+
+Disabled.story = {
+    name: 'disabled',
+}

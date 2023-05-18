@@ -1,41 +1,68 @@
 import React from 'react'
-import { storiesOf } from '@storybook/react'
-import styles from '@sambego/storybook-styles'
+import {Meta} from "@storybook/react"
 import UseState from '../UseState'
 import EditableText from '.'
-const stories = storiesOf('Shared/EditableText', module).addDecorator(
-    styles({
-        color: '#323232',
-        fontSize: '32px',
-    }),
-)
-stories.add('default', () => (
+
+export const Default = () => (
     <UseState initialValue={false}>
         {(editing, setEditing) => (
             <UseState initialValue="Double-click to edit…">
                 {(text, setText) => (
-                    <EditableText editing={editing} onChange={setText} setEditing={setEditing}>
+                    <EditableText
+                        editing={editing}
+                        onChange={setText}
+                        setEditing={setEditing}
+                    >
                         {text}
                     </EditableText>
                 )}
             </UseState>
         )}
     </UseState>
-))
-stories.add('zero', () => (
+)
+
+Default.story = {
+    name: 'default',
+}
+
+const meta: Meta<typeof Default> = {
+    title: 'Shared/EditableText',
+    component: Default,
+    decorators: [(Story) => {
+        return <div style={{
+            color: '#323232',
+            fontSize: '32px',
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta
+
+export const Zero = () => (
     <UseState initialValue={false}>
         {(editing, setEditing) => (
             <UseState initialValue={0}>
                 {(text, setText) => (
-                    <EditableText editing={editing} onChange={setText} setEditing={setEditing}>
+                    <EditableText
+                        editing={editing}
+                        onChange={setText}
+                        setEditing={setEditing}
+                    >
                         {text}
                     </EditableText>
                 )}
             </UseState>
         )}
     </UseState>
-))
-stories.add('placeholder', () => (
+)
+
+Zero.story = {
+    name: 'zero',
+}
+
+export const Placeholder = () => (
     <UseState initialValue={false}>
         {(editing, setEditing) => (
             <UseState initialValue="">
@@ -52,21 +79,36 @@ stories.add('placeholder', () => (
             </UseState>
         )}
     </UseState>
-))
-stories.add('short placeholder', () => (
+)
+
+Placeholder.story = {
+    name: 'placeholder',
+}
+
+export const ShortPlaceholder = () => (
     <UseState initialValue={false}>
         {(editing, setEditing) => (
             <UseState initialValue="">
                 {(text, setText) => (
-                    <EditableText placeholder="M" editing={editing} onChange={setText} setEditing={setEditing}>
+                    <EditableText
+                        placeholder="M"
+                        editing={editing}
+                        onChange={setText}
+                        setEditing={setEditing}
+                    >
                         {text}
                     </EditableText>
                 )}
             </UseState>
         )}
     </UseState>
-))
-stories.add('edit on focus', () => (
+)
+
+ShortPlaceholder.story = {
+    name: 'short placeholder',
+}
+
+export const EditOnFocus = () => (
     <div>
         <button
             type="text"
@@ -81,7 +123,12 @@ stories.add('edit on focus', () => (
             {(editing, setEditing) => (
                 <UseState initialValue="Focus to edit…">
                     {(text, setText) => (
-                        <EditableText editOnFocus editing={editing} onChange={setText} setEditing={setEditing}>
+                        <EditableText
+                            editOnFocus
+                            editing={editing}
+                            onChange={setText}
+                            setEditing={setEditing}
+                        >
                             {text}
                         </EditableText>
                     )}
@@ -89,4 +136,8 @@ stories.add('edit on focus', () => (
             )}
         </UseState>
     </div>
-))
+)
+
+EditOnFocus.story = {
+    name: 'edit on focus',
+}

@@ -1,15 +1,27 @@
 import React from 'react'
-import { storiesOf } from '@storybook/react'
-import styles from '@sambego/storybook-styles'
+import {Meta} from "@storybook/react"
 import ProgressBar from '.'
-const stories = storiesOf('Shared/ProgressBar', module)
-    .addDecorator(
-        styles({
-            color: '#323232',
-            padding: '2rem',
-        }),
-    )
-stories.add('default', () => {
+
+export const Default = () => {
     const value = 25
     return <ProgressBar value={value} />
-})
+}
+
+Default.story = {
+    name: 'default',
+}
+
+const meta: Meta<typeof Default> = {
+    title: 'Shared/ProgressBar',
+    component: Default,
+    decorators: [(Story) => {
+        return <div style={{
+            color: '#323232',
+            padding: '2rem',
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta

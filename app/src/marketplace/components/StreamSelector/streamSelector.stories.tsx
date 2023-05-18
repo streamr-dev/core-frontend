@@ -1,15 +1,7 @@
 import React, { useState } from 'react'
-import { storiesOf } from '@storybook/react'
-import styles from '@sambego/storybook-styles'
+import {Meta} from "@storybook/react"
 import StreamSelector from '.'
-const stories = storiesOf('Marketplace/StreamSelector', module)
-    .addDecorator(
-        styles({
-            color: '#323232',
-            padding: '5rem',
-            background: '#F8F8F8',
-        }),
-    )
+
 const streamList = [
     {
         id: 'stream-1',
@@ -58,7 +50,12 @@ type StreamControllerProps = {
     loading?: boolean
 }
 
-const StreamController = ({ error, disabled, availableStreams = [], loading = false }: StreamControllerProps) => {
+const StreamController = ({
+    error,
+    disabled,
+    availableStreams = [],
+    loading = false,
+}: StreamControllerProps) => {
     const [streams, setStreams] = useState([])
     return (
         <StreamSelector
@@ -74,12 +71,55 @@ const StreamController = ({ error, disabled, availableStreams = [], loading = fa
     )
 }
 
-stories.add('basic', () => <StreamController availableStreams={streamList} />)
-stories.add('with error', () => <StreamController error="Something went wrong" availableStreams={streamList} />)
-stories.add('disabled', () => <StreamController disabled availableStreams={streamList} />)
-stories.add('loading', () => <StreamController availableStreams={streamList} loading />)
-stories.add('empty', () => <StreamController />)
-stories.add('1500 streams', () => {
+export const Basic = () => <StreamController availableStreams={streamList} />
+
+const meta: Meta<typeof Basic> = {
+    title: 'Marketplace/StreamSelector',
+    component: Basic,
+    decorators: [(Story) => {
+        return <div style={{
+            color: '#323232',
+            padding: '5rem',
+            background: '#F8F8F8',
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta
+
+Basic.story = {
+    name: 'basic',
+}
+
+export const WithError = () => (
+    <StreamController error="Something went wrong" availableStreams={streamList} />
+)
+
+WithError.story = {
+    name: 'with error',
+}
+
+export const Disabled = () => <StreamController disabled availableStreams={streamList} />
+
+Disabled.story = {
+    name: 'disabled',
+}
+
+export const Loading = () => <StreamController availableStreams={streamList} loading />
+
+Loading.story = {
+    name: 'loading',
+}
+
+export const Empty = () => <StreamController />
+
+Empty.story = {
+    name: 'empty',
+}
+
+export const AlotOfStreams = () => {
     const longList = Array.from(
         {
             length: 1500,
@@ -99,4 +139,8 @@ stories.add('1500 streams', () => {
         }),
     )
     return <StreamController availableStreams={longList} />
-})
+}
+
+AlotOfStreams.story = {
+    name: '1500 streams',
+}

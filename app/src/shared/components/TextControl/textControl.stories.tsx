@@ -1,14 +1,9 @@
 import React from 'react'
-import { storiesOf } from '@storybook/react'
-import styles from '@sambego/storybook-styles'
+import {Meta} from "@storybook/react"
 import UseState from '$shared/components/UseState'
 import TextControl from '.'
-const stories = storiesOf('Shared/TextControl', module).addDecorator(
-    styles({
-        color: '#323232',
-    }),
-)
-stories.add('enhanced', () => (
+
+export const Enhanced = () => (
     <UseState initialValue="Lorem ipsum.">
         {(value, setValue) => (
             <TextControl
@@ -22,33 +17,87 @@ stories.add('enhanced', () => (
             />
         )}
     </UseState>
-))
-stories.add('revert on Escape', () => (
+)
+
+Enhanced.story = {
+    name: 'enhanced',
+}
+
+const meta: Meta<typeof Enhanced> = {
+    title: 'Shared/TextControl',
+    component: Enhanced,
+    decorators: [(Story) => {
+        return <div style={{
+            color: '#323232',
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta
+
+export const RevertOnEscape = () => (
     <UseState initialValue="Lorem ipsum.">
-        {(value, setValue) => <TextControl revertOnEsc onCommit={setValue} value={value} />}
+        {(value, setValue) => (
+            <TextControl revertOnEsc onCommit={setValue} value={value} />
+        )}
     </UseState>
-))
-stories.add('require value', () => (
+)
+
+RevertOnEscape.story = {
+    name: 'revert on Escape',
+}
+
+export const RequireValue = () => (
     <UseState initialValue="Lorem ipsum.">
-        {(value, setValue) => <TextControl commitEmpty={false} onCommit={setValue} value={value} />}
+        {(value, setValue) => (
+            <TextControl commitEmpty={false} onCommit={setValue} value={value} />
+        )}
     </UseState>
-))
-stories.add('commit on Enter', () => (
+)
+
+RequireValue.story = {
+    name: 'require value',
+}
+
+export const CommitOnEnter = () => (
     <UseState initialValue="Lorem ipsum.">
-        {(value, setValue) => <TextControl immediateCommit={false} onCommit={setValue} value={value} />}
+        {(value, setValue) => (
+            <TextControl immediateCommit={false} onCommit={setValue} value={value} />
+        )}
     </UseState>
-))
-stories.add('select all on focus', () => (
+)
+
+CommitOnEnter.story = {
+    name: 'commit on Enter',
+}
+
+export const SelectAllOnFocus = () => (
     <UseState initialValue="Lorem ipsum.">
-        {(value, setValue) => <TextControl selectAllOnFocus onCommit={setValue} value={value} />}
+        {(value, setValue) => (
+            <TextControl selectAllOnFocus onCommit={setValue} value={value} />
+        )}
     </UseState>
-))
-stories.add('prevent undo after blur', () => (
+)
+
+SelectAllOnFocus.story = {
+    name: 'select all on focus',
+}
+
+export const PreventUndoAfterBlur = () => (
     <UseState initialValue="Lorem ipsum.">
-        {(value, setValue) => <TextControl flushHistoryOnBlur onCommit={setValue} value={value} />}
+        {(value, setValue) => (
+            <TextControl flushHistoryOnBlur onCommit={setValue} value={value} />
+        )}
     </UseState>
-))
-stories.add('update prop on commit', () => (
+)
+
+PreventUndoAfterBlur.story = {
+    name: 'prevent undo after blur',
+}
+
+export const UpdatePropOnCommit = () => (
     <UseState initialValue="0">
         {(value, setValue) => (
             <TextControl
@@ -60,9 +109,20 @@ stories.add('update prop on commit', () => (
             />
         )}
     </UseState>
-))
-stories.add('textarea', () => (
+)
+
+UpdatePropOnCommit.story = {
+    name: 'update prop on commit',
+}
+
+export const Textarea = () => (
     <UseState initialValue="Lorem ipsum.">
-        {(value, setValue) => <TextControl tag="textarea" value={value} onCommit={setValue} />}
+        {(value, setValue) => (
+            <TextControl tag="textarea" value={value} onCommit={setValue} />
+        )}
     </UseState>
-))
+)
+
+Textarea.story = {
+    name: 'textarea',
+}

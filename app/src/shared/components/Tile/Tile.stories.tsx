@@ -1,6 +1,5 @@
 import React from 'react'
-import { storiesOf } from '@storybook/react'
-import styles from '@sambego/storybook-styles'
+import {Meta} from "@storybook/react"
 import { action } from '@storybook/addon-actions'
 import sample from './sample.stories.png'
 import { DeployingBadge, DataUnionBadge, SharedBadge, BadgeLink } from './Badge'
@@ -9,21 +8,34 @@ import Summary from './Summary'
 import Menu, { MenuItem } from './Menu'
 import Tile, { touchedAgo, TileImageContainer, TileThumbnail } from './'
 
-const stories = storiesOf('Shared/Tile', module)
-    .addDecorator(
-        styles({
-            color: '#323232',
-            padding: '16px',
-        }),
-    )
-stories.add('placeholder only', () => (
+export const PlaceholderOnly = () => (
     <Grid>
         <TileImageContainer autoSize>
             <TileThumbnail src="" />
         </TileImageContainer>
     </Grid>
-))
-stories.add('with sample image', () => (
+)
+
+PlaceholderOnly.story = {
+    name: 'placeholder only',
+}
+
+const meta: Meta<typeof PlaceholderOnly> = {
+    title: 'Shared/Tile',
+    component: PlaceholderOnly,
+    decorators: [(Story) => {
+        return <div style={{
+            color: '#323232',
+            padding: '16px',
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta
+
+export const WithSampleImage = () => (
     <Grid>
         <Tile>
             <TileImageContainer autoSize>
@@ -31,8 +43,13 @@ stories.add('with sample image', () => (
             </TileImageContainer>
         </Tile>
     </Grid>
-))
-stories.add('with sample image and badge', () => (
+)
+
+WithSampleImage.story = {
+    name: 'with sample image',
+}
+
+export const WithSampleImageAndBadge = () => (
     <Grid>
         <Tile>
             <TileImageContainer autoSize>
@@ -43,8 +60,13 @@ stories.add('with sample image and badge', () => (
             </TileImageContainer>
         </Tile>
     </Grid>
-))
-stories.add('fixed thumbnail height', () => (
+)
+
+WithSampleImageAndBadge.story = {
+    name: 'with sample image and badge',
+}
+
+export const FixedThumbnailHeight = () => (
     <Grid>
         <Tile>
             <Menu>
@@ -71,8 +93,13 @@ stories.add('fixed thumbnail height', () => (
             </TileImageContainer>
         </Tile>
     </Grid>
-))
-stories.add('square thumbnails', () => (
+)
+
+FixedThumbnailHeight.story = {
+    name: 'fixed thumbnail height',
+}
+
+export const SquareThumbnails = () => (
     <Grid>
         <Tile>
             <Menu>
@@ -99,8 +126,13 @@ stories.add('square thumbnails', () => (
             </TileImageContainer>
         </Tile>
     </Grid>
-))
-stories.add('with Data Union badge being a link', () => (
+)
+
+SquareThumbnails.story = {
+    name: 'square thumbnails',
+}
+
+export const WithDataUnionBadgeBeingALink = () => (
     <Grid>
         <Tile>
             <Menu>
@@ -134,8 +166,13 @@ stories.add('with Data Union badge being a link', () => (
             </TileImageContainer>
         </Tile>
     </Grid>
-))
-stories.add('elastic grid', () => (
+)
+
+WithDataUnionBadgeBeingALink.story = {
+    name: 'with Data Union badge being a link',
+}
+
+export const ElasticGrid = () => (
     <Grid>
         {[...Array(5)].map(
             (
@@ -174,4 +211,8 @@ stories.add('elastic grid', () => (
             ),
         )}
     </Grid>
-))
+)
+
+ElasticGrid.story = {
+    name: 'elastic grid',
+}

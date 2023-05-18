@@ -8,11 +8,16 @@ module.exports = {
     core: {
         builder: 'webpack5',
     },
-    stories: [
-        '../**/*.stories.tsx',
-    ],
+    stories: ['../src/**/*.stories.tsx', '../stories/**/*.stories.tsx'],
     addons: [
-        '@storybook/addon-postcss',
+        {
+            name: '@storybook/addon-postcss',
+            options: {
+                postcssLoaderOptions: {
+                    implementation: require('postcss'),
+                },
+            },
+        },
         '@storybook/addon-actions',
         '@storybook/addon-viewport',
         '@storybook/addon-controls',
@@ -35,15 +40,30 @@ module.exports = {
                 // both options are optional
                 filename: isProduction() ? '[name].css' : '[name].[hash].css',
                 chunkFilename: isProduction() ? '[id].css' : '[id].[hash].css',
-            }),            
+            }),
         )
         config.plugins.push(
             // Work around for Buffer is undefined:
             // https://github.com/webpack/changelog-v5/issues/10
             new webpack.ProvidePlugin({
                 Buffer: ['buffer', 'Buffer'],
-            })
+            }),
         )
+
+        /*config.module.rules.push({
+            test: /\.stories\.[tj]sx?$/,
+            use: [
+                {
+                    loader: require.resolve('@storybook/source-loader'),
+                    options: {} /!* your sourceLoaderOptions here *!/,
+                },
+            ],
+            enforce: 'pre',
+        });*/
         return config
+    },
+    framework: {
+        name: '@storybook/react-webpack5',
+        options: { fastRefresh: true },
     },
 }

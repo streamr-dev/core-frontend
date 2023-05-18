@@ -1,17 +1,11 @@
 import React from 'react'
-import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import styles from '@sambego/storybook-styles'
+import {Meta} from "@storybook/react"
 import styled from 'styled-components'
 import { MD, LG } from '$shared/utils/styled'
 import NetworkIcon from '$shared/components/NetworkIcon'
 import ChainSelector from '.'
-const stories = storiesOf('Shared/ChainSelector', module).addDecorator(
-    styles({
-        color: '#323232',
-        fontSize: '16px',
-    }),
-)
+
 const Container = styled.div`
     padding: 0;
 
@@ -51,14 +45,47 @@ const Component = () => (
     </Container>
 )
 
-stories.add('default', () => <Component />)
-stories.add('default (tablet)', () => <Component />, {
-    viewport: {
-        defaultViewport: 'md',
+export const Default = () => <Component />
+
+const meta: Meta<typeof Default> = {
+    title: 'Shared/ChainSelector',
+    component: Default,
+    decorators: [(Story) => {
+        return <div style={{
+            color: '#323232',
+            fontSize: '16px',
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta
+
+Default.story = {
+    name: 'default',
+}
+
+export const DefaultTablet = () => <Component />
+
+DefaultTablet.story = {
+    name: 'default (tablet)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'md',
+        },
     },
-})
-stories.add('default (mobile)', () => <Component />, {
-    viewport: {
-        defaultViewport: 'xs',
+}
+
+export const DefaultMobile = () => <Component />
+
+DefaultMobile.story = {
+    name: 'default (mobile)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'xs',
+        },
     },
-})
+}

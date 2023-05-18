@@ -1,8 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react'
-import { storiesOf } from '@storybook/react'
-import styles from '@sambego/storybook-styles'
 import styled from 'styled-components'
 import { action } from '@storybook/addon-actions'
+import {Meta} from "@storybook/react"
 import sortBy from 'lodash/sortBy'
 import { StatusIcon } from '@streamr/streamr-layout'
 import { MD, LG } from '$shared/utils/styled'
@@ -12,12 +11,7 @@ import {
     StreamList as StreamListComponent,
     MemberList as MemberListComponent,
 } from '.'
-const stories = storiesOf('Shared/List', module).addDecorator(
-    styles({
-        color: '#323232',
-        fontSize: '16px',
-    }),
-)
+
 const Container = styled.div`
     padding: 0;
 
@@ -49,7 +43,8 @@ const defaultList = [
     {
         id: '3',
         title: 'Title for the item that is really long and will break the layout if it goes long enough over the screen',
-        description: 'Description that is really long and will break the layout if it goes long enough over the screen',
+        description:
+            'Description that is really long and will break the layout if it goes long enough over the screen',
         updated: 'a week ago',
         lastData: '1 weeek ago',
         status: StatusIcon.INACTIVE,
@@ -83,17 +78,51 @@ const DefaultList = () => (
     </Container>
 )
 
-stories.add('default', () => <DefaultList />)
-stories.add('default (tablet)', () => <DefaultList />, {
-    viewport: {
-        defaultViewport: 'md',
+export const Default = () => <DefaultList />
+
+Default.story = {
+    name: 'default',
+}
+
+const meta: Meta<typeof Default> = {
+    title: 'Shared/List',
+    component: Default,
+    decorators: [(Story) => {
+        return <div style={{
+            color: '#323232',
+            fontSize: '16px',
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta
+
+export const DefaultTablet = () => <DefaultList />
+
+DefaultTablet.story = {
+    name: 'default (tablet)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'md',
+        },
     },
-})
-stories.add('default (mobile)', () => <DefaultList />, {
-    viewport: {
-        defaultViewport: 'xs',
+}
+
+export const DefaultMobile = () => <DefaultList />
+
+DefaultMobile.story = {
+    name: 'default (mobile)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'xs',
+        },
     },
-})
+}
+
 const sortOptions = {
     nameAsc: {
         column: 'title',
@@ -152,10 +181,20 @@ const SortableList = () => {
         <Container>
             <List>
                 <List.Header>
-                    <List.HeaderItem asc="nameAsc" desc="nameDesc" active={sort} onClick={onHeaderSortUpdate}>
+                    <List.HeaderItem
+                        asc="nameAsc"
+                        desc="nameDesc"
+                        active={sort}
+                        onClick={onHeaderSortUpdate}
+                    >
                         Title
                     </List.HeaderItem>
-                    <List.HeaderItem asc="descAsc" desc="descDesc" active={sort} onClick={onHeaderSortUpdate}>
+                    <List.HeaderItem
+                        asc="descAsc"
+                        desc="descDesc"
+                        active={sort}
+                        onClick={onHeaderSortUpdate}
+                    >
                         Description
                     </List.HeaderItem>
                     <List.HeaderItem>Updated</List.HeaderItem>
@@ -170,25 +209,32 @@ const SortableList = () => {
                         Status
                     </List.HeaderItem>
                 </List.Header>
-                {sortedList.map(({ id, title, description, updated, lastData, status }) => (
-                    <List.Row id={id} key={id} onClick={action('onClick')}>
-                        <List.Title description={description} moreInfo={lastData}>
-                            {title}
-                        </List.Title>
-                        <List.Item truncate>{description}</List.Item>
-                        <List.Item>{updated}</List.Item>
-                        <List.Item>{lastData}</List.Item>
-                        <List.Item center>
-                            <StatusIcon status={status} tooltip />
-                        </List.Item>
-                    </List.Row>
-                ))}
+                {sortedList.map(
+                    ({ id, title, description, updated, lastData, status }) => (
+                        <List.Row id={id} key={id} onClick={action('onClick')}>
+                            <List.Title description={description} moreInfo={lastData}>
+                                {title}
+                            </List.Title>
+                            <List.Item truncate>{description}</List.Item>
+                            <List.Item>{updated}</List.Item>
+                            <List.Item>{lastData}</List.Item>
+                            <List.Item center>
+                                <StatusIcon status={status} tooltip />
+                            </List.Item>
+                        </List.Row>
+                    ),
+                )}
             </List>
         </Container>
     )
 }
 
-stories.add('sortable columns', () => <SortableList />)
+export const SortableColumns = () => <SortableList />
+
+SortableColumns.story = {
+    name: 'sortable columns',
+}
+
 const selectableList = [
     {
         id: '1',
@@ -231,7 +277,13 @@ const SelectableList = () => {
                     <List.HeaderItem>Updated</List.HeaderItem>
                 </List.Header>
                 {selectableList.map(({ id, title, description, time }) => (
-                    <List.Row selectable active={selected.has(id)} onClick={onSelect} key={id} id={id}>
+                    <List.Row
+                        selectable
+                        active={selected.has(id)}
+                        onClick={onSelect}
+                        key={id}
+                        id={id}
+                    >
                         <List.Title description={description} moreInfo={time}>
                             {title}
                         </List.Title>
@@ -244,17 +296,36 @@ const SelectableList = () => {
     )
 }
 
-stories.add('selectable', () => <SelectableList selectable />)
-stories.add('selectable (tablet)', () => <SelectableList selectable />, {
-    viewport: {
-        defaultViewport: 'md',
+export const Selectable = () => <SelectableList selectable />
+
+Selectable.story = {
+    name: 'selectable',
+}
+
+export const SelectableTablet = () => <SelectableList selectable />
+
+SelectableTablet.story = {
+    name: 'selectable (tablet)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'md',
+        },
     },
-})
-stories.add('selectable (mobile)', () => <SelectableList selectable />, {
-    viewport: {
-        defaultViewport: 'xs',
+}
+
+export const SelectableMobile = () => <SelectableList selectable />
+
+SelectableMobile.story = {
+    name: 'selectable (mobile)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'xs',
+        },
     },
-})
+}
+
 const streamList = [
     {
         id: 'sandbox/coffee-machine',
@@ -303,17 +374,36 @@ const StreamList = () => (
     </Container>
 )
 
-stories.add('streams', () => <StreamList />)
-stories.add('streams (tablet)', () => <StreamList />, {
-    viewport: {
-        defaultViewport: 'md',
+export const Streams = () => <StreamList />
+
+Streams.story = {
+    name: 'streams',
+}
+
+export const StreamsTablet = () => <StreamList />
+
+StreamsTablet.story = {
+    name: 'streams (tablet)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'md',
+        },
     },
-})
-stories.add('streams (mobile)', () => <StreamList />, {
-    viewport: {
-        defaultViewport: 'xs',
+}
+
+export const StreamsMobile = () => <StreamList />
+
+StreamsMobile.story = {
+    name: 'streams (mobile)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'xs',
+        },
     },
-})
+}
+
 const memberList = [
     {
         id: '1',
@@ -360,8 +450,17 @@ const MemberList = () => {
                     <List.HeaderItem center>Status</List.HeaderItem>
                 </List.Header>
                 {memberList.map(({ id, address, joined, lastUpdated, status }) => (
-                    <List.Row selectable active={selected.has(id)} onClick={onSelect} id={id} key={id}>
-                        <List.Title description={`Last updated: ${joined}`} moreInfo={lastUpdated}>
+                    <List.Row
+                        selectable
+                        active={selected.has(id)}
+                        onClick={onSelect}
+                        id={id}
+                        key={id}
+                    >
+                        <List.Title
+                            description={`Last updated: ${joined}`}
+                            moreInfo={lastUpdated}
+                        >
                             {address}
                         </List.Title>
                         <List.Item>{joined}</List.Item>
@@ -376,14 +475,32 @@ const MemberList = () => {
     )
 }
 
-stories.add('members', () => <MemberList />)
-stories.add('members (tablet)', () => <MemberList />, {
-    viewport: {
-        defaultViewport: 'md',
+export const Members = () => <MemberList />
+
+Members.story = {
+    name: 'members',
+}
+
+export const MembersTablet = () => <MemberList />
+
+MembersTablet.story = {
+    name: 'members (tablet)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'md',
+        },
     },
-})
-stories.add('members (mobile)', () => <MemberList />, {
-    viewport: {
-        defaultViewport: 'xs',
+}
+
+export const MembersMobile = () => <MemberList />
+
+MembersMobile.story = {
+    name: 'members (mobile)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'xs',
+        },
     },
-})
+}

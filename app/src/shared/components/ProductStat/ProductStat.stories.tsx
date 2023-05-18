@@ -1,15 +1,7 @@
 import React from 'react'
-import { storiesOf } from '@storybook/react'
-import styles from '@sambego/storybook-styles'
+import {Meta} from "@storybook/react"
 import ProductStat from '.'
-const stories = storiesOf('Shared/Stat', module)
-    .addDecorator(
-        styles({
-            color: '#323232',
-            padding: '1rem',
-            background: '#F8F8F8',
-        }),
-    )
+
 const stats = [
     {
         id: 'revenue',
@@ -39,22 +31,74 @@ const stats = [
         value: '08/10/2019',
     },
 ]
-stories.add('header', () => (
+
+export const Header = () => (
     <div>
         <ProductStat.Title>header</ProductStat.Title>
         <div>content</div>
     </div>
-))
-stories.add('value', () => <ProductStat {...stats[0]} title="Revenue" />)
-stories.add('values', () => <ProductStat.List items={stats} />)
-stories.add('mobile', () => <ProductStat.List items={stats} />, {
-    viewport: {
-        defaultViewport: 'sm',
+)
+
+Header.story = {
+    name: 'header',
+}
+
+const meta: Meta<typeof Header> = {
+    title: 'Shared/Stat',
+    component: Header,
+    decorators: [(Story) => {
+        return <div style={{
+            color: '#323232',
+            padding: '1rem',
+            background: '#F8F8F8',
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta
+
+export const Value = () => <ProductStat {...stats[0]} title="Revenue" />
+
+Value.story = {
+    name: 'value',
+}
+
+export const Values = () => <ProductStat.List items={stats} />
+
+Values.story = {
+    name: 'values',
+}
+
+export const Mobile = () => <ProductStat.List items={stats} />
+
+Mobile.story = {
+    name: 'mobile',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'sm',
+        },
     },
-})
-stories.add('tablet', () => <ProductStat.List items={stats} />, {
-    viewport: {
-        defaultViewport: 'md',
+}
+
+export const Tablet = () => <ProductStat.List items={stats} />
+
+Tablet.story = {
+    name: 'tablet',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'md',
+        },
     },
-})
-stories.add('loading', () => <ProductStat.List items={stats.map((stat) => ({ ...stat, loading: true }))} />)
+}
+
+export const Loading = () => (
+    <ProductStat.List items={stats.map((stat) => ({ ...stat, loading: true }))} />
+)
+
+Loading.story = {
+    name: 'loading',
+}

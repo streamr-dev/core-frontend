@@ -1,15 +1,7 @@
 import React, { HTMLAttributes, useState } from 'react'
-import { storiesOf } from '@storybook/react'
+import {Meta} from "@storybook/react"
 import { Link, MemoryRouter } from 'react-router-dom'
-import styles from '@sambego/storybook-styles'
 import Tabs, { Tab } from './Tabs'
-
-const stories = storiesOf('Shared/Tabs', module).addDecorator(
-    styles({
-        padding: '2rem',
-        color: '#000',
-    }),
-)
 
 function Container({
     title,
@@ -40,7 +32,7 @@ function Stateful({
     return children(value, setValue)
 }
 
-stories.add('all', () => (
+export const All = () => (
     <>
         <Container title="Nothing selected">
             <Tabs>
@@ -131,4 +123,23 @@ stories.add('all', () => (
             </Stateful>
         </Container>
     </>
-))
+)
+
+All.story = {
+    name: 'all',
+}
+
+const meta: Meta<typeof All> = {
+    title: 'Shared/Tabs',
+    component: All,
+    decorators: [(Story) => {
+        return <div style={{
+            padding: '2rem',
+            color: '#000',
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta

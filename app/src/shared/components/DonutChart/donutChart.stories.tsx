@@ -1,15 +1,6 @@
 import React from 'react'
-import { storiesOf } from '@storybook/react'
-import styles from '@sambego/storybook-styles'
+import {Meta} from "@storybook/react"
 import DonutChart from '.'
-const stories = storiesOf('Shared/DonutChart', module)
-    .addDecorator(
-        styles({
-            color: '#323232',
-            padding: '5rem',
-            background: '#F8F8F8',
-        }),
-    )
 const data = [
     {
         title: '1',
@@ -27,7 +18,8 @@ const data = [
         color: 'green',
     },
 ]
-stories.add('default', () => (
+
+export const Default = () => (
     <div
         style={{
             width: '300px',
@@ -35,8 +27,29 @@ stories.add('default', () => (
     >
         <DonutChart strokeWidth={5} data={data} />
     </div>
-))
-stories.add('disabled', () => (
+)
+
+Default.story = {
+    name: 'default',
+}
+
+const meta: Meta<typeof Default> = {
+    title: 'Shared/DonutChart',
+    component: Default,
+    decorators: [(Story) => {
+        return <div style={{
+            color: '#323232',
+            padding: '5rem',
+            background: '#F8F8F8',
+        }}>
+            <Story/>
+        </div>
+    }]
+}
+
+export default meta
+
+export const Disabled = () => (
     <div
         style={{
             width: '300px',
@@ -44,4 +57,8 @@ stories.add('disabled', () => (
     >
         <DonutChart strokeWidth={5} data={data} disabled />
     </div>
-))
+)
+
+Disabled.story = {
+    name: 'disabled',
+}

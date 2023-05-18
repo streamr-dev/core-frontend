@@ -1,14 +1,7 @@
 import React, { useState } from 'react'
-import { storiesOf } from '@storybook/react'
-import styles from '@sambego/storybook-styles'
+import {Meta} from "@storybook/react"
 import ImageUpload from '.'
-const stories = storiesOf('Shared/ImageUpload', module).addDecorator(
-    styles({
-        color: '#323232',
-        padding: '5rem',
-        background: '#F8F8F8',
-    }),
-)
+
 type Props = {
     defaultImage?: string
     disabled?: boolean
@@ -16,24 +9,82 @@ type Props = {
 
 const ImageUploadContainer = ({ disabled, defaultImage }: Props) => {
     const [image, setImage] = useState(defaultImage)
-    return <ImageUpload setImageToUpload={setImage as any} originalImage={image} disabled={!!disabled} />
+    return (
+        <ImageUpload
+            setImageToUpload={setImage as any}
+            originalImage={image}
+            disabled={!!disabled}
+        />
+    )
 }
 
-stories.add('default', () => <ImageUploadContainer />)
-stories.add('default (tablet)', () => <ImageUploadContainer />, {
-    viewport: {
-        defaultViewport: 'md',
+export const Default = () => <ImageUploadContainer />
+
+Default.story = {
+    name: 'default',
+}
+
+const meta: Meta<typeof Default> = {
+    title: 'Shared/ImageUpload',
+    component: Default,
+    decorators: [(Story) => {
+        return <div style={{
+            color: '#323232',
+            padding: '5rem',
+            background: '#F8F8F8',
+        }}>
+            <Story/>
+        </div>
+    }],
+}
+
+export default meta
+
+export const DefaultTablet = () => <ImageUploadContainer />
+
+DefaultTablet.story = {
+    name: 'default (tablet)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'md',
+        },
     },
-})
-stories.add('default (mobile)', () => <ImageUploadContainer />, {
-    viewport: {
-        defaultViewport: 'sm',
+}
+
+export const DefaultMobile = () => <ImageUploadContainer />
+
+DefaultMobile.story = {
+    name: 'default (mobile)',
+
+    parameters: {
+        viewport: {
+            defaultViewport: 'sm',
+        },
     },
-})
-stories.add('with default image', () => (
+}
+
+export const WithDefaultImage = () => (
     <ImageUploadContainer defaultImage="https://miro.medium.com/fit/c/256/256/1*NfJkA-ChiQtYLRBOLryZxQ.jpeg" />
-))
-stories.add('disabled', () => <ImageUploadContainer disabled />)
-stories.add('disabled with default image', () => (
-    <ImageUploadContainer disabled defaultImage="https://miro.medium.com/fit/c/256/256/1*NfJkA-ChiQtYLRBOLryZxQ.jpeg" />
-))
+)
+
+WithDefaultImage.story = {
+    name: 'with default image',
+}
+
+export const Disabled = () => <ImageUploadContainer disabled />
+
+Disabled.story = {
+    name: 'disabled',
+}
+
+export const DisabledWithDefaultImage = () => (
+    <ImageUploadContainer
+        disabled
+        defaultImage="https://miro.medium.com/fit/c/256/256/1*NfJkA-ChiQtYLRBOLryZxQ.jpeg"
+    />
+)
+
+DisabledWithDefaultImage.story = {
+    name: 'disabled with default image',
+}
