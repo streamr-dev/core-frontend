@@ -119,7 +119,7 @@ function ConnectPage() {
 
     return (
         <>
-            <LoadingIndicator loading />
+            <LoadingIndicator loading={loading} />
             <ContainerBox fullWidth showRelatedProjects streamId={streamId}>
                 <StreamConnect streams={[streamId]} />
             </ContainerBox>
