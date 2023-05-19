@@ -7,7 +7,11 @@ interface Props {
 }
 
 export default function LoadingIndicator({ loading = false, ...props }: Props) {
-    return <Root {...props} $loading={loading} />
+    return (
+        <Root {...props} $loading={loading}>
+            <div />
+        </Root>
+    )
 }
 
 const animation = keyframes`
@@ -29,28 +33,33 @@ const animation = keyframes`
 `
 
 const Root = styled.div<{ $loading?: boolean }>`
-    background: none;
+    height: 0;
     opacity: 0;
-    overflow: hidden;
-    position: relative;
     transition: opacity 0.3s ease-out;
-    width: 100%;
     will-change: opacity;
 
-    ${({ $loading = false }) => $loading && css`
-        opacity: 1;
-    `}
+    ${({ $loading = false }) =>
+        $loading &&
+        css`
+            opacity: 1;
+        `}
 
-    :after {
-        animation: 2s infinite ${animation};
-        background: #0424FF;
+    div {
+        height: 2px;
+        position: relative;
+        overflow: hidden;
     }
-    
-    :after,
-    :before {
+
+    div:after {
+        animation: 2s infinite ${animation};
+        background: #0424ff;
+    }
+
+    div:after,
+    div:before {
         content: '';
         display: block;
-        height: 2px;
+        height: 100%;
         position: absolute;
         width: 100%;
     }

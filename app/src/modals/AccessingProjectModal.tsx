@@ -17,16 +17,17 @@ const Content = styled.div`
 `
 
 const LoadingIndicator = styled(PrestyledLoadingIndicator)`
-    border-radius: 8px;
-    height: 8px;
-
-    ::before,
-    ::after {
+    div {
         border-radius: 8px;
         height: 8px;
     }
 
-    ::before {
+    div:before,
+    div:after {
+        border-radius: 8px;
+    }
+
+    div:before {
         background-color: ${COLORS.secondaryHover};
     }
 `
