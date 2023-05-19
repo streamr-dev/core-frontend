@@ -3,7 +3,11 @@ import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 
-export default function NoProductsView() {
+interface Props {
+    noOwnProjects?: boolean
+}
+
+export default function NoProductsView({ noOwnProjects = false }: Props) {
     return (
         <EmptyState
             image={
@@ -14,10 +18,16 @@ export default function NoProductsView() {
                 />
             }
         >
-            <p>
-                <span>We couldn&apos;t find anything to match your search</span>
-                <small>Please try some different keywords</small>
-            </p>
+            {noOwnProjects ? (
+                <p>
+                    <span>You haven&apos;t created any projects yet</span>
+                </p>
+            ) : (
+                <p>
+                    <span>We couldn&apos;t find anything to match your search</span>
+                    <small>Please try some different keywords</small>
+                </p>
+            )}
         </EmptyState>
     )
 }

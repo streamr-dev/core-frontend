@@ -15,8 +15,8 @@ import Button from '$shared/components/Button'
 import { TheGraphProject } from '$app/src/services/projects'
 import ProductPageSpinner from '../ProductPageSpinner'
 import Error from '../Error'
-import { getErrorView } from './settings'
 import styles from './projects.pcss'
+import NoProductsView from './NoProductsView'
 
 export type ProjectTilePropType = 'projects' | 'relatedProjects'
 
@@ -29,6 +29,7 @@ export type OwnProps = {
     loadProducts?: () => void
     hasMoreSearchResults?: boolean
     header?: string
+    noOwnProjects?: boolean
 }
 
 export const MarketplaceProductTile = styled(UnstyledMarketplaceProductTile)`
@@ -129,14 +130,17 @@ const UnstyledProjects = ({
     hasMoreSearchResults,
     header,
     currentUserAddress,
+    noOwnProjects = false,
     ...props
 }: OwnProps) => (
     <div {...props}>
         {header && <ProjectsHeader>{header}</ProjectsHeader>}
         <Error source={error} />
-        {isFetching || projects.length > 0
-            ? listProjects(projects, currentUserAddress, isFetching)
-            : getErrorView(type)}
+        {isFetching || projects.length > 0 ? (
+            listProjects(projects, currentUserAddress, isFetching)
+        ) : (
+            <NoProductsView noOwnProjects={noOwnProjects} />
+        )}
         {loadProducts && !isFetching && hasMoreSearchResults && (
             <LoadMoreButton onClick={loadProducts} kind={'primary2'}>
                 Load more

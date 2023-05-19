@@ -34,7 +34,6 @@ const ProjectsPage: FunctionComponent = () => {
     const filter = useDeepEqualMemo(filterValue)
     const { api: createProductModal } = useModal('marketplace.createProduct')
     const account = useWalletAccount()
-    const isUserAuthenticated = account
 
     const query = useInfiniteQuery({
         queryKey: ["projects", filter.owner, filter.search, filter.type],
@@ -71,6 +70,8 @@ const ProjectsPage: FunctionComponent = () => {
         setFilter((filter) => (filter.owner && account ? { ...filter, owner: account } : filter))
     }, [account])
 
+    const noOwnProjects = !!filter.owner && !filter.search && !filter.type
+
     return (
         <Layout className={styles.projectsListPage} framedClassName={styles.productsFramed} innerClassName={styles.productsInner} footer={false}>
             <MarketplaceHelmet title="Projects" />
@@ -94,6 +95,7 @@ const ProjectsPage: FunctionComponent = () => {
                     isFetching={query.status === 'loading'}
                     loadProducts={() => query.fetchNextPage()}
                     hasMoreSearchResults={query.hasNextPage}
+                    noOwnProjects={noOwnProjects}
                 />
             </ProjectsContainer>
             <Footer />

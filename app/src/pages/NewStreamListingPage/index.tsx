@@ -255,6 +255,11 @@ const NewStreamListingPage: React.FC = () => {
                                 setOrderBy(orderBy)
                                 setOrderDirection(orderDirection)
                             }}
+                            noStreamsText={
+                                streamsSelection === StreamSelection.Your && !search
+                                ? <>You haven&apos;t created any streams yet</>
+                                : void 0
+                            }
                         />
                     </TableContainer>
                 </Container>
