@@ -182,7 +182,7 @@ export default function TabbedPage() {
                 }
                 rightComponent={<ProjectLinkTabs projectId={id} />}
             />
-            <LoadingIndicator loading={busy} />
+            <LoadingIndicator detached loading={busy} />
             {tab === 'overview' && <ProjectOverviewPage />}
             {tab === 'connect' && <ProjectConnectPage />}
             {tab === 'live-data' && <ProjectLiveDataPage />}

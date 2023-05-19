@@ -66,7 +66,7 @@ const UnstyledNewProjectPage = ({ className }: Props) => {
             pageTitle={pageTitle}
             rightComponent={<ProjectLinkTabs />}
         />
-        <LoadingIndicator loading={publishInProgress}/>
+        <LoadingIndicator detached loading={publishInProgress} />
         <ProjectEditor/>
     </Layout>
 }

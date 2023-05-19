@@ -92,7 +92,7 @@ const UnstyledStreamPreview: FunctionComponent<StreamPreviewPros> = ({
     }, [selectedStreamId, client])
 
     return <>
-        <LoadingIndicator loading={loading} />
+        <LoadingIndicator detached loading={loading} />
         {previewDisabled && (
             <EmptyState image={<img src={emptyStateIcon} srcSet={`${emptyStateIcon2x} 2x`} alt="No permission to subscribe" />}>
                 <p>

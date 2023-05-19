@@ -75,7 +75,7 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
             pageTitle={pageTitle}
             rightComponent={<ProjectLinkTabs />}
         />
-        <LoadingIndicator loading={publishInProgress}/>
+        <LoadingIndicator detached loading={publishInProgress} />
         <ProjectEditor nonEditableSalePointChains={nonEditableSalePointChains}/>
     </Layout>
 }
