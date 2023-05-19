@@ -4,10 +4,11 @@ import styled, { css, keyframes } from 'styled-components'
 interface Props {
     detached?: boolean
     loading?: boolean
+    className?: string
 }
 
-export default function LoadingIndicator({ loading = false, detached = false }: Props) {
-    return <Root $loading={loading} $detached={detached} />
+export default function LoadingIndicator({ loading = false, detached = false, ...props }: Props) {
+    return <Root {...props} $loading={loading} $detached={detached} />
 }
 
 const animation = keyframes`
@@ -45,6 +46,10 @@ const Root = styled.div<{ $loading?: boolean; $detached?: boolean }>`
     :after {
         animation: 2s infinite ${animation};
         background: #0424FF;
+    }
+    
+    :after,
+    :before {
         content: '';
         display: block;
         height: 100%;
