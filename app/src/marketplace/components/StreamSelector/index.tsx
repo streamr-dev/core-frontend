@@ -179,7 +179,7 @@ export const StreamSelector = (props: Props) => {
                                 </button>
                             </div>
                         ))}
-                        {!!fetchingStreams && <LoadingIndicator className={styles.loadingIndicator} loading />}
+                        <LoadingIndicator loading={!!fetchingStreams} />
                     </div>
                     <div className={styles.footer}>
                         <div className={styles.selectedCount}>
