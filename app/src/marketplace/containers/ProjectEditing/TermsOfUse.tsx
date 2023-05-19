@@ -12,21 +12,23 @@ type Props = {
     className?: string
     disabled?: boolean
 }
+
 const Section = styled.div`
     background: none;
     max-width: 678px;
-`
 
-const Title = styled.p`
-  font-size: 34px;
-  line-height: 34px;
-  color: black;
-  margin-bottom: 30px;
-`
+    h2 {
+        font-size: 34px;
+        line-height: 34px;
+        color: black;
+        margin-bottom: 30px;
+        font-weight: 400;
+    }
 
-const Description = styled.p`
-  color: black;
-  font-size: 16px;
+    p {
+        color: black;
+        font-size: 16px;
+    }
 `
 
 const DetailsContainer = styled.div`
@@ -72,8 +74,7 @@ const UnstyledTermCheckbox = ({
             }}
             disabled={disabled}
         />
-        &nbsp;
-        {terms[id]}
+        <span>{terms[id]}</span>
     </CheckboxLabel>
 )
 
@@ -82,6 +83,7 @@ const TermCheckbox = styled(UnstyledTermCheckbox)`
     display: flex;
     margin: 0;
 `
+
 const CheckboxContainer = styled.div`
     margin: 40px 0;
     background: #f1f1f1;
@@ -96,21 +98,22 @@ const CheckboxContainer = styled.div`
 `
 
 const CheckboxLabel = styled.label`
-  color: black;
+    color: black;
 `
 
 export const TermsOfUse: FunctionComponent<Props> = ({ className, disabled }: Props) => {
     const { state: project } = useContext(ProjectStateContext)
     const { updateTermsOfUse } = useEditableProjectActions()
     const { isValid, message } = useValidation('termsOfUse')
+
     return (
         <Section id="terms" className={className}>
-            <Title>Set terms of use</Title>
-            <Description>
-                Indicate the terms of use you prefer, either simply,
-                by checking the appropriate boxes below to show usage types are permitted, or optionally,
+            <h2>Set terms of use</h2>
+            <p>
+                Indicate the terms of use you prefer, either simply, by checking the
+                appropriate boxes below to show usage types are permitted, or optionally,
                 give more detail by providing a link to your own terms of use document.
-            </Description>
+            </p>
             <CheckboxContainer>
                 <TermCheckbox
                     id="redistribution"
