@@ -78,6 +78,7 @@ const UnstyledTermCheckbox = ({
 )
 
 const TermCheckbox = styled(UnstyledTermCheckbox)`
+    align-items: center;
     display: flex;
     margin: 0;
 `
