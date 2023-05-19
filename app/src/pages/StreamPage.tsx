@@ -78,7 +78,7 @@ function EditPage({ isNew = false }: { isNew?: boolean }) {
 
     return (
         <>
-            <LoadingIndicator detached loading={disabled} />
+            <LoadingIndicator loading={disabled} />
             <ContainerBox
                 disabled={disabled || clean}
                 showRelatedProjects={!!streamId}
@@ -106,7 +106,7 @@ function LiveDataPage() {
 
     return (
         <>
-            <LoadingIndicator detached loading={loading} />
+            <LoadingIndicator loading={loading} />
             <StreamPreview streamsList={[streamId]} previewDisabled={!canSubscribe} />
         </>
     )
@@ -119,7 +119,7 @@ function ConnectPage() {
 
     return (
         <>
-            <LoadingIndicator detached loading={loading} />
+            <LoadingIndicator loading />
             <ContainerBox fullWidth showRelatedProjects streamId={streamId}>
                 <StreamConnect streams={[streamId]} />
             </ContainerBox>
@@ -261,7 +261,7 @@ function StreamPageSwitch() {
             <form onSubmit={defaultFormEventHandler}>
                 <Layout>
                     <Header />
-                    <LoadingIndicator detached loading />
+                    <LoadingIndicator loading />
                 </Layout>
             </form>
         )

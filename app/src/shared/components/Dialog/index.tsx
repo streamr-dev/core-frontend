@@ -135,7 +135,7 @@ class Dialog extends Component<DialogProps, State> {
                         {title}
                         {!!helpText && <HelpToggle active={isHelpOpen} onToggle={this.onHelpToggle} />}
                     </TitleBar>
-                    {(!helpText || !isHelpOpen) && !!waiting && <LoadingIndicator detached loading />}
+                    {(!helpText || !isHelpOpen) && !!waiting && <LoadingIndicator loading />}
                     <ContentArea className={classNames(styles.content, contentClassName)}>
                         {(!helpText || !isHelpOpen) && !waiting && children}
                         {!!helpText && isHelpOpen && helpText}

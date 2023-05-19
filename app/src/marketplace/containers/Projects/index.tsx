@@ -84,7 +84,7 @@ const ProjectsPage: FunctionComponent = () => {
                 onFilterByAuthorChange={onFilterByAuthorChange}
                 isUserAuthenticated={!!account}
             />
-            <LoadingIndicator detached loading={query.isLoading || query.isFetching || query.isFetchingNextPage}/>
+            <LoadingIndicator loading={query.isLoading || query.isFetching || query.isFetchingNextPage}/>
             <CreateProjectModal />
             <ProjectsContainer>
                 <ProjectsComponent

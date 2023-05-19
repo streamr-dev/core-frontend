@@ -17,12 +17,13 @@ const Content = styled.div`
 `
 
 const LoadingIndicator = styled(PrestyledLoadingIndicator)`
-    height: 8px;
     border-radius: 8px;
+    height: 8px;
 
     ::before,
     ::after {
         border-radius: 8px;
+        height: 8px;
     }
 
     ::before {

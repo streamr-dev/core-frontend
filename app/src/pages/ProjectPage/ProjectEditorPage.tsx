@@ -36,7 +36,7 @@ export default function ProjectEditorPage() {
                 }
                 rightComponent={<ProjectLinkTabs />}
             />
-            <LoadingIndicator detached loading={busy} />
+            <LoadingIndicator loading={busy} />
             <ProjectPageContainer>
                 <ProjectHeroContainer overflowVisible={true}>
                     {/* <CoverImage /> */}

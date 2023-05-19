@@ -2,13 +2,12 @@ import React from 'react'
 import styled, { css, keyframes } from 'styled-components'
 
 interface Props {
-    detached?: boolean
     loading?: boolean
     className?: string
 }
 
-export default function LoadingIndicator({ loading = false, detached = false, ...props }: Props) {
-    return <Root {...props} $loading={loading} $detached={detached} />
+export default function LoadingIndicator({ loading = false, ...props }: Props) {
+    return <Root {...props} $loading={loading} />
 }
 
 const animation = keyframes`
@@ -29,15 +28,14 @@ const animation = keyframes`
     }
 `
 
-const Root = styled.div<{ $loading?: boolean; $detached?: boolean }>`
+const Root = styled.div<{ $loading?: boolean }>`
     background: none;
-    height: 2px;
     opacity: 0;
     overflow: hidden;
-    position: ${({ $detached = false }) => $detached ? 'absolute' : 'relative'};
+    position: relative;
     transition: opacity 0.3s ease-out;
     width: 100%;
-    will-change: opacity, transform;
+    will-change: opacity;
 
     ${({ $loading = false }) => $loading && css`
         opacity: 1;
@@ -52,7 +50,7 @@ const Root = styled.div<{ $loading?: boolean; $detached?: boolean }>`
     :before {
         content: '';
         display: block;
-        height: 100%;
+        height: 2px;
         position: absolute;
         width: 100%;
     }

@@ -6,6 +6,6 @@ import LoadingIndicator from '$shared/components/LoadingIndicator'
 export const MarketplaceLoadingView = () => (
     <Layout>
         <MarketplaceHelmet/>
-        <LoadingIndicator detached loading/>
+        <LoadingIndicator loading/>
     </Layout>
 )
