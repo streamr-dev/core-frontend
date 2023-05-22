@@ -4,10 +4,6 @@ on:
     tags:
      - v*.*.*
 
-defaults:
-  run:
-    working-directory: app
-
 jobs:
   deploy:
     name: Build and deploy to production

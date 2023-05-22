@@ -27,6 +27,14 @@ yarn-debug.log*
 yarn-error.log*
 node_modules
 dist
+build
 
 # VsCode files
 .vscode
+
+# Storybook
+storybook-static
+.cache
+
+# Cypress
+cypress/fixtures/example.json

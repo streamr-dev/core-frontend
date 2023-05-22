@@ -3,7 +3,7 @@ const webpack = require('webpack')
 
 const postcssImport = require('postcss-import')({
     addDependencyTo: webpack,
-    addModulesDirectories: [path.resolve(__dirname, 'src/shared/assets/stylesheets')],
+    addModulesDirectories: [path.resolve(__dirname, 'app/src/shared/assets/stylesheets')],
 })
 const calc = require('postcss-calc')
 const precss = require('precss')
@@ -23,7 +23,7 @@ module.exports = {
                 filter: false,
             },
             importFrom: [
-                path.resolve(__dirname, 'src/shared/assets/stylesheets/variables.css'),
+                path.resolve(__dirname, 'app/src/shared/assets/stylesheets/variables.css'),
                 {
                     customMedia: {
                         '--xs': `(max-width: ${xs.max}px)`,

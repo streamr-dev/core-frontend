@@ -45,16 +45,6 @@ module.exports = {
                         position: 'after',
                     },
                     {
-                        pattern: '@*/**',
-                        group: 'internal',
-                        position: 'after',
-                    },
-                    {
-                        pattern: '@*',
-                        group: 'internal',
-                        position: 'after',
-                    },
-                    {
                         pattern: '$*',
                         group: 'internal',
                         position: 'after',
