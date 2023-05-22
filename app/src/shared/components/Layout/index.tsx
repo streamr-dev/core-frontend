@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import { ThemeProvider } from 'styled-components'
-import { NavProvider } from '@streamr/streamr-layout'
 import React, { FunctionComponent, ReactNode } from 'react'
+import { NavProvider } from '@streamr/streamr-layout'
 import cx from 'classnames'
 import useScrollToTop from '$shared/hooks/useScrollToTop'
 import useCurrentLocation from '$shared/hooks/useCurrentLocation'

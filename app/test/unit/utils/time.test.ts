@@ -1,5 +1,5 @@
-import moment from 'moment-timezone'
 import BN from 'bignumber.js'
+import moment from 'moment-timezone'
 import * as all from '$mp/utils/time'
 describe('time utils', () => {
     describe('toSeconds', () => {

@@ -1,6 +1,6 @@
+import BN from 'bignumber.js'
 import { Moment } from 'moment'
 import moment from 'moment'
-import BN from 'bignumber.js'
 import { NumberString } from '$shared/types/common-types'
 import {TimeUnit, timeUnits} from "$shared/utils/timeUnit"
 const momentDurationFormatsByTimeUnit: {[key: string]: string} = {

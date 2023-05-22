@@ -1,6 +1,6 @@
-import { $Keys } from 'utility-types'
 import { ComponentType } from 'react'
 import React from 'react'
+import { $Keys } from 'utility-types'
 import UploadIcon from './ImageUploadIcon'
 import CheckmarkIcon from './CheckmarkIcon'
 import * as MapIcons from './MapIcons'

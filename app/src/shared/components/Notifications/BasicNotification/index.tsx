@@ -1,5 +1,5 @@
-import { $Values } from 'utility-types'
 import React, { FunctionComponent } from 'react'
+import { $Values } from 'utility-types'
 import cx from 'classnames'
 import Spinner from '$shared/components/Spinner'
 import SvgIcon from '$shared/components/SvgIcon'

@@ -1,5 +1,5 @@
-import isEqual from 'lodash/isEqual'
 import { useRef } from 'react'
+import isEqual from 'lodash/isEqual'
 
 function useDeepEqualMemo<T>(value: T): T {
     const ref = useRef<T | undefined>(undefined)

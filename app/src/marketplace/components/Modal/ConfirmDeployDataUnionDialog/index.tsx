@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react'
-import cx from 'classnames'
 import { ThemeProvider } from 'styled-components'
+import cx from 'classnames'
 import { ImageTile } from '$shared/components/Tile'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'

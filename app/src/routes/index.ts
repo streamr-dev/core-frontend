@@ -1,5 +1,5 @@
-import pick from 'lodash/pick'
 import qs from 'query-string'
+import pick from 'lodash/pick'
 import { parse, compile, Key } from 'path-to-regexp'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import definitions from './definitions.json'

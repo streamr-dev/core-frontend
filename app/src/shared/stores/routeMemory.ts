@@ -8,10 +8,10 @@
  * or erased on the next route change.
  */
 
-import { create } from 'zustand'
 import { produce } from 'immer'
-import { useHistory } from 'react-router-dom'
 import { useEffect } from 'react'
+import { create } from 'zustand'
+import { useHistory } from 'react-router-dom'
 
 export const RouteMemoryKey = {
     lastStreamListingSelection() {

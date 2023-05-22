@@ -1,6 +1,6 @@
 import React from 'react'
-import { render } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
+import { render } from '@testing-library/react'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 import * as getConfig from '$shared/web3/config'
 import MissingNetworkError from '$shared/errors/MissingNetworkError'

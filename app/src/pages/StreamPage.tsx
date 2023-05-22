@@ -1,5 +1,7 @@
 import React, { FormEvent, useCallback } from 'react'
 import { StreamPermission } from 'streamr-client'
+import styled, { css } from 'styled-components'
+import { toaster } from 'toasterhea'
 import {
     Link,
     Redirect,
@@ -9,8 +11,6 @@ import {
     useLocation,
     useParams,
 } from 'react-router-dom'
-import styled, { css } from 'styled-components'
-import { toaster } from 'toasterhea'
 import { StreamPreview } from '$shared/components/StreamPreview'
 import { StreamConnect } from '$shared/components/StreamConnect'
 import {

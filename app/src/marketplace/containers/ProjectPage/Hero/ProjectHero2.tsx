@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react'
-import Editor from "rich-markdown-editor"
 import styled from 'styled-components'
+import Editor from "rich-markdown-editor"
 import light from 'rich-markdown-editor/dist/styles/theme'
 import { Project } from '$mp/types/project-types'
 import {

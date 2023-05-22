@@ -1,5 +1,6 @@
 import React, {Fragment, FunctionComponent} from 'react'
 import styled, { css } from 'styled-components'
+import { toaster } from 'toasterhea'
 import { useLocation } from 'react-router-dom'
 import {
     Button,
@@ -9,7 +10,6 @@ import {
     NavDropdown,
     NavOverlay,
 } from '@streamr/streamr-layout'
-import { toaster } from 'toasterhea'
 import { MD as TABLET, LG as DESKTOP, COLORS, REGULAR, MEDIUM } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import SvgIcon from '$shared/components/SvgIcon'

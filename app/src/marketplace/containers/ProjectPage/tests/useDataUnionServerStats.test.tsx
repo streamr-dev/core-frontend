@@ -1,6 +1,6 @@
 import React from 'react'
-import { render } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
+import { render } from '@testing-library/react'
 import * as services from '$mp/modules/dataUnion/services'
 import useDataUnionServerStats from '../useDataUnionServerStats'
 jest.mock('$mp/modules/dataUnion/services', () => {

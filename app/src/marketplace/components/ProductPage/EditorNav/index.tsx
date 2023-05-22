@@ -1,5 +1,5 @@
-import { $Values } from 'utility-types'
 import React, { useMemo, useState, useEffect } from 'react'
+import { $Values } from 'utility-types'
 import cx from 'classnames'
 import findLastIndex from 'lodash/findLastIndex'
 import Icons from './Icons'

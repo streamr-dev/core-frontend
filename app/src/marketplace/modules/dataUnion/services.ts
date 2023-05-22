@@ -1,7 +1,7 @@
-import EventEmitter from 'events'
 import DataUnionClient, { ContractReceipt } from '@dataunions/client'
 import BN from 'bignumber.js'
 import {DataUnionClientConfig} from "@dataunions/client/types/src/Config"
+import EventEmitter from 'events'
 import { hexToNumber } from 'web3-utils'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'

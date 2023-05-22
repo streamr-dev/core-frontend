@@ -1,5 +1,5 @@
-import { $Keys } from 'utility-types'
 import React, { HTMLProps } from 'react'
+import { $Keys } from 'utility-types'
 import BrowserNotSupportedPng from '$shared/assets/images/browser_not_supported.png'
 import BrowserNotSupportedPng2x from '$shared/assets/images/browser_not_supported@2x.png'
 import DiscardChangesPng from '$shared/assets/images/discard_changes.png'

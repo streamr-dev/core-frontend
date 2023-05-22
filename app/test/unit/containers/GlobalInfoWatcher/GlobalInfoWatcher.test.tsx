@@ -1,5 +1,5 @@
-import EventEmitter from 'events'
 import React from 'react'
+import EventEmitter from 'events'
 import {render, act} from "@testing-library/react"
 import {jest} from "@jest/globals"
 import * as globalActions from '$mp/modules/global/actions'
