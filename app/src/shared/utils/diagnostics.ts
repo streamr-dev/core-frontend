@@ -3,7 +3,7 @@
 import '../../analytics'
 import packageLock from '$app/../package-lock.json'
 const navigator = global.navigator || {}
-const streamrClientVersion = packageLock['streamr-client'].version
+const streamrClientVersion = (packageLock as any).dependencies['streamr-client'].version
 global.streamr = Object.assign(global.streamr || {}, {
     info() {
         const info = {
