@@ -20,7 +20,8 @@
         "clear-cache": "npm run clean-cache",
         "clean-cache": "rm -rf node_modules/.cache; rm -rf .cache; rm -rf dist; jest --clearCache",
         "cloc": "npx cloc --exclude-dir=node_modules,coverage,package-lock.json .",
-        "prettier": "pretty-quick --staged"
+        "prettier": "pretty-quick --staged",
+        "prepare": "husky install"
     },
     "husky": {
         "hooks": {
