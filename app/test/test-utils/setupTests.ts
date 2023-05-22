@@ -1,5 +1,5 @@
 import { format } from 'util'
-import dotenv from '../../scripts/dotenv'
+import dotenv from '../../../scripts/dotenv'
 import '@testing-library/jest-dom'
 dotenv()
 

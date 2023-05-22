@@ -1,6 +1,6 @@
 import "core-js/stable"
 import '$utils/setupSnippets'
-import { xs, sm, md, lg } from '$app/scripts/breakpoints'
+import { xs, sm, md, lg } from '$app/../scripts/breakpoints'
 
 // To import the global styling
 import '$shared/assets/stylesheets'
