@@ -99,11 +99,7 @@ module.exports = {
             // Images are put to <BASE_URL>/images
             {
                 test: /\.(png|jpg|jpeg|svg)$/,
-                loader: 'file-loader',
-                options: {
-                    name: 'images/[name]_[hash:8].[ext]',
-                    publicPath,
-                },
+                type: 'asset/resource',
             },
             // Videos are put to <BASE_URL>/videos
             {
@@ -117,11 +113,7 @@ module.exports = {
             // Fonts are put to <BASE_URL>/fonts
             {
                 test: /\.(woff|woff2|eot|ttf)$/,
-                loader: 'file-loader',
-                options: {
-                    name: 'fonts/[name]_[hash:8].[ext]',
-                    publicPath,
-                },
+                type: 'asset/resource',
             },
             // .pcss files treated as modules
             {
