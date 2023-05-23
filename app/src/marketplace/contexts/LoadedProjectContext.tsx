@@ -18,7 +18,12 @@ const useLoadedProjectImplementation = (projectId: ProjectId): LoadedProjectStat
             setProject(theGraphProject)
             setMappedProject(await mapGraphProjectToDomainModel(theGraphProject))
         }
-        loadData()
+
+        try {
+            loadData()
+        } catch (e) {
+            console.error(e)
+        }
     }, [projectId])
 
     return {

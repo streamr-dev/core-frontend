@@ -81,7 +81,10 @@ const ImageUpload: FunctionComponent<Props> = ({
         [isMounted],
     )
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
-        accept: 'image/jpeg, image/png',
+        accept: {
+            'image/jpeg': ['.jpg', '.jpeg'],
+            'image/png': ['.png'],
+        },
         maxSize: maxFileSizeForImageUpload,
         onDrop,
         onDropAccepted,
