@@ -83,47 +83,13 @@ module.exports = {
                 },
             },
             {
-                test: /.jsx?$/,
-                loader: 'babel-loader',
-                include: [path.resolve(root, 'src'), path.resolve(root, 'scripts')],
-                options: {
-                    rootMode: 'upward',
-                    cacheDirectory: !isProduction(),
-                    compact: isProduction(),
-                },
-            },
-            {
-                test: /\.md$/,
-                loader: 'raw-loader',
-            },
-            // Images are put to <BASE_URL>/images
-            {
                 test: /\.(png|jpg|jpeg|svg)$/,
-                loader: 'file-loader',
-                options: {
-                    name: 'images/[name]_[hash:8].[ext]',
-                    publicPath,
-                },
+                type: 'asset/resource',
             },
-            // Videos are put to <BASE_URL>/videos
-            {
-                test: /\.(mp4)$/,
-                loader: 'file-loader',
-                options: {
-                    name: 'videos/[name]_[hash:8].[ext]',
-                    publicPath,
-                },
-            },
-            // Fonts are put to <BASE_URL>/fonts
             {
                 test: /\.(woff|woff2|eot|ttf)$/,
-                loader: 'file-loader',
-                options: {
-                    name: 'fonts/[name]_[hash:8].[ext]',
-                    publicPath,
-                },
+                type: 'asset/resource',
             },
-            // .pcss files treated as modules
             {
                 test: /\.pcss$/,
                 use: [
@@ -157,7 +123,6 @@ module.exports = {
                     },
                 ],
             },
-            // po-loader turns .po file into json
             {
                 test: /\.po$/,
                 loader: '@streamr/po-loader',
