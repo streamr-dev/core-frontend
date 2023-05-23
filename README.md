@@ -1,4 +1,4 @@
-# Streamr Core frontend
+# Streamr Hub
 
 This is the Streamr Hub application frontend, which includes tooling for creating and editing Streamr resources
 (streams, data unions, projects), and the data marketplace.
@@ -78,7 +78,7 @@ npm version patch # This will get you a tag, too, e.g. v3.1.15.
 git push master
 ```
 
-At this point it's a good idea to check that Travis confirms all tests are passing. Then, for example if the new version is '3.1.15',
+At this point it's a good idea to check that Travis confirms all tests are passing. Then, for example if the new version is `3.1.15`,
 
 ```
 git push v3.1.15
@@ -96,7 +96,7 @@ npm version patch
 git push master
 ```
 
-At this point it's a good idea to check that Travis confirms all tests are passing. Then, for example if the new version is '3.1.15',
+At this point it's a good idea to check that Travis confirms all tests are passing. Then, for example if the new version is `3.1.15`,
 
 ```
 git push v3.1.15
