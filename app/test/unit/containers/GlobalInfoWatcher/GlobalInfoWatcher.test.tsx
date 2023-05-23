@@ -1,7 +1,7 @@
 import React from 'react'
 import EventEmitter from 'events'
-import {render, act} from "@testing-library/react"
-import {jest} from "@jest/globals"
+import React from 'react'
+import { render, act } from '@testing-library/react'
 import * as globalActions from '$mp/modules/global/actions'
 import * as transactionActions from '$mp/modules/transactions/actions'
 import * as transactionUtils from '$shared/utils/transactions'
@@ -16,11 +16,11 @@ jest.mock('$shared/stores/wallet', () => ({
 }))
 
 jest.mock('$mp/modules/global/actions', () => ({
-    setEthereumNetworkId: jest.fn().mockImplementation((...args) => void 0)
+    setEthereumNetworkId: jest.fn().mockImplementation((...args) => void 0),
 }))
 
 jest.mock('$mp/modules/transactions/actions', () => ({
-    addTransaction: jest.fn().mockImplementation((...args) => void 0)
+    addTransaction: jest.fn().mockImplementation((...args) => void 0),
 }))
 
 jest.mock('$shared/hooks/useBalances', () => ({
@@ -30,13 +30,13 @@ jest.mock('$shared/hooks/useBalances', () => ({
 }))
 
 jest.mock('redux', () => ({
-    useDispatch: jest.fn().mockImplementation(() => (action) => action)
+    useDispatch: jest.fn().mockImplementation(() => (action) => action),
 }))
 
 // Skipping for now. It might be deleted soon anyways
 describe.skip('GlobalInfoWatcher', () => {
     beforeEach(() => {
-        (useWalletAccount as any).mockImplementation(() => '0xIMSOAUTHENTICATED')
+        ;(useWalletAccount as any).mockImplementation(() => '0xIMSOAUTHENTICATED')
     })
 
     const { location } = window
@@ -73,8 +73,13 @@ describe.skip('GlobalInfoWatcher', () => {
             '0x123': 'setDataAllowance',
             '0x456': 'purchase',
         }
-        jest.spyOn(web3Utils, 'hasTransactionCompleted').mockImplementation(() => Promise.resolve(false))
-        jest.spyOn(transactionUtils, 'getTransactionsFromSessionStorage').mockImplementation(() => transactions)
+        jest.spyOn(web3Utils, 'hasTransactionCompleted').mockImplementation(() =>
+            Promise.resolve(false),
+        )
+        jest.spyOn(
+            transactionUtils,
+            'getTransactionsFromSessionStorage',
+        ).mockImplementation(() => transactions)
         act(() => {
             render(<GlobalInfoWatcher />)
         })
