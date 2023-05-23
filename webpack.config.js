@@ -45,7 +45,7 @@ module.exports = {
         path.resolve(root, 'app', 'src', 'shared', 'utils', 'diagnostics.ts'),
         // always load setup first
         './setup.ts',
-        path.resolve(root, 'app', 'src', 'index.tsx'),
+        './index.tsx',
     ],
     output: {
         path: dist,
