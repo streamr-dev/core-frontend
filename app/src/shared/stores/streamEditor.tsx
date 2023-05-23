@@ -1,8 +1,6 @@
 import type StreamrClient from 'streamr-client'
-import { create } from 'zustand'
 import { produce } from 'immer'
 import React, { createContext, useCallback, useContext, useEffect, useMemo } from 'react'
-import isEqual from 'lodash/isEqual'
 import { useClient } from 'streamr-client-react'
 import {
     PermissionAssignment,
@@ -10,10 +8,12 @@ import {
     StreamMetadata,
     StreamPermission,
 } from 'streamr-client'
-import uniqueId from 'lodash/uniqueId'
-import { Link, useRouteMatch } from 'react-router-dom'
 import styled from 'styled-components'
 import { Toaster, toaster } from 'toasterhea'
+import uniqueId from 'lodash/uniqueId'
+import { Link, useRouteMatch } from 'react-router-dom'
+import isEqual from 'lodash/isEqual'
+import { create } from 'zustand'
 import address0 from '$app/src/utils/address0'
 import NoStreamIdError from '$shared/errors/NoStreamIdError'
 import getTransactionalClient from '$app/src/getters/getTransactionalClient'

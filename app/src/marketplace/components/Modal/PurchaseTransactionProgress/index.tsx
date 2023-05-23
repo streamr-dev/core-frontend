@@ -1,6 +1,6 @@
-import { $Values } from 'utility-types'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
+import { $Values } from 'utility-types'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import ProgressBar from '$shared/components/ProgressBar'

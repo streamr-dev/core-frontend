@@ -1,4 +1,3 @@
-import throttle from 'lodash/throttle'
 import React, {
     ComponentProps,
     HTMLAttributes,
@@ -12,6 +11,7 @@ import React, {
     useState,
 } from 'react'
 import styled, { css } from 'styled-components'
+import throttle from 'lodash/throttle'
 import isPreventable from '$utils/isPreventable'
 
 interface InternalTabProps<P = unknown> {

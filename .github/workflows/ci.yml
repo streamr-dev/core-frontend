@@ -1,10 +1,6 @@
 name: Lint, build and test
 on: [push]
 
-defaults:
-  run:
-    working-directory: app
-
 jobs:
   linting:
     name: eslint, stylelint
@@ -29,7 +25,7 @@ jobs:
       - name: Hadolint for linting Dockerfile
         uses: hadolint/hadolint-action@v3.1.0
         with:
-          dockerfile: ./app/Dockerfile
+          dockerfile: ./Dockerfile
           config: ./.hadolint.yaml
 
   jestSetup:
@@ -122,7 +118,6 @@ jobs:
         with:
           browser: chrome
           headless: true
-          working-directory: app
           # Start serving 'dist' folder from previous build step
           start: npx serve dist --listen 3333 --single
           wait-on: "http://localhost"
@@ -174,6 +169,5 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           exitZeroOnChanges: true
-          workingDir: app
           # Use output folder from previous step
           storybookBuildDir: storybook-static

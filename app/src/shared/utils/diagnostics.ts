@@ -1,10 +1,9 @@
 // You should init the Sentry browser SDK as soon as possible during your application load up, before initializing React
 // https://docs.sentry.io/platforms/javascript/react/
 import '../../analytics'
-import packageLock from '$app/package-lock'
-const dependencies = packageLock.dependencies
+import packageLock from '$app/../package-lock.json'
 const navigator = global.navigator || {}
-const streamrClientVersion = dependencies['streamr-client'].version
+const streamrClientVersion = (packageLock as any).dependencies['streamr-client'].version
 global.streamr = Object.assign(global.streamr || {}, {
     info() {
         const info = {
@@ -45,8 +44,8 @@ global.streamr = Object.assign(global.streamr || {}, {
             }
         }
 
-        const version = process.env.GIT_VERSION
-        const branch = process.env.GIT_BRANCH
+        const version = process.env.GIT_VERSION || ''
+        const branch = process.env.GIT_BRANCH || ''
         const isMaster = branch === 'master'
         // version e.g. v2.0.5-926-g7e20dd2eb
         const [versionNumber, , hash] = version.split('-')

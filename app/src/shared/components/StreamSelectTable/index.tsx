@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { Stream, StreamID } from 'streamr-client'
+import { Link } from 'react-router-dom'
 
 import LoadMore from '$mp/components/LoadMore'
 import { StreamId } from '$shared/types/stream-types'

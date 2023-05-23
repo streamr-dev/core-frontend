@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
+import { Link } from 'react-router-dom'
 import { REGULAR, TABLET } from '$shared/utils/styled'
 import Button from '$shared/components/Button'
 import { ProjectType, SalePoint } from '$shared/types'

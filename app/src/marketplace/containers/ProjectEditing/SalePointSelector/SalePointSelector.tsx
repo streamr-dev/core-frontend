@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useCallback, useContext, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { Chain } from '@streamr/config'
 import BN from 'bignumber.js'
+import { Chain } from '@streamr/config'
 import { REGULAR } from '$shared/utils/styled'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { PricingData, SalePoint } from '$mp/types/project-types'

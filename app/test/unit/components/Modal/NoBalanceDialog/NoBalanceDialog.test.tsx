@@ -1,6 +1,6 @@
 import React from 'react'
-import { render } from '@testing-library/react'
 import BN from 'bignumber.js'
+import { render } from '@testing-library/react'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
 
 describe('NoBalanceDialog', () => {

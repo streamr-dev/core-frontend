@@ -1,7 +1,7 @@
 import React, {FunctionComponent, ReactNode, useCallback, useEffect, useState} from 'react'
 import styled, { css } from 'styled-components'
-import { Link } from 'react-router-dom'
 import { Stream } from 'streamr-client'
+import { Link } from 'react-router-dom'
 
 import LoadMore from '$mp/components/LoadMore'
 import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'

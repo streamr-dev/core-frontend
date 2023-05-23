@@ -1,6 +1,6 @@
 import React from 'react'
-import classnames from 'classnames'
 import styled from 'styled-components'
+import classnames from 'classnames'
 import { isDataUnionProject } from '$mp/utils/product'
 import { MarketplaceProductTile as UnstyledMarketplaceProductTile } from '$shared/components/Tile'
 import {

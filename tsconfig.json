@@ -1,0 +1,19 @@
+{
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "typeRoots": ["./typings"],
+        "paths": {
+            "$app/*": ["app/*"],
+            "$mp/*": ["app/src/marketplace/*"],
+            "$userpages/*": ["app/src/userpages/*"],
+            "$routes/*": ["app/src/routes/*"],
+            "$routes": ["app/src/routes/index.ts"],
+            "$shared/*": ["app/src/shared/*"],
+            "$testUtils/*": ["app/src/test/test-utils/*"],
+            "$ui/*": ["app/src/shared/components/Ui/*"],
+            "$utils/*": ["app/src/utils/*"],
+            "$config": ["app/src/config/*.toml"]
+        }
+    },
+    "exclude": ["**/*.test.ts", "**/*.test.tsx", "./app/test/test-utils/setupTests.ts"]
+}

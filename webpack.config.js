@@ -29,9 +29,7 @@ const isProduction = require('./scripts/isProduction')
 
 const root = path.resolve(__dirname)
 const dist = path.resolve(root, 'dist')
-const gitRevisionPlugin = new GitRevisionPlugin({
-    gitWorkTree: path.resolve(root, '..'),
-})
+const gitRevisionPlugin = new GitRevisionPlugin()
 
 if (isProduction() && !process.env.STORYBOOK) {
     validateEnv(process.env)
@@ -44,10 +42,10 @@ module.exports = {
     mode: isProduction() ? 'production' : 'development',
     entry: [
         // forcibly print diagnostics upfront
-        path.resolve(root, 'src', 'shared', 'utils', 'diagnostics.ts'),
+        path.resolve(root, 'app', 'src', 'shared', 'utils', 'diagnostics.ts'),
         // always load setup first
-        path.resolve(root, 'src', 'setup.ts'),
-        path.resolve(root, 'src', 'index.tsx'),
+        './setup.ts',
+        './index.tsx',
     ],
     output: {
         path: dist,
@@ -83,6 +81,21 @@ module.exports = {
                 },
             },
             {
+                test: /.jsx?$/,
+                loader: 'babel-loader',
+                include: [path.resolve(root, 'app', 'src'), path.resolve(root, 'scripts')],
+                options: {
+                    rootMode: 'upward',
+                    cacheDirectory: !isProduction(),
+                    compact: isProduction(),
+                },
+            },
+            {
+                test: /\.md$/,
+                loader: 'raw-loader',
+            },
+            // Images are put to <BASE_URL>/images
+            {
                 test: /\.(png|jpg|jpeg|svg)$/,
                 type: 'asset/resource',
             },
@@ -117,7 +130,7 @@ module.exports = {
                         loader: 'sass-loader',
                         options: {
                             sassOptions: {
-                                includePaths: [path.resolve(__dirname, 'src/shared/assets/stylesheets')],
+                                includePaths: [path.resolve(__dirname, 'app/src/shared/assets/stylesheets')],
                             }
                         },
                     },
@@ -150,7 +163,7 @@ module.exports = {
         //     },
         // }),
         new HtmlWebpackPlugin({
-            template: 'src/index.html',
+            template: 'index.html',
             templateParameters: {
                 gaId: process.env.GOOGLE_ANALYTICS_ID,
                 version: pkg.version,
@@ -163,7 +176,7 @@ module.exports = {
             chunkFilename: !isProduction() ? '[id].css' : '[id].[contenthash:8].css',
         }),
         new StyleLintPlugin({
-            files: ['src/**/*.css', 'src/**/*.(p|s)css'],
+            files: ['**/*.css', '**/*.(p|s)css'],
         }),
         new webpack.EnvironmentPlugin({
             GIT_VERSION: gitRevisionPlugin.version(),
@@ -231,15 +244,8 @@ module.exports = {
                 : [
                     // Dev plugins
                     new DeadCodePlugin({
-                        patterns: [
-                            'src/marketplace/**/*.*',
-                            'src/shared/**/*.*',
-                            'src/routes/**/*.*',
-                            'src/userpages/**/*.*',
-                            'src/*.*',
-                        ],
                         exclude: [
-                            'node_modules/**/*.*',
+                            '**/node_modules/**/*.*',
                             // skip tests
                             '**/tests/*.*',
                             '**/tests/**/*.*',
@@ -316,15 +322,15 @@ module.exports = {
         },
         alias: {
             // Make sure you set up aliases in flow and jest configs.
-            $app: __dirname,
-            $mp: path.resolve(__dirname, 'src/marketplace/'),
-            $userpages: path.resolve(__dirname, 'src/userpages/'),
-            $shared: path.resolve(__dirname, 'src/shared/'),
+            $app: path.resolve(__dirname, 'app/'),
+            $mp: path.resolve(__dirname, 'app/src/marketplace/'),
+            $userpages: path.resolve(__dirname, 'app/src/userpages/'),
+            $shared: path.resolve(__dirname, 'app/src/shared/'),
             $testUtils: path.resolve(__dirname, 'test/test-utils/'),
-            $routes: path.resolve(__dirname, 'src/routes/'),
-            $utils: path.resolve(__dirname, 'src/utils/'),
-            $ui: path.resolve(__dirname, 'src/shared/components/Ui'),
-            $config: path.resolve(__dirname, `src/config/${process.env.HUB_CONFIG_ENV || process.env.NODE_ENV}.toml`),
+            $routes: path.resolve(__dirname, 'app/src/routes/'),
+            $utils: path.resolve(__dirname, 'app/src/utils/'),
+            $ui: path.resolve(__dirname, 'app/src/shared/components/Ui'),
+            $config: path.resolve(__dirname, `app/src/config/${process.env.HUB_CONFIG_ENV || process.env.NODE_ENV}.toml`),
             // When duplicate bundles point to different places.
             '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),
             'bn.js': path.resolve(__dirname, 'node_modules/bn.js'),

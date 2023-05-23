@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Link as PrestyledLink } from 'react-router-dom'
 import { useDiscardableEffect, defer, Deferral } from 'toasterhea'
+import { Link as PrestyledLink } from 'react-router-dom'
 import { Logo, Auth, SignInMethod, LoadingIndicator } from '@streamr/streamr-layout'
 import { MEDIUM, TABLET } from '$shared/utils/styled'
 import Button from '$shared/components/Button'

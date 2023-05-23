@@ -1,8 +1,8 @@
 import React from 'react'
-import * as yup from 'yup'
 import {Meta} from "@storybook/react"
 import styled from 'styled-components'
 import { action } from '@storybook/addon-actions'
+import * as yup from 'yup'
 import SvgIcon from '$shared/components/SvgIcon'
 import { COLORS } from '$shared/utils/styled'
 import NetworkIcon from '$shared/components/NetworkIcon'

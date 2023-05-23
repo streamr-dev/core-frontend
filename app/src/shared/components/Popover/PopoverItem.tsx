@@ -1,6 +1,6 @@
 import React, { FunctionComponent, ReactNode } from 'react'
-import { DropdownItem, DropdownItem as RsDropdownItem } from 'reactstrap'
 import styled from 'styled-components'
+import { DropdownItem, DropdownItem as RsDropdownItem } from 'reactstrap'
 import SvgIcon from '$shared/components/SvgIcon'
 const TickIcon = styled(SvgIcon)`
     width: 10px;

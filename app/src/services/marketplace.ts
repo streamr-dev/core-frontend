@@ -1,6 +1,6 @@
+import BN from 'bignumber.js'
 import { AbiItem } from 'web3-utils'
 import { Contract } from 'web3-eth-contract'
-import BN from 'bignumber.js'
 
 import { getContract } from '$mp/utils/smartContract'
 import { send, call } from '$mp/utils/smartContract'

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { FlexibleXYPlot, LineSeries, XAxis, YAxis, HorizontalGridLines } from 'react-vis'
 import Rect from '$shared/components/Rect'
 import ProductStat from '$shared/components/ProductStat'
-import '$app/node_modules/react-vis/dist/style.css'
+import 'node_modules/react-vis/dist/style.css'
 import Spinner from '$shared/components/Spinner'
 const PlotContainer = styled.div`
     height: 100%;

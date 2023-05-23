@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useMemo, useState } from 'react'
-import { CodeSnippet, Tabs } from '@streamr/streamr-layout'
 import styled from 'styled-components'
+import { CodeSnippet, Tabs } from '@streamr/streamr-layout'
 import { COLORS, MEDIUM } from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
 import Button from '$shared/components/Button'

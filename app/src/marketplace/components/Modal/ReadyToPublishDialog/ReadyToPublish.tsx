@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Label } from 'reactstrap'
 import styled from 'styled-components'
+import { Label } from 'reactstrap'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Checkbox from '$shared/components/Checkbox'
