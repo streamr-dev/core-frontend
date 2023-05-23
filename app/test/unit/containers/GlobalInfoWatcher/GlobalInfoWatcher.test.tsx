@@ -1,6 +1,5 @@
 import React from 'react'
 import EventEmitter from 'events'
-import React from 'react'
 import { render, act } from '@testing-library/react'
 import * as globalActions from '$mp/modules/global/actions'
 import * as transactionActions from '$mp/modules/transactions/actions'
