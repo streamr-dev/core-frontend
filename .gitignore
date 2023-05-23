@@ -17,6 +17,7 @@ screenshots
 .env.test.local
 .env.production.local
 *.log
+.env
 
 # IntelliJ files
 .idea
