@@ -36,7 +36,7 @@ jest.mock('redux', () => ({
 // Skipping for now. It might be deleted soon anyways
 describe.skip('GlobalInfoWatcher', () => {
     beforeEach(() => {
-        ;(useWalletAccount as any).mockImplementation(() => '0xIMSOAUTHENTICATED')
+        (useWalletAccount as any).mockImplementation(() => '0xIMSOAUTHENTICATED')
     })
 
     const { location } = window
