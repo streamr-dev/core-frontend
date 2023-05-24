@@ -248,6 +248,7 @@ module.exports = {
                             '**/node_modules/**/*.*',
                             'storybook-static/**/*.*',
                             'dist/**/*.*',
+                            'coverage/**/*.*',
                             // skip tests
                             '**/tests/*.*',
                             '**/tests/**/*.*',
