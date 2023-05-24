@@ -178,9 +178,8 @@ export const validate = (
                 +project.adminFee > 100)
         invalidFields.dataUnionChainId = !project.dataUnionChainId
         invalidFields.existingDUAddress =
-            !project.isDeployingNewDU ?
-                (!project.existingDUAddress || !isAddress(project.existingDUAddress)) :
-                true
+            !project.isDeployingNewDU &&
+            (!project.existingDUAddress || !isAddress(project.existingDUAddress))
     }
 
     // applies to paid projects and data unions

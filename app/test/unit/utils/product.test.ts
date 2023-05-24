@@ -202,7 +202,7 @@ describe('product utils', () => {
                 adminFee: true,
                 dataUnionChainId: true,
                 salePoints: true,
-                existingDUAddress: true
+                existingDUAddress: false,
             })
         })
         it('validates name & description', () => {
@@ -341,7 +341,7 @@ describe('product utils', () => {
                 adminFee: false,
                 dataUnionChainId: false,
                 salePoints: true,
-                existingDUAddress: true
+                existingDUAddress: false,
             })
             expect(
                 all.validate({

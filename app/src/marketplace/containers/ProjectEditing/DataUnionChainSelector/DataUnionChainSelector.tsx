@@ -26,7 +26,6 @@ const DUChainSelector: FunctionComponent<{editMode: boolean}> = ({editMode}) => 
     const {
         updateDataUnionChainId,
         updateExistingDUAddress,
-        updateSalePoints,
         updateIsDeployingNewDU,
     } = useEditableProjectActions()
 
@@ -43,14 +42,6 @@ const DUChainSelector: FunctionComponent<{editMode: boolean}> = ({editMode}) => 
             updateIsDeployingNewDU(deployNewDU)
         }
         updateDataUnionChainId(chain.id)
-        updateSalePoints({[chain.name]: {
-            chainId: chain.id,
-            timeUnit: undefined,
-            beneficiaryAddress: undefined,
-            price: undefined,
-            pricingTokenAddress: undefined,
-            pricePerSecond: undefined
-        }})
         updateExistingDUAddress(deployNewDU ? undefined : existingDUAddress)
     }, [
         currentlySelectedIndex,
@@ -59,7 +50,6 @@ const DUChainSelector: FunctionComponent<{editMode: boolean}> = ({editMode}) => 
         updateDataUnionChainId,
         updateExistingDUAddress,
         updateIsDeployingNewDU,
-        updateSalePoints
     ])
 
     return <Container>
