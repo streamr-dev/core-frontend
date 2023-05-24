@@ -2,10 +2,13 @@
 module.exports = {
     preset: 'ts-jest',
     transform: {
-        "^.+\\.tsx?$": ["ts-jest", {
+        "^.+\\.(t|j)sx?$": ["ts-jest", {
             tsconfig: "tsconfig.test.json"
         }],
     },
+    transformIgnorePatterns: [
+        '<rootDir>/node_modules/(?!query-string/)',
+    ],
     testEnvironment: 'jsdom',
     collectCoverage: true,
     coverageProvider: "v8",
