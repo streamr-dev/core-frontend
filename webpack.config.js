@@ -305,6 +305,11 @@ module.exports = {
         // inline: true,
         // progress: true,
         port: process.env.PORT || 3333,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': '*',
+            'Access-Control-Allow-Methods': '*',
+        },
     },
     // automatically creates a vendor chunk & also
     // seems to prevent out of memory errors during dev ??
