@@ -33,9 +33,6 @@
     },
     "author": "",
     "license": "UNLICENSED",
-    "resolutions": {
-        "prosemirror-model": "1.13.3"
-    },
     "dependencies": {
         "@atlaskit/icon": "^21.11.5",
         "@dataunions/client": "^3.0.11",
