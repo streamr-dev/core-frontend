@@ -40,4 +40,6 @@ const UnstyledAvatarImage = ({ username, name, src, upload = false, ...props }) 
     )
 }
 
-export default styled(UnstyledAvatarImage)``
+const AvatarImage = styled(UnstyledAvatarImage)``
+
+export default AvatarImage

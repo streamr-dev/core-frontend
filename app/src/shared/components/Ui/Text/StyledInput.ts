@@ -1,8 +1,10 @@
 import styled, { css } from 'styled-components'
+
 export const SpaciousTheme = {
     height: '64px',
 }
-export default styled.input<{dark?: boolean, invalid?: boolean, theme?: any}>`
+
+const StyledInput = styled.input<{dark?: boolean, invalid?: boolean, theme?: any}>`
     background-color: ${({ dark }) => (dark ? '#fdfdfd' : '#ffffff')};
     border: 1px solid #efefef;
     border-radius: 4px;
@@ -76,3 +78,5 @@ export default styled.input<{dark?: boolean, invalid?: boolean, theme?: any}>`
             }
         `}
 `
+
+export default StyledInput

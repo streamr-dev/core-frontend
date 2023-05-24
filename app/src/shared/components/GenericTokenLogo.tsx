@@ -39,7 +39,7 @@ const intToRGB = (i: number) => {
     return '00000'.substring(0, 6 - c.length) + c
 }
 
-const GenericTokenLogo = ({ contractAddress, symbol, ...props }: Props) => {
+const UnstyledGenericTokenLogo = ({ contractAddress, symbol, ...props }: Props) => {
     const cssColor = `#${intToRGB(hashCode(contractAddress || ''))}`
 
     return (
@@ -52,4 +52,6 @@ const GenericTokenLogo = ({ contractAddress, symbol, ...props }: Props) => {
     )
 }
 
-export default styled(GenericTokenLogo)``
+const GenericTokenLogo = styled(UnstyledGenericTokenLogo)``
+
+export default GenericTokenLogo

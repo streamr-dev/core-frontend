@@ -14,7 +14,7 @@ const Image = styled.img`
     height: 24px;
 `
 
-const TokenLogo = ({ contractAddress, symbol, chainId, ...props }: Props) => {
+const UnstyledTokenLogo = ({ contractAddress, symbol, chainId, ...props }: Props) => {
     const logoUrl = contractAddress ? getTokenLogoUrl(contractAddress, chainId) : ''
     const { src: imgSrc } = useImage({
         useSuspense: false,
@@ -40,4 +40,6 @@ const TokenLogo = ({ contractAddress, symbol, chainId, ...props }: Props) => {
     )
 }
 
-export default styled(TokenLogo)``
+const TokenLogo = styled(UnstyledTokenLogo)``
+
+export default TokenLogo
