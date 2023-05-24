@@ -246,6 +246,8 @@ module.exports = {
                     new DeadCodePlugin({
                         exclude: [
                             '**/node_modules/**/*.*',
+                            'storybook-static/**/*.*',
+                            'dist/**/*.*',
                             // skip tests
                             '**/tests/*.*',
                             '**/tests/**/*.*',
