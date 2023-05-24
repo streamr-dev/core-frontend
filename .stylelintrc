@@ -1,5 +1,5 @@
 {
-    "ignoreFiles": ["**/*.tsx"],
+    "ignoreFiles": ["**/*.tsx", "coverage/**"],
     "extends": ["stylelint-config-streamr", "prettier"],
     "rules": {
         "unit-no-unknown": [
