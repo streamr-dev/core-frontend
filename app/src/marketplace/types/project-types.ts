@@ -1,12 +1,11 @@
 import BN from 'bignumber.js'
-import { $ElementType, $Keys, $Values } from 'utility-types'
+import { $ElementType, $Keys } from 'utility-types'
 import { projectStates } from '$shared/utils/constants'
 import { ProjectType } from '$shared/types'
 import { StreamIdList } from '$shared/types/stream-types'
 import { NumberString, PaymentCurrency } from '$shared/types/common-types'
 import { Address } from '$shared/types/web3-types'
 import {TimeUnit} from "$shared/utils/timeUnit"
-import { CategoryId } from './category-types'
 
 export type ProjectId = string
 export type ChainName = string
@@ -100,14 +99,11 @@ export type ProjectListPageWrapper = {
 export type ProjectEntities = Record<ProjectId, Project>
 export type SmartContractProjectEntities = Record<ProjectId, SmartContractProduct>
 export type SearchFilter = string
-export type CategoryFilter = CategoryId
 export type SortByFilter = string
 export type ProjectTypeFilter = string
 export type MaxPriceFilter = NumberString
-export type AnyFilter = SearchFilter | CategoryFilter | SortByFilter | ProjectTypeFilter
 export type Filter = {
     search?: SearchFilter | null | undefined
-    categories?: CategoryFilter | null | undefined
     sortBy?: SortByFilter | null | undefined
     maxPrice?: MaxPriceFilter | null | undefined
     type?: ProjectTypeFilter | null | undefined
