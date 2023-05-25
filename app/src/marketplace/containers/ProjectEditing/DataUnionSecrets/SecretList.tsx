@@ -10,7 +10,7 @@ const Container = styled.div`
 `
 
 type Props = {
-    secrets: Array<DataUnionSecret>,
+    secrets: DataUnionSecret[],
     onEdit: (secret: DataUnionSecret) => void,
     onDelete: (secret: DataUnionSecret) => void,
 }

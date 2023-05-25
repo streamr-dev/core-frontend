@@ -148,7 +148,7 @@ const TokenSelector: FunctionComponent<Props> = ({
     value,
     tokenChangeDisabled
 }) => {
-    const chainId = useMemo(() => chain?.id, [chain])
+    const chainId = chain?.id
     const dataAddress = useMemo(() => chainId ? getDataAddress(chainId).toLowerCase() : '', [chainId])
     const isMounted = useIsMounted()
     const [selection, setSelection] = useState<ContractCurrency>(

@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback, useState } from 'react'
+import React, { FunctionComponent, useState } from 'react'
 import styled from 'styled-components'
 import { DataUnionSecret } from '$app/src/marketplace/types/project-types'
 import WithInputActions from '$shared/components/WithInputActions'
@@ -25,12 +25,6 @@ export const SecretItem: FunctionComponent<Props> = ({ secret, onEdit, onDelete 
     const elementId = `secret-${secret.id}`
     const [isRevealed, setIsRevealed] = useState(false)
 
-    const onCopy = useCallback(() => {
-        copy(secret.secret, {
-            toastMessage: 'Copied',
-        })
-    }, [copy, secret.secret])
-
     return (
         <Container>
             <Label htmlFor={elementId}>{secret.name}</Label>
@@ -46,7 +40,11 @@ export const SecretItem: FunctionComponent<Props> = ({ secret, onEdit, onDelete 
                     </PopoverItem>,
                     <PopoverItem
                         key="copy"
-                        onClick={onCopy}
+                        onClick={() => {
+                            copy(secret.secret, {
+                                toastMessage: 'Copied',
+                            })
+                        }}
                     >
                         Copy
                     </PopoverItem>,

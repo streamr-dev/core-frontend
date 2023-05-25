@@ -220,7 +220,7 @@ export const ProjectTypeChooser: FunctionComponent<{className?: string, onClose:
                         checked={selectedProductType === ProjectType.PaidData}/>
                 </RadioWrap>
             </Product>
-            <Product onClick={() => setSelectedProductType(ProjectType.DataUnion)} title={'Available soon'}>
+            <Product onClick={() => setSelectedProductType(ProjectType.DataUnion)} title={'Data Union'}>
                 <ProductTitle>Data Union</ProductTitle>
                 <ProductImage>
                     <img src={dataUnionImage} srcSet={`${dataUnionImage2x} 2x`} alt="Data Union"/>

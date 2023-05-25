@@ -42,7 +42,7 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
 
     const nonEditableSalePointChains = useMemo<number[]>(
         () =>
-            Object.values(loadedProject?.salePoints ?? {}).map(
+            Object.values(loadedProject?.salePoints || {}).map(
                 (salePoint) => salePoint.chainId,
             ),
         [loadedProject],

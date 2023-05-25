@@ -32,7 +32,7 @@ type Props = {
 }
 
 export const SecretEditor: FunctionComponent<Props> = ({ secret, chainId, dataUnionId, onReject, onResolve }: Props) => {
-    const [name, setName] = useState<string>()
+    const [name, setName] = useState<string>('')
     const { add, edit } = useDataUnionSecrets()
 
     const isNew = secret == null

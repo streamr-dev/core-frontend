@@ -34,7 +34,7 @@ export const DataUnionSecrets: FunctionComponent = () => {
 
     const onAdd = useCallback(async () => {
         if (project.existingDUAddress == null || project.dataUnionChainId == null) {
-            return
+            throw new Error('Project has no data union contract address or chainId defined!')
         }
 
         try {
@@ -49,7 +49,7 @@ export const DataUnionSecrets: FunctionComponent = () => {
 
     const onEdit = useCallback(async (secret: DataUnionSecret) => {
         if (project.existingDUAddress == null || project.dataUnionChainId == null) {
-            return
+            throw new Error('Project has no data union contract address or chainId defined!')
         }
 
         try {

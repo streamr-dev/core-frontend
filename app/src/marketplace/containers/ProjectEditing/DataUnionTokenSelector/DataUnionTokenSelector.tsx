@@ -12,9 +12,9 @@ export const DataUnionTokenSelector: FunctionComponent<{ editMode: boolean }> = 
     const { state: project } = useContext(ProjectStateContext)
     const { updateSalePoints } = useEditableProjectActions()
 
-    const chain = useMemo<Chain>(() => {
+    const chain = useMemo<Chain | undefined>(() => {
         if (!project.dataUnionChainId) {
-            return {} as Chain
+            return undefined
         }
         return getConfigForChain(project.dataUnionChainId)
     }, [project.dataUnionChainId])
@@ -58,7 +58,7 @@ export const DataUnionTokenSelector: FunctionComponent<{ editMode: boolean }> = 
             disabled={!project.dataUnionChainId}
             onChange={handleChange}
             chain={chain}
-            validationFieldName={`salePoints.${chain.name}`}
+            validationFieldName={`salePoints.${chain?.name ?? 'no_chain_available'}`}
             tokenChangeDisabled={editMode}
             value={pricingData}
         />
