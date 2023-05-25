@@ -1,6 +1,6 @@
-import DataUnionClient, { ContractReceipt } from '@dataunions/client'
+import { DataUnionClient, ContractReceipt } from '@dataunions/client'
+import { DataUnionClientConfig } from '@dataunions/client/types/src/Config'
 import BN from 'bignumber.js'
-import {DataUnionClientConfig} from "@dataunions/client/types/src/Config"
 import EventEmitter from 'events'
 import { hexToNumber } from 'web3-utils'
 import getClientConfig from '$app/src/getters/getClientConfig'
@@ -18,7 +18,7 @@ import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import routes from '$routes'
 import { Secret } from './types'
 
-const createClient = (chainId: number) => {
+const createClient = async (chainId: number): Promise<DataUnionClient> => {
     const provider: any = getWeb3().currentProvider
     const config = getConfigForChain(chainId)
     const { dataUnionJoinServerUrl } = getCoreConfig()
@@ -31,12 +31,23 @@ const createClient = (chainId: number) => {
 
     const providerChainId = hexToNumber(provider.chainId)
     const isProviderInCorrectChain = providerChainId === chainId
+
+    // Account needs to be unlocked so that DataUnionClient works as expected
+    let isLocked = true
+    try {
+        await getDefaultWeb3Account()
+        isLocked = false
+    } catch (e) {
+        // account was locked
+    }
+    const isInCorrectChainAndUnlocked = isProviderInCorrectChain && !isLocked
+
     const clientConfig = getClientConfig({
         auth: {
             // If MetaMask is in right chain, use it to enable signing
-            ethereum: isProviderInCorrectChain ? provider : undefined,
+            ethereum: isInCorrectChainAndUnlocked ? provider : undefined,
             // Otherwise use a throwaway private key to authenticate and allow read-only mode
-            privateKey: !isProviderInCorrectChain ? '531479d5645596f264e7e3cbe80c4a52a505d60fad45193d1f6b8e4724bf0304' : undefined,
+            privateKey: !isInCorrectChainAndUnlocked ? '531479d5645596f264e7e3cbe80c4a52a505d60fad45193d1f6b8e4724bf0304' : undefined,
         },
         network: {
             chainId,
@@ -76,7 +87,7 @@ const getDataunionSubgraphUrlForChain = (chainId: number): string => {
 // smart contract queries
 // ----------------------
 export const getDataUnionObject = async (address: string, chainId: number) => {
-    const client = createClient(chainId)
+    const client = await createClient(chainId)
     const dataUnion = await client.getDataUnion(address)
     return dataUnion
 }
@@ -135,9 +146,9 @@ export const deployDataUnion = ({ productId, adminFee, chainId }: DeployDataUnio
         checkEthereumNetworkIsCorrect({
             network: chainId,
         }),
+        createClient(chainId),
     ])
-        .then(() => {
-            const client = createClient(chainId)
+        .then(([_, __, client]) => {
             return client.deployDataUnion({
                 dataUnionName: productId,
                 adminFee: +adminFee,
@@ -288,6 +299,7 @@ export const getDataUnionsOwnedByInChain = async (user: Address, chainId: number
 
     return []
 }
+
 export const getDataUnionMembers = async (id: DataUnionId, chainId: number, limit = 100): Promise<Array<string>> => {
     const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
     const result = await post({
@@ -311,6 +323,7 @@ export const getDataUnionMembers = async (id: DataUnionId, chainId: number, limi
 
     return []
 }
+
 export const searchDataUnionMembers = async (id: DataUnionId, query: string, chainId: number, limit = 100): Promise<Array<string>> => {
     const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
     const result = await post({
@@ -341,6 +354,31 @@ export const searchDataUnionMembers = async (id: DataUnionId, query: string, cha
 
     return []
 }
+
+export const getDataUnionChainIdByAddress = async (id: DataUnionId): Promise<number> => {
+    for (const chainId of getDataUnionChainIds()) {
+        const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
+        const result = await post({
+            url: theGraphUrl,
+            data: {
+                query: `
+                    query {
+                        dataUnions(where: { id: "${id.toLowerCase()}" }) {
+                            id
+                        }
+                    }
+                `,
+            }
+        })
+
+        if (result.data.dataUnions.length > 0) {
+            return chainId
+        }
+    }
+
+    return -1
+}
+
 export async function getSelectedMemberStatuses(id: DataUnionId, members: Array<string>, chainId: number): Promise<any> {
     const statuses = []
 
@@ -354,7 +392,7 @@ export async function getSelectedMemberStatuses(id: DataUnionId, members: Array<
 }
 
 async function* getMemberStatusesWithClient(id: DataUnionId, members: Array<string>, chainId: number): AsyncGenerator {
-    const client = createClient(chainId)
+    const client = await createClient(chainId)
 
     /* eslint-disable no-restricted-syntax, no-await-in-loop */
     for (const memberAddress of members) {
@@ -369,105 +407,59 @@ export async function* getMemberStatusesFromTheGraph(id: DataUnionId, chainId: n
     const members = await getDataUnionMembers(id, chainId)
     yield* getMemberStatusesWithClient(id, members, chainId)
 }
+
 export async function* getMemberStatuses(id: DataUnionId, chainId: number): AsyncGenerator {
     yield* getMemberStatusesFromTheGraph(id, chainId)
 }
-// ----------------------
-// calls to core-api
-// ----------------------
+
 type GetSecrets = {
     dataUnionId: DataUnionId
     chainId: number
 }
+
 export const getSecrets = async ({ dataUnionId, chainId }: GetSecrets): Promise<Array<Secret>> => {
-    const client = createClient(chainId)
+    const client = await createClient(chainId)
     const dataUnion = await client.getDataUnion(dataUnionId)
     const secrets = await dataUnion.listSecrets()
     return secrets
 }
+
 type CreateSecret = {
     dataUnionId: DataUnionId
     name: string
     chainId: number
 }
+
 export const createSecret = async ({ dataUnionId, name, chainId }: CreateSecret): Promise<Secret> => {
-    const client = createClient(chainId)
+    const client = await createClient(chainId)
     const dataUnion = await client.getDataUnion(dataUnionId)
     const secret = await dataUnion.createSecret(name)
     return secret
 }
+
 type EditSecret = {
     dataUnionId: DataUnionId
     id: string
     name: string
     chainId: number
 }
+
 export const editSecret = async ({ dataUnionId, id, name, chainId }: EditSecret): Promise<Secret> => {
-    const client = createClient(chainId)
+    const client = await createClient(chainId)
     const dataUnion = await client.getDataUnion(dataUnionId)
     // @ts-expect-error 2339
     const result = await dataUnion.editSecret(id, name)
     return result
 }
+
 type DeleteSecrect = {
     dataUnionId: DataUnionId
     id: string
     chainId: number
 }
+
 export const deleteSecret = async ({ dataUnionId, id, chainId }: DeleteSecrect): Promise<void> => {
-    const client = createClient(chainId)
+    const client = await createClient(chainId)
     const dataUnion = await client.getDataUnion(dataUnionId)
     await dataUnion.deleteSecret(id)
 }
-type GetJoinRequests = {
-    dataUnionId: DataUnionId
-    params?: any
-}
-export const getJoinRequests = ({ dataUnionId, params }: GetJoinRequests): ApiResult<any> =>
-    get({
-        url: routes.api.dataunions.joinRequests.index({
-            dataUnionId,
-        }),
-        options: {
-            params,
-        },
-    })
-type PutJoinRequest = {
-    dataUnionId: DataUnionId
-    joinRequestId: string
-    state: 'ACCEPTED' | 'REJECTED' | 'PENDING'
-}
-export const updateJoinRequest = async ({ dataUnionId, joinRequestId: id, state }: PutJoinRequest): ApiResult<any> =>
-    put({
-        url: routes.api.dataunions.joinRequests.show({
-            dataUnionId,
-            id,
-        }),
-        data: {
-            state,
-        },
-    })
-type PostJoinRequest = {
-    dataUnionId: DataUnionId
-    memberAddress: Address
-}
-export const addJoinRequest = async ({ dataUnionId, memberAddress }: PostJoinRequest): ApiResult<any> =>
-    post({
-        url: routes.api.dataunions.joinRequests.index({
-            dataUnionId,
-        }),
-        data: {
-            memberAddress,
-        },
-    })
-type DeleteJoinRequest = {
-    dataUnionId: DataUnionId
-    joinRequestId: string
-}
-export const removeJoinRequest = async ({ dataUnionId, joinRequestId: id }: DeleteJoinRequest): ApiResult<void> =>
-    del({
-        url: routes.api.dataunions.joinRequests.show({
-            dataUnionId,
-            id,
-        }),
-    })

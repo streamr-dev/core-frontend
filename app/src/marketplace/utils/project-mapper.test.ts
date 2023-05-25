@@ -61,6 +61,7 @@ describe('projectMapper', () => {
                         termsUrl: undefined
                     }
                 },
+                isDataUnion: false,
                 createdAt: 'xxx',
                 updatedAt: 'xxx',
                 purchases: [],

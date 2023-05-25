@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback, useContext, useMemo } from 'react'
+import React, { FunctionComponent, useCallback, useContext, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { Chain } from '@streamr/config'
 import { REGULAR } from '$shared/utils/styled'
@@ -15,13 +15,19 @@ import { useEditableProjectActions } from '$mp/containers/ProductController/useE
 const getChainOptions = (chains: Array<string>): Chain[] =>
     chains.map((c) => getConfigForChainByName(c))
 
-const DUChainSelector: FunctionComponent = () => {
-    const [currentlySelectedIndex, setCurrentlySelectedIndex] = useContext(DataUnionChainSelectorContext)
+const DUChainSelector: FunctionComponent<{editMode: boolean}> = ({editMode}) => {
+    const [currentlySelectedIndex, setCurrentlySelectedIndex] = useContext(
+        DataUnionChainSelectorContext,
+    )
     const { dataunionChains } = getCoreConfig()
     const chainOptions: Chain[] = useMemo(() => {
         return getChainOptions(dataunionChains)
     }, [dataunionChains])
-    const {updateDataUnionChainId, updateExistingDUAddress, updateSalePoints } = useEditableProjectActions()
+    const {
+        updateDataUnionChainId,
+        updateExistingDUAddress,
+        updateIsDeployingNewDU,
+    } = useEditableProjectActions()
 
     const handleDataUnionOptionChange = useCallback((
         index: number,
@@ -32,22 +38,19 @@ const DUChainSelector: FunctionComponent = () => {
         if (currentlySelectedIndex !== index) {
             setCurrentlySelectedIndex(index)
         }
-        updateDataUnionChainId(chain.id)
-        if (deployNewDU) {
-            updateSalePoints({[chain.name]: {
-                chainId: chain.id,
-                timeUnit: undefined,
-                beneficiaryAddress: undefined,
-                price: undefined,
-                pricingTokenAddress: undefined,
-                pricePerSecond: undefined
-            }})
-            updateExistingDUAddress(undefined)
-            return
+        if (!editMode) {
+            updateIsDeployingNewDU(deployNewDU)
         }
-        updateSalePoints({})
-        updateExistingDUAddress(existingDUAddress)
-    }, [currentlySelectedIndex, setCurrentlySelectedIndex, updateDataUnionChainId, updateExistingDUAddress, updateSalePoints])
+        updateDataUnionChainId(chain.id)
+        updateExistingDUAddress(deployNewDU ? undefined : existingDUAddress)
+    }, [
+        currentlySelectedIndex,
+        editMode,
+        setCurrentlySelectedIndex,
+        updateDataUnionChainId,
+        updateExistingDUAddress,
+        updateIsDeployingNewDU,
+    ])
 
     return <Container>
         <Heading>Select chain</Heading>
@@ -65,9 +68,9 @@ const DUChainSelector: FunctionComponent = () => {
     </Container>
 }
 
-export const DataUnionChainSelector: FunctionComponent = () => {
+export const DataUnionChainSelector: FunctionComponent<{editMode: boolean}> = ({editMode}) => {
     return <DataUnionChainSelectorContextProvider>
-        <DUChainSelector/>
+        <DUChainSelector editMode={editMode}/>
     </DataUnionChainSelectorContextProvider>
 }
 

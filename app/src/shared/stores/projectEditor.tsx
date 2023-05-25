@@ -1,18 +1,19 @@
 import { produce } from 'immer'
 import { z } from 'zod'
 import { createContext, useContext, useEffect, useMemo } from 'react'
+import BN from 'bignumber.js'
 import { create } from 'zustand'
 import isEqual from 'lodash/isEqual'
 import uniqueId from 'lodash/uniqueId'
 import { getGraphUrl, getProjectImageUrl } from '$app/src/getters'
 import { post } from '$shared/utils/api'
 import { TimeUnit, timeUnitSecondsMultiplierMap } from '$shared/utils/timeUnit'
-import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { getConfigForChain } from '$shared/web3/config'
 import { getTokenInformation } from '$mp/utils/web3'
 import { fromDecimals } from '$mp/utils/math'
 import { getMostRelevantTimeUnit } from '$mp/utils/price'
-import { isProjectOwnedBy } from '$app/src/marketplace/utils/product'
+import { isProjectOwnedBy } from '$mp/utils/product'
+import { getAdminFee, getDataUnionChainIdByAddress } from '$mp/modules/dataUnion/services'
 import { ProjectType, Project } from '$shared/types'
 import { GraphProject } from '$shared/consts'
 import { useHasActiveProjectSubscription } from './purchases'
@@ -114,6 +115,7 @@ async function fetchGraphProject(projectId: string) {
                         minimumSubscriptionSeconds
                         createdAt
                         updatedAt
+                        isDataUnion
                         paymentDetails {
                             domainId
                             beneficiary
@@ -214,6 +216,7 @@ async function getProjectFromGraphProject({
     metadata,
     streams,
     paymentDetails,
+    isDataUnion,
 }: GraphProject): Promise<Project> {
     const {
         name,
@@ -225,20 +228,13 @@ async function getProjectFromGraphProject({
         contactDetails: contact = initialProject.contact,
     } = metadata
 
-    const {
-        ipfs: { ipfsGatewayUrl },
-    } = getCoreConfig()
-
     const [payment = { pricePerSecond: '0' }, secondPayment] = paymentDetails
-
+    const isOpenData = payment.pricePerSecond === '0' && !secondPayment
     const salePoints = await getSalePointsFromPaymentDetails(paymentDetails)
 
-    return {
+    let result: Project = {
         id,
-        type:
-            payment.pricePerSecond === '0' && !secondPayment
-                ? ProjectType.OpenData
-                : ProjectType.PaidData,
+        type: isOpenData ? ProjectType.OpenData : ProjectType.PaidData,
         name,
         description,
         creator,
@@ -261,6 +257,31 @@ async function getProjectFromGraphProject({
         },
         salePoints,
     }
+
+    if (isDataUnion) {
+        const duAddress = paymentDetails.find((pd) => pd.beneficiary.length > 0)?.beneficiary
+        let adminFee = '0'
+        let chainId: number | undefined = undefined
+
+        if (duAddress) {
+            try {
+                chainId = await getDataUnionChainIdByAddress(duAddress)
+                adminFee = await getAdminFee(duAddress, chainId)
+            } catch (e) {
+                console.error('Could not load Data Union details', e)
+            }
+        }
+
+        result = {
+            ...result,
+            type: ProjectType.DataUnion,
+            adminFee: new BN(adminFee).multipliedBy(100).toString(),
+            existingDUAddress: duAddress,
+            dataUnionChainId: chainId,
+        }
+    }
+
+    return result
 }
 
 const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
@@ -483,6 +504,12 @@ export function useProject({ hot = false } = {}) {
     const draft = useDraft()
 
     return (hot ? draft?.project.hot : draft?.project.cold) || initialProject
+}
+
+export function useIsProjectFetching() {
+    const draft = useDraft()
+
+    return !draft || draft.project.fetching
 }
 
 export function useIsProjectBusy() {

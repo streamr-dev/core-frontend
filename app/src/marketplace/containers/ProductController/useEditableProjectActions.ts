@@ -27,7 +27,8 @@ export type EditableProjectActions = {
     updateContactUrl: (url: ContactDetails['url']) => void,
     updateContactEmail: (email: ContactDetails['email']) => void,
     updateSocialUrl: (platform: 'twitter' | 'telegram' | 'reddit' | 'linkedIn', url: string) => void,
-    updateCreator: (creatorName: string) => void
+    updateCreator: (creatorName: string) => void,
+    updateIsDeployingNewDU: (isDeployingNewDU: boolean) => void
 }
 export const useEditableProjectActions = (): EditableProjectActions => {
     const {state, updateState} = useContext(ProjectStateContext)
@@ -146,6 +147,11 @@ export const useEditableProjectActions = (): EditableProjectActions => {
         setTouched('creator')
     }, [updateState, setTouched])
 
+    const updateIsDeployingNewDU = useCallback<EditableProjectActions['updateIsDeployingNewDU']>(((isDeployingNewDU) => {
+        updateState({isDeployingNewDU})
+        setTouched('isDeployingNewDU')
+    }), [updateState, setTouched])
+
     return useMemo<EditableProjectActions>(
         () => ({
             updateProject,
@@ -162,7 +168,8 @@ export const useEditableProjectActions = (): EditableProjectActions => {
             updateContactUrl,
             updateContactEmail,
             updateSocialUrl,
-            updateCreator
+            updateCreator,
+            updateIsDeployingNewDU
         }),
         [
             updateProject,
@@ -179,7 +186,8 @@ export const useEditableProjectActions = (): EditableProjectActions => {
             updateContactUrl,
             updateContactEmail,
             updateSocialUrl,
-            updateCreator
+            updateCreator,
+            updateIsDeployingNewDU
         ],
     )
 }

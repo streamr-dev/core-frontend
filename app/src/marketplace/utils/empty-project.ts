@@ -2,15 +2,15 @@ import { Project } from '$mp/types/project-types'
 import { ProjectType } from '$shared/types'
 
 export class EmptyProject implements Project {
-    id: undefined
-    name: undefined
+    id = undefined
+    name = ''
+    creator = ''
     adminFee = undefined
     type = ProjectType.OpenData
     contact = {}
     imageUrl = undefined
     streams = []
-    description = undefined
-    dataUnionDeployed = undefined
+    description = ''
     newImageToUpload = undefined
     termsOfUse = {
         commercialUse: false,

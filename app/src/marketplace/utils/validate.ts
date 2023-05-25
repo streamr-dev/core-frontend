@@ -34,10 +34,5 @@ export const validateSalePoint = (salePoint: SalePoint, isDataUnion?: boolean): 
         invalidFields.push('beneficiaryAddress')
     }
 
-    if (isDataUnion && !!salePoint.beneficiaryAddress) {
-        // data union should not have this field
-        invalidFields.push('beneficiaryAddress')
-    }
-
     return invalidFields.length ? invalidFields : null
 }

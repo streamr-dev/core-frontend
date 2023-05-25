@@ -1,7 +1,7 @@
 import { useCallback, useReducer } from 'react'
 
 export type StateContainerProps<T> = {
-    state: T | null
+    state: T,
     updateState: (state: Partial<T>) => void
 }
 

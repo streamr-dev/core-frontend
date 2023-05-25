@@ -11,6 +11,7 @@ export const GraphProject = z.object({
     id: z.string(),
     paymentDetails: z.array(ProjectDetail),
     minimumSubscriptionSeconds: z.string(),
+    isDataUnion: z.boolean(),
     subscriptions: z.array(
         z.object({
             userAddress: z.string(),

@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import { useHistory, useLocation } from 'react-router-dom'
 import Button from '$shared/components/Button'
 import { useProjectState } from '$mp/contexts/ProjectStateContext'
-import { deleteProject } from '$app/src/services/projects'
 import routes from '$routes'
+import { useProjectController } from './ProjectController'
 
 const Title = styled.p`
   font-size: 34px;
@@ -23,6 +23,7 @@ const DeleteProject = () => {
     const { state: project } = useProjectState()
     const history = useHistory()
     const { pathname } = useLocation()
+    const { deleteProject } = useProjectController()
 
     return (
         <div>
@@ -32,7 +33,7 @@ const DeleteProject = () => {
                 kind="destructive"
                 onClick={async () => {
                     try {
-                        await deleteProject(project?.id || undefined)
+                        await deleteProject()
 
                         // Navigate away from now gone project (if user stayed on the edit page)
                         if (pathname === routes.projects.edit({ id: project?.id })) {

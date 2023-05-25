@@ -1,7 +1,7 @@
 import React, {FunctionComponent, ReactNode, useCallback, useContext, useEffect, useMemo} from "react"
 import styled from "styled-components"
 import {isEqual} from "lodash"
-import {useHistory} from "react-router-dom"
+import {useHistory, useParams} from "react-router-dom"
 import {ValidationContext, ValidationContextProvider} from "$mp/containers/ProductController/ValidationContextProvider"
 import {ProjectControllerContext, ProjectControllerProvider} from "$mp/containers/ProjectEditing/ProjectController"
 import {ProjectStateContext, ProjectStateContextProvider} from "$mp/contexts/ProjectStateContext"
@@ -20,6 +20,7 @@ import ProjectLinkTabs from '$app/src/pages/ProjectPage/ProjectLinkTabs'
 import {ProjectPermission, useProjectAbility} from "$shared/stores/projectAbilities"
 import getCoreConfig from "$app/src/getters/getCoreConfig"
 import useIsMounted from "$shared/hooks/useIsMounted"
+import { ProjectDraftContext, useInitProject, useIsProjectFetching, useProject } from "$shared/stores/projectEditor"
 import { useWalletAccount } from "$shared/stores/wallet"
 import routes from "$routes"
 
@@ -40,8 +41,12 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
     })
 
     const nonEditableSalePointChains = useMemo<number[]>(
-        () => Object.values(loadedProject.salePoints).map((salePoint) => salePoint.chainId
-        ), [loadedProject])
+        () =>
+            Object.values(loadedProject?.salePoints || {}).map(
+                (salePoint) => salePoint.chainId,
+            ),
+        [loadedProject],
+    )
 
     const isMounted = useIsMounted()
     const { chainId } = getCoreConfig().projectRegistry
@@ -91,11 +96,13 @@ const LoadingIndicator = styled(PrestyledLoadingIndicator)`
 `
 
 const EditProjectInnerContainer: FunctionComponent = (props) => {
-    const {loadedProject} = useLoadedProject()
-    if (!loadedProject) {
+    const { loadedProject } = useLoadedProject()
+    const project = useProject({ hot: true })
+    const isFetching = useIsProjectFetching()
+    if (isFetching) {
         return <MarketplaceLoadingView />
     }
-    return <ProjectStateContextProvider initState={loadedProject}>
+    return <ProjectStateContextProvider initState={project}>
         <ValidationContextProvider>
             <ProjectControllerProvider>
                 <StyledEditProjectPage {...props}/>
@@ -105,9 +112,18 @@ const EditProjectInnerContainer: FunctionComponent = (props) => {
 }
 
 const EditProjectContainer: FunctionComponent = (props) => {
-    return <LoadedProjectContextProvider>
-        <EditProjectInnerContainer {...props}/>
-    </LoadedProjectContextProvider>
+    const { id: projectId = 'new' } = useParams<{ id: string }>()
+    return (
+        <ProjectDraftContext.Provider
+            value={useInitProject(
+                projectId === 'new' ? undefined : decodeURIComponent(projectId),
+            )}
+        >
+            <LoadedProjectContextProvider>
+                <EditProjectInnerContainer {...props}/>
+            </LoadedProjectContextProvider>
+        </ProjectDraftContext.Provider>
+    )
 }
 
 export default EditProjectContainer

@@ -53,7 +53,9 @@ export const mapGraphProjectToDomainModel = async (graphProject: TheGraphProject
  * @deprecated Use `projectEditor` to obtain both the graph projects and their local reflections.
  */
 export const mapProjectType = (graphProject: TheGraphProject): ProjectType => {
-    // TODO when the TheGraphProject will have field which determines if it's a Data Union - implement a check here
+    if (graphProject.isDataUnion) {
+        return ProjectType.DataUnion
+    }
     return graphProject.paymentDetails.length === 1 && graphProject.paymentDetails[0].pricePerSecond == '0'
         ? ProjectType.OpenData
         : ProjectType.PaidData

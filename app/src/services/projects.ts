@@ -1,20 +1,16 @@
 import BN from 'bignumber.js'
-import { Toaster, toaster } from 'toasterhea'
-import uniqueId from 'lodash/uniqueId'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { post } from '$shared/utils/api'
 import { Address } from '$shared/types/web3-types'
 import { getConfigForChainByName } from '$shared/web3/config'
 import address0 from '$utils/address0'
 import { getWalletWeb3Provider } from '$shared/stores/wallet'
-import TransactionListToast, {
-    Operation,
-    notify,
-} from '$shared/toasts/TransactionListToast'
+
 import { Layer } from '$utils/Layer'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import { getGraphUrl, getProjectRegistryContract } from '$app/src/getters'
 import networkPreflight from '$utils/networkPreflight'
+import { deployDataUnion } from '../marketplace/modules/dataUnion/services'
 
 const getProjectRegistryChainId = () => {
     const { projectsChain } = getCoreConfig()
@@ -65,6 +61,7 @@ export type TheGraphProject = {
     updatedAt: string
     purchases: TheGraphPurchase[]
     purchasesCount: number
+    isDataUnion: boolean
 }
 
 export type PaymentDetails = {
@@ -123,7 +120,6 @@ type SmartContractPaymentDetails = {
 
 const projectFields = `
     id
-    counter
     domainIds
     score
     metadata
@@ -131,6 +127,7 @@ const projectFields = `
     minimumSubscriptionSeconds
     createdAt
     updatedAt
+    isDataUnion
     paymentDetails {
         domainId
         beneficiary
@@ -236,8 +233,7 @@ const getProjectFilterQuery = (type: ProjectListingTypeFilter): string => {
         case ProjectListingTypeFilter.paidData:
             return `paymentDetails_: {beneficiary_not: "${address0}"}`
         case ProjectListingTypeFilter.dataUnion:
-            // TODO implement
-            return null
+            return `isDataUnion: true`
     }
 }
 
@@ -343,158 +339,137 @@ const getPaymentDetails = (
     }))
 }
 
-async function toastedProjectOperation(label: string, fn?: () => Promise<void>) {
-    let toast: Toaster<typeof TransactionListToast> | undefined = toaster(
-        TransactionListToast,
-        Layer.Toast,
-    )
-
-    const operation: Operation = {
-        id: uniqueId('operation-'),
-        label: label,
-        state: 'ongoing',
-    }
-
-    const operations = [operation]
-
-    try {
-        notify(toast, operations)
-
-        await fn?.()
-
-        operation.state = 'complete'
-
-        notify(toast, operations)
-    } catch (e) {
-        operations.forEach((op) => {
-            if (op.state === 'ongoing') {
-                op.state = 'error'
-            }
-        })
-
-        notify(toast, operations)
-
-        throw e
-    } finally {
-        setTimeout(() => {
-            toast?.discard()
-
-            toast = undefined
-        }, 3000)
-    }
-}
-
 export async function createProject(project: SmartContractProjectCreate) {
-    await toastedProjectOperation('Create project', async () => {
-        const chainId = getProjectRegistryChainId()
+    const chainId = getProjectRegistryChainId()
 
-        const {
-            id,
-            paymentDetails,
-            streams,
-            minimumSubscriptionInSeconds,
-            isPublicPurchasable,
-            metadata,
-        } = project
+    const {
+        id,
+        paymentDetails,
+        streams,
+        minimumSubscriptionInSeconds,
+        isPublicPurchasable,
+        metadata,
+    } = project
 
-        const from = await getDefaultWeb3Account()
+    const from = await getDefaultWeb3Account()
 
-        await networkPreflight(chainId)
+    await networkPreflight(chainId)
 
-        const web3 = await getWalletWeb3Provider()
+    const web3 = await getWalletWeb3Provider()
 
-        await new Promise<void>((resolve, reject) => {
-            getProjectRegistryContract({ chainId, web3 })
-                .methods.createProject(
-                    id,
-                    getDomainIds(paymentDetails),
-                    getPaymentDetails(paymentDetails),
-                    streams,
-                    minimumSubscriptionInSeconds,
-                    isPublicPurchasable,
-                    metadata,
-                )
-                .send({
-                    from,
-                    maxPriorityFeePerGas: null,
-                    maxFeePerGas: null,
-                })
-                .on('error', (error: unknown) => {
-                    reject(error)
-                })
-                .once('confirmation', () => {
-                    resolve()
-                })
-        })
+    await new Promise<void>((resolve, reject) => {
+        getProjectRegistryContract({ chainId, web3 })
+            .methods.createProject(
+                id,
+                getDomainIds(paymentDetails),
+                getPaymentDetails(paymentDetails),
+                streams,
+                minimumSubscriptionInSeconds,
+                isPublicPurchasable,
+                metadata,
+            )
+            .send({
+                from,
+                maxPriorityFeePerGas: null,
+                maxFeePerGas: null,
+            })
+            .on('error', (error: unknown) => {
+                reject(error)
+            })
+            .once('confirmation', () => {
+                resolve()
+            })
     })
 }
 
 export async function updateProject(project: SmartContractProject) {
-    await toastedProjectOperation('Update project', async () => {
-        const chainId = getProjectRegistryChainId()
+    const chainId = getProjectRegistryChainId()
 
-        const { id, paymentDetails, streams, minimumSubscriptionInSeconds, metadata } =
-            project
+    const { id, paymentDetails, streams, minimumSubscriptionInSeconds, metadata } =
+        project
 
-        const from = await getDefaultWeb3Account()
+    const from = await getDefaultWeb3Account()
 
-        await networkPreflight(chainId)
+    await networkPreflight(chainId)
 
-        const web3 = await getWalletWeb3Provider()
+    const web3 = await getWalletWeb3Provider()
 
-        await new Promise<void>((resolve, reject) => {
-            getProjectRegistryContract({ chainId, web3 })
-                .methods.updateProject(
-                    id,
-                    getDomainIds(paymentDetails),
-                    getPaymentDetails(paymentDetails),
-                    streams,
-                    minimumSubscriptionInSeconds,
-                    metadata,
-                )
-                .send({
-                    from,
-                    maxPriorityFeePerGas: null,
-                    maxFeePerGas: null,
-                })
-                .on('error', (error: unknown) => {
-                    reject(error)
-                })
-                .once('confirmation', () => {
-                    resolve()
-                })
-        })
+    await new Promise<void>((resolve, reject) => {
+        getProjectRegistryContract({ chainId, web3 })
+            .methods.updateProject(
+                id,
+                getDomainIds(paymentDetails),
+                getPaymentDetails(paymentDetails),
+                streams,
+                minimumSubscriptionInSeconds,
+                metadata,
+            )
+            .send({
+                from,
+                maxPriorityFeePerGas: null,
+                maxFeePerGas: null,
+            })
+            .on('error', (error: unknown) => {
+                reject(error)
+            })
+            .once('confirmation', () => {
+                resolve()
+            })
     })
 }
 
 export async function deleteProject(projectId: string | undefined) {
-    await toastedProjectOperation('Delete project', async () => {
-        if (!projectId) {
-            throw new Error('No project')
-        }
+    if (!projectId) {
+        throw new Error('No project')
+    }
 
-        const chainId = getProjectRegistryChainId()
+    const chainId = getProjectRegistryChainId()
 
-        const from = await getDefaultWeb3Account()
+    const from = await getDefaultWeb3Account()
 
-        await networkPreflight(chainId)
+    await networkPreflight(chainId)
 
-        const web3 = await getWalletWeb3Provider()
+    const web3 = await getWalletWeb3Provider()
 
-        await new Promise<void>((resolve, reject) => {
-            getProjectRegistryContract({ chainId, web3 })
-                .methods.deleteProject(projectId)
-                .send({
-                    from,
-                    maxPriorityFeePerGas: null,
-                    maxFeePerGas: null,
-                })
-                .on('error', (error: unknown) => {
-                    reject(error)
-                })
-                .once('confirmation', () => {
-                    resolve()
-                })
-        })
+    await new Promise<void>((resolve, reject) => {
+        getProjectRegistryContract({ chainId, web3 })
+            .methods.deleteProject(projectId)
+            .send({
+                from,
+                maxPriorityFeePerGas: null,
+                maxFeePerGas: null,
+            })
+            .on('error', (error: unknown) => {
+                reject(error)
+            })
+            .once('confirmation', () => {
+                resolve()
+            })
     })
+}
+
+export async function deployDataUnionContract(projectId: string, adminFee: string, chainId: number) {
+    await networkPreflight(chainId)
+
+    return new Promise<string>((resolve, reject) =>
+        deployDataUnion({
+            productId: projectId,
+            chainId,
+            adminFee,
+        })
+            .onTransactionHash((contractAddress) => {
+                // deployDataUnion() returns the calculated contract address as the tx hash
+            })
+            .onTransactionComplete(({ contractAddress }) => {
+                if (contractAddress == null) {
+                    reject(new Error('DU contract deploy did not return an address!'))
+                } else {
+                    resolve(contractAddress)
+                }
+            })
+            .onError((e) => {
+                console.error(e)
+                reject(e)
+            }),
+    )
 }

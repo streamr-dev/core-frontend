@@ -43,6 +43,10 @@ const productTypeOptions = [
         value: ProjectListingTypeFilter.paidData,
         label: 'Paid data'
     },
+    {
+        value: ProjectListingTypeFilter.dataUnion,
+        label: 'Data union'
+    },
 ]
 
 const UnstyledActionBar = ({

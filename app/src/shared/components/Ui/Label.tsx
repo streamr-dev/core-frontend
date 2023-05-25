@@ -5,8 +5,8 @@ import { MEDIUM } from '$shared/utils/styled'
 
 const UnstyledLabel: FunctionComponent<
     {className?: string, children?: ReactNode | ReactNode[]} & Partial<HTMLProps<HTMLLabelElement>>
-    > = ({ className, children }) =>{
-        return <label className={className}>{children}&zwnj;</label>
+    > = ({ className, children, ...props }) =>{
+        return <label className={className} {...props}>{children}&zwnj;</label>
     }
 
 const Label = styled(UnstyledLabel)<{state?: string}>`

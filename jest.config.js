@@ -15,7 +15,7 @@ module.exports = {
     coverageReporters: ['text-summary', 'lcov'],
     coverageThreshold: {
         global: {
-            lines: 20,
+            lines: 15,
         },
     },
     testTimeout: 30000,

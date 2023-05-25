@@ -191,6 +191,7 @@ describe('product utils', () => {
             expect(
                 all.validate({
                     type: ProjectType.DataUnion,
+                    isDeployingNewDU: true,
                 } as Project),
             ).toStrictEqual({
                 name: true,
@@ -201,6 +202,7 @@ describe('product utils', () => {
                 adminFee: true,
                 dataUnionChainId: true,
                 salePoints: true,
+                existingDUAddress: false,
             })
         })
         it('validates name & description', () => {
@@ -287,6 +289,7 @@ describe('product utils', () => {
                 adminFee: false,
                 dataUnionChainId: false,
                 salePoints: true,
+                existingDUAddress: true
             })
             expect(
                 all.validate({
@@ -303,6 +306,7 @@ describe('product utils', () => {
                 adminFee: false,
                 dataUnionChainId: false,
                 salePoints: true,
+                existingDUAddress: true
             })
             expect(
                 all.validate({
@@ -316,9 +320,66 @@ describe('product utils', () => {
                 creator: true,
                 imageUrl: true,
                 streams: true,
-                adminFee: true,
+                adminFee: false,
                 dataUnionChainId: true,
                 salePoints: true,
+                existingDUAddress: true
+            })
+            expect(
+                all.validate({
+                    type: ProjectType.DataUnion,
+                    adminFee: '0.5',
+                    dataUnionChainId: 124,
+                    isDeployingNewDU: true
+                } as Project),
+            ).toStrictEqual({
+                name: true,
+                description: true,
+                creator: true,
+                imageUrl: true,
+                streams: true,
+                adminFee: false,
+                dataUnionChainId: false,
+                salePoints: true,
+                existingDUAddress: false,
+            })
+            expect(
+                all.validate({
+                    type: ProjectType.DataUnion,
+                    adminFee: '0.5',
+                    dataUnionChainId: 124,
+                    isDeployingNewDU: false,
+                    existingDUAddress: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F'
+                } as Project),
+            ).toStrictEqual({
+                name: true,
+                description: true,
+                creator: true,
+                imageUrl: true,
+                streams: true,
+                adminFee: false,
+                dataUnionChainId: false,
+                salePoints: true,
+                existingDUAddress: false
+            })
+            expect(
+                all.validate({
+                    type: ProjectType.DataUnion,
+                    adminFee: '0.5',
+                    dataUnionChainId: 124,
+                    isDeployingNewDU: false,
+                    existingDUAddress: 'invalidAddress'
+                } as Project),
+            ).toStrictEqual({
+                name: true,
+                description: true,
+                creator: true,
+                imageUrl: true,
+                streams: true,
+                adminFee: false,
+                dataUnionChainId: false,
+                salePoints: true,
+                existingDUAddress: true
             })
         })
 
@@ -370,7 +431,7 @@ describe('product utils', () => {
                 it(`should properly validate the ${testCase.description}`, () => {
                     expect(all.validate(testCase.project as unknown as Project)).toStrictEqual({
                         ...expectedValidationResult,
-                        [`salePoints.${defaultSalePointChainName}.${testCase.expectedInvalidField}`]: true
+                        [`salePoints.${defaultSalePointChainName}`]: true
                     })
                 })
             })

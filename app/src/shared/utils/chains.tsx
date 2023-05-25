@@ -19,6 +19,7 @@ export const formatChainName = (apiChainName: string): string => {
             return 'Gnosis'
 
         case 'XDAI':
+        case 'GNOSIS':
             return 'Gnosis'
 
         case 'POLYGON':
@@ -31,7 +32,7 @@ export const formatChainName = (apiChainName: string): string => {
             return 'Avalanche'
 
         default:
-            return 'Unknown chain'
+            return apiChainName
     }
 }
 export const getChainIdFromApiString = (name: string): number => {
