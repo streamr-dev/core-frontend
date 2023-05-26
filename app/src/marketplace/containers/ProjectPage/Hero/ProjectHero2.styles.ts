@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components'
 import { ImageTile } from '$shared/components/Tile'
 import { COLORS, LAPTOP, TABLET } from '$shared/utils/styled'
-import MarkdownText from '$mp/components/ProductPage/MarkdownText'
 
 const mobileSpacing = '24px'
 const tabletSpacing = '40px'

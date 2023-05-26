@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react'
 import { useSubscribe } from 'streamr-client-react'
 import { MessageID } from 'streamr-client'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { Message } from '$shared/utils/SubscriptionEvents'
 
 type Params = {
     partition?: number,

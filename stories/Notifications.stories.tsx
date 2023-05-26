@@ -2,8 +2,8 @@ import React from "react"
 import {Meta} from "@storybook/react"
 import { ModalPortalProvider } from '$app/src/shared/contexts/ModalPortal'
 import Notifications from "$shared/components/Notifications"
-import ErrorDialog from "$mp/components/Modal/ErrorDialog"
 import {NotificationIcon} from "$shared/utils/constants"
+import GetCryptoDialog from "$mp/components/Modal/GetCryptoDialog"
 
 export const Basic = () => {
     const title = 'Lorem ipsum dolor sit. But hey, you always have emat!'
@@ -37,7 +37,7 @@ export const Basic = () => {
                 ))}
                 <Notifications />
                 {(
-                    <ErrorDialog title="Godlike!" message="Hello world!" onClose={() => {}} />
+                    <GetCryptoDialog nativeTokenName={'DATA'} onCancel={() => {}} />
                 )}
             </ModalPortalProvider>
         </React.Fragment>
