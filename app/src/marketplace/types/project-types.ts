@@ -124,13 +124,7 @@ export type DataUnionStat = {
     memberCount: MemberCount
     totalEarnings: number
 }
-export type AccessPeriod = {
-    time: NumberString
-    timeUnit: TimeUnit
-    paymentCurrency: PaymentCurrency
-    price: NumberString | null | undefined
-    approxUsd: NumberString | null | undefined
-}
+
 export type DataUnionSecretId = string
 export type DataUnionSecret = {
     id: DataUnionSecretId

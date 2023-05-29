@@ -68,10 +68,6 @@ export default class Notification {
         this.children = params.children || null
     }
 
-    isTx(): boolean {
-        return !!this.txHash
-    }
-
     close(delayMs?: number): void {
         if (delayMs != null) {
             setTimeout(() => {

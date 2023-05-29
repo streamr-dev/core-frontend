@@ -113,7 +113,6 @@
         "rich-markdown-editor": "^11.21.3",
         "sass": "1.62.1",
         "sass-loader": "^13.2.2",
-        "smooth-scroll-into-view-if-needed": "^2.0.0",
         "storybook": "^7.0.12",
         "storybook-react-router": "^1.0.8",
         "stream-browserify": "^3.0.0",

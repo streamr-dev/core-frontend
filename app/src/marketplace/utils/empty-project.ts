@@ -20,7 +20,6 @@ export class EmptyProject implements Project {
         termsName: undefined,
         termsUrl: undefined
     }
-    minimumSubscriptionInSeconds = 0
     existingDUAddress = undefined
     salePoints = {}
 }
