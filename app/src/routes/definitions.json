@@ -33,7 +33,6 @@
     "projects": {
         "index": "/hub/projects",
         "show": "/hub/projects/:id",
-        "showTab": "/hub/projects/:id/:tab(overview|connect|live-data)",
         "new": "/hub/projects/new",
         "edit": "/hub/projects/:id/edit",
         "overview": "/hub/projects/:id/overview",
@@ -48,7 +47,6 @@
     "streams": {
         "index": "/hub/streams",
         "show": "/hub/streams/:id",
-        "view": "/hub/streams/:id/:view(overview|connect|live-data)",
         "new": "/hub/streams/new",
         "overview": "/hub/streams/:id/overview",
         "connect": "/hub/streams/:id/connect",

@@ -1,7 +1,7 @@
-import React, { FunctionComponent, ReactNode } from 'react'
+import React from 'react'
 import { Container } from 'toasterhea'
 import styled from 'styled-components'
-import { Router, Route as RouterRoute, Switch, Redirect } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 import '$shared/assets/stylesheets'
 import '@ibm/plex/css/ibm-plex.css'
@@ -14,7 +14,6 @@ import NotFoundPage from '$shared/components/NotFoundPage'
 import AnalyticsTracker from '$shared/components/AnalyticsTracker'
 import GenericErrorPage from '$shared/components/GenericErrorPage'
 import ErrorPage from '$shared/components/ErrorPage'
-import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import Analytics from '$shared/utils/Analytics'
 import GlobalInfoWatcher from '$mp/containers/GlobalInfoWatcher'
 import NewStreamListingPage from '$app/src/pages/NewStreamListingPage'
@@ -25,38 +24,36 @@ import NewProjectPage from '$mp/containers/ProjectEditing/NewProjectPage'
 import EditProjectPage from '$mp/containers/ProjectEditing/EditProjectPage'
 import Globals from '$shared/components/Globals'
 import { Layer } from '$utils/Layer'
-import history from '$app/src/history'
 import routes from '$routes'
 import '../analytics'
 
-// Wrap authenticated components here instead of render() method
-// Wrap each Route to an ErrorBoundary
-const Route = withErrorBoundary(ErrorPage)(RouterRoute)
-
 const MiscRouter = () => [
-    <Redirect from={routes.root()} to={routes.projects.index()} key="RootRedirect" />, // edge case for localhost
-    <Redirect from={routes.hub()} to={routes.projects.index()} key="HubRedirect" />,
-    <Route exact path="/error" component={GenericErrorPage} key="GenericErrorPage" />,
-    <Route component={NotFoundPage} key="NotFoundPage" />,
-]
-
-const ProjectsRouter = (): ReactNode => [
-    <Route exact path={routes.projects.index()} component={ProjectsPage} key="Projects" />,
-    <Route exact path={routes.projects.new()} component={NewProjectPage} key="NewProjectPage" />,
-    <Route exact path={routes.projects.edit()} component={EditProjectPage} key="EditProjectPage" />,
-    <Route path={routes.projects.show()} component={ProjectPage} key="Tabbed" />,
-]
-
-const StreamsRouter = () => [
-    <Route exact path={routes.streams.index()} component={NewStreamListingPage} key="NewStreamListingPage" />,
-    <Route path={routes.streams.show()} component={StreamPage} key="StreamPage" />,
+    <Route
+        errorElement={<ErrorPage />}
+        path={routes.root()}
+        element={<Navigate to={routes.projects.index()} replace />}
+        key="RootRedirect"
+    />,
+    <Route
+        errorElement={<ErrorPage />}
+        path={routes.hub()}
+        element={<Navigate to={routes.projects.index()} replace />}
+        key="HubRedirect"
+    />,
+    <Route
+        errorElement={<ErrorPage />}
+        path="/error"
+        element={<GenericErrorPage />}
+        key="GenericErrorPage"
+    />,
+    <Route errorElement={<ErrorPage />} element={<NotFoundPage />} key="NotFoundPage" />,
 ]
 
 // Create client for 'react-query'
 const queryClient = new QueryClient()
 
 const App = () => (
-    <Router history={history}>
+    <BrowserRouter>
         <QueryClientProvider client={queryClient}>
             <StreamrClientProvider>
                 <ModalPortalProvider>
@@ -64,11 +61,25 @@ const App = () => (
                         <GlobalInfoWatcher>
                             <Analytics />
                             <Globals />
-                            <Switch>
-                                {ProjectsRouter()}
-                                {StreamsRouter()}
+                            <Routes>
+                                <Route
+                                    path="/hub/projects/*"
+                                    errorElement={<ErrorPage />}
+                                >
+                                    <Route index element={<ProjectsPage />} />
+                                    <Route path="new" element={<NewProjectPage />} />
+                                    <Route
+                                        path=":id/edit"
+                                        element={<EditProjectPage />}
+                                    />
+                                    <Route path=":id/*" element={<ProjectPage />} />
+                                </Route>
+                                <Route path="/hub/streams/*" errorElement={<ErrorPage />}>
+                                    <Route index element={<NewStreamListingPage />} />
+                                    <Route path=":id/*" element={<StreamPage />} />
+                                </Route>
                                 {MiscRouter()}
-                            </Switch>
+                            </Routes>
                             <Notifications />
                             <Container id={Layer.Modal} />
                             <ToastContainer id={Layer.Toast} />
@@ -78,7 +89,7 @@ const App = () => (
                 </ModalPortalProvider>
             </StreamrClientProvider>
         </QueryClientProvider>
-    </Router>
+    </BrowserRouter>
 )
 
 export default App

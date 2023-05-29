@@ -1,5 +1,5 @@
 import React from 'react'
-import { Redirect, Route, Switch, useParams } from 'react-router-dom'
+import { Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { ProjectDraftContext, useInitProject } from '$shared/stores/projectEditor'
 import NotFoundPage from '$shared/components/NotFoundPage'
 import routes from '$routes'
@@ -13,7 +13,7 @@ function NewProjectPage(): JSX.Element {
 function ProjectRedirect() {
     const { id } = useParams<{ id: string }>()
 
-    return <Redirect to={routes.projects.overview({ id })} />
+    return <Navigate to={routes.projects.overview({ id })} replace />
 }
 
 export default function ProjectPage() {
@@ -25,34 +25,23 @@ export default function ProjectPage() {
                 projectId === 'new' ? undefined : decodeURIComponent(projectId),
             )}
         >
-            <Switch>
+            <Routes>
                 <Route
-                    exact
                     path={routes.projects.new()}
-                    component={NewProjectPage}
+                    element={<NewProjectPage />}
                     key="NewProjectPage"
                 />
                 <Route
-                    exact
                     path={routes.projects.edit()}
-                    component={ProjectEditorPage}
+                    element={<ProjectEditorPage />}
                     key="EditProjectPage"
                 />
-
-                <Route
-                    exact
-                    path={routes.projects.show()}
-                    component={ProjectRedirect}
-                    key="ProjectRedirect"
-                />
-                <Route
-                    exact
-                    path={routes.projects.showTab()}
-                    component={TabbedPage}
-                    key="TabbedPage"
-                />
-                <Route component={NotFoundPage} key="NotFoundPage" />
-            </Switch>
+                <Route index element={<ProjectRedirect />} key="ProjectRedirect" />
+                <Route path="overview" element={<TabbedPage tab="overview" />} />
+                <Route path="connect" element={<TabbedPage tab="connect" />} />
+                <Route path="live-data" element={<TabbedPage tab="live-data" />} />
+                <Route path="*" element={<NotFoundPage />} />
+            </Routes>
         </ProjectDraftContext.Provider>
     )
 }

@@ -1,8 +1,9 @@
 import { produce } from 'immer'
 import { useEffect, useCallback } from 'react'
 import uniqueId from 'lodash/uniqueId'
-import { useHistory } from 'react-router-dom'
+import { useBeforeUnload } from 'react-router-dom'
 import { create } from 'zustand'
+import { history } from '~/consts'
 
 type Blocker = {
     message: string
@@ -37,16 +38,6 @@ const useBlockerStore = create<BlockerStore>((set) => {
         },
     }
 })
-
-function useBeforeUnload(fn: (e: BeforeUnloadEvent) => void) {
-    useEffect(() => {
-        window.addEventListener('beforeunload', fn)
-
-        return () => {
-            window.removeEventListener('beforeunload', fn)
-        }
-    }, [fn])
-}
 
 export default function usePreventNavigatingAway({
     message = 'You have unsaved changes. Are you sure you want to leave?',
@@ -88,21 +79,40 @@ export default function usePreventNavigatingAway({
 export function useBlockHistoryEffect() {
     const { blockers } = useBlockerStore()
 
-    const history = useHistory()
-
+    /**
+     * On each change to `blockers` we reblock history using the new set
+     * of potential blockers.
+     */
     useEffect(() => {
-        /**
-         * On each change to `blockers` we reblock history using the new set
-         * of potential blockers.
-         */
-        return history.block(({ pathname }) => {
+        let unblock: undefined | (() => void) = undefined
+
+        function unblockBeforeUnload() {
+            /**
+             * We have to make sure our `beforeunload` front-runs history's `beforeunload`.
+             * History provides its own handler that's unconditional (always blocks) which
+             * in our case does not make sense at all!
+             */
+            unblock?.()
+        }
+
+        window.addEventListener('beforeunload', unblockBeforeUnload)
+
+        unblock = history.block(({ retry, location: { pathname } }) => {
             const blocker = Object.values(blockers).find((blocker) => {
                 return blocker?.isDirty(pathname)
             })
 
-            if (blocker) {
-                return blocker.message
+            if (!blocker || confirm(blocker.message)) {
+                unblock?.()
+
+                retry()
             }
         })
-    }, [history, blockers])
+
+        return () => {
+            unblock?.()
+
+            window.removeEventListener('beforeunload', unblockBeforeUnload)
+        }
+    }, [blockers])
 }

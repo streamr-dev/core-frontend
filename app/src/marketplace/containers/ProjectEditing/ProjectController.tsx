@@ -5,7 +5,7 @@ import React, {
     useCallback,
     useState,
 } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from "react-router-dom"
 import BN from 'bignumber.js'
 import { z } from 'zod'
 import { randomHex } from 'web3-utils'
@@ -109,7 +109,7 @@ export const useProjectController = (): ProjectController => {
     const [publishInProgress, setPublishInProgress] = useState<boolean>(false)
     const { projectRegistry } = getCoreConfig()
     const registryChain = getConfigForChain(projectRegistry.chainId)
-    const history = useHistory()
+    const navigate = useNavigate()
 
     const { id: projectId, type: projectType } = project || {}
 
@@ -227,11 +227,11 @@ export const useProjectController = (): ProjectController => {
              * @FIXME Prevent navigating to the project listing page if… the user
              * has already moved on.
              */
-            history.push(routes.projects.index())
+            navigate(routes.projects.index())
         } finally {
             setPublishInProgress(false)
         }
-    }, [getSmartContractProject, projectType, history])
+    }, [getSmartContractProject, projectType, navigate])
 
     const createNewDataUnion = useCallback<() => Promise<void>>(async () => {
         if (!projectType) {
@@ -336,11 +336,11 @@ export const useProjectController = (): ProjectController => {
              * @FIXME Prevent navigating to the project listing page if… the user
              * has already moved on.
              */
-            history.push(routes.projects.index())
+            navigate(routes.projects.index())
         } finally {
             setPublishInProgress(false)
         }
-    }, [projectType, getSmartContractProject, project, history, updateExistingDUAddress])
+    }, [projectType, getSmartContractProject, project, navigate, updateExistingDUAddress])
 
     const updateExistingProject = useCallback(async () => {
         if (!projectId) {
@@ -360,11 +360,11 @@ export const useProjectController = (): ProjectController => {
              * @FIXME Prevent navigating to the project listing page if… the user
              * has already moved on.
              */
-            history.push(routes.projects.index())
+            navigate(routes.projects.index())
         } finally {
             setPublishInProgress(false)
         }
-    }, [getSmartContractProject, projectId, history])
+    }, [getSmartContractProject, projectId, navigate])
 
     const create = useCallback<ProjectController['create']>(async () => {
         checkValidationErrors()
