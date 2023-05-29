@@ -322,7 +322,6 @@ module.exports = {
             chunks: 'all',
         },
         usedExports: true,
-        sideEffects: true,
         minimize: isProduction(),
         minimizer: [new TerserPlugin({
             terserOptions: {
