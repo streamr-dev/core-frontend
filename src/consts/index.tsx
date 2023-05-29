@@ -14,7 +14,9 @@ export function HubRouter(props: HubRouterProps) {
         location: history.location,
     })
 
-    useLayoutEffect(() => void history.listen(setState), [])
+    useLayoutEffect(() => {
+        return history.listen(setState)
+    }, [])
 
     return (
         <Router

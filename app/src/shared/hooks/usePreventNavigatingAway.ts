@@ -1,7 +1,6 @@
 import { produce } from 'immer'
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useReducer } from 'react'
 import uniqueId from 'lodash/uniqueId'
-import { useBeforeUnload } from 'react-router-dom'
 import { create } from 'zustand'
 import { history } from '~/consts'
 
@@ -38,6 +37,23 @@ const useBlockerStore = create<BlockerStore>((set) => {
         },
     }
 })
+
+function useBeforeUnload(
+    callback: (event: BeforeUnloadEvent) => any,
+    options?: { capture?: boolean },
+): void {
+    const { capture } = options || {}
+
+    useEffect(() => {
+        const opts = capture != null ? { capture } : undefined
+
+        window.addEventListener('hub_beforeunload', callback, opts)
+
+        return () => {
+            window.removeEventListener('hub_beforeunload', callback, opts)
+        }
+    }, [callback, capture])
+}
 
 export default function usePreventNavigatingAway({
     message = 'You have unsaved changes. Are you sure you want to leave?',
@@ -76,43 +92,64 @@ export default function usePreventNavigatingAway({
     )
 }
 
+function patchBeforeUnload() {
+    if (window.addEventListener !== Window.prototype.addEventListener) {
+        return
+    }
+
+    function addEventListener(type: any, ...rest: [any, any]) {
+        if (type === 'beforeunload') {
+            return
+        }
+
+        Window.prototype.addEventListener.call(window, type.replace(/^hub_/, ''), ...rest)
+    }
+
+    window.addEventListener = addEventListener
+
+    function removeEventListener(type: any, ...rest: [any, any]) {
+        if (type === 'beforeunload') {
+            return
+        }
+
+        Window.prototype.removeEventListener.call(
+            window,
+            type.replace(/^hub_/, ''),
+            ...rest,
+        )
+    }
+
+    window.removeEventListener = removeEventListener
+}
+
 export function useBlockHistoryEffect() {
     const { blockers } = useBlockerStore()
+
+    const [cache, bump] = useReducer((x) => x + 1, 0)
 
     /**
      * On each change to `blockers` we reblock history using the new set
      * of potential blockers.
      */
     useEffect(() => {
-        let unblock: undefined | (() => void) = undefined
+        patchBeforeUnload()
 
-        function unblockBeforeUnload() {
-            /**
-             * We have to make sure our `beforeunload` front-runs history's `beforeunload`.
-             * History provides its own handler that's unconditional (always blocks) which
-             * in our case does not make sense at all!
-             */
-            unblock?.()
-        }
-
-        window.addEventListener('beforeunload', unblockBeforeUnload)
-
-        unblock = history.block(({ retry, location: { pathname } }) => {
+        const unblock = history.block(({ retry, location: { pathname } }) => {
             const blocker = Object.values(blockers).find((blocker) => {
                 return blocker?.isDirty(pathname)
             })
 
             if (!blocker || confirm(blocker.message)) {
-                unblock?.()
+                unblock()
 
                 retry()
+
+                bump()
             }
         })
 
-        return () => {
-            unblock?.()
+        cache // keep
 
-            window.removeEventListener('beforeunload', unblockBeforeUnload)
-        }
-    }, [blockers])
+        return unblock
+    }, [blockers, cache])
 }
