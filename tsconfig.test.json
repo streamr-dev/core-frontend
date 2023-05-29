@@ -16,7 +16,8 @@
       "$testUtils/*": ["app/src/test/test-utils/*"],
       "$ui/*": ["app/src/shared/components/Ui/*"],
       "$utils/*": ["app/src/utils/*"],
-      "$config": ["app/test/test-utils/testConfig.ts"]
+      "$config": ["app/test/test-utils/testConfig.ts"],
+      "~/*": ["src/*"]
     }
   },
   "files": ["./app/test/test-utils/setupTests.ts"],

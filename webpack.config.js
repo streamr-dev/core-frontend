@@ -347,6 +347,7 @@ module.exports = {
             $utils: path.resolve(__dirname, 'app/src/utils/'),
             $ui: path.resolve(__dirname, 'app/src/shared/components/Ui'),
             $config: path.resolve(__dirname, `app/src/config/${process.env.HUB_CONFIG_ENV || process.env.NODE_ENV}.toml`),
+            '~': path.resolve(__dirname, 'src/'),
             // When duplicate bundles point to different places.
             '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),
             'bn.js': path.resolve(__dirname, 'node_modules/bn.js'),
