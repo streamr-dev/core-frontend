@@ -1,7 +1,7 @@
 import React from 'react'
 import { Container } from 'toasterhea'
 import styled from 'styled-components'
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
+import { Route, Routes, Navigate } from 'react-router-dom'
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 import '$shared/assets/stylesheets'
 import '@ibm/plex/css/ibm-plex.css'
@@ -25,6 +25,7 @@ import EditProjectPage from '$mp/containers/ProjectEditing/EditProjectPage'
 import Globals from '$shared/components/Globals'
 import { Layer } from '$utils/Layer'
 import routes from '$routes'
+import { HubRouter } from '~/consts'
 import '../analytics'
 
 const MiscRouter = () => [
@@ -53,7 +54,7 @@ const MiscRouter = () => [
 const queryClient = new QueryClient()
 
 const App = () => (
-    <BrowserRouter>
+    <HubRouter>
         <QueryClientProvider client={queryClient}>
             <StreamrClientProvider>
                 <ModalPortalProvider>
@@ -89,7 +90,7 @@ const App = () => (
                 </ModalPortalProvider>
             </StreamrClientProvider>
         </QueryClientProvider>
-    </BrowserRouter>
+    </HubRouter>
 )
 
 export default App
