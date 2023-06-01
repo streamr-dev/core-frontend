@@ -226,6 +226,7 @@
         "stylelint": "^15.6.1",
         "stylelint-config-streamr": "^1.0.1",
         "stylelint-webpack-plugin": "^4.1.1",
+        "terser-webpack-plugin": "^5.3.9",
         "toml-loader": "^1.0.0",
         "ts-jest": "^29.1.0",
         "ts-loader": "^9.4.3",
