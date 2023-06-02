@@ -9,7 +9,6 @@ import '$utils/setupSnippets'
 import StreamrClientProvider from '$shared/components/StreamrClientProvider'
 import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
-import Notifications from '$shared/components/Notifications'
 import NotFoundPage from '$shared/components/NotFoundPage'
 import AnalyticsTracker from '$shared/components/AnalyticsTracker'
 import GenericErrorPage from '$shared/components/GenericErrorPage'
@@ -61,19 +60,16 @@ const App = () => (
             <StreamrClientProvider>
                 <ModalPortalProvider>
                     <ModalProvider>
-                        <GlobalInfoWatcher>
-                            <Analytics />
-                            <Globals />
-                            <Switch>
-                                {ProjectsRouter()}
-                                {StreamsRouter()}
-                                {MiscRouter()}
-                            </Switch>
-                            <Notifications />
-                            <Container id={Layer.Modal} />
-                            <ToastContainer id={Layer.Toast} />
-                            <AnalyticsTracker />
-                        </GlobalInfoWatcher>
+                        <Analytics />
+                        <Globals />
+                        <Switch>
+                            {ProjectsRouter()}
+                            {StreamsRouter()}
+                            {MiscRouter()}
+                        </Switch>
+                        <Container id={Layer.Modal} />
+                        <ToastContainer id={Layer.Toast} />
+                        <AnalyticsTracker />
                     </ModalProvider>
                 </ModalPortalProvider>
             </StreamrClientProvider>

@@ -14,7 +14,6 @@ import { MD as TABLET, LG as DESKTOP, COLORS, REGULAR, MEDIUM } from '$shared/ut
 import Link from '$shared/components/Link'
 import SvgIcon from '$shared/components/SvgIcon'
 import AvatarImage from '$shared/components/AvatarImage'
-import AccountsBalance from '$shared/components/AccountsBalance'
 import {truncate} from "$shared/utils/text"
 import ConnectModal from '$app/src/modals/ConnectModal'
 import { Layer } from '$app/src/utils/Layer'
@@ -306,6 +305,7 @@ const UserInfoMobile = styled.div`
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+        justify-content: center;
         
         ${Name} {
             font-size: 14px;
@@ -449,10 +449,7 @@ const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className 
                 {!!account &&
                     <UserInfoMobile>
                         <Avatar username={account} />
-                        <div>
-                            <Avatarless data-testid={'avatarless'} source={account} />
-                            <AccountsBalance />
-                        </div>
+                        <Avatarless data-testid={'avatarless'} source={account} />
                     </UserInfoMobile>
                 }
                 <NavbarLinkMobile highlight={pathname.startsWith(routes.projects.index())}>

@@ -11,16 +11,16 @@ import { Radio } from '$shared/components/Radio'
 import Text from '$ui/Text'
 import Button from '$shared/components/Button'
 import SelectField2 from '$mp/components/SelectField2'
-import { contractCurrencies, NotificationIcon} from '$shared/utils/constants'
+import { contractCurrencies } from '$shared/utils/constants'
 import { ContractCurrency} from '$shared/types/common-types'
 import useValidation from '$mp/containers/ProductController/useValidation'
 import { SeverityLevel } from '$mp/containers/ProductController/ValidationContextProvider'
-import Notification from '$shared/utils/Notification'
 import { Address } from '$shared/types/web3-types'
 import { PricingData, Project } from '$mp/types/project-types'
 import { pricePerSecondFromTimeUnit } from '$mp/utils/price'
 import { TimeUnit, timeUnits } from '$shared/utils/timeUnit'
 import { ObjectPaths } from '$utils/objectPaths'
+import { errorToast } from "$utils/toast"
 
 const Container = styled.div`
   color: ${COLORS.primary};
@@ -209,10 +209,9 @@ const TokenSelector: FunctionComponent<Props> = ({
                     setTokenSymbol(info.symbol)
                     setTokenDecimals(info.decimals)
                 } else {
-                    Notification.push({
+                    errorToast({
                         title: 'Invalid token contract address',
-                        description: 'This is not an ERC-20 token contract',
-                        icon: NotificationIcon.ERROR
+                        desc: 'This is not an ERC-20 token contract',
                     })
                     setStatus(SeverityLevel.ERROR, 'This is not an ERC-20 token contract')
                     setTokenSymbol(null)

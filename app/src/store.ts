@@ -1,10 +1,7 @@
 import thunk from 'redux-thunk'
 import { createStore, applyMiddleware, compose, combineReducers, Store } from 'redux'
 import entitiesReducer from '$shared/modules/entities/reducer'
-import userReducer from '$shared/modules/user/reducer'
 import dataUnionReducer from './marketplace/modules/dataUnion/reducer'
-import globalReducer from './marketplace/modules/global/reducer'
-import transactionsReducer from './marketplace/modules/transactions/reducer'
 import analytics from './analytics'
 const middleware = [thunk, ...analytics.getMiddlewares()]
 const toBeComposed = [applyMiddleware(...middleware)]
@@ -20,9 +17,6 @@ export function initStore(): Store {
         combineReducers({
             dataUnion: dataUnionReducer,
             entities: entitiesReducer,
-            global: globalReducer,
-            user: userReducer,
-            transactions: transactionsReducer,
         }),
         compose(...toBeComposed),
     )
