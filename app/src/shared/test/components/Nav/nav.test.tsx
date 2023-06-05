@@ -1,8 +1,6 @@
 import React from 'react'
-import { Provider } from 'react-redux'
 import {MemoryRouter} from 'react-router-dom'
 import {render, RenderResult, screen} from '@testing-library/react'
-import mockStore from '$app/test/test-utils/mockStoreProvider'
 import Nav from '$shared/components/Layout/Nav'
 import { useWalletAccount, useEns } from '$shared/stores/wallet'
 
@@ -39,9 +37,7 @@ jest.mock('$routes', () => ({
 function mountNav(): RenderResult {
     return render(
         <MemoryRouter>
-            <Provider store={mockStore({})}>
-                <Nav />
-            </Provider>
+            <Nav />
         </MemoryRouter>
     )
 }

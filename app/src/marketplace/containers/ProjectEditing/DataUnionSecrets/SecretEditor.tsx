@@ -5,7 +5,6 @@ import Button from '$shared/components/Button'
 import Text from '$ui/Text'
 import UnstyledLabel from '$ui/Label'
 import LightModal from '$app/src/modals/LightModal'
-import useDataUnionSecrets from '$mp/modules/dataUnion/hooks/useDataUnionSecrets'
 
 const Container = styled.div`
     display: grid;
@@ -25,16 +24,12 @@ const Buttons = styled.div`
 
 type Props = {
     secret?: DataUnionSecret | undefined,
-    chainId: number,
-    dataUnionId: string,
     onReject?: (reason?: unknown) => void,
-    onResolve?: () => void,
+    onResolve?: (name: string) => void,
 }
 
-export const SecretEditor: FunctionComponent<Props> = ({ secret, chainId, dataUnionId, onReject, onResolve }: Props) => {
+export const SecretEditor: FunctionComponent<Props> = ({ secret, onReject, onResolve }: Props) => {
     const [name, setName] = useState<string>('')
-    const { add, edit } = useDataUnionSecrets()
-
     const isNew = secret == null
 
     return (
@@ -65,29 +60,15 @@ export const SecretEditor: FunctionComponent<Props> = ({ secret, chainId, dataUn
                     <Button
                         disabled={name == null || name.length === 0}
                         onClick={async () => {
-                            if (name == null || name.length === 0) {
+                            if (name == null || name.length === 0 || typeof name === 'undefined') {
                                 return
                             }
 
                             try {
-                                if (isNew) {
-                                    await add({
-                                        chainId,
-                                        dataUnionId,
-                                        name,
-                                    })
-                                } else {
-                                    await edit({
-                                        id: secret.id,
-                                        chainId,
-                                        dataUnionId,
-                                        name,
-                                    })
-                                }
-
                                 if (onResolve != null) {
-                                    onResolve()
+                                    onResolve(name)
                                 }
+                                return
                             }
                             catch (e) {
                                 console.error(e)

@@ -1,5 +1,6 @@
 import React, {FunctionComponent, useContext} from 'react'
 import styled from 'styled-components'
+import { Container } from 'toasterhea'
 import { ProjectPageContainer } from '$shared/components/ProjectPage'
 import { ProjectHeroContainer } from '$mp/containers/ProjectPage/Hero/ProjectHero2.styles'
 import { CoverImage } from '$mp/containers/ProjectEditing/CoverImage'
@@ -17,6 +18,7 @@ import { DataUnionTokenSelector } from '$mp/containers/ProjectEditing/DataUnionT
 import { DataUnionFee } from '$mp/containers/ProjectEditing/DataUnionFee'
 import {ProjectControllerContext} from "$mp/containers/ProjectEditing/ProjectController"
 import getCoreConfig from "$app/src/getters/getCoreConfig"
+import {DataUnionSecretsContextProvider} from "$mp/modules/dataUnion/dataUnionSecrectsContext"
 import {ProjectPermission, useProjectAbility} from "$shared/stores/projectAbilities"
 import { useWalletAccount } from '$shared/stores/wallet'
 import DeleteProject from './DeleteProject'
@@ -84,7 +86,9 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({nonEditabl
         </WhiteBoxWithMargin>
         {project?.type === ProjectType.DataUnion && project.existingDUAddress != null && (
             <WhiteBoxWithMargin>
-                <DataUnionSecrets />
+                <DataUnionSecretsContextProvider>
+                    <DataUnionSecrets />
+                </DataUnionSecretsContextProvider>
             </WhiteBoxWithMargin>
         )}
         {project?.id && canDelete && (
