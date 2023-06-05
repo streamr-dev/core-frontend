@@ -4,6 +4,7 @@ const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const WebpackNotifierPlugin = require('webpack-notifier')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const TerserPlugin = require("terser-webpack-plugin")
 const ImageminPlugin = require('imagemin-webpack-plugin').default
 const StyleLintPlugin = require('stylelint-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
@@ -320,6 +321,13 @@ module.exports = {
         splitChunks: {
             chunks: 'all',
         },
+        usedExports: true,
+        minimize: isProduction(),
+        minimizer: [new TerserPlugin({
+            terserOptions: {
+                compress: true,
+            },
+        })],
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
