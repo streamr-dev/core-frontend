@@ -4,11 +4,6 @@ import {render, RenderResult, screen} from '@testing-library/react'
 import Nav from '$shared/components/Layout/Nav'
 import { useWalletAccount, useEns } from '$shared/stores/wallet'
 
-jest.mock('$shared/components/AccountsBalance', () => ({
-    __esModule: true,
-    default: () => <></>,
-}))
-
 jest.mock('$shared/stores/wallet', () => ({
     __esModule: true,
     useWalletAccount: jest.fn(),
