@@ -8,6 +8,9 @@ interface HubRouterProps {
     children?: ReactNode
 }
 
+/**
+ * Custom browser Router that allows us to access `history`.
+ */
 export function HubRouter(props: HubRouterProps) {
     const [state, setState] = useState({
         action: history.action,

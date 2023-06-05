@@ -93,6 +93,18 @@ export default function usePreventNavigatingAway({
 }
 
 function patchBeforeUnload() {
+    /**
+     * `history` forces in its own `beforeunload` event handler which makes the user
+     * always having to confirm a leave. Here we disable it the hackiest if ways.
+     *
+     * We overwrite `Window#addEventListener` and `Window#removeEventListener` to make
+     * them ignore "unauthorized" `beforeunload` and introduce `hub_beforeunload` event,
+     * and let that through.
+     *
+     * This effectively disables all library-driven logic for that event. It also enforces
+     * us to use the new event internally, too. Win some. Lose some.
+     */
+
     if (window.addEventListener !== Window.prototype.addEventListener) {
         return
     }
@@ -143,9 +155,13 @@ export function useBlockHistoryEffect() {
                 unblock()
 
                 retry()
-
-                bump()
             }
+
+            /**
+             * This callback runs on every attempt to change the client-side routing. It's
+             * ditched on every try thus we have to re-engage it manually.
+             */
+            bump()
         })
 
         cache // keep
