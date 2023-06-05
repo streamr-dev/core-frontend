@@ -1,6 +1,5 @@
 import BN from 'bignumber.js'
 import { AbiItem } from 'web3-utils'
-import { Contract } from 'web3-eth-contract'
 import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import { SmartContractConfig } from '$shared/types/web3-types'
@@ -12,28 +11,7 @@ import marketplaceAbi from '$shared/web3/abis/marketplace.json'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import { getContract, call } from '../utils/smartContract'
 import { fromAtto, fromDecimals } from './math'
-export const getDaiAddress = (chainId: number): Address => {
-    // Not available in @streamr/config yet
-    switch (chainId) {
-        case 1:
-            return '0x6B175474E89094C44Da98b954EedeAC495271d0F'
 
-        case 137:
-            return '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063'
-
-        case 8995:
-            // OTHERcoin in docker mainchain
-            return '0x642D2B84A32A9A92FEc78CeAA9488388b3704898'
-
-        case 8997:
-            // LINK token works for now on sidechain
-            return '0x3387F44140ea19100232873a5aAf9E46608c791E'
-
-        default:
-            console.error(`No Dai address found for chainId ${chainId}`)
-            throw new Error(`No Dai address found for chainId ${chainId}`)
-    }
-}
 export const getDataAddress = (chainId: number): Address => {
     const { contracts } = getConfigForChain(chainId)
     const dataTokenAddress = contracts.DATA
@@ -59,24 +37,6 @@ export const getMarketplaceAbiAndAddress = (chainId: number): SmartContractConfi
     abi: marketplaceAbi as AbiItem[],
     address: getMarketplaceAddress(chainId),
 })
-/**
- * @deprecated Use `getMarketplaceContract`.
- */
-export const marketplaceContract = (usePublicNode = false, chainId: number): Contract =>
-    getContract(getMarketplaceAbiAndAddress(chainId), usePublicNode, chainId)
-export const getDataTokenAbiAndAddress = (chainId: number): SmartContractConfig => ({
-    abi: tokenAbi as AbiItem[],
-    address: getDataAddress(chainId),
-})
-export const dataTokenContractMethods = (usePublicNode = false, chainId: number): any =>
-    getContract(getDataTokenAbiAndAddress(chainId), usePublicNode, chainId).methods
-export const daiTokenContractMethods = (usePublicNode = false, chainId: number): any => {
-    const instance: SmartContractConfig = {
-        abi: tokenAbi as AbiItem[],
-        address: getDaiAddress(chainId),
-    }
-    return getContract(instance, usePublicNode, chainId).methods
-}
 /**
  * @deprecated Use `getERC20TokenContract(…).methods` explicitly.
  */
@@ -112,10 +72,6 @@ export const getCustomTokenBalance = async (
     )
     const decimals = await call(erc20TokenContractMethods(contractAddress, usePublicNode, chainId).decimals())
     return fromDecimals(balance, decimals)
-}
-export const getCustomTokenDecimals = async (contractAddress: Address, chainId: number): SmartContractCall<BN> => {
-    const decimals = await call(erc20TokenContractMethods(contractAddress, true, chainId).decimals())
-    return new BN(decimals)
 }
 export const getMyNativeTokenBalance = (): Promise<BN> =>
     getDefaultWeb3Account().then((myAccount) => getNativeTokenBalance(myAccount))
