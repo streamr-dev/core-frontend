@@ -32,7 +32,6 @@ describe.skip('usePending', () => {
 
         function Test() {
             currentPendingState = usePending('test')
-            console.log('test', currentPendingState.isPending)
             isAnyPending = useAnyPending()
             const { wrap } = currentPendingState
             useEffect(() => {
