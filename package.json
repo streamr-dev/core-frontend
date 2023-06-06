@@ -151,7 +151,7 @@
         "@sentry/webpack-plugin": "^1.20.1",
         "@storybook/addon-actions": "^7.0.12",
         "@storybook/addon-controls": "^7.0.12",
-        "@storybook/addon-links": "^7.0.12",
+        "@storybook/addon-links": "^7.0.18",
         "@storybook/addon-postcss": "^2.0.0",
         "@storybook/addon-viewport": "^7.0.12",
         "@storybook/addons": "^7.0.12",
