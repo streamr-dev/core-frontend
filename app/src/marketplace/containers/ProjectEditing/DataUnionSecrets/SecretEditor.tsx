@@ -23,17 +23,24 @@ const Buttons = styled.div`
 `
 
 type Props = {
-    secret?: DataUnionSecret | undefined,
-    onReject?: (reason?: unknown) => void,
-    onResolve?: (name: string) => void,
+    secret?: DataUnionSecret | undefined
+    onReject?: (reason?: unknown) => void
+    onResolve?: (name: string) => void
 }
 
-export const SecretEditor: FunctionComponent<Props> = ({ secret, onReject, onResolve }: Props) => {
+export const SecretEditor: FunctionComponent<Props> = ({
+    secret,
+    onReject,
+    onResolve,
+}: Props) => {
     const [name, setName] = useState<string>('')
     const isNew = secret == null
 
     return (
-        <LightModal title={isNew ? 'Add a shared secret' : 'Edit shared secret'} onReject={onReject}>
+        <LightModal
+            title={isNew ? 'Add a shared secret' : 'Edit shared secret'}
+            onReject={onReject}
+        >
             <Container>
                 <div>
                     <Label>Secret name</Label>
@@ -60,7 +67,7 @@ export const SecretEditor: FunctionComponent<Props> = ({ secret, onReject, onRes
                     <Button
                         disabled={name == null || name.length === 0}
                         onClick={async () => {
-                            if (name == null || name.length === 0 || typeof name === 'undefined') {
+                            if (name == null || name.length === 0) {
                                 return
                             }
 
@@ -68,9 +75,7 @@ export const SecretEditor: FunctionComponent<Props> = ({ secret, onReject, onRes
                                 if (onResolve != null) {
                                     onResolve(name)
                                 }
-                                return
-                            }
-                            catch (e) {
+                            } catch (e) {
                                 console.error(e)
                             }
                         }}
@@ -78,7 +83,7 @@ export const SecretEditor: FunctionComponent<Props> = ({ secret, onReject, onRes
                         {isNew ? 'Add a shared secret' : 'Save'}
                     </Button>
                     <Button
-                        kind='link'
+                        kind="link"
                         onClick={() => {
                             if (onReject != null) {
                                 onReject()
