@@ -146,9 +146,10 @@ describe('web3 utils', () => {
             jest.spyOn(utils, 'getContract').mockImplementation(getContractStub as any)
             await all.getMyDataTokenBalance()
             expect(getContractStub).toHaveBeenCalledTimes(1)
-            // @ts-ignore
             expect(
-                getContractStub.mock.calls[0][0].abi.find((f) => f.name === 'balanceOf'),
+                (getContractStub.mock.calls[0] as any)[0].abi.find(
+                    (f) => f.name === 'balanceOf',
+                ),
             ).toBeDefined()
             expect(balanceStub).toHaveBeenCalledTimes(1)
             expect(balanceStub).toBeCalledWith('testAccount')
