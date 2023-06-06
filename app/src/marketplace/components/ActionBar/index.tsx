@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { CategoryFilter, Filter, ProjectTypeFilter, SearchFilter } from '$mp/types/project-types'
+import { Filter, ProjectTypeFilter, SearchFilter } from '$mp/types/project-types'
 import SearchBar from '$shared/components/SearchBar'
 import {
     ActionBarContainer,
@@ -16,7 +16,6 @@ import SelectField2 from '$mp/components/SelectField2'
 import MobileFilter from '$shared/components/MobileFilter'
 import { ProjectListingTypeFilter } from "$app/src/services/projects"
 import Tabs, { Tab } from '$shared/components/Tabs'
-import { Category } from '../../types/category-types'
 import { isValidSearchQuery } from '../../utils/validate'
 
 enum ProjectsScope {
@@ -26,7 +25,6 @@ enum ProjectsScope {
 
 export type Props = {
     filter: Filter
-    categories: Array<Category> | null | undefined
     onFilterChange: (filter: Filter) => void
     onSearchChange: (search: SearchFilter) => void
     onCreateProject: () => void
@@ -67,14 +65,6 @@ const UnstyledActionBar = ({
         },
         [onSearchChangeProp],
     )
-    const onCategoryChange = useCallback(
-        (category: CategoryFilter | null | undefined) => {
-            onFilterChangeProp({
-                categories: category !== '__all' ? category : undefined,
-            })
-        },
-        [onFilterChangeProp],
-    )
 
     const onProductTypeChange = useCallback(
         (type: ProjectTypeFilter | null | undefined) => {
@@ -88,7 +78,6 @@ const UnstyledActionBar = ({
     const { categories: category, type } = filter
 
     const handleMobileFilterChange = (filters: Record<string, string>): void => {
-        onCategoryChange(filters.category)
         onProductTypeChange(filters.type)
     }
 

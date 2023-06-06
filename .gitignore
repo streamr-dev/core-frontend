@@ -18,6 +18,7 @@ screenshots
 .env.production.local
 *.log
 .env
+.envrc
 
 # IntelliJ files
 .idea

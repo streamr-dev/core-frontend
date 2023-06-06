@@ -1,4 +1,4 @@
-import { type StreamrClient, type ExternalProvider } from 'streamr-client'
+import { StreamrClient, ExternalProvider } from 'streamr-client'
 import { getWalletProvider } from '$shared/stores/wallet'
 import getChainId from '$utils/web3/getChainId'
 import networkPreflight, { Matic } from '$utils/networkPreflight'

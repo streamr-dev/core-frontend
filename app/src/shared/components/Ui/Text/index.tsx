@@ -1,5 +1,5 @@
 import React, { ComponentType, forwardRef, ForwardRefRenderFunction, FunctionComponent, HTMLProps } from 'react'
-import { compose } from 'redux'
+import { compose } from "$shared/utils/compose"
 import { Props as FlushHistoryProps } from './FlushHistoryDecorator'
 import FlushHistoryDecorator from './FlushHistoryDecorator'
 import { Props as OnCommitProps } from './OnCommitDecorator'

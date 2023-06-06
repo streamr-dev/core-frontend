@@ -146,7 +146,3 @@ export function useCurrentProjectAbility(permission: ProjectPermission) {
 
     return useProjectAbility(chainId, id, address, permission)
 }
-
-export function useInvalidateProjectAbilities() {
-    return useProjectAbilitiesStore().invalidate
-}

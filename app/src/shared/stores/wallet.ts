@@ -1,11 +1,11 @@
 import { z } from 'zod'
-import {produce} from "immer"
+import { produce } from 'immer'
 import detectProvider from '@metamask/detect-provider'
 import { create } from 'zustand'
 import Web3 from 'web3'
 import { MetaMaskInpageProvider } from '@metamask/providers'
-import { lookupEnsName } from '$shared/modules/user/services'
 import { isEthereumAddress } from '$app/src/marketplace/utils/validate'
+import { lookupEnsName } from '$shared/utils/lookupEnsName'
 
 interface RequestArguments {
     readonly method: string

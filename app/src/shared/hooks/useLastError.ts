@@ -19,4 +19,3 @@ export function useLastError({ isProcessing, error }: LastErrorProps) {
         error: lastKnownError,
     }
 }
-export default useLastError

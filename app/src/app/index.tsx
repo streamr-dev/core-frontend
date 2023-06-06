@@ -9,7 +9,6 @@ import '$utils/setupSnippets'
 import StreamrClientProvider from '$shared/components/StreamrClientProvider'
 import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
-import Notifications from '$shared/components/Notifications'
 import NotFoundPage from '$shared/components/NotFoundPage'
 import AnalyticsTracker from '$shared/components/AnalyticsTracker'
 import GenericErrorPage from '$shared/components/GenericErrorPage'
@@ -59,10 +58,9 @@ const App = () => (
             <StreamrClientProvider>
                 <ModalPortalProvider>
                     <ModalProvider>
-                        <GlobalInfoWatcher>
-                            <Analytics />
-                            <Globals />
-                            <Routes>
+                        <Analytics />
+                        <Globals />
+                        <Routes>
                                 <Route
                                     path="/hub/projects/*"
                                     errorElement={<ErrorPage />}
@@ -73,19 +71,17 @@ const App = () => (
                                         path=":id/edit"
                                         element={<EditProjectPage />}
                                     />
-                                    <Route path=":id/*" element={<ProjectPage />} />
-                                </Route>
+                            <Route path=":id/*" element={<ProjectPage />} />
+                            </Route>
                                 <Route path="/hub/streams/*" errorElement={<ErrorPage />}>
                                     <Route index element={<NewStreamListingPage />} />
                                     <Route path=":id/*" element={<StreamPage />} />
                                 </Route>
-                                {MiscRouter()}
-                            </Routes>
-                            <Notifications />
-                            <Container id={Layer.Modal} />
-                            <ToastContainer id={Layer.Toast} />
-                            <AnalyticsTracker />
-                        </GlobalInfoWatcher>
+                            {MiscRouter()}
+                        </Routes>
+                        <Container id={Layer.Modal} />
+                        <ToastContainer id={Layer.Toast} />
+                        <AnalyticsTracker />
                     </ModalProvider>
                 </ModalPortalProvider>
             </StreamrClientProvider>

@@ -110,7 +110,6 @@ const BadgeContainer = styled.div<BadgeContainerProps>`
         border-bottom-left-radius: 4px;
     }
 `
-const Badge = styled(BadgeContainer)``
 
 const Spinner = styled(UnstyledSpinner)`
     height: 10px;
@@ -156,23 +155,6 @@ const SharedBadge = (props) => (
     </BadgeContainer>
 )
 
-const UnstyledIconBadge = ({ forwardAs, children, icon, ...props }) => (
-    <BadgeContainer {...props} as={forwardAs}>
-        <SingleBadge>
-            <SvgIcon name={icon} />
-            {children != null && <div>{children}</div>}
-        </SingleBadge>
-    </BadgeContainer>
-)
-
-const IconBadge = styled(UnstyledIconBadge)`
-    svg {
-        height: 12px;
-        width: auto;
-    }
-`
-
 const BadgeLink = ({ ...props }) => <Link {...props} />
 
-export { DataUnionBadge, IconBadge, DeployingBadge, SharedBadge, SharedTheme, BadgeLink }
-export default Badge
+export { DataUnionBadge, DeployingBadge, SharedBadge, SharedTheme, BadgeLink }

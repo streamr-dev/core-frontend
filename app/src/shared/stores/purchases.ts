@@ -731,20 +731,6 @@ export function useHasActiveProjectSubscription(
     return Number.parseInt(endTimestamp, 10) * 1000 >= Date.now()
 }
 
-export function useInvalidateProjectSubscriptionsCallback() {
-    /**
-     * @TODO It'd be best to invalidate permissions on each visit to project's page just
-     * to be sure the user's looking at the latest state.
-     */
-    return usePurchaseStore().invalidateSubscription
-}
-
-export function useIsFetchingProjectSubscriptions(projectId: string | undefined) {
-    const { fetchingSubscriptions } = usePurchaseStore()
-
-    return (projectId && fetchingSubscriptions[projectId]) || false
-}
-
 export function useIsAnyPurchaseInProgress() {
     return !!Object.keys(usePurchaseStore().inProgress).length
 }
