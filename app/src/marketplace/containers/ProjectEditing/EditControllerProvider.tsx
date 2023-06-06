@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useCallback, useContext, useRef, Context, ReactNode, useEffect } from 'react'
 import { DataUnionStats } from '@dataunions/client/types/src/DataUnion'
 import qs from 'query-string'
-import { useLocation, useHistory } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Project } from '$mp/types/project-types'
 import { isDataUnionProduct } from '$mp/utils/product'
 import usePending from '$shared/hooks/usePending'
@@ -40,7 +40,7 @@ const EditControllerContext: Context<ContextProps> = React.createContext<Context
  */
 function useEditController(product: Project) {
     const location = useLocation()
-    const history = useHistory()
+    const navigate = useNavigate()
     const { isAnyTouched, resetTouched, status } = useContext(ValidationContext)
     // lastSectionRef is stored here and set in EditorNav so it remembers its state when toggling
     // between editor and preview
@@ -92,20 +92,23 @@ function useEditController(product: Project) {
             return
         }
 
-        history.replace(routes.projects.index())
-    }, [isMounted, history])
+        navigate(routes.projects.index(), { replace: true })
+    }, [isMounted, navigate])
     const productId = product.id
     const redirectToProduct = useCallback(() => {
         if (!isMounted()) {
             return
         }
 
-        history.replace(
+        navigate(
             routes.projects.overview({
                 id: productId,
             }),
+            {
+                replace: true,
+            },
         )
-    }, [productId, isMounted, history])
+    }, [productId, isMounted, navigate])
     const save = useCallback(
         async (
             options = {

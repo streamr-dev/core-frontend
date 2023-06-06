@@ -33,6 +33,7 @@ module.exports = {
         '\\.(png)$': '<rootDir>/scripts/emptyObject',
         '\\$config$': '<rootDir>/app/test/test-utils/testConfig.ts',
         '\\$app/(.*)$': '<rootDir>/app/$1',
+        '\\~/(.*)$': '<rootDir>/src/$1',
         '\\$mp/(.*)$': '<rootDir>/app/src/marketplace/$1',
         '\\$userpages/(.*)$': '<rootDir>/app/src/userpages/$1',
         '\\$routes$': '<rootDir>/app/src/routes',

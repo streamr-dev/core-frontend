@@ -12,7 +12,8 @@
             "$testUtils/*": ["app/src/test/test-utils/*"],
             "$ui/*": ["app/src/shared/components/Ui/*"],
             "$utils/*": ["app/src/utils/*"],
-            "$config": ["app/src/config/*.toml"]
+            "$config": ["app/src/config/*.toml"],
+            "~/*": ["src/*"]
         }
     },
     "exclude": ["**/*.test.ts", "**/*.test.tsx", "./app/test/test-utils/setupTests.ts"]

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link, useParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import {
     useDoesUserHaveAccess,
     useIsProjectBusy,
@@ -143,9 +143,11 @@ function ProjectLiveDataPage() {
     )
 }
 
-export default function TabbedPage() {
-    const { tab } = useParams<{ tab: 'overview' | 'connect' | 'live-data' }>()
+interface Props {
+    tab: 'overview' | 'connect' | 'live-data'
+}
 
+export default function TabbedPage({ tab }: Props) {
     const { id, name, creator } = useProject()
 
     const busy = useIsProjectBusy()

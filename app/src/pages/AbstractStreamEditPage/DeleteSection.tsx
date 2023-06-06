@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Button from '$shared/components/Button'
 import getTransactionalClient from '$app/src/getters/getTransactionalClient'
 import { useCurrentDraft } from '$shared/stores/streamEditor'
@@ -12,7 +12,7 @@ const Description = styled.p`
 `
 
 export default function DeleteSection() {
-    const history = useHistory()
+    const navigate = useNavigate()
 
     const { streamId } = useCurrentDraft()
 
@@ -38,7 +38,7 @@ export default function DeleteSection() {
                      * @FIXME: If the user navigates away before the above transaciton is
                      * done the app is gonna navigate to streams/index.
                      */
-                    history.push(routes.streams.index())
+                    navigate(routes.streams.index())
                 }}
             >
                 Delete

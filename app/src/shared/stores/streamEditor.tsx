@@ -11,7 +11,7 @@ import {
 import styled from 'styled-components'
 import { Toaster, toaster } from 'toasterhea'
 import uniqueId from 'lodash/uniqueId'
-import { Link, useRouteMatch } from 'react-router-dom'
+import { Link, useMatch } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { create } from 'zustand'
 import address0 from '$app/src/utils/address0'
@@ -1034,7 +1034,7 @@ const NewStreamLink = styled(Link)`
 function getOpenStreamLink(streamId: string) {
     return function OpenStreamLink() {
         const id: string = decodeURIComponent(
-            useRouteMatch(routes.streams.show())?.params['id'] || '',
+            useMatch(routes.streams.show())?.params['id'] || '',
         )
 
         if (!streamId || id === streamId) {
