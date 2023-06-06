@@ -166,7 +166,7 @@
         "@types/jest": "^29.5.1",
         "@types/lunr": "^2.3.4",
         "@types/moxios": "^0.4.15",
-        "@types/node": "^20.1.2",
+        "@types/node": "^20.2.5",
         "@types/postcss-import": "^14.0.0",
         "@types/react": "^18.2.8",
         "@types/react-avatar-editor": "^13.0.0",
