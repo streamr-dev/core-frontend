@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { MemoryRouter, withRouter } from 'react-router-dom'
+import { MemoryRouter, NavigateFunction, useNavigate } from 'react-router-dom'
 import { render, act } from '@testing-library/react'
 import { Context as ModalContext, Provider as ModalContextProvider } from '$shared/contexts/ModalApi'
 describe('ModalContext', () => {
@@ -107,12 +107,15 @@ describe('ModalContext', () => {
     })
     it('closes open modal on route change', async () => {
         let currentContext
-        let history
-        const Test = withRouter(({ history: routerHistory }) => {
+
+        let navigate: NavigateFunction | undefined
+
+        function Test() {
             currentContext = useContext(ModalContext)
-            history = routerHistory
+            navigate = useNavigate()
             return null
-        })
+        }
+
         render(
             <MemoryRouter>
                 <ModalContextProvider>
@@ -131,7 +134,7 @@ describe('ModalContext', () => {
             },
         })
         await act(async () => {
-            history.push('/anotherPath')
+            navigate!('/anotherPath')
         })
         expect(acceptFn).not.toHaveBeenCalled()
         expect(rejectFn).toHaveBeenCalled()
