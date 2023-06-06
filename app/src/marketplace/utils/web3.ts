@@ -22,6 +22,14 @@ export const getDataAddress = (chainId: number): Address => {
 
     return dataTokenAddress
 }
+export const dataTokenContractMethods = (usePublicNode = false, chainId: number): any =>
+    getContract(getDataTokenAbiAndAddress(chainId), usePublicNode, chainId).methods
+
+export const getDataTokenAbiAndAddress = (chainId: number): SmartContractConfig => ({
+    abi: tokenAbi as AbiItem[],
+    address: getDataAddress(chainId),
+})
+
 export const getMarketplaceAddress = (chainId: number): Address => {
     const { contracts } = getConfigForChain(chainId)
     // Use Marketplace or RemoteMarketplace depending on chain. MarketplaceV3 is just a fallback for tests (they run on "dev0" chain)
