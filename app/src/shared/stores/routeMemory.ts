@@ -11,7 +11,7 @@
 import { produce } from 'immer'
 import { useEffect } from 'react'
 import { create } from 'zustand'
-import { useHistory } from 'react-router-dom'
+import { history } from '~/consts'
 
 export const RouteMemoryKey = {
     lastStreamListingSelection() {
@@ -129,17 +129,15 @@ export function useKeep() {
  * a route memory wipe.
  */
 export function useRouteMemoryWipeEffect() {
-    const history = useHistory()
-
     const { wipe } = useRouteMemoryStore()
 
     useEffect(() => {
-        return history.listen((_, action) => {
+        return history.listen(({ action }) => {
             if (action !== 'PUSH') {
                 return
             }
 
             wipe()
         })
-    }, [history, wipe])
+    }, [wipe])
 }

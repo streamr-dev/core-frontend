@@ -4,12 +4,12 @@ import styled, { css } from 'styled-components'
 import { toaster } from 'toasterhea'
 import {
     Link,
-    Redirect,
     Route,
-    Switch,
-    useHistory,
+    Routes,
+    useNavigate,
     useLocation,
     useParams,
+    Navigate,
 } from 'react-router-dom'
 import { StreamPreview } from '$shared/components/StreamPreview'
 import { StreamConnect } from '$shared/components/StreamConnect'
@@ -130,20 +130,23 @@ function ConnectPage() {
 function StreamRedirect() {
     const { id } = useParams<{ id: string }>()
 
-    return <Redirect to={routes.streams.overview({ id })} />
+    return <Navigate to={routes.streams.overview({ id })} replace />
 }
 
 function defaultFormEventHandler(e: FormEvent) {
     e.preventDefault()
 }
 
-function StreamPageSwitch() {
-    const { id, view } = useParams<{
-        view: 'overview' | 'connect' | 'live-data'
+interface Props {
+    tab?: 'overview' | 'connect' | 'live-data'
+}
+
+function StreamPageSwitch({ tab }: Props) {
+    const { id } = useParams<{
         id: string
     }>()
 
-    const isNew = !id && !view
+    const isNew = id === 'new'
 
     const { streamId, loadError } = useCurrentDraft()
 
@@ -155,7 +158,7 @@ function StreamPageSwitch() {
 
     const setValidationError = useSetCurrentDraftError()
 
-    const history = useHistory()
+    const navigate = useNavigate()
 
     const isMounted = useIsMounted()
 
@@ -202,7 +205,7 @@ function StreamPageSwitch() {
                         return
                     }
 
-                    history.push(
+                    navigate(
                         routes.streams.overview({
                             id: streamId,
                         }),
@@ -291,15 +294,15 @@ function StreamPageSwitch() {
         )
     }
 
-    const editView = view === 'overview' || isNew
+    const editView = tab === 'overview' || isNew
 
     return (
         <form onSubmit={editView ? onSubmit : defaultFormEventHandler}>
             <Layout>
                 <Header isNew={isNew} />
                 {editView && <EditPage isNew={isNew} />}
-                {view === 'connect' && <ConnectPage />}
-                {view === 'live-data' && <LiveDataPage />}
+                {tab === 'connect' && <ConnectPage />}
+                {tab === 'live-data' && <LiveDataPage />}
             </Layout>
         </form>
     )
@@ -312,12 +315,13 @@ export default function StreamPage() {
 
     return (
         <StreamDraftContext.Provider value={draftId}>
-            <Switch>
-                <Route exact path={routes.streams.new()} component={StreamPageSwitch} />
-                <Route exact path={routes.streams.show()} component={StreamRedirect} />
-                <Route exact path={routes.streams.view()} component={StreamPageSwitch} />
-                <Route component={NotFoundPage} key="NotFoundPage" />
-            </Switch>
+            <Routes>
+                <Route index element={streamId === 'new' ? <StreamPageSwitch /> : <StreamRedirect />} />
+                <Route path="overview" element={<StreamPageSwitch tab="overview" />} />
+                <Route path="connect" element={<StreamPageSwitch tab="connect" />} />
+                <Route path="live-data" element={<StreamPageSwitch tab="live-data" />} />
+                <Route path="*" element={<NotFoundPage />} />
+            </Routes>
         </StreamDraftContext.Provider>
     )
 }

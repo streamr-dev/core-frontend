@@ -54,7 +54,7 @@ jest.mock('$mp/containers/ProductController/useEditableProjectActions', () => ({
 jest.mock('$shared/utils/constants', () => ({}))
 
 jest.mock('react-router-dom', () => ({
-    useHistory: jest.fn().mockReturnValue({push: jest.fn()})
+    useNavigate: () => jest.fn()
 }))
 
 jest.mock('$routes', () => ({

@@ -1,14 +1,15 @@
-import React, { FunctionComponent } from 'react'
+import React from 'react'
+import { useRouteError } from 'react-router-dom'
 import NotFoundPage from '$shared/components/NotFoundPage'
 import GenericErrorPage from '$shared/components/GenericErrorPage'
 import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
 
-const ErrorPage: FunctionComponent<{error: Error}> = ({ error, ...props }) => {
+export default function ErrorPage() {
+    const error = useRouteError()
+
     if (error instanceof ResourceNotFoundError) {
-        return <NotFoundPage {...props} />
+        return <NotFoundPage />
     }
 
-    return <GenericErrorPage {...props} />
+    return <GenericErrorPage />
 }
-
-export default ErrorPage

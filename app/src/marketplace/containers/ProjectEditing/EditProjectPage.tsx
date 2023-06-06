@@ -1,7 +1,7 @@
 import React, {FunctionComponent, ReactNode, useCallback, useContext, useEffect, useMemo} from "react"
 import styled from "styled-components"
 import {isEqual} from "lodash"
-import {useHistory, useParams} from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import {ValidationContext, ValidationContextProvider} from "$mp/containers/ProductController/ValidationContextProvider"
 import {ProjectControllerContext, ProjectControllerProvider} from "$mp/containers/ProjectEditing/ProjectController"
 import {ProjectStateContext, ProjectStateContextProvider} from "$mp/contexts/ProjectStateContext"
@@ -51,17 +51,20 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
     const isMounted = useIsMounted()
     const { chainId } = getCoreConfig().projectRegistry
     const canEdit = useProjectAbility(chainId, project?.id || undefined, useWalletAccount(), ProjectPermission.Edit)
-    const history = useHistory()
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (isMounted() && canEdit === false) {
-            history.replace(
+            navigate(
                 routes.projects.overview({
                     id: project.id,
                 }),
+                {
+                    replace: true,
+                },
             )
         }
-    }, [isMounted, canEdit, history, project.id])
+    }, [isMounted, canEdit, navigate, project.id])
 
     useEffect(() => {
         resetTouched()
