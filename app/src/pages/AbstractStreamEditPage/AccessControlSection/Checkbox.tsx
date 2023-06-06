@@ -5,7 +5,7 @@ import SharedCheckbox from '$shared/components/Checkbox'
 import { COLORS } from '$shared/utils/styled'
 
 type LabelProps = {
-    disabled?: boolean,
+    disabled?: boolean
 }
 
 const Label = styled.label<LabelProps>`
@@ -18,18 +18,24 @@ const Label = styled.label<LabelProps>`
     padding: 0px 12px 0px 18px;
     height: 40px;
     margin: 0;
-    cursor: ${({ disabled }) => disabled ? 'not-allowed' : 'pointer'};
+    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
 `
 
 type Props = {
-    operationName: string,
-    value: boolean,
-    address: string,
-    onChange: (value: boolean) => void,
-    disabled?: boolean,
+    operationName: string
+    value: boolean
+    address: string
+    onChange: (value: boolean) => void
+    disabled?: boolean
 }
 
-const Checkbox: React.FC<Props> = ({ operationName, value, address, onChange, disabled }) => {
+const Checkbox: React.FC<Props> = ({
+    operationName,
+    value,
+    address,
+    onChange,
+    disabled,
+}) => {
     const uniqueKey = `${operationName}-${address}`
     return (
         <Label htmlFor={uniqueKey} disabled={disabled}>

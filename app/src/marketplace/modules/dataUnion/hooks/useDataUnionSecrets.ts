@@ -1,5 +1,8 @@
-import {useContext} from 'react'
-import {DataUnionSecretsContext, DataUnionSecretsController} from "../dataUnionSecretsContext"
+import { useContext } from 'react'
+import {
+    DataUnionSecretsContext,
+    DataUnionSecretsController,
+} from '../dataUnionSecretsContext'
 
 function useDataUnionSecrets(): DataUnionSecretsController {
     return useContext(DataUnionSecretsContext)

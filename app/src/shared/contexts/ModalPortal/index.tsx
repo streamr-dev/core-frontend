@@ -10,7 +10,8 @@ const defaultContext: ModalPortalContextModel = {
     registerModal: undefined,
     unregisterModal: undefined,
 }
-export const ModalPortalContext: ReactContext<ModalPortalContextModel> = React.createContext(defaultContext)
+export const ModalPortalContext: ReactContext<ModalPortalContextModel> =
+    React.createContext(defaultContext)
 type Props = {
     children: ReactNode
 }
@@ -38,7 +39,9 @@ export class ModalPortalProvider extends React.Component<Props, State> {
         this.count = this.count - 1
 
         if (this.count < 0) {
-            throw new Error('Negative number of open modals. Something went surprisingly wrong.')
+            throw new Error(
+                'Negative number of open modals. Something went surprisingly wrong.',
+            )
         }
 
         this.setState({

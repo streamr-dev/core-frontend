@@ -8,8 +8,13 @@ type Props = {
     block?: boolean
 }
 
-const UnstyledSkeleton: React.FunctionComponent<Props> = ({ disabled, children, width, block, ...props }: Props) =>
-    disabled ? children || null : <span {...props}>&zwnj;</span> as any
+const UnstyledSkeleton: React.FunctionComponent<Props> = ({
+    disabled,
+    children,
+    width,
+    block,
+    ...props
+}: Props) => (disabled ? children || null : ((<span {...props}>&zwnj;</span>) as any))
 
 const animation = keyframes`
     0% {

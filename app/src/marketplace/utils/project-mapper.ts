@@ -1,12 +1,12 @@
-import BN from "bignumber.js"
-import {TheGraphPaymentDetails, TheGraphProject} from "$app/src/services/projects"
-import {ChainName, Project, SalePoint} from "$mp/types/project-types"
+import BN from 'bignumber.js'
+import { TheGraphPaymentDetails, TheGraphProject } from '$app/src/services/projects'
+import { ChainName, Project, SalePoint } from '$mp/types/project-types'
 import { ProjectType } from '$shared/types'
-import {getConfigForChain} from "$shared/web3/config"
-import {getMostRelevantTimeUnit} from "$mp/utils/price"
-import {getTokenInformation} from "$mp/utils/web3"
-import {fromDecimals} from "$mp/utils/math"
-import {TimeUnit, timeUnitSecondsMultiplierMap} from "$shared/utils/timeUnit"
+import { getConfigForChain } from '$shared/web3/config'
+import { getMostRelevantTimeUnit } from '$mp/utils/price'
+import { getTokenInformation } from '$mp/utils/web3'
+import { fromDecimals } from '$mp/utils/math'
+import { TimeUnit, timeUnitSecondsMultiplierMap } from '$shared/utils/timeUnit'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 
 /**
@@ -24,7 +24,7 @@ export const mapImageUrl = (graphProject: TheGraphProject) => {
 
     // Replace old ipfs.io references with new IPFS gateway
     if (imageUrl != null && imageUrl.startsWith('https://ipfs.io/ipfs/')) {
-        imageUrl = imageUrl.replace("https://ipfs.io/ipfs/", ipfsGatewayUrl)
+        imageUrl = imageUrl.replace('https://ipfs.io/ipfs/', ipfsGatewayUrl)
     }
 
     return imageUrl
@@ -33,7 +33,9 @@ export const mapImageUrl = (graphProject: TheGraphProject) => {
 /**
  * @deprecated Use `projectEditor` to obtain both the graph projects and their local reflections.
  */
-export const mapGraphProjectToDomainModel = async (graphProject: TheGraphProject): Promise<Project> => {
+export const mapGraphProjectToDomainModel = async (
+    graphProject: TheGraphProject,
+): Promise<Project> => {
     return {
         id: graphProject.id,
         type: mapProjectType(graphProject),
@@ -43,9 +45,9 @@ export const mapGraphProjectToDomainModel = async (graphProject: TheGraphProject
         imageUrl: mapImageUrl(graphProject),
         imageIpfsCid: graphProject.metadata.imageIpfsCid,
         streams: graphProject.streams,
-        termsOfUse: {...graphProject.metadata.termsOfUse},
-        contact: {...graphProject.metadata.contactDetails},
-        salePoints: await mapSalePoints(graphProject.paymentDetails)
+        termsOfUse: { ...graphProject.metadata.termsOfUse },
+        contact: { ...graphProject.metadata.contactDetails },
+        salePoints: await mapSalePoints(graphProject.paymentDetails),
     }
 }
 
@@ -56,7 +58,8 @@ export const mapProjectType = (graphProject: TheGraphProject): ProjectType => {
     if (graphProject.isDataUnion) {
         return ProjectType.DataUnion
     }
-    return graphProject.paymentDetails.length === 1 && graphProject.paymentDetails[0].pricePerSecond == '0'
+    return graphProject.paymentDetails.length === 1 &&
+        graphProject.paymentDetails[0].pricePerSecond == '0'
         ? ProjectType.OpenData
         : ProjectType.PaidData
 }
@@ -64,21 +67,33 @@ export const mapProjectType = (graphProject: TheGraphProject): ProjectType => {
 /**
  * @deprecated Use `projectEditor` to obtain both the graph projects and their local reflections.
  */
-export const mapSalePoints = async (paymentDetails: TheGraphPaymentDetails[]): Promise<Record<ChainName, SalePoint>> => {
+export const mapSalePoints = async (
+    paymentDetails: TheGraphPaymentDetails[],
+): Promise<Record<ChainName, SalePoint>> => {
     const salePoints: Record<ChainName, SalePoint> = {}
-    await Promise.all(paymentDetails.map(async (paymentDetail) => {
-        const chainConfig = getConfigForChain(Number(paymentDetail.domainId))
-        const tokenInfo = await getTokenInformation(paymentDetail.pricingTokenAddress, chainConfig.id)
-        const pricePerSecondFromDecimals = fromDecimals(paymentDetail.pricePerSecond, String(tokenInfo.decimals))
-        const timeUnit: TimeUnit = getMostRelevantTimeUnit(pricePerSecondFromDecimals)
-        salePoints[chainConfig.name] = {
-            chainId: chainConfig.id,
-            pricingTokenAddress: paymentDetail.pricingTokenAddress.toLowerCase(),
-            pricePerSecond: new BN(paymentDetail.pricePerSecond),
-            beneficiaryAddress: paymentDetail.beneficiary.toLowerCase(),
-            timeUnit,
-            price: pricePerSecondFromDecimals.multipliedBy(timeUnitSecondsMultiplierMap.get(timeUnit))
-        }
-    }))
+    await Promise.all(
+        paymentDetails.map(async (paymentDetail) => {
+            const chainConfig = getConfigForChain(Number(paymentDetail.domainId))
+            const tokenInfo = await getTokenInformation(
+                paymentDetail.pricingTokenAddress,
+                chainConfig.id,
+            )
+            const pricePerSecondFromDecimals = fromDecimals(
+                paymentDetail.pricePerSecond,
+                String(tokenInfo.decimals),
+            )
+            const timeUnit: TimeUnit = getMostRelevantTimeUnit(pricePerSecondFromDecimals)
+            salePoints[chainConfig.name] = {
+                chainId: chainConfig.id,
+                pricingTokenAddress: paymentDetail.pricingTokenAddress.toLowerCase(),
+                pricePerSecond: new BN(paymentDetail.pricePerSecond),
+                beneficiaryAddress: paymentDetail.beneficiary.toLowerCase(),
+                timeUnit,
+                price: pricePerSecondFromDecimals.multipliedBy(
+                    timeUnitSecondsMultiplierMap.get(timeUnit),
+                ),
+            }
+        }),
+    )
     return salePoints
 }

@@ -1,7 +1,10 @@
 import React, { useContext } from 'react'
 import { MemoryRouter, NavigateFunction, useNavigate } from 'react-router-dom'
 import { render, act } from '@testing-library/react'
-import { Context as ModalContext, Provider as ModalContextProvider } from '$shared/contexts/ModalApi'
+import {
+    Context as ModalContext,
+    Provider as ModalContextProvider,
+} from '$shared/contexts/ModalApi'
 describe('ModalContext', () => {
     it('has no modals defined by default', () => {
         let currentContext

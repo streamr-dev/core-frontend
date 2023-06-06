@@ -4,7 +4,7 @@ import getWeb3 from '$utils/web3/getWeb3'
 export default function getProviderChainId(): number {
     const provider = getWeb3().currentProvider
 
-    if (provider == null || typeof provider === "string") {
+    if (provider == null || typeof provider === 'string') {
         return 0
     }
 

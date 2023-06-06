@@ -33,10 +33,15 @@ export const getDataTokenAbiAndAddress = (chainId: number): SmartContractConfig 
 export const getMarketplaceAddress = (chainId: number): Address => {
     const { contracts } = getConfigForChain(chainId)
     // Use Marketplace or RemoteMarketplace depending on chain. MarketplaceV3 is just a fallback for tests (they run on "dev0" chain)
-    const marketplaceAddress = contracts.MarketplaceV4 || contracts.RemoteMarketplaceV1 || contracts.MarketplaceV3
+    const marketplaceAddress =
+        contracts.MarketplaceV4 ||
+        contracts.RemoteMarketplaceV1 ||
+        contracts.MarketplaceV3
 
     if (marketplaceAddress == null) {
-        throw new Error('Could not find contract address for MarketplaceV4 or RemoteMarketplaceV1!')
+        throw new Error(
+            'Could not find contract address for MarketplaceV4 or RemoteMarketplaceV1!',
+        )
     }
 
     return marketplaceAddress
@@ -48,7 +53,11 @@ export const getMarketplaceAbiAndAddress = (chainId: number): SmartContractConfi
 /**
  * @deprecated Use `getERC20TokenContract(…).methods` explicitly.
  */
-export const erc20TokenContractMethods = (address: Address, usePublicNode = false, chainId: number): any => {
+export const erc20TokenContractMethods = (
+    address: Address,
+    usePublicNode = false,
+    chainId: number,
+): any => {
     const instance: SmartContractConfig = {
         abi: tokenAbi as AbiItem[],
         address,
@@ -56,7 +65,10 @@ export const erc20TokenContractMethods = (address: Address, usePublicNode = fals
     return getContract(instance, usePublicNode, chainId).methods
 }
 
-export const getNativeTokenBalance = (address: Address, usePublicNode = false): Promise<BN> => {
+export const getNativeTokenBalance = (
+    address: Address,
+    usePublicNode = false,
+): Promise<BN> => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
     return web3.eth
         .getBalance(address)
@@ -67,7 +79,10 @@ export const getDataTokenBalance = (
     address: Address,
     usePublicNode = false,
     chainId: number,
-): SmartContractCall<BN> => call(dataTokenContractMethods(usePublicNode, chainId).balanceOf(address)).then(fromAtto)
+): SmartContractCall<BN> =>
+    call(dataTokenContractMethods(usePublicNode, chainId).balanceOf(address)).then(
+        fromAtto,
+    )
 
 export const getCustomTokenBalance = async (
     contractAddress: Address,
@@ -76,9 +91,13 @@ export const getCustomTokenBalance = async (
     chainId: number,
 ): SmartContractCall<BN> => {
     const balance = await call(
-        erc20TokenContractMethods(contractAddress, usePublicNode, chainId).balanceOf(userAddress),
+        erc20TokenContractMethods(contractAddress, usePublicNode, chainId).balanceOf(
+            userAddress,
+        ),
     )
-    const decimals = await call(erc20TokenContractMethods(contractAddress, usePublicNode, chainId).decimals())
+    const decimals = await call(
+        erc20TokenContractMethods(contractAddress, usePublicNode, chainId).decimals(),
+    )
     return fromDecimals(balance, decimals)
 }
 export const getMyNativeTokenBalance = (): Promise<BN> =>
@@ -90,9 +109,9 @@ export const getMyDataTokenBalance = async (): SmartContractCall<BN> => {
 }
 
 type TokenInformation = {
-    symbol: string,
-    name: string,
-    decimals: number,
+    symbol: string
+    name: string
+    decimals: number
 }
 const tokenInformationCache: Record<string, TokenInformation> = {}
 export const getTokenInformation = async (

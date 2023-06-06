@@ -4,13 +4,20 @@ import * as Colors from '$ui/StateColors'
 import { MEDIUM } from '$shared/utils/styled'
 
 const UnstyledLabel: FunctionComponent<
-    {className?: string, children?: ReactNode | ReactNode[]} & Partial<HTMLProps<HTMLLabelElement>>
-    > = ({ className, children, ...props }) =>{
-        return <label className={className} {...props}>{children}&zwnj;</label>
-    }
+    { className?: string; children?: ReactNode | ReactNode[] } & Partial<
+        HTMLProps<HTMLLabelElement>
+    >
+> = ({ className, children, ...props }) => {
+    return (
+        <label className={className} {...props}>
+            {children}&zwnj;
+        </label>
+    )
+}
 
-const Label = styled(UnstyledLabel)<{state?: string}>`
-    color: ${({ state }) => (Colors as {[key: string]: string})[state] || Colors.DEFAULT};
+const Label = styled(UnstyledLabel)<{ state?: string }>`
+    color: ${({ state }) =>
+        (Colors as { [key: string]: string })[state] || Colors.DEFAULT};
     display: block;
     font-size: 12px;
     font-weight: ${MEDIUM};

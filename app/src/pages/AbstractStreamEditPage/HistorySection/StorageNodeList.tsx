@@ -5,23 +5,24 @@ import getCoreConfig from '$app/src/getters/getCoreConfig'
 import StorageNodeItem from './StorageNodeItem'
 
 type Props = {
-    className?: string,
-    disabled?: boolean,
+    className?: string
+    disabled?: boolean
 }
 
 function UnstyledStorageNodeList({ className, disabled = false }: Props) {
-    const { current: { storageNodes: storageNodes } } = useRef(getCoreConfig())
+    const {
+        current: { storageNodes: storageNodes },
+    } = useRef(getCoreConfig())
 
     return (
         <div className={className}>
-            <Label>{disabled ? 'Storage nodes' : 'Choose storage nodes (one or more)'}</Label>
+            <Label>
+                {disabled ? 'Storage nodes' : 'Choose storage nodes (one or more)'}
+            </Label>
             <ul data-test-hook="Storage nodes">
                 {storageNodes.map(({ address, name }) => (
                     <li key={address}>
-                        <StorageNodeItem
-                            address={address}
-                            disabled={disabled}
-                        >
+                        <StorageNodeItem address={address} disabled={disabled}>
                             {name}
                         </StorageNodeItem>
                     </li>

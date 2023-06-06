@@ -4,10 +4,10 @@ import { MessageID } from 'streamr-client'
 import useIsMounted from '$shared/hooks/useIsMounted'
 
 type Params = {
-    partition?: number,
-    activeFn?: () => boolean,
-    onError?: () => void,
-    tail?: number,
+    partition?: number
+    activeFn?: () => boolean
+    onError?: () => void
+    tail?: number
 }
 
 function getEmptyData() {
@@ -35,7 +35,8 @@ export default function useStreamData(
     useEffect(() => {
         onErrorRef.current = onErrorProp
     }, [onErrorProp])
-    useSubscribe({ id: streamId, partition: partition },
+    useSubscribe(
+        { id: streamId, partition: partition },
         {
             disabled: !activeFn(),
             onError: (e) => {
@@ -57,7 +58,9 @@ export default function useStreamData(
                     },
                 }
                 const { current: cache } = cacheRef
-                const existingMessage = cache.find((d) => areMessagesSame(d.metadata.messageId, dataPoint.metadata.messageId))
+                const existingMessage = cache.find((d) =>
+                    areMessagesSame(d.metadata.messageId, dataPoint.metadata.messageId),
+                )
 
                 if (existingMessage) {
                     // Duplicate message -> skip it

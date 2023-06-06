@@ -2,15 +2,15 @@ import { useContext, useMemo } from 'react'
 import { Context as ModalContext } from '$shared/contexts/ModalApi'
 
 export type ModalApi = {
-    open: (value?: object) => Promise<any>,
-    close: (value?) => void,
+    open: (value?: object) => Promise<any>
+    close: (value?) => void
 }
 
 export type ModalResult = {
-    modalId: string,
-    isOpen: boolean,
-    api: ModalApi,
-    value: any,
+    modalId: string
+    isOpen: boolean
+    api: ModalApi
+    value: any
 }
 
 export default function useModal(modalId: string): ModalResult {

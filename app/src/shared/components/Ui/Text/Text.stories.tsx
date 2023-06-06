@@ -1,5 +1,5 @@
 import React from 'react'
-import {Meta} from "@storybook/react"
+import { Meta } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import Text from '.'
 
@@ -32,15 +32,21 @@ Default.story = {
 const meta: Meta<typeof Default> = {
     title: 'Shared/Text',
     component: Default,
-    decorators: [(Story) => {
-        return <div style={{
-            background: 'white',
-            color: '#323232',
-            margin: '3rem',
-        }}>
-            <Story/>
-        </div>
-    }]
+    decorators: [
+        (Story) => {
+            return (
+                <div
+                    style={{
+                        background: 'white',
+                        color: '#323232',
+                        margin: '3rem',
+                    }}
+                >
+                    <Story />
+                </div>
+            )
+        },
+    ],
 }
 
 export default meta

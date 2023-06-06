@@ -1,4 +1,11 @@
-import { useReducer, useContext, useMemo, useCallback, useLayoutEffect, useRef } from 'react'
+import {
+    useReducer,
+    useContext,
+    useMemo,
+    useCallback,
+    useLayoutEffect,
+    useRef,
+} from 'react'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { Context as PendingContext } from '$shared/contexts/Pending'
 
@@ -11,7 +18,10 @@ function useDiff(val) {
 }
 
 export function usePending(name: string) {
-    const [selfPending, setSelfPending] = useReducer((state, delta: number) => Math.max(0, state + delta), 0)
+    const [selfPending, setSelfPending] = useReducer(
+        (state, delta: number) => Math.max(0, state + delta),
+        0,
+    )
     const { checkPending, setPending } = useContext(PendingContext)
     const isMounted = useIsMounted()
     const start = useCallback(() => {

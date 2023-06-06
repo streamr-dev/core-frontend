@@ -25,7 +25,9 @@ const createClient = async (chainId: number): Promise<DataUnionClient> => {
     const factoryAddress = config.contracts.DataUnionFactory
 
     if (factoryAddress == null) {
-        console.warn(`No contract address for DataUnionFactory found for chain ${chainId}.`)
+        console.warn(
+            `No contract address for DataUnionFactory found for chain ${chainId}.`,
+        )
     }
 
     const providerChainId = hexToNumber(provider.chainId)
@@ -46,7 +48,9 @@ const createClient = async (chainId: number): Promise<DataUnionClient> => {
             // If MetaMask is in right chain, use it to enable signing
             ethereum: isInCorrectChainAndUnlocked ? provider : undefined,
             // Otherwise use a throwaway private key to authenticate and allow read-only mode
-            privateKey: !isInCorrectChainAndUnlocked ? '531479d5645596f264e7e3cbe80c4a52a505d60fad45193d1f6b8e4724bf0304' : undefined,
+            privateKey: !isInCorrectChainAndUnlocked
+                ? '531479d5645596f264e7e3cbe80c4a52a505d60fad45193d1f6b8e4724bf0304'
+                : undefined,
         },
         network: {
             chainId,
@@ -62,8 +66,8 @@ const createClient = async (chainId: number): Promise<DataUnionClient> => {
         },
         ...(dataUnionJoinServerUrl
             ? {
-                joinServerUrl: dataUnionJoinServerUrl,
-            }
+                  joinServerUrl: dataUnionJoinServerUrl,
+              }
             : {}),
     })
     return new DataUnionClient(clientConfig as DataUnionClientConfig)
@@ -96,11 +100,17 @@ export const getAdminFee = async (address: DataUnionId, chainId: number) => {
     const adminFee = await dataUnion.getAdminFee()
     return `${adminFee}`
 }
-export const getDataUnionStats = async (address: DataUnionId, chainId: number): ApiResult<Record<string, any>> => {
+export const getDataUnionStats = async (
+    address: DataUnionId,
+    chainId: number,
+): ApiResult<Record<string, any>> => {
     const dataUnion = await getDataUnionObject(address, chainId)
-    const { activeMemberCount, inactiveMemberCount, totalEarnings } = await dataUnion.getStats()
-    const active = (activeMemberCount && new BN(activeMemberCount.toString()).toNumber()) || 0
-    const inactive = (inactiveMemberCount && new BN(inactiveMemberCount.toString()).toNumber()) || 0
+    const { activeMemberCount, inactiveMemberCount, totalEarnings } =
+        await dataUnion.getStats()
+    const active =
+        (activeMemberCount && new BN(activeMemberCount.toString()).toNumber()) || 0
+    const inactive =
+        (inactiveMemberCount && new BN(inactiveMemberCount.toString()).toNumber()) || 0
     return {
         memberCount: {
             active,
@@ -118,7 +128,11 @@ type DeployDataUnion = {
     adminFee: string
     chainId: number
 }
-export const deployDataUnion = ({ productId, adminFee, chainId }: DeployDataUnion): SmartContractTransaction => {
+export const deployDataUnion = ({
+    productId,
+    adminFee,
+    chainId,
+}: DeployDataUnion): SmartContractTransaction => {
     const emitter = new EventEmitter()
 
     const errorHandler = (error: Error) => {
@@ -160,15 +174,18 @@ export const getDataUnionChainIds = (): Array<number> => {
 }
 
 export type TheGraphDataUnion = {
-    id: string,
-    owner: string,
-    memberCount: number,
-    revenueWei: string,
-    creationDate: string,
-    chainId: number,
+    id: string
+    owner: string
+    memberCount: number
+    revenueWei: string
+    creationDate: string
+    chainId: number
 }
 
-export const getDataUnionsOwnedByInChain = async (user: Address, chainId: number): Promise<Array<TheGraphDataUnion>> => {
+export const getDataUnionsOwnedByInChain = async (
+    user: Address,
+    chainId: number,
+): Promise<Array<TheGraphDataUnion>> => {
     const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
     const result = await post({
         url: theGraphUrl,
@@ -184,7 +201,7 @@ export const getDataUnionsOwnedByInChain = async (user: Address, chainId: number
                     }
                 }
             `,
-        }
+        },
     })
 
     if (result.data.dataUnions.length > 0) {
@@ -210,7 +227,7 @@ export const getDataUnionChainIdByAddress = async (id: DataUnionId): Promise<num
                         }
                     }
                 `,
-            }
+            },
         })
 
         if (result.data.dataUnions.length > 0) {
@@ -226,7 +243,10 @@ type GetSecrets = {
     chainId: number
 }
 
-export const getSecrets = async ({ dataUnionId, chainId }: GetSecrets): Promise<Array<Secret>> => {
+export const getSecrets = async ({
+    dataUnionId,
+    chainId,
+}: GetSecrets): Promise<Array<Secret>> => {
     const client = await createClient(chainId)
     const dataUnion = await client.getDataUnion(dataUnionId)
     const secrets = await dataUnion.listSecrets()
@@ -239,7 +259,11 @@ type CreateSecret = {
     chainId: number
 }
 
-export const createSecret = async ({ dataUnionId, name, chainId }: CreateSecret): Promise<Secret> => {
+export const createSecret = async ({
+    dataUnionId,
+    name,
+    chainId,
+}: CreateSecret): Promise<Secret> => {
     const client = await createClient(chainId)
     const dataUnion = await client.getDataUnion(dataUnionId)
     const secret = await dataUnion.createSecret(name)
@@ -253,7 +277,12 @@ type EditSecret = {
     chainId: number
 }
 
-export const editSecret = async ({ dataUnionId, id, name, chainId }: EditSecret): Promise<Secret> => {
+export const editSecret = async ({
+    dataUnionId,
+    id,
+    name,
+    chainId,
+}: EditSecret): Promise<Secret> => {
     const client = await createClient(chainId)
     const dataUnion = await client.getDataUnion(dataUnionId)
     // @ts-expect-error 2339
@@ -267,7 +296,11 @@ type DeleteSecrect = {
     chainId: number
 }
 
-export const deleteSecret = async ({ dataUnionId, id, chainId }: DeleteSecrect): Promise<void> => {
+export const deleteSecret = async ({
+    dataUnionId,
+    id,
+    chainId,
+}: DeleteSecrect): Promise<void> => {
     const client = await createClient(chainId)
     const dataUnion = await client.getDataUnion(dataUnionId)
     await dataUnion.deleteSecret(id)

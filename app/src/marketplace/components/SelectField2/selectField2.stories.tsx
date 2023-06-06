@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import {Meta} from "@storybook/react"
+import { Meta } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import SelectField2 from '.'
 
@@ -66,15 +66,21 @@ export const Basic = () => <SelectFieldController />
 const meta: Meta<typeof Basic> = {
     title: 'Marketplace/SelectField2',
     component: Basic,
-    decorators: [(Story) => {
-        return <div style={{
-            padding: '5rem',
-            backgroundColor: 'ghostwhite',
-            color: 'black',
-        }}>
-            <Story/>
-        </div>
-    }]
+    decorators: [
+        (Story) => {
+            return (
+                <div
+                    style={{
+                        padding: '5rem',
+                        backgroundColor: 'ghostwhite',
+                        color: 'black',
+                    }}
+                >
+                    <Story />
+                </div>
+            )
+        },
+    ],
 }
 
 export default meta

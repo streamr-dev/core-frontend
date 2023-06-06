@@ -1,4 +1,4 @@
-import React, {useContext, useCallback, useEffect, FunctionComponent} from 'react'
+import React, { useContext, useCallback, useEffect, FunctionComponent } from 'react'
 import styled from 'styled-components'
 import ImageUpload from '$shared/components/ImageUpload'
 import Errors from '$ui/Errors'
@@ -8,7 +8,7 @@ import { COLORS, LAPTOP } from '$shared/utils/styled'
 import { ProjectHeroImageStyles } from '$mp/containers/ProjectPage/Hero/ProjectHero2.styles'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
-import CropImageModalWrap from "$mp/containers/ProjectEditing/CropImageModal"
+import CropImageModalWrap from '$mp/containers/ProjectEditing/CropImageModal'
 import useValidation from '../ProductController/useValidation'
 
 type Props = {
@@ -16,41 +16,41 @@ type Props = {
 }
 
 const Container = styled.div`
-  ${ProjectHeroImageStyles};
-  
-  .coverImageUpload {
-    background-color: ${COLORS.primaryLight};
-    border-radius: 16px;
-    min-height: unset;
-    aspect-ratio: 1/1;
-  }
-  
-  .imageUploadDropZone {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    transition: opacity 150ms ease-in;
-    
-    img {
-      width: 40%;
-    }
-  }
-  
-  .shared_imageUpload_imageUploaded {
-    .imageUploadDropZone {
-      opacity: 0;
-    }
-    &:hover {
-      .imageUploadDropZone {
-        opacity: 1;
-      }
-    }
-  }
+    ${ProjectHeroImageStyles};
 
-  .shared_imageUpload_previewImage {
-    transition: opacity 150ms ease-in;
-  }
+    .coverImageUpload {
+        background-color: ${COLORS.primaryLight};
+        border-radius: 16px;
+        min-height: unset;
+        aspect-ratio: 1/1;
+    }
+
+    .imageUploadDropZone {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        transition: opacity 150ms ease-in;
+
+        img {
+            width: 40%;
+        }
+    }
+
+    .shared_imageUpload_imageUploaded {
+        .imageUploadDropZone {
+            opacity: 0;
+        }
+        &:hover {
+            .imageUploadDropZone {
+                opacity: 1;
+            }
+        }
+    }
+
+    .shared_imageUpload_previewImage {
+        transition: opacity 150ms ease-in;
+    }
 `
 
 export const CoverImage: FunctionComponent<Props> = ({ disabled }) => {
@@ -89,8 +89,7 @@ export const CoverImage: FunctionComponent<Props> = ({ disabled }) => {
                 noPreview={true}
             />
             {!isValid && !!message && <Errors overlap>{message}</Errors>}
-            <CropImageModalWrap/>
+            <CropImageModalWrap />
         </Container>
     )
 }
-

@@ -7,13 +7,13 @@ describe('product utils', () => {
     describe('isPaidProduct', () => {
         it('detects a free product', () => {
             const product = {
-                type: ProjectType.OpenData
+                type: ProjectType.OpenData,
             } as Project
             expect(all.isPaidProject(product)).toBe(false)
         })
         it('detects a paid product', () => {
             const product = {
-                type: ProjectType.PaidData
+                type: ProjectType.PaidData,
             } as Project
             expect(all.isPaidProject(product)).toBe(true)
         })
@@ -56,23 +56,33 @@ describe('product utils', () => {
             expect(() => all.validateApiProductPricePerSecond('0')).not.toThrow()
             expect(() => all.validateApiProductPricePerSecond('1')).not.toThrow()
             expect(() => all.validateApiProductPricePerSecond('0,00045')).not.toThrow()
-            expect(() => all.validateApiProductPricePerSecond(new BN(0.000001231355))).not.toThrow()
+            expect(() =>
+                all.validateApiProductPricePerSecond(new BN(0.000001231355)),
+            ).not.toThrow()
         })
         it('detects an invalid PPS', () => {
             expect(() => all.validateApiProductPricePerSecond('-1')).toThrow()
-            expect(() => all.validateApiProductPricePerSecond(new BN(-0.000001231355))).toThrow()
+            expect(() =>
+                all.validateApiProductPricePerSecond(new BN(-0.000001231355)),
+            ).toThrow()
         })
     })
     describe('validateContractProductPricePerSecond', () => {
         it('detects a valid PPS', () => {
             expect(() => all.validateContractProductPricePerSecond('1')).not.toThrow()
-            expect(() => all.validateContractProductPricePerSecond('0,000125')).not.toThrow()
-            expect(() => all.validateContractProductPricePerSecond(new BN(0.000001231355))).not.toThrow()
+            expect(() =>
+                all.validateContractProductPricePerSecond('0,000125'),
+            ).not.toThrow()
+            expect(() =>
+                all.validateContractProductPricePerSecond(new BN(0.000001231355)),
+            ).not.toThrow()
         })
         it('detects an invalid PPS', () => {
             expect(() => all.validateContractProductPricePerSecond('0')).toThrow()
             expect(() => all.validateContractProductPricePerSecond('-0.0001')).toThrow()
-            expect(() => all.validateContractProductPricePerSecond(new BN(-0.000001231355))).toThrow()
+            expect(() =>
+                all.validateContractProductPricePerSecond(new BN(-0.000001231355)),
+            ).toThrow()
         })
     })
     describe('mapPriceFromContract', () => {
@@ -96,12 +106,12 @@ describe('product utils', () => {
             expect(all.mapPriceToContract('0.0000000000000000001', new BN(18))).toBe('0')
             expect(all.mapPriceToContract('0.00000000000000000049', new BN(18))).toBe('0')
             expect(all.mapPriceToContract('0.00000000000000000051', new BN(18))).toBe('1')
-            expect(all.mapPriceToContract('66666666666666.00000000000123456789', new BN(18))).toBe(
-                '66666666666666000000000001234568',
-            )
-            expect(all.mapPriceToContract('66666666666666.00000000000123456749', new BN(18))).toBe(
-                '66666666666666000000000001234567',
-            )
+            expect(
+                all.mapPriceToContract('66666666666666.00000000000123456789', new BN(18)),
+            ).toBe('66666666666666000000000001234568')
+            expect(
+                all.mapPriceToContract('66666666666666.00000000000123456749', new BN(18)),
+            ).toBe('66666666666666000000000001234567')
         })
     })
     describe('mapProductFromContract', () => {
@@ -129,7 +139,9 @@ describe('product utils', () => {
                 pricingTokenDecimals: 18,
                 chainId: 1337,
             }
-            expect(all.mapProductFromContract(inProduct.id, inProduct, 1337, new BN(18))).toMatchObject(outProduct)
+            expect(
+                all.mapProductFromContract(inProduct.id, inProduct, 1337, new BN(18)),
+            ).toMatchObject(outProduct)
         })
     })
     describe('getValidId', () => {
@@ -144,7 +156,9 @@ describe('product utils', () => {
             })
             it('throws with an invalid id', () => {
                 expect(() => all.getValidId('test')).toThrowError(/is not a valid hex/)
-                expect(() => all.getValidId('test', true)).toThrowError(/is not a valid hex/)
+                expect(() => all.getValidId('test', true)).toThrowError(
+                    /is not a valid hex/,
+                )
             })
         })
         describe('when prefix = false', () => {
@@ -155,7 +169,9 @@ describe('product utils', () => {
                 expect(all.getValidId('1234', false)).toBe('1234')
             })
             it('throws with an invalid id', () => {
-                expect(() => all.getValidId('test', false)).toThrowError(/is not a valid hex/)
+                expect(() => all.getValidId('test', false)).toThrowError(
+                    /is not a valid hex/,
+                )
             })
         })
     })
@@ -224,7 +240,7 @@ describe('product utils', () => {
             expect(
                 all.validate({
                     type: ProjectType.OpenData,
-                    creator: 'Julius Cesar'
+                    creator: 'Julius Cesar',
                 } as Project),
             ).toStrictEqual({
                 name: true,
@@ -278,7 +294,7 @@ describe('product utils', () => {
                 all.validate({
                     type: ProjectType.DataUnion,
                     adminFee: '0.3',
-                    dataUnionChainId: 123
+                    dataUnionChainId: 123,
                 } as Project),
             ).toStrictEqual({
                 name: true,
@@ -289,13 +305,13 @@ describe('product utils', () => {
                 adminFee: false,
                 dataUnionChainId: false,
                 salePoints: true,
-                existingDUAddress: true
+                existingDUAddress: true,
             })
             expect(
                 all.validate({
                     type: ProjectType.DataUnion,
                     adminFee: '0',
-                    dataUnionChainId: 123
+                    dataUnionChainId: 123,
                 } as Project),
             ).toStrictEqual({
                 name: true,
@@ -306,13 +322,13 @@ describe('product utils', () => {
                 adminFee: false,
                 dataUnionChainId: false,
                 salePoints: true,
-                existingDUAddress: true
+                existingDUAddress: true,
             })
             expect(
                 all.validate({
                     type: ProjectType.DataUnion,
                     adminFee: '1.1',
-                    dataUnionChainId: null
+                    dataUnionChainId: null,
                 } as Project),
             ).toStrictEqual({
                 name: true,
@@ -323,14 +339,14 @@ describe('product utils', () => {
                 adminFee: false,
                 dataUnionChainId: true,
                 salePoints: true,
-                existingDUAddress: true
+                existingDUAddress: true,
             })
             expect(
                 all.validate({
                     type: ProjectType.DataUnion,
                     adminFee: '0.5',
                     dataUnionChainId: 124,
-                    isDeployingNewDU: true
+                    isDeployingNewDU: true,
                 } as Project),
             ).toStrictEqual({
                 name: true,
@@ -349,7 +365,7 @@ describe('product utils', () => {
                     adminFee: '0.5',
                     dataUnionChainId: 124,
                     isDeployingNewDU: false,
-                    existingDUAddress: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F'
+                    existingDUAddress: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
                 } as Project),
             ).toStrictEqual({
                 name: true,
@@ -360,7 +376,7 @@ describe('product utils', () => {
                 adminFee: false,
                 dataUnionChainId: false,
                 salePoints: true,
-                existingDUAddress: false
+                existingDUAddress: false,
             })
             expect(
                 all.validate({
@@ -368,7 +384,7 @@ describe('product utils', () => {
                     adminFee: '0.5',
                     dataUnionChainId: 124,
                     isDeployingNewDU: false,
-                    existingDUAddress: 'invalidAddress'
+                    existingDUAddress: 'invalidAddress',
                 } as Project),
             ).toStrictEqual({
                 name: true,
@@ -379,7 +395,7 @@ describe('product utils', () => {
                 adminFee: false,
                 dataUnionChainId: false,
                 salePoints: true,
-                existingDUAddress: true
+                existingDUAddress: true,
             })
         })
 
@@ -398,40 +414,42 @@ describe('product utils', () => {
                 pricingTokenAddress: '0xbAA81A0179015bE47Ad439566374F2Bae098686F',
                 beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 price: new BN('3600'),
-                timeUnit: 'hour'
-            };
-            [
+                timeUnit: 'hour',
+            }
+            ;[
                 {
                     description: 'invalid pricePerSecond',
                     project: {
                         type: ProjectType.PaidData,
                         salePoints: {
-                            [defaultSalePointChainName] : {
+                            [defaultSalePointChainName]: {
                                 ...defaultSalePoint,
-                                pricePerSecond: new BN('-10')
-                            }
-                        }
+                                pricePerSecond: new BN('-10'),
+                            },
+                        },
                     },
-                    expectedInvalidField: 'pricePerSecond'
+                    expectedInvalidField: 'pricePerSecond',
                 },
                 {
                     description: 'invalid beneficiaryAddress',
                     project: {
                         type: ProjectType.PaidData,
                         salePoints: {
-                            [defaultSalePointChainName] : {
+                            [defaultSalePointChainName]: {
                                 ...defaultSalePoint,
-                                beneficiaryAddress: 'loremIpsum'
-                            }
-                        }
+                                beneficiaryAddress: 'loremIpsum',
+                            },
+                        },
                     },
-                    expectedInvalidField: 'beneficiaryAddress'
-                }
+                    expectedInvalidField: 'beneficiaryAddress',
+                },
             ].forEach((testCase) => {
                 it(`should properly validate the ${testCase.description}`, () => {
-                    expect(all.validate(testCase.project as unknown as Project)).toStrictEqual({
+                    expect(
+                        all.validate(testCase.project as unknown as Project),
+                    ).toStrictEqual({
                         ...expectedValidationResult,
-                        [`salePoints.${defaultSalePointChainName}`]: true
+                        [`salePoints.${defaultSalePointChainName}`]: true,
                     })
                 })
             })

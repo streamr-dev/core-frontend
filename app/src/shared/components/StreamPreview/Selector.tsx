@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
-import {COLORS, MEDIUM} from '$shared/utils/styled'
+import { COLORS, MEDIUM } from '$shared/utils/styled'
 import IconButton from './IconButton'
 const Button = styled(IconButton)`
     :not(:last-child) {
@@ -59,7 +59,7 @@ const Selector = styled(UnstyledSelector)`
     color: ${COLORS.primary};
     display: flex;
     button {
-      color: ${COLORS.primary};
+        color: ${COLORS.primary};
     }
 `
 export default Selector

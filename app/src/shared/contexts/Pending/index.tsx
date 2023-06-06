@@ -5,7 +5,7 @@ import React, {
     useContext,
     useEffect,
     Context,
-    ReactNode
+    ReactNode,
 } from 'react'
 import t from 'prop-types'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -24,9 +24,12 @@ const ROOT: ContextProps = {
     updateChildren: () => {},
 }
 
-function useNamedCounters(): [{[key: string]: number}, (name: string, direction: number) => void] {
+function useNamedCounters(): [
+    { [key: string]: number },
+    (name: string, direction: number) => void,
+] {
     const isMounted = useIsMounted()
-    const [counters, setCountersState] = useState<{[key: string]: number}>({})
+    const [counters, setCountersState] = useState<{ [key: string]: number }>({})
     const updateCounter: (name: string, direction: number) => void = useCallback(
         (name, direction) => {
             if (!isMounted()) {
@@ -64,12 +67,14 @@ function usePendingContext(name: string): ContextProps {
             }
 
             updatePendingChildren((c) => ({ ...c, [childName]: value }))
-        }, [updatePendingChildren, isMounted],
+        },
+        [updatePendingChildren, isMounted],
     )
     const isSelfPending = Object.values(selfPending).some((value) => !!value)
     const pendingChildrenValues = Object.values(pendingChildren)
     const isChildrenPending =
-        !!pendingChildrenValues.length && pendingChildrenValues.some(({ isPending }: any) => isPending)
+        !!pendingChildrenValues.length &&
+        pendingChildrenValues.some(({ isPending }: any) => isPending)
     const isPending = isSelfPending || isChildrenPending
     const checkPending = useCallback((key: any) => !!selfPending[key], [selfPending])
     const value = useMemo<ContextProps>(

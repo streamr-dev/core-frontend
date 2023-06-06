@@ -31,7 +31,7 @@ const ProjectGrid = styled.div`
 `
 
 type Props = {
-    streamId: string,
+    streamId: string
 }
 
 export default function RelatedProjects({ streamId }: Props) {

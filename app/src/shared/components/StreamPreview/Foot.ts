@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import {TABLET} from "$shared/utils/styled"
+import { TABLET } from '$shared/utils/styled'
 const Foot = styled.div`
     align-items: center;
     background: #ffffff;

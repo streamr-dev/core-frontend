@@ -1,52 +1,64 @@
 import React from 'react'
-import {act, screen, fireEvent, render, RenderResult, waitFor} from '@testing-library/react'
+import {
+    act,
+    screen,
+    fireEvent,
+    render,
+    RenderResult,
+    waitFor,
+} from '@testing-library/react'
 import MobileFilter from '$shared/components/MobileFilter'
 import { ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import Mock = jest.Mock
 
-const filters = [{
-    label: 'Category',
-    value: 'category',
-    options: [
-        {label: 'Business', value: 'business'},
-        {label: 'Environment', value: 'environment'},
-        {label: 'Entertainment', value: 'entertainment'},
-        {label: 'Social Media', value: 'social_media'},
-        {label: 'Education', value: 'education'},
-        {label: 'Sports', value: 'sports'},
-        {label: 'Transportation', value: 'transportation'},
-        {label: 'IoT', value: 'iot'},
-        {label: 'Very long name of a filter, like really long, or more like insanely long', value: 'long_filter'}
-    ]
-}, {
-    label: 'Project type',
-    value: 'project_type',
-    options: [
-        {label: 'Data Union', value: 'data_union'},
-        {label: 'Paid Data', value: 'paid_data'},
-        {label: 'Open Data', value: 'open_data'}
-    ]
-}]
+const filters = [
+    {
+        label: 'Category',
+        value: 'category',
+        options: [
+            { label: 'Business', value: 'business' },
+            { label: 'Environment', value: 'environment' },
+            { label: 'Entertainment', value: 'entertainment' },
+            { label: 'Social Media', value: 'social_media' },
+            { label: 'Education', value: 'education' },
+            { label: 'Sports', value: 'sports' },
+            { label: 'Transportation', value: 'transportation' },
+            { label: 'IoT', value: 'iot' },
+            {
+                label: 'Very long name of a filter, like really long, or more like insanely long',
+                value: 'long_filter',
+            },
+        ],
+    },
+    {
+        label: 'Project type',
+        value: 'project_type',
+        options: [
+            { label: 'Data Union', value: 'data_union' },
+            { label: 'Paid Data', value: 'paid_data' },
+            { label: 'Open Data', value: 'open_data' },
+        ],
+    },
+]
 describe('MobileFilter', () => {
     let spy: Mock = jest.fn()
     let renderResult: RenderResult
     const TestComponent = () => {
-        return <div>
-            <ModalPortalProvider>
-                <div id={'content'}>
-                    <MobileFilter
-                        onChange={spy}
-                        filters={filters}
-                    />
-                </div>
-                <div id={'modal-root'}></div>
-            </ModalPortalProvider>
-        </div>
+        return (
+            <div>
+                <ModalPortalProvider>
+                    <div id={'content'}>
+                        <MobileFilter onChange={spy} filters={filters} />
+                    </div>
+                    <div id={'modal-root'}></div>
+                </ModalPortalProvider>
+            </div>
+        )
     }
 
     beforeEach(() => {
         spy = jest.fn()
-        renderResult = render(<TestComponent/>)
+        renderResult = render(<TestComponent />)
     })
 
     afterEach(() => {
@@ -76,7 +88,6 @@ describe('MobileFilter', () => {
             fireEvent.click(screen.getByText('Save'))
         })
 
-        expect(spy).toHaveBeenCalledWith({category: 'business'})
+        expect(spy).toHaveBeenCalledWith({ category: 'business' })
     })
-
 })

@@ -1,7 +1,7 @@
-import React from "react"
-import {Col, Row} from "reactstrap"
-import {Meta} from "@storybook/react"
-import SvgIcon from "$shared/components/SvgIcon"
+import React from 'react'
+import { Col, Row } from 'reactstrap'
+import { Meta } from '@storybook/react'
+import SvgIcon from '$shared/components/SvgIcon'
 import sharedStyles from './shared.pcss'
 
 export const All = () => (
@@ -19,7 +19,11 @@ export const All = () => (
         <Col xs="4">
             <div className={sharedStyles.iconWrapper}>
                 <div className={sharedStyles.iconInner}>
-                    <SvgIcon name="checkmark" size="large" className={sharedStyles.svgIcon} />
+                    <SvgIcon
+                        name="checkmark"
+                        size="large"
+                        className={sharedStyles.svgIcon}
+                    />
                 </div>
                 <span>checkmark size=large</span>
             </div>
@@ -28,19 +32,25 @@ export const All = () => (
 )
 
 All.story = {
-    name: 'all'
+    name: 'all',
 }
 
 const meta: Meta<typeof All> = {
     title: 'Shared/SvgIcon',
     component: All,
-    decorators: [(Story) => {
-        return <div style={{
-            color: '#323232',
-            padding: '15px',
-        }}>
-            <Story/>
-        </div>
-    }]
+    decorators: [
+        (Story) => {
+            return (
+                <div
+                    style={{
+                        color: '#323232',
+                        padding: '15px',
+                    }}
+                >
+                    <Story />
+                </div>
+            )
+        },
+    ],
 }
 export default meta

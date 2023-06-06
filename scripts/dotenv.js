@@ -15,8 +15,8 @@ const TEMPLATE_DOTENV_PATH = path.resolve(__dirname, '../.env.template')
 const loadLocalDotenv = () =>
     !isProduction()
         ? dotenv.config({
-            path: LOCAL_DOTENV_PATH,
-        }).parsed
+              path: LOCAL_DOTENV_PATH,
+          }).parsed
         : {}
 
 /**

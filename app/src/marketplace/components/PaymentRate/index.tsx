@@ -4,7 +4,7 @@ import { contractCurrencies as currencies } from '$shared/utils/constants'
 import { formatPrice } from '$mp/utils/price'
 import { getTokenInformation } from '$mp/utils/web3'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import {TimeUnit} from "$shared/utils/timeUnit"
+import { TimeUnit } from '$shared/utils/timeUnit'
 
 type Props = {
     amount: BN
@@ -16,7 +16,14 @@ type Props = {
 }
 
 const PaymentRate = (props: Props) => {
-    const { amount, pricingTokenAddress, chainId, timeUnit, className, tag: Tag = 'div' } = props
+    const {
+        amount,
+        pricingTokenAddress,
+        chainId,
+        timeUnit,
+        className,
+        tag: Tag = 'div',
+    } = props
     const [currency, setCurrency] = useState(currencies.PRODUCT_DEFINED)
     const [symbol, setSymbol] = useState(currencies.DATA)
     const [decimals, setDecimals] = useState(new BN(18))
@@ -36,7 +43,11 @@ const PaymentRate = (props: Props) => {
 
         check()
     }, [pricingTokenAddress, chainId, isMounted])
-    return <Tag className={className}>{formatPrice(amount, currency, decimals, timeUnit, symbol)}</Tag>
+    return (
+        <Tag className={className}>
+            {formatPrice(amount, currency, decimals, timeUnit, symbol)}
+        </Tag>
+    )
 }
 
 export default PaymentRate

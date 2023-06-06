@@ -26,7 +26,11 @@ export default function TransactionListToast({ operations = [] }: Props) {
                 <Title>These transactions are needed to save your changes:</Title>
                 <ul>
                     {operations.map(({ id, state, label, action: Action }, index) => (
-                        <Item key={id} $complete={state === 'complete' || state === 'error'} $ongoing={state === 'ongoing'}>
+                        <Item
+                            key={id}
+                            $complete={state === 'complete' || state === 'error'}
+                            $ongoing={state === 'ongoing'}
+                        >
                             <Number>{index + 1}</Number>
                             <Name>{label}</Name>
                             {Action && (
@@ -35,7 +39,9 @@ export default function TransactionListToast({ operations = [] }: Props) {
                                 </ActionWrap>
                             )}
                             <IconContainer>
-                                {state === 'ongoing' && <Spinner size="small" color="blue" />}
+                                {state === 'ongoing' && (
+                                    <Spinner size="small" color="blue" />
+                                )}
                                 {state === 'complete' && <Icon name="checkmark" />}
                                 {state === 'error' && <Icon name="errorBadge" />}
                             </IconContainer>
@@ -47,7 +53,10 @@ export default function TransactionListToast({ operations = [] }: Props) {
     )
 }
 
-export function notify(toast: Toaster<typeof TransactionListToast> | undefined, operations: Operation[]) {
+export function notify(
+    toast: Toaster<typeof TransactionListToast> | undefined,
+    operations: Operation[],
+) {
     setTimeout(async () => {
         try {
             if (!toast) {

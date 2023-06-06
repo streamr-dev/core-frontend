@@ -5,7 +5,7 @@ import React, {
     useCallback,
     useState,
 } from 'react'
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from 'react-router-dom'
 import BN from 'bignumber.js'
 import { z } from 'zod'
 import { randomHex } from 'web3-utils'
@@ -275,16 +275,23 @@ export const useProjectController = (): ProjectController => {
                     if (adminFee == null || dataUnionChainId == null) {
                         throw new Error('Invalid project properties')
                     }
-                    const percentValueAdminFee = new BN(adminFee).dividedBy(100).toString()
+                    const percentValueAdminFee = new BN(adminFee)
+                        .dividedBy(100)
+                        .toString()
 
-                    const duAddress = await deployDataUnionContract(projectContractData.id, percentValueAdminFee, dataUnionChainId)
+                    const duAddress = await deployDataUnionContract(
+                        projectContractData.id,
+                        percentValueAdminFee,
+                        dataUnionChainId,
+                    )
 
                     // Update beneficiary address to match deployed contract
                     updateExistingDUAddress(duAddress)
-                    projectContractData.paymentDetails = projectContractData.paymentDetails.map((pd) => ({
-                        ...pd,
-                        beneficiaryAddress: duAddress,
-                    }))
+                    projectContractData.paymentDetails =
+                        projectContractData.paymentDetails.map((pd) => ({
+                            ...pd,
+                            beneficiaryAddress: duAddress,
+                        }))
 
                     deployOperation.state = 'complete'
 
@@ -391,11 +398,7 @@ export const useProjectController = (): ProjectController => {
         }
 
         throw new Error('Invalid project type')
-    }, [
-        projectType,
-        checkValidationErrors,
-        updateExistingProject,
-    ])
+    }, [projectType, checkValidationErrors, updateExistingProject])
 
     const deleteProject = useCallback<ProjectController['deleteProject']>(async () => {
         if (projectId == null) {

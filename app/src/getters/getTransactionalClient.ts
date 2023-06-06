@@ -12,15 +12,19 @@ let provider: ExternalProvider | undefined
  * if the provider is on the incorrect network. Default: `false`.
  * @returns A StreamrClient instance.
  */
-export default async function getTransactionalClient({ passiveNetworkCheck = false }: { passiveNetworkCheck?: boolean } = {}) {
-    const currentProvider = await getWalletProvider() as any
+export default async function getTransactionalClient({
+    passiveNetworkCheck = false,
+}: { passiveNetworkCheck?: boolean } = {}) {
+    const currentProvider = (await getWalletProvider()) as any
 
     const [chainId] = Matic
 
     if (
         streamrClient &&
         currentProvider === provider &&
-        (passiveNetworkCheck ? (await getChainId()) === chainId : (await networkPreflight(chainId)) === false)
+        (passiveNetworkCheck
+            ? (await getChainId()) === chainId
+            : (await networkPreflight(chainId)) === false)
     ) {
         return streamrClient
     }

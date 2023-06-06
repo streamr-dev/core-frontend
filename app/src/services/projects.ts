@@ -448,7 +448,11 @@ export async function deleteProject(projectId: string | undefined) {
     })
 }
 
-export async function deployDataUnionContract(projectId: string, adminFee: string, chainId: number) {
+export async function deployDataUnionContract(
+    projectId: string,
+    adminFee: string,
+    chainId: number,
+) {
     await networkPreflight(chainId)
 
     return new Promise<string>((resolve, reject) =>

@@ -7,7 +7,12 @@ import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import TransactionError from '$shared/errors/TransactionError'
-import { SmartContractCall, Address, SmartContractConfig, SmartContractTransaction } from '$shared/types/web3-types'
+import {
+    SmartContractCall,
+    Address,
+    SmartContractConfig,
+    SmartContractTransaction,
+} from '$shared/types/web3-types'
 import { NumberString } from '$shared/types/common-types'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import Transaction from '$shared/utils/Transaction'
@@ -19,9 +24,16 @@ export type Callable = {
 }
 // TODO add typing
 export type Sendable = {
-    send: (arg0: { from: Address, gas: any, value: any, maxPriorityFeePerGas: any, maxFeePerGas: any }) => PromiEvent<any>
+    send: (arg0: {
+        from: Address
+        gas: any
+        value: any
+        maxPriorityFeePerGas: any
+        maxFeePerGas: any
+    }) => PromiEvent<any>
 }
-export const areAddressesEqual = (first: Address, second: Address): boolean => (first || '').toLowerCase() === (second || '').toLowerCase()
+export const areAddressesEqual = (first: Address, second: Address): boolean =>
+    (first || '').toLowerCase() === (second || '').toLowerCase()
 export const hexEqualsZero = (hex: string): boolean => /^(0x)?0+$/.test(hex)
 export const getPrefixedHexString = (hex: string): string => hex.replace(/^0x|^/, '0x')
 export const getUnprefixedHexString = (hex: string): string => hex.replace(/^0x|^/, '')
@@ -31,12 +43,17 @@ export const getUnprefixedHexString = (hex: string): string => hex.replace(/^0x|
  * @param hex string to validate. Can have the 0x prefix or not
  * @returns {boolean}
  */
-export const isValidHexString = (hex: string): boolean => (typeof hex === 'string') && isHex(hex)
+export const isValidHexString = (hex: string): boolean =>
+    typeof hex === 'string' && isHex(hex)
 /**
  * @deprecated Use `web3.eth.Contract` directly. The main reason why this is a utility function
  * is the `usePublicNode` flag. It's going away (work in progress).
  */
-export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode = false, chainId?: number): Contract => {
+export const getContract = (
+    { abi, address }: SmartContractConfig,
+    usePublicNode = false,
+    chainId?: number,
+): Contract => {
     if (usePublicNode && chainId == null) {
         throw new Error('ChainId must be provided!')
     }

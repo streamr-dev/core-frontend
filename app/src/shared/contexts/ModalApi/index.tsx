@@ -1,4 +1,11 @@
-import React, { useState, useCallback, useMemo, useEffect, Context, ReactNode } from 'react'
+import React, {
+    useState,
+    useCallback,
+    useMemo,
+    useEffect,
+    Context,
+    ReactNode,
+} from 'react'
 import { useLocation } from 'react-router-dom'
 import useIsMounted from '$shared/hooks/useIsMounted'
 type ContextProps = {
@@ -65,7 +72,10 @@ function useModalContext(path: string): ContextProps {
 
             setModals((prevModals) => {
                 Object.keys(prevModals).forEach((modalId) => {
-                    if (prevModals[modalId].reject && typeof prevModals[modalId].reject === 'function') {
+                    if (
+                        prevModals[modalId].reject &&
+                        typeof prevModals[modalId].reject === 'function'
+                    ) {
                         prevModals[modalId].reject()
                     }
                 })
@@ -90,7 +100,11 @@ type Props = {
 
 const ModalContextProvider = ({ children }: Props) => {
     const { pathname } = useLocation()
-    return <ModalContext.Provider value={useModalContext(pathname)}>{children || null}</ModalContext.Provider>
+    return (
+        <ModalContext.Provider value={useModalContext(pathname)}>
+            {children || null}
+        </ModalContext.Provider>
+    )
 }
 
 export { ModalContextProvider as Provider, ModalContext as Context }

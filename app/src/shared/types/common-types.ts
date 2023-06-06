@@ -1,5 +1,10 @@
-import {$Values} from 'utility-types'
-import {contractCurrencies, paymentCurrencies, transactionStates, transactionTypes,} from '../utils/constants'
+import { $Values } from 'utility-types'
+import {
+    contractCurrencies,
+    paymentCurrencies,
+    transactionStates,
+    transactionTypes,
+} from '../utils/constants'
 
 export type ContractCurrency = $Values<typeof contractCurrencies>
 export type PaymentCurrency = $Values<typeof paymentCurrencies>

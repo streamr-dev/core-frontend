@@ -6,7 +6,7 @@ jest.mock('$app/src/getters/getConfig', () => ({
 }))
 describe('formatRpc', () => {
     beforeEach(() => {
-        (getConfig as any).mockImplementation(() => ({
+        ;(getConfig as any).mockImplementation(() => ({
             client: {
                 chainTimeout: 42,
             },

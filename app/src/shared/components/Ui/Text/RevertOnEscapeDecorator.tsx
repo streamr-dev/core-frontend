@@ -12,7 +12,12 @@ const sanitizeValue = (value: any): string => (value != null ? value : '')
 
 const RevertOnEscapeDecorator = (WrappedComponent: ComponentType<any>) => {
     const RevertOnEscapeDecoratorWrapper = (
-        { value: valueProp, onKeyDown: onKeyDownProp, onChange: onChangeProp, ...props }: Props,
+        {
+            value: valueProp,
+            onKeyDown: onKeyDownProp,
+            onChange: onChangeProp,
+            ...props
+        }: Props,
         ref: any,
     ) => {
         const [value, setValue] = useState(sanitizeValue(valueProp))
@@ -32,7 +37,7 @@ const RevertOnEscapeDecorator = (WrappedComponent: ComponentType<any>) => {
             [valueProp, onKeyDownProp],
         )
         const onChange = useCallback(
-            (e: ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
+            (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
                 setValue(e.target.value)
 
                 if (onChangeProp) {
@@ -41,12 +46,23 @@ const RevertOnEscapeDecorator = (WrappedComponent: ComponentType<any>) => {
             },
             [onChangeProp],
         )
-        return <WrappedComponent {...props} onChange={onChange} onKeyDown={onKeyDown} ref={ref} value={value} />
+        return (
+            <WrappedComponent
+                {...props}
+                onChange={onChange}
+                onKeyDown={onKeyDown}
+                ref={ref}
+                value={value}
+            />
+        )
     }
 
     const RevertOnEscapeDecoratorWrapperFR = forwardRef(RevertOnEscapeDecoratorWrapper)
 
-    const OptInRevertOnEscapeDecoratorWrapper = ({ revertOnEscape, ...props }: Props, ref: any) =>
+    const OptInRevertOnEscapeDecoratorWrapper = (
+        { revertOnEscape, ...props }: Props,
+        ref: any,
+    ) =>
         revertOnEscape ? (
             <RevertOnEscapeDecoratorWrapperFR {...props} ref={ref} />
         ) : (

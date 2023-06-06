@@ -50,7 +50,7 @@ Cypress.Commands.add('authenticatedRequest', (options = {}) =>
     cy.request({
         ...options,
         headers: {
-            ...options.headers
+            ...options.headers,
         },
     }),
 )
@@ -75,21 +75,22 @@ Cypress.Commands.add(
             domain: undefined,
         },
     ) =>
-        (!customDomain ? cy.getDefaultEthAccount() : Promise.resolve(customDomain)).then((domain) =>
-            cy
-                .authenticatedRequest({
-                    url: 'http://localhost/api/v1/streams',
-                    method: 'POST',
-                    body: {
-                        id: `${domain}/test-${new Date()
-                            .toISOString()
-                            .replace(/\W/g, '')
-                            .substr(4, 11)
-                            .replace(/T/, '-')}`,
-                        ...stream,
-                    },
-                })
-                .then(({ body: { id } }) => id),
+        (!customDomain ? cy.getDefaultEthAccount() : Promise.resolve(customDomain)).then(
+            (domain) =>
+                cy
+                    .authenticatedRequest({
+                        url: 'http://localhost/api/v1/streams',
+                        method: 'POST',
+                        body: {
+                            id: `${domain}/test-${new Date()
+                                .toISOString()
+                                .replace(/\W/g, '')
+                                .substr(4, 11)
+                                .replace(/T/, '-')}`,
+                            ...stream,
+                        },
+                    })
+                    .then(({ body: { id } }) => id),
         ),
 )
 
@@ -105,7 +106,9 @@ Cypress.Commands.add('addToStorageNode', (streamId) => {
         },
     })
     const client = new StreamrClient(config)
-    return client.getStream(streamId).then((stream) => stream.addToStorageNode(DEV_STORAGE_NODE_ADDRESS))
+    return client
+        .getStream(streamId)
+        .then((stream) => stream.addToStorageNode(DEV_STORAGE_NODE_ADDRESS))
 })
 
 Cypress.Commands.add('getStream', (id) => {
@@ -121,17 +124,21 @@ Cypress.Commands.add('ignoreUncaughtError', (messageRegex) => {
     })
 })
 
-Cypress.Commands.add('createStreamPermission', (streamId, user = null, operation = 'stream_get') =>
-    cy.authenticatedRequest({
-        url: `http://localhost/api/v1/streams/${encodeURIComponent(streamId)}/permissions`,
-        method: 'POST',
-        body: {
-            anonymous: !user,
-            new: true,
-            operation,
-            user: user != null ? getWallet(user).getAddressString() : null,
-        },
-    }),
+Cypress.Commands.add(
+    'createStreamPermission',
+    (streamId, user = null, operation = 'stream_get') =>
+        cy.authenticatedRequest({
+            url: `http://localhost/api/v1/streams/${encodeURIComponent(
+                streamId,
+            )}/permissions`,
+            method: 'POST',
+            body: {
+                anonymous: !user,
+                new: true,
+                operation,
+                user: user != null ? getWallet(user).getAddressString() : null,
+            },
+        }),
 )
 
 Cypress.Commands.add('createProduct', (body) =>
@@ -140,7 +147,11 @@ Cypress.Commands.add('createProduct', (body) =>
             url: 'http://localhost/api/v1/products',
             method: 'POST',
             body: {
-                name: `Test Product #${new Date().toISOString().replace(/\W/g, '').substr(4, 11).replace(/T/, '/')}`,
+                name: `Test Product #${new Date()
+                    .toISOString()
+                    .replace(/\W/g, '')
+                    .substr(4, 11)
+                    .replace(/T/, '/')}`,
                 ...body,
             },
         })

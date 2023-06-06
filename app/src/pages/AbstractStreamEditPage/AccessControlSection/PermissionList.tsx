@@ -2,7 +2,11 @@ import React from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import Button from '$shared/components/Button'
-import { useCurrentDraft, useDraftId, useStreamEditorStore } from '$shared/stores/streamEditor'
+import {
+    useCurrentDraft,
+    useDraftId,
+    useStreamEditorStore,
+} from '$shared/stores/streamEditor'
 import address0 from '$utils/address0'
 import NewStreamPermissionsModal from '$app/src/modals/NewStreamPermissionsModal'
 import { isAbandonment } from '$app/src/modals/ProjectModal'
@@ -70,12 +74,18 @@ const PermissionList: React.FunctionComponent<Props> = ({ disabled }) => {
                                 Layer.Modal,
                             ).pop({
                                 onBeforeSubmit(payload) {
-                                    const { bits = null, persistedBits = null } = permissions?.[payload.account.toLowerCase()] || {}
+                                    const { bits = null, persistedBits = null } =
+                                        permissions?.[payload.account.toLowerCase()] || {}
 
-                                    const currentBits = persistedBits === null && bits === null ? null : (bits || 0)
+                                    const currentBits =
+                                        persistedBits === null && bits === null
+                                            ? null
+                                            : bits || 0
 
                                     if (currentBits !== null) {
-                                        throw new Error('Permissions for this address already exist')
+                                        throw new Error(
+                                            'Permissions for this address already exist',
+                                        )
                                     }
                                 },
                             })

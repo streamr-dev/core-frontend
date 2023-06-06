@@ -4,7 +4,7 @@ const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const WebpackNotifierPlugin = require('webpack-notifier')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-const TerserPlugin = require("terser-webpack-plugin")
+const TerserPlugin = require('terser-webpack-plugin')
 const ImageminPlugin = require('imagemin-webpack-plugin').default
 const StyleLintPlugin = require('stylelint-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
@@ -16,7 +16,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { GitRevisionPlugin } = require('git-revision-webpack-plugin')
 const SentryPlugin = require('@sentry/webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
-const createStyledComponentsTransformer = require('typescript-plugin-styled-components').default
+const createStyledComponentsTransformer =
+    require('typescript-plugin-styled-components').default
 const validateEnv = require('./scripts/validateEnv')
 const pkg = require('./package')
 
@@ -66,11 +67,9 @@ module.exports = {
                         loader: 'ts-loader',
                         options: {
                             transpileOnly: true,
-                            getCustomTransformers: () => (
-                                {
-                                    before: [styledComponentsTransformer]
-                                }
-                            ),
+                            getCustomTransformers: () => ({
+                                before: [styledComponentsTransformer],
+                            }),
                         },
                     },
                 ],
@@ -84,7 +83,10 @@ module.exports = {
             {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
-                include: [path.resolve(root, 'app', 'src'), path.resolve(root, 'scripts')],
+                include: [
+                    path.resolve(root, 'app', 'src'),
+                    path.resolve(root, 'scripts'),
+                ],
                 options: {
                     rootMode: 'upward',
                     cacheDirectory: !isProduction(),
@@ -113,7 +115,9 @@ module.exports = {
                         options: {
                             modules: {
                                 localIdentRegExp: /app\/src\/([^/]+)/i,
-                                localIdentName: isProduction() ? '[local]_[hash:base64:8]' : '[1]_[name]_[local]',
+                                localIdentName: isProduction()
+                                    ? '[local]_[hash:base64:8]'
+                                    : '[1]_[name]_[local]',
                             },
                             importLoaders: 1,
                         },
@@ -131,8 +135,13 @@ module.exports = {
                         loader: 'sass-loader',
                         options: {
                             sassOptions: {
-                                includePaths: [path.resolve(__dirname, 'app/src/shared/assets/stylesheets')],
-                            }
+                                includePaths: [
+                                    path.resolve(
+                                        __dirname,
+                                        'app/src/shared/assets/stylesheets',
+                                    ),
+                                ],
+                            },
                         },
                     },
                 ],
@@ -196,11 +205,11 @@ module.exports = {
         new webpack.EnvironmentPlugin(loadedDotenv),
         ...(analyze
             ? [
-                new BundleAnalyzerPlugin({
-                    analyzerMode: 'static',
-                    openAnalyzer: false,
-                }),
-            ]
+                  new BundleAnalyzerPlugin({
+                      analyzerMode: 'static',
+                      openAnalyzer: false,
+                  }),
+              ]
             : []),
         // Ignore all locale files of moment.js
         new webpack.IgnorePlugin({
@@ -215,82 +224,82 @@ module.exports = {
         // https://github.com/webpack/changelog-v5/issues/10
         new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer'],
-        })
+        }),
     ]
         .concat(
             isProduction()
                 ? [
-                    new CleanWebpackPlugin({cleanOnceBeforeBuildPatterns: [dist]}),
-                    // Production plugins
-                    // new webpack.optimize.OccurrenceOrderPlugin(), // commented out as it started throwing errors after update to webpack5
-                    new webpack.EnvironmentPlugin({
-                        NODE_ENV: 'production',
-                    }),
-                    new OptimizeCssAssetsPlugin({
-                        cssProcessor,
-                        cssProcessorOptions: {
-                            discardComments: {
-                                removeAll: true,
-                            },
-                        },
-                        canPrint: true,
-                    }),
-                    new ImageminPlugin({
-                        disable: !isProduction(), // Disable during development
-                        pngquant: {
-                            quality: '50-75',
-                        },
-                    }),
-                ]
+                      new CleanWebpackPlugin({ cleanOnceBeforeBuildPatterns: [dist] }),
+                      // Production plugins
+                      // new webpack.optimize.OccurrenceOrderPlugin(), // commented out as it started throwing errors after update to webpack5
+                      new webpack.EnvironmentPlugin({
+                          NODE_ENV: 'production',
+                      }),
+                      new OptimizeCssAssetsPlugin({
+                          cssProcessor,
+                          cssProcessorOptions: {
+                              discardComments: {
+                                  removeAll: true,
+                              },
+                          },
+                          canPrint: true,
+                      }),
+                      new ImageminPlugin({
+                          disable: !isProduction(), // Disable during development
+                          pngquant: {
+                              quality: '50-75',
+                          },
+                      }),
+                  ]
                 : [
-                    // Dev plugins
-                    new DeadCodePlugin({
-                        exclude: [
-                            '**/node_modules/**/*.*',
-                            'storybook-static/**/*.*',
-                            'dist/**/*.*',
-                            'coverage/**/*.*',
-                            // skip tests
-                            '**/tests/*.*',
-                            '**/tests/**/*.*',
-                            '**/test/*.*',
-                            '**/test/**/*.*',
-                            '**/*.test.ts',
-                            '**/*.test.tsx',
-                            // skip conditional stubs
-                            '**/stub.tsx',
-                            // skip stories
-                            '**/*.stories.*',
-                            // skip sketch files
-                            '**/*.sketch',
-                        ],
-                    }),
-                    new WebpackNotifierPlugin(),
-                ],
+                      // Dev plugins
+                      new DeadCodePlugin({
+                          exclude: [
+                              '**/node_modules/**/*.*',
+                              'storybook-static/**/*.*',
+                              'dist/**/*.*',
+                              'coverage/**/*.*',
+                              // skip tests
+                              '**/tests/*.*',
+                              '**/tests/**/*.*',
+                              '**/test/*.*',
+                              '**/test/**/*.*',
+                              '**/*.test.ts',
+                              '**/*.test.tsx',
+                              // skip conditional stubs
+                              '**/stub.tsx',
+                              // skip stories
+                              '**/*.stories.*',
+                              // skip sketch files
+                              '**/*.sketch',
+                          ],
+                      }),
+                      new WebpackNotifierPlugin(),
+                  ],
         )
         .concat(
             process.env.SENTRY_DSN
                 ? [
-                    new SentryPlugin({
-                        include: dist,
-                        validate: true,
-                        ignore: [
-                            '.cache',
-                            '.DS_STORE',
-                            '.env',
-                            '.storybook',
-                            'bin',
-                            'coverage',
-                            'node_modules',
-                            'scripts',
-                            'stories',
-                            'test',
-                            'travis_scripts',
-                            'webpack.config.js',
-                        ],
-                        release: process.env.VERSION,
-                    }),
-                ]
+                      new SentryPlugin({
+                          include: dist,
+                          validate: true,
+                          ignore: [
+                              '.cache',
+                              '.DS_STORE',
+                              '.env',
+                              '.storybook',
+                              'bin',
+                              'coverage',
+                              'node_modules',
+                              'scripts',
+                              'stories',
+                              'test',
+                              'travis_scripts',
+                              'webpack.config.js',
+                          ],
+                          release: process.env.VERSION,
+                      }),
+                  ]
                 : [],
         ),
     devtool: isProduction() ? 'source-map' : 'eval-source-map',
@@ -323,18 +332,20 @@ module.exports = {
         },
         usedExports: true,
         minimize: isProduction(),
-        minimizer: [new TerserPlugin({
-            terserOptions: {
-                compress: true,
-            },
-        })],
+        minimizer: [
+            new TerserPlugin({
+                terserOptions: {
+                    compress: true,
+                },
+            }),
+        ],
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
         symlinks: false,
         fallback: {
-            "stream": require.resolve("stream-browserify"),
-            "buffer": require.resolve("buffer"),
+            stream: require.resolve('stream-browserify'),
+            buffer: require.resolve('buffer'),
         },
         alias: {
             // Make sure you set up aliases in flow and jest configs.
@@ -346,7 +357,12 @@ module.exports = {
             $routes: path.resolve(__dirname, 'app/src/routes/'),
             $utils: path.resolve(__dirname, 'app/src/utils/'),
             $ui: path.resolve(__dirname, 'app/src/shared/components/Ui'),
-            $config: path.resolve(__dirname, `app/src/config/${process.env.HUB_CONFIG_ENV || process.env.NODE_ENV}.toml`),
+            $config: path.resolve(
+                __dirname,
+                `app/src/config/${
+                    process.env.HUB_CONFIG_ENV || process.env.NODE_ENV
+                }.toml`,
+            ),
             '~': path.resolve(__dirname, 'src/'),
             // When duplicate bundles point to different places.
             '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),
@@ -356,14 +372,26 @@ module.exports = {
             invariant: path.resolve(__dirname, 'node_modules/invariant'),
             isarray: path.resolve(__dirname, 'node_modules/isarray'),
             'query-string': path.resolve(__dirname, 'node_modules/query-string'),
-            'regenerator-runtime': path.resolve(__dirname, 'node_modules/regenerator-runtime'),
-            'strict-uri-encode': path.resolve(__dirname, 'node_modules/strict-uri-encode'),
+            'regenerator-runtime': path.resolve(
+                __dirname,
+                'node_modules/regenerator-runtime',
+            ),
+            'strict-uri-encode': path.resolve(
+                __dirname,
+                'node_modules/strict-uri-encode',
+            ),
             warning: path.resolve(__dirname, 'node_modules/warning'),
             underscore: path.resolve(__dirname, 'node_modules/underscore'),
             react: path.resolve(__dirname, 'node_modules/react'),
             'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
-            'styled-components': path.resolve(__dirname, 'node_modules/styled-components'),
-            'prosemirror-model': path.resolve(__dirname, 'node_modules/prosemirror-model'),
+            'styled-components': path.resolve(
+                __dirname,
+                'node_modules/styled-components',
+            ),
+            'prosemirror-model': path.resolve(
+                __dirname,
+                'node_modules/prosemirror-model',
+            ),
         },
     },
 }

@@ -1,8 +1,14 @@
-import React, { useCallback, useMemo, useEffect, useState, FunctionComponent } from 'react'
+import React, {
+    useCallback,
+    useMemo,
+    useEffect,
+    useState,
+    FunctionComponent,
+} from 'react'
 import { Stream, StreamID } from 'streamr-client'
 import styled from 'styled-components'
 import { TABLET } from '$shared/utils/styled'
-import StreamTable, {StreamTableLight} from '$shared/components/StreamTable'
+import StreamTable, { StreamTableLight } from '$shared/components/StreamTable'
 import { Project } from '$mp/types/project-types'
 import { getStreamsFromIndexer, IndexerStream } from '$app/src/services/streams'
 import useLoadProductStreamsCallback from '$mp/containers/ProductController/useLoadProductStreamsCallback'
@@ -29,13 +35,12 @@ export default function Streams({ streams: streamsProp }: Props) {
     const [offset, setOffset] = useState(INITIAL_OFFSET)
 
     const appendStreams = useCallback((streams: Stream[]) => {
-        setStreams((prev) => ([
-            ...prev,
-            ...streams
-        ]))
+        setStreams((prev) => [...prev, ...streams])
     }, [])
 
-    const loadStreams = useLoadProductStreamsCallback({ setProductStreams: appendStreams })
+    const loadStreams = useLoadProductStreamsCallback({
+        setProductStreams: appendStreams,
+    })
 
     useEffect(() => {
         loadStreams(streamsProp.slice(0, INITIAL_OFFSET))
@@ -59,7 +64,10 @@ export default function Streams({ streams: streamsProp }: Props) {
         getStreamStats()
     }, [streams])
 
-    const hasMoreResults = useMemo(() => offset < streamsProp.length, [offset, streamsProp])
+    const hasMoreResults = useMemo(
+        () => offset < streamsProp.length,
+        [offset, streamsProp],
+    )
 
     const onLoadMore = useCallback(() => {
         loadStreams(streamsProp.slice(offset, offset + PAGE_SIZE))
@@ -68,11 +76,15 @@ export default function Streams({ streams: streamsProp }: Props) {
 
     return (
         <>
-            {streamsProp && streamsProp.length > 0 && (!streams || streams.length === 0) && (
-                <StreamsContainer>
-                    <StreamTableLight streamIds={streamsProp.slice(0, INITIAL_OFFSET)} />
-                </StreamsContainer>
-            )}
+            {streamsProp &&
+                streamsProp.length > 0 &&
+                (!streams || streams.length === 0) && (
+                    <StreamsContainer>
+                        <StreamTableLight
+                            streamIds={streamsProp.slice(0, INITIAL_OFFSET)}
+                        />
+                    </StreamsContainer>
+                )}
             {streams && streams.length > 0 && (
                 <StreamsContainer>
                     <StreamTable

@@ -5,6 +5,7 @@ type Props = {
     source: ErrorInUi | null | undefined
 }
 
-const Error = ({ source }: Props) => (source ? <div className={styles.error}>{source.message}</div> : null)
+const Error = ({ source }: Props) =>
+    source ? <div className={styles.error}>{source.message}</div> : null
 
 export default Error

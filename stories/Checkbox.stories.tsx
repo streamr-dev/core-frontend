@@ -1,7 +1,7 @@
-import {Meta} from "@storybook/react"
-import React from "react"
-import {action} from "@storybook/addon-actions"
-import Checkbox from "$shared/components/Checkbox"
+import { Meta } from '@storybook/react'
+import React from 'react'
+import { action } from '@storybook/addon-actions'
+import Checkbox from '$shared/components/Checkbox'
 
 class CheckboxContainer extends React.Component {
     constructor(props) {
@@ -28,29 +28,35 @@ class CheckboxContainer extends React.Component {
 
 export const CheckboxChecked = () => <Checkbox value={true} />
 CheckboxChecked.story = {
-    name: 'checked'
+    name: 'checked',
 }
 
 export const CheckboxUnchecked = () => <Checkbox value={false} />
 CheckboxUnchecked.story = {
-    name: 'unchecked'
+    name: 'unchecked',
 }
 
 export const CheckboxChangeable = () => <CheckboxContainer />
 CheckboxChangeable.story = {
-    name: 'changeable'
+    name: 'changeable',
 }
 
 const meta: Meta<typeof CheckboxChecked> = {
     title: 'Shared/Checkbox',
     component: CheckboxChecked,
-    decorators: [(Story) => {
-        return <div style={{
-            color: '#323232',
-            padding: '15px',
-        }}>
-            <Story/>
-        </div>
-    }]
+    decorators: [
+        (Story) => {
+            return (
+                <div
+                    style={{
+                        color: '#323232',
+                        padding: '15px',
+                    }}
+                >
+                    <Story />
+                </div>
+            )
+        },
+    ],
 }
 export default meta

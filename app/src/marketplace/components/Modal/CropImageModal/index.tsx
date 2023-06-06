@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react'
-import AvatarEditor, {CroppedRect} from 'react-avatar-editor'
+import AvatarEditor, { CroppedRect } from 'react-avatar-editor'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Slider from '$shared/components/Slider'
@@ -11,7 +11,10 @@ type Props = {
 }
 export const MAX_WIDTH = 1024
 // only width is considered because images returned from the cropper will always be squared
-export const getCroppedAndResizedBlob =  (imageUrl: string, cropInfo: CroppedRect): Promise<Blob> => {
+export const getCroppedAndResizedBlob = (
+    imageUrl: string,
+    cropInfo: CroppedRect,
+): Promise<Blob> => {
     const imageElement = document.createElement('img')
     imageElement.src = imageUrl
     let canvas = document.createElement('canvas')
@@ -39,14 +42,26 @@ export const getCroppedAndResizedBlob =  (imageUrl: string, cropInfo: CroppedRec
         while (resizedCanvas.width * 0.5 > MAX_WIDTH) {
             resizedCanvas.width *= 0.5
             resizedCanvas.height *= 0.5
-            resizedCanvasContext.drawImage(resizedCanvas, 0, 0, resizedCanvas.width, resizedCanvas.height)
+            resizedCanvasContext.drawImage(
+                resizedCanvas,
+                0,
+                0,
+                resizedCanvas.width,
+                resizedCanvas.height,
+            )
         }
 
         // Now do final resize for the resizingCanvas to meet the dimension requirments
         // directly to the output canvas, that will output the final image
         resizedCanvas.width = MAX_WIDTH
         resizedCanvas.height = (resizedCanvas.width * canvas.height) / canvas.width
-        resizedCanvasContext.drawImage(canvas, 0, 0, resizedCanvas.width, resizedCanvas.height)
+        resizedCanvasContext.drawImage(
+            canvas,
+            0,
+            0,
+            resizedCanvas.width,
+            resizedCanvas.height,
+        )
         canvas = resizedCanvas
     }
 
@@ -58,7 +73,10 @@ const CropImageModal = ({ imageUrl, onClose, onSave: onSaveProp }: Props) => {
     const [sliderValue, setSliderValue] = useState<number>(1)
     const onSave = useCallback(async () => {
         if (editorRef.current) {
-            const blob = await getCroppedAndResizedBlob(imageUrl, editorRef.current.getCroppingRect())
+            const blob = await getCroppedAndResizedBlob(
+                imageUrl,
+                editorRef.current.getCroppingRect(),
+            )
             const file = new File([blob], 'coverImage.png')
             onSaveProp(file)
         }

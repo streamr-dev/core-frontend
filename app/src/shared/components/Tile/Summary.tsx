@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 import React from 'react'
 import styled, { css } from 'styled-components'
 import Skeleton from '$shared/components/Skeleton'
-import {MEDIUM, REGULAR, MD} from '$shared/utils/styled'
+import { MEDIUM, REGULAR, MD } from '$shared/utils/styled'
 const Name = styled.div``
 const Secondary = styled.div`
     font-size: 16px;
@@ -28,14 +28,16 @@ const Root = styled.div<Root>`
     line-height: 24px;
     padding-top: 16px;
 
-  ${({label}) => label && css`
-      display: grid;
-      grid-template-columns: auto auto;
-      grid-gap: 0.5em;
-    `};
+    ${({ label }) =>
+        label &&
+        css`
+            display: grid;
+            grid-template-columns: auto auto;
+            grid-gap: 0.5em;
+        `};
 
     @media (min-width: ${MD}px) {
-      padding-top: 24px;
+        padding-top: 24px;
     }
 `
 type Props = {

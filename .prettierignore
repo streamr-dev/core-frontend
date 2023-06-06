@@ -1,0 +1,16 @@
+dist/
+node_modules/
+coverage/
+.github/
+.codedeploy/
+.ci_scripts/
+.husky/
+
+*.json
+*.yaml
+*.md
+
+.eslintignore
+.eslintrc.js
+.prettierrc
+.stylelintrc

@@ -27,23 +27,25 @@ function mockChainId(chainId) {
 }
 
 function mockDefaultAccount(defaultAccount) {
-    return (getDefaultWeb3Account as any).mockImplementation(() => Promise.resolve(defaultAccount))
+    return (getDefaultWeb3Account as any).mockImplementation(() =>
+        Promise.resolve(defaultAccount),
+    )
 }
 
 import { getDataTokenAbiAndAddress } from '$mp/utils/web3'
 describe('web3 utils', () => {
     afterEach(() => {
         jest.clearAllMocks()
-        jest.restoreAllMocks();
-        (getPublicWeb3 as any).mockReset();
-        (getDefaultWeb3Account as any).mockReset();
-        (getWeb3 as any).mockReset()
+        jest.restoreAllMocks()
+        ;(getPublicWeb3 as any).mockReset()
+        ;(getDefaultWeb3Account as any).mockReset()
+        ;(getWeb3 as any).mockReset()
     })
     describe('getNativeTokenBalance', () => {
         it('gets balance with web3 from metamask', async () => {
             const accountBalance = new BN(123450000000000000)
-            const balanceStub = jest.fn(() => Promise.resolve(accountBalance));
-            (getWeb3 as any).mockImplementation(() => ({
+            const balanceStub = jest.fn(() => Promise.resolve(accountBalance))
+            ;(getWeb3 as any).mockImplementation(() => ({
                 eth: {
                     getBalance: balanceStub,
                 },
@@ -56,8 +58,8 @@ describe('web3 utils', () => {
         })
         it('gets balance from public web3', async () => {
             const accountBalance = new BN(123450000000000000)
-            const balanceStub = jest.fn(() => Promise.resolve(accountBalance));
-            (getPublicWeb3 as any).mockImplementationOnce(() => ({
+            const balanceStub = jest.fn(() => Promise.resolve(accountBalance))
+            ;(getPublicWeb3 as any).mockImplementationOnce(() => ({
                 eth: {
                     getBalance: balanceStub,
                 },
@@ -84,7 +86,11 @@ describe('web3 utils', () => {
             const result = await all.getDataTokenBalance('testAccount', false, 8995)
             expect(result.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
             expect(getContractStub).toHaveBeenCalledTimes(1)
-            expect(getContractStub).toBeCalledWith(getDataTokenAbiAndAddress(8995), false, 8995)
+            expect(getContractStub).toBeCalledWith(
+                getDataTokenAbiAndAddress(8995),
+                false,
+                8995,
+            )
             expect(balanceStub).toHaveBeenCalledTimes(1)
             expect(balanceStub).toBeCalledWith('testAccount')
         })
@@ -102,7 +108,11 @@ describe('web3 utils', () => {
             const result = await all.getDataTokenBalance('testAccount', true, 8995)
             expect(result.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
             expect(getContractStub).toHaveBeenCalledTimes(1)
-            expect(getContractStub).toBeCalledWith(getDataTokenAbiAndAddress(8995), true, 8995)
+            expect(getContractStub).toBeCalledWith(
+                getDataTokenAbiAndAddress(8995),
+                true,
+                8995,
+            )
             expect(balanceStub).toHaveBeenCalledTimes(1)
             expect(balanceStub).toBeCalledWith('testAccount')
         })
@@ -110,8 +120,8 @@ describe('web3 utils', () => {
     describe('getMyNativeTokenBalance', () => {
         it('gets native token balance', async () => {
             const accountBalance = new BN(123450000000000000)
-            mockDefaultAccount('testAccount');
-            (getWeb3 as any).mockImplementation(() => ({
+            mockDefaultAccount('testAccount')
+            ;(getWeb3 as any).mockImplementation(() => ({
                 eth: {
                     getBalance: jest.fn(() => Promise.resolve(accountBalance)),
                 },
@@ -136,8 +146,11 @@ describe('web3 utils', () => {
             jest.spyOn(utils, 'getContract').mockImplementation(getContractStub as any)
             await all.getMyDataTokenBalance()
             expect(getContractStub).toHaveBeenCalledTimes(1)
-            // @ts-ignore
-            expect(getContractStub.mock.calls[0][0].abi.find((f) => f.name === 'balanceOf')).toBeDefined()
+            expect(
+                (getContractStub.mock.calls[0] as any)[0].abi.find(
+                    (f) => f.name === 'balanceOf',
+                ),
+            ).toBeDefined()
             expect(balanceStub).toHaveBeenCalledTimes(1)
             expect(balanceStub).toBeCalledWith('testAccount')
         })

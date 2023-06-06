@@ -17,7 +17,7 @@ jest.mock('$utils/web3/getChainId', () => ({
 }))
 
 function mockChainId(chainId) {
-    (getChainId as jest.Mock).mockImplementation(() => Promise.resolve(chainId))
+    ;(getChainId as jest.Mock).mockImplementation(() => Promise.resolve(chainId))
 }
 
 jest.mock('$utils/web3/getWeb3', () => ({
@@ -47,7 +47,7 @@ describe('smartContract utils', () => {
         jest.restoreAllMocks()
         const getDefaultWeb3AccountMock = getDefaultWeb3Account as jest.Mock
         getDefaultWeb3AccountMock.mockReset()
-        const getChainIdMock = (getChainId as jest.Mock)
+        const getChainIdMock = getChainId as jest.Mock
         getChainIdMock.mockReset()
     })
     describe('hexEqualsZero', () => {
@@ -115,7 +115,7 @@ describe('smartContract utils', () => {
 
             class Test {}
 
-            (getWeb3 as jest.Mock).mockImplementation(() => ({
+            ;(getWeb3 as jest.Mock).mockImplementation(() => ({
                 eth: {
                     Contract: Test,
                 },
@@ -139,13 +139,18 @@ describe('smartContract utils', () => {
     })
     describe('send', () => {
         beforeEach(() => {
-            (getDefaultWeb3Account as jest.Mock).mockImplementation(() => Promise.resolve('testAccount'))
+            ;(getDefaultWeb3Account as jest.Mock).mockImplementation(() =>
+                Promise.resolve('testAccount'),
+            )
             mockChainId('1')
-            jest.spyOn(getConfig, 'default').mockImplementation(() => ({
-                mainnet: {
-                    chainId: '1',
-                },
-            } as any))
+            jest.spyOn(getConfig, 'default').mockImplementation(
+                () =>
+                    ({
+                        mainnet: {
+                            chainId: '1',
+                        },
+                    } as any),
+            )
         })
         it('must return a Transaction', () => {
             const fakeEmitter = PromiEvent()
@@ -189,7 +194,7 @@ describe('smartContract utils', () => {
                     network: 1337,
                 },
             ).onError((e) => {
-                const err = (e as any as WrongNetworkSelectedError)
+                const err = e as any as WrongNetworkSelectedError
                 expect(err.requiredNetwork).toBe(1337)
                 expect(err.currentNetwork).toBe('2')
                 done()
@@ -210,7 +215,7 @@ describe('smartContract utils', () => {
                     network: 1337,
                 },
             ).onError((e) => {
-                const err = (e as any as WrongNetworkSelectedError)
+                const err = e as any as WrongNetworkSelectedError
                 expect(err.requiredNetwork).toBe(1337)
                 expect(err.currentNetwork).toBe('2')
                 done()

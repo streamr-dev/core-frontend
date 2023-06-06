@@ -259,7 +259,9 @@ async function getProjectFromGraphProject({
     }
 
     if (isDataUnion) {
-        const duAddress = paymentDetails.find((pd) => pd.beneficiary.length > 0)?.beneficiary
+        const duAddress = paymentDetails.find(
+            (pd) => pd.beneficiary.length > 0,
+        )?.beneficiary
         let adminFee = '0'
         let chainId: number | undefined = undefined
 

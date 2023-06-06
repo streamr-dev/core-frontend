@@ -56,16 +56,18 @@ const Inner = styled.div`
     > div:first-child {
         min-width: calc(var(--LiveDataMinLhsWidth) - var(--LiveDataMinMargin) - 16px);
         max-width: calc(var(--LiveDataTimestampColumnMaxWidth));
-        width: calc(100vw - var(--LiveDataInspectorWidth) - var(--LiveDataMinMargin) - 16px);
+        width: calc(
+            100vw - var(--LiveDataInspectorWidth) - var(--LiveDataMinMargin) - 16px
+        );
     }
 `
 
 type Props = {
-    className?: string,
-    onPartitionChange: (partition: number) => void,
-    onSettingsButtonClick: (streamId: string) => void,
-    partition: number,
-    partitions: Array<any>,
+    className?: string
+    onPartitionChange: (partition: number) => void
+    onSettingsButtonClick: (streamId: string) => void
+    partition: number
+    partitions: Array<any>
     streamId: string
 }
 
@@ -75,7 +77,7 @@ const UnstyledToolbar = ({
     onSettingsButtonClick,
     partition,
     partitions = [],
-    streamId
+    streamId,
 }: Props) => {
     return (
         <div className={className}>
@@ -93,7 +95,11 @@ const UnstyledToolbar = ({
             <Rhs>
                 <div>
                     {typeof onSettingsButtonClick === 'function' && (
-                        <SettingsButton kind="secondary" type={'button'} onClick={() => onSettingsButtonClick(streamId)}>
+                        <SettingsButton
+                            kind="secondary"
+                            type={'button'}
+                            onClick={() => onSettingsButtonClick(streamId)}
+                        >
                             Stream Settings
                         </SettingsButton>
                     )}

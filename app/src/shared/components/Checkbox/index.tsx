@@ -1,8 +1,13 @@
-import React, { ChangeEvent, FunctionComponent, HTMLProps, MouseEventHandler } from 'react'
+import React, {
+    ChangeEvent,
+    FunctionComponent,
+    HTMLProps,
+    MouseEventHandler,
+} from 'react'
 import styled, { css } from 'styled-components'
 import ImageChecked from './checkbox-checked.svg'
 import ImageUnchecked from './checkbox.svg'
-const Tick = styled.div<{checked: boolean}>`
+const Tick = styled.div<{ checked: boolean }>`
     background: url(${ImageUnchecked}) no-repeat;
     height: 16px;
     position: relative;
@@ -37,15 +42,27 @@ const Tick = styled.div<{checked: boolean}>`
 
 const noop = () => {}
 type CheckboxProps = {
-    value: boolean,
-    onChange?: (e: ChangeEvent<HTMLInputElement>) => void,
-    disabled?: boolean,
-    id?: string,
-    name?: string,
+    value: boolean
+    onChange?: (e: ChangeEvent<HTMLInputElement>) => void
+    disabled?: boolean
+    id?: string
+    name?: string
     onClick?: MouseEventHandler
 }
-const UnstyledCheckbox: FunctionComponent<CheckboxProps> = ({ value, onChange = noop, onClick= noop, ...props }) => (
-    <Tick {...props} as="input" type="checkbox" checked={!!value} onChange={onChange} onClick={onClick} />
+const UnstyledCheckbox: FunctionComponent<CheckboxProps> = ({
+    value,
+    onChange = noop,
+    onClick = noop,
+    ...props
+}) => (
+    <Tick
+        {...props}
+        as="input"
+        type="checkbox"
+        checked={!!value}
+        onChange={onChange}
+        onClick={onClick}
+    />
 )
 
 const Checkbox = styled(UnstyledCheckbox)<CheckboxProps>`

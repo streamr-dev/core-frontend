@@ -1,4 +1,11 @@
-import React, { ChangeEvent, FunctionComponent, MouseEventHandler, useEffect, useMemo, useState } from 'react'
+import React, {
+    ChangeEvent,
+    FunctionComponent,
+    MouseEventHandler,
+    useEffect,
+    useMemo,
+    useState,
+} from 'react'
 import styled from 'styled-components'
 import { useDebouncedCallback } from 'use-debounce'
 import { COLORS, SM, MD } from '$shared/utils/styled'
@@ -6,14 +13,20 @@ import searchIcon from './SearchIcon.svg'
 import closeIcon from './CloseIcon.svg'
 
 type SearchBarProps = {
-    onChange?: (searchValue: string) => void,
-    debounceTime?: number,
-    placeholder?: string,
+    onChange?: (searchValue: string) => void
+    debounceTime?: number
+    placeholder?: string
     value?: string
     autoFocus?: boolean
 }
 
-const SearchBar: FunctionComponent<SearchBarProps> = ({onChange, value, debounceTime = 250, placeholder= 'Search', autoFocus= false}) => {
+const SearchBar: FunctionComponent<SearchBarProps> = ({
+    onChange,
+    value,
+    debounceTime = 250,
+    placeholder = 'Search',
+    autoFocus = false,
+}) => {
     const [focused, setFocused] = useState<boolean>()
     const [inputValue, setInputValue] = useState<string>('')
 
@@ -42,20 +55,26 @@ const SearchBar: FunctionComponent<SearchBarProps> = ({onChange, value, debounce
         }
     }
 
-    return <FormWrapper onSubmit={(event) => event.preventDefault()}>
-        <SearchIcon src={searchIcon} className={focused ? 'hidden' : ''}/>
-        <SearchInput
-            placeholder={placeholder}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
-            onChange={handleChange}
-            value={inputValue}
-            autoFocus={autoFocus}
-        />
-        <ClearButton onClick={clearSearch} className={!inputValue ? 'hidden' : ''} type="button">
-            <img src={closeIcon} alt="Clear search"/>
-        </ClearButton>
-    </FormWrapper>
+    return (
+        <FormWrapper onSubmit={(event) => event.preventDefault()}>
+            <SearchIcon src={searchIcon} className={focused ? 'hidden' : ''} />
+            <SearchInput
+                placeholder={placeholder}
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
+                onChange={handleChange}
+                value={inputValue}
+                autoFocus={autoFocus}
+            />
+            <ClearButton
+                onClick={clearSearch}
+                className={!inputValue ? 'hidden' : ''}
+                type="button"
+            >
+                <img src={closeIcon} alt="Clear search" />
+            </ClearButton>
+        </FormWrapper>
+    )
 }
 
 const transitionTime = 150
@@ -117,7 +136,8 @@ const SearchIcon = styled.img`
     opacity: 1;
 
     &.hidden {
-        transition: opacity ${transitionTime}ms ease-in, left 1ms linear ${transitionTime}ms;
+        transition: opacity ${transitionTime}ms ease-in,
+            left 1ms linear ${transitionTime}ms;
         opacity: 0;
         left: 0;
     }
@@ -144,7 +164,8 @@ const ClearButton = styled.button`
     transform: translateY(-50%);
     background-color: transparent;
     border-radius: 100%;
-    transition: opacity ${transitionTime}ms ease-in, background-color ${transitionTime}ms ease-in;
+    transition: opacity ${transitionTime}ms ease-in,
+        background-color ${transitionTime}ms ease-in;
     opacity: 1;
 
     &.hidden {

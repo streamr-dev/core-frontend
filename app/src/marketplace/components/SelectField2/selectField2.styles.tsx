@@ -8,17 +8,17 @@ import BlackCheckmarkIcon from '$shared/assets/icons/checkmark-black.svg'
 const transitionTime = 150
 
 export const StyledCaretIcon = styled(SvgIcon)<SvgIconProps>`
-  height: 8px;
-  width: 10px;
-  transition: all ${transitionTime}ms ease-in-out;
-  color: ${COLORS.primaryLight};
-  &.rotated {
-    transform: rotate(180deg);
-    color: ${COLORS.primaryContrast}
-  };
-  &.disabled {
-    color: ${COLORS.disabled}
-  }
+    height: 8px;
+    width: 10px;
+    transition: all ${transitionTime}ms ease-in-out;
+    color: ${COLORS.primaryLight};
+    &.rotated {
+        transform: rotate(180deg);
+        color: ${COLORS.primaryContrast};
+    }
+    &.disabled {
+        color: ${COLORS.disabled};
+    }
 `
 
 export const StyledDropdownIndicator = styled(components.DropdownIndicator)`
@@ -26,40 +26,40 @@ export const StyledDropdownIndicator = styled(components.DropdownIndicator)`
 `
 
 export const StyledCloseIcon = styled(SvgIcon)`
-  color: ${COLORS.primaryLight};
-  &.menu-is-open {
-    color: ${COLORS.primaryContrast}
-  }
+    color: ${COLORS.primaryLight};
+    &.menu-is-open {
+        color: ${COLORS.primaryContrast};
+    }
 `
 
 const StyledOptionAfter = css`
-  :after {
-    content: ' ';
-    background: url("${CheckmarkIcon}") center center no-repeat;
-    width: 10px;
-    height: 10px;
-    position: absolute;
-    right: 12px;
-    top: 12px;
-  }
+    :after {
+        content: ' ';
+        background: url('${CheckmarkIcon}') center center no-repeat;
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        right: 12px;
+        top: 12px;
+    }
 `
 
 export const StyledOption = styled(components.Option)`
-  cursor: pointer;
-  color: ${COLORS.primaryLight};
-  font-size: 14px;
-  font-weight: 400;
-  transition: all ${transitionTime}ms ease-in-out;
-  position: relative;
-  &:active {
-    background-color: ${COLORS.primary} !important;
-  }
-  &:focus {
-    background-color: ${COLORS.focus};
-  }
-  
-  ${(props) => {
-        if (props.isSelected ) {
+    cursor: pointer;
+    color: ${COLORS.primaryLight};
+    font-size: 14px;
+    font-weight: 400;
+    transition: all ${transitionTime}ms ease-in-out;
+    position: relative;
+    &:active {
+        background-color: ${COLORS.primary} !important;
+    }
+    &:focus {
+        background-color: ${COLORS.focus};
+    }
+
+    ${(props) => {
+        if (props.isSelected) {
             return StyledOptionAfter
         }
     }}
@@ -71,7 +71,7 @@ export const getControlStyles = (
     isOpen: boolean,
     isDisabled: boolean,
     noShrink: boolean,
-    fullWidth: boolean
+    fullWidth: boolean,
 ): CSSObjectWithLabel => {
     const styleObject: CSSObjectWithLabel = {
         ...styles,
@@ -82,7 +82,7 @@ export const getControlStyles = (
         width: 'auto',
         display: 'inline-flex',
         transition: `background-color ${transitionTime}ms ease-in-out`,
-        cursor: 'pointer'
+        cursor: 'pointer',
     }
     if (isFocused) {
         styleObject.boxShadow = `none`
@@ -103,7 +103,11 @@ export const getControlStyles = (
     return styleObject
 }
 
-export const getPlaceholderStyles = (styles: CSSObjectWithLabel, isOpen: boolean, isDisabled: boolean): CSSObjectWithLabel => {
+export const getPlaceholderStyles = (
+    styles: CSSObjectWithLabel,
+    isOpen: boolean,
+    isDisabled: boolean,
+): CSSObjectWithLabel => {
     const styleObject: CSSObjectWithLabel = {
         ...styles,
         color: COLORS.primaryLight,
@@ -114,7 +118,7 @@ export const getPlaceholderStyles = (styles: CSSObjectWithLabel, isOpen: boolean
         fontSize: '14px',
         lineHeight: '36px',
         fontWeight: 500,
-        transition: `color ${transitionTime}ms ease-in-out`
+        transition: `color ${transitionTime}ms ease-in-out`,
     }
     if (isOpen) {
         styleObject.color = COLORS.primaryContrast
@@ -125,7 +129,12 @@ export const getPlaceholderStyles = (styles: CSSObjectWithLabel, isOpen: boolean
     return styleObject
 }
 
-export const getSingleValueStyles = (styles: CSSObjectWithLabel, isOpen: boolean, isDisabled: boolean, noShrink: boolean): CSSObjectWithLabel => {
+export const getSingleValueStyles = (
+    styles: CSSObjectWithLabel,
+    isOpen: boolean,
+    isDisabled: boolean,
+    noShrink: boolean,
+): CSSObjectWithLabel => {
     const styleObject: CSSObjectWithLabel = {
         ...styles,
         position: 'relative',
@@ -135,7 +144,7 @@ export const getSingleValueStyles = (styles: CSSObjectWithLabel, isOpen: boolean
         fontSize: '14px',
         fontWeight: 500,
         lineHeight: '36px',
-        color: COLORS.primaryLight
+        color: COLORS.primaryLight,
     }
 
     if (isOpen) {
@@ -172,14 +181,17 @@ export const getMenuListStyles = (styles: CSSObjectWithLabel): CSSObjectWithLabe
     }
 }
 
-export const getOptionStyles = (styles: CSSObjectWithLabel, isSelected: boolean): CSSObjectWithLabel => {
+export const getOptionStyles = (
+    styles: CSSObjectWithLabel,
+    isSelected: boolean,
+): CSSObjectWithLabel => {
     const styleObject: CSSObjectWithLabel = {
         ...styles,
         cursor: 'pointer',
         color: COLORS.primaryLight,
         fontSize: '14px',
         fontWeight: 400,
-        lineHeight: '18px'
+        lineHeight: '18px',
     }
     if (isSelected) {
         styleObject.backgroundColor = COLORS.primaryLight
@@ -188,11 +200,14 @@ export const getOptionStyles = (styles: CSSObjectWithLabel, isSelected: boolean)
     return styleObject
 }
 
-export const getClearIndicatorStyles = (styles: CSSObjectWithLabel, isOpen: boolean): CSSObjectWithLabel => {
+export const getClearIndicatorStyles = (
+    styles: CSSObjectWithLabel,
+    isOpen: boolean,
+): CSSObjectWithLabel => {
     const styleObject: CSSObjectWithLabel = {
         ...styles,
         color: COLORS.primaryLight,
-        transition: `color ${transitionTime}ms ease-in-out`
+        transition: `color ${transitionTime}ms ease-in-out`,
     }
     if (isOpen) {
         styleObject.color = COLORS.primaryContrast
@@ -201,37 +216,39 @@ export const getClearIndicatorStyles = (styles: CSSObjectWithLabel, isOpen: bool
 }
 
 const SelectedWhiteOption = css`
-  :after {
-    content: ' ';
-    background: url("${BlackCheckmarkIcon}") center center no-repeat;
-    width: 10px;
-    height: 10px;
-    position: absolute;
-    right: 12px;
-    top: 18px;
-  }
+    :after {
+        content: ' ';
+        background: url('${BlackCheckmarkIcon}') center center no-repeat;
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        right: 12px;
+        top: 18px;
+    }
 `
 
 export const StyledWhiteDropdownOption = styled(components.Option)`
-  position: relative;
-  &:active {
-    //background-color: ${COLORS.primary} !important;
-  }
-  &:focus {
-    background-color: ${COLORS.focus};
-  }
-  
-  ${(props) => {
-        if (props.isSelected ) {
+    position: relative;
+    &:active {
+        //background-color: ${COLORS.primary} !important;
+    }
+    &:focus {
+        background-color: ${COLORS.focus};
+    }
+
+    ${(props) => {
+        if (props.isSelected) {
             return SelectedWhiteOption
         }
     }}
 `
 
-export const getWhitePlaceholderStyles = (styles: CSSObjectWithLabel): CSSObjectWithLabel => {
+export const getWhitePlaceholderStyles = (
+    styles: CSSObjectWithLabel,
+): CSSObjectWithLabel => {
     return {
         ...styles,
-        color: COLORS.disabled
+        color: COLORS.disabled,
     }
 }
 
@@ -240,14 +257,14 @@ export const getWhiteControlStyles = (
     isFocused: boolean,
     isDisabled: boolean,
     noShrink: boolean,
-    fullWidth: boolean
+    fullWidth: boolean,
 ): CSSObjectWithLabel => {
     const styleObject: CSSObjectWithLabel = {
         ...styles,
         fontSize: '14px',
         borderColor: COLORS.secondaryHover,
         width: 'auto',
-        display: 'inline-flex'
+        display: 'inline-flex',
     }
     if (isFocused) {
         styleObject.borderColor = COLORS.focus
@@ -281,7 +298,9 @@ export const getWhiteMenuStyles = (styles: CSSObjectWithLabel): CSSObjectWithLab
     }
 }
 
-export const getWhiteMenuListStyles = (styles: CSSObjectWithLabel): CSSObjectWithLabel => {
+export const getWhiteMenuListStyles = (
+    styles: CSSObjectWithLabel,
+): CSSObjectWithLabel => {
     return {
         ...styles,
         padding: 0,
@@ -289,14 +308,17 @@ export const getWhiteMenuListStyles = (styles: CSSObjectWithLabel): CSSObjectWit
     }
 }
 
-export const getWhiteOptionStyles = (styles: CSSObjectWithLabel, isSelected: boolean): CSSObjectWithLabel => {
+export const getWhiteOptionStyles = (
+    styles: CSSObjectWithLabel,
+    isSelected: boolean,
+): CSSObjectWithLabel => {
     const styleObject: CSSObjectWithLabel = {
         ...styles,
         cursor: 'pointer',
         color: COLORS.primaryLight,
         fontSize: '14px',
         fontWeight: 400,
-        lineHeight: '18px'
+        lineHeight: '18px',
     }
     if (isSelected) {
         styleObject.color = COLORS.primaryLight

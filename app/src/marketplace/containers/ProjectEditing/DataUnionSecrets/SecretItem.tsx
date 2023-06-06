@@ -15,12 +15,16 @@ const Container = styled.div`
 `
 
 type Props = {
-    secret: DataUnionSecret,
-    onEdit: (secret: DataUnionSecret) => void,
-    onDelete: (secret: DataUnionSecret) => void,
+    secret: DataUnionSecret
+    onEdit: (secret: DataUnionSecret) => void
+    onDelete: (secret: DataUnionSecret) => void
 }
 
-export const SecretItem: FunctionComponent<Props> = ({ secret, onEdit, onDelete }: Props) => {
+export const SecretItem: FunctionComponent<Props> = ({
+    secret,
+    onEdit,
+    onDelete,
+}: Props) => {
     const { copy } = useCopy()
     const elementId = `secret-${secret.id}`
     const [isRevealed, setIsRevealed] = useState(false)
@@ -48,10 +52,7 @@ export const SecretItem: FunctionComponent<Props> = ({ secret, onEdit, onDelete 
                     >
                         Copy
                     </PopoverItem>,
-                    <PopoverItem
-                        key="delete"
-                        onClick={() => onDelete(secret)}
-                    >
+                    <PopoverItem key="delete" onClick={() => onDelete(secret)}>
                         Delete
                     </PopoverItem>,
                 ]}

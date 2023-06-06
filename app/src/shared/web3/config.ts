@@ -11,7 +11,7 @@ type MetamaskNetworkConfig = {
         name: string
         symbol: string
         decimals: number
-    },
+    }
 }
 
 type Config = {
@@ -29,7 +29,9 @@ export const getConfigForChain = (chainId: number): Chain => {
     }
 
     // $FlowFixMe: Object.entries loses type information
-    const configEntry = Object.entries(chainConfigs).find((c) => c[1].id.toString() === chainId.toString())
+    const configEntry = Object.entries(chainConfigs).find(
+        (c) => c[1].id.toString() === chainId.toString(),
+    )
 
     if (configEntry == null) {
         throw new Error(`Could not find config for chainId ${chainId}`)
@@ -66,7 +68,9 @@ export const getConfigForChainByName = (chainName: string): Chain => {
 }
 
 const getConfig = (): Config => {
-    const { contracts: { mainChainRPCs, streamRegistryChainRPCs } } = getClientConfig()
+    const {
+        contracts: { mainChainRPCs, streamRegistryChainRPCs },
+    } = getClientConfig()
 
     const mainChainId = getMainChainId()
     return {

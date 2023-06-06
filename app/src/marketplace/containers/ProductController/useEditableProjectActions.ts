@@ -5,27 +5,29 @@ import { ValidationContext } from '$mp/containers/ProductController/ValidationCo
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { ProjectType } from '$shared/types'
 
-
 export type EditableProjectActions = {
-    updateProject: (project: Partial<Project>) => void,
-    updateName: (name: Project['name']) => void,
-    updateDescription: (description: Project['description']) => void,
-    updateImageFile: (image: File) => void,
-    updateStreams: (streams: StreamIdList) => void,
-    updateAdminFee: (fee: Project['adminFee']) => void,
-    updateDataUnionChainId: (chainId: number) => void,
-    updateSalePoints: (salePoints: Project['salePoints']) => void,
-    updateExistingDUAddress: (address: string, touched?: boolean) => void,
-    updateType: (type: ProjectType) => void,
-    updateTermsOfUse: (termsOfUse: Project['termsOfUse']) => void,
-    updateContactUrl: (url: ContactDetails['url']) => void,
-    updateContactEmail: (email: ContactDetails['email']) => void,
-    updateSocialUrl: (platform: 'twitter' | 'telegram' | 'reddit' | 'linkedIn', url: string) => void,
-    updateCreator: (creatorName: string) => void,
+    updateProject: (project: Partial<Project>) => void
+    updateName: (name: Project['name']) => void
+    updateDescription: (description: Project['description']) => void
+    updateImageFile: (image: File) => void
+    updateStreams: (streams: StreamIdList) => void
+    updateAdminFee: (fee: Project['adminFee']) => void
+    updateDataUnionChainId: (chainId: number) => void
+    updateSalePoints: (salePoints: Project['salePoints']) => void
+    updateExistingDUAddress: (address: string, touched?: boolean) => void
+    updateType: (type: ProjectType) => void
+    updateTermsOfUse: (termsOfUse: Project['termsOfUse']) => void
+    updateContactUrl: (url: ContactDetails['url']) => void
+    updateContactEmail: (email: ContactDetails['email']) => void
+    updateSocialUrl: (
+        platform: 'twitter' | 'telegram' | 'reddit' | 'linkedIn',
+        url: string,
+    ) => void
+    updateCreator: (creatorName: string) => void
     updateIsDeployingNewDU: (isDeployingNewDU: boolean) => void
 }
 export const useEditableProjectActions = (): EditableProjectActions => {
-    const {state, updateState} = useContext(ProjectStateContext)
+    const { state, updateState } = useContext(ProjectStateContext)
     const { setTouched } = useContext(ValidationContext)
 
     const updateProject = useCallback<EditableProjectActions['updateProject']>(
@@ -36,41 +38,46 @@ export const useEditableProjectActions = (): EditableProjectActions => {
     )
     const updateName = useCallback(
         (name: Project['name']) => {
-            updateState({name})
+            updateState({ name })
             setTouched('name')
         },
         [updateState, setTouched],
     )
     const updateDescription = useCallback<EditableProjectActions['updateDescription']>(
         (description: string) => {
-            updateState({description})
+            updateState({ description })
             setTouched('description')
         },
         [updateState, setTouched],
     )
-    const updateDataUnionChainId = useCallback<EditableProjectActions['updateDataUnionChainId']>(
+    const updateDataUnionChainId = useCallback<
+        EditableProjectActions['updateDataUnionChainId']
+    >(
         (chainId: number) => {
-            updateState({dataUnionChainId: chainId})
+            updateState({ dataUnionChainId: chainId })
             setTouched('dataUnionChainId')
         },
         [updateState, setTouched],
     )
 
-    const updateSalePoints = useCallback<EditableProjectActions['updateSalePoints']>((salePoints: Project['salePoints']) => {
-        updateState({salePoints})
-        setTouched('salePoints')
-    }, [updateState, setTouched])
+    const updateSalePoints = useCallback<EditableProjectActions['updateSalePoints']>(
+        (salePoints: Project['salePoints']) => {
+            updateState({ salePoints })
+            setTouched('salePoints')
+        },
+        [updateState, setTouched],
+    )
 
     const updateImageFile = useCallback<EditableProjectActions['updateImageFile']>(
         (image: File) => {
-            updateState({newImageToUpload: image})
+            updateState({ newImageToUpload: image })
             setTouched('imageUrl')
         },
         [updateState, setTouched],
     )
     const updateStreams = useCallback<EditableProjectActions['updateStreams']>(
         (streams: StreamIdList) => {
-            updateState({streams })
+            updateState({ streams })
             setTouched('streams')
         },
         [updateState, setTouched],
@@ -82,7 +89,9 @@ export const useEditableProjectActions = (): EditableProjectActions => {
         },
         [updateState, setTouched],
     )
-    const updateExistingDUAddress = useCallback<EditableProjectActions['updateExistingDUAddress']>(
+    const updateExistingDUAddress = useCallback<
+        EditableProjectActions['updateExistingDUAddress']
+    >(
         (address: string, didTouch = true) => {
             updateState({
                 existingDUAddress: address,
@@ -96,14 +105,14 @@ export const useEditableProjectActions = (): EditableProjectActions => {
     )
     const updateType = useCallback<EditableProjectActions['updateType']>(
         (type: ProjectType) => {
-            updateState({type })
+            updateState({ type })
             setTouched('type')
         },
         [updateState, setTouched],
     )
     const updateTermsOfUse = useCallback<EditableProjectActions['updateTermsOfUse']>(
         (termsOfUse: Project['termsOfUse']) => {
-            updateState({termsOfUse })
+            updateState({ termsOfUse })
             setTouched('termsOfUse')
         },
         [updateState, setTouched],
@@ -126,25 +135,36 @@ export const useEditableProjectActions = (): EditableProjectActions => {
         },
         [updateState, state, setTouched],
     )
-    const updateSocialUrl = useCallback<EditableProjectActions['updateSocialUrl']>((platform, url) => {
-        updateState({
-            contact: {
-                ...(state.contact || {}),
-                [platform]: url
-            }
-        })
-        setTouched(`contact.${platform}`)
-    }, [updateState, state, setTouched])
+    const updateSocialUrl = useCallback<EditableProjectActions['updateSocialUrl']>(
+        (platform, url) => {
+            updateState({
+                contact: {
+                    ...(state.contact || {}),
+                    [platform]: url,
+                },
+            })
+            setTouched(`contact.${platform}`)
+        },
+        [updateState, state, setTouched],
+    )
 
-    const updateCreator = useCallback<EditableProjectActions['updateCreator']>((creatorName) => {
-        updateState({creator: creatorName})
-        setTouched('creator')
-    }, [updateState, setTouched])
+    const updateCreator = useCallback<EditableProjectActions['updateCreator']>(
+        (creatorName) => {
+            updateState({ creator: creatorName })
+            setTouched('creator')
+        },
+        [updateState, setTouched],
+    )
 
-    const updateIsDeployingNewDU = useCallback<EditableProjectActions['updateIsDeployingNewDU']>(((isDeployingNewDU) => {
-        updateState({isDeployingNewDU})
-        setTouched('isDeployingNewDU')
-    }), [updateState, setTouched])
+    const updateIsDeployingNewDU = useCallback<
+        EditableProjectActions['updateIsDeployingNewDU']
+    >(
+        (isDeployingNewDU) => {
+            updateState({ isDeployingNewDU })
+            setTouched('isDeployingNewDU')
+        },
+        [updateState, setTouched],
+    )
 
     return useMemo<EditableProjectActions>(
         () => ({
@@ -163,7 +183,7 @@ export const useEditableProjectActions = (): EditableProjectActions => {
             updateContactEmail,
             updateSocialUrl,
             updateCreator,
-            updateIsDeployingNewDU
+            updateIsDeployingNewDU,
         }),
         [
             updateProject,
@@ -181,7 +201,7 @@ export const useEditableProjectActions = (): EditableProjectActions => {
             updateContactEmail,
             updateSocialUrl,
             updateCreator,
-            updateIsDeployingNewDU
+            updateIsDeployingNewDU,
         ],
     )
 }

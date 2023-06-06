@@ -38,7 +38,8 @@ export const DataUnionTokenSelector: FunctionComponent<{ editMode: boolean }> = 
     )
 
     const pricingData = useMemo(() => {
-        const currentChainSalePoint = chain && project.salePoints && project.salePoints[chain.name]
+        const currentChainSalePoint =
+            chain && project.salePoints && project.salePoints[chain.name]
         if (project.id && currentChainSalePoint) {
             const result: PricingData = {
                 tokenAddress: currentChainSalePoint.pricingTokenAddress,

@@ -1,7 +1,7 @@
 const mapping = {
     137: 'MATIC',
     8997: 'MATIC',
-    100: 'xDai'
+    100: 'xDai',
 }
 
 const getNativeTokenName = (chainId: string | number) => {

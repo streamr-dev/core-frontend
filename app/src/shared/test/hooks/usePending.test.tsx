@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from 'react'
-import {render, act} from '@testing-library/react'
+import { render, act } from '@testing-library/react'
 import usePending, { useAnyPending } from '$shared/hooks/usePending'
 import * as PendingContext from '$shared/contexts/Pending'
 
@@ -32,7 +32,6 @@ describe.skip('usePending', () => {
 
         function Test() {
             currentPendingState = usePending('test')
-            console.log('test', currentPendingState.isPending)
             isAnyPending = useAnyPending()
             const { wrap } = currentPendingState
             useEffect(() => {

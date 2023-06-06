@@ -131,7 +131,12 @@ const EditButton = styled(Link)`
     }
 `
 
-const UnstyledTileImageContainer = ({ children, height, autoSize: autoSizeProp, ...props }: UnstyledTileImageContainerProps) => {
+const UnstyledTileImageContainer = ({
+    children,
+    height,
+    autoSize: autoSizeProp,
+    ...props
+}: UnstyledTileImageContainerProps) => {
     const autoSize = autoSizeProp === true || height != null
     return (
         <div {...props}>
@@ -141,7 +146,9 @@ const UnstyledTileImageContainer = ({ children, height, autoSize: autoSizeProp, 
     )
 }
 
-export const TileImageContainer = styled(UnstyledTileImageContainer)<UnstyledTileImageContainerProps>`
+export const TileImageContainer = styled(
+    UnstyledTileImageContainer,
+)<UnstyledTileImageContainerProps>`
     border-radius: 16px;
     overflow: hidden;
     position: relative;
@@ -170,9 +177,20 @@ type ImageTileProps = {
     noBorderRadius?: boolean
 }
 
-const ImageTile = ({ alt, height, showDataUnionBadge, src, noBorderRadius, ...props }: ImageTileProps) => (
+const ImageTile = ({
+    alt,
+    height,
+    showDataUnionBadge,
+    src,
+    noBorderRadius,
+    ...props
+}: ImageTileProps) => (
     <Tile {...props} suppressHover>
-        <TileImageContainer autoSize height={height} className={noBorderRadius ? 'no-border-radius' : ''}>
+        <TileImageContainer
+            autoSize
+            height={height}
+            className={noBorderRadius ? 'no-border-radius' : ''}
+        >
             <TileThumbnail alt={alt || ''} src={src || ''} />
             {!!showDataUnionBadge && <DataUnionBadge top left />}
         </TileImageContainer>
@@ -208,7 +226,16 @@ type ProductTileProps = {
     showDeployingBadge?: boolean
 }
 
-const ProductTile = ({ actions, deployed, published, numMembers, product, showDataUnionBadge, showDeployingBadge, ...props }: ProductTileProps) => (
+const ProductTile = ({
+    actions,
+    deployed,
+    published,
+    numMembers,
+    product,
+    showDataUnionBadge,
+    showDeployingBadge,
+    ...props
+}: ProductTileProps) => (
     <Tile {...props}>
         {!!actions && <Menu>{actions}</Menu>}
         <TileImageContainer>
@@ -224,7 +251,14 @@ const ProductTile = ({ actions, deployed, published, numMembers, product, showDa
                     <TileThumbnail src={getProjectImageUrl(product.metadata) || ''} />
                 </TileImageContainer>
             </Link>
-            {!!showDataUnionBadge && <DataUnionBadge top left memberCount={numMembers} linkTo={routes.projects.index()} />}
+            {!!showDataUnionBadge && (
+                <DataUnionBadge
+                    top
+                    left
+                    memberCount={numMembers}
+                    linkTo={routes.projects.index()}
+                />
+            )}
             {!!showDeployingBadge && <DeployingBadge bottom right />}
         </TileImageContainer>
         <Link
@@ -246,7 +280,12 @@ type MarketplaceProductTileProps = {
     showEditButton: boolean
 }
 
-const MarketplaceProductTile = ({ product, showDataUnionBadge, showEditButton, ...props }: MarketplaceProductTileProps) => (
+const MarketplaceProductTile = ({
+    product,
+    showDataUnionBadge,
+    showEditButton,
+    ...props
+}: MarketplaceProductTileProps) => (
     <Tile {...props}>
         <TileImageContainer>
             <Link
@@ -256,10 +295,12 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, showEditButton, .
             >
                 <TileImageContainer autoSize>
                     <TileThumbnail
-                        src={getProjectImageUrl({
-                            ...product.metadata,
-                            imageIpfsCid: product.metadata.imageIpfsCid || undefined,
-                        }) || ''}
+                        src={
+                            getProjectImageUrl({
+                                ...product.metadata,
+                                imageIpfsCid: product.metadata.imageIpfsCid || undefined,
+                            }) || ''
+                        }
                     />
                 </TileImageContainer>
             </Link>

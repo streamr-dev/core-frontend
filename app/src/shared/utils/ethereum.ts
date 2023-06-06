@@ -23,7 +23,8 @@ class EthDater {
         this.latestBlock = await this.getBlockWrapper('latest')
         this.firstBlock = await this.getBlockWrapper(1)
         this.blockTime =
-            (parseInt(this.latestBlock.timestamp, 10) - parseInt(this.firstBlock.timestamp, 10)) /
+            (parseInt(this.latestBlock.timestamp, 10) -
+                parseInt(this.firstBlock.timestamp, 10)) /
             (parseInt(this.latestBlock.number, 10) - 1)
     }
 
@@ -48,10 +49,18 @@ class EthDater {
         const predictedBlock = await this.getBlockWrapper(
             Math.ceil((date - this.firstBlock.timestamp) / this.blockTime),
         )
-        return this.returnWrapper(date, await this.findBetter(date, predictedBlock, after))
+        return this.returnWrapper(
+            date,
+            await this.findBetter(date, predictedBlock, after),
+        )
     }
 
-    async findBetter(date: number, predictedBlock: any, after: any, blockTime = this.blockTime): Promise<number> {
+    async findBetter(
+        date: number,
+        predictedBlock: any,
+        after: any,
+        blockTime = this.blockTime,
+    ): Promise<number> {
         if (await this.isBetterBlock(date, predictedBlock, after)) {
             return predictedBlock.number
         }
@@ -63,10 +72,14 @@ class EthDater {
             skip = difference < 0 ? -1 : 1
         }
 
-        const nextPredictedBlock = await this.getBlockWrapper(this.getNextBlock(date, predictedBlock.number, skip))
+        const nextPredictedBlock = await this.getBlockWrapper(
+            this.getNextBlock(date, predictedBlock.number, skip),
+        )
         const newBlockTime = Math.abs(
-            (parseInt(predictedBlock.timestamp, 10) - parseInt(nextPredictedBlock.timestamp, 10)) /
-                (parseInt(predictedBlock.number, 10) - parseInt(nextPredictedBlock.number, 10)),
+            (parseInt(predictedBlock.timestamp, 10) -
+                parseInt(nextPredictedBlock.timestamp, 10)) /
+                (parseInt(predictedBlock.number, 10) -
+                    parseInt(nextPredictedBlock.number, 10)),
         )
         return this.findBetter(date, nextPredictedBlock, after, newBlockTime)
     }
@@ -99,7 +112,7 @@ class EthDater {
         return false
     }
 
-    getNextBlock(date: number, currentBlock: any, skip: any):  Promise<any> {
+    getNextBlock(date: number, currentBlock: any, skip: any): Promise<any> {
         const nextBlock = currentBlock + skip
 
         if (this.checkedBlocks[date].includes(nextBlock)) {
@@ -119,7 +132,8 @@ class EthDater {
     }
 
     async getBlockWrapper(block: any) {
-        let actualBlock = block === 'latest' ? await this.web3.eth.getBlockNumber() : block
+        let actualBlock =
+            block === 'latest' ? await this.web3.eth.getBlockNumber() : block
 
         if (this.savedBlocks[actualBlock]) {
             return this.savedBlocks[actualBlock]
@@ -149,7 +163,10 @@ class EthDater {
 }
 
 // TODO add typing
-export const getBlockNumberForTimestamp = async (web3: any, timestampSecs: any): Promise<any> => {
+export const getBlockNumberForTimestamp = async (
+    web3: any,
+    timestampSecs: any,
+): Promise<any> => {
     const dater = new EthDater(web3)
     const result = await dater.getDate(timestampSecs)
     return result.block

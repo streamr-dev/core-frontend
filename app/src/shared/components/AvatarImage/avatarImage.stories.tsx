@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import {Meta} from "@storybook/react"
+import { Meta } from '@storybook/react'
 import AvatarImage from '.'
 const Container = styled.div`
     width: 200px;
@@ -20,14 +20,20 @@ export const Default = () => (
 const meta: Meta<typeof Default> = {
     title: 'Shared/AvatarImage',
     component: Default,
-    decorators: [(Story) => {
-        return <div style={{
-            color: '#323232',
-            padding: '3rem',
-        }}>
-            <Story/>
-        </div>
-    }]
+    decorators: [
+        (Story) => {
+            return (
+                <div
+                    style={{
+                        color: '#323232',
+                        padding: '3rem',
+                    }}
+                >
+                    <Story />
+                </div>
+            )
+        },
+    ],
 }
 
 export default meta

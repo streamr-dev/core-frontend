@@ -10,21 +10,22 @@ type Props = {
 }
 
 const ProjectNameInputContainer = styled.div`
-  ${ProjectHeroTitleStyles};`
+    ${ProjectHeroTitleStyles};
+`
 
 const ProjectNameInput = styled(EnhancedText)`
-  padding: 0;
-  border: none;
-  line-height: 44px;
-  font-size: 34px;
-  
-  &:not(:disabled):focus {
+    padding: 0;
     border: none;
-  }
-  
-  ::placeholder {
-    color: ${COLORS.primaryDisabled}
-  }
+    line-height: 44px;
+    font-size: 34px;
+
+    &:not(:disabled):focus {
+        border: none;
+    }
+
+    ::placeholder {
+        color: ${COLORS.primaryDisabled};
+    }
 `
 
 const ProjectName = ({ disabled }: Props) => {

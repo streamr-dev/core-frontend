@@ -9,21 +9,31 @@ type CheckNetworkParams = {
 }
 
 export const checkEthereumNetworkIsCorrect = async ({
-    network
+    network,
 }: CheckNetworkParams = {}): Promise<void> => {
     const currentChainId = await getChainId()
 
-    if (currentChainId == null || network == null || network.toString() !== currentChainId.toString()) {
+    if (
+        currentChainId == null ||
+        network == null ||
+        network.toString() !== currentChainId.toString()
+    ) {
         throw new WrongNetworkSelectedError(network, currentChainId)
     }
 }
 
-export const hasTransactionCompleted = (txHash: Hash, chainId: number): Promise<boolean> =>
+export const hasTransactionCompleted = (
+    txHash: Hash,
+    chainId: number,
+): Promise<boolean> =>
     getPublicWeb3(chainId)
         .eth.getTransaction(txHash)
         .then((trx) => !!(trx && trx.blockNumber))
 
-export const getTransactionReceipt = (txHash: Hash, chainId: number): Promise<TransactionReceipt> =>
+export const getTransactionReceipt = (
+    txHash: Hash,
+    chainId: number,
+): Promise<TransactionReceipt> =>
     getPublicWeb3(chainId)
         .eth.getTransactionReceipt(txHash)
         .then((receipt) => receipt)

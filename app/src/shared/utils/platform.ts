@@ -7,7 +7,10 @@ export const isMobile = (userAgent: string = navigator.userAgent): boolean => {
 export const isMetamaskSupported = (userAgent: string = navigator.userAgent): boolean => {
     const info = platform.parse(userAgent)
     const name = (info.name && info.name.toLowerCase()) || ''
-    return (name === 'firefox' || name === 'chrome' || name === 'opera') && !isMobile(userAgent)
+    return (
+        (name === 'firefox' || name === 'chrome' || name === 'opera') &&
+        !isMobile(userAgent)
+    )
 }
 export const isWindows = (userAgent: string = navigator.userAgent): boolean => {
     const info = platform.parse(userAgent)

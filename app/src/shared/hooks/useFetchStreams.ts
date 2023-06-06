@@ -5,12 +5,15 @@ import useInterrupt from '$shared/hooks/useInterrupt'
 import { useWalletAccount } from '$shared/stores/wallet'
 
 type FetchParameters = {
-    batchSize?: number,
-    allowPublic?: boolean,
-    onlyCurrentUser?: boolean,
+    batchSize?: number
+    allowPublic?: boolean
+    onlyCurrentUser?: boolean
 }
-type FetchCallbackType = (search?: string, params?: FetchParameters, resetSearch?: boolean) =>
-    Promise<[Stream[], boolean, boolean]>
+type FetchCallbackType = (
+    search?: string,
+    params?: FetchParameters,
+    resetSearch?: boolean,
+) => Promise<[Stream[], boolean, boolean]>
 
 export default function useFetchStreams(): FetchCallbackType {
     const client = useClient()
@@ -28,13 +31,18 @@ export default function useFetchStreams(): FetchCallbackType {
     }, [itp, client])
 
     return useCallback<FetchCallbackType>(
-        async (search?: string, { batchSize = 1, allowPublic = false, onlyCurrentUser = true } = {}, resetSearch = false) => {
+        async (
+            search?: string,
+            { batchSize = 1, allowPublic = false, onlyCurrentUser = true } = {},
+            resetSearch = false,
+        ) => {
             const { requireUninterrupted } = itp(search)
 
-            if (searchRef.current !== search
-                || allowPublicRef.current !== allowPublic
-                || onlyCurrentUserRef.current !== onlyCurrentUser
-                || resetSearch
+            if (
+                searchRef.current !== search ||
+                allowPublicRef.current !== allowPublic ||
+                onlyCurrentUserRef.current !== onlyCurrentUser ||
+                resetSearch
             ) {
                 searchRef.current = search
                 allowPublicRef.current = allowPublic
