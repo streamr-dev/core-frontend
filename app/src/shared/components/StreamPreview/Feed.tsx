@@ -39,11 +39,11 @@ const Container = styled.div<ContainerProps>`
 
     @media ${TABLET} {
         grid-template-columns: auto 1fr 1fr auto;
-    }
+    };
 
     @media (min-width: ${MAX_BODY_WIDTH}px) {
         grid-template-columns: auto ${MAX_BODY_WIDTH - 560}px 560px auto;
-    }
+    };
 `
 
 const LeftFiller = styled.div`

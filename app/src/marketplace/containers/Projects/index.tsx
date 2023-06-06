@@ -77,7 +77,6 @@ const ProjectsPage: FunctionComponent = () => {
             <MarketplaceHelmet title="Projects" />
             <ActionBar
                 filter={filter}
-                categories={[]}
                 onFilterChange={onFilterChange}
                 onSearchChange={onSearchChange}
                 onCreateProject={() => createProductModal.open()}

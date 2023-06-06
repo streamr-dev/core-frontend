@@ -85,10 +85,6 @@ export const mapPriceToContract = (
     pricePerSecond: NumberString | BN,
     decimals: BN,
 ): string => toDecimals(pricePerSecond, decimals).toFixed(0)
-export const mapPriceFromApi = (pricePerSecond: NumberString): string =>
-    pricePerSecond ? pricePerSecond.toString() : '0'
-export const mapPriceToApi = (pricePerSecond: NumberString | BN): string =>
-    pricePerSecond ? pricePerSecond.toString() : '0'
 
 export const mapProductFromContract = (
     id: ProjectId,

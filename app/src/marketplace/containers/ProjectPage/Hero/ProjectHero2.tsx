@@ -15,10 +15,6 @@ import { COLORS } from '$shared/utils/styled'
 import {DetailDisplay} from "$shared/components/DetailEditor/DetailDisplay"
 import {ProjectDetailIcon} from "$mp/containers/ProjectEditing/ProjectDetails.styles"
 
-export type ProjectHeroProps = {
-    project: Project
-}
-
 const DescriptionEditor = styled(Editor)`
   ${ProjectHeroDescriptionStyles};
   justify-content: flex-start;

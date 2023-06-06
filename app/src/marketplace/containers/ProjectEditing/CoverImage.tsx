@@ -10,7 +10,6 @@ import { useEditableProjectActions } from '$mp/containers/ProductController/useE
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import CropImageModalWrap from "$mp/containers/ProjectEditing/CropImageModal"
 import useValidation from '../ProductController/useValidation'
-import { Context as EditControllerContext } from './EditControllerProvider'
 
 type Props = {
     disabled?: boolean
@@ -60,7 +59,6 @@ export const CoverImage: FunctionComponent<Props> = ({ disabled }) => {
     const { isValid, message } = useValidation('imageUrl')
     const { api: cropImageDialog, isOpen } = useModal('cropImage')
     const { preview, createPreview } = useFilePreview()
-    const { publishAttempted } = useContext(EditControllerContext)
     const onUpload = useCallback(
         async (image: File) => {
             const newImage = await cropImageDialog.open({
@@ -80,7 +78,6 @@ export const CoverImage: FunctionComponent<Props> = ({ disabled }) => {
 
         createPreview(uploadedImage)
     }, [uploadedImage, createPreview])
-    const hasError = publishAttempted && !isValid
     return (
         <Container id="cover-image">
             <ImageUpload
@@ -91,7 +88,7 @@ export const CoverImage: FunctionComponent<Props> = ({ disabled }) => {
                 className={'coverImageUpload'}
                 noPreview={true}
             />
-            {hasError && !!message && <Errors overlap>{message}</Errors>}
+            {!isValid && !!message && <Errors overlap>{message}</Errors>}
             <CropImageModalWrap/>
         </Container>
     )

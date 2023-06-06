@@ -138,7 +138,6 @@ if (process.env.LOGROCKET_SLUG) {
                 extra,
             })
         },
-        getMiddleware: () => LogRocket.reduxMiddleware(),
     })
 }
 

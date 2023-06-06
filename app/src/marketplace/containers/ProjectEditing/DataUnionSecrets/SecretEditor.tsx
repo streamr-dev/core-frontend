@@ -5,7 +5,6 @@ import Button from '$shared/components/Button'
 import Text from '$ui/Text'
 import UnstyledLabel from '$ui/Label'
 import LightModal from '$app/src/modals/LightModal'
-import useDataUnionSecrets from '$mp/modules/dataUnion/hooks/useDataUnionSecrets'
 
 const Container = styled.div`
     display: grid;
@@ -24,21 +23,24 @@ const Buttons = styled.div`
 `
 
 type Props = {
-    secret?: DataUnionSecret | undefined,
-    chainId: number,
-    dataUnionId: string,
-    onReject?: (reason?: unknown) => void,
-    onResolve?: () => void,
+    secret?: DataUnionSecret | undefined
+    onReject?: (reason?: unknown) => void
+    onResolve?: (name: string) => void
 }
 
-export const SecretEditor: FunctionComponent<Props> = ({ secret, chainId, dataUnionId, onReject, onResolve }: Props) => {
+export const SecretEditor: FunctionComponent<Props> = ({
+    secret,
+    onReject,
+    onResolve,
+}: Props) => {
     const [name, setName] = useState<string>('')
-    const { add, edit } = useDataUnionSecrets()
-
     const isNew = secret == null
 
     return (
-        <LightModal title={isNew ? 'Add a shared secret' : 'Edit shared secret'} onReject={onReject}>
+        <LightModal
+            title={isNew ? 'Add a shared secret' : 'Edit shared secret'}
+            onReject={onReject}
+        >
             <Container>
                 <div>
                     <Label>Secret name</Label>
@@ -70,26 +72,10 @@ export const SecretEditor: FunctionComponent<Props> = ({ secret, chainId, dataUn
                             }
 
                             try {
-                                if (isNew) {
-                                    await add({
-                                        chainId,
-                                        dataUnionId,
-                                        name,
-                                    })
-                                } else {
-                                    await edit({
-                                        id: secret.id,
-                                        chainId,
-                                        dataUnionId,
-                                        name,
-                                    })
-                                }
-
                                 if (onResolve != null) {
-                                    onResolve()
+                                    onResolve(name)
                                 }
-                            }
-                            catch (e) {
+                            } catch (e) {
                                 console.error(e)
                             }
                         }}
@@ -97,7 +83,7 @@ export const SecretEditor: FunctionComponent<Props> = ({ secret, chainId, dataUn
                         {isNew ? 'Add a shared secret' : 'Save'}
                     </Button>
                     <Button
-                        kind='link'
+                        kind="link"
                         onClick={() => {
                             if (onReject != null) {
                                 onReject()

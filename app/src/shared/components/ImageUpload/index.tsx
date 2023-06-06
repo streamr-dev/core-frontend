@@ -5,7 +5,7 @@ import { maxFileSizeForImageUpload } from '$shared/utils/constants'
 import PngIcon from '$shared/components/PngIcon'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useFilePreview from '$shared/hooks/useFilePreview'
-import Notification from '$shared/utils/Notification'
+import {errorToast} from "$utils/toast"
 import styles from './imageUpload.pcss'
 
 type DropzoneFile = File & {
@@ -65,15 +65,13 @@ const ImageUpload: FunctionComponent<Props> = ({
         setUploading(false)
     }, [isMounted])
     const onDropRejected = useCallback(
-        ([file]: any) => {
+        ([rejection]: any) => {
             if (!isMounted()) {
                 return
             }
 
-            if (file.size > maxFileSizeForImageUpload) {
-                Notification.push({
-                    title: `Image file size must be less than ${Math.floor(maxFileSizeForImageUpload / 1e6)}MB`,
-                })
+            if (rejection.file.size > maxFileSizeForImageUpload) {
+                errorToast({title: `Image file size must be less than ${Math.floor(maxFileSizeForImageUpload / 1e6)}MB`})
             }
 
             setUploading(false)
