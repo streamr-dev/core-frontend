@@ -163,7 +163,7 @@
         "@storybook/source-loader": "^7.0.12",
         "@testing-library/jest-dom": "^5.16.5",
         "@testing-library/react": "^14.0.0",
-        "@types/jest": "^29.5.1",
+        "@types/jest": "^29.5.2",
         "@types/lunr": "^2.3.4",
         "@types/moxios": "^0.4.15",
         "@types/node": "^20.2.5",
