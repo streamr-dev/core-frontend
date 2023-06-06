@@ -1,15 +1,9 @@
-/**
- *  here we define the flag names
- */
 export enum FeatureFlag {
-    phaseTwo = 'phaseTwo',
+    PhaseTwo = 'PhaseTwo',
 }
 
-/**
- * here we define the flag values
- */
 const flags = new Map<FeatureFlag, FlagValue>([
-    [FeatureFlag.phaseTwo, { development: true, staging: true, production: false }],
+    [FeatureFlag.PhaseTwo, { development: true, staging: true, production: false }],
 ])
 
 type FlagValue = {

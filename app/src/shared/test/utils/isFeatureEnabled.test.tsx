@@ -24,16 +24,16 @@ describe('isFeatureEnabled', () => {
 
     it('should have the phaseTwo feature flag ENABLED on development environment', () => {
         mockWindowLocation('http://localhost')
-        expect(isFeatureEnabled(FeatureFlag.phaseTwo)).toStrictEqual(true)
+        expect(isFeatureEnabled(FeatureFlag.PhaseTwo)).toStrictEqual(true)
     })
 
     it('should have the phaseTwo feature flag ENABLED on staging environment', () => {
         mockWindowLocation('https://staging.streamr.network')
-        expect(isFeatureEnabled(FeatureFlag.phaseTwo)).toStrictEqual(true)
+        expect(isFeatureEnabled(FeatureFlag.PhaseTwo)).toStrictEqual(true)
     })
 
     it('should have the phaseTwo feature flag DISABLED on production environment', () => {
         mockWindowLocation('https://streamr.network')
-        expect(isFeatureEnabled(FeatureFlag.phaseTwo)).toStrictEqual(false)
+        expect(isFeatureEnabled(FeatureFlag.PhaseTwo)).toStrictEqual(false)
     })
 })
