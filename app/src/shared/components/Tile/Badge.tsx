@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react'
+import React, { ReactNode } from 'react'
 import styled, { css } from 'styled-components'
 import UnstyledSpinner from '$shared/components/Spinner'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -133,7 +133,12 @@ type DataUnionBadgeProps = {
     linkHref?: string
 }
 
-const DataUnionBadge = ({ memberCount, linkTo, linkHref, ...props }: DataUnionBadgeProps) => (
+const DataUnionBadge = ({
+    memberCount,
+    linkTo,
+    linkHref,
+    ...props
+}: DataUnionBadgeProps) => (
     <BadgeContainer {...props}>
         <SingleBadge>Data Union</SingleBadge>
         {memberCount != null && (

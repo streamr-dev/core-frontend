@@ -18,7 +18,7 @@ export class EmptyProject implements Project {
         reselling: false,
         storage: false,
         termsName: undefined,
-        termsUrl: undefined
+        termsUrl: undefined,
     }
     existingDUAddress = undefined
     salePoints = {}

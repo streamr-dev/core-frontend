@@ -2,7 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 import { StreamPermission } from 'streamr-client'
 import { MEDIUM } from '$shared/utils/styled'
-import { Bits, useCurrentDraft, useDraftId, useStreamEditorStore } from '$shared/stores/streamEditor'
+import {
+    Bits,
+    useCurrentDraft,
+    useDraftId,
+    useStreamEditorStore,
+} from '$shared/stores/streamEditor'
 import address0 from '$utils/address0'
 
 const Container = styled.div`
@@ -52,7 +57,7 @@ enum StreamType {
 }
 
 type Props = {
-    disabled?: boolean,
+    disabled?: boolean
 }
 
 export default function StreamTypeSelector({ disabled }: Props) {
@@ -78,7 +83,11 @@ export default function StreamTypeSelector({ disabled }: Props) {
                                 return
                             }
 
-                            setPermissions(draftId, address0, Bits[StreamPermission.SUBSCRIBE])
+                            setPermissions(
+                                draftId,
+                                address0,
+                                Bits[StreamPermission.SUBSCRIBE],
+                            )
                         }}
                         disabled={disabled}
                     />
@@ -106,7 +115,10 @@ export default function StreamTypeSelector({ disabled }: Props) {
                     />
                     <div>
                         <Title>Private stream</Title>
-                        <Description>Only Ethereum accounts listed below can subscribe to the stream.</Description>
+                        <Description>
+                            Only Ethereum accounts listed below can subscribe to the
+                            stream.
+                        </Description>
                     </div>
                 </RadioContainer>
             </Item>

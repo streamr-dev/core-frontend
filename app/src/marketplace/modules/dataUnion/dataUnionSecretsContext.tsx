@@ -1,16 +1,41 @@
-import React, {createContext, FunctionComponent, ReactNode, useCallback, useMemo, useState} from "react"
-import {DataUnionId, DataUnionSecret} from "$mp/types/project-types"
-import {createSecret, deleteSecret, editSecret, getSecrets} from "$mp/modules/dataUnion/services"
-import {Secret} from "$mp/modules/dataUnion/types"
+import React, {
+    createContext,
+    FunctionComponent,
+    ReactNode,
+    useCallback,
+    useMemo,
+    useState,
+} from 'react'
+import { DataUnionId, DataUnionSecret } from '$mp/types/project-types'
+import {
+    createSecret,
+    deleteSecret,
+    editSecret,
+    getSecrets,
+} from '$mp/modules/dataUnion/services'
+import { Secret } from '$mp/modules/dataUnion/types'
 
 export type DataUnionSecretsController = {
-    load: (dataUnionId: DataUnionId, chainId: number) => Promise<void>,
-    secrets: DataUnionSecret[],
-    add: (param: { dataUnionId: DataUnionId; name: string; chainId: number }) => Promise<void>,
-    edit: (param: { dataUnionId: DataUnionId;  id: string; name: string; chainId: number }) => Promise<void>,
-    remove: (param: { dataUnionId: DataUnionId; id: string; chainId: number }) => Promise<void>,
-    isLoading: boolean,
-    isLoaded: boolean,
+    load: (dataUnionId: DataUnionId, chainId: number) => Promise<void>
+    secrets: DataUnionSecret[]
+    add: (param: {
+        dataUnionId: DataUnionId
+        name: string
+        chainId: number
+    }) => Promise<void>
+    edit: (param: {
+        dataUnionId: DataUnionId
+        id: string
+        name: string
+        chainId: number
+    }) => Promise<void>
+    remove: (param: {
+        dataUnionId: DataUnionId
+        id: string
+        chainId: number
+    }) => Promise<void>
+    isLoading: boolean
+    isLoaded: boolean
     isSaving: boolean
 }
 
@@ -24,7 +49,7 @@ const useDataUnionSecretsControllerImplementation = (): DataUnionSecretsControll
         id: secret.secret,
         secret: secret.secret,
         name: secret.name,
-        contractAddress: secret.dataUnion
+        contractAddress: secret.dataUnion,
     })
 
     const load = useCallback(
@@ -35,7 +60,9 @@ const useDataUnionSecretsControllerImplementation = (): DataUnionSecretsControll
                     dataUnionId,
                     chainId,
                 })
-                const mappedSecrets: DataUnionSecret[] = response.map(mapSecretToDataUnionSecret)
+                const mappedSecrets: DataUnionSecret[] = response.map(
+                    mapSecretToDataUnionSecret,
+                )
                 setSecrets(mappedSecrets)
                 setIsLoaded(true)
             } catch (e) {
@@ -49,7 +76,15 @@ const useDataUnionSecretsControllerImplementation = (): DataUnionSecretsControll
     )
 
     const add = useCallback(
-        async ({ dataUnionId, name, chainId }: { dataUnionId: DataUnionId; name: string; chainId: number }) => {
+        async ({
+            dataUnionId,
+            name,
+            chainId,
+        }: {
+            dataUnionId: DataUnionId
+            name: string
+            chainId: number
+        }) => {
             setIsSaving(true)
             try {
                 const response = await createSecret({
@@ -57,7 +92,10 @@ const useDataUnionSecretsControllerImplementation = (): DataUnionSecretsControll
                     name,
                     chainId,
                 })
-                setSecrets((current) => [...current, mapSecretToDataUnionSecret(response)])
+                setSecrets((current) => [
+                    ...current,
+                    mapSecretToDataUnionSecret(response),
+                ])
                 setIsSaving(false)
             } catch (e) {
                 console.warn(e)
@@ -69,7 +107,17 @@ const useDataUnionSecretsControllerImplementation = (): DataUnionSecretsControll
     )
 
     const edit = useCallback(
-        async ({ dataUnionId, id, name, chainId }: { dataUnionId: DataUnionId; id: string; name: string; chainId: number }) => {
+        async ({
+            dataUnionId,
+            id,
+            name,
+            chainId,
+        }: {
+            dataUnionId: DataUnionId
+            id: string
+            name: string
+            chainId: number
+        }) => {
             setIsSaving(true)
             try {
                 const response = await editSecret({
@@ -78,7 +126,10 @@ const useDataUnionSecretsControllerImplementation = (): DataUnionSecretsControll
                     name,
                     chainId,
                 })
-                setSecrets((current) => [...current, mapSecretToDataUnionSecret(response)])
+                setSecrets((current) => [
+                    ...current,
+                    mapSecretToDataUnionSecret(response),
+                ])
                 setIsSaving(false)
             } catch (e) {
                 console.warn(e)
@@ -90,7 +141,15 @@ const useDataUnionSecretsControllerImplementation = (): DataUnionSecretsControll
     )
 
     const remove = useCallback(
-        async ({ dataUnionId, id, chainId }: { dataUnionId: DataUnionId; id: string; chainId: number }) => {
+        async ({
+            dataUnionId,
+            id,
+            chainId,
+        }: {
+            dataUnionId: DataUnionId
+            id: string
+            chainId: number
+        }) => {
             setIsSaving(true)
             try {
                 await deleteSecret({
@@ -118,16 +177,24 @@ const useDataUnionSecretsControllerImplementation = (): DataUnionSecretsControll
             remove,
             isLoading,
             isLoaded,
-            isSaving
+            isSaving,
         }),
         [load, secrets, add, edit, remove, isLoading, isLoaded, isSaving],
     )
 }
 
-export const DataUnionSecretsContext = createContext<DataUnionSecretsController>({} as DataUnionSecretsController)
+export const DataUnionSecretsContext = createContext<DataUnionSecretsController>(
+    {} as DataUnionSecretsController,
+)
 
-export const DataUnionSecretsContextProvider: FunctionComponent<{children: ReactNode}> = ({children}) => {
-    return <DataUnionSecretsContext.Provider value={useDataUnionSecretsControllerImplementation()}>
-        {children}
-    </DataUnionSecretsContext.Provider>
+export const DataUnionSecretsContextProvider: FunctionComponent<{
+    children: ReactNode
+}> = ({ children }) => {
+    return (
+        <DataUnionSecretsContext.Provider
+            value={useDataUnionSecretsControllerImplementation()}
+        >
+            {children}
+        </DataUnionSecretsContext.Provider>
+    )
 }

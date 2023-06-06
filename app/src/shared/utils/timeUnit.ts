@@ -1,4 +1,4 @@
-import {$Values} from "utility-types"
+import { $Values } from 'utility-types'
 
 export const timeUnits = {
     second: 'second',
@@ -15,5 +15,5 @@ export const timeUnitSecondsMultiplierMap = new Map<TimeUnit, number>([
     ['hour', 3600],
     ['day', 86400],
     ['week', 604800],
-    ['month', 2.628e+6]
+    ['month', 2.628e6],
 ])

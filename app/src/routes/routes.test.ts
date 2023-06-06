@@ -42,7 +42,9 @@ describe('route utils', () => {
             ).toEqual('/ns/resource/13')
         })
         it('generates a deeply namespaced route', () => {
-            expect(routes.namespace.deep.deep.deep.resource()).toEqual('/deep/resource/:id')
+            expect(routes.namespace.deep.deep.deep.resource()).toEqual(
+                '/deep/resource/:id',
+            )
             expect(
                 routes.namespace.deep.deep.deep.resource({
                     id: 13,
@@ -66,7 +68,9 @@ describe('route utils', () => {
             ).toEqual('https://streamr.network/api/resource/13')
         })
         it('generates a namespaced route using variabled', () => {
-            expect(routes.namespace.site()).toEqual('https://streamr.network/ns/api/resource/:id')
+            expect(routes.namespace.site()).toEqual(
+                'https://streamr.network/ns/api/resource/:id',
+            )
             expect(
                 routes.namespace.site({
                     id: 13,
@@ -74,7 +78,9 @@ describe('route utils', () => {
             ).toEqual('https://streamr.network/ns/api/resource/13')
         })
         it('generates a namespaced route using variabled (slash-squish)', () => {
-            expect(routes.namespace.slashed()).toEqual('https://streamr.network/ns/api/resource/:id')
+            expect(routes.namespace.slashed()).toEqual(
+                'https://streamr.network/ns/api/resource/:id',
+            )
             expect(
                 routes.namespace.slashed({
                     id: 13,
@@ -104,15 +110,21 @@ describe('route utils', () => {
             }))(params, options)
 
         it('renders urls correctly', () => {
-            expect(r('https://www.streamr.network/')).toEqual('https://www.streamr.network/')
+            expect(r('https://www.streamr.network/')).toEqual(
+                'https://www.streamr.network/',
+            )
         })
         it('prints the raw path when params are falsy', () => {
             expect(r('/resource/:id')).toEqual('/resource/:id')
             expect(r('/resource/:id?')).toEqual('/resource/:id?')
         })
         it('does not skip constraints if params are falsy', () => {
-            expect(r('/resource/:tab(tab1|tab2)', null)).toEqual('/resource/:tab(tab1|tab2)')
-            expect(r('/resource/:tab(tab1|tab2)/edit', null)).toEqual('/resource/:tab(tab1|tab2)/edit')
+            expect(r('/resource/:tab(tab1|tab2)', null)).toEqual(
+                '/resource/:tab(tab1|tab2)',
+            )
+            expect(r('/resource/:tab(tab1|tab2)/edit', null)).toEqual(
+                '/resource/:tab(tab1|tab2)/edit',
+            )
         })
         it('applies given params', () => {
             expect(
@@ -226,7 +238,9 @@ describe('route utils', () => {
                 ).toEqual('url/resource/1')
             })
             it('explodes when a variable is missing', () => {
-                expect(() => r('<unknown>')).toThrow(/expected "unknown" variable\(s\) to be defined/i)
+                expect(() => r('<unknown>')).toThrow(
+                    /expected "unknown" variable\(s\) to be defined/i,
+                )
                 expect(() =>
                     r('<var1>/<var2>/resource/:id', {
                         id: 1,

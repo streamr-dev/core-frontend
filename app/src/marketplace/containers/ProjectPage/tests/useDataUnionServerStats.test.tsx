@@ -5,7 +5,7 @@ import * as services from '$mp/modules/dataUnion/services'
 import useDataUnionServerStats from '../useDataUnionServerStats'
 jest.mock('$mp/modules/dataUnion/services', () => {
     return {
-        getDataUnionStats: jest.fn()
+        getDataUnionStats: jest.fn(),
     }
 })
 jest.useFakeTimers()
@@ -23,7 +23,7 @@ describe('useDataUnionServerStats', () => {
         jest.spyOn(console, 'warn').mockImplementation(() => {})
     })
     afterEach(() => {
-        (services.getDataUnionStats as any).mockRestore()
+        ;(services.getDataUnionStats as any).mockRestore()
         jest.clearAllTimers()
     })
     it('returns undefined earnings and member count by default', () => {
@@ -79,8 +79,8 @@ describe('useDataUnionServerStats', () => {
         render(<Test />)
         getDataUnionStatsMock = jest.fn(async () => {
             throw new Error('something happened')
-        });
-        (services.getDataUnionStats as any).mockImplementation(getDataUnionStatsMock)
+        })
+        ;(services.getDataUnionStats as any).mockImplementation(getDataUnionStatsMock)
         await act(async () => {
             try {
                 await result.startPolling('0x123', 8995)
@@ -100,11 +100,11 @@ describe('useDataUnionServerStats', () => {
 
         render(<Test />)
         getDataUnionStatsMock = jest.fn(async () => {
-            const responseError = new Error('something happened');
-            (responseError as any).statusCode = 404
+            const responseError = new Error('something happened')
+            ;(responseError as any).statusCode = 404
             throw responseError
-        });
-        (services.getDataUnionStats as any).mockImplementation(getDataUnionStatsMock)
+        })
+        ;(services.getDataUnionStats as any).mockImplementation(getDataUnionStatsMock)
         await act(async () => {
             await result.startPolling('0x123', 8995)
         })

@@ -13,14 +13,14 @@ const Container = styled.div`
     grid-template-rows: auto auto;
     grid-template-columns: unset;
     gap: 40px;
-    
-    @media(${LAPTOP}) {
+
+    @media (${LAPTOP}) {
         padding: 60px 116px;
         grid-template-rows: unset;
         grid-template-columns: auto auto;
     }
 
-    @media(${DESKTOP}) {
+    @media (${DESKTOP}) {
         padding: 165px 125px;
         grid-template-rows: unset;
         grid-template-columns: auto auto;
@@ -34,7 +34,7 @@ const TextContainer = styled.div`
     gap: 40px;
     align-content: center;
 
-    @media(${DESKTOP}) {
+    @media (${DESKTOP}) {
         margin-left: 112px;
     }
 `
@@ -46,11 +46,11 @@ const Text = styled.div`
     text-align: center;
     justify-self: center;
 
-    @media(${TABLET}) {
+    @media (${TABLET}) {
         font-size: 34px;
     }
 
-    @media(${DESKTOP}) {
+    @media (${DESKTOP}) {
         text-align: left;
         justify-self: left;
     }
@@ -60,7 +60,7 @@ const Image = styled.img`
     width: 261px;
     justify-self: center;
 
-    @media(${TABLET}) {
+    @media (${TABLET}) {
         width: 364px;
     }
 `
@@ -69,13 +69,13 @@ const CreateButton = styled(Button)`
     width: fit-content;
     justify-self: center;
 
-    @media(${DESKTOP}) {
+    @media (${DESKTOP}) {
         justify-self: left;
     }
 `
 
 type Props = {
-    streamId?: string,
+    streamId?: string
 }
 
 export default function CreateProjectHint({ streamId }: Props) {

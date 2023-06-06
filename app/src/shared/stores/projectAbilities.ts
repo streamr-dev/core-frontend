@@ -4,7 +4,7 @@ import { create } from 'zustand'
 import { getProjectPermissions } from '$app/src/getters'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { useProject } from '$shared/stores/projectEditor'
-import address0 from "$utils/address0"
+import address0 from '$utils/address0'
 import { useWalletAccount } from './wallet'
 
 export enum ProjectPermission {
@@ -105,7 +105,8 @@ export function useProjectAbility(
 
     const address = account || address0
 
-    const { value, cache = 0 } = (projectId ? permissions[key(chainId, projectId, address)] : undefined) || {}
+    const { value, cache = 0 } =
+        (projectId ? permissions[key(chainId, projectId, address)] : undefined) || {}
 
     useEffect(() => {
         async function fn() {
@@ -116,7 +117,13 @@ export function useProjectAbility(
             try {
                 await fetchPermissions(chainId, projectId, address)
             } catch (e) {
-                console.warn('Could not fetch permissions', chainId, projectId, address, e)
+                console.warn(
+                    'Could not fetch permissions',
+                    chainId,
+                    projectId,
+                    address,
+                    e,
+                )
             }
         }
 

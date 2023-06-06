@@ -36,7 +36,13 @@ export const CopyButton: FunctionComponent<CopyButtonProps> = ({
         })
     }, [copy, notificationTitle, valueToCopy])
     return (
-        <Btn onClick={handleCopy} type={'button'} kind={'secondary'} size={'mini'} className={className}>
+        <Btn
+            onClick={handleCopy}
+            type={'button'}
+            kind={'secondary'}
+            size={'mini'}
+            className={className}
+        >
             <SvgIcon name={'copy'} />
         </Btn>
     )

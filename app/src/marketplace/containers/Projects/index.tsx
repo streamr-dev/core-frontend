@@ -1,4 +1,11 @@
-import React, {FunctionComponent, useCallback, useEffect, useReducer, useRef, useState} from 'react'
+import React, {
+    FunctionComponent,
+    useCallback,
+    useEffect,
+    useReducer,
+    useRef,
+    useState,
+} from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import ProjectsComponent, { ProjectsContainer } from '$mp/components/Projects'
@@ -9,7 +16,11 @@ import LoadingIndicator from '$shared/components/LoadingIndicator'
 import useModal from '$shared/hooks/useModal'
 import CreateProjectModal from '$mp/containers/CreateProjectModal'
 import { SearchFilter } from '$mp/types/project-types'
-import {getProjects, ProjectListingTypeFilter, searchProjects} from '$app/src/services/projects'
+import {
+    getProjects,
+    ProjectListingTypeFilter,
+    searchProjects,
+} from '$app/src/services/projects'
 import useDeepEqualMemo from '$shared/hooks/useDeepEqualMemo'
 import { useWalletAccount } from '$shared/stores/wallet'
 
@@ -18,9 +29,9 @@ import styles from './projects.pcss'
 const PAGE_SIZE = 16
 
 type Filter = {
-    search: string,
-    type: ProjectListingTypeFilter | null,
-    owner: string | null,
+    search: string
+    type: ProjectListingTypeFilter | null
+    owner: string | null
 }
 
 const EMPTY_FILTER: Filter = {
@@ -36,12 +47,22 @@ const ProjectsPage: FunctionComponent = () => {
     const account = useWalletAccount()
 
     const query = useInfiniteQuery({
-        queryKey: ["projects", filter.owner, filter.search, filter.type],
+        queryKey: ['projects', filter.owner, filter.search, filter.type],
         queryFn: (ctx) => {
             if (filter.search != null && filter.search.length > 0) {
-                return searchProjects(filter.search, PAGE_SIZE, ctx.pageParam, filter.type)
+                return searchProjects(
+                    filter.search,
+                    PAGE_SIZE,
+                    ctx.pageParam,
+                    filter.type,
+                )
             } else {
-                return getProjects(filter.owner ?? undefined, PAGE_SIZE, ctx.pageParam, filter.type ?? undefined)
+                return getProjects(
+                    filter.owner ?? undefined,
+                    PAGE_SIZE,
+                    ctx.pageParam,
+                    filter.type ?? undefined,
+                )
             }
         },
         getNextPageParam: (lastPage, pages) => {
@@ -59,21 +80,31 @@ const ProjectsPage: FunctionComponent = () => {
         setFilter((prev) => ({ ...prev, search }))
     }, [])
 
-    const onFilterByAuthorChange = useCallback((myProjects: boolean): void => {
-        setFilter((prev) => ({
-            ...prev,
-            owner: myProjects && account ? account : null,
-        }))
-    }, [account])
+    const onFilterByAuthorChange = useCallback(
+        (myProjects: boolean): void => {
+            setFilter((prev) => ({
+                ...prev,
+                owner: myProjects && account ? account : null,
+            }))
+        },
+        [account],
+    )
 
     useEffect(() => {
-        setFilter((filter) => (filter.owner && account ? { ...filter, owner: account } : filter))
+        setFilter((filter) =>
+            filter.owner && account ? { ...filter, owner: account } : filter,
+        )
     }, [account])
 
     const noOwnProjects = !!filter.owner && !filter.search && !filter.type
 
     return (
-        <Layout className={styles.projectsListPage} framedClassName={styles.productsFramed} innerClassName={styles.productsInner} footer={false}>
+        <Layout
+            className={styles.projectsListPage}
+            framedClassName={styles.productsFramed}
+            innerClassName={styles.productsInner}
+            footer={false}
+        >
             <MarketplaceHelmet title="Projects" />
             <ActionBar
                 filter={filter}
@@ -83,7 +114,9 @@ const ProjectsPage: FunctionComponent = () => {
                 onFilterByAuthorChange={onFilterByAuthorChange}
                 isUserAuthenticated={!!account}
             />
-            <LoadingIndicator loading={query.isLoading || query.isFetching || query.isFetchingNextPage}/>
+            <LoadingIndicator
+                loading={query.isLoading || query.isFetching || query.isFetchingNextPage}
+            />
             <CreateProjectModal />
             <ProjectsContainer>
                 <ProjectsComponent

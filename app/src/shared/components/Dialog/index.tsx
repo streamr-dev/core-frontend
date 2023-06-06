@@ -23,9 +23,9 @@ export type DialogProps = {
     containerClassname?: string
     actionsClassName?: string
     backdropClassName?: string
-    useDarkBackdrop?: boolean,
+    useDarkBackdrop?: boolean
     titleClassName?: string
-    centerTitle?: boolean,
+    centerTitle?: boolean
     onClose: () => void
     showCloseIcon?: boolean
     autoCloseAfter?: number
@@ -33,7 +33,8 @@ export type DialogProps = {
     autoClose?: boolean
     // use this to close the dialog after default timeout
     renderActions?: (arg0: ButtonActions) => ReactNode
-} & ButtonsProps & ModalDialogProps
+} & ButtonsProps &
+    ModalDialogProps
 
 type State = {
     isHelpOpen: boolean
@@ -122,7 +123,11 @@ class Dialog extends Component<DialogProps, State> {
         return (
             <ModalDialog
                 className={classNames(styles.dialog, className)}
-                backdropClassName={classNames(styles.backdrop, backdropClassName, useDarkBackdrop ? styles.darkBackdrop : null)}
+                backdropClassName={classNames(
+                    styles.backdrop,
+                    backdropClassName,
+                    useDarkBackdrop ? styles.darkBackdrop : null,
+                )}
                 onClose={() => onClose && onClose()}
                 {...otherProps}
             >
@@ -130,20 +135,39 @@ class Dialog extends Component<DialogProps, State> {
                     <TitleBar
                         showCloseIcon={showCloseIcon}
                         onClose={onClose}
-                        className={classNames(styles.title, titleClassName, centerTitle ? styles.center : null)}
+                        className={classNames(
+                            styles.title,
+                            titleClassName,
+                            centerTitle ? styles.center : null,
+                        )}
                     >
                         {title}
-                        {!!helpText && <HelpToggle active={isHelpOpen} onToggle={this.onHelpToggle} />}
+                        {!!helpText && (
+                            <HelpToggle
+                                active={isHelpOpen}
+                                onToggle={this.onHelpToggle}
+                            />
+                        )}
                     </TitleBar>
-                    {(!helpText || !isHelpOpen) && !!waiting && <LoadingIndicator loading />}
+                    {(!helpText || !isHelpOpen) && !!waiting && (
+                        <LoadingIndicator loading />
+                    )}
                     <ContentArea className={classNames(styles.content, contentClassName)}>
                         {(!helpText || !isHelpOpen) && !waiting && children}
                         {!!helpText && isHelpOpen && helpText}
                     </ContentArea>
-                    {!waiting && (!helpText || !this.state.isHelpOpen) && !renderActions && (
-                        <Buttons className={classNames(styles.buttons, actionsClassName)} actions={actions} />
-                    )}
-                    {!waiting && (!helpText || !this.state.isHelpOpen) && renderActions && renderActions(actions || {})}
+                    {!waiting &&
+                        (!helpText || !this.state.isHelpOpen) &&
+                        !renderActions && (
+                            <Buttons
+                                className={classNames(styles.buttons, actionsClassName)}
+                                actions={actions}
+                            />
+                        )}
+                    {!waiting &&
+                        (!helpText || !this.state.isHelpOpen) &&
+                        renderActions &&
+                        renderActions(actions || {})}
                 </Container>
                 {!!disabled && <div className={styles.disabledModal} />}
             </ModalDialog>

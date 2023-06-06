@@ -19,7 +19,10 @@ export const PinIcon = ({ color }: MapIconProps) => (
     <svg viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg">
         <g transform="translate(-6 -6)" fill="none" fillRule="evenodd">
             <path d="M0 0h24v24H0z" />
-            <path d="M12 20c.049 0 6-4.686 6-8a6 6 0 1 0-12 0c0 3.314 5.92 8 6 8z" fill={color} />
+            <path
+                d="M12 20c.049 0 6-4.686 6-8a6 6 0 1 0-12 0c0 3.314 5.92 8 6 8z"
+                fill={color}
+            />
             <circle fill="#FFF" cx="12" cy="12" r="2" />
         </g>
     </svg>

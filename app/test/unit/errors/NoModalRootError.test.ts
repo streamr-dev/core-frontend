@@ -7,6 +7,8 @@ describe(NoModalRootError, () => {
         expect(new NoModalRootError()).toBeInstanceOf(NoModalRootError)
     })
     it('comes with a canned message', () => {
-        expect(new NoModalRootError().message).toMatch(/root element for modals is missing/i)
+        expect(new NoModalRootError().message).toMatch(
+            /root element for modals is missing/i,
+        )
     })
 })

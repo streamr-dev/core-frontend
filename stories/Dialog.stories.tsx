@@ -1,10 +1,10 @@
-import {Meta} from "@storybook/react"
-import {action} from "@storybook/addon-actions"
-import React from "react"
+import { Meta } from '@storybook/react'
+import { action } from '@storybook/addon-actions'
+import React from 'react'
 import Dialog from '$app/src/shared/components/Dialog'
 
 export const Basic = () => {
-    const actions: any= {}
+    const actions: any = {}
 
     actions.cancel = {
         title: 'Cancel',
@@ -34,19 +34,25 @@ export const Basic = () => {
 }
 
 Basic.story = {
-    name: 'basic'
+    name: 'basic',
 }
 
 const meta: Meta<typeof Basic> = {
     title: 'Shared/Dialog',
     component: Basic,
-    decorators: [(Story) => {
-        return <div style={{
-            color: '#323232',
-            padding: '15px',
-        }}>
-            <Story/>
-        </div>
-    }]
+    decorators: [
+        (Story) => {
+            return (
+                <div
+                    style={{
+                        color: '#323232',
+                        padding: '15px',
+                    }}
+                >
+                    <Story />
+                </div>
+            )
+        },
+    ],
 }
 export default meta

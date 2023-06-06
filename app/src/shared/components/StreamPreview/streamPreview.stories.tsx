@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {Meta} from "@storybook/react"
+import { Meta } from '@storybook/react'
 import { StreamPreview } from './'
 
 const streamList = [
@@ -69,15 +69,21 @@ LoadingStream.story = {
 const meta: Meta<typeof LoadingStream> = {
     title: 'Marketplace/StreamPreview',
     component: LoadingStream,
-    decorators: [(Story) => {
-        return <div style={{
-            color: '#323232',
-            fontSize: '16px',
-            height: '100vh',
-        }}>
-            <Story/>
-        </div>
-    }]
+    decorators: [
+        (Story) => {
+            return (
+                <div
+                    style={{
+                        color: '#323232',
+                        fontSize: '16px',
+                        height: '100vh',
+                    }}
+                >
+                    <Story />
+                </div>
+            )
+        },
+    ],
 }
 
 export default meta

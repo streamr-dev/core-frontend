@@ -1,5 +1,5 @@
 import React from 'react'
-import {Meta} from "@storybook/react"
+import { Meta } from '@storybook/react'
 import ProductStat from '.'
 
 const stats = [
@@ -46,15 +46,21 @@ Header.story = {
 const meta: Meta<typeof Header> = {
     title: 'Shared/Stat',
     component: Header,
-    decorators: [(Story) => {
-        return <div style={{
-            color: '#323232',
-            padding: '1rem',
-            background: '#F8F8F8',
-        }}>
-            <Story/>
-        </div>
-    }]
+    decorators: [
+        (Story) => {
+            return (
+                <div
+                    style={{
+                        color: '#323232',
+                        padding: '1rem',
+                        background: '#F8F8F8',
+                    }}
+                >
+                    <Story />
+                </div>
+            )
+        },
+    ],
 }
 
 export default meta

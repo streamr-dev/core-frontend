@@ -1,8 +1,15 @@
-import React, {createContext, FunctionComponent, ReactNode, useContext, useEffect, useState} from "react"
-import {useParams} from "react-router-dom"
-import {Project, ProjectId} from "$mp/types/project-types"
-import {getProject, TheGraphProject} from "$app/src/services/projects"
-import {mapGraphProjectToDomainModel} from "$mp/utils/project-mapper"
+import React, {
+    createContext,
+    FunctionComponent,
+    ReactNode,
+    useContext,
+    useEffect,
+    useState,
+} from 'react'
+import { useParams } from 'react-router-dom'
+import { Project, ProjectId } from '$mp/types/project-types'
+import { getProject, TheGraphProject } from '$app/src/services/projects'
+import { mapGraphProjectToDomainModel } from '$mp/utils/project-mapper'
 
 export type LoadedProjectState = {
     loadedProject: Project | undefined
@@ -34,9 +41,15 @@ const useLoadedProjectImplementation = (projectId: ProjectId): LoadedProjectStat
 
 export const LoadedProjectContext = createContext<LoadedProjectState>(null)
 
-export const LoadedProjectContextProvider: FunctionComponent<{children: ReactNode}> = ({children}) => {
-    const params = useParams<{id: string}>()
-    return <LoadedProjectContext.Provider value={useLoadedProjectImplementation(params.id)}>{children}</LoadedProjectContext.Provider>
+export const LoadedProjectContextProvider: FunctionComponent<{ children: ReactNode }> = ({
+    children,
+}) => {
+    const params = useParams<{ id: string }>()
+    return (
+        <LoadedProjectContext.Provider value={useLoadedProjectImplementation(params.id)}>
+            {children}
+        </LoadedProjectContext.Provider>
+    )
 }
 
 export const useLoadedProject = (): LoadedProjectState => {

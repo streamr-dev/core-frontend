@@ -6,10 +6,20 @@ import { Optional } from 'utility-types'
 import Spinner from '$shared/components/Spinner'
 import styles from './newButton.pcss'
 export type Size = 'mini' | 'normal' | 'big'
-export type Kind = 'primary' | 'secondary' | 'destructive' | 'link' | 'special' | 'primary2' | 'transparent'
+export type Kind =
+    | 'primary'
+    | 'secondary'
+    | 'destructive'
+    | 'link'
+    | 'special'
+    | 'primary2'
+    | 'transparent'
 export type Variant = 'dark' | 'light'
 // TODO - try to make it more generic without passing LinkProps directly
-type ButtonProps = Omit<HTMLProps<HTMLButtonElement | HTMLAnchorElement> & Optional<LinkProps>, 'size'> & {
+type ButtonProps = Omit<
+    HTMLProps<HTMLButtonElement | HTMLAnchorElement> & Optional<LinkProps>,
+    'size'
+> & {
     className?: string
     tag?: string | ComponentType<any>
     size?: Size
@@ -26,7 +36,10 @@ type ButtonProps = Omit<HTMLProps<HTMLButtonElement | HTMLAnchorElement> & Optio
 }
 const darkBgs = new Set(['primary', 'destructive'])
 
-const handleClick = (e: React.SyntheticEvent<EventTarget>, onClick: ButtonProps["onClick"] ) => {
+const handleClick = (
+    e: React.SyntheticEvent<EventTarget>,
+    onClick: ButtonProps['onClick'],
+) => {
     if (e.currentTarget instanceof HTMLElement) {
         // Make sure we make the button lose focus after click
         e.currentTarget.blur()
@@ -39,12 +52,12 @@ const handleClick = (e: React.SyntheticEvent<EventTarget>, onClick: ButtonProps[
 const Button: FunctionComponent<ButtonProps> = ({
     className,
     tag: Tag = 'button',
-    size= 'normal',
+    size = 'normal',
     kind = 'primary',
     variant,
     outline = false,
-    disabled= false,
-    waiting= false,
+    disabled = false,
+    waiting = false,
     onClick,
     children,
     external,
@@ -66,11 +79,15 @@ const Button: FunctionComponent<ButtonProps> = ({
                 [styles.dark]: variant === 'dark',
                 [styles.outline]: outline,
                 [styles.primary2]: kind === 'primary2',
-                [styles.transparent]: kind === 'transparent'
+                [styles.transparent]: kind === 'transparent',
             },
             className,
         )}
-        onClick={disabled ? (e: Event) => e.preventDefault() : (e: React.SyntheticEvent<EventTarget, Event>) => handleClick(e, onClick)}
+        onClick={
+            disabled
+                ? (e: Event) => e.preventDefault()
+                : (e: React.SyntheticEvent<EventTarget, Event>) => handleClick(e, onClick)
+        }
         disabled={disabled || waiting}
         tabIndex={disabled ? -1 : 0}
     >

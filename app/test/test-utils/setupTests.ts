@@ -5,7 +5,7 @@ dotenv()
 
 window.requestAnimationFrame = (callback) => {
     setTimeout(callback, 0)
-    return void(0)
+    return void 0
 }
 
 // ensure unhandled rejections are logged

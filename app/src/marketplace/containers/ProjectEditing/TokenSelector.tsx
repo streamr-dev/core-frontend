@@ -1,4 +1,10 @@
-import React, {FunctionComponent, useCallback, useEffect, useMemo, useState} from 'react'
+import React, {
+    FunctionComponent,
+    useCallback,
+    useEffect,
+    useMemo,
+    useState,
+} from 'react'
 import styled from 'styled-components'
 import BN from 'bignumber.js'
 import { debounce } from 'lodash'
@@ -12,7 +18,7 @@ import Text from '$ui/Text'
 import Button from '$shared/components/Button'
 import SelectField2 from '$mp/components/SelectField2'
 import { contractCurrencies } from '$shared/utils/constants'
-import { ContractCurrency} from '$shared/types/common-types'
+import { ContractCurrency } from '$shared/types/common-types'
 import useValidation from '$mp/containers/ProductController/useValidation'
 import { SeverityLevel } from '$mp/containers/ProductController/ValidationContextProvider'
 import { Address } from '$shared/types/web3-types'
@@ -20,109 +26,109 @@ import { PricingData, Project } from '$mp/types/project-types'
 import { pricePerSecondFromTimeUnit } from '$mp/utils/price'
 import { TimeUnit, timeUnits } from '$shared/utils/timeUnit'
 import { ObjectPaths } from '$utils/objectPaths'
-import { errorToast } from "$utils/toast"
+import { errorToast } from '$utils/toast'
 
 const Container = styled.div`
-  color: ${COLORS.primary};
-  max-width: ${MAX_CONTENT_WIDTH};
+    color: ${COLORS.primary};
+    max-width: ${MAX_CONTENT_WIDTH};
 `
 
 const Heading = styled.p`
-  color: black;
-  font-weight: ${REGULAR};
-  font-size: 20px;
-  margin-bottom: 22px;
+    color: black;
+    font-weight: ${REGULAR};
+    font-size: 20px;
+    margin-bottom: 22px;
 `
 
 const Description = styled.p`
-  font-size: 16px;
-  margin-bottom: 32px;
+    font-size: 16px;
+    margin-bottom: 32px;
 `
 
 const Form = styled.div`
-  border-radius: 4px;
-  background-color: ${COLORS.inputBackground};
-  padding: 24px;
-  margin-bottom: 32px;
+    border-radius: 4px;
+    background-color: ${COLORS.inputBackground};
+    padding: 24px;
+    margin-bottom: 32px;
 `
 
 const RadioContainer = styled.div`
-  background-color: white;
-  border-radius: 4px;
-  
-  .radio {
-    padding: 24px 20px;
-    width: 100%;
-  }
-  
-  &.data-token-radio-container {
-    margin-bottom: 16px
-  }
+    background-color: white;
+    border-radius: 4px;
+
+    .radio {
+        padding: 24px 20px;
+        width: 100%;
+    }
+
+    &.data-token-radio-container {
+        margin-bottom: 16px;
+    }
 `
 
 const RadioLabel = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  .data-icon {
-    width: 24px;
-    height: 24px;
-  }
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .data-icon {
+        width: 24px;
+        height: 24px;
+    }
 `
 
 const CustomTokenAddressInputContainer = styled.div`
-  padding: 0 20px 24px;
-  label {
-    font-weight: ${MEDIUM};
-    font-size: 12px;
-    line-height: 16px;
-    margin-bottom: 9px;
-  }
+    padding: 0 20px 24px;
+    label {
+        font-weight: ${MEDIUM};
+        font-size: 12px;
+        line-height: 16px;
+        margin-bottom: 9px;
+    }
 `
 
 const SetTokenContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
 `
 
 const PriceContainer = styled.div`
-  display: flex;
-  margin-top: 16px;
+    display: flex;
+    margin-top: 16px;
 `
 
 const PriceInputWrap = styled.div`
-  position: relative;
-  flex: 1;
-  margin-right: 16px;
-  .price-input {
-    padding-right: 60px;
-    &:disabled {
-      background-color: white;
-      opacity: 1;
+    position: relative;
+    flex: 1;
+    margin-right: 16px;
+    .price-input {
+        padding-right: 60px;
+        &:disabled {
+            background-color: white;
+            opacity: 1;
+        }
     }
-  }
-  .token-symbol {
-    position: absolute;
-    right: 12px;
-    top: 0;
-    height: 100%;
-    font-size: 14px;
-    border-left: 1px solid ${COLORS.separator};
-    padding-left: 12px;
-    color: ${COLORS.primaryLight};
-    display: flex;
-    align-items: center;
-  }
+    .token-symbol {
+        position: absolute;
+        right: 12px;
+        top: 0;
+        height: 100%;
+        font-size: 14px;
+        border-left: 1px solid ${COLORS.separator};
+        padding-left: 12px;
+        color: ${COLORS.primaryLight};
+        display: flex;
+        align-items: center;
+    }
 `
 
 const SelectContainer = styled.div`
-    [class*="-control"] {
-      min-height: 40px;
-      border: none;
-      &:hover {
-        border:none;
-      }
+    [class*='-control'] {
+        min-height: 40px;
+        border: none;
+        &:hover {
+            border: none;
+        }
     }
 `
 
@@ -132,11 +138,11 @@ const options = Object.values(timeUnits).map((unit: TimeUnit) => ({
 }))
 
 type Props = {
-    disabled?: boolean,
-    chain?: Chain,
-    onChange: (pricing: PricingData) => void,
-    value?: PricingData | undefined,
-    validationFieldName: ObjectPaths<Project>,
+    disabled?: boolean
+    chain?: Chain
+    onChange: (pricing: PricingData) => void
+    value?: PricingData | undefined
+    validationFieldName: ObjectPaths<Project>
     tokenChangeDisabled: boolean
 }
 
@@ -146,28 +152,33 @@ const TokenSelector: FunctionComponent<Props> = ({
     chain,
     validationFieldName,
     value,
-    tokenChangeDisabled
+    tokenChangeDisabled,
 }) => {
     const chainId = chain?.id
-    const dataAddress = useMemo(() => chainId ? getDataAddress(chainId).toLowerCase() : '', [chainId])
+    const dataAddress = useMemo(
+        () => (chainId ? getDataAddress(chainId).toLowerCase() : ''),
+        [chainId],
+    )
     const isMounted = useIsMounted()
     const [selection, setSelection] = useState<ContractCurrency>(
-        (value?.tokenAddress && value?.tokenAddress === dataAddress)
+        value?.tokenAddress && value?.tokenAddress === dataAddress
             ? contractCurrencies.DATA
-            : contractCurrencies.PRODUCT_DEFINED
+            : contractCurrencies.PRODUCT_DEFINED,
     )
     const [customTokenAddress, setCustomTokenAddress] = useState<Address>(
-        (value?.tokenAddress && value?.tokenAddress !== dataAddress)
+        value?.tokenAddress && value?.tokenAddress !== dataAddress
             ? value.tokenAddress
-            : ''
+            : '',
     )
-    const [selectedTokenAddress, setSelectedTokenAddress] = useState<Address | undefined>(value?.tokenAddress?.toLowerCase())
+    const [selectedTokenAddress, setSelectedTokenAddress] = useState<Address | undefined>(
+        value?.tokenAddress?.toLowerCase(),
+    )
     const [tokenSymbol, setTokenSymbol] = useState<string | null>(null)
     const [price, setPrice] = useState<string | undefined>(value?.price?.toString())
     const [timeUnit, setTimeUnit] = useState<TimeUnit>(value?.timeUnit || timeUnits.day)
     const [tokenDecimals, setTokenDecimals] = useState<number | null>(18)
     const [isEditable, setIsEditable] = useState<boolean>(false)
-    const {setStatus, clearStatus, isValid} = useValidation(validationFieldName)
+    const { setStatus, clearStatus, isValid } = useValidation(validationFieldName)
     const pricingTokenAddress = value?.tokenAddress?.toLowerCase()
 
     const debouncedOnChange = useMemo(() => debounce(onChange, 50), [onChange])
@@ -244,19 +255,29 @@ const TokenSelector: FunctionComponent<Props> = ({
         } // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selection, chainId])
 
-    const handleChange = useCallback((changes: Partial<PricingData>) => {
-        const outputPrice = changes.price || price
-        const outputTimeUnit = changes.timeUnit || timeUnit
-        const output: PricingData = {
-            price: outputPrice ? new BN(outputPrice) : undefined,
-            timeUnit: outputTimeUnit,
-            tokenAddress: selectedTokenAddress?.toLowerCase(),
-            pricePerSecond: (outputPrice && outputTimeUnit && tokenDecimals)
-                ? new BN(pricePerSecondFromTimeUnit(new BN(outputPrice), outputTimeUnit, new BN(tokenDecimals)))
-                : undefined
-        }
-        debouncedOnChange(output)
-    }, [price, selectedTokenAddress, timeUnit, tokenDecimals, debouncedOnChange])
+    const handleChange = useCallback(
+        (changes: Partial<PricingData>) => {
+            const outputPrice = changes.price || price
+            const outputTimeUnit = changes.timeUnit || timeUnit
+            const output: PricingData = {
+                price: outputPrice ? new BN(outputPrice) : undefined,
+                timeUnit: outputTimeUnit,
+                tokenAddress: selectedTokenAddress?.toLowerCase(),
+                pricePerSecond:
+                    outputPrice && outputTimeUnit && tokenDecimals
+                        ? new BN(
+                              pricePerSecondFromTimeUnit(
+                                  new BN(outputPrice),
+                                  outputTimeUnit,
+                                  new BN(tokenDecimals),
+                              ),
+                          )
+                        : undefined,
+            }
+            debouncedOnChange(output)
+        },
+        [price, selectedTokenAddress, timeUnit, tokenDecimals, debouncedOnChange],
+    )
 
     useEffect(() => {
         if (selection === contractCurrencies.PRODUCT_DEFINED && !selectedTokenAddress) {
@@ -269,20 +290,24 @@ const TokenSelector: FunctionComponent<Props> = ({
 
     return (
         <Container>
-            <Heading>Set the payment token a and price on {chain?.name || 'the selected'} chain</Heading>
+            <Heading>
+                Set the payment token a and price on {chain?.name || 'the selected'} chain
+            </Heading>
             <Description>
-                You can set a price for others to access the streams in your project.
-                The price can be set in DATA or any other ERC-20 token.
+                You can set a price for others to access the streams in your project. The
+                price can be set in DATA or any other ERC-20 token.
             </Description>
             <Form>
                 <RadioContainer className={'data-token-radio-container'}>
                     <Radio
                         id={'data-token'}
                         name={'token-selector-' + chain?.name}
-                        label={<RadioLabel>
-                            <span>DATA Token</span>
-                            <SvgIcon name={'DATAColor'} className={'data-icon'} />
-                        </RadioLabel>}
+                        label={
+                            <RadioLabel>
+                                <span>DATA Token</span>
+                                <SvgIcon name={'DATAColor'} className={'data-icon'} />
+                            </RadioLabel>
+                        }
                         value={contractCurrencies.DATA}
                         disabled={disabled || tokenChangeDisabled}
                         disabledReason={'You need to select the chain first!'}
@@ -295,9 +320,11 @@ const TokenSelector: FunctionComponent<Props> = ({
                     <Radio
                         id={'custom-token'}
                         name={'token-selector-' + chain?.name}
-                        label={<RadioLabel>
-                            <span>Custom Token</span>
-                        </RadioLabel>}
+                        label={
+                            <RadioLabel>
+                                <span>Custom Token</span>
+                            </RadioLabel>
+                        }
                         value={contractCurrencies.PRODUCT_DEFINED}
                         disabled={disabled || tokenChangeDisabled}
                         disabledReason={'You need to select the chain first!'}
@@ -309,7 +336,12 @@ const TokenSelector: FunctionComponent<Props> = ({
                         <label>Token contract address</label>
                         <Text
                             autoComplete="off"
-                            disabled={selection !== contractCurrencies.PRODUCT_DEFINED || disabled || !isEditable || tokenChangeDisabled}
+                            disabled={
+                                selection !== contractCurrencies.PRODUCT_DEFINED ||
+                                disabled ||
+                                !isEditable ||
+                                tokenChangeDisabled
+                            }
                             placeholder={'e.g 0xdac17f958d2ee523a2206206994597c13d831ec7'}
                             value={customTokenAddress}
                             onChange={(e) => setCustomTokenAddress(e.target.value)}
@@ -323,7 +355,9 @@ const TokenSelector: FunctionComponent<Props> = ({
                                     setSelectedTokenAddress(customTokenAddress)
                                 }}
                                 disabled={disabled}
-                            >Set Custom Token</Button>
+                            >
+                                Set Custom Token
+                            </Button>
                         </SetTokenContainer>
                     </CustomTokenAddressInputContainer>
                 </RadioContainer>
@@ -333,13 +367,17 @@ const TokenSelector: FunctionComponent<Props> = ({
                             className={'price-input'}
                             placeholder={'Set your price'}
                             onChange={(event) => {
-                                handleChange({price: event.target.value})
+                                handleChange({ price: event.target.value })
                                 setPrice(event.target.value)
                             }}
-                            defaultValue={value?.price ? value.price.toString() : undefined}
+                            defaultValue={
+                                value?.price ? value.price.toString() : undefined
+                            }
                             disabled={disabled}
                         />
-                        {tokenSymbol && <span className={'token-symbol'}>{tokenSymbol}</span>}
+                        {tokenSymbol && (
+                            <span className={'token-symbol'}>{tokenSymbol}</span>
+                        )}
                     </PriceInputWrap>
                     <SelectContainer>
                         <SelectField2
@@ -349,7 +387,7 @@ const TokenSelector: FunctionComponent<Props> = ({
                             isClearable={false}
                             value={timeUnit}
                             onChange={(selected) => {
-                                handleChange({timeUnit: selected})
+                                handleChange({ timeUnit: selected })
                                 setTimeUnit(selected as TimeUnit)
                             }}
                             disabled={disabled}

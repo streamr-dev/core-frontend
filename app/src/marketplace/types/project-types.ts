@@ -5,14 +5,14 @@ import { ProjectType } from '$shared/types'
 import { StreamIdList } from '$shared/types/stream-types'
 import { NumberString, PaymentCurrency } from '$shared/types/common-types'
 import { Address } from '$shared/types/web3-types'
-import {TimeUnit} from "$shared/utils/timeUnit"
+import { TimeUnit } from '$shared/utils/timeUnit'
 
 export type ProjectId = string
 export type ChainName = string
 export type ProjectState = $Keys<typeof projectStates>
 
 export type SalePoint = {
-    chainId: number,
+    chainId: number
     beneficiaryAddress?: Address
     pricePerSecond: BN | undefined // the value kept in this field should be multiplied by token's decimals
     timeUnit: TimeUnit | null | undefined
@@ -73,8 +73,8 @@ export type SmartContractProduct = {
     name: $ElementType<Project, 'name'>
     ownerAddress: $ElementType<Project, 'ownerAddress'>
     beneficiaryAddress: Address
-    pricePerSecond: NumberString,
-    minimumSubscriptionInSeconds: number,
+    pricePerSecond: NumberString
+    minimumSubscriptionInSeconds: number
     state: $ElementType<Project, 'state'>
     chainId: number
     pricingTokenAddress: Address
@@ -134,9 +134,9 @@ export type DataUnionSecret = {
 }
 
 export type PricingData = {
-    tokenAddress: Address | undefined,
-    price: BN | undefined,
-    pricePerSecond: BN | undefined,
-    timeUnit: TimeUnit | undefined,
+    tokenAddress: Address | undefined
+    price: BN | undefined
+    pricePerSecond: BN | undefined
+    timeUnit: TimeUnit | undefined
     beneficiaryAddress?: Address | undefined
 }

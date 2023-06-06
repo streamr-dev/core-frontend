@@ -5,9 +5,7 @@ const container = document.getElementById('root')
 const root = createRoot(container as HTMLElement)
 
 if (container) {
-    root.render(
-        <App />
-    )
+    root.render(<App />)
 } else {
     throw new Error('Root element could not be found.')
 }

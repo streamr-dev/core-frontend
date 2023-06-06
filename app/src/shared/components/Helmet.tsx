@@ -27,5 +27,11 @@ export const MarketplaceHelmet = ({
     suffix,
     ...props
 }: Props) => (
-    <Helmet {...props} description={description} image={image} suffix={suffix || 'Streamr Hub'} title={title} />
+    <Helmet
+        {...props}
+        description={description}
+        image={image}
+        suffix={suffix || 'Streamr Hub'}
+        title={title}
+    />
 )

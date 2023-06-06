@@ -1,5 +1,5 @@
 import React from 'react'
-import {Meta} from "@storybook/react"
+import { Meta } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import sample from './sample.stories.png'
 import { DeployingBadge, DataUnionBadge, SharedBadge, BadgeLink } from './Badge'
@@ -23,14 +23,20 @@ PlaceholderOnly.story = {
 const meta: Meta<typeof PlaceholderOnly> = {
     title: 'Shared/Tile',
     component: PlaceholderOnly,
-    decorators: [(Story) => {
-        return <div style={{
-            color: '#323232',
-            padding: '16px',
-        }}>
-            <Story/>
-        </div>
-    }]
+    decorators: [
+        (Story) => {
+            return (
+                <div
+                    style={{
+                        color: '#323232',
+                        padding: '16px',
+                    }}
+                >
+                    <Story />
+                </div>
+            )
+        },
+    ],
 }
 
 export default meta

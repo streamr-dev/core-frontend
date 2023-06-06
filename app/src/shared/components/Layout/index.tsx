@@ -12,20 +12,22 @@ import styles from './layout.pcss'
 const Inner = styled.div<{ $gray?: boolean }>`
     background-color: white;
 
-    ${({ $gray = false }) => $gray && css`
-        background-color: #F5F5F5;
-    `}
+    ${({ $gray = false }) =>
+        $gray &&
+        css`
+            background-color: #f5f5f5;
+        `}
 `
 
 const DefaultTheme = {}
 
 type LayoutProps = {
-    theme?: any,
-    footer?: boolean,
-    nav?: ReactNode,
-    framedClassName?: string,
-    innerClassName?: string,
-    children?: ReactNode | ReactNode[],
+    theme?: any
+    footer?: boolean
+    nav?: ReactNode
+    framedClassName?: string
+    innerClassName?: string
+    children?: ReactNode | ReactNode[]
     className?: string
     gray?: boolean
 }

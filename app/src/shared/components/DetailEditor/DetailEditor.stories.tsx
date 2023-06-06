@@ -1,5 +1,5 @@
 import React from 'react'
-import {Meta} from "@storybook/react"
+import { Meta } from '@storybook/react'
 import styled from 'styled-components'
 import { action } from '@storybook/addon-actions'
 import * as yup from 'yup'
@@ -221,15 +221,21 @@ Default.story = {
 const meta: Meta<typeof Default> = {
     title: 'Shared/DetailEditor',
     component: Default,
-    decorators: [(Story) => {
-        return <div style={{
-            color: '#323232',
-            padding: '5rem',
-            background: 'white',
-        }}>
-            <Story/>
-        </div>
-    }]
+    decorators: [
+        (Story) => {
+            return (
+                <div
+                    style={{
+                        color: '#323232',
+                        padding: '5rem',
+                        background: 'white',
+                    }}
+                >
+                    <Story />
+                </div>
+            )
+        },
+    ],
 }
 
 export default meta

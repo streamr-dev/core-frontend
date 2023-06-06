@@ -1,7 +1,10 @@
 import React, { useContext } from 'react'
 import { act } from 'react-dom/test-utils'
 import { render } from '@testing-library/react'
-import { ValidationContextProvider, ValidationContext } from '../ValidationContextProvider'
+import {
+    ValidationContextProvider,
+    ValidationContext,
+} from '../ValidationContextProvider'
 describe('validation context2', () => {
     afterEach(() => {
         jest.clearAllMocks()
@@ -308,6 +311,5 @@ describe('validation context2', () => {
             })
             expect(currentContext.status).toStrictEqual({})
         })
-
     })
 })

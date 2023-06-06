@@ -1,5 +1,5 @@
 import React, { HTMLAttributes, useState } from 'react'
-import {Meta} from "@storybook/react"
+import { Meta } from '@storybook/react'
 import { Link, MemoryRouter } from 'react-router-dom'
 import Tabs, { Tab } from './Tabs'
 
@@ -132,14 +132,20 @@ All.story = {
 const meta: Meta<typeof All> = {
     title: 'Shared/Tabs',
     component: All,
-    decorators: [(Story) => {
-        return <div style={{
-            padding: '2rem',
-            color: '#000',
-        }}>
-            <Story/>
-        </div>
-    }]
+    decorators: [
+        (Story) => {
+            return (
+                <div
+                    style={{
+                        padding: '2rem',
+                        color: '#000',
+                    }}
+                >
+                    <Story />
+                </div>
+            )
+        },
+    ],
 }
 
 export default meta

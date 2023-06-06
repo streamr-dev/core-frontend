@@ -5,7 +5,7 @@ import { maxFileSizeForImageUpload } from '$shared/utils/constants'
 import PngIcon from '$shared/components/PngIcon'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useFilePreview from '$shared/hooks/useFilePreview'
-import {errorToast} from "$utils/toast"
+import { errorToast } from '$utils/toast'
 import styles from './imageUpload.pcss'
 
 type DropzoneFile = File & {
@@ -27,7 +27,7 @@ const ImageUpload: FunctionComponent<Props> = ({
     className,
     dropZoneClassName,
     noPreview,
-    disabled
+    disabled,
 }: Props) => {
     const [uploading, setUploading] = useState(false)
     const { preview, createPreview } = useFilePreview()
@@ -71,7 +71,11 @@ const ImageUpload: FunctionComponent<Props> = ({
             }
 
             if (rejection.file.size > maxFileSizeForImageUpload) {
-                errorToast({title: `Image file size must be less than ${Math.floor(maxFileSizeForImageUpload / 1e6)}MB`})
+                errorToast({
+                    title: `Image file size must be less than ${Math.floor(
+                        maxFileSizeForImageUpload / 1e6,
+                    )}MB`,
+                })
             }
 
             setUploading(false)
@@ -118,17 +122,34 @@ const ImageUpload: FunctionComponent<Props> = ({
                 <p>
                     {srcImage ? (
                         <span>
-                            Drag &amp; drop to replace your cover image <br /> or click to browse for one
+                            Drag &amp; drop to replace your cover image <br /> or click to
+                            browse for one
                         </span>
                     ) : (
                         <Fragment>
-                            <span className={cx(styles.uploadAdvice, styles.uploadAdviceDesktop)}>
-                                Drag &amp; drop to upload a cover image <br /> or click to browse for one
+                            <span
+                                className={cx(
+                                    styles.uploadAdvice,
+                                    styles.uploadAdviceDesktop,
+                                )}
+                            >
+                                Drag &amp; drop to upload a cover image <br /> or click to
+                                browse for one
                             </span>
-                            <span className={cx(styles.uploadAdvice, styles.uploadAdviceTablet)}>
+                            <span
+                                className={cx(
+                                    styles.uploadAdvice,
+                                    styles.uploadAdviceTablet,
+                                )}
+                            >
                                 Tap to take a photo or browse for one
                             </span>
-                            <span className={cx(styles.uploadAdvice, styles.uploadAdviceMobile)}>
+                            <span
+                                className={cx(
+                                    styles.uploadAdvice,
+                                    styles.uploadAdviceMobile,
+                                )}
+                            >
                                 Tap to take a photo
                                 <br />
                                 or browse for one
@@ -137,7 +158,9 @@ const ImageUpload: FunctionComponent<Props> = ({
                     )}
                 </p>
             </div>
-            {srcImage && <img className={styles.previewImage} src={srcImage} alt="Uploaded" />}
+            {srcImage && (
+                <img className={styles.previewImage} src={srcImage} alt="Uploaded" />
+            )}
         </div>
     )
 }

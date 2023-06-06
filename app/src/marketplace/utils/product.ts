@@ -148,7 +148,7 @@ export const validate = (
     }
 
     if (project.contact) {
-        ['url', 'social1', 'social2', 'social3', 'social4'].forEach((field) => {
+        ;['url', 'social1', 'social2', 'social3', 'social4'].forEach((field) => {
             if (
                 project.contact[field as keyof ContactDetails] &&
                 project.contact[field as keyof ContactDetails].length > 0

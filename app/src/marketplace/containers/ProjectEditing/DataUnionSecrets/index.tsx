@@ -4,7 +4,7 @@ import { toaster } from 'toasterhea'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import useDataUnionSecrets from '$mp/modules/dataUnion/hooks/useDataUnionSecrets'
 import Button from '$shared/components/Button'
-import { Layer } from "$utils/Layer"
+import { Layer } from '$utils/Layer'
 import { errorToast, successToast } from '$utils/toast'
 import { DataUnionSecret } from '$app/src/marketplace/types/project-types'
 import { SecretList } from './SecretList'
@@ -18,58 +18,76 @@ const Section = styled.div`
 `
 
 const Title = styled.p`
-  font-size: 34px;
-  line-height: 34px;
-  color: black;
-  margin-bottom: 30px;
+    font-size: 34px;
+    line-height: 34px;
+    color: black;
+    margin-bottom: 30px;
 `
 
 const Description = styled.p`
-  color: black;
-  font-size: 16px;
+    color: black;
+    font-size: 16px;
 `
 
 export const DataUnionSecrets: FunctionComponent = () => {
     const { state: project } = useContext(ProjectStateContext)
-    const { load, secrets, isLoaded, remove, add, edit, isSaving, isLoading } = useDataUnionSecrets()
+    const { load, secrets, isLoaded, remove, add, edit, isSaving, isLoading } =
+        useDataUnionSecrets()
 
-    const onAddOrEdit = useCallback(async (secret?: DataUnionSecret) => {
-        console.log('secret', secret)
-        if (project.existingDUAddress == null || project.dataUnionChainId == null) {
-            throw new Error('Project has no data union contract address or chainId defined!')
-        }
-        let name: string
-        try {
-            name = await secretEditorModal.pop({secret})
-        } catch (e) {
-            // cancelled
-        }
-        if (name) {
-            try {
-                if (!secret) {
-                    await add({dataUnionId: project.existingDUAddress, chainId: project.dataUnionChainId, name})
-                } else {
-                    await edit({dataUnionId: project.existingDUAddress, chainId: project.dataUnionChainId, name, id: secret.id})
-                }
-                successToast({title: 'Your shared secret was saved'})
-            } catch (e) {
-                errorToast({title: 'An error occurred, please try again later.'})
-                console.error(e)
+    const onAddOrEdit = useCallback(
+        async (secret?: DataUnionSecret) => {
+            console.log('secret', secret)
+            if (project.existingDUAddress == null || project.dataUnionChainId == null) {
+                throw new Error(
+                    'Project has no data union contract address or chainId defined!',
+                )
             }
-        }
-    }, [project.dataUnionChainId, project.existingDUAddress, add, edit])
+            let name: string
+            try {
+                name = await secretEditorModal.pop({ secret })
+            } catch (e) {
+                // cancelled
+            }
+            if (name) {
+                try {
+                    if (!secret) {
+                        await add({
+                            dataUnionId: project.existingDUAddress,
+                            chainId: project.dataUnionChainId,
+                            name,
+                        })
+                    } else {
+                        await edit({
+                            dataUnionId: project.existingDUAddress,
+                            chainId: project.dataUnionChainId,
+                            name,
+                            id: secret.id,
+                        })
+                    }
+                    successToast({ title: 'Your shared secret was saved' })
+                } catch (e) {
+                    errorToast({ title: 'An error occurred, please try again later.' })
+                    console.error(e)
+                }
+            }
+        },
+        [project.dataUnionChainId, project.existingDUAddress, add, edit],
+    )
 
-    const onDelete = useCallback(async (secret: DataUnionSecret) => {
-        if (project.existingDUAddress == null || project.dataUnionChainId == null) {
-            return
-        }
+    const onDelete = useCallback(
+        async (secret: DataUnionSecret) => {
+            if (project.existingDUAddress == null || project.dataUnionChainId == null) {
+                return
+            }
 
-        await remove({
-            chainId: project.dataUnionChainId,
-            dataUnionId: project.existingDUAddress,
-            id: secret.id,
-        })
-    }, [project.dataUnionChainId, project.existingDUAddress, remove])
+            await remove({
+                chainId: project.dataUnionChainId,
+                dataUnionId: project.existingDUAddress,
+                id: secret.id,
+            })
+        },
+        [project.dataUnionChainId, project.existingDUAddress, remove],
+    )
 
     return (
         <Section id="secrets">
@@ -87,7 +105,10 @@ export const DataUnionSecrets: FunctionComponent = () => {
             <Button
                 hidden={isLoaded}
                 onClick={() => {
-                    if (project.existingDUAddress != null && project.dataUnionChainId != null) {
+                    if (
+                        project.existingDUAddress != null &&
+                        project.dataUnionChainId != null
+                    ) {
                         load(project.existingDUAddress, project.dataUnionChainId)
                     }
                 }}

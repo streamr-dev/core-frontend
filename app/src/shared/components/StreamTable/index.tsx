@@ -1,11 +1,22 @@
-import React, {FunctionComponent, ReactNode, useCallback, useEffect, useState} from 'react'
+import React, {
+    FunctionComponent,
+    ReactNode,
+    useCallback,
+    useEffect,
+    useState,
+} from 'react'
 import styled, { css } from 'styled-components'
 import { Stream } from 'streamr-client'
 import { Link } from 'react-router-dom'
 
 import LoadMore from '$mp/components/LoadMore'
 import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
-import { getGlobalStatsFromIndexer, GlobalStreamStats, IndexerStream, TheGraphStream } from '$app/src/services/streams'
+import {
+    getGlobalStatsFromIndexer,
+    GlobalStreamStats,
+    IndexerStream,
+    TheGraphStream,
+} from '$app/src/services/streams'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { truncateStreamName } from '$shared/utils/text'
 import routes from '$routes'
@@ -72,7 +83,7 @@ const TableHeader = styled(TableGrid)`
 `
 
 type TableRowsProps = {
-    rowCount: number,
+    rowCount: number
 }
 
 const TableRows = styled.div<TableRowsProps>`
@@ -109,10 +120,10 @@ const TableRow = styled(TableGrid)`
 `
 
 type GridCellProps = {
-    onlyDesktop?: boolean,
-    onlyTablet?: boolean,
-    notOnTablet?: boolean,
-    onClick?: () => void,
+    onlyDesktop?: boolean
+    onlyTablet?: boolean
+    notOnTablet?: boolean
+    onClick?: () => void
 }
 
 const GridCell = styled.span<GridCellProps>`
@@ -226,7 +237,8 @@ const Stat = styled.div`
 
 const OrderDirectionIcon = styled(SvgIcon)<{ direction: OrderDirection }>`
     width: 12px;
-    transform: ${({ direction }) => direction === OrderDirection.Asc ? 'rotate(180deg)' : 'rotate(0deg)' };
+    transform: ${({ direction }) =>
+        direction === OrderDirection.Asc ? 'rotate(180deg)' : 'rotate(0deg)'};
     transition: transform 180ms ease-in-out;
     margin-left: 8px;
 `
@@ -237,20 +249,22 @@ const DirectionDefaults: Record<OrderBy, OrderDirection> = {
     [OrderBy.MessagesPerSecond]: OrderDirection.Desc,
 }
 
-function isIndexerStream(stream: TheGraphStream | IndexerStream | Stream): stream is IndexerStream {
+function isIndexerStream(
+    stream: TheGraphStream | IndexerStream | Stream,
+): stream is IndexerStream {
     return (stream as IndexerStream).peerCount !== undefined
 }
 
 type Props = {
-    title?: string,
-    streams: Array<TheGraphStream | IndexerStream | Stream>,
-    streamStats: Record<string, TheGraphStream | IndexerStream>,
-    loadMore?: () => void,
-    hasMoreResults?: boolean,
-    showGlobalStats: boolean,
-    orderBy?: OrderBy,
-    orderDirection?: OrderDirection,
-    onSortChange?: (orderBy: OrderBy, orderDirection: OrderDirection) => void,
+    title?: string
+    streams: Array<TheGraphStream | IndexerStream | Stream>
+    streamStats: Record<string, TheGraphStream | IndexerStream>
+    loadMore?: () => void
+    hasMoreResults?: boolean
+    showGlobalStats: boolean
+    orderBy?: OrderBy
+    orderDirection?: OrderDirection
+    onSortChange?: (orderBy: OrderBy, orderDirection: OrderDirection) => void
     noStreamsText?: ReactNode
 }
 
@@ -264,21 +278,24 @@ const StreamTable: React.FC<Props> = ({
     orderBy,
     orderDirection,
     onSortChange,
-    noStreamsText = 'No streams that match your query'
+    noStreamsText = 'No streams that match your query',
 }: Props) => {
     const [globalStats, setGlobalStats] = useState<GlobalStreamStats | null>(null)
     const isMounted = useIsMounted()
 
-    const handleHeaderClick = useCallback((field: OrderBy) => {
-        if (typeof onSortChange === 'function') {
-            let newDirection = DirectionDefaults[field] ?? OrderDirection.Desc
-            // If field was not changed, flip the direction
-            if (orderBy === field) {
-                newDirection = Number(!orderDirection) as OrderDirection
+    const handleHeaderClick = useCallback(
+        (field: OrderBy) => {
+            if (typeof onSortChange === 'function') {
+                let newDirection = DirectionDefaults[field] ?? OrderDirection.Desc
+                // If field was not changed, flip the direction
+                if (orderBy === field) {
+                    newDirection = Number(!orderDirection) as OrderDirection
+                }
+                onSortChange(field, newDirection)
             }
-            onSortChange(field, newDirection)
-        }
-    }, [onSortChange, orderDirection, orderBy])
+        },
+        [onSortChange, orderDirection, orderBy],
+    )
 
     useEffect(() => {
         const loadStats = async () => {
@@ -304,7 +321,8 @@ const StreamTable: React.FC<Props> = ({
                             Streams <strong>{globalStats.streamCount}</strong>
                         </Stat>
                         <Stat>
-                            Msg/s <strong>{globalStats.messagesPerSecond.toFixed(0)}</strong>
+                            Msg/s{' '}
+                            <strong>{globalStats.messagesPerSecond.toFixed(0)}</strong>
                         </Stat>
                     </>
                 )}
@@ -314,20 +332,35 @@ const StreamTable: React.FC<Props> = ({
                     <GridCell onClick={() => handleHeaderClick(OrderBy.Id)}>
                         Stream ID
                         {orderBy === OrderBy.Id && (
-                            <OrderDirectionIcon name="caretDown" direction={orderDirection ?? OrderDirection.Asc} />
+                            <OrderDirectionIcon
+                                name="caretDown"
+                                direction={orderDirection ?? OrderDirection.Asc}
+                            />
                         )}
                     </GridCell>
                     <GridCell onlyTablet>Description</GridCell>
-                    <GridCell onlyDesktop onClick={() => handleHeaderClick(OrderBy.PeerCount)}>
+                    <GridCell
+                        onlyDesktop
+                        onClick={() => handleHeaderClick(OrderBy.PeerCount)}
+                    >
                         Live peers
                         {orderBy === OrderBy.PeerCount && (
-                            <OrderDirectionIcon name="caretDown" direction={orderDirection ?? OrderDirection.Asc} />
+                            <OrderDirectionIcon
+                                name="caretDown"
+                                direction={orderDirection ?? OrderDirection.Asc}
+                            />
                         )}
                     </GridCell>
-                    <GridCell onlyDesktop onClick={() => handleHeaderClick(OrderBy.MessagesPerSecond)}>
+                    <GridCell
+                        onlyDesktop
+                        onClick={() => handleHeaderClick(OrderBy.MessagesPerSecond)}
+                    >
                         Msg/s
                         {orderBy === OrderBy.MessagesPerSecond && (
-                            <OrderDirectionIcon name="caretDown" direction={orderDirection ?? OrderDirection.Asc} />
+                            <OrderDirectionIcon
+                                name="caretDown"
+                                direction={orderDirection ?? OrderDirection.Asc}
+                            />
                         )}
                     </GridCell>
                     <GridCell onlyDesktop>Access</GridCell>
@@ -336,7 +369,10 @@ const StreamTable: React.FC<Props> = ({
                 </TableHeader>
                 <TableRows rowCount={streams.length}>
                     {streams.map((s) => {
-                        const stats = streamStats && streamStats[s.id] != null ? streamStats[s.id] : null
+                        const stats =
+                            streamStats && streamStats[s.id] != null
+                                ? streamStats[s.id]
+                                : null
                         let publisherCount: number | null | undefined
                         let subscriberCount: number | null | undefined
                         let description: string
@@ -357,11 +393,17 @@ const StreamTable: React.FC<Props> = ({
                             // For pub/sub count, show values from stats (The Graph) once the data is available.
                             // Until that show (possibly wrong) value from the indexer. One exception is that
                             // if we have more than 100 permissions, use indexer (because The Graph caps subentity count at 100).
-                            const graphStats = (stats as TheGraphStream)
-                            if (graphStats != null && graphStats?.publisherCount !== 100) {
+                            const graphStats = stats as TheGraphStream
+                            if (
+                                graphStats != null &&
+                                graphStats?.publisherCount !== 100
+                            ) {
                                 publisherCount = graphStats.publisherCount
                             }
-                            if (graphStats != null && graphStats?.subscriberCount !== 100) {
+                            if (
+                                graphStats != null &&
+                                graphStats?.subscriberCount !== 100
+                            ) {
                                 subscriberCount = graphStats.subscriberCount
                             }
                             description = s.description ?? ''
@@ -372,22 +414,43 @@ const StreamTable: React.FC<Props> = ({
                             subscriberCount = s.subscriberCount
                             description = s.metadata?.description ?? ''
                             peerCount = (stats as IndexerStream)?.peerCount
-                            messagesPerSecond = (stats as IndexerStream)?.messagesPerSecond
+                            messagesPerSecond = (stats as IndexerStream)
+                                ?.messagesPerSecond
                         }
 
                         return (
-                            <TableRow key={s.id} as={Link} to={routes.streams.show({ id: s.id })}>
+                            <TableRow
+                                key={s.id}
+                                as={Link}
+                                to={routes.streams.show({ id: s.id })}
+                            >
                                 <StreamDetails>
-                                    <StreamId title={s.id}>{truncateStreamName(s.id, 40)}</StreamId>
+                                    <StreamId title={s.id}>
+                                        {truncateStreamName(s.id, 40)}
+                                    </StreamId>
                                     {'\n'}
-                                    <StreamDescription notOnTablet>{description}</StreamDescription>
+                                    <StreamDescription notOnTablet>
+                                        {description}
+                                    </StreamDescription>
                                 </StreamDetails>
                                 <GridCell onlyTablet>{description}</GridCell>
                                 <GridCell onlyDesktop>{peerCount ?? '-'}</GridCell>
-                                <GridCell onlyDesktop>{messagesPerSecond ?? '-'}</GridCell>
-                                <GridCell onlyDesktop>{subscriberCount == null ? 'Public' : 'Private'}</GridCell>
-                                <GridCell onlyDesktop>{publisherCount === null ? '∞' : publisherCount ?? '-'}</GridCell>
-                                <GridCell onlyDesktop>{subscriberCount === null ? '∞' : subscriberCount ?? '-'}</GridCell>
+                                <GridCell onlyDesktop>
+                                    {messagesPerSecond ?? '-'}
+                                </GridCell>
+                                <GridCell onlyDesktop>
+                                    {subscriberCount == null ? 'Public' : 'Private'}
+                                </GridCell>
+                                <GridCell onlyDesktop>
+                                    {publisherCount === null
+                                        ? '∞'
+                                        : publisherCount ?? '-'}
+                                </GridCell>
+                                <GridCell onlyDesktop>
+                                    {subscriberCount === null
+                                        ? '∞'
+                                        : subscriberCount ?? '-'}
+                                </GridCell>
                             </TableRow>
                         )
                     })}
@@ -409,7 +472,10 @@ const StreamTable: React.FC<Props> = ({
 
 export default StreamTable
 
-export const StreamTableLight: FunctionComponent<{streamIds: string[], title?: string}> = ({streamIds, title = 'Streams'}) => {
+export const StreamTableLight: FunctionComponent<{
+    streamIds: string[]
+    title?: string
+}> = ({ streamIds, title = 'Streams' }) => {
     return (
         <Container>
             <Heading>
@@ -437,7 +503,7 @@ export const StreamTableLight: FunctionComponent<{streamIds: string[], title?: s
                                     {truncateStreamName(streamId, 40)}
                                 </StreamId>
                             </StreamDetails>
-                            <GridCell onlyTablet/>
+                            <GridCell onlyTablet />
                             <GridCell onlyDesktop>-</GridCell>
                             <GridCell onlyDesktop>-</GridCell>
                             <GridCell onlyDesktop>-</GridCell>

@@ -5,13 +5,18 @@ import Spinner from '$shared/components/Spinner'
 import { useCurrentDraft, useToggleCurrentStorageNode } from '$shared/stores/streamEditor'
 
 type Props = {
-    address: string,
-    className?: string,
-    disabled: boolean,
-    children: React.ReactNode,
+    address: string
+    className?: string
+    disabled: boolean
+    children: React.ReactNode
 }
 
-function UnstyledStorageNodeItem({ address, className, disabled = false, children }: Props) {
+function UnstyledStorageNodeItem({
+    address,
+    className,
+    disabled = false,
+    children,
+}: Props) {
     const active = !!useCurrentDraft().storageNodes[address.toLowerCase()]?.enabled
 
     const busy = useCurrentDraft().fetchingStorageNodes
@@ -28,7 +33,10 @@ function UnstyledStorageNodeItem({ address, className, disabled = false, childre
         >
             <div>{children}</div>
             {!disabled && (
-                <Checkbox.Tick checked={active} data-test-hook={active ? 'Checkbox on' : 'Checkbox off'} />
+                <Checkbox.Tick
+                    checked={active}
+                    data-test-hook={active ? 'Checkbox on' : 'Checkbox off'}
+                />
             )}
             {busy && <Spinner color="gray" />}
         </Root>

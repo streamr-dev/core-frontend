@@ -1,5 +1,5 @@
 import React from 'react'
-import {Meta} from "@storybook/react"
+import { Meta } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import SearchBar from '.'
 
@@ -12,13 +12,19 @@ Default.story = {
 const meta: Meta<typeof Default> = {
     title: 'Shared/SearchBar',
     component: Default,
-    decorators: [(Story) => {
-        return <div style={{
-            padding: '2rem',
-        }}>
-            <Story/>
-        </div>
-    }]
+    decorators: [
+        (Story) => {
+            return (
+                <div
+                    style={{
+                        padding: '2rem',
+                    }}
+                >
+                    <Story />
+                </div>
+            )
+        },
+    ],
 }
 
 export default meta

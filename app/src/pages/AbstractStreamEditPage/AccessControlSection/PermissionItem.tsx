@@ -3,13 +3,20 @@ import styled from 'styled-components'
 import { truncate } from '$shared/utils/text'
 import SvgIcon from '$shared/components/SvgIcon'
 import { COLORS } from '$shared/utils/styled'
-import { Bits, matchBits, setBits, unsetBits, useDraftId, useStreamEditorStore } from '$shared/stores/streamEditor'
+import {
+    Bits,
+    matchBits,
+    setBits,
+    unsetBits,
+    useDraftId,
+    useStreamEditorStore,
+} from '$shared/stores/streamEditor'
 import { useWalletAccount } from '$shared/stores/wallet'
 import UnstyledPermissionEditor from './PermissionEditor'
 
 const Container = styled.div`
     background: #ffffff;
-    border-radius: 4px;    
+    border-radius: 4px;
     display: grid;
     grid-template-rows: 1fr auto auto;
     align-items: center;
@@ -17,7 +24,7 @@ const Container = styled.div`
 `
 
 type TitleProps = {
-    $isOpen: boolean,
+    $isOpen: boolean
 }
 
 const Title = styled.div<TitleProps>`
@@ -25,7 +32,7 @@ const Title = styled.div<TitleProps>`
     grid-template-columns: auto 1fr auto;
     gap: 8px;
     align-items: center;
-    border-bottom: ${({ $isOpen }) => $isOpen ? '1px' : '0px'} solid ${COLORS.separator};
+    border-bottom: ${({ $isOpen }) => ($isOpen ? '1px' : '0px')} solid ${COLORS.separator};
     height: 72px;
     padding: 21px;
 
@@ -59,7 +66,7 @@ const PermissionEditor = styled(UnstyledPermissionEditor)`
 `
 
 type DropdownCaretProps = {
-    $isOpen: boolean,
+    $isOpen: boolean
 }
 
 const DropdownCaret = styled(SvgIcon)<DropdownCaretProps>`
@@ -67,22 +74,28 @@ const DropdownCaret = styled(SvgIcon)<DropdownCaretProps>`
     color: ${COLORS.primaryLight};
     width: 12px;
     height: 12px;
-    transform: ${({ $isOpen }) => $isOpen ? 'rotate(180deg)' : 'rotate(0deg)' };
+    transform: ${({ $isOpen }) => ($isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
     transition: transform 180ms ease-in-out;
 `
 
 type Props = {
-    disabled?: boolean,
-    address: string,
-    permissionBits: number,
+    disabled?: boolean
+    address: string
+    permissionBits: number
 }
 
-const PermissionItem: React.FunctionComponent<Props> = ({ disabled, address, permissionBits }) => {
+const PermissionItem: React.FunctionComponent<Props> = ({
+    disabled,
+    address,
+    permissionBits,
+}) => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
 
     const account = useWalletAccount()
 
-    const operations = Object.keys(Bits).filter((permission) => matchBits(Bits[permission], permissionBits))
+    const operations = Object.keys(Bits).filter((permission) =>
+        matchBits(Bits[permission], permissionBits),
+    )
 
     const draftId = useDraftId()
 
@@ -90,19 +103,22 @@ const PermissionItem: React.FunctionComponent<Props> = ({ disabled, address, per
 
     return (
         <Container>
-            <Title $isOpen={isOpen} onClick={() => setIsOpen((prev) => (!prev))}>
+            <Title $isOpen={isOpen} onClick={() => setIsOpen((prev) => !prev)}>
                 {isOpen ? address : truncate(address)}
-                {isOpen ?
-                    <div /> :
+                {isOpen ? (
+                    <div />
+                ) : (
                     <Labels>
                         {account?.toLowerCase() === address.toLowerCase() && (
                             <YouLabel>You</YouLabel>
                         )}
                         {operations.map((op) => (
-                            <Label key={op}>{op.replace(/^\w/, (s) => s.toUpperCase())}</Label>
+                            <Label key={op}>
+                                {op.replace(/^\w/, (s) => s.toUpperCase())}
+                            </Label>
                         ))}
                     </Labels>
-                }
+                )}
                 <DropdownCaret name="caretDown" $isOpen={isOpen} />
             </Title>
             {isOpen && (
@@ -115,7 +131,14 @@ const PermissionItem: React.FunctionComponent<Props> = ({ disabled, address, per
                             return
                         }
 
-                        setPermissions(draftId, address, (enabled ? setBits : unsetBits)(permissionBits, Bits[permission]))
+                        setPermissions(
+                            draftId,
+                            address,
+                            (enabled ? setBits : unsetBits)(
+                                permissionBits,
+                                Bits[permission],
+                            ),
+                        )
                     }}
                 />
             )}

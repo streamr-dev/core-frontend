@@ -7,7 +7,7 @@ jest.mock('$app/src/getters/getConfig', () => ({
 }))
 describe('getClientConfig', () => {
     it("when empty, defaults to streamr-client's configuration", () => {
-        (getConfig as any).mockImplementation(() => ({
+        ;(getConfig as any).mockImplementation(() => ({
             /* emptiness */
         }))
         const mods = {}
@@ -18,7 +18,7 @@ describe('getClientConfig', () => {
         })
     })
     it('gets overwritten with config', () => {
-        (getConfig as any).mockImplementation(() => ({
+        ;(getConfig as any).mockImplementation(() => ({
             client: {
                 network: {
                     trackers: ['tracker1', 'tracker2'],

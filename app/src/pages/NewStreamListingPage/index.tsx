@@ -19,7 +19,12 @@ import {
     getStreams,
     getStreamsFromIndexer,
 } from '$app/src/services/streams'
-import { ActionBarContainer, FiltersBar, FiltersWrap, SearchBarWrap } from '$mp/components/ActionBar/actionBar.styles'
+import {
+    ActionBarContainer,
+    FiltersBar,
+    FiltersWrap,
+    SearchBarWrap,
+} from '$mp/components/ActionBar/actionBar.styles'
 import { PageWrap } from '$shared/components/PageWrap'
 import styles from '$shared/components/Layout/layout.pcss'
 import StreamTable, { OrderBy, OrderDirection } from '$shared/components/StreamTable'
@@ -32,8 +37,8 @@ import address0 from '$app/src/utils/address0'
 import routes from '$routes'
 
 enum StreamSelection {
-    All = "All",
-    Your = "Your",
+    All = 'All',
+    Your = 'Your',
 }
 
 const PAGE_SIZE = 10
@@ -56,7 +61,9 @@ const mapOrderByToIndexer = (orderBy: OrderBy): IndexerOrderBy => {
     }
 }
 
-const mapOrderDirectionToIndexer = (orderDirection: OrderDirection): IndexerOrderDirection => {
+const mapOrderDirectionToIndexer = (
+    orderDirection: OrderDirection,
+): IndexerOrderDirection => {
     if (orderDirection === OrderDirection.Desc) {
         return IndexerOrderDirection.Desc
     }
@@ -74,7 +81,9 @@ const mapOrderByToGraph = (orderBy: OrderBy): TheGraphOrderBy => {
     }
 }
 
-const mapOrderDirectionToGraph = (orderDirection: OrderDirection): TheGraphOrderDirection => {
+const mapOrderDirectionToGraph = (
+    orderDirection: OrderDirection,
+): TheGraphOrderDirection => {
     if (orderDirection === OrderDirection.Desc) {
         return TheGraphOrderDirection.Desc
     }
@@ -110,7 +119,8 @@ const NewStreamListingPage: React.FC = () => {
     const [orderBy, setOrderBy] = useState(DEFAULT_ORDER_BY)
     const [orderDirection, setOrderDirection] = useState(DEFAULT_ORDER_DIRECTION)
     const [streamsSelection, setStreamsSelection] = useState<StreamSelection>(
-        useRecall(RouteMemoryKey.lastStreamListingSelection()) as StreamSelection || StreamSelection.All
+        (useRecall(RouteMemoryKey.lastStreamListingSelection()) as StreamSelection) ||
+            StreamSelection.All,
     )
     const account = useWalletAccount()
 
@@ -121,9 +131,12 @@ const NewStreamListingPage: React.FC = () => {
     }, [remember, streamsSelection])
 
     const streamsQuery = useInfiniteQuery({
-        queryKey: ["streams", search, streamsSelection, account, orderBy, orderDirection],
+        queryKey: ['streams', search, streamsSelection, account, orderBy, orderDirection],
         queryFn: async (ctx) => {
-            const owner = streamsSelection === StreamSelection.Your ? (account || address0) : undefined
+            const owner =
+                streamsSelection === StreamSelection.Your
+                    ? account || address0
+                    : undefined
 
             let result: TheGraphStreamResult | IndexerResult
             if (shouldUseIndexer(orderBy)) {
@@ -151,18 +164,18 @@ const NewStreamListingPage: React.FC = () => {
                 pageParam: {
                     streamIds: result.streams.map((s) => s.id),
                     useIndexer: !shouldUseIndexer(orderBy),
-                }
+                },
             })
 
             return result
         },
         getNextPageParam: (lastPage) => {
-            const theGraphResult = (lastPage as TheGraphStreamResult)
+            const theGraphResult = lastPage as TheGraphStreamResult
             if (theGraphResult.lastId) {
                 return theGraphResult.hasNextPage ? theGraphResult.lastId : null
             }
 
-            const indexerResult = (lastPage as IndexerResult)
+            const indexerResult = lastPage as IndexerResult
             if (indexerResult.cursor) {
                 return indexerResult.hasNextPage ? indexerResult.cursor : null
             }
@@ -174,7 +187,7 @@ const NewStreamListingPage: React.FC = () => {
     })
 
     const statsQuery = useInfiniteQuery({
-        queryKey: ["streamStats"],
+        queryKey: ['streamStats'],
         queryFn: async (ctx) => {
             if (ctx.pageParam == null) {
                 return
@@ -216,13 +229,19 @@ const NewStreamListingPage: React.FC = () => {
                     <FiltersWrap>
                         <Tabs
                             selection={streamsSelection}
-                            onSelectionChange={(id) => void setStreamsSelection(id as StreamSelection)}
+                            onSelectionChange={(id) =>
+                                void setStreamsSelection(id as StreamSelection)
+                            }
                         >
                             <Tab id={StreamSelection.All}>All streams</Tab>
                             <Tab
                                 id={StreamSelection.Your}
                                 disabled={!account}
-                                title={account ? undefined : 'Connect your wallet to view your streams'}
+                                title={
+                                    account
+                                        ? undefined
+                                        : 'Connect your wallet to view your streams'
+                                }
                             >
                                 Your streams
                             </Tab>
@@ -233,13 +252,23 @@ const NewStreamListingPage: React.FC = () => {
                     </Button>
                 </FiltersBar>
             </ActionBarContainer>
-            <LoadingIndicator loading={streamsQuery.isLoading || streamsQuery.isFetching || streamsQuery.isFetchingNextPage} />
+            <LoadingIndicator
+                loading={
+                    streamsQuery.isLoading ||
+                    streamsQuery.isFetching ||
+                    streamsQuery.isFetchingNextPage
+                }
+            />
             <PageWrap>
                 <Container>
                     <TableContainer>
                         <StreamTable
-                            title={`${streamsSelection === StreamSelection.All ? 'All' : 'Your'} Streams`}
-                            streams={streamsQuery.data?.pages.flatMap((d) => d.streams) ?? []}
+                            title={`${
+                                streamsSelection === StreamSelection.All ? 'All' : 'Your'
+                            } Streams`}
+                            streams={
+                                streamsQuery.data?.pages.flatMap((d) => d.streams) ?? []
+                            }
                             streamStats={Object.fromEntries(
                                 (statsQuery.data?.pages ?? [])
                                     .filter((p) => p != null)
@@ -256,9 +285,11 @@ const NewStreamListingPage: React.FC = () => {
                                 setOrderDirection(orderDirection)
                             }}
                             noStreamsText={
-                                streamsSelection === StreamSelection.Your && !search
-                                ? <>You haven&apos;t created any streams yet</>
-                                : void 0
+                                streamsSelection === StreamSelection.Your && !search ? (
+                                    <>You haven&apos;t created any streams yet</>
+                                ) : (
+                                    void 0
+                                )
                             }
                         />
                     </TableContainer>

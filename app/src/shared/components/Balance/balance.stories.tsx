@@ -1,5 +1,5 @@
 import React from 'react'
-import {Meta} from "@storybook/react"
+import { Meta } from '@storybook/react'
 import Balance, { Account } from '.'
 
 export const Default = () => (
@@ -16,13 +16,19 @@ Default.story = {
 const meta: Meta<typeof Default> = {
     title: 'Userpages/Balance',
     component: Default,
-    decorators: [(Story) => {
-        return <div style={{
-            margin: '3rem',
-        }}>
-            <Story/>
-        </div>
-    }]
+    decorators: [
+        (Story) => {
+            return (
+                <div
+                    style={{
+                        margin: '3rem',
+                    }}
+                >
+                    <Story />
+                </div>
+            )
+        },
+    ],
 }
 
 export default meta

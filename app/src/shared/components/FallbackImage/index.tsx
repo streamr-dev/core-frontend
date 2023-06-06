@@ -31,7 +31,9 @@ const FallbackImage = ({ src, alt, className, placeholder }: Props) => (
         className={className}
         src={src}
         alt={alt}
-        unloader={placeholder || <DefaultImagePlaceholder alt={alt} className={className} />}
+        unloader={
+            placeholder || <DefaultImagePlaceholder alt={alt} className={className} />
+        }
     />
 )
 

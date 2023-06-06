@@ -74,10 +74,7 @@ export async function getAllowance(
                     getERC20TokenContract({
                         tokenAddress,
                         web3: getPublicWeb3(chainId),
-                    }).methods.allowance(
-                        account,
-                        getMarketplaceAddress(chainId),
-                    ),
+                    }).methods.allowance(account, getMarketplaceAddress(chainId)),
                 ),
             )
         } catch (e) {

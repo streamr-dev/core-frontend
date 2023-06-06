@@ -11,7 +11,7 @@ describe('getWeb3', () => {
         global.web3.currentProvider = new Web3.providers.HttpProvider('http://boop:1337')
         const web3 = getWeb3()
         // @ts-ignore
-        expect((web3.currentProvider).host).toBe('http://boop:1337')
+        expect(web3.currentProvider.host).toBe('http://boop:1337')
     })
     it('must return the web3 object with the window.ethereum provider if it is available/defined', () => {
         // permissioned metamask provider injection scenario

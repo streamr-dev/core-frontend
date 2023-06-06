@@ -1,5 +1,5 @@
 import React from 'react'
-import {Meta} from "@storybook/react"
+import { Meta } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { Radio } from '.'
 
@@ -71,14 +71,20 @@ Default.story = {
 const meta: Meta<typeof Default> = {
     title: 'Shared/Radio',
     component: Default,
-    decorators: [(Story) => {
-        return <div style={{
-            color: '#323232',
-            padding: '2rem',
-        }}>
-            <Story/>
-        </div>
-    }]
+    decorators: [
+        (Story) => {
+            return (
+                <div
+                    style={{
+                        color: '#323232',
+                        padding: '2rem',
+                    }}
+                >
+                    <Story />
+                </div>
+            )
+        },
+    ],
 }
 
 export default meta

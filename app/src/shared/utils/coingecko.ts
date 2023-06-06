@@ -2,11 +2,14 @@ import request from '$shared/utils/request'
 import { Address } from '$shared/types/web3-types'
 const BASE_URL = 'https://api.coingecko.com/api/v3'
 // Got from: https://api.coingecko.com/api/v3/asset_platforms
-const chainIdToNetworkMapping: {[key: string]: string} = {
+const chainIdToNetworkMapping: { [key: string]: string } = {
     '100': 'xdai',
     '137': 'polygon-pos',
 }
-export const getUsdRate = async (tokenContractAddress: Address, chainId: number): Promise<number> => {
+export const getUsdRate = async (
+    tokenContractAddress: Address,
+    chainId: number,
+): Promise<number> => {
     const vsCurrency = 'usd' // https://api.coingecko.com/api/v3/simple/supported_vs_currencies
 
     let contractAddress = tokenContractAddress
@@ -16,7 +19,9 @@ export const getUsdRate = async (tokenContractAddress: Address, chainId: number)
     if (network == null) {
         network = 'ethereum'
         contractAddress = '0x8f693ca8D21b157107184d29D398A8D082b38b76'
-        console.warn('CoinGecko: Fallback to mainnet DATA contract because network is unsupported')
+        console.warn(
+            'CoinGecko: Fallback to mainnet DATA contract because network is unsupported',
+        )
     }
 
     const url = `${BASE_URL}/simple/token_price/${network}?contract_addresses=${contractAddress}&vs_currencies=${vsCurrency}`

@@ -11,7 +11,7 @@ export const Username = styled.div`
     line-height: 1em;
 `
 
-const UnstyledAvatarless = ({ source , ...props }) => (
+const UnstyledAvatarless = ({ source, ...props }) => (
     <div {...props}>
         <Username title={source}>
             {truncate(source)}

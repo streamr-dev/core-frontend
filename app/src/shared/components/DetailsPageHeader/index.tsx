@@ -11,7 +11,11 @@ export type DetailsPageHeaderProps = {
     rightComponent?: ReactNode
 }
 
-export const DetailsPageHeader: FunctionComponent<DetailsPageHeaderProps> = ({ backButtonLink, pageTitle, rightComponent }) => {
+export const DetailsPageHeader: FunctionComponent<DetailsPageHeaderProps> = ({
+    backButtonLink,
+    pageTitle,
+    rightComponent,
+}) => {
     const keep = useKeep()
 
     return (
@@ -29,11 +33,11 @@ export const DetailsPageHeader: FunctionComponent<DetailsPageHeaderProps> = ({ b
                                 <BackButtonIcon name={'backArrow'}></BackButtonIcon>
                             </BackLink>
                         )}
-                        {!!pageTitle && <PageTitleContainer>{pageTitle}</PageTitleContainer>}
+                        {!!pageTitle && (
+                            <PageTitleContainer>{pageTitle}</PageTitleContainer>
+                        )}
                     </LeftSideContainer>
-                    <RightSideContainer>
-                        {rightComponent}
-                    </RightSideContainer>
+                    <RightSideContainer>{rightComponent}</RightSideContainer>
                 </DetailsPageHeaderBar>
             </DetailsPageHeaderContainer>
         </DetailsPageHeaderBackground>
@@ -50,25 +54,25 @@ const DetailsPageHeaderBackground = styled.div`
 `
 
 const DetailsPageHeaderContainer = styled.div`
-  max-width: ${MAX_BODY_WIDTH}px;
-  margin: 0 auto;
-  padding: 0 24px;
-
-  & & {
+    max-width: ${MAX_BODY_WIDTH}px;
+    margin: 0 auto;
     padding: 0 24px;
-  }
-
-  @media (${TABLET}) {
-    padding: 0 40px;
 
     & & {
-      padding: 0;
+        padding: 0 24px;
     }
-  }
 
-  @media (${DESKTOP}) {
-    padding: 0;
-  }
+    @media (${TABLET}) {
+        padding: 0 40px;
+
+        & & {
+            padding: 0;
+        }
+    }
+
+    @media (${DESKTOP}) {
+        padding: 0;
+    }
 `
 
 const DetailsPageHeaderBar = styled.div`

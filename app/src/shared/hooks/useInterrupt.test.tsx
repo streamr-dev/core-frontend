@@ -139,9 +139,11 @@ describe('useInterrupt', () => {
                 foo: [],
                 bar: [],
             }
-            const { TestComponent, onSuccess, onError } = getTestComponent((id, [promise, resolve]) => {
-                promises[id].push([promise, resolve])
-            })
+            const { TestComponent, onSuccess, onError } = getTestComponent(
+                (id, [promise, resolve]) => {
+                    promises[id].push([promise, resolve])
+                },
+            )
             render(<TestComponent />)
             const foo = screen.getByText('Foo')
             fireEvent.click(foo)
@@ -161,9 +163,11 @@ describe('useInterrupt', () => {
                 foo: [],
                 bar: [],
             }
-            const { TestComponent, onSuccess, onError } = getTestComponent((id, [promise, resolve]) => {
-                promises[id].push([promise, resolve])
-            })
+            const { TestComponent, onSuccess, onError } = getTestComponent(
+                (id, [promise, resolve]) => {
+                    promises[id].push([promise, resolve])
+                },
+            )
             render(<TestComponent />)
             const foo = screen.getByText('Foo')
             fireEvent.click(foo)
@@ -184,16 +188,22 @@ describe('useInterrupt', () => {
             expect(onSuccess).toHaveBeenCalledWith(fooPromise, 'foo')
             expect(onSuccess).toHaveBeenCalledWith(barPromise2, 'bar')
             expect(onError).toHaveBeenCalled()
-            expect(onError).toHaveBeenCalledWith(expect.any(InterruptionError), barPromise, 'bar')
+            expect(onError).toHaveBeenCalledWith(
+                expect.any(InterruptionError),
+                barPromise,
+                'bar',
+            )
         })
         it('discontinues all flows on unmount', async () => {
             const promises = {
                 foo: [],
                 bar: [],
             }
-            const { TestComponent, onSuccess, onError } = getTestComponent((id, [promise, resolve]) => {
-                promises[id].push([promise, resolve])
-            })
+            const { TestComponent, onSuccess, onError } = getTestComponent(
+                (id, [promise, resolve]) => {
+                    promises[id].push([promise, resolve])
+                },
+            )
             const { unmount } = render(<TestComponent />)
             const foo = screen.getByText('Foo')
             fireEvent.click(foo)
@@ -206,17 +216,27 @@ describe('useInterrupt', () => {
             await barResolve()
             expect(onSuccess).not.toHaveBeenCalled()
             expect(onError).toHaveBeenCalledTimes(2)
-            expect(onError).toHaveBeenCalledWith(expect.any(InterruptionError), fooPromise, 'foo')
-            expect(onError).toHaveBeenCalledWith(expect.any(InterruptionError), barPromise, 'bar')
+            expect(onError).toHaveBeenCalledWith(
+                expect.any(InterruptionError),
+                fooPromise,
+                'foo',
+            )
+            expect(onError).toHaveBeenCalledWith(
+                expect.any(InterruptionError),
+                barPromise,
+                'bar',
+            )
         })
         it('discontinues `foo` on rerender', async () => {
             const promises = {
                 foo: [],
                 bar: [],
             }
-            const { TestComponent, onSuccess, onError } = getTestComponent((id, [promise, resolve]) => {
-                promises[id].push([promise, resolve])
-            })
+            const { TestComponent, onSuccess, onError } = getTestComponent(
+                (id, [promise, resolve]) => {
+                    promises[id].push([promise, resolve])
+                },
+            )
             const { rerender } = render(<TestComponent />)
             const foo = screen.getByText('Foo')
             fireEvent.click(foo)
@@ -232,7 +252,11 @@ describe('useInterrupt', () => {
             expect(onSuccess).toHaveBeenCalled()
             expect(onSuccess).toHaveBeenCalledWith(barPromise, 'bar')
             expect(onError).toHaveBeenCalled()
-            expect(onError).toHaveBeenCalledWith(expect.any(InterruptionError), fooPromise, 'foo')
+            expect(onError).toHaveBeenCalledWith(
+                expect.any(InterruptionError),
+                fooPromise,
+                'foo',
+            )
         })
     })
 })

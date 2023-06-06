@@ -12,7 +12,7 @@ import { ProjectType, SalePoint } from '$shared/types'
 import { getProjectTypeName } from '$app/src/getters'
 import {
     useIsProjectBeingPurchased,
-    usePurchaseCallback
+    usePurchaseCallback,
 } from '$app/src/shared/stores/purchases'
 import { errorToast } from '$utils/toast'
 import { isAbandonment } from '$app/src/modals/ProjectModal'

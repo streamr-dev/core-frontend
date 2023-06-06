@@ -1,7 +1,12 @@
 import React, { FunctionComponent, useContext, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-import { getStreamsOwnedBy, getStreamsFromIndexer, IndexerStream, TheGraphStream } from '$app/src/services/streams'
+import {
+    getStreamsOwnedBy,
+    getStreamsFromIndexer,
+    IndexerStream,
+    TheGraphStream,
+} from '$app/src/services/streams'
 import { ProjectStateContext } from '$mp/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '$mp/containers/ProductController/useEditableProjectActions'
 import { StreamSelectTable } from '$shared/components/StreamSelectTable'
@@ -14,30 +19,30 @@ import address0 from '$app/src/utils/address0'
 const PAGE_SIZE = 10
 
 const Heading = styled.div`
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 16px;
-  align-items: center;
-  padding-bottom: 30px;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 16px;
+    align-items: center;
+    padding-bottom: 30px;
 
-  @media ${TABLET} {
-    padding-bottom: 45px
-  }
+    @media ${TABLET} {
+        padding-bottom: 45px;
+    }
 
-  @media ${DESKTOP} {
-    padding-bottom: 55px;
-  }
+    @media ${DESKTOP} {
+        padding-bottom: 55px;
+    }
 `
 
 const Title = styled.div`
-  font-size: 34px;
-  line-height: 48px;
-  color: black;
+    font-size: 34px;
+    line-height: 48px;
+    color: black;
 `
 
 export const StreamSelector: FunctionComponent = () => {
-    const {state: project} = useContext(ProjectStateContext)
-    const {updateStreams} = useEditableProjectActions()
+    const { state: project } = useContext(ProjectStateContext)
+    const { updateStreams } = useEditableProjectActions()
     const [search, setSearch] = useState<string>('')
     const [streams, setStreams] = useState<Array<TheGraphStream>>([])
     const [streamStats, setStreamStats] = useState<Record<string, IndexerStream>>({})
@@ -57,7 +62,11 @@ export const StreamSelector: FunctionComponent = () => {
 
     useEffect(() => {
         const load = async () => {
-            const res = await getStreamsOwnedBy(account, search, projectType === ProjectType.OpenData)
+            const res = await getStreamsOwnedBy(
+                account,
+                search,
+                projectType === ProjectType.OpenData,
+            )
             setStreams(res)
         }
 
@@ -75,7 +84,7 @@ export const StreamSelector: FunctionComponent = () => {
                 if (stats && stats.length > 0) {
                     setStreamStats((prev) => ({
                         ...prev,
-                        ...Object.fromEntries(stats.map((is) => [is.id, is]))
+                        ...Object.fromEntries(stats.map((is) => [is.id, is])),
                     }))
                 }
             } catch (e) {
@@ -91,24 +100,26 @@ export const StreamSelector: FunctionComponent = () => {
         setPage(0)
     }, [search, projectType, account])
 
-    return <div>
-        <Heading>
-            <Title>Add Streams</Title>
-        </Heading>
-        <SearchBar
-            placeholder={'Search stream'}
-            value={search}
-            onChange={(value) => {
-                setSearch(value)
-            }}
-        />
-        <StreamSelectTable
-            streams={visibleStreams}
-            streamStats={streamStats}
-            loadMore={() => setPage((prev) => prev + 1)}
-            hasMoreResults={hasMore}
-            onSelectionChange={updateStreams}
-            selected={project?.streams ?? []}
-        />
-    </div>
+    return (
+        <div>
+            <Heading>
+                <Title>Add Streams</Title>
+            </Heading>
+            <SearchBar
+                placeholder={'Search stream'}
+                value={search}
+                onChange={(value) => {
+                    setSearch(value)
+                }}
+            />
+            <StreamSelectTable
+                streams={visibleStreams}
+                streamStats={streamStats}
+                loadMore={() => setPage((prev) => prev + 1)}
+                hasMoreResults={hasMore}
+                onSelectionChange={updateStreams}
+                selected={project?.streams ?? []}
+            />
+        </div>
+    )
 }

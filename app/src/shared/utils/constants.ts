@@ -1,7 +1,7 @@
 import getMainChainId from '$app/src/getters/getMainChainId'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
-import {getConfigForChainByName} from '$shared/web3/config'
+import { getConfigForChainByName } from '$shared/web3/config'
 
 /*
     These are all type
@@ -37,7 +37,8 @@ export const networks = {
 }
 export const ethereumNetworks = {
     [getMainChainId()]: 'Local mainchain',
-    [getClientConfig().contracts?.streamRegistryChainRPCs?.chainId ?? 0]: 'Local streams chain',
+    [getClientConfig().contracts?.streamRegistryChainRPCs?.chainId ?? 0]:
+        'Local streams chain',
     '1': 'Mainnet',
     '3': 'Ropsten',
     '4': 'Rinkeby',

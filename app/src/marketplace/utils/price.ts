@@ -1,7 +1,11 @@
 import BN from 'bignumber.js'
-import { PaymentCurrency, ContractCurrency, NumberString } from '$shared/types/common-types'
+import {
+    PaymentCurrency,
+    ContractCurrency,
+    NumberString,
+} from '$shared/types/common-types'
 import { contractCurrencies, paymentCurrencies } from '$shared/utils/constants'
-import {TimeUnit, timeUnits} from "$shared/utils/timeUnit"
+import { TimeUnit, timeUnits } from '$shared/utils/timeUnit'
 import { toSeconds, getAbbreviation } from './time'
 import { fromDecimals, toDecimals } from './math'
 
@@ -22,7 +26,11 @@ export const priceForTimeUnits = (
     const seconds = toSeconds(timeAmount as string | BN, timeUnit)
     return new BN(pricePerSecond).multipliedBy(seconds)
 }
-export const pricePerSecondFromTimeUnit = (pricePerTimeUnit: BN, timeUnit: TimeUnit, decimals: BN): string => {
+export const pricePerSecondFromTimeUnit = (
+    pricePerTimeUnit: BN,
+    timeUnit: TimeUnit,
+    decimals: BN,
+): string => {
     const pptInTokens = toDecimals(pricePerTimeUnit, decimals)
     return new BN(pptInTokens).dividedBy(toSeconds('1', timeUnit)).toFixed(0)
 }
@@ -31,7 +39,8 @@ export const pricePerSecondFromTimeUnit = (pricePerTimeUnit: BN, timeUnit: TimeU
  * Make sure the amount is a non-negative number.
  * @param amount Number to sanitize.
  */
-export const sanitize = (amount: BN): BN => (new BN(amount).isNaN() ? new BN(0) : BN.max(new BN(0), amount))
+export const sanitize = (amount: BN): BN =>
+    new BN(amount).isNaN() ? new BN(0) : BN.max(new BN(0), amount)
 
 /**
  * Limit the number of fraction digits.
@@ -75,18 +84,28 @@ export const formatDecimals = (
     }
 
     if (Math.abs(value as number) < 10) {
-        result = currency === contractCurrencies.DATA ? new BN(value).decimalPlaces(3) : new BN(value).toFixed(2)
+        result =
+            currency === contractCurrencies.DATA
+                ? new BN(value).decimalPlaces(3)
+                : new BN(value).toFixed(2)
     } else if (Math.abs(value as number) < 100) {
-        result = currency === contractCurrencies.DATA ? new BN(value).decimalPlaces(2) : new BN(value).toFixed(2)
+        result =
+            currency === contractCurrencies.DATA
+                ? new BN(value).decimalPlaces(2)
+                : new BN(value).toFixed(2)
     } else if (Math.abs(value as number) < 1000) {
-        result = currency === contractCurrencies.DATA ? new BN(value).decimalPlaces(1) : new BN(value).toFixed(1)
+        result =
+            currency === contractCurrencies.DATA
+                ? new BN(value).decimalPlaces(1)
+                : new BN(value).toFixed(1)
     } else {
         result = new BN(value).decimalPlaces(0)
     }
 
     return result.toString()
 }
-export const arePricesEqual = (first: NumberString, second: NumberString): boolean => new BN(first).isEqualTo(new BN(second))
+export const arePricesEqual = (first: NumberString, second: NumberString): boolean =>
+    new BN(first).isEqualTo(new BN(second))
 
 /**
  * Gets most relevant time unit for given price per second.

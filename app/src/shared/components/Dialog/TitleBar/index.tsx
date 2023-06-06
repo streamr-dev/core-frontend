@@ -4,10 +4,10 @@ import cx from 'classnames'
 import SvgIcon from '$shared/components/SvgIcon'
 import styles from './titleBar.pcss'
 type Props = {
-    showCloseIcon?: boolean;
-    onClose?: () => void;
-    children?: ReactNode;
-    className?: string;
+    showCloseIcon?: boolean
+    onClose?: () => void
+    children?: ReactNode
+    className?: string
 }
 export const TitleBar = ({ showCloseIcon, onClose, children, className }: Props) => (
     <div className={cx(styles.modalTitle, className)}>

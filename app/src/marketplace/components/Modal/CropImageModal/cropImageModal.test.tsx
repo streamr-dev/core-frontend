@@ -13,7 +13,7 @@ const mockGetCroppingRect = jest.fn(() => ({
     x: 0,
     y: 0,
     width: 0.5,
-    height: 0.5
+    height: 0.5,
 }))
 jest.doMock('react-avatar-editor', () => ({
     __esModule: true,
@@ -22,7 +22,7 @@ jest.doMock('react-avatar-editor', () => ({
         // eslint-disable-next-line no-param-reassign
         ref.current = {
             getImage: mockGetImage,
-            getCroppingRect: mockGetCroppingRect
+            getCroppingRect: mockGetCroppingRect,
         }
         return <div id="AvatarEditor" />
     }),
@@ -62,29 +62,39 @@ describe('CropImageModal', () => {
     describe('getResizedBlob', () => {
         it('returns the same image if smaller than max width', async () => {
             const { getCroppedAndResizedBlob, MAX_WIDTH } = await import('.')
-            const cropSettings = {x: 0, y: 0, width: 0.5, height: 0.5}
+            const cropSettings = { x: 0, y: 0, width: 0.5, height: 0.5 }
             prepareTest(400, 400)
-            const result = await getCroppedAndResizedBlob('https://imageUrl', cropSettings)
+            const result = await getCroppedAndResizedBlob(
+                'https://imageUrl',
+                cropSettings,
+            )
             expect(drawSpy).toHaveBeenCalledTimes(1)
             expect(result).toBe('crppedImage')
         })
         it('returns a resized image if bigger than max width', async () => {
             const { getCroppedAndResizedBlob, MAX_WIDTH } = await import('.')
-            const cropSettings = {x: 0, y: 0, width: 0.85, height: 0.85}
+            const cropSettings = { x: 0, y: 0, width: 0.85, height: 0.85 }
             prepareTest(3000, 3000)
-            const result = await getCroppedAndResizedBlob('https://imageUrl', cropSettings)
+            const result = await getCroppedAndResizedBlob(
+                'https://imageUrl',
+                cropSettings,
+            )
             expect(drawSpy).toHaveBeenCalledTimes(4)
         })
     })
     it('renders the avatar editor', async () => {
         const { default: CropImageModal } = await import('.')
-        render(<CropImageModal imageUrl="http://" onClose={jest.fn()} onSave={jest.fn()} />)
+        render(
+            <CropImageModal imageUrl="http://" onClose={jest.fn()} onSave={jest.fn()} />,
+        )
         expect(screen.getByText(/Scale and crop your image/)).toBeInTheDocument()
     })
     it('closes the modal', async () => {
         const { default: CropImageModal } = await import('.')
         const closeStub = jest.fn()
-        render(<CropImageModal imageUrl="http://" onClose={closeStub} onSave={jest.fn()} />)
+        render(
+            <CropImageModal imageUrl="http://" onClose={closeStub} onSave={jest.fn()} />,
+        )
         fireEvent.click(screen.getByText(/cancel/i))
         expect(closeStub).toHaveBeenCalled()
     })

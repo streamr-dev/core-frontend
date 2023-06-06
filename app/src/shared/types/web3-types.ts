@@ -9,7 +9,6 @@ export type Address = string
 export type Receipt = TransactionReceipt
 export type Abi = Array<AbiItem>
 
-
 export type SmartContractConfig = {
     abi: Abi
     address: Address

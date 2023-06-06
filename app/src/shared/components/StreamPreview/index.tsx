@@ -1,13 +1,13 @@
-import React, {useState, useMemo, FunctionComponent, useEffect} from 'react'
-import {Stream} from "streamr-client"
-import {useClient} from "streamr-client-react"
+import React, { useState, useMemo, FunctionComponent, useEffect } from 'react'
+import { Stream } from 'streamr-client'
+import { useClient } from 'streamr-client-react'
 import styled, { css } from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
 import { COLORS } from '$shared/utils/styled'
 import Errors from '$ui/Errors'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
-import {StreamId} from "$shared/types/stream-types"
-import useStreamData from "$shared/hooks/useStreamData"
+import { StreamId } from '$shared/types/stream-types'
+import useStreamData from '$shared/hooks/useStreamData'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
@@ -18,7 +18,7 @@ import Foot from './Foot'
 import Selector from './Selector'
 
 type InspectorButtonProps = {
-    active: boolean,
+    active: boolean
 }
 
 const InspectorButton = styled(IconButton)<InspectorButtonProps>`
@@ -47,10 +47,10 @@ const InspectorButton = styled(IconButton)<InspectorButtonProps>`
         `}
 `
 type StreamPreviewPros = {
-    streamsList: StreamId[],
-    activePartition?: number,
-    className?: string,
-    preselectedStreamId?: StreamId,
+    streamsList: StreamId[]
+    activePartition?: number
+    className?: string
+    preselectedStreamId?: StreamId
     previewDisabled?: boolean
 }
 
@@ -59,24 +59,27 @@ const UnstyledStreamPreview: FunctionComponent<StreamPreviewPros> = ({
     activePartition = 0,
     className,
     preselectedStreamId,
-    previewDisabled = false
+    previewDisabled = false,
 }) => {
     const client = useClient()
     const [inspectorFocused, setInspectorFocused] = useState<boolean>(false)
     const [selectedStreamId, setSelectedStreamId] = useState<StreamId>(
-        !!preselectedStreamId && streamsList.includes(preselectedStreamId) ? preselectedStreamId : streamsList[0]
+        !!preselectedStreamId && streamsList.includes(preselectedStreamId)
+            ? preselectedStreamId
+            : streamsList[0],
     )
     const [partition, setPartition] = useState<number>(activePartition)
     const [loading, setIsLoading] = useState<boolean>()
     const [stream, setStream] = useState<Stream>()
     const { partitions } = stream?.getMetadata() || {}
     const partitionOptions = useMemo(
-        () => (partitions ? [...new Array(partitions)].map((_, index) => index) : undefined),
+        () =>
+            partitions ? [...new Array(partitions)].map((_, index) => index) : undefined,
         [partitions],
     )
     const streamData = useStreamData(selectedStreamId, {
         tail: 20,
-        partition
+        partition,
     })
 
     useEffect(() => {
@@ -91,68 +94,84 @@ const UnstyledStreamPreview: FunctionComponent<StreamPreviewPros> = ({
         loadStreamData()
     }, [selectedStreamId, client])
 
-    return <>
-        <LoadingIndicator loading={loading} />
-        {previewDisabled && (
-            <EmptyState image={<img src={emptyStateIcon} srcSet={`${emptyStateIcon2x} 2x`} alt="No permission to subscribe" />}>
-                <p>
-                    <span>You do not have permission to<br/>subscribe to the stream.</span>
-                </p>
-            </EmptyState>
-        )}
-        {!loading && <>
-            {!previewDisabled && (
-                <Feed
-                    className={className}
-                    inspectorFocused={inspectorFocused}
-                    streamData={streamData}
-                    streamLoaded={!loading}
-                    // errorComponent={
-                    //     <Fragment>
-                    //         {!!dataError && <Errors>{dataError}</Errors>}
-                    //     </Fragment>
-                    // }
-                    onPartitionChange={setPartition}
-                    onSettingsButtonClick={undefined}
-                    onStreamChange={setSelectedStreamId}
-                    partition={partition}
-                    partitions={partitionOptions || []}
-                    streamId={selectedStreamId}
-                    streamIds={streamsList}
-                />
-            )}
-            <Foot>
-                <div>
-                    <InspectorButton
-                        active={!inspectorFocused}
-                        onClick={() => setInspectorFocused(false)}
-                        type="button"
-                    >
-                        <SvgIcon name="list" />
-                    </InspectorButton>
-                </div>
-                <div>
-                    <InspectorButton
-                        active={!!inspectorFocused}
-                        onClick={() => setInspectorFocused(true)}
-                        type="button"
-                    >
-                        <SvgIcon name="listInspect" />
-                    </InspectorButton>
-                </div>
-                {!inspectorFocused && !loading && (
-                    <div>
-                        <Selector
-                            title="Partitions"
-                            options={partitionOptions || []}
-                            active={partition}
-                            onChange={setPartition}
+    return (
+        <>
+            <LoadingIndicator loading={loading} />
+            {previewDisabled && (
+                <EmptyState
+                    image={
+                        <img
+                            src={emptyStateIcon}
+                            srcSet={`${emptyStateIcon2x} 2x`}
+                            alt="No permission to subscribe"
                         />
-                    </div>
-                )}
-            </Foot>
-        </>}
-    </>
+                    }
+                >
+                    <p>
+                        <span>
+                            You do not have permission to
+                            <br />
+                            subscribe to the stream.
+                        </span>
+                    </p>
+                </EmptyState>
+            )}
+            {!loading && (
+                <>
+                    {!previewDisabled && (
+                        <Feed
+                            className={className}
+                            inspectorFocused={inspectorFocused}
+                            streamData={streamData}
+                            streamLoaded={!loading}
+                            // errorComponent={
+                            //     <Fragment>
+                            //         {!!dataError && <Errors>{dataError}</Errors>}
+                            //     </Fragment>
+                            // }
+                            onPartitionChange={setPartition}
+                            onSettingsButtonClick={undefined}
+                            onStreamChange={setSelectedStreamId}
+                            partition={partition}
+                            partitions={partitionOptions || []}
+                            streamId={selectedStreamId}
+                            streamIds={streamsList}
+                        />
+                    )}
+                    <Foot>
+                        <div>
+                            <InspectorButton
+                                active={!inspectorFocused}
+                                onClick={() => setInspectorFocused(false)}
+                                type="button"
+                            >
+                                <SvgIcon name="list" />
+                            </InspectorButton>
+                        </div>
+                        <div>
+                            <InspectorButton
+                                active={!!inspectorFocused}
+                                onClick={() => setInspectorFocused(true)}
+                                type="button"
+                            >
+                                <SvgIcon name="listInspect" />
+                            </InspectorButton>
+                        </div>
+                        {!inspectorFocused && !loading && (
+                            <div>
+                                <Selector
+                                    title="Partitions"
+                                    options={partitionOptions || []}
+                                    active={partition}
+                                    onChange={setPartition}
+                                />
+                            </div>
+                        )}
+                    </Foot>
+                </>
+            )}
+        </>
+    )
 }
 
 export const StreamPreview = styled(UnstyledStreamPreview)`

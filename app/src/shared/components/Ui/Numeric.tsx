@@ -8,7 +8,12 @@ type ButtonsProps = {
     disabled?: boolean
 }
 
-const UnstyledButtons = ({ onUpClick, onDownClick, disabled, ...props }: ButtonsProps) => (
+const UnstyledButtons = ({
+    onUpClick,
+    onDownClick,
+    disabled,
+    ...props
+}: ButtonsProps) => (
     <div {...props}>
         <button disabled={disabled} type="button" onClick={onUpClick}>
             <SvgIcon name="caretUp" />
@@ -81,7 +86,16 @@ type Props = {
     onChange?: (arg0: React.SyntheticEvent<EventTarget>) => void
 }
 
-const Numeric = ({ value, min, max, step, hideButtons = false, onChange: onChangeProp, disabled, ...props }: Props) => {
+const Numeric = ({
+    value,
+    min,
+    max,
+    step,
+    hideButtons = false,
+    onChange: onChangeProp,
+    disabled,
+    ...props
+}: Props) => {
     const [internalValue, setInternalValue] = useState(value)
     const inputRef = useRef()
     const onChange = useCallback(
@@ -99,7 +113,9 @@ const Numeric = ({ value, min, max, step, hideButtons = false, onChange: onChang
     }, [value])
     const addValue = useCallback(
         (event: React.SyntheticEvent<EventTarget>, val) => {
-            let parsedValue = Number.parseFloat(internalValue != null ? internalValue : '')
+            let parsedValue = Number.parseFloat(
+                internalValue != null ? internalValue : '',
+            )
             let parsedStep = Number.parseFloat(val.toString())
 
             if (Number.isNaN(parsedValue)) {
@@ -161,7 +177,13 @@ const Numeric = ({ value, min, max, step, hideButtons = false, onChange: onChang
                 disabled={disabled}
                 ref={inputRef}
             />
-            {!hideButtons && <Buttons disabled={disabled} onUpClick={onIncrease} onDownClick={onDecrease} />}
+            {!hideButtons && (
+                <Buttons
+                    disabled={disabled}
+                    onUpClick={onIncrease}
+                    onDownClick={onDecrease}
+                />
+            )}
         </div>
     )
 }

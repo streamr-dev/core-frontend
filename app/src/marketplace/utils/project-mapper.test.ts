@@ -1,20 +1,22 @@
-import BN from "bn.js"
-import {TheGraphPaymentDetails, TheGraphProject} from "$app/src/services/projects"
-import {mapGraphProjectToDomainModel, mapSalePoints} from "$mp/utils/project-mapper"
+import BN from 'bn.js'
+import { TheGraphPaymentDetails, TheGraphProject } from '$app/src/services/projects'
+import { mapGraphProjectToDomainModel, mapSalePoints } from '$mp/utils/project-mapper'
 import { ProjectType } from '$shared/types'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 
 const stubChainName = 'localChain'
 
 jest.mock('$shared/web3/config', () => ({
-    getConfigForChain: jest.fn().mockImplementation((chainId) => ({id: chainId, name: stubChainName})),
-    getConfigForChainByName: jest.fn().mockReturnValue({})
+    getConfigForChain: jest
+        .fn()
+        .mockImplementation((chainId) => ({ id: chainId, name: stubChainName })),
+    getConfigForChainByName: jest.fn().mockReturnValue({}),
 }))
 
 jest.mock('$mp/utils/web3', () => ({
     getTokenInformation: jest.fn().mockImplementation(async () => {
-        return {decimals: new BN(18)}
-    })
+        return { decimals: new BN(18) }
+    }),
 }))
 
 describe('projectMapper', () => {
@@ -23,8 +25,8 @@ describe('projectMapper', () => {
             beneficiary: 'beneficiaryaddress',
             pricePerSecond: '324234234232323',
             pricingTokenAddress: 'tokenaddress',
-            domainId: '666'
-        }
+            domainId: '666',
+        },
     ]
 
     describe('mapSalePoints', () => {
@@ -32,9 +34,17 @@ describe('projectMapper', () => {
             const salePoints = await mapSalePoints(paymentDetailsStub)
             expect(salePoints).toHaveProperty(stubChainName)
             expect(salePoints[stubChainName].chainId).toEqual(666)
-            expect(salePoints[stubChainName].beneficiaryAddress).toEqual(paymentDetailsStub[0].beneficiary)
-            expect(salePoints[stubChainName].pricingTokenAddress).toEqual(paymentDetailsStub[0].pricingTokenAddress)
-            expect(salePoints[stubChainName].pricePerSecond.isEqualTo(paymentDetailsStub[0].pricePerSecond)).toEqual(true)
+            expect(salePoints[stubChainName].beneficiaryAddress).toEqual(
+                paymentDetailsStub[0].beneficiary,
+            )
+            expect(salePoints[stubChainName].pricingTokenAddress).toEqual(
+                paymentDetailsStub[0].pricingTokenAddress,
+            )
+            expect(
+                salePoints[stubChainName].pricePerSecond.isEqualTo(
+                    paymentDetailsStub[0].pricePerSecond,
+                ),
+            ).toEqual(true)
             expect(salePoints[stubChainName].price).toEqual(expect.anything())
             expect(salePoints[stubChainName].timeUnit).toEqual(expect.any(String))
         })
@@ -58,8 +68,8 @@ describe('projectMapper', () => {
                         redistribution: false,
                         storage: false,
                         termsName: undefined,
-                        termsUrl: undefined
-                    }
+                        termsUrl: undefined,
+                    },
                 },
                 isDataUnion: false,
                 createdAt: 'xxx',
@@ -69,7 +79,7 @@ describe('projectMapper', () => {
                 purchasesCount: 0,
                 minimumSubscriptionSeconds: '0',
                 version: null,
-                subscriptions: []
+                subscriptions: [],
             }
             const model = await mapGraphProjectToDomainModel(stubGraphModel)
 
@@ -82,11 +92,11 @@ describe('projectMapper', () => {
                 name: stubGraphModel.metadata.name,
                 description: stubGraphModel.metadata.description,
                 creator: stubGraphModel.metadata.creator,
-                imageUrl:  ipfsGatewayUrl + stubGraphModel.metadata.imageIpfsCid,
+                imageUrl: ipfsGatewayUrl + stubGraphModel.metadata.imageIpfsCid,
                 streams: stubGraphModel.streams,
                 termsOfUse: stubGraphModel.metadata.termsOfUse,
                 contact: stubGraphModel.metadata.contactDetails,
-                salePoints: expect.anything() // because sale point mapping has it's own test
+                salePoints: expect.anything(), // because sale point mapping has it's own test
             })
         })
     })

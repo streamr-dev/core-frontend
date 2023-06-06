@@ -10,7 +10,13 @@ type Props = {
     nav?: ReactNode
 }
 
-const CoreLayout: FunctionComponent<Props> = ({ children, className, contentClassname, navComponent, nav }: Props) => (
+const CoreLayout: FunctionComponent<Props> = ({
+    children,
+    className,
+    contentClassname,
+    navComponent,
+    nav,
+}: Props) => (
     <Layout footer={false} className={cx(styles.container, className)} nav={nav}>
         {navComponent || null}
         <div className={cx(styles.content, contentClassname)}>{children || null}</div>

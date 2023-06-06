@@ -1,7 +1,7 @@
-import React from "react"
-import {Col, Row} from "reactstrap"
-import {Meta} from "@storybook/react"
-import PngIcon from "$shared/components/PngIcon"
+import React from 'react'
+import { Col, Row } from 'reactstrap'
+import { Meta } from '@storybook/react'
+import PngIcon from '$shared/components/PngIcon'
 import sharedStyles from './shared.pcss'
 
 export const All = () => (
@@ -20,19 +20,25 @@ export const All = () => (
 )
 
 All.story = {
-    name: 'all'
+    name: 'all',
 }
 
 const meta: Meta<typeof All> = {
     title: 'Shared/PngIcon',
     component: All,
-    decorators: [(Story) => {
-        return <div style={{
-            color: '#323232',
-            padding: '15px',
-        }}>
-            <Story/>
-        </div>
-    }]
+    decorators: [
+        (Story) => {
+            return (
+                <div
+                    style={{
+                        color: '#323232',
+                        padding: '15px',
+                    }}
+                >
+                    <Story />
+                </div>
+            )
+        },
+    ],
 }
 export default meta

@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { action } from '@storybook/addon-actions'
-import {Meta} from "@storybook/react"
+import { Meta } from '@storybook/react'
 import styled, { css } from 'styled-components'
 import Button from '.'
 
@@ -683,14 +683,20 @@ All.story = {
 const meta: Meta<typeof All> = {
     title: 'Shared/Button',
     component: All,
-    decorators: [(Story) => {
-        return <div style={{
-            color: '#323232',
-            padding: '32px 0',
-        }}>
-            <Story/>
-        </div>
-    }]
+    decorators: [
+        (Story) => {
+            return (
+                <div
+                    style={{
+                        color: '#323232',
+                        padding: '32px 0',
+                    }}
+                >
+                    <Story />
+                </div>
+            )
+        },
+    ],
 }
 
 export default meta

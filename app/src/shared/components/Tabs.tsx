@@ -360,7 +360,11 @@ export default function Tabs({
                     }}
                 >
                     {tabs.map(({ id, children }) => (
-                        <Trolley key={id} $selected={id === selectedId} $animated={animated}>
+                        <Trolley
+                            key={id}
+                            $selected={id === selectedId}
+                            $animated={animated}
+                        >
                             <ItemContent $truncate={spreadEvenly}>{children}</ItemContent>
                         </Trolley>
                     ))}

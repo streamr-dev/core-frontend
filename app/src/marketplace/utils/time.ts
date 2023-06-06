@@ -2,8 +2,8 @@ import BN from 'bignumber.js'
 import { Moment } from 'moment'
 import moment from 'moment'
 import { NumberString } from '$shared/types/common-types'
-import {TimeUnit, timeUnits} from "$shared/utils/timeUnit"
-const momentDurationFormatsByTimeUnit: {[key: string]: string} = {
+import { TimeUnit, timeUnits } from '$shared/utils/timeUnit'
+const momentDurationFormatsByTimeUnit: { [key: string]: string } = {
     second: 's',
     minute: 'm',
     hour: 'H',
@@ -26,7 +26,10 @@ export const toSeconds = (quantity: NumberString | BN, timeUnit: TimeUnit): BN =
 
     return new BN(moment.duration(new BN(quantity).toNumber(), format as any).asSeconds())
 }
-export const formatDateTime = (timestamp: number | null | undefined, timezone: string | null | undefined): string =>
+export const formatDateTime = (
+    timestamp: number | null | undefined,
+    timezone: string | null | undefined,
+): string =>
     timestamp && (moment as any).tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')
 
 /**
@@ -62,4 +65,5 @@ export const getAbbreviation = (timeUnit: TimeUnit): string => {
  * Returns true if the given time is in the future.
  * @param time Time to check
  */
-export const isActive = (time: string | number | Date | Moment): boolean => moment().isBefore(time)
+export const isActive = (time: string | number | Date | Moment): boolean =>
+    moment().isBefore(time)

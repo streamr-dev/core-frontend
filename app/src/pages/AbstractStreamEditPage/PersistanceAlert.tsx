@@ -1,6 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useCurrentDraft, useDraftId, usePersistingDraftIdsForStream } from '$shared/stores/streamEditor'
+import {
+    useCurrentDraft,
+    useDraftId,
+    usePersistingDraftIdsForStream,
+} from '$shared/stores/streamEditor'
 import { COLORS } from '$shared/utils/styled'
 import Spinner from '$app/src/shared/components/Spinner'
 
@@ -9,9 +13,10 @@ export default function PersistanceAlert() {
 
     const { streamId, transientStreamId } = useCurrentDraft()
 
-    const persistingDraftIds = [...usePersistingDraftIdsForStream(streamId), ...usePersistingDraftIdsForStream(transientStreamId)].filter(
-        (did) => did !== draftId,
-    )
+    const persistingDraftIds = [
+        ...usePersistingDraftIdsForStream(streamId),
+        ...usePersistingDraftIdsForStream(transientStreamId),
+    ].filter((did) => did !== draftId)
 
     if (!persistingDraftIds.length) {
         return null
@@ -19,7 +24,10 @@ export default function PersistanceAlert() {
 
     return (
         <Root>
-            <Copy>This stream is being persisted as we speak. Consider waiting for it to finish before introducing new changes.</Copy>
+            <Copy>
+                This stream is being persisted as we speak. Consider waiting for it to
+                finish before introducing new changes.
+            </Copy>
             <SpinnerWrap>
                 <Spinner size="small" color="blue" />
             </SpinnerWrap>

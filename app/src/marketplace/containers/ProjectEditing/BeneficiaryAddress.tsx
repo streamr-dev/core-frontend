@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useCallback, useEffect, useRef, useState} from 'react'
+import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { COLORS, MAX_CONTENT_WIDTH } from '$shared/utils/styled'
 import WithInputActions from '$shared/components/WithInputActions'
@@ -13,30 +13,30 @@ import { Address } from '$shared/types/web3-types'
 import { useWalletAccount } from '$shared/stores/wallet'
 
 const Heading = styled.p`
-  font-size: 20px;
-  color: black;
-  margin-top: 30px;
+    font-size: 20px;
+    color: black;
+    margin-top: 30px;
 `
 
 const DescriptionText = styled.p`
-  color: black;
-  margin-bottom: 15px;
-  margin-right: 55px;
-  flex-shrink: 0;
+    color: black;
+    margin-bottom: 15px;
+    margin-right: 55px;
+    flex-shrink: 0;
 `
 
 const Container = styled.div`
-  background-color: ${COLORS.inputBackground};
-  padding: 12px 24px;
-  max-width: ${MAX_CONTENT_WIDTH};
-  
-  .beneficiary-address-input {
-    margin: 0;
-    input:disabled {
-      background-color: white;
-      opacity: 1;
+    background-color: ${COLORS.inputBackground};
+    padding: 12px 24px;
+    max-width: ${MAX_CONTENT_WIDTH};
+
+    .beneficiary-address-input {
+        margin: 0;
+        input:disabled {
+            background-color: white;
+            opacity: 1;
+        }
     }
-  }
 `
 
 type AddressItemProps = {
@@ -64,8 +64,8 @@ const AddressItem = styled(UnstyledAddressItem)`
     }
 `
 type BeneficiaryAddressProps = {
-    disabled?: boolean,
-    beneficiaryAddress?: Address,
+    disabled?: boolean
+    beneficiaryAddress?: Address
     onChange: (address: Address) => void
     chainName: string
 }
@@ -74,12 +74,13 @@ export const BeneficiaryAddress: FunctionComponent<BeneficiaryAddressProps> = ({
     disabled,
     beneficiaryAddress,
     onChange,
-    chainName
+    chainName,
 }) => {
-
     const { copy } = useCopy()
     const accountAddress = useWalletAccount()
-    const {setStatus, clearStatus, isValid} = useValidation(`salePoints.${chainName}.beneficiaryAddress`)
+    const { setStatus, clearStatus, isValid } = useValidation(
+        `salePoints.${chainName}.beneficiaryAddress`,
+    )
     const [defaultValueWasSet, setDefaultValueWasSet] = useState(false)
     const inputRef = useRef<HTMLInputElement>()
     const onCopy = useCallback(() => {
@@ -151,7 +152,7 @@ export const BeneficiaryAddress: FunctionComponent<BeneficiaryAddressProps> = ({
                     ]}
                 >
                     <Text
-                        ref={(input: HTMLInputElement) => inputRef.current = input}
+                        ref={(input: HTMLInputElement) => (inputRef.current = input)}
                         id="beneficiaryAddress"
                         autoComplete="off"
                         defaultValue={beneficiaryAddress || ''}

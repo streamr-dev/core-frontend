@@ -12,7 +12,7 @@ const WS = {
 function testDockerHost({ envHost, expectedHost }) {
     return () => {
         beforeEach(() => {
-            (getConfig as any).mockImplementation(() => ({
+            ;(getConfig as any).mockImplementation(() => ({
                 docker: {
                     host: 'testhost',
                 },

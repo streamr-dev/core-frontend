@@ -18,5 +18,7 @@ export default function getPublicWeb3(chainId?: number): Web3 {
     }
 
     // Fall back to Ethereum Mainnet if chain specific provider was not available
-    return new Web3(new Web3.providers.HttpProvider(getCoreConfig().mainnetInfuraUrl, options))
+    return new Web3(
+        new Web3.providers.HttpProvider(getCoreConfig().mainnetInfuraUrl, options),
+    )
 }

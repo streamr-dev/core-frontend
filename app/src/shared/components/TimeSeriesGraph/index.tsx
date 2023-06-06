@@ -54,7 +54,10 @@ const formatXAxisTicks = (value, index, scale, tickTotal, dayCount) => {
     }
 
     const previousTickDate = index > 0 ? scale.ticks()[index - 1] : null
-    const monthChanged = previousTickDate != null ? new Date(value).getMonth() !== previousTickDate.getMonth() : false
+    const monthChanged =
+        previousTickDate != null
+            ? new Date(value).getMonth() !== previousTickDate.getMonth()
+            : false
 
     // Include month name only for the first item and when month changes
     if (index === 0 || monthChanged) {
@@ -76,7 +79,12 @@ type Props = {
     isLoading?: boolean
 }
 
-const UnstyledTimeSeriesGraph = ({ graphData, shownDays, isLoading, ...props }: Props) => {
+const UnstyledTimeSeriesGraph = ({
+    graphData,
+    shownDays,
+    isLoading,
+    ...props
+}: Props) => {
     const dataDomain = useMemo(() => {
         const dataValues = (graphData || []).map((d) => d.y)
         let max = Math.max(...dataValues)
@@ -93,7 +101,10 @@ const UnstyledTimeSeriesGraph = ({ graphData, shownDays, isLoading, ...props }: 
     }, [graphData])
     // Adjust right margin so that it takes maximum Y value into account.
     // This way we'll have enough room for also larger numbers.
-    const maxLength = Math.max(dataDomain[0].toString().length, dataDomain[1].toString().length)
+    const maxLength = Math.max(
+        dataDomain[0].toString().length,
+        dataDomain[1].toString().length,
+    )
     const rightMargin = 12 + maxLength * 9
     return (
         <Container {...props}>
@@ -120,12 +131,23 @@ const UnstyledTimeSeriesGraph = ({ graphData, shownDays, isLoading, ...props }: 
                             style={xAxisStyle}
                             tickTotal={7}
                             tickFormat={(value, index, scale, tickTotal) =>
-                                formatXAxisTicks(value, index, scale, tickTotal, shownDays)
+                                formatXAxisTicks(
+                                    value,
+                                    index,
+                                    scale,
+                                    tickTotal,
+                                    shownDays,
+                                )
                             }
                             tickSizeInner={0}
                             tickSizeOuter={6}
                         />
-                        <YAxis hideLine style={yAxisStyle} position="middle" orientation="right" />
+                        <YAxis
+                            hideLine
+                            style={yAxisStyle}
+                            position="middle"
+                            orientation="right"
+                        />
                         <HorizontalGridLines />
                         <LineSeries
                             curve={null}
