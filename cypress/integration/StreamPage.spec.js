@@ -51,7 +51,9 @@ describe('Stream listing page', () => {
                     status: 404,
                     response: {},
                 })
-                cy.route(`/api/v1/streams/${streamId}/data/partitions/0/last?count=1`).as('getLastMessage')
+                cy.route(`/api/v1/streams/${streamId}/data/partitions/0/last?count=1`).as(
+                    'getLastMessage',
+                )
 
                 cy.visit('/core/streams')
                 cy.wait('@getLastMessage')
@@ -70,7 +72,9 @@ describe('Stream listing page', () => {
                     key: 'value',
                 })
                 cy.server()
-                cy.route(`/api/v1/streams/${streamId}/data/partitions/0/last?count=1`).as('getLastMessage')
+                cy.route(`/api/v1/streams/${streamId}/data/partitions/0/last?count=1`).as(
+                    'getLastMessage',
+                )
 
                 cy.visit('/core/streams')
                 cy.wait('@getLastMessage')
@@ -282,7 +286,10 @@ describe('New stream page', () => {
                 .find('button')
                 .contains(/create/i)
                 .click()
-            cy.location('pathname').should('eq', `/core/streams/${encodeURIComponent(streamId)}`)
+            cy.location('pathname').should(
+                'eq',
+                `/core/streams/${encodeURIComponent(streamId)}`,
+            )
 
             cy.visit('/core/streams')
             cy.visit(`/core/streams/${encodeURIComponent(streamId)}`)
@@ -582,7 +589,10 @@ describe('Stream read-only page (no edit permission)', () => {
                 cy.logout()
                 cy.login('tester two')
                 cy.visit(`/core/streams/${encodedId}`)
-                cy.get('[data-test-hook=Toolbar]').find('button').contains(/back/i).click()
+                cy.get('[data-test-hook=Toolbar]')
+                    .find('button')
+                    .contains(/back/i)
+                    .click()
                 cy.location('pathname').should('eq', '/core/streams')
             })
         })
@@ -594,7 +604,10 @@ describe('Stream read-only page (no edit permission)', () => {
                 cy.createStreamPermission(streamId)
                 cy.logout()
                 cy.visit(`/core/streams/${encodedId}`)
-                cy.get('[data-test-hook=Toolbar]').find('button').contains(/back/i).click()
+                cy.get('[data-test-hook=Toolbar]')
+                    .find('button')
+                    .contains(/back/i)
+                    .click()
                 cy.location('pathname').should('eq', '/')
             })
         })
@@ -733,7 +746,9 @@ describe('Stream edit page', () => {
                     status: 404,
                     response: {},
                 })
-                cy.route(`/api/v1/streams/${streamId}/data/partitions/0/last?count=1`).as('getLastMessage')
+                cy.route(`/api/v1/streams/${streamId}/data/partitions/0/last?count=1`).as(
+                    'getLastMessage',
+                )
 
                 cy.visit(`/core/streams/${encodedId}`)
                 cy.wait('@getLastMessage')
@@ -753,7 +768,9 @@ describe('Stream edit page', () => {
                     key: 'value',
                 })
                 cy.server()
-                cy.route(`/api/v1/streams/${encodedId}/data/partitions/0/last?count=1`).as('getLastMessage')
+                cy.route(
+                    `/api/v1/streams/${encodedId}/data/partitions/0/last?count=1`,
+                ).as('getLastMessage')
 
                 cy.visit(`/core/streams/${encodedId}`)
                 cy.wait('@getLastMessage')
@@ -812,7 +829,9 @@ describe('Stream edit page', () => {
                 const encodedId = encodeURIComponent(streamId)
                 cy.server()
 
-                cy.route('POST', `/api/v1/streams/${streamId}/storageNodes`).as('enableNode')
+                cy.route('POST', `/api/v1/streams/${streamId}/storageNodes`).as(
+                    'enableNode',
+                )
 
                 cy.visit(`/core/streams/${encodedId}`)
                 cy.get('[data-test-hook="Storage nodes"]').within(() => {

@@ -48,13 +48,7 @@ export default function EditorNav() {
                     <LogoLink href={routes.root()}>
                         <Logo />
                     </LogoLink>
-                    <h1>
-                        {isNew ? (
-                            <>Create a project</>
-                        ) : (
-                            <>Edit a project</>
-                        )}
-                    </h1>
+                    <h1>{isNew ? <>Create a project</> : <>Edit a project</>}</h1>
                 </FlexNavbarItem>
                 <FlexNavbarItem>
                     <Button tag={Link} to={routes.projects.index()} kind="transparent">

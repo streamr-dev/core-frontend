@@ -316,7 +316,12 @@ export default function StreamPage() {
     return (
         <StreamDraftContext.Provider value={draftId}>
             <Routes>
-                <Route index element={streamId === 'new' ? <StreamPageSwitch /> : <StreamRedirect />} />
+                <Route
+                    index
+                    element={
+                        streamId === 'new' ? <StreamPageSwitch /> : <StreamRedirect />
+                    }
+                />
                 <Route path="overview" element={<StreamPageSwitch tab="overview" />} />
                 <Route path="connect" element={<StreamPageSwitch tab="connect" />} />
                 <Route path="live-data" element={<StreamPageSwitch tab="live-data" />} />

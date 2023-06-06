@@ -3,12 +3,12 @@ import styled from 'styled-components'
 import Color from 'color'
 
 type Props = {
-    contractAddress?: string,
-    symbol?: string,
+    contractAddress?: string
+    symbol?: string
 }
 
 type CircleProps = {
-    tokenColor: string,
+    tokenColor: string
 }
 
 const Circle = styled.div<CircleProps>`
@@ -20,7 +20,7 @@ const Circle = styled.div<CircleProps>`
     line-height: 16px;
     font-size: 16px;
     border-radius: 50%;
-    color: ${({ tokenColor }) => Color(tokenColor).isDark() ? '#ffffff' : '#000000'};
+    color: ${({ tokenColor }) => (Color(tokenColor).isDark() ? '#ffffff' : '#000000')};
     background-color: ${({ tokenColor }) => tokenColor};
 `
 
@@ -43,10 +43,7 @@ const UnstyledGenericTokenLogo = ({ contractAddress, symbol, ...props }: Props) 
     const cssColor = `#${intToRGB(hashCode(contractAddress || ''))}`
 
     return (
-        <Circle
-            {...props}
-            tokenColor={cssColor}
-        >
+        <Circle {...props} tokenColor={cssColor}>
             {(symbol || '?').charAt(0).toUpperCase()}
         </Circle>
     )

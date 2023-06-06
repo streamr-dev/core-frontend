@@ -5,7 +5,7 @@ import xDaiIcon from './assets/xdai.svg'
 import polygonIcon from './assets/polygon.svg'
 import bscIcon from './assets/bsc.svg'
 import unknownIcon from './assets/unknown.svg'
-const icons: {[key: string]: any} = {
+const icons: { [key: string]: any } = {
     '1': ethereumIcon,
     '100': xDaiIcon,
     '137': polygonIcon,
@@ -15,13 +15,18 @@ const icons: {[key: string]: any} = {
 }
 
 type NetworkIconProps = {
-    chainId: number,
-    className?: string,
-    emptyIcon?: string,
+    chainId: number
+    className?: string
+    emptyIcon?: string
     alt?: string
 }
 
-const UnstyledNetworkIcon: FunctionComponent<NetworkIconProps> = ({ chainId, className, emptyIcon, alt = '' }) => (
+const UnstyledNetworkIcon: FunctionComponent<NetworkIconProps> = ({
+    chainId,
+    className,
+    emptyIcon,
+    alt = '',
+}) => (
     <div className={className}>
         <img src={icons[String(chainId)] || emptyIcon || unknownIcon} alt={alt} />
     </div>

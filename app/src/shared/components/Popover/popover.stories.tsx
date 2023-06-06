@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react'
 import { action } from '@storybook/addon-actions'
-import {Meta} from "@storybook/react"
+import { Meta } from '@storybook/react'
 import styled from 'styled-components'
 import PopoverItem from './PopoverItem'
 import Popover from '.'
@@ -24,11 +24,15 @@ Basic.story = {
 const meta: Meta<typeof Basic> = {
     title: 'Shared/Popover',
     component: Basic,
-    decorators: [(Story) => {
-        return <Container>
-            <Story/>
-        </Container>
-    }]
+    decorators: [
+        (Story) => {
+            return (
+                <Container>
+                    <Story />
+                </Container>
+            )
+        },
+    ],
 }
 
 export default meta

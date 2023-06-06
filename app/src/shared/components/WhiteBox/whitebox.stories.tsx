@@ -1,5 +1,5 @@
 import React from 'react'
-import {Meta} from "@storybook/react"
+import { Meta } from '@storybook/react'
 import { WhiteBox } from '.'
 
 export const Default = () => (
@@ -18,15 +18,21 @@ Default.story = {
 const meta: Meta<typeof Default> = {
     title: 'Shared/WhiteBox',
     component: Default,
-    decorators: [(Story) => {
-        return <div style={{
-            padding: '2rem',
-            color: '#000',
-            backgroundColor: '#ccc',
-        }}>
-            <Story/>
-        </div>
-    }]
+    decorators: [
+        (Story) => {
+            return (
+                <div
+                    style={{
+                        padding: '2rem',
+                        color: '#000',
+                        backgroundColor: '#ccc',
+                    }}
+                >
+                    <Story />
+                </div>
+            )
+        },
+    ],
 }
 
 export default meta

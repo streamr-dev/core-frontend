@@ -5,11 +5,15 @@ import '$shared/types/common-types'
 
 const sanitise = (value: string): string => (value == null ? '' : value)
 
-const normalize = (value: any): string => (typeof value === 'string' ? value.trim() : String(sanitise(value)))
+const normalize = (value: any): string =>
+    typeof value === 'string' ? value.trim() : String(sanitise(value))
 
 export type Props = {
     onBlur?: ((arg0: React.FocusEvent<EventTarget>) => void) | null | undefined
-    onChange?: ((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void) | null | undefined
+    onChange?:
+        | ((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void)
+        | null
+        | undefined
     onCommit?: ((arg0: string) => void) | null | undefined
     onFocus?: ((arg0: React.FocusEvent<EventTarget>) => void) | null | undefined
     onKeyDown?: ((arg0: React.KeyboardEvent<EventTarget>) => void) | null | undefined
@@ -37,7 +41,10 @@ const OnCommitDecorator = (WrappedComponent: ComponentType<any>) => {
                 if (onCommitProp) {
                     const newValue = noEmptyCommit ? normalize(value) : value
 
-                    if ((!requireChanged || valueRef.current !== value) && (newValue || !noEmptyCommit)) {
+                    if (
+                        (!requireChanged || valueRef.current !== value) &&
+                        (newValue || !noEmptyCommit)
+                    ) {
                         onCommitProp(value)
                     }
                 }
@@ -45,7 +52,7 @@ const OnCommitDecorator = (WrappedComponent: ComponentType<any>) => {
             [onCommitProp, noEmptyCommit],
         )
         const onChange = useCallback(
-            (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
+            (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
                 if (!smartCommit) {
                     onCommit(e.target.value)
                 }
@@ -58,7 +65,11 @@ const OnCommitDecorator = (WrappedComponent: ComponentType<any>) => {
         )
         const onKeyDown = useCallback(
             (e: React.KeyboardEvent<EventTarget>) => {
-                if (e.key === 'Enter' && smartCommit && e.target instanceof HTMLInputElement) {
+                if (
+                    e.key === 'Enter' &&
+                    smartCommit &&
+                    e.target instanceof HTMLInputElement
+                ) {
                     onCommit(e.target.value)
                 }
 
@@ -70,7 +81,10 @@ const OnCommitDecorator = (WrappedComponent: ComponentType<any>) => {
         )
         const onFocus = useCallback(
             (e: React.FocusEvent<EventTarget>) => {
-                if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+                if (
+                    e.target instanceof HTMLInputElement ||
+                    e.target instanceof HTMLTextAreaElement
+                ) {
                     valueRef.current = e.target.value
                 }
 
@@ -82,7 +96,10 @@ const OnCommitDecorator = (WrappedComponent: ComponentType<any>) => {
         )
         const onBlur = useCallback(
             (e: React.FocusEvent<EventTarget>) => {
-                if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+                if (
+                    e.target instanceof HTMLInputElement ||
+                    e.target instanceof HTMLTextAreaElement
+                ) {
                     const { value } = e.target
 
                     if (smartCommit) {
@@ -110,7 +127,10 @@ const OnCommitDecorator = (WrappedComponent: ComponentType<any>) => {
 
     const OnCommitDecoratorWrapperFR = forwardRef(OnCommitDecoratorWrapper)
 
-    const OptInOnCommitDecorator = ({ onCommit, smartCommit, noEmptyCommit, ...props }: Props, ref: any) =>
+    const OptInOnCommitDecorator = (
+        { onCommit, smartCommit, noEmptyCommit, ...props }: Props,
+        ref: any,
+    ) =>
         onCommit ? (
             <OnCommitDecoratorWrapperFR
                 {...props}

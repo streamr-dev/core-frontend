@@ -8,7 +8,7 @@ import { StreamId } from '$shared/types/stream-types'
 import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '$shared/utils/styled'
 import Checkbox from '$shared/components/Checkbox'
 import { IndexerStream, TheGraphStream } from '$app/src/services/streams'
-import {truncateStreamName} from '$shared/utils/text'
+import { truncateStreamName } from '$shared/utils/text'
 import routes from '$routes'
 
 const ROW_HEIGHT = 88
@@ -193,7 +193,10 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
 
     const handleSelectChange = useCallback(
         (streamId: StreamId) => {
-            const newSelectedStreams = { ...selectedStreams, [streamId]: !selectedStreams[streamId] }
+            const newSelectedStreams = {
+                ...selectedStreams,
+                [streamId]: !selectedStreams[streamId],
+            }
             setSelectedStreams(newSelectedStreams)
             emitSelectedStreamsChange(newSelectedStreams)
         },
@@ -215,7 +218,11 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
         const selectedStreamsArray = Object.entries(selectedStreams)
             .filter(([streamId, isSelected]) => isSelected)
             .map(([streamId]) => streamId)
-        if (streams.length > 0 && selectedStreamsArray.length === streams.length && !allSelected) {
+        if (
+            streams.length > 0 &&
+            selectedStreamsArray.length === streams.length &&
+            !allSelected
+        ) {
             setAllSelected(true)
         }
         if (selectedStreamsArray.length !== streams.length && allSelected) {
@@ -254,16 +261,42 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
                         return (
                             <TableRow key={s.id}>
                                 <StreamDetails to={routes.streams.show({ id: s.id })}>
-                                    <StreamId title={s.id}>{truncateStreamName(s.id, 40)}</StreamId>
+                                    <StreamId title={s.id}>
+                                        {truncateStreamName(s.id, 40)}
+                                    </StreamId>
                                     {'\n'}
-                                    <StreamDescription notOnTablet>{s.metadata?.description ?? ''}</StreamDescription>
+                                    <StreamDescription notOnTablet>
+                                        {s.metadata?.description ?? ''}
+                                    </StreamDescription>
                                 </StreamDetails>
-                                <GridCell onlyTablet>{s.metadata?.description ?? ''}</GridCell>
+                                <GridCell onlyTablet>
+                                    {s.metadata?.description ?? ''}
+                                </GridCell>
                                 <GridCell onlyDesktop>{stats?.peerCount ?? '-'}</GridCell>
-                                <GridCell onlyDesktop>{stats?.messagesPerSecond ?? '-'}</GridCell>
-                                <GridCell onlyDesktop>{stats == null ? '-' : stats.subscriberCount == null ? 'Public' : 'Private'}</GridCell>
-                                <GridCell onlyDesktop>{stats == null ? '-' : stats.publisherCount == null ? '∞' : stats.publisherCount}</GridCell>
-                                <GridCell onlyDesktop>{stats == null ? '-' : stats.subscriberCount == null ? '∞' : stats.subscriberCount}</GridCell>
+                                <GridCell onlyDesktop>
+                                    {stats?.messagesPerSecond ?? '-'}
+                                </GridCell>
+                                <GridCell onlyDesktop>
+                                    {stats == null
+                                        ? '-'
+                                        : stats.subscriberCount == null
+                                        ? 'Public'
+                                        : 'Private'}
+                                </GridCell>
+                                <GridCell onlyDesktop>
+                                    {stats == null
+                                        ? '-'
+                                        : stats.publisherCount == null
+                                        ? '∞'
+                                        : stats.publisherCount}
+                                </GridCell>
+                                <GridCell onlyDesktop>
+                                    {stats == null
+                                        ? '-'
+                                        : stats.subscriberCount == null
+                                        ? '∞'
+                                        : stats.subscriberCount}
+                                </GridCell>
                                 <GridCell flex={true}>
                                     <Checkbox
                                         value={selectedStreams[s.id]}
@@ -275,10 +308,18 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
                             </TableRow>
                         )
                     })}
-                    {streams.length === 0 && <NoStreams>No streams that match your query</NoStreams>}
+                    {streams.length === 0 && (
+                        <NoStreams>No streams that match your query</NoStreams>
+                    )}
                 </TableRows>
             </Table>
-            {loadMore != null && <LoadMore hasMoreSearchResults={!!hasMoreResults} onClick={loadMore} preserveSpace={false} />}
+            {loadMore != null && (
+                <LoadMore
+                    hasMoreSearchResults={!!hasMoreResults}
+                    onClick={loadMore}
+                    preserveSpace={false}
+                />
+            )}
         </div>
     )
 }

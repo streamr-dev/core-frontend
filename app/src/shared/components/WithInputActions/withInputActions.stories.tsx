@@ -1,5 +1,5 @@
 import React from 'react'
-import {Meta} from "@storybook/react"
+import { Meta } from '@storybook/react'
 import Text from '$ui/Text'
 import PopoverItem from '$shared/components/Popover/PopoverItem'
 import WithInputActions from '.'
@@ -17,14 +17,20 @@ Basic.story = {
 const meta: Meta<typeof Basic> = {
     title: 'Shared/WithInputActions',
     component: Basic,
-    decorators: [(Story) => {
-        return <div style={{
-            padding: '2rem',
-            color: 'black',
-        }}>
-            <Story/>
-        </div>
-    }]
+    decorators: [
+        (Story) => {
+            return (
+                <div
+                    style={{
+                        padding: '2rem',
+                        color: 'black',
+                    }}
+                >
+                    <Story />
+                </div>
+            )
+        },
+    ],
 }
 
 export default meta

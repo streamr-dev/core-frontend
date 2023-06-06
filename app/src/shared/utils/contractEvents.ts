@@ -13,7 +13,11 @@ export async function* getContractEvents(
     // Get events in batches since xDai RPC seems to timeout if fetching too large sets
     const batchSize = 10000
 
-    for (let blockNumber = fromBlock; blockNumber < latestBlock.number; blockNumber += batchSize + 1) {
+    for (
+        let blockNumber = fromBlock;
+        blockNumber < latestBlock.number;
+        blockNumber += batchSize + 1
+    ) {
         let toBlockNumber = blockNumber + batchSize
 
         if (toBlockNumber > latestBlock.number) {

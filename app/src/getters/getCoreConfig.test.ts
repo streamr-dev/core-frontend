@@ -7,7 +7,7 @@ jest.mock('$app/src/getters/getConfig', () => ({
 }))
 describe('getCoreConfig', () => {
     it('when empty, returns defaults', () => {
-        (getConfig as any).mockImplementation(() => ({}))
+        ;(getConfig as any).mockImplementation(() => ({}))
         expect(g()).toMatchObject({
             landingPageUrl: 'https://streamr.network',
             platformOriginUrl: undefined,
@@ -15,7 +15,7 @@ describe('getCoreConfig', () => {
         })
     })
     it('forwards custom core config fields', () => {
-        (getConfig as any).mockImplementation(() => ({
+        ;(getConfig as any).mockImplementation(() => ({
             core: {
                 custom: 'value',
             },
@@ -27,7 +27,7 @@ describe('getCoreConfig', () => {
             STREAMR_DOCKER_DEV_HOST: 'host',
         })
         it('formats selected URLs', () => {
-            (getConfig as any).mockImplementation(() => ({
+            ;(getConfig as any).mockImplementation(() => ({
                 core: {
                     landingPageUrl: '/lp',
                     platformOriginUrl: '/pf',

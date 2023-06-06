@@ -1,28 +1,28 @@
 import styled from 'styled-components'
 import Segment from '$shared/components/Segment'
-import {SM, MD, LG, XL, COLORS, MAX_BODY_WIDTH} from '$shared/utils/styled'
+import { SM, MD, LG, XL, COLORS, MAX_BODY_WIDTH } from '$shared/utils/styled'
 
 export const ProjectPageContainer = styled.div`
-  max-width: ${MAX_BODY_WIDTH}px;
-  margin: 0 auto;
-  position: relative;
-  padding: 24px;
-
-  & & {
-    padding: 0 24px;
-  }
-
-  @media (min-width: ${MD}px) {
-    padding: 40px;
+    max-width: ${MAX_BODY_WIDTH}px;
+    margin: 0 auto;
+    position: relative;
+    padding: 24px;
 
     & & {
-      padding: 0;
+        padding: 0 24px;
     }
-  }
 
-  @media (min-width: ${LG}px) {
-    padding: 60px 0;
-  }
+    @media (min-width: ${MD}px) {
+        padding: 40px;
+
+        & & {
+            padding: 0;
+        }
+    }
+
+    @media (min-width: ${LG}px) {
+        padding: 60px 0;
+    }
 `
 const ProjectPage = styled.div`
     color: #323232;

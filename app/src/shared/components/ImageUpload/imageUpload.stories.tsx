@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {Meta} from "@storybook/react"
+import { Meta } from '@storybook/react'
 import ImageUpload from '.'
 
 type Props = {
@@ -27,15 +27,21 @@ Default.story = {
 const meta: Meta<typeof Default> = {
     title: 'Shared/ImageUpload',
     component: Default,
-    decorators: [(Story) => {
-        return <div style={{
-            color: '#323232',
-            padding: '5rem',
-            background: '#F8F8F8',
-        }}>
-            <Story/>
-        </div>
-    }],
+    decorators: [
+        (Story) => {
+            return (
+                <div
+                    style={{
+                        color: '#323232',
+                        padding: '5rem',
+                        background: '#F8F8F8',
+                    }}
+                >
+                    <Story />
+                </div>
+            )
+        },
+    ],
 }
 
 export default meta

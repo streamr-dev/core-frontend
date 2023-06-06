@@ -7,14 +7,15 @@ import {
     CreateProjectButton,
     DropdownFilters,
     FiltersBar,
-    FiltersWrap, MobileFilterText,
+    FiltersWrap,
+    MobileFilterText,
     MobileFilterWrap,
     SearchBarWrap,
-    SelectFieldWrap
+    SelectFieldWrap,
 } from '$mp/components/ActionBar/actionBar.styles'
 import SelectField2 from '$mp/components/SelectField2'
 import MobileFilter from '$shared/components/MobileFilter'
-import { ProjectListingTypeFilter } from "$app/src/services/projects"
+import { ProjectListingTypeFilter } from '$app/src/services/projects'
 import Tabs, { Tab } from '$shared/components/Tabs'
 import { isValidSearchQuery } from '../../utils/validate'
 
@@ -39,11 +40,11 @@ const productTypeOptions = [
     },
     {
         value: ProjectListingTypeFilter.paidData,
-        label: 'Paid data'
+        label: 'Paid data',
     },
     {
         value: ProjectListingTypeFilter.dataUnion,
-        label: 'Data union'
+        label: 'Data union',
     },
 ]
 
@@ -86,7 +87,7 @@ const UnstyledActionBar = ({
     return (
         <ActionBarContainer {...props}>
             <SearchBarWrap>
-                <SearchBar value={filter.search} onChange={onSearchChange}/>
+                <SearchBar value={filter.search} onChange={onSearchChange} />
             </SearchBarWrap>
             <FiltersBar>
                 <FiltersWrap>
@@ -101,7 +102,11 @@ const UnstyledActionBar = ({
                         <Tab
                             id={ProjectsScope.Owned}
                             disabled={!isUserAuthenticated}
-                            title={isUserAuthenticated ? undefined : 'You need to be connected in to view your projects'}
+                            title={
+                                isUserAuthenticated
+                                    ? undefined
+                                    : 'You need to be connected in to view your projects'
+                            }
                         >
                             Your projects
                         </Tab>
@@ -123,8 +128,8 @@ const UnstyledActionBar = ({
                                 {
                                     label: 'Project type',
                                     value: 'type',
-                                    options: productTypeOptions
-                                }
+                                    options: productTypeOptions,
+                                },
                             ]}
                             onChange={handleMobileFilterChange}
                             selectedFilters={{ category, type }}
@@ -133,12 +138,17 @@ const UnstyledActionBar = ({
                         </MobileFilter>
                     </MobileFilterWrap>
                 </FiltersWrap>
-                <CreateProjectButton kind={'primary'} type={'button'} onClick={() => onCreateProject()}>Create project</CreateProjectButton>
+                <CreateProjectButton
+                    kind={'primary'}
+                    type={'button'}
+                    onClick={() => onCreateProject()}
+                >
+                    Create project
+                </CreateProjectButton>
             </FiltersBar>
         </ActionBarContainer>
     )
 }
 
-const ActionBar = styled(UnstyledActionBar)`
-`
+const ActionBar = styled(UnstyledActionBar)``
 export default ActionBar

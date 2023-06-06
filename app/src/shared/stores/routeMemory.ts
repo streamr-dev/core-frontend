@@ -59,7 +59,10 @@ const useRouteMemoryStore = create<Store>((set, get) => {
                     for (const key in draft.items) {
                         const item = draft.items[key]
 
-                        if (item == null || !Object.prototype.hasOwnProperty.call(draft.items, key)) {
+                        if (
+                            item == null ||
+                            !Object.prototype.hasOwnProperty.call(draft.items, key)
+                        ) {
                             continue
                         }
 
@@ -79,7 +82,10 @@ const useRouteMemoryStore = create<Store>((set, get) => {
                 produce(current, (draft) => {
                     const item = draft.items[key]
 
-                    if (item == null || !Object.prototype.hasOwnProperty.call(draft.items, key)) {
+                    if (
+                        item == null ||
+                        !Object.prototype.hasOwnProperty.call(draft.items, key)
+                    ) {
                         return
                     }
 

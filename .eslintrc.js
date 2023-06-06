@@ -1,7 +1,7 @@
 const path = require('path')
 
 module.exports = {
-    extends: ['plugin:react/recommended', 'streamr-ts', 'plugin:cypress/recommended'],
+    extends: ['plugin:react/recommended', 'streamr-ts', 'plugin:cypress/recommended', 'prettier'],
     parser: '@typescript-eslint/parser',
     settings: {
         'import/resolver': {

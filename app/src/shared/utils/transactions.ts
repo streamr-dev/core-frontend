@@ -2,7 +2,9 @@ import { isSessionStorageAvailable } from '$shared/utils/storage'
 import { Hash } from '$shared/types/web3-types'
 import { TransactionType } from '$shared/types/common-types'
 export const getTransactionsFromSessionStorage = (): Record<string, any> =>
-    isSessionStorageAvailable() ? JSON.parse(sessionStorage.getItem('pendingTransactions') || '{}') : {}
+    isSessionStorageAvailable()
+        ? JSON.parse(sessionStorage.getItem('pendingTransactions') || '{}')
+        : {}
 
 const setTransactionsToSessionStorage = (txList: Record<string, any>): void => {
     if (isSessionStorageAvailable()) {

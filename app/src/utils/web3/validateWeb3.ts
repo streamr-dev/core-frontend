@@ -3,7 +3,7 @@ import { networks } from '$shared/utils/constants'
 import unlock from '$utils/web3/unlock'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 type ValidateParams = {
-    requireNetwork?: number | boolean;
+    requireNetwork?: number | boolean
     unlockTimeout?: number | boolean
 }
 export default async function validateWeb3({

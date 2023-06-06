@@ -1,6 +1,6 @@
 import React from 'react'
-import {MemoryRouter} from 'react-router-dom'
-import {render, RenderResult, screen} from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
+import { render, RenderResult, screen } from '@testing-library/react'
 import Nav from '$shared/components/Layout/Nav'
 import { useWalletAccount, useEns } from '$shared/stores/wallet'
 
@@ -20,12 +20,12 @@ jest.mock('$routes', () => ({
     default: {
         root: jest.fn(),
         projects: {
-            index: jest.fn()
+            index: jest.fn(),
         },
         streams: {
-            index: jest.fn()
+            index: jest.fn(),
         },
-        networkExplorer: jest.fn()
+        networkExplorer: jest.fn(),
     },
 }))
 
@@ -33,13 +33,12 @@ function mountNav(): RenderResult {
     return render(
         <MemoryRouter>
             <Nav />
-        </MemoryRouter>
+        </MemoryRouter>,
     )
 }
 
 /* eslint-disable object-curly-newline */
 describe('Nav.Wide', () => {
-
     it('renders logo', () => {
         mountNav()
         expect(screen.getByTestId('logo')).toBeTruthy()
@@ -58,8 +57,8 @@ describe('Nav.Wide', () => {
 
     describe('When the user is signed in', () => {
         beforeEach(() => {
-            (useWalletAccount as any).mockImplementation(() => '0xADDR');
-            (useEns as any).mockImplementation(() => '')
+            ;(useWalletAccount as any).mockImplementation(() => '0xADDR')
+            ;(useEns as any).mockImplementation(() => '')
         })
 
         it('does not render the Connect button', () => {

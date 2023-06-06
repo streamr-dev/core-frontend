@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react'
 import styled from 'styled-components'
-import Editor from "rich-markdown-editor"
+import Editor from 'rich-markdown-editor'
 import light from 'rich-markdown-editor/dist/styles/theme'
 import { Project } from '$mp/types/project-types'
 import {
@@ -9,21 +9,21 @@ import {
     ProjectHeroImage,
     ProjectHeroMetadataContainer,
     ProjectHeroSignalContainer,
-    ProjectHeroTitle
+    ProjectHeroTitle,
 } from '$mp/containers/ProjectPage/Hero/ProjectHero2.styles'
 import { COLORS } from '$shared/utils/styled'
-import {DetailDisplay} from "$shared/components/DetailEditor/DetailDisplay"
-import {ProjectDetailIcon} from "$mp/containers/ProjectEditing/ProjectDetails.styles"
+import { DetailDisplay } from '$shared/components/DetailEditor/DetailDisplay'
+import { ProjectDetailIcon } from '$mp/containers/ProjectEditing/ProjectDetails.styles'
 
 const DescriptionEditor = styled(Editor)`
-  ${ProjectHeroDescriptionStyles};
-  justify-content: flex-start;
-  
-  .block-menu-trigger {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+    ${ProjectHeroDescriptionStyles};
+    justify-content: flex-start;
+
+    .block-menu-trigger {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 `
 
 const customTheme = {
@@ -33,7 +33,7 @@ const customTheme = {
     toolbarItem: COLORS.primaryLight,
     placeholder: COLORS.primaryDisabled,
     link: COLORS.link,
-    text: COLORS.primaryLight
+    text: COLORS.primaryLight,
 }
 
 interface Props {
@@ -43,17 +43,31 @@ interface Props {
     contact: Project['contact']
 }
 
-export default function ProjectHero2({ name, description, imageUrl, contact = {} }: Props) {
+export default function ProjectHero2({
+    name,
+    description,
+    imageUrl,
+    contact = {},
+}: Props) {
     return (
         <ProjectHeroContainer>
-            <ProjectHeroImage src={imageUrl} alt={name} noBorderRadius={true} key={imageUrl || ''} />
+            <ProjectHeroImage
+                src={imageUrl}
+                alt={name}
+                noBorderRadius={true}
+                key={imageUrl || ''}
+            />
             <ProjectHeroTitle>{name}</ProjectHeroTitle>
             <DescriptionEditor value={description} readOnly={true} theme={customTheme} />
             <ProjectHeroMetadataContainer>
                 {contact && (
                     <>
                         {contact.url && (
-                            <DetailDisplay icon={<ProjectDetailIcon name={'web'} />} value={contact.url} link={contact.url} />
+                            <DetailDisplay
+                                icon={<ProjectDetailIcon name={'web'} />}
+                                value={contact.url}
+                                link={contact.url}
+                            />
                         )}
                         {contact.email && (
                             <DetailDisplay
@@ -63,20 +77,46 @@ export default function ProjectHero2({ name, description, imageUrl, contact = {}
                             />
                         )}
                         {contact.twitter && (
-                            <DetailDisplay icon={<ProjectDetailIcon name={'twitter'} className={'twitterColor'} />} link={contact.twitter} />
+                            <DetailDisplay
+                                icon={
+                                    <ProjectDetailIcon
+                                        name={'twitter'}
+                                        className={'twitterColor'}
+                                    />
+                                }
+                                link={contact.twitter}
+                            />
                         )}
                         {contact.telegram && (
                             <DetailDisplay
-                                icon={<ProjectDetailIcon name={'telegram'} className={'telegramColor'} />}
+                                icon={
+                                    <ProjectDetailIcon
+                                        name={'telegram'}
+                                        className={'telegramColor'}
+                                    />
+                                }
                                 link={contact.telegram}
                             />
                         )}
                         {contact.reddit && (
-                            <DetailDisplay icon={<ProjectDetailIcon name={'reddit'} className={'redditColor'} />} link={contact.reddit} />
+                            <DetailDisplay
+                                icon={
+                                    <ProjectDetailIcon
+                                        name={'reddit'}
+                                        className={'redditColor'}
+                                    />
+                                }
+                                link={contact.reddit}
+                            />
                         )}
                         {contact.linkedIn && (
                             <DetailDisplay
-                                icon={<ProjectDetailIcon name={'linkedin'} className={'linkedInColor'} />}
+                                icon={
+                                    <ProjectDetailIcon
+                                        name={'linkedin'}
+                                        className={'linkedInColor'}
+                                    />
+                                }
                                 link={contact.linkedIn}
                             />
                         )}
@@ -93,4 +133,3 @@ export default function ProjectHero2({ name, description, imageUrl, contact = {}
         </ProjectHeroContainer>
     )
 }
-

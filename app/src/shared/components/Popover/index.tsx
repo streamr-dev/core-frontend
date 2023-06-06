@@ -21,7 +21,7 @@ type Props = {
         modifiers?: Record<string, any>
     }
     onMenuToggle?: (arg0: boolean) => any
-    direction?: "up" | "down" | "left" | "right"
+    direction?: 'up' | 'down' | 'left' | 'right'
     disabled?: boolean
     onChange?: (arg0: string) => void
     leftTick?: boolean
@@ -163,7 +163,10 @@ const Popover: FunctionComponent<Props> = ({
     leftTick,
 }) => {
     const [open, setOpen] = useState(false)
-    const childrenArray = useMemo<ReactElement[]>(() => React.Children.toArray(children) as ReactElement[], [children])
+    const childrenArray = useMemo<ReactElement[]>(
+        () => React.Children.toArray(children) as ReactElement[],
+        [children],
+    )
     const selectedIndex = useMemo(
         () => childrenArray.findIndex((child) => child.props.value === selectedItem),
         [childrenArray, selectedItem],
@@ -239,8 +242,19 @@ const Popover: FunctionComponent<Props> = ({
         }
     }, [onMenuToggle, open])
     return (
-        <StyledDropdown toggle={toggle} isOpen={open} onClick={onClick} direction={direction} className={className}>
-            <StyledDropdownToggle {...toggleProps} tag="div" className={toggleClassName} disabled={!!disabled}>
+        <StyledDropdown
+            toggle={toggle}
+            isOpen={open}
+            onClick={onClick}
+            direction={direction}
+            className={className}
+        >
+            <StyledDropdownToggle
+                {...toggleProps}
+                tag="div"
+                className={toggleClassName}
+                disabled={!!disabled}
+            >
                 <ToggleLabel>{titleComponent}</ToggleLabel>
                 {caretComponent}
             </StyledDropdownToggle>
@@ -251,7 +265,9 @@ const Popover: FunctionComponent<Props> = ({
                         (child, index) =>
                             child &&
                             React.cloneElement(child, {
-                                active: !!child.props.value && child.props.value === selectedItem,
+                                active:
+                                    !!child.props.value &&
+                                    child.props.value === selectedItem,
                                 onClick: getOnItemClick(index, child.props.onClick),
                                 leftTick: !!leftTick,
                             }),

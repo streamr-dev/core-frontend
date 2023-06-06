@@ -11,7 +11,15 @@ type Props = {
     disabled?: boolean
 }
 
-const Slider = ({ min, max, value, className, sliderClassname, onChange: onChangeProp, disabled }: Props) => {
+const Slider = ({
+    min,
+    max,
+    value,
+    className,
+    sliderClassname,
+    onChange: onChangeProp,
+    disabled,
+}: Props) => {
     const onChange = useCallback(
         (e: React.SyntheticEvent<HTMLInputElement>) => {
             if (onChangeProp) {

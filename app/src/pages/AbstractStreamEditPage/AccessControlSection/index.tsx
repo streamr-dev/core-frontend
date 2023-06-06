@@ -6,10 +6,12 @@ import StreamTypeSelector from './StreamTypeSelector'
 import PermissionList from './PermissionList'
 
 export type Props = {
-    disabled: boolean,
+    disabled: boolean
 }
 
-const AccessControlSection: React.FunctionComponent<Props> = ({ disabled: disabledProp }) => {
+const AccessControlSection: React.FunctionComponent<Props> = ({
+    disabled: disabledProp,
+}) => {
     const canEdit = useCurrentStreamAbility(StreamPermission.EDIT)
 
     const disabled = disabledProp || !canEdit
@@ -17,8 +19,9 @@ const AccessControlSection: React.FunctionComponent<Props> = ({ disabled: disabl
     return (
         <Section title="Access control">
             <p>
-                You can make your stream public, or grant access to specific Ethereum accounts.
-                Learn more about stream access control from the <a href="https://docs.streamr.network/">docs</a>.
+                You can make your stream public, or grant access to specific Ethereum
+                accounts. Learn more about stream access control from the{' '}
+                <a href="https://docs.streamr.network/">docs</a>.
             </p>
             <StreamTypeSelector disabled={disabled} />
             <PermissionList disabled={disabled} />

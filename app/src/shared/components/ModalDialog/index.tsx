@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react'
+import React, { ReactNode } from 'react'
 import styled, { css } from 'styled-components'
 import ReactModal2 from 'react-modal2'
 import BodyClass, { NO_SCROLL } from '$shared/components/BodyClass'
@@ -9,13 +9,13 @@ export type Props = {
     className?: string
     backdropClassName?: string
     noScroll?: boolean
-    closeOnEsc?: boolean,
+    closeOnEsc?: boolean
     closeOnBackdropClick?: boolean
 }
 export type InternalProps = Props & {
     children: ReactNode
 }
-const Fullpage = styled.div<{noScroll: boolean}>`
+const Fullpage = styled.div<{ noScroll: boolean }>`
     position: fixed;
     top: 0;
     left: 0;
@@ -40,7 +40,12 @@ const ModalDialog = ({
     noScroll = false,
     ...otherProps
 }: InternalProps) => (
-    <ReactModal2 onClose={onClose} backdropClassName={backdropClassName} modalClassName={className} {...otherProps}>
+    <ReactModal2
+        onClose={onClose}
+        backdropClassName={backdropClassName}
+        modalClassName={className}
+        {...otherProps}
+    >
         <BodyClass className={NO_SCROLL} />
         {fullpage ? <Fullpage noScroll={noScroll}>{children}</Fullpage> : children}
     </ReactModal2>

@@ -58,7 +58,12 @@ function reducer(state, { type, value, detectUnit = false }) {
     }
 }
 
-export default function UnitizedQuantity({ units: unitsProp, quantity: quantityProp, onChange, disabled }) {
+export default function UnitizedQuantity({
+    units: unitsProp,
+    quantity: quantityProp,
+    onChange,
+    disabled,
+}) {
     const [{ quantity, unit, cache, units }, dispatch] = useReducer(reducer, {
         ...initialState,
         units: Object.entries(unitsProp).sort(([, a], [, b]) => a - b),
@@ -71,7 +76,10 @@ export default function UnitizedQuantity({ units: unitsProp, quantity: quantityP
             detectUnit: detectUnitRef.current,
         })
     }, [quantityProp])
-    const unitOptions = useMemo(() => getUnitSelectOptions(...units.map(([u]) => u), quantity), [quantity, units])
+    const unitOptions = useMemo(
+        () => getUnitSelectOptions(...units.map(([u]) => u), quantity),
+        [quantity, units],
+    )
     const stateRef = useRef({
         quantityProp,
         onChange,
@@ -99,7 +107,9 @@ export default function UnitizedQuantity({ units: unitsProp, quantity: quantityP
             return
         }
 
-        const q = Number.isNaN(state.quantity / 1) ? undefined : Math.max(0, state.quantity)
+        const q = Number.isNaN(state.quantity / 1)
+            ? undefined
+            : Math.max(0, state.quantity)
 
         const newQuantity = (() => {
             if (typeof q === 'undefined') {

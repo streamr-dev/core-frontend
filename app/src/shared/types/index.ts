@@ -3,7 +3,7 @@ import { TimeUnit } from '$shared/utils/timeUnit'
 export enum ProjectType {
     OpenData = 'OPEN_DATA',
     PaidData = 'PAID_DATA',
-    DataUnion = 'DATA_UNION'
+    DataUnion = 'DATA_UNION',
 }
 
 export interface SalePoint {

@@ -10,7 +10,11 @@ export interface ModalProps extends BaseModalProps {
 /**
  * `BaseModal` with left-aligned title bar.
  */
-export default function LightModal({ children, title = 'Untitled modal', ...props }: ModalProps) {
+export default function LightModal({
+    children,
+    title = 'Untitled modal',
+    ...props
+}: ModalProps) {
     return (
         <BaseModal {...props}>
             <Root>

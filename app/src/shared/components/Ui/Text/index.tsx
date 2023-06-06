@@ -1,5 +1,11 @@
-import React, { ComponentType, forwardRef, ForwardRefRenderFunction, FunctionComponent, HTMLProps } from 'react'
-import { compose } from "$shared/utils/compose"
+import React, {
+    ComponentType,
+    forwardRef,
+    ForwardRefRenderFunction,
+    FunctionComponent,
+    HTMLProps,
+} from 'react'
+import { compose } from '$shared/utils/compose'
 import { Props as FlushHistoryProps } from './FlushHistoryDecorator'
 import FlushHistoryDecorator from './FlushHistoryDecorator'
 import { Props as OnCommitProps } from './OnCommitDecorator'
@@ -17,13 +23,19 @@ export type TextInputProps = FlushHistoryProps &
         tag?: 'input' | 'textarea'
         unstyled?: boolean
         invalid?: boolean
-    } &
-    HTMLProps<HTMLInputElement | HTMLTextAreaElement>
+    } & HTMLProps<HTMLInputElement | HTMLTextAreaElement>
 
-const Text: FunctionComponent<TextInputProps> = ({ tag: Tag = 'input', unstyled, ...props }: TextInputProps, ref: any) =>
-    unstyled ? <Tag {...props} ref={ref} /> : <StyledInput {...props} as={Tag} ref={ref} />
+const Text: FunctionComponent<TextInputProps> = (
+    { tag: Tag = 'input', unstyled, ...props }: TextInputProps,
+    ref: any,
+) =>
+    unstyled ? (
+        <Tag {...props} ref={ref} />
+    ) : (
+        <StyledInput {...props} as={Tag} ref={ref} />
+    )
 
-const EnhancedText= compose<ComponentType<TextInputProps>>(
+const EnhancedText = compose<ComponentType<TextInputProps>>(
     FlushHistoryDecorator,
     OnCommitDecorator,
     SelectAllOnFocusDecorator,

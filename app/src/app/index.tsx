@@ -61,22 +61,16 @@ const App = () => (
                         <Analytics />
                         <Globals />
                         <Routes>
-                                <Route
-                                    path="/hub/projects/*"
-                                    errorElement={<ErrorPage />}
-                                >
-                                    <Route index element={<ProjectsPage />} />
-                                    <Route path="new" element={<NewProjectPage />} />
-                                    <Route
-                                        path=":id/edit"
-                                        element={<EditProjectPage />}
-                                    />
-                            <Route path=":id/*" element={<ProjectPage />} />
+                            <Route path="/hub/projects/*" errorElement={<ErrorPage />}>
+                                <Route index element={<ProjectsPage />} />
+                                <Route path="new" element={<NewProjectPage />} />
+                                <Route path=":id/edit" element={<EditProjectPage />} />
+                                <Route path=":id/*" element={<ProjectPage />} />
                             </Route>
-                                <Route path="/hub/streams/*" errorElement={<ErrorPage />}>
-                                    <Route index element={<NewStreamListingPage />} />
-                                    <Route path=":id/*" element={<StreamPage />} />
-                                </Route>
+                            <Route path="/hub/streams/*" errorElement={<ErrorPage />}>
+                                <Route index element={<NewStreamListingPage />} />
+                                <Route path=":id/*" element={<StreamPage />} />
+                            </Route>
                             {MiscRouter()}
                         </Routes>
                         <Container id={Layer.Modal} />

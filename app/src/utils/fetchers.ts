@@ -65,9 +65,7 @@ export async function fetchGraphProjectSubscriptions(projectId: string) {
         const [project = undefined] = z
             .object({
                 data: z.object({
-                    projects: z.array(
-                        GraphProject.pick({ subscriptions: true }),
-                    ),
+                    projects: z.array(GraphProject.pick({ subscriptions: true })),
                 }),
             })
             .parse(result).data.projects

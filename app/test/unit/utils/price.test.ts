@@ -40,13 +40,27 @@ describe('price utils', () => {
     })
     describe('pricePerSecondFromTimeUnit', () => {
         it('calculates PPS for time units', () => {
-            expect(all.pricePerSecondFromTimeUnit(new BN(0), 'second', new BN(18))).toStrictEqual('0')
-            expect(all.pricePerSecondFromTimeUnit(new BN(1), 'second', new BN(18))).toStrictEqual('1000000000000000000')
-            expect(all.pricePerSecondFromTimeUnit(new BN(1), 'minute', new BN(18))).toStrictEqual('16666666666666667')
-            expect(all.pricePerSecondFromTimeUnit(new BN(1), 'hour', new BN(18))).toStrictEqual('277777777777778')
-            expect(all.pricePerSecondFromTimeUnit(new BN(1), 'day', new BN(18))).toStrictEqual('11574074074074')
-            expect(all.pricePerSecondFromTimeUnit(new BN(1), 'week', new BN(18))).toStrictEqual('1653439153439')
-            expect(() => all.pricePerSecondFromTimeUnit(new BN(0), 'asdf', new BN(18))).toThrow()
+            expect(
+                all.pricePerSecondFromTimeUnit(new BN(0), 'second', new BN(18)),
+            ).toStrictEqual('0')
+            expect(
+                all.pricePerSecondFromTimeUnit(new BN(1), 'second', new BN(18)),
+            ).toStrictEqual('1000000000000000000')
+            expect(
+                all.pricePerSecondFromTimeUnit(new BN(1), 'minute', new BN(18)),
+            ).toStrictEqual('16666666666666667')
+            expect(
+                all.pricePerSecondFromTimeUnit(new BN(1), 'hour', new BN(18)),
+            ).toStrictEqual('277777777777778')
+            expect(
+                all.pricePerSecondFromTimeUnit(new BN(1), 'day', new BN(18)),
+            ).toStrictEqual('11574074074074')
+            expect(
+                all.pricePerSecondFromTimeUnit(new BN(1), 'week', new BN(18)),
+            ).toStrictEqual('1653439153439')
+            expect(() =>
+                all.pricePerSecondFromTimeUnit(new BN(0), 'asdf', new BN(18)),
+            ).toThrow()
         })
     })
     describe('sanitize', () => {
@@ -54,7 +68,9 @@ describe('price utils', () => {
             expect(all.sanitize(new BN(-500))).toStrictEqual(new BN(0))
             expect(all.sanitize(new BN(-1.345345))).toStrictEqual(new BN(0))
             expect(all.sanitize(new BN(12300))).toStrictEqual(new BN(12300))
-            expect(all.sanitize(new BN(1.012030123012))).toStrictEqual(new BN(1.012030123012))
+            expect(all.sanitize(new BN(1.012030123012))).toStrictEqual(
+                new BN(1.012030123012),
+            )
         })
     })
     describe('formatAmount', () => {
@@ -92,8 +108,12 @@ describe('price utils', () => {
             expect(all.arePricesEqual('1', '0.5')).toBe(false)
             expect(all.arePricesEqual('1', '1')).toBe(true)
             expect(all.arePricesEqual('-1.123123', '-1.123123')).toBe(true)
-            expect(all.arePricesEqual('0.00000000000000001', '-0.00000000000000001')).toBe(false)
-            expect(all.arePricesEqual('0.00000000000000001', '0.00000000000000001')).toBe(true)
+            expect(
+                all.arePricesEqual('0.00000000000000001', '-0.00000000000000001'),
+            ).toBe(false)
+            expect(all.arePricesEqual('0.00000000000000001', '0.00000000000000001')).toBe(
+                true,
+            )
         })
     })
     describe('getMostRelevantTimeUnit', () => {
@@ -107,27 +127,63 @@ describe('price utils', () => {
     })
     describe('formatPrice', () => {
         it('works with all parameters given', () => {
-            expect(all.formatPrice(new BN(1), 'DATA', new BN(18), 'second')).toBe('1 DATA / s')
-            expect(all.formatPrice(new BN(1), 'DATA', new BN(18), 'minute')).toBe('60 DATA / min')
-            expect(all.formatPrice(new BN(0.016666), 'DATA', new BN(18), 'minute')).toBe('1 DATA / min')
-            expect(all.formatPrice(new BN(0.016666), 'DATA', new BN(18), 'hour')).toBe('60 DATA / hr')
-            expect(all.formatPrice(new BN(1.004512), 'DATA', new BN(18), 'second')).toBe('1.005 DATA / s')
-            expect(all.formatPrice(new BN(123.456789), 'DATA', new BN(18), 'second')).toBe('123.5 DATA / s')
-            expect(all.formatPrice(new BN(123.512345), 'DATA', new BN(18), 'second')).toBe('123.5 DATA / s')
-            expect(all.formatPrice(new BN(0.00000000008), 'DATA', new BN(18), 'second')).toBe('0 DATA / s')
-            expect(all.formatPrice(new BN(0.0002777777), 'USD', new BN(18), 'hour')).toBe('1.00 USD / hr')
-            expect(all.formatPrice(new BN(0.0002777777), 'USD', new BN(18), 'day')).toBe('24.00 USD / d')
-            expect(all.formatPrice(new BN(0.0000115), 'USD', new BN(18), 'day')).toBe('0.99 USD / d')
-            expect(all.formatPrice(new BN(0.0000115), 'USD', new BN(18), 'week')).toBe('6.96 USD / wk')
+            expect(all.formatPrice(new BN(1), 'DATA', new BN(18), 'second')).toBe(
+                '1 DATA / s',
+            )
+            expect(all.formatPrice(new BN(1), 'DATA', new BN(18), 'minute')).toBe(
+                '60 DATA / min',
+            )
+            expect(all.formatPrice(new BN(0.016666), 'DATA', new BN(18), 'minute')).toBe(
+                '1 DATA / min',
+            )
+            expect(all.formatPrice(new BN(0.016666), 'DATA', new BN(18), 'hour')).toBe(
+                '60 DATA / hr',
+            )
+            expect(all.formatPrice(new BN(1.004512), 'DATA', new BN(18), 'second')).toBe(
+                '1.005 DATA / s',
+            )
+            expect(
+                all.formatPrice(new BN(123.456789), 'DATA', new BN(18), 'second'),
+            ).toBe('123.5 DATA / s')
+            expect(
+                all.formatPrice(new BN(123.512345), 'DATA', new BN(18), 'second'),
+            ).toBe('123.5 DATA / s')
+            expect(
+                all.formatPrice(new BN(0.00000000008), 'DATA', new BN(18), 'second'),
+            ).toBe('0 DATA / s')
+            expect(all.formatPrice(new BN(0.0002777777), 'USD', new BN(18), 'hour')).toBe(
+                '1.00 USD / hr',
+            )
+            expect(all.formatPrice(new BN(0.0002777777), 'USD', new BN(18), 'day')).toBe(
+                '24.00 USD / d',
+            )
+            expect(all.formatPrice(new BN(0.0000115), 'USD', new BN(18), 'day')).toBe(
+                '0.99 USD / d',
+            )
+            expect(all.formatPrice(new BN(0.0000115), 'USD', new BN(18), 'week')).toBe(
+                '6.96 USD / wk',
+            )
         })
         it('works without timeunit given', () => {
             expect(all.formatPrice(new BN(1), 'DATA', new BN(18))).toBe('1 DATA / s')
-            expect(all.formatPrice(new BN(0.0166666666667), 'DATA', new BN(18))).toBe('1 DATA / min')
-            expect(all.formatPrice(new BN(0.04), 'DATA', new BN(18))).toBe('2.4 DATA / min')
-            expect(all.formatPrice(new BN(0.0002777777778), 'USD', new BN(18))).toBe('1.00 USD / hr')
-            expect(all.formatPrice(new BN(0.000011574075), 'USD', new BN(18))).toBe('1.00 USD / d')
-            expect(all.formatPrice(new BN(0.00005), 'USD', new BN(18))).toBe('4.32 USD / d')
-            expect(all.formatPrice(new BN(0.00000165344), 'USD', new BN(18))).toBe('1.00 USD / wk')
+            expect(all.formatPrice(new BN(0.0166666666667), 'DATA', new BN(18))).toBe(
+                '1 DATA / min',
+            )
+            expect(all.formatPrice(new BN(0.04), 'DATA', new BN(18))).toBe(
+                '2.4 DATA / min',
+            )
+            expect(all.formatPrice(new BN(0.0002777777778), 'USD', new BN(18))).toBe(
+                '1.00 USD / hr',
+            )
+            expect(all.formatPrice(new BN(0.000011574075), 'USD', new BN(18))).toBe(
+                '1.00 USD / d',
+            )
+            expect(all.formatPrice(new BN(0.00005), 'USD', new BN(18))).toBe(
+                '4.32 USD / d',
+            )
+            expect(all.formatPrice(new BN(0.00000165344), 'USD', new BN(18))).toBe(
+                '1.00 USD / wk',
+            )
         })
     })
 })

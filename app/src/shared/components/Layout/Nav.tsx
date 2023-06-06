@@ -1,4 +1,4 @@
-import React, {Fragment, FunctionComponent} from 'react'
+import React, { Fragment, FunctionComponent } from 'react'
 import styled, { css } from 'styled-components'
 import { toaster } from 'toasterhea'
 import { useLocation } from 'react-router-dom'
@@ -10,11 +10,17 @@ import {
     NavDropdown,
     NavOverlay,
 } from '@streamr/streamr-layout'
-import { MD as TABLET, LG as DESKTOP, COLORS, REGULAR, MEDIUM } from '$shared/utils/styled'
+import {
+    MD as TABLET,
+    LG as DESKTOP,
+    COLORS,
+    REGULAR,
+    MEDIUM,
+} from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import SvgIcon from '$shared/components/SvgIcon'
 import AvatarImage from '$shared/components/AvatarImage'
-import {truncate} from "$shared/utils/text"
+import { truncate } from '$shared/utils/text'
 import ConnectModal from '$app/src/modals/ConnectModal'
 import { Layer } from '$app/src/utils/Layer'
 import { useEns, useWalletAccount } from '$shared/stores/wallet'
@@ -48,41 +54,40 @@ const DropdownToggle = styled.div`
         transition: 200ms opacity;
     }
 `
-const Menu = styled(UnstyledMenu)`
-`
+const Menu = styled(UnstyledMenu)``
 const MenuItem = styled(Menu.Item)`
-  &.user-info {
-    padding: 0 16px !important;
-  }
-  &.disconnect {
-    padding: 0 !important;
-    .disconnect-text {
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    &.user-info {
+        padding: 0 16px !important;
     }
-  }
+    &.disconnect {
+        padding: 0 !important;
+        .disconnect-text {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
 `
 
 const MenuDivider = styled(Menu.Divider)`
-  margin: 0;
+    margin: 0;
 `
 
 const WalletAddress = styled.div`
-  margin-left: 13px;
-  display: flex;
-  flex-direction: column;
-  span {
-    font-size: 14px;
-    line-height: 18px;
-    user-select: none;
-    color: ${COLORS.primary};
-    font-weight: 400;
-    &.ens-name {
-      font-weight: 500;
+    margin-left: 13px;
+    display: flex;
+    flex-direction: column;
+    span {
+        font-size: 14px;
+        line-height: 18px;
+        user-select: none;
+        color: ${COLORS.primary};
+        font-weight: 400;
+        &.ens-name {
+            font-weight: 500;
+        }
     }
-  }
 `
 
 const SignedInUserMenu = styled(NavDropdown)`
@@ -95,7 +100,8 @@ const SignedInUserMenu = styled(NavDropdown)`
             margin-bottom: 10px;
         }
 
-        ${Avatarless} {}
+        ${Avatarless} {
+        }
 
         ${Name},
         ${Username} {
@@ -142,7 +148,7 @@ const LinkWrapper = styled.div`
         white-space: nowrap;
         text-decoration: none !important;
     }
-    
+
     &:hover {
         ${NavLink} {
             color: ${COLORS.primary};
@@ -155,24 +161,24 @@ type UnstyledNavbarLinkProps = {
     children: any
 }
 
-const UnstyledNavbarLink: FunctionComponent<UnstyledNavbarLinkProps> = ({highlight, children, ...props}) => {
-    return (
-        <LinkWrapper {...props}>
-            {children}
-        </LinkWrapper>
-    )
+const UnstyledNavbarLink: FunctionComponent<UnstyledNavbarLinkProps> = ({
+    highlight,
+    children,
+    ...props
+}) => {
+    return <LinkWrapper {...props}>{children}</LinkWrapper>
 }
 
 const NavbarLinkDesktop = styled(UnstyledNavbarLink)<{ highlight: boolean }>`
     position: relative;
-    
+
     ${NavLink} {
         font-size: 12px;
         padding: 0 10px;
         height: 40px;
         line-height: 40px;
     }
-    
+
     &:after {
         display: block;
         content: '';
@@ -192,17 +198,19 @@ const NavbarLinkDesktop = styled(UnstyledNavbarLink)<{ highlight: boolean }>`
             width: 20px;
         }
     }
-    
-    ${({ highlight }) => highlight && css`
-        &:after {
-            left: 50%;
-            width: 20px;
-        }
 
-        ${NavLink} {
-            color: ${COLORS.primary};
-        }
-    `}
+    ${({ highlight }) =>
+        highlight &&
+        css`
+            &:after {
+                left: 50%;
+                width: 20px;
+            }
+
+            ${NavLink} {
+                color: ${COLORS.primary};
+            }
+        `}
 `
 
 const NavbarLinkMobile = styled(UnstyledNavbarLink)<{ highlight: boolean }>`
@@ -213,30 +221,32 @@ const NavbarLinkMobile = styled(UnstyledNavbarLink)<{ highlight: boolean }>`
         font-size: 18px;
         line-height: 100px;
     }
-    
-    ${({ highlight }) => highlight && css`
-        &:after {
-            display: block;
-            content: '';
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            left: -24px;
-            width: 3px;
-            height: 32px;
-            background-color: ${COLORS.primary};
-        }
 
-        ${NavLink} {
-            color: ${COLORS.primary};
-        }
-
-        @media (min-width: ${MOBILE_LG}px) {
+    ${({ highlight }) =>
+        highlight &&
+        css`
             &:after {
-                left: -64px;
+                display: block;
+                content: '';
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                left: -24px;
+                width: 3px;
+                height: 32px;
+                background-color: ${COLORS.primary};
             }
-        }
-    `}
+
+            ${NavLink} {
+                color: ${COLORS.primary};
+            }
+
+            @media (min-width: ${MOBILE_LG}px) {
+                &:after {
+                    left: -64px;
+                }
+            }
+        `}
 `
 
 const NavbarItemAccount = styled.div`
@@ -248,10 +258,11 @@ const NavbarItemAccount = styled.div`
     }
 `
 
-const UnstyledLogoLink: FunctionComponent<{children?: any, href: string}> = ({children, ...props}) => {
-    return (
-        <a {...props}>{children}</a>
-    )
+const UnstyledLogoLink: FunctionComponent<{ children?: any; href: string }> = ({
+    children,
+    ...props
+}) => {
+    return <a {...props}>{children}</a>
 }
 
 export const LogoLink = styled(UnstyledLogoLink)`
@@ -268,7 +279,7 @@ export const LogoLink = styled(UnstyledLogoLink)`
 const Avatar = styled(AvatarImage)`
     width: 32px;
     height: 32px;
-    border: 1px solid #F3F3F3;
+    border: 1px solid #f3f3f3;
     border-radius: 50%;
     background-color: white;
 
@@ -293,20 +304,20 @@ const UserInfoMobile = styled.div`
     display: flex;
     justify-content: flex-start;
     border-radius: 4px;
-    
+
     ${Avatar} {
         width: 45px;
         height: 45px;
         background-color: #fff;
         margin-right: 8px;
     }
-    
+
     ${Avatarless} {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         justify-content: center;
-        
+
         ${Name} {
             font-size: 14px;
             font-weight: ${REGULAR};
@@ -340,14 +351,18 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                 </NavbarItem>
                 <MenuGrid data-desktop-only>
                     <NavbarItem>
-                        <NavbarLinkDesktop highlight={pathname.startsWith(routes.projects.index())}>
+                        <NavbarLinkDesktop
+                            highlight={pathname.startsWith(routes.projects.index())}
+                        >
                             <NavLink as={Link} to={routes.projects.index()}>
                                 Projects
                             </NavLink>
                         </NavbarLinkDesktop>
                     </NavbarItem>
                     <NavbarItem>
-                        <NavbarLinkDesktop highlight={pathname.startsWith(routes.streams.index())}>
+                        <NavbarLinkDesktop
+                            highlight={pathname.startsWith(routes.streams.index())}
+                        >
                             <NavLink as={Link} to={routes.streams.index()}>
                                 Streams
                             </NavLink>
@@ -355,7 +370,12 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                     </NavbarItem>
                     <NavbarItem>
                         <NavbarLinkDesktop highlight={false}>
-                            <NavLink as={Link} href={routes.networkExplorer()} rel="noopener noreferrer" target="_blank">
+                            <NavLink
+                                as={Link}
+                                href={routes.networkExplorer()}
+                                rel="noopener noreferrer"
+                                target="_blank"
+                            >
                                 Network
                             </NavLink>
                         </NavbarLinkDesktop>
@@ -389,29 +409,34 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                 edge
                                 alignMenu="right"
                                 nodeco
-                                toggle={
-                                    <Avatar username={account} />
-                                }
+                                toggle={<Avatar username={account} />}
                                 menu={
                                     <Menu>
                                         <MenuItem className={'user-info'}>
                                             <MenuItemAvatarContainer>
                                                 <Avatar username={account} />
                                                 <WalletAddress>
-                                                    {!!ensName && <span className={'ens-name'}>{truncate(ensName)}</span>}
+                                                    {!!ensName && (
+                                                        <span className={'ens-name'}>
+                                                            {truncate(ensName)}
+                                                        </span>
+                                                    )}
                                                     <span>{truncate(account)}</span>
                                                 </WalletAddress>
                                             </MenuItemAvatarContainer>
                                         </MenuItem>
                                         <MenuDivider />
-                                        <MenuItem className="disconnect" onClick={() => {
-                                            toast({
-                                                title: 'Use the "Lock" button in your wallet.',
-                                            })
-                                        }}>
+                                        <MenuItem
+                                            className="disconnect"
+                                            onClick={() => {
+                                                toast({
+                                                    title: 'Use the "Lock" button in your wallet.',
+                                                })
+                                            }}
+                                        >
                                             <div className={'disconnect-text'}>
                                                 <span>Disconnect</span>
-                                                <SvgIcon name={'disconnect'}/>
+                                                <SvgIcon name={'disconnect'} />
                                             </div>
                                         </MenuItem>
                                     </Menu>
@@ -426,7 +451,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
     )
 }
 
-const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className }) => {
+const UnstyledMobileNav: FunctionComponent<{ className?: string }> = ({ className }) => {
     const account = useWalletAccount()
 
     const { pathname } = useLocation()
@@ -446,13 +471,15 @@ const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className 
                 </Navbar>
             </NavOverlay.Head>
             <NavOverlay.Body>
-                {!!account &&
+                {!!account && (
                     <UserInfoMobile>
                         <Avatar username={account} />
                         <Avatarless data-testid={'avatarless'} source={account} />
                     </UserInfoMobile>
-                }
-                <NavbarLinkMobile highlight={pathname.startsWith(routes.projects.index())}>
+                )}
+                <NavbarLinkMobile
+                    highlight={pathname.startsWith(routes.projects.index())}
+                >
                     <NavLink as={Link} to={routes.projects.index()}>
                         Projects
                     </NavLink>
@@ -463,18 +490,28 @@ const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className 
                     </NavLink>
                 </NavbarLinkMobile>
                 <NavbarLinkMobile highlight={false}>
-                    <NavLink as={Link} href={routes.networkExplorer()} rel="noopener noreferrer" target="_blank">
+                    <NavLink
+                        as={Link}
+                        href={routes.networkExplorer()}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                    >
                         Network
                     </NavLink>
                 </NavbarLinkMobile>
             </NavOverlay.Body>
             <NavOverlay.Footer>
                 {!!account ? (
-                    <Button kind="secondary" size="normal" type="button" onClick={() => {
-                        toast({
-                            title: 'Use the "Lock" button in your wallet.',
-                        })
-                    }}>
+                    <Button
+                        kind="secondary"
+                        size="normal"
+                        type="button"
+                        onClick={() => {
+                            toast({
+                                title: 'Use the "Lock" button in your wallet.',
+                            })
+                        }}
+                    >
                         Disconnect
                     </Button>
                 ) : (
@@ -544,23 +581,23 @@ const MobileNav = styled(UnstyledMobileNav)`
     ${HamburgerButton} {
         margin-left: auto;
     }
-  
+
     ${NavOverlay.Body} {
         padding: 36px 24px 0 24px;
 
         ${UserInfoMobile} {
             margin-bottom: 24px;
         }
-        
+
         ${NavbarLinkMobile} {
             border-top: 1px solid #efefef;
-            
+
             + ${NavbarLinkMobile} {
                 border-top: none;
             }
         }
 
-        >:first-child {
+        > :first-child {
             border-top: none;
         }
     }
@@ -598,9 +635,9 @@ const UnstyledContainer: FunctionComponent = (props) => <div {...props} />
 export const NavContainer = styled(UnstyledContainer)`
     background-color: #ffffff;
     color: #323232;
-  
+
     ${HamburgerButton} {
-      background-color: #F8F8F8;
+        background-color: #f8f8f8;
     }
 
     ${Navbar} {
@@ -632,11 +669,10 @@ export const NavContainer = styled(UnstyledContainer)`
     }
 
     > [data-mobile-only='true'] {
-       display: block;
+        display: block;
     }
 
     @media (min-width: ${TABLET}px) {
-
         ${Navbar} > [data-desktop-only='true'] {
             display: grid;
         }
@@ -645,13 +681,17 @@ export const NavContainer = styled(UnstyledContainer)`
             display: none;
         }
 
-      > [data-mobile-only='true'] {
-        display: none;
-      }
+        > [data-mobile-only='true'] {
+            display: none;
+        }
     }
 `
 
-const N: FunctionComponent<{children?: any, shadow?: any}> = ({ children, shadow, ...props }) => (
+const N: FunctionComponent<{ children?: any; shadow?: any }> = ({
+    children,
+    shadow,
+    ...props
+}) => (
     <NavContainer {...props}>
         <DesktopNav data-shadow={!!shadow} />
         <MobileNav />

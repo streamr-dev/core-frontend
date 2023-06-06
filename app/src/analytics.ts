@@ -8,12 +8,12 @@ type ErrorService = {
     id: ErrorServiceId
     init?: (...args: Array<any>) => any
     reportError?: (...args: Array<any>) => any
-    getMiddleware?: (...args: Array<any>) => any,
+    getMiddleware?: (...args: Array<any>) => any
     reportWarning?: (...args: Array<any>) => any
 }
 // TODO add typing
 export class Analytics {
-    services: {[key: string]: any} = {}
+    services: { [key: string]: any } = {}
     register({ id, init, reportError, getMiddleware }: ErrorService): void {
         if (!id) {
             throw new Error('Service has no id!')
@@ -27,31 +27,38 @@ export class Analytics {
             id,
             init: typeof init === 'function' ? init : undefined,
             reportError: typeof reportError === 'function' ? reportError : undefined,
-            getMiddleware: typeof getMiddleware === 'function' ? getMiddleware : undefined,
+            getMiddleware:
+                typeof getMiddleware === 'function' ? getMiddleware : undefined,
         }
 
         if (this.services[id].init) {
             this.services[id].init()
         }
     }
-    deregister (id: ErrorServiceId): void {
+    deregister(id: ErrorServiceId): void {
         delete this.services[id]
     }
     reportError(error: Error, extra: Record<string, any> = {}): void {
         Object.keys(this.services).forEach(
-            (id) => this.services[id].reportError && this.services[id].reportError(error, extra),
+            (id) =>
+                this.services[id].reportError &&
+                this.services[id].reportError(error, extra),
         )
     }
     reportWarning(error: Error, extra: Record<string, any> = {}): void {
         Object.keys(this.services).forEach(
-            (id) => this.services[id].reportWarning && this.services[id].reportWarning(error, extra),
+            (id) =>
+                this.services[id].reportWarning &&
+                this.services[id].reportWarning(error, extra),
         )
     }
     getMiddlewares(): any {
         return Object.keys(this.services).reduce(
             (result, id) => [
                 ...result,
-                ...(this.services[id].getMiddleware ? [this.services[id].getMiddleware()] : []),
+                ...(this.services[id].getMiddleware
+                    ? [this.services[id].getMiddleware()]
+                    : []),
             ],
             [],
         )
@@ -103,7 +110,7 @@ if (process.env.SENTRY_DSN) {
                     scope.setExtras(extra)
                 }
 
-                scope.setLevel("warning")
+                scope.setLevel('warning')
                 Sentry.captureException(error)
             })
         },
@@ -123,7 +130,11 @@ if (process.env.LOGROCKET_SLUG) {
                         const requestUrl = request.url.toLowerCase()
 
                         // if the url contains one of the blacklisted paths
-                        if (urlBlackList.some((search) => requestUrl.indexOf(search) !== -1)) {
+                        if (
+                            urlBlackList.some(
+                                (search) => requestUrl.indexOf(search) !== -1,
+                            )
+                        ) {
                             // scrub out the body
                             request.body = null
                         }

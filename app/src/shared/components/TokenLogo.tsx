@@ -5,9 +5,9 @@ import { getTokenLogoUrl } from '$shared/utils/tokenAssets'
 import GenericTokenLogo from './GenericTokenLogo'
 
 type Props = {
-    contractAddress?: string,
-    symbol?: string,
-    chainId: number,
+    contractAddress?: string
+    symbol?: string
+    chainId: number
 }
 const Image = styled.img`
     width: 24px;
@@ -18,25 +18,13 @@ const UnstyledTokenLogo = ({ contractAddress, symbol, chainId, ...props }: Props
     const logoUrl = contractAddress ? getTokenLogoUrl(contractAddress, chainId) : ''
     const { src: imgSrc } = useImage({
         useSuspense: false,
-        srcList: [
-            logoUrl,
-        ],
+        srcList: [logoUrl],
     })
 
-    return (
-        (imgSrc ? (
-            <Image
-                {...props}
-                src={imgSrc}
-                alt="Token logo"
-            />
-        ) : (
-            <GenericTokenLogo
-                contractAddress={contractAddress}
-                symbol={symbol}
-            />
-        ))
-
+    return imgSrc ? (
+        <Image {...props} src={imgSrc} alt="Token logo" />
+    ) : (
+        <GenericTokenLogo contractAddress={contractAddress} symbol={symbol} />
     )
 }
 

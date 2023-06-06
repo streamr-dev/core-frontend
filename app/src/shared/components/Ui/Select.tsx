@@ -76,7 +76,7 @@ const customStyles: any = {
         color: '#CDCDCD',
         lineHeight: '1rem',
         position: 'absolute',
-        left: '16px'
+        left: '16px',
     }),
     valueContainer: (provided: any) => ({
         ...provided,
@@ -94,14 +94,17 @@ const customStyles: any = {
     }),
 }
 
-const Control: FunctionComponent<{ className?: string; children?: ReactNode | ReactNode[]; selectProps: any }> = ({
-    className,
-    children,
-    ...props
-}) => {
+const Control: FunctionComponent<{
+    className?: string
+    children?: ReactNode | ReactNode[]
+    selectProps: any
+}> = ({ className, children, ...props }) => {
     const { controlClassName } = props.selectProps
     return (
-        <components.Control {...(props as any)} className={cx(className, controlClassName)}>
+        <components.Control
+            {...(props as any)}
+            className={cx(className, controlClassName)}
+        >
             {children}
         </components.Control>
     )
@@ -132,32 +135,34 @@ const OptionIconWrapper = styled.div`
     margin-right: 0.5rem;
 `
 
-const IconOption: FunctionComponent<{isSelected: boolean, data: {icon: ReactNode, label: string}}> = (props) => (
-    <components.Option {...props as any}>
+const IconOption: FunctionComponent<{
+    isSelected: boolean
+    data: { icon: ReactNode; label: string }
+}> = (props) => (
+    <components.Option {...(props as any)}>
         {props.isSelected && <Tick />}
-        {props.data.icon != null && <OptionIconWrapper>{props.data.icon}</OptionIconWrapper>}
+        {props.data.icon != null && (
+            <OptionIconWrapper>{props.data.icon}</OptionIconWrapper>
+        )}
         <EllipsisSpanWithTickMargin>{props.data.label}</EllipsisSpanWithTickMargin>
     </components.Option>
 )
 
 type CaretProps = {
-    $isOpen: boolean, // transient prop -> does not forward to SvgIcon
+    $isOpen: boolean // transient prop -> does not forward to SvgIcon
 } & SvgIconProps
 
 const Caret = styled(SvgIcon)<CaretProps>`
     height: 8px;
     width: 10px;
     transition: transform 180ms ease-in-out;
-    transform: ${({ $isOpen }) => $isOpen ? 'rotate(180deg)' : ''};
+    transform: ${({ $isOpen }) => ($isOpen ? 'rotate(180deg)' : '')};
 `
 
 const DropdownIndicator = (props: any) =>
     components.DropdownIndicator && (
         <components.DropdownIndicator {...props}>
-            <Caret
-                name="caretDown"
-                $isOpen={props.selectProps.menuIsOpen}
-            />
+            <Caret name="caretDown" $isOpen={props.selectProps.menuIsOpen} />
         </components.DropdownIndicator>
     )
 
@@ -169,16 +174,22 @@ const IconWrapper = styled.div`
 const SingleValue = ({ children, ...props }) => {
     const { icon } = props.getValue()[0] || {}
     return (
-        <components.SingleValue {...props as any}>
+        <components.SingleValue {...(props as any)}>
             {icon != null && <IconWrapper>{icon}</IconWrapper>}
             <EllipsisSpan>{children}</EllipsisSpan>
         </components.SingleValue>
     )
 }
 
-const ClearIndicator = () => (<></>)
+const ClearIndicator = () => <></>
 
-export const UnstyledSelect = ({ controlClassName, required = false, clearable = true, disabled, ...props }: Props) => (
+export const UnstyledSelect = ({
+    controlClassName,
+    required = false,
+    clearable = true,
+    disabled,
+    ...props
+}: Props) => (
     <ReactSelect
         styles={customStyles}
         components={{
@@ -187,7 +198,7 @@ export const UnstyledSelect = ({ controlClassName, required = false, clearable =
             Option: IconOption,
             DropdownIndicator,
             SingleValue,
-            ClearIndicator
+            ClearIndicator,
         }}
         isMulti={false}
         className={controlClassName}

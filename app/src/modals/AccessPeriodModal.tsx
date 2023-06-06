@@ -251,7 +251,11 @@ export default function AccessPeriodModal({
 
                         const newQuantity = bnQuantity.toNumber()
 
-                        const total = priceForTimeUnits(pricePerSecond, newQuantity, selectedUnit)
+                        const total = priceForTimeUnits(
+                            pricePerSecond,
+                            newQuantity,
+                            selectedUnit,
+                        )
 
                         onResolve?.({
                             quantity: newQuantity,

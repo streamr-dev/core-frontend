@@ -128,10 +128,7 @@ export default function NewStreamPermissionsModal({
                 permissionBits={permissionBits}
                 onChange={(permission, enabled) => {
                     setPermissionBits(
-                        (enabled ? setBits : unsetBits)(
-                            permissionBits,
-                            Bits[permission],
-                        ),
+                        (enabled ? setBits : unsetBits)(permissionBits, Bits[permission]),
                     )
                 }}
             />

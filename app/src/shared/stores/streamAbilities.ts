@@ -90,9 +90,7 @@ const useStreamAbilitiesStore = create<Store>((set, get) => {
                 let stream: Stream | null | undefined
 
                 try {
-                    stream = await streamrClient.getStream(
-                        streamId,
-                    )
+                    stream = await streamrClient.getStream(streamId)
                 } catch (e) {
                     if (isMessagedObject(e) && /not_found/i.test(e.message)) {
                         throw new StreamNotFoundError(streamId)

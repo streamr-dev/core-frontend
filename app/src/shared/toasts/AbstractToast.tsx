@@ -33,7 +33,10 @@ const toastOut = keyframes`
     }
 `
 
-export default function AbstractToast({ children, ...props }: HTMLAttributes<HTMLDivElement>) {
+export default function AbstractToast({
+    children,
+    ...props
+}: HTMLAttributes<HTMLDivElement>) {
     const [hidden, hide] = useReducer(() => true, false)
 
     const [squeezed, squeeze] = useReducer(() => true, false)

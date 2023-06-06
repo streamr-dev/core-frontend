@@ -9,7 +9,13 @@ type Props = {
     linkOnMobile?: boolean
 }
 
-const EmptyState: FunctionComponent<Props> = ({ children, image, className, link, linkOnMobile }: Props) => (
+const EmptyState: FunctionComponent<Props> = ({
+    children,
+    image,
+    className,
+    link,
+    linkOnMobile,
+}: Props) => (
     <div className={classNames(className, styles.emptyState)}>
         {image && <div className={styles.imageWrapper}>{image}</div>}
         {children}

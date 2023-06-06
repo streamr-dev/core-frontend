@@ -8,7 +8,10 @@ const chainIdToNetworkMap = new Map<number, string>([
     [8995, 'ethereum'],
     [8997, 'ethereum'],
 ])
-export const getTokenLogoUrl = (tokenContractAddress: Address, chainId: number): string => {
+export const getTokenLogoUrl = (
+    tokenContractAddress: Address,
+    chainId: number,
+): string => {
     const network = chainIdToNetworkMap.get(chainId)
 
     if (network == null) {

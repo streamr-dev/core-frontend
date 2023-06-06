@@ -28,15 +28,25 @@ const StyledDropdownItem = styled(RsDropdownItem)`
 `
 
 type PopoverItemProps = {
-    children?: ReactNode | string,
-    onClick?: () => any,
-    active?: boolean,
-    leftTick?: boolean,
+    children?: ReactNode | string
+    onClick?: () => any
+    active?: boolean
+    leftTick?: boolean
     value?: any
 }
 
-const PopoverItem: FunctionComponent<PopoverItemProps & DropdownItem['props']> = ({ children, active, onClick, leftTick, ...rest }) => (
-    <StyledDropdownItem {...rest} onClick={onClick} data-tick-position={leftTick ? 'left' : 'right'}>
+const PopoverItem: FunctionComponent<PopoverItemProps & DropdownItem['props']> = ({
+    children,
+    active,
+    onClick,
+    leftTick,
+    ...rest
+}) => (
+    <StyledDropdownItem
+        {...rest}
+        onClick={onClick}
+        data-tick-position={leftTick ? 'left' : 'right'}
+    >
         {children}
         {active && <TickIcon name="tick" />}
     </StyledDropdownItem>

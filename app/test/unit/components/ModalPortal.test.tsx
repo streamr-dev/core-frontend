@@ -1,7 +1,10 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
 import { render } from '@testing-library/react'
-import { Context as ModalPortalContext, Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
+import {
+    Context as ModalPortalContext,
+    Provider as ModalPortalProvider,
+} from '$shared/contexts/ModalPortal'
 import ModalPortal from '$shared/components/ModalPortal'
 describe(ModalPortalProvider, () => {
     const { body } = global.document
@@ -20,7 +23,11 @@ describe(ModalPortalProvider, () => {
         jest.restoreAllMocks()
     })
     it('renders #app', () => {
-        const result = render(<ModalPortalProvider><></></ModalPortalProvider>)
+        const result = render(
+            <ModalPortalProvider>
+                <></>
+            </ModalPortalProvider>,
+        )
         expect(result.container.querySelectorAll('#app')).toHaveLength(1)
         result.unmount()
     })
@@ -51,8 +58,12 @@ describe(ModalPortalProvider, () => {
         const result = render(
             <ModalPortalProvider>
                 <React.Fragment>
-                    <ModalPortal><p data-testid={'modal-portal-content'}>Foo</p></ModalPortal>
-                    <ModalPortal><p data-testid={'modal-portal-content'}>Foo</p></ModalPortal>
+                    <ModalPortal>
+                        <p data-testid={'modal-portal-content'}>Foo</p>
+                    </ModalPortal>
+                    <ModalPortal>
+                        <p data-testid={'modal-portal-content'}>Foo</p>
+                    </ModalPortal>
                     <ModalPortalContext.Consumer>{consume}</ModalPortalContext.Consumer>
                 </React.Fragment>
             </ModalPortalProvider>,
@@ -67,7 +78,9 @@ describe(ModalPortalProvider, () => {
         const result = render(
             <ModalPortalProvider>
                 <React.Fragment>
-                    <ModalPortal><p data-testid={'modal-portal-content'}>boom</p></ModalPortal>
+                    <ModalPortal>
+                        <p data-testid={'modal-portal-content'}>boom</p>
+                    </ModalPortal>
                     <ModalPortalContext.Consumer>{consume}</ModalPortalContext.Consumer>
                 </React.Fragment>
             </ModalPortalProvider>,
@@ -76,11 +89,13 @@ describe(ModalPortalProvider, () => {
         expect(consume).toHaveBeenCalledTimes(2)
         expect(consume.mock.calls[0][0].isModalOpen).toBe(false)
         expect(consume.mock.calls[1][0].isModalOpen).toBe(true)
-        result.rerender(<ModalPortalProvider>
-            <React.Fragment>
-                <ModalPortalContext.Consumer>{consume}</ModalPortalContext.Consumer>
-            </React.Fragment>
-        </ModalPortalProvider>,)
+        result.rerender(
+            <ModalPortalProvider>
+                <React.Fragment>
+                    <ModalPortalContext.Consumer>{consume}</ModalPortalContext.Consumer>
+                </React.Fragment>
+            </ModalPortalProvider>,
+        )
         expect(result.queryAllByTestId('modal-portal-content').length).toEqual(0)
         expect(consume).toHaveBeenCalledTimes(4)
         // Before being unmounted…

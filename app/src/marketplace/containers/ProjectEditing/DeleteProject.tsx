@@ -7,16 +7,16 @@ import routes from '$routes'
 import { useProjectController } from './ProjectController'
 
 const Title = styled.p`
-  font-size: 34px;
-  line-height: 34px;
-  color: black;
-  margin-bottom: 30px;
+    font-size: 34px;
+    line-height: 34px;
+    color: black;
+    margin-bottom: 30px;
 `
 
 const Description = styled.p`
-  color: black;
-  font-size: 16px;
-  padding-bottom: 28px;
+    color: black;
+    font-size: 16px;
+    padding-bottom: 28px;
 `
 
 const DeleteProject = () => {
@@ -28,7 +28,9 @@ const DeleteProject = () => {
     return (
         <div>
             <Title>Delete project</Title>
-            <Description>Delete this project forever. You can&apos;t undo this.</Description>
+            <Description>
+                Delete this project forever. You can&apos;t undo this.
+            </Description>
             <Button
                 kind="destructive"
                 onClick={async () => {

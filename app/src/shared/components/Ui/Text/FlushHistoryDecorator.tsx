@@ -7,7 +7,10 @@ export type Props = {
 }
 
 const FlushHistoryDecorator = (WrappedComponent: ComponentType<any>) => {
-    const FlushHistoryDecoratorWrapper = ({ onBlur: onBlurProp, ...props }: Props, ref: any) => {
+    const FlushHistoryDecoratorWrapper = (
+        { onBlur: onBlurProp, ...props }: Props,
+        ref: any,
+    ) => {
         const [blurCount, setBlurCount] = useState(0)
         const onBlur = useCallback(
             (e: React.FocusEvent<EventTarget>) => {
@@ -26,7 +29,10 @@ const FlushHistoryDecorator = (WrappedComponent: ComponentType<any>) => {
 
     const FlushHistoryDecoratorWrapperFR = forwardRef(FlushHistoryDecoratorWrapper)
 
-    const OptInFlushHistoryDecorator = ({ flushHistoryOnBlur = false, ...props }: Props, ref: any) =>
+    const OptInFlushHistoryDecorator = (
+        { flushHistoryOnBlur = false, ...props }: Props,
+        ref: any,
+    ) =>
         flushHistoryOnBlur ? (
             <FlushHistoryDecoratorWrapperFR {...props} ref={ref} />
         ) : (

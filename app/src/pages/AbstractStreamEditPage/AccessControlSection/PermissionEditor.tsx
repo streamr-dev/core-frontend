@@ -21,7 +21,7 @@ const Container = styled.div`
 const Column = styled.div`
     display: grid;
     grid-template-rows: auto auto auto;
-    gap: 12px;    
+    gap: 12px;
 
     & > span {
         color: #000000;
@@ -33,14 +33,20 @@ const Column = styled.div`
 `
 
 type Props = {
-    address: string,
-    permissionBits: number,
-    disabled?: boolean,
-    editor?: boolean,
-    onChange: (permission: StreamPermission, enabled: boolean) => void,
+    address: string
+    permissionBits: number
+    disabled?: boolean
+    editor?: boolean
+    onChange: (permission: StreamPermission, enabled: boolean) => void
 }
 
-function UnstyledPermissionEditor({ address, permissionBits, disabled, onChange, ...props }: Props) {
+function UnstyledPermissionEditor({
+    address,
+    permissionBits,
+    disabled,
+    onChange,
+    ...props
+}: Props) {
     return (
         <Container {...props}>
             <Column>

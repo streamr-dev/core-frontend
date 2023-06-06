@@ -13,13 +13,28 @@ const ImageUploadIcon = ({ color, className }: Props) => (
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 52 52"
     >
-        <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinejoin="round">
-            <g transform="translate(-217.000000, -136.000000)" stroke={color} strokeWidth="2">
+        <g
+            stroke="none"
+            strokeWidth="1"
+            fill="none"
+            fillRule="evenodd"
+            strokeLinejoin="round"
+        >
+            <g
+                transform="translate(-217.000000, -136.000000)"
+                stroke={color}
+                strokeWidth="2"
+            >
                 <g>
                     <g transform="translate(0.000000, 137.000000)">
                         <g transform="translate(218.000000, 0.000000)">
                             <g>
-                                <rect x="0.0472589792" y="0.0472589792" width="40.8589792" height="40.831758" />
+                                <rect
+                                    x="0.0472589792"
+                                    y="0.0472589792"
+                                    width="40.8589792"
+                                    height="40.831758"
+                                />
                                 <path d="M0.0744801512,31.805293 L40.9062382,31.805293" />
                                 <polyline
                                     strokeLinecap="round"

@@ -1,4 +1,4 @@
-import BN from "bignumber.js"
+import BN from 'bignumber.js'
 import * as all from '$mp/utils/validate'
 import { validateSalePoint } from '$mp/utils/validate'
 import * as constants from '$mp/utils/constants'
@@ -34,19 +34,19 @@ describe('validate utils', () => {
             pricingTokenAddress: '0xbAA81A0179015bE47Ad439566374F2Bae098686F',
             beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
             price: new BN('3600'),
-            timeUnit: 'hour'
-        };
-        [
+            timeUnit: 'hour',
+        }
+        ;[
             {
                 description: 'invalid pricePerSecond',
                 project: {
                     projectType: ProjectType.PaidData,
                     salePoint: {
                         ...defaultSalePoint,
-                        pricePerSecond: new BN('-10')
-                    }
+                        pricePerSecond: new BN('-10'),
+                    },
                 },
-                expectedInvalidFields: ['pricePerSecond']
+                expectedInvalidFields: ['pricePerSecond'],
             },
             {
                 description: 'invalid beneficiaryAddress',
@@ -54,10 +54,10 @@ describe('validate utils', () => {
                     projectType: ProjectType.PaidData,
                     salePoint: {
                         ...defaultSalePoint,
-                        beneficiaryAddress: 'loremIpsum'
-                    }
+                        beneficiaryAddress: 'loremIpsum',
+                    },
                 },
-                expectedInvalidFields: ['beneficiaryAddress']
+                expectedInvalidFields: ['beneficiaryAddress'],
             },
             {
                 description: 'invalid pricingTokenAddress',
@@ -65,10 +65,10 @@ describe('validate utils', () => {
                     projectType: ProjectType.PaidData,
                     salePoint: {
                         ...defaultSalePoint,
-                        pricingTokenAddress: '0xa3934kd'
-                    }
+                        pricingTokenAddress: '0xa3934kd',
+                    },
                 },
-                expectedInvalidFields: ['pricingTokenAddress']
+                expectedInvalidFields: ['pricingTokenAddress'],
             },
             {
                 description: 'invalid chain',
@@ -76,10 +76,10 @@ describe('validate utils', () => {
                     projectType: ProjectType.PaidData,
                     salePoint: {
                         ...defaultSalePoint,
-                        chainId: undefined
-                    }
+                        chainId: undefined,
+                    },
                 },
-                expectedInvalidFields: ['chainId']
+                expectedInvalidFields: ['chainId'],
             },
             {
                 description: 'invalid price',
@@ -87,10 +87,10 @@ describe('validate utils', () => {
                     projectType: ProjectType.PaidData,
                     salePoint: {
                         ...defaultSalePoint,
-                        price: new BN('0')
-                    }
+                        price: new BN('0'),
+                    },
                 },
-                expectedInvalidFields: ['price']
+                expectedInvalidFields: ['price'],
             },
             {
                 description: 'invalid timeUnit',
@@ -99,9 +99,9 @@ describe('validate utils', () => {
                     salePoint: {
                         ...defaultSalePoint,
                         timeUnit: '5',
-                    }
+                    },
                 },
-                expectedInvalidFields: ['timeUnit']
+                expectedInvalidFields: ['timeUnit'],
             },
             {
                 description: 'invalid timeUnit AND pricingTokenAddress for a DU',
@@ -111,15 +111,18 @@ describe('validate utils', () => {
                         ...defaultSalePoint,
                         timeUnit: '5',
                         beneficiaryAddress: undefined,
-                        pricingTokenAddress: '1234'
-                    }
+                        pricingTokenAddress: '1234',
+                    },
                 },
-                expectedInvalidFields: ['timeUnit', 'pricingTokenAddress']
-            }
+                expectedInvalidFields: ['timeUnit', 'pricingTokenAddress'],
+            },
         ].forEach((testCase) => {
             it(`should properly validate the SalePoint's ${testCase.description}`, () => {
                 expect(
-                    all.validateSalePoint(testCase.project.salePoint, testCase.project.projectType === ProjectType.DataUnion)
+                    all.validateSalePoint(
+                        testCase.project.salePoint,
+                        testCase.project.projectType === ProjectType.DataUnion,
+                    ),
                 ).toEqual(testCase.expectedInvalidFields)
             })
         })

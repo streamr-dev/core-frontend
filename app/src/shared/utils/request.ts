@@ -13,9 +13,9 @@ export default function request({
     url,
     options,
     method = 'get',
-    data = null
+    data = null,
 }: RequestParams): ApiResult<any> {
-    const defaultOptions: {headers: {[key: string]: string}} = {
+    const defaultOptions: { headers: { [key: string]: string } } = {
         headers: {},
     }
 

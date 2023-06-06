@@ -36,11 +36,11 @@ describe('web3 utils', () => {
         it('must fail if required network is not the same as the actual network', async () => {
             mockChainId('1')
 
-            await expect(all.checkEthereumNetworkIsCorrect({
-                network: 2,
-            }))
-                .rejects
-                .toThrow()
+            await expect(
+                all.checkEthereumNetworkIsCorrect({
+                    network: 2,
+                }),
+            ).rejects.toThrow()
         })
         it('must resolve if required sidechain is the same as the actual network', async () => {
             mockChainId('8995')
@@ -51,11 +51,11 @@ describe('web3 utils', () => {
         it('must fail if required sidechain is not the same as the actual network', async () => {
             mockChainId('1')
 
-            await expect(all.checkEthereumNetworkIsCorrect({
-                network: 8995,
-            }))
-                .rejects
-                .toThrow()
+            await expect(
+                all.checkEthereumNetworkIsCorrect({
+                    network: 8995,
+                }),
+            ).rejects.toThrow()
         })
     })
     describe('hasTransactionCompleted', () => {

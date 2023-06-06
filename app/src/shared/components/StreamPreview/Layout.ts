@@ -2,7 +2,7 @@ import styled, { css, createGlobalStyle } from 'styled-components'
 import { SM, MD, XL } from '$shared/utils/styled'
 
 type Props = {
-    inspectorWidth: number,
+    inspectorWidth: number
 }
 
 const Layout = createGlobalStyle<Props>`

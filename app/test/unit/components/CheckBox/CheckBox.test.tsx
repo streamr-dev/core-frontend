@@ -11,6 +11,8 @@ describe('Checkbox', () => {
         expect(container.querySelector('input[type="checkbox"]')).toBeTruthy()
     })
     it('sets input value correctly', () => {
-        expect(container.querySelector('input[type="checkbox"]').getAttribute('checked')).not.toBeNull()
+        expect(
+            container.querySelector('input[type="checkbox"]').getAttribute('checked'),
+        ).not.toBeNull()
     })
 })

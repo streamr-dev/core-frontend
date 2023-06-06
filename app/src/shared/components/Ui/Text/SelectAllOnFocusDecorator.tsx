@@ -7,7 +7,10 @@ export type Props = {
 }
 
 const SelectAllOnFocusDecorator = (WrappedComponent: ComponentType<any>) => {
-    const SelectAllOnFocusDecoratorWrapper = ({ onFocus: onFocusProp, ...props }: Props, ref: any) => {
+    const SelectAllOnFocusDecoratorWrapper = (
+        { onFocus: onFocusProp, ...props }: Props,
+        ref: any,
+    ) => {
         const isMounted = useIsMounted()
         const onFocus = useCallback(
             (e: React.FocusEvent<EventTarget>) => {
@@ -15,7 +18,8 @@ const SelectAllOnFocusDecorator = (WrappedComponent: ComponentType<any>) => {
                 setTimeout(() => {
                     if (
                         isMounted() &&
-                        (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)
+                        (e.target instanceof HTMLInputElement ||
+                            e.target instanceof HTMLTextAreaElement)
                     ) {
                         e.target.select()
                     }
@@ -30,9 +34,14 @@ const SelectAllOnFocusDecorator = (WrappedComponent: ComponentType<any>) => {
         return <WrappedComponent {...props} onFocus={onFocus} ref={ref} />
     }
 
-    const SelectAllOnFocusDecoratorWrapperFR = forwardRef(SelectAllOnFocusDecoratorWrapper)
+    const SelectAllOnFocusDecoratorWrapperFR = forwardRef(
+        SelectAllOnFocusDecoratorWrapper,
+    )
 
-    const OptInSelectAllOnFocusDecoratorWrapper = ({ selectAllOnFocus = false, ...props }: Props, ref: any) =>
+    const OptInSelectAllOnFocusDecoratorWrapper = (
+        { selectAllOnFocus = false, ...props }: Props,
+        ref: any,
+    ) =>
         selectAllOnFocus ? (
             <SelectAllOnFocusDecoratorWrapperFR {...props} ref={ref} />
         ) : (

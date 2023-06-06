@@ -60,7 +60,9 @@ describe('platform utils', () => {
         })
         it('detects Built-in browser on Android', () => {
             expect(all.isMobile(UserAgents.AndroidMobileBrowser)).toEqual(true)
-            expect(all.isMetamaskSupported(UserAgents.AndroidMobileBrowser)).toEqual(false)
+            expect(all.isMetamaskSupported(UserAgents.AndroidMobileBrowser)).toEqual(
+                false,
+            )
         })
         it('detects IE mobile on Window Phone', () => {
             expect(all.isMobile(UserAgents.WPMobileIE)).toEqual(true)

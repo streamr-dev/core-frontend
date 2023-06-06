@@ -19,11 +19,21 @@ import WalletNoEthPng2x from '$shared/assets/images/wallet_no_eth@2x.png'
 import WalletErrorPng from '$shared/assets/images/wallet_error.png'
 import WalletErrorPng2x from '$shared/assets/images/wallet_error@2x.png'
 const sources = {
-    browserNotSupported: <img src={BrowserNotSupportedPng} srcSet={`${BrowserNotSupportedPng2x} 2x`} alt="" />,
-    discardChanges: <img src={DiscardChangesPng} srcSet={`${DiscardChangesPng2x} 2x`} alt="" />,
+    browserNotSupported: (
+        <img
+            src={BrowserNotSupportedPng}
+            srcSet={`${BrowserNotSupportedPng2x} 2x`}
+            alt=""
+        />
+    ),
+    discardChanges: (
+        <img src={DiscardChangesPng} srcSet={`${DiscardChangesPng2x} 2x`} alt="" />
+    ),
     imageUpload: <img src={ImageUploadPng} srcSet={`${ImageUploadPng2x} 2x`} alt="" />,
     metamask: <img src={MetamaskPng} srcSet={`${MetamaskPng2x} 2x`} alt="" />,
-    publishFailed: <img src={PublishFailedPng} srcSet={`${PublishFailedPng2x} 2x`} alt="" />,
+    publishFailed: (
+        <img src={PublishFailedPng} srcSet={`${PublishFailedPng2x} 2x`} alt="" />
+    ),
     wallet: <img src={WalletPng} srcSet={`${WalletPng2x} 2x`} alt="" />,
     walletNoData: <img src={WalletNoDataPng} srcSet={`${WalletNoDataPng2x} 2x`} alt="" />,
     walletNoEth: <img src={WalletNoEthPng} srcSet={`${WalletNoEthPng2x} 2x`} alt="" />,
@@ -35,7 +45,8 @@ type Props = HTMLProps<HTMLImageElement> & {
     name: PngIconName
 }
 
-const PngIcon = ({ name, ...props }: Props) => React.cloneElement(sources[name], { ...props })
+const PngIcon = ({ name, ...props }: Props) =>
+    React.cloneElement(sources[name], { ...props })
 
 PngIcon.names = Object.keys(sources).sort()
 export default PngIcon

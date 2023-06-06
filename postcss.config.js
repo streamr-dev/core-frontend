@@ -23,7 +23,10 @@ module.exports = {
                 filter: false,
             },
             importFrom: [
-                path.resolve(__dirname, 'app/src/shared/assets/stylesheets/variables.css'),
+                path.resolve(
+                    __dirname,
+                    'app/src/shared/assets/stylesheets/variables.css',
+                ),
                 {
                     customMedia: {
                         '--xs': `(max-width: ${xs.max}px)`,
@@ -34,7 +37,8 @@ module.exports = {
                         '--lg-up': `(min-width: ${lg.min}px)`,
                         '--lg-down': `(max-width: ${lg.max}px)`,
                         '--xl': `(min-width: ${xl.min}px)`,
-                        '--retina': '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)',
+                        '--retina':
+                            '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)',
                     },
                 },
             ],

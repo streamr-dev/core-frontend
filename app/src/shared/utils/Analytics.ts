@@ -9,7 +9,7 @@ function Analytics(): null {
 
     if (account) {
         Sentry.configureScope((scope) => {
-            scope.setUser({id: account})
+            scope.setUser({ id: account })
         })
     }
 

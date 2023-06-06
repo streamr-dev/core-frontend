@@ -8,20 +8,23 @@ import Layout from '$shared/components/Layout'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import { DetailsPageHeader } from '$shared/components/DetailsPageHeader'
 import { EditorNav } from '$mp/containers/ProjectEditing/EditorNav'
-import { ProjectStateContext, ProjectStateContextProvider } from '$mp/contexts/ProjectStateContext'
+import {
+    ProjectStateContext,
+    ProjectStateContextProvider,
+} from '$mp/contexts/ProjectStateContext'
 import {
     ValidationContext,
-    ValidationContextProvider
+    ValidationContextProvider,
 } from '$mp/containers/ProductController/ValidationContextProvider'
 import { ProjectEditor } from '$mp/containers/ProjectEditing/ProjectEditor'
 import styles from '$shared/components/Layout/layout.pcss'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import {
     ProjectControllerContext,
-    ProjectControllerProvider
+    ProjectControllerProvider,
 } from '$mp/containers/ProjectEditing/ProjectController'
-import PrestyledLoadingIndicator from "$shared/components/LoadingIndicator"
-import {getProjectTitleForEditor} from "$mp/containers/ProjectPage/utils"
+import PrestyledLoadingIndicator from '$shared/components/LoadingIndicator'
+import { getProjectTitleForEditor } from '$mp/containers/ProjectPage/utils'
 import ProjectLinkTabs from '$app/src/pages/ProjectPage/ProjectLinkTabs'
 import { useEditableProjectActions } from '../ProductController/useEditableProjectActions'
 
@@ -31,8 +34,8 @@ type Props = {
 
 const UnstyledNewProjectPage = ({ className }: Props) => {
     const location = useLocation()
-    const {state: project} = useContext(ProjectStateContext)
-    const {publishInProgress} = useContext(ProjectControllerContext)
+    const { state: project } = useContext(ProjectStateContext)
+    const { publishInProgress } = useContext(ProjectControllerContext)
     const { type } = qs.parse(location.search)
     const { updateType } = useEditableProjectActions()
     const { isAnyTouched, resetTouched } = useContext(ValidationContext)
@@ -49,7 +52,7 @@ const UnstyledNewProjectPage = ({ className }: Props) => {
 
     useEffect(() => {
         const typeIsValid = Object.values(ProjectType).includes(type as ProjectType)
-        updateType( typeIsValid ? type as ProjectType : ProjectType.OpenData)
+        updateType(typeIsValid ? (type as ProjectType) : ProjectType.OpenData)
     }, [type, updateType])
 
     useEffect(() => {
@@ -60,15 +63,17 @@ const UnstyledNewProjectPage = ({ className }: Props) => {
         return getProjectTitleForEditor(project)
     }, [project])
 
-    return <Layout nav={<EditorNav isNewProject={true}/>} innerClassName={styles.greyInner}>
-        <MarketplaceHelmet title={'Create a new project'}/>
-        <DetailsPageHeader
-            pageTitle={pageTitle}
-            rightComponent={<ProjectLinkTabs />}
-        />
-        <LoadingIndicator loading={publishInProgress} />
-        <ProjectEditor/>
-    </Layout>
+    return (
+        <Layout nav={<EditorNav isNewProject={true} />} innerClassName={styles.greyInner}>
+            <MarketplaceHelmet title={'Create a new project'} />
+            <DetailsPageHeader
+                pageTitle={pageTitle}
+                rightComponent={<ProjectLinkTabs />}
+            />
+            <LoadingIndicator loading={publishInProgress} />
+            <ProjectEditor />
+        </Layout>
+    )
 }
 
 const StyledNewProjectPage = styled(UnstyledNewProjectPage)`
@@ -82,12 +87,14 @@ const LoadingIndicator = styled(PrestyledLoadingIndicator)`
 `
 
 const NewProjectPageContainer = (props: Props) => {
-    return <ProjectStateContextProvider>
-        <ValidationContextProvider>
-            <ProjectControllerProvider>
-                <StyledNewProjectPage {...props}/>
-            </ProjectControllerProvider>
-        </ValidationContextProvider>
-    </ProjectStateContextProvider>
+    return (
+        <ProjectStateContextProvider>
+            <ValidationContextProvider>
+                <ProjectControllerProvider>
+                    <StyledNewProjectPage {...props} />
+                </ProjectControllerProvider>
+            </ValidationContextProvider>
+        </ProjectStateContextProvider>
+    )
 }
 export default NewProjectPageContainer

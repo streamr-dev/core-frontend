@@ -24,5 +24,5 @@ export const searchCharMax = 250
 export const projectTypeNames: Record<ProjectType, string> = {
     [ProjectType.OpenData]: 'open data project',
     [ProjectType.PaidData]: 'paid data project',
-    [ProjectType.DataUnion]: 'Data Union'
+    [ProjectType.DataUnion]: 'Data Union',
 }
