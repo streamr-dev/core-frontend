@@ -19,23 +19,18 @@ type FlagValue = {
 }
 
 export const isFeatureEnabled = (flagName: FeatureFlag): boolean => {
-    if (!flags.has(flagName)) {
+    const flag = flags.get(flagName)
+
+    if (!flag) {
         throw new Error('Feature flag values not defined')
     }
 
-    let environmentName: keyof FlagValue
-
     switch (window.location.host) {
         case 'streamr.network':
-            environmentName = 'production'
-            break
+            return flag.production
         case 'staging.streamr.network':
-            environmentName = 'staging'
-            break
+            return flag.staging
         default:
-            environmentName = 'development'
-            break
+            return flag.development
     }
-
-    return (flags.get(flagName) as FlagValue)[environmentName]
 }
