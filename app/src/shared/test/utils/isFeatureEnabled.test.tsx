@@ -1,8 +1,8 @@
 import React from 'react'
 import { cloneDeep } from 'lodash'
-import { FeatureFlag, hasFeatureFlag } from '../../utils/hasFeatureFlag'
+import { FeatureFlag, isFeatureEnabled } from '../../utils/isFeatureEnabled'
 
-describe('hasFeatureFlag', () => {
+describe('isFeatureEnabled', () => {
     let defaultLocation: Location
 
     beforeEach(() => {
@@ -24,16 +24,16 @@ describe('hasFeatureFlag', () => {
 
     it('should have the phaseTwo feature flag ENABLED on development environment', () => {
         mockWindowLocation('http://localhost')
-        expect(hasFeatureFlag(FeatureFlag.phaseTwo)).toStrictEqual(true)
+        expect(isFeatureEnabled(FeatureFlag.phaseTwo)).toStrictEqual(true)
     })
 
     it('should have the phaseTwo feature flag ENABLED on staging environment', () => {
         mockWindowLocation('https://staging.streamr.network')
-        expect(hasFeatureFlag(FeatureFlag.phaseTwo)).toStrictEqual(true)
+        expect(isFeatureEnabled(FeatureFlag.phaseTwo)).toStrictEqual(true)
     })
 
     it('should have the phaseTwo feature flag DISABLED on production environment', () => {
         mockWindowLocation('https://streamr.network')
-        expect(hasFeatureFlag(FeatureFlag.phaseTwo)).toStrictEqual(false)
+        expect(isFeatureEnabled(FeatureFlag.phaseTwo)).toStrictEqual(false)
     })
 })

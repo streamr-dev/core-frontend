@@ -18,7 +18,7 @@ type FlagValue = {
     production: boolean
 }
 
-export const hasFeatureFlag = (flagName: FeatureFlag): boolean => {
+export const isFeatureEnabled = (flagName: FeatureFlag): boolean => {
     if (!flags.has(flagName)) {
         throw new Error('Feature flag values not defined')
     }
