@@ -8,9 +8,10 @@ type Props = {
     gray2?: boolean
     white?: boolean
     disabled?: boolean
+    vertical?: boolean
 }
 
-const Meatball = ({ alt, blue, gray, gray2, white, disabled }: Props) => (
+const Meatball = ({ alt, blue, gray, gray2, white, disabled, vertical }: Props) => (
     <div
         className={cx(styles.root, {
             [styles.blue]: !!blue,
@@ -23,14 +24,14 @@ const Meatball = ({ alt, blue, gray, gray2, white, disabled }: Props) => (
     >
         <svg
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 4"
-            width="20"
-            height="4"
+            viewBox={vertical ? '0 0 4 20' : '0 0 20 4'}
+            width={vertical ? '4' : '20'}
+            height={vertical ? '20' : '4'}
             data-alt={alt}
         >
             <circle cx="2" cy="2" r="2" />
-            <circle cx="10" cy="2" r="2" />
-            <circle cx="18" cy="2" r="2" />
+            <circle cx={vertical ? '2' : '10'} cy={vertical ? '10' : '2'} r="2" />
+            <circle cx={vertical ? '2' : '18'} cy={vertical ? '18' : '2'} r="2" />
         </svg>
     </div>
 )

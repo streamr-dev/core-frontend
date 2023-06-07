@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactElement, ReactNode } from 'react'
+import { ReactElement, ReactNode } from 'react'
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import { Dropdown as RsDropdown, DropdownToggle, DropdownMenu } from 'reactstrap'
@@ -10,7 +10,13 @@ import Meatball from '$shared/components/Meatball'
 
 type Props = {
     title: ReactNode
-    type?: 'normal' | 'uppercase' | 'meatball' | 'grayMeatball' | 'whiteMeatball'
+    type?:
+        | 'normal'
+        | 'uppercase'
+        | 'meatball'
+        | 'grayMeatball'
+        | 'whiteMeatball'
+        | 'verticalMeatball'
     children?: ReactNode | ReactNode[]
     className?: string
     caret?: false | 'arrow' | 'svg'
@@ -146,7 +152,7 @@ export const Caret = ({ open, svg }: CaretProps) => {
     )
 }
 
-const Popover: FunctionComponent<Props> = ({
+const Popover = ({
     title,
     type = 'normal',
     onMenuToggle,
@@ -161,7 +167,7 @@ const Popover: FunctionComponent<Props> = ({
     disabled,
     onChange,
     leftTick,
-}) => {
+}: Props) => {
     const [open, setOpen] = useState(false)
     const childrenArray = useMemo<ReactElement[]>(
         () => React.Children.toArray(children) as ReactElement[],
@@ -189,11 +195,13 @@ const Popover: FunctionComponent<Props> = ({
 
             case 'meatball':
             case 'whiteMeatball':
+            case 'verticalMeatball':
             case 'grayMeatball': {
                 const meatballProps = {
                     alt: typeof titleString === 'string' ? titleString : '',
                     gray: type === 'grayMeatball',
                     white: type === 'whiteMeatball',
+                    vertical: type === 'verticalMeatball',
                     disabled,
                 }
                 return <Meatball {...meatballProps} />
