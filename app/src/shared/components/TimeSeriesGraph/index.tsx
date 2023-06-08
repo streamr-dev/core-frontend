@@ -1,10 +1,18 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import { FlexibleXYPlot, LineSeries, XAxis, YAxis, HorizontalGridLines } from 'react-vis'
+import {
+    FlexibleXYPlot,
+    XAxis,
+    YAxis,
+    HorizontalGridLines,
+    LineMarkSeries,
+    Borders,
+    VerticalGridLines,
+} from 'react-vis'
 import Rect from '$shared/components/Rect'
-import ProductStat from '$shared/components/ProductStat'
-import 'node_modules/react-vis/dist/style.css'
+import 'react-vis/dist/style.css'
 import Spinner from '$shared/components/Spinner'
+import { COLORS } from '$shared/utils/styled'
 const PlotContainer = styled.div`
     height: 100%;
     left: 0;
@@ -25,26 +33,47 @@ const xAxisStyle = {
     ticks: {
         fontSize: '12px',
         fontFamily: "'IBM Plex Sans', sans-serif",
-        color: '#A3A3A3',
-        strokeOpacity: '1',
-        stroke: '#A3A3A3',
-        opacity: '0.5',
+        strokeOpacity: '0',
+        stroke: COLORS.primaryLight,
+        opacity: '1',
         letterSpacing: '0px',
     },
     text: {
         strokeWidth: '0',
         textAnchor: 'start',
+        fill: COLORS.primaryLight,
     },
 }
 const yAxisStyle = {
     ticks: {
         fontSize: '12px',
         fontFamily: "'IBM Plex Sans', sans-serif",
-        color: '#A3A3A3',
+        stroke: COLORS.primaryLight,
         strokeOpacity: '0',
-        opacity: '0.5',
+        opacity: '1',
         letterSpacing: '0px',
     },
+}
+
+const gridLinesStyle = {
+    stroke: COLORS.dialogBorder,
+}
+
+const borderStyle = {
+    bottom: {
+        height: '1',
+        stroke: COLORS.dialogBorder,
+    },
+    left: {
+        width: '1',
+        stroke: COLORS.dialogBorder,
+    },
+    right: { width: '1', stroke: COLORS.dialogBorder },
+    top: { stroke: COLORS.dialogBorder, padding: '10px', height: '1' },
+}
+
+const plotStyle = {
+    overflow: 'visible',
 }
 
 const formatXAxisTicks = (value, index, scale, tickTotal, dayCount) => {
@@ -69,8 +98,8 @@ const formatXAxisTicks = (value, index, scale, tickTotal, dayCount) => {
 }
 
 type XY = {
-    x: any
-    y: any
+    x: number // timestamp
+    y: number
 }
 type Props = {
     graphData: Array<XY>
@@ -79,12 +108,7 @@ type Props = {
     isLoading?: boolean
 }
 
-const UnstyledTimeSeriesGraph = ({
-    graphData,
-    shownDays,
-    isLoading,
-    ...props
-}: Props) => {
+export const TimeSeriesGraph = ({ graphData, shownDays, isLoading, ...props }: Props) => {
     const dataDomain = useMemo(() => {
         const dataValues = (graphData || []).map((d) => d.y)
         let max = Math.max(...dataValues)
@@ -125,6 +149,7 @@ const UnstyledTimeSeriesGraph = ({
                         }}
                         yDomain={dataDomain}
                         yBaseValue={dataDomain[0]}
+                        style={plotStyle}
                     >
                         <XAxis
                             hideLine
@@ -140,7 +165,7 @@ const UnstyledTimeSeriesGraph = ({
                                 )
                             }
                             tickSizeInner={0}
-                            tickSizeOuter={6}
+                            tickSizeOuter={0}
                         />
                         <YAxis
                             hideLine
@@ -148,14 +173,15 @@ const UnstyledTimeSeriesGraph = ({
                             position="middle"
                             orientation="right"
                         />
-                        <HorizontalGridLines />
-                        <LineSeries
+                        <HorizontalGridLines style={gridLinesStyle} />
+                        {/*<Borders style={borderStyle} />*/}
+                        <LineMarkSeries
                             curve={null}
-                            color="#0324FF"
-                            opacity={1}
+                            color={COLORS.link}
                             strokeStyle="solid"
-                            strokeWidth="4"
+                            strokeWidth="1"
                             data={graphData}
+                            fill="#fff"
                         />
                     </FlexibleXYPlot>
                 </PlotContainer>
@@ -165,26 +191,3 @@ const UnstyledTimeSeriesGraph = ({
         </Container>
     )
 }
-
-const TimeSeriesGraph = styled(UnstyledTimeSeriesGraph)``
-const Header = styled.div`
-    align-items: center;
-    display: flex;
-    margin-bottom: 12px;
-
-    ${ProductStat.Title} {
-        flex-grow: 1;
-    }
-`
-const Body = styled.div`
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
-`
-Object.assign(TimeSeriesGraph, {
-    Header,
-    Body,
-})
-export default TimeSeriesGraph
