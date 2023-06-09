@@ -49,7 +49,7 @@ const meta: Meta<typeof Default> = {
                 <div
                     style={{
                         color: '#323232',
-                        padding: '5rem',
+                        padding: '10px',
                         background: '#FFF',
                     }}
                 >

@@ -154,7 +154,7 @@ export const TimeSeriesGraph = ({ graphData, shownDays, isLoading, ...props }: P
                         <XAxis
                             hideLine
                             style={xAxisStyle}
-                            tickTotal={7}
+                            tickTotal={shownDays}
                             tickFormat={(value, index, scale, tickTotal) =>
                                 formatXAxisTicks(
                                     value,
