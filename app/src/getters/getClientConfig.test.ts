@@ -1,4 +1,6 @@
-import getConfig from '$app/src/getters/getConfig'
+import { RPCProtocol } from '@streamr/config'
+import getConfig from './getConfig'
+import { defaultChainConfig } from './getChainConfig'
 import g from './getClientConfig'
 // Filter out what's unexpected. FIXME: fix the client.
 jest.mock('$app/src/getters/getConfig', () => ({
@@ -23,28 +25,27 @@ describe('getClientConfig', () => {
                 network: {
                     trackers: ['tracker1', 'tracker2'],
                 },
-                streamRegistryChainAddress: 'stream reg address',
-                streamRegistryChain: {
-                    rpc: 'stream reg rpc',
-                },
-                streamStorageRegistryChainAddress: 'stream storage reg address',
                 graphUrl: 'graph url',
-                mainchain: {
-                    rpc: 'mc chain rpc',
-                },
             },
         }))
         expect(g()).toMatchObject({
             network: {
                 trackers: ['tracker1', 'tracker2'],
             },
-            contracts: {
-                mainChainRPCs: 'mc chain rpc',
-                streamRegistryChainAddress: 'stream reg address',
-                streamRegistryChainRPCs: 'stream reg rpc',
-                streamStorageRegistryChainAddress: 'stream storage reg address',
+            contracts: expect.objectContaining({
+                mainChainRPCs: {
+                    chainId: defaultChainConfig.id,
+                    rpcs: defaultChainConfig.getRPCEndpointsByProtocol(RPCProtocol.HTTP),
+                },
+                streamRegistryChainAddress: defaultChainConfig.contracts.StreamRegistry,
+                streamRegistryChainRPCs: {
+                    chainId: defaultChainConfig.id,
+                    rpcs: defaultChainConfig.getRPCEndpointsByProtocol(RPCProtocol.HTTP),
+                },
+                streamStorageRegistryChainAddress:
+                    defaultChainConfig.contracts.StreamStorageRegistry,
                 theGraphUrl: 'graph url',
-            },
+            }),
             metrics: false,
         })
     })

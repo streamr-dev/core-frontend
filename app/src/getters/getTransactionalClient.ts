@@ -1,7 +1,8 @@
 import { StreamrClient, ExternalProvider } from 'streamr-client'
 import { getWalletProvider } from '$shared/stores/wallet'
 import getChainId from '$utils/web3/getChainId'
-import networkPreflight, { Matic } from '$utils/networkPreflight'
+import networkPreflight from '$utils/networkPreflight'
+import { defaultChainConfig } from '$app/src/getters/getChainConfig'
 
 let streamrClient: StreamrClient | undefined
 
@@ -17,14 +18,12 @@ export default async function getTransactionalClient({
 }: { passiveNetworkCheck?: boolean } = {}) {
     const currentProvider = (await getWalletProvider()) as any
 
-    const [chainId] = Matic
-
     if (
         streamrClient &&
         currentProvider === provider &&
         (passiveNetworkCheck
-            ? (await getChainId()) === chainId
-            : (await networkPreflight(chainId)) === false)
+            ? (await getChainId()) === defaultChainConfig.id
+            : (await networkPreflight(defaultChainConfig.id)) === false)
     ) {
         return streamrClient
     }

@@ -3,41 +3,7 @@ import SwitchNetworkModal from '$app/src/modals/SwitchNetworkModal'
 import getChainId from '$utils/web3/getChainId'
 import { Layer } from '$utils/Layer'
 import { getWalletProvider } from '$shared/stores/wallet'
-
-interface Currency {
-    decimals: number
-    name: string
-    symbol: string
-}
-
-interface Network {
-    chainId: string
-    chainName: string
-    blockExplorerUrls?: string[]
-    nativeCurrency?: Currency
-    rpcUrls: string[]
-}
-
-type Chain = [chainId: number, network: Network]
-
-/**
- * @TODO Chain lists and configs are in few different places around the app. My guess is,
- * the it'd be best to use `@streamr/config` here.
- */
-export const Matic: Chain = [
-    137,
-    {
-        chainId: '0x89',
-        blockExplorerUrls: ['https://polygonscan.com'],
-        chainName: 'Polygon Mainnet',
-        nativeCurrency: {
-            decimals: 18,
-            name: 'Matic',
-            symbol: 'MATIC',
-        },
-        rpcUrls: ['https://polygon-rpc.com'],
-    },
-]
+import { defaultChainConfig } from '$app/src/getters/getChainConfig'
 
 /**
  *
@@ -72,11 +38,17 @@ export default async function networkPreflight(expectedChainId: number) {
             throw e
         }
 
-        const [, params] = Matic
-
         await provider.request({
             method: 'wallet_addEthereumChain',
-            params: [params],
+            params: [
+                {
+                    chainId: '0x' + defaultChainConfig.id.toString(16),
+                    chainName: defaultChainConfig.name,
+                    rpcUrls: defaultChainConfig.rpcEndpoints.map(
+                        (rpcEndpoint) => rpcEndpoint.url,
+                    ),
+                },
+            ],
         })
     }
 

@@ -46,27 +46,14 @@ chainId = 8997
 
 [client]
 graphUrl = ":8000/subgraphs/name/streamr-dev/network-contracts"
-streamRegistryChainAddress = "0x6cCdd5d866ea766f6DF5965aA98DeCCD629ff222"
-streamStorageRegistryChainAddress = "0xd04af489677001444280366Dd0885B03dAaDe71D"
 
 [client.mainchain]
 chainId = 8995
 dataTokenAddress = "0xbAA81A0179015bE47Ad439566374F2Bae098686F"
 
-[client.mainchain.rpc]
-chainId = 8995
-
-[[client.mainchain.rpc.rpcs]]
-url = ":8545"
 
 [client.sidechain]
 dataTokenAddress = "0x73Be21733CC5D08e1a14Ea9a399fb27DB3BEf8fF"
-
-[client.streamRegistryChain.rpc]
-chainId = 8997
-
-[[client.streamRegistryChain.rpc.rpcs]]
-url = ":8546"
 
 [[client.network.trackers]]
 id = "0xb9e7cEBF7b03AE26458E32a059488386b05798e8"

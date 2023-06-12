@@ -1,7 +1,8 @@
+import { ChainConnectionInfo } from 'streamr-client/types/src/Config'
 import formatConfigUrl from '$utils/formatConfigUrl'
 import getConfig from '$app/src/getters/getConfig'
 // TODO add typing
-export default function formatRpc(rpc: any): any {
+export default function formatRpc(rpc: any): ChainConnectionInfo {
     if (!rpc || typeof rpc !== 'object' || !('rpcs' in rpc)) {
         return rpc
     }

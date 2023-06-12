@@ -1,7 +1,7 @@
-import { Chain, Chains } from '@streamr/config'
+import { Chain, Chains, RPCProtocol } from '@streamr/config'
 import getMainChainId from '$app/src/getters/getMainChainId'
-import getClientConfig from '$app/src/getters/getClientConfig'
 import formatConfigUrl from '$utils/formatConfigUrl'
+import { defaultChainConfig } from '$app/src/getters/getChainConfig'
 
 type MetamaskNetworkConfig = {
     chainName: string
@@ -68,10 +68,6 @@ export const getConfigForChainByName = (chainName: string): Chain => {
 }
 
 const getConfig = (): Config => {
-    const {
-        contracts: { mainChainRPCs, streamRegistryChainRPCs },
-    } = getClientConfig()
-
     const mainChainId = getMainChainId()
     return {
         metamask: {
@@ -80,7 +76,9 @@ const getConfig = (): Config => {
             [mainChainId]: {
                 getParams: () => ({
                     chainName: 'Mainchain (dev)',
-                    rpcUrls: [mainChainRPCs.rpcs[0].url],
+                    rpcUrls: defaultChainConfig
+                        .getRPCEndpointsByProtocol(RPCProtocol.HTTP)
+                        .map((endpoint) => endpoint.url),
                     blockExplorerUrls: [],
                     nativeCurrency: {
                         name: 'ETH',
@@ -89,10 +87,10 @@ const getConfig = (): Config => {
                     },
                 }),
             },
-            [streamRegistryChainRPCs?.chainId ?? 0]: {
+            /*[defaultChainConfig.id]: {
                 getParams: () => ({
                     chainName: 'Streams chain (dev)',
-                    rpcUrls: [streamRegistryChainRPCs?.rpcs[0].url ?? ''],
+                    rpcUrls: defaultChainConfig.getRPCEndpointsByProtocol(RPCProtocol.HTTP).map(endpoint => endpoint.url),
                     blockExplorerUrls: [],
                     nativeCurrency: {
                         name: 'xDAI',
@@ -100,7 +98,7 @@ const getConfig = (): Config => {
                         decimals: 18,
                     },
                 }),
-            },
+            },*/
             // Real chain values
             // Note: urls are added to user's Metamask, do not use private RPC urls here
             '1': {
