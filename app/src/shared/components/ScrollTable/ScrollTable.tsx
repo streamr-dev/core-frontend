@@ -29,6 +29,7 @@ export type ScrollTableColumnDef<T> = {
 export type ScrollTableAction<T> = {
     displayName: string
     callback: (element: T) => void
+    disabled?: boolean
 }
 
 export const ScrollTable = <T extends object>({
@@ -102,6 +103,7 @@ export const ScrollTable = <T extends object>({
                                                 onClick={() => {
                                                     action.callback(element)
                                                 }}
+                                                disabled={action.disabled}
                                             >
                                                 {action.displayName}
                                             </PopoverItem>

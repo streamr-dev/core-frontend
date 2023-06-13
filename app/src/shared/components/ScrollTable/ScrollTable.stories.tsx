@@ -115,6 +115,11 @@ const actions: ScrollTableAction<SomeElement>[] = [
         displayName: 'Edit',
         callback: action('Edit CLICKED'),
     },
+    {
+        displayName: 'Delete',
+        callback: action('Edit CLICKED'),
+        disabled: true,
+    },
 ]
 
 export const Basic = () => {

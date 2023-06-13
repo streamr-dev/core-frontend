@@ -40,6 +40,7 @@ export const ScrollTableNonStickyColumnsWrap = styled.div`
     display: flex;
     flex: 1;
     overflow-x: auto;
+    overflow-y: hidden;
 `
 
 export const ScrollTableHeaderCell = styled.div`

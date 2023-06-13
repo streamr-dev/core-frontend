@@ -267,7 +267,11 @@ const Popover = ({
                 {caretComponent}
             </StyledDropdownToggle>
             {childrenArray.length > 0 && (
-                <StyledDropdownMenu {...menuProps} className={menuClassName}>
+                <StyledDropdownMenu
+                    {...menuProps}
+                    className={menuClassName}
+                    container="body"
+                >
                     {React.Children.map(
                         children as ReactElement[],
                         (child, index) =>
