@@ -1,15 +1,24 @@
 import React from 'react'
 import styled from 'styled-components'
-import { DESKTOP, TABLET } from '$shared/utils/styled'
+import { COLORS, DESKTOP, TABLET } from '$shared/utils/styled'
 
 export const WhiteBox = styled.div`
     background-color: white;
     border-radius: 16px;
-    padding: 24px;
-    @media (${TABLET}) {
-        padding: 40px;
+    &.with-padding {
+        padding: 24px;
+        @media (${TABLET}) {
+            padding: 40px;
+        }
+        @media (${DESKTOP}) {
+            padding: 52px;
+        }
     }
-    @media (${DESKTOP}) {
-        padding: 52px;
-    }
+`
+
+export const WhiteBoxSeparator = styled.hr`
+    border: none;
+    width: 100%;
+    height: 1px;
+    background-color: ${COLORS.separator};
 `

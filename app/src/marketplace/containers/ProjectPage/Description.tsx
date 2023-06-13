@@ -33,7 +33,7 @@ const Description: FunctionComponent<{ project: Project }> = ({ project }) => {
     const isBeingPurchased = useIsProjectBeingPurchased(project?.id || '')
 
     return (
-        <WhiteBox>
+        <WhiteBox className={'with-padding'}>
             <DescriptionContainer>
                 <p>
                     <span>
