@@ -13,7 +13,9 @@ const Container = styled.div`
 export const Basic = () => (
     <Popover title="Select">
         <PopoverItem onClick={action('Click me')}>Click me</PopoverItem>
-        <PopoverItem onClick={action('Another option')}>Another option</PopoverItem>
+        <PopoverItem onClick={action('Another option')} disabled={true}>
+            Another option
+        </PopoverItem>
     </Popover>
 )
 

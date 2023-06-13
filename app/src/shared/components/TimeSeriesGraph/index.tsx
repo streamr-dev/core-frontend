@@ -6,8 +6,6 @@ import {
     YAxis,
     HorizontalGridLines,
     LineMarkSeries,
-    Borders,
-    VerticalGridLines,
 } from 'react-vis'
 import Rect from '$shared/components/Rect'
 import 'react-vis/dist/style.css'
