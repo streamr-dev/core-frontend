@@ -28,9 +28,6 @@ const StatsCell = styled.div`
             // last row
             border-bottom: none;
         }
-        /*&:nth-child(-n + 3) {
-            // first row
-        }*/
         &:nth-child(3n) {
             // last column
             @media (${LAPTOP}) {
@@ -66,9 +63,6 @@ const StatsCell = styled.div`
 
     .cell-inner {
         padding: 0 24px;
-        /*@media (${TABLET}) {
-            padding: 24px;
-        }*/
         display: flex;
         flex-direction: row;
         justify-content: space-between;
