@@ -42,7 +42,7 @@ export default async function networkPreflight(expectedChainId: number) {
             method: 'wallet_addEthereumChain',
             params: [
                 {
-                    chainId: '0x' + defaultChainConfig.id.toString(16),
+                    chainId: `0x${defaultChainConfig.id.toString(16)}`,
                     chainName: defaultChainConfig.name,
                     rpcUrls: defaultChainConfig.rpcEndpoints.map(
                         (rpcEndpoint) => rpcEndpoint.url,
