@@ -1,6 +1,6 @@
-import React, { FunctionComponent } from 'react'
+import React, { FunctionComponent, useMemo } from 'react'
 import styled from 'styled-components'
-import { COLORS, MEDIUM, REGULAR, TABLET } from '$shared/utils/styled'
+import { COLORS, LAPTOP, MEDIUM, REGULAR, TABLET } from '$shared/utils/styled'
 
 const StatsGrid = styled.div`
     display: grid;
@@ -21,13 +21,54 @@ const StatsGrid = styled.div`
 `
 
 const StatsCell = styled.div`
-    border-top: 1px solid ${COLORS.separator};
+    border-bottom: 1px solid ${COLORS.separator};
     padding: 24px 0;
-    @media (${TABLET}) {
-        padding: 24px;
+    &.column-count-3 {
+        &:nth-last-child(-n + 3) {
+            // last row
+            border-bottom: none;
+        }
+        /*&:nth-child(-n + 3) {
+            // first row
+        }*/
+        &:nth-child(3n) {
+            // last column
+            @media (${LAPTOP}) {
+                padding-right: 16px;
+            }
+        }
+        &:nth-child(3n-2) {
+            // first column
+            @media (${LAPTOP}) {
+                padding-left: 16px;
+            }
+        }
+    }
+
+    &.column-count-4 {
+        &:nth-last-child(-n + 4) {
+            // last row
+            border-bottom: none;
+        }
+        &:nth-child(4n) {
+            // last column
+            @media (${LAPTOP}) {
+                padding-right: 16px;
+            }
+        }
+        &:nth-child(4n-3) {
+            // first column
+            @media (${LAPTOP}) {
+                padding-left: 16px;
+            }
+        }
     }
 
     .cell-inner {
+        padding: 0 24px;
+        /*@media (${TABLET}) {
+            padding: 24px;
+        }*/
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -69,17 +110,28 @@ export const StatsBox: FunctionComponent<{
     stats: { label: string; value: string }[]
     columns: 3 | 4
 }> = ({ stats, columns }) => {
-    if (stats.length % columns !== 0) {
-        throw new Error('Invalid amount of stats provided')
-    }
+    const statsCells = useMemo(() => {
+        const modulo = stats.length % columns
+        if (modulo == 0) {
+            return stats
+        }
+        const newStatsArray = [...stats]
+        const amountToAdd = columns - modulo
+        for (let i = 0; i < amountToAdd; i++) {
+            newStatsArray.push({ label: '\xa0', value: '\xa0' })
+        }
+        return newStatsArray
+    }, [stats, columns])
     return (
         <StatsGrid className={`column-count-${columns}`}>
-            {stats.map((stat, index) => (
-                <StatsCell key={index}>
+            {statsCells.map((stat, index) => (
+                <StatsCell key={index} className={`column-count-${columns}`}>
                     <div
                         className={
                             'cell-inner ' +
-                            ((index + 1) % columns === 0 ? 'no-border' : '')
+                            ((index + 1) % columns === 0 || stat.label === '\xa0'
+                                ? 'no-border'
+                                : '')
                         }
                     >
                         <StatsLabel>{stat.label}</StatsLabel>

@@ -2,7 +2,6 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { FlexibleXYPlot, LineSeries, XAxis, YAxis, HorizontalGridLines } from 'react-vis'
 import Rect from '$shared/components/Rect'
-import ProductStat from '$shared/components/ProductStat'
 import 'node_modules/react-vis/dist/style.css'
 import Spinner from '$shared/components/Spinner'
 const PlotContainer = styled.div`
@@ -171,10 +170,6 @@ const Header = styled.div`
     align-items: center;
     display: flex;
     margin-bottom: 12px;
-
-    ${ProductStat.Title} {
-        flex-grow: 1;
-    }
 `
 const Body = styled.div`
     align-items: center;

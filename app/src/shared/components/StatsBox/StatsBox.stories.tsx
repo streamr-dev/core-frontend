@@ -32,6 +32,20 @@ export const FourColumn = () => (
     />
 )
 
+export const Uneven = () => (
+    <StatsBox
+        columns={4}
+        stats={[
+            { label: 'Total stake', value: '200000 DATA' },
+            { label: 'Bounties', value: '233' },
+            { label: 'Operators', value: '3323' },
+            { label: 'APY', value: '12%' },
+            { label: 'Cumulative sponsored', value: '12M DATA' },
+            { label: 'Population of Sri Lanka', value: '22.16M' },
+        ]}
+    />
+)
+
 const meta: Meta<typeof ThreeColumn> = {
     title: 'Shared/StatsBox',
     component: ThreeColumn,

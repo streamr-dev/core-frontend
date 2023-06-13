@@ -102,7 +102,7 @@ function ProjectConnectPage() {
         <PP>
             <ProjectPageContainer>
                 {hasAccess ? (
-                    <WhiteBox>
+                    <WhiteBox className={'with-padding'}>
                         <StreamConnect streams={streams} />
                     </WhiteBox>
                 ) : (

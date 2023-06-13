@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Meta } from '@storybook/react'
 import DaysPopover from '$shared/components/DaysPopover'
-import ProductStat from '$shared/components/ProductStat'
 import TimeSeriesGraph from '.'
 
 const MSEC_DAILY = 86400000
@@ -77,7 +76,6 @@ const WithShownDaysComponent = ({ data }) => {
     return (
         <div>
             <TimeSeriesGraph.Header>
-                <ProductStat.Title>Title</ProductStat.Title>
                 <DaysPopover onChange={setDays} selectedItem={`${days}`} />
             </TimeSeriesGraph.Header>
             <TimeSeriesGraph graphData={data} shownDays={days} />
