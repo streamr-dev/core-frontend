@@ -3,6 +3,7 @@ import { getWalletProvider } from '$shared/stores/wallet'
 import getChainId from '$utils/web3/getChainId'
 import networkPreflight from '$utils/networkPreflight'
 import { defaultChainConfig } from '$app/src/getters/getChainConfig'
+import getClientConfig from './getClientConfig'
 
 let streamrClient: StreamrClient | undefined
 
@@ -30,11 +31,13 @@ export default async function getTransactionalClient({
 
     provider = currentProvider
 
-    streamrClient = new (await require('streamr-client')).StreamrClient({
-        auth: {
-            ethereum: currentProvider,
-        },
-    })
+    streamrClient = new (await require('streamr-client')).StreamrClient(
+        getClientConfig({
+            auth: {
+                ethereum: currentProvider,
+            },
+        }),
+    )
 
     if (!streamrClient) {
         throw new Error('Failed to create new transactional client.')

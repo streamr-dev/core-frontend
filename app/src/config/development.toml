@@ -19,14 +19,6 @@ streamsGraphName = "streamr-dev/streams"
 streamIndexerUrl = ":4001/api"
 reverseRecordsAddress = "0x3671aE578E63FdF66ad4F3E12CC0c0d71Ac7510C"
 
-[[core.marketplaceContractCreationBlocks]]
-chainId = 8995
-blockNumber = 1
-
-[[core.marketplaceContractCreationBlocks]]
-chainId = 8997
-blockNumber = 1
-
 [[core.dataunionGraphNames]]
 chainId = 8997
 name = "streamr-dev/dataunion"
@@ -41,19 +33,8 @@ apiSecretKey = "c39492773b28820c8b3654178bf26946"
 ipfsUploadEndpoint = "https://ipfs.infura.io:5001/api/v0/add"
 ipfsGatewayUrl = "https://streamr-hub.infura-ipfs.io/ipfs/"
 
-[core.projectRegistry]
-chainId = 8997
-
 [client]
 graphUrl = ":8000/subgraphs/name/streamr-dev/network-contracts"
-
-[client.mainchain]
-chainId = 8995
-dataTokenAddress = "0xbAA81A0179015bE47Ad439566374F2Bae098686F"
-
-
-[client.sidechain]
-dataTokenAddress = "0x73Be21733CC5D08e1a14Ea9a399fb27DB3BEf8fF"
 
 [[client.network.trackers]]
 id = "0xb9e7cEBF7b03AE26458E32a059488386b05798e8"

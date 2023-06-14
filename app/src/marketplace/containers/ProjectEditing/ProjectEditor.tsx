@@ -16,10 +16,10 @@ import { DataUnionChainSelector } from '$mp/containers/ProjectEditing/DataUnionC
 import { DataUnionTokenSelector } from '$mp/containers/ProjectEditing/DataUnionTokenSelector/DataUnionTokenSelector'
 import { DataUnionFee } from '$mp/containers/ProjectEditing/DataUnionFee'
 import { ProjectControllerContext } from '$mp/containers/ProjectEditing/ProjectController'
-import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { DataUnionSecretsContextProvider } from '$mp/modules/dataUnion/dataUnionSecretsContext'
 import { ProjectPermission, useProjectAbility } from '$shared/stores/projectAbilities'
 import { useWalletAccount } from '$shared/stores/wallet'
+import { defaultChainConfig } from '$app/src/getters/getChainConfig'
 import DeleteProject from './DeleteProject'
 import { DataUnionSecrets } from './DataUnionSecrets'
 
@@ -53,7 +53,7 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({
 }) => {
     const { state: project } = useContext(ProjectStateContext)
     const { publishInProgress } = useContext(ProjectControllerContext)
-    const { chainId } = getCoreConfig().projectRegistry
+    const chainId = defaultChainConfig.id
     const canDelete = useProjectAbility(
         chainId,
         project?.id || undefined,
