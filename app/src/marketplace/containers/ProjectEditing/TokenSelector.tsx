@@ -7,6 +7,7 @@ import React, {
 } from 'react'
 import styled from 'styled-components'
 import BN from 'bignumber.js'
+import capitalize from 'lodash/capitalize'
 import { useDebouncedCallback } from 'use-debounce'
 import { Chain } from '@streamr/config'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -161,7 +162,8 @@ const TokenSelector: FunctionComponent<Props> = ({
     )
     const isMounted = useIsMounted()
     const [selection, setSelection] = useState<ContractCurrency>(
-        value?.tokenAddress && value?.tokenAddress === dataAddress
+        ((value?.tokenAddress && value?.tokenAddress === dataAddress) ||
+        value?.tokenAddress == null)
             ? contractCurrencies.DATA
             : contractCurrencies.PRODUCT_DEFINED,
     )
@@ -186,13 +188,6 @@ const TokenSelector: FunctionComponent<Props> = ({
     useEffect(() => {
         clearStatus()
     }, [chain, clearStatus])
-
-    // Set default value to DATA
-    useEffect(() => {
-        if (!pricingTokenAddress) {
-            setSelection('DATA')
-        }
-    }, [pricingTokenAddress])
 
     useEffect(() => {
         if (pricingTokenAddress && chainId) {
@@ -292,7 +287,7 @@ const TokenSelector: FunctionComponent<Props> = ({
     return (
         <Container>
             <Heading>
-                Set the payment token a and price on {chain?.name || 'the selected'} chain
+                Set the payment token and price on the {chain != null ? capitalize(chain.name) : 'selected'} chain
             </Heading>
             <Description>
                 You can set a price for others to access the streams in your project. The
