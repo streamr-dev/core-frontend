@@ -7,7 +7,7 @@ import React, {
 } from 'react'
 import styled from 'styled-components'
 import BN from 'bignumber.js'
-import { debounce } from 'lodash'
+import { useDebouncedCallback } from 'use-debounce'
 import { Chain } from '@streamr/config'
 import SvgIcon from '$shared/components/SvgIcon'
 import { getDataAddress, getTokenInformation } from '$mp/utils/web3'
@@ -181,7 +181,7 @@ const TokenSelector: FunctionComponent<Props> = ({
     const { setStatus, clearStatus, isValid } = useValidation(validationFieldName)
     const pricingTokenAddress = value?.tokenAddress?.toLowerCase()
 
-    const debouncedOnChange = useMemo(() => debounce(onChange, 50), [onChange])
+    const debouncedOnChange = useDebouncedCallback(onChange, 50)
 
     useEffect(() => {
         clearStatus()
@@ -286,6 +286,7 @@ const TokenSelector: FunctionComponent<Props> = ({
         if (selectedTokenAddress?.toUpperCase() !== value?.tokenAddress?.toUpperCase()) {
             handleChange({})
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedTokenAddress, value, selection])
 
     return (
