@@ -15,6 +15,7 @@ import GenericErrorPage from '$shared/components/GenericErrorPage'
 import ErrorPage from '$shared/components/ErrorPage'
 import Analytics from '$shared/utils/Analytics'
 import NewStreamListingPage from '$app/src/pages/NewStreamListingPage'
+import SponsorshipsPage from '$app/src/pages/Sponsorships'
 import StreamPage from '$app/src/pages/StreamPage'
 import ProjectPage from '$app/src/pages/ProjectPage'
 import ProjectsPage from '$mp/containers/Projects'
@@ -77,15 +78,15 @@ const App = () => (
                                 <>
                                     <Route
                                         path="/hub/operators/*"
-                                        errorElement={<ErrorPage/>}
+                                        errorElement={<ErrorPage />}
                                     >
-                                        <Route index element={<OperatorsPage/>}/>
+                                        <Route index element={<OperatorsPage />} />
                                     </Route>
-                                    <Route path="/hub/network/*" errorElement={<ErrorPage/>}>
-                                        <Route
-                                            path="overview"
-                                            element={<NetworkOverviewPage/>}
-                                        />
+                                    <Route
+                                        path="/hub/sponsorships/*"
+                                        errorElement={<ErrorPage />}
+                                    >
+                                        <Route index element={<SponsorshipsPage />} />
                                     </Route>
                                 </>
                             )}
