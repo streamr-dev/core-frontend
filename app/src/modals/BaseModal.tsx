@@ -153,6 +153,7 @@ export default function BaseModal({
 const AnimatedWrap = styled.div<{ $dismissed?: boolean }>`
     animation: 300ms ${({ $dismissed = false }) => ($dismissed ? bringOut : bringIn)}
         ease-in-out 1;
+    animation-fill-mode: both;
     backface-visibility: hidden;
 `
 
@@ -173,6 +174,7 @@ const Root = styled.div<{ $dismissed?: boolean; $dark?: boolean }>`
         $dismissed &&
         css`
             animation: 300ms ${fadeAway} ease-in-out 1;
+            animation-fill-mode: both;
         `}
 
     ${({ $dark = false }) =>

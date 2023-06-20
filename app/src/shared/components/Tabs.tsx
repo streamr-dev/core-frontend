@@ -53,7 +53,7 @@ const Item = styled.button<{ $selected?: boolean; $flexBasis?: number }>`
     font-family: inherit;
     font-weight: inherit;
     padding: 0 20px;
-    border-radius: 16px;
+    border-radius: 6px;
     flex-shrink: 0;
     font-size: inherit;
     justify-content: center;
@@ -110,7 +110,7 @@ const Inner = styled.div`
 const Root = styled.div`
     background: #f5f5f5;
     box-sizing: border-box;
-    border-radius: 20px;
+    border-radius: 8px;
     padding: 4px;
     width: max-content;
     font-size: 14px;
@@ -156,7 +156,7 @@ const Trolley = styled.div<{ $selected?: boolean; $animated?: boolean }>`
 const Rails = styled.div<{ $animated?: boolean }>`
     background: #323232;
     color: #ffffff;
-    border-radius: 16px;
+    border-radius: 6px;
     height: 100%;
     position: absolute;
     transition: 200ms ease-out;
