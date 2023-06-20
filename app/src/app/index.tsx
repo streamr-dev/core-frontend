@@ -22,7 +22,9 @@ import NewProjectPage from '$mp/containers/ProjectEditing/NewProjectPage'
 import EditProjectPage from '$mp/containers/ProjectEditing/EditProjectPage'
 import Globals from '$shared/components/Globals'
 import { Layer } from '$utils/Layer'
+import { FeatureFlag, isFeatureEnabled } from '$shared/utils/isFeatureEnabled'
 import routes from '$routes'
+import OperatorsPage from '~/pages/OperatorsPage'
 import { HubRouter } from '~/consts'
 import '../analytics'
 
@@ -70,6 +72,14 @@ const App = () => (
                                 <Route index element={<NewStreamListingPage />} />
                                 <Route path=":id/*" element={<StreamPage />} />
                             </Route>
+                            {isFeatureEnabled(FeatureFlag.PhaseTwo) && (
+                                <Route
+                                    path="/hub/operators/*"
+                                    errorElement={<ErrorPage />}
+                                >
+                                    <Route index element={<OperatorsPage />} />
+                                </Route>
+                            )}
                             {MiscRouter()}
                         </Routes>
                         <Container id={Layer.Modal} />
