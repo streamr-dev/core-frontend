@@ -280,7 +280,14 @@ const UnstyledMobileNav: FunctionComponent<{ className?: string }> = ({ classNam
                 <NavbarLinkMobile highlight={false}>
                     {isFeatureEnabled(FeatureFlag.PhaseTwo) ? (
                         <NavLink onClick={(event) => event.stopPropagation()} as={'div'}>
-                            <Accordion flush open={accordionOpen} toggle={toggle}>
+                            <Accordion
+                                flush
+                                open={accordionOpen}
+                                // hack for the issues with typing
+                                {...{
+                                    toggle,
+                                }}
+                            >
                                 <AccordionItem>
                                     <StyledAccordionHeader targetId="1">
                                         <div className="network-dropdown-button-inner">
@@ -297,11 +304,11 @@ const UnstyledMobileNav: FunctionComponent<{ className?: string }> = ({ classNam
                                     <StyledAccordionBody accordionId="1">
                                         {extendedNetworkNav.map(
                                             (networkNavElement, index) => {
-                                                const { title, subtitle, href, ...rest } =
+                                                const { title, subtitle, link, ...rest } =
                                                     networkNavElement
                                                 return (
                                                     <NetworkMobileLink
-                                                        to={href}
+                                                        to={link}
                                                         {...rest}
                                                         key={index}
                                                     >
