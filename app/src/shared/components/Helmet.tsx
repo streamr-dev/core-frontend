@@ -35,3 +35,19 @@ export const MarketplaceHelmet = ({
         title={title}
     />
 )
+
+export const NetworkHelmet = ({
+    description = 'Create or fund sponsorships, and create or delegate operators on Streamr Hub',
+    image = 'https://streamr.network/resources/social/marketplace.png',
+    title,
+    suffix,
+    ...props
+}: Props) => (
+    <Helmet
+        {...props}
+        description={description}
+        image={image}
+        suffix={suffix || 'Streamr Hub'}
+        title={title}
+    />
+)

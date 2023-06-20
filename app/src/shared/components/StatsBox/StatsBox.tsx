@@ -22,7 +22,7 @@ const StatsGrid = styled.div`
 
 const StatsCell = styled.div`
     border-bottom: 1px solid ${COLORS.separator};
-    padding: 24px 0;
+    padding: 32px 0;
     &.column-count-3 {
         &:nth-last-child(-n + 3) {
             // last row
@@ -62,7 +62,7 @@ const StatsCell = styled.div`
     }
 
     .cell-inner {
-        padding: 0 24px;
+        padding: 12px 24px;
         display: flex;
         flex-direction: row;
         justify-content: space-between;

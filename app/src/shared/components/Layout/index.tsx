@@ -3,6 +3,7 @@ import { ThemeProvider } from 'styled-components'
 import React, { FunctionComponent, ReactNode } from 'react'
 import { NavProvider } from '@streamr/streamr-layout'
 import cx from 'classnames'
+import { COLORS, MAX_BODY_WIDTH } from '$shared/utils/styled'
 import useScrollToTop from '$shared/hooks/useScrollToTop'
 import useCurrentLocation from '$shared/hooks/useCurrentLocation'
 import Nav from './Nav'
@@ -59,3 +60,14 @@ const Layout: FunctionComponent<LayoutProps> = ({
 }
 
 export default Layout
+
+export const PageContainer = styled.div`
+    background-color: ${COLORS.secondary};
+    max-width: ${MAX_BODY_WIDTH}px;
+    margin: 0 auto;
+    color: ${COLORS.primary};
+    padding: 0 24px;
+    @media (min-width: ${MAX_BODY_WIDTH + 48}px) {
+        padding: 0;
+    }
+`

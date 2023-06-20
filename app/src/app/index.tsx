@@ -1,8 +1,8 @@
 import React from 'react'
 import { Container } from 'toasterhea'
 import styled from 'styled-components'
-import { Route, Routes, Navigate } from 'react-router-dom'
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
+import { Navigate, Route, Routes } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import '$shared/assets/stylesheets'
 import '@ibm/plex/css/ibm-plex.css'
 import '$utils/setupSnippets'
@@ -25,6 +25,8 @@ import { Layer } from '$utils/Layer'
 import routes from '$routes'
 import { HubRouter } from '~/consts'
 import '../analytics'
+import { FeatureFlag, isFeatureEnabled } from '$shared/utils/isFeatureEnabled'
+import { NetworkOverview } from '$app/src/network/pages/NetworkOverview'
 
 const MiscRouter = () => [
     <Route
@@ -70,6 +72,16 @@ const App = () => (
                                 <Route index element={<NewStreamListingPage />} />
                                 <Route path=":id/*" element={<StreamPage />} />
                             </Route>
+                            {isFeatureEnabled(FeatureFlag.PhaseTwo) ? (
+                                <Route path="/hub/network/*" errorElement={<ErrorPage />}>
+                                    <Route
+                                        path="overview"
+                                        element={<NetworkOverview />}
+                                    />
+                                </Route>
+                            ) : (
+                                <></>
+                            )}
                             {MiscRouter()}
                         </Routes>
                         <Container id={Layer.Modal} />
