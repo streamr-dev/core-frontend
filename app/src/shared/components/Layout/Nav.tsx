@@ -60,7 +60,7 @@ const extendedNetworkNav: {
     {
         title: 'Operators',
         subtitle: 'Explore Operators and delegate',
-        link: '$',
+        link: '#',
     },
     {
         title: 'The Network Explorer',
@@ -125,6 +125,16 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                                     <NetworkNavElement
                                                         as={Link}
                                                         to={link}
+                                                        onClick={() => {
+                                                            if (
+                                                                rest.target &&
+                                                                rest.target === '_blank'
+                                                            ) {
+                                                                // a bit of a hack for the Network Explorer as the Popover
+                                                                // from ReactStrap somehow blocks links with target=_blank
+                                                                window.open(link)
+                                                            }
+                                                        }}
                                                         {...rest}
                                                     >
                                                         <p className="title">{title}</p>

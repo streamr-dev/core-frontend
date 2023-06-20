@@ -198,6 +198,7 @@ export const NetworkNavElement = styled.div`
     font-weight: ${MEDIUM};
     color: ${COLORS.black};
     margin: 0;
+    letter-spacing: initial;
   }
 
   .subtitle {
@@ -207,6 +208,7 @@ export const NetworkNavElement = styled.div`
     margin: 0;
     max-width: 350px;
     white-space: pre-line;
+    letter-spacing: initial;
   }
 `
 export const NavbarLinkMobile = styled(UnstyledNavbarLink)<{ highlight: boolean }>`
