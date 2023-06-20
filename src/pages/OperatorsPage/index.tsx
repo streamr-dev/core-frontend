@@ -9,12 +9,19 @@ import { Layer } from '$app/src/utils/Layer'
 import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
 import DelegateFundsModal from '~/modals/DelegateFundsModal'
 import FundSponsorshipModal from '~/modals/FundSponsorshipModal'
+import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
+import BigNumber from 'bignumber.js'
+import JoinSponsorshipModal from '~/modals/JoinSponsorshipModal'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
 const delegateFundsModal = toaster(DelegateFundsModal, Layer.Modal)
 
 const fundSponsorshipModal = toaster(FundSponsorshipModal, Layer.Modal)
+
+const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
+
+const joinSponsorshipModal = toaster(JoinSponsorshipModal, Layer.Modal)
 
 export default function OperatorsPage() {
     return (
@@ -34,6 +41,7 @@ export default function OperatorsPage() {
                 >
                     Become an Operator
                 </Button>
+                <br />
                 <Button
                     type="button"
                     onClick={async () => {
@@ -46,6 +54,7 @@ export default function OperatorsPage() {
                 >
                     Delegate
                 </Button>
+                <br />
                 <Button
                     type="button"
                     onClick={async () => {
@@ -57,6 +66,32 @@ export default function OperatorsPage() {
                     }}
                 >
                     Fund
+                </Button>
+                <br />
+                <Button
+                    type="button"
+                    onClick={async () => {
+                        try {
+                            await createSponsorshipModal.pop()
+                        } catch (e) {
+                            // Ignore for now.
+                        }
+                    }}
+                >
+                    Create Sponsorship
+                </Button>
+                <br />
+                <Button
+                    type="button"
+                    onClick={async () => {
+                        try {
+                            await joinSponsorshipModal.pop()
+                        } catch (e) {
+                            // Ignore for now.
+                        }
+                    }}
+                >
+                    Join Sponsorship as Operator
                 </Button>
             </PageWrap>
         </Layout>

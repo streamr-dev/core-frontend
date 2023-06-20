@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 import styled, { css } from 'styled-components'
-import { COLORS, MEDIUM, SANS, TABLET } from '$shared/utils/styled'
+import { COLORS, MEDIUM, REGULAR, SANS, TABLET } from '$shared/utils/styled'
 import Buttons, { ButtonActions } from '$shared/components/Buttons'
 import SvgIcon from '$shared/components/SvgIcon'
 import Label from '$ui/Label'
@@ -184,6 +184,10 @@ export const Section = styled.div`
     li + li {
         margin-top: 16px;
     }
+
+    & + & {
+        margin-top: 16px;
+    }
 `
 
 export const Prop = styled.em<{ $invalid?: boolean }>`
@@ -227,6 +231,10 @@ export const FieldWrap = styled.div<{ $invalid?: boolean }>`
         box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
     }
 
+    & + ${Label} {
+        margin-top: 24px;
+    }
+
     ${Appendix} {
         border-left: 1px solid #efefef;
     }
@@ -261,5 +269,24 @@ export const TextInput = styled.input`
 
     &[type='number'] {
         -moz-appearance: textfield;
+    }
+
+    &::placeholder {
+        color: #a3a3a3;
+    }
+`
+
+export const GroupHeadline = styled.h2`
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: ${REGULAR};
+    margin: 0 0 24px;
+    border-bottom: 1px solid #efefef;
+    padding: 0 0 16px;
+`
+
+export const Group = styled.div`
+    & + & {
+        margin-top: 40px;
     }
 `
