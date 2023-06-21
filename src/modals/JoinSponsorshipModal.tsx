@@ -62,7 +62,9 @@ export default function JoinSponsorshipModal({
         setRawAmount(parseAmount(amountProp))
     }, [amountProp])
 
-    const canSubmit = finalAmount.isGreaterThan(0)
+    const insufficientFunds = finalAmount.isGreaterThan(operatorBalance)
+
+    const canSubmit = finalAmount.isGreaterThan(0) && !insufficientFunds
 
     const { copy } = useCopy()
 
@@ -143,7 +145,13 @@ export default function JoinSponsorshipModal({
                 </FieldWrap>
                 <ul>
                     <li>
-                        <Prop>Available balance in Operator contract</Prop>
+                        <Prop $invalid={insufficientFunds}>
+                            {insufficientFunds ? (
+                                <>Not enough balance in Operator contract</>
+                            ) : (
+                                <>Available balance in Operator contract</>
+                            )}
+                        </Prop>
                         <div>
                             {operatorBalance.dividedBy(1e18).toString()} {tokenSymbol}
                         </div>

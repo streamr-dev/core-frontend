@@ -4,6 +4,7 @@ import { z } from 'zod'
 import SearchIcon from '@atlaskit/icon/glyph/search'
 import { RejectionReason } from '$app/src/modals/BaseModal'
 import FormModal, {
+    ErrorLabel,
     FieldWrap,
     FormModalProps,
     Group,
@@ -15,6 +16,7 @@ import FormModal, {
     SectionHeadline,
     TextAppendix,
     TextInput,
+    WingedLabelWrap,
 } from '$app/src/modals/FormModal'
 import Label from '$ui/Label'
 
@@ -49,7 +51,7 @@ const FormData = z
     })
     .refine(
         ({ minNumberOfOperators, maxNumberOfOperators }) =>
-            maxNumberOfOperators >= minNumberOfOperators,
+            maxNumberOfOperators === 0 || maxNumberOfOperators >= minNumberOfOperators,
         {
             message: 'invalid range of operator numbers',
         },
@@ -149,8 +151,6 @@ export default function CreateSponsorshipModal({
         maxNumberOfOperators: Number.parseInt(maxNumberOfOperators),
     }
 
-    const canSubmit = FormData.safeParse(formData).success
-
     const backdropDismissable =
         rawStreamId === initialRawFormData.streamId &&
         new BigNumber(rawInitialAmount || '0').toString() ===
@@ -165,6 +165,14 @@ export default function CreateSponsorshipModal({
         payoutRateBN.isGreaterThan(0) && initialAmountBN.isGreaterThanOrEqualTo(0)
             ? initialAmountBN.dividedBy(payoutRateBN).toNumber()
             : 0
+
+    const insufficientFunds = initialAmountBN.isGreaterThan(balance)
+
+    const invalidOperatorNumberRange =
+        formData.maxNumberOfOperators !== 0 &&
+        formData.minNumberOfOperators > formData.maxNumberOfOperators
+
+    const canSubmit = FormData.safeParse(formData).success && !insufficientFunds
 
     return (
         <FormModal
@@ -231,8 +239,11 @@ export default function CreateSponsorshipModal({
             <Group>
                 <GroupHeadline>Set Sponsorship parameters</GroupHeadline>
                 <Section>
-                    <Label>Initial amount to fund</Label>
-                    <FieldWrap>
+                    <WingedLabelWrap>
+                        <Label>Initial amount to fund</Label>
+                        {insufficientFunds && <ErrorLabel>Insufficient funds</ErrorLabel>}
+                    </WingedLabelWrap>
+                    <FieldWrap $invalid={insufficientFunds}>
                         <TextInput
                             name="initialAmount"
                             onChange={({ target }) =>
@@ -303,7 +314,7 @@ export default function CreateSponsorshipModal({
                 </Section>
                 <Section>
                     <Label>Minimum number of Operators</Label>
-                    <FieldWrap>
+                    <FieldWrap $invalid={invalidOperatorNumberRange}>
                         <TextInput
                             name="minNumberOfOperators"
                             onChange={({ target }) =>
@@ -322,7 +333,7 @@ export default function CreateSponsorshipModal({
                 </Section>
                 <Section>
                     <Label>Maximum number of Operators</Label>
-                    <FieldWrap>
+                    <FieldWrap $invalid={invalidOperatorNumberRange}>
                         <TextInput
                             name="maxNumberOfOperators"
                             onChange={({ target }) =>

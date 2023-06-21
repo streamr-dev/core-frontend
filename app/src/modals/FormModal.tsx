@@ -318,3 +318,21 @@ export const IconWrapAppendix = styled(Appendix)`
     color: #a3a3a3;
     padding-right: 10px;
 `
+
+export const WingedLabelWrap = styled.div`
+    display: flex;
+    align-items: center;
+
+    ${Label} {
+        flex-grow: 1;
+    }
+
+    ${Label} + ${Label} {
+        flex-grow: 0;
+    }
+`
+
+export const ErrorLabel = styled(Label)`
+    color: #d90c25;
+    opacity: 0.7;
+`
