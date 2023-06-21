@@ -1,6 +1,7 @@
 import React, { useEffect, useReducer, useState } from 'react'
 import BigNumber from 'bignumber.js'
 import { z } from 'zod'
+import SearchIcon from '@atlaskit/icon/glyph/search'
 import { RejectionReason } from '$app/src/modals/BaseModal'
 import FormModal, {
     FieldWrap,
@@ -8,6 +9,7 @@ import FormModal, {
     Group,
     GroupHeadline,
     Hint,
+    IconWrapAppendix,
     Prop,
     Section,
     SectionHeadline,
@@ -218,6 +220,9 @@ export default function CreateSponsorshipModal({
                             type="text"
                             value={streamId}
                         />
+                        <IconWrapAppendix>
+                            <SearchIcon label="Search" />
+                        </IconWrapAppendix>
                     </FieldWrap>
                 </Section>
             </Group>

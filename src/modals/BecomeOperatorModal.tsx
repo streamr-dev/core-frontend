@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import BigNumber from 'bignumber.js'
 import { RejectionReason } from '$app/src/modals/BaseModal'
 import FormModal, {
     FieldWrap,
@@ -16,11 +17,13 @@ interface Props extends Omit<FormModalProps, 'canSubmit'> {
     operatorId?: string
     onResolve?: (cut: number) => void
     cut?: number
+    balance: string
 }
 
 export default function BecomeOperatorModal({
     title = 'Become an Operator',
     submitLabel = 'Become an Operator',
+    balance: balanceProp = '0',
     onResolve,
     operatorId = 'N/A',
     cut: cutProp,
@@ -42,6 +45,8 @@ export default function BecomeOperatorModal({
 
     const canSubmit =
         `${numericValue}` === value && numericValue >= 0 && numericValue <= 100
+
+    const balance = new BigNumber(balanceProp).dividedBy(1e18).toString()
 
     return (
         <FormModal
@@ -73,9 +78,11 @@ export default function BecomeOperatorModal({
                 }
             }}
         >
-            <SectionHeadline>Please choose your Operator&apos;s cut</SectionHeadline>
+            <SectionHeadline>
+                Please choose the percentage for the Operator&apos;s cut
+            </SectionHeadline>
             <Section>
-                <Label>Operator&apos;s cut</Label>
+                <Label>Operator&apos;s cut percentage</Label>
                 <FieldWrap>
                     <TextInput
                         name="cut"
@@ -98,6 +105,10 @@ export default function BecomeOperatorModal({
                     </p>
                 </Hint>
                 <ul>
+                    <li>
+                        <Prop>Your wallet balance</Prop>
+                        <div>{balance} DATA</div>
+                    </li>
                     <li>
                         <Prop>Operator ID</Prop>
                         <div>{operatorId}</div>

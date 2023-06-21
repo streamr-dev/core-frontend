@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { HTMLAttributes, ReactNode } from 'react'
 import styled, { css } from 'styled-components'
 import { COLORS, MEDIUM, REGULAR, SANS, TABLET } from '$shared/utils/styled'
 import Buttons, { ButtonActions } from '$shared/components/Buttons'
@@ -207,17 +207,17 @@ export const Prop = styled.em<{ $invalid?: boolean }>`
 `
 
 export const Appendix = styled.div`
-    height: 100%;
+    align-items: center;
+    display: flex;
     flex-shrink: 0;
+    height: 100%;
 `
 
 export const TextAppendix = styled(Appendix)`
-    align-items: center;
-    display: flex;
     padding: 0 18px;
 `
 
-export const FieldWrap = styled.div<{ $invalid?: boolean }>`
+export const FieldWrap = styled.div<{ $invalid?: boolean; $grayedOut?: boolean }>`
     display: flex;
     border: 1px solid transparent;
     align-items: center;
@@ -235,7 +235,7 @@ export const FieldWrap = styled.div<{ $invalid?: boolean }>`
         margin-top: 24px;
     }
 
-    ${Appendix} {
+    ${TextAppendix} {
         border-left: 1px solid #efefef;
     }
 
@@ -244,9 +244,16 @@ export const FieldWrap = styled.div<{ $invalid?: boolean }>`
         css`
             border: 1px solid #d90c25;
 
-            ${Appendix} {
+            ${TextAppendix} {
                 border-color: #d90c25;
             }
+        `}
+
+    ${({ $grayedOut = false }) =>
+        $grayedOut &&
+        css`
+            border-color: #f8f8f8;
+            background: #f8f8f8;
         `}
 `
 
@@ -289,4 +296,25 @@ export const Group = styled.div`
     & + & {
         margin-top: 40px;
     }
+`
+
+export const CopyButtonWrapAppendix = styled(Appendix)`
+    padding: 0 16px 0 0;
+
+    button {
+        align-items: center;
+        appearance: none;
+        background: #ffffff;
+        border: 0;
+        color: #525252;
+        display: flex;
+        height: 24px;
+        justify-content: center;
+        width: 24px;
+    }
+`
+
+export const IconWrapAppendix = styled(Appendix)`
+    color: #a3a3a3;
+    padding-right: 10px;
 `

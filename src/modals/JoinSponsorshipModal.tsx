@@ -1,5 +1,6 @@
 import React, { useEffect, useReducer, useState } from 'react'
 import BigNumber from 'bignumber.js'
+import CopyIcon from '@atlaskit/icon/glyph/copy'
 import { z } from 'zod'
 import { RejectionReason } from '$app/src/modals/BaseModal'
 import FormModal, {
@@ -13,8 +14,10 @@ import FormModal, {
     SectionHeadline,
     TextAppendix,
     TextInput,
+    CopyButtonWrapAppendix,
 } from '$app/src/modals/FormModal'
 import Label from '$ui/Label'
+import useCopy from '$shared/hooks/useCopy'
 
 interface Props extends Omit<FormModalProps, 'canSubmit'> {
     onResolve?: (amount: string) => void
@@ -37,9 +40,11 @@ export default function JoinSponsorshipModal({
     operatorBalance: operatorBalanceProp = '0',
     operatorId = 'N/A',
     amount: amountProp = '0',
-    streamId = 'N/A',
+    streamId: streamIdProp,
     ...props
 }: Props) {
+    const streamId = streamIdProp || 'N/A'
+
     const [busy, setBusy] = useState(false)
 
     const operatorBalance = new BigNumber(operatorBalanceProp)
@@ -56,6 +61,8 @@ export default function JoinSponsorshipModal({
     }, [amountProp])
 
     const canSubmit = finalAmount.isGreaterThan(0)
+
+    const { copy } = useCopy()
 
     return (
         <FormModal
@@ -100,8 +107,22 @@ export default function JoinSponsorshipModal({
             </SectionHeadline>
             <Section>
                 <Label>Sponsorship Stream ID</Label>
-                <FieldWrap>
+                <FieldWrap $grayedOut>
                     <TextInput defaultValue={streamId} readOnly />
+                    {!!streamIdProp && (
+                        <CopyButtonWrapAppendix>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    copy(streamIdProp, {
+                                        toastMessage: 'Copied!',
+                                    })
+                                }}
+                            >
+                                <CopyIcon label="Copy" size="small" />
+                            </button>
+                        </CopyButtonWrapAppendix>
+                    )}
                 </FieldWrap>
                 <Label>Amount to stake</Label>
                 <FieldWrap>
