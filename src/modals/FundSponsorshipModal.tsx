@@ -16,6 +16,7 @@ import Label from '$ui/Label'
 interface Props extends Omit<FormModalProps, 'canSubmit'> {
     onResolve?: (amount: string) => void
     balance?: string
+    tokenSymbol?: string
     delegatedTotal?: string
     operatorId?: string
     amount?: string
@@ -27,6 +28,7 @@ const DayInSeconds = 60 * 60 * 24
 export default function FundSponsorshipModal({
     title = 'Fund Sponsorship',
     balance: balanceProp = '0',
+    tokenSymbol = 'DATA',
     onResolve,
     amount: amountProp = '',
     submitLabel = 'Fund',
@@ -94,7 +96,7 @@ export default function FundSponsorshipModal({
             }}
         >
             <SectionHeadline>
-                Please set the amount of DATA to spend to extend the Sponsorship
+                Please set the amount of {tokenSymbol} to spend to extend the Sponsorship
             </SectionHeadline>
             <Section>
                 <Label>Amount to delegate</Label>
@@ -109,7 +111,7 @@ export default function FundSponsorshipModal({
                         min={0}
                         value={rawAmount}
                     />
-                    <TextAppendix>DATA</TextAppendix>
+                    <TextAppendix>{tokenSymbol}</TextAppendix>
                 </FieldWrap>
                 <ul>
                     <li>
@@ -120,7 +122,9 @@ export default function FundSponsorshipModal({
                                 <>Your wallet balance</>
                             )}
                         </Prop>
-                        <div>{balance.dividedBy(1e18).toString()} DATA</div>
+                        <div>
+                            {balance.dividedBy(1e18).toString()} {tokenSymbol}
+                        </div>
                     </li>
                     <li>
                         <Prop>Sponsorship extended by</Prop>
@@ -132,7 +136,9 @@ export default function FundSponsorshipModal({
                     </li>
                     <li>
                         <Prop>Rate</Prop>
-                        <div>{rate.toString()} DATA/day</div>
+                        <div>
+                            {rate.toString()} {tokenSymbol}/day
+                        </div>
                     </li>
                 </ul>
             </Section>

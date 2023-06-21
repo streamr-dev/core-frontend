@@ -16,6 +16,7 @@ import Label from '$ui/Label'
 interface Props extends Omit<FormModalProps, 'canSubmit'> {
     onResolve?: (amount: string) => void
     balance?: string
+    tokenSymbol?: string
     delegatedTotal?: string
     operatorId?: string
     amount?: string
@@ -24,6 +25,7 @@ interface Props extends Omit<FormModalProps, 'canSubmit'> {
 export default function DelegateFundsModal({
     title = 'Delegate',
     balance: balanceProp = '0',
+    tokenSymbol = 'DATA',
     delegatedTotal: delegatedTotalProp = '0',
     operatorId = 'N/A',
     onResolve,
@@ -83,7 +85,8 @@ export default function DelegateFundsModal({
             }}
         >
             <SectionHeadline>
-                Please set the amount of DATA to delegate to the selected Operator
+                Please set the amount of {tokenSymbol} to delegate to the selected
+                Operator
             </SectionHeadline>
             <Section>
                 <Label>Amount to delegate</Label>
@@ -98,7 +101,7 @@ export default function DelegateFundsModal({
                         min={0}
                         value={rawAmount}
                     />
-                    <TextAppendix>DATA</TextAppendix>
+                    <TextAppendix>{tokenSymbol}</TextAppendix>
                 </FieldWrap>
                 <ul>
                     <li>
@@ -109,7 +112,9 @@ export default function DelegateFundsModal({
                                 <>Your wallet balance</>
                             )}
                         </Prop>
-                        <div>{balance.dividedBy(1e18).toString()} DATA</div>
+                        <div>
+                            {balance.dividedBy(1e18).toString()} {tokenSymbol}
+                        </div>
                     </li>
                     <li>
                         <Prop>Operator ID</Prop>
@@ -117,7 +122,9 @@ export default function DelegateFundsModal({
                     </li>
                     <li>
                         <Prop>Amount currently delegated to Operator</Prop>
-                        <div>{delegatedTotal.dividedBy(1e18).toString()} DATA</div>
+                        <div>
+                            {delegatedTotal.dividedBy(1e18).toString()} {tokenSymbol}
+                        </div>
                     </li>
                 </ul>
             </Section>

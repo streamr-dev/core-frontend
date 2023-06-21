@@ -17,7 +17,8 @@ interface Props extends Omit<FormModalProps, 'canSubmit'> {
     operatorId?: string
     onResolve?: (cut: number) => void
     cut?: number
-    balance: string
+    balance?: string
+    tokenSymbol?: string
 }
 
 export default function BecomeOperatorModal({
@@ -27,6 +28,7 @@ export default function BecomeOperatorModal({
     onResolve,
     operatorId = 'N/A',
     cut: cutProp,
+    tokenSymbol = 'DATA',
     ...props
 }: Props) {
     const [busy, setBusy] = useState(false)
@@ -107,7 +109,9 @@ export default function BecomeOperatorModal({
                 <ul>
                     <li>
                         <Prop>Your wallet balance</Prop>
-                        <div>{balance} DATA</div>
+                        <div>
+                            {balance} {tokenSymbol}
+                        </div>
                     </li>
                     <li>
                         <Prop>Operator ID</Prop>

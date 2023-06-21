@@ -61,6 +61,7 @@ interface Props extends Omit<FormModalProps, 'canSubmit'> {
     onResolve?: (formData: FormData) => void
     balance?: string
     formData: Partial<FormData>
+    tokenSymbol?: string
 }
 
 function getRawFormData(formData: Partial<FormData>): RawFormData {
@@ -93,6 +94,7 @@ export default function CreateSponsorshipModal({
     onResolve,
     balance: balanceProp = '0',
     formData: formDataProp = {},
+    tokenSymbol = 'DATA',
     ...props
 }: Props) {
     const [busy, setBusy] = useState(false)
@@ -244,12 +246,14 @@ export default function CreateSponsorshipModal({
                             min={0}
                             value={rawInitialAmount}
                         />
-                        <TextAppendix>DATA</TextAppendix>
+                        <TextAppendix>{tokenSymbol}</TextAppendix>
                     </FieldWrap>
                     <Hint>
                         <p>
                             Wallet balance:{' '}
-                            <strong>{balance.dividedBy(1e18).toString()} DATA</strong>
+                            <strong>
+                                {balance.dividedBy(1e18).toString()} {tokenSymbol}
+                            </strong>
                         </p>
                     </Hint>
                 </Section>
@@ -269,7 +273,7 @@ export default function CreateSponsorshipModal({
                             min={0}
                             value={rawPayoutRate}
                         />
-                        <TextAppendix>DATA/day</TextAppendix>
+                        <TextAppendix>{tokenSymbol}/day</TextAppendix>
                     </FieldWrap>
                     <Hint>
                         <p>

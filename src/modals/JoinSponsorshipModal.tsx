@@ -22,6 +22,7 @@ import useCopy from '$shared/hooks/useCopy'
 interface Props extends Omit<FormModalProps, 'canSubmit'> {
     onResolve?: (amount: string) => void
     operatorBalance?: string
+    tokenSymbol?: string
     operatorId?: string
     amount?: string
     streamId?: string
@@ -41,6 +42,7 @@ export default function JoinSponsorshipModal({
     operatorId = 'N/A',
     amount: amountProp = '0',
     streamId: streamIdProp,
+    tokenSymbol = 'DATA',
     ...props
 }: Props) {
     const streamId = streamIdProp || 'N/A'
@@ -103,7 +105,8 @@ export default function JoinSponsorshipModal({
             }}
         >
             <SectionHeadline>
-                Please set the amount of DATA to stake on the selected Sponsorship
+                Please set the amount of {tokenSymbol} to stake on the selected
+                Sponsorship
             </SectionHeadline>
             <Section>
                 <Label>Sponsorship Stream ID</Label>
@@ -136,12 +139,14 @@ export default function JoinSponsorshipModal({
                         min={0}
                         value={rawAmount}
                     />
-                    <TextAppendix>DATA</TextAppendix>
+                    <TextAppendix>{tokenSymbol}</TextAppendix>
                 </FieldWrap>
                 <ul>
                     <li>
                         <Prop>Available balance in Operator contract</Prop>
-                        <div>{operatorBalance.dividedBy(1e18).toString()} DATA</div>
+                        <div>
+                            {operatorBalance.dividedBy(1e18).toString()} {tokenSymbol}
+                        </div>
                     </li>
                     <li>
                         <Prop>Operator ID</Prop>
