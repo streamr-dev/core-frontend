@@ -97,8 +97,6 @@ export default function CreateSponsorshipModal({
 
     const balance = new BigNumber(balanceProp)
 
-    const extensionInDays = 0
-
     const initialRawFormData = getRawFormData(formDataProp)
 
     const [
@@ -119,11 +117,13 @@ export default function CreateSponsorshipModal({
         initialRawFormData,
     )
 
-    const initialAmount = new BigNumber(rawInitialAmount || '0')
-        .multipliedBy(1e18)
-        .toString()
+    const initialAmountBN = new BigNumber(rawInitialAmount || '0').multipliedBy(1e18)
 
-    const payoutRate = new BigNumber(rawPayoutRate || '0').multipliedBy(1e18).toString()
+    const initialAmount = initialAmountBN.toString()
+
+    const payoutRateBN = new BigNumber(rawPayoutRate || '0').multipliedBy(1e18)
+
+    const payoutRate = payoutRateBN.toString()
 
     const minStakeDuration = rawMinStakeDuration || '0'
 
@@ -156,6 +156,11 @@ export default function CreateSponsorshipModal({
         minStakeDuration === (initialRawFormData.minStakeDuration || '0') &&
         minNumberOfOperators === (initialRawFormData.minNumberOfOperators || '0') &&
         maxNumberOfOperators === (initialRawFormData.maxNumberOfOperators || '0')
+
+    const extensionInDays =
+        payoutRateBN.isGreaterThan(0) && initialAmountBN.isGreaterThanOrEqualTo(0)
+            ? initialAmountBN.dividedBy(payoutRateBN).toNumber()
+            : 0
 
     return (
         <FormModal
@@ -262,7 +267,10 @@ export default function CreateSponsorshipModal({
                         <TextAppendix>DATA/day</TextAppendix>
                     </FieldWrap>
                     <Hint>
-                        <p>The Sponsorship will be funded for {extensionInDays} days</p>
+                        <p>
+                            The Sponsorship will be funded for{' '}
+                            {extensionInDays.toFixed(2).replace(/\.00$/, '')} days
+                        </p>
                     </Hint>
                 </Section>
                 <Section>
