@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo } from 'react'
+import React, { FunctionComponent, ReactNode, useMemo } from 'react'
 import styled from 'styled-components'
 import { COLORS, LAPTOP, MEDIUM, REGULAR, TABLET } from '$shared/utils/styled'
 
@@ -101,7 +101,7 @@ const StatsValue = styled.p`
 `
 
 export const StatsBox: FunctionComponent<{
-    stats: { label: string; value: string }[]
+    stats: { label: ReactNode; value: string }[]
     columns: 3 | 4
 }> = ({ stats, columns }) => {
     const statsCells = useMemo(() => {

@@ -11,10 +11,12 @@ import {
 import { TABLET } from '$shared/utils/styled'
 import { NetworkSectionTitle } from '$app/src/network/components/NetworkSectionTitle'
 import { StatsBox } from '$shared/components/StatsBox/StatsBox'
-import { NetworkSearchBar } from '../components/NetworkSearchBar'
+import { MyOperatorSummary } from '../components/MyOperatorSummary'
+import { NetworkActionBar } from '../components/NetworkActionBar'
 
 export const NetworkStats = styled(WhiteBox)`
     margin-top: 32px;
+    margin-bottom: 24px;
 
     @media (${TABLET}) {
         margin-top: 60px;
@@ -43,7 +45,7 @@ export const NetworkOverview = () => {
             footer={false}
         >
             <NetworkHelmet title="Network Overview" />
-            <NetworkSearchBar />
+            <NetworkActionBar searchEnabled={false} />
             <PageContainer>
                 <NetworkStats>
                     <div className="title">
@@ -52,6 +54,7 @@ export const NetworkOverview = () => {
                     <WhiteBoxSeparator />
                     <StatsBox stats={stubNetworkStats} columns={3} />
                 </NetworkStats>
+                <MyOperatorSummary />
             </PageContainer>
         </Layout>
     )
