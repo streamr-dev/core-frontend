@@ -13,6 +13,7 @@ import { NetworkSectionTitle } from '$app/src/network/components/NetworkSectionT
 import { StatsBox } from '$shared/components/StatsBox/StatsBox'
 import { MyOperatorSummary } from '../components/MyOperatorSummary'
 import { NetworkActionBar } from '../components/NetworkActionBar'
+import { MyDelegationsSummary } from '../components/MyDelegationsSummary'
 
 export const NetworkStats = styled(WhiteBox)`
     margin-top: 32px;
@@ -55,6 +56,7 @@ export const NetworkOverview = () => {
                     <StatsBox stats={stubNetworkStats} columns={3} />
                 </NetworkStats>
                 <MyOperatorSummary />
+                <MyDelegationsSummary />
             </PageContainer>
         </Layout>
     )
