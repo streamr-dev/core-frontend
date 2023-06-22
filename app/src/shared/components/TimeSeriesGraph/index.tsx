@@ -70,10 +70,6 @@ const borderStyle = {
     top: { stroke: COLORS.dialogBorder, padding: '10px', height: '1' },
 }
 
-const plotStyle = {
-    overflow: 'visible',
-}
-
 const formatXAxisTicks = (value, index, scale, tickTotal, dayCount) => {
     // Show weekday name for small datasets
     if (dayCount < 5) {
@@ -147,7 +143,6 @@ export const TimeSeriesGraph = ({ graphData, shownDays, isLoading, ...props }: P
                         }}
                         yDomain={dataDomain}
                         yBaseValue={dataDomain[0]}
-                        style={plotStyle}
                     >
                         <XAxis
                             hideLine

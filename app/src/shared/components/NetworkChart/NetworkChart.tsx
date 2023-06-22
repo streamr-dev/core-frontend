@@ -4,6 +4,7 @@ import { MD, TABLET } from '$shared/utils/styled'
 import { TimeSeriesGraph } from '$shared/components/TimeSeriesGraph'
 import Tabs, { Tab } from '$shared/components/Tabs'
 import { useWindowSize } from '$shared/hooks/useWindowSize'
+import UnstyledSpinner from '$shared/components/Spinner'
 
 export enum ChartPeriod {
     '7D' = '7D',
@@ -90,6 +91,11 @@ export const NetworkChart: FunctionComponent<Props> = ({
                 shownDays={7}
                 graphData={stats.map((stat) => ({ x: stat.day, y: stat.value }))}
             />
+            {dataLoading && (
+                <ChartSpinnerContainer>
+                    <Spinner color="blue" />
+                </ChartSpinnerContainer>
+            )}
 
             {isDesktop ? (
                 <ChartPeriodSelectorDesktop>
@@ -184,4 +190,29 @@ const Chart = styled(TimeSeriesGraph)`
     @media (${TABLET}) {
         grid-area: 2 / 1 / 3 / 4;
     }
+    transition: filter 100ms ease-in-out;
+    &.blur {
+        filter: blur(5px);
+    }
+`
+
+const ChartSpinnerContainer = styled.div`
+    background-color: #fff;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 2;
+    @media (${TABLET}) {
+        grid-area: 2 / 1 / 3 / 4;
+    }
+`
+
+const Spinner = styled(UnstyledSpinner)`
+    width: 100px;
+    height: 100px;
 `

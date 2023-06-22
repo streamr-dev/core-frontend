@@ -58,6 +58,8 @@ export const MyDelegationsSummary: FunctionComponent = () => {
         async (dataSource: string) => {
             setSelectedDataSource(dataSource)
             // todo fetch data
+            // simulate awaiting data
+            await new Promise((resolve) => setTimeout(resolve, 1000))
         },
         [setSelectedChartPeriod, setSelectedDataSource],
     )
@@ -66,6 +68,8 @@ export const MyDelegationsSummary: FunctionComponent = () => {
         async (period: ChartPeriod) => {
             setSelectedChartPeriod(period)
             // todo fetch data
+            // simulate awaiting data
+            await new Promise((resolve) => setTimeout(resolve, 1000))
         },
         [setSelectedChartPeriod, selectedChartPeriod],
     )
