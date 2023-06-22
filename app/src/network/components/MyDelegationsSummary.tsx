@@ -45,9 +45,15 @@ export const MyDelegationsSummary: FunctionComponent = () => {
             label: 'Current value',
             value: numberShortener(statsObject.currentValue, 'millions') + ' DATA',
             hoverValue: statsObject.currentValue + ' DATA',
+            tooltipText:
+                'Lorem Ipsum dolor sit amet bla bla bla lorem lorem ipsum ipsum it will be a long text so that we can see if the tooltip works',
         },
         { label: 'Operators', value: statsObject.operators.toString() },
-        { label: 'APY', value: statsObject.apy.toString() + '%' },
+        {
+            label: 'APY',
+            value: statsObject.apy.toString() + '%',
+            tooltipText: 'Lorem Ipsum APY',
+        },
     ]
     const chartData = walletConnected
         ? myDelegationsChartData

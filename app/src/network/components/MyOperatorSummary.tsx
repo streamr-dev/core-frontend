@@ -42,9 +42,14 @@ export const MyOperatorSummary: FunctionComponent = () => {
             label: 'Total stake',
             value: numberShortener(statsObject.totalStake, 'millions') + ' DATA',
             hoverValue: statsObject.totalStake + ' DATA',
+            tooltipText: 'Lorem ipsum dolor sit amet',
         },
         { label: 'Delegators', value: statsObject.delegators.toString() },
-        { label: 'Sponsorships', value: statsObject.sponsorships.toString() },
+        {
+            label: 'Sponsorships',
+            value: statsObject.sponsorships.toString(),
+            tooltipText: 'This is info tooltip about sponsorships',
+        },
     ]
     const chartData = walletConnected ? myOperatorChartData : hardcodedOperatorChartData
 

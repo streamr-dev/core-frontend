@@ -46,6 +46,32 @@ export const Uneven = () => (
     />
 )
 
+export const WithHover = () => (
+    <StatsBox
+        columns={3}
+        stats={[
+            { label: 'HOVER THE VALUE', value: '12M $', hoverValue: '12543983 USD' },
+            { label: 'Bounties', value: '233' },
+            { label: 'Operators', value: '3323' },
+        ]}
+    />
+)
+
+export const WithTooltip = () => (
+    <StatsBox
+        columns={3}
+        stats={[
+            {
+                label: 'Total stake',
+                value: '200000 DATA',
+                tooltipText: 'This is a tooltip!',
+            },
+            { label: 'Bounties', value: '233' },
+            { label: 'Operators', value: '3323' },
+        ]}
+    />
+)
+
 const meta: Meta<typeof ThreeColumn> = {
     title: 'Shared/StatsBox',
     component: ThreeColumn,
