@@ -101,7 +101,7 @@ const StatsValue = styled.p`
 `
 
 export const StatsBox: FunctionComponent<{
-    stats: { label: ReactNode; value: string }[]
+    stats: { label: ReactNode; value: string; hoverValue?: string }[]
     columns: 3 | 4
 }> = ({ stats, columns }) => {
     const statsCells = useMemo(() => {
@@ -129,7 +129,7 @@ export const StatsBox: FunctionComponent<{
                         }
                     >
                         <StatsLabel>{stat.label}</StatsLabel>
-                        <StatsValue>{stat.value}</StatsValue>
+                        <StatsValue title={stat.hoverValue}>{stat.value}</StatsValue>
                     </div>
                 </StatsCell>
             ))}

@@ -15,11 +15,12 @@ import {
     SummaryContainer,
     WalletNotConnectedOverlay,
 } from './SummaryUtils'
+import { numberShortener } from '$shared/utils/numberShortener'
 
 const hardcodedOperatorStats: OperatorStats = {
     delegators: 124,
     sponsorships: 2,
-    totalStake: 24000000,
+    totalStake: 24040218,
 }
 
 const maxDayStats = 10
@@ -37,7 +38,11 @@ export const MyOperatorSummary: FunctionComponent = () => {
 
     const statsObject = walletConnected ? myOperatorStats : hardcodedOperatorStats
     const mappedStats = [
-        { label: 'Total stake', value: statsObject.totalStake.toString() },
+        {
+            label: 'Total stake',
+            value: numberShortener(statsObject.totalStake, 'millions') + ' DATA',
+            hoverValue: statsObject.totalStake + ' DATA',
+        },
         { label: 'Delegators', value: statsObject.delegators.toString() },
         { label: 'Sponsorships', value: statsObject.sponsorships.toString() },
     ]

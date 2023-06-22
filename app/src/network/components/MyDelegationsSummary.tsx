@@ -15,9 +15,10 @@ import {
     SummaryContainer,
     WalletNotConnectedOverlay,
 } from './SummaryUtils'
+import { numberShortener } from '$shared/utils/numberShortener'
 
 const hardcodedDelegationStats: DelegationStats = {
-    currentValue: 12300000,
+    currentValue: 12300431,
     operators: 8,
     apy: 24.3,
 }
@@ -40,7 +41,11 @@ export const MyDelegationsSummary: FunctionComponent = () => {
 
     const statsObject = walletConnected ? myDelegationsStats : hardcodedDelegationStats
     const mappedStats = [
-        { label: 'Current value', value: statsObject.currentValue.toString() },
+        {
+            label: 'Current value',
+            value: numberShortener(statsObject.currentValue, 'millions') + ' DATA',
+            hoverValue: statsObject.currentValue + ' DATA',
+        },
         { label: 'Operators', value: statsObject.operators.toString() },
         { label: 'APY', value: statsObject.apy.toString() + '%' },
     ]
