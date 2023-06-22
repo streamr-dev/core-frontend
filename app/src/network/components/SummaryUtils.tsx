@@ -45,6 +45,8 @@ const WalletNotConnectedInner = styled.div`
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    padding: 20px;
+    text-align: center;
 
     .connect-wallet-text {
         font-size: 16px;
