@@ -55,38 +55,21 @@ export const NetworkChart: FunctionComponent<Props> = ({
 
     return (
         <ChartContainer>
-            {isDesktop ? (
-                <ChartDataSourceSelectorDesktop>
-                    <Tabs
-                        selection={selectedDataSource}
-                        onSelectionChange={handleDataSourceTabChange}
-                    >
-                        {dataSources.map((dataSource, index) => {
-                            return (
-                                <Tab id={dataSource.value} key={index}>
-                                    {dataSource.label}
-                                </Tab>
-                            )
-                        })}
-                    </Tabs>
-                </ChartDataSourceSelectorDesktop>
-            ) : (
-                <ChartDataSourceSelectorMobile>
-                    <Tabs
-                        spreadEvenly={true}
-                        selection={selectedDataSource}
-                        onSelectionChange={handleDataSourceTabChange}
-                    >
-                        {dataSources.map((dataSource, index) => {
-                            return (
-                                <Tab id={dataSource.value} key={index}>
-                                    {dataSource.label}
-                                </Tab>
-                            )
-                        })}
-                    </Tabs>
-                </ChartDataSourceSelectorMobile>
-            )}
+            <ChartDataSourceSelector>
+                <Tabs
+                    fullWidthOnMobile={true}
+                    selection={selectedDataSource}
+                    onSelectionChange={handleDataSourceTabChange}
+                >
+                    {dataSources.map((dataSource, index) => {
+                        return (
+                            <Tab id={dataSource.value} key={index}>
+                                {dataSource.label}
+                            </Tab>
+                        )
+                    })}
+                </Tabs>
+            </ChartDataSourceSelector>
             <Chart
                 shownDays={7}
                 graphData={stats.map((stat) => ({ x: stat.day, y: stat.value }))}
@@ -97,87 +80,64 @@ export const NetworkChart: FunctionComponent<Props> = ({
                 </ChartSpinnerContainer>
             )}
 
-            {isDesktop ? (
-                <ChartPeriodSelectorDesktop>
-                    <Tabs
-                        selection={selectedPeriod}
-                        onSelectionChange={handlePeriodTabChange}
-                    >
-                        {Object.keys(ChartPeriod).map((periodKey, index) => {
-                            return (
-                                <Tab id={ChartPeriod[periodKey]} key={index}>
-                                    {ChartPeriod[periodKey]}
-                                </Tab>
-                            )
-                        })}
-                    </Tabs>
-                </ChartPeriodSelectorDesktop>
-            ) : (
-                <ChartPeriodSelectorMobile>
-                    <Tabs
-                        spreadEvenly={true}
-                        selection={selectedPeriod}
-                        onSelectionChange={handlePeriodTabChange}
-                    >
-                        {Object.keys(ChartPeriod).map((periodKey, index) => {
-                            return (
-                                <Tab id={ChartPeriod[periodKey]} key={index}>
-                                    {ChartPeriod[periodKey]}
-                                </Tab>
-                            )
-                        })}
-                    </Tabs>
-                </ChartPeriodSelectorMobile>
-            )}
+            <ChartPeriodSelector>
+                <Tabs
+                    fullWidthOnMobile={true}
+                    selection={selectedPeriod}
+                    onSelectionChange={handlePeriodTabChange}
+                >
+                    {Object.keys(ChartPeriod).map((periodKey, index) => {
+                        return (
+                            <Tab id={ChartPeriod[periodKey]} key={index}>
+                                {ChartPeriod[periodKey]}
+                            </Tab>
+                        )
+                    })}
+                </Tabs>
+            </ChartPeriodSelector>
         </ChartContainer>
     )
 }
 
 const ChartContainer = styled.div`
     display: grid;
-    grid-template-columns: min-content;
-    grid-template-rows: min-content min-content min-content;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, min-content);
     @media (${TABLET}) {
         grid-template-columns: min-content 1fr min-content;
         grid-template-rows: min-content min-content;
     }
 `
 
-const ChartPeriodSelectorDesktop = styled.div`
-    grid-column-start: 3;
-    grid-column-end: 3;
-    grid-row-start: 1;
-    grid-row-end: 1;
-    margin-bottom: 50px;
-`
-
-const ChartPeriodSelectorMobile = styled.div`
+const ChartPeriodSelector = styled.div`
     grid-column-start: 1;
     grid-column-end: 3;
     grid-row-start: 3;
     grid-row-end: 3;
     margin-top: 20px;
-    > * {
-        width: 100%;
+
+    @media (${TABLET}) {
+        grid-column-start: 3;
+        grid-column-end: 3;
+        grid-row-start: 1;
+        grid-row-end: 1;
+        margin-bottom: 50px;
+        margin-top: 0;
     }
 `
 
-const ChartDataSourceSelectorDesktop = styled.div`
-    margin-bottom: 50px;
-    grid-column-start: 1;
-    grid-column-end: 1;
-    grid-row-start: 1;
-    grid-row-end: 1;
-`
-
-const ChartDataSourceSelectorMobile = styled.div`
+const ChartDataSourceSelector = styled.div`
     grid-column-start: 1;
     grid-column-end: 3;
     grid-row-start: 1;
     grid-row-end: 1;
     margin-bottom: 20px;
-    > * {
-        width: 100%;
+    @media (${TABLET}) {
+        margin-bottom: 50px;
+        grid-column-start: 1;
+        grid-column-end: 1;
+        grid-row-start: 1;
+        grid-row-end: 1;
     }
 `
 

@@ -13,6 +13,7 @@ import React, {
 import styled, { css } from 'styled-components'
 import throttle from 'lodash/throttle'
 import isPreventable from '$utils/isPreventable'
+import { TABLET } from '$shared/utils/styled'
 
 interface InternalTabProps<P = unknown> {
     id: string
@@ -84,6 +85,16 @@ const Item = styled.button<{ $selected?: boolean; $flexBasis?: number }>`
         css`
             flex-basis: ${$flexBasis};
         `}
+
+    &.full-width {
+        padding: 0;
+        flex: 1;
+        line-height: 16px;
+        @media (${TABLET}) {
+            padding: 0 20px;
+            flex: none;
+        }
+    }
 `
 
 const ItemContent = styled.div<{ $truncate?: boolean }>`
@@ -118,6 +129,13 @@ const Root = styled.div`
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.025);
     user-select: none;
     overflow: hidden;
+    max-width: 100%;
+    &.full-width {
+        width: 100%;
+        @media (${TABLET}) {
+            width: max-content;
+        }
+    }
 `
 
 const Trolley = styled.div<{ $selected?: boolean; $animated?: boolean }>`
@@ -178,6 +196,7 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
     selection?: string
     onSelectionChange?: (selection: string) => void
     spreadEvenly?: boolean
+    fullWidthOnMobile?: boolean
 }
 
 export default function Tabs({
@@ -185,6 +204,7 @@ export default function Tabs({
     onSelectionChange,
     selection: selectionProp,
     spreadEvenly = false,
+    fullWidthOnMobile = false,
     ...props
 }: Props) {
     /**
@@ -350,7 +370,7 @@ export default function Tabs({
     }, [canAnimate])
 
     return (
-        <Root {...props}>
+        <Root {...props} className={fullWidthOnMobile ? 'full-width' : ''}>
             <Outer>
                 <Rails
                     $animated={animated}
@@ -390,6 +410,7 @@ export default function Tabs({
                                 }
                                 as={tag}
                                 key={id}
+                                className={fullWidthOnMobile ? 'full-width' : ''}
                                 ref={setElementAt(id, index)}
                                 disabled={disabled}
                                 onClick={(e: unknown, ...otherArgs: unknown[]) => {
