@@ -26,7 +26,7 @@ import routes from '$routes'
 import { HubRouter } from '~/consts'
 import '../analytics'
 import { FeatureFlag, isFeatureEnabled } from '$shared/utils/isFeatureEnabled'
-import { NetworkOverview } from '$app/src/network/pages/NetworkOverview'
+import { NetworkOverviewPage } from '$app/src/network/pages/NetworkOverviewPage'
 
 const MiscRouter = () => [
     <Route
@@ -76,7 +76,7 @@ const App = () => (
                                 <Route path="/hub/network/*" errorElement={<ErrorPage />}>
                                     <Route
                                         path="overview"
-                                        element={<NetworkOverview />}
+                                        element={<NetworkOverviewPage />}
                                     />
                                 </Route>
                             ) : (

@@ -28,7 +28,7 @@ export const NetworkStats = styled(WhiteBox)`
     }
 `
 
-export const NetworkOverview = () => {
+export const NetworkOverviewPage = () => {
     const stubNetworkStats = [
         {
             label: 'Total stake',
