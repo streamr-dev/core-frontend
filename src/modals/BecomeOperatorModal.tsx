@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
 import BigNumber from 'bignumber.js'
 import { RejectionReason } from '$app/src/modals/BaseModal'
 import FormModal, {
     FieldWrap,
     FormModalProps,
-    Hint,
     Prop,
     Section,
     SectionHeadline,
@@ -12,6 +12,7 @@ import FormModal, {
     TextInput,
 } from '$app/src/modals/FormModal'
 import Label from '$ui/Label'
+import Help from '~/components/Help'
 
 interface Props extends Omit<FormModalProps, 'canSubmit'> {
     operatorId?: string
@@ -84,7 +85,19 @@ export default function BecomeOperatorModal({
                 Please choose the percentage for the Operator&apos;s cut
             </SectionHeadline>
             <Section>
-                <Label>Operator&apos;s cut percentage</Label>
+                <Label>
+                    <LabelInner>
+                        <span>Operator&apos;s cut percentage</span>
+                        <Help align="center">
+                            <p>
+                                The cut taken by the Operator from all earnings. This
+                                percentage can not be changed later. The rest is shared
+                                among Delegators including the Operator&apos;s
+                                own&nbsp;stake.
+                            </p>
+                        </Help>
+                    </LabelInner>
+                </Label>
                 <FieldWrap>
                     <TextInput
                         name="cut"
@@ -99,13 +112,6 @@ export default function BecomeOperatorModal({
                     />
                     <TextAppendix>%</TextAppendix>
                 </FieldWrap>
-                <Hint>
-                    <p>
-                        The cut taken by the Operator from all earnings. This percentage
-                        can not be changed later. The rest is shared among Delegators
-                        including the Operator&apos;s own stake.
-                    </p>
-                </Hint>
                 <ul>
                     <li>
                         <Prop>Your wallet balance</Prop>
@@ -122,3 +128,8 @@ export default function BecomeOperatorModal({
         </FormModal>
     )
 }
+
+const LabelInner = styled.div`
+    align-items: center;
+    display: flex;
+`

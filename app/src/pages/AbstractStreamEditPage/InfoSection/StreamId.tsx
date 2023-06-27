@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
-import { SM, MONO, MEDIUM } from '$shared/utils/styled'
+import { SM } from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
 import Button from '$shared/components/Button'
 import Spinner from '$shared/components/Spinner'
@@ -17,6 +17,7 @@ import {
     useSetCurrentDraftTransientStreamId,
 } from '$shared/stores/streamEditor'
 import { useWalletAccount } from '$shared/stores/wallet'
+import Help from '~/components/Help'
 import useStreamOwnerOptionGroups, {
     ADD_ENS_DOMAIN_VALUE,
     OptionGroup,
@@ -36,7 +37,7 @@ export function ReadonlyStreamId({ streamId }: { streamId: string }) {
                 </PathnameField>
             </Pathname>
             <div>
-                <Label />
+                <Label keepSpace />
                 <Button
                     kind="secondary"
                     onClick={() =>
@@ -187,15 +188,14 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
                 )}
             </Domain>
             <div>
-                <Label />
+                <Label keepSpace />
                 <Separator />
             </div>
             <Pathname>
-                <LabelWrap>
-                    <Label>Path name</Label>
-                    <Hint>
-                        <SvgIcon name="outlineQuestionMark" />
-                        <Tooltip>
+                <Label>
+                    <LabelInner>
+                        <span>Path name</span>
+                        <Help align="right">
                             <p>Stream paths can be single or multi-level.</p>
                             <p>Single</p>
                             <pre>streamr.eth/coffeemachine</pre>
@@ -205,9 +205,9 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
                                 For more information, see the{' '}
                                 <a href="https://docs.streamr.network/">docs</a>.
                             </p>
-                        </Tooltip>
-                    </Hint>
-                </LabelWrap>
+                        </Help>
+                    </LabelInner>
+                </Label>
                 <PathnameField>
                     <Text
                         disabled={disabled}
@@ -261,82 +261,6 @@ const Pathname = styled.div`
 
     ${Label} {
         flex-grow: 1;
-    }
-`
-const LabelWrap = styled.div`
-    display: flex;
-`
-const Hint = styled.div`
-    color: #cdcdcd;
-    position: relative;
-    transition: 200ms color;
-
-    :hover {
-        color: #323232;
-    }
-
-    svg {
-        display: block;
-        left: -2px;
-        position: relative;
-        top: -2px;
-        width: 16px;
-    }
-`
-const Tooltip = styled.div`
-    background: #323232;
-    border-radius: 4px;
-    color: #ffffff;
-    font-size: 0.75rem;
-    line-height: 1rem;
-    padding: 0.5rem 0.75rem;
-    opacity: 0;
-    position: absolute;
-    right: 0;
-    top: 20px;
-    transform: translateY(4px);
-    transition: 200ms;
-    transition-property: visibility, opacity, transform;
-    transition-delay: 200ms, 0s, 0s;
-    visibility: hidden;
-    width: 250px;
-    z-index: 1;
-
-    pre {
-        color: inherit;
-        font-family: ${MONO};
-        font-size: 0.9em;
-        font-weight: ${MEDIUM};
-        margin: 0;
-        padding: 0;
-    }
-
-    pre,
-    p {
-        margin: 0;
-    }
-
-    pre + p,
-    p + p {
-        margin-top: 0.75em;
-    }
-
-    a {
-        color: inherit !important;
-        text-decoration: none;
-    }
-
-    a:focus,
-    a:hover {
-        text-decoration: underline;
-    }
-
-    ${Hint}:hover & {
-        opacity: 1;
-        transform: translateY(0);
-        transition-delay: 0s;
-        transition-duration: 50ms;
-        visibility: visible;
     }
 `
 const PathnameField = styled.div`
@@ -397,5 +321,14 @@ const StreamId = styled.div`
 
     > * + * {
         margin-left: 16px;
+    }
+`
+
+const LabelInner = styled.div`
+    align-items: center;
+    display: flex;
+
+    span {
+        flex-grow: 1;
     }
 `
