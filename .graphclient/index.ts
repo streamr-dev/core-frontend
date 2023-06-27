@@ -3535,7 +3535,7 @@ const streamrTransforms = [];
 const additionalTypeDefs = [] as any[];
 const streamrHandler = new GraphqlHandler({
               name: "streamr",
-              config: {"endpoint":"http://192.168.1.3:8000/subgraphs/name/streamr-dev/network-subgraphs"},
+              config: {"endpoint":"http://localhost:8000/subgraphs/name/streamr-dev/network-subgraphs"},
               baseDir,
               cache,
               pubsub,
