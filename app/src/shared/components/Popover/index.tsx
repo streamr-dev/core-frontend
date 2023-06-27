@@ -108,16 +108,17 @@ export const StyledDropdownMenu = styled(DropdownMenu)`
         box-shadow: 0px 6px 12px 0px #52525226;
         border: none;
         border-radius: 8px;
-        padding: 0;
+        padding: 16px 0;
         margin: 0;
+        overflow: hidden;
         .dropdown-item {
-            padding: 16px 36px !important;
-            &:first-of-type {
-                padding-top: 26px !important;
+            padding: 16px 32px !important;
+            /*&:first-of-type {
+                padding-top: 32px !important;
             }
             &:last-of-type {
-                padding-bottom: 26px !important;
-            }
+                padding-bottom: 32px !important;
+            }*/
         }
     }
 `

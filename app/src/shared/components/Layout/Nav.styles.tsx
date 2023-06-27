@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react'
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { Menu as UnstyledMenu, NavDropdown } from '@streamr/streamr-layout'
-import { Accordion, AccordionBody, AccordionHeader, AccordionItem } from 'reactstrap'
+import { AccordionBody, AccordionHeader } from 'reactstrap'
 import SvgIcon from '$shared/components/SvgIcon'
 import { Avatarless, Name, Username } from '$shared/components/Layout/User'
 import AvatarImage from '$shared/components/AvatarImage'
@@ -134,17 +134,16 @@ const LinkWrapper = styled.div`
     }
 `
 type UnstyledNavbarLinkProps = {
-    highlight?: boolean
     children: any
 }
 const UnstyledNavbarLink: FunctionComponent<UnstyledNavbarLinkProps> = ({
-    highlight,
     children,
     ...props
 }) => {
     return <LinkWrapper {...props}>{children}</LinkWrapper>
 }
-export const NavbarLinkDesktop = styled(UnstyledNavbarLink)<{ highlight: boolean }>`
+
+export const NavbarLinkDesktop = styled(UnstyledNavbarLink)<{ highlight?: boolean }>`
     position: relative;
 
     ${NavLink} {
@@ -167,14 +166,12 @@ export const NavbarLinkDesktop = styled(UnstyledNavbarLink)<{ highlight: boolean
         transform: translateX(-50%);
     }
 
-    &:hover {
-        &:after {
-            transition: width 0.2s ease-in;
-            width: 20px;
-        }
+    &:hover:after {
+        transition: width 0.2s ease-in;
+        width: 20px;
     }
 
-    ${({ highlight }) =>
+    ${({ highlight = false }) =>
         highlight &&
         css`
             &:after {
@@ -211,7 +208,7 @@ export const NetworkNavElement = styled.div`
     letter-spacing: initial;
   }
 `
-export const NavbarLinkMobile = styled(UnstyledNavbarLink)<{ highlight: boolean }>`
+export const NavbarLinkMobile = styled(UnstyledNavbarLink)<{ highlight?: boolean }>`
     position: relative;
     border-bottom: 1px solid #efefef;
 
@@ -221,7 +218,7 @@ export const NavbarLinkMobile = styled(UnstyledNavbarLink)<{ highlight: boolean 
         color: ${COLORS.primary};
     }
 
-    ${({ highlight }) =>
+    ${({ highlight = false }) =>
         highlight &&
         css`
             &:after {
