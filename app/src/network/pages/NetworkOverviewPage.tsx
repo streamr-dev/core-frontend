@@ -14,6 +14,7 @@ import { StatsBox } from '$shared/components/StatsBox/StatsBox'
 import { MyOperatorSummary } from '../components/MyOperatorSummary'
 import { NetworkActionBar } from '../components/NetworkActionBar'
 import { MyDelegationsSummary } from '../components/MyDelegationsSummary'
+import { MyDelegationsTable } from '$app/src/network/components/MyDelegationsTable'
 
 export const NetworkStats = styled(WhiteBox)`
     margin-top: 32px;
@@ -57,6 +58,7 @@ export const NetworkOverviewPage = () => {
                 </NetworkStats>
                 <MyOperatorSummary />
                 <MyDelegationsSummary />
+                <MyDelegationsTable />
             </PageContainer>
         </Layout>
     )

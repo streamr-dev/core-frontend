@@ -1,4 +1,4 @@
-export const numberShortener = (
+export const truncateNumber = (
     value: number,
     shortenFrom: 'thousands' | 'millions',
 ): string => {

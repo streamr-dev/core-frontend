@@ -9,13 +9,13 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import { DelegationChartData, DelegationStats } from '$app/src/network/types/delegations'
 import routes from '$routes'
 import { NetworkSectionTitle } from './NetworkSectionTitle'
+import { truncateNumber } from '$shared/utils/truncateNumber'
 import {
     growingValuesGenerator,
     NetworkChartWrap,
     SummaryContainer,
     WalletNotConnectedOverlay,
 } from './SummaryUtils'
-import { numberShortener } from '$shared/utils/numberShortener'
 
 const hardcodedDelegationStats: DelegationStats = {
     currentValue: 12300431,
@@ -43,7 +43,7 @@ export const MyDelegationsSummary: FunctionComponent = () => {
     const mappedStats = [
         {
             label: 'Current value',
-            value: numberShortener(statsObject.currentValue, 'millions') + ' DATA',
+            value: truncateNumber(statsObject.currentValue, 'millions') + ' DATA',
             hoverValue: statsObject.currentValue + ' DATA',
             tooltipText:
                 'Lorem Ipsum dolor sit amet bla bla bla lorem lorem ipsum ipsum it will be a long text so that we can see if the tooltip works',

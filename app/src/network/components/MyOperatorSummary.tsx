@@ -15,7 +15,7 @@ import {
     SummaryContainer,
     WalletNotConnectedOverlay,
 } from './SummaryUtils'
-import { numberShortener } from '$shared/utils/numberShortener'
+import { truncateNumber } from '$shared/utils/truncateNumber'
 
 const hardcodedOperatorStats: OperatorStats = {
     delegators: 124,
@@ -40,7 +40,7 @@ export const MyOperatorSummary: FunctionComponent = () => {
     const mappedStats = [
         {
             label: 'Total stake',
-            value: numberShortener(statsObject.totalStake, 'millions') + ' DATA',
+            value: truncateNumber(statsObject.totalStake, 'millions') + ' DATA',
             hoverValue: statsObject.totalStake + ' DATA',
             tooltipText: 'Lorem ipsum dolor sit amet',
         },

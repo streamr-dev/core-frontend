@@ -8,3 +8,12 @@ export type DelegationStats = {
     operators: number
     apy: number
 }
+
+export type Delegation = {
+    operatorId: string
+    myShare: number
+    totalStake: number
+    operatorsCut: number
+    apy: number
+    sponsorships: number
+}

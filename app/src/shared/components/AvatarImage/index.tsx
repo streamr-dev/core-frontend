@@ -5,6 +5,7 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import SvgIcon from '$shared/components/SvgIcon'
 import Initials from './Initials'
 import Identicon from './Identicon'
+import { DESKTOP } from '$shared/utils/styled'
 const FallbackImage = styled(UnstyledFallbackImage)`
     display: block;
     height: 100%;
@@ -43,3 +44,11 @@ const UnstyledAvatarImage = ({ username, name, src, upload = false, ...props }) 
 const AvatarImage = styled(UnstyledAvatarImage)``
 
 export default AvatarImage
+
+export const HubAvatar = styled(Identicon)`
+    width: 32px;
+    height: 32px;
+    border: 1px solid #f3f3f3;
+    border-radius: 50%;
+    background-color: white;
+`
