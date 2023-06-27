@@ -3,14 +3,15 @@ import styled from 'styled-components'
 import * as Colors from '$ui/StateColors'
 import { MEDIUM } from '$shared/utils/styled'
 
-const UnstyledLabel: FunctionComponent<
-    { className?: string; children?: ReactNode | ReactNode[] } & Partial<
-        HTMLProps<HTMLLabelElement>
-    >
-> = ({ className, children, ...props }) => {
+interface Props extends HTMLProps<HTMLLabelElement> {
+    keepSpace?: boolean
+}
+
+function UnstyledLabel({ children, keepSpace = false, ...props }: Props) {
     return (
-        <label className={className} {...props}>
-            {children}&zwnj;
+        <label {...props}>
+            {children}
+            {keepSpace ? <>&zwnj;</> : null}
         </label>
     )
 }

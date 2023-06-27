@@ -71,7 +71,7 @@ export default function AccessManifest({ projectId, projectType, salePoints }: P
     const { pricePerSecond, chainId, pricingTokenAddress } = firstSalePoint
 
     return (
-        <WhiteBox>
+        <WhiteBox className={'with-padding'}>
             <DescriptionContainer>
                 {projectType === ProjectType.OpenData ? (
                     <p>

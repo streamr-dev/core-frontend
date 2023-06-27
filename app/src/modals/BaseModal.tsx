@@ -42,7 +42,7 @@ export const RejectionReason = {
 }
 
 export interface BaseModalProps {
-    children?: ReactNode
+    children?: ReactNode | ((close: (reason?: unknown) => void) => ReactNode)
     onReject?: (reason?: any) => void
     onBeforeAbort?: (reason?: any) => boolean | null | void
     darkBackdrop?: boolean
@@ -140,7 +140,11 @@ export default function BaseModal({
                     <Pad>
                         <Interactive>
                             <AnimatedWrap $dismissed={dismissed}>
-                                <Wigglable ref={wigglyRef}>{children}</Wigglable>
+                                <Wigglable ref={wigglyRef}>
+                                    {typeof children === 'function'
+                                        ? children(close)
+                                        : children}
+                                </Wigglable>
                             </AnimatedWrap>
                         </Interactive>
                     </Pad>
@@ -153,6 +157,7 @@ export default function BaseModal({
 const AnimatedWrap = styled.div<{ $dismissed?: boolean }>`
     animation: 300ms ${({ $dismissed = false }) => ($dismissed ? bringOut : bringIn)}
         ease-in-out 1;
+    animation-fill-mode: both;
     backface-visibility: hidden;
 `
 
@@ -173,6 +178,7 @@ const Root = styled.div<{ $dismissed?: boolean; $dark?: boolean }>`
         $dismissed &&
         css`
             animation: 300ms ${fadeAway} ease-in-out 1;
+            animation-fill-mode: both;
         `}
 
     ${({ $dark = false }) =>

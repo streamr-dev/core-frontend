@@ -1,6 +1,6 @@
 {
     "name": "core-frontend",
-    "version": "4.0.3",
+    "version": "4.1.0",
     "description": "Streamr Hub",
     "main": "src/index.jsx",
     "scripts": {
@@ -101,7 +101,7 @@
         "react-scrollspy": "^3.4.0",
         "react-select": "^5.7.3",
         "react-syntax-highlighter": "^15.5.0",
-        "react-vis": "^1.11.12",
+        "react-vis": "^1.12.1",
         "reactstrap": "^9.1.9",
         "reselect": "^4.1.8",
         "resize-observer-polyfill": "^1.5.1",
@@ -166,6 +166,7 @@
         "@types/react-dom": "^18.2.4",
         "@types/react-notification-system": "^0.2.42",
         "@types/react-router-dom": "^5.3.3",
+        "@types/react-vis": "^1.11.11",
         "@types/reactstrap": "^8.7.1",
         "@types/styled-components": "^5.1.26",
         "@types/web3": "^1.2.2",

@@ -1,8 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Meta } from '@storybook/react'
-import DaysPopover from '$shared/components/DaysPopover'
-import ProductStat from '$shared/components/ProductStat'
-import TimeSeriesGraph from '.'
+import { TimeSeriesGraph } from '.'
 
 const MSEC_DAILY = 86400000
 const today = new Date('2035-01-01').getTime() + Math.floor(MSEC_DAILY * 0.5)
@@ -51,8 +49,8 @@ const meta: Meta<typeof Default> = {
                 <div
                     style={{
                         color: '#323232',
-                        padding: '5rem',
-                        background: '#F8F8F8',
+                        padding: '10px',
+                        background: '#FFF',
                     }}
                 >
                     <Story />
@@ -72,56 +70,47 @@ Loading.story = {
     name: 'loading',
 }
 
-const WithShownDaysComponent = ({ data }) => {
-    const [days, setDays] = useState(7)
-    return (
-        <div>
-            <TimeSeriesGraph.Header>
-                <ProductStat.Title>Title</ProductStat.Title>
-                <DaysPopover onChange={setDays} selectedItem={`${days}`} />
-            </TimeSeriesGraph.Header>
-            <TimeSeriesGraph graphData={data} shownDays={days} />
-        </div>
-    )
-}
-
-export const WithShownDays = () => <WithShownDaysComponent data={graphData} />
-
-WithShownDays.story = {
-    name: 'with shown days',
-}
-
 const graphDataLarge = [
     {
         x: today,
-        y: 1300,
+        y: 1300000,
     },
     {
         x: today + MSEC_DAILY,
-        y: 1500,
+        y: 1500000,
     },
     {
         x: today + MSEC_DAILY * 2,
-        y: 4200,
+        y: 4200000,
     },
     {
         x: today + MSEC_DAILY * 3,
-        y: 3800,
+        y: 3800000,
     },
     {
         x: today + MSEC_DAILY * 4,
-        y: 4400,
+        y: 4400000,
     },
     {
         x: today + MSEC_DAILY * 5,
-        y: 5800,
+        y: 5800000,
     },
     {
         x: today + MSEC_DAILY * 6,
-        y: 13400,
+        y: 13400000,
+    },
+    {
+        x: today + MSEC_DAILY * 7,
+        y: 15400000,
+    },
+    {
+        x: today + MSEC_DAILY * 8,
+        y: 17300000,
     },
 ]
-export const LargeValues = () => <WithShownDays data={graphDataLarge} />
+export const LargeValues = () => (
+    <TimeSeriesGraph graphData={graphDataLarge} shownDays={7} />
+)
 
 LargeValues.story = {
     name: 'large values',

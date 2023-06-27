@@ -12,10 +12,11 @@ const TickIcon = styled(SvgIcon)`
 const StyledDropdownItem = styled(RsDropdownItem)`
     display: flex;
     align-items: center;
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
     margin-right: 10px;
     position: relative;
+    padding: 10px 16px !important;
 
     &&[data-tick-position='left'] {
         padding-left: 32px;
@@ -40,12 +41,14 @@ const PopoverItem: FunctionComponent<PopoverItemProps & DropdownItem['props']> =
     active,
     onClick,
     leftTick,
+    disabled,
     ...rest
 }) => (
     <StyledDropdownItem
         {...rest}
         onClick={onClick}
         data-tick-position={leftTick ? 'left' : 'right'}
+        disabled={disabled}
     >
         {children}
         {active && <TickIcon name="tick" />}

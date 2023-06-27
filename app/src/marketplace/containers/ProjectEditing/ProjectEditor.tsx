@@ -70,7 +70,7 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({
                 <ProjectDetails />
             </ProjectHeroContainer>
             {project?.type === ProjectType.PaidData && (
-                <WhiteBox>
+                <WhiteBox className={'with-padding'}>
                     <SalePointSelector
                         nonEditableSalePointChains={nonEditableSalePointChains}
                     />
@@ -80,32 +80,32 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({
                 <>
                     {/* Show chain selector only for new projects as it cannot be changed */}
                     {project?.id == null && (
-                        <WhiteBox>
+                        <WhiteBox className={'with-padding'}>
                             <DataUnionChainSelector editMode={editMode} />
                         </WhiteBox>
                     )}
-                    <WhiteBoxWithMargin>
+                    <WhiteBoxWithMargin className={'with-padding'}>
                         <DataUnionTokenSelector editMode={editMode} />
                         <DataUnionFee />
                     </WhiteBoxWithMargin>
                 </>
             )}
-            <WhiteBoxWithMargin>
+            <WhiteBoxWithMargin className={'with-padding'}>
                 <StreamSelector />
             </WhiteBoxWithMargin>
-            <WhiteBoxWithMargin>
+            <WhiteBoxWithMargin className={'with-padding'}>
                 <TermsOfUse />
             </WhiteBoxWithMargin>
             {project?.type === ProjectType.DataUnion &&
                 project.existingDUAddress != null && (
-                    <WhiteBoxWithMargin>
+                    <WhiteBoxWithMargin className={'with-padding'}>
                         <DataUnionSecretsContextProvider>
                             <DataUnionSecrets />
                         </DataUnionSecretsContextProvider>
                     </WhiteBoxWithMargin>
                 )}
             {project?.id && canDelete && (
-                <TransparentBoxWithMargin>
+                <TransparentBoxWithMargin className={'with-padding'}>
                     <DeleteProject />
                 </TransparentBoxWithMargin>
             )}

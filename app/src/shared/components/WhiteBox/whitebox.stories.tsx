@@ -1,9 +1,15 @@
 import React from 'react'
 import { Meta } from '@storybook/react'
-import { WhiteBox } from '.'
+import { WhiteBox, WhiteBoxSeparator } from '.'
 
 export const Default = () => (
     <WhiteBox>
+        <p>This is just a white box container with border radius</p>
+    </WhiteBox>
+)
+
+export const WithPadding = () => (
+    <WhiteBox className="with-padding">
         <p>
             This is just a white box container with defined paddings for all breakpoints.
             Its purpose is to be used in the new HUB design
@@ -11,9 +17,15 @@ export const Default = () => (
     </WhiteBox>
 )
 
-Default.story = {
-    name: 'default',
-}
+export const WithSeparator = () => (
+    <WhiteBox>
+        <p style={{ padding: '24px' }}>Lorem ipsum dolor sit amet.</p>
+        <WhiteBoxSeparator />
+        <p style={{ padding: '24px' }}>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id, sed!
+        </p>
+    </WhiteBox>
+)
 
 const meta: Meta<typeof Default> = {
     title: 'Shared/WhiteBox',
