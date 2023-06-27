@@ -20,13 +20,14 @@ import ProjectPage from '$app/src/pages/ProjectPage'
 import ProjectsPage from '$mp/containers/Projects'
 import NewProjectPage from '$mp/containers/ProjectEditing/NewProjectPage'
 import EditProjectPage from '$mp/containers/ProjectEditing/EditProjectPage'
+import { NetworkOverviewPage } from '$app/src/network/pages/NetworkOverviewPage'
 import Globals from '$shared/components/Globals'
 import { Layer } from '$utils/Layer'
+import { FeatureFlag, isFeatureEnabled } from '$shared/utils/isFeatureEnabled'
 import routes from '$routes'
+import OperatorsPage from '~/pages/OperatorsPage'
 import { HubRouter } from '~/consts'
 import '../analytics'
-import { FeatureFlag, isFeatureEnabled } from '$shared/utils/isFeatureEnabled'
-import { NetworkOverviewPage } from '$app/src/network/pages/NetworkOverviewPage'
 
 const MiscRouter = () => [
     <Route
@@ -72,15 +73,21 @@ const App = () => (
                                 <Route index element={<NewStreamListingPage />} />
                                 <Route path=":id/*" element={<StreamPage />} />
                             </Route>
-                            {isFeatureEnabled(FeatureFlag.PhaseTwo) ? (
-                                <Route path="/hub/network/*" errorElement={<ErrorPage />}>
+                            {isFeatureEnabled(FeatureFlag.PhaseTwo) && (
+                                <>
                                     <Route
-                                        path="overview"
-                                        element={<NetworkOverviewPage />}
-                                    />
-                                </Route>
-                            ) : (
-                                <></>
+                                        path="/hub/operators/*"
+                                        errorElement={<ErrorPage/>}
+                                    >
+                                        <Route index element={<OperatorsPage/>}/>
+                                    </Route>
+                                    <Route path="/hub/network/*" errorElement={<ErrorPage/>}>
+                                        <Route
+                                            path="overview"
+                                            element={<NetworkOverviewPage/>}
+                                        />
+                                    </Route>
+                                </>
                             )}
                             {MiscRouter()}
                         </Routes>
