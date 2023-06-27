@@ -5,7 +5,6 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import SvgIcon from '$shared/components/SvgIcon'
 import Initials from './Initials'
 import Identicon from './Identicon'
-import { DESKTOP } from '$shared/utils/styled'
 const FallbackImage = styled(UnstyledFallbackImage)`
     display: block;
     height: 100%;
