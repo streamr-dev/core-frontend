@@ -15,6 +15,7 @@ import { MyOperatorSummary } from '../components/MyOperatorSummary'
 import { NetworkActionBar } from '../components/NetworkActionBar'
 import { MyDelegationsSummary } from '../components/MyDelegationsSummary'
 import { MyDelegationsTable } from '$app/src/network/components/MyDelegationsTable'
+import { MySponsorshipsTable } from '$app/src/network/components/MySponsorshiptsTable'
 
 export const NetworkStats = styled(WhiteBox)`
     margin-top: 32px;
@@ -59,6 +60,7 @@ export const NetworkOverviewPage = () => {
                 <MyOperatorSummary />
                 <MyDelegationsSummary />
                 <MyDelegationsTable />
+                <MySponsorshipsTable />
             </PageContainer>
         </Layout>
     )

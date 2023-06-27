@@ -9,6 +9,7 @@ import {
 import { NetworkSectionTitle } from '$app/src/network/components/NetworkSectionTitle'
 import { ScrollTableCore } from '$shared/components/ScrollTable/ScrollTable'
 import { HubAvatar } from '$shared/components/AvatarImage'
+import { COLORS, MEDIUM } from '$shared/utils/styled'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { truncate } from '$shared/utils/text'
 import { truncateNumber } from '$shared/utils/truncateNumber'
@@ -111,6 +112,13 @@ export const MyDelegationsTable: FunctionComponent = () => {
                                     key: 'sponsorships',
                                 },
                             ]}
+                            actions={[
+                                {
+                                    displayName: 'Edit',
+                                    callback: (element) =>
+                                        console.log('editing! ' + element.operatorId),
+                                },
+                            ]}
                         />
                     </div>
                     {isMounted() && !walletConnected && (
@@ -136,4 +144,6 @@ const OperatorCell = styled.div`
     display: flex;
     align-items: center;
     gap: 5px;
+    font-weight: ${MEDIUM};
+    color: ${COLORS.primary};
 `

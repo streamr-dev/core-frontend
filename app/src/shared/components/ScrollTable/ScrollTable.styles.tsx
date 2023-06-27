@@ -68,7 +68,8 @@ export const ScrollTableHeaderCell = styled.div`
 
 export const ScrollTableCell = styled.div`
     padding: 5px ${horizontalPaddingMobile};
-    font-size: 14px;
+    font-size: 16px;
+    color: ${COLORS.primaryLight};
     height: 90px;
     display: flex;
     align-items: center;
