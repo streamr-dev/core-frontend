@@ -10,6 +10,7 @@ import {
 } from '$shared/components/ScrollTable/ScrollTable.styles'
 import Popover from '$shared/components/Popover'
 import PopoverItem from '$shared/components/Popover/PopoverItem'
+import { WhiteBoxSeparator } from '$shared/components/WhiteBox'
 
 type ScrollTableProps<Element> = {
     elements: Element[]
@@ -40,6 +41,7 @@ export const ScrollTable = <T extends object>({
     return (
         <ScrollTableContainer>
             <ScrollTableTitle>{title}</ScrollTableTitle>
+            <WhiteBoxSeparator />
             <ScrollTableCore columns={columns} elements={elements} actions={actions} />
         </ScrollTableContainer>
     )

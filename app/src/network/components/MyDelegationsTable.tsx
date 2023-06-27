@@ -16,6 +16,7 @@ import { truncateNumber } from '$shared/utils/truncateNumber'
 import routes from '$routes'
 import { Delegation } from '../types/delegations'
 import { NoNetworkStats } from './NoNetworkStats'
+import { WhiteBoxSeparator } from '$shared/components/WhiteBox'
 
 const hardcodedAddresses = [
     '0x12e567661643698e7C86D3684e391D2C38950C0c',
@@ -51,6 +52,7 @@ export const MyDelegationsTable: FunctionComponent = () => {
             <div className="title">
                 <NetworkSectionTitle>My delegations</NetworkSectionTitle>
             </div>
+            <WhiteBoxSeparator />
             {hasDelegations ? (
                 <>
                     <div

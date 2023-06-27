@@ -44,7 +44,6 @@ export const ScrollTableNonStickyColumnsWrap = styled.div`
 `
 
 export const ScrollTableHeaderCell = styled.div`
-    border-top: 1.5px solid ${COLORS.separator};
     border-bottom: 1.5px solid ${COLORS.separator};
     padding: 5px ${horizontalPaddingMobile};
     height: 80px;

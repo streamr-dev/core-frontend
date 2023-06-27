@@ -17,6 +17,7 @@ import routes from '$routes'
 import { Sponsorship } from '../types/sponsorship'
 import { NoNetworkStats } from './NoNetworkStats'
 import { COLORS, MEDIUM, REGULAR } from '$shared/utils/styled'
+import { WhiteBoxSeparator } from '$shared/components/WhiteBox'
 
 const hardcodedData: Sponsorship[] = [
     {
@@ -50,6 +51,7 @@ export const MySponsorshipsTable: FunctionComponent = () => {
             <div className="title">
                 <NetworkSectionTitle>My sponsorships</NetworkSectionTitle>
             </div>
+            <WhiteBoxSeparator />
             {hasSponsorships ? (
                 <>
                     <div
