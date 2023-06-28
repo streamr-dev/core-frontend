@@ -115,6 +115,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                     title={<NavLink>Network</NavLink>}
                                     caret={false}
                                     menuProps={{ className: 'nav-dropdown' }}
+                                    openOnHover={true}
                                 >
                                     {extendedNetworkNav.map(
                                         (networkNavElement, index) => {
