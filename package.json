@@ -167,7 +167,6 @@
         "@types/react-notification-system": "^0.2.42",
         "@types/react-router-dom": "^5.3.3",
         "@types/react-vis": "^1.11.11",
-        "@types/reactstrap": "^8.7.1",
         "@types/styled-components": "^5.1.26",
         "@types/web3": "^1.2.2",
         "@types/webpack": "^5.28.1",
