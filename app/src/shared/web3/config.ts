@@ -1,6 +1,4 @@
 import { Chain, Chains } from '@streamr/config'
-import getMainChainId from '$app/src/getters/getMainChainId'
-import getClientConfig from '$app/src/getters/getClientConfig'
 import formatConfigUrl from '$utils/formatConfigUrl'
 
 type MetamaskNetworkConfig = {
@@ -66,74 +64,3 @@ export const getConfigForChainByName = (chainName: string): Chain => {
     const config: Chain = configEntry[1]
     return getConfigForChain(config.id)
 }
-
-const getConfig = (): Config => {
-    const {
-        contracts: { mainChainRPCs, streamRegistryChainRPCs },
-    } = getClientConfig()
-
-    const mainChainId = getMainChainId()
-    return {
-        metamask: {
-            // local development values
-            // Note: rpcUrls need to use HTTPS urls, otherwise adding the chain will fail
-            [mainChainId]: {
-                getParams: () => ({
-                    chainName: 'Mainchain (dev)',
-                    rpcUrls: [mainChainRPCs.rpcs[0].url],
-                    blockExplorerUrls: [],
-                    nativeCurrency: {
-                        name: 'ETH',
-                        symbol: 'ETH',
-                        decimals: 18,
-                    },
-                }),
-            },
-            [streamRegistryChainRPCs?.chainId ?? 0]: {
-                getParams: () => ({
-                    chainName: 'Streams chain (dev)',
-                    rpcUrls: [streamRegistryChainRPCs?.rpcs[0].url ?? ''],
-                    blockExplorerUrls: [],
-                    nativeCurrency: {
-                        name: 'xDAI',
-                        symbol: 'xDAI',
-                        decimals: 18,
-                    },
-                }),
-            },
-            // Real chain values
-            // Note: urls are added to user's Metamask, do not use private RPC urls here
-            '1': {
-                getParams: () => {
-                    throw new Error('Mainnet can not be added!')
-                },
-            },
-            '100': {
-                getParams: () => ({
-                    chainName: 'Gnosis',
-                    rpcUrls: ['https://rpc.gnosischain.com/'],
-                    blockExplorerUrls: ['https://blockscout.com/xdai/mainnet'],
-                    nativeCurrency: {
-                        name: 'xDAI',
-                        symbol: 'xDAI',
-                        decimals: 18,
-                    },
-                }),
-            },
-            '137': {
-                getParams: () => ({
-                    chainName: 'Polygon',
-                    rpcUrls: ['https://polygon-rpc.com/'],
-                    blockExplorerUrls: ['https://polygonscan.com/'],
-                    nativeCurrency: {
-                        name: 'MATIC',
-                        symbol: 'MATIC',
-                        decimals: 18,
-                    },
-                }),
-            },
-        },
-    }
-}
-
-export default getConfig

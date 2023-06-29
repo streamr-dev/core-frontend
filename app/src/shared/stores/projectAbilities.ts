@@ -2,8 +2,8 @@ import { useEffect } from 'react'
 import { produce } from 'immer'
 import { create } from 'zustand'
 import { getProjectPermissions } from '$app/src/getters'
-import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { useProject } from '$shared/stores/projectEditor'
+import { defaultChainConfig } from '$app/src/getters/getChainConfig'
 import address0 from '$utils/address0'
 import { useWalletAccount } from './wallet'
 
@@ -145,11 +145,9 @@ export function useProjectAbility(
 }
 
 export function useCurrentProjectAbility(permission: ProjectPermission) {
-    const { chainId } = getCoreConfig().projectRegistry
-
     const { id } = useProject()
 
     const address = useWalletAccount()
 
-    return useProjectAbility(chainId, id, address, permission)
+    return useProjectAbility(defaultChainConfig.id, id, address, permission)
 }

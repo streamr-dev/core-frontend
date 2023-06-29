@@ -1,8 +1,10 @@
 import { StreamrClientConfig } from 'streamr-client'
+import { RPCProtocol } from '@streamr/config'
 import formatConfigUrl from '$utils/formatConfigUrl'
 import formatRpc from '$utils/formatRpc'
 import formatTrackers from '$utils/formatTrackers'
 import getConfig from '$app/src/getters/getConfig'
+import { defaultChainConfig } from '$app/src/getters/getChainConfig'
 
 export default function getClientConfig(mods: any = {}): StreamrClientConfig {
     const { client } = getConfig()
@@ -14,27 +16,34 @@ export default function getClientConfig(mods: any = {}): StreamrClientConfig {
             trackers: formatTrackers(client?.network?.trackers),
         }
     }
+
     const contracts: StreamrClientConfig['contracts'] = {}
     ;[
         {
-            condition: !!client?.mainchain?.rpc,
+            condition: !!defaultChainConfig.getRPCEndpointsByProtocol(RPCProtocol.HTTP),
             key: 'mainChainRPCs',
-            value: formatRpc(client?.mainchain?.rpc),
+            value: formatRpc({
+                chainId: defaultChainConfig.id,
+                rpcs: defaultChainConfig.getRPCEndpointsByProtocol(RPCProtocol.HTTP),
+            }),
         },
         {
-            condition: !!client?.streamRegistryChainAddress,
+            condition: !!defaultChainConfig.contracts.StreamRegistry,
             key: 'streamRegistryChainAddress',
-            value: client?.streamRegistryChainAddress,
+            value: defaultChainConfig.contracts.StreamRegistry,
         },
         {
-            condition: !!client?.streamRegistryChain?.rpc,
+            condition: !!defaultChainConfig.getRPCEndpointsByProtocol(RPCProtocol.HTTP),
             key: 'streamRegistryChainRPCs',
-            value: formatRpc(client?.streamRegistryChain?.rpc),
+            value: formatRpc({
+                chainId: defaultChainConfig.id,
+                rpcs: defaultChainConfig.getRPCEndpointsByProtocol(RPCProtocol.HTTP),
+            }),
         },
         {
-            condition: !!client?.streamStorageRegistryChainAddress,
+            condition: !!defaultChainConfig.contracts.StreamStorageRegistry,
             key: 'streamStorageRegistryChainAddress',
-            value: client?.streamStorageRegistryChainAddress,
+            value: defaultChainConfig.contracts.StreamStorageRegistry,
         },
         {
             condition: !!client?.graphUrl,

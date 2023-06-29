@@ -12,12 +12,13 @@ import {
 } from '$app/src/services/projects'
 import { useProjectState } from '$mp/contexts/ProjectStateContext'
 import { ProjectType } from '$shared/types'
+import { defaultChainConfig } from '$app/src/getters/getChainConfig'
 import { ObjectPaths } from '$utils/objectPaths'
 import { ProjectController, useProjectController } from './ProjectController'
 import Mock = jest.Mock
 
 const STUB_REGISTRY_CHAIN: Partial<Chain> = {
-    id: 420,
+    id: defaultChainConfig.id,
     name: 'TestChain',
 }
 const STUB_DATA_TOKEN_ADDRESS = '0x3a9A81d576d83FF21f26f325066054540720fC34'
@@ -33,11 +34,6 @@ jest.mock('$mp/utils/web3', () => ({
 
 jest.mock('$app/src/services/images', () => ({
     postImage: async () => STUB_UPLOADED_IMAGE_CID,
-}))
-
-jest.mock('$app/src/getters/getCoreConfig', () => ({
-    __esModule: true,
-    default: () => ({ projectRegistry: { chainId: 1 } }),
 }))
 
 jest.mock('$app/src/services/projects', () => ({
