@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { format } from 'date-fns'
 import {
     LineChart,
     Line,
@@ -11,7 +10,6 @@ import {
     Tooltip,
     ReferenceLine,
 } from 'recharts'
-import Rect from '$shared/components/Rect'
 import Spinner from '$shared/components/Spinner'
 import { COLORS, MEDIUM, REGULAR } from '$shared/utils/styled'
 
@@ -38,10 +36,6 @@ type Props = {
     tooltipLabelFormatter?: (value: number) => string
     tooltipValueFormatter?: (value: number) => string
     tooltipValuePrefix: string
-}
-
-const dateFormatter = (date: number): string => {
-    return format(new Date(date), 'dd MMM')
 }
 
 export const TimeSeriesGraph = ({
@@ -135,8 +129,6 @@ export const TimeSeriesGraph = ({
                     </LineChart>
                 </ResponsiveContainer>
             )}
-            {/* This here is how we dictate the size of the container. */}
-            <Rect ratio="5x2" />
         </Container>
     )
 }
