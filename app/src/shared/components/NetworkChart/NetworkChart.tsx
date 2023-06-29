@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { MD, TABLET } from '$shared/utils/styled'
-import { TimeSeriesGraph } from '$shared/components/TimeSeriesGraph'
+import { TimeSeriesGraphProps, TimeSeriesGraph } from '$shared/components/TimeSeriesGraph'
 import Tabs, { Tab } from '$shared/components/Tabs'
 import { useWindowSize } from '$shared/hooks/useWindowSize'
 import UnstyledSpinner from '$shared/components/Spinner'
@@ -15,25 +15,22 @@ export enum ChartPeriod {
     'ALL' = 'ALL',
 }
 
-type Props = {
+type Props = TimeSeriesGraphProps & {
     dataSources: { label: string; value: string }[]
     onDataSourceChange: (dataSource: string) => Promise<void>
     onPeriodChange: (period: ChartPeriod) => Promise<void>
     selectedDataSource: string
     selectedPeriod: ChartPeriod
-    stats: { day: number; value: number }[]
 }
 export const NetworkChart: FunctionComponent<Props> = ({
-    stats,
     dataSources,
     onDataSourceChange,
     onPeriodChange,
     selectedDataSource,
     selectedPeriod,
+    ...props
 }) => {
     const [dataLoading, setDataLoading] = useState(false)
-    const windowWidth = useWindowSize().width
-    const isDesktop = windowWidth >= MD
 
     const handleDataSourceTabChange = useCallback(
         async (selection: string) => {
@@ -70,15 +67,7 @@ export const NetworkChart: FunctionComponent<Props> = ({
                     })}
                 </Tabs>
             </ChartDataSourceSelector>
-            <Chart
-                shownDays={7}
-                graphData={stats.map((stat) => ({ x: stat.day, y: stat.value }))}
-            />
-            {dataLoading && (
-                <ChartSpinnerContainer>
-                    <Spinner color="blue" />
-                </ChartSpinnerContainer>
-            )}
+            <Chart {...props} isLoading={dataLoading} />
 
             <ChartPeriodSelector>
                 <Tabs

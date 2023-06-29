@@ -1,9 +1,10 @@
 import React from 'react'
 import { Meta } from '@storybook/react'
+import { format } from 'date-fns'
 import { TimeSeriesGraph } from '.'
 
 const MSEC_DAILY = 86400000
-const today = new Date('2035-01-01').getTime() + Math.floor(MSEC_DAILY * 0.5)
+const today = new Date().getTime() + Math.floor(MSEC_DAILY * 0.5)
 const graphData = [
     {
         x: today,
@@ -34,11 +35,14 @@ const graphData = [
         y: 32,
     },
 ]
-export const Default = () => <TimeSeriesGraph graphData={graphData} shownDays={7} />
-
-Default.story = {
-    name: 'default',
-}
+export const Default = () => (
+    <TimeSeriesGraph
+        graphData={graphData}
+        xAxisDisplayFormatter={(value) => format(new Date(value), 'dd MMM')}
+        tooltipLabelFormatter={(value) => format(new Date(value), 'dd/mm/yyyy')}
+        tooltipValuePrefix="Msg/s"
+    />
+)
 
 const meta: Meta<typeof Default> = {
     title: 'Shared/TimeSeriesGraph',
@@ -63,12 +67,8 @@ const meta: Meta<typeof Default> = {
 export default meta
 
 export const Loading = () => (
-    <TimeSeriesGraph graphData={graphData} shownDays={7} isLoading />
+    <TimeSeriesGraph graphData={graphData} isLoading tooltipValuePrefix={'Msg/s'} />
 )
-
-Loading.story = {
-    name: 'loading',
-}
 
 const graphDataLarge = [
     {
@@ -109,9 +109,32 @@ const graphDataLarge = [
     },
 ]
 export const LargeValues = () => (
-    <TimeSeriesGraph graphData={graphDataLarge} shownDays={7} />
+    <TimeSeriesGraph
+        graphData={graphDataLarge}
+        tooltipValuePrefix={'Amount staked'}
+        yAxisAxisDisplayFormatter={(value) => Math.round(value / 1000000) + 'M'}
+        xAxisDisplayFormatter={(value) => format(new Date(value), 'dd MMM')}
+        tooltipLabelFormatter={(value) => format(new Date(value), 'dd/mm/yyyy')}
+        tooltipValueFormatter={(value) => Math.round(value / 1000000) + 'M DATA'}
+    />
 )
 
-LargeValues.story = {
-    name: 'large values',
+export const LargeAmountOfData = () => {
+    const data = new Array(365).fill(null).map((_, index) => {
+        return {
+            x: today + MSEC_DAILY * index,
+            // y: Math.round(10000000 * Math.random()),
+            y: 10000000 * ((index + 1) / 365) * Math.random(),
+        }
+    })
+    return (
+        <TimeSeriesGraph
+            graphData={data}
+            tooltipValuePrefix={'Amount staked'}
+            yAxisAxisDisplayFormatter={(value) => Math.round(value / 1000000) + 'M'}
+            xAxisDisplayFormatter={(value) => format(new Date(value), 'dd MMM')}
+            tooltipLabelFormatter={(value) => format(new Date(value), 'dd/mm/yyyy')}
+            tooltipValueFormatter={(value) => Math.round(value / 1000000) + 'M DATA'}
+        />
+    )
 }

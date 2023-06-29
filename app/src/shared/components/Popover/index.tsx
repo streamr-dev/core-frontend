@@ -31,6 +31,7 @@ type Props = {
     disabled?: boolean
     onChange?: (arg0: string) => void
     leftTick?: boolean
+    openOnHover?: boolean
 }
 const UppercaseTitle = styled.span`
     font-family: var(--mono);
@@ -104,6 +105,17 @@ export const ToggleLabel = styled.span`
 `
 export const StyledDropdownMenu = styled(DropdownMenu)`
     min-width: 8rem;
+    &.nav-dropdown {
+        box-shadow: 0px 6px 12px 0px #52525226;
+        border: none;
+        border-radius: 8px;
+        padding: 16px 0;
+        margin: 0;
+        overflow: hidden;
+        .dropdown-item {
+            padding: 16px 32px !important;
+        }
+    }
 `
 const TextCaret = styled.span`
     margin-left: 0.35em;
@@ -167,6 +179,7 @@ const Popover = ({
     disabled,
     onChange,
     leftTick,
+    openOnHover = false,
 }: Props) => {
     const [open, setOpen] = useState(false)
     const childrenArray = useMemo<ReactElement[]>(
@@ -249,13 +262,25 @@ const Popover = ({
             onMenuToggleRef.current(open)
         }
     }, [onMenuToggle, open])
+
+    const additionalProps = openOnHover
+        ? {
+              onMouseOver: () => {
+                  setOpen(true)
+              },
+              onMouseLeave: () => {
+                  setOpen(false)
+              },
+          }
+        : {}
     return (
         <StyledDropdown
-            toggle={toggle}
+            toggle={!openOnHover ? toggle : () => {}}
             isOpen={open}
             onClick={onClick}
             direction={direction}
             className={className}
+            {...additionalProps}
         >
             <StyledDropdownToggle
                 {...toggleProps}

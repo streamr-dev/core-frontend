@@ -6,6 +6,11 @@ import { NoNetworkStats } from '$app/src/network/components/NoNetworkStats'
 import { StatsBox } from '$shared/components/StatsBox/StatsBox'
 import { ChartPeriod, NetworkChart } from '$shared/components/NetworkChart/NetworkChart'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import { truncateNumber } from '$shared/utils/truncateNumber'
+import {
+    formatLongDate,
+    formatShortDate,
+} from '$shared/components/TimeSeriesGraph/chartUtils'
 import routes from '$routes'
 import { OperatorChartData, OperatorStats } from '../types/operator'
 import { NetworkSectionTitle } from './NetworkSectionTitle'
@@ -15,7 +20,6 @@ import {
     SummaryContainer,
     WalletNotConnectedOverlay,
 } from './SummaryUtils'
-import { truncateNumber } from '$shared/utils/truncateNumber'
 
 const hardcodedOperatorStats: OperatorStats = {
     delegators: 124,
@@ -104,10 +108,25 @@ export const MyOperatorSummary: FunctionComponent = () => {
                                         value: 'cumulativeEarnings',
                                     },
                                 ]}
-                                stats={
+                                graphData={(selectedDataSource === 'totalStake'
+                                    ? chartData.totalStake
+                                    : chartData.cumulativeEarnings
+                                ).map((element) => ({
+                                    x: element.day,
+                                    y: element.value,
+                                }))}
+                                tooltipValuePrefix={
                                     selectedDataSource === 'totalStake'
-                                        ? chartData.totalStake
-                                        : chartData.cumulativeEarnings
+                                        ? 'Total stake'
+                                        : 'Cumulative earnings'
+                                }
+                                xAxisDisplayFormatter={formatShortDate}
+                                yAxisAxisDisplayFormatter={(value) =>
+                                    truncateNumber(value, 'thousands')
+                                }
+                                tooltipLabelFormatter={formatLongDate}
+                                tooltipValueFormatter={(value) =>
+                                    truncateNumber(value, 'thousands') + ' DATA'
                                 }
                                 onDataSourceChange={handleChartDataSourceChange}
                                 onPeriodChange={handleChartPeriodChange}

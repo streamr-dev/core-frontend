@@ -37,7 +37,6 @@ import { MarketplaceLoadingView } from '$mp/containers/ProjectPage/MarketplaceLo
 import { getProjectTitleForEditor } from '$mp/containers/ProjectPage/utils'
 import ProjectLinkTabs from '$app/src/pages/ProjectPage/ProjectLinkTabs'
 import { ProjectPermission, useProjectAbility } from '$shared/stores/projectAbilities'
-import getCoreConfig from '$app/src/getters/getCoreConfig'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import {
     ProjectDraftContext,
@@ -46,6 +45,7 @@ import {
     useProject,
 } from '$shared/stores/projectEditor'
 import { useWalletAccount } from '$shared/stores/wallet'
+import { defaultChainConfig } from '$app/src/getters/getChainConfig'
 import routes from '$routes'
 
 const UnstyledEditProjectPage: FunctionComponent = () => {
@@ -73,7 +73,7 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
     )
 
     const isMounted = useIsMounted()
-    const { chainId } = getCoreConfig().projectRegistry
+    const chainId = defaultChainConfig.id
     const canEdit = useProjectAbility(
         chainId,
         project?.id || undefined,

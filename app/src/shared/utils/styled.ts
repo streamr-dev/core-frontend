@@ -37,4 +37,5 @@ export enum COLORS {
     error = '#D90C25',
     warning = '#FFF6F1',
     dialogBorder = '#F3F3F3',
+    black = '#000',
 }

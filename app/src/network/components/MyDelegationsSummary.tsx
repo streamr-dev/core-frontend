@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback, useState } from 'react'
+import React, { FunctionComponent, useCallback, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { WhiteBoxSeparator } from '$shared/components/WhiteBox'
 import { useWalletAccount } from '$shared/stores/wallet'
@@ -7,9 +7,13 @@ import { StatsBox } from '$shared/components/StatsBox/StatsBox'
 import { ChartPeriod, NetworkChart } from '$shared/components/NetworkChart/NetworkChart'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { DelegationChartData, DelegationStats } from '$app/src/network/types/delegations'
+import { truncateNumber } from '$shared/utils/truncateNumber'
+import {
+    formatLongDate,
+    formatShortDate,
+} from '$shared/components/TimeSeriesGraph/chartUtils'
 import routes from '$routes'
 import { NetworkSectionTitle } from './NetworkSectionTitle'
-import { truncateNumber } from '$shared/utils/truncateNumber'
 import {
     growingValuesGenerator,
     NetworkChartWrap,
@@ -110,10 +114,25 @@ export const MyDelegationsSummary: FunctionComponent = () => {
                                         value: 'cumulativeEarnings',
                                     },
                                 ]}
-                                stats={
+                                graphData={(selectedDataSource === 'currentValue'
+                                    ? chartData.currentValue
+                                    : chartData.cumulativeEarnings
+                                ).map((element) => ({
+                                    x: element.day,
+                                    y: element.value,
+                                }))}
+                                tooltipValuePrefix={
                                     selectedDataSource === 'currentValue'
-                                        ? chartData.currentValue
-                                        : chartData.cumulativeEarnings
+                                        ? 'Current value'
+                                        : 'Cumulative earnings'
+                                }
+                                xAxisDisplayFormatter={formatShortDate}
+                                yAxisAxisDisplayFormatter={(value) =>
+                                    truncateNumber(value, 'thousands')
+                                }
+                                tooltipLabelFormatter={formatLongDate}
+                                tooltipValueFormatter={(value) =>
+                                    truncateNumber(value, 'thousands') + ' DATA'
                                 }
                                 onDataSourceChange={handleChartDataSourceChange}
                                 onPeriodChange={handleChartPeriodChange}

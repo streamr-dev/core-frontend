@@ -15,18 +15,6 @@ streamsGraphName = "streamr-dev/streams"
 streamIndexerUrl = "https://stream-metrics.streamr.network/api"
 reverseRecordsAddress = "0x3671aE578E63FdF66ad4F3E12CC0c0d71Ac7510C"
 
-[[core.marketplaceContractCreationBlocks]]
-chainId = 1
-blockNumber = 13575716
-
-[[core.marketplaceContractCreationBlocks]]
-chainId = 100
-blockNumber = 23758654
-
-[[core.marketplaceContractCreationBlocks]]
-chainId = 137
-blockNumber = 32026284
-
 [[core.dataunionGraphNames]]
 chainId = 100
 name = "dataunions/data-unions-gnosis"
@@ -44,18 +32,3 @@ projectId = "2KjYUpR265h6R5M5njkSue5RGm7"
 apiSecretKey = "c39492773b28820c8b3654178bf26946"
 ipfsUploadEndpoint = "https://ipfs.infura.io:5001/api/v0/add"
 ipfsGatewayUrl = "https://streamr-hub.infura-ipfs.io/ipfs/"
-
-[core.projectRegistry]
-chainId = 137
-
-[client.mainchain]
-dataTokenAddress = "0x8f693ca8D21b157107184d29D398A8D082b38b76"
-
-[client.mainchain.rpc]
-chainId = 1
-
-[[client.mainchain.rpc.rpcs]]
-url = "https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206"
-
-[client.sidechain]
-dataTokenAddress = "0xE4a2620edE1058D61BEe5F45F6414314fdf10548"
