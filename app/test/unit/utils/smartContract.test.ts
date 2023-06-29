@@ -143,14 +143,6 @@ describe('smartContract utils', () => {
                 Promise.resolve('testAccount'),
             )
             mockChainId('1')
-            jest.spyOn(getConfig, 'default').mockImplementation(
-                () =>
-                    ({
-                        mainnet: {
-                            chainId: '1',
-                        },
-                    } as any),
-            )
         })
         it('must return a Transaction', () => {
             const fakeEmitter = PromiEvent()

@@ -7,7 +7,6 @@ import React, {
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BN from 'bignumber.js'
-import { z } from 'zod'
 import { randomHex } from 'web3-utils'
 import { Toaster, toaster } from 'toasterhea'
 import uniqueId from 'lodash/uniqueId'
@@ -29,14 +28,13 @@ import {
     SmartContractProjectMetadata,
     updateProject,
 } from '$app/src/services/projects'
-import getCoreConfig from '$app/src/getters/getCoreConfig'
-import { getConfigForChain } from '$shared/web3/config'
 import { getDataAddress } from '$mp/utils/web3'
 import TransactionListToast, {
     Operation,
     notify,
 } from '$shared/toasts/TransactionListToast'
 import address0 from '$utils/address0'
+import { defaultChainConfig } from '$app/src/getters/getChainConfig'
 import routes from '$routes'
 import { useEditableProjectActions } from '../ProductController/useEditableProjectActions'
 
@@ -107,8 +105,7 @@ export const useProjectController = (): ProjectController => {
     const { validate } = useValidationContext()
     const { updateExistingDUAddress } = useEditableProjectActions()
     const [publishInProgress, setPublishInProgress] = useState<boolean>(false)
-    const { projectRegistry } = getCoreConfig()
-    const registryChain = getConfigForChain(projectRegistry.chainId)
+    const registryChain = defaultChainConfig
     const navigate = useNavigate()
 
     const { id: projectId, type: projectType } = project || {}

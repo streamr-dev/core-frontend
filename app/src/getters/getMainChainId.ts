@@ -1,4 +1,4 @@
-import getConfig from '$app/src/getters/getConfig'
+import { defaultChainConfig } from '$app/src/getters/getChainConfig'
 export default function getMainChainId() {
-    return getConfig().client?.mainchain?.chainId
+    return defaultChainConfig.id
 }
