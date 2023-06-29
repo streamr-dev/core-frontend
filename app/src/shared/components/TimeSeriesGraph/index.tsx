@@ -17,10 +17,6 @@ import { COLORS, MEDIUM, REGULAR } from '$shared/utils/styled'
 
 const Container = styled.div`
     position: relative;
-
-    .tooltip {
-        background-color: blue;
-    }
 `
 const SpinnerContainer = styled.div`
     position: absolute;
