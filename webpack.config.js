@@ -360,7 +360,7 @@ module.exports = {
             $config: path.resolve(
                 __dirname,
                 `app/src/config/${
-                    process.env.HUB_CONFIG_ENV || process.env.NODE_ENV || 'development'
+                    process.env.HUB_CONFIG_ENV || process.env.NODE_ENV || 'production'
                 }.toml`,
             ),
             '~': path.resolve(__dirname, 'src/'),
