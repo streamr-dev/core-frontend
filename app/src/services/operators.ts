@@ -1,8 +1,7 @@
 import BN from 'bignumber.js'
 import { AbiItem } from 'web3-utils'
-import { gql } from '@graphql-mesh/utils'
+import { gql } from '@apollo/client'
 import { operatorFactoryABI, tokenABI, operatorABI } from '@streamr/network-contracts'
-import { getBuiltGraphSDK } from '$app/../.graphclient'
 import { getConfigForChainByName, getConfigForChain } from '$shared/web3/config'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import networkPreflight from '$utils/networkPreflight'
@@ -54,8 +53,6 @@ gql`
         }
     }
 `
-
-export const { getAllOperators } = getBuiltGraphSDK()
 
 export type OperatorParams = {
     stringArgs: [string, string]
