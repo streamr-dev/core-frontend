@@ -44,6 +44,11 @@
             "liveData": "<streamr>/hub/projects/:id/live-data"
         }
     },
+    "network": {
+        "overview": "/hub/network/overview",
+        "operators": "/hub/network/operators",
+        "createOperator": "/hub/network/operators/new"
+    },
     "streams": {
         "index": "/hub/streams",
         "show": "/hub/streams/:id",

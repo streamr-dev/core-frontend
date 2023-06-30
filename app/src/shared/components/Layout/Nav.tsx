@@ -50,7 +50,7 @@ const extendedNetworkNav: {
     {
         title: 'Overview',
         subtitle: 'Your activity on one glance',
-        link: '#',
+        link: routes.network.overview(),
     },
     {
         title: 'Sponsorships',
@@ -71,6 +71,14 @@ const extendedNetworkNav: {
         target: '_blank',
     },
 ]
+
+const networkLinks = [routes.network.overview()]
+const isNetworkTabActive = (path: string): boolean => {
+    return networkLinks.reduce((previousValue, currentValue) => {
+        const isNetworkLink = path.startsWith(currentValue)
+        return previousValue || isNetworkLink
+    }, false)
+}
 
 const UnstyledDesktopNav: FunctionComponent = (props) => {
     const { pathname } = useLocation()
@@ -109,7 +117,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                         </NavbarLinkDesktop>
                     </NavbarItem>
                     <NavbarItem>
-                        <NavbarLinkDesktop highlight={false}>
+                        <NavbarLinkDesktop highlight={isNetworkTabActive(pathname)}>
                             {isFeatureEnabled(FeatureFlag.PhaseTwo) ? (
                                 <Popover
                                     title={<NavLink>Network</NavLink>}
@@ -278,7 +286,7 @@ const UnstyledMobileNav: FunctionComponent<{ className?: string }> = ({ classNam
                         Streams
                     </NavLink>
                 </NavbarLinkMobile>
-                <NavbarLinkMobile highlight={false}>
+                <NavbarLinkMobile highlight={isNetworkTabActive(pathname)}>
                     {isFeatureEnabled(FeatureFlag.PhaseTwo) ? (
                         <NavLink onClick={(event) => event.stopPropagation()} as={'div'}>
                             <Accordion

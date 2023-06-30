@@ -5,9 +5,10 @@ type Props = {
     description?: string
     suffix?: string
     image?: string
+    otherTags?: { name: string; content: string }[]
 }
 
-const Helmet = ({ description, image, suffix, title, ...props }: Props) => (
+const Helmet = ({ description, image, suffix, title, otherTags, ...props }: Props) => (
     <ReactHelmet {...props} title={[title, suffix].filter(Boolean).join(' | ')}>
         <meta name="description" content={description} />
         <meta property="og:title" content={title} />
@@ -17,6 +18,11 @@ const Helmet = ({ description, image, suffix, title, ...props }: Props) => (
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={image} />
+        {otherTags &&
+            otherTags.length &&
+            otherTags.map((tagData, index) => {
+                return <meta key={index} name={tagData.name} content={tagData.content} />
+            })}
     </ReactHelmet>
 )
 
@@ -33,5 +39,22 @@ export const MarketplaceHelmet = ({
         image={image}
         suffix={suffix || 'Streamr Hub'}
         title={title}
+    />
+)
+
+export const NetworkHelmet = ({
+    description = 'Operate your Streamr nodes. Create, join and delegate to stream Sponsorships.',
+    image = 'https://streamr.network/resources/social/marketplace.png',
+    title,
+    suffix,
+    ...props
+}: Props) => (
+    <Helmet
+        {...props}
+        description={description}
+        image={image}
+        suffix={suffix || 'Streamr Hub'}
+        title={title}
+        otherTags={[{ name: 'robots', content: 'noindex' }]}
     />
 )

@@ -1,8 +1,8 @@
 import React from 'react'
 import { Container } from 'toasterhea'
 import styled from 'styled-components'
-import { Route, Routes, Navigate } from 'react-router-dom'
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
+import { Navigate, Route, Routes } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import '$shared/assets/stylesheets'
 import '@ibm/plex/css/ibm-plex.css'
 import '$utils/setupSnippets'
@@ -20,6 +20,7 @@ import ProjectPage from '$app/src/pages/ProjectPage'
 import ProjectsPage from '$mp/containers/Projects'
 import NewProjectPage from '$mp/containers/ProjectEditing/NewProjectPage'
 import EditProjectPage from '$mp/containers/ProjectEditing/EditProjectPage'
+import { NetworkOverviewPage } from '$app/src/network/pages/NetworkOverviewPage'
 import Globals from '$shared/components/Globals'
 import { Layer } from '$utils/Layer'
 import { FeatureFlag, isFeatureEnabled } from '$shared/utils/isFeatureEnabled'
@@ -73,12 +74,20 @@ const App = () => (
                                 <Route path=":id/*" element={<StreamPage />} />
                             </Route>
                             {isFeatureEnabled(FeatureFlag.PhaseTwo) && (
-                                <Route
-                                    path="/hub/operators/*"
-                                    errorElement={<ErrorPage />}
-                                >
-                                    <Route index element={<OperatorsPage />} />
-                                </Route>
+                                <>
+                                    <Route
+                                        path="/hub/operators/*"
+                                        errorElement={<ErrorPage/>}
+                                    >
+                                        <Route index element={<OperatorsPage/>}/>
+                                    </Route>
+                                    <Route path="/hub/network/*" errorElement={<ErrorPage/>}>
+                                        <Route
+                                            path="overview"
+                                            element={<NetworkOverviewPage/>}
+                                        />
+                                    </Route>
+                                </>
                             )}
                             {MiscRouter()}
                         </Routes>

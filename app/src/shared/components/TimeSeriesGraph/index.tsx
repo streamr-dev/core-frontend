@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import {
     LineChart,
@@ -17,19 +17,18 @@ const Container = styled.div`
     position: relative;
 `
 const SpinnerContainer = styled.div`
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `
 
 type XY = {
     x: number // timestamp
     y: number
 }
-type Props = {
+export type TimeSeriesGraphProps = {
     graphData: Array<XY>
-    className?: string
     isLoading?: boolean
     xAxisDisplayFormatter?: (value: number) => string
     yAxisAxisDisplayFormatter?: (value: number) => string
@@ -47,14 +46,16 @@ export const TimeSeriesGraph = ({
     tooltipValueFormatter,
     tooltipValuePrefix,
     ...props
-}: Props) => {
+}: TimeSeriesGraphProps) => {
     const chartData = useMemo(() => graphData.sort((a, b) => a.x - b.x), [graphData])
 
     const [crossHairY, setCrossHairY] = useState<number | null>(null)
     const [crossHairX, setCrossHairX] = useState<number | null>(null)
     const updateCrossHairCoordinates = useCallback((xValue: number, yValue: number) => {
-        setCrossHairX(xValue)
-        setCrossHairY(yValue)
+        setTimeout(() => {
+            setCrossHairX(xValue)
+            setCrossHairY(yValue)
+        })
         // do not put anything in the dependencies array or it will cause endless rerendering cycle
     }, [])
 
@@ -62,7 +63,7 @@ export const TimeSeriesGraph = ({
         <Container {...props}>
             {!!isLoading && (
                 <SpinnerContainer>
-                    <Spinner size="large" color="white" />
+                    <Spinner size="large" color="blue" />
                 </SpinnerContainer>
             )}
             {!isLoading && (
@@ -72,8 +73,9 @@ export const TimeSeriesGraph = ({
                             type="linear"
                             dataKey="y"
                             stroke={COLORS.link}
-                            dot={{ r: 4 }}
+                            dot={{ r: 4, stroke: COLORS.link }}
                             activeDot={{ stroke: 'white', fill: COLORS.link, r: 5 }}
+                            isAnimationActive={false}
                         />
                         <CartesianGrid stroke={COLORS.dialogBorder} vertical={false} />
                         <XAxis

@@ -43,3 +43,11 @@ const UnstyledAvatarImage = ({ username, name, src, upload = false, ...props }) 
 const AvatarImage = styled(UnstyledAvatarImage)``
 
 export default AvatarImage
+
+export const HubAvatar = styled(Identicon)`
+    width: 32px;
+    height: 32px;
+    border: 1px solid #f3f3f3;
+    border-radius: 50%;
+    background-color: white;
+`
