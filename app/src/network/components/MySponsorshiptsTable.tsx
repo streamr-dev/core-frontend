@@ -9,15 +9,14 @@ import {
 } from '$app/src/network/components/SummaryUtils'
 import { NetworkSectionTitle } from '$app/src/network/components/NetworkSectionTitle'
 import { ScrollTableCore } from '$shared/components/ScrollTable/ScrollTable'
-import { HubAvatar } from '$shared/components/AvatarImage'
+import { COLORS, MEDIUM } from '$shared/utils/styled'
+import { WhiteBoxSeparator } from '$shared/components/WhiteBox'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { truncate, truncateStreamName } from '$shared/utils/text'
+import { truncateStreamName } from '$shared/utils/text'
 import { truncateNumber } from '$shared/utils/truncateNumber'
 import routes from '$routes'
 import { Sponsorship } from '../types/sponsorship'
 import { NoNetworkStats } from './NoNetworkStats'
-import { COLORS, MEDIUM, REGULAR } from '$shared/utils/styled'
-import { WhiteBoxSeparator } from '$shared/components/WhiteBox'
 
 const hardcodedData: Sponsorship[] = [
     {

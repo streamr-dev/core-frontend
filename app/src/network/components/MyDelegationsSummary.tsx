@@ -76,7 +76,7 @@ export const MyDelegationsSummary: FunctionComponent = () => {
             // simulate awaiting data
             await new Promise((resolve) => setTimeout(resolve, 1000))
         },
-        [setSelectedChartPeriod, setSelectedDataSource],
+        [setSelectedDataSource],
     )
 
     const handleChartPeriodChange = useCallback(
@@ -86,7 +86,7 @@ export const MyDelegationsSummary: FunctionComponent = () => {
             // simulate awaiting data
             await new Promise((resolve) => setTimeout(resolve, 1000))
         },
-        [setSelectedChartPeriod, selectedChartPeriod],
+        [setSelectedChartPeriod],
     )
 
     return (

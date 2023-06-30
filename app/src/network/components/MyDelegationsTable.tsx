@@ -13,10 +13,10 @@ import { COLORS, MEDIUM } from '$shared/utils/styled'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { truncate } from '$shared/utils/text'
 import { truncateNumber } from '$shared/utils/truncateNumber'
+import { WhiteBoxSeparator } from '$shared/components/WhiteBox'
 import routes from '$routes'
 import { Delegation } from '../types/delegations'
 import { NoNetworkStats } from './NoNetworkStats'
-import { WhiteBoxSeparator } from '$shared/components/WhiteBox'
 
 const hardcodedAddresses = [
     '0x12e567661643698e7C86D3684e391D2C38950C0c',

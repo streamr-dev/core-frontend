@@ -15,7 +15,7 @@ export enum ChartPeriod {
     'ALL' = 'ALL',
 }
 
-type Props = TimeSeriesGraphProps & {
+type Props = Omit<TimeSeriesGraphProps, 'isLoading'> & {
     dataSources: { label: string; value: string }[]
     onDataSourceChange: (dataSource: string) => Promise<void>
     onPeriodChange: (period: ChartPeriod) => Promise<void>
@@ -28,7 +28,12 @@ export const NetworkChart: FunctionComponent<Props> = ({
     onPeriodChange,
     selectedDataSource,
     selectedPeriod,
-    ...props
+    graphData,
+    tooltipValuePrefix,
+    xAxisDisplayFormatter,
+    yAxisAxisDisplayFormatter,
+    tooltipLabelFormatter,
+    tooltipValueFormatter,
 }) => {
     const [dataLoading, setDataLoading] = useState(false)
 
@@ -67,7 +72,15 @@ export const NetworkChart: FunctionComponent<Props> = ({
                     })}
                 </Tabs>
             </ChartDataSourceSelector>
-            <Chart {...props} isLoading={dataLoading} />
+            <Chart
+                isLoading={dataLoading}
+                graphData={graphData}
+                tooltipValuePrefix={tooltipValuePrefix}
+                xAxisDisplayFormatter={xAxisDisplayFormatter}
+                yAxisAxisDisplayFormatter={yAxisAxisDisplayFormatter}
+                tooltipLabelFormatter={tooltipLabelFormatter}
+                tooltipValueFormatter={tooltipValueFormatter}
+            />
 
             <ChartPeriodSelector>
                 <Tabs

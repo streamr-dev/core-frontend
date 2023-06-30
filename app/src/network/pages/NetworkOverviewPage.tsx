@@ -12,10 +12,9 @@ import { TABLET } from '$shared/utils/styled'
 import { NetworkSectionTitle } from '$app/src/network/components/NetworkSectionTitle'
 import { StatsBox } from '$shared/components/StatsBox/StatsBox'
 import { MyOperatorSummary } from '../components/MyOperatorSummary'
-import { NetworkActionBar } from '../components/NetworkActionBar'
 import { MyDelegationsSummary } from '../components/MyDelegationsSummary'
-import { MyDelegationsTable } from '$app/src/network/components/MyDelegationsTable'
-import { MySponsorshipsTable } from '$app/src/network/components/MySponsorshiptsTable'
+import { MyDelegationsTable } from '../components/MyDelegationsTable'
+import { MySponsorshipsTable } from '../components/MySponsorshiptsTable'
 
 export const NetworkStats = styled(WhiteBox)`
     margin-top: 32px;
@@ -48,7 +47,6 @@ export const NetworkOverviewPage = () => {
             footer={false}
         >
             <NetworkHelmet title="Network Overview" />
-            <NetworkActionBar searchEnabled={false} />
             <PageContainer>
                 <NetworkStats>
                     <div className="title">
