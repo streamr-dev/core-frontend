@@ -25,6 +25,9 @@ jest.mock('$routes', () => ({
         streams: {
             index: jest.fn(),
         },
+        network: {
+            overview: jest.fn(),
+        },
         networkExplorer: jest.fn(),
     },
 }))
