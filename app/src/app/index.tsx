@@ -32,7 +32,9 @@ import { HubRouter } from '~/consts'
 import '../analytics'
 
 const apolloClient = new ApolloClient({
-    uri: 'http://localhost:8000/subgraphs/name/streamr-dev/network-subgraphs',
+    uri:
+        process.env.GQL_SUBGRAPH_PATH ||
+        'http://localhost:8000/subgraphs/name/streamr-dev/network-subgraphs',
     cache: new InMemoryCache(),
 })
 

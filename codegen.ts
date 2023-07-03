@@ -1,12 +1,13 @@
 import type { CodegenConfig } from '@graphql-codegen/cli'
 
 const {
-    GQL_SCHEMA_PATH = 'http://localhost:8000/subgraphs/name/streamr-dev/network-subgraphs',
+    GQL_SCHEMA_PATH:
+        schema = 'http://localhost:8000/subgraphs/name/streamr-dev/network-subgraphs',
 } = process.env
 
 const config: CodegenConfig = {
     overwrite: true,
-    schema: GQL_SCHEMA_PATH,
+    schema,
     documents: './app/**/*.{ts,tsx,js,jsx}',
     generates: {
         'src/gql.ts': {
