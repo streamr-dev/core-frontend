@@ -76,7 +76,6 @@ jobs:
           TEST_HOOKS: 1
 
   cypress:
-    if: ${{ false }}
     name: Cypress Tests
     runs-on: ubuntu-latest
     strategy:
