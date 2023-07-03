@@ -14,7 +14,8 @@ jest.mock('$app/src/getters/getConfig', () => {
 })
 describe('getPublicWeb3', () => {
     it('returns a web3 with the public provider', () => {
-        // @ts-ignore
-        expect(getPublicWeb3().currentProvider.host).toBe('http://mainchainrpc:8545')
+        expect((getPublicWeb3().currentProvider as any).host).toBe(
+            'http://mainchainrpc:8545',
+        )
     })
 })

@@ -3,6 +3,7 @@ import { Container } from 'toasterhea'
 import styled from 'styled-components'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client'
 import '$shared/assets/stylesheets'
 import '@ibm/plex/css/ibm-plex.css'
 import '$utils/setupSnippets'
@@ -15,6 +16,7 @@ import GenericErrorPage from '$shared/components/GenericErrorPage'
 import ErrorPage from '$shared/components/ErrorPage'
 import Analytics from '$shared/utils/Analytics'
 import NewStreamListingPage from '$app/src/pages/NewStreamListingPage'
+import SponsorshipsPage from '$app/src/pages/Sponsorships'
 import StreamPage from '$app/src/pages/StreamPage'
 import ProjectPage from '$app/src/pages/ProjectPage'
 import ProjectsPage from '$mp/containers/Projects'
@@ -28,6 +30,13 @@ import routes from '$routes'
 import OperatorsPage from '~/pages/OperatorsPage'
 import { HubRouter } from '~/consts'
 import '../analytics'
+
+const apolloClient = new ApolloClient({
+    uri:
+        process.env.GQL_SUBGRAPH_PATH ||
+        'http://localhost:8000/subgraphs/name/streamr-dev/network-subgraphs',
+    cache: new InMemoryCache(),
+})
 
 const MiscRouter = () => [
     <Route
@@ -56,48 +65,65 @@ const queryClient = new QueryClient()
 
 const App = () => (
     <HubRouter>
-        <QueryClientProvider client={queryClient}>
-            <StreamrClientProvider>
-                <ModalPortalProvider>
-                    <ModalProvider>
-                        <Analytics />
-                        <Globals />
-                        <Routes>
-                            <Route path="/hub/projects/*" errorElement={<ErrorPage />}>
-                                <Route index element={<ProjectsPage />} />
-                                <Route path="new" element={<NewProjectPage />} />
-                                <Route path=":id/edit" element={<EditProjectPage />} />
-                                <Route path=":id/*" element={<ProjectPage />} />
-                            </Route>
-                            <Route path="/hub/streams/*" errorElement={<ErrorPage />}>
-                                <Route index element={<NewStreamListingPage />} />
-                                <Route path=":id/*" element={<StreamPage />} />
-                            </Route>
-                            {isFeatureEnabled(FeatureFlag.PhaseTwo) && (
-                                <>
+        <ApolloProvider client={apolloClient}>
+            <QueryClientProvider client={queryClient}>
+                <StreamrClientProvider>
+                    <ModalPortalProvider>
+                        <ModalProvider>
+                            <Analytics />
+                            <Globals />
+                            <Routes>
+                                <Route
+                                    path="/hub/projects/*"
+                                    errorElement={<ErrorPage />}
+                                >
+                                    <Route index element={<ProjectsPage />} />
+                                    <Route path="new" element={<NewProjectPage />} />
                                     <Route
-                                        path="/hub/operators/*"
-                                        errorElement={<ErrorPage/>}
-                                    >
-                                        <Route index element={<OperatorsPage/>}/>
-                                    </Route>
-                                    <Route path="/hub/network/*" errorElement={<ErrorPage/>}>
+                                        path=":id/edit"
+                                        element={<EditProjectPage />}
+                                    />
+                                    <Route path=":id/*" element={<ProjectPage />} />
+                                </Route>
+                                <Route path="/hub/streams/*" errorElement={<ErrorPage />}>
+                                    <Route index element={<NewStreamListingPage />} />
+                                    <Route path=":id/*" element={<StreamPage />} />
+                                </Route>
+                                {isFeatureEnabled(FeatureFlag.PhaseTwo) && (
+                                    <>
                                         <Route
-                                            path="overview"
-                                            element={<NetworkOverviewPage/>}
-                                        />
-                                    </Route>
-                                </>
-                            )}
-                            {MiscRouter()}
-                        </Routes>
-                        <Container id={Layer.Modal} />
-                        <ToastContainer id={Layer.Toast} />
-                        <AnalyticsTracker />
-                    </ModalProvider>
-                </ModalPortalProvider>
-            </StreamrClientProvider>
-        </QueryClientProvider>
+                                            path="/hub/operators/*"
+                                            errorElement={<ErrorPage />}
+                                        >
+                                            <Route index element={<OperatorsPage />} />
+                                        </Route>
+                                        <Route
+                                            path="/hub/network/*"
+                                            errorElement={<ErrorPage />}
+                                        >
+                                            <Route
+                                                path="overview"
+                                                element={<NetworkOverviewPage />}
+                                            />
+                                        </Route>
+                                        <Route
+                                            path="/hub/sponsorships/*"
+                                            errorElement={<ErrorPage />}
+                                        >
+                                            <Route index element={<SponsorshipsPage />} />
+                                        </Route>
+                                    </>
+                                )}
+                                {MiscRouter()}
+                            </Routes>
+                            <Container id={Layer.Modal} />
+                            <ToastContainer id={Layer.Toast} />
+                            <AnalyticsTracker />
+                        </ModalProvider>
+                    </ModalPortalProvider>
+                </StreamrClientProvider>
+            </QueryClientProvider>
+        </ApolloProvider>
     </HubRouter>
 )
 
