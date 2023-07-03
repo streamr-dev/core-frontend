@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { useInfiniteQuery } from '@tanstack/react-query'
@@ -17,7 +17,8 @@ import styles from '$shared/components/Layout/layout.pcss'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import { useWalletAccount } from '$shared/stores/wallet'
 import { ScrollTable } from '$shared/components/ScrollTable/ScrollTable'
-import { createSponsorship, getAllSponsorships } from '../services/sponsorships'
+import { useGetAllSponsorshipsLazyQuery } from '~/gql'
+import { createSponsorship } from '../services/sponsorships'
 
 const PAGE_SIZE = 10
 
@@ -44,10 +45,16 @@ const TableContainer = styled.div`
 const SponsorshipsPage: React.FC = () => {
     const account = useWalletAccount()
 
+    const [loadAll] = useGetAllSponsorshipsLazyQuery({
+        variables: {
+            first: PAGE_SIZE,
+        },
+    })
+
     const sponsorshipsQuery = useInfiniteQuery({
         queryKey: ['sponsorships'],
         queryFn: async (ctx) => {
-            return getAllSponsorships({ first: PAGE_SIZE })
+            return (await loadAll()).data
         },
         getNextPageParam: (lastPage) => {
             return 0

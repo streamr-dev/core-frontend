@@ -205,11 +205,11 @@ module.exports = {
         new webpack.EnvironmentPlugin(loadedDotenv),
         ...(analyze
             ? [
-                new BundleAnalyzerPlugin({
-                    analyzerMode: 'static',
-                    openAnalyzer: false,
-                }),
-            ]
+                  new BundleAnalyzerPlugin({
+                      analyzerMode: 'static',
+                      openAnalyzer: false,
+                  }),
+              ]
             : []),
         // Ignore all locale files of moment.js
         new webpack.IgnorePlugin({
@@ -229,77 +229,77 @@ module.exports = {
         .concat(
             isProduction()
                 ? [
-                    new CleanWebpackPlugin({ cleanOnceBeforeBuildPatterns: [dist] }),
-                    // Production plugins
-                    // new webpack.optimize.OccurrenceOrderPlugin(), // commented out as it started throwing errors after update to webpack5
-                    new webpack.EnvironmentPlugin({
-                        NODE_ENV: 'production',
-                    }),
-                    new OptimizeCssAssetsPlugin({
-                        cssProcessor,
-                        cssProcessorOptions: {
-                            discardComments: {
-                                removeAll: true,
-                            },
-                        },
-                        canPrint: true,
-                    }),
-                    new ImageminPlugin({
-                        disable: !isProduction(), // Disable during development
-                        pngquant: {
-                            quality: '50-75',
-                        },
-                    }),
-                ]
+                      new CleanWebpackPlugin({ cleanOnceBeforeBuildPatterns: [dist] }),
+                      // Production plugins
+                      // new webpack.optimize.OccurrenceOrderPlugin(), // commented out as it started throwing errors after update to webpack5
+                      new webpack.EnvironmentPlugin({
+                          NODE_ENV: 'production',
+                      }),
+                      new OptimizeCssAssetsPlugin({
+                          cssProcessor,
+                          cssProcessorOptions: {
+                              discardComments: {
+                                  removeAll: true,
+                              },
+                          },
+                          canPrint: true,
+                      }),
+                      new ImageminPlugin({
+                          disable: !isProduction(), // Disable during development
+                          pngquant: {
+                              quality: '50-75',
+                          },
+                      }),
+                  ]
                 : [
-                    // Dev plugins
-                    new DeadCodePlugin({
-                        exclude: [
-                            '**/node_modules/**/*.*',
-                            'storybook-static/**/*.*',
-                            'dist/**/*.*',
-                            'coverage/**/*.*',
-                            // skip tests
-                            '**/tests/*.*',
-                            '**/tests/**/*.*',
-                            '**/test/*.*',
-                            '**/test/**/*.*',
-                            '**/*.test.ts',
-                            '**/*.test.tsx',
-                            // skip conditional stubs
-                            '**/stub.tsx',
-                            // skip stories
-                            '**/*.stories.*',
-                            // skip sketch files
-                            '**/*.sketch',
-                        ],
-                    }),
-                    new WebpackNotifierPlugin(),
-                ],
+                      // Dev plugins
+                      new DeadCodePlugin({
+                          exclude: [
+                              '**/node_modules/**/*.*',
+                              'storybook-static/**/*.*',
+                              'dist/**/*.*',
+                              'coverage/**/*.*',
+                              // skip tests
+                              '**/tests/*.*',
+                              '**/tests/**/*.*',
+                              '**/test/*.*',
+                              '**/test/**/*.*',
+                              '**/*.test.ts',
+                              '**/*.test.tsx',
+                              // skip conditional stubs
+                              '**/stub.tsx',
+                              // skip stories
+                              '**/*.stories.*',
+                              // skip sketch files
+                              '**/*.sketch',
+                          ],
+                      }),
+                      new WebpackNotifierPlugin(),
+                  ],
         )
         .concat(
             process.env.SENTRY_DSN
                 ? [
-                    new SentryPlugin({
-                        include: dist,
-                        validate: true,
-                        ignore: [
-                            '.cache',
-                            '.DS_STORE',
-                            '.env',
-                            '.storybook',
-                            'bin',
-                            'coverage',
-                            'node_modules',
-                            'scripts',
-                            'stories',
-                            'test',
-                            'travis_scripts',
-                            'webpack.config.js',
-                        ],
-                        release: process.env.VERSION,
-                    }),
-                ]
+                      new SentryPlugin({
+                          include: dist,
+                          validate: true,
+                          ignore: [
+                              '.cache',
+                              '.DS_STORE',
+                              '.env',
+                              '.storybook',
+                              'bin',
+                              'coverage',
+                              'node_modules',
+                              'scripts',
+                              'stories',
+                              'test',
+                              'travis_scripts',
+                              'webpack.config.js',
+                          ],
+                          release: process.env.VERSION,
+                      }),
+                  ]
                 : [],
         ),
     devtool: isProduction() ? 'source-map' : 'eval-source-map',
@@ -346,8 +346,6 @@ module.exports = {
         fallback: {
             stream: require.resolve('stream-browserify'),
             buffer: require.resolve('buffer'),
-            http: require.resolve('stream-http'),
-            https: require.resolve('https-browserify')
         },
         alias: {
             // Make sure you set up aliases in flow and jest configs.

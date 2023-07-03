@@ -1,7 +1,7 @@
 {
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
-        "typeRoots": ["./typings"],
+        "typeRoots": ["node_modules/@types", "./typings"],
         "paths": {
             "$app/*": ["app/*"],
             "$mp/*": ["app/src/marketplace/*"],
