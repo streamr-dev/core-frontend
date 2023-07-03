@@ -125,10 +125,6 @@ jobs:
           name: screenshots
           path:
             cypress/screenshots
-            # there might be no screenshots created when:
-            # - there are no test failures
-            # so only upload screenshots if previous step has failed
-          if: failure()
 
   chromatic:
     name: Chromatic Tests
