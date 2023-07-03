@@ -66,7 +66,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Start Streamr Docker Stack
-        uses: streamr-dev/streamr-docker-dev-action@v1.0.1
+        uses: streamr-dev/streamr-docker-dev-action@v1.0.2
         with:
           services-to-start: "mysql cassandra parity-node0 parity-sidechain-node0 broker-node-storage-1 nginx"
       - name: Run Jest Tests
@@ -110,7 +110,7 @@ jobs:
       - name: Build app
         run: npm run build
       - name: Start Streamr Docker Stack
-        uses: streamr-dev/streamr-docker-dev-action@v1.0.1
+        uses: streamr-dev/streamr-docker-dev-action@v1.0.2
         with:
           services-to-start: "mysql cassandra parity-node0 parity-sidechain-node0 broker-node-storage-1 nginx"
       - name: Run Cypress tests
