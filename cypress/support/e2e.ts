@@ -13,8 +13,13 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-// Import commands.js using ES2015 syntax:
-// import './commands'
+import './commands'
 
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
+declare global {
+    namespace Cypress {
+        // eslint-disable-next-line @typescript-eslint/no-empty-interface
+        interface Chainable {
+            // Def types for your custom commands here, sir (or maddam).
+        }
+    }
+}
