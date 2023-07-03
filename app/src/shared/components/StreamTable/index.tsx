@@ -299,10 +299,14 @@ const StreamTable: React.FC<Props> = ({
 
     useEffect(() => {
         const loadStats = async () => {
-            const result = await getGlobalStatsFromIndexer()
+            try {
+                const result = await getGlobalStatsFromIndexer()
 
-            if (isMounted()) {
-                setGlobalStats(result)
+                if (isMounted()) {
+                    setGlobalStats(result)
+                }
+            } catch (e) {
+                console.error(e)
             }
         }
 

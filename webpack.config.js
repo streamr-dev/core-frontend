@@ -201,6 +201,7 @@ module.exports = {
             TRAVIS_PULL_REQUEST_SHA: process.env.TRAVIS_PULL_REQUEST_SHA || '',
             STREAMR_DOCKER_DEV_HOST: process.env.STREAMR_DOCKER_DEV_HOST || '',
             GOOGLE_ANALYTICS_ID: process.env.GOOGLE_ANALYTICS_ID || '',
+            GQL_SUBGRAPH_PATH: process.env.GQL_SUBGRAPH_PATH,
         }),
         new webpack.EnvironmentPlugin(loadedDotenv),
         ...(analyze

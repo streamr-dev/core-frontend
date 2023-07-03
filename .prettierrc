@@ -6,6 +6,5 @@
     "tabWidth": 4,
     "bracketSpacing": true,
     "arrowParens": "always",
-    "semi": false,
-    "parser": "typescript"
+    "semi": false
 }
