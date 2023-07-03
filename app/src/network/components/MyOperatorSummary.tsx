@@ -2,7 +2,7 @@ import React, { FunctionComponent, useCallback, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { WhiteBoxSeparator } from '$shared/components/WhiteBox'
 import { useWalletAccount } from '$shared/stores/wallet'
-import { NoNetworkStats } from '$app/src/network/components/NoNetworkStats'
+import { NoData } from '$shared/components/NoData'
 import { StatsBox } from '$shared/components/StatsBox/StatsBox'
 import { ChartPeriod, NetworkChart } from '$shared/components/NetworkChart/NetworkChart'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -19,7 +19,7 @@ import {
     NetworkChartWrap,
     SummaryContainer,
     WalletNotConnectedOverlay,
-} from './SummaryUtils'
+} from './NetworkUtils'
 
 const hardcodedOperatorStats: OperatorStats = {
     delegators: 124,
@@ -140,7 +140,7 @@ export const MyOperatorSummary: FunctionComponent = () => {
                     )}
                 </>
             ) : (
-                <NoNetworkStats
+                <NoData
                     firstLine="You don't have any operator yet."
                     secondLine={
                         <span>

@@ -1,5 +1,7 @@
 import React, { ReactNode } from 'react'
 import {
+    FloatingLoadingIndicator,
+    NoDataWrap,
     ScrollTableCell,
     ScrollTableCellsWrap,
     ScrollTableColumn,
@@ -11,11 +13,15 @@ import {
 import Popover from '$shared/components/Popover'
 import PopoverItem from '$shared/components/Popover/PopoverItem'
 import { WhiteBoxSeparator } from '$shared/components/WhiteBox'
+import { NoData } from '$shared/components/NoData'
 
 type ScrollTableProps<Element> = {
     elements: Element[]
+    isLoading?: boolean
     columns: ScrollTableColumnDef<Element>[]
     actions?: ScrollTableAction<Element>[]
+    noDataFirstLine?: ReactNode
+    noDataSecondLine?: ReactNode
 }
 
 export type ScrollTableColumnDef<T> = {
@@ -37,12 +43,22 @@ export const ScrollTable = <T extends object>({
     title,
     columns,
     actions,
+    isLoading,
+    noDataFirstLine,
+    noDataSecondLine,
 }: ScrollTableProps<T> & { title: string }) => {
     return (
         <ScrollTableContainer>
             <ScrollTableTitle>{title}</ScrollTableTitle>
             <WhiteBoxSeparator />
-            <ScrollTableCore columns={columns} elements={elements} actions={actions} />
+            <ScrollTableCore
+                columns={columns}
+                elements={elements}
+                actions={actions}
+                isLoading={isLoading}
+                noDataFirstLine={noDataFirstLine}
+                noDataSecondLine={noDataSecondLine}
+            />
         </ScrollTableContainer>
     )
 }
@@ -51,6 +67,9 @@ export const ScrollTableCore = <T extends object>({
     elements,
     columns,
     actions,
+    isLoading,
+    noDataFirstLine,
+    noDataSecondLine,
 }: ScrollTableProps<T>) => {
     const stickyColumns = columns.filter((column) => column.isSticky)
     const nonStickyColumns = columns.filter((column) => !column.isSticky)
@@ -62,16 +81,20 @@ export const ScrollTableCore = <T extends object>({
                         <ScrollTableHeaderCell className={'align-' + stickyColumn.align}>
                             <span>{stickyColumn.displayName}</span>
                         </ScrollTableHeaderCell>
-                        {elements.map((element, id) => {
-                            return (
-                                <ScrollTableCell
-                                    key={id}
-                                    className={'align-' + stickyColumn.align}
-                                >
-                                    {stickyColumn.valueMapper(element)}
-                                </ScrollTableCell>
-                            )
-                        })}
+                        {elements && elements.length > 0 && (
+                            <>
+                                {elements.map((element, id) => {
+                                    return (
+                                        <ScrollTableCell
+                                            key={id}
+                                            className={'align-' + stickyColumn.align}
+                                        >
+                                            {stickyColumn.valueMapper(element)}
+                                        </ScrollTableCell>
+                                    )
+                                })}
+                            </>
+                        )}
                     </ScrollTableColumn>
                 )
             })}
@@ -84,16 +107,22 @@ export const ScrollTableCore = <T extends object>({
                             >
                                 <span>{nonStickyColumn.displayName}</span>
                             </ScrollTableHeaderCell>
-                            {elements.map((element, id) => {
-                                return (
-                                    <ScrollTableCell
-                                        key={id}
-                                        className={'align-' + nonStickyColumn.align}
-                                    >
-                                        {nonStickyColumn.valueMapper(element)}
-                                    </ScrollTableCell>
-                                )
-                            })}
+                            {elements && elements.length > 0 && (
+                                <>
+                                    {elements.map((element, id) => {
+                                        return (
+                                            <ScrollTableCell
+                                                key={id}
+                                                className={
+                                                    'align-' + nonStickyColumn.align
+                                                }
+                                            >
+                                                {nonStickyColumn.valueMapper(element)}
+                                            </ScrollTableCell>
+                                        )
+                                    })}
+                                </>
+                            )}
                         </ScrollTableColumn>
                     )
                 })}
@@ -124,6 +153,15 @@ export const ScrollTableCore = <T extends object>({
                     </ScrollTableColumn>
                 )}
             </ScrollTableNonStickyColumnsWrap>
+            {(!elements || elements.length === 0) && (
+                <NoDataWrap>
+                    <NoData
+                        firstLine={noDataFirstLine || 'No data'}
+                        secondLine={noDataSecondLine}
+                    />
+                </NoDataWrap>
+            )}
+            <FloatingLoadingIndicator loading={isLoading} />
         </ScrollTableCellsWrap>
     )
 }

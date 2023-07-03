@@ -21,6 +21,7 @@ import ProjectsPage from '$mp/containers/Projects'
 import NewProjectPage from '$mp/containers/ProjectEditing/NewProjectPage'
 import EditProjectPage from '$mp/containers/ProjectEditing/EditProjectPage'
 import { NetworkOverviewPage } from '$app/src/network/pages/NetworkOverviewPage'
+import { SponsorshipsPage } from '$app/src/network/pages/SponsorshipsPage'
 import Globals from '$shared/components/Globals'
 import { Layer } from '$utils/Layer'
 import { FeatureFlag, isFeatureEnabled } from '$shared/utils/isFeatureEnabled'
@@ -76,15 +77,24 @@ const App = () => (
                             {isFeatureEnabled(FeatureFlag.PhaseTwo) && (
                                 <>
                                     <Route
-                                        path="/hub/operators/*"
-                                        errorElement={<ErrorPage/>}
+                                        path="/hub/network/*"
+                                        errorElement={<ErrorPage />}
                                     >
-                                        <Route index element={<OperatorsPage/>}/>
-                                    </Route>
-                                    <Route path="/hub/network/*" errorElement={<ErrorPage/>}>
+                                        <Route
+                                            path="operators/*"
+                                            errorElement={<ErrorPage />}
+                                        >
+                                            <Route index element={<OperatorsPage />} />
+                                        </Route>
+                                        <Route
+                                            path="sponsorships/*"
+                                            errorElement={<ErrorPage />}
+                                        >
+                                            <Route index element={<SponsorshipsPage />} />
+                                        </Route>
                                         <Route
                                             path="overview"
-                                            element={<NetworkOverviewPage/>}
+                                            element={<NetworkOverviewPage />}
                                         />
                                     </Route>
                                 </>
