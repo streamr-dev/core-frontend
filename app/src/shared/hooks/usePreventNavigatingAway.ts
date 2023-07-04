@@ -155,11 +155,13 @@ export function useBlockHistoryEffect() {
                 unblock()
 
                 retry()
+
+                return () => {}
             }
 
             /**
-             * This callback runs on every attempt to change the client-side routing. It's
-             * ditched on every try thus we have to re-engage it manually.
+             * If the user rejects the message thrown by `confirm` we have to manually
+             * reblock routing for further attempts.
              */
             bump()
         })
