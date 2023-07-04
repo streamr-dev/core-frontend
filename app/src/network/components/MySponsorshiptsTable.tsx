@@ -14,10 +14,10 @@ import { truncateStreamName } from '$shared/utils/text'
 import { truncateNumber } from '$shared/utils/truncateNumber'
 import routes from '$routes'
 import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
-import { Sponsorship } from '../types/sponsorship'
+import { SponsorshipElement } from '../types/sponsorship'
 import { NoData } from '$shared/components/NoData'
 
-const hardcodedData: Sponsorship[] = [
+const hardcodedData: SponsorshipElement[] = [
     {
         streamId: 'jollygood.eth/my/funded/stream',
         streamDescription: 'Price, volume data feed for the DATAUSD',
@@ -43,7 +43,7 @@ export const MySponsorshipsTable: FunctionComponent = () => {
     const walletConnected = !!useWalletAccount()
     const hasSponsorships = true // todo fetch from state
 
-    const sponsorships: Sponsorship[] = hardcodedData // todo fetch from state
+    const sponsorships: SponsorshipElement[] = hardcodedData // todo fetch from state
     return (
         <SummaryContainer>
             <div className="title">

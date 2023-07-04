@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import { randomHex } from 'web3-utils'
 import styled from 'styled-components'
 import moment from 'moment/moment'
@@ -18,80 +19,54 @@ import { truncateNumber } from '$shared/utils/truncateNumber'
 import Tabs, { Tab } from '$shared/components/Tabs'
 import Button from '$shared/components/Button'
 import { ScrollTableCore } from '$shared/components/ScrollTable/ScrollTable'
+import { useWalletAccount } from '$shared/stores/wallet'
 import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
 import { NetworkActionBar } from '../components/NetworkActionBar'
 import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
 import { StreamInfoCell } from '../components/NetworkUtils'
-import { Sponsorship } from '../types/sponsorship'
-import { useWalletAccount } from '$shared/stores/wallet'
+import { SponsorshipElement } from '../types/sponsorship'
+import {
+    useAllSponsorshipsQuery,
+    useMySponsorshipsQuery,
+} from '../hooks/useSponsorshipsList'
 
 const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
+
+const PAGE_SIZE = 10
 
 enum TabOptions {
     allSponsorships = 'allSponsorships',
     mySponsorships = 'mySponsorships',
 }
-
-const hardcodedData: Sponsorship[] = [
-    {
-        streamId: 'jollygood.eth/my/funded/stream',
-        streamDescription: 'Price, volume data feed for the DATAUSD',
-        apy: 24.6,
-        DATAPerDay: 1200,
-        totalStake: 1500000,
-        operators: 54,
-        fundedUntil: moment().add(1, 'month').format('DD-mm-YYYY'),
-    },
-    {
-        streamId: 'HSL/helsinki/trams',
-        streamDescription: 'Real-time location of Helsinki trams',
-        apy: 14.5,
-        DATAPerDay: 4347,
-        totalStake: 2300000,
-        operators: 10,
-        fundedUntil: moment().add(50, 'days').format('DD-mm-YYYY'),
-    },
-].concat(
-    new Array(10).fill(null).map((_, index) => {
-        return {
-            streamId: randomHex(8) + '/' + Math.random(),
-            streamDescription: 'Something something lorem ipsum',
-            apy: Number((50 * Math.random()).toFixed(2)),
-            DATAPerDay: Math.round(5000 * Math.random()),
-            fundedUntil: moment()
-                .add(Math.round(index * 10 * Math.random()), 'days')
-                .format('DD-mm-YYYY'),
-            operators: Math.round(100 * Math.random()),
-            totalStake: Math.round(10000000 * Math.random()),
-        }
-    }),
-)
 export const SponsorshipsPage = () => {
-    const [isLoading, setIsLoading] = useState<boolean>(false)
     const [selectedTab, setSelectedTab] = useState<TabOptions>(TabOptions.allSponsorships)
+    const [searchQuery, setSearchQuery] = useState<string>('')
     const walletConnected = !!useWalletAccount()
-    const sponsorships: Sponsorship[] = hardcodedData // todo fetch from state
+
+    const allSponsorshipsQuery = useAllSponsorshipsQuery(PAGE_SIZE, searchQuery)
+
+    const mySponsorshipsQuery = useMySponsorshipsQuery(PAGE_SIZE, searchQuery)
+
+    const sponsorshipsQuery =
+        selectedTab === TabOptions.allSponsorships
+            ? allSponsorshipsQuery
+            : mySponsorshipsQuery
+
+    const sponsorships: SponsorshipElement[] =
+        (sponsorshipsQuery?.data?.pages.flat() as SponsorshipElement[]) || []
+
     const handleSearch = useCallback(
         (searchTerm: string) => {
-            console.log('searching!', searchTerm)
-            setIsLoading(true)
-            setTimeout(() => {
-                setIsLoading(false)
-            }, 1000)
+            setSearchQuery(searchTerm)
         },
-        [setIsLoading],
+        [setSearchQuery],
     )
 
     const handleTabChange = useCallback(
         (tab: string) => {
-            console.log('selected tab!', tab)
-            setIsLoading(true)
             setSelectedTab(tab as TabOptions)
-            setTimeout(() => {
-                setIsLoading(false)
-            }, 1000)
         },
-        [setIsLoading],
+        [setSelectedTab],
     )
 
     useEffect(() => {
@@ -148,7 +123,11 @@ export const SponsorshipsPage = () => {
                     <WhiteBoxSeparator />
                     <ScrollTableCore
                         elements={sponsorships}
-                        isLoading={isLoading}
+                        isLoading={
+                            sponsorshipsQuery.isLoading ||
+                            sponsorshipsQuery.isFetching ||
+                            sponsorshipsQuery.isFetchingNextPage
+                        }
                         columns={[
                             {
                                 displayName: 'Stream ID',
