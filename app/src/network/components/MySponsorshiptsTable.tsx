@@ -11,19 +11,19 @@ import { ScrollTableCore } from '$shared/components/ScrollTable/ScrollTable'
 import { WhiteBoxSeparator } from '$shared/components/WhiteBox'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { truncateStreamName } from '$shared/utils/text'
+import { NoData } from '$shared/components/NoData'
 import { truncateNumber } from '$shared/utils/truncateNumber'
 import routes from '$routes'
 import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
 import { SponsorshipElement } from '../types/sponsorship'
-import { NoData } from '$shared/components/NoData'
 
 const hardcodedData: SponsorshipElement[] = [
     {
         streamId: 'jollygood.eth/my/funded/stream',
         streamDescription: 'Price, volume data feed for the DATAUSD',
         apy: 24.6,
-        DATAPerDay: 1200,
-        totalStake: 1500000,
+        DATAPerDay: '1200',
+        totalStake: '1500000',
         operators: 54,
         fundedUntil: moment().add(1, 'month').format('DD-mm-YYYY'),
     },
@@ -31,8 +31,8 @@ const hardcodedData: SponsorshipElement[] = [
         streamId: 'HSL/helsinki/trams',
         streamDescription: 'Real-time location of Helsinki trams',
         apy: 14.5,
-        DATAPerDay: 4347,
-        totalStake: 2300000,
+        DATAPerDay: '4347',
+        totalStake: '2300000',
         operators: 10,
         fundedUntil: moment().add(50, 'days').format('DD-mm-YYYY'),
     },
@@ -96,7 +96,10 @@ export const MySponsorshipsTable: FunctionComponent = () => {
                                 {
                                     displayName: 'Staked',
                                     valueMapper: (element) =>
-                                        truncateNumber(element.totalStake, 'thousands'),
+                                        truncateNumber(
+                                            Number(element.totalStake),
+                                            'thousands',
+                                        ),
                                     align: 'end',
                                     isSticky: false,
                                     key: 'staked',

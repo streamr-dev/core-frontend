@@ -43,7 +43,14 @@ export const useAllSponsorshipsQuery = (
     })
 
     useEffect(() => {
-        query.refetch()
+        const effect = async () => {
+            try {
+                await query.refetch()
+            } catch (e) {
+                // we don't care about it
+            }
+        }
+        effect()
     }, [searchQuery])
 
     return query
@@ -82,7 +89,14 @@ export const useMySponsorshipsQuery = (
     })
 
     useEffect(() => {
-        query.refetch()
+        const effect = async () => {
+            try {
+                await query.refetch()
+            } catch (e) {
+                // we don't care about it
+            }
+        }
+        effect()
     }, [account, searchQuery])
 
     return query
@@ -90,16 +104,14 @@ export const useMySponsorshipsQuery = (
 
 const mapSponsorshipToElement = (sponsorship: Sponsorship): SponsorshipElement => {
     return {
-        streamId: sponsorship?.stream?.id as string,
+        streamId: sponsorship.stream?.id as string,
         fundedUntil: sponsorship.projectedInsolvency,
         apy: 0, // TODO add mapping when it will get included in the subgraph
         DATAPerDay: new BigNumber(sponsorship.totalPayoutWeiPerSec)
-            .dividedBy(new BigNumber(Math.pow(10, 18)))
-            .dividedBy(new BigNumber(86400))
-            .toNumber(),
+            .dividedBy(1e18)
+            .dividedBy(86400)
+            .toString(),
         operators: Number(sponsorship.operatorCount),
-        totalStake: new BigNumber(sponsorship.totalStakedWei)
-            .dividedBy(new BigNumber(Math.pow(10, 18)))
-            .toNumber(),
+        totalStake: new BigNumber(sponsorship.totalStakedWei).dividedBy(1e18).toString(),
     }
 }

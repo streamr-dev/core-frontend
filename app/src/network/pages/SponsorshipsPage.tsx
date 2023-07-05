@@ -1,8 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { useInfiniteQuery } from '@tanstack/react-query'
-import { randomHex } from 'web3-utils'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import moment from 'moment/moment'
+import BigNumber from 'bignumber.js'
 import { toaster } from 'toasterhea'
 import styles from '$mp/containers/Projects/projects.pcss'
 import Layout, { PageContainer } from '$shared/components/Layout'
@@ -149,7 +147,8 @@ export const SponsorshipsPage = () => {
                             },
                             {
                                 displayName: 'DATA/day',
-                                valueMapper: (element) => element.DATAPerDay,
+                                valueMapper: (element) =>
+                                    new BigNumber(element.DATAPerDay).toFormat(18),
                                 align: 'start',
                                 isSticky: false,
                                 key: 'dataPerDay',
@@ -164,7 +163,10 @@ export const SponsorshipsPage = () => {
                             {
                                 displayName: 'Staked',
                                 valueMapper: (element) =>
-                                    truncateNumber(element.totalStake, 'thousands'),
+                                    truncateNumber(
+                                        Number(element.totalStake),
+                                        'thousands',
+                                    ),
                                 align: 'end',
                                 isSticky: false,
                                 key: 'staked',

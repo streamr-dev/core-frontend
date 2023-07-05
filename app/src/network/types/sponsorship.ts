@@ -1,9 +1,9 @@
 export type SponsorshipElement = {
     streamId: string
     streamDescription?: string
-    DATAPerDay: number
+    DATAPerDay: string
     operators: number
-    totalStake: number
+    totalStake: string
     apy: number
     fundedUntil: string
 }

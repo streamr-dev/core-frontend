@@ -132,12 +132,12 @@ export const generateSponsorshipElements = (amount: number): SponsorshipElement[
             streamId: randomHex(8) + '/' + Math.random(),
             streamDescription: 'Something something lorem ipsum',
             apy: Number((50 * Math.random()).toFixed(2)),
-            DATAPerDay: Math.round(5000 * Math.random()),
+            DATAPerDay: Math.round(5000 * Math.random()).toString(),
             fundedUntil: moment()
                 .add(Math.round(index * 10 * Math.random()), 'days')
                 .format('DD-mm-YYYY'),
             operators: Math.round(100 * Math.random()),
-            totalStake: Math.round(10000000 * Math.random()),
+            totalStake: Math.round(10000000 * Math.random()).toString(),
         }
     })
 }
