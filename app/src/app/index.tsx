@@ -16,13 +16,13 @@ import GenericErrorPage from '$shared/components/GenericErrorPage'
 import ErrorPage from '$shared/components/ErrorPage'
 import Analytics from '$shared/utils/Analytics'
 import NewStreamListingPage from '$app/src/pages/NewStreamListingPage'
-import SponsorshipsPage from '$app/src/pages/Sponsorships'
 import StreamPage from '$app/src/pages/StreamPage'
 import ProjectPage from '$app/src/pages/ProjectPage'
 import ProjectsPage from '$mp/containers/Projects'
 import NewProjectPage from '$mp/containers/ProjectEditing/NewProjectPage'
 import EditProjectPage from '$mp/containers/ProjectEditing/EditProjectPage'
 import { NetworkOverviewPage } from '$app/src/network/pages/NetworkOverviewPage'
+import { SponsorshipsPage } from '$app/src/network/pages/SponsorshipsPage'
 import Globals from '$shared/components/Globals'
 import { Layer } from '$utils/Layer'
 import { FeatureFlag, isFeatureEnabled } from '$shared/utils/isFeatureEnabled'
@@ -92,25 +92,31 @@ const App = () => (
                                 {isFeatureEnabled(FeatureFlag.PhaseTwo) && (
                                     <>
                                         <Route
-                                            path="/hub/operators/*"
-                                            errorElement={<ErrorPage />}
-                                        >
-                                            <Route index element={<OperatorsPage />} />
-                                        </Route>
-                                        <Route
                                             path="/hub/network/*"
                                             errorElement={<ErrorPage />}
                                         >
                                             <Route
+                                                path="operators/*"
+                                                errorElement={<ErrorPage />}
+                                            >
+                                                <Route
+                                                    index
+                                                    element={<OperatorsPage />}
+                                                />
+                                            </Route>
+                                            <Route
+                                                path="sponsorships/*"
+                                                errorElement={<ErrorPage />}
+                                            >
+                                                <Route
+                                                    index
+                                                    element={<SponsorshipsPage />}
+                                                />
+                                            </Route>
+                                            <Route
                                                 path="overview"
                                                 element={<NetworkOverviewPage />}
                                             />
-                                        </Route>
-                                        <Route
-                                            path="/hub/sponsorships/*"
-                                            errorElement={<ErrorPage />}
-                                        >
-                                            <Route index element={<SponsorshipsPage />} />
                                         </Route>
                                     </>
                                 )}

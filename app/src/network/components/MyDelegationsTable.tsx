@@ -5,7 +5,7 @@ import { useWalletAccount } from '$shared/stores/wallet'
 import {
     SummaryContainer,
     WalletNotConnectedOverlay,
-} from '$app/src/network/components/SummaryUtils'
+} from '$app/src/network/components/NetworkUtils'
 import { NetworkSectionTitle } from '$app/src/network/components/NetworkSectionTitle'
 import { ScrollTableCore } from '$shared/components/ScrollTable/ScrollTable'
 import { HubAvatar } from '$shared/components/AvatarImage'
@@ -16,7 +16,7 @@ import { truncateNumber } from '$shared/utils/truncateNumber'
 import { WhiteBoxSeparator } from '$shared/components/WhiteBox'
 import routes from '$routes'
 import { Delegation } from '../types/delegations'
-import { NoNetworkStats } from './NoNetworkStats'
+import { NoData } from '$shared/components/NoData'
 
 const hardcodedAddresses = [
     '0x12e567661643698e7C86D3684e391D2C38950C0c',
@@ -128,7 +128,7 @@ export const MyDelegationsTable: FunctionComponent = () => {
                     )}
                 </>
             ) : (
-                <NoNetworkStats
+                <NoData
                     firstLine="You don't have any delegations yet."
                     secondLine={
                         <span>

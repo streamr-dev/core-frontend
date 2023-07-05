@@ -8,7 +8,7 @@ type Props = {
     firstLine: ReactNode
     secondLine?: ReactNode
 }
-export const NoNetworkStats: FunctionComponent<Props> = ({ firstLine, secondLine }) => {
+export const NoData: FunctionComponent<Props> = ({ firstLine, secondLine }) => {
     return (
         <EmptyStateWrap
             image={

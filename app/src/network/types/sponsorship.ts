@@ -1,4 +1,4 @@
-export type Sponsorship = {
+export type SponsorshipElement = {
     streamId: string
     streamDescription?: string
     DATAPerDay: number

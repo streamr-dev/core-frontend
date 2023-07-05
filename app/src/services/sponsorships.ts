@@ -40,14 +40,27 @@ gql`
         creator
     }
 
-    query getAllSponsorships($first: Int, $skip: Int) {
-        sponsorships(first: $first, skip: $skip) {
+    query getAllSponsorships($first: Int, $skip: Int, $streamContains: String) {
+        sponsorships(
+            first: $first
+            skip: $skip
+            where: { stream_contains: $streamContains }
+        ) {
             ...SponsorshipFields
         }
     }
 
-    query getSponsorshipsByCreator($first: Int, $skip: Int, $creator: String!) {
-        sponsorships(first: $first, skip: $skip, where: { creator: $creator }) {
+    query getSponsorshipsByCreator(
+        $first: Int
+        $skip: Int
+        $streamContains: String
+        $creator: String!
+    ) {
+        sponsorships(
+            first: $first
+            skip: $skip
+            where: { creator: $creator, stream_contains: $streamContains }
+        ) {
             ...SponsorshipFields
         }
     }

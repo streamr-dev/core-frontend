@@ -47,6 +47,7 @@
     "network": {
         "overview": "/hub/network/overview",
         "operators": "/hub/network/operators",
+        "sponsorships": "/hub/network/sponsorships",
         "createOperator": "/hub/network/operators/new"
     },
     "streams": {

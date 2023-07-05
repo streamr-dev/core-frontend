@@ -21,6 +21,7 @@ import { useGetAllSponsorshipsLazyQuery } from '~/gql'
 import { createSponsorship } from '../services/sponsorships'
 
 const PAGE_SIZE = 10
+///
 
 const Container = styled.div`
     color: ${COLORS.primary};

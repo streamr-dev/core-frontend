@@ -2,11 +2,13 @@ import React, { FunctionComponent } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import moment from 'moment'
+import { randomHex } from 'web3-utils'
 import { WhiteBox, WhiteBoxPaddingStyles } from '$shared/components/WhiteBox'
 import ConnectModal from '$app/src/modals/ConnectModal'
 import { Layer } from '$utils/Layer'
 import Button from '$shared/components/Button'
-import { COLORS } from '$shared/utils/styled'
+import { COLORS, MEDIUM } from '$shared/utils/styled'
+import { SponsorshipElement } from '$app/src/network/types/sponsorship'
 
 export const SummaryContainer = styled(WhiteBox)`
     margin-bottom: 24px;
@@ -26,6 +28,21 @@ export const SummaryContainer = styled(WhiteBox)`
 `
 export const NetworkChartWrap = styled.div`
     ${WhiteBoxPaddingStyles}
+`
+
+export const StreamInfoCell = styled.div`
+    display: flex;
+    flex-direction: column;
+    line-height: 26px;
+
+    .stream-id {
+        font-weight: ${MEDIUM};
+        color: ${COLORS.primary};
+    }
+
+    .stream-description {
+        font-size: 14px;
+    }
 `
 
 const WalletNotConnectedBackground = styled.div`
@@ -105,6 +122,22 @@ export const growingValuesGenerator = (
                     ? maxValue
                     : maxValue *
                       ((((index + 1) / maxDays) * randomIntFromInterval(7, 10)) / 10),
+        }
+    })
+}
+
+export const generateSponsorshipElements = (amount: number): SponsorshipElement[] => {
+    return new Array(amount).fill(null).map((_, index) => {
+        return {
+            streamId: randomHex(8) + '/' + Math.random(),
+            streamDescription: 'Something something lorem ipsum',
+            apy: Number((50 * Math.random()).toFixed(2)),
+            DATAPerDay: Math.round(5000 * Math.random()),
+            fundedUntil: moment()
+                .add(Math.round(index * 10 * Math.random()), 'days')
+                .format('DD-mm-YYYY'),
+            operators: Math.round(100 * Math.random()),
+            totalStake: Math.round(10000000 * Math.random()),
         }
     })
 }

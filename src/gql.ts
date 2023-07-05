@@ -2958,6 +2958,7 @@ export type SponsorshipFieldsFragment = { __typename?: 'Sponsorship', id: string
 export type GetAllSponsorshipsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   skip?: InputMaybe<Scalars['Int']['input']>;
+  streamContains?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -2966,6 +2967,7 @@ export type GetAllSponsorshipsQuery = { __typename?: 'Query', sponsorships: Arra
 export type GetSponsorshipsByCreatorQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   skip?: InputMaybe<Scalars['Int']['input']>;
+  streamContains?: InputMaybe<Scalars['String']['input']>;
   creator: Scalars['String']['input'];
 }>;
 
@@ -3066,8 +3068,12 @@ export type GetAllOperatorsQueryHookResult = ReturnType<typeof useGetAllOperator
 export type GetAllOperatorsLazyQueryHookResult = ReturnType<typeof useGetAllOperatorsLazyQuery>;
 export type GetAllOperatorsQueryResult = Apollo.QueryResult<GetAllOperatorsQuery, GetAllOperatorsQueryVariables>;
 export const GetAllSponsorshipsDocument = gql`
-    query getAllSponsorships($first: Int, $skip: Int) {
-  sponsorships(first: $first, skip: $skip) {
+    query getAllSponsorships($first: Int, $skip: Int, $streamContains: String) {
+  sponsorships(
+    first: $first
+    skip: $skip
+    where: {stream_contains: $streamContains}
+  ) {
     ...SponsorshipFields
   }
 }
@@ -3087,6 +3093,7 @@ export const GetAllSponsorshipsDocument = gql`
  *   variables: {
  *      first: // value for 'first'
  *      skip: // value for 'skip'
+ *      streamContains: // value for 'streamContains'
  *   },
  * });
  */
@@ -3102,8 +3109,12 @@ export type GetAllSponsorshipsQueryHookResult = ReturnType<typeof useGetAllSpons
 export type GetAllSponsorshipsLazyQueryHookResult = ReturnType<typeof useGetAllSponsorshipsLazyQuery>;
 export type GetAllSponsorshipsQueryResult = Apollo.QueryResult<GetAllSponsorshipsQuery, GetAllSponsorshipsQueryVariables>;
 export const GetSponsorshipsByCreatorDocument = gql`
-    query getSponsorshipsByCreator($first: Int, $skip: Int, $creator: String!) {
-  sponsorships(first: $first, skip: $skip, where: {creator: $creator}) {
+    query getSponsorshipsByCreator($first: Int, $skip: Int, $streamContains: String, $creator: String!) {
+  sponsorships(
+    first: $first
+    skip: $skip
+    where: {creator: $creator, stream_contains: $streamContains}
+  ) {
     ...SponsorshipFields
   }
 }
@@ -3123,6 +3134,7 @@ export const GetSponsorshipsByCreatorDocument = gql`
  *   variables: {
  *      first: // value for 'first'
  *      skip: // value for 'skip'
+ *      streamContains: // value for 'streamContains'
  *      creator: // value for 'creator'
  *   },
  * });

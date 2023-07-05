@@ -1,24 +1,23 @@
 import React, { FunctionComponent } from 'react'
 import { Link } from 'react-router-dom'
-import styled from 'styled-components'
 import moment from 'moment'
 import { useWalletAccount } from '$shared/stores/wallet'
 import {
+    StreamInfoCell,
     SummaryContainer,
     WalletNotConnectedOverlay,
-} from '$app/src/network/components/SummaryUtils'
-import { NetworkSectionTitle } from '$app/src/network/components/NetworkSectionTitle'
+} from '$app/src/network/components/NetworkUtils'
 import { ScrollTableCore } from '$shared/components/ScrollTable/ScrollTable'
-import { COLORS, MEDIUM } from '$shared/utils/styled'
 import { WhiteBoxSeparator } from '$shared/components/WhiteBox'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { truncateStreamName } from '$shared/utils/text'
 import { truncateNumber } from '$shared/utils/truncateNumber'
 import routes from '$routes'
-import { Sponsorship } from '../types/sponsorship'
-import { NoNetworkStats } from './NoNetworkStats'
+import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
+import { SponsorshipElement } from '../types/sponsorship'
+import { NoData } from '$shared/components/NoData'
 
-const hardcodedData: Sponsorship[] = [
+const hardcodedData: SponsorshipElement[] = [
     {
         streamId: 'jollygood.eth/my/funded/stream',
         streamDescription: 'Price, volume data feed for the DATAUSD',
@@ -44,7 +43,7 @@ export const MySponsorshipsTable: FunctionComponent = () => {
     const walletConnected = !!useWalletAccount()
     const hasSponsorships = true // todo fetch from state
 
-    const sponsorships: Sponsorship[] = hardcodedData // todo fetch from state
+    const sponsorships: SponsorshipElement[] = hardcodedData // todo fetch from state
     return (
         <SummaryContainer>
             <div className="title">
@@ -124,7 +123,7 @@ export const MySponsorshipsTable: FunctionComponent = () => {
                     )}
                 </>
             ) : (
-                <NoNetworkStats
+                <NoData
                     firstLine="You don't have any sponsorships yet."
                     secondLine={
                         <span>
@@ -140,15 +139,3 @@ export const MySponsorshipsTable: FunctionComponent = () => {
         </SummaryContainer>
     )
 }
-const StreamInfoCell = styled.div`
-    display: flex;
-    flex-direction: column;
-    line-height: 26px;
-    .stream-id {
-        font-weight: ${MEDIUM};
-        color: ${COLORS.primary};
-    }
-    .stream-description {
-        font-size: 14px;
-    }
-`

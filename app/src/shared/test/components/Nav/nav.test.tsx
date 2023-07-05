@@ -27,6 +27,8 @@ jest.mock('$routes', () => ({
         },
         network: {
             overview: jest.fn(),
+            operators: jest.fn(),
+            sponsorships: jest.fn(),
         },
         networkExplorer: jest.fn(),
     },

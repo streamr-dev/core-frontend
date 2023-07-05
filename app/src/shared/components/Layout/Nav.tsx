@@ -55,12 +55,12 @@ const extendedNetworkNav: {
     {
         title: 'Sponsorships',
         subtitle: 'Explore, create and join Sponsorships',
-        link: '#',
+        link: routes.network.sponsorships(),
     },
     {
         title: 'Operators',
         subtitle: 'Explore Operators and delegate',
-        link: '#',
+        link: routes.network.operators(),
     },
     {
         title: 'The Network Explorer',
@@ -72,7 +72,11 @@ const extendedNetworkNav: {
     },
 ]
 
-const networkLinks = [routes.network.overview()]
+const networkLinks = [
+    routes.network.overview(),
+    routes.network.sponsorships(),
+    routes.network.operators(),
+]
 const isNetworkTabActive = (path: string): boolean => {
     return networkLinks.reduce((previousValue, currentValue) => {
         const isNetworkLink = path.startsWith(currentValue)

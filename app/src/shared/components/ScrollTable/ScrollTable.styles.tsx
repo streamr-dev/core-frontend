@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 import { COLORS, MEDIUM, TABLET } from '$shared/utils/styled'
+import LoadingIndicator from '$shared/components/LoadingIndicator'
+import { NoData } from '$shared/components/NoData'
 
 const horizontalPaddingMobile = '24px'
 const verticalPaddingMobile = '20px'
@@ -14,6 +16,7 @@ export const ScrollTableContainer = styled.div`
 export const ScrollTableCellsWrap = styled.div`
     display: grid;
     grid-template-columns: min-content 1fr;
+    position: relative;
 `
 
 export const ScrollTableTitle = styled.p`
@@ -87,4 +90,16 @@ export const ScrollTableCell = styled.div`
     &.action-cell {
         border-left: 1px solid ${COLORS.secondary};
     }
+`
+
+export const FloatingLoadingIndicator = styled(LoadingIndicator)`
+    position: absolute;
+    top: 78px;
+    left: 0;
+    width: 100%;
+`
+
+export const NoDataWrap = styled.div`
+    grid-column-start: 1;
+    grid-column-end: 3;
 `
