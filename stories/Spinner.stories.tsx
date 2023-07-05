@@ -1,6 +1,6 @@
 import React from 'react'
 import { Meta } from '@storybook/react'
-import Spinner from '$shared/components/Spinner'
+import Spinner from '~/shared/components/Spinner'
 
 export const SpinnerSmall = () => <Spinner size="small" />
 SpinnerSmall.story = {

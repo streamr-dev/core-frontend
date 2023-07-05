@@ -1,7 +1,7 @@
 import React, { ComponentProps, ReactNode } from 'react'
 import styled, { css } from 'styled-components'
-import SvgIcon from '$shared/components/SvgIcon'
-import { MEDIUM, MONO } from '$app/src/shared/utils/styled'
+import SvgIcon from '~/shared/components/SvgIcon'
+import { MEDIUM, MONO } from '~/shared/utils/styled'
 
 type Alignment = 'left' | 'center' | 'right'
 

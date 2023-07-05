@@ -2,7 +2,7 @@ import React, { useEffect, useReducer, useState } from 'react'
 import BigNumber from 'bignumber.js'
 import { z } from 'zod'
 import SearchIcon from '@atlaskit/icon/glyph/search'
-import { RejectionReason } from '$app/src/modals/BaseModal'
+import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     ErrorLabel,
     FieldWrap,
@@ -17,8 +17,8 @@ import FormModal, {
     TextAppendix,
     TextInput,
     WingedLabelWrap,
-} from '$app/src/modals/FormModal'
-import Label from '$ui/Label'
+} from '~/modals/FormModal'
+import Label from '~/shared/components/Ui//Label'
 
 interface RawFormData {
     streamId: string
