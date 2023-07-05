@@ -184,7 +184,11 @@ export const SponsorshipsPage = () => {
                                     console.log('editing! ' + element.streamId),
                             },
                         ]}
-                        noDataFirstLine="No sponsorships found"
+                        noDataFirstLine={
+                            selectedTab === TabOptions.allSponsorships
+                                ? 'No sponsorships found.'
+                                : 'You do not have any sponsorships yet.'
+                        }
                     />
                 </SponsorshipsTableWrap>
             </PageContainer>
