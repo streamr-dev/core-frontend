@@ -44,7 +44,7 @@ module.exports = {
     mode: isProduction() ? 'production' : 'development',
     entry: [
         // forcibly print diagnostics upfront
-        path.resolve(root, 'app', 'src', 'shared', 'utils', 'diagnostics.ts'),
+        path.resolve(root, 'src', 'shared', 'utils', 'diagnostics.ts'),
         // always load setup first
         './setup.ts',
         './index.tsx',
@@ -83,10 +83,7 @@ module.exports = {
             {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
-                include: [
-                    path.resolve(root, 'app', 'src'),
-                    path.resolve(root, 'scripts'),
-                ],
+                include: [path.resolve(root, 'src'), path.resolve(root, 'scripts')],
                 options: {
                     rootMode: 'upward',
                     cacheDirectory: !isProduction(),
@@ -114,7 +111,7 @@ module.exports = {
                         loader: 'css-loader',
                         options: {
                             modules: {
-                                localIdentRegExp: /app\/src\/([^/]+)/i,
+                                localIdentRegExp: /src\/([^/]+)/i,
                                 localIdentName: isProduction()
                                     ? '[local]_[hash:base64:8]'
                                     : '[1]_[name]_[local]',
@@ -138,7 +135,7 @@ module.exports = {
                                 includePaths: [
                                     path.resolve(
                                         __dirname,
-                                        'app/src/shared/assets/stylesheets',
+                                        'src/shared/assets/stylesheets',
                                     ),
                                 ],
                             },
@@ -350,17 +347,10 @@ module.exports = {
         },
         alias: {
             // Make sure you set up aliases in flow and jest configs.
-            $app: path.resolve(__dirname, 'app/'),
-            $mp: path.resolve(__dirname, 'app/src/marketplace/'),
-            $userpages: path.resolve(__dirname, 'app/src/userpages/'),
-            $shared: path.resolve(__dirname, 'app/src/shared/'),
             $testUtils: path.resolve(__dirname, 'test/test-utils/'),
-            $routes: path.resolve(__dirname, 'app/src/routes/'),
-            $utils: path.resolve(__dirname, 'app/src/utils/'),
-            $ui: path.resolve(__dirname, 'app/src/shared/components/Ui'),
             $config: path.resolve(
                 __dirname,
-                `app/src/config/${
+                `src/config/${
                     process.env.HUB_CONFIG_ENV || process.env.NODE_ENV || 'production'
                 }.toml`,
             ),

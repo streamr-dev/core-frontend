@@ -2,7 +2,7 @@ import React, { useEffect, useReducer, useState } from 'react'
 import BigNumber from 'bignumber.js'
 import CopyIcon from '@atlaskit/icon/glyph/copy'
 import { z } from 'zod'
-import { RejectionReason } from '$app/src/modals/BaseModal'
+import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     FieldWrap,
     FormModalProps,
@@ -15,9 +15,9 @@ import FormModal, {
     TextAppendix,
     TextInput,
     CopyButtonWrapAppendix,
-} from '$app/src/modals/FormModal'
-import Label from '$ui/Label'
-import useCopy from '$shared/hooks/useCopy'
+} from '~/modals/FormModal'
+import Label from '~/shared/components/Ui//Label'
+import useCopy from '~/shared/hooks/useCopy'
 
 interface Props extends Omit<FormModalProps, 'canSubmit'> {
     onResolve?: (amount: string) => void

@@ -19,7 +19,7 @@
         "chromatic": "chromatic --project-token exgpyxh1il5 --exit-zero-on-changes",
         "clear-cache": "npm run clean-cache",
         "clean-cache": "rm -rf node_modules/.cache; rm -rf .cache; rm -rf dist; jest --clearCache",
-        "rm-old-dist": "rm -rf app/node_modules app/dist",
+        "rm-old-dist": "rm -rf node_modules dist",
         "cloc": "npx cloc --exclude-dir=node_modules,coverage,package-lock.json .",
         "prettier": "pretty-quick --staged",
         "prepare": "husky install",

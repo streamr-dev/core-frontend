@@ -1,7 +1,7 @@
 import { Meta } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import React from 'react'
-import Dialog from '$app/src/shared/components/Dialog'
+import Dialog from '~/shared/components/Dialog'
 
 export const Basic = () => {
     const actions: any = {}

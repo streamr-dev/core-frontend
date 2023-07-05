@@ -1,7 +1,7 @@
 import React from 'react'
 import { Col, Row } from 'reactstrap'
 import { Meta } from '@storybook/react'
-import SvgIcon from '$shared/components/SvgIcon'
+import SvgIcon from '~/shared/components/SvgIcon'
 import sharedStyles from './shared.pcss'
 
 export const All = () => (

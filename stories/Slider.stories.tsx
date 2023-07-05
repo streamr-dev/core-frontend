@@ -1,6 +1,6 @@
 import React from 'react'
 import { Meta } from '@storybook/react'
-import Slider from '$shared/components/Slider'
+import Slider from '~/shared/components/Slider'
 
 class SliderContainer extends React.Component {
     state = {

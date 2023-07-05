@@ -8,7 +8,7 @@ module.exports = {
     core: {
         builder: 'webpack5',
     },
-    stories: ['../app/src/**/*.stories.tsx', '../stories/**/*.stories.tsx'],
+    stories: ['../src/**/*.stories.tsx', '../stories/**/*.stories.tsx'],
     addons: [
         {
             name: '@storybook/addon-postcss',

@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import React, { useEffect, useState } from 'react'
 import moment from 'moment'
-import { RejectionReason } from '$app/src/modals/BaseModal'
+import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     FieldWrap,
     FormModalProps,
@@ -10,8 +10,8 @@ import FormModal, {
     SectionHeadline,
     TextAppendix,
     TextInput,
-} from '$app/src/modals/FormModal'
-import Label from '$ui/Label'
+} from '~/modals/FormModal'
+import Label from '~/shared/components/Ui//Label'
 
 interface Props extends Omit<FormModalProps, 'canSubmit'> {
     onResolve?: (amount: string) => void
