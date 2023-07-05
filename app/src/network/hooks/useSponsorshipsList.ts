@@ -12,6 +12,9 @@ import {
     useGetSponsorshipsByCreatorLazyQuery,
 } from '~/gql'
 
+/**
+ * TODO - HANDLE PAGINATION
+ */
 export const useAllSponsorshipsQuery = (
     pageSize = 10,
     searchQuery?: string,
@@ -56,7 +59,6 @@ export const useMySponsorshipsQuery = (
     const query = useInfiniteQuery({
         queryKey: ['mySponsorships'],
         queryFn: async (ctx) => {
-            console.log('account', account)
             const queryResult: GetSponsorshipsByCreatorQueryResult | undefined = account
                 ? await loadMySponsorships({
                       variables: {
