@@ -64,6 +64,7 @@ module.exports = {
                 allowArgumentsExplicitlyTypedAsAny: true,
             },
         ],
+        "@typescript-eslint/no-namespace": "off"
     },
     overrides: [
         {

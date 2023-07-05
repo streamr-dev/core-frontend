@@ -76,7 +76,6 @@ jobs:
           TEST_HOOKS: 1
 
   cypress:
-    if: ${{ false }}
     name: Cypress Tests
     runs-on: ubuntu-latest
     strategy:
@@ -117,7 +116,6 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           browser: chrome
-          headless: true
           # Start serving 'dist' folder from previous build step
           start: npx serve dist --listen 3333 --single
           wait-on: "http://localhost"
@@ -127,10 +125,6 @@ jobs:
           name: screenshots
           path:
             cypress/screenshots
-            # there might be no screenshots created when:
-            # - there are no test failures
-            # so only upload screenshots if previous step has failed
-          if: failure()
 
   chromatic:
     name: Chromatic Tests
