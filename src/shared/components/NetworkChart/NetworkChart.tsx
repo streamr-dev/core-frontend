@@ -1,6 +1,6 @@
-import React, { FunctionComponent, useCallback, useMemo, useState } from 'react'
+import React, { FunctionComponent, useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { MD, TABLET } from '~/shared/utils/styled'
+import { TABLET } from '~/shared/utils/styled'
 import {
     TimeSeriesGraphProps,
     TimeSeriesGraph,

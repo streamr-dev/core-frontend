@@ -1,7 +1,6 @@
 import { produce } from 'immer'
 import { z } from 'zod'
 import { createContext, useContext, useEffect, useMemo } from 'react'
-import BN from 'bignumber.js'
 import { create } from 'zustand'
 import isEqual from 'lodash/isEqual'
 import uniqueId from 'lodash/uniqueId'
@@ -19,6 +18,7 @@ import {
 } from '~/marketplace/modules/dataUnion/services'
 import { ProjectType, Project } from '~/shared/types'
 import { GraphProject } from '~/shared/consts'
+import { toBN } from '~/utils/bn'
 import { useHasActiveProjectSubscription } from './purchases'
 import { useWalletAccount } from './wallet'
 
@@ -280,7 +280,7 @@ async function getProjectFromGraphProject({
         result = {
             ...result,
             type: ProjectType.DataUnion,
-            adminFee: new BN(adminFee).multipliedBy(100).toString(),
+            adminFee: toBN(adminFee).multipliedBy(100).toString(),
             existingDUAddress: duAddress,
             dataUnionChainId: chainId,
         }

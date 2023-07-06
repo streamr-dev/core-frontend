@@ -1,4 +1,5 @@
-import BN from 'bignumber.js'
+import { BN } from '~/utils/bn'
+
 export type Required = {
     gas: BN
     native?: BN

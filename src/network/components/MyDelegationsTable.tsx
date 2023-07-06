@@ -14,9 +14,9 @@ import useIsMounted from '~/shared/hooks/useIsMounted'
 import { truncate } from '~/shared/utils/text'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
 import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
+import { NoData } from '~/shared/components/NoData'
 import routes from '~/routes'
 import { Delegation } from '../types/delegations'
-import { NoData } from '~/shared/components/NoData'
 
 const hardcodedAddresses = [
     '0x12e567661643698e7C86D3684e391D2C38950C0c',
@@ -118,7 +118,7 @@ export const MyDelegationsTable: FunctionComponent = () => {
                                 {
                                     displayName: 'Edit',
                                     callback: (element) =>
-                                        console.log('editing! ' + element.operatorId),
+                                        console.warn('editing! ' + element.operatorId),
                                 },
                             ]}
                         />

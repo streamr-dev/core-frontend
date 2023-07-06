@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 import { RejectionReason } from '~/modals/BaseModal'
@@ -12,6 +11,7 @@ import FormModal, {
     TextInput,
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui//Label'
+import { toBN } from '~/utils/bn'
 
 interface Props extends Omit<FormModalProps, 'canSubmit'> {
     onResolve?: (amount: string) => void
@@ -37,7 +37,7 @@ export default function FundSponsorshipModal({
 }: Props) {
     const [rawAmount, setRawAmount] = useState(amountProp)
 
-    const pricePerSecond = new BigNumber(pricePerSecondProp)
+    const pricePerSecond = toBN(pricePerSecondProp)
 
     const rate = pricePerSecond.dividedBy(1e18).multipliedBy(DayInSeconds)
 
@@ -47,7 +47,7 @@ export default function FundSponsorshipModal({
 
     const value = rawAmount || '0'
 
-    const finalValue = new BigNumber(value).multipliedBy(1e18)
+    const finalValue = toBN(value).multipliedBy(1e18)
 
     const extensionInSeconds =
         pricePerSecond.isGreaterThan(0) && finalValue.isGreaterThanOrEqualTo(0)
@@ -56,7 +56,7 @@ export default function FundSponsorshipModal({
 
     const endDate = new Date(Date.now() + extensionInSeconds * 1000)
 
-    const balance = new BigNumber(balanceProp)
+    const balance = toBN(balanceProp)
 
     const insufficientFunds = finalValue.isGreaterThan(balance)
 

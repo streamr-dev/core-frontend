@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import BigNumber from 'bignumber.js'
 import PaymentRate from '~/marketplace/components/PaymentRate'
 import { formatChainName } from '~/shared/utils/chains'
 import Button from '~/shared/components/Button'
@@ -16,6 +15,7 @@ import {
 } from '~/shared/stores/purchases'
 import { errorToast } from '~/utils/toast'
 import { isAbandonment } from '~/modals/ProjectModal'
+import { toBN } from '~/utils/bn'
 
 const GetAccessContainer = styled.div`
     display: flex;
@@ -83,7 +83,7 @@ export default function GetAccess({
                     <br />
                     <strong>
                         <PaymentRate
-                            amount={new BigNumber(pricePerSecond)}
+                            amount={toBN(pricePerSecond)}
                             chainId={chainId}
                             pricingTokenAddress={pricingTokenAddress}
                             timeUnit={timeUnits.hour}

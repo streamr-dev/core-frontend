@@ -12,6 +12,7 @@ import { getCustomTokenBalance, getTokenInformation } from '~/marketplace/utils/
 import { getUsdRate } from '~/shared/utils/coingecko'
 import { Layer } from '~/utils/Layer'
 import { ProjectDetail } from '~/shared/consts'
+import getPublicWeb3 from '~/utils/web3/getPublicWeb3'
 import ProjectModal, { Actions } from './ProjectModal'
 import ConnectModal from './ConnectModal'
 import { RejectionReason } from './BaseModal'
@@ -140,7 +141,11 @@ export async function getPurchasePreconditions({
         throw new Error('No account')
     }
 
-    const balance = await getCustomTokenBalance(tokenAddress, account, true, chainId)
+    const balance = await getCustomTokenBalance(
+        tokenAddress,
+        account,
+        getPublicWeb3(chainId),
+    )
 
     const usdRate = await getUsdRate(tokenAddress, chainId)
 

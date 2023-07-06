@@ -1,14 +1,9 @@
-import React, { useEffect, useReducer, useState } from 'react'
-import BigNumber from 'bignumber.js'
+import React, { useEffect, useState } from 'react'
 import CopyIcon from '@atlaskit/icon/glyph/copy'
-import { z } from 'zod'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     FieldWrap,
     FormModalProps,
-    Group,
-    GroupHeadline,
-    Hint,
     Prop,
     Section,
     SectionHeadline,
@@ -18,6 +13,7 @@ import FormModal, {
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui//Label'
 import useCopy from '~/shared/hooks/useCopy'
+import { toBN } from '~/utils/bn'
 
 interface Props extends Omit<FormModalProps, 'canSubmit'> {
     onResolve?: (amount: string) => void
@@ -31,7 +27,7 @@ interface Props extends Omit<FormModalProps, 'canSubmit'> {
 function parseAmount(amount: string | undefined) {
     return typeof amount === 'undefined' || /^0?$/.test(amount)
         ? ''
-        : new BigNumber(amount).dividedBy(1e18).toString()
+        : toBN(amount).dividedBy(1e18).toString()
 }
 
 export default function JoinSponsorshipModal({
@@ -49,14 +45,13 @@ export default function JoinSponsorshipModal({
 
     const [busy, setBusy] = useState(false)
 
-    const operatorBalance = new BigNumber(operatorBalanceProp)
+    const operatorBalance = toBN(operatorBalanceProp)
 
     const [rawAmount, setRawAmount] = useState(parseAmount(amountProp))
 
-    const amount = new BigNumber(rawAmount || '0').multipliedBy(1e18)
+    const amount = toBN(rawAmount || '0').multipliedBy(1e18)
 
-    const finalAmount =
-        amount.isFinite() && amount.isGreaterThan(0) ? amount : new BigNumber(0)
+    const finalAmount = amount.isFinite() && amount.isGreaterThan(0) ? amount : toBN(0)
 
     useEffect(() => {
         setRawAmount(parseAmount(amountProp))
@@ -77,7 +72,7 @@ export default function JoinSponsorshipModal({
             submitting={busy}
             onBeforeAbort={(reason) =>
                 !busy &&
-                (new BigNumber(rawAmount || '0')
+                (toBN(rawAmount || '0')
                     .multipliedBy(1e18)
                     .eq(amountProp || '0') ||
                     reason !== RejectionReason.Backdrop)

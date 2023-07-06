@@ -1,8 +1,9 @@
 import React from 'react'
-import BN from 'bignumber.js'
 import { act, render } from '@testing-library/react'
-import { isHex, randomHex } from 'web3-utils'
+import { randomHex } from 'web3-utils'
+import { isHex } from 'web3-validator'
 import { Chain } from '@streamr/config'
+import { toBN } from '~/utils/bn'
 import { Project } from '~/marketplace/types/project-types'
 import * as validationCtx from '~/marketplace/containers/ProductController/ValidationContextProvider'
 import {
@@ -86,8 +87,8 @@ const PROJECT_STUB: Project = {
             chainId: 1,
             beneficiaryAddress: randomHex(32),
             pricingTokenAddress: STUB_DATA_TOKEN_ADDRESS,
-            price: new BN('2000'),
-            pricePerSecond: new BN('5555555555556'),
+            price: toBN('2000'),
+            pricePerSecond: toBN('5555555555556'),
             timeUnit: 'hour',
         },
     },

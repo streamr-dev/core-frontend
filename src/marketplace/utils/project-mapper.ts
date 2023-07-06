@@ -1,4 +1,3 @@
-import BN from 'bignumber.js'
 import { TheGraphPaymentDetails, TheGraphProject } from '~/services/projects'
 import { ChainName, Project, SalePoint } from '~/marketplace/types/project-types'
 import { ProjectType } from '~/shared/types'
@@ -8,6 +7,7 @@ import { getTokenInformation } from '~/marketplace/utils/web3'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { TimeUnit, timeUnitSecondsMultiplierMap } from '~/shared/utils/timeUnit'
 import getCoreConfig from '~/getters/getCoreConfig'
+import { toBN } from '~/utils/bn'
 
 /**
  * @deprecated Use `getProjectImageUrl`.
@@ -86,7 +86,7 @@ export const mapSalePoints = async (
             salePoints[chainConfig.name] = {
                 chainId: chainConfig.id,
                 pricingTokenAddress: paymentDetail.pricingTokenAddress.toLowerCase(),
-                pricePerSecond: new BN(paymentDetail.pricePerSecond),
+                pricePerSecond: toBN(paymentDetail.pricePerSecond),
                 beneficiaryAddress: paymentDetail.beneficiary.toLowerCase(),
                 timeUnit,
                 price: pricePerSecondFromDecimals.multipliedBy(

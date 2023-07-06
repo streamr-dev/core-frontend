@@ -1,6 +1,5 @@
 import { DataUnionClient } from '@dataunions/client'
 import { DataUnionClientConfig } from '@dataunions/client/types/src/Config'
-import BN from 'bignumber.js'
 import EventEmitter from 'events'
 import { hexToNumber } from 'web3-utils'
 import getClientConfig from '~/getters/getClientConfig'
@@ -11,14 +10,15 @@ import { ProjectId, DataUnionId } from '~/marketplace/types/project-types'
 import { ApiResult } from '~/shared/types/common-types'
 import { checkEthereumNetworkIsCorrect } from '~/shared/utils/web3'
 import { post } from '~/shared/utils/api'
-import getWeb3 from '~/utils/web3/getWeb3'
+import { getWalletProvider } from '~/shared/stores/wallet'
 import TransactionError from '~/shared/errors/TransactionError'
 import Transaction from '~/shared/utils/Transaction'
-import getDefaultWeb3Account from '~/utils/web3/getDefaultWeb3Account'
+import { getWalletAccount } from '~/shared/stores/wallet'
+import { toBN } from '~/utils/bn'
 import { Secret } from './types'
 
 const createClient = async (chainId: number): Promise<DataUnionClient> => {
-    const provider: any = getWeb3().currentProvider
+    const provider: any = await getWalletProvider()
     const config = getConfigForChain(chainId)
     const { dataUnionJoinServerUrl } = getCoreConfig()
     const providerUrl = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))?.url
@@ -33,15 +33,13 @@ const createClient = async (chainId: number): Promise<DataUnionClient> => {
     const providerChainId = hexToNumber(provider.chainId)
     const isProviderInCorrectChain = providerChainId === chainId
 
-    // Account needs to be unlocked so that DataUnionClient works as expected
-    let isLocked = true
-    try {
-        await getDefaultWeb3Account()
-        isLocked = false
-    } catch (e) {
-        // account was locked
+    const account = await getWalletAccount()
+
+    if (!account) {
+        throw new Error('No wallet connected')
     }
-    const isInCorrectChainAndUnlocked = isProviderInCorrectChain && !isLocked
+
+    const isInCorrectChainAndUnlocked = isProviderInCorrectChain
 
     const clientConfig = getClientConfig({
         auth: {
@@ -107,17 +105,15 @@ export const getDataUnionStats = async (
     const dataUnion = await getDataUnionObject(address, chainId)
     const { activeMemberCount, inactiveMemberCount, totalEarnings } =
         await dataUnion.getStats()
-    const active =
-        (activeMemberCount && new BN(activeMemberCount.toString()).toNumber()) || 0
-    const inactive =
-        (inactiveMemberCount && new BN(inactiveMemberCount.toString()).toNumber()) || 0
+    const active = toBN(activeMemberCount).toNumber()
+    const inactive = toBN(inactiveMemberCount).toNumber()
     return {
         memberCount: {
             active,
             inactive,
             total: active + inactive,
         },
-        totalEarnings: totalEarnings && new BN(totalEarnings.toString()).toNumber(),
+        totalEarnings: toBN(totalEarnings).toNumber(),
     }
 }
 // ----------------------
@@ -140,14 +136,18 @@ export const deployDataUnion = ({
     }
 
     const tx = new Transaction(emitter)
+
+    /**
+     * The following does not go sequentially. Some calls
+     * can be prevented by not using `.all`.
+     */
     Promise.all([
-        getDefaultWeb3Account(),
         checkEthereumNetworkIsCorrect({
             network: chainId,
         }),
         createClient(chainId),
     ])
-        .then(([_, __, client]) => {
+        .then(([_, client]) => {
             return client.deployDataUnion({
                 dataUnionName: productId,
                 adminFee: +adminFee,

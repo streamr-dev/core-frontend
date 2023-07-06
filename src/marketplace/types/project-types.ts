@@ -1,4 +1,3 @@
-import BN from 'bignumber.js'
 import { $ElementType, $Keys } from 'utility-types'
 import { projectStates } from '~/shared/utils/constants'
 import { ProjectType } from '~/shared/types'
@@ -6,6 +5,7 @@ import { StreamIdList } from '~/shared/types/stream-types'
 import { NumberString, PaymentCurrency } from '~/shared/types/common-types'
 import { Address } from '~/shared/types/web3-types'
 import { TimeUnit } from '~/shared/utils/timeUnit'
+import { BN } from '~/utils/bn'
 
 export type ProjectId = string
 export type ChainName = string

@@ -1,4 +1,4 @@
-import { isAddress } from 'web3-utils'
+import { isAddress } from 'web3-validator'
 import { SalePoint } from '~/marketplace/types/project-types'
 import { isPriceValid } from '~/marketplace/utils/price'
 import { timeUnits } from '~/shared/utils/timeUnit'

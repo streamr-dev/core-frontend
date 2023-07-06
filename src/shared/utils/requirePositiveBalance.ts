@@ -1,12 +1,12 @@
-import { getNativeTokenBalance } from '~/marketplace/utils/web3'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
+import { getWalletWeb3Provider } from '../stores/wallet'
 
 export default async function requirePositiveBalance(address: string) {
-    const balance = await getNativeTokenBalance(address)
+    const provider = await getWalletWeb3Provider()
 
-    if (balance.isGreaterThan(0)) {
-        return
+    const balance = await provider.getBalance(address)
+
+    if (balance.lte(0)) {
+        throw new InsufficientFundsError(address)
     }
-
-    throw new InsufficientFundsError(address)
 }

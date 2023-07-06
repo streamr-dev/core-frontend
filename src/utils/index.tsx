@@ -73,21 +73,19 @@ export async function waitForPurchasePropagation(
     account: string,
     { attempts = 30 }: { attempts?: number } = {},
 ) {
-    const web3 = getPublicWeb3(chainId)
+    const signer = getPublicWeb3(chainId)
 
-    const contract = getProjectRegistryContract({ chainId, web3 })
+    const contract = getProjectRegistryContract({ chainId, signer })
 
-    const params = {
-        fromBlock: (await web3.eth.getBlockNumber()) - 10, // take a couple of blocks back to be sure
-        toBlock: 'latest',
-        filter: {
-            projectId,
-            subscriber: account,
-        },
-    }
+    // Take a couple of blocks back to be sure.
+    const fromBlock = (await signer.getBlockNumber()) - 10
 
     for (let i = 0; i < attempts; i++) {
-        const events = await contract.getPastEvents('Subscribed', params)
+        const events = await contract.queryFilter(
+            contract.filters.Subscribed(projectId, account),
+            fromBlock,
+            'latest',
+        )
 
         if (events.length) {
             return

@@ -6,7 +6,6 @@ import React, {
     useState,
 } from 'react'
 import styled from 'styled-components'
-import BN from 'bignumber.js'
 import capitalize from 'lodash/capitalize'
 import { useDebouncedCallback } from 'use-debounce'
 import { Chain } from '@streamr/config'
@@ -28,6 +27,7 @@ import { pricePerSecondFromTimeUnit } from '~/marketplace/utils/price'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
 import { ObjectPaths } from '~/utils/objectPaths'
 import { errorToast } from '~/utils/toast'
+import { toBN } from '~/utils/bn'
 
 const Container = styled.div`
     color: ${COLORS.primary};
@@ -213,7 +213,7 @@ const TokenSelector: FunctionComponent<Props> = ({
                 if (info) {
                     clearStatus()
                     setTokenSymbol(info.symbol)
-                    setTokenDecimals(info.decimals)
+                    setTokenDecimals(toBN(info.decimals).toNumber())
                 } else {
                     errorToast({
                         title: 'Invalid token contract address',
@@ -255,17 +255,15 @@ const TokenSelector: FunctionComponent<Props> = ({
             const outputPrice = changes.price || price
             const outputTimeUnit = changes.timeUnit || timeUnit
             const output: PricingData = {
-                price: outputPrice ? new BN(outputPrice) : undefined,
+                price: outputPrice ? toBN(outputPrice) : undefined,
                 timeUnit: outputTimeUnit,
                 tokenAddress: selectedTokenAddress?.toLowerCase(),
                 pricePerSecond:
                     outputPrice && outputTimeUnit && tokenDecimals
-                        ? new BN(
-                              pricePerSecondFromTimeUnit(
-                                  new BN(outputPrice),
-                                  outputTimeUnit,
-                                  new BN(tokenDecimals),
-                              ),
+                        ? pricePerSecondFromTimeUnit(
+                              outputPrice,
+                              outputTimeUnit,
+                              tokenDecimals,
                           )
                         : undefined,
             }

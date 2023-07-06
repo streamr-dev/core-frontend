@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import BN from 'bignumber.js'
 import { contractCurrencies as currencies } from '~/shared/utils/constants'
 import { formatPrice } from '~/marketplace/utils/price'
 import { getTokenInformation } from '~/marketplace/utils/web3'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { TimeUnit } from '~/shared/utils/timeUnit'
+import { BNish, toBN } from '~/utils/bn'
 
 type Props = {
-    amount: BN
+    amount: BNish
     pricingTokenAddress: string
     chainId: number
     timeUnit: TimeUnit
@@ -26,7 +26,7 @@ const PaymentRate = (props: Props) => {
     } = props
     const [currency, setCurrency] = useState(currencies.PRODUCT_DEFINED)
     const [symbol, setSymbol] = useState(currencies.DATA)
-    const [decimals, setDecimals] = useState(new BN(18))
+    const [decimals, setDecimals] = useState(toBN(18))
     const isMounted = useIsMounted()
     useEffect(() => {
         const check = async () => {
@@ -36,7 +36,7 @@ const PaymentRate = (props: Props) => {
                 if (isMounted() && info) {
                     setCurrency(currencies.PRODUCT_DEFINED)
                     setSymbol(info.symbol)
-                    setDecimals(new BN(info.decimals))
+                    setDecimals(toBN(info.decimals))
                 }
             }
         }
@@ -45,7 +45,7 @@ const PaymentRate = (props: Props) => {
     }, [pricingTokenAddress, chainId, isMounted])
     return (
         <Tag className={className}>
-            {formatPrice(amount, currency, decimals, timeUnit, symbol)}
+            {formatPrice(toBN(amount), currency, decimals, timeUnit, symbol)}
         </Tag>
     )
 }
