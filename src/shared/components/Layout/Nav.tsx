@@ -1,7 +1,7 @@
 import React, { Fragment, FunctionComponent, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
-import { useLocation, Link, useNavigate } from 'react-router-dom'
+import { useLocation, Link } from 'react-router-dom'
 import { Accordion, AccordionItem } from 'reactstrap'
 import { Button, HamburgerButton, Logo, NavOverlay } from '@streamr/streamr-layout'
 import { DESKTOP, TABLET } from '~/shared/utils/styled'
@@ -75,6 +75,7 @@ const extendedNetworkNav: {
 const networkLinks = [
     routes.network.overview(),
     routes.network.sponsorships(),
+    routes.network.sponsorship(),
     routes.network.operators(),
 ]
 const isNetworkTabActive = (path: string): boolean => {
@@ -90,8 +91,6 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
     const account = useWalletAccount()
 
     const ensName = useEns(account)
-
-    const navigate = useNavigate()
 
     return (
         <div {...props} data-testid={'desktop-nav'}>

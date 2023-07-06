@@ -23,6 +23,7 @@ import NewProjectPage from '~/marketplace/containers/ProjectEditing/NewProjectPa
 import EditProjectPage from '~/marketplace/containers/ProjectEditing/EditProjectPage'
 import { NetworkOverviewPage } from '~/network/pages/NetworkOverviewPage'
 import { SponsorshipsPage } from '~/network/pages/SponsorshipsPage'
+import { SingleSponsorshipPage } from '~/network/pages/SingleSponsorshipPage'
 import Globals from '~/shared/components/Globals'
 import { Layer } from '~/utils/Layer'
 import { FeatureFlag, isFeatureEnabled } from '~/shared/utils/isFeatureEnabled'
@@ -111,6 +112,10 @@ const App = () => (
                                                 <Route
                                                     index
                                                     element={<SponsorshipsPage />}
+                                                />
+                                                <Route
+                                                    path=":id"
+                                                    element={<SingleSponsorshipPage />}
                                                 />
                                             </Route>
                                             <Route

@@ -2974,6 +2974,13 @@ export type GetSponsorshipsByCreatorQueryVariables = Exact<{
 
 export type GetSponsorshipsByCreatorQuery = { __typename?: 'Query', sponsorships: Array<{ __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, creator: string, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> }> };
 
+export type GetSponsorshipByIdQueryVariables = Exact<{
+  sponsorshipId: Scalars['ID']['input'];
+}>;
+
+
+export type GetSponsorshipByIdQuery = { __typename?: 'Query', sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, creator: string, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> } | null };
+
 export const OperatorFieldsFragmentDoc = gql`
     fragment OperatorFields on Operator {
   id
@@ -3150,3 +3157,38 @@ export function useGetSponsorshipsByCreatorLazyQuery(baseOptions?: Apollo.LazyQu
 export type GetSponsorshipsByCreatorQueryHookResult = ReturnType<typeof useGetSponsorshipsByCreatorQuery>;
 export type GetSponsorshipsByCreatorLazyQueryHookResult = ReturnType<typeof useGetSponsorshipsByCreatorLazyQuery>;
 export type GetSponsorshipsByCreatorQueryResult = Apollo.QueryResult<GetSponsorshipsByCreatorQuery, GetSponsorshipsByCreatorQueryVariables>;
+export const GetSponsorshipByIdDocument = gql`
+    query getSponsorshipById($sponsorshipId: ID!) {
+  sponsorship(id: $sponsorshipId) {
+    ...SponsorshipFields
+  }
+}
+    ${SponsorshipFieldsFragmentDoc}`;
+
+/**
+ * __useGetSponsorshipByIdQuery__
+ *
+ * To run a query within a React component, call `useGetSponsorshipByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSponsorshipByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSponsorshipByIdQuery({
+ *   variables: {
+ *      sponsorshipId: // value for 'sponsorshipId'
+ *   },
+ * });
+ */
+export function useGetSponsorshipByIdQuery(baseOptions: Apollo.QueryHookOptions<GetSponsorshipByIdQuery, GetSponsorshipByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSponsorshipByIdQuery, GetSponsorshipByIdQueryVariables>(GetSponsorshipByIdDocument, options);
+      }
+export function useGetSponsorshipByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSponsorshipByIdQuery, GetSponsorshipByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSponsorshipByIdQuery, GetSponsorshipByIdQueryVariables>(GetSponsorshipByIdDocument, options);
+        }
+export type GetSponsorshipByIdQueryHookResult = ReturnType<typeof useGetSponsorshipByIdQuery>;
+export type GetSponsorshipByIdLazyQueryHookResult = ReturnType<typeof useGetSponsorshipByIdLazyQuery>;
+export type GetSponsorshipByIdQueryResult = Apollo.QueryResult<GetSponsorshipByIdQuery, GetSponsorshipByIdQueryVariables>;

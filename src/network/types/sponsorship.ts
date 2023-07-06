@@ -1,4 +1,5 @@
 export type SponsorshipElement = {
+    id: string
     streamId: string
     streamDescription?: string
     DATAPerDay: string
@@ -6,4 +7,5 @@ export type SponsorshipElement = {
     totalStake: string
     apy: number
     fundedUntil: string
+    active: boolean
 }

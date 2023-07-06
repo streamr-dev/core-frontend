@@ -129,6 +129,7 @@ export const growingValuesGenerator = (
 export const generateSponsorshipElements = (amount: number): SponsorshipElement[] => {
     return new Array(amount).fill(null).map((_, index) => {
         return {
+            id: Math.round(Math.random() * 10000).toString(),
             streamId: randomHex(8) + '/' + Math.random(),
             streamDescription: 'Something something lorem ipsum',
             apy: Number((50 * Math.random()).toFixed(2)),
@@ -138,6 +139,7 @@ export const generateSponsorshipElements = (amount: number): SponsorshipElement[
                 .format('DD-mm-YYYY'),
             operators: Math.round(100 * Math.random()),
             totalStake: Math.round(10000000 * Math.random()).toString(),
+            active: Boolean(Math.round(Math.random())),
         }
     })
 }

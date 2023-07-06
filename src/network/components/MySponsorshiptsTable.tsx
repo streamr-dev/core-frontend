@@ -14,8 +14,8 @@ import { truncateStreamName } from '~/shared/utils/text'
 import { NoData } from '~/shared/components/NoData'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
 import routes from '~/routes'
-import { NetworkSectionTitle } from './NetworkSectionTitle'
 import { SponsorshipElement } from '../types/sponsorship'
+import { NetworkSectionTitle } from './NetworkSectionTitle'
 
 const hardcodedData: SponsorshipElement[] = [
     {
@@ -26,6 +26,8 @@ const hardcodedData: SponsorshipElement[] = [
         totalStake: '1500000',
         operators: 54,
         fundedUntil: moment().add(1, 'month').format('DD-mm-YYYY'),
+        id: '45c5027a-ce52-49e2-9787-7f5599ce85cf',
+        active: true,
     },
     {
         streamId: 'HSL/helsinki/trams',
@@ -35,6 +37,8 @@ const hardcodedData: SponsorshipElement[] = [
         totalStake: '2300000',
         operators: 10,
         fundedUntil: moment().add(50, 'days').format('DD-mm-YYYY'),
+        id: 'add2771e-111d-451a-ae50-6fb93f5da616',
+        active: false,
     },
 ]
 

@@ -100,8 +100,10 @@ const StatsValue = styled.p`
     color: ${COLORS.primary};
     margin: 0;
     line-height: 24px;
+    text-align: right;
     @media (${TABLET}) {
         font-size: 20px;
+        text-align: left;
     }
 `
 

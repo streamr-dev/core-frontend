@@ -19,7 +19,8 @@ import Button from '~/shared/components/Button'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
-import { NetworkActionBar } from '../components/NetworkActionBar'
+import routes from '~/routes'
+import { NetworkActionBar } from '../components/ActionBars/NetworkActionBar'
 import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
 import { StreamInfoCell } from '../components/NetworkUtils'
 import { SponsorshipElement } from '../types/sponsorship'
@@ -190,6 +191,9 @@ export const SponsorshipsPage = () => {
                             selectedTab === TabOptions.allSponsorships
                                 ? 'No sponsorships found.'
                                 : 'You do not have any sponsorships yet.'
+                        }
+                        linkMapper={(element) =>
+                            routes.network.sponsorship({ id: element.id })
                         }
                     />
                 </SponsorshipsTableWrap>

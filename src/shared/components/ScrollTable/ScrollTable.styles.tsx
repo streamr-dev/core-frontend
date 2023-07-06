@@ -71,7 +71,7 @@ export const ScrollTableHeaderCell = styled.div`
 export const ScrollTableCell = styled.div`
     padding: 5px ${horizontalPaddingMobile};
     font-size: 16px;
-    color: ${COLORS.primaryLight};
+    color: ${COLORS.primaryLight} !important; //to override the link styled when we use this StyledComponent as Link
     height: 90px;
     display: flex;
     align-items: center;
