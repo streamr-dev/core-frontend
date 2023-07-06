@@ -71,52 +71,6 @@ describe('web3 utils', () => {
             expect(balance.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
         })
     })
-    describe('getDataTokenBalance', () => {
-        it('gets balance with web3 from metamask', async () => {
-            const accountBalance = new BN('2209000000000000000000')
-            const balanceStub = jest.fn(() => ({
-                call: () => Promise.resolve(accountBalance),
-            }))
-            const getContractStub = jest.fn(() => ({
-                methods: {
-                    balanceOf: balanceStub,
-                },
-            }))
-            jest.spyOn(utils, 'getContract').mockImplementation(getContractStub as any)
-            const result = await all.getDataTokenBalance('testAccount', false, 8995)
-            expect(result.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
-            expect(getContractStub).toHaveBeenCalledTimes(1)
-            expect(getContractStub).toBeCalledWith(
-                getDataTokenAbiAndAddress(8995),
-                false,
-                8995,
-            )
-            expect(balanceStub).toHaveBeenCalledTimes(1)
-            expect(balanceStub).toBeCalledWith('testAccount')
-        })
-        it('gets balance with public web3', async () => {
-            const accountBalance = new BN('2209000000000000000000')
-            const balanceStub = jest.fn(() => ({
-                call: () => Promise.resolve(accountBalance),
-            }))
-            const getContractStub = jest.fn(() => ({
-                methods: {
-                    balanceOf: balanceStub,
-                },
-            }))
-            jest.spyOn(utils, 'getContract').mockImplementation(getContractStub as any)
-            const result = await all.getDataTokenBalance('testAccount', true, 8995)
-            expect(result.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
-            expect(getContractStub).toHaveBeenCalledTimes(1)
-            expect(getContractStub).toBeCalledWith(
-                getDataTokenAbiAndAddress(8995),
-                true,
-                8995,
-            )
-            expect(balanceStub).toHaveBeenCalledTimes(1)
-            expect(balanceStub).toBeCalledWith('testAccount')
-        })
-    })
     describe('getMyNativeTokenBalance', () => {
         it('gets native token balance', async () => {
             const accountBalance = new BN(123450000000000000)
@@ -129,45 +83,6 @@ describe('web3 utils', () => {
             }))
             const balance = await all.getMyNativeTokenBalance()
             expect(balance.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
-        })
-    })
-    describe('getMyDataTokenBalance', () => {
-        it('must call the correct method', async () => {
-            mockDefaultAccount('testAccount')
-            mockChainId(8995)
-            const balanceStub = jest.fn(() => ({
-                call: () => Promise.resolve('100000'),
-            }))
-            const getContractStub = jest.fn(() => ({
-                methods: {
-                    balanceOf: balanceStub,
-                },
-            }))
-            jest.spyOn(utils, 'getContract').mockImplementation(getContractStub as any)
-            await all.getMyDataTokenBalance()
-            expect(getContractStub).toHaveBeenCalledTimes(1)
-            expect(
-                (getContractStub.mock.calls[0] as any)[0].abi.find(
-                    (f) => f.name === 'balanceOf',
-                ),
-            ).toBeDefined()
-            expect(balanceStub).toHaveBeenCalledTimes(1)
-            expect(balanceStub).toBeCalledWith('testAccount')
-        })
-        it('must transform the result from wei to tokens', async () => {
-            mockDefaultAccount('testAccount')
-            mockChainId(8995)
-            const accountBalance = new BN('2209000000000000000000')
-            const balanceStub = jest.fn(() => ({
-                call: () => Promise.resolve(accountBalance),
-            }))
-            jest.spyOn(utils, 'getContract').mockImplementation((): any => ({
-                methods: {
-                    balanceOf: balanceStub,
-                },
-            }))
-            const result = await all.getMyDataTokenBalance()
-            expect(result.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
         })
     })
 })
