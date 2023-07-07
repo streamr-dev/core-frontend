@@ -28,6 +28,7 @@ const hardcodedData: SponsorshipElement[] = [
         fundedUntil: moment().add(1, 'month').format('DD-mm-YYYY'),
         id: '45c5027a-ce52-49e2-9787-7f5599ce85cf',
         active: true,
+        stakes: [],
     },
     {
         streamId: 'HSL/helsinki/trams',
@@ -39,6 +40,7 @@ const hardcodedData: SponsorshipElement[] = [
         fundedUntil: moment().add(50, 'days').format('DD-mm-YYYY'),
         id: 'add2771e-111d-451a-ae50-6fb93f5da616',
         active: false,
+        stakes: [],
     },
 ]
 

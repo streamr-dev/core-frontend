@@ -93,7 +93,14 @@ const Item = styled.button<{ $selected?: boolean; $flexBasis?: number }>`
         @media (${TABLET}) {
             padding: 0 20px;
             flex: none;
+            &.small-padding {
+                padding: 0 12px;
+            }
         }
+    }
+
+    &.small-padding {
+        padding: 0 12px;
     }
 `
 
@@ -197,6 +204,7 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
     onSelectionChange?: (selection: string) => void
     spreadEvenly?: boolean
     fullWidthOnMobile?: boolean
+    smallPadding?: boolean
 }
 
 export default function Tabs({
@@ -205,6 +213,7 @@ export default function Tabs({
     selection: selectionProp,
     spreadEvenly = false,
     fullWidthOnMobile = false,
+    smallPadding = false,
     ...props
 }: Props) {
     /**
@@ -410,7 +419,10 @@ export default function Tabs({
                                 }
                                 as={tag}
                                 key={id}
-                                className={fullWidthOnMobile ? 'full-width' : ''}
+                                className={
+                                    (fullWidthOnMobile ? 'full-width ' : ' ') +
+                                    (smallPadding ? 'small-padding ' : ' ')
+                                }
                                 ref={setElementAt(id, index)}
                                 disabled={disabled}
                                 onClick={(e: unknown, ...otherArgs: unknown[]) => {

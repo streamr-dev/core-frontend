@@ -18,6 +18,7 @@ import Tabs, { Tab } from '~/shared/components/Tabs'
 import Button from '~/shared/components/Button'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
+import Footer from '~/shared/components/Layout/Footer'
 import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
 import routes from '~/routes'
 import { NetworkActionBar } from '../components/ActionBars/NetworkActionBar'
@@ -198,6 +199,7 @@ export const SponsorshipsPage = () => {
                     />
                 </SponsorshipsTableWrap>
             </PageContainer>
+            <Footer />
         </Layout>
     )
 }

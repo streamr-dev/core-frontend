@@ -1,9 +1,11 @@
 import React, { FunctionComponent, useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { MD, TABLET } from '~/shared/utils/styled'
-import { TimeSeriesGraphProps, TimeSeriesGraph } from '~/shared/components/TimeSeriesGraph'
+import {
+    TimeSeriesGraphProps,
+    TimeSeriesGraph,
+} from '~/shared/components/TimeSeriesGraph'
 import Tabs, { Tab } from '~/shared/components/Tabs'
-import { useWindowSize } from '~/shared/hooks/useWindowSize'
 import UnstyledSpinner from '~/shared/components/Spinner'
 
 export enum ChartPeriod {
@@ -87,6 +89,7 @@ export const NetworkChart: FunctionComponent<Props> = ({
                     fullWidthOnMobile={true}
                     selection={selectedPeriod}
                     onSelectionChange={handlePeriodTabChange}
+                    smallPadding={true}
                 >
                     {Object.keys(ChartPeriod).map((periodKey, index) => {
                         return (

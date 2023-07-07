@@ -98,7 +98,7 @@ export const SponsorshipActionBar: FunctionComponent<{
                                     target="_blank"
                                     rel="noreferrer"
                                 >
-                                    <SvgIcon name="linkOut2" />
+                                    <SvgIcon name="externalLink" />
                                 </a>
                             </NetworkActionBarInfoButton>
                         </NetworkActionBarInfoButtons>

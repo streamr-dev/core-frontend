@@ -8,4 +8,11 @@ export type SponsorshipElement = {
     apy: number
     fundedUntil: string
     active: boolean
+    stakes: SponsorshipStake[]
+}
+
+export type SponsorshipStake = {
+    operatorId: string
+    date: string
+    amount: string
 }

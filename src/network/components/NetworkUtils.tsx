@@ -128,12 +128,16 @@ export const growingValuesGenerator = (
             value:
                 index === maxDays - 1
                     ? maxValue
-                    : maxValue *
-                      ((((index + 1) / maxDays) * randomIntFromInterval(7, 10)) / 10),
+                    : Math.round(
+                          maxValue *
+                              ((((index + 1) / maxDays) * randomIntFromInterval(7, 10)) /
+                                  10),
+                      ),
         }
     })
 }
 
+// this is kept for now just in case we would need ot generate some sponsorhip data during development
 export const generateSponsorshipElements = (amount: number): SponsorshipElement[] => {
     return new Array(amount).fill(null).map((_, index) => {
         return {
@@ -148,6 +152,7 @@ export const generateSponsorshipElements = (amount: number): SponsorshipElement[
             operators: Math.round(100 * Math.random()),
             totalStake: Math.round(10000000 * Math.random()).toString(),
             active: Boolean(Math.round(Math.random())),
+            stakes: [],
         }
     })
 }

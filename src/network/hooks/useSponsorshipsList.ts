@@ -118,5 +118,12 @@ export const mapSponsorshipToElement = (sponsorship: Sponsorship): SponsorshipEl
         operators: Number(sponsorship.operatorCount),
         totalStake: new BigNumber(sponsorship.totalStakedWei).dividedBy(1e18).toString(),
         active: sponsorship.isRunning,
+        stakes: sponsorship.stakes.map((stake) => {
+            return {
+                operatorId: stake.operator.id,
+                amount: (Number(stake.amount) / 1e18).toString(),
+                date: (Number(stake.date) * 1000).toString(),
+            }
+        }),
     }
 }

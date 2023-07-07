@@ -8,6 +8,7 @@ import {
     WhiteBoxPaddingStyles,
     WhiteBoxSeparator,
 } from '~/shared/components/WhiteBox'
+import Footer from '~/shared/components/Layout/Footer'
 import { MD, TABLET } from '~/shared/utils/styled'
 import { NetworkSectionTitle } from '~/network/components/NetworkSectionTitle'
 import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
@@ -70,6 +71,7 @@ export const NetworkOverviewPage = () => {
                 <MyDelegationsTable />
                 <MySponsorshipsTable />
             </PageContainer>
+            <Footer />
         </Layout>
     )
 }
