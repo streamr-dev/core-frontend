@@ -11,7 +11,7 @@ import {
     Sponsorship,
     useGetAllSponsorshipsLazyQuery,
     useGetSponsorshipsByCreatorLazyQuery,
-} from '~/gql'
+} from '~/generated/gql'
 
 /**
  * TODO - HANDLE PAGINATION

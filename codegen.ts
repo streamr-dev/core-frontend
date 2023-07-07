@@ -10,7 +10,7 @@ const config: CodegenConfig = {
     schema,
     documents: './src/**/*.{ts,tsx,js,jsx}',
     generates: {
-        'src/gql.ts': {
+        'src/generated/gql.ts': {
             plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo'],
             config: {
                 withHooks: true,
