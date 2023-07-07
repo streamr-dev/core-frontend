@@ -7,7 +7,7 @@ import { WhiteBox, WhiteBoxPaddingStyles } from '~/shared/components/WhiteBox'
 import ConnectModal from '~/modals/ConnectModal'
 import { Layer } from '~/utils/Layer'
 import Button from '~/shared/components/Button'
-import { COLORS, MEDIUM } from '~/shared/utils/styled'
+import { COLORS, MD, MEDIUM } from '~/shared/utils/styled'
 import { SponsorshipElement } from '~/network/types/sponsorship'
 
 export const SummaryContainer = styled(WhiteBox)`
@@ -24,6 +24,14 @@ export const SummaryContainer = styled(WhiteBox)`
 
     .blur {
         filter: blur(5px);
+    }
+
+    .stat-box-wrap {
+        @media (max-width: ${MD}px) {
+            ${WhiteBoxPaddingStyles};
+            padding-top: 0;
+            padding-bottom: 0;
+        }
     }
 `
 export const NetworkChartWrap = styled.div`
@@ -120,15 +128,20 @@ export const growingValuesGenerator = (
             value:
                 index === maxDays - 1
                     ? maxValue
-                    : maxValue *
-                      ((((index + 1) / maxDays) * randomIntFromInterval(7, 10)) / 10),
+                    : Math.round(
+                          maxValue *
+                              ((((index + 1) / maxDays) * randomIntFromInterval(7, 10)) /
+                                  10),
+                      ),
         }
     })
 }
 
+// this is kept for now just in case we would need ot generate some sponsorhip data during development
 export const generateSponsorshipElements = (amount: number): SponsorshipElement[] => {
     return new Array(amount).fill(null).map((_, index) => {
         return {
+            id: Math.round(Math.random() * 10000).toString(),
             streamId: randomHex(8) + '/' + Math.random(),
             streamDescription: 'Something something lorem ipsum',
             apy: Number((50 * Math.random()).toFixed(2)),
@@ -138,6 +151,8 @@ export const generateSponsorshipElements = (amount: number): SponsorshipElement[
                 .format('DD-mm-YYYY'),
             operators: Math.round(100 * Math.random()),
             totalStake: Math.round(10000000 * Math.random()).toString(),
+            active: Boolean(Math.round(Math.random())),
+            stakes: [],
         }
     })
 }

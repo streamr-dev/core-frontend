@@ -38,4 +38,6 @@ export enum COLORS {
     warning = '#FFF6F1',
     dialogBorder = '#F3F3F3',
     black = '#000',
+    active = '#0EAC1B',
+    activeBackground = '#0eac1b1a',
 }

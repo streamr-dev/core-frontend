@@ -64,6 +64,12 @@ gql`
             ...SponsorshipFields
         }
     }
+
+    query getSponsorshipById($sponsorshipId: ID!) {
+        sponsorship(id: $sponsorshipId) {
+            ...SponsorshipFields
+        }
+    }
 `
 
 export type SponsorshipParams = {

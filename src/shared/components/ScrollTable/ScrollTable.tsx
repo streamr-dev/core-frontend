@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import {
     FloatingLoadingIndicator,
     NoDataWrap,
@@ -22,6 +23,7 @@ type ScrollTableProps<Element> = {
     actions?: ScrollTableAction<Element>[]
     noDataFirstLine?: ReactNode
     noDataSecondLine?: ReactNode
+    linkMapper?: (element: Element) => string
 }
 
 export type ScrollTableColumnDef<T> = {
@@ -46,6 +48,7 @@ export const ScrollTable = <T extends object>({
     isLoading,
     noDataFirstLine,
     noDataSecondLine,
+    linkMapper,
 }: ScrollTableProps<T> & { title: string }) => {
     return (
         <ScrollTableContainer>
@@ -58,6 +61,7 @@ export const ScrollTable = <T extends object>({
                 isLoading={isLoading}
                 noDataFirstLine={noDataFirstLine}
                 noDataSecondLine={noDataSecondLine}
+                linkMapper={linkMapper}
             />
         </ScrollTableContainer>
     )
@@ -70,6 +74,7 @@ export const ScrollTableCore = <T extends object>({
     isLoading,
     noDataFirstLine,
     noDataSecondLine,
+    linkMapper,
 }: ScrollTableProps<T>) => {
     const stickyColumns = columns.filter((column) => column.isSticky)
     const nonStickyColumns = columns.filter((column) => !column.isSticky)
@@ -88,6 +93,8 @@ export const ScrollTableCore = <T extends object>({
                                         <ScrollTableCell
                                             key={id}
                                             className={'align-' + stickyColumn.align}
+                                            as={linkMapper ? Link : 'div'}
+                                            to={linkMapper ? linkMapper(element) : ''}
                                         >
                                             {stickyColumn.valueMapper(element)}
                                         </ScrollTableCell>
@@ -112,6 +119,8 @@ export const ScrollTableCore = <T extends object>({
                                     {elements.map((element, id) => {
                                         return (
                                             <ScrollTableCell
+                                                as={linkMapper ? Link : 'div'}
+                                                to={linkMapper ? linkMapper(element) : ''}
                                                 key={id}
                                                 className={
                                                     'align-' + nonStickyColumn.align

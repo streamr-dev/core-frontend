@@ -1,8 +1,8 @@
 import React, { FunctionComponent, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { Tooltip } from 'react-tooltip'
-import { COLORS, LAPTOP, MEDIUM, REGULAR, TABLET } from '~/shared/utils/styled'
+import { COLORS, LAPTOP, MD, MEDIUM, REGULAR, TABLET } from '~/shared/utils/styled'
 import SvgIcon from '~/shared/components/SvgIcon'
+import { WhiteTooltip } from '~/shared/components/Tooltip/Tooltip'
 
 const StatsGrid = styled.div`
     display: grid;
@@ -28,18 +28,26 @@ const StatsCell = styled.div`
     &.column-count-3 {
         &:nth-last-child(-n + 3) {
             // last row
-            border-bottom: none;
+            @media (${TABLET}) {
+                border-bottom: none;
+            }
         }
         &:nth-child(3n) {
             // last column
-            @media (${LAPTOP}) {
+            @media (${TABLET}) {
                 padding-right: 16px;
             }
         }
         &:nth-child(3n-2) {
             // first column
-            @media (${LAPTOP}) {
+            @media (${TABLET}) {
                 padding-left: 16px;
+            }
+        }
+
+        @media (max-width: ${MD - 1}px) {
+            :last-child {
+                border-bottom: none;
             }
         }
     }
@@ -47,28 +55,31 @@ const StatsCell = styled.div`
     &.column-count-4 {
         &:nth-last-child(-n + 4) {
             // last row
-            border-bottom: none;
+            @media (${TABLET}) {
+                border-bottom: none;
+            }
         }
         &:nth-child(4n) {
             // last column
-            @media (${LAPTOP}) {
+            @media (${TABLET}) {
                 padding-right: 16px;
             }
         }
         &:nth-child(4n-3) {
             // first column
-            @media (${LAPTOP}) {
+            @media (${TABLET}) {
                 padding-left: 16px;
             }
         }
     }
 
     .cell-inner {
-        padding: 12px 24px;
+        padding: 0;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         @media (${TABLET}) {
+            padding: 12px 24px;
             border-right: 1px solid ${COLORS.separator};
             flex-direction: column;
             justify-content: center;
@@ -100,8 +111,10 @@ const StatsValue = styled.p`
     color: ${COLORS.primary};
     margin: 0;
     line-height: 24px;
+    text-align: right;
     @media (${TABLET}) {
         font-size: 20px;
+        text-align: left;
     }
 `
 
@@ -112,16 +125,6 @@ const TooltipIcon = styled(SvgIcon)`
     padding: 6px;
     cursor: pointer;
 `
-
-const StatTooltip = styled(Tooltip)`
-    max-width: 300px;
-    background-color: #fff;
-    color: ${COLORS.primaryLight};
-    font-size: 14px;
-    border-radius: 8px;
-    box-shadow: 0px 6px 12px 0px #52525226;
-`
-
 export const StatsBox: FunctionComponent<{
     stats: {
         label: string
@@ -171,9 +174,9 @@ export const StatsBox: FunctionComponent<{
                             </StatsLabel>
                             <StatsValue title={stat.hoverValue}>{stat.value}</StatsValue>
                             {stat.tooltipText && (
-                                <StatTooltip id={id} openOnClick={true}>
+                                <WhiteTooltip id={id} openOnClick={true}>
                                     {stat.tooltipText}
-                                </StatTooltip>
+                                </WhiteTooltip>
                             )}
                         </div>
                     </StatsCell>

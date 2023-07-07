@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import moment from 'moment'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import BigNumber from 'bignumber.js'
 import { UseInfiniteQueryResult } from '@tanstack/react-query/src/types'
@@ -10,7 +11,7 @@ import {
     Sponsorship,
     useGetAllSponsorshipsLazyQuery,
     useGetSponsorshipsByCreatorLazyQuery,
-} from '~/gql'
+} from '~/generated/gql'
 
 /**
  * TODO - HANDLE PAGINATION
@@ -102,10 +103,13 @@ export const useMySponsorshipsQuery = (
     return query
 }
 
-const mapSponsorshipToElement = (sponsorship: Sponsorship): SponsorshipElement => {
+export const mapSponsorshipToElement = (sponsorship: Sponsorship): SponsorshipElement => {
     return {
+        id: sponsorship.id,
         streamId: sponsorship.stream?.id as string,
-        fundedUntil: sponsorship.projectedInsolvency,
+        fundedUntil: moment(Number(sponsorship.projectedInsolvency) * 1000).format(
+            'D MMM YYYY',
+        ),
         apy: 0, // TODO add mapping when it will get included in the subgraph
         DATAPerDay: new BigNumber(sponsorship.totalPayoutWeiPerSec)
             .dividedBy(1e18)
@@ -113,5 +117,13 @@ const mapSponsorshipToElement = (sponsorship: Sponsorship): SponsorshipElement =
             .toString(),
         operators: Number(sponsorship.operatorCount),
         totalStake: new BigNumber(sponsorship.totalStakedWei).dividedBy(1e18).toString(),
+        active: sponsorship.isRunning,
+        stakes: sponsorship.stakes.map((stake) => {
+            return {
+                operatorId: stake.operator.id,
+                amount: (Number(stake.amount) / 1e18).toString(),
+                date: (Number(stake.date) * 1000).toString(),
+            }
+        }),
     }
 }

@@ -103,7 +103,9 @@ export const MyDelegationsSummary: FunctionComponent = () => {
                             (isMounted() && !walletConnected ? 'blur' : '')
                         }
                     >
-                        <StatsBox stats={mappedStats} columns={3} />
+                        <div className="stat-box-wrap">
+                            <StatsBox stats={mappedStats} columns={3} />
+                        </div>
                         <WhiteBoxSeparator />
                         <NetworkChartWrap>
                             <NetworkChart

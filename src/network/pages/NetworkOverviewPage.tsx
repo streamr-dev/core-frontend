@@ -8,7 +8,8 @@ import {
     WhiteBoxPaddingStyles,
     WhiteBoxSeparator,
 } from '~/shared/components/WhiteBox'
-import { TABLET } from '~/shared/utils/styled'
+import Footer from '~/shared/components/Layout/Footer'
+import { MD, TABLET } from '~/shared/utils/styled'
 import { NetworkSectionTitle } from '~/network/components/NetworkSectionTitle'
 import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
 import { MyOperatorSummary } from '../components/MyOperatorSummary'
@@ -26,6 +27,14 @@ export const NetworkStats = styled(WhiteBox)`
 
     .title {
         ${WhiteBoxPaddingStyles}
+    }
+
+    .stat-box-wrap {
+        @media (max-width: ${MD}px) {
+            ${WhiteBoxPaddingStyles};
+            padding-top: 0;
+            padding-bottom: 0;
+        }
     }
 `
 
@@ -53,13 +62,16 @@ export const NetworkOverviewPage = () => {
                         <NetworkSectionTitle>Network stats</NetworkSectionTitle>
                     </div>
                     <WhiteBoxSeparator />
-                    <StatsBox stats={stubNetworkStats} columns={3} />
+                    <div className="stat-box-wrap">
+                        <StatsBox stats={stubNetworkStats} columns={3} />
+                    </div>
                 </NetworkStats>
                 <MyOperatorSummary />
                 <MyDelegationsSummary />
                 <MyDelegationsTable />
                 <MySponsorshipsTable />
             </PageContainer>
+            <Footer />
         </Layout>
     )
 }
