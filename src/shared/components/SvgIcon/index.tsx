@@ -197,6 +197,42 @@ const sources = {
             />
         </svg>
     ),
+    linkOut2: (
+        <svg
+            width="15"
+            height="14"
+            viewBox="0 0 15 14"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <g id="external link">
+                <path
+                    id="Shape"
+                    d="M13.3749 4.42857V1H9.94629"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+                <path
+                    id="Shape_2"
+                    d="M13.3749 1L5.66064 8.71429"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+                <path
+                    id="Shape_3"
+                    d="M6.875 3.57141H2.16071C1.72678 3.57141 1.375 3.92319 1.375 4.35713V12.2143C1.375 12.6482 1.72678 13 2.16071 13H10.0179C10.4518 13 10.8036 12.6482 10.8036 12.2143V7.49998"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+            </g>
+        </svg>
+    ),
     play: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
             <path

@@ -2,7 +2,6 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { COLORS, LAPTOP, MAX_BODY_WIDTH, MEDIUM, TABLET } from '~/shared/utils/styled'
 import SvgIcon from '~/shared/components/SvgIcon'
-import { Tooltip } from 'react-tooltip'
 
 export const SingleElementPageActionBar = styled.div`
     background-color: white;
@@ -31,7 +30,7 @@ export const SingleElementPageActionBarTopPart = styled.div`
     display: flex;
     flex-direction: column;
 
-    @media (${TABLET}) {
+    @media (${LAPTOP}) {
         align-items: center;
         flex-direction: row;
         justify-content: space-between;
@@ -82,16 +81,41 @@ export const NetworkActionBarInfoButton = styled.div`
         background-color: ${COLORS.activeBackground};
     }
 
+    a {
+        color: ${COLORS.primaryDisabled};
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
     .icon {
         height: 20px;
         color: ${COLORS.primaryDisabled};
+        outline: none;
+        cursor: pointer;
     }
 `
 
-export const CopyAddressTooltip = styled(Tooltip)`
-    max-width: 300px;
-    background-color: ${COLORS.primary};
-    color: ${COLORS.primaryContrast};
-    font-size: 14px;
-    border-radius: 8px;
+export const NetworkActionBarCTAs = styled.div`
+    display: none;
+
+    @media (${TABLET}) {
+        margin-top: 48px;
+        display: flex;
+        gap: 10px;
+    }
+
+    @media (${LAPTOP}) {
+        margin-top: 55px;
+    }
+`
+
+export const NetworkActionBarStatsTitle = styled.p`
+    font-weight: ${MEDIUM};
+    letter-spacing: 0.6px;
+    line-height: 30px;
+    font-size: 12px;
+    color: ${COLORS.primaryLight};
+    text-transform: uppercase;
+    margin-top: 44px;
 `

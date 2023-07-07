@@ -7,7 +7,7 @@ import { WhiteBox, WhiteBoxPaddingStyles } from '~/shared/components/WhiteBox'
 import ConnectModal from '~/modals/ConnectModal'
 import { Layer } from '~/utils/Layer'
 import Button from '~/shared/components/Button'
-import { COLORS, MEDIUM } from '~/shared/utils/styled'
+import { COLORS, MD, MEDIUM } from '~/shared/utils/styled'
 import { SponsorshipElement } from '~/network/types/sponsorship'
 
 export const SummaryContainer = styled(WhiteBox)`
@@ -24,6 +24,14 @@ export const SummaryContainer = styled(WhiteBox)`
 
     .blur {
         filter: blur(5px);
+    }
+
+    .stat-box-wrap {
+        @media (max-width: ${MD}px) {
+            ${WhiteBoxPaddingStyles};
+            padding-top: 0;
+            padding-bottom: 0;
+        }
     }
 `
 export const NetworkChartWrap = styled.div`

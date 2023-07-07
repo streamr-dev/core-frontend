@@ -1,24 +1,35 @@
 import React, { FunctionComponent, useMemo } from 'react'
 import BigNumber from 'bignumber.js'
+import { toaster } from 'toasterhea'
 import { SponsorshipElement } from '~/network/types/sponsorship'
 import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
+import JoinSponsorshipModal from '~/modals/JoinSponsorshipModal'
+import FundSponsorshipModal from '~/modals/FundSponsorshipModal'
+import { BlackTooltip } from '~/shared/components/Tooltip/Tooltip'
+import Button from '~/shared/components/Button'
 import useCopy from '~/shared/hooks/useCopy'
 import SvgIcon from '~/shared/components/SvgIcon'
+import { Layer } from '~/utils/Layer'
 import routes from '~/routes'
 import {
-    CopyAddressTooltip,
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
     NetworkActionBarBackLink,
+    NetworkActionBarCTAs,
     NetworkActionBarInfoButton,
     NetworkActionBarInfoButtons,
+    NetworkActionBarStatsTitle,
     NetworkActionBarTitle,
     SingleElementPageActionBar,
     SingleElementPageActionBarContainer,
     SingleElementPageActionBarTopPart,
 } from './NetworkActionBar.styles'
+import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
+
+const joinSponsorshipModal = toaster(JoinSponsorshipModal, Layer.Modal)
+const fundSponsorshipModal = toaster(FundSponsorshipModal, Layer.Modal)
 
 export const SponsorshipActionBar: FunctionComponent<{
     sponsorship: SponsorshipElement
@@ -68,22 +79,61 @@ export const SponsorshipActionBar: FunctionComponent<{
                                         data-tooltip-id="copy-sponsorship-address"
                                         onClick={() =>
                                             copy(sponsorship.id, {
-                                                toastMessage: 'Contract address copied!',
+                                                toastMessage: 'Copied!',
                                             })
                                         }
                                     />
-                                    <CopyAddressTooltip
+                                    <BlackTooltip
                                         id="copy-sponsorship-address"
                                         openOnClick={false}
                                     >
                                         Copy address
-                                    </CopyAddressTooltip>
+                                    </BlackTooltip>
                                 </span>
+                                <a
+                                    href={
+                                        'https://polygonscan.com/address/' +
+                                        sponsorship.id
+                                    }
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <SvgIcon name="linkOut2" />
+                                </a>
                             </NetworkActionBarInfoButton>
                         </NetworkActionBarInfoButtons>
                     </div>
-                    <p>sss</p>
+                    <NetworkActionBarCTAs>
+                        <Button
+                            onClick={async () => {
+                                try {
+                                    await fundSponsorshipModal.pop()
+                                } catch (e) {
+                                    // Ignore for now.
+                                }
+                            }}
+                        >
+                            Sponsor
+                        </Button>
+                        <Button
+                            onClick={async () => {
+                                try {
+                                    await joinSponsorshipModal.pop({
+                                        streamId: sponsorship.streamId,
+                                    })
+                                } catch (e) {
+                                    // Ignore for now.
+                                }
+                            }}
+                        >
+                            Join as operator
+                        </Button>
+                    </NetworkActionBarCTAs>
                 </SingleElementPageActionBarTopPart>
+                <NetworkActionBarStatsTitle>
+                    Sponsorship summary
+                </NetworkActionBarStatsTitle>
+                <WhiteBoxSeparator />
                 <StatsBox
                     stats={[
                         {
