@@ -1,14 +1,11 @@
 {
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
-        "typeRoots": ["node_modules/@types", "./typings"],
         "paths": {
             "$testUtils/*": ["test/test-utils/*"],
             "$config": ["src/config/*.toml"],
-            "~/*": ["src/*"],
+            "~/*": ["src/*"]
         }
     },
-    "exclude": ["**/*.test.ts", "**/*.test.tsx",
-        "./test/test-utils/setupTests.ts"
-    ]
+    "exclude": ["**/*.test.ts", "**/*.test.tsx", "./test/test-utils/setupTests.ts"]
 }

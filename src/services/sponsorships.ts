@@ -109,14 +109,12 @@ export async function createSponsorship({
                 initialMinHorizonSeconds,
                 initialMinOperatorCount,
                 streamId,
-                metadata,
+                JSON.stringify(metadata),
                 policies,
                 initParams,
             )
             .send({
                 from,
-                maxPriorityFeePerGas: null,
-                maxFeePerGas: null,
             })
             .on('error', (error: unknown) => {
                 reject(error)
