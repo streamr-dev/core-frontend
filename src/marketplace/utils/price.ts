@@ -35,7 +35,9 @@ export function pricePerSecondFromTimeUnit(
     timeUnit: TimeUnit,
     decimals: BNish,
 ): BN {
-    return toBN(toDecimals(pricePerTimeUnit, decimals)).dividedBy(toSeconds(1, timeUnit))
+    return toDecimals(pricePerTimeUnit, decimals)
+        .dividedBy(toSeconds(1, timeUnit))
+        .integerValue(BN.ROUND_DOWN)
 }
 
 /**
