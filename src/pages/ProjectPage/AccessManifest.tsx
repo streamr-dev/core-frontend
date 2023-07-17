@@ -96,7 +96,7 @@ export default function AccessManifest({ projectId, projectType, salePoints }: P
                         on{' '}
                         <strong>
                             {formatChainName(getConfigForChain(chainId).name)}
-                        </strong>
+                        </strong>{' '}
                         {count > 0 && (
                             <>
                                 and on {count} other chain{count > 1 && 's'}
