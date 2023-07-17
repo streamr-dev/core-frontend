@@ -42,10 +42,12 @@ export function pricePerSecondFromTimeUnit(
 
 /**
  * Make sure the amount is a non-negative number.
- * @param amount Number to sanitize.
+ * @param amount Numberish value to sanitize.
  */
 export function sanitize(amount: BNish) {
-    return toBN(amount).isNaN() ? toBN(0) : BN.max(0, amount)
+    const amountBN = toBN(amount)
+
+    return amountBN.isNaN() ? toBN(0) : BN.max(0, amountBN)
 }
 
 /**
@@ -95,26 +97,26 @@ export function formatDecimals(
 
     if (bn.abs().lt(10)) {
         return currency === contractCurrencies.DATA
-            ? new BN(value).decimalPlaces(3).toString()
-            : new BN(value).toFixed(2)
+            ? bn.decimalPlaces(3).toString()
+            : bn.toFixed(2)
     }
 
     if (bn.abs().lt(100)) {
         return currency === contractCurrencies.DATA
-            ? new BN(value).decimalPlaces(2).toString()
-            : new BN(value).toFixed(2)
+            ? bn.decimalPlaces(2).toString()
+            : bn.toFixed(2)
     }
 
     if (bn.abs().lt(1000)) {
         return currency === contractCurrencies.DATA
-            ? new BN(value).decimalPlaces(1).toString()
-            : new BN(value).toFixed(1)
+            ? bn.decimalPlaces(1).toString()
+            : bn.toFixed(1)
     }
 
     return bn.decimalPlaces(0).toString()
 }
 export const arePricesEqual = (first: NumberString, second: NumberString): boolean =>
-    new BN(first).isEqualTo(new BN(second))
+    toBN(first).isEqualTo(new BN(second))
 
 /**
  * Gets most relevant time unit for given price per second.
