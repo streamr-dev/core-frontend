@@ -171,7 +171,7 @@ interface Props {
     account?: string
 }
 
-export default function ProjectChainSelectorModal({
+export default function ChainSelectorModal({
     projectId,
     chainIds = [],
     selectedChainId: selectedChainIdProp,
