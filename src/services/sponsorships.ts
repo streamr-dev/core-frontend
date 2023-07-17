@@ -8,7 +8,7 @@ import {
 import { Contract } from 'ethers'
 import { getConfigForChainByName, getConfigForChain } from '~/shared/web3/config'
 import networkPreflight from '~/utils/networkPreflight'
-import { getWalletWeb3Provider } from '~/shared/stores/wallet'
+import { getSigner } from '~/shared/stores/wallet'
 import { Address } from '~/shared/types/web3-types'
 import { BNish, toBN } from '~/utils/bn'
 
@@ -101,7 +101,7 @@ export async function createSponsorship({
 
     await networkPreflight(chainId)
 
-    const signer = await getWalletWeb3Provider()
+    const signer = await getSigner()
 
     const factory = new Contract(
         chainConfig.contracts['SponsorshipFactory'],
@@ -129,7 +129,7 @@ export async function fundSponsorship(sponsorshipId: string, amount: BNish) {
 
     await networkPreflight(chainId)
 
-    const signer = await getWalletWeb3Provider()
+    const signer = await getSigner()
 
     const dataTokenContract = new Contract(
         chainConfig.contracts['DATA'],

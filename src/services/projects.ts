@@ -3,7 +3,7 @@ import { post } from '~/shared/utils/api'
 import { Address } from '~/shared/types/web3-types'
 import { getConfigForChainByName } from '~/shared/web3/config'
 import address0 from '~/utils/address0'
-import { getWalletWeb3Provider } from '~/shared/stores/wallet'
+import { getSigner } from '~/shared/stores/wallet'
 import { getGraphUrl, getProjectRegistryContract } from '~/getters'
 import networkPreflight from '~/utils/networkPreflight'
 import { deployDataUnion } from '~/marketplace/modules/dataUnion/services'
@@ -350,7 +350,7 @@ export async function createProject(project: SmartContractProjectCreate) {
 
     await networkPreflight(chainId)
 
-    const signer = await getWalletWeb3Provider()
+    const signer = await getSigner()
 
     const tx = await getProjectRegistryContract({
         chainId,
@@ -376,7 +376,7 @@ export async function updateProject(project: SmartContractProject) {
 
     await networkPreflight(chainId)
 
-    const signer = await getWalletWeb3Provider()
+    const signer = await getSigner()
 
     const tx = await getProjectRegistryContract({ chainId, signer }).updateProject(
         id,
@@ -399,7 +399,7 @@ export async function deleteProject(projectId: string | undefined) {
 
     await networkPreflight(chainId)
 
-    const signer = await getWalletWeb3Provider()
+    const signer = await getSigner()
 
     const tx = await getProjectRegistryContract({
         chainId,

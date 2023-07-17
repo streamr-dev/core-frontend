@@ -29,7 +29,7 @@ import { RejectionReason } from '~/modals/BaseModal'
 import FailedPurchaseModal from '~/modals/FailedPurchaseModal'
 import { ensureGasMonies, waitForPurchasePropagation } from '~/utils'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
-import { getWalletWeb3Provider } from './wallet'
+import { getSigner, getWalletWeb3Provider } from './wallet'
 
 interface Store {
     inProgress: Record<string, true | undefined>
@@ -306,7 +306,7 @@ const usePurchaseStore = create<Store>((set, get) => {
 
                                             await networkPreflight(selectedChainId)
 
-                                            const signer = await getWalletWeb3Provider()
+                                            const signer = await getSigner()
 
                                             /**
                                              * Send the `approve` method on the selected
@@ -451,7 +451,7 @@ const usePurchaseStore = create<Store>((set, get) => {
 
                                         await networkPreflight(selectedChainId)
 
-                                        const signer = await getWalletWeb3Provider()
+                                        const signer = await getSigner()
 
                                         let accessingProjectModal:
                                             | Toaster<typeof AccessingProjectModal>

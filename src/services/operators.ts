@@ -7,7 +7,7 @@ import {
 } from '@streamr/network-contracts'
 import { getConfigForChainByName, getConfigForChain } from '~/shared/web3/config'
 import networkPreflight from '~/utils/networkPreflight'
-import { getWalletWeb3Provider } from '~/shared/stores/wallet'
+import { getSigner } from '~/shared/stores/wallet'
 import { Address } from '~/shared/types/web3-types'
 import { Contract } from 'ethers'
 import { getERC20TokenContract } from '~/getters'
@@ -76,7 +76,7 @@ export async function createOperator({
 
     await networkPreflight(chainId)
 
-    const signer = await getWalletWeb3Provider()
+    const signer = await getSigner()
 
     const factory = new Contract(
         chainConfig.contracts['OperatorFactory'],
@@ -96,7 +96,7 @@ export async function delegateToOperator(operatorId: string, amount: BNish) {
 
     await networkPreflight(chainId)
 
-    const signer = await getWalletWeb3Provider()
+    const signer = await getSigner()
 
     const tokenContract = getERC20TokenContract({
         tokenAddress: chainConfig.contracts['DATA'],

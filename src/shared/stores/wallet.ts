@@ -60,6 +60,10 @@ export async function getWalletWeb3Provider() {
     return new providers.Web3Provider(provider as any)
 }
 
+export async function getSigner() {
+    return (await getWalletWeb3Provider()).getSigner()
+}
+
 const promiseMap = new Map<MetaMaskProvider, Promise<string | undefined>>()
 
 /**
