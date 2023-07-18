@@ -479,19 +479,19 @@ const usePurchaseStore = create<Store>((set, get) => {
                                              */
                                             confirmPurchaseModal?.discard()
 
-                                            /**
-                                             * We pop up the Accessing Project modal at this point. It does not
-                                             * have to be extra-detached cause we're already in an event handler
-                                             * which is sort of detached. In short, nothing is being blocked
-                                             * by the `await ….pop()`.
-                                             */
-                                            try {
-                                                await accessingProjectModal?.pop()
-                                            } catch (e) {
-                                                if (!isAbandonment(e)) {
-                                                    console.warn(e)
+                                            setTimeout(async () => {
+                                                /**
+                                                 * We pop up the Accessing Project modal and let it live for as long
+                                                 * as it takes. We close it later (see `finally`). It does not block.
+                                                 */
+                                                try {
+                                                    await accessingProjectModal?.pop()
+                                                } catch (e) {
+                                                    if (!isAbandonment(e)) {
+                                                        console.warn(e)
+                                                    }
                                                 }
-                                            }
+                                            })
 
                                             await tx.wait()
 
