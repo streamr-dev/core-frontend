@@ -12,7 +12,7 @@ import { getCustomTokenBalance, getTokenInformation } from '~/marketplace/utils/
 import { getUsdRate } from '~/shared/utils/coingecko'
 import { Layer } from '~/utils/Layer'
 import { ProjectDetail } from '~/shared/consts'
-import getPublicWeb3 from '~/utils/web3/getPublicWeb3'
+import networkPreflight from '~/utils/networkPreflight'
 import ProjectModal, { Actions } from './ProjectModal'
 import ConnectModal from './ConnectModal'
 import { RejectionReason } from './BaseModal'
@@ -119,6 +119,8 @@ export async function getPurchasePreconditions({
     chainId: number
     paymentDetails: PaymentDetails
 }) {
+    await networkPreflight(chainId)
+
     const paymentDetail = paymentDetails.find(
         ({ domainId }) => Number(domainId) === chainId,
     )
