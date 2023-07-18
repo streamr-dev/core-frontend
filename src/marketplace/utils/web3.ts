@@ -1,5 +1,4 @@
-import { getWalletWeb3Provider } from '~/shared/stores/wallet'
-import getPublicWeb3 from '~/utils/web3/getPublicWeb3'
+import { getPublicWeb3Provider, getWalletWeb3Provider } from '~/shared/stores/wallet'
 import { Address } from '~/shared/types/web3-types'
 import { getConfigForChain } from '~/shared/web3/config'
 import getChainId from '~/utils/web3/getChainId'
@@ -76,7 +75,7 @@ export const getTokenInformation = async (
 
     const contract = getERC20TokenContract({
         tokenAddress: address,
-        signer: getPublicWeb3(actualChainId),
+        signer: getPublicWeb3Provider(actualChainId),
     })
 
     try {
@@ -99,6 +98,8 @@ export const getTokenInformation = async (
         tokenInformationCache[cacheKey] = infoObj
         return infoObj
     } catch (e) {
-        return null
+        console.warn('Failed to load token info', e)
     }
+
+    return null
 }

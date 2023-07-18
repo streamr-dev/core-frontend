@@ -16,7 +16,7 @@ import {
 import { getMarketplaceAddress } from '~/marketplace/utils/web3'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
-import getPublicWeb3 from '~/utils/web3/getPublicWeb3'
+import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { ProjectType } from '~/shared/types'
 import tokenAbi from '~/shared/web3/abis/token.json'
 import address0 from '~/utils/address0'
@@ -84,7 +84,7 @@ export async function getAllowance(
         try {
             return await getERC20TokenContract({
                 tokenAddress,
-                signer: getPublicWeb3(chainId),
+                signer: getPublicWeb3Provider(chainId),
             }).allowance(account, getMarketplaceAddress(chainId))
         } catch (e) {
             console.warn('Allowance check failed', e)
@@ -126,7 +126,7 @@ export async function getProjectPermissions(
 
     const response = await getProjectRegistryContract({
         chainId,
-        signer: getPublicWeb3(chainId),
+        signer: getPublicWeb3Provider(chainId),
     }).getPermission(projectId, account)
 
     const [canBuy = false, canDelete = false, canEdit = false, canGrant = false] = z
@@ -189,7 +189,7 @@ export async function getFirstEnsNameFor(address: string) {
     const contract = new Contract(
         getCoreConfig().reverseRecordsAddress,
         reverseRecordsAbi,
-        getPublicWeb3(1),
+        getPublicWeb3Provider(1),
     ) as ReverseRecordsContract
 
     const [domain] = await contract.getNames([address])

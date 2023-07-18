@@ -6,7 +6,7 @@ import getNativeTokenName from '~/shared/utils/nativeToken'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { getProjectRegistryContract } from '~/getters'
 import { Layer } from '~/utils/Layer'
-import getPublicWeb3 from '~/utils/web3/getPublicWeb3'
+import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { ObjectWithMessage } from '~/shared/consts'
 import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
 
@@ -73,7 +73,7 @@ export async function waitForPurchasePropagation(
     account: string,
     { attempts = 30 }: { attempts?: number } = {},
 ) {
-    const signer = getPublicWeb3(chainId)
+    const signer = getPublicWeb3Provider(chainId)
 
     const contract = getProjectRegistryContract({ chainId, signer })
 
