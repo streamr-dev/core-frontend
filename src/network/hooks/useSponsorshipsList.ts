@@ -10,7 +10,7 @@ import {
     Sponsorship,
     useGetAllSponsorshipsLazyQuery,
     useGetSponsorshipsByCreatorLazyQuery,
-} from '~/generated/gql'
+} from '~/generated/gql/network'
 import { toBN } from '~/utils/bn'
 
 /**

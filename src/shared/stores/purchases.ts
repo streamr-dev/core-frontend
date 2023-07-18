@@ -29,7 +29,7 @@ import { RejectionReason } from '~/modals/BaseModal'
 import FailedPurchaseModal from '~/modals/FailedPurchaseModal'
 import { ensureGasMonies, waitForPurchasePropagation } from '~/utils'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
-import { getSigner, getWalletWeb3Provider } from './wallet'
+import { getSigner } from './wallet'
 
 interface Store {
     inProgress: Record<string, true | undefined>

@@ -1,4 +1,3 @@
-import { gql } from '@apollo/client'
 import {
     operatorFactoryABI,
     operatorABI,
@@ -19,45 +18,6 @@ const getOperatorChainId = () => {
     const chainConfig = getConfigForChainByName(sponsorshipChainName)
     return chainConfig.id
 }
-
-gql`
-    fragment OperatorFields on Operator {
-        id
-        stakes {
-            operator {
-                id
-            }
-            amount
-            allocatedWei
-            date
-            sponsorship {
-                id
-            }
-        }
-        delegators {
-            operator {
-                id
-            }
-            poolTokenWei
-        }
-        delegatorCount
-        poolValue
-        totalValueInSponsorshipsWei
-        freeFundsWei
-        poolValueTimestamp
-        poolValueBlockNumber
-        poolTokenTotalSupplyWei
-        exchangeRate
-        metadataJsonString
-        owner
-    }
-
-    query getAllOperators($first: Int, $skip: Int) {
-        operators(first: $first, skip: $skip) {
-            ...OperatorFields
-        }
-    }
-`
 
 export type OperatorParams = {
     stringArgs: [string, string]

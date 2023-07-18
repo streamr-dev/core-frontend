@@ -1,4 +1,3 @@
-import { gql } from '@apollo/client'
 import {
     SponsorshipFactory,
     TestToken,
@@ -18,63 +17,6 @@ const getSponsorshipChainId = () => {
     const chainConfig = getConfigForChainByName(sponsorshipChainName)
     return chainConfig.id
 }
-
-gql`
-    fragment SponsorshipFields on Sponsorship {
-        id
-        stream {
-            id
-            metadata
-        }
-        metadata
-        isRunning
-        totalPayoutWeiPerSec
-        stakes {
-            operator {
-                id
-            }
-            amount
-            allocatedWei
-            date
-        }
-        operatorCount
-        totalStakedWei
-        unallocatedWei
-        projectedInsolvency
-        creator
-    }
-
-    query getAllSponsorships($first: Int, $skip: Int, $streamContains: String) {
-        sponsorships(
-            first: $first
-            skip: $skip
-            where: { stream_contains: $streamContains }
-        ) {
-            ...SponsorshipFields
-        }
-    }
-
-    query getSponsorshipsByCreator(
-        $first: Int
-        $skip: Int
-        $streamContains: String
-        $creator: String!
-    ) {
-        sponsorships(
-            first: $first
-            skip: $skip
-            where: { creator: $creator, stream_contains: $streamContains }
-        ) {
-            ...SponsorshipFields
-        }
-    }
-
-    query getSponsorshipById($sponsorshipId: ID!) {
-        sponsorship(id: $sponsorshipId) {
-            ...SponsorshipFields
-        }
-    }
-`
 
 export type SponsorshipParams = {
     initialMinimumStakeWei: number
