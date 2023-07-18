@@ -226,7 +226,6 @@ export default function ChainSelectorModal({
                         if (!account) {
                             throw new Error('No account')
                         }
-
                         const preconditions = await getPurchasePreconditions({
                             chainId: selectedChainId,
                             paymentDetails,
