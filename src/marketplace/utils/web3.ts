@@ -1,4 +1,4 @@
-import { Signer } from 'ethers'
+import { getWalletWeb3Provider } from '~/shared/stores/wallet'
 import getPublicWeb3 from '~/utils/web3/getPublicWeb3'
 import { Address } from '~/shared/types/web3-types'
 import { getConfigForChain } from '~/shared/web3/config'
@@ -38,11 +38,10 @@ export const getMarketplaceAddress = (chainId: number): Address => {
 export const getCustomTokenBalance = async (
     contractAddress: Address,
     userAddress: Address,
-    signer: Signer,
 ) => {
     const contract = getERC20TokenContract({
         tokenAddress: contractAddress,
-        signer,
+        signer: await getWalletWeb3Provider(),
     })
 
     const balance = await contract.balanceOf(userAddress)
