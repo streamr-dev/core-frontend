@@ -166,7 +166,6 @@ interface Props {
     chainIds?: number[]
     selectedChainId?: number
     paymentDetails?: PaymentDetails
-    account?: string
 }
 
 export default function ChainSelectorModal({
@@ -176,7 +175,6 @@ export default function ChainSelectorModal({
     paymentDetails = [],
     onReject,
     onResolve,
-    account,
 }: Props) {
     const [selectedChainId, selectChainId] = useState<number | undefined>(
         selectedChainIdProp,
@@ -221,9 +219,6 @@ export default function ChainSelectorModal({
                             throw new Error('No project id')
                         }
 
-                        if (!account) {
-                            throw new Error('No account')
-                        }
                         const preconditions = await getPurchasePreconditions({
                             chainId: selectedChainId,
                             paymentDetails,
