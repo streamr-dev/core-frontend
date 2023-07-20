@@ -11,8 +11,6 @@
             "~/*": ["src/*"]
         }
     },
-    "files": [
-      "./test/test-utils/setupTests.ts"
-    ],
+    "files": ["./test/test-utils/setupTests.ts"],
     "include": ["**/*.test.ts", "**/*.test.tsx", "**/*.d.ts"]
 }
