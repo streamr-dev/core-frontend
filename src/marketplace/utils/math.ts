@@ -1,4 +1,4 @@
-import { toBN, BNish } from '~/utils/bn'
+import { toBN, BNish, BN } from '~/utils/bn'
 
 export function toNano(value: BNish) {
     return toDecimals(value, 9)
@@ -17,7 +17,9 @@ export function fromAtto(value: BNish) {
 }
 
 export function toDecimals(value: BNish, decimals: BNish) {
-    return toBN(value).multipliedBy(toBN(10).pow(toBN(decimals)))
+    return toBN(value)
+        .multipliedBy(toBN(10).pow(toBN(decimals)))
+        .dp(0, BN.ROUND_HALF_UP)
 }
 
 export function fromDecimals(value: BNish, decimals: BNish) {

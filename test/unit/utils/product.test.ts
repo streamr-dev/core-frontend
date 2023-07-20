@@ -91,8 +91,8 @@ describe('product utils', () => {
             expect(all.mapPriceFromContract('asdfasdf', toBN(18))).toBe('NaN')
             expect(all.mapPriceFromContract('0', toBN(18))).toBe('0')
             expect(all.mapPriceFromContract('1000000000000000000', toBN(18))).toBe('1')
-            expect(all.mapPriceFromContract('1', toBN(18))).toBe('1e-18')
-            expect(all.mapPriceFromContract('-1', toBN(18))).toBe('-1e-18')
+            expect(all.mapPriceFromContract('1', toBN(18))).toBe('0.000000000000000001')
+            expect(all.mapPriceFromContract('-1', toBN(18))).toBe('-0.000000000000000001')
         })
     })
     describe('mapPriceToContract', () => {
