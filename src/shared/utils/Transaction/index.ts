@@ -1,7 +1,7 @@
-import { TransactionReceipt } from 'web3-core'
 import EventEmitter from 'events'
 import { Hash } from '~/shared/types/web3-types'
 import TransactionError from '~/shared/errors/TransactionError'
+import { providers } from 'ethers'
 export default class Transaction {
     constructor(private emitter: EventEmitter) {}
 
@@ -9,7 +9,7 @@ export default class Transaction {
         this.emitter.on('transactionHash', cb)
         return this
     }
-    onTransactionComplete(cb: (arg0: TransactionReceipt) => void): Transaction {
+    onTransactionComplete(cb: (arg0: providers.TransactionReceipt) => void): Transaction {
         this.emitter.on('receipt', cb)
         return this
     }

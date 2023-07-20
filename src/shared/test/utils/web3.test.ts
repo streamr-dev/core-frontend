@@ -1,14 +1,15 @@
 import * as all from '~/shared/utils/web3'
-import getPublicWeb3 from '~/utils/web3/getPublicWeb3'
+import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import getChainId from '~/utils/web3/getChainId'
-jest.mock('~/utils/web3/getPublicWeb3', () => ({
+
+jest.mock('~/shared/stores/wallet', () => ({
     __esModule: true,
-    default: jest.fn(() => Promise.reject(new Error('Not implemented'))),
+    getPublicWeb3Provider: jest.fn(() => Promise.reject(new Error('Not implemented'))),
 }))
 
 function mockPublicWeb3(publicWeb3) {
-    const getPublicWeb3Mock = getPublicWeb3 as jest.Mock
-    return getPublicWeb3Mock.mockImplementation(() => publicWeb3)
+    const getPublicWeb3ProviderMock = getPublicWeb3Provider as jest.Mock
+    return getPublicWeb3ProviderMock.mockImplementation(() => publicWeb3)
 }
 
 jest.mock('~/utils/web3/getChainId', () => ({
@@ -65,9 +66,7 @@ describe('web3 utils', () => {
             }
             const transactionStub = jest.fn(() => Promise.resolve(trx))
             const publicWeb3Stub = {
-                eth: {
-                    getTransaction: transactionStub,
-                },
+                getTransaction: transactionStub,
             }
             mockPublicWeb3(publicWeb3Stub)
             const result = await all.hasTransactionCompleted('0x123', 1)
@@ -79,9 +78,7 @@ describe('web3 utils', () => {
             }
             const transactionStub = jest.fn(() => Promise.resolve(trx))
             const publicWeb3Stub = {
-                eth: {
-                    getTransaction: transactionStub,
-                },
+                getTransaction: transactionStub,
             }
             mockPublicWeb3(publicWeb3Stub)
             const result = await all.hasTransactionCompleted('0x123', 1)
@@ -91,9 +88,7 @@ describe('web3 utils', () => {
             const trx = null
             const transactionStub = jest.fn(() => Promise.resolve(trx))
             const publicWeb3Stub = {
-                eth: {
-                    getTransaction: transactionStub,
-                },
+                getTransaction: transactionStub,
             }
             mockPublicWeb3(publicWeb3Stub)
             const result = await all.hasTransactionCompleted('0x123', 1)

@@ -46,7 +46,7 @@ export const formatDateTime = (
  * @param timeUnit Time unit to abbreviate.
  */
 export function getAbbreviation(timeUnit: TimeUnit) {
-    return abbrMapping[timeUnit]
+    return abbrMapping[timeUnit] || ''
 }
 
 /**

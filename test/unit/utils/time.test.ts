@@ -5,16 +5,16 @@ import { toBN } from '~/utils/bn'
 describe('time utils', () => {
     describe('toSeconds', () => {
         it('converts to seconds', () => {
-            expect(all.toSeconds('1', 'second')).toStrictEqual(toBN(1))
-            expect(all.toSeconds('1', 'minute')).toStrictEqual(toBN(60))
-            expect(all.toSeconds('1', 'hour')).toStrictEqual(toBN(3600))
-            expect(all.toSeconds('1', 'day')).toStrictEqual(toBN(86400))
-            expect(all.toSeconds('1', 'week')).toStrictEqual(toBN(604800))
-            expect(all.toSeconds('1', 'month')).toStrictEqual(toBN(2592000))
+            expect(all.toSeconds(1, 'second')).toStrictEqual(1)
+            expect(all.toSeconds(1, 'minute')).toStrictEqual(60)
+            expect(all.toSeconds(1, 'hour')).toStrictEqual(3600)
+            expect(all.toSeconds(1, 'day')).toStrictEqual(86400)
+            expect(all.toSeconds(1, 'week')).toStrictEqual(604800)
+            expect(all.toSeconds(1, 'month')).toStrictEqual(2592000)
         })
         it('rejects invalid time units', () => {
-            expect(() => all.toSeconds('1', 'asdf')).toThrow()
-            expect(() => all.toSeconds('1', 'seconds')).toThrow()
+            expect(() => all.toSeconds(1, 'asdf')).toThrow()
+            expect(() => all.toSeconds(1, 'seconds')).toThrow()
         })
     })
     describe('formatDateTime', () => {
