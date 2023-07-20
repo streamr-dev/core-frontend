@@ -1,14 +1,14 @@
 import { Contract, Signer, providers } from 'ethers'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
-import { getConfigForChain } from '~/shared/web3/config'
-import reverseRecordsAbi from '~/shared/web3/abis/reverseRecords.json'
 import {
     marketplaceV4ABI as marketplaceAbi,
     projectRegistryV1ABI as projectRegistryAbi,
     ProjectRegistryV1 as ProjectRegistryContract,
     MarketplaceV4 as MarketplaceContract,
 } from '@streamr/hub-contracts'
+import { getConfigForChain } from '~/shared/web3/config'
+import reverseRecordsAbi from '~/shared/web3/abis/reverseRecords.json'
 import {
     Token as TokenContract,
     ReverseRecords as ReverseRecordsContract,

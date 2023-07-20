@@ -1,3 +1,4 @@
+import { Contract } from 'ethers'
 import {
     operatorFactoryABI,
     operatorABI,
@@ -8,7 +9,6 @@ import { getConfigForChainByName, getConfigForChain } from '~/shared/web3/config
 import networkPreflight from '~/utils/networkPreflight'
 import { getSigner } from '~/shared/stores/wallet'
 import { Address } from '~/shared/types/web3-types'
-import { Contract } from 'ethers'
 import { getERC20TokenContract } from '~/getters'
 import { BNish, toBN } from '~/utils/bn'
 
