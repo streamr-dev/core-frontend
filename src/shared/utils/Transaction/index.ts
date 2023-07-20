@@ -1,7 +1,7 @@
+import { providers } from 'ethers'
 import EventEmitter from 'events'
 import { Hash } from '~/shared/types/web3-types'
 import TransactionError from '~/shared/errors/TransactionError'
-import { providers } from 'ethers'
 export default class Transaction {
     constructor(private emitter: EventEmitter) {}
 

@@ -1,5 +1,5 @@
-import setTempEnv from '../../test/test-utils/setTempEnv'
 import getConfig from '~/getters/getConfig'
+import setTempEnv from '../../test/test-utils/setTempEnv'
 import f from './formatConfigUrl'
 jest.mock('~//getters/getConfig', () => ({
     __esModule: true,
