@@ -122,7 +122,7 @@ export const MySponsorshipsTable: FunctionComponent = () => {
                                 {
                                     displayName: 'Edit',
                                     callback: (element) =>
-                                        console.log('editing! ' + element.streamId),
+                                        console.warn('editing! ' + element.streamId),
                                 },
                             ]}
                         />

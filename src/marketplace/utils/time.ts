@@ -1,15 +1,23 @@
-import BN from 'bignumber.js'
-import { Moment } from 'moment'
-import moment from 'moment'
-import { NumberString } from '~/shared/types/common-types'
+import moment, { Moment, unitOfTime } from 'moment'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
-const momentDurationFormatsByTimeUnit: { [key: string]: string } = {
-    second: 's',
-    minute: 'm',
-    hour: 'H',
-    day: 'd',
-    week: 'w',
-    month: 'M',
+
+const momentDurationFormatsByTimeUnit: Record<TimeUnit, unitOfTime.DurationConstructor> =
+    {
+        [timeUnits.second]: 's',
+        [timeUnits.minute]: 'm',
+        [timeUnits.hour]: 'h',
+        [timeUnits.day]: 'd',
+        [timeUnits.week]: 'w',
+        [timeUnits.month]: 'M',
+    }
+
+const abbrMapping: Record<TimeUnit, string> = {
+    [timeUnits.second]: 's',
+    [timeUnits.minute]: 'min',
+    [timeUnits.hour]: 'hr',
+    [timeUnits.day]: 'd',
+    [timeUnits.week]: 'wk',
+    [timeUnits.month]: 'm',
 }
 
 /**
@@ -17,15 +25,16 @@ const momentDurationFormatsByTimeUnit: { [key: string]: string } = {
  * @param quantity Number of units to convert.
  * @param timeUnit Unit, e.g. day, hour, minute, etc.
  */
-export const toSeconds = (quantity: NumberString | BN, timeUnit: TimeUnit): BN => {
+export function toSeconds(quantity: number, timeUnit: TimeUnit) {
     const format = momentDurationFormatsByTimeUnit[timeUnit]
 
     if (!format) {
         throw new Error(`Invalid time unit: ${timeUnit}`)
     }
 
-    return new BN(moment.duration(new BN(quantity).toNumber(), format as any).asSeconds())
+    return Math.floor(moment.duration(quantity, format).asSeconds())
 }
+
 export const formatDateTime = (
     timestamp: number | null | undefined,
     timezone: string | null | undefined,
@@ -36,29 +45,8 @@ export const formatDateTime = (
  * Returns short form for given time unit.
  * @param timeUnit Time unit to abbreviate.
  */
-export const getAbbreviation = (timeUnit: TimeUnit): string => {
-    switch (timeUnit) {
-        case timeUnits.second:
-            return 's'
-
-        case timeUnits.minute:
-            return 'min'
-
-        case timeUnits.hour:
-            return 'hr'
-
-        case timeUnits.day:
-            return 'd'
-
-        case timeUnits.week:
-            return 'wk'
-
-        case timeUnits.month:
-            return 'm'
-
-        default:
-            return ''
-    }
+export function getAbbreviation(timeUnit: TimeUnit) {
+    return abbrMapping[timeUnit] || ''
 }
 
 /**

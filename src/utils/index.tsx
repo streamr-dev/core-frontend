@@ -1,15 +1,14 @@
 import React from 'react'
 import { toaster } from 'toasterhea'
-import BigNumber from 'bignumber.js'
 import { z } from 'zod'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import getNativeTokenName from '~/shared/utils/nativeToken'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
-import { fromAtto } from '~/marketplace/utils/math'
 import { getProjectRegistryContract } from '~/getters'
 import { Layer } from '~/utils/Layer'
-import getPublicWeb3 from '~/utils/web3/getPublicWeb3'
+import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { ObjectWithMessage } from '~/shared/consts'
+import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
 
 /**
  * Gas money checker.
@@ -26,15 +25,9 @@ export async function ensureGasMonies(
 ) {
     while (true) {
         try {
-            const balance = fromAtto(
-                new BigNumber(await getPublicWeb3(chainId).eth.getBalance(account)),
-            )
+            await requirePositiveBalance(account)
 
-            if (balance.isGreaterThan(0)) {
-                break
-            }
-
-            throw new InsufficientFundsError(account)
+            break
         } catch (e) {
             if (recover && e instanceof InsufficientFundsError) {
                 const tokenName = getNativeTokenName(chainId)
@@ -80,21 +73,19 @@ export async function waitForPurchasePropagation(
     account: string,
     { attempts = 30 }: { attempts?: number } = {},
 ) {
-    const web3 = getPublicWeb3(chainId)
+    const signer = getPublicWeb3Provider(chainId)
 
-    const contract = getProjectRegistryContract({ chainId, web3 })
+    const contract = getProjectRegistryContract({ chainId, signer })
 
-    const params = {
-        fromBlock: (await web3.eth.getBlockNumber()) - 10, // take a couple of blocks back to be sure
-        toBlock: 'latest',
-        filter: {
-            projectId,
-            subscriber: account,
-        },
-    }
+    // Take a couple of blocks back to be sure.
+    const fromBlock = (await signer.getBlockNumber()) - 10
 
     for (let i = 0; i < attempts; i++) {
-        const events = await contract.getPastEvents('Subscribed', params)
+        const events = await contract.queryFilter(
+            contract.filters.Subscribed(projectId, account),
+            fromBlock,
+            'latest',
+        )
 
         if (events.length) {
             return

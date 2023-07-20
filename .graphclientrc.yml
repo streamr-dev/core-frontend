@@ -1,8 +1,0 @@
-sources:
-  - name: streamr
-    handler:
-      graphql:
-        endpoint: ${NETWORK_SUBGRAPHS_ENDPOINT:http://localhost:8000}/subgraphs/name/streamr-dev/network-subgraphs
-
-documents:
-  - './app/src/**/*.{ts,tsx,js,jsx}' # scan all source files for GraphQL definitions

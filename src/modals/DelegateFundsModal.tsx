@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import React, { useEffect, useState } from 'react'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
@@ -12,6 +11,7 @@ import FormModal, {
     TextInput,
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui//Label'
+import { toBN } from '~/utils/bn'
 
 interface Props extends Omit<FormModalProps, 'canSubmit'> {
     onResolve?: (amount: string) => void
@@ -41,11 +41,11 @@ export default function DelegateFundsModal({
 
     const value = rawAmount || '0'
 
-    const finalValue = new BigNumber(value).multipliedBy(1e18)
+    const finalValue = toBN(value).multipliedBy(1e18)
 
-    const balance = new BigNumber(balanceProp)
+    const balance = toBN(balanceProp)
 
-    const delegatedTotal = new BigNumber(delegatedTotalProp)
+    const delegatedTotal = toBN(delegatedTotalProp)
 
     const insufficientFunds = finalValue.isGreaterThan(balance)
 

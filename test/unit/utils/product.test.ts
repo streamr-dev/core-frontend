@@ -1,7 +1,7 @@
-import BN from 'bignumber.js'
 import * as all from '~/marketplace/utils/product'
 import { Project, SalePoint } from '~/marketplace/types/project-types'
 import { ProjectType } from '~/shared/types'
+import { toBN } from '~/utils/bn'
 
 describe('product utils', () => {
     describe('isPaidProduct', () => {
@@ -57,13 +57,13 @@ describe('product utils', () => {
             expect(() => all.validateApiProductPricePerSecond('1')).not.toThrow()
             expect(() => all.validateApiProductPricePerSecond('0,00045')).not.toThrow()
             expect(() =>
-                all.validateApiProductPricePerSecond(new BN(0.000001231355)),
+                all.validateApiProductPricePerSecond(toBN(0.000001231355)),
             ).not.toThrow()
         })
         it('detects an invalid PPS', () => {
             expect(() => all.validateApiProductPricePerSecond('-1')).toThrow()
             expect(() =>
-                all.validateApiProductPricePerSecond(new BN(-0.000001231355)),
+                all.validateApiProductPricePerSecond(toBN(-0.000001231355)),
             ).toThrow()
         })
     })
@@ -74,105 +74,44 @@ describe('product utils', () => {
                 all.validateContractProductPricePerSecond('0,000125'),
             ).not.toThrow()
             expect(() =>
-                all.validateContractProductPricePerSecond(new BN(0.000001231355)),
+                all.validateContractProductPricePerSecond(toBN(0.000001231355)),
             ).not.toThrow()
         })
         it('detects an invalid PPS', () => {
             expect(() => all.validateContractProductPricePerSecond('0')).toThrow()
             expect(() => all.validateContractProductPricePerSecond('-0.0001')).toThrow()
             expect(() =>
-                all.validateContractProductPricePerSecond(new BN(-0.000001231355)),
+                all.validateContractProductPricePerSecond(toBN(-0.000001231355)),
             ).toThrow()
         })
     })
     describe('mapPriceFromContract', () => {
         it('converts the price', () => {
-            expect(all.mapPriceFromContract('0,0000013314', new BN(18))).toBe('NaN')
-            expect(all.mapPriceFromContract('asdfasdf', new BN(18))).toBe('NaN')
-            expect(all.mapPriceFromContract('0', new BN(18))).toBe('0')
-            expect(all.mapPriceFromContract('1000000000000000000', new BN(18))).toBe('1')
-            expect(all.mapPriceFromContract('1', new BN(18))).toBe('1e-18')
-            expect(all.mapPriceFromContract('-1', new BN(18))).toBe('-1e-18')
+            expect(all.mapPriceFromContract('0,0000013314', toBN(18))).toBe('NaN')
+            expect(all.mapPriceFromContract('asdfasdf', toBN(18))).toBe('NaN')
+            expect(all.mapPriceFromContract('0', toBN(18))).toBe('0')
+            expect(all.mapPriceFromContract('1000000000000000000', toBN(18))).toBe('1')
+            expect(all.mapPriceFromContract('1', toBN(18))).toBe('0.000000000000000001')
+            expect(all.mapPriceFromContract('-1', toBN(18))).toBe('-0.000000000000000001')
         })
     })
     describe('mapPriceToContract', () => {
         it('converts the price', () => {
-            expect(all.mapPriceToContract('0,0000013314', new BN(18))).toBe('NaN')
-            expect(all.mapPriceToContract('asdfasdf', new BN(18))).toBe('NaN')
-            expect(all.mapPriceToContract('0', new BN(18))).toBe('0')
-            expect(all.mapPriceToContract('1', new BN(18))).toBe('1000000000000000000')
-            expect(all.mapPriceToContract('1e-18', new BN(18))).toBe('1')
-            expect(all.mapPriceToContract('-1e-18', new BN(18))).toBe('-1')
-            expect(all.mapPriceToContract('0.0000000000000000001', new BN(18))).toBe('0')
-            expect(all.mapPriceToContract('0.00000000000000000049', new BN(18))).toBe('0')
-            expect(all.mapPriceToContract('0.00000000000000000051', new BN(18))).toBe('1')
+            expect(all.mapPriceToContract('0,0000013314', toBN(18))).toBe('NaN')
+            expect(all.mapPriceToContract('asdfasdf', toBN(18))).toBe('NaN')
+            expect(all.mapPriceToContract('0', toBN(18))).toBe('0')
+            expect(all.mapPriceToContract('1', toBN(18))).toBe('1000000000000000000')
+            expect(all.mapPriceToContract('1e-18', toBN(18))).toBe('1')
+            expect(all.mapPriceToContract('-1e-18', toBN(18))).toBe('-1')
+            expect(all.mapPriceToContract('0.0000000000000000001', toBN(18))).toBe('0')
+            expect(all.mapPriceToContract('0.00000000000000000049', toBN(18))).toBe('0')
+            expect(all.mapPriceToContract('0.00000000000000000051', toBN(18))).toBe('1')
             expect(
-                all.mapPriceToContract('66666666666666.00000000000123456789', new BN(18)),
+                all.mapPriceToContract('66666666666666.00000000000123456789', toBN(18)),
             ).toBe('66666666666666000000000001234568')
             expect(
-                all.mapPriceToContract('66666666666666.00000000000123456749', new BN(18)),
+                all.mapPriceToContract('66666666666666.00000000000123456749', toBN(18)),
             ).toBe('66666666666666000000000001234567')
-        })
-    })
-    describe('mapProductFromContract', () => {
-        it('maps product properties', () => {
-            const inProduct = {
-                id: 1,
-                name: 'test',
-                minimumSubscriptionSeconds: 60,
-                pricePerSecond: '1',
-                owner: '0x123',
-                beneficiary: '0x1337',
-                currency: 0,
-                state: 0,
-                pricingTokenAddress: '0x1337',
-            } as any
-            const outProduct = {
-                id: 1,
-                name: 'test',
-                minimumSubscriptionInSeconds: 60,
-                pricePerSecond: '1',
-                ownerAddress: '0x123',
-                beneficiaryAddress: '0x1337',
-                state: 'NOT_DEPLOYED',
-                pricingTokenAddress: '0x1337',
-                pricingTokenDecimals: 18,
-                chainId: 1337,
-            }
-            expect(
-                all.mapProductFromContract(inProduct.id, inProduct, 1337, new BN(18)),
-            ).toMatchObject(outProduct)
-        })
-    })
-    describe('getValidId', () => {
-        describe('when prefix = true or missing', () => {
-            it('works with a prefixed id', () => {
-                expect(all.getValidId('0x1234')).toBe('0x1234')
-                expect(all.getValidId('0x1234', true)).toBe('0x1234')
-            })
-            it('works with an unprefixed id', () => {
-                expect(all.getValidId('1234')).toBe('0x1234')
-                expect(all.getValidId('1234', true)).toBe('0x1234')
-            })
-            it('throws with an invalid id', () => {
-                expect(() => all.getValidId('test')).toThrowError(/is not a valid hex/)
-                expect(() => all.getValidId('test', true)).toThrowError(
-                    /is not a valid hex/,
-                )
-            })
-        })
-        describe('when prefix = false', () => {
-            it('works with a prefixed id', () => {
-                expect(all.getValidId('0x1234', false)).toBe('1234')
-            })
-            it('works with an unprefixed id', () => {
-                expect(all.getValidId('1234', false)).toBe('1234')
-            })
-            it('throws with an invalid id', () => {
-                expect(() => all.getValidId('test', false)).toThrowError(
-                    /is not a valid hex/,
-                )
-            })
         })
     })
     describe('validate', () => {
@@ -410,10 +349,10 @@ describe('product utils', () => {
             const defaultSalePointChainName = 'polygon'
             const defaultSalePoint: SalePoint = {
                 chainId: 12345,
-                pricePerSecond: new BN('10'),
+                pricePerSecond: toBN('10'),
                 pricingTokenAddress: '0xbAA81A0179015bE47Ad439566374F2Bae098686F',
                 beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
-                price: new BN('3600'),
+                price: toBN('3600'),
                 timeUnit: 'hour',
             }
             ;[
@@ -424,7 +363,7 @@ describe('product utils', () => {
                         salePoints: {
                             [defaultSalePointChainName]: {
                                 ...defaultSalePoint,
-                                pricePerSecond: new BN('-10'),
+                                pricePerSecond: toBN('-10'),
                             },
                         },
                     },

@@ -12,6 +12,7 @@ import { getCustomTokenBalance, getTokenInformation } from '~/marketplace/utils/
 import { getUsdRate } from '~/shared/utils/coingecko'
 import { Layer } from '~/utils/Layer'
 import { ProjectDetail } from '~/shared/consts'
+import networkPreflight from '~/utils/networkPreflight'
 import ProjectModal, { Actions } from './ProjectModal'
 import ConnectModal from './ConnectModal'
 import { RejectionReason } from './BaseModal'
@@ -118,6 +119,8 @@ export async function getPurchasePreconditions({
     chainId: number
     paymentDetails: PaymentDetails
 }) {
+    await networkPreflight(chainId)
+
     const paymentDetail = paymentDetails.find(
         ({ domainId }) => Number(domainId) === chainId,
     )
@@ -140,7 +143,7 @@ export async function getPurchasePreconditions({
         throw new Error('No account')
     }
 
-    const balance = await getCustomTokenBalance(tokenAddress, account, true, chainId)
+    const balance = await getCustomTokenBalance(tokenAddress, account)
 
     const usdRate = await getUsdRate(tokenAddress, chainId)
 
@@ -163,17 +166,15 @@ interface Props {
     chainIds?: number[]
     selectedChainId?: number
     paymentDetails?: PaymentDetails
-    account?: string
 }
 
-export default function ProjectChainSelectorModal({
+export default function ChainSelectorModal({
     projectId,
     chainIds = [],
     selectedChainId: selectedChainIdProp,
     paymentDetails = [],
     onReject,
     onResolve,
-    account,
 }: Props) {
     const [selectedChainId, selectChainId] = useState<number | undefined>(
         selectedChainIdProp,
@@ -216,10 +217,6 @@ export default function ProjectChainSelectorModal({
 
                         if (!projectId) {
                             throw new Error('No project id')
-                        }
-
-                        if (!account) {
-                            throw new Error('No account')
                         }
 
                         const preconditions = await getPurchasePreconditions({

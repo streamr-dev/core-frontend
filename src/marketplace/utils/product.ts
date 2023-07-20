@@ -1,26 +1,13 @@
-import BN from 'bignumber.js'
 import * as yup from 'yup'
-import { isAddress } from 'web3-utils'
-import { NumberString } from '~/shared/types/common-types'
-import { contractCurrencies as currencies, projectStates } from '~/shared/utils/constants'
-import InvalidHexStringError from '~/shared/errors/InvalidHexStringError'
+import { isAddress } from 'web3-validator'
+import { contractCurrencies as currencies } from '~/shared/utils/constants'
 import { TheGraphProject } from '~/services/projects'
 import { ProjectType } from '~/shared/types'
 import { ObjectPaths } from '~/utils/objectPaths'
-import {
-    ContactDetails,
-    Project,
-    ProjectId,
-    SmartContractProduct,
-} from '../types/project-types'
-import { ProjectState } from '../types/project-types'
+import { BNish, toBN } from '~/utils/bn'
+import { ContactDetails, Project } from '../types/project-types'
 import { validateSalePoint } from './validate'
 import { fromDecimals, toDecimals } from './math'
-import {
-    getPrefixedHexString,
-    getUnprefixedHexString,
-    isValidHexString,
-} from './smartContract'
 
 export const isPaidProject = (project: Project): boolean =>
     project.type !== ProjectType.OpenData
@@ -61,53 +48,23 @@ export const validateProductPriceCurrency = (priceCurrency: string): void => {
     }
 }
 
-export const validateApiProductPricePerSecond = (
-    pricePerSecond: NumberString | BN,
-): void => {
-    if (new BN(pricePerSecond).isLessThan(0)) {
+export const validateApiProductPricePerSecond = (pricePerSecond: BNish): void => {
+    if (toBN(pricePerSecond).lt(0)) {
         throw new Error('Product price must be equal to or greater than 0')
     }
 }
 
-export const validateContractProductPricePerSecond = (
-    pricePerSecond: NumberString | BN,
-): void => {
-    if (new BN(pricePerSecond).isLessThanOrEqualTo(0)) {
+export const validateContractProductPricePerSecond = (pricePerSecond: BNish): void => {
+    if (toBN(pricePerSecond).lte(0)) {
         throw new Error('Product price must be greater than 0 to publish')
     }
 }
 
-export const mapPriceFromContract = (
-    pricePerSecond: NumberString,
-    decimals: BN,
-): string => fromDecimals(pricePerSecond, decimals).toString()
-export const mapPriceToContract = (
-    pricePerSecond: NumberString | BN,
-    decimals: BN,
-): string => toDecimals(pricePerSecond, decimals).toFixed(0)
+export const mapPriceFromContract = (pricePerSecond: BNish, decimals: BNish): string =>
+    fromDecimals(pricePerSecond, decimals).toString()
 
-export const mapProductFromContract = (
-    id: ProjectId,
-    result: any,
-    chainId: number,
-    pricingTokenDecimals: BN,
-): SmartContractProduct => {
-    const minimumSubscriptionSeconds = parseInt(result.minimumSubscriptionSeconds, 10)
-    return {
-        id,
-        name: result.name,
-        ownerAddress: result.owner,
-        beneficiaryAddress: result.beneficiary,
-        pricePerSecond: result.pricePerSecond,
-        minimumSubscriptionInSeconds: Number.isNaN(minimumSubscriptionSeconds)
-            ? 0
-            : minimumSubscriptionSeconds,
-        state: (Object.keys(projectStates) as ProjectState[])[result.state],
-        chainId,
-        pricingTokenAddress: result.pricingTokenAddress,
-        pricingTokenDecimals: pricingTokenDecimals.toNumber(),
-    }
-}
+export const mapPriceToContract = (pricePerSecond: BNish, decimals: BNish): string =>
+    toDecimals(pricePerSecond, decimals).toString()
 
 export const mapProductFromApi = (product: Project): Project => {
     // TODO map the project from contract
@@ -115,19 +72,10 @@ export const mapProductFromApi = (product: Project): Project => {
     return { ...product }
 }
 
-export const mapAllProductsFromApi = (products: Array<Project>): Array<Project> =>
-    products.map(mapProductFromApi)
-
-export const getValidId = (id: string, prefix = true): string => {
-    if (!isValidHexString(id) || parseInt(id, 16) === 0) {
-        throw new InvalidHexStringError(id)
-    }
-
-    return prefix ? getPrefixedHexString(id) : getUnprefixedHexString(id)
-}
-
 const urlValidator = yup.string().trim().url()
+
 const emailValidator = yup.string().trim().email()
+
 const descriptionRegExp = new RegExp(/^(\\+\n?)*$/)
 
 export const validate = (

@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import BigNumber from 'bignumber.js'
 import { Link } from 'react-router-dom'
 import { REGULAR, TABLET } from '~/shared/utils/styled'
 import Button from '~/shared/components/Button'
@@ -19,6 +18,7 @@ import { errorToast } from '~/utils/toast'
 import { useDoesUserHaveAccess } from '~/shared/stores/projectEditor'
 import { isAbandonment } from '~/modals/ProjectModal'
 import routes from '~/routes'
+import { toBN } from '~/utils/bn'
 
 const DescriptionContainer = styled.div`
     display: flex;
@@ -86,7 +86,7 @@ export default function AccessManifest({ projectId, projectType, salePoints }: P
                         <strong>
                             {' '}
                             <PaymentRate
-                                amount={new BigNumber(pricePerSecond)}
+                                amount={toBN(pricePerSecond)}
                                 chainId={chainId}
                                 pricingTokenAddress={pricingTokenAddress}
                                 timeUnit={timeUnits.hour}
@@ -96,7 +96,7 @@ export default function AccessManifest({ projectId, projectType, salePoints }: P
                         on{' '}
                         <strong>
                             {formatChainName(getConfigForChain(chainId).name)}
-                        </strong>
+                        </strong>{' '}
                         {count > 0 && (
                             <>
                                 and on {count} other chain{count > 1 && 's'}

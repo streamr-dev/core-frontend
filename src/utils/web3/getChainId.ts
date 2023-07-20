@@ -1,5 +1,5 @@
-import getWeb3 from '~/utils/web3/getWeb3'
+import { getWalletWeb3Provider } from '~/shared/stores/wallet'
+
 export default async function getChainId(): Promise<number> {
-    const network = await getWeb3().eth.net.getId()
-    return Number.isInteger(network) ? network : undefined
+    return (await (await getWalletWeb3Provider()).getNetwork()).chainId
 }

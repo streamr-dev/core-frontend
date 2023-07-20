@@ -1,19 +1,20 @@
-import BN from 'bignumber.js'
 import moment from 'moment-timezone'
 import * as all from '~/marketplace/utils/time'
+import { toBN } from '~/utils/bn'
+
 describe('time utils', () => {
     describe('toSeconds', () => {
         it('converts to seconds', () => {
-            expect(all.toSeconds('1', 'second')).toStrictEqual(new BN(1))
-            expect(all.toSeconds('1', 'minute')).toStrictEqual(new BN(60))
-            expect(all.toSeconds('1', 'hour')).toStrictEqual(new BN(3600))
-            expect(all.toSeconds('1', 'day')).toStrictEqual(new BN(86400))
-            expect(all.toSeconds('1', 'week')).toStrictEqual(new BN(604800))
-            expect(all.toSeconds('1', 'month')).toStrictEqual(new BN(2592000))
+            expect(all.toSeconds(1, 'second')).toStrictEqual(1)
+            expect(all.toSeconds(1, 'minute')).toStrictEqual(60)
+            expect(all.toSeconds(1, 'hour')).toStrictEqual(3600)
+            expect(all.toSeconds(1, 'day')).toStrictEqual(86400)
+            expect(all.toSeconds(1, 'week')).toStrictEqual(604800)
+            expect(all.toSeconds(1, 'month')).toStrictEqual(2592000)
         })
         it('rejects invalid time units', () => {
-            expect(() => all.toSeconds('1', 'asdf')).toThrow()
-            expect(() => all.toSeconds('1', 'seconds')).toThrow()
+            expect(() => all.toSeconds(1, 'asdf')).toThrow()
+            expect(() => all.toSeconds(1, 'seconds')).toThrow()
         })
     })
     describe('formatDateTime', () => {

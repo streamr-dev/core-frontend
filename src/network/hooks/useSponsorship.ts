@@ -3,7 +3,7 @@ import {
     GetSponsorshipByIdQueryResult,
     Sponsorship,
     useGetSponsorshipByIdLazyQuery,
-} from '~/generated/gql'
+} from '~/generated/gql/network'
 import { mapSponsorshipToElement } from './useSponsorshipsList'
 
 export const useSponsorship = (sponsorshipId: string) => {

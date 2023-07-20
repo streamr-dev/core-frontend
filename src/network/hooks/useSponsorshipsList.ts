@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import moment from 'moment'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import BigNumber from 'bignumber.js'
 import { UseInfiniteQueryResult } from '@tanstack/react-query/src/types'
 import { SponsorshipElement } from '~/network/types/sponsorship'
 import { useWalletAccount } from '~/shared/stores/wallet'
@@ -11,7 +10,8 @@ import {
     Sponsorship,
     useGetAllSponsorshipsLazyQuery,
     useGetSponsorshipsByCreatorLazyQuery,
-} from '~/generated/gql'
+} from '~/generated/gql/network'
+import { toBN } from '~/utils/bn'
 
 /**
  * TODO - HANDLE PAGINATION
@@ -21,6 +21,7 @@ export const useAllSponsorshipsQuery = (
     searchQuery?: string,
 ): UseInfiniteQueryResult<SponsorshipElement[]> => {
     const [loadAllSponsorships] = useGetAllSponsorshipsLazyQuery()
+
     const query = useInfiniteQuery({
         queryKey: ['allSponsorships'],
         queryFn: async (ctx) => {
@@ -111,18 +112,18 @@ export const mapSponsorshipToElement = (sponsorship: Sponsorship): SponsorshipEl
             'D MMM YYYY',
         ),
         apy: 0, // TODO add mapping when it will get included in the subgraph
-        DATAPerDay: new BigNumber(sponsorship.totalPayoutWeiPerSec)
+        DATAPerDay: toBN(sponsorship.totalPayoutWeiPerSec)
             .dividedBy(1e18)
             .dividedBy(86400)
             .toString(),
         operators: Number(sponsorship.operatorCount),
-        totalStake: new BigNumber(sponsorship.totalStakedWei).dividedBy(1e18).toString(),
+        totalStake: toBN(sponsorship.totalStakedWei).dividedBy(1e18).toString(),
         active: sponsorship.isRunning,
         stakes: sponsorship.stakes.map((stake) => {
             return {
                 operatorId: stake.operator.id,
-                amount: (Number(stake.amount) / 1e18).toString(),
-                date: (Number(stake.date) * 1000).toString(),
+                amount: toBN(stake.amount).dividedBy(1e18).toString(),
+                date: toBN(stake.date).multipliedBy(1000).toString(),
             }
         }),
     }

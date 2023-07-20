@@ -1,9 +1,9 @@
-import BN from 'bignumber.js'
 import * as all from '~/marketplace/utils/validate'
 import { validateSalePoint } from '~/marketplace/utils/validate'
 import * as constants from '~/marketplace/utils/constants'
 import { ProjectType } from '~/shared/types'
 import { SalePoint } from '~/marketplace/types/project-types'
+import { toBN } from '~/utils/bn'
 
 describe('validate utils', () => {
     describe('isValidSearchQuery', () => {
@@ -30,10 +30,10 @@ describe('validate utils', () => {
     describe('validateSalePoint', () => {
         const defaultSalePoint: SalePoint = {
             chainId: 12345,
-            pricePerSecond: new BN('10'),
+            pricePerSecond: toBN('10'),
             pricingTokenAddress: '0xbAA81A0179015bE47Ad439566374F2Bae098686F',
             beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
-            price: new BN('3600'),
+            price: toBN('3600'),
             timeUnit: 'hour',
         }
         ;[
@@ -43,7 +43,7 @@ describe('validate utils', () => {
                     projectType: ProjectType.PaidData,
                     salePoint: {
                         ...defaultSalePoint,
-                        pricePerSecond: new BN('-10'),
+                        pricePerSecond: toBN('-10'),
                     },
                 },
                 expectedInvalidFields: ['pricePerSecond'],
@@ -87,7 +87,7 @@ describe('validate utils', () => {
                     projectType: ProjectType.PaidData,
                     salePoint: {
                         ...defaultSalePoint,
-                        price: new BN('0'),
+                        price: toBN('0'),
                     },
                 },
                 expectedInvalidFields: ['price'],

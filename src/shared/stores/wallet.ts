@@ -2,10 +2,12 @@ import { z } from 'zod'
 import { produce } from 'immer'
 import detectProvider from '@metamask/detect-provider'
 import { create } from 'zustand'
-import Web3 from 'web3'
+import { providers } from 'ethers'
 import { MetaMaskInpageProvider } from '@metamask/providers'
 import { isEthereumAddress } from '~/marketplace/utils/validate'
-import { lookupEnsName } from '~/shared/utils/lookupEnsName'
+import { getFirstEnsNameFor } from '~/getters'
+import { getConfigForChain } from '~/shared/web3/config'
+import getCoreConfig from '~/getters/getCoreConfig'
 
 interface RequestArguments {
     readonly method: string
@@ -55,7 +57,11 @@ export function getWalletProvider() {
 export async function getWalletWeb3Provider() {
     const provider = await getWalletProvider()
 
-    return new Web3(provider as any)
+    return new providers.Web3Provider(provider as any)
+}
+
+export async function getSigner() {
+    return (await getWalletWeb3Provider()).getSigner()
 }
 
 const promiseMap = new Map<MetaMaskProvider, Promise<string | undefined>>()
@@ -117,6 +123,22 @@ export async function getWalletAccount({
     return promise
 }
 
+export function getPublicWeb3Provider(chainId?: number) {
+    let url: string = getCoreConfig().mainnetInfuraUrl
+
+    if (chainId) {
+        const config = getConfigForChain(chainId)
+
+        const httpEntry = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))
+
+        if (httpEntry) {
+            url = httpEntry.url
+        }
+    }
+
+    return new providers.JsonRpcProvider(url)
+}
+
 interface WalletStore {
     account: string | undefined
     ens: Record<string, string | undefined>
@@ -143,7 +165,7 @@ const useWalletStore = create<WalletStore>((set, get) => {
 
             setTimeout(async () => {
                 try {
-                    const ensName = await lookupEnsName(addr)
+                    const ensName = await getFirstEnsNameFor(addr)
 
                     set((current) =>
                         produce(current, (next) => {

@@ -1,18 +1,22 @@
-import BigNumber from 'bignumber.js'
+import { Contract, Signer, providers } from 'ethers'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
-import { AbiItem } from 'web3-utils'
-import Web3 from 'web3'
-import { getConfigForChain } from '~/shared/web3/config'
-import projectRegistryAbi from '~/shared/web3/abis/projectRegistry.json'
-import { call } from '~/marketplace/utils/smartContract'
 import {
-    getMarketplaceAbiAndAddress,
-    getMarketplaceAddress,
-} from '~/marketplace/utils/web3'
+    marketplaceV4ABI as marketplaceAbi,
+    projectRegistryV1ABI as projectRegistryAbi,
+    ProjectRegistryV1 as ProjectRegistryContract,
+    MarketplaceV4 as MarketplaceContract,
+} from '@streamr/hub-contracts'
+import { getConfigForChain } from '~/shared/web3/config'
+import reverseRecordsAbi from '~/shared/web3/abis/reverseRecords.json'
+import {
+    Token as TokenContract,
+    ReverseRecords as ReverseRecordsContract,
+} from '~/generated/types'
+import { getMarketplaceAddress } from '~/marketplace/utils/web3'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
-import getPublicWeb3 from '~/utils/web3/getPublicWeb3'
+import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { ProjectType } from '~/shared/types'
 import tokenAbi from '~/shared/web3/abis/token.json'
 import address0 from '~/utils/address0'
@@ -26,10 +30,10 @@ export function getGraphUrl() {
 
 export function getProjectRegistryContract({
     chainId,
-    web3,
+    signer,
 }: {
     chainId: number
-    web3: Web3
+    signer?: Signer | providers.Provider
 }) {
     const { contracts } = getConfigForChain(chainId)
 
@@ -39,29 +43,35 @@ export function getProjectRegistryContract({
         throw new Error(`No ProjectRegistry contract address found for chain ${chainId}`)
     }
 
-    return new web3.eth.Contract(projectRegistryAbi as AbiItem[], contractAddress)
+    return new Contract(
+        contractAddress,
+        projectRegistryAbi,
+        signer,
+    ) as ProjectRegistryContract
 }
 
 export function getERC20TokenContract({
     tokenAddress,
-    web3,
+    signer,
 }: {
     tokenAddress: string
-    web3: Web3
+    signer?: Signer | providers.Provider
 }) {
-    return new web3.eth.Contract(tokenAbi as AbiItem[], tokenAddress)
+    return new Contract(tokenAddress, tokenAbi, signer) as TokenContract
 }
 
 export function getMarketplaceContract({
     chainId,
-    web3,
+    signer,
 }: {
     chainId: number
-    web3: Web3
+    signer?: Signer | providers.Provider
 }) {
-    const { abi, address } = getMarketplaceAbiAndAddress(chainId)
-
-    return new web3.eth.Contract(abi, address)
+    return new Contract(
+        getMarketplaceAddress(chainId),
+        marketplaceAbi,
+        signer,
+    ) as MarketplaceContract
 }
 
 export async function getAllowance(
@@ -72,14 +82,10 @@ export async function getAllowance(
 ) {
     while (true) {
         try {
-            return new BigNumber(
-                await call(
-                    getERC20TokenContract({
-                        tokenAddress,
-                        web3: getPublicWeb3(chainId),
-                    }).methods.allowance(account, getMarketplaceAddress(chainId)),
-                ),
-            )
+            return await getERC20TokenContract({
+                tokenAddress,
+                signer: getPublicWeb3Provider(chainId),
+            }).allowance(account, getMarketplaceAddress(chainId))
         } catch (e) {
             console.warn('Allowance check failed', e)
 
@@ -120,10 +126,8 @@ export async function getProjectPermissions(
 
     const response = await getProjectRegistryContract({
         chainId,
-        web3: getPublicWeb3(chainId),
-    })
-        .methods.getPermission(projectId, account)
-        .call()
+        signer: getPublicWeb3Provider(chainId),
+    }).getPermission(projectId, account)
 
     const [canBuy = false, canDelete = false, canEdit = false, canGrant = false] = z
         .array(z.boolean())
@@ -179,4 +183,16 @@ export function getProjectImageUrl({
     }
 
     return `${imageUrl.replace(/^https:\/\/ipfs\.io\/ipfs\//, ipfsGatewayUrl)}`
+}
+
+export async function getFirstEnsNameFor(address: string) {
+    const contract = new Contract(
+        getCoreConfig().reverseRecordsAddress,
+        reverseRecordsAbi,
+        getPublicWeb3Provider(1),
+    ) as ReverseRecordsContract
+
+    const [domain] = await contract.getNames([address])
+
+    return domain
 }

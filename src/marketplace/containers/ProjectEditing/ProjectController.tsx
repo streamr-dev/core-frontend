@@ -6,7 +6,6 @@ import React, {
     useState,
 } from 'react'
 import { useNavigate } from 'react-router-dom'
-import BN from 'bignumber.js'
 import { randomHex } from 'web3-utils'
 import { Toaster, toaster } from 'toasterhea'
 import uniqueId from 'lodash/uniqueId'
@@ -35,6 +34,7 @@ import TransactionListToast, {
 } from '~/shared/toasts/TransactionListToast'
 import address0 from '~/utils/address0'
 import { defaultChainConfig } from '~/getters/getChainConfig'
+import { toBN } from '~/utils/bn'
 import routes from '~/routes'
 import { useEditableProjectActions } from '../ProductController/useEditableProjectActions'
 
@@ -179,7 +179,7 @@ export const useProjectController = (): ProjectController => {
                 {
                     chainId: registryChain.id,
                     beneficiaryAddress: address0,
-                    pricePerSecond: new BN(0),
+                    pricePerSecond: toBN(0),
                     pricingTokenAddress: getDataAddress(registryChain.id),
                 },
             ]
@@ -272,9 +272,7 @@ export const useProjectController = (): ProjectController => {
                     if (adminFee == null || dataUnionChainId == null) {
                         throw new Error('Invalid project properties')
                     }
-                    const percentValueAdminFee = new BN(adminFee)
-                        .dividedBy(100)
-                        .toString()
+                    const percentValueAdminFee = toBN(adminFee).dividedBy(100).toString()
 
                     const duAddress = await deployDataUnionContract(
                         projectContractData.id,

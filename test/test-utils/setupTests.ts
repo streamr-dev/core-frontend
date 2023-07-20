@@ -1,6 +1,8 @@
 import { format } from 'util'
 import dotenv from '../../scripts/dotenv'
 import '@testing-library/jest-dom'
+import '../../setup'
+
 dotenv()
 
 window.requestAnimationFrame = (callback) => {

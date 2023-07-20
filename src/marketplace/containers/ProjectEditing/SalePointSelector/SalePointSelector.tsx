@@ -6,7 +6,6 @@ import React, {
     useState,
 } from 'react'
 import styled from 'styled-components'
-import BN from 'bignumber.js'
 import { Chain } from '@streamr/config'
 import { REGULAR } from '~/shared/utils/styled'
 import getCoreConfig from '~/getters/getCoreConfig'
@@ -14,6 +13,7 @@ import { PricingData, SalePoint } from '~/marketplace/types/project-types'
 import { getConfigForChainByName } from '~/shared/web3/config'
 import { ProjectStateContext } from '~/marketplace/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '~/marketplace/containers/ProductController/useEditableProjectActions'
+import { toBN } from '~/utils/bn'
 import { PricingOption } from './PricingOption'
 
 type Props = {
@@ -85,10 +85,10 @@ export const SalePointSelector: FunctionComponent<Props> = ({
                 const salePointData: PricingData = salePoint
                     ? {
                           tokenAddress: salePoint.pricingTokenAddress,
-                          price: salePoint.price ? new BN(salePoint.price) : undefined,
+                          price: salePoint.price ? toBN(salePoint.price) : undefined,
                           timeUnit: salePoint.timeUnit,
                           pricePerSecond: salePoint.pricePerSecond
-                              ? new BN(salePoint.pricePerSecond)
+                              ? toBN(salePoint.pricePerSecond)
                               : undefined,
                           beneficiaryAddress: salePoint.beneficiaryAddress,
                       }

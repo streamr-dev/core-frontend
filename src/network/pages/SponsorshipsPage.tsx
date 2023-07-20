@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import BigNumber from 'bignumber.js'
 import { toaster } from 'toasterhea'
 import styles from '~/marketplace/containers/Projects/projects.pcss'
 import Layout, { PageContainer } from '~/shared/components/Layout'
@@ -20,6 +19,7 @@ import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import Footer from '~/shared/components/Layout/Footer'
 import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
+import { toBN } from '~/utils/bn'
 import routes from '~/routes'
 import { NetworkActionBar } from '../components/ActionBars/NetworkActionBar'
 import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
@@ -150,7 +150,7 @@ export const SponsorshipsPage = () => {
                             {
                                 displayName: 'DATA/day',
                                 valueMapper: (element) =>
-                                    new BigNumber(element.DATAPerDay).toFormat(18),
+                                    toBN(element.DATAPerDay).toFormat(18),
                                 align: 'start',
                                 isSticky: false,
                                 key: 'dataPerDay',
@@ -185,7 +185,7 @@ export const SponsorshipsPage = () => {
                             {
                                 displayName: 'Edit',
                                 callback: (element) =>
-                                    console.log('editing! ' + element.streamId),
+                                    console.warn('editing! ' + element.streamId),
                             },
                         ]}
                         noDataFirstLine={

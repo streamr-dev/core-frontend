@@ -1,12 +1,16 @@
-import BN from 'bignumber.js'
-import { AbiItem } from 'web3-utils'
-import { gql } from '@apollo/client'
-import { operatorFactoryABI, tokenABI, operatorABI } from '@streamr/network-contracts'
+import { Contract } from 'ethers'
+import {
+    operatorFactoryABI,
+    operatorABI,
+    OperatorFactory,
+    Operator,
+} from '@streamr/network-contracts'
 import { getConfigForChainByName, getConfigForChain } from '~/shared/web3/config'
-import getDefaultWeb3Account from '~/utils/web3/getDefaultWeb3Account'
 import networkPreflight from '~/utils/networkPreflight'
-import { getWalletWeb3Provider } from '~/shared/stores/wallet'
+import { getSigner } from '~/shared/stores/wallet'
 import { Address } from '~/shared/types/web3-types'
+import { getERC20TokenContract } from '~/getters'
+import { BNish, toBN } from '~/utils/bn'
 
 const getOperatorChainId = () => {
     // TODO: add to .toml
@@ -14,45 +18,6 @@ const getOperatorChainId = () => {
     const chainConfig = getConfigForChainByName(sponsorshipChainName)
     return chainConfig.id
 }
-
-gql`
-    fragment OperatorFields on Operator {
-        id
-        stakes {
-            operator {
-                id
-            }
-            amount
-            allocatedWei
-            date
-            sponsorship {
-                id
-            }
-        }
-        delegators {
-            operator {
-                id
-            }
-            poolTokenWei
-        }
-        delegatorCount
-        poolValue
-        totalValueInSponsorshipsWei
-        freeFundsWei
-        poolValueTimestamp
-        poolValueBlockNumber
-        poolTokenTotalSupplyWei
-        exchangeRate
-        metadataJsonString
-        owner
-    }
-
-    query getAllOperators($first: Int, $skip: Int) {
-        operators(first: $first, skip: $skip) {
-            ...OperatorFields
-        }
-    }
-`
 
 export type OperatorParams = {
     stringArgs: [string, string]
@@ -66,78 +31,45 @@ export async function createOperator({
     initParams,
 }: OperatorParams) {
     const chainId = getOperatorChainId()
+
     const chainConfig = getConfigForChain(chainId)
-    const from = await getDefaultWeb3Account()
+
     await networkPreflight(chainId)
-    const web3 = await getWalletWeb3Provider()
 
-    const factory = new web3.eth.Contract(
-        operatorFactoryABI as AbiItem[],
+    const signer = await getSigner()
+
+    const factory = new Contract(
         chainConfig.contracts['OperatorFactory'],
-    )
+        operatorFactoryABI,
+        signer,
+    ) as OperatorFactory
 
-    return new Promise<void>((resolve, reject) => {
-        factory.methods
-            .deployOperator(stringArgs, policies, initParams)
-            .send({
-                from,
-                maxPriorityFeePerGas: null,
-                maxFeePerGas: null,
-            })
-            .on('error', (error: unknown) => {
-                reject(error)
-            })
-            .once('confirmation', () => {
-                resolve()
-            })
-    })
+    const tx = await factory.deployOperator(stringArgs, policies, initParams)
+
+    await tx.wait()
 }
 
-export async function delegateToOperator(operatorId: string, amount: BN) {
+export async function delegateToOperator(operatorId: string, amount: BNish) {
     const chainId = getOperatorChainId()
+
     const chainConfig = getConfigForChain(chainId)
-    const from = await getDefaultWeb3Account()
+
     await networkPreflight(chainId)
-    const web3 = await getWalletWeb3Provider()
 
-    const dataContract = new web3.eth.Contract(
-        tokenABI as AbiItem[],
-        chainConfig.contracts['DATA'],
-    )
+    const signer = await getSigner()
 
-    // 1. Approve transfer
-    await new Promise<void>((resolve, reject) => {
-        dataContract.methods
-            .approve(operatorId, amount)
-            .send({
-                from,
-                maxPriorityFeePerGas: null,
-                maxFeePerGas: null,
-            })
-            .on('error', (error: unknown) => {
-                reject(error)
-            })
-            .once('confirmation', () => {
-                resolve()
-            })
+    const tokenContract = getERC20TokenContract({
+        tokenAddress: chainConfig.contracts['DATA'],
+        signer,
     })
 
-    const operatorContract = new web3.eth.Contract(operatorABI as AbiItem[], operatorId)
+    const tokenTx = await tokenContract.approve(operatorId, toBN(amount).toString())
 
-    // 2. Delegate
-    await new Promise<void>((resolve, reject) => {
-        operatorContract.methods
-            .delegate(amount)
-            .send({
-                from,
-                maxPriorityFeePerGas: null,
-                maxFeePerGas: null,
-            })
-            .on('error', (error: unknown) => {
-                reject(error)
-            })
-            .once('confirmation', () => {
-                resolve()
-            })
-    })
+    await tokenTx.wait()
+
+    const operatorContract = new Contract(operatorId, operatorABI, signer) as Operator
+
+    const operatorTx = await operatorContract.delegate(toBN(amount).toString())
+
+    await operatorTx.wait()
 }

@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useMemo } from 'react'
-import BigNumber from 'bignumber.js'
 import { toaster } from 'toasterhea'
 import { SponsorshipElement } from '~/network/types/sponsorship'
 import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
@@ -11,7 +10,9 @@ import { BlackTooltip } from '~/shared/components/Tooltip/Tooltip'
 import Button from '~/shared/components/Button'
 import useCopy from '~/shared/hooks/useCopy'
 import SvgIcon from '~/shared/components/SvgIcon'
+import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
 import { Layer } from '~/utils/Layer'
+import { toBN } from '~/utils/bn'
 import routes from '~/routes'
 import {
     NetworkActionBarBackButtonAndTitle,
@@ -26,7 +27,6 @@ import {
     SingleElementPageActionBarContainer,
     SingleElementPageActionBarTopPart,
 } from './NetworkActionBar.styles'
-import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
 
 const joinSponsorshipModal = toaster(JoinSponsorshipModal, Layer.Modal)
 const fundSponsorshipModal = toaster(FundSponsorshipModal, Layer.Modal)
@@ -139,8 +139,7 @@ export const SponsorshipActionBar: FunctionComponent<{
                         {
                             label: 'Payout rate',
                             value:
-                                new BigNumber(sponsorship.DATAPerDay).toFormat(18) +
-                                ' DATA/day',
+                                toBN(sponsorship.DATAPerDay).toFormat(18) + ' DATA/day',
                         },
                         {
                             label: 'Operators',

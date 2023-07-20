@@ -1,12 +1,15 @@
-import BN from 'bignumber.js'
-import { AbiItem } from 'web3-utils'
-import { gql } from '@apollo/client'
-import { sponsorshipFactoryABI, tokenABI } from '@streamr/network-contracts'
+import {
+    SponsorshipFactory,
+    TestToken,
+    sponsorshipFactoryABI,
+    tokenABI,
+} from '@streamr/network-contracts'
+import { Contract } from 'ethers'
 import { getConfigForChainByName, getConfigForChain } from '~/shared/web3/config'
-import getDefaultWeb3Account from '~/utils/web3/getDefaultWeb3Account'
 import networkPreflight from '~/utils/networkPreflight'
-import { getWalletWeb3Provider } from '~/shared/stores/wallet'
+import { getSigner } from '~/shared/stores/wallet'
 import { Address } from '~/shared/types/web3-types'
+import { BNish, toBN } from '~/utils/bn'
 
 const getSponsorshipChainId = () => {
     // TODO: add to .toml
@@ -14,63 +17,6 @@ const getSponsorshipChainId = () => {
     const chainConfig = getConfigForChainByName(sponsorshipChainName)
     return chainConfig.id
 }
-
-gql`
-    fragment SponsorshipFields on Sponsorship {
-        id
-        stream {
-            id
-            metadata
-        }
-        metadata
-        isRunning
-        totalPayoutWeiPerSec
-        stakes {
-            operator {
-                id
-            }
-            amount
-            allocatedWei
-            date
-        }
-        operatorCount
-        totalStakedWei
-        unallocatedWei
-        projectedInsolvency
-        creator
-    }
-
-    query getAllSponsorships($first: Int, $skip: Int, $streamContains: String) {
-        sponsorships(
-            first: $first
-            skip: $skip
-            where: { stream_contains: $streamContains }
-        ) {
-            ...SponsorshipFields
-        }
-    }
-
-    query getSponsorshipsByCreator(
-        $first: Int
-        $skip: Int
-        $streamContains: String
-        $creator: String!
-    ) {
-        sponsorships(
-            first: $first
-            skip: $skip
-            where: { creator: $creator, stream_contains: $streamContains }
-        ) {
-            ...SponsorshipFields
-        }
-    }
-
-    query getSponsorshipById($sponsorshipId: ID!) {
-        sponsorship(id: $sponsorshipId) {
-            ...SponsorshipFields
-        }
-    }
-`
 
 export type SponsorshipParams = {
     initialMinimumStakeWei: number
@@ -92,64 +38,52 @@ export async function createSponsorship({
     initParams,
 }: SponsorshipParams) {
     const chainId = getSponsorshipChainId()
-    const chainConfig = getConfigForChain(chainId)
-    const from = await getDefaultWeb3Account()
-    await networkPreflight(chainId)
-    const web3 = await getWalletWeb3Provider()
 
-    const factory = new web3.eth.Contract(
-        sponsorshipFactoryABI as AbiItem[],
+    const chainConfig = getConfigForChain(chainId)
+
+    await networkPreflight(chainId)
+
+    const signer = await getSigner()
+
+    const factory = new Contract(
         chainConfig.contracts['SponsorshipFactory'],
+        sponsorshipFactoryABI,
+        signer,
+    ) as SponsorshipFactory
+
+    const tx = await factory.deploySponsorship(
+        initialMinimumStakeWei,
+        initialMinHorizonSeconds,
+        initialMinOperatorCount,
+        streamId,
+        JSON.stringify(metadata),
+        policies,
+        initParams,
     )
 
-    return new Promise<void>((resolve, reject) => {
-        factory.methods
-            .deploySponsorship(
-                initialMinimumStakeWei,
-                initialMinHorizonSeconds,
-                initialMinOperatorCount,
-                streamId,
-                JSON.stringify(metadata),
-                policies,
-                initParams,
-            )
-            .send({
-                from,
-            })
-            .on('error', (error: unknown) => {
-                reject(error)
-            })
-            .once('confirmation', () => {
-                resolve()
-            })
-    })
+    await tx.wait()
 }
 
-export async function fundSponsorship(sponsorshipId: string, amount: BN) {
+export async function fundSponsorship(sponsorshipId: string, amount: BNish) {
     const chainId = getSponsorshipChainId()
-    const chainConfig = getConfigForChain(chainId)
-    const from = await getDefaultWeb3Account()
-    await networkPreflight(chainId)
-    const web3 = await getWalletWeb3Provider()
 
-    const dataContract = new web3.eth.Contract(
-        tokenABI as AbiItem[],
+    const chainConfig = getConfigForChain(chainId)
+
+    await networkPreflight(chainId)
+
+    const signer = await getSigner()
+
+    const dataTokenContract = new Contract(
         chainConfig.contracts['DATA'],
+        tokenABI,
+        signer,
+    ) as TestToken
+
+    const tx = await dataTokenContract.transferAndCall(
+        sponsorshipId,
+        toBN(amount).toString(),
+        '0x',
     )
 
-    return new Promise<void>((resolve, reject) => {
-        dataContract.methods
-            .transferAndCall(sponsorshipId, amount, '0x')
-            .send({
-                from,
-                maxPriorityFeePerGas: null,
-                maxFeePerGas: null,
-            })
-            .on('error', (error: unknown) => {
-                reject(error)
-            })
-            .once('confirmation', () => {
-                resolve()
-            })
-    })
+    await tx.wait()
 }

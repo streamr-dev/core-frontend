@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import BigNumber from 'bignumber.js'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     FieldWrap,
@@ -13,6 +12,7 @@ import FormModal, {
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui//Label'
 import Help from '~/components/Help'
+import { toBN } from '~/utils/bn'
 
 interface Props extends Omit<FormModalProps, 'canSubmit'> {
     operatorId?: string
@@ -49,7 +49,7 @@ export default function BecomeOperatorModal({
     const canSubmit =
         `${numericValue}` === value && numericValue >= 0 && numericValue <= 100
 
-    const balance = new BigNumber(balanceProp).dividedBy(1e18).toString()
+    const balance = toBN(balanceProp).dividedBy(1e18).toString()
 
     return (
         <FormModal

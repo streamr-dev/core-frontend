@@ -1,6 +1,5 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import BigNumber from 'bignumber.js'
 import Button from '~/shared/components/Button'
 import Text from '~/shared/components/Ui//Text'
 import SelectField2 from '~/marketplace/components/SelectField2'
@@ -15,6 +14,7 @@ import { priceForTimeUnits } from '~/marketplace/utils/price'
 import address0 from '~/utils/address0'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { getAllowance } from '~/getters'
+import { toBN } from '~/utils/bn'
 import ProjectModal, { Actions } from './ProjectModal'
 import { RejectionReason } from './BaseModal'
 
@@ -196,12 +196,12 @@ export default function AccessPeriodModal({
     const chainName = formatChainName(getConfigForChain(chainId).name)
 
     let price = fromDecimals(
-        priceForTimeUnits(pricePerSecond, length, selectedUnit),
-        new BigNumber(tokenDecimals),
+        priceForTimeUnits(pricePerSecond, toBN(length).toNumber(), selectedUnit),
+        toBN(tokenDecimals),
     )
 
     if (!price.isFinite() || price.isLessThanOrEqualTo(0)) {
-        price = new BigNumber(0)
+        price = toBN(0)
     }
 
     const disabled = price.isEqualTo(0)
@@ -234,7 +234,7 @@ export default function AccessPeriodModal({
                     try {
                         setIsSubmitting(true)
 
-                        const bnQuantity = new BigNumber(length)
+                        const bnQuantity = toBN(length)
 
                         if (!bnQuantity.isFinite() || bnQuantity.isEqualTo(0)) {
                             throw new Error('Invalid quantity')
@@ -260,7 +260,7 @@ export default function AccessPeriodModal({
                         onResolve?.({
                             quantity: newQuantity,
                             unit: selectedUnit,
-                            exceedsAllowance: allowance.isLessThan(total),
+                            exceedsAllowance: allowance.lt(total.toString()),
                         })
                     } catch (e) {
                         onReject?.(e)
@@ -299,7 +299,7 @@ export default function AccessPeriodModal({
                         <AmountBar>
                             <AmountBarInner>
                                 <div>
-                                    <em>{new BigNumber(balance).toFixed(3)}</em>{' '}
+                                    <em>{toBN(balance).toFixed(3)}</em>{' '}
                                     <span>Balance</span>
                                     <div>
                                         <TokenLogo

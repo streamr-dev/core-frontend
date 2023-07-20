@@ -1,5 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react'
-import BigNumber from 'bignumber.js'
+import React, { useReducer, useState } from 'react'
 import { z } from 'zod'
 import SearchIcon from '@atlaskit/icon/glyph/search'
 import { RejectionReason } from '~/modals/BaseModal'
@@ -11,7 +10,6 @@ import FormModal, {
     GroupHeadline,
     Hint,
     IconWrapAppendix,
-    Prop,
     Section,
     SectionHeadline,
     TextAppendix,
@@ -19,6 +17,7 @@ import FormModal, {
     WingedLabelWrap,
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui//Label'
+import { toBN } from '~/utils/bn'
 
 interface RawFormData {
     streamId: string
@@ -34,8 +33,8 @@ const FormData = z
         streamId: z.string().trim().min(1),
         initialAmount: z
             .string()
-            .refine((value) => new BigNumber(value).isGreaterThanOrEqualTo(0)),
-        payoutRate: z.string().refine((value) => new BigNumber(value).isGreaterThan(0)),
+            .refine((value) => toBN(value).isGreaterThanOrEqualTo(0)),
+        payoutRate: z.string().refine((value) => toBN(value).isGreaterThan(0)),
         minStakeDuration: z
             .number()
             .gte(0)
@@ -70,11 +69,11 @@ function getRawFormData(formData: Partial<FormData>): RawFormData {
     return {
         initialAmount: !formData.initialAmount
             ? ''
-            : new BigNumber(formData.initialAmount).dividedBy(1e18).toString(),
+            : toBN(formData.initialAmount).dividedBy(1e18).toString(),
         streamId: formData.streamId || '',
         payoutRate: !formData.payoutRate
             ? ''
-            : new BigNumber(formData.payoutRate).dividedBy(1e18).toString(),
+            : toBN(formData.payoutRate).dividedBy(1e18).toString(),
         minStakeDuration:
             typeof formData.minStakeDuration === 'undefined'
                 ? ''
@@ -101,7 +100,7 @@ export default function CreateSponsorshipModal({
 }: Props) {
     const [busy, setBusy] = useState(false)
 
-    const balance = new BigNumber(balanceProp)
+    const balance = toBN(balanceProp)
 
     const initialRawFormData = getRawFormData(formDataProp)
 
@@ -123,11 +122,11 @@ export default function CreateSponsorshipModal({
         initialRawFormData,
     )
 
-    const initialAmountBN = new BigNumber(rawInitialAmount || '0').multipliedBy(1e18)
+    const initialAmountBN = toBN(rawInitialAmount || '0').multipliedBy(1e18)
 
     const initialAmount = initialAmountBN.toString()
 
-    const payoutRateBN = new BigNumber(rawPayoutRate || '0').multipliedBy(1e18)
+    const payoutRateBN = toBN(rawPayoutRate || '0').multipliedBy(1e18)
 
     const payoutRate = payoutRateBN.toString()
 
@@ -153,10 +152,10 @@ export default function CreateSponsorshipModal({
 
     const backdropDismissable =
         rawStreamId === initialRawFormData.streamId &&
-        new BigNumber(rawInitialAmount || '0').toString() ===
-            new BigNumber(initialRawFormData.initialAmount || '0').toString() &&
-        new BigNumber(rawPayoutRate || '0').toString() ===
-            new BigNumber(initialRawFormData.payoutRate || '0').toString() &&
+        toBN(rawInitialAmount || '0').toString() ===
+            toBN(initialRawFormData.initialAmount || '0').toString() &&
+        toBN(rawPayoutRate || '0').toString() ===
+            toBN(initialRawFormData.payoutRate || '0').toString() &&
         minStakeDuration === (initialRawFormData.minStakeDuration || '0') &&
         minNumberOfOperators === (initialRawFormData.minNumberOfOperators || '0') &&
         maxNumberOfOperators === (initialRawFormData.maxNumberOfOperators || '0')

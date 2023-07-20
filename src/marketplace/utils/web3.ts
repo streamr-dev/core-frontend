@@ -1,16 +1,10 @@
-import BN from 'bignumber.js'
-import { AbiItem } from 'web3-utils'
-import getWeb3 from '~/utils/web3/getWeb3'
-import getPublicWeb3 from '~/utils/web3/getPublicWeb3'
-import { SmartContractConfig } from '~/shared/types/web3-types'
-import { SmartContractCall, Address } from '~/shared/types/web3-types'
+import { getPublicWeb3Provider, getWalletWeb3Provider } from '~/shared/stores/wallet'
+import { Address } from '~/shared/types/web3-types'
 import { getConfigForChain } from '~/shared/web3/config'
 import getChainId from '~/utils/web3/getChainId'
-import tokenAbi from '~/shared/web3/abis/token.json'
-import marketplaceAbi from '~/shared/web3/abis/marketplace.json'
-import getDefaultWeb3Account from '~/utils/web3/getDefaultWeb3Account'
-import { getContract, call } from './smartContract'
-import { fromAtto, fromDecimals } from './math'
+import { getERC20TokenContract } from '~/getters'
+import { BNish } from '~/utils/bn'
+import { fromDecimals } from './math'
 
 export const getDataAddress = (chainId: number): Address => {
     const { contracts } = getConfigForChain(chainId)
@@ -22,13 +16,6 @@ export const getDataAddress = (chainId: number): Address => {
 
     return dataTokenAddress
 }
-export const dataTokenContractMethods = (usePublicNode = false, chainId: number): any =>
-    getContract(getDataTokenAbiAndAddress(chainId), usePublicNode, chainId).methods
-
-export const getDataTokenAbiAndAddress = (chainId: number): SmartContractConfig => ({
-    abi: tokenAbi as AbiItem[],
-    address: getDataAddress(chainId),
-})
 
 export const getMarketplaceAddress = (chainId: number): Address => {
     const { contracts } = getConfigForChain(chainId)
@@ -46,74 +33,31 @@ export const getMarketplaceAddress = (chainId: number): Address => {
 
     return marketplaceAddress
 }
-export const getMarketplaceAbiAndAddress = (chainId: number): SmartContractConfig => ({
-    abi: marketplaceAbi as AbiItem[],
-    address: getMarketplaceAddress(chainId),
-})
-/**
- * @deprecated Use `getERC20TokenContract(…).methods` explicitly.
- */
-export const erc20TokenContractMethods = (
-    address: Address,
-    usePublicNode = false,
-    chainId: number,
-): any => {
-    const instance: SmartContractConfig = {
-        abi: tokenAbi as AbiItem[],
-        address,
-    }
-    return getContract(instance, usePublicNode, chainId).methods
-}
-
-export const getNativeTokenBalance = (
-    address: Address,
-    usePublicNode = false,
-): Promise<BN> => {
-    const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
-    return web3.eth
-        .getBalance(address)
-        .then((balance) => new BN(balance))
-        .then(fromAtto)
-}
-export const getDataTokenBalance = (
-    address: Address,
-    usePublicNode = false,
-    chainId: number,
-): SmartContractCall<BN> =>
-    call(dataTokenContractMethods(usePublicNode, chainId).balanceOf(address)).then(
-        fromAtto,
-    )
 
 export const getCustomTokenBalance = async (
     contractAddress: Address,
     userAddress: Address,
-    usePublicNode = false,
-    chainId: number,
-): SmartContractCall<BN> => {
-    const balance = await call(
-        erc20TokenContractMethods(contractAddress, usePublicNode, chainId).balanceOf(
-            userAddress,
-        ),
-    )
-    const decimals = await call(
-        erc20TokenContractMethods(contractAddress, usePublicNode, chainId).decimals(),
-    )
+) => {
+    const contract = getERC20TokenContract({
+        tokenAddress: contractAddress,
+        signer: await getWalletWeb3Provider(),
+    })
+
+    const balance = await contract.balanceOf(userAddress)
+
+    const decimals = await contract.decimals()
+
     return fromDecimals(balance, decimals)
-}
-export const getMyNativeTokenBalance = (): Promise<BN> =>
-    getDefaultWeb3Account().then((myAccount) => getNativeTokenBalance(myAccount))
-export const getMyDataTokenBalance = async (): SmartContractCall<BN> => {
-    const myAccount = await getDefaultWeb3Account()
-    const chainId = await getChainId()
-    return getDataTokenBalance(myAccount, false, chainId)
 }
 
 type TokenInformation = {
     symbol: string
     name: string
-    decimals: number
+    decimals: BNish
 }
+
 const tokenInformationCache: Record<string, TokenInformation> = {}
+
 export const getTokenInformation = async (
     address: Address,
     chainId?: number,
@@ -129,17 +73,23 @@ export const getTokenInformation = async (
         return cacheItem
     }
 
+    const contract = getERC20TokenContract({
+        tokenAddress: address,
+        signer: getPublicWeb3Provider(actualChainId),
+    })
+
     try {
-        const contract = erc20TokenContractMethods(address, true, actualChainId)
-        const symbol = await contract.symbol().call()
+        const symbol = await contract.symbol()
 
         if (symbol == null) {
             // This is not an ERC-20 token
             return null
         }
 
-        const name = await contract.name().call()
-        const decimals = await contract.decimals().call()
+        const name = await contract.name()
+
+        const decimals = await contract.decimals()
+
         const infoObj: TokenInformation = {
             symbol,
             name,
@@ -148,6 +98,8 @@ export const getTokenInformation = async (
         tokenInformationCache[cacheKey] = infoObj
         return infoObj
     } catch (e) {
-        return null
+        console.warn('Failed to load token info', e)
     }
+
+    return null
 }
