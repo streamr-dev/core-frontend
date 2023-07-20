@@ -10,7 +10,7 @@ module.exports = {
         ],
     },
     transformIgnorePatterns: ['<rootDir>/node_modules/(?!query-string/)'],
-    testEnvironment: 'jsdom',
+    testEnvironment: './test/test-utils/env',
     collectCoverage: true,
     coverageProvider: 'v8',
     coverageReporters: ['text-summary', 'lcov'],
