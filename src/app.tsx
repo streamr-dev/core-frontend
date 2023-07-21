@@ -34,7 +34,7 @@ import '~/analytics'
 
 const apolloClient = new ApolloClient({
     uri:
-        process.env.GQL_SUBGRAPH_PATH ||
+        process.env.NETWORK_GRAPH_SCHEMA_PATH ||
         'http://localhost:8000/subgraphs/name/streamr-dev/network-subgraphs',
     cache: new InMemoryCache(),
 })
