@@ -14,15 +14,12 @@ import { Radio } from '~/shared/components/Radio'
 import { DataUnionChainSelectorContext } from '~/marketplace/containers/ProjectEditing/DataUnionChainSelector/DataUnionChainSelectorContext'
 import { Address } from '~/shared/types/web3-types'
 import useIsMounted from '~/shared/hooks/useIsMounted'
-import {
-    getDataUnionObject,
-    getDataUnionsOwnedByInChain,
-    TheGraphDataUnion,
-} from '~/marketplace/modules/dataUnion/services'
+import { getDataUnionsOwnedByInChain, getDataUnion } from '~/getters/du'
 import SelectField2 from '~/marketplace/components/SelectField2'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { truncate } from '~/shared/utils/text'
 import { formatChainName } from '~/shared/utils/chains'
+import { TheGraph } from '~/shared/types'
 
 type DataUnionChainOptionProps = {
     index: number
@@ -34,9 +31,6 @@ type DataUnionChainOptionProps = {
     }) => void
 }
 
-type DataUnionWithMetadata = TheGraphDataUnion & {
-    name?: string
-}
 export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> = ({
     index,
     chain,
@@ -45,7 +39,7 @@ export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> 
 }) => {
     const isMounted = useIsMounted()
     const account = useWalletAccount()
-    const [ownedDataUnions, setOwnedDataUnions] = useState<DataUnionWithMetadata[]>([])
+    const [ownedDataUnions, setOwnedDataUnions] = useState<TheGraph.NamedDataUnion[]>([])
     const existingDUOptions = useMemo(
         () =>
             ownedDataUnions.map((du) => ({
@@ -67,7 +61,7 @@ export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> 
     useEffect(() => {
         const load = async () => {
             if (account && chain.id) {
-                const dataUnionsWithMetadata: DataUnionWithMetadata[] = []
+                const dataUnionsWithMetadata: TheGraph.NamedDataUnion[] = []
                 const dataUnionsOwned = await getDataUnionsOwnedByInChain(
                     account,
                     chain.id,
@@ -75,8 +69,9 @@ export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> 
 
                 for (const du of dataUnionsOwned) {
                     try {
-                        let duWithMetadata: DataUnionWithMetadata = du
-                        const duObj = await getDataUnionObject(du.id, chain.id)
+                        let duWithMetadata: TheGraph.NamedDataUnion = du
+                        const duObj = await getDataUnion(du.id, chain.id)
+
                         const metadata = await duObj.getMetadata()
 
                         if (typeof metadata === 'object') {

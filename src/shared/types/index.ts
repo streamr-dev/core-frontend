@@ -52,3 +52,18 @@ interface DataUnionProject extends Omit<RegularProject, 'type'> {
 }
 
 export type Project = RegularProject | DataUnionProject
+
+export namespace TheGraph {
+    export interface DataUnion {
+        id: string
+        owner: string
+        memberCount: number
+        revenueWei: string
+        creationDate: string
+        chainId: number
+    }
+
+    export interface NamedDataUnion extends DataUnion {
+        name?: string
+    }
+}

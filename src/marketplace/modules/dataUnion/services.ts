@@ -1,134 +1,21 @@
-import { DataUnionClient } from '@dataunions/client'
-import { DataUnionClientConfig } from '@dataunions/client/types/src/Config'
 import EventEmitter from 'events'
-import { hexToNumber } from 'web3-utils'
-import getClientConfig from '~/getters/getClientConfig'
-import getCoreConfig from '~/getters/getCoreConfig'
-import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
-import { SmartContractTransaction, Address } from '~/shared/types/web3-types'
+import { SmartContractTransaction } from '~/shared/types/web3-types'
 import { ProjectId, DataUnionId } from '~/marketplace/types/project-types'
-import { ApiResult } from '~/shared/types/common-types'
 import { checkEthereumNetworkIsCorrect } from '~/shared/utils/web3'
-import { post } from '~/shared/utils/api'
-import { getWalletProvider } from '~/shared/stores/wallet'
 import TransactionError from '~/shared/errors/TransactionError'
 import Transaction from '~/shared/utils/Transaction'
-import { getWalletAccount } from '~/shared/stores/wallet'
-import { toBN } from '~/utils/bn'
+import { getDataUnion, getDataUnionClient } from '~/getters/du'
 import { Secret } from './types'
 
-const createClient = async (chainId: number): Promise<DataUnionClient> => {
-    const provider: any = await getWalletProvider()
-    const config = getConfigForChain(chainId)
-    const { dataUnionJoinServerUrl } = getCoreConfig()
-    const providerUrl = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))?.url
-    const factoryAddress = config.contracts.DataUnionFactory
-
-    if (factoryAddress == null) {
-        console.warn(
-            `No contract address for DataUnionFactory found for chain ${chainId}.`,
-        )
-    }
-
-    const providerChainId = hexToNumber(provider.chainId)
-    const isProviderInCorrectChain = providerChainId === chainId
-
-    const account = await getWalletAccount()
-
-    if (!account) {
-        throw new Error('No wallet connected')
-    }
-
-    const isInCorrectChainAndUnlocked = isProviderInCorrectChain
-
-    const clientConfig = getClientConfig({
-        auth: {
-            // If MetaMask is in right chain, use it to enable signing
-            ethereum: isInCorrectChainAndUnlocked ? provider : undefined,
-            // Otherwise use a throwaway private key to authenticate and allow read-only mode
-            privateKey: !isInCorrectChainAndUnlocked
-                ? '531479d5645596f264e7e3cbe80c4a52a505d60fad45193d1f6b8e4724bf0304'
-                : undefined,
-        },
-        network: {
-            chainId,
-            rpcs: [
-                {
-                    url: providerUrl,
-                    timeout: 120 * 1000,
-                },
-            ],
-        },
-        dataUnion: {
-            factoryAddress,
-        },
-        ...(dataUnionJoinServerUrl
-            ? {
-                  joinServerUrl: dataUnionJoinServerUrl,
-              }
-            : {}),
-    })
-    return new DataUnionClient(clientConfig as DataUnionClientConfig)
-}
-
-const getDataunionSubgraphUrlForChain = (chainId: number): string => {
-    const { theGraphUrl } = getCoreConfig()
-    const map = getCoreConfig().dataunionGraphNames
-    const item = map.find((i: any) => i.chainId === chainId)
-
-    if (item == null || item.name == null) {
-        throw new Error(`No dataunionGraphNames defined in config for chain ${chainId}!`)
-    }
-
-    const url = `${theGraphUrl}/subgraphs/name/${item.name}`
-    return url
-}
-
-// ----------------------
-// smart contract queries
-// ----------------------
-export const getDataUnionObject = async (address: string, chainId: number) => {
-    const client = await createClient(chainId)
-    const dataUnion = await client.getDataUnion(address)
-    return dataUnion
-}
-
-export const getAdminFee = async (address: DataUnionId, chainId: number) => {
-    const dataUnion = await getDataUnionObject(address, chainId)
-    const adminFee = await dataUnion.getAdminFee()
-    return `${adminFee}`
-}
-export const getDataUnionStats = async (
-    address: DataUnionId,
-    chainId: number,
-): ApiResult<Record<string, any>> => {
-    const dataUnion = await getDataUnionObject(address, chainId)
-    const { activeMemberCount, inactiveMemberCount, totalEarnings } =
-        await dataUnion.getStats()
-    const active = toBN(activeMemberCount).toNumber()
-    const inactive = toBN(inactiveMemberCount).toNumber()
-    return {
-        memberCount: {
-            active,
-            inactive,
-            total: active + inactive,
-        },
-        totalEarnings: toBN(totalEarnings).toNumber(),
-    }
-}
-// ----------------------
-// transactions
-// ----------------------
-type DeployDataUnion = {
-    productId: ProjectId
-    adminFee: string
-    chainId: number
-}
-export const deployDataUnion = ({
+export function deployDataUnion({
     productId,
     adminFee,
     chainId,
-}: DeployDataUnion): SmartContractTransaction => {
+}: {
+    productId: ProjectId
+    adminFee: string
+    chainId: number
+}): SmartContractTransaction {
     const emitter = new EventEmitter()
 
     const errorHandler = (error: Error) => {
@@ -145,7 +32,7 @@ export const deployDataUnion = ({
         checkEthereumNetworkIsCorrect({
             network: chainId,
         }),
-        createClient(chainId),
+        getDataUnionClient(chainId),
     ])
         .then(([_, client]) => {
             return client.deployDataUnion({
@@ -166,142 +53,47 @@ export const deployDataUnion = ({
         .catch(errorHandler)
     return tx
 }
-export const getDataUnionChainIds = (): Array<number> => {
-    const { dataunionChains } = getCoreConfig()
-    return dataunionChains.map((chain: string) => {
-        return getConfigForChainByName(chain).id
-    })
-}
 
-export type TheGraphDataUnion = {
-    id: string
-    owner: string
-    memberCount: number
-    revenueWei: string
-    creationDate: string
-    chainId: number
-}
-
-export const getDataUnionsOwnedByInChain = async (
-    user: Address,
-    chainId: number,
-): Promise<Array<TheGraphDataUnion>> => {
-    const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
-    const result = await post({
-        url: theGraphUrl,
-        data: {
-            query: `
-                query {
-                    dataUnions(where: { owner: "${user.toLowerCase()}" }) {
-                        id,
-                        owner,
-                        memberCount,
-                        revenueWei,
-                        creationDate,
-                    }
-                }
-            `,
-        },
-    })
-
-    if (result.data.dataUnions.length > 0) {
-        return result.data.dataUnions.map((du) => ({
-            ...du,
-            chainId,
-        }))
-    }
-
-    return []
-}
-
-export const getDataUnionChainIdByAddress = async (id: DataUnionId): Promise<number> => {
-    for (const chainId of getDataUnionChainIds()) {
-        const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
-        const result = await post({
-            url: theGraphUrl,
-            data: {
-                query: `
-                    query {
-                        dataUnions(where: { id: "${id.toLowerCase()}" }) {
-                            id
-                        }
-                    }
-                `,
-            },
-        })
-
-        if (result.data.dataUnions.length > 0) {
-            return chainId
-        }
-    }
-
-    return -1
-}
-
-type GetSecrets = {
-    dataUnionId: DataUnionId
-    chainId: number
-}
-
-export const getSecrets = async ({
-    dataUnionId,
-    chainId,
-}: GetSecrets): Promise<Array<Secret>> => {
-    const client = await createClient(chainId)
-    const dataUnion = await client.getDataUnion(dataUnionId)
-    const secrets = await dataUnion.listSecrets()
-    return secrets
-}
-
-type CreateSecret = {
-    dataUnionId: DataUnionId
-    name: string
-    chainId: number
-}
-
-export const createSecret = async ({
+export async function createSecret({
     dataUnionId,
     name,
     chainId,
-}: CreateSecret): Promise<Secret> => {
-    const client = await createClient(chainId)
-    const dataUnion = await client.getDataUnion(dataUnionId)
-    const secret = await dataUnion.createSecret(name)
-    return secret
-}
-
-type EditSecret = {
+}: {
     dataUnionId: DataUnionId
-    id: string
     name: string
     chainId: number
+}): Promise<Secret> {
+    return (await getDataUnion(dataUnionId, chainId)).createSecret(name)
 }
 
-export const editSecret = async ({
+export async function editSecret({
     dataUnionId,
     id,
     name,
     chainId,
-}: EditSecret): Promise<Secret> => {
-    const client = await createClient(chainId)
-    const dataUnion = await client.getDataUnion(dataUnionId)
-    // @ts-expect-error 2339
-    const result = await dataUnion.editSecret(id, name)
-    return result
-}
-
-type DeleteSecrect = {
+}: {
     dataUnionId: DataUnionId
     id: string
+    name: string
     chainId: number
+}): Promise<Secret> {
+    const dataUnion = await getDataUnion(dataUnionId, chainId)
+
+    if (!('editSecret' in dataUnion) || typeof dataUnion.editSecret !== 'function') {
+        throw new Error('Editing secrets is not implemented')
+    }
+
+    return dataUnion.editSecret(id, name)
 }
 
-export const deleteSecret = async ({
+export async function deleteSecret({
     dataUnionId,
     id,
     chainId,
-}: DeleteSecrect): Promise<void> => {
-    const client = await createClient(chainId)
-    const dataUnion = await client.getDataUnion(dataUnionId)
-    await dataUnion.deleteSecret(id)
+}: {
+    dataUnionId: DataUnionId
+    id: string
+    chainId: number
+}): Promise<void> {
+    ;(await getDataUnion(dataUnionId, chainId)).deleteSecret(id)
 }

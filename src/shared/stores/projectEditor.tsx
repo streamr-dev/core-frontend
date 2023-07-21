@@ -12,10 +12,7 @@ import { getTokenInformation } from '~/marketplace/utils/web3'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { getMostRelevantTimeUnit } from '~/marketplace/utils/price'
 import { isProjectOwnedBy } from '~/marketplace/utils/product'
-import {
-    getAdminFee,
-    getDataUnionChainIdByAddress,
-} from '~/marketplace/modules/dataUnion/services'
+import { getDataUnionChainId, getDataUnionAdminFee } from '~/getters/du'
 import { ProjectType, Project } from '~/shared/types'
 import { GraphProject } from '~/shared/consts'
 import { toBN } from '~/utils/bn'
@@ -265,13 +262,13 @@ async function getProjectFromGraphProject({
         const duAddress = paymentDetails.find(
             (pd) => pd.beneficiary.length > 0,
         )?.beneficiary
-        let adminFee = '0'
+        let adminFee: undefined | number
         let chainId: number | undefined = undefined
 
         if (duAddress) {
             try {
-                chainId = await getDataUnionChainIdByAddress(duAddress)
-                adminFee = await getAdminFee(duAddress, chainId)
+                chainId = await getDataUnionChainId(duAddress)
+                adminFee = await getDataUnionAdminFee(duAddress, chainId)
             } catch (e) {
                 console.error('Could not load Data Union details', e)
             }
@@ -280,7 +277,9 @@ async function getProjectFromGraphProject({
         result = {
             ...result,
             type: ProjectType.DataUnion,
-            adminFee: toBN(adminFee).multipliedBy(100).toString(),
+            adminFee: toBN(adminFee || 0)
+                .multipliedBy(100)
+                .toString(),
             existingDUAddress: duAddress,
             dataUnionChainId: chainId,
         }
