@@ -173,6 +173,7 @@ module.exports = {
             template: 'index.html',
             templateParameters: {
                 gaId: process.env.GOOGLE_ANALYTICS_ID,
+                commitHash: process.env.HUB_COMMIT_HASH,
                 version: pkg.version,
             },
         }),
