@@ -20,6 +20,14 @@ const config: CodegenConfig = {
                 withHooks: true,
             },
         },
+        'src/generated/gql/hub.ts': {
+            documents: ['src/queries/hub.ts'],
+            schema: HUB_GRAPH_SCHEMA_PATH,
+            plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo'],
+            config: {
+                withHooks: false,
+            },
+        },
         'src/generated/gql/du.ts': {
             documents: ['src/queries/du.ts'],
             schema: DU_GRAPH_SCHEMA_PATH,

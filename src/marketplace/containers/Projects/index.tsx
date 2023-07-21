@@ -1,11 +1,4 @@
-import React, {
-    FunctionComponent,
-    useCallback,
-    useEffect,
-    useReducer,
-    useRef,
-    useState,
-} from 'react'
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { MarketplaceHelmet } from '~/shared/components/Helmet'
 import ProjectsComponent, { ProjectsContainer } from '~/marketplace/components/Projects'
@@ -16,21 +9,17 @@ import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import useModal from '~/shared/hooks/useModal'
 import CreateProjectModal from '~/marketplace/containers/CreateProjectModal'
 import { SearchFilter } from '~/marketplace/types/project-types'
-import {
-    getProjects,
-    ProjectListingTypeFilter,
-    searchProjects,
-} from '~/services/projects'
+import { getProjects, searchProjects } from '~/services/projects'
 import useDeepEqualMemo from '~/shared/hooks/useDeepEqualMemo'
 import { useWalletAccount } from '~/shared/stores/wallet'
-
+import { TheGraph } from '~/shared/types'
 import styles from './projects.pcss'
 
 const PAGE_SIZE = 16
 
 type Filter = {
     search: string
-    type: ProjectListingTypeFilter | null
+    type: TheGraph.ProjectType | null
     owner: string | null
 }
 
@@ -50,12 +39,7 @@ const ProjectsPage: FunctionComponent = () => {
         queryKey: ['projects', filter.owner, filter.search, filter.type],
         queryFn: (ctx) => {
             if (filter.search != null && filter.search.length > 0) {
-                return searchProjects(
-                    filter.search,
-                    PAGE_SIZE,
-                    ctx.pageParam,
-                    filter.type,
-                )
+                return searchProjects(filter.search, PAGE_SIZE, ctx.pageParam)
             } else {
                 return getProjects(
                     filter.owner ?? undefined,

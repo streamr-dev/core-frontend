@@ -19,8 +19,8 @@ import {
 } from '~/marketplace/components/ActionBar/actionBar.styles'
 import SelectField2 from '~/marketplace/components/SelectField2'
 import MobileFilter from '~/shared/components/MobileFilter'
-import { ProjectListingTypeFilter } from '~/services/projects'
 import Tabs, { Tab } from '~/shared/components/Tabs'
+import { TheGraph } from '~/shared/types'
 import { isValidSearchQuery } from '../../utils/validate'
 
 enum ProjectsScope {
@@ -39,15 +39,15 @@ export type Props = {
 
 const productTypeOptions = [
     {
-        value: ProjectListingTypeFilter.openData,
+        value: TheGraph.ProjectType.Open,
         label: 'Open data',
     },
     {
-        value: ProjectListingTypeFilter.paidData,
+        value: TheGraph.ProjectType.Paid,
         label: 'Paid data',
     },
     {
-        value: ProjectListingTypeFilter.dataUnion,
+        value: TheGraph.ProjectType.DataUnion,
         label: 'Data union',
     },
 ]

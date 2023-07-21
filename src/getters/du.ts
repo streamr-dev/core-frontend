@@ -1,7 +1,7 @@
+import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
+import { DataUnion } from '@dataunions/client'
 import { hexToNumber } from 'web3-utils'
 import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
-import getCoreConfig from './getCoreConfig'
-import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
 import {
     GetDataUnionsByIdDocument,
     GetDataUnionsByIdQuery,
@@ -11,8 +11,8 @@ import {
 import { TheGraph } from '~/shared/types'
 import { getWalletAccount, getWalletProvider } from '~/shared/stores/wallet'
 import getClientConfig from '~/getters/getClientConfig'
-import { DataUnion } from '@dataunions/client'
 import { toBN } from '~/utils/bn'
+import getCoreConfig from './getCoreConfig'
 
 const apolloClients: Partial<Record<number, ApolloClient<NormalizedCacheObject>>> = {}
 

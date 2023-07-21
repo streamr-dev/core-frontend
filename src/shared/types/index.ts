@@ -66,4 +66,10 @@ export namespace TheGraph {
     export interface NamedDataUnion extends DataUnion {
         name?: string
     }
+
+    export enum ProjectType {
+        Open = 'openData',
+        Paid = 'paidData',
+        DataUnion = 'dataUnion',
+    }
 }
