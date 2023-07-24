@@ -2981,6 +2981,47 @@ export type GetSponsorshipByIdQueryVariables = Exact<{
 
 export type GetSponsorshipByIdQuery = { __typename?: 'Query', sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, creator: string, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> } | null };
 
+export type ProjectFieldsFragment = { __typename?: 'Project', id: string, domainIds: Array<any>, score: any, metadata: string, streams: Array<string>, minimumSubscriptionSeconds: any, createdAt?: any | null, updatedAt?: any | null, isDataUnion?: boolean | null, paymentDetails: Array<{ __typename?: 'ProjectPaymentDetails', domainId?: any | null, beneficiary: any, pricingTokenAddress: any, pricePerSecond?: any | null }>, subscriptions: Array<{ __typename?: 'ProjectSubscription', userAddress: any, endTimestamp?: any | null }>, permissions: Array<{ __typename?: 'ProjectPermission', userAddress: any, canBuy?: boolean | null, canDelete?: boolean | null, canEdit?: boolean | null, canGrant?: boolean | null }>, purchases: Array<{ __typename?: 'ProjectPurchase', subscriber: any, subscriptionSeconds: any, price: any, fee: any, purchasedAt?: any | null }> };
+
+export type GetProjectQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', id: string, domainIds: Array<any>, score: any, metadata: string, streams: Array<string>, minimumSubscriptionSeconds: any, createdAt?: any | null, updatedAt?: any | null, isDataUnion?: boolean | null, paymentDetails: Array<{ __typename?: 'ProjectPaymentDetails', domainId?: any | null, beneficiary: any, pricingTokenAddress: any, pricePerSecond?: any | null }>, subscriptions: Array<{ __typename?: 'ProjectSubscription', userAddress: any, endTimestamp?: any | null }>, permissions: Array<{ __typename?: 'ProjectPermission', userAddress: any, canBuy?: boolean | null, canDelete?: boolean | null, canEdit?: boolean | null, canGrant?: boolean | null }>, purchases: Array<{ __typename?: 'ProjectPurchase', subscriber: any, subscriptionSeconds: any, price: any, fee: any, purchasedAt?: any | null }> } | null };
+
+export type GetProjectsQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['Int']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<Project_Filter>;
+}>;
+
+
+export type GetProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', id: string, domainIds: Array<any>, score: any, metadata: string, streams: Array<string>, minimumSubscriptionSeconds: any, createdAt?: any | null, updatedAt?: any | null, isDataUnion?: boolean | null, paymentDetails: Array<{ __typename?: 'ProjectPaymentDetails', domainId?: any | null, beneficiary: any, pricingTokenAddress: any, pricePerSecond?: any | null }>, subscriptions: Array<{ __typename?: 'ProjectSubscription', userAddress: any, endTimestamp?: any | null }>, permissions: Array<{ __typename?: 'ProjectPermission', userAddress: any, canBuy?: boolean | null, canDelete?: boolean | null, canEdit?: boolean | null, canGrant?: boolean | null }>, purchases: Array<{ __typename?: 'ProjectPurchase', subscriber: any, subscriptionSeconds: any, price: any, fee: any, purchasedAt?: any | null }> }> };
+
+export type GetProjectsByTextQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['Int']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  text: Scalars['String']['input'];
+}>;
+
+
+export type GetProjectsByTextQuery = { __typename?: 'Query', projectSearch: Array<{ __typename?: 'Project', id: string, domainIds: Array<any>, score: any, metadata: string, streams: Array<string>, minimumSubscriptionSeconds: any, createdAt?: any | null, updatedAt?: any | null, isDataUnion?: boolean | null, paymentDetails: Array<{ __typename?: 'ProjectPaymentDetails', domainId?: any | null, beneficiary: any, pricingTokenAddress: any, pricePerSecond?: any | null }>, subscriptions: Array<{ __typename?: 'ProjectSubscription', userAddress: any, endTimestamp?: any | null }>, permissions: Array<{ __typename?: 'ProjectPermission', userAddress: any, canBuy?: boolean | null, canDelete?: boolean | null, canEdit?: boolean | null, canGrant?: boolean | null }>, purchases: Array<{ __typename?: 'ProjectPurchase', subscriber: any, subscriptionSeconds: any, price: any, fee: any, purchasedAt?: any | null }> }> };
+
+export type GetProjectSubscriptionsQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetProjectSubscriptionsQuery = { __typename?: 'Query', project?: { __typename?: 'Project', subscriptions: Array<{ __typename?: 'ProjectSubscription', userAddress: any, endTimestamp?: any | null }> } | null };
+
+export type GetProjectForPurchaseQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetProjectForPurchaseQuery = { __typename?: 'Query', project?: { __typename?: 'Project', streams: Array<string>, paymentDetails: Array<{ __typename?: 'ProjectPaymentDetails', domainId?: any | null, beneficiary: any, pricingTokenAddress: any, pricePerSecond?: any | null }> } | null };
+
 export const OperatorFieldsFragmentDoc = gql`
     fragment OperatorFields on Operator {
   id
@@ -3036,6 +3077,43 @@ export const SponsorshipFieldsFragmentDoc = gql`
   unallocatedWei
   projectedInsolvency
   creator
+}
+    `;
+export const ProjectFieldsFragmentDoc = gql`
+    fragment ProjectFields on Project {
+  id
+  domainIds
+  score
+  metadata
+  streams
+  minimumSubscriptionSeconds
+  createdAt
+  updatedAt
+  isDataUnion
+  paymentDetails {
+    domainId
+    beneficiary
+    pricingTokenAddress
+    pricePerSecond
+  }
+  subscriptions {
+    userAddress
+    endTimestamp
+  }
+  permissions {
+    userAddress
+    canBuy
+    canDelete
+    canEdit
+    canGrant
+  }
+  purchases {
+    subscriber
+    subscriptionSeconds
+    price
+    fee
+    purchasedAt
+  }
 }
     `;
 export const GetAllOperatorsDocument = gql`
@@ -3192,3 +3270,197 @@ export function useGetSponsorshipByIdLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetSponsorshipByIdQueryHookResult = ReturnType<typeof useGetSponsorshipByIdQuery>;
 export type GetSponsorshipByIdLazyQueryHookResult = ReturnType<typeof useGetSponsorshipByIdLazyQuery>;
 export type GetSponsorshipByIdQueryResult = Apollo.QueryResult<GetSponsorshipByIdQuery, GetSponsorshipByIdQueryVariables>;
+export const GetProjectDocument = gql`
+    query getProject($id: ID!) {
+  project(id: $id) {
+    ...ProjectFields
+  }
+}
+    ${ProjectFieldsFragmentDoc}`;
+
+/**
+ * __useGetProjectQuery__
+ *
+ * To run a query within a React component, call `useGetProjectQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProjectQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetProjectQuery(baseOptions: Apollo.QueryHookOptions<GetProjectQuery, GetProjectQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProjectQuery, GetProjectQueryVariables>(GetProjectDocument, options);
+      }
+export function useGetProjectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectQuery, GetProjectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProjectQuery, GetProjectQueryVariables>(GetProjectDocument, options);
+        }
+export type GetProjectQueryHookResult = ReturnType<typeof useGetProjectQuery>;
+export type GetProjectLazyQueryHookResult = ReturnType<typeof useGetProjectLazyQuery>;
+export type GetProjectQueryResult = Apollo.QueryResult<GetProjectQuery, GetProjectQueryVariables>;
+export const GetProjectsDocument = gql`
+    query getProjects($first: Int, $skip: Int, $where: Project_filter) {
+  projects(
+    first: $first
+    skip: $skip
+    orderBy: score
+    orderDirection: desc
+    where: $where
+  ) {
+    ...ProjectFields
+  }
+}
+    ${ProjectFieldsFragmentDoc}`;
+
+/**
+ * __useGetProjectsQuery__
+ *
+ * To run a query within a React component, call `useGetProjectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProjectsQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      skip: // value for 'skip'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useGetProjectsQuery(baseOptions?: Apollo.QueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, options);
+      }
+export function useGetProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, options);
+        }
+export type GetProjectsQueryHookResult = ReturnType<typeof useGetProjectsQuery>;
+export type GetProjectsLazyQueryHookResult = ReturnType<typeof useGetProjectsLazyQuery>;
+export type GetProjectsQueryResult = Apollo.QueryResult<GetProjectsQuery, GetProjectsQueryVariables>;
+export const GetProjectsByTextDocument = gql`
+    query getProjectsByText($first: Int, $skip: Int, $text: String!) {
+  projectSearch(first: $first, skip: $skip, text: $text) {
+    ...ProjectFields
+  }
+}
+    ${ProjectFieldsFragmentDoc}`;
+
+/**
+ * __useGetProjectsByTextQuery__
+ *
+ * To run a query within a React component, call `useGetProjectsByTextQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectsByTextQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProjectsByTextQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      skip: // value for 'skip'
+ *      text: // value for 'text'
+ *   },
+ * });
+ */
+export function useGetProjectsByTextQuery(baseOptions: Apollo.QueryHookOptions<GetProjectsByTextQuery, GetProjectsByTextQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProjectsByTextQuery, GetProjectsByTextQueryVariables>(GetProjectsByTextDocument, options);
+      }
+export function useGetProjectsByTextLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectsByTextQuery, GetProjectsByTextQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProjectsByTextQuery, GetProjectsByTextQueryVariables>(GetProjectsByTextDocument, options);
+        }
+export type GetProjectsByTextQueryHookResult = ReturnType<typeof useGetProjectsByTextQuery>;
+export type GetProjectsByTextLazyQueryHookResult = ReturnType<typeof useGetProjectsByTextLazyQuery>;
+export type GetProjectsByTextQueryResult = Apollo.QueryResult<GetProjectsByTextQuery, GetProjectsByTextQueryVariables>;
+export const GetProjectSubscriptionsDocument = gql`
+    query getProjectSubscriptions($id: ID!) {
+  project(id: $id) {
+    subscriptions {
+      userAddress
+      endTimestamp
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProjectSubscriptionsQuery__
+ *
+ * To run a query within a React component, call `useGetProjectSubscriptionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectSubscriptionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProjectSubscriptionsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetProjectSubscriptionsQuery(baseOptions: Apollo.QueryHookOptions<GetProjectSubscriptionsQuery, GetProjectSubscriptionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProjectSubscriptionsQuery, GetProjectSubscriptionsQueryVariables>(GetProjectSubscriptionsDocument, options);
+      }
+export function useGetProjectSubscriptionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectSubscriptionsQuery, GetProjectSubscriptionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProjectSubscriptionsQuery, GetProjectSubscriptionsQueryVariables>(GetProjectSubscriptionsDocument, options);
+        }
+export type GetProjectSubscriptionsQueryHookResult = ReturnType<typeof useGetProjectSubscriptionsQuery>;
+export type GetProjectSubscriptionsLazyQueryHookResult = ReturnType<typeof useGetProjectSubscriptionsLazyQuery>;
+export type GetProjectSubscriptionsQueryResult = Apollo.QueryResult<GetProjectSubscriptionsQuery, GetProjectSubscriptionsQueryVariables>;
+export const GetProjectForPurchaseDocument = gql`
+    query getProjectForPurchase($id: ID!) {
+  project(id: $id) {
+    streams
+    paymentDetails {
+      domainId
+      beneficiary
+      pricingTokenAddress
+      pricePerSecond
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProjectForPurchaseQuery__
+ *
+ * To run a query within a React component, call `useGetProjectForPurchaseQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectForPurchaseQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProjectForPurchaseQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetProjectForPurchaseQuery(baseOptions: Apollo.QueryHookOptions<GetProjectForPurchaseQuery, GetProjectForPurchaseQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProjectForPurchaseQuery, GetProjectForPurchaseQueryVariables>(GetProjectForPurchaseDocument, options);
+      }
+export function useGetProjectForPurchaseLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectForPurchaseQuery, GetProjectForPurchaseQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProjectForPurchaseQuery, GetProjectForPurchaseQueryVariables>(GetProjectForPurchaseDocument, options);
+        }
+export type GetProjectForPurchaseQueryHookResult = ReturnType<typeof useGetProjectForPurchaseQuery>;
+export type GetProjectForPurchaseLazyQueryHookResult = ReturnType<typeof useGetProjectForPurchaseLazyQuery>;
+export type GetProjectForPurchaseQueryResult = Apollo.QueryResult<GetProjectForPurchaseQuery, GetProjectForPurchaseQueryVariables>;

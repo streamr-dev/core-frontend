@@ -7,7 +7,7 @@ import {
     GetProjectsDocument,
     GetProjectsQuery,
     Project_Filter,
-} from '~/generated/gql/hub'
+} from '~/generated/gql/network'
 import { TheGraph } from '~/shared/types'
 import address0 from '~/utils/address0'
 import { getGraphUrl } from '.'
