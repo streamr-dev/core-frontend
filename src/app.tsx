@@ -27,17 +27,11 @@ import { SingleSponsorshipPage } from '~/network/pages/SingleSponsorshipPage'
 import Globals from '~/shared/components/Globals'
 import { Layer } from '~/utils/Layer'
 import { FeatureFlag, isFeatureEnabled } from '~/shared/utils/isFeatureEnabled'
+import getGraphClient from '~/getters/getGraphClient'
 import routes from '~/routes'
 import OperatorsPage from '~/pages/OperatorsPage'
 import { HubRouter } from '~/consts'
 import '~/analytics'
-
-const apolloClient = new ApolloClient({
-    uri:
-        process.env.NETWORK_GRAPH_SCHEMA_PATH ||
-        'http://localhost:8000/subgraphs/name/streamr-dev/network-subgraphs',
-    cache: new InMemoryCache(),
-})
 
 const MiscRouter = () => [
     <Route
@@ -66,7 +60,7 @@ const queryClient = new QueryClient()
 
 const App = () => (
     <HubRouter>
-        <ApolloProvider client={apolloClient}>
+        <ApolloProvider client={getGraphClient()}>
             <QueryClientProvider client={queryClient}>
                 <StreamrClientProvider>
                     <ModalPortalProvider>
