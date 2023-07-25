@@ -2,18 +2,20 @@ import React, { useEffect, useState } from 'react'
 import CopyIcon from '@atlaskit/icon/glyph/copy'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
-    FieldWrap,
     FormModalProps,
     Prop,
     Section,
     SectionHeadline,
-    TextAppendix,
-    TextInput,
-    CopyButtonWrapAppendix,
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui//Label'
 import useCopy from '~/shared/hooks/useCopy'
 import { toBN } from '~/utils/bn'
+import {
+    CopyButtonWrapAppendix,
+    FieldWrap,
+    TextAppendix,
+    TextInput,
+} from '~/components/TextInput'
 
 interface Props extends Omit<FormModalProps, 'canSubmit'> {
     onResolve?: (amount: string) => void

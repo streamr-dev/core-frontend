@@ -4,20 +4,23 @@ import SearchIcon from '@atlaskit/icon/glyph/search'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     ErrorLabel,
-    FieldWrap,
     FormModalProps,
     Group,
     GroupHeadline,
     Hint,
-    IconWrapAppendix,
     Section,
     SectionHeadline,
-    TextAppendix,
-    TextInput,
     WingedLabelWrap,
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui//Label'
 import { toBN } from '~/utils/bn'
+import {
+    FieldWrap,
+    IconWrapAppendix,
+    TextAppendix,
+    TextInput,
+} from '~/components/TextInput'
+import { SearchDropdown } from '~/components/SearchDropdown'
 
 interface RawFormData {
     streamId: string
@@ -215,24 +218,18 @@ export default function CreateSponsorshipModal({
                 </SectionHeadline>
                 <Section>
                     <Label>Select a Stream</Label>
-                    <FieldWrap>
-                        <TextInput
-                            name="streamId"
-                            autoFocus
-                            onChange={({ target }) =>
-                                void setRawProperties({
-                                    streamId: target.value,
-                                })
-                            }
-                            placeholder="Type to select a stream"
-                            readOnly={busy}
-                            type="text"
-                            value={streamId}
-                        />
-                        <IconWrapAppendix>
-                            <SearchIcon label="Search" />
-                        </IconWrapAppendix>
-                    </FieldWrap>
+                    <SearchDropdown
+                        name="streamId"
+                        autoFocus
+                        /*onChange={({ target }) =>
+                            void setRawProperties({
+                                streamId: target.value,
+                            })
+                        }*/
+                        placeholder="Type to select a stream"
+                        readOnly={busy}
+                        value={streamId}
+                    />
                 </Section>
             </Group>
             <Group>
