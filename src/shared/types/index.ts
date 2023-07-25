@@ -1,4 +1,5 @@
 import { TimeUnit } from '~/shared/utils/timeUnit'
+import { GetProjectQuery } from '~/generated/gql/network'
 
 export enum ProjectType {
     OpenData = 'OPEN_DATA',
@@ -52,6 +53,8 @@ interface DataUnionProject extends Omit<RegularProject, 'type'> {
 }
 
 export type Project = RegularProject | DataUnionProject
+
+export type QueriedGraphProject = NonNullable<GetProjectQuery['project']>
 
 export namespace TheGraph {
     export interface DataUnion {
