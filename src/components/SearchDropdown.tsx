@@ -1,4 +1,4 @@
-import React, { FunctionComponent, InputHTMLAttributes, useEffect, useState } from 'react'
+import React, { FunctionComponent, useEffect, useState } from 'react'
 import SearchIcon from '@atlaskit/icon/glyph/search'
 import Autocomplete from 'react-autocomplete'
 import styled, { css } from 'styled-components'
@@ -35,6 +35,10 @@ export const SearchDropdown: FunctionComponent<{
         }
     }, searchDebounceTime)
 
+    useEffect(() => {
+        setInputValue(value)
+    }, [value, setInputValue])
+
     return (
         <Autocomplete
             renderInput={(props: any) => (
@@ -65,15 +69,21 @@ export const SearchDropdown: FunctionComponent<{
             )}
             renderMenu={(items, value, styles) => {
                 return (
-                    <Menu>
-                        {isLoadingOptions ? (
-                            <SpinnerContainer>
-                                <Spinner size="large" color="blue" />
-                            </SpinnerContainer>
+                    <div>
+                        {options.length || isLoadingOptions ? (
+                            <Menu>
+                                {isLoadingOptions ? (
+                                    <SpinnerContainer>
+                                        <Spinner size="large" color="blue" />
+                                    </SpinnerContainer>
+                                ) : (
+                                    <ul className="options-list">{items}</ul>
+                                )}
+                            </Menu>
                         ) : (
-                            <ul className="options-list">{items}</ul>
+                            <div></div>
                         )}
-                    </Menu>
+                    </div>
                 )
             }}
         />
@@ -90,6 +100,8 @@ const Menu = styled.div`
         0px 3px 5px 0px rgba(9, 30, 66, 0.2);
     border-radius: 8px;
     padding: 8px 0px;
+    max-height: 600px;
+    overflow: auto;
 
     .options-list {
         list-style-type: none;
@@ -98,13 +110,19 @@ const Menu = styled.div`
         display: flex;
         flex-direction: column;
         gap: 8px;
+        background-color: transparent;
     }
     .option-element {
         padding: 6px 16px;
+        margin: 0;
         font-weight: 400;
         font-size: 14px;
         color: ${COLORS.primaryLight};
         cursor: pointer;
+
+        &:hover {
+            background-color: ${COLORS.separator};
+        }
     }
 `
 

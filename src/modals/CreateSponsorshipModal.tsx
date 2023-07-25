@@ -1,6 +1,5 @@
 import React, { useReducer, useState } from 'react'
 import { z } from 'zod'
-import SearchIcon from '@atlaskit/icon/glyph/search'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     ErrorLabel,
@@ -14,13 +13,16 @@ import FormModal, {
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui//Label'
 import { toBN } from '~/utils/bn'
-import {
-    FieldWrap,
-    IconWrapAppendix,
-    TextAppendix,
-    TextInput,
-} from '~/components/TextInput'
+import { FieldWrap, TextAppendix, TextInput } from '~/components/TextInput'
 import { SearchDropdown } from '~/components/SearchDropdown'
+import { useInfiniteQuery } from '@tanstack/react-query'
+import {
+    getPagedStreams,
+    TheGraphOrderBy,
+    TheGraphOrderDirection,
+    TheGraphStreamResult,
+} from '~/services/streams'
+import { truncateStreamName } from '~/shared/utils/text'
 
 interface RawFormData {
     streamId: string
@@ -103,6 +105,8 @@ export default function CreateSponsorshipModal({
 }: Props) {
     const [busy, setBusy] = useState(false)
 
+    const [streamSearchValue, setStreamSearchValue] = useState('')
+
     const balance = toBN(balanceProp)
 
     const initialRawFormData = getRawFormData(formDataProp)
@@ -176,6 +180,31 @@ export default function CreateSponsorshipModal({
 
     const canSubmit = FormData.safeParse(formData).success && !insufficientFunds
 
+    const streamsQuery = useInfiniteQuery({
+        queryKey: ['createSponsorshipsStreamSearch', streamSearchValue],
+        queryFn: async (ctx) => {
+            const result: TheGraphStreamResult = await getPagedStreams(
+                999,
+                ctx.pageParam,
+                undefined,
+                streamSearchValue,
+                TheGraphOrderBy.Id,
+                TheGraphOrderDirection.Asc,
+            )
+
+            return result
+        },
+        getNextPageParam: (lastPage) => {
+            const theGraphResult = lastPage as TheGraphStreamResult
+            if (theGraphResult.lastId) {
+                return theGraphResult.hasNextPage ? theGraphResult.lastId : null
+            }
+            return null
+        },
+        staleTime: 60 * 1000, // 1 minute
+        keepPreviousData: true,
+    })
+
     return (
         <FormModal
             {...props}
@@ -201,7 +230,7 @@ export default function CreateSponsorshipModal({
 
                     onResolve?.(formData)
                 } catch (e) {
-                    console.warn('Error while becoming an operator', e)
+                    console.warn('Error while creating a Sponsorship', e)
                     setBusy(false)
                 } finally {
                     /**
@@ -220,12 +249,25 @@ export default function CreateSponsorshipModal({
                     <Label>Select a Stream</Label>
                     <SearchDropdown
                         name="streamId"
-                        autoFocus
-                        /*onChange={({ target }) =>
-                            void setRawProperties({
-                                streamId: target.value,
+                        onSelect={(streamId) => {
+                            setRawProperties({
+                                streamId,
                             })
-                        }*/
+                        }}
+                        onSearchInputChange={(searchInputValue) => {
+                            setStreamSearchValue(searchInputValue)
+                        }}
+                        options={
+                            streamsQuery.data?.pages
+                                .flatMap((d) => d.streams)
+                                .map((stream) => ({
+                                    label: truncateStreamName(stream.id),
+                                    value: stream.id,
+                                })) ?? []
+                        }
+                        isLoadingOptions={
+                            streamsQuery.isLoading || streamsQuery.isFetching
+                        }
                         placeholder="Type to select a stream"
                         readOnly={busy}
                         value={streamId}

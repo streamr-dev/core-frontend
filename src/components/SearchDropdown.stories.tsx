@@ -22,8 +22,10 @@ export const Default = () => {
                     action('onSearchChange')(searchInputValue)
                 }}
                 options={[
-                    { label: 'Option One', value: 'option_one_value' },
-                    { label: 'Option Two', value: 'option_two_value' },
+                    ...new Array(1000).fill(null).map((_, index) => ({
+                        label: `Option ${index}`,
+                        value: `option_${index}`,
+                    })),
                 ]}
             />
         </>
