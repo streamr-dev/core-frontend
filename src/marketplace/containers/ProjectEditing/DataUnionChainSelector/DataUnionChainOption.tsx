@@ -62,6 +62,7 @@ export const DataUnionChainOption: FunctionComponent<DataUnionChainOptionProps> 
         const load = async () => {
             if (account && chain.id) {
                 const dataUnionsWithMetadata: TheGraph.NamedDataUnion[] = []
+
                 const dataUnionsOwned = await getDataUnionsOwnedByInChain(
                     account,
                     chain.id,

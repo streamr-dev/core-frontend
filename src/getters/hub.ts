@@ -14,8 +14,8 @@ import {
 } from '~/generated/gql/network'
 import { TheGraph } from '~/shared/types'
 import address0 from '~/utils/address0'
-import { getGraphUrl } from '.'
 import { GraphProject } from '~/shared/consts'
+import { getGraphUrl } from '.'
 
 let apolloClient: undefined | ApolloClient<NormalizedCacheObject>
 

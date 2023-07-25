@@ -25,9 +25,9 @@ import { RejectionReason } from '~/modals/BaseModal'
 import FailedPurchaseModal from '~/modals/FailedPurchaseModal'
 import { ensureGasMonies, waitForPurchasePropagation } from '~/utils'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
-import { getSigner } from './wallet'
 import { getProjectForPurchase, getProjectSubscriptions } from '~/getters/hub'
 import { TheGraph } from '../types'
+import { getSigner } from './wallet'
 
 interface Store {
     inProgress: Record<string, true | undefined>

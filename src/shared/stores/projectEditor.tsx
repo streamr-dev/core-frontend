@@ -10,14 +10,14 @@ import { getTokenInformation } from '~/marketplace/utils/web3'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { getMostRelevantTimeUnit } from '~/marketplace/utils/price'
 import { isProjectOwnedBy } from '~/utils'
-import { getDataUnionChainId, getDataUnionAdminFee } from '~/getters/du'
 import getGraphClient from '~/getters/getGraphClient'
 import { ProjectType, Project, QueriedGraphProject } from '~/shared/types'
 import { toBN } from '~/utils/bn'
 import { GetProjectQuery, GetProjectDocument } from '~/generated/gql/network'
+import { ProjectMetadata } from '~/shared/consts'
+import { getDataUnionAdminFee } from '~/getters/du'
 import { useHasActiveProjectSubscription } from './purchases'
 import { useWalletAccount } from './wallet'
-import { ProjectMetadata } from '../consts'
 
 interface ProjectDraft {
     abandoned: boolean
@@ -149,7 +149,7 @@ async function getTransientProject<
 
     const salePoints = await getSalePointsFromPaymentDetails({ paymentDetails })
 
-    let result: Project = {
+    const result: Project = {
         id,
         type: isOpenData ? ProjectType.OpenData : ProjectType.PaidData,
         name,
@@ -175,34 +175,50 @@ async function getTransientProject<
         salePoints,
     }
 
-    if (isDataUnion) {
-        const duAddress = paymentDetails.find(
-            (pd) => pd.beneficiary.length > 0,
-        )?.beneficiary
-        let adminFee: undefined | number
-        let chainId: number | undefined = undefined
+    if (!isDataUnion) {
+        return result
+    }
 
-        if (duAddress) {
-            try {
-                chainId = await getDataUnionChainId(duAddress)
-                adminFee = await getDataUnionAdminFee(duAddress, chainId)
-            } catch (e) {
-                console.error('Could not load Data Union details', e)
-            }
-        }
+    const {
+        beneficiary: dataUnionId = undefined,
+        domainId = undefined,
+    }: { beneficiary?: unknown; domainId?: unknown } =
+        paymentDetails.find((pd) => pd.beneficiary.length > 0) || {}
 
-        result = {
+    if (
+        typeof domainId !== 'string' ||
+        !domainId ||
+        typeof dataUnionId !== 'string' ||
+        !dataUnionId
+    ) {
+        return {
             ...result,
             type: ProjectType.DataUnion,
-            adminFee: toBN(adminFee || 0)
-                .multipliedBy(100)
-                .toString(),
-            existingDUAddress: duAddress,
-            dataUnionChainId: chainId,
+            adminFee: '0',
+            existingDUAddress: undefined,
+            dataUnionChainId: undefined,
         }
     }
 
-    return result
+    let adminFee: number | undefined
+
+    const dataUnionChainId = Number(domainId)
+
+    try {
+        adminFee = await getDataUnionAdminFee(dataUnionId, dataUnionChainId)
+    } catch (e) {
+        console.warn('Failed to load Data Union admin fee', e)
+    }
+
+    return {
+        ...result,
+        type: ProjectType.DataUnion,
+        adminFee: toBN(adminFee || 0)
+            .multipliedBy(100)
+            .toString(),
+        existingDUAddress: dataUnionId,
+        dataUnionChainId,
+    }
 }
 
 const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {

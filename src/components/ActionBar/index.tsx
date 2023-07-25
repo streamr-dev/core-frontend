@@ -10,6 +10,7 @@ import SelectField2 from '~/marketplace/components/SelectField2'
 import MobileFilter from '~/shared/components/MobileFilter'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { TheGraph } from '~/shared/types'
+import { isValidSearchQuery } from '../../marketplace/utils/validate'
 import {
     ActionBarContainer,
     CreateProjectButton,
@@ -21,7 +22,6 @@ import {
     SearchBarWrap,
     SelectFieldWrap,
 } from './actionBar.styles'
-import { isValidSearchQuery } from '../../marketplace/utils/validate'
 
 enum ProjectsScope {
     Any = 'any',

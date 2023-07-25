@@ -1,15 +1,13 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
-import { DataUnion } from '@dataunions/client'
+import DataUnionClient, { DataUnion } from '@dataunions/client'
 import { hexToNumber } from 'web3-utils'
 import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
-import {
-    GetDataUnionsByIdDocument,
-    GetDataUnionsByIdQuery,
-    GetDataUnionsOwnedByDocument,
-    GetDataUnionsOwnedByQuery,
-} from '~/generated/gql/du'
 import { TheGraph } from '~/shared/types'
 import { getWalletAccount, getWalletProvider } from '~/shared/stores/wallet'
+import {
+    GetDataUnionsOwnedByQuery,
+    GetDataUnionsOwnedByDocument,
+} from '~/generated/gql/du'
 import getClientConfig from '~/getters/getClientConfig'
 import { toBN } from '~/utils/bn'
 import getCoreConfig from './getCoreConfig'
@@ -43,31 +41,6 @@ export function getDataUnionSubgraphUrlForChain(chainId: number) {
     const { theGraphUrl } = getCoreConfig()
 
     return `${theGraphUrl}/subgraphs/name/${item.name}`
-}
-
-export function getDataUnionChainIds() {
-    return getCoreConfig().dataunionChains.map((chain: string) => {
-        return getConfigForChainByName(chain).id
-    })
-}
-
-export async function getDataUnionChainId(dataUnionId: string): Promise<number> {
-    for (const chainId of getDataUnionChainIds()) {
-        const { data = { dataUnions: [] } } = await getDuApolloClientForChain(
-            chainId,
-        ).query<GetDataUnionsByIdQuery>({
-            query: GetDataUnionsByIdDocument,
-            variables: {
-                id: dataUnionId.toLowerCase(),
-            },
-        })
-
-        if (data.dataUnions.length > 0) {
-            return chainId
-        }
-    }
-
-    return -1
 }
 
 export async function getDataUnionsOwnedByInChain(
@@ -146,7 +119,9 @@ export async function getDataUnionClient(chainId: number) {
             : {}),
     })
 
-    return new (await require('@dataunions/client')).DataUnionClient(clientConfig)
+    return new (await require('@dataunions/client')).DataUnionClient(
+        clientConfig,
+    ) as DataUnionClient
 }
 
 export async function getDataUnionSecrets(dataUnionId: string, chainId: number) {

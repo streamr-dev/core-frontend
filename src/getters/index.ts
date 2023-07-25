@@ -17,12 +17,11 @@ import { getMarketplaceAddress } from '~/marketplace/utils/web3'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
-import { Project, ProjectType } from '~/shared/types'
+import { ProjectType } from '~/shared/types'
 import tokenAbi from '~/shared/web3/abis/token.json'
 import address0 from '~/utils/address0'
-import { Project as GraphProject } from '~/generated/gql/network'
-import getCoreConfig from './getCoreConfig'
 import { ProjectMetadata } from '~/shared/consts'
+import getCoreConfig from './getCoreConfig'
 
 export function getGraphUrl() {
     const { theGraphUrl, theHubGraphName } = getCoreConfig()
