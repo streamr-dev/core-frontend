@@ -2,7 +2,7 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { MarketplaceHelmet } from '~/shared/components/Helmet'
 import ProjectsComponent, { ProjectsContainer } from '~/marketplace/components/Projects'
-import ActionBar from '~/marketplace/components/ActionBar'
+import ActionBar from '~/components/ActionBar'
 import Layout from '~/shared/components/Layout'
 import Footer from '~/shared/components/Layout/Footer'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'

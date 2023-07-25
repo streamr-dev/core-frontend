@@ -6,6 +6,10 @@ import {
     SearchFilter,
 } from '~/marketplace/types/project-types'
 import SearchBar from '~/shared/components/SearchBar'
+import SelectField2 from '~/marketplace/components/SelectField2'
+import MobileFilter from '~/shared/components/MobileFilter'
+import Tabs, { Tab } from '~/shared/components/Tabs'
+import { TheGraph } from '~/shared/types'
 import {
     ActionBarContainer,
     CreateProjectButton,
@@ -16,12 +20,8 @@ import {
     MobileFilterWrap,
     SearchBarWrap,
     SelectFieldWrap,
-} from '~/marketplace/components/ActionBar/actionBar.styles'
-import SelectField2 from '~/marketplace/components/SelectField2'
-import MobileFilter from '~/shared/components/MobileFilter'
-import Tabs, { Tab } from '~/shared/components/Tabs'
-import { TheGraph } from '~/shared/types'
-import { isValidSearchQuery } from '../../utils/validate'
+} from './actionBar.styles'
+import { isValidSearchQuery } from '../../marketplace/utils/validate'
 
 enum ProjectsScope {
     Any = 'any',
