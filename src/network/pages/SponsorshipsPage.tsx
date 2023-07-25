@@ -29,6 +29,10 @@ import {
     useAllSponsorshipsQuery,
     useMySponsorshipsQuery,
 } from '../hooks/useSponsorshipsList'
+import {
+    BalanceForSponsorship,
+    useGetBalanceForSponsorships,
+} from '~/network/hooks/useGetBalanceForSponsorships'
 
 const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
 
@@ -42,6 +46,8 @@ export const SponsorshipsPage = () => {
     const [selectedTab, setSelectedTab] = useState<TabOptions>(TabOptions.allSponsorships)
     const [searchQuery, setSearchQuery] = useState<string>('')
     const walletConnected = !!useWalletAccount()
+    const [balanceInfo, setBalanceInfo] = useState<BalanceForSponsorship>(null)
+    const getBalanceInfo = useGetBalanceForSponsorships()
 
     const allSponsorshipsQuery = useAllSponsorshipsQuery(PAGE_SIZE, searchQuery)
 
@@ -75,6 +81,10 @@ export const SponsorshipsPage = () => {
         }
     }, [walletConnected, selectedTab, setSelectedTab])
 
+    useEffect(() => {
+        getBalanceInfo().then((result) => setBalanceInfo(result))
+    }, [walletConnected])
+
     return (
         <Layout
             className={styles.projectsListPage}
@@ -101,12 +111,19 @@ export const SponsorshipsPage = () => {
                 rightSideContent={
                     <Button
                         onClick={async () => {
-                            try {
-                                await createSponsorshipModal.pop()
-                            } catch (e) {
-                                // Ignore for now.
+                            if (balanceInfo) {
+                                try {
+                                    await createSponsorshipModal.pop({
+                                        balance: balanceInfo.balance,
+                                        tokenSymbol: balanceInfo.tokenSymbol,
+                                        tokenDecimals: balanceInfo.tokenDecimals,
+                                    })
+                                } catch (e) {
+                                    // Ignore for now.
+                                }
                             }
                         }}
+                        disabled={!walletConnected || !balanceInfo}
                     >
                         Create sponsorship
                     </Button>

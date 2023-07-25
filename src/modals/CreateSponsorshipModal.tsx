@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react'
+import React, { useMemo, useReducer, useState } from 'react'
 import { z } from 'zod'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
@@ -65,20 +65,24 @@ type FormData = z.infer<typeof FormData>
 
 interface Props extends Omit<FormModalProps, 'canSubmit'> {
     onResolve?: (formData: FormData) => void
-    balance?: string
-    formData: Partial<FormData>
-    tokenSymbol?: string
+    balance: string
+    formData?: Partial<FormData>
+    tokenSymbol: string
+    tokenDecimals: number
 }
 
-function getRawFormData(formData: Partial<FormData>): RawFormData {
+function getRawFormData(
+    formData: Partial<FormData>,
+    decimalMultiplier: number,
+): RawFormData {
     return {
         initialAmount: !formData.initialAmount
             ? ''
-            : toBN(formData.initialAmount).dividedBy(1e18).toString(),
+            : toBN(formData.initialAmount).dividedBy(decimalMultiplier).toString(),
         streamId: formData.streamId || '',
         payoutRate: !formData.payoutRate
             ? ''
-            : toBN(formData.payoutRate).dividedBy(1e18).toString(),
+            : toBN(formData.payoutRate).dividedBy(decimalMultiplier).toString(),
         minStakeDuration:
             typeof formData.minStakeDuration === 'undefined'
                 ? ''
@@ -100,16 +104,19 @@ export default function CreateSponsorshipModal({
     onResolve,
     balance: balanceProp = '0',
     formData: formDataProp = {},
-    tokenSymbol = 'DATA',
+    tokenSymbol,
+    tokenDecimals,
     ...props
 }: Props) {
     const [busy, setBusy] = useState(false)
 
     const [streamSearchValue, setStreamSearchValue] = useState('')
 
-    const balance = toBN(balanceProp)
+    const decimalMultiplier = useMemo(() => Math.pow(10, tokenDecimals), [tokenDecimals])
 
-    const initialRawFormData = getRawFormData(formDataProp)
+    const balance = toBN(balanceProp).multipliedBy(decimalMultiplier)
+
+    const initialRawFormData = getRawFormData(formDataProp, decimalMultiplier)
 
     const [
         {
@@ -129,11 +136,11 @@ export default function CreateSponsorshipModal({
         initialRawFormData,
     )
 
-    const initialAmountBN = toBN(rawInitialAmount || '0').multipliedBy(1e18)
+    const initialAmountBN = toBN(rawInitialAmount || '0').multipliedBy(decimalMultiplier)
 
     const initialAmount = initialAmountBN.toString()
 
-    const payoutRateBN = toBN(rawPayoutRate || '0').multipliedBy(1e18)
+    const payoutRateBN = toBN(rawPayoutRate || '0').multipliedBy(decimalMultiplier)
 
     const payoutRate = payoutRateBN.toString()
 
@@ -143,9 +150,6 @@ export default function CreateSponsorshipModal({
 
     const maxNumberOfOperators = rawMaxNumberOfOperators || '0'
 
-    /**
-     * @TODO Implement a search feature and a dropdown.
-     */
     const streamId = rawStreamId
 
     const formData: FormData = {
@@ -226,6 +230,7 @@ export default function CreateSponsorshipModal({
                     /**
                      * Replace the following with your favourite contract interaction! <3
                      */
+                    console.log('formData', formData)
                     await new Promise((resolve) => void setTimeout(resolve, 2000))
 
                     onResolve?.(formData)
@@ -301,7 +306,8 @@ export default function CreateSponsorshipModal({
                         <p>
                             Wallet balance:{' '}
                             <strong>
-                                {balance.dividedBy(1e18).toString()} {tokenSymbol}
+                                {balance.dividedBy(decimalMultiplier).toString()}{' '}
+                                {tokenSymbol}
                             </strong>
                         </p>
                     </Hint>

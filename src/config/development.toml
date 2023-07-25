@@ -18,6 +18,7 @@ theHubGraphName = "streamr-dev/hub-subgraph"
 streamsGraphName = "streamr-dev/network-subgraphs"
 streamIndexerUrl = ":4001/api"
 reverseRecordsAddress = "0x3671aE578E63FdF66ad4F3E12CC0c0d71Ac7510C"
+sponsorshipPaymentToken = "LINK"
 
 [[core.dataunionGraphNames]]
 chainId = 8997
