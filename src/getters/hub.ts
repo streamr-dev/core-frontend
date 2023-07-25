@@ -1,7 +1,11 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
 import {
     GetProjectDocument,
+    GetProjectForPurchaseDocument,
+    GetProjectForPurchaseQuery,
     GetProjectQuery,
+    GetProjectSubscriptionsDocument,
+    GetProjectSubscriptionsQuery,
     GetProjectsByTextDocument,
     GetProjectsByTextQuery,
     GetProjectsDocument,
@@ -11,6 +15,7 @@ import {
 import { TheGraph } from '~/shared/types'
 import address0 from '~/utils/address0'
 import { getGraphUrl } from '.'
+import { GraphProject } from '~/shared/consts'
 
 let apolloClient: undefined | ApolloClient<NormalizedCacheObject>
 
@@ -110,4 +115,36 @@ export async function getRawGraphProjectsByText(
     })
 
     return projects
+}
+
+export async function getProjectSubscriptions(
+    projectId: string,
+): Promise<TheGraph.ProjectSubscription[]> {
+    const {
+        data: { project },
+    } = await getApolloClient().query<GetProjectSubscriptionsQuery>({
+        query: GetProjectSubscriptionsDocument,
+        variables: {
+            id: projectId,
+        },
+    })
+
+    return project?.subscriptions || []
+}
+
+export async function getProjectForPurchase(projectId: string) {
+    const {
+        data: { project },
+    } = await getApolloClient().query<GetProjectForPurchaseQuery>({
+        query: GetProjectForPurchaseDocument,
+        variables: {
+            id: projectId,
+        },
+    })
+
+    if (project) {
+        return GraphProject.pick({ paymentDetails: true, streams: true }).parse(project)
+    }
+
+    return null
 }

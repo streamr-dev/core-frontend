@@ -1,4 +1,12 @@
+import { z } from 'zod'
 import { TimeUnit } from '~/shared/utils/timeUnit'
+import {
+    GraphProject,
+    GraphProjectPermissions,
+    ProjectPermissions,
+    ProjectSubscription,
+    PaymentDetail,
+} from '~/shared/consts'
 import { GetProjectQuery } from '~/generated/gql/network'
 
 export enum ProjectType {
@@ -56,6 +64,10 @@ export type Project = RegularProject | DataUnionProject
 
 export type QueriedGraphProject = NonNullable<GetProjectQuery['project']>
 
+export type PaymentDetail = z.infer<typeof PaymentDetail>
+
+export type ProjectPermissions = z.infer<typeof ProjectPermissions>
+
 export namespace TheGraph {
     export interface DataUnion {
         id: string
@@ -75,4 +87,10 @@ export namespace TheGraph {
         Paid = 'paidData',
         DataUnion = 'dataUnion',
     }
+
+    export type Project = z.infer<typeof GraphProject>
+
+    export type ProjectSubscription = z.infer<typeof ProjectSubscription>
+
+    export type ProjectPermissions = z.infer<typeof GraphProjectPermissions>
 }

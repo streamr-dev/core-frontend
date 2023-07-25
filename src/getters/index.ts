@@ -7,7 +7,7 @@ import {
     ProjectRegistryV1 as ProjectRegistryContract,
     MarketplaceV4 as MarketplaceContract,
 } from '@streamr/hub-contracts'
-import { getConfigForChain } from '~/shared/web3/config'
+import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
 import reverseRecordsAbi from '~/shared/web3/abis/reverseRecords.json'
 import {
     Token as TokenContract,
@@ -17,10 +17,12 @@ import { getMarketplaceAddress } from '~/marketplace/utils/web3'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
-import { ProjectType } from '~/shared/types'
+import { Project, ProjectType } from '~/shared/types'
 import tokenAbi from '~/shared/web3/abis/token.json'
 import address0 from '~/utils/address0'
+import { Project as GraphProject } from '~/generated/gql/network'
 import getCoreConfig from './getCoreConfig'
+import { ProjectMetadata } from '~/shared/consts'
 
 export function getGraphUrl() {
     const { theGraphUrl, theHubGraphName } = getCoreConfig()
@@ -48,6 +50,10 @@ export function getProjectRegistryContract({
         projectRegistryAbi,
         signer,
     ) as ProjectRegistryContract
+}
+
+export function getProjectRegistryChainId() {
+    return getConfigForChainByName(getCoreConfig().projectsChain).id
 }
 
 export function getERC20TokenContract({
@@ -195,4 +201,23 @@ export async function getFirstEnsNameFor(address: string) {
     const [domain] = await contract.getNames([address])
 
     return domain
+}
+
+export function getGraphProjectWithParsedMetadata<T extends { metadata: string }>(
+    rawProject: T,
+): Omit<T, 'metadata'> & {
+    metadata: ProjectMetadata
+} {
+    let metadata: ProjectMetadata = {}
+
+    try {
+        metadata = ProjectMetadata.parse(JSON.parse(rawProject.metadata))
+    } catch (e) {
+        console.warn('Failed to parse project metadata', e)
+    }
+
+    return {
+        ...rawProject,
+        metadata,
+    }
 }

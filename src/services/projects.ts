@@ -1,6 +1,4 @@
-import getCoreConfig from '~/getters/getCoreConfig'
 import { Address } from '~/shared/types/web3-types'
-import { getConfigForChainByName } from '~/shared/web3/config'
 import { getSigner } from '~/shared/stores/wallet'
 import { getProjectRegistryContract } from '~/getters'
 import networkPreflight from '~/utils/networkPreflight'
@@ -11,24 +9,14 @@ import {
     getRawGraphProjects,
     getRawGraphProjectsByText,
 } from '~/getters/hub'
+import { getProjectRegistryChainId } from '~/getters'
 import { TheGraph } from '~/shared/types'
-
-const getProjectRegistryChainId = () => {
-    const { projectsChain } = getCoreConfig()
-    const config = getConfigForChainByName(projectsChain)
-    return config.id
-}
 
 export type TheGraphPaymentDetails = {
     domainId: string
     beneficiary: string
     pricingTokenAddress: string
     pricePerSecond: string
-}
-
-export type TheGraphSubscription = {
-    userAddress: string
-    endTimestamp: string
 }
 
 export type ProjectPermissions = {
@@ -53,7 +41,6 @@ export type TheGraphProject = {
     id: string
     paymentDetails: TheGraphPaymentDetails[]
     minimumSubscriptionSeconds: string
-    subscriptions: TheGraphSubscription[]
     metadata: SmartContractProjectMetadata
     version: number | null
     streams: string[]
