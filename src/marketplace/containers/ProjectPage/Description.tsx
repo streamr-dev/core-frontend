@@ -16,6 +16,7 @@ import {
     useIsProjectBeingPurchased,
 } from '~/shared/stores/purchases'
 import routes from '~/routes'
+import { getProjectTypeName } from '~/getters'
 
 const Description: FunctionComponent<{ project: Project }> = ({ project }) => {
     const firstSalePoint = useMemo<SalePoint>(
@@ -40,7 +41,7 @@ const Description: FunctionComponent<{ project: Project }> = ({ project }) => {
             <DescriptionContainer>
                 <p>
                     <span>
-                        The streams in this {projectTypeNames[project.type]}
+                        The streams in this {getProjectTypeName(project.type)}
                         {project.type === ProjectType.OpenData
                             ? ' are public and '
                             : ''}{' '}

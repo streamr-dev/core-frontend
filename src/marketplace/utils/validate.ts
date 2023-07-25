@@ -2,9 +2,9 @@ import { isAddress } from 'web3-validator'
 import { SalePoint } from '~/marketplace/types/project-types'
 import { isPriceValid } from '~/marketplace/utils/price'
 import { timeUnits } from '~/shared/utils/timeUnit'
-import { searchCharMax } from './constants'
+import { MaxSearchPhraseLenght } from '~/consts'
 export const isValidSearchQuery = (value: string): boolean =>
-    value.length <= searchCharMax
+    value.length <= MaxSearchPhraseLenght
 export const isEthereumAddress = (value: string): boolean => isAddress(value)
 
 // returns invalid field names array
