@@ -407,3 +407,11 @@ export const getStreamsOwnedBy = async (
 
     return result
 }
+
+export const checkIfStreamExists = async (
+    potentialStreamId: string,
+): Promise<boolean> => {
+    // todo implement
+    console.log('checking!')
+    return false
+}

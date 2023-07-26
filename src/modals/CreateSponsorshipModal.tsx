@@ -1,4 +1,5 @@
-import React, { useMemo, useReducer, useState } from 'react'
+import React, { useEffect, useMemo, useReducer, useState } from 'react'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
@@ -15,14 +16,15 @@ import Label from '~/shared/components/Ui//Label'
 import { toBN } from '~/utils/bn'
 import { FieldWrap, TextAppendix, TextInput } from '~/components/TextInput'
 import { SearchDropdown } from '~/components/SearchDropdown'
-import { useInfiniteQuery } from '@tanstack/react-query'
 import {
+    checkIfStreamExists,
     getPagedStreams,
     TheGraphOrderBy,
     TheGraphOrderDirection,
     TheGraphStreamResult,
 } from '~/services/streams'
 import { truncateStreamName } from '~/shared/utils/text'
+import { createSponsorship } from '~/services/sponsorships'
 
 interface RawFormData {
     streamId: string
@@ -69,6 +71,7 @@ interface Props extends Omit<FormModalProps, 'canSubmit'> {
     formData?: Partial<FormData>
     tokenSymbol: string
     tokenDecimals: number
+    streamId?: string
 }
 
 function getRawFormData(
@@ -106,6 +109,7 @@ export default function CreateSponsorshipModal({
     formData: formDataProp = {},
     tokenSymbol,
     tokenDecimals,
+    streamId: streamIdProp,
     ...props
 }: Props) {
     const [busy, setBusy] = useState(false)
@@ -184,11 +188,36 @@ export default function CreateSponsorshipModal({
 
     const canSubmit = FormData.safeParse(formData).success && !insufficientFunds
 
+    const handleSearchInputChange = async (searchInputValue: string) => {
+        const exists = await checkIfStreamExists(searchInputValue)
+        if (exists) {
+            setRawProperties({
+                streamId: searchInputValue,
+            })
+        } else {
+            setStreamSearchValue(searchInputValue)
+        }
+    }
+
+    useEffect(() => {
+        if (!streamIdProp) {
+            return void 0
+        }
+        checkIfStreamExists(streamIdProp).then((exists) => {
+            if (exists) {
+                setRawProperties({
+                    streamId: streamIdProp,
+                })
+                setStreamSearchValue(streamIdProp)
+            }
+        })
+    }, [streamIdProp])
+
     const streamsQuery = useInfiniteQuery({
         queryKey: ['createSponsorshipsStreamSearch', streamSearchValue],
         queryFn: async (ctx) => {
             const result: TheGraphStreamResult = await getPagedStreams(
-                999,
+                20,
                 ctx.pageParam,
                 undefined,
                 streamSearchValue,
@@ -231,7 +260,17 @@ export default function CreateSponsorshipModal({
                      * Replace the following with your favourite contract interaction! <3
                      */
                     console.log('formData', formData)
-                    await new Promise((resolve) => void setTimeout(resolve, 2000))
+                    await createSponsorship({
+                        initialMinHorizonSeconds: toBN(formData.minStakeDuration)
+                            .multipliedBy(86400)
+                            .toNumber(),
+                        initialMinimumStakeWei: Number(formData.initialAmount),
+                        initialMinOperatorCount: Number(formData.minNumberOfOperators),
+                        streamId: formData.streamId,
+                        metadata: {},
+                        policies: [],
+                        initParams: [],
+                    })
 
                     onResolve?.(formData)
                 } catch (e) {
@@ -259,9 +298,7 @@ export default function CreateSponsorshipModal({
                                 streamId,
                             })
                         }}
-                        onSearchInputChange={(searchInputValue) => {
-                            setStreamSearchValue(searchInputValue)
-                        }}
+                        onSearchInputChange={handleSearchInputChange}
                         options={
                             streamsQuery.data?.pages
                                 .flatMap((d) => d.streams)
