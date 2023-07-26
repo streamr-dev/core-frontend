@@ -1,4 +1,4 @@
-import { Contract, Signer, providers } from 'ethers'
+import { BigNumber, Contract, Signer, providers } from 'ethers'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
 import {
@@ -35,7 +35,7 @@ import {
 import getCoreConfig from './getCoreConfig'
 import getGraphClient from './getGraphClient'
 
-export function getGraphUrl() {
+export function getGraphUrl(): string {
     const { theGraphUrl, theHubGraphName } = getCoreConfig()
 
     return `${theGraphUrl}/subgraphs/name/${theHubGraphName}`
@@ -63,7 +63,7 @@ export function getProjectRegistryContract({
     ) as ProjectRegistryContract
 }
 
-export function getProjectRegistryChainId() {
+export function getProjectRegistryChainId(): number {
     return getConfigForChainByName(getCoreConfig().projectsChain).id
 }
 
@@ -96,7 +96,7 @@ export async function getAllowance(
     tokenAddress: string,
     account: string,
     { recover = false }: { recover?: boolean } = {},
-) {
+): Promise<BigNumber> {
     while (true) {
         try {
             return await getERC20TokenContract({
@@ -131,7 +131,12 @@ export async function getProjectPermissions(
     chainId: number,
     projectId: string,
     account: string,
-) {
+): Promise<{
+    canBuy: boolean
+    canDelete: boolean
+    canEdit: boolean
+    canGrant: boolean
+}> {
     if (account === address0) {
         return {
             canBuy: false,
@@ -158,7 +163,7 @@ export async function getProjectPermissions(
     }
 }
 
-export function getProjectTypeName(projectType: ProjectType) {
+export function getProjectTypeName(projectType: ProjectType): string {
     switch (projectType) {
         case ProjectType.DataUnion:
             return 'Data Union'
@@ -169,7 +174,7 @@ export function getProjectTypeName(projectType: ProjectType) {
     }
 }
 
-export function getProjectTypeTitle(projectType: ProjectType) {
+export function getProjectTypeTitle(projectType: ProjectType): string {
     switch (projectType) {
         case ProjectType.DataUnion:
             return 'Data Union'
@@ -186,7 +191,7 @@ export function getProjectImageUrl({
 }: {
     imageUrl?: string
     imageIpfsCid?: string
-}) {
+}): string | undefined {
     const {
         ipfs: { ipfsGatewayUrl },
     } = getCoreConfig()
@@ -202,7 +207,7 @@ export function getProjectImageUrl({
     return `${imageUrl.replace(/^https:\/\/ipfs\.io\/ipfs\//, ipfsGatewayUrl)}`
 }
 
-export async function getFirstEnsNameFor(address: string) {
+export async function getFirstEnsNameFor(address: string): Promise<string> {
     const contract = new Contract(
         getCoreConfig().reverseRecordsAddress,
         reverseRecordsAbi,
@@ -241,7 +246,7 @@ export async function getAllSponsorships({
     first?: number
     skip?: number
     streamId?: string
-}) {
+}): Promise<GetAllSponsorshipsQuery['sponsorships']> {
     const {
         data: { sponsorships },
     } = await getGraphClient().query<
@@ -259,7 +264,9 @@ export async function getAllSponsorships({
     return sponsorships
 }
 
-export async function getSponsorshipById(sponsorshipId: string) {
+export async function getSponsorshipById(
+    sponsorshipId: string,
+): Promise<NonNullable<GetSponsorshipByIdQuery['sponsorship']> | null> {
     const {
         data: { sponsorship },
     } = await getGraphClient().query<
@@ -286,7 +293,7 @@ export async function getSponsorshipsByCreator(
         skip?: number
         streamId?: string
     } = {},
-) {
+): Promise<GetSponsorshipsByCreatorQuery['sponsorships']> {
     const {
         data: { sponsorships },
     } = await getGraphClient().query<

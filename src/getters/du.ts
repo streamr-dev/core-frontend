@@ -1,4 +1,4 @@
-import DataUnionClient, { DataUnion } from '@dataunions/client'
+import DataUnionClient, { DataUnion, SecretsResponse } from '@dataunions/client'
 import { hexToNumber } from 'web3-utils'
 import { getConfigForChain } from '~/shared/web3/config'
 import { TheGraph } from '~/shared/types'
@@ -35,7 +35,7 @@ export async function getDataUnionsOwnedByInChain(
     }))
 }
 
-export async function getDataUnionClient(chainId: number) {
+export async function getDataUnionClient(chainId: number): Promise<DataUnionClient> {
     const provider: any = await getWalletProvider()
 
     const config = getConfigForChain(chainId)
@@ -92,12 +92,13 @@ export async function getDataUnionClient(chainId: number) {
             : {}),
     })
 
-    return new (await require('@dataunions/client')).DataUnionClient(
-        clientConfig,
-    ) as DataUnionClient
+    return new (await require('@dataunions/client')).DataUnionClient(clientConfig)
 }
 
-export async function getDataUnionSecrets(dataUnionId: string, chainId: number) {
+export async function getDataUnionSecrets(
+    dataUnionId: string,
+    chainId: number,
+): Promise<SecretsResponse[]> {
     return (await getDataUnion(dataUnionId, chainId)).listSecrets()
 }
 
@@ -114,11 +115,20 @@ export async function getDataUnion(
     return dataUnion
 }
 
-export async function getDataUnionAdminFee(dataUnionId: string, chainId: number) {
+export async function getDataUnionAdminFee(
+    dataUnionId: string,
+    chainId: number,
+): Promise<number> {
     return (await getDataUnion(dataUnionId, chainId)).getAdminFee()
 }
 
-export async function getDataUnionStats(dataUnionId: string, chainId: number) {
+export async function getDataUnionStats(
+    dataUnionId: string,
+    chainId: number,
+): Promise<{
+    memberCount: { active: number; inactive: number; total: number }
+    totalEarnings: number
+}> {
     const dataUnion = await getDataUnion(dataUnionId, chainId)
 
     const { activeMemberCount, inactiveMemberCount, totalEarnings } =

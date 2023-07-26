@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
 import {
     GetProjectDocument,
@@ -24,7 +25,7 @@ import { getGraphUrl } from '.'
 
 let apolloClient: undefined | ApolloClient<NormalizedCacheObject>
 
-function getApolloClient() {
+function getApolloClient(): ApolloClient<NormalizedCacheObject> {
     if (!apolloClient) {
         apolloClient = new ApolloClient({
             uri: getGraphUrl(),
@@ -35,7 +36,9 @@ function getApolloClient() {
     return apolloClient
 }
 
-export async function getRawGraphProject(projectId: string) {
+export async function getRawGraphProject(
+    projectId: string,
+): Promise<NonNullable<GetProjectQuery['project']> | null> {
     const {
         data: { project },
     } = await getApolloClient().query<GetProjectQuery, GetProjectQueryVariables>({
@@ -60,7 +63,7 @@ export async function getRawGraphProjects({
     skip?: number
     projectType?: TheGraph.ProjectType
     streamId?: string
-}) {
+}): Promise<GetProjectsQuery['projects']> {
     const where: Project_Filter = {}
 
     if (projectType === TheGraph.ProjectType.Open) {
@@ -107,7 +110,7 @@ export async function getRawGraphProjects({
 export async function getRawGraphProjectsByText(
     value: string,
     { first = 20, skip = 0 }: { first?: number; skip?: number },
-) {
+): Promise<GetProjectsByTextQuery['projectSearch']> {
     const {
         data: { projectSearch: projects = [] },
     } = await getApolloClient().query<
@@ -143,7 +146,9 @@ export async function getProjectSubscriptions(
     return project?.subscriptions || []
 }
 
-export async function getProjectForPurchase(projectId: string) {
+export async function getProjectForPurchase(
+    projectId: string,
+): Promise<Pick<z.infer<typeof GraphProject>, 'paymentDetails' | 'streams'> | null> {
     const {
         data: { project },
     } = await getApolloClient().query<
