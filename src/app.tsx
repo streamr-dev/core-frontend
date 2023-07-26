@@ -3,7 +3,6 @@ import { Container } from 'toasterhea'
 import styled from 'styled-components'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client'
 import '~/shared/assets/stylesheets'
 import '@ibm/plex/css/ibm-plex.css'
 import '~/utils/setupSnippets'
@@ -27,7 +26,6 @@ import { SingleSponsorshipPage } from '~/network/pages/SingleSponsorshipPage'
 import Globals from '~/shared/components/Globals'
 import { Layer } from '~/utils/Layer'
 import { FeatureFlag, isFeatureEnabled } from '~/shared/utils/isFeatureEnabled'
-import getGraphClient from '~/getters/getGraphClient'
 import routes from '~/routes'
 import OperatorsPage from '~/pages/OperatorsPage'
 import { HubRouter } from '~/consts'
@@ -60,75 +58,61 @@ const queryClient = new QueryClient()
 
 const App = () => (
     <HubRouter>
-        <ApolloProvider client={getGraphClient()}>
-            <QueryClientProvider client={queryClient}>
-                <StreamrClientProvider>
-                    <ModalPortalProvider>
-                        <ModalProvider>
-                            <Analytics />
-                            <Globals />
-                            <Routes>
-                                <Route
-                                    path="/hub/projects/*"
-                                    errorElement={<ErrorPage />}
-                                >
-                                    <Route index element={<ProjectsPage />} />
-                                    <Route path="new" element={<NewProjectPage />} />
+        <QueryClientProvider client={queryClient}>
+            <StreamrClientProvider>
+                <ModalPortalProvider>
+                    <ModalProvider>
+                        <Analytics />
+                        <Globals />
+                        <Routes>
+                            <Route path="/hub/projects/*" errorElement={<ErrorPage />}>
+                                <Route index element={<ProjectsPage />} />
+                                <Route path="new" element={<NewProjectPage />} />
+                                <Route path=":id/edit" element={<EditProjectPage />} />
+                                <Route path=":id/*" element={<ProjectPage />} />
+                            </Route>
+                            <Route path="/hub/streams/*" errorElement={<ErrorPage />}>
+                                <Route index element={<NewStreamListingPage />} />
+                                <Route path=":id/*" element={<StreamPage />} />
+                            </Route>
+                            {isFeatureEnabled(FeatureFlag.PhaseTwo) && (
+                                <>
                                     <Route
-                                        path=":id/edit"
-                                        element={<EditProjectPage />}
-                                    />
-                                    <Route path=":id/*" element={<ProjectPage />} />
-                                </Route>
-                                <Route path="/hub/streams/*" errorElement={<ErrorPage />}>
-                                    <Route index element={<NewStreamListingPage />} />
-                                    <Route path=":id/*" element={<StreamPage />} />
-                                </Route>
-                                {isFeatureEnabled(FeatureFlag.PhaseTwo) && (
-                                    <>
+                                        path="/hub/network/*"
+                                        errorElement={<ErrorPage />}
+                                    >
                                         <Route
-                                            path="/hub/network/*"
+                                            path="operators/*"
                                             errorElement={<ErrorPage />}
                                         >
+                                            <Route index element={<OperatorsPage />} />
+                                        </Route>
+                                        <Route
+                                            path="sponsorships/*"
+                                            errorElement={<ErrorPage />}
+                                        >
+                                            <Route index element={<SponsorshipsPage />} />
                                             <Route
-                                                path="operators/*"
-                                                errorElement={<ErrorPage />}
-                                            >
-                                                <Route
-                                                    index
-                                                    element={<OperatorsPage />}
-                                                />
-                                            </Route>
-                                            <Route
-                                                path="sponsorships/*"
-                                                errorElement={<ErrorPage />}
-                                            >
-                                                <Route
-                                                    index
-                                                    element={<SponsorshipsPage />}
-                                                />
-                                                <Route
-                                                    path=":id"
-                                                    element={<SingleSponsorshipPage />}
-                                                />
-                                            </Route>
-                                            <Route
-                                                path="overview"
-                                                element={<NetworkOverviewPage />}
+                                                path=":id"
+                                                element={<SingleSponsorshipPage />}
                                             />
                                         </Route>
-                                    </>
-                                )}
-                                {MiscRouter()}
-                            </Routes>
-                            <Container id={Layer.Modal} />
-                            <ToastContainer id={Layer.Toast} />
-                            <AnalyticsTracker />
-                        </ModalProvider>
-                    </ModalPortalProvider>
-                </StreamrClientProvider>
-            </QueryClientProvider>
-        </ApolloProvider>
+                                        <Route
+                                            path="overview"
+                                            element={<NetworkOverviewPage />}
+                                        />
+                                    </Route>
+                                </>
+                            )}
+                            {MiscRouter()}
+                        </Routes>
+                        <Container id={Layer.Modal} />
+                        <ToastContainer id={Layer.Toast} />
+                        <AnalyticsTracker />
+                    </ModalProvider>
+                </ModalPortalProvider>
+            </StreamrClientProvider>
+        </QueryClientProvider>
     </HubRouter>
 )
 
