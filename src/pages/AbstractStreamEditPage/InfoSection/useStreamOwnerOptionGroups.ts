@@ -6,6 +6,7 @@ import { errorToast } from '~/utils/toast'
 import {
     GetEnsDomainsForAccountQuery,
     GetEnsDomainsForAccountDocument,
+    GetEnsDomainsForAccountQueryVariables,
 } from '~/generated/gql/ens'
 
 export const ADD_ENS_DOMAIN_VALUE = '::ens/add_domain'
@@ -23,13 +24,15 @@ async function fetchDomains(account: string | undefined): Promise<string[]> {
     }
 
     try {
-        const { data = { domains: [] } } =
-            await apolloClient.query<GetEnsDomainsForAccountQuery>({
-                query: GetEnsDomainsForAccountDocument,
-                variables: {
-                    account: account.toLowerCase(),
-                },
-            })
+        const { data = { domains: [] } } = await apolloClient.query<
+            GetEnsDomainsForAccountQuery,
+            GetEnsDomainsForAccountQueryVariables
+        >({
+            query: GetEnsDomainsForAccountDocument,
+            variables: {
+                account: account.toLowerCase(),
+            },
+        })
 
         return (data.domains.map(({ name }) => name).filter(Boolean) as string[]).sort()
     } catch (e) {

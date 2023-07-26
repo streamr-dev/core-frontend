@@ -3,13 +3,18 @@ import {
     GetProjectDocument,
     GetProjectForPurchaseDocument,
     GetProjectForPurchaseQuery,
+    GetProjectForPurchaseQueryVariables,
     GetProjectQuery,
+    GetProjectQueryVariables,
     GetProjectSubscriptionsDocument,
     GetProjectSubscriptionsQuery,
+    GetProjectSubscriptionsQueryVariables,
     GetProjectsByTextDocument,
     GetProjectsByTextQuery,
+    GetProjectsByTextQueryVariables,
     GetProjectsDocument,
     GetProjectsQuery,
+    GetProjectsQueryVariables,
     Project_Filter,
 } from '~/generated/gql/network'
 import { TheGraph } from '~/shared/types'
@@ -33,7 +38,7 @@ function getApolloClient() {
 export async function getRawGraphProject(projectId: string) {
     const {
         data: { project },
-    } = await getApolloClient().query<GetProjectQuery>({
+    } = await getApolloClient().query<GetProjectQuery, GetProjectQueryVariables>({
         query: GetProjectDocument,
         variables: {
             id: projectId,
@@ -87,7 +92,7 @@ export async function getRawGraphProjects({
 
     const {
         data: { projects = [] },
-    } = await getApolloClient().query<GetProjectsQuery>({
+    } = await getApolloClient().query<GetProjectsQuery, GetProjectsQueryVariables>({
         query: GetProjectsDocument,
         variables: {
             skip,
@@ -105,7 +110,10 @@ export async function getRawGraphProjectsByText(
 ) {
     const {
         data: { projectSearch: projects = [] },
-    } = await getApolloClient().query<GetProjectsByTextQuery>({
+    } = await getApolloClient().query<
+        GetProjectsByTextQuery,
+        GetProjectsByTextQueryVariables
+    >({
         query: GetProjectsByTextDocument,
         variables: {
             first,
@@ -122,7 +130,10 @@ export async function getProjectSubscriptions(
 ): Promise<TheGraph.ProjectSubscription[]> {
     const {
         data: { project },
-    } = await getApolloClient().query<GetProjectSubscriptionsQuery>({
+    } = await getApolloClient().query<
+        GetProjectSubscriptionsQuery,
+        GetProjectSubscriptionsQueryVariables
+    >({
         query: GetProjectSubscriptionsDocument,
         variables: {
             id: projectId,
@@ -135,7 +146,10 @@ export async function getProjectSubscriptions(
 export async function getProjectForPurchase(projectId: string) {
     const {
         data: { project },
-    } = await getApolloClient().query<GetProjectForPurchaseQuery>({
+    } = await getApolloClient().query<
+        GetProjectForPurchaseQuery,
+        GetProjectForPurchaseQueryVariables
+    >({
         query: GetProjectForPurchaseDocument,
         variables: {
             id: projectId,

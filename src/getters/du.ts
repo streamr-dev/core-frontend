@@ -6,6 +6,7 @@ import { getWalletAccount, getWalletProvider } from '~/shared/stores/wallet'
 import {
     GetDataUnionsOwnedByQuery,
     GetDataUnionsOwnedByDocument,
+    GetDataUnionsOwnedByQueryVariables,
 } from '~/generated/gql/du'
 import getClientConfig from '~/getters/getClientConfig'
 import { toBN } from '~/utils/bn'
@@ -18,7 +19,10 @@ export async function getDataUnionsOwnedByInChain(
 ): Promise<TheGraph.DataUnion[]> {
     const client = getDataUnionGraphClient(chainId)
 
-    const { data = { dataUnions: [] } } = await client.query<GetDataUnionsOwnedByQuery>({
+    const { data = { dataUnions: [] } } = await client.query<
+        GetDataUnionsOwnedByQuery,
+        GetDataUnionsOwnedByQueryVariables
+    >({
         query: GetDataUnionsOwnedByDocument,
         variables: {
             owner: account.toLowerCase(),

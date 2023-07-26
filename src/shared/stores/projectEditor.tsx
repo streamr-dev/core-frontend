@@ -13,7 +13,11 @@ import { isProjectOwnedBy } from '~/utils'
 import getGraphClient from '~/getters/getGraphClient'
 import { ProjectType, Project, QueriedGraphProject } from '~/shared/types'
 import { toBN } from '~/utils/bn'
-import { GetProjectQuery, GetProjectDocument } from '~/generated/gql/network'
+import {
+    GetProjectQuery,
+    GetProjectDocument,
+    GetProjectQueryVariables,
+} from '~/generated/gql/network'
 import { ProjectMetadata } from '~/shared/consts'
 import { getDataUnionAdminFee } from '~/getters/du'
 import { useHasActiveProjectSubscription } from './purchases'
@@ -287,7 +291,10 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
 
                     const {
                         data: { project: graphProject },
-                    } = await getGraphClient().query<GetProjectQuery>({
+                    } = await getGraphClient().query<
+                        GetProjectQuery,
+                        GetProjectQueryVariables
+                    >({
                         query: GetProjectDocument,
                         variables: {
                             id: id.toLowerCase(),
