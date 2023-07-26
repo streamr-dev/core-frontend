@@ -107,15 +107,18 @@ type SmartContractPaymentDetails = {
 }
 
 const mapProject = (project: any): TheGraphProject => {
+    let metadata = {}
+
     try {
-        const metadata = JSON.parse(project.metadata)
-        project.metadata = metadata
+        metadata = JSON.parse(project.metadata)
     } catch (e) {
-        console.error(`Could not parse metadata for project ${project.id}`, e)
-        project.metadata = {}
+        console.warn('Could not parse metadata for project', project.id, e)
     }
 
-    return project as TheGraphProject
+    return {
+        ...project,
+        metadata,
+    }
 }
 
 export const getProject = async (id: string): Promise<TheGraphProject | null> => {
