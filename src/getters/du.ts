@@ -1,7 +1,6 @@
-import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
 import DataUnionClient, { DataUnion } from '@dataunions/client'
 import { hexToNumber } from 'web3-utils'
-import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
+import { getConfigForChain } from '~/shared/web3/config'
 import { TheGraph } from '~/shared/types'
 import { getWalletAccount, getWalletProvider } from '~/shared/stores/wallet'
 import {
@@ -10,44 +9,14 @@ import {
 } from '~/generated/gql/du'
 import getClientConfig from '~/getters/getClientConfig'
 import { toBN } from '~/utils/bn'
+import { getDataUnionGraphClient } from '~/getters/getGraphClient'
 import getCoreConfig from './getCoreConfig'
-
-const apolloClients: Partial<Record<number, ApolloClient<NormalizedCacheObject>>> = {}
-
-export default function getDuApolloClientForChain(chainId: number) {
-    const client =
-        apolloClients[chainId] ||
-        new ApolloClient({
-            uri: getDataUnionSubgraphUrlForChain(chainId),
-            cache: new InMemoryCache(),
-        })
-
-    if (!apolloClients[chainId]) {
-        apolloClients[chainId] = client
-    }
-
-    return client
-}
-
-export function getDataUnionSubgraphUrlForChain(chainId: number) {
-    const map = getCoreConfig().dataunionGraphNames
-
-    const item = map.find((i: any) => i.chainId === chainId)
-
-    if (!item?.name) {
-        throw new Error(`No dataunionGraphNames defined in config for chain ${chainId}!`)
-    }
-
-    const { theGraphUrl } = getCoreConfig()
-
-    return `${theGraphUrl}/subgraphs/name/${item.name}`
-}
 
 export async function getDataUnionsOwnedByInChain(
     account: string,
     chainId: number,
 ): Promise<TheGraph.DataUnion[]> {
-    const client = getDuApolloClientForChain(chainId)
+    const client = getDataUnionGraphClient(chainId)
 
     const { data = { dataUnions: [] } } = await client.query<GetDataUnionsOwnedByQuery>({
         query: GetDataUnionsOwnedByDocument,
