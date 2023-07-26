@@ -16,7 +16,7 @@ const config: CodegenConfig = {
             schema: NETWORK_GRAPH_SCHEMA_PATH,
             plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo'],
             config: {
-                withHooks: true,
+                withHooks: false,
             },
         },
         'src/generated/gql/du.ts': {

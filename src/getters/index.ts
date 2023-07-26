@@ -21,7 +21,19 @@ import { ProjectType } from '~/shared/types'
 import tokenAbi from '~/shared/web3/abis/token.json'
 import address0 from '~/utils/address0'
 import { ProjectMetadata } from '~/shared/consts'
+import {
+    GetSponsorshipByIdQuery,
+    GetSponsorshipByIdDocument,
+    GetAllSponsorshipsQuery,
+    GetAllSponsorshipsDocument,
+    GetAllSponsorshipsQueryVariables,
+    GetSponsorshipByIdQueryVariables,
+    GetSponsorshipsByCreatorQuery,
+    GetSponsorshipsByCreatorQueryVariables,
+    GetSponsorshipsByCreatorDocument,
+} from '~/generated/gql/network'
 import getCoreConfig from './getCoreConfig'
+import getGraphClient from './getGraphClient'
 
 export function getGraphUrl() {
     const { theGraphUrl, theHubGraphName } = getCoreConfig()
@@ -219,4 +231,76 @@ export function getGraphProjectWithParsedMetadata<T extends { metadata: string }
         ...rawProject,
         metadata,
     }
+}
+
+export async function getAllSponsorships({
+    first,
+    skip,
+    streamId,
+}: {
+    first?: number
+    skip?: number
+    streamId?: string
+}) {
+    const {
+        data: { sponsorships },
+    } = await getGraphClient().query<
+        GetAllSponsorshipsQuery,
+        GetAllSponsorshipsQueryVariables
+    >({
+        query: GetAllSponsorshipsDocument,
+        variables: {
+            first,
+            skip,
+            streamContains: streamId,
+        },
+    })
+
+    return sponsorships
+}
+
+export async function getSponsorshipById(sponsorshipId: string) {
+    const {
+        data: { sponsorship },
+    } = await getGraphClient().query<
+        GetSponsorshipByIdQuery,
+        GetSponsorshipByIdQueryVariables
+    >({
+        query: GetSponsorshipByIdDocument,
+        variables: {
+            sponsorshipId,
+        },
+    })
+
+    return sponsorship || null
+}
+
+export async function getSponsorshipsByCreator(
+    creator: string,
+    {
+        first,
+        skip,
+        streamId,
+    }: {
+        first?: number
+        skip?: number
+        streamId?: string
+    } = {},
+) {
+    const {
+        data: { sponsorships },
+    } = await getGraphClient().query<
+        GetSponsorshipsByCreatorQuery,
+        GetSponsorshipsByCreatorQueryVariables
+    >({
+        query: GetSponsorshipsByCreatorDocument,
+        variables: {
+            first,
+            skip,
+            streamContains: streamId,
+            creator,
+        },
+    })
+
+    return sponsorships
 }
