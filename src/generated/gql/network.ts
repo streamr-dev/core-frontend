@@ -7,7 +7,6 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
-const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -3123,34 +3122,6 @@ export const GetAllOperatorsDocument = gql`
   }
 }
     ${OperatorFieldsFragmentDoc}`;
-
-/**
- * __useGetAllOperatorsQuery__
- *
- * To run a query within a React component, call `useGetAllOperatorsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllOperatorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllOperatorsQuery({
- *   variables: {
- *      first: // value for 'first'
- *      skip: // value for 'skip'
- *   },
- * });
- */
-export function useGetAllOperatorsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllOperatorsQuery, GetAllOperatorsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllOperatorsQuery, GetAllOperatorsQueryVariables>(GetAllOperatorsDocument, options);
-      }
-export function useGetAllOperatorsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllOperatorsQuery, GetAllOperatorsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllOperatorsQuery, GetAllOperatorsQueryVariables>(GetAllOperatorsDocument, options);
-        }
-export type GetAllOperatorsQueryHookResult = ReturnType<typeof useGetAllOperatorsQuery>;
-export type GetAllOperatorsLazyQueryHookResult = ReturnType<typeof useGetAllOperatorsLazyQuery>;
 export type GetAllOperatorsQueryResult = Apollo.QueryResult<GetAllOperatorsQuery, GetAllOperatorsQueryVariables>;
 export const GetAllSponsorshipsDocument = gql`
     query getAllSponsorships($first: Int, $skip: Int, $streamContains: String) {
@@ -3163,35 +3134,6 @@ export const GetAllSponsorshipsDocument = gql`
   }
 }
     ${SponsorshipFieldsFragmentDoc}`;
-
-/**
- * __useGetAllSponsorshipsQuery__
- *
- * To run a query within a React component, call `useGetAllSponsorshipsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllSponsorshipsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllSponsorshipsQuery({
- *   variables: {
- *      first: // value for 'first'
- *      skip: // value for 'skip'
- *      streamContains: // value for 'streamContains'
- *   },
- * });
- */
-export function useGetAllSponsorshipsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllSponsorshipsQuery, GetAllSponsorshipsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllSponsorshipsQuery, GetAllSponsorshipsQueryVariables>(GetAllSponsorshipsDocument, options);
-      }
-export function useGetAllSponsorshipsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllSponsorshipsQuery, GetAllSponsorshipsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllSponsorshipsQuery, GetAllSponsorshipsQueryVariables>(GetAllSponsorshipsDocument, options);
-        }
-export type GetAllSponsorshipsQueryHookResult = ReturnType<typeof useGetAllSponsorshipsQuery>;
-export type GetAllSponsorshipsLazyQueryHookResult = ReturnType<typeof useGetAllSponsorshipsLazyQuery>;
 export type GetAllSponsorshipsQueryResult = Apollo.QueryResult<GetAllSponsorshipsQuery, GetAllSponsorshipsQueryVariables>;
 export const GetSponsorshipsByCreatorDocument = gql`
     query getSponsorshipsByCreator($first: Int, $skip: Int, $streamContains: String, $creator: String!) {
@@ -3204,36 +3146,6 @@ export const GetSponsorshipsByCreatorDocument = gql`
   }
 }
     ${SponsorshipFieldsFragmentDoc}`;
-
-/**
- * __useGetSponsorshipsByCreatorQuery__
- *
- * To run a query within a React component, call `useGetSponsorshipsByCreatorQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetSponsorshipsByCreatorQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetSponsorshipsByCreatorQuery({
- *   variables: {
- *      first: // value for 'first'
- *      skip: // value for 'skip'
- *      streamContains: // value for 'streamContains'
- *      creator: // value for 'creator'
- *   },
- * });
- */
-export function useGetSponsorshipsByCreatorQuery(baseOptions: Apollo.QueryHookOptions<GetSponsorshipsByCreatorQuery, GetSponsorshipsByCreatorQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetSponsorshipsByCreatorQuery, GetSponsorshipsByCreatorQueryVariables>(GetSponsorshipsByCreatorDocument, options);
-      }
-export function useGetSponsorshipsByCreatorLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSponsorshipsByCreatorQuery, GetSponsorshipsByCreatorQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetSponsorshipsByCreatorQuery, GetSponsorshipsByCreatorQueryVariables>(GetSponsorshipsByCreatorDocument, options);
-        }
-export type GetSponsorshipsByCreatorQueryHookResult = ReturnType<typeof useGetSponsorshipsByCreatorQuery>;
-export type GetSponsorshipsByCreatorLazyQueryHookResult = ReturnType<typeof useGetSponsorshipsByCreatorLazyQuery>;
 export type GetSponsorshipsByCreatorQueryResult = Apollo.QueryResult<GetSponsorshipsByCreatorQuery, GetSponsorshipsByCreatorQueryVariables>;
 export const GetSponsorshipByIdDocument = gql`
     query getSponsorshipById($sponsorshipId: ID!) {
@@ -3242,33 +3154,6 @@ export const GetSponsorshipByIdDocument = gql`
   }
 }
     ${SponsorshipFieldsFragmentDoc}`;
-
-/**
- * __useGetSponsorshipByIdQuery__
- *
- * To run a query within a React component, call `useGetSponsorshipByIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetSponsorshipByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetSponsorshipByIdQuery({
- *   variables: {
- *      sponsorshipId: // value for 'sponsorshipId'
- *   },
- * });
- */
-export function useGetSponsorshipByIdQuery(baseOptions: Apollo.QueryHookOptions<GetSponsorshipByIdQuery, GetSponsorshipByIdQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetSponsorshipByIdQuery, GetSponsorshipByIdQueryVariables>(GetSponsorshipByIdDocument, options);
-      }
-export function useGetSponsorshipByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSponsorshipByIdQuery, GetSponsorshipByIdQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetSponsorshipByIdQuery, GetSponsorshipByIdQueryVariables>(GetSponsorshipByIdDocument, options);
-        }
-export type GetSponsorshipByIdQueryHookResult = ReturnType<typeof useGetSponsorshipByIdQuery>;
-export type GetSponsorshipByIdLazyQueryHookResult = ReturnType<typeof useGetSponsorshipByIdLazyQuery>;
 export type GetSponsorshipByIdQueryResult = Apollo.QueryResult<GetSponsorshipByIdQuery, GetSponsorshipByIdQueryVariables>;
 export const GetProjectDocument = gql`
     query getProject($id: ID!) {
@@ -3277,33 +3162,6 @@ export const GetProjectDocument = gql`
   }
 }
     ${ProjectFieldsFragmentDoc}`;
-
-/**
- * __useGetProjectQuery__
- *
- * To run a query within a React component, call `useGetProjectQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProjectQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetProjectQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetProjectQuery(baseOptions: Apollo.QueryHookOptions<GetProjectQuery, GetProjectQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetProjectQuery, GetProjectQueryVariables>(GetProjectDocument, options);
-      }
-export function useGetProjectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectQuery, GetProjectQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetProjectQuery, GetProjectQueryVariables>(GetProjectDocument, options);
-        }
-export type GetProjectQueryHookResult = ReturnType<typeof useGetProjectQuery>;
-export type GetProjectLazyQueryHookResult = ReturnType<typeof useGetProjectLazyQuery>;
 export type GetProjectQueryResult = Apollo.QueryResult<GetProjectQuery, GetProjectQueryVariables>;
 export const GetProjectsDocument = gql`
     query getProjects($first: Int, $skip: Int, $where: Project_filter) {
@@ -3318,35 +3176,6 @@ export const GetProjectsDocument = gql`
   }
 }
     ${ProjectFieldsFragmentDoc}`;
-
-/**
- * __useGetProjectsQuery__
- *
- * To run a query within a React component, call `useGetProjectsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetProjectsQuery({
- *   variables: {
- *      first: // value for 'first'
- *      skip: // value for 'skip'
- *      where: // value for 'where'
- *   },
- * });
- */
-export function useGetProjectsQuery(baseOptions?: Apollo.QueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, options);
-      }
-export function useGetProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, options);
-        }
-export type GetProjectsQueryHookResult = ReturnType<typeof useGetProjectsQuery>;
-export type GetProjectsLazyQueryHookResult = ReturnType<typeof useGetProjectsLazyQuery>;
 export type GetProjectsQueryResult = Apollo.QueryResult<GetProjectsQuery, GetProjectsQueryVariables>;
 export const GetProjectsByTextDocument = gql`
     query getProjectsByText($first: Int, $skip: Int, $text: String!) {
@@ -3355,35 +3184,6 @@ export const GetProjectsByTextDocument = gql`
   }
 }
     ${ProjectFieldsFragmentDoc}`;
-
-/**
- * __useGetProjectsByTextQuery__
- *
- * To run a query within a React component, call `useGetProjectsByTextQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProjectsByTextQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetProjectsByTextQuery({
- *   variables: {
- *      first: // value for 'first'
- *      skip: // value for 'skip'
- *      text: // value for 'text'
- *   },
- * });
- */
-export function useGetProjectsByTextQuery(baseOptions: Apollo.QueryHookOptions<GetProjectsByTextQuery, GetProjectsByTextQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetProjectsByTextQuery, GetProjectsByTextQueryVariables>(GetProjectsByTextDocument, options);
-      }
-export function useGetProjectsByTextLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectsByTextQuery, GetProjectsByTextQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetProjectsByTextQuery, GetProjectsByTextQueryVariables>(GetProjectsByTextDocument, options);
-        }
-export type GetProjectsByTextQueryHookResult = ReturnType<typeof useGetProjectsByTextQuery>;
-export type GetProjectsByTextLazyQueryHookResult = ReturnType<typeof useGetProjectsByTextLazyQuery>;
 export type GetProjectsByTextQueryResult = Apollo.QueryResult<GetProjectsByTextQuery, GetProjectsByTextQueryVariables>;
 export const GetProjectSubscriptionsDocument = gql`
     query getProjectSubscriptions($id: ID!) {
@@ -3395,33 +3195,6 @@ export const GetProjectSubscriptionsDocument = gql`
   }
 }
     `;
-
-/**
- * __useGetProjectSubscriptionsQuery__
- *
- * To run a query within a React component, call `useGetProjectSubscriptionsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProjectSubscriptionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetProjectSubscriptionsQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetProjectSubscriptionsQuery(baseOptions: Apollo.QueryHookOptions<GetProjectSubscriptionsQuery, GetProjectSubscriptionsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetProjectSubscriptionsQuery, GetProjectSubscriptionsQueryVariables>(GetProjectSubscriptionsDocument, options);
-      }
-export function useGetProjectSubscriptionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectSubscriptionsQuery, GetProjectSubscriptionsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetProjectSubscriptionsQuery, GetProjectSubscriptionsQueryVariables>(GetProjectSubscriptionsDocument, options);
-        }
-export type GetProjectSubscriptionsQueryHookResult = ReturnType<typeof useGetProjectSubscriptionsQuery>;
-export type GetProjectSubscriptionsLazyQueryHookResult = ReturnType<typeof useGetProjectSubscriptionsLazyQuery>;
 export type GetProjectSubscriptionsQueryResult = Apollo.QueryResult<GetProjectSubscriptionsQuery, GetProjectSubscriptionsQueryVariables>;
 export const GetProjectForPurchaseDocument = gql`
     query getProjectForPurchase($id: ID!) {
@@ -3436,31 +3209,4 @@ export const GetProjectForPurchaseDocument = gql`
   }
 }
     `;
-
-/**
- * __useGetProjectForPurchaseQuery__
- *
- * To run a query within a React component, call `useGetProjectForPurchaseQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProjectForPurchaseQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetProjectForPurchaseQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetProjectForPurchaseQuery(baseOptions: Apollo.QueryHookOptions<GetProjectForPurchaseQuery, GetProjectForPurchaseQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetProjectForPurchaseQuery, GetProjectForPurchaseQueryVariables>(GetProjectForPurchaseDocument, options);
-      }
-export function useGetProjectForPurchaseLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectForPurchaseQuery, GetProjectForPurchaseQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetProjectForPurchaseQuery, GetProjectForPurchaseQueryVariables>(GetProjectForPurchaseDocument, options);
-        }
-export type GetProjectForPurchaseQueryHookResult = ReturnType<typeof useGetProjectForPurchaseQuery>;
-export type GetProjectForPurchaseLazyQueryHookResult = ReturnType<typeof useGetProjectForPurchaseLazyQuery>;
 export type GetProjectForPurchaseQueryResult = Apollo.QueryResult<GetProjectForPurchaseQuery, GetProjectForPurchaseQueryVariables>;
