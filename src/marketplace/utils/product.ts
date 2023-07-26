@@ -1,76 +1,9 @@
 import * as yup from 'yup'
 import { isAddress } from 'web3-validator'
-import { contractCurrencies as currencies } from '~/shared/utils/constants'
-import { TheGraphProject } from '~/services/projects'
 import { ProjectType } from '~/shared/types'
 import { ObjectPaths } from '~/utils/objectPaths'
-import { BNish, toBN } from '~/utils/bn'
 import { ContactDetails, Project } from '../types/project-types'
 import { validateSalePoint } from './validate'
-import { fromDecimals, toDecimals } from './math'
-
-export const isPaidProject = (project: Project): boolean =>
-    project.type !== ProjectType.OpenData
-
-export const isProjectOwnedBy = (
-    { permissions }: Pick<TheGraphProject, 'permissions'>,
-    address: string,
-) => {
-    const { canGrant = false } =
-        permissions.find((p) => p.userAddress.toLowerCase() === address.toLowerCase()) ||
-        {}
-
-    return !!canGrant
-}
-
-export const isDataUnionProject = (project: TheGraphProject): boolean => {
-    return project.isDataUnion
-}
-
-export const isDataUnionProduct = (
-    productOrProductType?: Project | ProjectType,
-): boolean => {
-    const { type } =
-        typeof productOrProductType === 'string'
-            ? {
-                  type: productOrProductType,
-              }
-            : ((productOrProductType || {}) as Project)
-
-    return type === ProjectType.DataUnion
-}
-
-export const validateProductPriceCurrency = (priceCurrency: string): void => {
-    const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
-
-    if (currencyIndex < 0) {
-        throw new Error(`Invalid currency: ${priceCurrency}`)
-    }
-}
-
-export const validateApiProductPricePerSecond = (pricePerSecond: BNish): void => {
-    if (toBN(pricePerSecond).lt(0)) {
-        throw new Error('Product price must be equal to or greater than 0')
-    }
-}
-
-export const validateContractProductPricePerSecond = (pricePerSecond: BNish): void => {
-    if (toBN(pricePerSecond).lte(0)) {
-        throw new Error('Product price must be greater than 0 to publish')
-    }
-}
-
-export const mapPriceFromContract = (pricePerSecond: BNish, decimals: BNish): string =>
-    fromDecimals(pricePerSecond, decimals).toString()
-
-export const mapPriceToContract = (pricePerSecond: BNish, decimals: BNish): string =>
-    toDecimals(pricePerSecond, decimals).toString()
-
-export const mapProductFromApi = (product: Project): Project => {
-    // TODO map the project from contract
-    // const pricePerSecond = mapPriceFromApi(product.pricePerSecond)
-    return { ...product }
-}
 
 const urlValidator = yup.string().trim().url()
 

@@ -1,30 +1,22 @@
-import getCoreConfig from '~/getters/getCoreConfig'
-import { post } from '~/shared/utils/api'
 import { Address } from '~/shared/types/web3-types'
-import { getConfigForChainByName } from '~/shared/web3/config'
-import address0 from '~/utils/address0'
 import { getSigner } from '~/shared/stores/wallet'
-import { getGraphUrl, getProjectRegistryContract } from '~/getters'
+import { getProjectRegistryContract } from '~/getters'
 import networkPreflight from '~/utils/networkPreflight'
 import { deployDataUnion } from '~/marketplace/modules/dataUnion/services'
 import { BN } from '~/utils/bn'
-
-const getProjectRegistryChainId = () => {
-    const { projectsChain } = getCoreConfig()
-    const config = getConfigForChainByName(projectsChain)
-    return config.id
-}
+import {
+    getRawGraphProject,
+    getRawGraphProjects,
+    getRawGraphProjectsByText,
+} from '~/getters/hub'
+import { getProjectRegistryChainId } from '~/getters'
+import { TheGraph } from '~/shared/types'
 
 export type TheGraphPaymentDetails = {
     domainId: string
     beneficiary: string
     pricingTokenAddress: string
     pricePerSecond: string
-}
-
-export type TheGraphSubscription = {
-    userAddress: string
-    endTimestamp: string
 }
 
 export type ProjectPermissions = {
@@ -49,7 +41,6 @@ export type TheGraphProject = {
     id: string
     paymentDetails: TheGraphPaymentDetails[]
     minimumSubscriptionSeconds: string
-    subscriptions: TheGraphSubscription[]
     metadata: SmartContractProjectMetadata
     version: number | null
     streams: string[]
@@ -115,83 +106,26 @@ type SmartContractPaymentDetails = {
     pricingTokenAddress: string
 }
 
-const projectFields = `
-    id
-    domainIds
-    score
-    metadata
-    streams
-    minimumSubscriptionSeconds
-    createdAt
-    updatedAt
-    isDataUnion
-    paymentDetails {
-        domainId
-        beneficiary
-        pricingTokenAddress
-        pricePerSecond
-    }
-    subscriptions {
-        userAddress
-        endTimestamp
-    }
-    permissions {
-        userAddress
-        canBuy
-        canDelete
-        canEdit
-        canGrant
-    }
-    purchases {
-        subscriber
-        subscriptionSeconds
-        price
-        fee
-        purchasedAt
-    }
-`
-
 const mapProject = (project: any): TheGraphProject => {
+    let metadata = {}
+
     try {
-        const metadata = JSON.parse(project.metadata)
-        project.metadata = metadata
+        metadata = JSON.parse(project.metadata)
     } catch (e) {
-        console.error(`Could not parse metadata for project ${project.id}`, e)
-        project.metadata = {}
+        console.warn('Could not parse metadata for project', project.id, e)
     }
 
-    return project as TheGraphProject
-}
-
-export enum ProjectListingTypeFilter {
-    openData = 'openData',
-    paidData = 'paidData',
-    dataUnion = 'dataUnion',
+    return {
+        ...project,
+        metadata,
+    }
 }
 
 export const getProject = async (id: string): Promise<TheGraphProject | null> => {
-    const theGraphUrl = getGraphUrl()
+    const project = await getRawGraphProject(id)
 
-    const result = await post({
-        url: theGraphUrl,
-        data: {
-            query: `
-                query {
-                    projects(
-                        where: { id: "${id.toLowerCase()}" }
-                    ) {
-                        ${projectFields}
-                    }
-                }
-            `,
-        },
-    })
-
-    if (result.data) {
-        const projects = result.data.projects.map((p) => mapProject(p))
-        if (projects && projects.length > 0) {
-            return projects[0]
-        }
+    if (project) {
+        return mapProject(project)
     }
 
     return null
@@ -223,103 +157,35 @@ export type ProjectsResult = {
     lastId: string | null
 }
 
-const getProjectFilterQuery = (type: ProjectListingTypeFilter): string => {
-    switch (type) {
-        case ProjectListingTypeFilter.openData:
-            return `paymentDetails_: {beneficiary: "${address0}"}`
-        case ProjectListingTypeFilter.paidData:
-            return `paymentDetails_: {beneficiary_not: "${address0}"}`
-        case ProjectListingTypeFilter.dataUnion:
-            return `isDataUnion: true`
-    }
-}
-
 export const getProjects = async (
     owner?: string | undefined,
     first = 20,
     skip = 0,
-    type?: ProjectListingTypeFilter | undefined,
-    streamId?: string | null, // used to search projects which contain this stream
+    projectType?: TheGraph.ProjectType | undefined,
+    streamId?: string, // used to search projects which contain this stream
 ): Promise<ProjectsResult> => {
-    const theGraphUrl = getGraphUrl()
-
-    const filters: string[] = []
-    if (owner) {
-        filters.push(`permissions_: { userAddress: "${owner}", canGrant: true }`)
-    }
-    if (type) {
-        filters.push(getProjectFilterQuery(type))
-    }
-    if (streamId) {
-        filters.push(`streams_contains: ["${streamId}"]`)
-    }
-
-    const result = await post({
-        url: theGraphUrl,
-        data: {
-            query: `
-                query {
-                    projects(
-                        first: ${first + 1},
-                        skip: ${skip},
-                        orderBy: score,
-                        orderDirection: desc,
-                        ${filters.length > 0 ? `where: { ${filters} }` : ''},
-                    ) {
-                        ${projectFields}
-                    }
-                }
-            `,
-        },
+    const projects = await getRawGraphProjects({
+        owner,
+        first: first + 1,
+        skip,
+        projectType,
+        streamId,
     })
 
-    if (result.data) {
-        return prepareProjectResult(result.data.projects, first)
-    }
-
-    return {
-        projects: [],
-        hasNextPage: false,
-        lastId: null,
-    }
+    return prepareProjectResult(projects as unknown as TheGraphProject[], first)
 }
 
 export const searchProjects = async (
     search: string,
     first = 20,
     skip = 0,
-    type?: ProjectListingTypeFilter | null,
 ): Promise<ProjectsResult> => {
-    const theGraphUrl = getGraphUrl()
-    const typeFilter = type != null ? getProjectFilterQuery(type) : null
-
-    const result = await post({
-        url: theGraphUrl,
-        data: {
-            query: `
-                query {
-                    projectSearch(
-                        first: ${first + 1},
-                        skip: ${skip},
-                        text: "${search}",
-                        ${typeFilter !== null ? `where: {${typeFilter}}` : ''}
-                    ) {
-                        ${projectFields}
-                    }
-                }
-            `,
-        },
+    const projects = await getRawGraphProjectsByText(search, {
+        first: first + 1,
+        skip,
     })
 
-    if (result.data) {
-        return prepareProjectResult(result.data.projectSearch, first)
-    }
-
-    return {
-        projects: [],
-        hasNextPage: false,
-        lastId: null,
-    }
+    return prepareProjectResult(projects as unknown as TheGraphProject[], first)
 }
 
 const getDomainIds = (paymentDetails: PaymentDetails[]): number[] => {

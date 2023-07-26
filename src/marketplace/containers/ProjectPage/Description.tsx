@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { Project, SalePoint } from '~/marketplace/types/project-types'
 import { REGULAR, TABLET } from '~/shared/utils/styled'
 import Button from '~/shared/components/Button'
-import { projectTypeNames } from '~/marketplace/utils/constants'
+import { getProjectTypeName } from '~/getters'
 import { ProjectType } from '~/shared/types'
 import PaymentRate from '~/marketplace/components/PaymentRate'
 import { formatChainName } from '~/shared/utils/chains'
@@ -40,7 +40,7 @@ const Description: FunctionComponent<{ project: Project }> = ({ project }) => {
             <DescriptionContainer>
                 <p>
                     <span>
-                        The streams in this {projectTypeNames[project.type]}
+                        The streams in this {getProjectTypeName(project.type)}
                         {project.type === ProjectType.OpenData
                             ? ' are public and '
                             : ''}{' '}

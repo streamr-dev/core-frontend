@@ -6,6 +6,11 @@ import {
     SearchFilter,
 } from '~/marketplace/types/project-types'
 import SearchBar from '~/shared/components/SearchBar'
+import SelectField2 from '~/marketplace/components/SelectField2'
+import MobileFilter from '~/shared/components/MobileFilter'
+import Tabs, { Tab } from '~/shared/components/Tabs'
+import { TheGraph } from '~/shared/types'
+import { isValidSearchQuery } from '../../marketplace/utils/validate'
 import {
     ActionBarContainer,
     CreateProjectButton,
@@ -16,12 +21,7 @@ import {
     MobileFilterWrap,
     SearchBarWrap,
     SelectFieldWrap,
-} from '~/marketplace/components/ActionBar/actionBar.styles'
-import SelectField2 from '~/marketplace/components/SelectField2'
-import MobileFilter from '~/shared/components/MobileFilter'
-import { ProjectListingTypeFilter } from '~/services/projects'
-import Tabs, { Tab } from '~/shared/components/Tabs'
-import { isValidSearchQuery } from '../../utils/validate'
+} from './actionBar.styles'
 
 enum ProjectsScope {
     Any = 'any',
@@ -39,15 +39,15 @@ export type Props = {
 
 const productTypeOptions = [
     {
-        value: ProjectListingTypeFilter.openData,
+        value: TheGraph.ProjectType.Open,
         label: 'Open data',
     },
     {
-        value: ProjectListingTypeFilter.paidData,
+        value: TheGraph.ProjectType.Paid,
         label: 'Paid data',
     },
     {
-        value: ProjectListingTypeFilter.dataUnion,
+        value: TheGraph.ProjectType.DataUnion,
         label: 'Data union',
     },
 ]

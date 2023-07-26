@@ -1,20 +1,21 @@
+import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { useEffect, useState } from 'react'
-import { z } from 'zod'
-import { post } from '~/shared/utils/api'
 import { truncate } from '~/shared/utils/text'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { errorToast } from '~/utils/toast'
+import {
+    GetEnsDomainsForAccountQuery,
+    GetEnsDomainsForAccountDocument,
+    GetEnsDomainsForAccountQueryVariables,
+} from '~/generated/gql/ens'
 
 export const ADD_ENS_DOMAIN_VALUE = '::ens/add_domain'
 
-const EnsGraphResponse = z.object({
-    data: z.object({
-        domains: z.array(
-            z.object({
-                name: z.string(),
-            }),
-        ),
-    }),
+const apolloClient = new ApolloClient({
+    uri:
+        process.env.ENS_GRAPH_SCHEMA_PATH ||
+        'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
+    cache: new InMemoryCache(),
 })
 
 async function fetchDomains(account: string | undefined): Promise<string[]> {
@@ -23,25 +24,17 @@ async function fetchDomains(account: string | undefined): Promise<string[]> {
     }
 
     try {
-        const resp = await post({
-            url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
-            data: {
-                query: `
-                query {
-                    domains(
-                        where: { owner_in: ["${account.toLowerCase()}"]}
-                        orderBy: name
-                    ) {
-                        name
-                    }
-                }
-            `,
+        const { data = { domains: [] } } = await apolloClient.query<
+            GetEnsDomainsForAccountQuery,
+            GetEnsDomainsForAccountQueryVariables
+        >({
+            query: GetEnsDomainsForAccountDocument,
+            variables: {
+                account: account.toLowerCase(),
             },
         })
 
-        return EnsGraphResponse.parse(resp)
-            .data.domains.map(({ name }) => name)
-            .sort()
+        return (data.domains.map(({ name }) => name).filter(Boolean) as string[]).sort()
     } catch (e) {
         console.warn('Failed to load ENS domains', e)
 
