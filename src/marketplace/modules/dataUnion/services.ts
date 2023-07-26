@@ -79,6 +79,11 @@ export async function editSecret({
 }): Promise<Secret> {
     const dataUnion = await getDataUnion(dataUnionId, chainId)
 
+    /**
+     * Looks like editing secrets isn't implemented on the client level. We do expose
+     * a UI for editing secrets though. Let's keep things civil and at least check.
+     * Failure is an option. It's fine as long as we know the (h)why.
+     */
     if (!('editSecret' in dataUnion) || typeof dataUnion.editSecret !== 'function') {
         throw new Error('Editing secrets is not implemented')
     }
@@ -94,6 +99,6 @@ export async function deleteSecret({
     dataUnionId: DataUnionId
     id: string
     chainId: number
-}): Promise<void> {
-    ;(await getDataUnion(dataUnionId, chainId)).deleteSecret(id)
+}): Promise<Secret> {
+    return (await getDataUnion(dataUnionId, chainId)).deleteSecret(id)
 }
