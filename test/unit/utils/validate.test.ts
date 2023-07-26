@@ -1,13 +1,13 @@
 import * as all from '~/marketplace/utils/validate'
 import { validateSalePoint } from '~/marketplace/utils/validate'
-import { MaxSearchPhraseLenght } from '~/consts'
+import { MaxSearchPhraseLength } from '~/consts'
 import { ProjectType } from '~/shared/types'
 import { SalePoint } from '~/marketplace/types/project-types'
 import { toBN } from '~/utils/bn'
 
 describe('validate utils', () => {
     describe('isValidSearchQuery', () => {
-        it(`must limit the search character throughput to ${MaxSearchPhraseLenght} characters long`, () => {
+        it(`must limit the search character throughput to ${MaxSearchPhraseLength} characters long`, () => {
             const goodSearch = 'Lorem ipsum dolor sit amet'
             const tooLongSearch = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore 
                 et dolore magna aliqua. Est placerat in egestas erat imperdiet sed euismod. Vitae proin sagittis nisl 

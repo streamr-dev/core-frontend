@@ -32,4 +32,4 @@ export function HubRouter({ history: historyProp = history, ...props }: HubRoute
     )
 }
 
-export const MaxSearchPhraseLenght = 250
+export const MaxSearchPhraseLength = 250
