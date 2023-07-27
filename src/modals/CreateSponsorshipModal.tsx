@@ -1,7 +1,5 @@
 import React, { useMemo, useReducer, useState } from 'react'
-import { toaster, Toaster } from 'toasterhea'
 import { z } from 'zod'
-import uniqueId from 'lodash/uniqueId'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     ErrorLabel,
@@ -16,9 +14,6 @@ import FormModal, {
 import Label from '~/shared/components/Ui//Label'
 import { toBN } from '~/utils/bn'
 import { FieldWrap, TextAppendix, TextInput } from '~/components/TextInput'
-import { createSponsorship } from '~/services/sponsorships'
-import TransactionListToast, { Operation } from '~/shared/toasts/TransactionListToast'
-import { Layer } from '~/utils/Layer'
 import { StreamSearchDropdown } from '~/network/components/StreamSearchDropdown'
 
 const FormDataValidator = z
@@ -54,9 +49,9 @@ const FormDataValidator = z
             path: ['maxNumberOfOperators'],
         },
     )
-type FormData = z.infer<typeof FormDataValidator>
+export type CreateSponsorshipFormData = z.infer<typeof FormDataValidator>
 
-const defaultFormData: FormData = {
+const defaultFormData: CreateSponsorshipFormData = {
     streamId: '',
     initialAmount: '',
     payoutRate: '',
@@ -66,9 +61,10 @@ const defaultFormData: FormData = {
 }
 
 interface Props extends Omit<FormModalProps, 'canSubmit'> {
-    onResolve?: (formData: FormData) => void
+    onResolve?: (formData: CreateSponsorshipFormData) => void
+    onSubmit: (formData: CreateSponsorshipFormData) => Promise<void>
     balance: string
-    formData?: Partial<FormData>
+    formData?: Partial<CreateSponsorshipFormData>
     tokenSymbol: string
     tokenDecimals: number
     streamId?: string
@@ -78,6 +74,7 @@ export default function CreateSponsorshipModal({
     title = 'Create Sponsorship',
     submitLabel = 'Create',
     onResolve,
+    onSubmit,
     balance: balanceProp = '0',
     formData: formDataProp = {},
     tokenSymbol,
@@ -85,11 +82,6 @@ export default function CreateSponsorshipModal({
     streamId: streamIdProp,
     ...props
 }: Props) {
-    const toast: Toaster<typeof TransactionListToast> | undefined = toaster(
-        TransactionListToast,
-        Layer.Toast,
-    )
-
     const [busy, setBusy] = useState(false)
 
     const decimalMultiplier = useMemo(() => Math.pow(10, tokenDecimals), [tokenDecimals])
@@ -97,7 +89,10 @@ export default function CreateSponsorshipModal({
     const balance = toBN(balanceProp).multipliedBy(decimalMultiplier)
 
     const [formData, setRawProperties] = useReducer<
-        (state: FormData, change: Partial<FormData>) => FormData
+        (
+            state: CreateSponsorshipFormData,
+            change: Partial<CreateSponsorshipFormData>,
+        ) => CreateSponsorshipFormData
     >(
         (state, change) => ({
             ...state,
@@ -157,44 +152,10 @@ export default function CreateSponsorshipModal({
                 }
 
                 setBusy(true)
-
-                const deploymentOperation: Operation = {
-                    id: uniqueId('sponsorship-deployment-'),
-                    label: 'Sponsorship deployment',
-                    state: 'ongoing',
-                }
-
-                const operations = [deploymentOperation]
-                setTimeout(async () => {
-                    await toast.pop({ operations })
-                })
-
                 try {
-                    /**
-                     * Replace the following with your favourite contract interaction! <3
-                     */
-                    await createSponsorship({
-                        minOperatorCount: Number(formData.minNumberOfOperators),
-                        maxOperatorCount: formData.maxNumberOfOperators
-                            ? Number(formData.maxNumberOfOperators)
-                            : undefined,
-                        minimumStakeTime: toBN(formData.minStakeDuration).multipliedBy(
-                            86400,
-                        ),
-                        payoutRate: toBN(formData.payoutRate)
-                            .dividedBy(86400)
-                            .multipliedBy(decimalMultiplier),
-                        initialFunding: toBN(formData.initialAmount).multipliedBy(
-                            decimalMultiplier,
-                        ),
-                        streamId: formData.streamId,
-                        metadata: {},
-                    })
-                    deploymentOperation.state = 'complete'
-
+                    await onSubmit(formData)
                     onResolve?.(formData)
                 } catch (e) {
-                    deploymentOperation.state = 'error'
                     console.warn('Error while creating a Sponsorship', e)
                     setBusy(false)
                 } finally {

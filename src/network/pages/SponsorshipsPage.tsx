@@ -19,8 +19,8 @@ import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import Footer from '~/shared/components/Layout/Footer'
 import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
-import { toBN } from '~/utils/bn'
 import routes from '~/routes'
+import { useCreateSponsorshipController } from '../hooks/useCreateSponsorshipController'
 import { NetworkActionBar } from '../components/ActionBars/NetworkActionBar'
 import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
 import { StreamInfoCell } from '../components/NetworkUtils'
@@ -29,10 +29,6 @@ import {
     useAllSponsorshipsQuery,
     useMySponsorshipsQuery,
 } from '../hooks/useSponsorshipsList'
-import {
-    BalanceForSponsorship,
-    useGetBalanceForSponsorships,
-} from '~/network/hooks/useGetBalanceForSponsorships'
 
 const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
 
@@ -46,8 +42,7 @@ export const SponsorshipsPage = () => {
     const [selectedTab, setSelectedTab] = useState<TabOptions>(TabOptions.allSponsorships)
     const [searchQuery, setSearchQuery] = useState<string>('')
     const walletConnected = !!useWalletAccount()
-    const [balanceInfo, setBalanceInfo] = useState<BalanceForSponsorship>(null)
-    const getBalanceInfo = useGetBalanceForSponsorships()
+    const { balanceData, handleSponsorshipFormSubmit } = useCreateSponsorshipController()
 
     const allSponsorshipsQuery = useAllSponsorshipsQuery(PAGE_SIZE, searchQuery)
 
@@ -81,10 +76,6 @@ export const SponsorshipsPage = () => {
         }
     }, [walletConnected, selectedTab, setSelectedTab])
 
-    useEffect(() => {
-        getBalanceInfo().then((result) => setBalanceInfo(result))
-    }, [walletConnected])
-
     return (
         <Layout
             className={styles.projectsListPage}
@@ -111,19 +102,20 @@ export const SponsorshipsPage = () => {
                 rightSideContent={
                     <Button
                         onClick={async () => {
-                            if (balanceInfo) {
+                            if (balanceData) {
                                 try {
                                     await createSponsorshipModal.pop({
-                                        balance: balanceInfo.balance,
-                                        tokenSymbol: balanceInfo.tokenSymbol,
-                                        tokenDecimals: balanceInfo.tokenDecimals,
+                                        balance: balanceData.balance,
+                                        tokenSymbol: balanceData.tokenSymbol,
+                                        tokenDecimals: balanceData.tokenDecimals,
+                                        onSubmit: handleSponsorshipFormSubmit,
                                     })
                                 } catch (e) {
                                     // Ignore for now.
                                 }
                             }
                         }}
-                        disabled={!walletConnected || !balanceInfo}
+                        disabled={!walletConnected || !balanceData}
                     >
                         Create sponsorship
                     </Button>
