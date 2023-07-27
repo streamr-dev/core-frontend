@@ -112,10 +112,9 @@ export const mapSponsorshipToElement = (sponsorship: Sponsorship): SponsorshipEl
             'D MMM YYYY',
         ),
         apy: 0, // TODO add mapping when it will get included in the subgraph
-        DATAPerDay: toBN(sponsorship.totalPayoutWeiPerSec)
-            .dividedBy(1e18)
-            .dividedBy(86400)
-            .toString(),
+        DATAPerDay: Number(
+            toBN(sponsorship.totalPayoutWeiPerSec).dividedBy(1e18).multipliedBy(86400),
+        ).toString(),
         operators: Number(sponsorship.operatorCount),
         totalStake: toBN(sponsorship.totalStakedWei).dividedBy(1e18).toString(),
         active: sponsorship.isRunning,

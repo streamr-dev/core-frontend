@@ -166,8 +166,7 @@ export const SponsorshipsPage = () => {
                             },
                             {
                                 displayName: 'DATA/day',
-                                valueMapper: (element) =>
-                                    toBN(element.DATAPerDay).toFormat(18),
+                                valueMapper: (element) => element.DATAPerDay,
                                 align: 'start',
                                 isSticky: false,
                                 key: 'dataPerDay',
