@@ -4,14 +4,9 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { UseInfiniteQueryResult } from '@tanstack/react-query/src/types'
 import { SponsorshipElement } from '~/network/types/sponsorship'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import {
-    GetAllSponsorshipsQueryResult,
-    GetSponsorshipsByCreatorQueryResult,
-    Sponsorship,
-    useGetAllSponsorshipsLazyQuery,
-    useGetSponsorshipsByCreatorLazyQuery,
-} from '~/generated/gql/network'
+import { Sponsorship } from '~/generated/gql/network'
 import { toBN } from '~/utils/bn'
+import { getAllSponsorships, getSponsorshipsByCreator } from '~/getters'
 
 /**
  * TODO - HANDLE PAGINATION
@@ -20,22 +15,15 @@ export const useAllSponsorshipsQuery = (
     pageSize = 10,
     searchQuery?: string,
 ): UseInfiniteQueryResult<SponsorshipElement[]> => {
-    const [loadAllSponsorships] = useGetAllSponsorshipsLazyQuery()
-
     const query = useInfiniteQuery({
         queryKey: ['allSponsorships'],
-        queryFn: async (ctx) => {
-            const queryResult: GetAllSponsorshipsQueryResult = await loadAllSponsorships({
-                variables: {
-                    first: pageSize,
-                    streamContains: searchQuery,
-                },
-            })
-            return queryResult?.data?.sponsorships
-                ? queryResult?.data?.sponsorships.map((sponsorship) =>
-                      mapSponsorshipToElement(sponsorship as Sponsorship),
-                  )
-                : []
+        async queryFn() {
+            const sponsorships = (await getAllSponsorships({
+                first: pageSize,
+                streamId: searchQuery,
+            })) as Sponsorship[]
+
+            return sponsorships.map(mapSponsorshipToElement)
         },
         getNextPageParam: (lastPage) => {
             return 0
@@ -63,25 +51,20 @@ export const useMySponsorshipsQuery = (
     searchQuery?: string,
 ): UseInfiniteQueryResult<SponsorshipElement[]> => {
     const account = useWalletAccount()
-    const [loadMySponsorships] = useGetSponsorshipsByCreatorLazyQuery()
 
     const query = useInfiniteQuery({
         queryKey: ['mySponsorships'],
-        queryFn: async (ctx) => {
-            const queryResult: GetSponsorshipsByCreatorQueryResult | undefined = account
-                ? await loadMySponsorships({
-                      variables: {
-                          first: pageSize,
-                          creator: account as string,
-                          streamContains: searchQuery,
-                      },
-                  })
-                : undefined
-            return queryResult?.data?.sponsorships
-                ? queryResult?.data?.sponsorships.map((sponsorship) =>
-                      mapSponsorshipToElement(sponsorship as Sponsorship),
-                  )
-                : []
+        async queryFn() {
+            if (!account) {
+                return []
+            }
+
+            const sponsorships = (await getSponsorshipsByCreator(account, {
+                first: pageSize,
+                streamId: searchQuery,
+            })) as Sponsorship[]
+
+            return sponsorships.map(mapSponsorshipToElement)
         },
         getNextPageParam: (lastPage) => {
             return 0

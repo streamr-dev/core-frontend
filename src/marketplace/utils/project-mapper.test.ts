@@ -82,7 +82,6 @@ describe('projectMapper', () => {
                 purchasesCount: 0,
                 minimumSubscriptionSeconds: '0',
                 version: null,
-                subscriptions: [],
             }
             const model = await mapGraphProjectToDomainModel(stubGraphModel)
 

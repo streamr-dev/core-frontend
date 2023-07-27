@@ -11,7 +11,7 @@ import useIsMounted from '~/shared/hooks/useIsMounted'
 import { getCustomTokenBalance, getTokenInformation } from '~/marketplace/utils/web3'
 import { getUsdRate } from '~/shared/utils/coingecko'
 import { Layer } from '~/utils/Layer'
-import { ProjectDetail } from '~/shared/consts'
+import { PaymentDetail } from '~/shared/types'
 import networkPreflight from '~/utils/networkPreflight'
 import ProjectModal, { Actions } from './ProjectModal'
 import ConnectModal from './ConnectModal'
@@ -110,14 +110,12 @@ export interface ChainSelectorResult {
     usdRate: number
 }
 
-type PaymentDetails = z.infer<typeof ProjectDetail>[]
-
 export async function getPurchasePreconditions({
     chainId,
     paymentDetails,
 }: {
     chainId: number
-    paymentDetails: PaymentDetails
+    paymentDetails: PaymentDetail[]
 }) {
     await networkPreflight(chainId)
 
@@ -165,7 +163,7 @@ interface Props {
     onReject?: (reason?: unknown) => void
     chainIds?: number[]
     selectedChainId?: number
-    paymentDetails?: PaymentDetails
+    paymentDetails?: PaymentDetail[]
 }
 
 export default function ChainSelectorModal({

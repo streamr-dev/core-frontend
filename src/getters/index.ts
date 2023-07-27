@@ -1,4 +1,4 @@
-import { Contract, Signer, providers } from 'ethers'
+import { BigNumber, Contract, Signer, providers } from 'ethers'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
 import {
@@ -7,7 +7,7 @@ import {
     ProjectRegistryV1 as ProjectRegistryContract,
     MarketplaceV4 as MarketplaceContract,
 } from '@streamr/hub-contracts'
-import { getConfigForChain } from '~/shared/web3/config'
+import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
 import reverseRecordsAbi from '~/shared/web3/abis/reverseRecords.json'
 import {
     Token as TokenContract,
@@ -20,9 +20,22 @@ import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { ProjectType } from '~/shared/types'
 import tokenAbi from '~/shared/web3/abis/token.json'
 import address0 from '~/utils/address0'
+import { ProjectMetadata } from '~/shared/consts'
+import {
+    GetSponsorshipByIdQuery,
+    GetSponsorshipByIdDocument,
+    GetAllSponsorshipsQuery,
+    GetAllSponsorshipsDocument,
+    GetAllSponsorshipsQueryVariables,
+    GetSponsorshipByIdQueryVariables,
+    GetSponsorshipsByCreatorQuery,
+    GetSponsorshipsByCreatorQueryVariables,
+    GetSponsorshipsByCreatorDocument,
+} from '~/generated/gql/network'
 import getCoreConfig from './getCoreConfig'
+import getGraphClient from './getGraphClient'
 
-export function getGraphUrl() {
+export function getGraphUrl(): string {
     const { theGraphUrl, theHubGraphName } = getCoreConfig()
 
     return `${theGraphUrl}/subgraphs/name/${theHubGraphName}`
@@ -48,6 +61,10 @@ export function getProjectRegistryContract({
         projectRegistryAbi,
         signer,
     ) as ProjectRegistryContract
+}
+
+export function getProjectRegistryChainId(): number {
+    return getConfigForChainByName(getCoreConfig().projectsChain).id
 }
 
 export function getERC20TokenContract({
@@ -79,7 +96,7 @@ export async function getAllowance(
     tokenAddress: string,
     account: string,
     { recover = false }: { recover?: boolean } = {},
-) {
+): Promise<BigNumber> {
     while (true) {
         try {
             return await getERC20TokenContract({
@@ -114,7 +131,12 @@ export async function getProjectPermissions(
     chainId: number,
     projectId: string,
     account: string,
-) {
+): Promise<{
+    canBuy: boolean
+    canDelete: boolean
+    canEdit: boolean
+    canGrant: boolean
+}> {
     if (account === address0) {
         return {
             canBuy: false,
@@ -141,7 +163,7 @@ export async function getProjectPermissions(
     }
 }
 
-export function getProjectTypeName(projectType: ProjectType) {
+export function getProjectTypeName(projectType: ProjectType): string {
     switch (projectType) {
         case ProjectType.DataUnion:
             return 'Data Union'
@@ -152,7 +174,7 @@ export function getProjectTypeName(projectType: ProjectType) {
     }
 }
 
-export function getProjectTypeTitle(projectType: ProjectType) {
+export function getProjectTypeTitle(projectType: ProjectType): string {
     switch (projectType) {
         case ProjectType.DataUnion:
             return 'Data Union'
@@ -169,7 +191,7 @@ export function getProjectImageUrl({
 }: {
     imageUrl?: string
     imageIpfsCid?: string
-}) {
+}): string | undefined {
     const {
         ipfs: { ipfsGatewayUrl },
     } = getCoreConfig()
@@ -185,7 +207,7 @@ export function getProjectImageUrl({
     return `${imageUrl.replace(/^https:\/\/ipfs\.io\/ipfs\//, ipfsGatewayUrl)}`
 }
 
-export async function getFirstEnsNameFor(address: string) {
+export async function getFirstEnsNameFor(address: string): Promise<string> {
     const contract = new Contract(
         getCoreConfig().reverseRecordsAddress,
         reverseRecordsAbi,
@@ -195,4 +217,97 @@ export async function getFirstEnsNameFor(address: string) {
     const [domain] = await contract.getNames([address])
 
     return domain
+}
+
+export function getGraphProjectWithParsedMetadata<T extends { metadata: string }>(
+    rawProject: T,
+): Omit<T, 'metadata'> & {
+    metadata: ProjectMetadata
+} {
+    let metadata: ProjectMetadata = {}
+
+    try {
+        metadata = ProjectMetadata.parse(JSON.parse(rawProject.metadata))
+    } catch (e) {
+        console.warn('Failed to parse project metadata', e)
+    }
+
+    return {
+        ...rawProject,
+        metadata,
+    }
+}
+
+export async function getAllSponsorships({
+    first,
+    skip,
+    streamId,
+}: {
+    first?: number
+    skip?: number
+    streamId?: string
+}): Promise<GetAllSponsorshipsQuery['sponsorships']> {
+    const {
+        data: { sponsorships },
+    } = await getGraphClient().query<
+        GetAllSponsorshipsQuery,
+        GetAllSponsorshipsQueryVariables
+    >({
+        query: GetAllSponsorshipsDocument,
+        variables: {
+            first,
+            skip,
+            streamContains: streamId,
+        },
+    })
+
+    return sponsorships
+}
+
+export async function getSponsorshipById(
+    sponsorshipId: string,
+): Promise<NonNullable<GetSponsorshipByIdQuery['sponsorship']> | null> {
+    const {
+        data: { sponsorship },
+    } = await getGraphClient().query<
+        GetSponsorshipByIdQuery,
+        GetSponsorshipByIdQueryVariables
+    >({
+        query: GetSponsorshipByIdDocument,
+        variables: {
+            sponsorshipId,
+        },
+    })
+
+    return sponsorship || null
+}
+
+export async function getSponsorshipsByCreator(
+    creator: string,
+    {
+        first,
+        skip,
+        streamId,
+    }: {
+        first?: number
+        skip?: number
+        streamId?: string
+    } = {},
+): Promise<GetSponsorshipsByCreatorQuery['sponsorships']> {
+    const {
+        data: { sponsorships },
+    } = await getGraphClient().query<
+        GetSponsorshipsByCreatorQuery,
+        GetSponsorshipsByCreatorQueryVariables
+    >({
+        query: GetSponsorshipsByCreatorDocument,
+        variables: {
+            first,
+            skip,
+            streamContains: streamId,
+            creator,
+        },
+    })
+
+    return sponsorships
 }

@@ -1,28 +1,27 @@
 import { produce } from 'immer'
-import { z } from 'zod'
 import { createContext, useContext, useEffect, useMemo } from 'react'
 import { create } from 'zustand'
 import isEqual from 'lodash/isEqual'
 import uniqueId from 'lodash/uniqueId'
-import { getGraphUrl, getProjectImageUrl } from '~/getters'
-import { post } from '~/shared/utils/api'
+import { getGraphProjectWithParsedMetadata, getProjectImageUrl } from '~/getters'
 import { TimeUnit, timeUnitSecondsMultiplierMap } from '~/shared/utils/timeUnit'
 import { getConfigForChain } from '~/shared/web3/config'
 import { getTokenInformation } from '~/marketplace/utils/web3'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { getMostRelevantTimeUnit } from '~/marketplace/utils/price'
-import { isProjectOwnedBy } from '~/marketplace/utils/product'
-import {
-    getAdminFee,
-    getDataUnionChainIdByAddress,
-} from '~/marketplace/modules/dataUnion/services'
-import { ProjectType, Project } from '~/shared/types'
-import { GraphProject } from '~/shared/consts'
+import { isProjectOwnedBy } from '~/utils'
+import getGraphClient from '~/getters/getGraphClient'
+import { ProjectType, Project, QueriedGraphProject } from '~/shared/types'
 import { toBN } from '~/utils/bn'
+import {
+    GetProjectQuery,
+    GetProjectDocument,
+    GetProjectQueryVariables,
+} from '~/generated/gql/network'
+import { ProjectMetadata } from '~/shared/consts'
+import { getDataUnionAdminFee } from '~/getters/du'
 import { useHasActiveProjectSubscription } from './purchases'
 import { useWalletAccount } from './wallet'
-
-type GraphProject = z.infer<typeof GraphProject>
 
 interface ProjectDraft {
     abandoned: boolean
@@ -31,7 +30,7 @@ interface ProjectDraft {
     project: {
         hot: Project
         cold: Project
-        graph: GraphProject | undefined
+        graph: QueriedGraphProject | undefined
         changed: boolean
         fetching: boolean
     }
@@ -85,93 +84,9 @@ const initialDraft: ProjectDraft = {
     },
 }
 
-const GraphResponse = z.object({
-    data: z.object({
-        projects: z.array(
-            GraphProject.extend({
-                metadata: z.string(),
-            }),
-        ),
-    }),
-})
-
-/**
- * Fetches a project from the Graph.
- * @param projectId Project id.
- * @returns A project stored in the Graph with parsed `metadata`.
- */
-async function fetchGraphProject(projectId: string) {
-    const result = await post({
-        url: getGraphUrl(),
-        data: {
-            query: `
-                query {
-                    projects(
-                        where: { id: "${projectId.toLowerCase()}" }
-                    ) {
-                        id
-                        counter
-                        domainIds
-                        score
-                        metadata
-                        streams
-                        minimumSubscriptionSeconds
-                        createdAt
-                        updatedAt
-                        isDataUnion
-                        paymentDetails {
-                            domainId
-                            beneficiary
-                            pricingTokenAddress
-                            pricePerSecond
-                        }
-                        subscriptions {
-                            userAddress
-                            endTimestamp
-                        }
-                        permissions {
-                            userAddress
-                            canBuy
-                            canDelete
-                            canEdit
-                            canGrant
-                        }
-                        purchases {
-                            subscriber
-                            subscriptionSeconds
-                            price
-                            fee
-                            purchasedAt
-                        }
-                    }
-                }
-            `,
-        },
-    })
-
-    try {
-        const [project = undefined] = GraphResponse.parse(result).data.projects
-
-        if (!project) {
-            return null
-        }
-
-        const metadata = GraphProject.shape.metadata.parse(JSON.parse(project.metadata))
-
-        return {
-            ...project,
-            metadata,
-        } as GraphProject
-    } catch (e) {
-        console.warn(e)
-    }
-
-    return null
-}
-
-async function getSalePointsFromPaymentDetails(
-    paymentDetails: GraphProject['paymentDetails'],
-): Promise<Project['salePoints']> {
+async function getSalePointsFromPaymentDetails<
+    T extends Pick<QueriedGraphProject, 'paymentDetails'>,
+>({ paymentDetails }: T): Promise<Project['salePoints']> {
     const result: Project['salePoints'] = {}
 
     for (let i = 0; i < paymentDetails.length; i++) {
@@ -214,13 +129,14 @@ async function getSalePointsFromPaymentDetails(
     return result
 }
 
-async function getProjectFromGraphProject({
-    id,
-    metadata,
-    streams,
-    paymentDetails,
-    isDataUnion,
-}: GraphProject): Promise<Project> {
+async function getTransientProject<
+    T extends Pick<
+        QueriedGraphProject,
+        'id' | 'streams' | 'paymentDetails' | 'isDataUnion'
+    > & {
+        metadata: ProjectMetadata
+    },
+>({ id, metadata, streams, paymentDetails, isDataUnion }: T): Promise<Project> {
     const {
         name,
         description,
@@ -232,10 +148,12 @@ async function getProjectFromGraphProject({
     } = metadata
 
     const [payment = { pricePerSecond: '0' }, secondPayment] = paymentDetails
-    const isOpenData = payment.pricePerSecond === '0' && !secondPayment
-    const salePoints = await getSalePointsFromPaymentDetails(paymentDetails)
 
-    let result: Project = {
+    const isOpenData = payment.pricePerSecond === '0' && !secondPayment
+
+    const salePoints = await getSalePointsFromPaymentDetails({ paymentDetails })
+
+    const result: Project = {
         id,
         type: isOpenData ? ProjectType.OpenData : ProjectType.PaidData,
         name,
@@ -261,32 +179,50 @@ async function getProjectFromGraphProject({
         salePoints,
     }
 
-    if (isDataUnion) {
-        const duAddress = paymentDetails.find(
-            (pd) => pd.beneficiary.length > 0,
-        )?.beneficiary
-        let adminFee = '0'
-        let chainId: number | undefined = undefined
+    if (!isDataUnion) {
+        return result
+    }
 
-        if (duAddress) {
-            try {
-                chainId = await getDataUnionChainIdByAddress(duAddress)
-                adminFee = await getAdminFee(duAddress, chainId)
-            } catch (e) {
-                console.error('Could not load Data Union details', e)
-            }
-        }
+    const {
+        beneficiary: dataUnionId = undefined,
+        domainId = undefined,
+    }: { beneficiary?: unknown; domainId?: unknown } =
+        paymentDetails.find((pd) => pd.beneficiary.length > 0) || {}
 
-        result = {
+    if (
+        typeof domainId !== 'string' ||
+        !domainId ||
+        typeof dataUnionId !== 'string' ||
+        !dataUnionId
+    ) {
+        return {
             ...result,
             type: ProjectType.DataUnion,
-            adminFee: toBN(adminFee).multipliedBy(100).toString(),
-            existingDUAddress: duAddress,
-            dataUnionChainId: chainId,
+            adminFee: '0',
+            existingDUAddress: undefined,
+            dataUnionChainId: undefined,
         }
     }
 
-    return result
+    let adminFee: number | undefined
+
+    const dataUnionChainId = Number(domainId)
+
+    try {
+        adminFee = await getDataUnionAdminFee(dataUnionId, dataUnionChainId)
+    } catch (e) {
+        console.warn('Failed to load Data Union admin fee', e)
+    }
+
+    return {
+        ...result,
+        type: ProjectType.DataUnion,
+        adminFee: toBN(adminFee || 0)
+            .multipliedBy(100)
+            .toString(),
+        existingDUAddress: dataUnionId,
+        dataUnionChainId,
+    }
 }
 
 const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
@@ -353,18 +289,33 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
                         draft.project.fetching = true
                     })
 
-                    const graphProject = await fetchGraphProject(id)
+                    const {
+                        data: { project: graphProject },
+                    } = await getGraphClient().query<
+                        GetProjectQuery,
+                        GetProjectQueryVariables
+                    >({
+                        query: GetProjectDocument,
+                        variables: {
+                            id: id.toLowerCase(),
+                        },
+                    })
 
                     if (!graphProject) {
                         throw new Error('Not found or invalid')
                     }
 
-                    const project = await getProjectFromGraphProject(graphProject)
+                    const graphProjectWithMetadata =
+                        getGraphProjectWithParsedMetadata(graphProject)
+
+                    const transientProject = await getTransientProject(
+                        graphProjectWithMetadata,
+                    )
 
                     setDraft(draftId, (draft) => {
-                        draft.project.hot = project
+                        draft.project.hot = transientProject
 
-                        draft.project.cold = project
+                        draft.project.cold = transientProject
 
                         draft.project.graph = graphProject
 
@@ -544,7 +495,7 @@ export function useDoesUserHaveAccess() {
         return false
     }
 
-    return isProjectOwnedBy(graph, address) || hasActiveProjectSubscription
+    return isProjectOwnedBy(graph.permissions, address) || hasActiveProjectSubscription
 }
 
 export function useIsCurrentProjectDraftClean() {

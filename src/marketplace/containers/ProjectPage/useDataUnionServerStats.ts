@@ -1,11 +1,15 @@
 import { useState, useRef, useCallback, useMemo } from 'react'
 import useIsMounted from '~/shared/hooks/useIsMounted'
-import { getDataUnionStats } from '~/marketplace/modules/dataUnion/services'
+import { getDataUnionStats } from '~/getters/du'
+
 const DATA_UNION_SERVER_POLL_INTERVAL_MS = 10000
 
 function useDataUnionServerStats() {
-    const [totalEarnings, setTotalEarnings] = useState(undefined)
-    const [memberCount, setMemberCount] = useState(undefined)
+    const [totalEarnings, setTotalEarnings] = useState<number>()
+
+    const [memberCount, setMemberCount] =
+        useState<Awaited<ReturnType<typeof getDataUnionStats>>['memberCount']>()
+
     const isMounted = useIsMounted()
     const timeOutId = useRef(null)
     const resetTimeout = useCallback(() => {

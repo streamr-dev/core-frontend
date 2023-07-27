@@ -7,10 +7,6 @@ import ChainSelectorModal, {
     getPurchasePreconditions,
 } from '~/modals/ChainSelectorModal'
 import { Layer } from '~/utils/Layer'
-import {
-    fetchGraphProjectForPurchase,
-    fetchGraphProjectSubscriptions,
-} from '~/utils/fetchers'
 import AccessPeriodModal, { AccessPeriod } from '~/modals/AccessPeriodModal'
 import { isAbandonment } from '~/modals/ProjectModal'
 import AllowanceModal from '~/modals/AllowanceModal'
@@ -29,6 +25,8 @@ import { RejectionReason } from '~/modals/BaseModal'
 import FailedPurchaseModal from '~/modals/FailedPurchaseModal'
 import { ensureGasMonies, waitForPurchasePropagation } from '~/utils'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
+import { getProjectForPurchase, getProjectSubscriptions } from '~/getters/hub'
+import { TheGraph } from '../types'
 import { getSigner } from './wallet'
 
 interface Store {
@@ -39,7 +37,7 @@ interface Store {
         string,
         | {
               cache: number | undefined
-              entries: Awaited<ReturnType<typeof fetchGraphProjectSubscriptions>>
+              entries: TheGraph.ProjectSubscription[]
           }
         | undefined
     >
@@ -71,7 +69,7 @@ const usePurchaseStore = create<Store>((set, get) => {
             )
 
             try {
-                const entries = await fetchGraphProjectSubscriptions(projectId)
+                const entries = await getProjectSubscriptions(projectId)
 
                 set((current) =>
                     produce(current, (next) => {
@@ -119,7 +117,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                 )
 
                 const { paymentDetails = [], streams = [] } =
-                    (await fetchGraphProjectForPurchase(projectId)) || {}
+                    (await getProjectForPurchase(projectId)) || {}
 
                 const chainIds = paymentDetails
                     .map(({ domainId }) => Number(domainId))

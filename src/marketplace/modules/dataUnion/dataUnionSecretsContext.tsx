@@ -11,8 +11,8 @@ import {
     createSecret,
     deleteSecret,
     editSecret,
-    getSecrets,
 } from '~/marketplace/modules/dataUnion/services'
+import { getDataUnionSecrets } from '~/getters/du'
 import { Secret } from '~/marketplace/modules/dataUnion/types'
 
 export type DataUnionSecretsController = {
@@ -56,14 +56,15 @@ const useDataUnionSecretsControllerImplementation = (): DataUnionSecretsControll
         async (dataUnionId: DataUnionId, chainId: number) => {
             try {
                 setIsLoading(true)
-                const response = await getSecrets({
-                    dataUnionId,
-                    chainId,
-                })
+
+                const response = await getDataUnionSecrets(dataUnionId, chainId)
+
                 const mappedSecrets: DataUnionSecret[] = response.map(
                     mapSecretToDataUnionSecret,
                 )
+
                 setSecrets(mappedSecrets)
+
                 setIsLoaded(true)
             } catch (e) {
                 console.warn(e)

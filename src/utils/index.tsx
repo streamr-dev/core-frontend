@@ -9,6 +9,7 @@ import { Layer } from '~/utils/Layer'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { ObjectWithMessage } from '~/shared/consts'
 import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
+import { QueriedGraphProject } from '~/shared/types'
 
 /**
  * Gas money checker.
@@ -99,4 +100,23 @@ export async function waitForPurchasePropagation(
 
 export function isMessagedObject(e: unknown): e is z.infer<typeof ObjectWithMessage> {
     return ObjectWithMessage.safeParse(e).success
+}
+
+export function isDataUnionProject<T extends Pick<QueriedGraphProject, 'isDataUnion'>>({
+    isDataUnion,
+}: T) {
+    return !!isDataUnion
+}
+
+export function isProjectOwnedBy<
+    T extends { userAddress: unknown; canGrant?: boolean | null | undefined }[],
+>(permissions: T, address: string) {
+    const { canGrant = false } =
+        permissions.find(
+            ({ userAddress }) =>
+                typeof userAddress === 'string' &&
+                userAddress.toLowerCase() === address.toLowerCase(),
+        ) || {}
+
+    return !!canGrant
 }

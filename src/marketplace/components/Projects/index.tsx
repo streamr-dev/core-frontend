@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { HTMLAttributes } from 'react'
 import styled from 'styled-components'
 import classnames from 'classnames'
-import { isDataUnionProject } from '~/marketplace/utils/product'
+import { isDataUnionProject } from '~/utils'
 import { MarketplaceProductTile as UnstyledMarketplaceProductTile } from '~/shared/components/Tile'
 import {
     REGULAR,
@@ -13,8 +13,8 @@ import {
 } from '~/shared/utils/styled'
 import Button from '~/shared/components/Button'
 import { TheGraphProject } from '~/services/projects'
+import { ErrorInUi } from '~/shared/types/common-types'
 import ProductPageSpinner from '../ProductPageSpinner'
-import Error from '../Error'
 import styles from './projects.pcss'
 import NoProductsView from './NoProductsView'
 
@@ -153,3 +153,18 @@ const UnstyledProjects = ({
 const ProjectsComponent = styled(UnstyledProjects)<OwnProps>``
 
 export default ProjectsComponent
+
+interface ErrorProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
+    source?: ErrorInUi | null | undefined
+}
+
+function UnstyledError({ source, ...props }: ErrorProps) {
+    return source ? <div {...props}>{source.message}</div> : null
+}
+
+const Error = styled(UnstyledError)`
+    background: rgba(255, 25, 0, 0.4);
+    border-radius: 2px;
+    font-size: 0.9em;
+    padding: 1em 2em;
+`
