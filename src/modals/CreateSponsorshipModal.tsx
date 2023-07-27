@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useReducer, useState } from 'react'
+import React, { useMemo, useReducer, useState } from 'react'
 import { toaster, Toaster } from 'toasterhea'
-import { useInfiniteQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 import uniqueId from 'lodash/uniqueId'
 import { RejectionReason } from '~/modals/BaseModal'
@@ -17,18 +16,10 @@ import FormModal, {
 import Label from '~/shared/components/Ui//Label'
 import { toBN } from '~/utils/bn'
 import { FieldWrap, TextAppendix, TextInput } from '~/components/TextInput'
-import { SearchDropdown } from '~/components/SearchDropdown'
-import {
-    checkIfStreamExists,
-    getPagedStreams,
-    TheGraphOrderBy,
-    TheGraphOrderDirection,
-    TheGraphStreamResult,
-} from '~/services/streams'
-import { truncateStreamName } from '~/shared/utils/text'
 import { createSponsorship } from '~/services/sponsorships'
 import TransactionListToast, { Operation } from '~/shared/toasts/TransactionListToast'
 import { Layer } from '~/utils/Layer'
+import { StreamSearchDropdown } from '~/network/components/StreamSearchDropdown'
 
 const FormDataValidator = z
     .object({
@@ -101,8 +92,6 @@ export default function CreateSponsorshipModal({
 
     const [busy, setBusy] = useState(false)
 
-    const [streamSearchValue, setStreamSearchValue] = useState('')
-
     const decimalMultiplier = useMemo(() => Math.pow(10, tokenDecimals), [tokenDecimals])
 
     const balance = toBN(balanceProp).multipliedBy(decimalMultiplier)
@@ -151,56 +140,6 @@ export default function CreateSponsorshipModal({
         formData.minNumberOfOperators > formData.maxNumberOfOperators
 
     const canSubmit = FormDataValidator.safeParse(formData).success && !insufficientFunds
-
-    const handleSearchInputChange = async (searchInputValue: string) => {
-        const exists = await checkIfStreamExists(searchInputValue)
-        if (exists) {
-            setRawProperties({
-                streamId: searchInputValue,
-            })
-        } else {
-            setStreamSearchValue(searchInputValue)
-        }
-    }
-
-    useEffect(() => {
-        if (!streamIdProp) {
-            return void 0
-        }
-        checkIfStreamExists(streamIdProp).then((exists) => {
-            if (exists) {
-                setRawProperties({
-                    streamId: streamIdProp,
-                })
-                setStreamSearchValue(streamIdProp)
-            }
-        })
-    }, [streamIdProp])
-
-    const streamsQuery = useInfiniteQuery({
-        queryKey: ['createSponsorshipsStreamSearch', streamSearchValue],
-        queryFn: async (ctx) => {
-            const result: TheGraphStreamResult = await getPagedStreams(
-                20,
-                ctx.pageParam,
-                undefined,
-                streamSearchValue,
-                TheGraphOrderBy.Id,
-                TheGraphOrderDirection.Asc,
-            )
-
-            return result
-        },
-        getNextPageParam: (lastPage) => {
-            const theGraphResult = lastPage as TheGraphStreamResult
-            if (theGraphResult.lastId) {
-                return theGraphResult.hasNextPage ? theGraphResult.lastId : null
-            }
-            return null
-        },
-        staleTime: 60 * 1000, // 1 minute
-        keepPreviousData: true,
-    })
 
     return (
         <FormModal
@@ -273,28 +212,15 @@ export default function CreateSponsorshipModal({
                 </SectionHeadline>
                 <Section>
                     <Label>Select a Stream</Label>
-                    <SearchDropdown
-                        name="streamId"
-                        onSelect={(streamId) => {
+                    <StreamSearchDropdown
+                        onStreamChange={(streamId) => {
                             setRawProperties({
                                 streamId,
                             })
                         }}
-                        onSearchInputChange={handleSearchInputChange}
-                        options={
-                            streamsQuery.data?.pages
-                                .flatMap((d) => d.streams)
-                                .map((stream) => ({
-                                    label: truncateStreamName(stream.id),
-                                    value: stream.id,
-                                })) ?? []
-                        }
-                        isLoadingOptions={
-                            streamsQuery.isLoading || streamsQuery.isFetching
-                        }
-                        placeholder="Type to select a stream"
-                        readOnly={busy}
-                        value={streamId}
+                        streamId={streamId}
+                        disabled={busy}
+                        name="streamId"
                     />
                 </Section>
             </Group>

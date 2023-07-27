@@ -65,7 +65,7 @@ module.exports = {
             },
         ],
         "@typescript-eslint/no-namespace": "off",
-        "no-underscore-dangle": 0,
+        "no-underscore-dangle": "off",
     },
     overrides: [
         {
