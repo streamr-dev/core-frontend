@@ -3021,6 +3021,15 @@ export type GetProjectForPurchaseQueryVariables = Exact<{
 
 export type GetProjectForPurchaseQuery = { __typename?: 'Query', project?: { __typename?: 'Project', streams: Array<string>, paymentDetails: Array<{ __typename?: 'ProjectPaymentDetails', domainId?: any | null, beneficiary: any, pricingTokenAddress: any, pricePerSecond?: any | null }> } | null };
 
+export type StreamFieldsFragment = { __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userAddress: any }> | null };
+
+export type GetStreamByIdQueryVariables = Exact<{
+  streamId: Scalars['ID']['input'];
+}>;
+
+
+export type GetStreamByIdQuery = { __typename?: 'Query', stream?: { __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userAddress: any }> | null } | null };
+
 export const OperatorFieldsFragmentDoc = gql`
     fragment OperatorFields on Operator {
   id
@@ -3112,6 +3121,19 @@ export const ProjectFieldsFragmentDoc = gql`
     price
     fee
     purchasedAt
+  }
+}
+    `;
+export const StreamFieldsFragmentDoc = gql`
+    fragment StreamFields on Stream {
+  id
+  metadata
+  permissions {
+    id
+    canGrant
+    canEdit
+    canDelete
+    userAddress
   }
 }
     `;
@@ -3210,3 +3232,11 @@ export const GetProjectForPurchaseDocument = gql`
 }
     `;
 export type GetProjectForPurchaseQueryResult = Apollo.QueryResult<GetProjectForPurchaseQuery, GetProjectForPurchaseQueryVariables>;
+export const GetStreamByIdDocument = gql`
+    query getStreamById($streamId: ID!) {
+  stream(id: $streamId) {
+    ...StreamFields
+  }
+}
+    ${StreamFieldsFragmentDoc}`;
+export type GetStreamByIdQueryResult = Apollo.QueryResult<GetStreamByIdQuery, GetStreamByIdQueryVariables>;

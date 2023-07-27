@@ -178,3 +178,22 @@ gql`
         }
     }
 `
+
+gql`
+    fragment StreamFields on Stream {
+        id
+        metadata
+        permissions {
+            id
+            canGrant
+            canEdit
+            canDelete
+            userAddress
+        }
+    }
+    query getStreamById($streamId: ID!) {
+        stream(id: $streamId) {
+            ...StreamFields
+        }
+    }
+`
