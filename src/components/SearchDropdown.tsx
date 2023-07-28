@@ -38,7 +38,7 @@ export const SearchDropdown: FunctionComponent<{
 
     useEffect(() => {
         setInputValue(value)
-    }, [value, setInputValue])
+    }, [value])
 
     return (
         <Autocomplete

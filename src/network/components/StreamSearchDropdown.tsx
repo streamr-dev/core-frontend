@@ -38,7 +38,7 @@ export const StreamSearchDropdown: FunctionComponent<{
 
     useEffect(() => {
         if (!streamId || streamId === streamSearchValue) {
-            return void 0
+            return
         }
         checkIfStreamExists(streamId).then((exists) => {
             if (exists) {

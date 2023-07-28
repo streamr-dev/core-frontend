@@ -12,7 +12,7 @@ export const Default = () => {
                 name="testDropdown"
                 onSelect={action('onSelect')}
                 placeholder="Type to select a stream"
-                value={''}
+                value=""
                 isLoadingOptions={isLoading}
                 onSearchInputChange={(searchInputValue) => {
                     setIsLoading(true)
@@ -21,12 +21,10 @@ export const Default = () => {
                     }, 1000)
                     action('onSearchChange')(searchInputValue)
                 }}
-                options={[
-                    ...new Array(1000).fill(null).map((_, index) => ({
-                        label: `Option ${index}`,
-                        value: `option_${index}`,
-                    })),
-                ]}
+                options={[...Array(1000)].map((_, index) => ({
+                    label: `Option ${index}`,
+                    value: `option_${index}`,
+                }))}
             />
         </>
     )

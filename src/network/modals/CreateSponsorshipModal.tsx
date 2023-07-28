@@ -243,11 +243,7 @@ export default function CreateSponsorshipModal({
                             readOnly={busy}
                             type="number"
                             min={0}
-                            value={
-                                typeof minStakeDuration !== 'undefined'
-                                    ? minStakeDuration
-                                    : ''
-                            }
+                            value={minStakeDuration || ''}
                         />
                         <TextAppendix>Days</TextAppendix>
                     </FieldWrap>
