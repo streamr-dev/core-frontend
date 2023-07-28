@@ -31,9 +31,7 @@ export const SearchDropdown: FunctionComponent<{
     const [inputValue, setInputValue] = useState(value)
 
     const debouncedSearchChangeHandler = useDebouncedCallback((searchValue: string) => {
-        if (typeof onSearchInputChange === 'function') {
-            return onSearchInputChange(searchValue)
-        }
+        return onSearchInputChange(searchValue)
     }, searchDebounceTime)
 
     useEffect(() => {
