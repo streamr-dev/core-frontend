@@ -191,6 +191,7 @@ gql`
             userAddress
         }
     }
+
     query getStreamById($streamId: ID!) {
         stream(id: $streamId) {
             ...StreamFields
