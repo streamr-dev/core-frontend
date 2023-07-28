@@ -2,17 +2,19 @@ import React, { useMemo, useReducer, useState } from 'react'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     ErrorLabel,
+    FieldWrap,
     FormModalProps,
     Group,
     GroupHeadline,
     Hint,
     Section,
     SectionHeadline,
+    TextAppendix,
+    TextInput,
     WingedLabelWrap,
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
 import { toBN } from '~/utils/bn'
-import { FieldWrap, TextAppendix, TextInput } from '~/components/FormComponents'
 import { StreamSearchDropdown } from '~/network/components/StreamSearchDropdown'
 import {
     CreateSponsorshipFormData,

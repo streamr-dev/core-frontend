@@ -2,15 +2,17 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
+    FieldWrap,
     FormModalProps,
     Prop,
     Section,
     SectionHeadline,
+    TextAppendix,
+    TextInput,
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui//Label'
 import Help from '~/components/Help'
 import { toBN } from '~/utils/bn'
-import { FieldWrap, TextAppendix, TextInput } from '~/components/FormComponents'
 
 interface Props extends Omit<FormModalProps, 'canSubmit'> {
     operatorId?: string

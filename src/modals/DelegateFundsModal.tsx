@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
+    FieldWrap,
     FormModalProps,
     Prop,
     Section,
     SectionHeadline,
+    TextAppendix,
+    TextInput,
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui//Label'
 import { toBN } from '~/utils/bn'
-import { FieldWrap, TextAppendix, TextInput } from '~/components/FormComponents'
 
 interface Props extends Omit<FormModalProps, 'canSubmit'> {
     onResolve?: (amount: string) => void
