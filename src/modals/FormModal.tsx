@@ -141,7 +141,7 @@ export const SectionHeadline = styled.h4`
 `
 
 export const Hint = styled.div`
-    color: #525252;
+    color: ${COLORS.primaryLight};
     font-size: 12px;
     margin-top: 8px;
     line-height: 20px;
@@ -158,7 +158,7 @@ export const Hint = styled.div`
 
 export const Section = styled.div`
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
-    background: #f1f1f1;
+    background: ${COLORS.section};
     border-radius: 8px;
     padding: 16px;
 
@@ -167,7 +167,7 @@ export const Section = styled.div`
     }
 
     ul {
-        background: #f8f8f8;
+        background: ${COLORS.secondaryLight};
         font-size: 14px;
         list-style: none;
         margin: 16px 0 0;
@@ -192,7 +192,7 @@ export const Section = styled.div`
 
 export const Prop = styled.em<{ $invalid?: boolean }>`
     opacity: 0.7;
-    color: #525252;
+    color: ${COLORS.primaryLight};
     flex-grow: 1;
     display: block;
     font-style: normal;
@@ -202,7 +202,7 @@ export const Prop = styled.em<{ $invalid?: boolean }>`
     ${({ $invalid = false }) =>
         $invalid &&
         css`
-            color: #d90c25;
+            color: ${COLORS.error};
         `}
 `
 
@@ -235,6 +235,6 @@ export const WingedLabelWrap = styled.div`
 `
 
 export const ErrorLabel = styled(Label)`
-    color: #d90c25;
+    color: ${COLORS.error};
     opacity: 0.7;
 `

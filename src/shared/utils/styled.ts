@@ -29,7 +29,7 @@ export enum COLORS {
     selection = '#CCE9FD',
     separator = '#EFEFEF',
     disabled = '#ADADAD',
-    docLink = '#F1F1F1',
+    section = '#F1F1F1',
     inputBackground = '#F1F1F1',
     radioBorder = '#CDCDCD',
     close = '#848484',

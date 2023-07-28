@@ -24,7 +24,7 @@ export const TextInput = styled.input`
     }
 
     &::placeholder {
-        color: #a3a3a3;
+        color: ${COLORS.primaryDisabled};
     }
 `
 export const Appendix = styled.div`
@@ -40,7 +40,7 @@ export const FieldWrap = styled.div<{ $invalid?: boolean; $grayedOut?: boolean }
     display: flex;
     border: 1px solid transparent;
     align-items: center;
-    background: #ffffff;
+    background: ${COLORS.primaryContrast};
     font-size: 14px;
     border-radius: 8px;
     height: 40px;
@@ -55,24 +55,24 @@ export const FieldWrap = styled.div<{ $invalid?: boolean; $grayedOut?: boolean }
     }
 
     ${TextAppendix} {
-        border-left: 1px solid #efefef;
+        border-left: 1px solid ${COLORS.separator};
     }
 
     ${({ $invalid = false }) =>
         $invalid &&
         css`
-            border: 1px solid #d90c25;
+            border: 1px solid ${COLORS.error};
 
             ${TextAppendix} {
-                border-color: #d90c25;
+                border-color: ${COLORS.error};
             }
         `}
 
     ${({ $grayedOut = false }) =>
         $grayedOut &&
         css`
-            border-color: #f8f8f8;
-            background: #f8f8f8;
+            border-color: ${COLORS.secondaryLight};
+            background: ${COLORS.secondaryLight};
         `}
 `
 export const CopyButtonWrapAppendix = styled(Appendix)`
@@ -81,9 +81,9 @@ export const CopyButtonWrapAppendix = styled(Appendix)`
     button {
         align-items: center;
         appearance: none;
-        background: #ffffff;
+        background: ${COLORS.primaryContrast};
         border: 0;
-        color: #525252;
+        color: ${COLORS.primaryLight};
         display: flex;
         height: 24px;
         justify-content: center;
@@ -91,6 +91,6 @@ export const CopyButtonWrapAppendix = styled(Appendix)`
     }
 `
 export const IconWrapAppendix = styled(Appendix)`
-    color: #a3a3a3;
+    color: ${COLORS.primaryDisabled};
     padding-right: 10px;
 `

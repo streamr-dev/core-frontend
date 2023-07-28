@@ -18,9 +18,8 @@ import Button from '~/shared/components/Button'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import Footer from '~/shared/components/Layout/Footer'
-import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
+import CreateSponsorshipModal from '~/network/modals/CreateSponsorshipModal'
 import routes from '~/routes'
-import { useCreateSponsorshipController } from '../hooks/useCreateSponsorshipController'
 import { NetworkActionBar } from '../components/ActionBars/NetworkActionBar'
 import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
 import { StreamInfoCell } from '../components/NetworkUtils'
@@ -29,6 +28,11 @@ import {
     useAllSponsorshipsQuery,
     useMySponsorshipsQuery,
 } from '../hooks/useSponsorshipsList'
+import {
+    getTokenAndBalanceForSponsorship,
+    TokenAndBalanceForSponsorship,
+} from '../getters/getTokenAndBalanceForSponsorship'
+import { handleSponsorshipCreation } from '../handlers/handleSponsorshipCreation'
 
 const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
 
@@ -40,9 +44,11 @@ enum TabOptions {
 }
 export const SponsorshipsPage = () => {
     const [selectedTab, setSelectedTab] = useState<TabOptions>(TabOptions.allSponsorships)
+    const [balanceData, setBalanceData] = useState<TokenAndBalanceForSponsorship | null>(
+        null,
+    )
     const [searchQuery, setSearchQuery] = useState<string>('')
     const walletConnected = !!useWalletAccount()
-    const { balanceData, handleSponsorshipFormSubmit } = useCreateSponsorshipController()
 
     const allSponsorshipsQuery = useAllSponsorshipsQuery(PAGE_SIZE, searchQuery)
 
@@ -76,6 +82,12 @@ export const SponsorshipsPage = () => {
         }
     }, [walletConnected, selectedTab, setSelectedTab])
 
+    useEffect(() => {
+        getTokenAndBalanceForSponsorship().then((balanceInfo) => {
+            setBalanceData(balanceInfo)
+        })
+    }, [])
+
     return (
         <Layout
             className={styles.projectsListPage}
@@ -108,7 +120,10 @@ export const SponsorshipsPage = () => {
                                         balance: balanceData.balance,
                                         tokenSymbol: balanceData.tokenSymbol,
                                         tokenDecimals: balanceData.tokenDecimals,
-                                        onSubmit: handleSponsorshipFormSubmit,
+                                        onSubmit: handleSponsorshipCreation,
+                                        onResolve: () => {
+                                            sponsorshipsQuery.refetch()
+                                        },
                                     })
                                 } catch (e) {
                                     // Ignore for now.

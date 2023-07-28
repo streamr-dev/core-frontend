@@ -15,7 +15,7 @@ import {
     FieldWrap,
     TextAppendix,
     TextInput,
-} from '~/components/TextInput'
+} from '~/components/FormComponents'
 
 interface Props extends Omit<FormModalProps, 'canSubmit'> {
     onResolve?: (amount: string) => void

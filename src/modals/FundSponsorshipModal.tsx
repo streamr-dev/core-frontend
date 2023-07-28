@@ -9,7 +9,7 @@ import FormModal, {
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui//Label'
 import { toBN } from '~/utils/bn'
-import { FieldWrap, TextAppendix, TextInput } from '~/components/TextInput'
+import { FieldWrap, TextAppendix, TextInput } from '~/components/FormComponents'
 
 interface Props extends Omit<FormModalProps, 'canSubmit'> {
     onResolve?: (amount: string) => void

@@ -1,5 +1,4 @@
 import React, { useMemo, useReducer, useState } from 'react'
-import { z } from 'zod'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     ErrorLabel,
@@ -11,45 +10,14 @@ import FormModal, {
     SectionHeadline,
     WingedLabelWrap,
 } from '~/modals/FormModal'
-import Label from '~/shared/components/Ui//Label'
+import Label from '~/shared/components/Ui/Label'
 import { toBN } from '~/utils/bn'
-import { FieldWrap, TextAppendix, TextInput } from '~/components/TextInput'
+import { FieldWrap, TextAppendix, TextInput } from '~/components/FormComponents'
 import { StreamSearchDropdown } from '~/network/components/StreamSearchDropdown'
-
-const FormDataValidator = z
-    .object({
-        streamId: z.string().trim().min(1),
-        initialAmount: z
-            .string()
-            .refine((value) => toBN(value).isGreaterThanOrEqualTo(0)),
-        payoutRate: z.string().refine((value) => toBN(value).isGreaterThan(0)),
-        minStakeDuration: z
-            .number()
-            .gte(0)
-            .refine((value) => Number.isSafeInteger(value)),
-        minNumberOfOperators: z
-            .number()
-            .gte(0)
-            .refine((value) => Number.isSafeInteger(value)),
-        maxNumberOfOperators: z
-            .number()
-            .gte(0)
-            .refine((value) => Number.isSafeInteger(value))
-            .optional(),
-    })
-    .refine(
-        ({ minNumberOfOperators, maxNumberOfOperators }) => {
-            if (typeof maxNumberOfOperators === 'undefined') {
-                return true
-            }
-            return maxNumberOfOperators >= minNumberOfOperators
-        },
-        {
-            message: 'invalid range of operator numbers',
-            path: ['maxNumberOfOperators'],
-        },
-    )
-export type CreateSponsorshipFormData = z.infer<typeof FormDataValidator>
+import {
+    CreateSponsorshipFormData,
+    CreateSponsorshipFormDataValidator,
+} from '~/network/forms/createSponsorshipForm'
 
 const defaultFormData: CreateSponsorshipFormData = {
     streamId: '',
@@ -60,7 +28,7 @@ const defaultFormData: CreateSponsorshipFormData = {
     maxNumberOfOperators: undefined,
 }
 
-interface Props extends Omit<FormModalProps, 'canSubmit'> {
+interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onResolve?: (formData: CreateSponsorshipFormData) => void
     onSubmit: (formData: CreateSponsorshipFormData) => Promise<void>
     balance: string
@@ -134,7 +102,12 @@ export default function CreateSponsorshipModal({
         typeof formData.maxNumberOfOperators !== 'undefined' &&
         formData.minNumberOfOperators > formData.maxNumberOfOperators
 
-    const canSubmit = FormDataValidator.safeParse(formData).success && !insufficientFunds
+    const canSubmit =
+        CreateSponsorshipFormDataValidator.safeParse(formData).success &&
+        !insufficientFunds
+
+    const invalidMinStakeDuration =
+        !!initialAmount && !!payoutRate && extensionInDays < minStakeDuration
 
     return (
         <FormModal
@@ -246,8 +219,15 @@ export default function CreateSponsorshipModal({
                     </Hint>
                 </Section>
                 <Section>
-                    <Label>Minimum time operators must stay staked</Label>
-                    <FieldWrap>
+                    <WingedLabelWrap>
+                        <Label>Minimum time operators must stay staked</Label>
+                        {invalidMinStakeDuration && (
+                            <ErrorLabel>
+                                The value is higher than the duration of the sponsorship
+                            </ErrorLabel>
+                        )}
+                    </WingedLabelWrap>
+                    <FieldWrap $invalid={invalidMinStakeDuration}>
                         <TextInput
                             name="minStakeDuration"
                             onChange={({ target }) =>
