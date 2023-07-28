@@ -82,8 +82,11 @@ export async function createSponsorship({
 
     const sponsorshipDeployReceipt = await sponsorshipDeployTx.wait()
 
-    /* You may wonder why we are accessing the SECOND transfer event, that's because first the funds are being transferred to
-     *  the sponsorship factory and then the factory transfers them to the sponsorship contract */
+    /**
+     * You may wonder why we are accessing the SECOND transfer event, that's because first
+     * the funds are being transferred to the sponsorship factory and then the factory
+     * transfers them to the sponsorship contract.
+     */
     const newSponsorshipAddress = sponsorshipDeployReceipt.events?.filter(
         (e) => e.event === 'Transfer',
     )[1]?.args?.to
