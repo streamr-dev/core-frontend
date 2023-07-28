@@ -33,6 +33,7 @@ import {
     TokenAndBalanceForSponsorship,
 } from '../getters/getTokenAndBalanceForSponsorship'
 import { handleSponsorshipCreation } from '../handlers/handleSponsorshipCreation'
+import useIsMounted from '~/shared/hooks/useIsMounted'
 
 const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
 
@@ -43,6 +44,7 @@ enum TabOptions {
     mySponsorships = 'mySponsorships',
 }
 export const SponsorshipsPage = () => {
+    const isMounted = useIsMounted()
     const [selectedTab, setSelectedTab] = useState<TabOptions>(TabOptions.allSponsorships)
     const [balanceData, setBalanceData] = useState<TokenAndBalanceForSponsorship | null>(
         null,
@@ -84,7 +86,9 @@ export const SponsorshipsPage = () => {
 
     useEffect(() => {
         getTokenAndBalanceForSponsorship().then((balanceInfo) => {
-            setBalanceData(balanceInfo)
+            if (isMounted()) {
+                setBalanceData(balanceInfo)
+            }
         })
     }, [])
 
