@@ -13,19 +13,25 @@ import { getAllSponsorships, getSponsorshipsByCreator } from '~/getters'
 export const useAllSponsorshipsQuery = (
     pageSize = 10,
     searchQuery?: string,
-): UseInfiniteQueryResult<SponsorshipElement[]> => {
+): UseInfiniteQueryResult<{ pageParam: number; elements: SponsorshipElement[] }> => {
     return useInfiniteQuery({
         queryKey: ['allSponsorships', searchQuery],
-        async queryFn() {
+        async queryFn(ctx) {
             const sponsorships = (await getAllSponsorships({
                 first: pageSize,
                 streamId: searchQuery,
+                skip: ctx.pageParam,
             })) as Sponsorship[]
 
-            return sponsorships.map(mapSponsorshipToElement)
+            return {
+                pageParam: ctx.pageParam || 0,
+                elements: sponsorships.map(mapSponsorshipToElement),
+            }
         },
-        getNextPageParam: (lastPage) => {
-            return 0
+        getNextPageParam: (lastPage, pages) => {
+            return lastPage.elements.length === pageSize
+                ? lastPage.pageParam + pageSize
+                : undefined
         },
         staleTime: 60 * 1000, // 1 minute
         keepPreviousData: true,
@@ -35,14 +41,17 @@ export const useAllSponsorshipsQuery = (
 export const useMySponsorshipsQuery = (
     pageSize = 10,
     searchQuery?: string,
-): UseInfiniteQueryResult<SponsorshipElement[]> => {
+): UseInfiniteQueryResult<{ pageParam: number; elements: SponsorshipElement[] }> => {
     const account = useWalletAccount()
 
     return useInfiniteQuery({
         queryKey: ['mySponsorships', searchQuery],
-        async queryFn() {
+        async queryFn(ctx) {
             if (!account) {
-                return []
+                return {
+                    pageParam: 0,
+                    elements: [],
+                }
             }
 
             const sponsorships = (await getSponsorshipsByCreator(account, {
@@ -50,10 +59,15 @@ export const useMySponsorshipsQuery = (
                 streamId: searchQuery,
             })) as Sponsorship[]
 
-            return sponsorships.map(mapSponsorshipToElement)
+            return {
+                pageParam: ctx.pageParam || 0,
+                elements: sponsorships.map(mapSponsorshipToElement),
+            }
         },
         getNextPageParam: (lastPage) => {
-            return 0
+            return lastPage.elements.length === pageSize
+                ? lastPage.pageParam + pageSize
+                : undefined
         },
         staleTime: 60 * 1000, // 1 minute
         keepPreviousData: true,

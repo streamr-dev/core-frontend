@@ -37,7 +37,7 @@ import {
 
 const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 20
 
 enum TabOptions {
     allSponsorships = 'allSponsorships',
@@ -63,7 +63,7 @@ export const SponsorshipsPage = () => {
             : mySponsorshipsQuery
 
     const sponsorships: SponsorshipElement[] =
-        (sponsorshipsQuery?.data?.pages.flat() as SponsorshipElement[]) || []
+        sponsorshipsQuery?.data?.pages.map((page) => page.elements).flat() || []
 
     const handleSearch = useCallback(
         (searchTerm: string) => {
@@ -230,6 +230,14 @@ export const SponsorshipsPage = () => {
                         }
                     />
                 </SponsorshipsTableWrap>
+                {sponsorshipsQuery.hasNextPage && (
+                    <LoadMoreButton
+                        onClick={() => sponsorshipsQuery.fetchNextPage()}
+                        kind={'primary2'}
+                    >
+                        Load more
+                    </LoadMoreButton>
+                )}
             </PageContainer>
             <Footer />
         </Layout>
@@ -249,4 +257,9 @@ const SponsorshipsTableWrap = styled(WhiteBox)`
     .title {
         ${WhiteBoxPaddingStyles}
     }
+`
+
+const LoadMoreButton = styled(Button)`
+    display: block !important;
+    margin: 130px auto 80px;
 `
