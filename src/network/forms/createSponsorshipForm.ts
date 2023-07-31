@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { toBN } from '~/utils/bn'
 
-export const CreateSponsorshipFormDataValidator = z
+export const CreateSponsorshipForm = z
     .object({
         streamId: z.string().trim().min(1),
         initialAmount: z
@@ -49,4 +49,4 @@ export const CreateSponsorshipFormDataValidator = z
             path: ['minStakeDuration'],
         },
     )
-export type CreateSponsorshipFormData = z.infer<typeof CreateSponsorshipFormDataValidator>
+export type CreateSponsorshipForm = z.infer<typeof CreateSponsorshipForm>

@@ -7,15 +7,16 @@ import TransactionListToast, {
 import { Layer } from '~/utils/Layer'
 import { createSponsorship } from '~/services/sponsorships'
 import { toBN } from '~/utils/bn'
-import { getTokenAndBalanceForSponsorship } from '../getters/getTokenAndBalanceForSponsorship'
-import { CreateSponsorshipFormData } from '../forms/createSponsorshipForm'
+import {
+    getTokenAndBalanceForSponsorship,
+    TokenAndBalanceForSponsorship,
+} from '../getters/getTokenAndBalanceForSponsorship'
+import { CreateSponsorshipForm } from '../forms/createSponsorshipForm'
 
-export const handleSponsorshipCreation = async (formData: CreateSponsorshipFormData) => {
-    const balanceData = await getTokenAndBalanceForSponsorship()
-    if (!balanceData) {
-        throw new Error('No balance data')
-    }
-
+export const handleSponsorshipCreation = async (
+    formData: CreateSponsorshipForm,
+    balanceData: TokenAndBalanceForSponsorship,
+) => {
     const toast: Toaster<typeof TransactionListToast> = toaster(
         TransactionListToast,
         Layer.Toast,

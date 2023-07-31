@@ -50,7 +50,8 @@ export const SponsorshipsPage = () => {
         null,
     )
     const [searchQuery, setSearchQuery] = useState<string>('')
-    const walletConnected = !!useWalletAccount()
+    const wallet = useWalletAccount()
+    const walletConnected = !!wallet
 
     const allSponsorshipsQuery = useAllSponsorshipsQuery(PAGE_SIZE, searchQuery)
 
@@ -85,12 +86,14 @@ export const SponsorshipsPage = () => {
     }, [walletConnected, selectedTab, setSelectedTab])
 
     useEffect(() => {
-        getTokenAndBalanceForSponsorship().then((balanceInfo) => {
-            if (isMounted()) {
-                setBalanceData(balanceInfo)
-            }
-        })
-    }, [])
+        if (wallet) {
+            getTokenAndBalanceForSponsorship(wallet).then((balanceInfo) => {
+                if (isMounted()) {
+                    setBalanceData(balanceInfo)
+                }
+            })
+        }
+    }, [wallet])
 
     return (
         <Layout
@@ -124,11 +127,13 @@ export const SponsorshipsPage = () => {
                                         balance: balanceData.balance,
                                         tokenSymbol: balanceData.tokenSymbol,
                                         tokenDecimals: balanceData.tokenDecimals,
-                                        onSubmit: handleSponsorshipCreation,
-                                        onResolve: () => {
-                                            sponsorshipsQuery.refetch()
-                                        },
+                                        onSubmit: async (formData) =>
+                                            await handleSponsorshipCreation(
+                                                formData,
+                                                balanceData,
+                                            ),
                                     })
+                                    await sponsorshipsQuery.refetch()
                                 } catch (e) {
                                     // Ignore for now.
                                 }

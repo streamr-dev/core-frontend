@@ -16,12 +16,9 @@ import FormModal, {
 import Label from '~/shared/components/Ui/Label'
 import { toBN } from '~/utils/bn'
 import { StreamSearchDropdown } from '~/network/components/StreamSearchDropdown'
-import {
-    CreateSponsorshipFormData,
-    CreateSponsorshipFormDataValidator,
-} from '~/network/forms/createSponsorshipForm'
+import { CreateSponsorshipForm } from '~/network/forms/createSponsorshipForm'
 
-const defaultFormData: CreateSponsorshipFormData = {
+const defaultFormData: CreateSponsorshipForm = {
     streamId: '',
     initialAmount: '',
     payoutRate: '',
@@ -31,10 +28,10 @@ const defaultFormData: CreateSponsorshipFormData = {
 }
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
-    onResolve?: (formData: CreateSponsorshipFormData) => void
-    onSubmit: (formData: CreateSponsorshipFormData) => Promise<void>
+    onResolve?: (formData: CreateSponsorshipForm) => void
+    onSubmit: (formData: CreateSponsorshipForm) => Promise<void>
     balance: string
-    formData?: Partial<CreateSponsorshipFormData>
+    formData?: Partial<CreateSponsorshipForm>
     tokenSymbol: string
     tokenDecimals: number
     streamId?: string
@@ -60,9 +57,9 @@ export default function CreateSponsorshipModal({
 
     const [formData, setRawProperties] = useReducer<
         (
-            state: CreateSponsorshipFormData,
-            change: Partial<CreateSponsorshipFormData>,
-        ) => CreateSponsorshipFormData
+            state: CreateSponsorshipForm,
+            change: Partial<CreateSponsorshipForm>,
+        ) => CreateSponsorshipForm
     >(
         (state, change) => ({
             ...state,
@@ -105,8 +102,7 @@ export default function CreateSponsorshipModal({
         formData.minNumberOfOperators > formData.maxNumberOfOperators
 
     const canSubmit =
-        CreateSponsorshipFormDataValidator.safeParse(formData).success &&
-        !insufficientFunds
+        CreateSponsorshipForm.safeParse(formData).success && !insufficientFunds
 
     const invalidMinStakeDuration =
         !!initialAmount && !!payoutRate && extensionInDays < minStakeDuration
@@ -179,9 +175,7 @@ export default function CreateSponsorshipModal({
                             readOnly={busy}
                             type="number"
                             min={0}
-                            value={
-                                typeof initialAmount !== 'undefined' ? initialAmount : ''
-                            }
+                            value={initialAmount || ''}
                         />
                         <TextAppendix>{tokenSymbol}</TextAppendix>
                     </FieldWrap>
@@ -209,7 +203,7 @@ export default function CreateSponsorshipModal({
                             readOnly={busy}
                             type="number"
                             min={0}
-                            value={typeof payoutRate !== 'undefined' ? payoutRate : ''}
+                            value={payoutRate || ''}
                         />
                         <TextAppendix>{tokenSymbol}/day</TextAppendix>
                     </FieldWrap>
