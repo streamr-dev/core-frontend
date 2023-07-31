@@ -136,7 +136,19 @@ const useStreamAbilitiesStore = create<Store>((set, get) => {
         invalidate(streamId, account) {
             set((store) =>
                 produce(store, (draft) => {
-                    delete draft.permissions[accountKey(streamId, account)]
+                    const permissions =
+                        draft.permissions[accountKey(streamId, account)] || {}
+
+                    const permissionKeys = Object.keys(permissions) as StreamPermission[]
+
+                    permissionKeys.forEach((permission) => {
+                        const { value, cache = 0 } = permissions[permission] || {}
+
+                        permissions[permission] = {
+                            value,
+                            cache: cache + 1,
+                        }
+                    })
                 }),
             )
         },
@@ -152,7 +164,7 @@ function useStreamAbility(
 
     const { fetchPermission } = useStreamAbilitiesStore()
 
-    const { value, cache } =
+    const { value, cache = 0 } =
         useStreamAbilitiesStore(({ permissions }) =>
             streamId
                 ? permissions[accountKey(streamId, account || address0)]?.[permission]
