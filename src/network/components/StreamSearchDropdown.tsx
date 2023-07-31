@@ -46,7 +46,7 @@ export const StreamSearchDropdown: FunctionComponent<{
                 setStreamSearchValue(streamId)
             }
         })
-        // eslint-disable-next-line
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [streamId])
 
     const handleSearchInputChange = async (searchInputValue: string) => {
