@@ -9,7 +9,7 @@ import { Layer } from '~/utils/Layer'
 import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
 import DelegateFundsModal from '~/modals/DelegateFundsModal'
 import FundSponsorshipModal from '~/modals/FundSponsorshipModal'
-import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
+import CreateSponsorshipModal from '~/network/modals/CreateSponsorshipModal'
 import JoinSponsorshipModal from '~/modals/JoinSponsorshipModal'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)

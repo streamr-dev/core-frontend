@@ -3,7 +3,6 @@ import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     FieldWrap,
     FormModalProps,
-    Hint,
     Prop,
     Section,
     SectionHeadline,

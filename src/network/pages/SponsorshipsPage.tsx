@@ -18,8 +18,9 @@ import Button from '~/shared/components/Button'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import Footer from '~/shared/components/Layout/Footer'
-import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
-import { toBN } from '~/utils/bn'
+import CreateSponsorshipModal from '~/network/modals/CreateSponsorshipModal'
+import useIsMounted from '~/shared/hooks/useIsMounted'
+import { createSponsorship } from '~/services/sponsorships'
 import routes from '~/routes'
 import { NetworkActionBar } from '../components/ActionBars/NetworkActionBar'
 import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
@@ -29,6 +30,10 @@ import {
     useAllSponsorshipsQuery,
     useMySponsorshipsQuery,
 } from '../hooks/useSponsorshipsList'
+import {
+    getTokenAndBalanceForSponsorship,
+    TokenAndBalanceForSponsorship,
+} from '../getters/getTokenAndBalanceForSponsorship'
 
 const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
 
@@ -39,9 +44,14 @@ enum TabOptions {
     mySponsorships = 'mySponsorships',
 }
 export const SponsorshipsPage = () => {
+    const isMounted = useIsMounted()
     const [selectedTab, setSelectedTab] = useState<TabOptions>(TabOptions.allSponsorships)
+    const [balanceData, setBalanceData] = useState<TokenAndBalanceForSponsorship | null>(
+        null,
+    )
     const [searchQuery, setSearchQuery] = useState<string>('')
-    const walletConnected = !!useWalletAccount()
+    const wallet = useWalletAccount()
+    const walletConnected = !!wallet
 
     const allSponsorshipsQuery = useAllSponsorshipsQuery(PAGE_SIZE, searchQuery)
 
@@ -75,6 +85,16 @@ export const SponsorshipsPage = () => {
         }
     }, [walletConnected, selectedTab, setSelectedTab])
 
+    useEffect(() => {
+        if (wallet) {
+            getTokenAndBalanceForSponsorship(wallet).then((balanceInfo) => {
+                if (isMounted()) {
+                    setBalanceData(balanceInfo)
+                }
+            })
+        }
+    }, [wallet, isMounted])
+
     return (
         <Layout
             className={styles.projectsListPage}
@@ -101,12 +121,25 @@ export const SponsorshipsPage = () => {
                 rightSideContent={
                     <Button
                         onClick={async () => {
-                            try {
-                                await createSponsorshipModal.pop()
-                            } catch (e) {
-                                // Ignore for now.
+                            if (balanceData) {
+                                try {
+                                    await createSponsorshipModal.pop({
+                                        balance: balanceData.balance,
+                                        tokenSymbol: balanceData.tokenSymbol,
+                                        tokenDecimals: balanceData.tokenDecimals,
+                                        onSubmit: async (formData) =>
+                                            await createSponsorship(
+                                                formData,
+                                                balanceData,
+                                            ),
+                                    })
+                                    await sponsorshipsQuery.refetch()
+                                } catch (e) {
+                                    // Ignore for now.
+                                }
                             }
                         }}
+                        disabled={!walletConnected || !balanceData}
                     >
                         Create sponsorship
                     </Button>
@@ -149,8 +182,7 @@ export const SponsorshipsPage = () => {
                             },
                             {
                                 displayName: 'DATA/day',
-                                valueMapper: (element) =>
-                                    toBN(element.DATAPerDay).toFormat(18),
+                                valueMapper: (element) => element.DATAPerDay,
                                 align: 'start',
                                 isSticky: false,
                                 key: 'dataPerDay',

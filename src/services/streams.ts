@@ -1,6 +1,12 @@
 import getCoreConfig from '~/getters/getCoreConfig'
 import address0 from '~/utils/address0'
 import { post } from '~/shared/utils/api'
+import getGraphClient from '~/getters/getGraphClient'
+import {
+    GetStreamByIdDocument,
+    GetStreamByIdQuery,
+    GetStreamByIdQueryVariables,
+} from '~/generated/gql/network'
 
 const getGraphUrl = () => {
     const { theGraphUrl, streamsGraphName } = getCoreConfig()
@@ -406,4 +412,18 @@ export const getStreamsOwnedBy = async (
     }
 
     return result
+}
+
+export const checkIfStreamExists = async (
+    potentialStreamId: string,
+): Promise<boolean> => {
+    const {
+        data: { stream },
+    } = await getGraphClient().query<GetStreamByIdQuery, GetStreamByIdQueryVariables>({
+        query: GetStreamByIdDocument,
+        variables: {
+            streamId: potentialStreamId,
+        },
+    })
+    return !!stream
 }

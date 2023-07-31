@@ -1,6 +1,4 @@
-import React, { useReducer, useState } from 'react'
-import { z } from 'zod'
-import SearchIcon from '@atlaskit/icon/glyph/search'
+import React, { useMemo, useReducer, useState } from 'react'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     ErrorLabel,
@@ -9,156 +7,88 @@ import FormModal, {
     Group,
     GroupHeadline,
     Hint,
-    IconWrapAppendix,
     Section,
     SectionHeadline,
     TextAppendix,
     TextInput,
     WingedLabelWrap,
 } from '~/modals/FormModal'
-import Label from '~/shared/components/Ui//Label'
+import Label from '~/shared/components/Ui/Label'
 import { toBN } from '~/utils/bn'
+import { StreamSearchDropdown } from '~/network/components/StreamSearchDropdown'
+import { CreateSponsorshipForm } from '~/network/forms/createSponsorshipForm'
 
-interface RawFormData {
-    streamId: string
-    initialAmount: string
-    payoutRate: string
-    minStakeDuration: string
-    minNumberOfOperators: string
-    maxNumberOfOperators: string
+const defaultFormData: CreateSponsorshipForm = {
+    streamId: '',
+    initialAmount: '',
+    payoutRate: '',
+    minStakeDuration: 14,
+    minNumberOfOperators: 1,
+    maxNumberOfOperators: undefined,
 }
 
-const FormData = z
-    .object({
-        streamId: z.string().trim().min(1),
-        initialAmount: z
-            .string()
-            .refine((value) => toBN(value).isGreaterThanOrEqualTo(0)),
-        payoutRate: z.string().refine((value) => toBN(value).isGreaterThan(0)),
-        minStakeDuration: z
-            .number()
-            .gte(0)
-            .refine((value) => Number.isSafeInteger(value)),
-        minNumberOfOperators: z
-            .number()
-            .gte(0)
-            .refine((value) => Number.isSafeInteger(value)),
-        maxNumberOfOperators: z
-            .number()
-            .gte(0)
-            .refine((value) => Number.isSafeInteger(value)),
-    })
-    .refine(
-        ({ minNumberOfOperators, maxNumberOfOperators }) =>
-            maxNumberOfOperators === 0 || maxNumberOfOperators >= minNumberOfOperators,
-        {
-            message: 'invalid range of operator numbers',
-        },
-    )
-
-type FormData = z.infer<typeof FormData>
-
-interface Props extends Omit<FormModalProps, 'canSubmit'> {
-    onResolve?: (formData: FormData) => void
-    balance?: string
-    formData: Partial<FormData>
-    tokenSymbol?: string
-}
-
-function getRawFormData(formData: Partial<FormData>): RawFormData {
-    return {
-        initialAmount: !formData.initialAmount
-            ? ''
-            : toBN(formData.initialAmount).dividedBy(1e18).toString(),
-        streamId: formData.streamId || '',
-        payoutRate: !formData.payoutRate
-            ? ''
-            : toBN(formData.payoutRate).dividedBy(1e18).toString(),
-        minStakeDuration:
-            typeof formData.minStakeDuration === 'undefined'
-                ? ''
-                : `${formData.minStakeDuration}`,
-        minNumberOfOperators:
-            typeof formData.minNumberOfOperators === 'undefined'
-                ? ''
-                : `${formData.minNumberOfOperators}`,
-        maxNumberOfOperators:
-            typeof formData.maxNumberOfOperators === 'undefined'
-                ? ''
-                : `${formData.maxNumberOfOperators}`,
-    }
+interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
+    onResolve?: (formData: CreateSponsorshipForm) => void
+    onSubmit: (formData: CreateSponsorshipForm) => Promise<void>
+    balance: string
+    formData?: Partial<CreateSponsorshipForm>
+    tokenSymbol: string
+    tokenDecimals: number
+    streamId?: string
 }
 
 export default function CreateSponsorshipModal({
     title = 'Create Sponsorship',
     submitLabel = 'Create',
     onResolve,
+    onSubmit,
     balance: balanceProp = '0',
     formData: formDataProp = {},
-    tokenSymbol = 'DATA',
+    tokenSymbol,
+    tokenDecimals,
+    streamId: streamIdProp,
     ...props
 }: Props) {
     const [busy, setBusy] = useState(false)
 
-    const balance = toBN(balanceProp)
+    const decimalMultiplier = useMemo(() => Math.pow(10, tokenDecimals), [tokenDecimals])
 
-    const initialRawFormData = getRawFormData(formDataProp)
+    const balance = toBN(balanceProp).multipliedBy(decimalMultiplier)
 
-    const [
-        {
-            initialAmount: rawInitialAmount,
-            streamId: rawStreamId,
-            payoutRate: rawPayoutRate,
-            minStakeDuration: rawMinStakeDuration,
-            minNumberOfOperators: rawMinNumberOfOperators,
-            maxNumberOfOperators: rawMaxNumberOfOperators,
-        },
-        setRawProperties,
-    ] = useReducer<(state: RawFormData, change: Partial<RawFormData>) => RawFormData>(
+    const [formData, setRawProperties] = useReducer<
+        (
+            state: CreateSponsorshipForm,
+            change: Partial<CreateSponsorshipForm>,
+        ) => CreateSponsorshipForm
+    >(
         (state, change) => ({
             ...state,
             ...change,
         }),
-        initialRawFormData,
+        defaultFormData,
     )
 
-    const initialAmountBN = toBN(rawInitialAmount || '0').multipliedBy(1e18)
-
-    const initialAmount = initialAmountBN.toString()
-
-    const payoutRateBN = toBN(rawPayoutRate || '0').multipliedBy(1e18)
-
-    const payoutRate = payoutRateBN.toString()
-
-    const minStakeDuration = rawMinStakeDuration || '0'
-
-    const minNumberOfOperators = rawMinNumberOfOperators || '0'
-
-    const maxNumberOfOperators = rawMaxNumberOfOperators || '0'
-
-    /**
-     * @TODO Implement a search feature and a dropdown.
-     */
-    const streamId = rawStreamId
-
-    const formData: FormData = {
-        streamId,
+    const {
         initialAmount,
+        streamId,
         payoutRate,
-        minStakeDuration: Number.parseInt(minStakeDuration),
-        minNumberOfOperators: Number.parseInt(minNumberOfOperators),
-        maxNumberOfOperators: Number.parseInt(maxNumberOfOperators),
-    }
+        minStakeDuration,
+        minNumberOfOperators,
+        maxNumberOfOperators,
+    } = formData
+
+    const initialAmountBN = toBN(initialAmount || '0').multipliedBy(decimalMultiplier)
+    const payoutRateBN = toBN(payoutRate || '0').multipliedBy(decimalMultiplier)
 
     const backdropDismissable =
-        rawStreamId === initialRawFormData.streamId &&
-        toBN(rawInitialAmount || '0').toString() ===
-            toBN(initialRawFormData.initialAmount || '0').toString() &&
-        toBN(rawPayoutRate || '0').toString() ===
-            toBN(initialRawFormData.payoutRate || '0').toString() &&
-        minStakeDuration === (initialRawFormData.minStakeDuration || '0') &&
-        minNumberOfOperators === (initialRawFormData.minNumberOfOperators || '0') &&
-        maxNumberOfOperators === (initialRawFormData.maxNumberOfOperators || '0')
+        streamId === defaultFormData.streamId &&
+        toBN(initialAmount || '0').toString() ===
+            toBN(defaultFormData.initialAmount || '0').toString() &&
+        toBN(payoutRate || '0').toString() ===
+            toBN(defaultFormData.payoutRate || '0').toString() &&
+        minStakeDuration === defaultFormData.minStakeDuration &&
+        minNumberOfOperators === defaultFormData.minNumberOfOperators &&
+        maxNumberOfOperators === defaultFormData.maxNumberOfOperators
 
     const extensionInDays =
         payoutRateBN.isGreaterThan(0) && initialAmountBN.isGreaterThanOrEqualTo(0)
@@ -168,10 +98,14 @@ export default function CreateSponsorshipModal({
     const insufficientFunds = initialAmountBN.isGreaterThan(balance)
 
     const invalidOperatorNumberRange =
-        formData.maxNumberOfOperators !== 0 &&
+        typeof formData.maxNumberOfOperators !== 'undefined' &&
         formData.minNumberOfOperators > formData.maxNumberOfOperators
 
-    const canSubmit = FormData.safeParse(formData).success && !insufficientFunds
+    const canSubmit =
+        CreateSponsorshipForm.safeParse(formData).success && !insufficientFunds
+
+    const invalidMinStakeDuration =
+        !!initialAmount && !!payoutRate && extensionInDays < minStakeDuration
 
     return (
         <FormModal
@@ -189,16 +123,11 @@ export default function CreateSponsorshipModal({
                 }
 
                 setBusy(true)
-
                 try {
-                    /**
-                     * Replace the following with your favourite contract interaction! <3
-                     */
-                    await new Promise((resolve) => void setTimeout(resolve, 2000))
-
+                    await onSubmit(formData)
                     onResolve?.(formData)
                 } catch (e) {
-                    console.warn('Error while becoming an operator', e)
+                    console.warn('Error while creating a Sponsorship', e)
                     setBusy(false)
                 } finally {
                     /**
@@ -215,24 +144,16 @@ export default function CreateSponsorshipModal({
                 </SectionHeadline>
                 <Section>
                     <Label>Select a Stream</Label>
-                    <FieldWrap>
-                        <TextInput
-                            name="streamId"
-                            autoFocus
-                            onChange={({ target }) =>
-                                void setRawProperties({
-                                    streamId: target.value,
-                                })
-                            }
-                            placeholder="Type to select a stream"
-                            readOnly={busy}
-                            type="text"
-                            value={streamId}
-                        />
-                        <IconWrapAppendix>
-                            <SearchIcon label="Search" />
-                        </IconWrapAppendix>
-                    </FieldWrap>
+                    <StreamSearchDropdown
+                        onStreamChange={(streamId) => {
+                            setRawProperties({
+                                streamId,
+                            })
+                        }}
+                        streamId={streamId}
+                        disabled={busy}
+                        name="streamId"
+                    />
                 </Section>
             </Group>
             <Group>
@@ -254,7 +175,7 @@ export default function CreateSponsorshipModal({
                             readOnly={busy}
                             type="number"
                             min={0}
-                            value={rawInitialAmount}
+                            value={initialAmount || ''}
                         />
                         <TextAppendix>{tokenSymbol}</TextAppendix>
                     </FieldWrap>
@@ -262,7 +183,8 @@ export default function CreateSponsorshipModal({
                         <p>
                             Wallet balance:{' '}
                             <strong>
-                                {balance.dividedBy(1e18).toString()} {tokenSymbol}
+                                {balance.dividedBy(decimalMultiplier).toString()}{' '}
+                                {tokenSymbol}
                             </strong>
                         </p>
                     </Hint>
@@ -281,7 +203,7 @@ export default function CreateSponsorshipModal({
                             readOnly={busy}
                             type="number"
                             min={0}
-                            value={rawPayoutRate}
+                            value={payoutRate || ''}
                         />
                         <TextAppendix>{tokenSymbol}/day</TextAppendix>
                     </FieldWrap>
@@ -293,58 +215,79 @@ export default function CreateSponsorshipModal({
                     </Hint>
                 </Section>
                 <Section>
-                    <Label>Minimum time Operators must stay staked</Label>
-                    <FieldWrap>
+                    <WingedLabelWrap>
+                        <Label>Minimum time operators must stay staked</Label>
+                        {invalidMinStakeDuration && (
+                            <ErrorLabel>
+                                The value is higher than the duration of the sponsorship
+                            </ErrorLabel>
+                        )}
+                    </WingedLabelWrap>
+                    <FieldWrap $invalid={invalidMinStakeDuration}>
                         <TextInput
                             name="minStakeDuration"
                             onChange={({ target }) =>
                                 void setRawProperties({
-                                    minStakeDuration: target.value,
+                                    minStakeDuration: target.value
+                                        ? Number(target.value)
+                                        : undefined,
                                 })
                             }
                             placeholder="0"
                             readOnly={busy}
                             type="number"
                             min={0}
-                            value={rawMinStakeDuration}
+                            value={minStakeDuration || ''}
                         />
                         <TextAppendix>Days</TextAppendix>
                     </FieldWrap>
                 </Section>
                 <Section>
-                    <Label>Minimum number of Operators</Label>
+                    <Label>Minimum number of operators to start payout</Label>
                     <FieldWrap $invalid={invalidOperatorNumberRange}>
                         <TextInput
                             name="minNumberOfOperators"
                             onChange={({ target }) =>
                                 void setRawProperties({
-                                    minNumberOfOperators: target.value,
+                                    minNumberOfOperators: target.value
+                                        ? Number(target.value)
+                                        : undefined,
                                 })
                             }
                             placeholder="0"
                             readOnly={busy}
                             type="number"
                             min={0}
-                            value={rawMinNumberOfOperators}
+                            value={
+                                typeof minNumberOfOperators !== 'undefined'
+                                    ? minNumberOfOperators
+                                    : ''
+                            }
                         />
                         <TextAppendix>Operators</TextAppendix>
                     </FieldWrap>
                 </Section>
                 <Section>
-                    <Label>Maximum number of Operators</Label>
+                    <Label>Maximum number of operators</Label>
                     <FieldWrap $invalid={invalidOperatorNumberRange}>
                         <TextInput
                             name="maxNumberOfOperators"
                             onChange={({ target }) =>
                                 void setRawProperties({
-                                    maxNumberOfOperators: target.value,
+                                    maxNumberOfOperators: target.value
+                                        ? Number(target.value)
+                                        : undefined,
                                 })
                             }
-                            placeholder="0"
+                            placeholder="Leave blank if you don't want to set a limit"
                             readOnly={busy}
                             type="number"
                             min={0}
-                            value={rawMaxNumberOfOperators}
+                            value={
+                                typeof maxNumberOfOperators !== 'undefined'
+                                    ? maxNumberOfOperators
+                                    : ''
+                            }
                         />
                         <TextAppendix>Operators</TextAppendix>
                     </FieldWrap>
