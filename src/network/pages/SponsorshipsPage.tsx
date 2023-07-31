@@ -260,6 +260,6 @@ const SponsorshipsTableWrap = styled(WhiteBox)`
 `
 
 const LoadMoreButton = styled(Button)`
-    display: block !important;
+    display: block;
     margin: 130px auto 80px;
 `
