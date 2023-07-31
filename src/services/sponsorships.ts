@@ -6,6 +6,9 @@ import networkPreflight from '~/utils/networkPreflight'
 import { getSigner } from '~/shared/stores/wallet'
 import { BNish, toBN } from '~/utils/bn'
 import getCoreConfig from '~/getters/getCoreConfig'
+import { toastedOperation } from '~/utils/toastedOperation'
+import { CreateSponsorshipForm } from '~/network/forms/createSponsorshipForm'
+import { TokenAndBalanceForSponsorship } from '~/network/getters/getTokenAndBalanceForSponsorship'
 
 const getSponsorshipChainId = () => {
     // TODO: add to .toml
@@ -14,25 +17,29 @@ const getSponsorshipChainId = () => {
     return chainConfig.id
 }
 
-export type SponsorshipParams = {
-    minOperatorCount: number
-    maxOperatorCount?: number
-    payoutRate: BNish // tokens per second
-    minimumStakeTime: BNish // seconds
-    initialFunding: BNish // wei
-    streamId: string
-    metadata?: object
-}
+export async function createSponsorship(
+    formData: CreateSponsorshipForm,
+    balanceData: TokenAndBalanceForSponsorship,
+): Promise<void> {
+    const minOperatorCount = Number(formData.minNumberOfOperators)
+    const maxOperatorCount = formData.maxNumberOfOperators
+        ? String(formData.maxNumberOfOperators)
+        : undefined
+    // seconds
+    const minimumStakeTime = toBN(formData.minStakeDuration)
+        .multipliedBy(86400)
+        .toString()
+    // tokens per second
+    const payoutRate = toBN(formData.payoutRate)
+        .dividedBy(86400)
+        .multipliedBy(toBN(10).pow(toBN(balanceData.tokenDecimals)))
+        .toString()
+    // wei
+    const initialFunding = toBN(formData.initialAmount)
+        .multipliedBy(toBN(10).pow(toBN(balanceData.tokenDecimals)))
+        .toString()
+    const streamId = formData.streamId
 
-export async function createSponsorship({
-    minOperatorCount,
-    maxOperatorCount,
-    payoutRate,
-    minimumStakeTime,
-    initialFunding,
-    streamId,
-    metadata = {},
-}: SponsorshipParams): Promise<void> {
     const chainId = getSponsorshipChainId()
 
     const chainConfig = getConfigForChain(chainId)
@@ -48,11 +55,11 @@ export async function createSponsorship({
         chainConfig.contracts.SponsorshipDefaultLeavePolicy,
     ]
 
-    const policyParams = [payoutRate.toString(), minimumStakeTime.toString()]
+    const policyParams = [payoutRate, minimumStakeTime]
 
     if (maxOperatorCount) {
         policies.push(chainConfig.contracts.SponsorshipMaxOperatorsJoinPolicy)
-        policyParams.push(maxOperatorCount.toString())
+        policyParams.push(maxOperatorCount)
     }
 
     const data = defaultAbiCoder.encode(
@@ -62,7 +69,7 @@ export async function createSponsorship({
             0, // initialMinHorizonSeconds - hardcoded for now
             minOperatorCount,
             streamId,
-            JSON.stringify(metadata),
+            JSON.stringify({}), // metadata
             policies,
             policyParams,
         ],
@@ -74,26 +81,28 @@ export async function createSponsorship({
         signer,
     ) as ERC677
 
-    const sponsorshipDeployTx = await token.transferAndCall(
-        chainConfig.contracts['SponsorshipFactory'],
-        initialFunding.toString(),
-        data,
-    )
+    await toastedOperation('Sponsorship deployment', async () => {
+        const sponsorshipDeployTx = await token.transferAndCall(
+            chainConfig.contracts['SponsorshipFactory'],
+            initialFunding.toString(),
+            data,
+        )
 
-    const sponsorshipDeployReceipt = await sponsorshipDeployTx.wait()
+        const sponsorshipDeployReceipt = await sponsorshipDeployTx.wait()
 
-    /**
-     * You may wonder why we are accessing the SECOND transfer event, that's because first
-     * the funds are being transferred to the sponsorship factory and then the factory
-     * transfers them to the sponsorship contract.
-     */
-    const newSponsorshipAddress = sponsorshipDeployReceipt.events?.filter(
-        (e) => e.event === 'Transfer',
-    )[1]?.args?.to
+        /**
+         * You may wonder why we are accessing the SECOND transfer event, that's because first
+         * the funds are being transferred to the sponsorship factory and then the factory
+         * transfers them to the sponsorship contract.
+         */
+        const newSponsorshipAddress = sponsorshipDeployReceipt.events?.filter(
+            (e) => e.event === 'Transfer',
+        )[1]?.args?.to
 
-    if (!newSponsorshipAddress) {
-        throw new Error('Sponsorship deployment failed')
-    }
+        if (!newSponsorshipAddress) {
+            throw new Error('Sponsorship deployment failed')
+        }
+    })
 }
 
 export async function fundSponsorship(sponsorshipId: string, amount: BNish) {

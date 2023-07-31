@@ -20,6 +20,7 @@ import { useWalletAccount } from '~/shared/stores/wallet'
 import Footer from '~/shared/components/Layout/Footer'
 import CreateSponsorshipModal from '~/network/modals/CreateSponsorshipModal'
 import useIsMounted from '~/shared/hooks/useIsMounted'
+import { createSponsorship } from '~/services/sponsorships'
 import routes from '~/routes'
 import { NetworkActionBar } from '../components/ActionBars/NetworkActionBar'
 import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
@@ -33,7 +34,6 @@ import {
     getTokenAndBalanceForSponsorship,
     TokenAndBalanceForSponsorship,
 } from '../getters/getTokenAndBalanceForSponsorship'
-import { handleSponsorshipCreation } from '../handlers/handleSponsorshipCreation'
 
 const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
 
@@ -128,7 +128,7 @@ export const SponsorshipsPage = () => {
                                         tokenSymbol: balanceData.tokenSymbol,
                                         tokenDecimals: balanceData.tokenDecimals,
                                         onSubmit: async (formData) =>
-                                            await handleSponsorshipCreation(
+                                            await createSponsorship(
                                                 formData,
                                                 balanceData,
                                             ),

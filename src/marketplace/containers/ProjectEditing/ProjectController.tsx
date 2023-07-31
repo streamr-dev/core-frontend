@@ -8,7 +8,6 @@ import React, {
 import { useNavigate } from 'react-router-dom'
 import { randomHex } from 'web3-utils'
 import { Toaster, toaster } from 'toasterhea'
-import uniqueId from 'lodash/uniqueId'
 import { useProjectState } from '~/marketplace/contexts/ProjectStateContext'
 import { Layer } from '~/utils/Layer'
 import {
@@ -29,10 +28,11 @@ import {
 } from '~/services/projects'
 import { getDataAddress } from '~/marketplace/utils/web3'
 import TransactionListToast, {
-    Operation,
     notify,
+    Operation,
 } from '~/shared/toasts/TransactionListToast'
 import address0 from '~/utils/address0'
+import { toastedOperation } from '~/utils/toastedOperation'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import { toBN } from '~/utils/bn'
 import routes from '~/routes'
@@ -49,47 +49,6 @@ export class ValidationError extends Error {
         }
 
         Object.setPrototypeOf(this, ValidationError.prototype)
-    }
-}
-
-async function toastedProjectOperation(label: string, fn?: () => Promise<void>) {
-    let toast: Toaster<typeof TransactionListToast> | undefined = toaster(
-        TransactionListToast,
-        Layer.Toast,
-    )
-
-    const operation: Operation = {
-        id: uniqueId('operation-'),
-        label: label,
-        state: 'ongoing',
-    }
-
-    const operations = [operation]
-
-    try {
-        notify(toast, operations)
-
-        await fn?.()
-
-        operation.state = 'complete'
-
-        notify(toast, operations)
-    } catch (e) {
-        operations.forEach((op) => {
-            if (op.state === 'ongoing') {
-                op.state = 'error'
-            }
-        })
-
-        notify(toast, operations)
-
-        throw e
-    } finally {
-        setTimeout(() => {
-            toast?.discard()
-
-            toast = undefined
-        }, 3000)
     }
 }
 
@@ -216,7 +175,7 @@ export const useProjectController = (): ProjectController => {
                 isPublicPurchasable: projectType !== ProjectType.OpenData,
             }
 
-            await toastedProjectOperation('Create project', () =>
+            await toastedOperation('Create project', () =>
                 createProject(projectContractData),
             )
 
@@ -354,7 +313,7 @@ export const useProjectController = (): ProjectController => {
         try {
             const projectContractData = await getSmartContractProject(projectId)
 
-            await toastedProjectOperation('Update project', () =>
+            await toastedOperation('Update project', () =>
                 updateProject(projectContractData),
             )
 
@@ -403,7 +362,7 @@ export const useProjectController = (): ProjectController => {
         setPublishInProgress(true)
 
         try {
-            await toastedProjectOperation('Delete project', () =>
+            await toastedOperation('Delete project', () =>
                 deleteProjectService(projectId),
             )
         } finally {

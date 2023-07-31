@@ -41,7 +41,6 @@ export const StreamSearchDropdown: FunctionComponent<{
             return
         }
         checkIfStreamExists(streamId).then((exists) => {
-            console.log('exists?', exists)
             if (exists) {
                 onStreamChange(streamId)
                 setStreamSearchValue(streamId)
