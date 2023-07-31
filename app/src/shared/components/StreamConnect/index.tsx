@@ -233,7 +233,7 @@ mqtt.subscribe('${streamId}', (msg) => {
                             <Button
                                 kind="secondary"
                                 onClick={() =>
-                                    void copy(currentBrokerSnippet, {
+                                    void copy(lightNodeSnippet, {
                                         toastMessage: 'Copied',
                                     })
                                 }
