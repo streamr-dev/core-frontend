@@ -127,21 +127,16 @@ mqtt.subscribe('${streamId}', (msg) => {
 
     const { copy } = useCopy()
 
-    const currentBrokerSnippet = useMemo(() => {
-        let snippet: string
+    const currentBrokerSnippet = (() => {
         switch (currentProtocol) {
             case 'websocket':
-                snippet = websocketSnippet
-                break
+                return websocketSnippet
             case 'http':
-                snippet = httpSnippet
-                break
+                return httpSnippet
             case 'mqtt':
-                snippet = mqttSnippet
-                break
+                return mqttSnippet
         }
-        return snippet
-    }, [currentProtocol, httpSnippet, mqttSnippet, websocketSnippet])
+    })()
 
     return (
         <div className={'row'}>
