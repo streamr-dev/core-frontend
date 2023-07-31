@@ -41,19 +41,20 @@ export const StreamSearchDropdown: FunctionComponent<{
             return
         }
         checkIfStreamExists(streamId).then((exists) => {
+            console.log('exists?', exists)
             if (exists) {
                 onStreamChange(streamId)
                 setStreamSearchValue(streamId)
             }
         })
+        // eslint-disable-next-line
     }, [streamId])
 
     const handleSearchInputChange = async (searchInputValue: string) => {
+        setStreamSearchValue(searchInputValue)
         const exists = await checkIfStreamExists(searchInputValue)
         if (exists) {
             onStreamChange(searchInputValue)
-        } else {
-            setStreamSearchValue(searchInputValue)
         }
     }
 

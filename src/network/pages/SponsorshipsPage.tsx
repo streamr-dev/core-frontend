@@ -19,6 +19,7 @@ import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import Footer from '~/shared/components/Layout/Footer'
 import CreateSponsorshipModal from '~/network/modals/CreateSponsorshipModal'
+import useIsMounted from '~/shared/hooks/useIsMounted'
 import routes from '~/routes'
 import { NetworkActionBar } from '../components/ActionBars/NetworkActionBar'
 import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
@@ -33,7 +34,6 @@ import {
     TokenAndBalanceForSponsorship,
 } from '../getters/getTokenAndBalanceForSponsorship'
 import { handleSponsorshipCreation } from '../handlers/handleSponsorshipCreation'
-import useIsMounted from '~/shared/hooks/useIsMounted'
 
 const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
 
@@ -93,7 +93,7 @@ export const SponsorshipsPage = () => {
                 }
             })
         }
-    }, [wallet])
+    }, [wallet, isMounted])
 
     return (
         <Layout

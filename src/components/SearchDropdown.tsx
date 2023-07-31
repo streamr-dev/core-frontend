@@ -1,9 +1,9 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import SearchIcon from '@atlaskit/icon/glyph/search'
 import Autocomplete from 'react-autocomplete'
+import { useDebouncedCallback } from 'use-debounce'
 import styled, { css } from 'styled-components'
 import Spinner from '~/shared/components/Spinner'
-import { useDebouncedCallback } from 'use-debounce'
 import { COLORS } from '~/shared/utils/styled'
 import { FieldWrap, IconWrapAppendix, TextInput } from '~/modals/FormModal'
 

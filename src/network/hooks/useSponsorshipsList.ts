@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import moment from 'moment'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { UseInfiniteQueryResult } from '@tanstack/react-query/src/types'
@@ -15,8 +14,8 @@ export const useAllSponsorshipsQuery = (
     pageSize = 10,
     searchQuery?: string,
 ): UseInfiniteQueryResult<SponsorshipElement[]> => {
-    const query = useInfiniteQuery({
-        queryKey: ['allSponsorships'],
+    return useInfiniteQuery({
+        queryKey: ['allSponsorships', searchQuery],
         async queryFn() {
             const sponsorships = (await getAllSponsorships({
                 first: pageSize,
@@ -31,19 +30,6 @@ export const useAllSponsorshipsQuery = (
         staleTime: 60 * 1000, // 1 minute
         keepPreviousData: true,
     })
-
-    useEffect(() => {
-        const effect = async () => {
-            try {
-                await query.refetch()
-            } catch (e) {
-                // we don't care about it
-            }
-        }
-        effect()
-    }, [searchQuery])
-
-    return query
 }
 
 export const useMySponsorshipsQuery = (
@@ -52,8 +38,8 @@ export const useMySponsorshipsQuery = (
 ): UseInfiniteQueryResult<SponsorshipElement[]> => {
     const account = useWalletAccount()
 
-    const query = useInfiniteQuery({
-        queryKey: ['mySponsorships'],
+    return useInfiniteQuery({
+        queryKey: ['mySponsorships', searchQuery],
         async queryFn() {
             if (!account) {
                 return []
@@ -72,19 +58,6 @@ export const useMySponsorshipsQuery = (
         staleTime: 60 * 1000, // 1 minute
         keepPreviousData: true,
     })
-
-    useEffect(() => {
-        const effect = async () => {
-            try {
-                await query.refetch()
-            } catch (e) {
-                // we don't care about it
-            }
-        }
-        effect()
-    }, [account, searchQuery])
-
-    return query
 }
 
 export const mapSponsorshipToElement = (sponsorship: Sponsorship): SponsorshipElement => {
