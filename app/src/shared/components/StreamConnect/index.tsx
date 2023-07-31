@@ -247,7 +247,7 @@ mqtt.subscribe('${streamId}', (msg) => {
                 {nodeType === 'brokerNode' && (
                     <BrokerNodeSnippetContainer>
                         <Tabs
-                            selected={'websocket'}
+                            selected={currentProtocol}
                             onSelect={(tab) => setCurrentProtocol(tab)}
                         >
                             <Tabs.Item label={'Websocket'} value={'websocket'} key={0}>
