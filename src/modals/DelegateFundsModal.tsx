@@ -9,7 +9,7 @@ import FormModal, {
     TextAppendix,
     TextInput,
 } from '~/modals/FormModal'
-import Label from '~/shared/components/Ui//Label'
+import Label from '~/shared/components/Ui/Label'
 import { toBN } from '~/utils/bn'
 
 interface Props extends Omit<FormModalProps, 'canSubmit'> {

@@ -1,7 +1,7 @@
 import React, { useContext, useCallback, useEffect, FunctionComponent } from 'react'
 import styled from 'styled-components'
 import ImageUpload from '~/shared/components/ImageUpload'
-import Errors from '~/shared/components/Ui//Errors'
+import Errors from '~/shared/components/Ui/Errors'
 import useModal from '~/shared/hooks/useModal'
 import useFilePreview from '~/shared/hooks/useFilePreview'
 import { COLORS, LAPTOP } from '~/shared/utils/styled'

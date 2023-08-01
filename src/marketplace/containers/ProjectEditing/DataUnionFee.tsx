@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FunctionComponent, useContext, useEffect } from 'react'
 import styled from 'styled-components'
 import { COLORS, MAX_CONTENT_WIDTH } from '~/shared/utils/styled'
-import Text from '~/shared/components/Ui//Text'
+import Text from '~/shared/components/Ui/Text'
 import { ProjectStateContext } from '~/marketplace/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '~/marketplace/containers/ProductController/useEditableProjectActions'
 import useValidation from '~/marketplace/containers/ProductController/useValidation'

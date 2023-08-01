@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import styled from 'styled-components'
-import Label from '~/shared/components/Ui//Label'
+import Label from '~/shared/components/Ui/Label'
 import getCoreConfig from '~/getters/getCoreConfig'
 import StorageNodeItem from './StorageNodeItem'
 

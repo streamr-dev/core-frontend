@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
-import Label from '~/shared/components/Ui//Label'
+import Label from '~/shared/components/Ui/Label'
 import UnitizedQuantity from '~/shared/components/UnitizedQuantity'
 import { useCurrentStreamAbility } from '~/shared/stores/streamAbilities'
 import { useCurrentDraft, useUpdateCurrentMetadata } from '~/shared/stores/streamEditor'

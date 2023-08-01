@@ -1,7 +1,7 @@
 import React, { useContext, useCallback, ChangeEvent } from 'react'
 import styled from 'styled-components'
 import { ProjectHeroTitleStyles } from '~/marketplace/containers/ProjectPage/Hero/ProjectHero2.styles'
-import EnhancedText from '~/shared/components/Ui//Text'
+import EnhancedText from '~/shared/components/Ui/Text'
 import { COLORS } from '~/shared/utils/styled'
 import { useEditableProjectActions } from '~/marketplace/containers/ProductController/useEditableProjectActions'
 import { ProjectStateContext } from '~/marketplace/contexts/ProjectStateContext'

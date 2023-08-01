@@ -2,8 +2,8 @@ import React, { FunctionComponent, useState } from 'react'
 import styled from 'styled-components'
 import { DataUnionSecret } from '~/marketplace/types/project-types'
 import Button from '~/shared/components/Button'
-import Text from '~/shared/components/Ui//Text'
-import UnstyledLabel from '~/shared/components/Ui//Label'
+import Text from '~/shared/components/Ui/Text'
+import UnstyledLabel from '~/shared/components/Ui/Label'
 import LightModal from '~/modals/LightModal'
 
 const Container = styled.div`
