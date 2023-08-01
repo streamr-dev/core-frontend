@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState } from 'react'
 import styled from 'styled-components'
 import { DataUnionSecret } from '~/marketplace/types/project-types'
 import Button from '~/shared/components/Button'
-import Text from '~/shared/components/Ui/Text'
+import TextField from '~/shared/components/Ui/TextField'
 import UnstyledLabel from '~/shared/components/Ui/Label'
 import LightModal from '~/modals/LightModal'
 
@@ -44,18 +44,16 @@ export const SecretEditor: FunctionComponent<Props> = ({
             <Container>
                 <div>
                     <Label>Secret name</Label>
-                    <Text
+                    <TextField
                         defaultValue={secret?.name}
-                        onCommit={(text) => {
-                            setName(text)
-                        }}
+                        onCommit={setName}
                         placeholder="Enter a secret name"
                         selectAllOnFocus
                     />
                 </div>
                 <div>
                     <Label>Shared secret</Label>
-                    <Text
+                    <TextField
                         defaultValue={secret?.secret}
                         placeholder="Shared secret will be automatically generated"
                         disabled

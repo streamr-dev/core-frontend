@@ -1,7 +1,7 @@
 import React from 'react'
 import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
-import Text from '~/shared/components/Ui/Text'
+import TextField from '~/shared/components/Ui/TextField'
 import Label from '~/shared/components/Ui/Label'
 import Surround from '~/shared/components/Surround'
 import { useCurrentStreamAbility } from '~/shared/stores/streamAbilities'
@@ -64,7 +64,7 @@ export default function InfoSection({ disabled: disabledProp = false }) {
             </Row>
             <Row>
                 <Label htmlFor="streamDescription">Description</Label>
-                <Text
+                <TextField
                     type="text"
                     id="streamDescription"
                     name="description"

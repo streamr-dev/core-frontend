@@ -5,7 +5,7 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import Button from '~/shared/components/Button'
 import Spinner from '~/shared/components/Spinner'
 import Label from '~/shared/components/Ui/Label'
-import Text from '~/shared/components/Ui/Text'
+import TextField from '~/shared/components/Ui/TextField'
 import Select from '~/shared/components/Ui/Select'
 import Errors, { MarketplaceTheme } from '~/shared/components/Ui/Errors'
 import useCopy from '~/shared/hooks/useCopy'
@@ -33,7 +33,7 @@ export function ReadonlyStreamId({ streamId }: { streamId: string }) {
             <Pathname>
                 <Label>Stream ID</Label>
                 <PathnameField>
-                    <Text readOnly value={streamId} disabled />
+                    <TextField readOnly value={streamId} disabled />
                 </PathnameField>
             </Pathname>
             <div>
@@ -209,9 +209,9 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
                     </LabelInner>
                 </Label>
                 <PathnameField>
-                    <Text
+                    <TextField
                         disabled={disabled}
-                        invalid={!!validationError}
+                        $invalid={!!validationError}
                         onChange={({ target }) => {
                             setPathname(target.value)
 

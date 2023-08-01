@@ -14,7 +14,7 @@ import { getDataAddress, getTokenInformation } from '~/marketplace/utils/web3'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { COLORS, MAX_CONTENT_WIDTH, MEDIUM, REGULAR } from '~/shared/utils/styled'
 import { Radio } from '~/shared/components/Radio'
-import Text from '~/shared/components/Ui/Text'
+import TextField from '~/shared/components/Ui/TextField'
 import Button from '~/shared/components/Button'
 import SelectField2 from '~/marketplace/components/SelectField2'
 import { contractCurrencies } from '~/shared/utils/constants'
@@ -329,7 +329,7 @@ const TokenSelector: FunctionComponent<Props> = ({
                     />
                     <CustomTokenAddressInputContainer className={'custom-'}>
                         <label>Token contract address</label>
-                        <Text
+                        <TextField
                             autoComplete="off"
                             disabled={
                                 selection !== contractCurrencies.PRODUCT_DEFINED ||
@@ -341,8 +341,7 @@ const TokenSelector: FunctionComponent<Props> = ({
                             value={customTokenAddress}
                             onChange={(e) => setCustomTokenAddress(e.target.value)}
                             selectAllOnFocus
-                            smartCommit
-                            invalid={!isValid}
+                            $invalid={!isValid}
                         />
                         <SetTokenContainer>
                             <Button
@@ -358,7 +357,7 @@ const TokenSelector: FunctionComponent<Props> = ({
                 </RadioContainer>
                 <PriceContainer>
                     <PriceInputWrap>
-                        <Text
+                        <TextField
                             className={'price-input'}
                             placeholder={'Set your price'}
                             onChange={(event) => {

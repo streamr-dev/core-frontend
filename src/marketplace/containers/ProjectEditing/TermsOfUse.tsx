@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useContext } from 'react'
 import styled from 'styled-components'
 import Checkbox from '~/shared/components/Checkbox'
-import Text from '~/shared/components/Ui/Text'
+import TextField from '~/shared/components/Ui/TextField'
 import Label from '~/shared/components/Ui/Label'
 import Errors, { MarketplaceTheme } from '~/shared/components/Ui/Errors'
 import { ProjectStateContext } from '~/marketplace/contexts/ProjectStateContext'
@@ -143,8 +143,8 @@ export const TermsOfUse: FunctionComponent<Props> = ({ className, disabled }: Pr
             <DetailsContainer>
                 <div>
                     <Label>Link to detailed terms</Label>
-                    <Text
-                        defaultValue={project?.termsOfUse?.termsUrl}
+                    <TextField
+                        defaultValue={project?.termsOfUse?.termsUrl || undefined}
                         onCommit={(text) => {
                             updateTermsOfUse({
                                 ...project.termsOfUse,
@@ -154,15 +154,14 @@ export const TermsOfUse: FunctionComponent<Props> = ({ className, disabled }: Pr
                         placeholder="Add a URL here"
                         disabled={!!disabled}
                         selectAllOnFocus
-                        smartCommit
-                        invalid={!isValid}
+                        $invalid={!isValid}
                     />
                     {!isValid && <Errors theme={MarketplaceTheme}>{message}</Errors>}
                 </div>
                 <div>
                     <Label>Display name for link</Label>
-                    <Text
-                        defaultValue={project?.termsOfUse?.termsName}
+                    <TextField
+                        defaultValue={project?.termsOfUse?.termsName || undefined}
                         onCommit={(text) => {
                             updateTermsOfUse({
                                 ...project.termsOfUse,
@@ -172,7 +171,6 @@ export const TermsOfUse: FunctionComponent<Props> = ({ className, disabled }: Pr
                         placeholder="Add a display name"
                         disabled={!!disabled}
                         selectAllOnFocus
-                        smartCommit
                     />
                 </div>
             </DetailsContainer>

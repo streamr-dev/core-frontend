@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FunctionComponent, useContext, useEffect } from 'react'
 import styled from 'styled-components'
 import { COLORS, MAX_CONTENT_WIDTH } from '~/shared/utils/styled'
-import Text from '~/shared/components/Ui/Text'
+import TextField from '~/shared/components/Ui/TextField'
 import { ProjectStateContext } from '~/marketplace/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '~/marketplace/containers/ProductController/useEditableProjectActions'
 import useValidation from '~/marketplace/containers/ProductController/useValidation'
@@ -30,7 +30,7 @@ const DescriptionText = styled.p`
     }
 `
 
-const StyledInput = styled(Text)`
+const StyledInput = styled(TextField)`
     flex-shrink: 1;
 `
 
@@ -100,7 +100,7 @@ export const DataUnionFee: FunctionComponent<{ disabled?: boolean }> = ({
                         onChange={(event: ChangeEvent<HTMLInputElement>) => {
                             handleUpdate(event.target.value)
                         }}
-                        invalid={!isValid}
+                        $invalid={!isValid}
                     />
                     <span className={'percent-symbol'}>%</span>
                 </AdminFeeInputWrap>

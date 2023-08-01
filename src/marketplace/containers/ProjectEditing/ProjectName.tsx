@@ -1,7 +1,7 @@
 import React, { useContext, useCallback, ChangeEvent } from 'react'
 import styled from 'styled-components'
 import { ProjectHeroTitleStyles } from '~/marketplace/containers/ProjectPage/Hero/ProjectHero2.styles'
-import EnhancedText from '~/shared/components/Ui/Text'
+import TextField from '~/shared/components/Ui/TextField'
 import { COLORS } from '~/shared/utils/styled'
 import { useEditableProjectActions } from '~/marketplace/containers/ProductController/useEditableProjectActions'
 import { ProjectStateContext } from '~/marketplace/contexts/ProjectStateContext'
@@ -13,7 +13,7 @@ const ProjectNameInputContainer = styled.div`
     ${ProjectHeroTitleStyles};
 `
 
-const ProjectNameInput = styled(EnhancedText)`
+const ProjectNameInput = styled(TextField)`
     padding: 0;
     border: none;
     line-height: 44px;

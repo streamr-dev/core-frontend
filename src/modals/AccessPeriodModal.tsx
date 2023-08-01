@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Button from '~/shared/components/Button'
-import Text from '~/shared/components/Ui/Text'
+import TextField from '~/shared/components/Ui/TextField'
 import SelectField2 from '~/marketplace/components/SelectField2'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
 import { COLORS, LIGHT, MEDIUM } from '~/shared/utils/styled'
@@ -272,9 +272,9 @@ export default function AccessPeriodModal({
                 }}
             >
                 <PeriodContainer>
-                    <Text
+                    <TextField
                         value={length}
-                        onChange={(e: any) => void setLength(e.target.value)}
+                        onChange={(e) => void setLength(e.target.value)}
                         onCommit={setLength}
                         autoFocus
                         name="quantity"

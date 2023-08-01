@@ -1,7 +1,7 @@
 import React from 'react'
 import { Meta } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import Text from './index'
+import TextField from './TextField'
 
 export const Native = () => <input />
 
@@ -9,19 +9,20 @@ Native.story = {
     name: 'native',
 }
 
-export const NoEvents = () => <Text />
+export const NoEvents = () => <TextField commitSame />
 
 NoEvents.story = {
     name: 'no events',
 }
 
 export const Default = () => (
-    <Text
-        smartCommit={false}
+    <TextField
+        commitSame
         onChange={action('onChange')}
         onCommit={action('onCommit')}
-        noEmptyCommit={false}
-        revertOnEscape={false}
+        revertOnEscape
+        flushHistoryOnBlur
+        selectAllOnFocus
     />
 )
 
@@ -30,7 +31,7 @@ Default.story = {
 }
 
 const meta: Meta<typeof Default> = {
-    title: 'Shared/Text',
+    title: 'Shared/TextField',
     component: Default,
     decorators: [
         (Story) => {

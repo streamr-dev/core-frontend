@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { DataUnionSecret } from '~/marketplace/types/project-types'
 import WithInputActions from '~/shared/components/WithInputActions'
 import PopoverItem from '~/shared/components/Popover/PopoverItem'
-import Text from '~/shared/components/Ui/Text'
+import TextField from '~/shared/components/Ui/TextField'
 import Label from '~/shared/components/Ui/Label'
 import useCopy from '~/shared/hooks/useCopy'
 import { COLORS } from '~/shared/utils/styled'
@@ -57,7 +57,7 @@ export const SecretItem: FunctionComponent<Props> = ({
                     </PopoverItem>,
                 ]}
             >
-                <Text
+                <TextField
                     id={elementId}
                     type={isRevealed ? 'text' : 'password'}
                     autoComplete="off"

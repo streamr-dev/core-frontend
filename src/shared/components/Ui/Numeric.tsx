@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import SvgIcon from '~/shared/components/SvgIcon'
-import Text from '~/shared/components/Ui/Text'
+import TextField from '~/shared/components/Ui/TextField'
 type ButtonsProps = {
     onUpClick?: ((arg0: React.MouseEvent<EventTarget>) => void) | null | undefined
     onDownClick?: ((arg0: React.MouseEvent<EventTarget>) => void) | null | undefined
@@ -166,7 +166,7 @@ const Numeric = ({
                 position: 'relative',
             }}
         >
-            <Text
+            <TextField
                 {...props}
                 type="number"
                 min={min}

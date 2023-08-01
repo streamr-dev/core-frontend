@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { COLORS, MAX_CONTENT_WIDTH } from '~/shared/utils/styled'
 import WithInputActions from '~/shared/components/WithInputActions'
 import PopoverItem from '~/shared/components/Popover/PopoverItem'
-import Text from '~/shared/components/Ui/Text'
+import TextField from '~/shared/components/Ui/TextField'
 import useCopy from '~/shared/hooks/useCopy'
 import { truncate } from '~/shared/utils/text'
 import { isEthereumAddress } from '~/marketplace/utils/validate'
@@ -151,17 +151,17 @@ export const BeneficiaryAddress: FunctionComponent<BeneficiaryAddressProps> = ({
                         </PopoverItem>,
                     ]}
                 >
-                    <Text
-                        ref={(input: HTMLInputElement) => (inputRef.current = input)}
+                    <TextField
+                        ref={inputRef}
                         id="beneficiaryAddress"
                         autoComplete="off"
                         defaultValue={beneficiaryAddress || ''}
                         onCommit={(value) => {
                             handleUpdate(value)
                         }}
-                        placeholder={'i.e. 0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1'}
+                        placeholder="i.e. 0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1"
                         disabled={disabled}
-                        invalid={!isValid}
+                        $invalid={!isValid}
                         selectAllOnFocus
                     />
                 </WithInputActions>

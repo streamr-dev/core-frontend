@@ -1,7 +1,7 @@
 import React, { useReducer, useEffect, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import getUnitSelectOptions from '~/getters/getUnitSelectOptions'
-import Text from '~/shared/components/Ui/Text'
+import TextField from '~/shared/components/Ui/TextField'
 import Select from '~/shared/components/Ui/Select'
 const initialState = {
     cache: undefined,
@@ -125,7 +125,7 @@ export default function UnitizedQuantity({
     }, [cache])
     return (
         <InputContainer>
-            <Text
+            <TextField
                 id="storageAmount"
                 value={typeof quantity === 'undefined' ? '' : quantity}
                 onChange={({ target }) => {

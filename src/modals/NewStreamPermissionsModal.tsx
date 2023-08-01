@@ -8,7 +8,7 @@ import { isEthereumAddress } from '~/marketplace/utils/validate'
 import address0 from '~/utils/address0'
 import UnstyledLabel from '~/shared/components/Ui/Label'
 import UnstyledErrors, { MarketplaceTheme } from '~/shared/components/Ui/Errors'
-import Text from '~/shared/components/Ui/Text'
+import TextField from '~/shared/components/Ui/TextField'
 import FormModal, { FormModalProps } from './FormModal'
 import { RejectionReason } from './BaseModal'
 
@@ -109,12 +109,12 @@ export default function NewStreamPermissionsModal({
         >
             <div>
                 <Label>Wallet address</Label>
-                <Text
+                <TextField
                     onCommit={(value) => {
                         setAddress(value)
                         setError('')
                     }}
-                    placeholder="0x..."
+                    placeholder="0x…"
                 />
                 {!!error && (
                     <Errors theme={MarketplaceTheme} overlap>
