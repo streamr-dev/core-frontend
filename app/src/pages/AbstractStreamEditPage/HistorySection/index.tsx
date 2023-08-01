@@ -23,10 +23,13 @@ export default function HistorySection({ disabled: disabledProp = false }: Props
     const disabled = disabledProp || !canEdit
 
     const {
+        storageNodes,
         metadata: { storageDays },
     } = useCurrentDraft()
 
     const updateMetadata = useUpdateCurrentMetadata()
+
+    const noStorageEnabled = !Object.values(storageNodes).some((item) => item?.enabled)
 
     return (
         <Section title="Data storage">
@@ -43,7 +46,7 @@ export default function HistorySection({ disabled: disabledProp = false }: Props
                     month: 30,
                     week: 7,
                 }}
-                disabled={disabled}
+                disabled={disabled || noStorageEnabled}
                 onChange={(value: number) =>
                     void updateMetadata((metadata) => {
                         metadata.storageDays = value
