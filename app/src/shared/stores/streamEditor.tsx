@@ -1034,7 +1034,7 @@ const NewStreamLink = styled(Link)`
 function getOpenStreamLink(streamId: string) {
     return function OpenStreamLink() {
         const id: string = decodeURIComponent(
-            useMatch(routes.streams.show())?.params['id'] || '',
+            useMatch(routes.streams.overview())?.params['id'] || '',
         )
 
         if (!streamId || id === streamId) {
