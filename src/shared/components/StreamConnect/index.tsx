@@ -9,6 +9,126 @@ import { StreamId } from '~/shared/types/stream-types'
 import { truncateStreamName } from '~/shared/utils/text'
 import useCopy from '~/shared/hooks/useCopy'
 
+function stripIndent(code: string): string {
+    let minIndent = Number.POSITIVE_INFINITY
+
+    ;(code.match(/^[ \t]*(?=\S)/gm) || ['']).forEach(({ length }) => {
+        if (length < minIndent) {
+            minIndent = length
+        }
+    })
+
+    return code
+        .replace(new RegExp(`^[ \\t]{${minIndent}}`, 'gm'), '')
+        .trim()
+        .replace(/^\s+$/gm, '')
+}
+
+const Snippet = {
+    lightNodeHeader() {
+        return `
+            // Run a Streamr node right inside your JS app
+            const StreamrClient = require('streamr-client')
+            const streamr = new StreamrClient({
+                auth: {
+                    privateKey: 'ethereum-private-key' 
+                }
+            })
+        `
+    },
+    lightNodeSubscribe(streamId: string) {
+        return `
+            ${this.lightNodeHeader()}
+            // Subscribe to a stream of messages
+            streamr.subscribe('${streamId}', (msg) => {
+                // Handle incoming messages
+            })
+        `
+    },
+    lightNodePublish(streamId: string) {
+        return `
+            ${this.lightNodeHeader()}
+            // Publish messages to a stream
+            streamr.publish('${streamId}', {
+                hello: 'world',
+            })
+        `
+    },
+    websocketHeader(streamId: string) {
+        return `
+            // You'll want to URI-encode the stream id
+            const streamId = encodeURIComponent('${streamId}')
+        `
+    },
+    websocketPublish(streamId: string) {
+        return `
+            ${this.websocketHeader(streamId)}
+            // Connect to the Websocket plugin on your Streamr 
+            // node and send JSON messages to publish them
+            const pub = ws.connect(\`ws://my-streamr-node:7170/streams/\${streamId}/publish\`)
+            pub.send({
+                hello: 'world',
+            })
+        `
+    },
+    websocketSubscribe(streamId: string) {
+        return `
+            ${this.websocketHeader(streamId)}
+            // Connect to the Websocket plugin on your Streamr 
+            // node and subscribe to a stream of messages
+            const sub = ws.connect(\`ws://my-streamr-node:7170/streams/${streamId}/subscribe\`)
+            sub.onmessage = (msg) => {
+                // Handle incoming messages
+            }
+        `
+    },
+    httpSubscribe() {
+        return `
+            // The Subscribe over HTTP is not available, as in it's not a valid selection.
+        `
+    },
+    httpPublish(streamId: string) {
+        return `
+            // Use your favourite language and HTTP library!
+
+            // You'll want to URI-encode the stream id
+            const streamId = encodeURIComponent('${streamId}')
+
+            // Publish messages to a stream by POSTing JSON 
+            // to the HTTP plugin on your Streamr node
+            http.post(\`http://my-streamr-node:7171/streams/\${streamId}\`, {
+                hello: 'world'
+            })
+        `
+    },
+    mqttHeader() {
+        return `
+            // Use your favourite language and MQTT library!
+
+            // Connect to MQTT plugin on your Streamr node
+            mqtt.connect('mqtt://my-streamr-node')
+        `
+    },
+    mqttSubscribe(streamId: string) {
+        return `
+            ${this.mqttHeader()}
+            // Subscribe to a stream of messages
+            mqtt.subscribe('${streamId}', (msg) => {
+                // Handle incoming messages
+            })
+        `
+    },
+    mqttPublish(streamId: string) {
+        return `
+            ${this.mqttHeader()}
+            // Publish a message to a stream
+            mqtt.publish('${streamId}', {
+                hello: 'world',
+            })
+        `
+    },
+}
+
 export const StreamConnect: FunctionComponent<{ streams: StreamId[] }> = ({
     streams,
 }) => {
@@ -19,129 +139,40 @@ export const StreamConnect: FunctionComponent<{ streams: StreamId[] }> = ({
         'websocket',
     )
 
-    const lightNodeSnippetHeader = useMemo<string>(() => {
-        return `// Run a Streamr node right inside your JS app
-const StreamrClient = require('streamr-client')
-const streamr = new StreamrClient({
-    auth: {
-        privateKey: 'ethereum-private-key' 
-    }
-})
-
-`
-    }, [])
-
-    const lightNodeSubscribe = useMemo<string>(() => {
-        return `// Subscribe to a stream of messages
-streamr.subscribe('${streamId}', (msg) => {
-    // Handle incoming messages
-})`
-    }, [streamId])
-
-    const lightNodePublish = useMemo<string>(() => {
-        return `// Publish messages to a stream
-streamr.publish('${streamId}', {
-    hello: 'world',
-})`
-    }, [streamId])
-
-    const lightNodeSnippet = useMemo(
-        () =>
-            lightNodeSnippetHeader +
-            (action === 'publish' ? lightNodePublish : lightNodeSubscribe),
-        [action, lightNodeSnippetHeader, lightNodeSubscribe, lightNodePublish],
+    const lightNodeSnippet = stripIndent(
+        action === 'publish'
+            ? Snippet.lightNodePublish(streamId)
+            : Snippet.lightNodeSubscribe(streamId),
     )
 
-    const websocketSnippetHeader = useMemo(() => {
-        return `// You'll want to URI-encode the stream id
-const streamId = encodeURIComponent('${streamId}')
+    const websocketSnippet = stripIndent(
+        action === 'publish'
+            ? Snippet.websocketPublish(streamId)
+            : Snippet.websocketSubscribe(streamId),
+    )
 
-`
-    }, [streamId])
+    const httpSnippet = stripIndent(
+        action === 'subscribe' ? Snippet.httpSubscribe() : Snippet.httpPublish(streamId),
+    )
 
-    const websocketPublish = useMemo(() => {
-        return `// Connect to the Websocket plugin on your Streamr 
-// node and send JSON messages to publish them
-const pub = ws.connect(\`ws://my-streamr-node:7170/streams/\${streamId}/publish\`)
-pub.send({
-    hello: 'world',
-})`
-    }, [])
-    const websocketSubscribe = useMemo(() => {
-        return `// Connect to the Websocket plugin on your Streamr 
-// node and subscribe to a stream of messages
-const sub = ws.connect(\`ws://my-streamr-node:7170/streams/${streamId}/subscribe\`)
-sub.onmessage = (msg) => {
-    // Handle incoming messages
-}`
-    }, [streamId])
-    const websocketSnippet = useMemo<string>(() => {
-        return (
-            websocketSnippetHeader +
-            (action === 'publish' ? websocketPublish : websocketSubscribe)
-        )
-    }, [websocketSnippetHeader, websocketPublish, websocketSubscribe, action])
-
-    const httpSnippet = useMemo(() => {
-        if (action === 'subscribe') {
-            return "// The Subscribe over HTTP is not available, as in it's not a valid selection."
-        }
-        return `// Use your favourite language and HTTP library!
-
-// You'll want to URI-encode the stream id
-const streamId = encodeURIComponent('${streamId}')
-
-// Publish messages to a stream by POSTing JSON 
-// to the HTTP plugin on your Streamr node
-http.post(\`http://my-streamr-node:7171/streams/\${streamId}\`, {
-    hello: 'world'
-})`
-    }, [streamId, action])
-
-    const mqttSnippetHeader = useMemo(() => {
-        return `// Use your favourite language and MQTT library!
-
-// Connect to MQTT plugin on your Streamr node
-mqtt.connect('mqtt://my-streamr-node')
-
-`
-    }, [])
-
-    const mqttPublish = useMemo(() => {
-        return `// Publish a message to a stream
-mqtt.publish('${streamId}', {
-    hello: 'world',
-})`
-    }, [streamId])
-
-    const mqttSubscribe = useMemo(() => {
-        return `// Subscribe to a stream of messages
-mqtt.subscribe('${streamId}', (msg) => {
-    // Handle incoming messages
-})`
-    }, [streamId])
-
-    const mqttSnippet = useMemo(() => {
-        return mqttSnippetHeader + (action === 'publish' ? mqttPublish : mqttSubscribe)
-    }, [mqttSnippetHeader, mqttPublish, mqttSubscribe, action])
+    const mqttSnippet = stripIndent(
+        action === 'publish'
+            ? Snippet.mqttPublish(streamId)
+            : Snippet.mqttSubscribe(streamId),
+    )
 
     const { copy } = useCopy()
 
-    const currentBrokerSnippet = useMemo(() => {
-        let snippet: string
+    const currentBrokerSnippet = (() => {
         switch (currentProtocol) {
             case 'websocket':
-                snippet = websocketSnippet
-                break
+                return websocketSnippet
             case 'http':
-                snippet = httpSnippet
-                break
+                return httpSnippet
             case 'mqtt':
-                snippet = mqttSnippet
-                break
+                return mqttSnippet
         }
-        return snippet
-    }, [currentProtocol, httpSnippet, mqttSnippet, websocketSnippet])
+    })()
 
     return (
         <div className={'row'}>
@@ -233,7 +264,7 @@ mqtt.subscribe('${streamId}', (msg) => {
                             <Button
                                 kind="secondary"
                                 onClick={() =>
-                                    void copy(currentBrokerSnippet, {
+                                    void copy(lightNodeSnippet, {
                                         toastMessage: 'Copied',
                                     })
                                 }
@@ -247,7 +278,7 @@ mqtt.subscribe('${streamId}', (msg) => {
                 {nodeType === 'brokerNode' && (
                     <BrokerNodeSnippetContainer>
                         <Tabs
-                            selected={'websocket'}
+                            selected={currentProtocol}
                             onSelect={(tab) => setCurrentProtocol(tab)}
                         >
                             <Tabs.Item label={'Websocket'} value={'websocket'} key={0}>
