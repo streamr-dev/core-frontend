@@ -12,9 +12,9 @@ export type Props = {
 const AccessControlSection: React.FunctionComponent<Props> = ({
     disabled: disabledProp,
 }) => {
-    const canEdit = useCurrentStreamAbility(StreamPermission.EDIT)
+    const canGrant = useCurrentStreamAbility(StreamPermission.GRANT)
 
-    const disabled = disabledProp || !canEdit
+    const disabled = disabledProp || !canGrant
 
     return (
         <Section title="Access control">
