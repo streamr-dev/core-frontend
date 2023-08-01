@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState } from 'react'
 import styled from 'styled-components'
 import { DataUnionSecret } from '~/marketplace/types/project-types'
-import WithInputActions from '~/shared/components/WithInputActions'
+import WithInputActions from '~/components/WithInputActions'
 import PopoverItem from '~/shared/components/Popover/PopoverItem'
 import Text from '~/shared/components/Ui/Text'
 import Label from '~/shared/components/Ui/Label'

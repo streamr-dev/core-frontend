@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { COLORS, MAX_CONTENT_WIDTH } from '~/shared/utils/styled'
-import WithInputActions from '~/shared/components/WithInputActions'
+import WithInputActions from '~/components/WithInputActions'
 import PopoverItem from '~/shared/components/Popover/PopoverItem'
 import Text from '~/shared/components/Ui/Text'
 import useCopy from '~/shared/hooks/useCopy'

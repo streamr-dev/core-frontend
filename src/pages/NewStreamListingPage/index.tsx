@@ -24,7 +24,7 @@ import {
     FiltersBar,
     FiltersWrap,
     SearchBarWrap,
-} from '~/components/ActionBars/ActionBar.styles'
+} from '~/components/ActionBar.styles'
 import { PageWrap } from '~/shared/components/PageWrap'
 import styles from '~/shared/components/Layout/layout.pcss'
 import StreamTable, { OrderBy, OrderDirection } from '~/shared/components/StreamTable'
