@@ -1,5 +1,10 @@
 import type { CodegenConfig } from '@graphql-codegen/cli'
 
+// Load dotenv to support providing schema paths from .env file
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const dotenv = require('./scripts/dotenv')
+dotenv()
+
 const {
     NETWORK_GRAPH_SCHEMA_PATH = 'http://localhost:8000/subgraphs/name/streamr-dev/network-subgraphs',
     DU_GRAPH_SCHEMA_PATH = 'http://localhost:8000/subgraphs/name/streamr-dev/dataunion',
