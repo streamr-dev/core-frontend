@@ -63,7 +63,7 @@ export const SponsorshipsPage = () => {
             : mySponsorshipsQuery
 
     const sponsorships: SponsorshipElement[] =
-        sponsorshipsQuery?.data?.pages.map((page) => page.elements).flat() || []
+        sponsorshipsQuery.data?.pages.map((page) => page.elements).flat() || []
 
     const handleSearch = useCallback(
         (searchTerm: string) => {
