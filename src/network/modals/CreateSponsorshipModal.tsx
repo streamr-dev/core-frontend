@@ -1,4 +1,4 @@
-import React, { useMemo, useReducer, useState } from 'react'
+import React, { useEffect, useMemo, useReducer, useState } from 'react'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     ErrorLabel,
@@ -17,6 +17,8 @@ import Label from '~/shared/components/Ui/Label'
 import { toBN } from '~/utils/bn'
 import { StreamSearchDropdown } from '~/network/components/StreamSearchDropdown'
 import { CreateSponsorshipForm } from '~/network/forms/createSponsorshipForm'
+import useIsMounted from '~/shared/hooks/useIsMounted'
+import { getConfigFromChain } from '~/getters/getConfigFromChain'
 
 const defaultFormData: CreateSponsorshipForm = {
     streamId: '',
@@ -49,6 +51,8 @@ export default function CreateSponsorshipModal({
     streamId: streamIdProp,
     ...props
 }: Props) {
+    const isMounted = useIsMounted()
+
     const [busy, setBusy] = useState(false)
 
     const decimalMultiplier = useMemo(() => Math.pow(10, tokenDecimals), [tokenDecimals])
@@ -106,6 +110,23 @@ export default function CreateSponsorshipModal({
 
     const invalidMinStakeDuration =
         !!initialAmount && !!payoutRate && extensionInDays < minStakeDuration
+
+    const [maxPenaltyPeriod, setMaxPenaltyPeriod] = useState<number>()
+
+    const tooLongMinStakeDuration =
+        !!maxPenaltyPeriod && minStakeDuration > maxPenaltyPeriod
+
+    useEffect(() => {
+        getConfigFromChain().then((config) => {
+            if (isMounted()) {
+                setMaxPenaltyPeriod(
+                    toBN(config.maxPenaltyPeriodSeconds.toString())
+                        .dividedBy(86400)
+                        .toNumber(),
+                )
+            }
+        })
+    }, [isMounted])
 
     return (
         <FormModal
@@ -217,13 +238,23 @@ export default function CreateSponsorshipModal({
                 <Section>
                     <WingedLabelWrap>
                         <Label>Minimum time operators must stay staked</Label>
-                        {invalidMinStakeDuration && (
-                            <ErrorLabel>
-                                The value is higher than the duration of the sponsorship
-                            </ErrorLabel>
-                        )}
+                        <div className="error-wrap">
+                            {invalidMinStakeDuration && (
+                                <ErrorLabel>
+                                    The value is higher than the duration of the
+                                    sponsorship
+                                </ErrorLabel>
+                            )}
+                            {tooLongMinStakeDuration && (
+                                <ErrorLabel>
+                                    Max amount: {maxPenaltyPeriod} days
+                                </ErrorLabel>
+                            )}
+                        </div>
                     </WingedLabelWrap>
-                    <FieldWrap $invalid={invalidMinStakeDuration}>
+                    <FieldWrap
+                        $invalid={invalidMinStakeDuration || tooLongMinStakeDuration}
+                    >
                         <TextInput
                             name="minStakeDuration"
                             onChange={({ target }) =>

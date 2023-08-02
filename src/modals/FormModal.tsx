@@ -232,6 +232,10 @@ export const WingedLabelWrap = styled.div`
     ${Label} + ${Label} {
         flex-grow: 0;
     }
+
+    .error-wrap {
+        text-align: right;
+    }
 `
 
 export const ErrorLabel = styled(Label)`

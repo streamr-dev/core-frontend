@@ -9,6 +9,7 @@ import getCoreConfig from '~/getters/getCoreConfig'
 import { toastedOperation } from '~/utils/toastedOperation'
 import { CreateSponsorshipForm } from '~/network/forms/createSponsorshipForm'
 import { TokenAndBalanceForSponsorship } from '~/network/getters/getTokenAndBalanceForSponsorship'
+import { getConfigFromChain } from '~/getters/getConfigFromChain'
 
 const getSponsorshipChainId = () => {
     // TODO: add to .toml
@@ -50,6 +51,8 @@ export async function createSponsorship(
 
     const signer = await getSigner()
 
+    const contractConfig = await getConfigFromChain()
+
     const policies = [
         chainConfig.contracts.SponsorshipStakeWeightedAllocationPolicy,
         chainConfig.contracts.SponsorshipDefaultLeavePolicy,
@@ -65,7 +68,7 @@ export async function createSponsorship(
     const data = defaultAbiCoder.encode(
         ['uint', 'uint32', 'uint32', 'string', 'string', 'address[]', 'uint[]'],
         [
-            parseEther('60'), // initialMinimumStakeWei - hardcoded for now
+            contractConfig.minimumStakeWei, // initialMinimumStakeWei
             0, // initialMinHorizonSeconds - hardcoded for now
             minOperatorCount,
             streamId,
