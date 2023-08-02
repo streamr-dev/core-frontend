@@ -6,31 +6,40 @@ import { useWalletAccount } from '~/shared/stores/wallet'
 import { Sponsorship } from '~/generated/gql/network'
 import { toBN } from '~/utils/bn'
 import { getAllSponsorships, getSponsorshipsByCreator } from '~/getters'
+import { errorToast } from '~/utils/toast'
 
-/**
- * TODO - HANDLE PAGINATION
- */
 export const useAllSponsorshipsQuery = (
     pageSize = 10,
     searchQuery?: string,
-): UseInfiniteQueryResult<{ pageParam: number; elements: SponsorshipElement[] }> => {
+): UseInfiniteQueryResult<{
+    skippedElements: number
+    elements: SponsorshipElement[]
+}> => {
     return useInfiniteQuery({
         queryKey: ['allSponsorships', searchQuery],
         async queryFn(ctx) {
-            const sponsorships = (await getAllSponsorships({
-                first: pageSize,
-                streamId: searchQuery,
-                skip: ctx.pageParam,
-            })) as Sponsorship[]
+            try {
+                const sponsorships = (await getAllSponsorships({
+                    first: pageSize,
+                    streamId: searchQuery,
+                    skip: ctx.pageParam,
+                })) as Sponsorship[]
 
-            return {
-                pageParam: ctx.pageParam || 0,
-                elements: sponsorships.map(mapSponsorshipToElement),
+                return {
+                    skippedElements: ctx.pageParam || 0,
+                    elements: sponsorships.map(mapSponsorshipToElement),
+                }
+            } catch (e) {
+                errorToast({ title: 'Could not fetch the sponsorships list' })
+                return {
+                    skippedElements: 0,
+                    elements: [],
+                }
             }
         },
         getNextPageParam: (lastPage, pages) => {
             return lastPage.elements.length === pageSize
-                ? lastPage.pageParam + pageSize
+                ? lastPage.skippedElements + pageSize
                 : undefined
         },
         staleTime: 60 * 1000, // 1 minute
@@ -41,7 +50,10 @@ export const useAllSponsorshipsQuery = (
 export const useMySponsorshipsQuery = (
     pageSize = 10,
     searchQuery?: string,
-): UseInfiniteQueryResult<{ pageParam: number; elements: SponsorshipElement[] }> => {
+): UseInfiniteQueryResult<{
+    skippedElements: number
+    elements: SponsorshipElement[]
+}> => {
     const account = useWalletAccount()
 
     return useInfiniteQuery({
@@ -49,24 +61,32 @@ export const useMySponsorshipsQuery = (
         async queryFn(ctx) {
             if (!account) {
                 return {
-                    pageParam: 0,
+                    skippedElements: 0,
                     elements: [],
                 }
             }
 
-            const sponsorships = (await getSponsorshipsByCreator(account, {
-                first: pageSize,
-                streamId: searchQuery,
-            })) as Sponsorship[]
+            try {
+                const sponsorships = (await getSponsorshipsByCreator(account, {
+                    first: pageSize,
+                    streamId: searchQuery,
+                })) as Sponsorship[]
 
-            return {
-                pageParam: ctx.pageParam || 0,
-                elements: sponsorships.map(mapSponsorshipToElement),
+                return {
+                    skippedElements: ctx.pageParam || 0,
+                    elements: sponsorships.map(mapSponsorshipToElement),
+                }
+            } catch (e) {
+                errorToast({ title: 'Could not fetch the sponsorships list' })
+                return {
+                    skippedElements: 0,
+                    elements: [],
+                }
             }
         },
         getNextPageParam: (lastPage) => {
             return lastPage.elements.length === pageSize
-                ? lastPage.pageParam + pageSize
+                ? lastPage.skippedElements + pageSize
                 : undefined
         },
         staleTime: 60 * 1000, // 1 minute

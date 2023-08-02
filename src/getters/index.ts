@@ -240,7 +240,7 @@ export function getGraphProjectWithParsedMetadata<T extends { metadata: string }
 
 export async function getAllSponsorships({
     first,
-    skip = 0,
+    skip,
     streamId,
 }: {
     first?: number

@@ -232,6 +232,9 @@ export const SponsorshipsPage = () => {
                 </SponsorshipsTableWrap>
                 {sponsorshipsQuery.hasNextPage && (
                     <LoadMoreButton
+                        disabled={
+                            sponsorshipsQuery.isLoading || sponsorshipsQuery.isFetching
+                        }
                         onClick={() => sponsorshipsQuery.fetchNextPage()}
                         kind="primary2"
                     >
