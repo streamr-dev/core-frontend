@@ -233,7 +233,7 @@ export const SponsorshipsPage = () => {
                 {sponsorshipsQuery.hasNextPage && (
                     <LoadMoreButton
                         onClick={() => sponsorshipsQuery.fetchNextPage()}
-                        kind={'primary2'}
+                        kind="primary2"
                     >
                         Load more
                     </LoadMoreButton>
