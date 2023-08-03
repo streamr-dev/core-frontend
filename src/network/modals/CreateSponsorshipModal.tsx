@@ -118,7 +118,7 @@ export default function CreateSponsorshipModal({
 
     useEffect(() => {
         getConfigFromChain().then((config) => {
-            if (isMounted()) {
+            if (isMounted() && config) {
                 setMaxPenaltyPeriod(
                     toBN(config.maxPenaltyPeriodSeconds.toString())
                         .dividedBy(86400)

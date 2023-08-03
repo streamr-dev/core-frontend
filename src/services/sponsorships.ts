@@ -53,6 +53,10 @@ export async function createSponsorship(
 
     const contractConfig = await getConfigFromChain()
 
+    if (!contractConfig) {
+        throw new Error('Config did not load')
+    }
+
     const policies = [
         chainConfig.contracts.SponsorshipStakeWeightedAllocationPolicy,
         chainConfig.contracts.SponsorshipDefaultLeavePolicy,
