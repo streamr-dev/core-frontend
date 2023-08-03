@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import moment from 'moment'
 import styles from '~/marketplace/containers/Projects/projects.pcss'
 import { NetworkHelmet } from '~/shared/components/Helmet'
+import { useQuery } from '@tanstack/react-query'
 import Layout, { PageContainer } from '~/shared/components/Layout'
 import { useSponsorship } from '~/network/hooks/useSponsorship'
 import { NoData } from '~/shared/components/NoData'
@@ -14,7 +15,6 @@ import { NetworkSectionTitle } from '~/network/components/NetworkSectionTitle'
 import { HubAvatar } from '~/shared/components/AvatarImage'
 import { truncate } from '~/shared/utils/text'
 import Footer from '~/shared/components/Layout/Footer'
-import SvgIcon from '~/shared/components/SvgIcon'
 import { ChartPeriod, NetworkChart } from '~/shared/components/NetworkChart/NetworkChart'
 import {
     formatLongDate,
@@ -24,14 +24,7 @@ import { truncateNumber } from '~/shared/utils/truncateNumber'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { SponsorshipActionBar } from '../components/ActionBars/SponsorshipActionBar'
 import { growingValuesGenerator, NetworkChartWrap } from '../components/NetworkUtils'
-import { useQuery } from '@tanstack/react-query'
-import { GetSponsorshipDailyBucketsQuery } from '~/generated/gql/network'
-import { getSponsorshipStats } from '~/network/getters/getSponsorshipStats'
-
-const chartStubData = growingValuesGenerator(10, 20000000).map((element) => ({
-    x: element.day,
-    y: element.value,
-}))
+import { getSponsorshipStats } from '../getters/getSponsorshipStats'
 
 const fundingHistoryStubData: { sponsorId: string; date: string; amount: string }[] =
     new Array(10).fill(null).map((_, index) => {
