@@ -12,7 +12,7 @@ export const getConfigFromChain = async (): Promise<{
     minimumStakeWei: BNish
 }> => {
     const signer = await getSigner()
-    const token = new Contract(
+    const config = new Contract(
         defaultChainConfig.contracts.StreamrConfig,
         streamrConfigABI,
         signer,
