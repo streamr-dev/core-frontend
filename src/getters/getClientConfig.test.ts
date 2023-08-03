@@ -1,4 +1,5 @@
 import { RPCProtocol } from '@streamr/config'
+import setTempEnv from '../../test/test-utils/setTempEnv'
 import getConfig from './getConfig'
 import { defaultChainConfig } from './getChainConfig'
 import g from './getClientConfig'
@@ -7,6 +8,9 @@ jest.mock('~//getters/getConfig', () => ({
     __esModule: true,
     default: jest.fn(),
 }))
+
+setTempEnv({ STREAMR_DOCKER_DEV_HOST: null })
+
 describe('getClientConfig', () => {
     it("when empty, defaults to streamr-client's configuration", () => {
         ;(getConfig as any).mockImplementation(() => ({
