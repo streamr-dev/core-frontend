@@ -20,7 +20,7 @@ export enum ChartPeriod {
 type Props = Omit<TimeSeriesGraphProps, 'isLoading'> & {
     dataSources: { label: string; value: string }[]
     onDataSourceChange: (dataSource: string) => void
-    onPeriodChange: (period: ChartPeriod) => void
+    onPeriodChange: (period: string) => void
     selectedDataSource: string
     selectedPeriod: ChartPeriod
     isLoading?: boolean
@@ -39,13 +39,6 @@ export const NetworkChart: FunctionComponent<Props> = ({
     tooltipValueFormatter,
     isLoading = false,
 }) => {
-    const handlePeriodTabChange = useCallback(
-        (selection: string) => {
-            onPeriodChange(selection as ChartPeriod)
-        },
-        [onPeriodChange],
-    )
-
     return (
         <ChartContainer>
             <ChartDataSourceSelector>
@@ -77,7 +70,7 @@ export const NetworkChart: FunctionComponent<Props> = ({
                 <Tabs
                     fullWidthOnMobile={true}
                     selection={selectedPeriod}
-                    onSelectionChange={handlePeriodTabChange}
+                    onSelectionChange={onPeriodChange}
                     smallPadding={true}
                 >
                     {Object.keys(ChartPeriod).map((periodKey, index) => {
