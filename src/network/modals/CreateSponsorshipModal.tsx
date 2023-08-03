@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useReducer, useState } from 'react'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     ErrorLabel,
+    ErrorWrap,
     FieldWrap,
     FormModalProps,
     Group,
@@ -19,6 +20,7 @@ import { StreamSearchDropdown } from '~/network/components/StreamSearchDropdown'
 import { CreateSponsorshipForm } from '~/network/forms/createSponsorshipForm'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { getConfigFromChain } from '~/getters/getConfigFromChain'
+import { errorToast } from '~/utils/toast'
 
 const defaultFormData: CreateSponsorshipForm = {
     streamId: '',
@@ -117,15 +119,19 @@ export default function CreateSponsorshipModal({
         !!maxPenaltyPeriod && minStakeDuration > maxPenaltyPeriod
 
     useEffect(() => {
-        getConfigFromChain().then((config) => {
-            if (isMounted() && config) {
-                setMaxPenaltyPeriod(
-                    toBN(config.maxPenaltyPeriodSeconds.toString())
-                        .dividedBy(86400)
-                        .toNumber(),
-                )
-            }
-        })
+        getConfigFromChain()
+            .then((config) => {
+                if (isMounted() && config) {
+                    setMaxPenaltyPeriod(
+                        toBN(config.maxPenaltyPeriodSeconds).dividedBy(86400).toNumber(),
+                    )
+                }
+            })
+            .catch((e) => {
+                errorToast({
+                    title: 'Could not load the data from the chain. Please try again later.',
+                })
+            })
     }, [isMounted])
 
     return (
@@ -238,7 +244,7 @@ export default function CreateSponsorshipModal({
                 <Section>
                     <WingedLabelWrap>
                         <Label>Minimum time operators must stay staked</Label>
-                        <div className="error-wrap">
+                        <ErrorWrap>
                             {invalidMinStakeDuration && (
                                 <ErrorLabel>
                                     The value is higher than the duration of the
@@ -250,7 +256,7 @@ export default function CreateSponsorshipModal({
                                     Max amount: {maxPenaltyPeriod} days
                                 </ErrorLabel>
                             )}
-                        </div>
+                        </ErrorWrap>
                     </WingedLabelWrap>
                     <FieldWrap
                         $invalid={invalidMinStakeDuration || tooLongMinStakeDuration}

@@ -49,14 +49,6 @@ export async function createSponsorship(
 
     await networkPreflight(chainId)
 
-    const signer = await getSigner()
-
-    const contractConfig = await getConfigFromChain()
-
-    if (!contractConfig) {
-        throw new Error('Config did not load')
-    }
-
     const policies = [
         chainConfig.contracts.SponsorshipStakeWeightedAllocationPolicy,
         chainConfig.contracts.SponsorshipDefaultLeavePolicy,
@@ -69,26 +61,30 @@ export async function createSponsorship(
         policyParams.push(maxOperatorCount)
     }
 
-    const data = defaultAbiCoder.encode(
-        ['uint', 'uint32', 'uint32', 'string', 'string', 'address[]', 'uint[]'],
-        [
-            contractConfig.minimumStakeWei, // initialMinimumStakeWei
-            0, // initialMinHorizonSeconds - hardcoded for now
-            minOperatorCount,
-            streamId,
-            JSON.stringify({}), // metadata
-            policies,
-            policyParams,
-        ],
-    )
-
-    const token = new Contract(
-        chainConfig.contracts[paymentTokenSymbolFromConfig],
-        ERC677ABI,
-        signer,
-    ) as ERC677
-
     await toastedOperation('Sponsorship deployment', async () => {
+        const contractConfig = await getConfigFromChain()
+
+        const data = defaultAbiCoder.encode(
+            ['uint', 'uint32', 'uint32', 'string', 'string', 'address[]', 'uint[]'],
+            [
+                contractConfig.minimumStakeWei, // initialMinimumStakeWei
+                0, // initialMinHorizonSeconds - hardcoded for now
+                minOperatorCount,
+                streamId,
+                JSON.stringify({}), // metadata
+                policies,
+                policyParams,
+            ],
+        )
+
+        const signer = await getSigner()
+
+        const token = new Contract(
+            chainConfig.contracts[paymentTokenSymbolFromConfig],
+            ERC677ABI,
+            signer,
+        ) as ERC677
+
         const sponsorshipDeployTx = await token.transferAndCall(
             chainConfig.contracts['SponsorshipFactory'],
             initialFunding.toString(),
