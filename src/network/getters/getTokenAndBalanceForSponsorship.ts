@@ -1,7 +1,7 @@
 import getCoreConfig from '~/getters/getCoreConfig'
-import { getCustomTokenBalance, getTokenInformation } from '~/marketplace/utils/web3'
+import { getCustomTokenBalance } from '~/marketplace/utils/web3'
 import { defaultChainConfig } from '~/getters/getChainConfig'
-import { getWalletAccount } from '~/shared/stores/wallet'
+import { getSponsorshipTokenInfo } from './getSponsorshipTokenInfo'
 
 export type TokenAndBalanceForSponsorship = {
     balance: string
@@ -13,9 +13,7 @@ export const getTokenAndBalanceForSponsorship = async (
     walletAddress: string,
 ): Promise<TokenAndBalanceForSponsorship> => {
     const tokenSymbolFromConfig = getCoreConfig().sponsorshipPaymentToken as string
-    const tokenInformation = await getTokenInformation(
-        defaultChainConfig.contracts[tokenSymbolFromConfig],
-    )
+    const tokenInformation = await getSponsorshipTokenInfo()
     if (!tokenInformation) {
         throw new Error('Invalid token for sponsorship balanance')
     }

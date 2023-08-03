@@ -8,7 +8,7 @@ import Layout, { PageContainer } from '~/shared/components/Layout'
 import { useSponsorship } from '~/network/hooks/useSponsorship'
 import { NoData } from '~/shared/components/NoData'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
-import { LAPTOP, TABLET, COLORS } from '~/shared/utils/styled'
+import { COLORS, LAPTOP, TABLET } from '~/shared/utils/styled'
 import { WhiteBox, WhiteBoxPaddingStyles } from '~/shared/components/WhiteBox'
 import { NetworkSectionTitle } from '~/network/components/NetworkSectionTitle'
 import { HubAvatar } from '~/shared/components/AvatarImage'
@@ -24,6 +24,9 @@ import { truncateNumber } from '~/shared/utils/truncateNumber'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { SponsorshipActionBar } from '../components/ActionBars/SponsorshipActionBar'
 import { growingValuesGenerator, NetworkChartWrap } from '../components/NetworkUtils'
+import { useQuery } from '@tanstack/react-query'
+import { GetSponsorshipDailyBucketsQuery } from '~/generated/gql/network'
+import { getSponsorshipStats } from '~/network/getters/getSponsorshipStats'
 
 const chartStubData = growingValuesGenerator(10, 20000000).map((element) => ({
     x: element.day,
@@ -45,7 +48,20 @@ export const SingleSponsorshipPage = () => {
     const sponsorship = sponsorshipQuery.data
 
     const [selectedDataSource, setSelectedDataSource] = useState<string>('amountStaked')
-    const [selectedPeriod, setSelectedPeriod] = useState<ChartPeriod>(ChartPeriod['7D'])
+    const [selectedPeriod, setSelectedPeriod] = useState<ChartPeriod>(
+        ChartPeriod.SevenDays,
+    )
+
+    const chartQuery = useQuery({
+        queryKey: ['sponsorshipChartQuery', selectedPeriod, selectedDataSource],
+        queryFn: async () => {
+            return await getSponsorshipStats(
+                sponsorshipId as string,
+                selectedPeriod,
+                selectedDataSource,
+            )
+        },
+    })
 
     const tooltipPrefix = useMemo(() => {
         switch (selectedDataSource) {
@@ -116,15 +132,18 @@ export const SingleSponsorshipPage = () => {
                         <OverviewCharts>
                             <div className="title">
                                 <NetworkSectionTitle>Overview charts</NetworkSectionTitle>
-                                <SvgIcon
+                                {/*<SvgIcon
                                     name="fullScreen"
                                     className="icon"
                                     onClick={() => alert('open fullscreen mode')}
-                                />
+                                />*/}
                             </div>
                             <NetworkChartWrap>
                                 <NetworkChart
-                                    graphData={chartStubData}
+                                    graphData={chartQuery?.data || []}
+                                    isLoading={
+                                        chartQuery.isLoading || chartQuery.isFetching
+                                    }
                                     tooltipValuePrefix={tooltipPrefix}
                                     dataSources={[
                                         { label: 'Amount staked', value: 'amountStaked' },

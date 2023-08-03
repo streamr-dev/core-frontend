@@ -60,7 +60,7 @@ export const MyOperatorSummary: FunctionComponent = () => {
     const [selectedDataSource, setSelectedDataSource] = useState<string>('totalStake')
 
     const [selectedChartPeriod, setSelectedChartPeriod] = useState<ChartPeriod>(
-        ChartPeriod['7D'],
+        ChartPeriod.SevenDays,
     )
 
     const handleChartDataSourceChange = useCallback(

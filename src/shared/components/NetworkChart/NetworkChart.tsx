@@ -9,20 +9,21 @@ import Tabs, { Tab } from '~/shared/components/Tabs'
 import UnstyledSpinner from '~/shared/components/Spinner'
 
 export enum ChartPeriod {
-    '7D' = '7D',
-    '1M' = '1M',
-    '3M' = '3M',
-    '1Y' = '1Y',
-    'YTD' = 'YTD',
-    'ALL' = 'ALL',
+    'SevenDays' = '7D',
+    'OneMonth' = '1M',
+    'ThreeMonths' = '3M',
+    'OneYear' = '1Y',
+    'YearToDate' = 'YTD',
+    'All' = 'ALL',
 }
 
 type Props = Omit<TimeSeriesGraphProps, 'isLoading'> & {
     dataSources: { label: string; value: string }[]
-    onDataSourceChange: (dataSource: string) => Promise<void>
-    onPeriodChange: (period: ChartPeriod) => Promise<void>
+    onDataSourceChange: (dataSource: string) => void
+    onPeriodChange: (period: ChartPeriod) => void
     selectedDataSource: string
     selectedPeriod: ChartPeriod
+    isLoading?: boolean
 }
 export const NetworkChart: FunctionComponent<Props> = ({
     dataSources,
@@ -36,25 +37,13 @@ export const NetworkChart: FunctionComponent<Props> = ({
     yAxisAxisDisplayFormatter,
     tooltipLabelFormatter,
     tooltipValueFormatter,
+    isLoading = false,
 }) => {
-    const [dataLoading, setDataLoading] = useState(false)
-
-    const handleDataSourceTabChange = useCallback(
-        async (selection: string) => {
-            setDataLoading(true)
-            await onDataSourceChange(selection)
-            setDataLoading(false)
-        },
-        [onDataSourceChange, setDataLoading],
-    )
-
     const handlePeriodTabChange = useCallback(
-        async (selection: string) => {
-            setDataLoading(true)
-            await onPeriodChange(selection as ChartPeriod)
-            setDataLoading(false)
+        (selection: string) => {
+            onPeriodChange(selection as ChartPeriod)
         },
-        [onDataSourceChange, setDataLoading],
+        [onPeriodChange],
     )
 
     return (
@@ -63,7 +52,7 @@ export const NetworkChart: FunctionComponent<Props> = ({
                 <Tabs
                     fullWidthOnMobile={true}
                     selection={selectedDataSource}
-                    onSelectionChange={handleDataSourceTabChange}
+                    onSelectionChange={onDataSourceChange}
                 >
                     {dataSources.map((dataSource, index) => {
                         return (
@@ -75,7 +64,7 @@ export const NetworkChart: FunctionComponent<Props> = ({
                 </Tabs>
             </ChartDataSourceSelector>
             <Chart
-                isLoading={dataLoading}
+                isLoading={isLoading}
                 graphData={graphData}
                 tooltipValuePrefix={tooltipValuePrefix}
                 xAxisDisplayFormatter={xAxisDisplayFormatter}

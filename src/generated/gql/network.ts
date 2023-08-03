@@ -3030,6 +3030,17 @@ export type GetStreamByIdQueryVariables = Exact<{
 
 export type GetStreamByIdQuery = { __typename?: 'Query', stream?: { __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userAddress: any }> | null } | null };
 
+export type SponsorshipDailyBucketFieldsFragment = { __typename?: 'SponsorshipDailyBucket', id: string, operatorCount: number, projectedInsolvency: any, spotAPY: any, totalPayoutsCumulative: any, totalStakedWei: any, unallocatedWei: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string } };
+
+export type GetSponsorshipDailyBucketsQueryVariables = Exact<{
+  sponsorshipId: Scalars['ID']['input'];
+  first?: InputMaybe<Scalars['Int']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GetSponsorshipDailyBucketsQuery = { __typename?: 'Query', sponsorshipDailyBuckets: Array<{ __typename?: 'SponsorshipDailyBucket', id: string, operatorCount: number, projectedInsolvency: any, spotAPY: any, totalPayoutsCumulative: any, totalStakedWei: any, unallocatedWei: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string } }> };
+
 export const OperatorFieldsFragmentDoc = gql`
     fragment OperatorFields on Operator {
   id
@@ -3137,6 +3148,21 @@ export const StreamFieldsFragmentDoc = gql`
   }
 }
     `;
+export const SponsorshipDailyBucketFieldsFragmentDoc = gql`
+    fragment SponsorshipDailyBucketFields on SponsorshipDailyBucket {
+  id
+  operatorCount
+  projectedInsolvency
+  spotAPY
+  totalPayoutsCumulative
+  totalStakedWei
+  unallocatedWei
+  date
+  sponsorship {
+    id
+  }
+}
+    `;
 export const GetAllOperatorsDocument = gql`
     query getAllOperators($first: Int, $skip: Int) {
   operators(first: $first, skip: $skip) {
@@ -3240,3 +3266,15 @@ export const GetStreamByIdDocument = gql`
 }
     ${StreamFieldsFragmentDoc}`;
 export type GetStreamByIdQueryResult = Apollo.QueryResult<GetStreamByIdQuery, GetStreamByIdQueryVariables>;
+export const GetSponsorshipDailyBucketsDocument = gql`
+    query getSponsorshipDailyBuckets($sponsorshipId: ID!, $first: Int, $skip: Int) {
+  sponsorshipDailyBuckets(
+    first: $first
+    skip: $skip
+    where: {sponsorship_: {id: $sponsorshipId}}
+  ) {
+    ...SponsorshipDailyBucketFields
+  }
+}
+    ${SponsorshipDailyBucketFieldsFragmentDoc}`;
+export type GetSponsorshipDailyBucketsQueryResult = Apollo.QueryResult<GetSponsorshipDailyBucketsQuery, GetSponsorshipDailyBucketsQueryVariables>;

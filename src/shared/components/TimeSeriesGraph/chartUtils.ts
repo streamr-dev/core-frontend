@@ -5,5 +5,5 @@ export const formatShortDate = (value: number): string => {
 }
 
 export const formatLongDate = (value: number): string => {
-    return format(new Date(value), 'dd/mm/yyyy')
+    return format(new Date(value), 'dd/MM/yyyy')
 }
