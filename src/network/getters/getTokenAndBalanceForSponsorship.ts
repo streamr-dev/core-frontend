@@ -14,6 +14,9 @@ export const getTokenAndBalanceForSponsorship = async (
 ): Promise<TokenAndBalanceForSponsorship> => {
     const tokenSymbolFromConfig = getCoreConfig().sponsorshipPaymentToken as string
     const tokenInformation = await getSponsorshipTokenInfo()
+
+    // TODO it fails if user in not on the default chain (local or Polygon on prod) - needs refactor
+
     if (!tokenInformation) {
         throw new Error('Invalid token for sponsorship balanance')
     }
