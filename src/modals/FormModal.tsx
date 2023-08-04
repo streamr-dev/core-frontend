@@ -234,6 +234,10 @@ export const WingedLabelWrap = styled.div`
     }
 `
 
+export const ErrorWrap = styled.div`
+    text-align: right;
+`
+
 export const ErrorLabel = styled(Label)`
     color: ${COLORS.error};
     opacity: 0.7;
