@@ -214,12 +214,12 @@ gql`
         }
     }
 
-    query getSponsorshipDailyBuckets($sponsorshipId: ID!, $first: Int, $skip: Int) {
-        sponsorshipDailyBuckets(
-            first: $first
-            skip: $skip
-            where: { sponsorship_: { id: $sponsorshipId } }
-        ) {
+    query getSponsorshipDailyBuckets(
+        $where: SponsorshipDailyBucket_filter!
+        $first: Int
+        $skip: Int
+    ) {
+        sponsorshipDailyBuckets(first: $first, skip: $skip, where: $where) {
             ...SponsorshipDailyBucketFields
         }
     }

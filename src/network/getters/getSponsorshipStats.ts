@@ -10,21 +10,43 @@ export const getSponsorshipStats = async (
     sponsorshipId: string,
     selectedPeriod: ChartPeriod,
     dataSource: string,
+    ignoreToday?: boolean,
 ): Promise<{ x: number; y: number }[]> => {
     const tokenInfo = (await getSponsorshipTokenInfo()) as TokenInformation
+    const todayUTC = moment().utc().startOf('day').format('X')
     let result: GetSponsorshipDailyBucketsQuery['sponsorshipDailyBuckets']
     switch (selectedPeriod) {
         case ChartPeriod.SevenDays:
-            result = await getSponsorshipDailyBuckets(sponsorshipId, 7)
+            result = await getSponsorshipDailyBuckets(
+                sponsorshipId,
+                7,
+                0,
+                ignoreToday ? todayUTC : undefined,
+            )
             break
         case ChartPeriod.OneMonth:
-            result = await getSponsorshipDailyBuckets(sponsorshipId, 30)
+            result = await getSponsorshipDailyBuckets(
+                sponsorshipId,
+                30,
+                0,
+                ignoreToday ? todayUTC : undefined,
+            )
             break
         case ChartPeriod.ThreeMonths:
-            result = await getSponsorshipDailyBuckets(sponsorshipId, 90)
+            result = await getSponsorshipDailyBuckets(
+                sponsorshipId,
+                90,
+                0,
+                ignoreToday ? todayUTC : undefined,
+            )
             break
         case ChartPeriod.OneYear:
-            result = await getSponsorshipDailyBuckets(sponsorshipId, 365)
+            result = await getSponsorshipDailyBuckets(
+                sponsorshipId,
+                365,
+                0,
+                ignoreToday ? todayUTC : undefined,
+            )
             break
         case ChartPeriod.YearToDate:
             const today = moment()
@@ -34,7 +56,12 @@ export const getSponsorshipStats = async (
                 result = []
                 break
             }
-            result = await getSponsorshipDailyBuckets(sponsorshipId, daySpan)
+            result = await getSponsorshipDailyBuckets(
+                sponsorshipId,
+                daySpan,
+                0,
+                ignoreToday ? todayUTC : undefined,
+            )
             break
         case ChartPeriod.All:
             const maxAmount = 999
@@ -45,6 +72,7 @@ export const getSponsorshipStats = async (
                     sponsorshipId,
                     maxAmount,
                     maxAmount * i,
+                    ignoreToday ? todayUTC : undefined,
                 )
                 elements = [...elements, ...partialResult]
                 if (partialResult.length < maxAmount) {

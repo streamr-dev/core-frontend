@@ -116,6 +116,7 @@ export enum Delegation_OrderBy {
   OperatorPoolValue = 'operator__poolValue',
   OperatorPoolValueBlockNumber = 'operator__poolValueBlockNumber',
   OperatorPoolValueTimestamp = 'operator__poolValueTimestamp',
+  OperatorSlashingsCount = 'operator__slashingsCount',
   OperatorTotalValueInSponsorshipsWei = 'operator__totalValueInSponsorshipsWei',
   PoolTokenWei = 'poolTokenWei'
 }
@@ -246,16 +247,19 @@ export enum Flag_OrderBy {
   FlaggerPoolValue = 'flagger__poolValue',
   FlaggerPoolValueBlockNumber = 'flagger__poolValueBlockNumber',
   FlaggerPoolValueTimestamp = 'flagger__poolValueTimestamp',
+  FlaggerSlashingsCount = 'flagger__slashingsCount',
   FlaggerTotalValueInSponsorshipsWei = 'flagger__totalValueInSponsorshipsWei',
   Id = 'id',
   Result = 'result',
   Sponsorship = 'sponsorship',
   SponsorshipCreator = 'sponsorship__creator',
+  SponsorshipCumulativeSponsoring = 'sponsorship__cumulativeSponsoring',
   SponsorshipId = 'sponsorship__id',
   SponsorshipIsRunning = 'sponsorship__isRunning',
   SponsorshipMetadata = 'sponsorship__metadata',
   SponsorshipOperatorCount = 'sponsorship__operatorCount',
   SponsorshipProjectedInsolvency = 'sponsorship__projectedInsolvency',
+  SponsorshipSpotApy = 'sponsorship__spotAPY',
   SponsorshipTotalPayoutWeiPerSec = 'sponsorship__totalPayoutWeiPerSec',
   SponsorshipTotalStakedWei = 'sponsorship__totalStakedWei',
   SponsorshipUnallocatedWei = 'sponsorship__unallocatedWei',
@@ -271,6 +275,7 @@ export enum Flag_OrderBy {
   TargetPoolValue = 'target__poolValue',
   TargetPoolValueBlockNumber = 'target__poolValueBlockNumber',
   TargetPoolValueTimestamp = 'target__poolValueTimestamp',
+  TargetSlashingsCount = 'target__slashingsCount',
   TargetTotalValueInSponsorshipsWei = 'target__totalValueInSponsorshipsWei'
 }
 
@@ -376,6 +381,7 @@ export type Operator = {
   freeFundsWei: Scalars['BigInt']['output'];
   id: Scalars['ID']['output'];
   metadataJsonString: Scalars['String']['output'];
+  nodes: Array<Scalars['String']['output']>;
   owner: Scalars['String']['output'];
   /** Total number of pool tokens in existence */
   poolTokenTotalSupplyWei: Scalars['BigInt']['output'];
@@ -385,7 +391,10 @@ export type Operator = {
   poolValueBlockNumber: Scalars['BigInt']['output'];
   /** Timestamp in seconds when poolValue was the best approximation of total DATA staked, earned and held by the Operator contract. Shows how much the poolValue is out of date. */
   poolValueTimestamp: Scalars['BigInt']['output'];
+  slashingEvents: Array<SlashingEvent>;
+  slashingsCount: Scalars['Int']['output'];
   stakes: Array<Stake>;
+  stakingEvents: Array<StakingEvent>;
   /** DATA staked and earned in sponsorship contracts. Updated by PoolValueUpdate event, so it will be out of date by the amount of earnings. */
   totalValueInSponsorshipsWei: Scalars['BigInt']['output'];
 };
@@ -418,12 +427,30 @@ export type OperatorFlagsTargetedArgs = {
 };
 
 
+export type OperatorSlashingEventsArgs = {
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<SlashingEvent_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<SlashingEvent_Filter>;
+};
+
+
 export type OperatorStakesArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Stake_OrderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
   skip?: InputMaybe<Scalars['Int']['input']>;
   where?: InputMaybe<Stake_Filter>;
+};
+
+
+export type OperatorStakingEventsArgs = {
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<StakingEvent_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<StakingEvent_Filter>;
 };
 
 export type OperatorDailyBucket = {
@@ -606,6 +633,7 @@ export enum OperatorDailyBucket_OrderBy {
   OperatorPoolValue = 'operator__poolValue',
   OperatorPoolValueBlockNumber = 'operator__poolValueBlockNumber',
   OperatorPoolValueTimestamp = 'operator__poolValueTimestamp',
+  OperatorSlashingsCount = 'operator__slashingsCount',
   OperatorTotalValueInSponsorshipsWei = 'operator__totalValueInSponsorshipsWei',
   OperatorsShareWei = 'operatorsShareWei',
   PoolValue = 'poolValue',
@@ -675,6 +703,12 @@ export type Operator_Filter = {
   metadataJsonString_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
   metadataJsonString_starts_with?: InputMaybe<Scalars['String']['input']>;
   metadataJsonString_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  nodes?: InputMaybe<Array<Scalars['String']['input']>>;
+  nodes_contains?: InputMaybe<Array<Scalars['String']['input']>>;
+  nodes_contains_nocase?: InputMaybe<Array<Scalars['String']['input']>>;
+  nodes_not?: InputMaybe<Array<Scalars['String']['input']>>;
+  nodes_not_contains?: InputMaybe<Array<Scalars['String']['input']>>;
+  nodes_not_contains_nocase?: InputMaybe<Array<Scalars['String']['input']>>;
   or?: InputMaybe<Array<InputMaybe<Operator_Filter>>>;
   owner?: InputMaybe<Scalars['String']['input']>;
   owner_contains?: InputMaybe<Scalars['String']['input']>;
@@ -728,7 +762,17 @@ export type Operator_Filter = {
   poolValue_lte?: InputMaybe<Scalars['BigInt']['input']>;
   poolValue_not?: InputMaybe<Scalars['BigInt']['input']>;
   poolValue_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  slashingEvents_?: InputMaybe<SlashingEvent_Filter>;
+  slashingsCount?: InputMaybe<Scalars['Int']['input']>;
+  slashingsCount_gt?: InputMaybe<Scalars['Int']['input']>;
+  slashingsCount_gte?: InputMaybe<Scalars['Int']['input']>;
+  slashingsCount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  slashingsCount_lt?: InputMaybe<Scalars['Int']['input']>;
+  slashingsCount_lte?: InputMaybe<Scalars['Int']['input']>;
+  slashingsCount_not?: InputMaybe<Scalars['Int']['input']>;
+  slashingsCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
   stakes_?: InputMaybe<Stake_Filter>;
+  stakingEvents_?: InputMaybe<StakingEvent_Filter>;
   totalValueInSponsorshipsWei?: InputMaybe<Scalars['BigInt']['input']>;
   totalValueInSponsorshipsWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
   totalValueInSponsorshipsWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
@@ -748,12 +792,16 @@ export enum Operator_OrderBy {
   FreeFundsWei = 'freeFundsWei',
   Id = 'id',
   MetadataJsonString = 'metadataJsonString',
+  Nodes = 'nodes',
   Owner = 'owner',
   PoolTokenTotalSupplyWei = 'poolTokenTotalSupplyWei',
   PoolValue = 'poolValue',
   PoolValueBlockNumber = 'poolValueBlockNumber',
   PoolValueTimestamp = 'poolValueTimestamp',
+  SlashingEvents = 'slashingEvents',
+  SlashingsCount = 'slashingsCount',
   Stakes = 'stakes',
+  StakingEvents = 'stakingEvents',
   TotalValueInSponsorshipsWei = 'totalValueInSponsorshipsWei'
 }
 
@@ -1603,12 +1651,20 @@ export type Query = {
   projectSubscription?: Maybe<ProjectSubscription>;
   projectSubscriptions: Array<ProjectSubscription>;
   projects: Array<Project>;
+  queueEntries: Array<QueueEntry>;
+  queueEntry?: Maybe<QueueEntry>;
+  slashingEvent?: Maybe<SlashingEvent>;
+  slashingEvents: Array<SlashingEvent>;
+  sponsoringEvent?: Maybe<SponsoringEvent>;
+  sponsoringEvents: Array<SponsoringEvent>;
   sponsorship?: Maybe<Sponsorship>;
   sponsorshipDailyBucket?: Maybe<SponsorshipDailyBucket>;
   sponsorshipDailyBuckets: Array<SponsorshipDailyBucket>;
   sponsorships: Array<Sponsorship>;
   stake?: Maybe<Stake>;
   stakes: Array<Stake>;
+  stakingEvent?: Maybe<StakingEvent>;
+  stakingEvents: Array<StakingEvent>;
   stream?: Maybe<Stream>;
   streamPermission?: Maybe<StreamPermission>;
   streamPermissions: Array<StreamPermission>;
@@ -1839,6 +1895,60 @@ export type QueryProjectsArgs = {
 };
 
 
+export type QueryQueueEntriesArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<QueueEntry_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<QueueEntry_Filter>;
+};
+
+
+export type QueryQueueEntryArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QuerySlashingEventArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QuerySlashingEventsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<SlashingEvent_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<SlashingEvent_Filter>;
+};
+
+
+export type QuerySponsoringEventArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QuerySponsoringEventsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<SponsoringEvent_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<SponsoringEvent_Filter>;
+};
+
+
 export type QuerySponsorshipArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID']['input'];
@@ -1893,6 +2003,24 @@ export type QueryStakesArgs = {
 };
 
 
+export type QueryStakingEventArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryStakingEventsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<StakingEvent_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<StakingEvent_Filter>;
+};
+
+
 export type QueryStreamArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID']['input'];
@@ -1928,16 +2056,335 @@ export type QueryStreamsArgs = {
   where?: InputMaybe<Stream_Filter>;
 };
 
+export type QueueEntry = {
+  __typename?: 'QueueEntry';
+  amount: Scalars['BigInt']['output'];
+  date: Scalars['BigInt']['output'];
+  delegator: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  operator: Operator;
+};
+
+export type QueueEntry_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  amount?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  amount_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  and?: InputMaybe<Array<InputMaybe<QueueEntry_Filter>>>;
+  date?: InputMaybe<Scalars['BigInt']['input']>;
+  date_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  date_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  date_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  date_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  date_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  date_not?: InputMaybe<Scalars['BigInt']['input']>;
+  date_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  delegator?: InputMaybe<Scalars['String']['input']>;
+  delegator_contains?: InputMaybe<Scalars['String']['input']>;
+  delegator_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  delegator_ends_with?: InputMaybe<Scalars['String']['input']>;
+  delegator_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  delegator_gt?: InputMaybe<Scalars['String']['input']>;
+  delegator_gte?: InputMaybe<Scalars['String']['input']>;
+  delegator_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  delegator_lt?: InputMaybe<Scalars['String']['input']>;
+  delegator_lte?: InputMaybe<Scalars['String']['input']>;
+  delegator_not?: InputMaybe<Scalars['String']['input']>;
+  delegator_not_contains?: InputMaybe<Scalars['String']['input']>;
+  delegator_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  delegator_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  delegator_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  delegator_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  delegator_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  delegator_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  delegator_starts_with?: InputMaybe<Scalars['String']['input']>;
+  delegator_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  id_gt?: InputMaybe<Scalars['ID']['input']>;
+  id_gte?: InputMaybe<Scalars['ID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_lt?: InputMaybe<Scalars['ID']['input']>;
+  id_lte?: InputMaybe<Scalars['ID']['input']>;
+  id_not?: InputMaybe<Scalars['ID']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  operator?: InputMaybe<Scalars['String']['input']>;
+  operator_?: InputMaybe<Operator_Filter>;
+  operator_contains?: InputMaybe<Scalars['String']['input']>;
+  operator_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  operator_ends_with?: InputMaybe<Scalars['String']['input']>;
+  operator_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  operator_gt?: InputMaybe<Scalars['String']['input']>;
+  operator_gte?: InputMaybe<Scalars['String']['input']>;
+  operator_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  operator_lt?: InputMaybe<Scalars['String']['input']>;
+  operator_lte?: InputMaybe<Scalars['String']['input']>;
+  operator_not?: InputMaybe<Scalars['String']['input']>;
+  operator_not_contains?: InputMaybe<Scalars['String']['input']>;
+  operator_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  operator_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  operator_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  operator_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  operator_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  operator_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  operator_starts_with?: InputMaybe<Scalars['String']['input']>;
+  operator_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  or?: InputMaybe<Array<InputMaybe<QueueEntry_Filter>>>;
+};
+
+export enum QueueEntry_OrderBy {
+  Amount = 'amount',
+  Date = 'date',
+  Delegator = 'delegator',
+  Id = 'id',
+  Operator = 'operator',
+  OperatorDelegatorCount = 'operator__delegatorCount',
+  OperatorExchangeRate = 'operator__exchangeRate',
+  OperatorFreeFundsWei = 'operator__freeFundsWei',
+  OperatorId = 'operator__id',
+  OperatorMetadataJsonString = 'operator__metadataJsonString',
+  OperatorOwner = 'operator__owner',
+  OperatorPoolTokenTotalSupplyWei = 'operator__poolTokenTotalSupplyWei',
+  OperatorPoolValue = 'operator__poolValue',
+  OperatorPoolValueBlockNumber = 'operator__poolValueBlockNumber',
+  OperatorPoolValueTimestamp = 'operator__poolValueTimestamp',
+  OperatorSlashingsCount = 'operator__slashingsCount',
+  OperatorTotalValueInSponsorshipsWei = 'operator__totalValueInSponsorshipsWei'
+}
+
+export type SlashingEvent = {
+  __typename?: 'SlashingEvent';
+  amount: Scalars['BigInt']['output'];
+  date: Scalars['BigInt']['output'];
+  id: Scalars['ID']['output'];
+  operator: Operator;
+  sponsorship: Sponsorship;
+};
+
+export type SlashingEvent_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  amount?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  amount_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  and?: InputMaybe<Array<InputMaybe<SlashingEvent_Filter>>>;
+  date?: InputMaybe<Scalars['BigInt']['input']>;
+  date_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  date_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  date_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  date_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  date_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  date_not?: InputMaybe<Scalars['BigInt']['input']>;
+  date_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  id_gt?: InputMaybe<Scalars['ID']['input']>;
+  id_gte?: InputMaybe<Scalars['ID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_lt?: InputMaybe<Scalars['ID']['input']>;
+  id_lte?: InputMaybe<Scalars['ID']['input']>;
+  id_not?: InputMaybe<Scalars['ID']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  operator?: InputMaybe<Scalars['String']['input']>;
+  operator_?: InputMaybe<Operator_Filter>;
+  operator_contains?: InputMaybe<Scalars['String']['input']>;
+  operator_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  operator_ends_with?: InputMaybe<Scalars['String']['input']>;
+  operator_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  operator_gt?: InputMaybe<Scalars['String']['input']>;
+  operator_gte?: InputMaybe<Scalars['String']['input']>;
+  operator_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  operator_lt?: InputMaybe<Scalars['String']['input']>;
+  operator_lte?: InputMaybe<Scalars['String']['input']>;
+  operator_not?: InputMaybe<Scalars['String']['input']>;
+  operator_not_contains?: InputMaybe<Scalars['String']['input']>;
+  operator_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  operator_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  operator_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  operator_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  operator_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  operator_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  operator_starts_with?: InputMaybe<Scalars['String']['input']>;
+  operator_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  or?: InputMaybe<Array<InputMaybe<SlashingEvent_Filter>>>;
+  sponsorship?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_?: InputMaybe<Sponsorship_Filter>;
+  sponsorship_contains?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_ends_with?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_gt?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_gte?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  sponsorship_lt?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_lte?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not_contains?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  sponsorship_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_starts_with?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+};
+
+export enum SlashingEvent_OrderBy {
+  Amount = 'amount',
+  Date = 'date',
+  Id = 'id',
+  Operator = 'operator',
+  OperatorDelegatorCount = 'operator__delegatorCount',
+  OperatorExchangeRate = 'operator__exchangeRate',
+  OperatorFreeFundsWei = 'operator__freeFundsWei',
+  OperatorId = 'operator__id',
+  OperatorMetadataJsonString = 'operator__metadataJsonString',
+  OperatorOwner = 'operator__owner',
+  OperatorPoolTokenTotalSupplyWei = 'operator__poolTokenTotalSupplyWei',
+  OperatorPoolValue = 'operator__poolValue',
+  OperatorPoolValueBlockNumber = 'operator__poolValueBlockNumber',
+  OperatorPoolValueTimestamp = 'operator__poolValueTimestamp',
+  OperatorSlashingsCount = 'operator__slashingsCount',
+  OperatorTotalValueInSponsorshipsWei = 'operator__totalValueInSponsorshipsWei',
+  Sponsorship = 'sponsorship',
+  SponsorshipCreator = 'sponsorship__creator',
+  SponsorshipCumulativeSponsoring = 'sponsorship__cumulativeSponsoring',
+  SponsorshipId = 'sponsorship__id',
+  SponsorshipIsRunning = 'sponsorship__isRunning',
+  SponsorshipMetadata = 'sponsorship__metadata',
+  SponsorshipOperatorCount = 'sponsorship__operatorCount',
+  SponsorshipProjectedInsolvency = 'sponsorship__projectedInsolvency',
+  SponsorshipSpotApy = 'sponsorship__spotAPY',
+  SponsorshipTotalPayoutWeiPerSec = 'sponsorship__totalPayoutWeiPerSec',
+  SponsorshipTotalStakedWei = 'sponsorship__totalStakedWei',
+  SponsorshipUnallocatedWei = 'sponsorship__unallocatedWei'
+}
+
+export type SponsoringEvent = {
+  __typename?: 'SponsoringEvent';
+  amount: Scalars['BigInt']['output'];
+  date: Scalars['BigInt']['output'];
+  id: Scalars['ID']['output'];
+  sponsor: Scalars['String']['output'];
+  sponsorship: Sponsorship;
+};
+
+export type SponsoringEvent_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  amount?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  amount_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  and?: InputMaybe<Array<InputMaybe<SponsoringEvent_Filter>>>;
+  date?: InputMaybe<Scalars['BigInt']['input']>;
+  date_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  date_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  date_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  date_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  date_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  date_not?: InputMaybe<Scalars['BigInt']['input']>;
+  date_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  id_gt?: InputMaybe<Scalars['ID']['input']>;
+  id_gte?: InputMaybe<Scalars['ID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_lt?: InputMaybe<Scalars['ID']['input']>;
+  id_lte?: InputMaybe<Scalars['ID']['input']>;
+  id_not?: InputMaybe<Scalars['ID']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  or?: InputMaybe<Array<InputMaybe<SponsoringEvent_Filter>>>;
+  sponsor?: InputMaybe<Scalars['String']['input']>;
+  sponsor_contains?: InputMaybe<Scalars['String']['input']>;
+  sponsor_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsor_ends_with?: InputMaybe<Scalars['String']['input']>;
+  sponsor_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsor_gt?: InputMaybe<Scalars['String']['input']>;
+  sponsor_gte?: InputMaybe<Scalars['String']['input']>;
+  sponsor_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  sponsor_lt?: InputMaybe<Scalars['String']['input']>;
+  sponsor_lte?: InputMaybe<Scalars['String']['input']>;
+  sponsor_not?: InputMaybe<Scalars['String']['input']>;
+  sponsor_not_contains?: InputMaybe<Scalars['String']['input']>;
+  sponsor_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsor_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  sponsor_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsor_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  sponsor_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  sponsor_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsor_starts_with?: InputMaybe<Scalars['String']['input']>;
+  sponsor_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsorship?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_?: InputMaybe<Sponsorship_Filter>;
+  sponsorship_contains?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_ends_with?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_gt?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_gte?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  sponsorship_lt?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_lte?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not_contains?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  sponsorship_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_starts_with?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+};
+
+export enum SponsoringEvent_OrderBy {
+  Amount = 'amount',
+  Date = 'date',
+  Id = 'id',
+  Sponsor = 'sponsor',
+  Sponsorship = 'sponsorship',
+  SponsorshipCreator = 'sponsorship__creator',
+  SponsorshipCumulativeSponsoring = 'sponsorship__cumulativeSponsoring',
+  SponsorshipId = 'sponsorship__id',
+  SponsorshipIsRunning = 'sponsorship__isRunning',
+  SponsorshipMetadata = 'sponsorship__metadata',
+  SponsorshipOperatorCount = 'sponsorship__operatorCount',
+  SponsorshipProjectedInsolvency = 'sponsorship__projectedInsolvency',
+  SponsorshipSpotApy = 'sponsorship__spotAPY',
+  SponsorshipTotalPayoutWeiPerSec = 'sponsorship__totalPayoutWeiPerSec',
+  SponsorshipTotalStakedWei = 'sponsorship__totalStakedWei',
+  SponsorshipUnallocatedWei = 'sponsorship__unallocatedWei'
+}
+
 export type Sponsorship = {
   __typename?: 'Sponsorship';
   creator: Scalars['String']['output'];
+  cumulativeSponsoring: Scalars['BigInt']['output'];
   flags: Array<Flag>;
   id: Scalars['ID']['output'];
   isRunning: Scalars['Boolean']['output'];
   metadata?: Maybe<Scalars['String']['output']>;
   operatorCount: Scalars['Int']['output'];
   projectedInsolvency: Scalars['BigInt']['output'];
+  slashingEvents: Array<SlashingEvent>;
+  sponsoringEvents: Array<SponsoringEvent>;
+  spotAPY: Scalars['BigInt']['output'];
   stakes: Array<Stake>;
+  stakingEvents: Array<StakingEvent>;
   stream?: Maybe<Stream>;
   totalPayoutWeiPerSec: Scalars['BigInt']['output'];
   totalStakedWei: Scalars['BigInt']['output'];
@@ -1954,12 +2401,39 @@ export type SponsorshipFlagsArgs = {
 };
 
 
+export type SponsorshipSlashingEventsArgs = {
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<SlashingEvent_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<SlashingEvent_Filter>;
+};
+
+
+export type SponsorshipSponsoringEventsArgs = {
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<SponsoringEvent_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<SponsoringEvent_Filter>;
+};
+
+
 export type SponsorshipStakesArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Stake_OrderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
   skip?: InputMaybe<Scalars['Int']['input']>;
   where?: InputMaybe<Stake_Filter>;
+};
+
+
+export type SponsorshipStakingEventsArgs = {
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<StakingEvent_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<StakingEvent_Filter>;
 };
 
 export type SponsorshipDailyBucket = {
@@ -2074,11 +2548,13 @@ export enum SponsorshipDailyBucket_OrderBy {
   ProjectedInsolvency = 'projectedInsolvency',
   Sponsorship = 'sponsorship',
   SponsorshipCreator = 'sponsorship__creator',
+  SponsorshipCumulativeSponsoring = 'sponsorship__cumulativeSponsoring',
   SponsorshipId = 'sponsorship__id',
   SponsorshipIsRunning = 'sponsorship__isRunning',
   SponsorshipMetadata = 'sponsorship__metadata',
   SponsorshipOperatorCount = 'sponsorship__operatorCount',
   SponsorshipProjectedInsolvency = 'sponsorship__projectedInsolvency',
+  SponsorshipSpotApy = 'sponsorship__spotAPY',
   SponsorshipTotalPayoutWeiPerSec = 'sponsorship__totalPayoutWeiPerSec',
   SponsorshipTotalStakedWei = 'sponsorship__totalStakedWei',
   SponsorshipUnallocatedWei = 'sponsorship__unallocatedWei',
@@ -2112,6 +2588,14 @@ export type Sponsorship_Filter = {
   creator_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
   creator_starts_with?: InputMaybe<Scalars['String']['input']>;
   creator_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  cumulativeSponsoring?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeSponsoring_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeSponsoring_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeSponsoring_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  cumulativeSponsoring_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeSponsoring_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeSponsoring_not?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeSponsoring_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   flags_?: InputMaybe<Flag_Filter>;
   id?: InputMaybe<Scalars['ID']['input']>;
   id_gt?: InputMaybe<Scalars['ID']['input']>;
@@ -2162,7 +2646,18 @@ export type Sponsorship_Filter = {
   projectedInsolvency_lte?: InputMaybe<Scalars['BigInt']['input']>;
   projectedInsolvency_not?: InputMaybe<Scalars['BigInt']['input']>;
   projectedInsolvency_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  slashingEvents_?: InputMaybe<SlashingEvent_Filter>;
+  sponsoringEvents_?: InputMaybe<SponsoringEvent_Filter>;
+  spotAPY?: InputMaybe<Scalars['BigInt']['input']>;
+  spotAPY_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  spotAPY_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  spotAPY_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  spotAPY_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  spotAPY_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  spotAPY_not?: InputMaybe<Scalars['BigInt']['input']>;
+  spotAPY_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   stakes_?: InputMaybe<Stake_Filter>;
+  stakingEvents_?: InputMaybe<StakingEvent_Filter>;
   stream?: InputMaybe<Scalars['String']['input']>;
   stream_?: InputMaybe<Stream_Filter>;
   stream_contains?: InputMaybe<Scalars['String']['input']>;
@@ -2212,13 +2707,18 @@ export type Sponsorship_Filter = {
 
 export enum Sponsorship_OrderBy {
   Creator = 'creator',
+  CumulativeSponsoring = 'cumulativeSponsoring',
   Flags = 'flags',
   Id = 'id',
   IsRunning = 'isRunning',
   Metadata = 'metadata',
   OperatorCount = 'operatorCount',
   ProjectedInsolvency = 'projectedInsolvency',
+  SlashingEvents = 'slashingEvents',
+  SponsoringEvents = 'sponsoringEvents',
+  SpotApy = 'spotAPY',
   Stakes = 'stakes',
+  StakingEvents = 'stakingEvents',
   Stream = 'stream',
   StreamCreatedAt = 'stream__createdAt',
   StreamId = 'stream__id',
@@ -2336,14 +2836,130 @@ export enum Stake_OrderBy {
   OperatorPoolValue = 'operator__poolValue',
   OperatorPoolValueBlockNumber = 'operator__poolValueBlockNumber',
   OperatorPoolValueTimestamp = 'operator__poolValueTimestamp',
+  OperatorSlashingsCount = 'operator__slashingsCount',
   OperatorTotalValueInSponsorshipsWei = 'operator__totalValueInSponsorshipsWei',
   Sponsorship = 'sponsorship',
   SponsorshipCreator = 'sponsorship__creator',
+  SponsorshipCumulativeSponsoring = 'sponsorship__cumulativeSponsoring',
   SponsorshipId = 'sponsorship__id',
   SponsorshipIsRunning = 'sponsorship__isRunning',
   SponsorshipMetadata = 'sponsorship__metadata',
   SponsorshipOperatorCount = 'sponsorship__operatorCount',
   SponsorshipProjectedInsolvency = 'sponsorship__projectedInsolvency',
+  SponsorshipSpotApy = 'sponsorship__spotAPY',
+  SponsorshipTotalPayoutWeiPerSec = 'sponsorship__totalPayoutWeiPerSec',
+  SponsorshipTotalStakedWei = 'sponsorship__totalStakedWei',
+  SponsorshipUnallocatedWei = 'sponsorship__unallocatedWei'
+}
+
+export type StakingEvent = {
+  __typename?: 'StakingEvent';
+  amount: Scalars['BigInt']['output'];
+  date: Scalars['BigInt']['output'];
+  id: Scalars['ID']['output'];
+  operator: Operator;
+  sponsorship: Sponsorship;
+};
+
+export type StakingEvent_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  amount?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  amount_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  and?: InputMaybe<Array<InputMaybe<StakingEvent_Filter>>>;
+  date?: InputMaybe<Scalars['BigInt']['input']>;
+  date_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  date_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  date_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  date_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  date_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  date_not?: InputMaybe<Scalars['BigInt']['input']>;
+  date_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  id_gt?: InputMaybe<Scalars['ID']['input']>;
+  id_gte?: InputMaybe<Scalars['ID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_lt?: InputMaybe<Scalars['ID']['input']>;
+  id_lte?: InputMaybe<Scalars['ID']['input']>;
+  id_not?: InputMaybe<Scalars['ID']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  operator?: InputMaybe<Scalars['String']['input']>;
+  operator_?: InputMaybe<Operator_Filter>;
+  operator_contains?: InputMaybe<Scalars['String']['input']>;
+  operator_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  operator_ends_with?: InputMaybe<Scalars['String']['input']>;
+  operator_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  operator_gt?: InputMaybe<Scalars['String']['input']>;
+  operator_gte?: InputMaybe<Scalars['String']['input']>;
+  operator_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  operator_lt?: InputMaybe<Scalars['String']['input']>;
+  operator_lte?: InputMaybe<Scalars['String']['input']>;
+  operator_not?: InputMaybe<Scalars['String']['input']>;
+  operator_not_contains?: InputMaybe<Scalars['String']['input']>;
+  operator_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  operator_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  operator_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  operator_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  operator_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  operator_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  operator_starts_with?: InputMaybe<Scalars['String']['input']>;
+  operator_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  or?: InputMaybe<Array<InputMaybe<StakingEvent_Filter>>>;
+  sponsorship?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_?: InputMaybe<Sponsorship_Filter>;
+  sponsorship_contains?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_ends_with?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_gt?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_gte?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  sponsorship_lt?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_lte?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not_contains?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  sponsorship_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_starts_with?: InputMaybe<Scalars['String']['input']>;
+  sponsorship_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+};
+
+export enum StakingEvent_OrderBy {
+  Amount = 'amount',
+  Date = 'date',
+  Id = 'id',
+  Operator = 'operator',
+  OperatorDelegatorCount = 'operator__delegatorCount',
+  OperatorExchangeRate = 'operator__exchangeRate',
+  OperatorFreeFundsWei = 'operator__freeFundsWei',
+  OperatorId = 'operator__id',
+  OperatorMetadataJsonString = 'operator__metadataJsonString',
+  OperatorOwner = 'operator__owner',
+  OperatorPoolTokenTotalSupplyWei = 'operator__poolTokenTotalSupplyWei',
+  OperatorPoolValue = 'operator__poolValue',
+  OperatorPoolValueBlockNumber = 'operator__poolValueBlockNumber',
+  OperatorPoolValueTimestamp = 'operator__poolValueTimestamp',
+  OperatorSlashingsCount = 'operator__slashingsCount',
+  OperatorTotalValueInSponsorshipsWei = 'operator__totalValueInSponsorshipsWei',
+  Sponsorship = 'sponsorship',
+  SponsorshipCreator = 'sponsorship__creator',
+  SponsorshipCumulativeSponsoring = 'sponsorship__cumulativeSponsoring',
+  SponsorshipId = 'sponsorship__id',
+  SponsorshipIsRunning = 'sponsorship__isRunning',
+  SponsorshipMetadata = 'sponsorship__metadata',
+  SponsorshipOperatorCount = 'sponsorship__operatorCount',
+  SponsorshipProjectedInsolvency = 'sponsorship__projectedInsolvency',
+  SponsorshipSpotApy = 'sponsorship__spotAPY',
   SponsorshipTotalPayoutWeiPerSec = 'sponsorship__totalPayoutWeiPerSec',
   SponsorshipTotalStakedWei = 'sponsorship__totalStakedWei',
   SponsorshipUnallocatedWei = 'sponsorship__unallocatedWei'
@@ -2592,12 +3208,20 @@ export type Subscription = {
   projectSubscription?: Maybe<ProjectSubscription>;
   projectSubscriptions: Array<ProjectSubscription>;
   projects: Array<Project>;
+  queueEntries: Array<QueueEntry>;
+  queueEntry?: Maybe<QueueEntry>;
+  slashingEvent?: Maybe<SlashingEvent>;
+  slashingEvents: Array<SlashingEvent>;
+  sponsoringEvent?: Maybe<SponsoringEvent>;
+  sponsoringEvents: Array<SponsoringEvent>;
   sponsorship?: Maybe<Sponsorship>;
   sponsorshipDailyBucket?: Maybe<SponsorshipDailyBucket>;
   sponsorshipDailyBuckets: Array<SponsorshipDailyBucket>;
   sponsorships: Array<Sponsorship>;
   stake?: Maybe<Stake>;
   stakes: Array<Stake>;
+  stakingEvent?: Maybe<StakingEvent>;
+  stakingEvents: Array<StakingEvent>;
   stream?: Maybe<Stream>;
   streamPermission?: Maybe<StreamPermission>;
   streamPermissions: Array<StreamPermission>;
@@ -2819,6 +3443,60 @@ export type SubscriptionProjectsArgs = {
 };
 
 
+export type SubscriptionQueueEntriesArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<QueueEntry_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<QueueEntry_Filter>;
+};
+
+
+export type SubscriptionQueueEntryArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionSlashingEventArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionSlashingEventsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<SlashingEvent_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<SlashingEvent_Filter>;
+};
+
+
+export type SubscriptionSponsoringEventArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionSponsoringEventsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<SponsoringEvent_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<SponsoringEvent_Filter>;
+};
+
+
 export type SubscriptionSponsorshipArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID']['input'];
@@ -2870,6 +3548,24 @@ export type SubscriptionStakesArgs = {
   skip?: InputMaybe<Scalars['Int']['input']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<Stake_Filter>;
+};
+
+
+export type SubscriptionStakingEventArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionStakingEventsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<StakingEvent_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<StakingEvent_Filter>;
 };
 
 
@@ -3033,7 +3729,7 @@ export type GetStreamByIdQuery = { __typename?: 'Query', stream?: { __typename?:
 export type SponsorshipDailyBucketFieldsFragment = { __typename?: 'SponsorshipDailyBucket', id: string, operatorCount: number, projectedInsolvency: any, spotAPY: any, totalPayoutsCumulative: any, totalStakedWei: any, unallocatedWei: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string } };
 
 export type GetSponsorshipDailyBucketsQueryVariables = Exact<{
-  sponsorshipId: Scalars['ID']['input'];
+  where: SponsorshipDailyBucket_Filter;
   first?: InputMaybe<Scalars['Int']['input']>;
   skip?: InputMaybe<Scalars['Int']['input']>;
 }>;
@@ -3267,12 +3963,8 @@ export const GetStreamByIdDocument = gql`
     ${StreamFieldsFragmentDoc}`;
 export type GetStreamByIdQueryResult = Apollo.QueryResult<GetStreamByIdQuery, GetStreamByIdQueryVariables>;
 export const GetSponsorshipDailyBucketsDocument = gql`
-    query getSponsorshipDailyBuckets($sponsorshipId: ID!, $first: Int, $skip: Int) {
-  sponsorshipDailyBuckets(
-    first: $first
-    skip: $skip
-    where: {sponsorship_: {id: $sponsorshipId}}
-  ) {
+    query getSponsorshipDailyBuckets($where: SponsorshipDailyBucket_filter!, $first: Int, $skip: Int) {
+  sponsorshipDailyBuckets(first: $first, skip: $skip, where: $where) {
     ...SponsorshipDailyBucketFields
   }
 }

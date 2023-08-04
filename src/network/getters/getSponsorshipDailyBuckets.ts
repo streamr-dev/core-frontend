@@ -3,13 +3,19 @@ import {
     GetSponsorshipDailyBucketsDocument,
     GetSponsorshipDailyBucketsQuery,
     GetSponsorshipDailyBucketsQueryVariables,
+    SponsorshipDailyBucket_Filter,
 } from '~/generated/gql/network'
 
 export const getSponsorshipDailyBuckets = async (
     sponsorshipId: string,
     first: number,
     skip = 0,
+    dateLowerThan?: string, // utc timestamp in seconds
 ): Promise<GetSponsorshipDailyBucketsQuery['sponsorshipDailyBuckets']> => {
+    const where: SponsorshipDailyBucket_Filter = { sponsorship_: { id: sponsorshipId } }
+    if (dateLowerThan) {
+        where.date_lt = dateLowerThan
+    }
     const {
         data: { sponsorshipDailyBuckets },
     } = await getGraphClient().query<
@@ -20,7 +26,7 @@ export const getSponsorshipDailyBuckets = async (
         variables: {
             first,
             skip,
-            sponsorshipId,
+            where,
         },
     })
     return sponsorshipDailyBuckets

@@ -2,9 +2,9 @@ import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 import moment from 'moment'
+import { useQuery } from '@tanstack/react-query'
 import styles from '~/marketplace/containers/Projects/projects.pcss'
 import { NetworkHelmet } from '~/shared/components/Helmet'
-import { useQuery } from '@tanstack/react-query'
 import Layout, { PageContainer } from '~/shared/components/Layout'
 import { useSponsorship } from '~/network/hooks/useSponsorship'
 import { NoData } from '~/shared/components/NoData'
@@ -50,6 +50,7 @@ export const SingleSponsorshipPage = () => {
                 sponsorshipId as string,
                 selectedPeriod as ChartPeriod,
                 selectedDataSource,
+                false, // ignore today
             )
         },
     })
@@ -147,7 +148,7 @@ export const SingleSponsorshipPage = () => {
                                     onDataSourceChange={setSelectedDataSource}
                                     onPeriodChange={setSelectedPeriod}
                                     selectedDataSource={selectedDataSource}
-                                    selectedPeriod={selectedPeriod}
+                                    selectedPeriod={selectedPeriod as ChartPeriod}
                                     xAxisDisplayFormatter={formatShortDate}
                                     yAxisAxisDisplayFormatter={formatYAxisValue}
                                     tooltipLabelFormatter={formatLongDate}
