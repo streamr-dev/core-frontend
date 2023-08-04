@@ -62,6 +62,7 @@ gql`
         unallocatedWei
         projectedInsolvency
         creator
+        spotAPY
     }
 
     query getAllSponsorships($first: Int, $skip: Int, $streamContains: String) {
@@ -195,6 +196,27 @@ gql`
     query getStreamById($streamId: ID!) {
         stream(id: $streamId) {
             ...StreamFields
+        }
+    }
+`
+
+gql`
+    fragment SponsoringEventFields on SponsoringEvent {
+        id
+        amount
+        date
+        sponsor
+    }
+
+    query getSponsoringEvents($sponsorshipId: ID!, $first: Int, $skip: Int) {
+        sponsoringEvents(
+            where: { sponsorship_: { id: $sponsorshipId } }
+            first: $first
+            skip: $skip
+            orderBy: date
+            orderDirection: desc
+        ) {
+            ...SponsoringEventFields
         }
     }
 `

@@ -94,24 +94,31 @@ export const useMySponsorshipsQuery = (
     })
 }
 
-export const mapSponsorshipToElement = (sponsorship: Sponsorship): SponsorshipElement => {
+export const mapSponsorshipToElement = (
+    sponsorship: Sponsorship,
+    decimals: number,
+): SponsorshipElement => {
     return {
         id: sponsorship.id,
         streamId: sponsorship.stream?.id as string,
         fundedUntil: moment(Number(sponsorship.projectedInsolvency) * 1000).format(
             'D MMM YYYY',
         ),
-        apy: 0, // TODO add mapping when it will get included in the subgraph
+        apy: sponsorship.spotAPY,
         DATAPerDay: Number(
-            toBN(sponsorship.totalPayoutWeiPerSec).dividedBy(1e18).multipliedBy(86400),
+            toBN(sponsorship.totalPayoutWeiPerSec)
+                .dividedBy(Math.pow(10, decimals))
+                .multipliedBy(86400),
         ).toString(),
         operators: Number(sponsorship.operatorCount),
-        totalStake: toBN(sponsorship.totalStakedWei).dividedBy(1e18).toString(),
+        totalStake: toBN(sponsorship.totalStakedWei)
+            .dividedBy(Math.pow(10, decimals))
+            .toString(),
         active: sponsorship.isRunning,
         stakes: sponsorship.stakes.map((stake) => {
             return {
                 operatorId: stake.operator.id,
-                amount: toBN(stake.amount).dividedBy(1e18).toString(),
+                amount: toBN(stake.amount).dividedBy(Math.pow(10, decimals)).toString(),
                 date: toBN(stake.date).multipliedBy(1000).toString(),
             }
         }),

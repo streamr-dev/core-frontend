@@ -19,6 +19,7 @@ import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import Footer from '~/shared/components/Layout/Footer'
 import CreateSponsorshipModal from '~/network/modals/CreateSponsorshipModal'
+import { LoadMoreButton } from '~/components/LoadMore'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { createSponsorship } from '~/services/sponsorships'
 import routes from '~/routes'
@@ -260,9 +261,4 @@ const SponsorshipsTableWrap = styled(WhiteBox)`
     .title {
         ${WhiteBoxPaddingStyles}
     }
-`
-
-const LoadMoreButton = styled(Button)`
-    display: block;
-    margin: 130px auto 80px;
 `

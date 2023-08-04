@@ -24,6 +24,7 @@ import { truncateNumber } from '~/shared/utils/truncateNumber'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { SponsorshipActionBar } from '../components/ActionBars/SponsorshipActionBar'
 import { growingValuesGenerator, NetworkChartWrap } from '../components/NetworkUtils'
+import { useSponsorshipFundingHistory } from '../hooks/useSponsorshipFundingHistory'
 
 const chartStubData = growingValuesGenerator(10, 20000000).map((element) => ({
     x: element.day,
@@ -91,6 +92,8 @@ export const SingleSponsorshipPage = () => {
         },
         [selectedDataSource],
     )
+
+    const fundingEventsQuery = useSponsorshipFundingHistory(sponsorshipId)
 
     return (
         <Layout
@@ -177,7 +180,17 @@ export const SingleSponsorshipPage = () => {
                             />
                         </OperatorsContainer>
                         <FundingHistory
-                            elements={fundingHistoryStubData}
+                            hasMoreResults={fundingEventsQuery.hasNextPage}
+                            onLoadMore={() => fundingEventsQuery.fetchNextPage()}
+                            elements={
+                                fundingEventsQuery.data?.pages
+                                    .map((page) => page.events)
+                                    .flat() || []
+                            }
+                            isLoading={
+                                fundingEventsQuery.isLoading ||
+                                fundingEventsQuery.isFetching
+                            }
                             columns={[
                                 {
                                     displayName: 'Date',
@@ -200,7 +213,7 @@ export const SingleSponsorshipPage = () => {
                                 {
                                     displayName: 'Sponsor',
                                     valueMapper: (element: any) =>
-                                        truncate(element.sponsorId),
+                                        truncate(element.sponsor),
                                     align: 'start',
                                     isSticky: false,
                                     key: 'sponsor',

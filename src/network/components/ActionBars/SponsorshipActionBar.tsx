@@ -138,8 +138,7 @@ export const SponsorshipActionBar: FunctionComponent<{
                     stats={[
                         {
                             label: 'Payout rate',
-                            value:
-                                toBN(sponsorship.DATAPerDay).toFormat(18) + ' DATA/day',
+                            value: toBN(sponsorship.DATAPerDay).toString() + ' DATA/day',
                         },
                         {
                             label: 'Operators',
@@ -162,7 +161,7 @@ export const SponsorshipActionBar: FunctionComponent<{
                         },
                         {
                             label: 'Minimum stake',
-                            value: 'NO DATA IN GRAPH',
+                            value: (sponsorship.minimumStake as string) + ' DATA',
                         },
                     ]}
                     columns={3}

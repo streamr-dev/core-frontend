@@ -15,6 +15,7 @@ import Popover from '~/shared/components/Popover'
 import PopoverItem from '~/shared/components/Popover/PopoverItem'
 import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
 import { NoData } from '~/shared/components/NoData'
+import { LoadMoreButton } from '~/components/LoadMore'
 
 type ScrollTableProps<Element> = {
     elements: Element[]
@@ -24,6 +25,8 @@ type ScrollTableProps<Element> = {
     noDataFirstLine?: ReactNode
     noDataSecondLine?: ReactNode
     linkMapper?: (element: Element) => string
+    hasMoreResults?: boolean
+    onLoadMore?: () => void
 }
 
 export type ScrollTableColumnDef<T> = {
@@ -49,6 +52,8 @@ export const ScrollTable = <T extends object>({
     noDataFirstLine,
     noDataSecondLine,
     linkMapper,
+    hasMoreResults,
+    onLoadMore,
 }: ScrollTableProps<T> & { title: string }) => {
     return (
         <ScrollTableContainer>
@@ -63,6 +68,15 @@ export const ScrollTable = <T extends object>({
                 noDataSecondLine={noDataSecondLine}
                 linkMapper={linkMapper}
             />
+            {hasMoreResults && (
+                <LoadMoreButton
+                    disabled={isLoading}
+                    onClick={() => onLoadMore?.()}
+                    kind="primary2"
+                >
+                    Load more
+                </LoadMoreButton>
+            )}
         </ScrollTableContainer>
     )
 }

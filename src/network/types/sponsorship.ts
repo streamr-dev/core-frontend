@@ -9,6 +9,7 @@ export type SponsorshipElement = {
     fundedUntil: string
     active: boolean
     stakes: SponsorshipStake[]
+    minimumStake?: string
 }
 
 export type SponsorshipStake = {
