@@ -12,8 +12,9 @@ function entryKey(tokenAddress: string, chainId: number) {
     return `${chainId}-${tokenAddress}`
 }
 
-const tokenInfoCache: Partial<
-    Record<string, TokenInfo | null | Promise<TokenInfo | null>>
+const tokenInfoCache: Record<
+    string,
+    TokenInfo | null | Promise<TokenInfo | null> | undefined
 > = {}
 
 export async function getTokenInfo(
