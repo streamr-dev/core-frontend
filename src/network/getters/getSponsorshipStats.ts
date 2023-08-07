@@ -1,10 +1,9 @@
 import moment from 'moment'
 import { ChartPeriod } from '~/shared/components/NetworkChart/NetworkChart'
 import { GetSponsorshipDailyBucketsQuery } from '~/generated/gql/network'
-import { getSponsorshipDailyBuckets } from '~/network/getters/getSponsorshipDailyBuckets'
 import { toBN } from '~/utils/bn'
-import { getSponsorshipTokenInfo } from '~/network/getters/getSponsorshipTokenInfo'
-import { TokenInformation } from '~/marketplace/utils/web3'
+import { getSponsorshipDailyBuckets } from './getSponsorshipDailyBuckets'
+import { getSponsorshipTokenInfo } from './getSponsorshipTokenInfo'
 
 export const getSponsorshipStats = async (
     sponsorshipId: string,
@@ -12,71 +11,71 @@ export const getSponsorshipStats = async (
     dataSource: string,
     ignoreToday?: boolean,
 ): Promise<{ x: number; y: number }[]> => {
-    const tokenInfo = (await getSponsorshipTokenInfo()) as TokenInformation
-    const todayUTC = moment().utc().startOf('day').format('X')
+    const tokenInfo = await getSponsorshipTokenInfo()
+    const today = moment()
+    const start = ignoreToday ? moment().utc().startOf('day') : moment().utc()
+
     let result: GetSponsorshipDailyBucketsQuery['sponsorshipDailyBuckets']
     switch (selectedPeriod) {
         case ChartPeriod.SevenDays:
             result = await getSponsorshipDailyBuckets(
                 sponsorshipId,
-                7,
-                0,
-                ignoreToday ? todayUTC : undefined,
+                start.format('X'),
+                start.subtract(7, 'days').format('X'),
             )
             break
         case ChartPeriod.OneMonth:
             result = await getSponsorshipDailyBuckets(
                 sponsorshipId,
-                30,
-                0,
-                ignoreToday ? todayUTC : undefined,
+                start.format('X'),
+                start.subtract(30, 'days').format('X'),
             )
             break
         case ChartPeriod.ThreeMonths:
             result = await getSponsorshipDailyBuckets(
                 sponsorshipId,
-                90,
-                0,
-                ignoreToday ? todayUTC : undefined,
+                start.format('X'),
+                start.subtract(90, 'days').format('X'),
             )
             break
         case ChartPeriod.OneYear:
             result = await getSponsorshipDailyBuckets(
                 sponsorshipId,
-                365,
-                0,
-                ignoreToday ? todayUTC : undefined,
+                start.format('X'),
+                start.subtract(365, 'days').format('X'),
             )
             break
         case ChartPeriod.YearToDate:
-            const today = moment()
-            const beginningOfYear = moment().startOf('year')
-            const daySpan = today.diff(beginningOfYear, 'day')
+            const beginningOfYear = moment().utc().startOf('year')
+            const daySpan = today.utc().diff(beginningOfYear, 'day')
             if (daySpan === 0) {
                 result = []
                 break
             }
             result = await getSponsorshipDailyBuckets(
                 sponsorshipId,
-                daySpan,
-                0,
-                ignoreToday ? todayUTC : undefined,
+                start.format('X'),
+                start.subtract(daySpan, 'days').format('X'),
             )
             break
         case ChartPeriod.All:
             const maxAmount = 999
-            let elements: GetSponsorshipDailyBucketsQuery['sponsorshipDailyBuckets'] = []
+            const maxIterations = 5
+            const endDate = start.subtract(maxIterations * maxAmount, 'days')
+            const elements: GetSponsorshipDailyBucketsQuery['sponsorshipDailyBuckets'] =
+                []
             // yeah - I'm guessing we will not have a history longer than 5 thousand days :)
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < maxIterations; i++) {
                 const partialResult = await getSponsorshipDailyBuckets(
                     sponsorshipId,
+                    start.format('X'),
+                    endDate.format('X'),
                     maxAmount,
                     maxAmount * i,
-                    ignoreToday ? todayUTC : undefined,
                 )
-                elements = [...elements, ...partialResult]
+                elements.push(...partialResult)
                 if (partialResult.length < maxAmount) {
-                    break
+                    break // we're breaking the FOR loop here
                 }
             }
             result = elements
@@ -89,7 +88,7 @@ export const getSponsorshipStats = async (
         switch (dataSource) {
             case 'amountStaked':
                 yValue = toBN(bucket.totalStakedWei)
-                    .dividedBy(Math.pow(10, Number(tokenInfo.decimals.toString())))
+                    .dividedBy(Math.pow(10, Number(tokenInfo?.decimals.toString())))
                     .toNumber()
                 break
             case 'numberOfOperators':

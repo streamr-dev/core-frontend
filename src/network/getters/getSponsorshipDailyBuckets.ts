@@ -8,14 +8,19 @@ import {
 
 export const getSponsorshipDailyBuckets = async (
     sponsorshipId: string,
-    first: number,
+    dateLowerThan: string, // utc timestamp in seconds
+    dateGreaterEqualThan: string, // utc timestamp in seconds
+    first = 999,
     skip = 0,
-    dateLowerThan?: string, // utc timestamp in seconds
 ): Promise<GetSponsorshipDailyBucketsQuery['sponsorshipDailyBuckets']> => {
-    const where: SponsorshipDailyBucket_Filter = { sponsorship_: { id: sponsorshipId } }
-    if (dateLowerThan) {
-        where.date_lt = dateLowerThan
+    const where: SponsorshipDailyBucket_Filter = {
+        sponsorship_: {
+            id: sponsorshipId,
+        },
+        date_lt: dateLowerThan,
+        date_gte: dateGreaterEqualThan,
     }
+
     const {
         data: { sponsorshipDailyBuckets },
     } = await getGraphClient().query<

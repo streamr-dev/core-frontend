@@ -137,7 +137,9 @@ export const TimeSeriesGraph = ({
 
 const CustomCursor = (props) => {
     const { setSelectedPointValues } = props
-    setSelectedPointValues(props.payload[0].payload.x, props.payload[0].payload.y)
+    if (props.payload) {
+        setSelectedPointValues(props.payload[0].payload.x, props.payload[0].payload.y)
+    }
     useEffect(() => {
         return () => {
             setSelectedPointValues(null, null)
