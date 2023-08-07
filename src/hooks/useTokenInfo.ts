@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { getERC20TokenContract } from '~/getters'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 
-interface TokenInfo {
+export interface TokenInfo {
     symbol: string
     decimals: number
     name: string
