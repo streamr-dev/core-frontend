@@ -109,8 +109,8 @@ export default function useTokenInfo(
     )
 
     /**
-     * Undefined token info causes a fetch *attempt*. Since we cache both the values
-     * and their pending promises there's no redundant loading.
+     * Undefined token info causes a fetch *attempt*. Since we cache either the values
+     * or their pending promises there's no redundant loading.
      */
     const shouldFetch = typeof tokenInfo === 'undefined'
 
