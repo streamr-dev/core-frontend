@@ -8,8 +8,8 @@ export interface TokenInfo {
     name: string
 }
 
-function entryKey(tokenAddress: string | undefined, chainId: number | undefined) {
-    return `${typeof chainId === 'undefined' ? '' : chainId}-${tokenAddress || ''}`
+function entryKey(tokenAddress: string, chainId: number) {
+    return `${chainId}-${tokenAddress}`
 }
 
 const tokenInfoCache: Partial<
@@ -95,12 +95,17 @@ export default function useTokenInfo(
     tokenAddress: string | undefined,
     chainId: number | undefined,
 ) {
-    const key = entryKey(tokenAddress, chainId)
+    const key =
+        tokenAddress && typeof chainId !== 'undefined'
+            ? entryKey(tokenAddress, chainId)
+            : null
 
     const [tokenInfo, setTokenInfo] = useState<TokenInfo | null | undefined>(
-        tokenInfoCache[key] instanceof Promise
-            ? undefined
-            : (tokenInfoCache[key] as TokenInfo | null | undefined),
+        key
+            ? tokenInfoCache[key] instanceof Promise
+                ? undefined
+                : (tokenInfoCache[key] as TokenInfo | null | undefined)
+            : null,
     )
 
     /**
