@@ -21,33 +21,33 @@ export const getSponsorshipStats = async (
             result = await getSponsorshipDailyBuckets(
                 sponsorshipId,
                 start.format('X'),
-                start.subtract(7, 'days').format('X'),
+                start.clone().subtract(7, 'days').format('X'),
             )
             break
         case ChartPeriod.OneMonth:
             result = await getSponsorshipDailyBuckets(
                 sponsorshipId,
                 start.format('X'),
-                start.subtract(30, 'days').format('X'),
+                start.clone().subtract(30, 'days').format('X'),
             )
             break
         case ChartPeriod.ThreeMonths:
             result = await getSponsorshipDailyBuckets(
                 sponsorshipId,
                 start.format('X'),
-                start.subtract(90, 'days').format('X'),
+                start.clone().subtract(90, 'days').format('X'),
             )
             break
         case ChartPeriod.OneYear:
             result = await getSponsorshipDailyBuckets(
                 sponsorshipId,
                 start.format('X'),
-                start.subtract(365, 'days').format('X'),
+                start.clone().subtract(365, 'days').format('X'),
             )
             break
         case ChartPeriod.YearToDate:
             const beginningOfYear = moment().utc().startOf('year')
-            const daySpan = today.utc().diff(beginningOfYear, 'day')
+            const daySpan = today.clone().utc().diff(beginningOfYear, 'day')
             if (daySpan === 0) {
                 result = []
                 break
@@ -55,13 +55,13 @@ export const getSponsorshipStats = async (
             result = await getSponsorshipDailyBuckets(
                 sponsorshipId,
                 start.format('X'),
-                start.subtract(daySpan, 'days').format('X'),
+                start.clone().subtract(daySpan, 'days').format('X'),
             )
             break
         case ChartPeriod.All:
             const maxAmount = 999
             const maxIterations = 5
-            const endDate = start.subtract(maxIterations * maxAmount, 'days')
+            const endDate = start.clone().subtract(maxIterations * maxAmount, 'days')
             const elements: GetSponsorshipDailyBucketsQuery['sponsorshipDailyBuckets'] =
                 []
             // yeah - I'm guessing we will not have a history longer than 5 thousand days :)
