@@ -12,22 +12,20 @@ function entryKey(tokenAddress: string, chainId: number) {
     return `${chainId}-${tokenAddress}`
 }
 
-const tokenInfoCache: Record<
-    string,
-    TokenInfo | null | Promise<TokenInfo | null> | undefined
-> = {}
+const tokenInfoCache: Record<string, TokenInfo | null | Promise<TokenInfo> | undefined> =
+    {}
 
 export async function getTokenInfo(
-    tokenAddress: string | undefined,
-    chainId: number | undefined,
-): Promise<TokenInfo | null> {
-    if (!tokenAddress || typeof chainId === 'undefined') {
-        return null
-    }
-
+    tokenAddress: string,
+    chainId: number,
+): Promise<TokenInfo> {
     const key = entryKey(tokenAddress, chainId)
 
     const current = tokenInfoCache[key]
+
+    if (current === null) {
+        throw new Error('Not an ERC-20 token')
+    }
 
     if (typeof current === 'undefined') {
         const contract = getERC20TokenContract({
@@ -35,7 +33,7 @@ export async function getTokenInfo(
             signer: getPublicWeb3Provider(chainId),
         })
 
-        const promise = new Promise<TokenInfo | null>((resolve, reject) => {
+        const promise = new Promise<TokenInfo>((resolve, reject) => {
             setTimeout(async () => {
                 try {
                     const symbol = await contract.symbol()
@@ -95,7 +93,7 @@ export async function getTokenInfo(
 export default function useTokenInfo(
     tokenAddress: string | undefined,
     chainId: number | undefined,
-) {
+): TokenInfo | null | undefined {
     const key =
         tokenAddress && typeof chainId !== 'undefined'
             ? entryKey(tokenAddress, chainId)
@@ -123,6 +121,14 @@ export default function useTokenInfo(
         if (shouldFetch) {
             setTimeout(async () => {
                 try {
+                    if (!tokenAddress) {
+                        throw new Error('Missing token address')
+                    }
+
+                    if (typeof chainId === 'undefined') {
+                        throw new Error('Missing chain id')
+                    }
+
                     result = await getTokenInfo(tokenAddress, chainId)
                 } catch (e) {
                     console.warn(
