@@ -28,7 +28,6 @@ export type PayloadAction<P> = ReduxAction & {
 }
 export type RequestMethod = 'get' | 'post' | 'put' | 'delete'
 export type PropertySetter<T> = (arg0: string, arg1: T) => void
-export type ApiResult<T> = Promise<T>
 export type TransactionState = $Values<typeof transactionStates>
 export type TransactionType = $Values<typeof transactionTypes>
 export type Ref<T> = {

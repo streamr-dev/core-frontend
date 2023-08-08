@@ -273,6 +273,17 @@ module.exports = {
                               '**/*.stories.*',
                               // skip sketch files
                               '**/*.sketch',
+                              // other files
+                              'package-lock.json',
+                              'codegen.ts',
+                              'README.md',
+                              'babel.config.js',
+                              'codegen.ts',
+                              'cypress.config.ts',
+                              'healthcheck.ts',
+                              'jest.config.js',
+                              'nginx.conf',
+                              'src/generated/**/*.*',
                           ],
                       }),
                       new WebpackNotifierPlugin(),
