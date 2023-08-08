@@ -38,11 +38,11 @@ export const getMarketplaceAddress = (chainId: number): Address => {
 export const getCustomTokenBalance = async (
     contractAddress: Address,
     userAddress: Address,
-    chainId?: number,
+    chainId: number,
 ) => {
     const contract = getERC20TokenContract({
         tokenAddress: contractAddress,
-        signer: await getPublicWeb3Provider(chainId || defaultChainConfig.id),
+        signer: await getPublicWeb3Provider(chainId),
     })
 
     const balance = await contract.balanceOf(userAddress)
