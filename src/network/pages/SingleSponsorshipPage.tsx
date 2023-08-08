@@ -2,19 +2,19 @@ import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 import moment from 'moment'
+import { useQuery } from '@tanstack/react-query'
 import styles from '~/marketplace/containers/Projects/projects.pcss'
 import { NetworkHelmet } from '~/shared/components/Helmet'
 import Layout, { PageContainer } from '~/shared/components/Layout'
 import { useSponsorship } from '~/network/hooks/useSponsorship'
 import { NoData } from '~/shared/components/NoData'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
-import { LAPTOP, TABLET, COLORS } from '~/shared/utils/styled'
+import { COLORS, LAPTOP, TABLET } from '~/shared/utils/styled'
 import { WhiteBox, WhiteBoxPaddingStyles } from '~/shared/components/WhiteBox'
 import { NetworkSectionTitle } from '~/network/components/NetworkSectionTitle'
 import { HubAvatar } from '~/shared/components/AvatarImage'
 import { truncate } from '~/shared/utils/text'
 import Footer from '~/shared/components/Layout/Footer'
-import SvgIcon from '~/shared/components/SvgIcon'
 import { ChartPeriod, NetworkChart } from '~/shared/components/NetworkChart/NetworkChart'
 import {
     formatLongDate,
@@ -24,11 +24,7 @@ import { truncateNumber } from '~/shared/utils/truncateNumber'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { SponsorshipActionBar } from '../components/ActionBars/SponsorshipActionBar'
 import { growingValuesGenerator, NetworkChartWrap } from '../components/NetworkUtils'
-
-const chartStubData = growingValuesGenerator(10, 20000000).map((element) => ({
-    x: element.day,
-    y: element.value,
-}))
+import { getSponsorshipStats } from '../getters/getSponsorshipStats'
 
 const fundingHistoryStubData: { sponsorId: string; date: string; amount: string }[] =
     new Array(10).fill(null).map((_, index) => {
@@ -45,7 +41,19 @@ export const SingleSponsorshipPage = () => {
     const sponsorship = sponsorshipQuery.data
 
     const [selectedDataSource, setSelectedDataSource] = useState<string>('amountStaked')
-    const [selectedPeriod, setSelectedPeriod] = useState<ChartPeriod>(ChartPeriod['7D'])
+    const [selectedPeriod, setSelectedPeriod] = useState<string>(ChartPeriod.SevenDays)
+
+    const chartQuery = useQuery({
+        queryKey: ['sponsorshipChartQuery', selectedPeriod, selectedDataSource],
+        queryFn: async () => {
+            return await getSponsorshipStats(
+                sponsorshipId as string,
+                selectedPeriod as ChartPeriod,
+                selectedDataSource,
+                false, // ignore today
+            )
+        },
+    })
 
     const tooltipPrefix = useMemo(() => {
         switch (selectedDataSource) {
@@ -116,15 +124,18 @@ export const SingleSponsorshipPage = () => {
                         <OverviewCharts>
                             <div className="title">
                                 <NetworkSectionTitle>Overview charts</NetworkSectionTitle>
-                                <SvgIcon
+                                {/*<SvgIcon
                                     name="fullScreen"
                                     className="icon"
                                     onClick={() => alert('open fullscreen mode')}
-                                />
+                                />*/}
                             </div>
                             <NetworkChartWrap>
                                 <NetworkChart
-                                    graphData={chartStubData}
+                                    graphData={chartQuery?.data || []}
+                                    isLoading={
+                                        chartQuery.isLoading || chartQuery.isFetching
+                                    }
                                     tooltipValuePrefix={tooltipPrefix}
                                     dataSources={[
                                         { label: 'Amount staked', value: 'amountStaked' },
@@ -137,7 +148,7 @@ export const SingleSponsorshipPage = () => {
                                     onDataSourceChange={setSelectedDataSource}
                                     onPeriodChange={setSelectedPeriod}
                                     selectedDataSource={selectedDataSource}
-                                    selectedPeriod={selectedPeriod}
+                                    selectedPeriod={selectedPeriod as ChartPeriod}
                                     xAxisDisplayFormatter={formatShortDate}
                                     yAxisAxisDisplayFormatter={formatYAxisValue}
                                     tooltipLabelFormatter={formatLongDate}

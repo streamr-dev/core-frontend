@@ -198,3 +198,29 @@ gql`
         }
     }
 `
+
+gql`
+    fragment SponsorshipDailyBucketFields on SponsorshipDailyBucket {
+        id
+        operatorCount
+        projectedInsolvency
+        spotAPY
+        totalPayoutsCumulative
+        totalStakedWei
+        unallocatedWei
+        date
+        sponsorship {
+            id
+        }
+    }
+
+    query getSponsorshipDailyBuckets(
+        $where: SponsorshipDailyBucket_filter!
+        $first: Int
+        $skip: Int
+    ) {
+        sponsorshipDailyBuckets(first: $first, skip: $skip, where: $where) {
+            ...SponsorshipDailyBucketFields
+        }
+    }
+`
