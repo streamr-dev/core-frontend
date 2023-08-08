@@ -8,7 +8,7 @@ import { toBN } from '~/utils/bn'
 import { getAllSponsorships, getSponsorshipsByCreator } from '~/getters'
 import { errorToast } from '~/utils/toast'
 import { getConfigFromChain } from '~/getters/getConfigFromChain'
-import { getSponsorshipTokenInfo } from '../getters/getSponsorshipTokenInfo'
+import getSponsorshipTokenInfo from '../getters/getSponsorshipTokenInfo'
 
 export const useAllSponsorshipsQuery = (
     pageSize = 10,
