@@ -7,6 +7,8 @@ import { Sponsorship } from '~/generated/gql/network'
 import { toBN } from '~/utils/bn'
 import { getAllSponsorships, getSponsorshipsByCreator } from '~/getters'
 import { errorToast } from '~/utils/toast'
+import { getConfigFromChain } from '~/getters/getConfigFromChain'
+import { getSponsorshipTokenInfo } from '../getters/getSponsorshipTokenInfo'
 
 export const useAllSponsorshipsQuery = (
     pageSize = 10,
@@ -19,6 +21,8 @@ export const useAllSponsorshipsQuery = (
         queryKey: ['allSponsorships', searchQuery],
         async queryFn(ctx) {
             try {
+                const tokenInfo = await getSponsorshipTokenInfo()
+                const configFromChain = await getConfigFromChain()
                 const sponsorships = (await getAllSponsorships({
                     first: pageSize,
                     streamId: searchQuery,
@@ -27,7 +31,17 @@ export const useAllSponsorshipsQuery = (
 
                 return {
                     skippedElements: ctx.pageParam || 0,
-                    elements: sponsorships.map(mapSponsorshipToElement),
+                    elements: sponsorships.map((sponsorship) =>
+                        mapSponsorshipToElement(
+                            sponsorship,
+                            Number(tokenInfo.decimals.toString()),
+                            toBN(configFromChain.minimumStakeWei)
+                                .dividedBy(
+                                    Math.pow(10, Number(tokenInfo.decimals.toString())),
+                                )
+                                .toString(),
+                        ),
+                    ),
                 }
             } catch (e) {
                 errorToast({ title: 'Could not fetch the sponsorships list' })
@@ -67,6 +81,8 @@ export const useMySponsorshipsQuery = (
             }
 
             try {
+                const tokenInfo = await getSponsorshipTokenInfo()
+                const configFromChain = await getConfigFromChain()
                 const sponsorships = (await getSponsorshipsByCreator(account, {
                     first: pageSize,
                     streamId: searchQuery,
@@ -74,7 +90,17 @@ export const useMySponsorshipsQuery = (
 
                 return {
                     skippedElements: ctx.pageParam || 0,
-                    elements: sponsorships.map(mapSponsorshipToElement),
+                    elements: sponsorships.map((sponsorship) =>
+                        mapSponsorshipToElement(
+                            sponsorship,
+                            Number(tokenInfo.decimals.toString()),
+                            toBN(configFromChain.minimumStakeWei)
+                                .dividedBy(
+                                    Math.pow(10, Number(tokenInfo.decimals.toString())),
+                                )
+                                .toString(),
+                        ),
+                    ),
                 }
             } catch (e) {
                 errorToast({ title: 'Could not fetch the sponsorships list' })
@@ -94,26 +120,38 @@ export const useMySponsorshipsQuery = (
     })
 }
 
-export const mapSponsorshipToElement = (sponsorship: Sponsorship): SponsorshipElement => {
+export const mapSponsorshipToElement = (
+    sponsorship: Sponsorship,
+    decimals: number,
+    minimumStake: string,
+): SponsorshipElement => {
     return {
         id: sponsorship.id,
         streamId: sponsorship.stream?.id as string,
         fundedUntil: moment(Number(sponsorship.projectedInsolvency) * 1000).format(
             'D MMM YYYY',
         ),
-        apy: 0, // TODO add mapping when it will get included in the subgraph
-        DATAPerDay: Number(
-            toBN(sponsorship.totalPayoutWeiPerSec).dividedBy(1e18).multipliedBy(86400),
+        apy: sponsorship.spotAPY,
+        payoutPerDay: Number(
+            toBN(sponsorship.totalPayoutWeiPerSec)
+                .dividedBy(Math.pow(10, decimals))
+                .multipliedBy(86400),
         ).toString(),
         operators: Number(sponsorship.operatorCount),
-        totalStake: toBN(sponsorship.totalStakedWei).dividedBy(1e18).toString(),
+        totalStake: toBN(sponsorship.totalStakedWei)
+            .dividedBy(Math.pow(10, decimals))
+            .toString(),
         active: sponsorship.isRunning,
         stakes: sponsorship.stakes.map((stake) => {
             return {
                 operatorId: stake.operator.id,
-                amount: toBN(stake.amount).dividedBy(1e18).toString(),
+                amount: toBN(stake.amount).dividedBy(Math.pow(10, decimals)).toString(),
                 date: toBN(stake.date).multipliedBy(1000).toString(),
             }
         }),
+        cumulativeSponsoring: toBN(sponsorship.cumulativeSponsoring)
+            .dividedBy(Math.pow(10, decimals))
+            .toString(),
+        minimumStake,
     }
 }

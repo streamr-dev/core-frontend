@@ -1,6 +1,6 @@
 import { Contract } from 'ethers'
 import { StreamrConfig, streamrConfigABI } from '@streamr/network-contracts'
-import { getSigner } from '~/shared/stores/wallet'
+import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { BNish } from '~/utils/bn'
 import { defaultChainConfig } from './getChainConfig'
 
@@ -11,7 +11,7 @@ export const getConfigFromChain = async (): Promise<{
     maxPenaltyPeriodSeconds: BNish
     minimumStakeWei: BNish
 }> => {
-    const signer = await getSigner()
+    const signer = await getPublicWeb3Provider(defaultChainConfig.id).getSigner()
     const config = new Contract(
         defaultChainConfig.contracts.StreamrConfig,
         streamrConfigABI,

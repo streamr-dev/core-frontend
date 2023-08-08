@@ -3648,7 +3648,7 @@ export type GetAllOperatorsQueryVariables = Exact<{
 
 export type GetAllOperatorsQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, operator?: { __typename?: 'Operator', id: string } | null }> }> };
 
-export type SponsorshipFieldsFragment = { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, creator: string, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> };
+export type SponsorshipFieldsFragment = { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> };
 
 export type GetAllSponsorshipsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -3657,7 +3657,7 @@ export type GetAllSponsorshipsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllSponsorshipsQuery = { __typename?: 'Query', sponsorships: Array<{ __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, creator: string, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> }> };
+export type GetAllSponsorshipsQuery = { __typename?: 'Query', sponsorships: Array<{ __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> }> };
 
 export type GetSponsorshipsByCreatorQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -3667,14 +3667,14 @@ export type GetSponsorshipsByCreatorQueryVariables = Exact<{
 }>;
 
 
-export type GetSponsorshipsByCreatorQuery = { __typename?: 'Query', sponsorships: Array<{ __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, creator: string, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> }> };
+export type GetSponsorshipsByCreatorQuery = { __typename?: 'Query', sponsorships: Array<{ __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> }> };
 
 export type GetSponsorshipByIdQueryVariables = Exact<{
   sponsorshipId: Scalars['ID']['input'];
 }>;
 
 
-export type GetSponsorshipByIdQuery = { __typename?: 'Query', sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, creator: string, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> } | null };
+export type GetSponsorshipByIdQuery = { __typename?: 'Query', sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> } | null };
 
 export type ProjectFieldsFragment = { __typename?: 'Project', id: string, domainIds: Array<any>, score: any, metadata: string, streams: Array<string>, minimumSubscriptionSeconds: any, createdAt?: any | null, updatedAt?: any | null, isDataUnion?: boolean | null, paymentDetails: Array<{ __typename?: 'ProjectPaymentDetails', domainId?: any | null, beneficiary: any, pricingTokenAddress: any, pricePerSecond?: any | null }>, subscriptions: Array<{ __typename?: 'ProjectSubscription', userAddress: any, endTimestamp?: any | null }>, permissions: Array<{ __typename?: 'ProjectPermission', userAddress: any, canBuy?: boolean | null, canDelete?: boolean | null, canEdit?: boolean | null, canGrant?: boolean | null }>, purchases: Array<{ __typename?: 'ProjectPurchase', subscriber: any, subscriptionSeconds: any, price: any, fee: any, purchasedAt?: any | null }> };
 
@@ -3737,6 +3737,17 @@ export type GetSponsorshipDailyBucketsQueryVariables = Exact<{
 
 export type GetSponsorshipDailyBucketsQuery = { __typename?: 'Query', sponsorshipDailyBuckets: Array<{ __typename?: 'SponsorshipDailyBucket', id: string, operatorCount: number, projectedInsolvency: any, spotAPY: any, totalPayoutsCumulative: any, totalStakedWei: any, unallocatedWei: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string } }> };
 
+export type SponsoringEventFieldsFragment = { __typename?: 'SponsoringEvent', id: string, amount: any, date: any, sponsor: string };
+
+export type GetSponsoringEventsQueryVariables = Exact<{
+  sponsorshipId: Scalars['ID']['input'];
+  first?: InputMaybe<Scalars['Int']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GetSponsoringEventsQuery = { __typename?: 'Query', sponsoringEvents: Array<{ __typename?: 'SponsoringEvent', id: string, amount: any, date: any, sponsor: string }> };
+
 export const OperatorFieldsFragmentDoc = gql`
     fragment OperatorFields on Operator {
   id
@@ -3791,7 +3802,9 @@ export const SponsorshipFieldsFragmentDoc = gql`
   totalStakedWei
   unallocatedWei
   projectedInsolvency
+  cumulativeSponsoring
   creator
+  spotAPY
 }
     `;
 export const ProjectFieldsFragmentDoc = gql`
@@ -3857,6 +3870,14 @@ export const SponsorshipDailyBucketFieldsFragmentDoc = gql`
   sponsorship {
     id
   }
+}
+    `;
+export const SponsoringEventFieldsFragmentDoc = gql`
+    fragment SponsoringEventFields on SponsoringEvent {
+  id
+  amount
+  date
+  sponsor
 }
     `;
 export const GetAllOperatorsDocument = gql`
@@ -3970,3 +3991,17 @@ export const GetSponsorshipDailyBucketsDocument = gql`
 }
     ${SponsorshipDailyBucketFieldsFragmentDoc}`;
 export type GetSponsorshipDailyBucketsQueryResult = Apollo.QueryResult<GetSponsorshipDailyBucketsQuery, GetSponsorshipDailyBucketsQueryVariables>;
+export const GetSponsoringEventsDocument = gql`
+    query getSponsoringEvents($sponsorshipId: ID!, $first: Int, $skip: Int) {
+  sponsoringEvents(
+    where: {sponsorship_: {id: $sponsorshipId}}
+    first: $first
+    skip: $skip
+    orderBy: date
+    orderDirection: desc
+  ) {
+    ...SponsoringEventFields
+  }
+}
+    ${SponsoringEventFieldsFragmentDoc}`;
+export type GetSponsoringEventsQueryResult = Apollo.QueryResult<GetSponsoringEventsQuery, GetSponsoringEventsQueryVariables>;

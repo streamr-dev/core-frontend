@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
-import moment from 'moment'
 import { useQuery } from '@tanstack/react-query'
 import styles from '~/marketplace/containers/Projects/projects.pcss'
 import { NetworkHelmet } from '~/shared/components/Helmet'
@@ -21,19 +20,12 @@ import {
     formatShortDate,
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
+import { errorToast } from '~/utils/toast'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { SponsorshipActionBar } from '../components/ActionBars/SponsorshipActionBar'
-import { growingValuesGenerator, NetworkChartWrap } from '../components/NetworkUtils'
+import { NetworkChartWrap } from '../components/NetworkUtils'
+import { useSponsorshipFundingHistory } from '../hooks/useSponsorshipFundingHistory'
 import { getSponsorshipStats } from '../getters/getSponsorshipStats'
-
-const fundingHistoryStubData: { sponsorId: string; date: string; amount: string }[] =
-    new Array(10).fill(null).map((_, index) => {
-        return {
-            sponsorId: '0x' + Math.round(10000000 * Math.random()).toString(),
-            amount: Math.round(10000000 * Math.random()).toString(),
-            date: moment().subtract(index, 'days').toISOString(),
-        }
-    })
 
 export const SingleSponsorshipPage = () => {
     const sponsorshipId = useParams().id
@@ -46,12 +38,17 @@ export const SingleSponsorshipPage = () => {
     const chartQuery = useQuery({
         queryKey: ['sponsorshipChartQuery', selectedPeriod, selectedDataSource],
         queryFn: async () => {
-            return await getSponsorshipStats(
-                sponsorshipId as string,
-                selectedPeriod as ChartPeriod,
-                selectedDataSource,
-                false, // ignore today
-            )
+            try {
+                return await getSponsorshipStats(
+                    sponsorshipId as string,
+                    selectedPeriod as ChartPeriod,
+                    selectedDataSource,
+                    false, // ignore today
+                )
+            } catch (e) {
+                errorToast({ title: 'Could not load sponsorship chart data' })
+                return []
+            }
         },
     })
 
@@ -99,6 +96,8 @@ export const SingleSponsorshipPage = () => {
         },
         [selectedDataSource],
     )
+
+    const fundingEventsQuery = useSponsorshipFundingHistory(sponsorshipId)
 
     return (
         <Layout
@@ -188,7 +187,17 @@ export const SingleSponsorshipPage = () => {
                             />
                         </OperatorsContainer>
                         <FundingHistory
-                            elements={fundingHistoryStubData}
+                            hasMoreResults={fundingEventsQuery.hasNextPage}
+                            onLoadMore={() => fundingEventsQuery.fetchNextPage()}
+                            elements={
+                                fundingEventsQuery.data?.pages
+                                    .map((page) => page.events)
+                                    .flat() || []
+                            }
+                            isLoading={
+                                fundingEventsQuery.isLoading ||
+                                fundingEventsQuery.isFetching
+                            }
                             columns={[
                                 {
                                     displayName: 'Date',
@@ -211,7 +220,7 @@ export const SingleSponsorshipPage = () => {
                                 {
                                     displayName: 'Sponsor',
                                     valueMapper: (element: any) =>
-                                        truncate(element.sponsorId),
+                                        truncate(element.sponsor),
                                     align: 'start',
                                     isSticky: false,
                                     key: 'sponsor',

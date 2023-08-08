@@ -36,6 +36,8 @@ export const SponsorshipActionBar: FunctionComponent<{
 }> = ({ sponsorship }) => {
     const { copy } = useCopy()
 
+    // TODO when Mariusz will merge his hook & getter for fetching Token information - use it here to display the proper token symbol
+
     return (
         <SingleElementPageActionBar>
             <SingleElementPageActionBarContainer>
@@ -138,8 +140,7 @@ export const SponsorshipActionBar: FunctionComponent<{
                     stats={[
                         {
                             label: 'Payout rate',
-                            value:
-                                toBN(sponsorship.DATAPerDay).toFormat(18) + ' DATA/day',
+                            value: sponsorship.payoutPerDay + ' DATA/day',
                         },
                         {
                             label: 'Operators',
@@ -158,11 +159,11 @@ export const SponsorshipActionBar: FunctionComponent<{
                         },
                         {
                             label: 'Cumulative sponsored',
-                            value: 'NO DATA IN GRAPH',
+                            value: `${sponsorship.cumulativeSponsoring} DATA`,
                         },
                         {
                             label: 'Minimum stake',
-                            value: 'NO DATA IN GRAPH',
+                            value: sponsorship.minimumStake + ' DATA',
                         },
                     ]}
                     columns={3}

@@ -10,7 +10,11 @@ import capitalize from 'lodash/capitalize'
 import { useDebouncedCallback } from 'use-debounce'
 import { Chain } from '@streamr/config'
 import SvgIcon from '~/shared/components/SvgIcon'
-import { getDataAddress, getTokenInformation } from '~/marketplace/utils/web3'
+import {
+    getDataAddress,
+    getTokenInformation,
+    TokenInformation,
+} from '~/marketplace/utils/web3'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { COLORS, MAX_CONTENT_WIDTH, MEDIUM, REGULAR } from '~/shared/utils/styled'
 import { Radio } from '~/shared/components/Radio'
@@ -201,7 +205,10 @@ const TokenSelector: FunctionComponent<Props> = ({
                     setCustomTokenAddress(pricingTokenAddress)
                 }
 
-                const info = await getTokenInformation(pricingTokenAddress, chainId)
+                let info: TokenInformation | undefined
+                try {
+                    info = await getTokenInformation(pricingTokenAddress, chainId)
+                } catch (e) {}
                 if (!isMounted()) {
                     return
                 }

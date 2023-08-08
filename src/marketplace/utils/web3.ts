@@ -1,4 +1,4 @@
-import { getPublicWeb3Provider, getWalletWeb3Provider } from '~/shared/stores/wallet'
+import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { Address } from '~/shared/types/web3-types'
 import { getConfigForChain } from '~/shared/web3/config'
 import getChainId from '~/utils/web3/getChainId'
@@ -37,10 +37,11 @@ export const getMarketplaceAddress = (chainId: number): Address => {
 export const getCustomTokenBalance = async (
     contractAddress: Address,
     userAddress: Address,
+    chainId: number,
 ) => {
     const contract = getERC20TokenContract({
         tokenAddress: contractAddress,
-        signer: await getWalletWeb3Provider(),
+        signer: await getPublicWeb3Provider(chainId),
     })
 
     const balance = await contract.balanceOf(userAddress)
@@ -61,7 +62,7 @@ const tokenInformationCache: Record<string, TokenInformation> = {}
 export const getTokenInformation = async (
     address: Address,
     chainId?: number,
-): Promise<TokenInformation | null | undefined> => {
+): Promise<TokenInformation> => {
     const actualChainId = chainId || (await getChainId())
     // Check from cache first
     const cacheKey = `${address ? address.toString().toLowerCase() : 'noaddress'}-${
@@ -78,28 +79,22 @@ export const getTokenInformation = async (
         signer: getPublicWeb3Provider(actualChainId),
     })
 
-    try {
-        const symbol = await contract.symbol()
+    const symbol = await contract.symbol()
 
-        if (symbol == null) {
-            // This is not an ERC-20 token
-            return null
-        }
-
-        const name = await contract.name()
-
-        const decimals = await contract.decimals()
-
-        const infoObj: TokenInformation = {
-            symbol,
-            name,
-            decimals: Number(decimals),
-        }
-        tokenInformationCache[cacheKey] = infoObj
-        return infoObj
-    } catch (e) {
-        console.warn('Failed to load token info', e)
+    if (symbol == null) {
+        // This is not an ERC-20 token
+        throw new Error('This is not an ERC-20 token')
     }
 
-    return null
+    const name = await contract.name()
+
+    const decimals = await contract.decimals()
+
+    const infoObj: TokenInformation = {
+        symbol,
+        name,
+        decimals: Number(decimals),
+    }
+    tokenInformationCache[cacheKey] = infoObj
+    return infoObj
 }

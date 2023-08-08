@@ -61,7 +61,9 @@ gql`
         totalStakedWei
         unallocatedWei
         projectedInsolvency
+        cumulativeSponsoring
         creator
+        spotAPY
     }
 
     query getAllSponsorships($first: Int, $skip: Int, $streamContains: String) {
@@ -221,6 +223,27 @@ gql`
     ) {
         sponsorshipDailyBuckets(first: $first, skip: $skip, where: $where) {
             ...SponsorshipDailyBucketFields
+        }
+    }
+`
+
+gql`
+    fragment SponsoringEventFields on SponsoringEvent {
+        id
+        amount
+        date
+        sponsor
+    }
+
+    query getSponsoringEvents($sponsorshipId: ID!, $first: Int, $skip: Int) {
+        sponsoringEvents(
+            where: { sponsorship_: { id: $sponsorshipId } }
+            first: $first
+            skip: $skip
+            orderBy: date
+            orderDirection: desc
+        ) {
+            ...SponsoringEventFields
         }
     }
 `
