@@ -20,42 +20,36 @@ export const getSponsorshipStats = async (
         case ChartPeriod.SevenDays:
             result = await getSponsorshipDailyBuckets(
                 sponsorshipId,
-                start.format('X'),
-                start.clone().subtract(7, 'days').format('X'),
+                start.unix(),
+                start.clone().subtract(7, 'days').unix(),
             )
             break
         case ChartPeriod.OneMonth:
             result = await getSponsorshipDailyBuckets(
                 sponsorshipId,
-                start.format('X'),
-                start.clone().subtract(30, 'days').format('X'),
+                start.unix(),
+                start.clone().subtract(30, 'days').unix(),
             )
             break
         case ChartPeriod.ThreeMonths:
             result = await getSponsorshipDailyBuckets(
                 sponsorshipId,
-                start.format('X'),
-                start.clone().subtract(90, 'days').format('X'),
+                start.unix(),
+                start.clone().subtract(90, 'days').unix(),
             )
             break
         case ChartPeriod.OneYear:
             result = await getSponsorshipDailyBuckets(
                 sponsorshipId,
-                start.format('X'),
-                start.clone().subtract(365, 'days').format('X'),
+                start.unix(),
+                start.clone().subtract(365, 'days').unix(),
             )
             break
         case ChartPeriod.YearToDate:
-            const beginningOfYear = moment().utc().startOf('year')
-            const daySpan = today.clone().utc().diff(beginningOfYear, 'day')
-            if (daySpan === 0) {
-                result = []
-                break
-            }
             result = await getSponsorshipDailyBuckets(
                 sponsorshipId,
-                start.format('X'),
-                start.clone().subtract(daySpan, 'days').format('X'),
+                start.unix(),
+                start.clone().startOf('year').unix(),
             )
             break
         case ChartPeriod.All:
@@ -68,8 +62,8 @@ export const getSponsorshipStats = async (
             for (let i = 0; i < maxIterations; i++) {
                 const partialResult = await getSponsorshipDailyBuckets(
                     sponsorshipId,
-                    start.format('X'),
-                    endDate.format('X'),
+                    start.unix(),
+                    endDate.unix(),
                     maxAmount,
                     maxAmount * i,
                 )

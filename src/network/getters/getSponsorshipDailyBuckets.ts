@@ -8,8 +8,8 @@ import {
 
 export const getSponsorshipDailyBuckets = async (
     sponsorshipId: string,
-    dateLowerThan: string, // utc timestamp in seconds
-    dateGreaterEqualThan: string, // utc timestamp in seconds
+    dateLowerThan: number, // utc unix timestamp
+    dateGreaterEqualThan: number, // utc unix timestamp
     first = 999,
     skip = 0,
 ): Promise<GetSponsorshipDailyBucketsQuery['sponsorshipDailyBuckets']> => {
