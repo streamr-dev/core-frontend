@@ -140,7 +140,7 @@ export async function getPurchasePreconditions({
         throw new Error('No account')
     }
 
-    const balance = await getCustomTokenBalance(tokenAddress, account)
+    const balance = await getCustomTokenBalance(tokenAddress, account, chainId)
 
     const usdRate = await getUsdRate(tokenAddress, chainId)
 

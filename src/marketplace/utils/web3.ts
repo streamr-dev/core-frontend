@@ -1,6 +1,7 @@
-import { getPublicWeb3Provider, getWalletWeb3Provider } from '~/shared/stores/wallet'
+import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { Address } from '~/shared/types/web3-types'
 import { getConfigForChain } from '~/shared/web3/config'
+import { defaultChainConfig } from '~/getters/getChainConfig'
 import getChainId from '~/utils/web3/getChainId'
 import { getERC20TokenContract } from '~/getters'
 import { BNish } from '~/utils/bn'
@@ -37,10 +38,11 @@ export const getMarketplaceAddress = (chainId: number): Address => {
 export const getCustomTokenBalance = async (
     contractAddress: Address,
     userAddress: Address,
+    chainId?: number,
 ) => {
     const contract = getERC20TokenContract({
         tokenAddress: contractAddress,
-        signer: await getWalletWeb3Provider(),
+        signer: await getPublicWeb3Provider(chainId || defaultChainConfig.id),
     })
 
     const balance = await contract.balanceOf(userAddress)
