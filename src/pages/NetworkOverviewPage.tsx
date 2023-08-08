@@ -10,7 +10,7 @@ import {
 } from '~/shared/components/WhiteBox'
 import Footer from '~/shared/components/Layout/Footer'
 import { MD, TABLET } from '~/shared/utils/styled'
-import { NetworkSectionTitle } from '~/network/components/NetworkSectionTitle'
+import { NetworkSectionTitle } from '~/components/NetworkSectionTitle'
 import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
 import { MyOperatorSummary } from '../components/MyOperatorSummary'
 import { MyDelegationsSummary } from '../components/MyDelegationsSummary'

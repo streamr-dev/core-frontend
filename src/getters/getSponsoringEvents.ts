@@ -6,7 +6,7 @@ import {
     GetSponsoringEventsQuery,
     GetSponsoringEventsQueryVariables,
 } from '~/generated/gql/network'
-import { FundingEvent } from '../types/fundingEvent'
+import { FundingEvent } from '~/types/fundingEvent'
 
 export const getSponsoringEvents = async (
     sponsorshipId: string,

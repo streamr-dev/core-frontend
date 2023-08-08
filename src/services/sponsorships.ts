@@ -7,8 +7,8 @@ import { getSigner } from '~/shared/stores/wallet'
 import { BNish, toBN } from '~/utils/bn'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { toastedOperation } from '~/utils/toastedOperation'
-import { CreateSponsorshipForm } from '~/network/forms/createSponsorshipForm'
-import { TokenAndBalanceForSponsorship } from '~/network/getters/getTokenAndBalanceForSponsorship'
+import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
+import { TokenAndBalanceForSponsorship } from '~/getters/getTokenAndBalanceForSponsorship'
 import { getConfigFromChain } from '~/getters/getConfigFromChain'
 
 const getSponsorshipChainId = () => {

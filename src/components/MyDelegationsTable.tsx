@@ -2,11 +2,8 @@ import React, { FunctionComponent } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import {
-    SummaryContainer,
-    WalletNotConnectedOverlay,
-} from '~/network/components/NetworkUtils'
-import { NetworkSectionTitle } from '~/network/components/NetworkSectionTitle'
+import { SummaryContainer, WalletNotConnectedOverlay } from '~/components/NetworkUtils'
+import { NetworkSectionTitle } from '~/components/NetworkSectionTitle'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { HubAvatar } from '~/shared/components/AvatarImage'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
@@ -16,7 +13,7 @@ import { truncateNumber } from '~/shared/utils/truncateNumber'
 import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
 import { NoData } from '~/shared/components/NoData'
 import routes from '~/routes'
-import { Delegation } from '../types/delegations'
+import { Delegation } from '~/types/delegations'
 
 const hardcodedAddresses = [
     '0x12e567661643698e7C86D3684e391D2C38950C0c',

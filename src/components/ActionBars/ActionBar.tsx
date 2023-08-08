@@ -21,7 +21,7 @@ import {
     MobileFilterWrap,
     SearchBarWrap,
     SelectFieldWrap,
-} from './actionBar.styles'
+} from './ActionBar.styles'
 
 enum ProjectsScope {
     Any = 'any',
