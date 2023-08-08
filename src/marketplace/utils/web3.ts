@@ -52,7 +52,7 @@ export const getCustomTokenBalance = async (
     return fromDecimals(balance, decimals)
 }
 
-type TokenInformation = {
+export type TokenInformation = {
     symbol: string
     name: string
     decimals: BNish

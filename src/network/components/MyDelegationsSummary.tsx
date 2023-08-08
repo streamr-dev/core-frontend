@@ -66,7 +66,7 @@ export const MyDelegationsSummary: FunctionComponent = () => {
     const [selectedDataSource, setSelectedDataSource] = useState<string>('currentValue')
 
     const [selectedChartPeriod, setSelectedChartPeriod] = useState<ChartPeriod>(
-        ChartPeriod['7D'],
+        ChartPeriod.SevenDays,
     )
 
     const handleChartDataSourceChange = useCallback(

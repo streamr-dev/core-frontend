@@ -3726,6 +3726,17 @@ export type GetStreamByIdQueryVariables = Exact<{
 
 export type GetStreamByIdQuery = { __typename?: 'Query', stream?: { __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userAddress: any }> | null } | null };
 
+export type SponsorshipDailyBucketFieldsFragment = { __typename?: 'SponsorshipDailyBucket', id: string, operatorCount: number, projectedInsolvency: any, spotAPY: any, totalPayoutsCumulative: any, totalStakedWei: any, unallocatedWei: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string } };
+
+export type GetSponsorshipDailyBucketsQueryVariables = Exact<{
+  where: SponsorshipDailyBucket_Filter;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GetSponsorshipDailyBucketsQuery = { __typename?: 'Query', sponsorshipDailyBuckets: Array<{ __typename?: 'SponsorshipDailyBucket', id: string, operatorCount: number, projectedInsolvency: any, spotAPY: any, totalPayoutsCumulative: any, totalStakedWei: any, unallocatedWei: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string } }> };
+
 export type SponsoringEventFieldsFragment = { __typename?: 'SponsoringEvent', id: string, amount: any, date: any, sponsor: string };
 
 export type GetSponsoringEventsQueryVariables = Exact<{
@@ -3845,6 +3856,21 @@ export const StreamFieldsFragmentDoc = gql`
   }
 }
     `;
+export const SponsorshipDailyBucketFieldsFragmentDoc = gql`
+    fragment SponsorshipDailyBucketFields on SponsorshipDailyBucket {
+  id
+  operatorCount
+  projectedInsolvency
+  spotAPY
+  totalPayoutsCumulative
+  totalStakedWei
+  unallocatedWei
+  date
+  sponsorship {
+    id
+  }
+}
+    `;
 export const SponsoringEventFieldsFragmentDoc = gql`
     fragment SponsoringEventFields on SponsoringEvent {
   id
@@ -3956,6 +3982,14 @@ export const GetStreamByIdDocument = gql`
 }
     ${StreamFieldsFragmentDoc}`;
 export type GetStreamByIdQueryResult = Apollo.QueryResult<GetStreamByIdQuery, GetStreamByIdQueryVariables>;
+export const GetSponsorshipDailyBucketsDocument = gql`
+    query getSponsorshipDailyBuckets($where: SponsorshipDailyBucket_filter!, $first: Int, $skip: Int) {
+  sponsorshipDailyBuckets(first: $first, skip: $skip, where: $where) {
+    ...SponsorshipDailyBucketFields
+  }
+}
+    ${SponsorshipDailyBucketFieldsFragmentDoc}`;
+export type GetSponsorshipDailyBucketsQueryResult = Apollo.QueryResult<GetSponsorshipDailyBucketsQuery, GetSponsorshipDailyBucketsQueryVariables>;
 export const GetSponsoringEventsDocument = gql`
     query getSponsoringEvents($sponsorshipId: ID!, $first: Int, $skip: Int) {
   sponsoringEvents(
