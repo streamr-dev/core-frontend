@@ -159,7 +159,7 @@ export const SponsorshipActionBar: FunctionComponent<{
                         },
                         {
                             label: 'Cumulative sponsored',
-                            value: sponsorship.cumulativeSponsoring + ' DATA',
+                            value: `${sponsorship.cumulativeSponsoring} DATA`,
                         },
                         {
                             label: 'Minimum stake',
