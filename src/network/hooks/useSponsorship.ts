@@ -4,6 +4,7 @@ import { getSponsorshipById } from '~/getters'
 import { getConfigFromChain } from '~/getters/getConfigFromChain'
 import { errorToast } from '~/utils/toast'
 import { toBN } from '~/utils/bn'
+import { getSponsorshipTokenInfo } from '../getters/getSponsorshipTokenInfo'
 import { mapSponsorshipToElement } from './useSponsorshipsList'
 
 export function useSponsorship(sponsorshipId: string) {
@@ -11,15 +12,20 @@ export function useSponsorship(sponsorshipId: string) {
         queryKey: ['getSponsorship-' + sponsorshipId],
         async queryFn() {
             try {
+                const tokenInfo = await getSponsorshipTokenInfo()
                 const sponsorship = await getSponsorshipById(sponsorshipId)
                 const configFromChain = await getConfigFromChain()
 
-                // todo fetch token info and provide its decimals value
                 return sponsorship
                     ? {
-                          ...mapSponsorshipToElement(sponsorship as Sponsorship, 18),
+                          ...mapSponsorshipToElement(
+                              sponsorship as Sponsorship,
+                              Number(tokenInfo?.decimals.toString()),
+                          ),
                           minimumStake: toBN(configFromChain.minimumStakeWei)
-                              .dividedBy(1e18)
+                              .dividedBy(
+                                  Math.pow(10, Number(tokenInfo?.decimals.toString())),
+                              )
                               .toString(),
                       }
                     : null

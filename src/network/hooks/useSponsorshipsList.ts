@@ -7,6 +7,7 @@ import { Sponsorship } from '~/generated/gql/network'
 import { toBN } from '~/utils/bn'
 import { getAllSponsorships, getSponsorshipsByCreator } from '~/getters'
 import { errorToast } from '~/utils/toast'
+import { getSponsorshipTokenInfo } from '../getters/getSponsorshipTokenInfo'
 
 export const useAllSponsorshipsQuery = (
     pageSize = 10,
@@ -19,6 +20,7 @@ export const useAllSponsorshipsQuery = (
         queryKey: ['allSponsorships', searchQuery],
         async queryFn(ctx) {
             try {
+                const tokenInfo = await getSponsorshipTokenInfo()
                 const sponsorships = (await getAllSponsorships({
                     first: pageSize,
                     streamId: searchQuery,
@@ -27,7 +29,12 @@ export const useAllSponsorshipsQuery = (
 
                 return {
                     skippedElements: ctx.pageParam || 0,
-                    elements: sponsorships.map(mapSponsorshipToElement),
+                    elements: sponsorships.map((sponsorship) =>
+                        mapSponsorshipToElement(
+                            sponsorship,
+                            Number(tokenInfo?.decimals.toString()),
+                        ),
+                    ),
                 }
             } catch (e) {
                 errorToast({ title: 'Could not fetch the sponsorships list' })
@@ -105,7 +112,7 @@ export const mapSponsorshipToElement = (
             'D MMM YYYY',
         ),
         apy: sponsorship.spotAPY,
-        DATAPerDay: Number(
+        payoutPerDay: Number(
             toBN(sponsorship.totalPayoutWeiPerSec)
                 .dividedBy(Math.pow(10, decimals))
                 .multipliedBy(86400),
@@ -122,5 +129,8 @@ export const mapSponsorshipToElement = (
                 date: toBN(stake.date).multipliedBy(1000).toString(),
             }
         }),
+        cumulativeSponsoring: toBN(sponsorship.cumulativeSponsoring)
+            .dividedBy(Math.pow(10, decimals))
+            .toString(),
     }
 }

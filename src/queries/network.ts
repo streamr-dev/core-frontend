@@ -61,6 +61,7 @@ gql`
         totalStakedWei
         unallocatedWei
         projectedInsolvency
+        cumulativeSponsoring
         creator
         spotAPY
     }
