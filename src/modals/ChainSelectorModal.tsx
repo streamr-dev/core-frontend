@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
-import { z } from 'zod'
 import { toaster } from 'toasterhea'
 import Button from '~/shared/components/Button'
 import NetworkIcon from '~/shared/components/NetworkIcon'
@@ -116,7 +115,7 @@ export async function getPurchasePreconditions({
 }: {
     chainId: number
     paymentDetails: PaymentDetail[]
-}) {
+}): Promise<ChainSelectorResult> {
     await networkPreflight(chainId)
 
     const paymentDetail = paymentDetails.find(
@@ -127,7 +126,7 @@ export async function getPurchasePreconditions({
         throw new Error('No matching payment detail')
     }
 
-    const { pricingTokenAddress: tokenAddress, pricePerSecond } = paymentDetail
+    const { pricingTokenAddress: tokenAddress, pricePerSecond = '0' } = paymentDetail
 
     const tokenInfo = await getTokenInformation(tokenAddress, chainId)
 
