@@ -7,6 +7,7 @@ import { Sponsorship } from '~/generated/gql/network'
 import { toBN } from '~/utils/bn'
 import { getAllSponsorships, getSponsorshipsByCreator } from '~/getters'
 import { errorToast } from '~/utils/toast'
+import { getConfigFromChain } from '~/getters/getConfigFromChain'
 import { getSponsorshipTokenInfo } from '../getters/getSponsorshipTokenInfo'
 
 export const useAllSponsorshipsQuery = (
@@ -21,6 +22,7 @@ export const useAllSponsorshipsQuery = (
         async queryFn(ctx) {
             try {
                 const tokenInfo = await getSponsorshipTokenInfo()
+                const configFromChain = await getConfigFromChain()
                 const sponsorships = (await getAllSponsorships({
                     first: pageSize,
                     streamId: searchQuery,
@@ -32,7 +34,12 @@ export const useAllSponsorshipsQuery = (
                     elements: sponsorships.map((sponsorship) =>
                         mapSponsorshipToElement(
                             sponsorship,
-                            Number(tokenInfo?.decimals.toString()),
+                            Number(tokenInfo.decimals.toString()),
+                            toBN(configFromChain.minimumStakeWei)
+                                .dividedBy(
+                                    Math.pow(10, Number(tokenInfo.decimals.toString())),
+                                )
+                                .toString(),
                         ),
                     ),
                 }
@@ -74,6 +81,8 @@ export const useMySponsorshipsQuery = (
             }
 
             try {
+                const tokenInfo = await getSponsorshipTokenInfo()
+                const configFromChain = await getConfigFromChain()
                 const sponsorships = (await getSponsorshipsByCreator(account, {
                     first: pageSize,
                     streamId: searchQuery,
@@ -81,7 +90,17 @@ export const useMySponsorshipsQuery = (
 
                 return {
                     skippedElements: ctx.pageParam || 0,
-                    elements: sponsorships.map(mapSponsorshipToElement),
+                    elements: sponsorships.map((sponsorship) =>
+                        mapSponsorshipToElement(
+                            sponsorship,
+                            Number(tokenInfo.decimals.toString()),
+                            toBN(configFromChain.minimumStakeWei)
+                                .dividedBy(
+                                    Math.pow(10, Number(tokenInfo.decimals.toString())),
+                                )
+                                .toString(),
+                        ),
+                    ),
                 }
             } catch (e) {
                 errorToast({ title: 'Could not fetch the sponsorships list' })
@@ -104,6 +123,7 @@ export const useMySponsorshipsQuery = (
 export const mapSponsorshipToElement = (
     sponsorship: Sponsorship,
     decimals: number,
+    minimumStake: string,
 ): SponsorshipElement => {
     return {
         id: sponsorship.id,
@@ -132,5 +152,6 @@ export const mapSponsorshipToElement = (
         cumulativeSponsoring: toBN(sponsorship.cumulativeSponsoring)
             .dividedBy(Math.pow(10, decimals))
             .toString(),
+        minimumStake,
     }
 }

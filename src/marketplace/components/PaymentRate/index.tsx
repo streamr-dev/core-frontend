@@ -5,6 +5,7 @@ import { getTokenInformation } from '~/marketplace/utils/web3'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { TimeUnit } from '~/shared/utils/timeUnit'
 import { BNish, toBN } from '~/utils/bn'
+import { errorToast } from '~/utils/toast'
 
 type Props = {
     amount: BNish
@@ -31,12 +32,16 @@ const PaymentRate = (props: Props) => {
     useEffect(() => {
         const check = async () => {
             if (pricingTokenAddress != null) {
-                const info = await getTokenInformation(pricingTokenAddress, chainId)
+                try {
+                    const info = await getTokenInformation(pricingTokenAddress, chainId)
 
-                if (isMounted() && info) {
-                    setCurrency(currencies.PRODUCT_DEFINED)
-                    setSymbol(info.symbol)
-                    setDecimals(toBN(info.decimals))
+                    if (isMounted()) {
+                        setCurrency(currencies.PRODUCT_DEFINED)
+                        setSymbol(info.symbol)
+                        setDecimals(toBN(info.decimals))
+                    }
+                } catch (e) {
+                    errorToast({ title: 'Could not load token information' })
                 }
             }
         }

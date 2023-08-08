@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
-import moment from 'moment'
 import { useQuery } from '@tanstack/react-query'
 import styles from '~/marketplace/containers/Projects/projects.pcss'
 import { NetworkHelmet } from '~/shared/components/Helmet'
@@ -21,6 +20,7 @@ import {
     formatShortDate,
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
+import { errorToast } from '~/utils/toast'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { SponsorshipActionBar } from '../components/ActionBars/SponsorshipActionBar'
 import { NetworkChartWrap } from '../components/NetworkUtils'
@@ -38,12 +38,17 @@ export const SingleSponsorshipPage = () => {
     const chartQuery = useQuery({
         queryKey: ['sponsorshipChartQuery', selectedPeriod, selectedDataSource],
         queryFn: async () => {
-            return await getSponsorshipStats(
-                sponsorshipId as string,
-                selectedPeriod as ChartPeriod,
-                selectedDataSource,
-                false, // ignore today
-            )
+            try {
+                return await getSponsorshipStats(
+                    sponsorshipId as string,
+                    selectedPeriod as ChartPeriod,
+                    selectedDataSource,
+                    false, // ignore today
+                )
+            } catch (e) {
+                errorToast({ title: 'Could not load sponsorship chart data' })
+                return []
+            }
         },
     })
 

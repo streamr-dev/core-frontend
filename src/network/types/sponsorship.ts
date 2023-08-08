@@ -10,7 +10,7 @@ export type SponsorshipElement = {
     active: boolean
     stakes: SponsorshipStake[]
     cumulativeSponsoring: string
-    minimumStake?: string
+    minimumStake: string
 }
 
 export type SponsorshipStake = {

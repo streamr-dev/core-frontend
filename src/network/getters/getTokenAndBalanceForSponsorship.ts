@@ -12,14 +12,13 @@ export type TokenAndBalanceForSponsorship = {
 export const getTokenAndBalanceForSponsorship = async (
     walletAddress: string,
 ): Promise<TokenAndBalanceForSponsorship> => {
-    const tokenSymbolFromConfig = getCoreConfig().sponsorshipPaymentToken as string
     const tokenInformation = await getSponsorshipTokenInfo()
 
     if (!tokenInformation) {
         throw new Error('Invalid token for sponsorship balanance')
     }
     const balance = await getCustomTokenBalance(
-        defaultChainConfig.contracts[tokenSymbolFromConfig],
+        defaultChainConfig.contracts[tokenInformation.symbol],
         walletAddress,
         defaultChainConfig.id,
     )

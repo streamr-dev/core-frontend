@@ -20,13 +20,13 @@ export function useSponsorship(sponsorshipId: string) {
                     ? {
                           ...mapSponsorshipToElement(
                               sponsorship as Sponsorship,
-                              Number(tokenInfo?.decimals.toString()),
+                              Number(tokenInfo.decimals.toString()),
+                              toBN(configFromChain.minimumStakeWei)
+                                  .dividedBy(
+                                      Math.pow(10, Number(tokenInfo.decimals.toString())),
+                                  )
+                                  .toString(),
                           ),
-                          minimumStake: toBN(configFromChain.minimumStakeWei)
-                              .dividedBy(
-                                  Math.pow(10, Number(tokenInfo?.decimals.toString())),
-                              )
-                              .toString(),
                       }
                     : null
             } catch (e) {

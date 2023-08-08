@@ -163,7 +163,7 @@ export const SponsorshipActionBar: FunctionComponent<{
                         },
                         {
                             label: 'Minimum stake',
-                            value: (sponsorship.minimumStake as string) + ' DATA',
+                            value: sponsorship.minimumStake + ' DATA',
                         },
                     ]}
                     columns={3}
