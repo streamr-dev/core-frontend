@@ -1,6 +1,6 @@
-import { TestToken, tokenABI, ERC677ABI, ERC677 } from '@streamr/network-contracts'
-import { BigNumber, Contract } from 'ethers'
-import { defaultAbiCoder, parseEther } from 'ethers/lib/utils'
+import { ERC677ABI, ERC677 } from '@streamr/network-contracts'
+import { Contract } from 'ethers'
+import { defaultAbiCoder } from 'ethers/lib/utils'
 import { getConfigForChainByName, getConfigForChain } from '~/shared/web3/config'
 import networkPreflight from '~/utils/networkPreflight'
 import { getSigner } from '~/shared/stores/wallet'
@@ -113,21 +113,25 @@ export async function fundSponsorship(sponsorshipId: string, amount: BNish) {
 
     const chainConfig = getConfigForChain(chainId)
 
+    const paymentTokenSymbolFromConfig = getCoreConfig().sponsorshipPaymentToken
+
     await networkPreflight(chainId)
 
     const signer = await getSigner()
 
-    const dataTokenContract = new Contract(
-        chainConfig.contracts['DATA'],
-        tokenABI,
+    const contract = new Contract(
+        chainConfig.contracts[paymentTokenSymbolFromConfig],
+        ERC677ABI,
         signer,
-    ) as TestToken
+    ) as ERC677
 
-    const tx = await dataTokenContract.transferAndCall(
-        sponsorshipId,
-        toBN(amount).toString(),
-        '0x',
-    )
+    await toastedOperation('Sponsorship funding', async () => {
+        const tx = await contract.transferAndCall(
+            sponsorshipId,
+            toBN(amount).toString(),
+            '0x',
+        )
 
-    await tx.wait()
+        await tx.wait()
+    })
 }

@@ -13,6 +13,7 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
 import { Layer } from '~/utils/Layer'
 import routes from '~/routes'
+import { useFundSponsorship } from '~/hooks/useFundSponsorship'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -28,12 +29,13 @@ import {
 } from './NetworkActionBar.styles'
 
 const joinSponsorshipModal = toaster(JoinSponsorshipModal, Layer.Modal)
-const fundSponsorshipModal = toaster(FundSponsorshipModal, Layer.Modal)
 
 export const SponsorshipActionBar: FunctionComponent<{
     sponsorship: SponsorshipElement
 }> = ({ sponsorship }) => {
     const { copy } = useCopy()
+
+    const fundSponsorship = useFundSponsorship(sponsorship.id, sponsorship.payoutPerDay)
 
     // TODO when Mariusz will merge his hook & getter for fetching Token information - use it here to display the proper token symbol
 
@@ -105,17 +107,7 @@ export const SponsorshipActionBar: FunctionComponent<{
                         </NetworkActionBarInfoButtons>
                     </div>
                     <NetworkActionBarCTAs>
-                        <Button
-                            onClick={async () => {
-                                try {
-                                    await fundSponsorshipModal.pop()
-                                } catch (e) {
-                                    // Ignore for now.
-                                }
-                            }}
-                        >
-                            Sponsor
-                        </Button>
+                        <Button onClick={fundSponsorship}>Sponsor</Button>
                         <Button
                             onClick={async () => {
                                 try {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import moment from 'moment'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
@@ -12,34 +12,40 @@ import FormModal, {
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
 import { toBN } from '~/utils/bn'
+import { unitPluralizer } from '~/utils/unitPluralizer'
 
-interface Props extends Omit<FormModalProps, 'canSubmit'> {
+interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onResolve?: (amount: string) => void
-    balance?: string
-    tokenSymbol?: string
-    delegatedTotal?: string
-    operatorId?: string
+    onSubmit: (amount: string) => Promise<void>
+    balance: string
+    tokenSymbol: string
+    decimals: number
     amount?: string
-    pricePerSecond?: string
+    payoutPerDay: string
 }
 
 const DayInSeconds = 60 * 60 * 24
 
 export default function FundSponsorshipModal({
     title = 'Fund Sponsorship',
-    balance: balanceProp = '0',
-    tokenSymbol = 'DATA',
+    balance: balanceProp,
+    tokenSymbol,
+    decimals: decimalsProp,
     onResolve,
+    onSubmit,
     amount: amountProp = '',
     submitLabel = 'Fund',
-    pricePerSecond: pricePerSecondProp = '0',
+    payoutPerDay = '0',
     ...props
 }: Props) {
     const [rawAmount, setRawAmount] = useState(amountProp)
+    const decimals = Math.pow(10, decimalsProp)
 
-    const pricePerSecond = toBN(pricePerSecondProp)
+    const pricePerSecond = toBN(payoutPerDay)
+        .multipliedBy(decimals)
+        .dividedBy(DayInSeconds)
 
-    const rate = pricePerSecond.dividedBy(1e18).multipliedBy(DayInSeconds)
+    const rate = pricePerSecond.multipliedBy(DayInSeconds).dividedBy(decimals)
 
     useEffect(() => {
         setRawAmount(amountProp)
@@ -47,18 +53,45 @@ export default function FundSponsorshipModal({
 
     const value = rawAmount || '0'
 
-    const finalValue = toBN(value).multipliedBy(1e18)
+    const finalValue = toBN(value).multipliedBy(decimals)
 
     const extensionInSeconds =
         pricePerSecond.isGreaterThan(0) && finalValue.isGreaterThanOrEqualTo(0)
             ? finalValue.dividedBy(pricePerSecond).toNumber()
             : 0
 
+    const extensionDuration = moment.duration(extensionInSeconds, 'seconds')
+    const extensionText = useMemo<string>(() => {
+        if (extensionDuration.asSeconds() === 0) {
+            return '0 days'
+        }
+
+        const days = extensionDuration.get('days')
+        const hours = extensionDuration.get('hours')
+        const minutes = extensionDuration.get('minutes')
+
+        if (!days && !hours) {
+            return `${minutes} ${unitPluralizer(minutes, 'minute')}`
+        }
+
+        if (!days) {
+            return (
+                `${hours} ${unitPluralizer(hours, 'hour')}` +
+                (minutes ? ` & ${minutes} ${unitPluralizer(minutes, 'minute')}` : '')
+            )
+        }
+
+        return `${days} ${unitPluralizer(days, 'day')} & ${hours} ${unitPluralizer(
+            hours,
+            'hour',
+        )}`
+    }, [extensionDuration])
+
     const endDate = new Date(Date.now() + extensionInSeconds * 1000)
 
-    const balance = toBN(balanceProp)
-
-    const insufficientFunds = finalValue.isGreaterThan(balance)
+    const insufficientFunds = finalValue.isGreaterThan(
+        toBN(balanceProp).multipliedBy(decimals),
+    )
 
     const canSubmit =
         finalValue.isFinite() && finalValue.isGreaterThan(0) && !insufficientFunds
@@ -82,7 +115,7 @@ export default function FundSponsorshipModal({
                     /**
                      * Replace the following with your favourite contract interaction! <3
                      */
-                    await new Promise((resolve) => void setTimeout(resolve, 2000))
+                    await onSubmit(finalValue.toString())
 
                     onResolve?.(finalValue.toString())
                 } catch (e) {
@@ -123,12 +156,12 @@ export default function FundSponsorshipModal({
                             )}
                         </Prop>
                         <div>
-                            {balance.dividedBy(1e18).toString()} {tokenSymbol}
+                            {balanceProp} {tokenSymbol}
                         </div>
                     </li>
                     <li>
                         <Prop>Sponsorship extended by</Prop>
-                        <div>{extensionInSeconds / DayInSeconds} days</div>
+                        <div>{extensionText}</div>
                     </li>
                     <li>
                         <Prop>New end date</Prop>
