@@ -11,34 +11,37 @@ import { errorToast } from '~/utils/toast'
 import { fundSponsorship } from '~/services/sponsorships'
 
 const fundSponsorshipModal = toaster(FundSponsorshipModal, Layer.Modal)
-export const useFundSponsorship = (
+export const useFundSponsorship = (): ((
     sponsorshipId: string,
     payoutPerDay: string,
-): (() => Promise<void>) => {
+) => Promise<void>) => {
     const wallet = useWalletAccount()
-    return useCallback(async () => {
-        if (!wallet) {
-            return
-        }
-        let tokenAndBalanceInfo: TokenAndBalanceForSponsorship
-        try {
-            tokenAndBalanceInfo = await getTokenAndBalanceForSponsorship(wallet)
-        } catch (e) {
-            errorToast({ title: 'Could not fetch the wallet balance' })
-            return
-        }
-        try {
-            await fundSponsorshipModal.pop({
-                decimals: tokenAndBalanceInfo.tokenDecimals,
-                tokenSymbol: tokenAndBalanceInfo.tokenSymbol,
-                balance: tokenAndBalanceInfo.balance,
-                payoutPerDay,
-                onSubmit: async (value) => {
-                    await fundSponsorship(sponsorshipId, value)
-                },
-            })
-        } catch (e) {
-            // modal closed - ignore
-        }
-    }, [wallet, payoutPerDay, sponsorshipId])
+    return useCallback(
+        async (sponsorshipId: string, payoutPerDay: string) => {
+            if (!wallet) {
+                return
+            }
+            let tokenAndBalanceInfo: TokenAndBalanceForSponsorship
+            try {
+                tokenAndBalanceInfo = await getTokenAndBalanceForSponsorship(wallet)
+            } catch (e) {
+                errorToast({ title: 'Could not fetch the wallet balance' })
+                return
+            }
+            try {
+                await fundSponsorshipModal.pop({
+                    decimals: tokenAndBalanceInfo.tokenDecimals,
+                    tokenSymbol: tokenAndBalanceInfo.tokenSymbol,
+                    balance: tokenAndBalanceInfo.balance,
+                    payoutPerDay,
+                    onSubmit: async (value) => {
+                        await fundSponsorship(sponsorshipId, value)
+                    },
+                })
+            } catch (e) {
+                // modal closed - ignore
+            }
+        },
+        [wallet],
+    )
 }

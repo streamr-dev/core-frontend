@@ -35,7 +35,7 @@ export const SponsorshipActionBar: FunctionComponent<{
 }> = ({ sponsorship }) => {
     const { copy } = useCopy()
 
-    const fundSponsorship = useFundSponsorship(sponsorship.id, sponsorship.payoutPerDay)
+    const fundSponsorship = useFundSponsorship()
 
     // TODO when Mariusz will merge his hook & getter for fetching Token information - use it here to display the proper token symbol
 
@@ -107,7 +107,13 @@ export const SponsorshipActionBar: FunctionComponent<{
                         </NetworkActionBarInfoButtons>
                     </div>
                     <NetworkActionBarCTAs>
-                        <Button onClick={fundSponsorship}>Sponsor</Button>
+                        <Button
+                            onClick={() =>
+                                fundSponsorship(sponsorship.id, sponsorship.payoutPerDay)
+                            }
+                        >
+                            Sponsor
+                        </Button>
                         <Button
                             onClick={async () => {
                                 try {
