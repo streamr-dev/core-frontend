@@ -18,19 +18,19 @@ import Button from '~/shared/components/Button'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import Footer from '~/shared/components/Layout/Footer'
-import CreateSponsorshipModal from '~/network/modals/CreateSponsorshipModal'
+import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
 import { LoadMoreButton } from '~/components/LoadMore'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { createSponsorship } from '~/services/sponsorships'
 import routes from '~/routes'
-import { NetworkActionBar } from '../components/ActionBars/NetworkActionBar'
+import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
 import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
 import { StreamInfoCell } from '../components/NetworkUtils'
-import { SponsorshipElement } from '../types/sponsorship'
+import { SponsorshipElement } from '~/types/sponsorship'
 import {
     useAllSponsorshipsQuery,
     useMySponsorshipsQuery,
-} from '../hooks/useSponsorshipsList'
+} from '~/hooks/useSponsorshipsList'
 import {
     getTokenAndBalanceForSponsorship,
     TokenAndBalanceForSponsorship,

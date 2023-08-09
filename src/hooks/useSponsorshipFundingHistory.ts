@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { getSponsoringEvents } from '~/network/getters/getSponsoringEvents'
+import { getSponsoringEvents } from '~/getters/getSponsoringEvents'
 import { errorToast } from '~/utils/toast'
 
 const FUNDING_HISTORY_PAGE_SIZE = 10

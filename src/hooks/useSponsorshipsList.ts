@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { UseInfiniteQueryResult } from '@tanstack/react-query/src/types'
-import { SponsorshipElement } from '~/network/types/sponsorship'
+import { SponsorshipElement } from '~/types/sponsorship'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { Sponsorship } from '~/generated/gql/network'
 import { toBN } from '~/utils/bn'

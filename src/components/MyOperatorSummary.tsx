@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback, useMemo, useState } from 'react'
+import React, { FunctionComponent, useCallback, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
 import { useWalletAccount } from '~/shared/stores/wallet'
@@ -6,13 +6,13 @@ import { NoData } from '~/shared/components/NoData'
 import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
 import { ChartPeriod, NetworkChart } from '~/shared/components/NetworkChart/NetworkChart'
 import useIsMounted from '~/shared/hooks/useIsMounted'
-import { DelegationChartData, DelegationStats } from '~/network/types/delegations'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
 import {
     formatLongDate,
     formatShortDate,
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
 import routes from '~/routes'
+import { OperatorChartData, OperatorStats } from '~/types/operator'
 import { NetworkSectionTitle } from './NetworkSectionTitle'
 import {
     growingValuesGenerator,
@@ -21,49 +21,43 @@ import {
     WalletNotConnectedOverlay,
 } from './NetworkUtils'
 
-const hardcodedDelegationStats: DelegationStats = {
-    currentValue: 12300431,
-    operators: 8,
-    apy: 24.3,
+const hardcodedOperatorStats: OperatorStats = {
+    delegators: 124,
+    sponsorships: 2,
+    totalStake: 24040218,
 }
 
 const maxDayStats = 10
 
-const hardcodedOperatorChartData: DelegationChartData = {
-    currentValue: growingValuesGenerator(
-        maxDayStats,
-        hardcodedDelegationStats.currentValue,
-    ),
-    cumulativeEarnings: growingValuesGenerator(maxDayStats, 1400000),
+const hardcodedOperatorChartData: OperatorChartData = {
+    totalStake: growingValuesGenerator(maxDayStats, hardcodedOperatorStats.totalStake),
+    cumulativeEarnings: growingValuesGenerator(maxDayStats, 2000000),
 }
-export const MyDelegationsSummary: FunctionComponent = () => {
+export const MyOperatorSummary: FunctionComponent = () => {
     const isMounted = useIsMounted()
     const walletConnected = !!useWalletAccount()
     const hasOperator = true
-    const myDelegationsStats: DelegationStats = hardcodedDelegationStats // todo fetch from state
-    const myDelegationsChartData: DelegationChartData = hardcodedOperatorChartData // todo fetch from state
+    const myOperatorStats: OperatorStats = hardcodedOperatorStats // todo fetch from state
+    const myOperatorChartData: OperatorChartData = hardcodedOperatorChartData // todo fetch from state
 
-    const statsObject = walletConnected ? myDelegationsStats : hardcodedDelegationStats
+    const statsObject = walletConnected ? myOperatorStats : hardcodedOperatorStats
     const mappedStats = [
         {
-            label: 'Current value',
-            value: truncateNumber(statsObject.currentValue, 'millions') + ' DATA',
-            hoverValue: statsObject.currentValue + ' DATA',
-            tooltipText:
-                'Lorem Ipsum dolor sit amet bla bla bla lorem lorem ipsum ipsum it will be a long text so that we can see if the tooltip works',
+            label: 'Total stake',
+            value: truncateNumber(statsObject.totalStake, 'millions') + ' DATA',
+            hoverValue: statsObject.totalStake + ' DATA',
+            tooltipText: 'Lorem ipsum dolor sit amet',
         },
-        { label: 'Operators', value: statsObject.operators.toString() },
+        { label: 'Delegators', value: statsObject.delegators.toString() },
         {
-            label: 'APY',
-            value: statsObject.apy.toString() + '%',
-            tooltipText: 'Lorem Ipsum APY',
+            label: 'Sponsorships',
+            value: statsObject.sponsorships.toString(),
+            tooltipText: 'This is info tooltip about sponsorships',
         },
     ]
-    const chartData = walletConnected
-        ? myDelegationsChartData
-        : hardcodedOperatorChartData
+    const chartData = walletConnected ? myOperatorChartData : hardcodedOperatorChartData
 
-    const [selectedDataSource, setSelectedDataSource] = useState<string>('currentValue')
+    const [selectedDataSource, setSelectedDataSource] = useState<string>('totalStake')
 
     const [selectedChartPeriod, setSelectedChartPeriod] = useState<ChartPeriod>(
         ChartPeriod.SevenDays,
@@ -92,7 +86,7 @@ export const MyDelegationsSummary: FunctionComponent = () => {
     return (
         <SummaryContainer>
             <div className="title">
-                <NetworkSectionTitle>My delegations summary</NetworkSectionTitle>
+                <NetworkSectionTitle>My operator summary</NetworkSectionTitle>
             </div>
             <WhiteBoxSeparator />
             {hasOperator || !walletConnected ? (
@@ -110,22 +104,22 @@ export const MyDelegationsSummary: FunctionComponent = () => {
                         <NetworkChartWrap>
                             <NetworkChart
                                 dataSources={[
-                                    { label: 'Current value', value: 'currentValue' },
+                                    { label: 'Total stake', value: 'totalStake' },
                                     {
                                         label: 'Cumulative earnings',
                                         value: 'cumulativeEarnings',
                                     },
                                 ]}
-                                graphData={(selectedDataSource === 'currentValue'
-                                    ? chartData.currentValue
+                                graphData={(selectedDataSource === 'totalStake'
+                                    ? chartData.totalStake
                                     : chartData.cumulativeEarnings
                                 ).map((element) => ({
                                     x: element.day,
                                     y: element.value,
                                 }))}
                                 tooltipValuePrefix={
-                                    selectedDataSource === 'currentValue'
-                                        ? 'Current value'
+                                    selectedDataSource === 'totalStake'
+                                        ? 'Total stake'
                                         : 'Cumulative earnings'
                                 }
                                 xAxisDisplayFormatter={formatShortDate}
@@ -144,17 +138,18 @@ export const MyDelegationsSummary: FunctionComponent = () => {
                         </NetworkChartWrap>
                     </div>
                     {isMounted() && !walletConnected && (
-                        <WalletNotConnectedOverlay summaryTitle="delegations summary" />
+                        <WalletNotConnectedOverlay summaryTitle="operator summary" />
                     )}
                 </>
             ) : (
                 <NoData
-                    firstLine="You don't have any delegations yet."
+                    firstLine="You don't have any operator yet."
                     secondLine={
                         <span>
-                            Please find
-                            <Link to={routes.network.operators()}>Operators</Link> to
-                            start delegation
+                            <Link to={routes.network.createOperator()}>
+                                Create a operator
+                            </Link>{' '}
+                            now.
                         </span>
                     }
                 />

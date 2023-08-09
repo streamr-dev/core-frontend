@@ -6,7 +6,7 @@ import {
     StreamInfoCell,
     SummaryContainer,
     WalletNotConnectedOverlay,
-} from '~/network/components/NetworkUtils'
+} from '~/components/NetworkUtils'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
 import useIsMounted from '~/shared/hooks/useIsMounted'
@@ -14,7 +14,7 @@ import { truncateStreamName } from '~/shared/utils/text'
 import { NoData } from '~/shared/components/NoData'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
 import routes from '~/routes'
-import { SponsorshipElement } from '../types/sponsorship'
+import { SponsorshipElement } from '~/types/sponsorship'
 import { NetworkSectionTitle } from './NetworkSectionTitle'
 
 const hardcodedData: SponsorshipElement[] = [

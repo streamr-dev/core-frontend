@@ -8,7 +8,7 @@ import ConnectModal from '~/modals/ConnectModal'
 import { Layer } from '~/utils/Layer'
 import Button from '~/shared/components/Button'
 import { COLORS, MD, MEDIUM } from '~/shared/utils/styled'
-import { SponsorshipElement } from '~/network/types/sponsorship'
+import { SponsorshipElement } from '~/types/sponsorship'
 
 export const SummaryContainer = styled(WhiteBox)`
     margin-bottom: 24px;

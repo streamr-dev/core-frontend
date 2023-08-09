@@ -1,6 +1,6 @@
-import React, { FunctionComponent, useMemo } from 'react'
+import React, { FunctionComponent } from 'react'
 import { toaster } from 'toasterhea'
-import { SponsorshipElement } from '~/network/types/sponsorship'
+import { SponsorshipElement } from '~/types/sponsorship'
 import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
@@ -12,7 +12,6 @@ import useCopy from '~/shared/hooks/useCopy'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
 import { Layer } from '~/utils/Layer'
-import { toBN } from '~/utils/bn'
 import routes from '~/routes'
 import {
     NetworkActionBarBackButtonAndTitle,
