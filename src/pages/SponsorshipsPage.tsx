@@ -35,6 +35,7 @@ import {
     getTokenAndBalanceForSponsorship,
     TokenAndBalanceForSponsorship,
 } from '../getters/getTokenAndBalanceForSponsorship'
+import { useFundSponsorship } from '~/hooks/useFundSponsorship'
 
 const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
 
@@ -53,6 +54,8 @@ export const SponsorshipsPage = () => {
     const [searchQuery, setSearchQuery] = useState<string>('')
     const wallet = useWalletAccount()
     const walletConnected = !!wallet
+
+    const fundSponsorship = useFundSponsorship()
 
     const allSponsorshipsQuery = useAllSponsorshipsQuery(PAGE_SIZE, searchQuery)
 
@@ -216,9 +219,16 @@ export const SponsorshipsPage = () => {
                         ]}
                         actions={[
                             {
-                                displayName: 'Edit',
+                                displayName: 'Sponsor',
+                                disabled: !walletConnected,
                                 callback: (element) =>
-                                    console.warn('editing! ' + element.streamId),
+                                    fundSponsorship(element.id, element.payoutPerDay),
+                            },
+                            {
+                                displayName: 'Join As Operator',
+                                disabled: !walletConnected,
+                                callback: (element) =>
+                                    console.log('join as operator', element),
                             },
                         ]}
                         noDataFirstLine={
