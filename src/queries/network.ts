@@ -32,8 +32,30 @@ gql`
         owner
     }
 
-    query getAllOperators($first: Int, $skip: Int) {
+    query getAllOperators($first: Int, $skip: Int, $searchQuery: ID) {
         operators(first: $first, skip: $skip) {
+            ...OperatorFields
+        }
+    }
+
+    query searchOperators($first: Int, $skip: Int, $searchQuery: ID) {
+        operators(first: $first, skip: $skip, where: { id: $searchQuery }) {
+            ...OperatorFields
+        }
+    }
+
+    query getOperatorById($operatorId: ID!) {
+        operator(id: $operatorId) {
+            ...OperatorFields
+        }
+    }
+
+    query getOperatorsByDelegation($first: Int, $skip: Int, $operatorId: String!) {
+        operators(
+            first: $first
+            skip: $skip
+            where: { delegators_: { operator: $operatorId } }
+        ) {
             ...OperatorFields
         }
     }
