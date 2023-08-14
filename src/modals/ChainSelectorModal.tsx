@@ -131,10 +131,6 @@ export async function getPurchasePreconditions({
 
     const tokenInfo = await getTokenInfo(tokenAddress, chainId)
 
-    if (!tokenInfo) {
-        throw new Error('Failed to load token information')
-    }
-
     const account = await toaster(ConnectModal, Layer.Modal).pop()
 
     if (!account) {

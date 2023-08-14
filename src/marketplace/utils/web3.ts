@@ -39,7 +39,7 @@ export const getCustomTokenBalance = async (
 ) => {
     const contract = getERC20TokenContract({
         tokenAddress: contractAddress,
-        signer: await getPublicWeb3Provider(chainId),
+        signer: getPublicWeb3Provider(chainId),
     })
 
     const balance = await contract.balanceOf(userAddress)
