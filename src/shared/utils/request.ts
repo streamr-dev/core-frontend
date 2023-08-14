@@ -1,8 +1,10 @@
 import axios from 'axios'
 import merge from 'lodash/merge'
-import { ApiResult, RequestMethod } from '~/shared/types/common-types'
+import { RequestMethod } from '~/shared/types/common-types'
 import RequestError from '~/shared/errors/RequestError'
-export const getData = ({ data }: { data: any }): any => data
+
+const getData = ({ data }: { data: any }): any => data
+
 export type RequestParams = {
     url: string
     method?: RequestMethod
@@ -14,7 +16,7 @@ export default function request({
     options,
     method = 'get',
     data = null,
-}: RequestParams): ApiResult<any> {
+}: RequestParams): Promise<any> {
     const defaultOptions: { headers: { [key: string]: string } } = {
         headers: {},
     }

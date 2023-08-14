@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import PaymentRate from '~/marketplace/components/PaymentRate'
+import FormattedPaymentRate from '~/components/FormattedPaymentRate'
 import { formatChainName } from '~/shared/utils/chains'
 import Button from '~/shared/components/Button'
 import ProjectPng from '~/shared/assets/images/project.png'
@@ -82,12 +82,11 @@ export default function GetAccess({
                     for
                     <br />
                     <strong>
-                        <PaymentRate
+                        <FormattedPaymentRate
                             amount={toBN(pricePerSecond)}
                             chainId={chainId}
                             pricingTokenAddress={pricingTokenAddress}
                             timeUnit={timeUnits.hour}
-                            tag="span"
                         />
                     </strong>{' '}
                     on <strong>{formatChainName(getConfigForChain(chainId).name)}</strong>
