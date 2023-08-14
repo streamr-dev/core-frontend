@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { REGULAR, TABLET } from '~/shared/utils/styled'
 import Button from '~/shared/components/Button'
 import { ProjectType, SalePoint } from '~/shared/types'
-import PaymentRate from '~/marketplace/components/PaymentRate'
+import FormattedPaymentRate from '~/components/FormattedPaymentRate'
 import { formatChainName } from '~/shared/utils/chains'
 import { WhiteBox } from '~/shared/components/WhiteBox'
 import { getConfigForChain } from '~/shared/web3/config'
@@ -85,12 +85,11 @@ export default function AccessManifest({ projectId, projectType, salePoints }: P
                         {prefix} can be accessed for{' '}
                         <strong>
                             {' '}
-                            <PaymentRate
+                            <FormattedPaymentRate
                                 amount={toBN(pricePerSecond)}
                                 chainId={chainId}
                                 pricingTokenAddress={pricingTokenAddress}
                                 timeUnit={timeUnits.hour}
-                                tag="span"
                             />
                         </strong>{' '}
                         on{' '}

@@ -7,7 +7,8 @@ import { MEDIUM } from '~/shared/utils/styled'
 import { getConfigForChain } from '~/shared/web3/config'
 import { formatChainName } from '~/shared/utils/chains'
 import useIsMounted from '~/shared/hooks/useIsMounted'
-import { getCustomTokenBalance, getTokenInformation } from '~/marketplace/utils/web3'
+import { getCustomTokenBalance } from '~/marketplace/utils/web3'
+import { getTokenInfo } from '~/hooks/useTokenInfo'
 import { getUsdRate } from '~/shared/utils/coingecko'
 import { Layer } from '~/utils/Layer'
 import { PaymentDetail } from '~/shared/types'
@@ -128,11 +129,7 @@ export async function getPurchasePreconditions({
 
     const { pricingTokenAddress: tokenAddress, pricePerSecond = '0' } = paymentDetail
 
-    const tokenInfo = await getTokenInformation(tokenAddress, chainId)
-
-    if (!tokenInfo) {
-        throw new Error('Failed to load token information')
-    }
+    const tokenInfo = await getTokenInfo(tokenAddress, chainId)
 
     const account = await toaster(ConnectModal, Layer.Modal).pop()
 
