@@ -76,9 +76,22 @@ export const NetworkActionBarInfoButton = styled.div`
     align-items: center;
     gap: 6px;
 
+    &.pointer {
+        cursor: pointer;
+    }
+
+    &.bold {
+        font-weight: 500;
+    }
+
     &.active {
         color: ${COLORS.active};
         background-color: ${COLORS.activeBackground};
+    }
+
+    &.inactive {
+        color: ${COLORS.primary};
+        background-color: ${COLORS.radioBorder};
     }
 
     a {
