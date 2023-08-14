@@ -12,10 +12,19 @@ import {
 } from 'recharts'
 import Spinner from '~/shared/components/Spinner'
 import { COLORS, MEDIUM, REGULAR } from '~/shared/utils/styled'
+import { NoData } from '~/shared/components/NoData'
 
 const Container = styled.div`
     position: relative;
 `
+
+const NoDataContainer = styled.div`
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`
+
 const SpinnerContainer = styled.div`
     height: 400px;
     display: flex;
@@ -35,6 +44,7 @@ export type TimeSeriesGraphProps = {
     tooltipLabelFormatter?: (value: number) => string
     tooltipValueFormatter?: (value: number) => string
     tooltipValuePrefix: string
+    noDataText?: string
 }
 
 export const TimeSeriesGraph = ({
@@ -45,6 +55,7 @@ export const TimeSeriesGraph = ({
     tooltipLabelFormatter,
     tooltipValueFormatter,
     tooltipValuePrefix,
+    noDataText,
     ...props
 }: TimeSeriesGraphProps) => {
     const chartData = useMemo(() => graphData.sort((a, b) => a.x - b.x), [graphData])
@@ -66,7 +77,12 @@ export const TimeSeriesGraph = ({
                     <Spinner size="large" color="blue" />
                 </SpinnerContainer>
             )}
-            {!isLoading && (
+            {!isLoading && (!chartData || !chartData.length) && (
+                <NoDataContainer>
+                    <NoData width={250} firstLine={noDataText || 'Not enough data'} />
+                </NoDataContainer>
+            )}
+            {!isLoading && chartData && chartData.length > 0 && (
                 <ResponsiveContainer width="100%" height={400}>
                     <LineChart data={chartData}>
                         <Line

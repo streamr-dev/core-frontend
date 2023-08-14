@@ -7,8 +7,9 @@ import EmptyState from '~/shared/components/EmptyState'
 type Props = {
     firstLine: ReactNode
     secondLine?: ReactNode
+    width?: number //px
 }
-export const NoData: FunctionComponent<Props> = ({ firstLine, secondLine }) => {
+export const NoData: FunctionComponent<Props> = ({ firstLine, secondLine, width }) => {
     return (
         <EmptyStateWrap
             image={
@@ -16,6 +17,11 @@ export const NoData: FunctionComponent<Props> = ({ firstLine, secondLine }) => {
                     src={emptyStateIcon}
                     srcSet={`${emptyStateIcon2x} 2x`}
                     alt="Not found"
+                    style={
+                        width
+                            ? { width: `${width}px`, height: 'auto', maxWidth: '100%' }
+                            : {}
+                    }
                 />
             }
         >
