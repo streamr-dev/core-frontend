@@ -126,7 +126,7 @@ export async function getWalletAccount({
 export function getPublicWeb3Provider(chainId?: number) {
     let url: string = getCoreConfig().mainnetInfuraUrl
 
-    if (chainId) {
+    if (typeof chainId !== 'undefined') {
         const config = getConfigForChain(chainId)
 
         const httpEntry = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))

@@ -13,10 +13,11 @@ export const DataUnionTokenSelector: FunctionComponent<{ editMode: boolean }> = 
     const { updateSalePoints } = useEditableProjectActions()
 
     const chain = useMemo<Chain | undefined>(() => {
-        if (!project.dataUnionChainId) {
-            return undefined
+        const { dataUnionChainId } = project
+
+        if (typeof dataUnionChainId !== 'undefined') {
+            return getConfigForChain(dataUnionChainId)
         }
-        return getConfigForChain(project.dataUnionChainId)
     }, [project.dataUnionChainId])
 
     const handleChange = useCallback(
