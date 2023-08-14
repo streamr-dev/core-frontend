@@ -2,7 +2,7 @@ import React from 'react'
 import { Meta } from '@storybook/react'
 import Text from '~/shared/components/Ui/Text'
 import PopoverItem from '~/shared/components/Popover/PopoverItem'
-import WithInputActions from './index'
+import WithInputActions from './WithInputActions'
 
 export const Basic = () => (
     <WithInputActions actions={[<PopoverItem key="1">Some Action</PopoverItem>]}>
