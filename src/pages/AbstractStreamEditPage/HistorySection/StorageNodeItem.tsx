@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
-import Checkbox from '~/shared/components/Checkbox'
+import Checkbox, { Tick } from '~/shared/components/Checkbox'
 import Spinner from '~/shared/components/Spinner'
 import { useCurrentDraft, useToggleCurrentStorageNode } from '~/shared/stores/streamEditor'
 
@@ -33,8 +33,8 @@ function UnstyledStorageNodeItem({
         >
             <div>{children}</div>
             {!disabled && (
-                <Checkbox.Tick
-                    checked={active}
+                <Tick
+                    $checked={active}
                     data-test-hook={active ? 'Checkbox on' : 'Checkbox off'}
                 />
             )}
@@ -81,7 +81,7 @@ const StorageNodeItem = styled(UnstyledStorageNodeItem)`
         white-space: nowrap;
     }
 
-    ${Checkbox.Tick} {
+    ${Tick} {
         flex-shrink: 0;
         margin-left: 12px;
     }
