@@ -185,11 +185,13 @@ export const SponsorshipsPage = () => {
                                 key: 'streamInfo',
                             },
                             {
-                                displayName: 'DATA/day',
-                                valueMapper: (element) => element.DATAPerDay,
+                                displayName: balanceData
+                                    ? `${balanceData.tokenSymbol}/day`
+                                    : 'DATA/day',
+                                valueMapper: (element) => element.payoutPerDay,
                                 align: 'start',
                                 isSticky: false,
-                                key: 'dataPerDay',
+                                key: 'payoutPerDay',
                             },
                             {
                                 displayName: 'Operators',
