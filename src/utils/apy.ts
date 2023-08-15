@@ -12,7 +12,7 @@ export function calculateOperatorSpotAPY(operator: OperatorElement): BN {
     operator.stakes.forEach((s) => {
         if (Number.parseInt(s.date) * 1000 > Date.now()) {
             operatorIncomePerYear.plus(
-                thisOperatorStake.multipliedBy(s.sponsorship.spotApy),
+                thisOperatorStake.multipliedBy(s.sponsorship?.spotAPY),
             )
         }
     })

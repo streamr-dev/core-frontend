@@ -22,6 +22,7 @@ import { truncateNumber } from '~/shared/utils/truncateNumber'
 import { errorToast } from '~/utils/toast'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { useSponsorshipFundingHistory } from '~/hooks/useSponsorshipFundingHistory'
+import { OperatorStake } from '~/types/operator'
 import { useOperator } from '~/hooks/useOperator'
 import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
 import { NetworkChartWrap } from '../components/NetworkUtils'
@@ -146,79 +147,46 @@ export const SingleOperatorPage = () => {
                                 />
                             </NetworkChartWrap>
                         </OverviewCharts>
-                        <OperatorsContainer>
+                        <OperatorsContainer>TODO: My delegation</OperatorsContainer>
+                        <SponsorshipsTable>
                             <ScrollTable
                                 elements={operator.stakes}
                                 columns={[
                                     {
-                                        displayName: 'Operator ID',
-                                        key: 'operatorId',
-                                        isSticky: true,
-                                        valueMapper: (stake) => (
-                                            <OperatorCell>
-                                                <HubAvatar id={stake.operatorId} />{' '}
-                                                {truncate(stake.operatorId)}
-                                            </OperatorCell>
-                                        ),
+                                        displayName: 'Stream ID',
+                                        valueMapper: (element) =>
+                                            element.sponsorship?.stream?.id,
                                         align: 'start',
+                                        isSticky: true,
+                                        key: 'streamId',
                                     },
                                     {
                                         displayName: 'Staked',
+                                        valueMapper: (element) =>
+                                            element.amount.toString(),
+                                        align: 'start',
+                                        isSticky: false,
                                         key: 'staked',
-                                        isSticky: true,
-                                        valueMapper: (stake) =>
-                                            truncateNumber(
-                                                Number(stake.amount),
-                                                'thousands',
-                                            ).toString(),
-                                        align: 'end',
+                                    },
+                                    {
+                                        displayName: 'APY',
+                                        valueMapper: (element) =>
+                                            element.sponsorship?.spotAPY,
+                                        align: 'start',
+                                        isSticky: false,
+                                        key: 'apy',
+                                    },
+                                    {
+                                        displayName: 'Funded until',
+                                        valueMapper: (element) => element.date,
+                                        align: 'start',
+                                        isSticky: false,
+                                        key: 'fundedUntil',
                                     },
                                 ]}
-                                title="Operators"
+                                title="Sponsorships"
                             />
-                        </OperatorsContainer>
-                        <FundingHistory
-                            hasMoreResults={fundingEventsQuery.hasNextPage}
-                            onLoadMore={() => fundingEventsQuery.fetchNextPage()}
-                            elements={
-                                fundingEventsQuery.data?.pages
-                                    .map((page) => page.events)
-                                    .flat() || []
-                            }
-                            isLoading={
-                                fundingEventsQuery.isLoading ||
-                                fundingEventsQuery.isFetching
-                            }
-                            columns={[
-                                {
-                                    displayName: 'Date',
-                                    valueMapper: (element: any) => element.date,
-                                    align: 'start',
-                                    isSticky: true,
-                                    key: 'date',
-                                },
-                                {
-                                    displayName: 'Amount',
-                                    valueMapper: (element: any) =>
-                                        truncateNumber(
-                                            Number(element.amount),
-                                            'thousands',
-                                        ),
-                                    align: 'start',
-                                    isSticky: false,
-                                    key: 'amount',
-                                },
-                                {
-                                    displayName: 'Sponsor',
-                                    valueMapper: (element: any) =>
-                                        truncate(element.sponsor),
-                                    align: 'start',
-                                    isSticky: false,
-                                    key: 'sponsor',
-                                },
-                            ]}
-                            title={'Funding history'}
-                        />
+                        </SponsorshipsTable>
                     </SponsorshipGrid>
                 )}
             </PageContainer>
@@ -290,7 +258,7 @@ const OperatorCell = styled.div`
     gap: 5px;
 `
 
-const FundingHistory = styled(ScrollTable)`
+const SponsorshipsTable = styled.div`
     grid-column-start: 1;
     grid-column-end: 2;
     grid-row-start: 3;

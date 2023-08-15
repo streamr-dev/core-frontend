@@ -94,9 +94,7 @@ export const mapOperatorToElement = (operator: Operator): OperatorElement => {
             allocated: toBN(s.allocatedWei),
             amount: toBN(s.amount),
             date: s.date,
-            sponsorship: {
-                spotApy: s.sponsorship?.spotAPY,
-            },
+            sponsorship: s.sponsorship,
         })),
         delegatorCount: operator.delegatorCount,
         delegators: operator.delegators.map((d) => ({

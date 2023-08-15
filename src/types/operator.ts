@@ -1,3 +1,4 @@
+import { Sponsorship } from '~/generated/gql/network'
 import { BN } from '~/utils/bn'
 
 export type OperatorChartData = {
@@ -32,14 +33,10 @@ export type OperatorStake = {
     date: string
     amount: BN
     allocated: BN
-    sponsorship: OperatorSponsorship
+    sponsorship?: Sponsorship | null
 }
 
 export type OperatorDelegator = {
     operatorId?: string
     amount: BN
-}
-
-export type OperatorSponsorship = {
-    spotApy: number
 }
