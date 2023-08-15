@@ -10,11 +10,8 @@ import capitalize from 'lodash/capitalize'
 import { useDebouncedCallback } from 'use-debounce'
 import { Chain } from '@streamr/config'
 import SvgIcon from '~/shared/components/SvgIcon'
-import {
-    getDataAddress,
-    getTokenInformation,
-    TokenInformation,
-} from '~/marketplace/utils/web3'
+import { getDataAddress } from '~/marketplace/utils/web3'
+import { TokenInfo, getTokenInfo } from '~/hooks/useTokenInfo'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { COLORS, MAX_CONTENT_WIDTH, MEDIUM, REGULAR } from '~/shared/utils/styled'
 import { Radio } from '~/shared/components/Radio'
@@ -205,10 +202,14 @@ const TokenSelector: FunctionComponent<Props> = ({
                     setCustomTokenAddress(pricingTokenAddress)
                 }
 
-                let info: TokenInformation | undefined
+                let info: TokenInfo | undefined
+
                 try {
-                    info = await getTokenInformation(pricingTokenAddress, chainId)
-                } catch (e) {}
+                    info = await getTokenInfo(pricingTokenAddress, chainId)
+                } catch (e) {
+                    // Ignore the error as we handle invalid info few lines down.
+                }
+
                 if (!isMounted()) {
                     return
                 }

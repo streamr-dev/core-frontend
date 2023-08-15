@@ -13,6 +13,7 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
 import { Layer } from '~/utils/Layer'
 import routes from '~/routes'
+import { SimpleDropdown } from '~/components/SimpleDropdown'
 import { useFundSponsorship } from '~/hooks/useFundSponsorship'
 import {
     NetworkActionBarBackButtonAndTitle,
@@ -27,6 +28,7 @@ import {
     SingleElementPageActionBarContainer,
     SingleElementPageActionBarTopPart,
 } from './NetworkActionBar.styles'
+import styled from 'styled-components'
 
 const joinSponsorshipModal = toaster(JoinSponsorshipModal, Layer.Modal)
 
@@ -56,14 +58,38 @@ export const SponsorshipActionBar: FunctionComponent<{
                         </NetworkActionBarBackButtonAndTitle>
                         <NetworkActionBarInfoButtons>
                             <NetworkActionBarInfoButton
-                                className={sponsorship.active ? 'active ' : 'inactive'}
+                                className={
+                                    (sponsorship.active ? 'active ' : 'inactive') +
+                                    ' bold'
+                                }
                             >
-                                Active
+                                {sponsorship.active ? 'Active' : 'Inactive'}
                             </NetworkActionBarInfoButton>
-                            <NetworkActionBarInfoButton>
-                                <SvgIcon name="page" />
-                                About Sponsorships
-                            </NetworkActionBarInfoButton>
+
+                            <SimpleDropdown
+                                toggleElement={
+                                    <NetworkActionBarInfoButton className="pointer bold">
+                                        <SvgIcon name="page" />
+                                        About Sponsorships
+                                    </NetworkActionBarInfoButton>
+                                }
+                                dropdownContent={
+                                    <AboutSponsorshipsContent>
+                                        Sponsorships pay out tokens to staked operators
+                                        for doing work in the network, i.e. relaying data
+                                        in the associated stream. Sponsorships can be
+                                        funded by anyone. Learn more{' '}
+                                        <a
+                                            href="https://docs.streamr.network/streamr-network/network-incentives"
+                                            target="_blank"
+                                            rel="noreferrer noopener"
+                                        >
+                                            here
+                                        </a>
+                                        .
+                                    </AboutSponsorshipsContent>
+                                }
+                            />
                             <NetworkActionBarInfoButton>
                                 <span>
                                     Funded until:{' '}
@@ -170,38 +196,7 @@ export const SponsorshipActionBar: FunctionComponent<{
     )
 }
 
-const SponsorshipStatBox: FunctionComponent<{ sponsorship: SponsorshipElement }> = ({
-    sponsorship,
-}) => {
-    return (
-        <StatsBox
-            stats={[
-                {
-                    label: 'Payout',
-                    value: 'NO DATA',
-                },
-                {
-                    label: 'Operators',
-                    value: String(sponsorship.operators),
-                },
-                {
-                    label: 'Total staked',
-                    value: truncateNumber(Number(sponsorship.totalStake), 'thousands'),
-                },
-                {
-                    label: 'APY',
-                    value: 'NO DATA',
-                },
-                {
-                    label: 'Cumulative sponsored',
-                    value: 'NO DATA',
-                },
-                {
-                    label: 'Minimum stake',
-                    value: 'NO DATA',
-                },
-            ]}
-            columns={3}
-        />
-    )
-}
+const AboutSponsorshipsContent = styled.div`
+    margin: 0;
+    min-width: 250px;
+`

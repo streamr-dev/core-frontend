@@ -3,7 +3,7 @@ import { ChainName, Project, SalePoint } from '~/marketplace/types/project-types
 import { ProjectType } from '~/shared/types'
 import { getConfigForChain } from '~/shared/web3/config'
 import { getMostRelevantTimeUnit } from '~/marketplace/utils/price'
-import { getTokenInformation } from '~/marketplace/utils/web3'
+import { getTokenInfo } from '~/hooks/useTokenInfo'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { TimeUnit, timeUnitSecondsMultiplierMap } from '~/shared/utils/timeUnit'
 import getCoreConfig from '~/getters/getCoreConfig'
@@ -74,10 +74,17 @@ export const mapSalePoints = async (
     await Promise.all(
         paymentDetails.map(async (paymentDetail) => {
             const chainConfig = getConfigForChain(Number(paymentDetail.domainId))
-            const tokenInfo = await getTokenInformation(
+            const tokenInfo = await getTokenInfo(
                 paymentDetail.pricingTokenAddress,
                 chainConfig.id,
             )
+
+            if (!tokenInfo) {
+                throw new Error(
+                    `"${paymentDetail.pricingTokenAddress}" is not an ERC-20 token`,
+                )
+            }
+
             const pricePerSecondFromDecimals = fromDecimals(
                 paymentDetail.pricePerSecond,
                 String(tokenInfo.decimals),

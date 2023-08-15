@@ -6,7 +6,7 @@ import uniqueId from 'lodash/uniqueId'
 import { getGraphProjectWithParsedMetadata, getProjectImageUrl } from '~/getters'
 import { TimeUnit, timeUnitSecondsMultiplierMap } from '~/shared/utils/timeUnit'
 import { getConfigForChain } from '~/shared/web3/config'
-import { getTokenInformation } from '~/marketplace/utils/web3'
+import { getTokenInfo } from '~/hooks/useTokenInfo'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { getMostRelevantTimeUnit } from '~/marketplace/utils/price'
 import { isProjectOwnedBy } from '~/utils'
@@ -96,8 +96,7 @@ async function getSalePointsFromPaymentDetails<
 
             const { id: chainId, name: chainName } = getConfigForChain(Number(domainId))
 
-            const { decimals } =
-                (await getTokenInformation(pricingTokenAddress, chainId)) || {}
+            const { decimals } = (await getTokenInfo(pricingTokenAddress, chainId)) || {}
 
             if (!decimals) {
                 throw new Error('Invalid decimals')

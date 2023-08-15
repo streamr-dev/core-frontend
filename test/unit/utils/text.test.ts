@@ -1,4 +1,4 @@
-import { numberToText, truncate, truncateStreamName } from '~/shared/utils/text'
+import { truncate, truncateStreamName } from '~/shared/utils/text'
 describe('text utils', () => {
     describe('truncate', () => {
         it('does not truncate non-strings', () => {
@@ -58,35 +58,6 @@ describe('text utils', () => {
                     '0x8b549d1526d0f6168eed061041d6cb5243c2c283b6d35cf41fe9c95b1e606ff1',
                 ),
             ).toBe('0x8b5...06ff1')
-        })
-    })
-    describe('numberToText', () => {
-        it('returns negative number untranslated', () => {
-            expect(numberToText(-12)).toBe('-12')
-        })
-        it('translates round numbers', () => {
-            expect(numberToText(0)).toBe('zero')
-            expect(numberToText(1)).toBe('one')
-            expect(numberToText(2)).toBe('two')
-            expect(numberToText(3)).toBe('three')
-            expect(numberToText(4)).toBe('four')
-            expect(numberToText(5)).toBe('five')
-            expect(numberToText(6)).toBe('six')
-            expect(numberToText(7)).toBe('seven')
-            expect(numberToText(8)).toBe('eight')
-            expect(numberToText(9)).toBe('nine')
-            expect(numberToText(10)).toBe('ten')
-            expect(numberToText(100)).toBe('a hundred')
-            expect(numberToText(1000)).toBe('a thousand')
-            expect(numberToText(10000)).toBe('ten thousand')
-            expect(numberToText(100000)).toBe('a hundred thousand')
-            expect(numberToText(1000000)).toBe('a million')
-        })
-        it('doesnt translate specific numbers', () => {
-            expect(numberToText(12)).toBe('12')
-            expect(numberToText(111)).toBe('111')
-            expect(numberToText(1012)).toBe('1012')
-            expect(numberToText(65231)).toBe('65231')
         })
     })
 

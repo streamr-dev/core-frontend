@@ -4,7 +4,7 @@ import { getSponsorshipById } from '~/getters'
 import { getConfigFromChain } from '~/getters/getConfigFromChain'
 import { errorToast } from '~/utils/toast'
 import { toBN } from '~/utils/bn'
-import { getSponsorshipTokenInfo } from '../getters/getSponsorshipTokenInfo'
+import getSponsorshipTokenInfo from '../getters/getSponsorshipTokenInfo'
 import { mapSponsorshipToElement } from './useSponsorshipsList'
 
 export function useSponsorship(sponsorshipId: string) {
