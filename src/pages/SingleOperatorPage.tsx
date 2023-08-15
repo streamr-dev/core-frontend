@@ -5,7 +5,6 @@ import { useQuery } from '@tanstack/react-query'
 import styles from '~/marketplace/containers/Projects/projects.pcss'
 import { NetworkHelmet } from '~/shared/components/Helmet'
 import Layout, { PageContainer } from '~/shared/components/Layout'
-import { useSponsorship } from '~/hooks/useSponsorship'
 import { NoData } from '~/shared/components/NoData'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { COLORS, LAPTOP, TABLET } from '~/shared/utils/styled'
@@ -22,15 +21,16 @@ import {
 import { truncateNumber } from '~/shared/utils/truncateNumber'
 import { errorToast } from '~/utils/toast'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
-import { SponsorshipActionBar } from '~/components/ActionBars/SponsorshipActionBar'
 import { useSponsorshipFundingHistory } from '~/hooks/useSponsorshipFundingHistory'
+import { useOperator } from '~/hooks/useOperator'
+import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
 import { NetworkChartWrap } from '../components/NetworkUtils'
 import { getSponsorshipStats } from '../getters/getSponsorshipStats'
 
 export const SingleOperatorPage = () => {
-    const sponsorshipId = useParams().id
-    const sponsorshipQuery = useSponsorship(sponsorshipId || '')
-    const sponsorship = sponsorshipQuery.data
+    const operatorId = useParams().id
+    const operatorQuery = useOperator(operatorId || '')
+    const operator = operatorQuery.data
 
     const [selectedDataSource, setSelectedDataSource] = useState<string>('amountStaked')
     const [selectedPeriod, setSelectedPeriod] = useState<string>(ChartPeriod.SevenDays)
@@ -40,7 +40,7 @@ export const SingleOperatorPage = () => {
         queryFn: async () => {
             try {
                 return await getSponsorshipStats(
-                    sponsorshipId as string,
+                    operatorId as string,
                     selectedPeriod as ChartPeriod,
                     selectedDataSource,
                     false, // ignore today
@@ -97,7 +97,7 @@ export const SingleOperatorPage = () => {
         [selectedDataSource],
     )
 
-    const fundingEventsQuery = useSponsorshipFundingHistory(sponsorshipId)
+    const fundingEventsQuery = useSponsorshipFundingHistory(operatorId)
 
     return (
         <Layout
@@ -106,16 +106,16 @@ export const SingleOperatorPage = () => {
             innerClassName={styles.productsInner}
             footer={false}
         >
-            <NetworkHelmet title="Sponsorship" />
+            <NetworkHelmet title="Operator" />
             <LoadingIndicator
-                loading={sponsorshipQuery.isLoading || sponsorshipQuery.isFetching}
+                loading={operatorQuery.isLoading || operatorQuery.isFetching}
             />
-            {!!sponsorship && <SponsorshipActionBar sponsorship={sponsorship} />}
+            {!!operator && <OperatorActionBar operator={operator} />}
             <PageContainer>
-                {sponsorship == null ? (
+                {operator == null ? (
                     <>
-                        {!(sponsorshipQuery.isLoading || sponsorshipQuery.isFetching) && (
-                            <NoData firstLine={'Sponsorship not found.'} />
+                        {!(operatorQuery.isLoading || operatorQuery.isFetching) && (
+                            <NoData firstLine={'Operator not found.'} />
                         )}
                     </>
                 ) : (
@@ -157,7 +157,7 @@ export const SingleOperatorPage = () => {
                         </OverviewCharts>
                         <OperatorsContainer>
                             <ScrollTable
-                                elements={sponsorship.stakes}
+                                elements={operator.stakes}
                                 columns={[
                                     {
                                         displayName: 'Operator ID',
