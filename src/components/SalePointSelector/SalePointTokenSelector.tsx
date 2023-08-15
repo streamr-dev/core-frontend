@@ -6,13 +6,12 @@ import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import Text from '~/shared/components/Ui/Text'
 import Button from '~/shared/components/Button'
 import SelectField2 from '~/marketplace/components/SelectField2'
-import { getConfigForChain } from '~/shared/web3/config'
 import { isEthereumAddress } from '~/marketplace/utils/validate'
 import { SalePoint } from '~/shared/types'
 import useTokenInfo, { getCachedTokenInfo, getTokenInfo } from '~/hooks/useTokenInfo'
-import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
 import { pricePerSecondFromTimeUnit } from '~/marketplace/utils/price'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
+import { errorToast } from '~/utils/toast'
 
 const TimeUnitOptions = Object.values(timeUnits).map((unit: TimeUnit) => ({
     label: `Per ${unit}`,
@@ -33,7 +32,7 @@ export default function SalePointTokenSelector({
     salePoint: SalePoint
     onSalePointChange?: (value: SalePoint) => void
 }) {
-    const { pricingTokenAddress: tokenAddress, chainId, pricePerSecond } = salePoint
+    const { pricingTokenAddress: tokenAddress, chainId } = salePoint
 
     const dataTokenAddress = getDataAddress(chainId).toLowerCase()
 
@@ -53,9 +52,9 @@ export default function SalePointTokenSelector({
         }
     }, [tokenAddress, dataTokenAddress])
 
-    const isValid = true
-
     const tokenInfo = useTokenInfo(tokenAddress, chainId)
+
+    const isLoadingTokenInfo = typeof tokenInfo === 'undefined'
 
     const { symbol: tokenSymbol, decimals: tokenDecimals } = tokenInfo || {}
 
@@ -66,7 +65,10 @@ export default function SalePointTokenSelector({
     const isCustomTokenInfoCached = isTokenInfoCached(customTokenAddress, chainId)
 
     const canFetchTokenInfo =
-        !disabled && isEthereumAddress(customTokenAddress) && !isCustomTokenInfoCached
+        !disabled &&
+        isEthereumAddress(customTokenAddress) &&
+        !isCustomTokenInfoCached &&
+        !isLoadingTokenInfo
 
     const recentPriceRef = useRef<{ price: string; timeUnit: TimeUnit }>({
         price,
@@ -159,7 +161,7 @@ export default function SalePointTokenSelector({
                         <label>Token contract address</label>
                         <Text
                             autoComplete="off"
-                            disabled={disabled}
+                            disabled={disabled || isLoadingTokenInfo}
                             placeholder="e.g 0xdac17f958d2ee523a2206206994597c13d831ec7"
                             value={customTokenAddress}
                             onChange={(e: any) => {
@@ -176,7 +178,10 @@ export default function SalePointTokenSelector({
                             }}
                             selectAllOnFocus
                             smartCommit
-                            invalid={!isValid}
+                            invalid={
+                                !!tokenAddress &&
+                                getCachedTokenInfo(tokenAddress, chainId) === null
+                            }
                             onFocus={() => {
                                 onSalePointChange?.({
                                     ...salePoint,
@@ -210,9 +215,22 @@ export default function SalePointTokenSelector({
                                         ...salePoint,
                                         pricingTokenAddress: customTokenAddress,
                                     })
+
+                                    try {
+                                        /**
+                                         * The only thing we check here: does `customTokenAddress` make
+                                         * `getTokenInfo` explode. `useTokenInfo` won't tell.
+                                         */
+                                        await getTokenInfo(customTokenAddress, chainId)
+                                    } catch (e) {
+                                        errorToast({
+                                            title: 'Invalid token contract address',
+                                            desc: 'This is not an ERC-20 token contract',
+                                        })
+                                    }
                                 }}
                                 disabled={!canFetchTokenInfo}
-                                waiting={typeof tokenInfo === 'undefined'}
+                                waiting={isLoadingTokenInfo}
                             >
                                 Set custom token
                             </Button>
