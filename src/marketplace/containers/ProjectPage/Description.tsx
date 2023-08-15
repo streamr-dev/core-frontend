@@ -6,7 +6,7 @@ import { REGULAR, TABLET } from '~/shared/utils/styled'
 import Button from '~/shared/components/Button'
 import { getProjectTypeName } from '~/getters'
 import { ProjectType } from '~/shared/types'
-import PaymentRate from '~/marketplace/components/PaymentRate'
+import FormattedPaymentRate from '~/components/FormattedPaymentRate'
 import { formatChainName } from '~/shared/utils/chains'
 import { WhiteBox } from '~/shared/components/WhiteBox'
 import { getConfigForChain } from '~/shared/web3/config'
@@ -51,12 +51,11 @@ const Description: FunctionComponent<{ project: Project }> = ({ project }) => {
                         {project.type === ProjectType.OpenData ? (
                             'free'
                         ) : (
-                            <PaymentRate
+                            <FormattedPaymentRate
                                 amount={firstSalePoint.pricePerSecond}
                                 chainId={firstSalePoint.chainId}
                                 pricingTokenAddress={firstSalePoint.pricingTokenAddress}
                                 timeUnit={timeUnits.hour}
-                                tag={'span'}
                             />
                         )}
                     </strong>

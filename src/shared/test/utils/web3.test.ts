@@ -59,40 +59,4 @@ describe('web3 utils', () => {
             ).rejects.toThrow()
         })
     })
-    describe('hasTransactionCompleted', () => {
-        it('returns true if transaction has a block number', async () => {
-            const trx = {
-                blockNumber: 12345,
-            }
-            const transactionStub = jest.fn(() => Promise.resolve(trx))
-            const publicWeb3Stub = {
-                getTransaction: transactionStub,
-            }
-            mockPublicWeb3(publicWeb3Stub)
-            const result = await all.hasTransactionCompleted('0x123', 1)
-            expect(result).toBe(true)
-        })
-        it('returns false if transaction doesnt have a block number', async () => {
-            const trx = {
-                blockNumber: null,
-            }
-            const transactionStub = jest.fn(() => Promise.resolve(trx))
-            const publicWeb3Stub = {
-                getTransaction: transactionStub,
-            }
-            mockPublicWeb3(publicWeb3Stub)
-            const result = await all.hasTransactionCompleted('0x123', 1)
-            expect(result).toBe(false)
-        })
-        it('returns false if transaction is null', async () => {
-            const trx = null
-            const transactionStub = jest.fn(() => Promise.resolve(trx))
-            const publicWeb3Stub = {
-                getTransaction: transactionStub,
-            }
-            mockPublicWeb3(publicWeb3Stub)
-            const result = await all.hasTransactionCompleted('0x123', 1)
-            expect(result).toBe(false)
-        })
-    })
 })

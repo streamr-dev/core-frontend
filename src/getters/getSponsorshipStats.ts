@@ -3,7 +3,7 @@ import { ChartPeriod } from '~/shared/components/NetworkChart/NetworkChart'
 import { GetSponsorshipDailyBucketsQuery } from '~/generated/gql/network'
 import { toBN } from '~/utils/bn'
 import { getSponsorshipDailyBuckets } from './getSponsorshipDailyBuckets'
-import { getSponsorshipTokenInfo } from './getSponsorshipTokenInfo'
+import getSponsorshipTokenInfo from './getSponsorshipTokenInfo'
 
 export const getSponsorshipStats = async (
     sponsorshipId: string,

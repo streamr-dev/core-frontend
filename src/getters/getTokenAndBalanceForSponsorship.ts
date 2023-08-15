@@ -1,7 +1,6 @@
-import getCoreConfig from '~/getters/getCoreConfig'
 import { getCustomTokenBalance } from '~/marketplace/utils/web3'
 import { defaultChainConfig } from '~/getters/getChainConfig'
-import { getSponsorshipTokenInfo } from './getSponsorshipTokenInfo'
+import getSponsorshipTokenInfo from './getSponsorshipTokenInfo'
 
 export type TokenAndBalanceForSponsorship = {
     balance: string

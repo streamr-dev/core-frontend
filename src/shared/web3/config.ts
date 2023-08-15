@@ -22,16 +22,11 @@ type Config = {
 const chainConfigs = Chains.load()
 
 export const getConfigForChain = (chainId: number): Chain => {
-    if (chainId == null) {
-        throw new Error('ChainId must be provided!')
-    }
-
-    // $FlowFixMe: Object.entries loses type information
     const configEntry = Object.entries(chainConfigs).find(
         (c) => c[1].id.toString() === chainId.toString(),
     )
 
-    if (configEntry == null) {
+    if (!configEntry) {
         throw new Error(`Could not find config for chainId ${chainId}`)
     }
 

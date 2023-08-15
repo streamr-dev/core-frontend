@@ -16,8 +16,8 @@ jest.mock('~/shared/web3/config', () => ({
     getConfigForChainByName: jest.fn().mockReturnValue({}),
 }))
 
-jest.mock('~/marketplace/utils/web3', () => ({
-    getTokenInformation: jest.fn().mockImplementation(async () => {
+jest.mock('~/hooks/useTokenInfo', () => ({
+    getTokenInfo: jest.fn().mockImplementation(async () => {
         return { decimals: new BN(18) }
     }),
 }))
