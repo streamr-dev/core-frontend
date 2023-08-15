@@ -81,6 +81,22 @@ export async function getTokenInfo(
     return current
 }
 
+export function getCachedTokenInfo(
+    tokenAddress: string | undefined,
+    chainId: number | undefined,
+): TokenInfo | null | undefined {
+    const key =
+        tokenAddress && typeof chainId !== 'undefined'
+            ? entryKey(tokenAddress, chainId)
+            : null
+
+    return key
+        ? tokenInfoCache[key] instanceof Promise
+            ? undefined
+            : (tokenInfoCache[key] as TokenInfo | null | undefined)
+        : null
+}
+
 /**
  * A hook that fetches and returns a `TokenInfo` object for a given pair of token address and chain id.
  * @param tokenAddress Address of the ERC-20 token contract.
@@ -94,18 +110,11 @@ export default function useTokenInfo(
     tokenAddress: string | undefined,
     chainId: number | undefined,
 ): TokenInfo | null | undefined {
-    const key =
-        tokenAddress && typeof chainId !== 'undefined'
-            ? entryKey(tokenAddress, chainId)
-            : null
+    const [tokenInfo, setTokenInfo] = useState(getCachedTokenInfo(tokenAddress, chainId))
 
-    const [tokenInfo, setTokenInfo] = useState<TokenInfo | null | undefined>(
-        key
-            ? tokenInfoCache[key] instanceof Promise
-                ? undefined
-                : (tokenInfoCache[key] as TokenInfo | null | undefined)
-            : null,
-    )
+    useEffect(() => {
+        setTokenInfo(getCachedTokenInfo(tokenAddress, chainId))
+    }, [tokenAddress, chainId])
 
     /**
      * Undefined token info causes a fetch *attempt*. Since we cache either the values
