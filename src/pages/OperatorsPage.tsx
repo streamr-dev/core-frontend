@@ -21,6 +21,7 @@ import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { createSponsorship } from '~/services/sponsorships'
 import { useOperator } from '~/hooks/useOperator'
+import { calculateOperatorSpotAPY } from '~/utils/apy'
 import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
 import routes from '~/routes'
 import { NetworkActionBar } from '../components/ActionBars/NetworkActionBar'
@@ -30,6 +31,7 @@ import {
     useDelegatedOperatorsQuery,
 } from '../hooks/useOperatorList'
 import { OperatorElement } from '../types/operator'
+import { fromAtto } from '~/marketplace/utils/math'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -61,7 +63,6 @@ export const OperatorsPage = () => {
     const handleSearch = useCallback(
         (searchTerm: string) => {
             setSearchQuery(searchTerm)
-            console.log(searchTerm)
         },
         [setSearchQuery],
     )
@@ -151,7 +152,8 @@ export const OperatorsPage = () => {
                             },
                             {
                                 displayName: 'Total value',
-                                valueMapper: (element) => element.poolValue,
+                                valueMapper: (element) =>
+                                    fromAtto(element.poolValue).toString(),
                                 align: 'start',
                                 isSticky: false,
                                 key: 'totalValue',
@@ -159,10 +161,34 @@ export const OperatorsPage = () => {
                             {
                                 displayName: 'Deployed',
                                 valueMapper: (element) =>
-                                    element.totalValueInSponsorshipsWei,
+                                    fromAtto(
+                                        element.totalValueInSponsorshipsWei,
+                                    ).toString(),
                                 align: 'start',
                                 isSticky: false,
                                 key: 'deployed',
+                            },
+                            {
+                                displayName: 'Operator cut',
+                                valueMapper: (element) => element.exchangeRate.toString(),
+                                align: 'start',
+                                isSticky: false,
+                                key: 'operatorCut',
+                            },
+                            {
+                                displayName: 'APY',
+                                valueMapper: (element) =>
+                                    calculateOperatorSpotAPY(element).toString(),
+                                align: 'start',
+                                isSticky: false,
+                                key: 'apy',
+                            },
+                            {
+                                displayName: 'Sponsorships',
+                                valueMapper: (element) => element.stakes.length,
+                                align: 'start',
+                                isSticky: false,
+                                key: 'sponshorshipCount',
                             },
                         ]}
                         actions={[

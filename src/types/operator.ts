@@ -1,3 +1,5 @@
+import { BN } from '~/utils/bn'
+
 export type OperatorChartData = {
     totalStake: { day: number; value: number }[]
     cumulativeEarnings: { day: number; value: number }[]
@@ -14,13 +16,13 @@ export type OperatorElement = {
     stakes: OperatorStake[]
     delegators: OperatorDelegator[]
     delegatorCount: number
-    poolValue: string
-    totalValueInSponsorshipsWei: string
-    freeFundsWei: string
+    poolValue: BN
+    totalValueInSponsorshipsWei: BN
+    freeFundsWei: BN
     poolValueTimestamp: string
     poolValueBlockNumber: string
-    poolTokenTotalSupplyWei: string
-    exchangeRate: string
+    poolTokenTotalSupplyWei: BN
+    exchangeRate: BN
     metadata?: object
     owner: string
 }
@@ -28,11 +30,16 @@ export type OperatorElement = {
 export type OperatorStake = {
     operatorId: string
     date: string
-    amount: string
-    allocated: string
+    amount: BN
+    allocated: BN
+    sponsorship: OperatorSponsorship
 }
 
 export type OperatorDelegator = {
     operatorId?: string
-    amount: string
+    amount: BN
+}
+
+export type OperatorSponsorship = {
+    spotApy: number
 }
