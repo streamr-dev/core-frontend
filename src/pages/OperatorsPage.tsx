@@ -169,7 +169,7 @@ export const OperatorsPage = () => {
                                 key: 'deployed',
                             },
                             {
-                                displayName: 'Operator cut',
+                                displayName: "Operator's cut",
                                 valueMapper: (element) => element.exchangeRate.toString(),
                                 align: 'start',
                                 isSticky: false,
