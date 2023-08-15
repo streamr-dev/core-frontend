@@ -268,3 +268,31 @@ gql`
         }
     }
 `
+
+gql`
+    fragment OperatorDailyBucketFields on OperatorDailyBucket {
+        date
+        id
+        freeFundsWei
+        delegatorCountChange
+        delegatorCountAtStart
+        lossesWei
+        operatorsShareWei
+        poolValue
+        profitsWei
+        spotAPY
+        totalDelegatedWei
+        totalUndelegatedWei
+        totalValueInSponsorshipsWei
+    }
+
+    query getOperatorDailyBuckets(
+        $where: OperatorDailyBucket_filter!
+        $first: Int
+        $skip: Int
+    ) {
+        operatorDailyBuckets(first: $first, skip: $skip, where: $where) {
+            ...OperatorDailyBucketFields
+        }
+    }
+`

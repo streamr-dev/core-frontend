@@ -25,28 +25,28 @@ import { useSponsorshipFundingHistory } from '~/hooks/useSponsorshipFundingHisto
 import { useOperator } from '~/hooks/useOperator'
 import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
 import { NetworkChartWrap } from '../components/NetworkUtils'
-import { getSponsorshipStats } from '../getters/getSponsorshipStats'
+import { getOperatorStats } from '../getters/getOperatorStats'
 
 export const SingleOperatorPage = () => {
     const operatorId = useParams().id
     const operatorQuery = useOperator(operatorId || '')
     const operator = operatorQuery.data
 
-    const [selectedDataSource, setSelectedDataSource] = useState<string>('amountStaked')
+    const [selectedDataSource, setSelectedDataSource] = useState<string>('totalValue')
     const [selectedPeriod, setSelectedPeriod] = useState<string>(ChartPeriod.SevenDays)
 
     const chartQuery = useQuery({
-        queryKey: ['sponsorshipChartQuery', selectedPeriod, selectedDataSource],
+        queryKey: ['operatorChartQuery', operatorId, selectedPeriod, selectedDataSource],
         queryFn: async () => {
             try {
-                return await getSponsorshipStats(
+                return await getOperatorStats(
                     operatorId as string,
                     selectedPeriod as ChartPeriod,
                     selectedDataSource,
                     false, // ignore today
                 )
             } catch (e) {
-                errorToast({ title: 'Could not load sponsorship chart data' })
+                errorToast({ title: 'Could not load operator chart data' })
                 return []
             }
         },
@@ -54,12 +54,10 @@ export const SingleOperatorPage = () => {
 
     const tooltipPrefix = useMemo(() => {
         switch (selectedDataSource) {
-            case 'amountStaked':
-                return 'Amount Staked'
-            case 'numberOfOperators':
-                return 'Number of Operators'
-            case 'apy':
-                return 'APY'
+            case 'totalValue':
+                return 'Total value'
+            case 'cumulativeEarnings':
+                return 'Cumulative earnings'
             default:
                 return ''
         }
@@ -68,12 +66,9 @@ export const SingleOperatorPage = () => {
     const formatTooltipValue = useCallback(
         (value: number) => {
             switch (selectedDataSource) {
-                case 'amountStaked':
+                case 'totalValue':
+                case 'cumulativeEarnings':
                     return truncateNumber(value, 'thousands') + ' DATA'
-                case 'numberOfOperators':
-                    return value.toString()
-                case 'apy':
-                    return value + '%'
                 default:
                     return ''
             }
@@ -84,12 +79,9 @@ export const SingleOperatorPage = () => {
     const formatYAxisValue = useCallback(
         (value: number) => {
             switch (selectedDataSource) {
-                case 'amountStaked':
+                case 'totalValue':
+                case 'cumulativeEarnings':
                     return truncateNumber(value, 'thousands')
-                case 'numberOfOperators':
-                    return value.toString()
-                case 'apy':
-                    return value + '%'
                 default:
                     return ''
             }
@@ -137,12 +129,11 @@ export const SingleOperatorPage = () => {
                                     }
                                     tooltipValuePrefix={tooltipPrefix}
                                     dataSources={[
-                                        { label: 'Amount staked', value: 'amountStaked' },
+                                        { label: 'Total value', value: 'totalValue' },
                                         {
-                                            label: 'Number of operators',
-                                            value: 'numberOfOperators',
+                                            label: 'Cumulative earnings',
+                                            value: 'cumulativeEarnings',
                                         },
-                                        { label: 'APY', value: 'apy' },
                                     ]}
                                     onDataSourceChange={setSelectedDataSource}
                                     onPeriodChange={setSelectedPeriod}
