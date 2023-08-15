@@ -3774,6 +3774,17 @@ export type GetSponsoringEventsQueryVariables = Exact<{
 
 export type GetSponsoringEventsQuery = { __typename?: 'Query', sponsoringEvents: Array<{ __typename?: 'SponsoringEvent', id: string, amount: any, date: any, sponsor: string }> };
 
+export type OperatorDailyBucketFieldsFragment = { __typename?: 'OperatorDailyBucket', date: any, id: string, freeFundsWei: any, delegatorCountChange: number, delegatorCountAtStart: number, lossesWei: any, operatorsShareWei: any, poolValue: any, profitsWei: any, spotAPY: any, totalDelegatedWei: any, totalUndelegatedWei: any, totalValueInSponsorshipsWei: any };
+
+export type GetOperatorDailyBucketsQueryVariables = Exact<{
+  where: OperatorDailyBucket_Filter;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GetOperatorDailyBucketsQuery = { __typename?: 'Query', operatorDailyBuckets: Array<{ __typename?: 'OperatorDailyBucket', date: any, id: string, freeFundsWei: any, delegatorCountChange: number, delegatorCountAtStart: number, lossesWei: any, operatorsShareWei: any, poolValue: any, profitsWei: any, spotAPY: any, totalDelegatedWei: any, totalUndelegatedWei: any, totalValueInSponsorshipsWei: any }> };
+
 export const OperatorFieldsFragmentDoc = gql`
     fragment OperatorFields on Operator {
   id
@@ -3904,6 +3915,23 @@ export const SponsoringEventFieldsFragmentDoc = gql`
   amount
   date
   sponsor
+}
+    `;
+export const OperatorDailyBucketFieldsFragmentDoc = gql`
+    fragment OperatorDailyBucketFields on OperatorDailyBucket {
+  date
+  id
+  freeFundsWei
+  delegatorCountChange
+  delegatorCountAtStart
+  lossesWei
+  operatorsShareWei
+  poolValue
+  profitsWei
+  spotAPY
+  totalDelegatedWei
+  totalUndelegatedWei
+  totalValueInSponsorshipsWei
 }
     `;
 export const GetAllOperatorsDocument = gql`
@@ -4059,3 +4087,11 @@ export const GetSponsoringEventsDocument = gql`
 }
     ${SponsoringEventFieldsFragmentDoc}`;
 export type GetSponsoringEventsQueryResult = Apollo.QueryResult<GetSponsoringEventsQuery, GetSponsoringEventsQueryVariables>;
+export const GetOperatorDailyBucketsDocument = gql`
+    query getOperatorDailyBuckets($where: OperatorDailyBucket_filter!, $first: Int, $skip: Int) {
+  operatorDailyBuckets(first: $first, skip: $skip, where: $where) {
+    ...OperatorDailyBucketFields
+  }
+}
+    ${OperatorDailyBucketFieldsFragmentDoc}`;
+export type GetOperatorDailyBucketsQueryResult = Apollo.QueryResult<GetOperatorDailyBucketsQuery, GetOperatorDailyBucketsQueryVariables>;

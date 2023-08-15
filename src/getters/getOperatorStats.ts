@@ -1,12 +1,12 @@
 import moment from 'moment'
 import { ChartPeriod } from '~/shared/components/NetworkChart/NetworkChart'
-import { GetSponsorshipDailyBucketsQuery } from '~/generated/gql/network'
+import { GetOperatorDailyBucketsQuery } from '~/generated/gql/network'
 import { toBN } from '~/utils/bn'
-import { getSponsorshipDailyBuckets } from './getSponsorshipDailyBuckets'
 import getSponsorshipTokenInfo from './getSponsorshipTokenInfo'
+import { getOperatorBuckets } from './getOperatorDailyBuckets'
 
-export const getSponsorshipStats = async (
-    sponsorshipId: string,
+export const getOperatorStats = async (
+    operatorId: string,
     selectedPeriod: ChartPeriod,
     dataSource: string,
     ignoreToday?: boolean,
@@ -14,39 +14,39 @@ export const getSponsorshipStats = async (
     const tokenInfo = await getSponsorshipTokenInfo()
     const start = ignoreToday ? moment().utc().startOf('day') : moment().utc()
 
-    let result: GetSponsorshipDailyBucketsQuery['sponsorshipDailyBuckets']
+    let result: GetOperatorDailyBucketsQuery['operatorDailyBuckets']
     switch (selectedPeriod) {
         case ChartPeriod.SevenDays:
-            result = await getSponsorshipDailyBuckets(
-                sponsorshipId,
+            result = await getOperatorBuckets(
+                operatorId,
                 start.unix(),
                 start.clone().subtract(7, 'days').unix(),
             )
             break
         case ChartPeriod.OneMonth:
-            result = await getSponsorshipDailyBuckets(
-                sponsorshipId,
+            result = await getOperatorBuckets(
+                operatorId,
                 start.unix(),
                 start.clone().subtract(30, 'days').unix(),
             )
             break
         case ChartPeriod.ThreeMonths:
-            result = await getSponsorshipDailyBuckets(
-                sponsorshipId,
+            result = await getOperatorBuckets(
+                operatorId,
                 start.unix(),
                 start.clone().subtract(90, 'days').unix(),
             )
             break
         case ChartPeriod.OneYear:
-            result = await getSponsorshipDailyBuckets(
-                sponsorshipId,
+            result = await getOperatorBuckets(
+                operatorId,
                 start.unix(),
                 start.clone().subtract(365, 'days').unix(),
             )
             break
         case ChartPeriod.YearToDate:
-            result = await getSponsorshipDailyBuckets(
-                sponsorshipId,
+            result = await getOperatorBuckets(
+                operatorId,
                 start.unix(),
                 start.clone().startOf('year').unix(),
             )
@@ -55,12 +55,11 @@ export const getSponsorshipStats = async (
             const maxAmount = 999
             const maxIterations = 5
             const endDate = start.clone().subtract(maxIterations * maxAmount, 'days')
-            const elements: GetSponsorshipDailyBucketsQuery['sponsorshipDailyBuckets'] =
-                []
+            const elements: GetOperatorDailyBucketsQuery['operatorDailyBuckets'] = []
             // yeah - I'm guessing we will not have a history longer than 5 thousand days :)
             for (let i = 0; i < maxIterations; i++) {
-                const partialResult = await getSponsorshipDailyBuckets(
-                    sponsorshipId,
+                const partialResult = await getOperatorBuckets(
+                    operatorId,
                     start.unix(),
                     endDate.unix(),
                     maxAmount,
@@ -79,16 +78,15 @@ export const getSponsorshipStats = async (
     return result.map((bucket) => {
         let yValue: number
         switch (dataSource) {
-            case 'amountStaked':
-                yValue = toBN(bucket.totalStakedWei)
+            case 'totalValue':
+                yValue = toBN(bucket.poolValue)
                     .dividedBy(Math.pow(10, Number(tokenInfo?.decimals.toString())))
                     .toNumber()
                 break
-            case 'numberOfOperators':
-                yValue = Number(bucket.operatorCount)
-                break
-            case 'apy':
-                yValue = Number(bucket.spotAPY)
+            case 'cumulativeEarnings':
+                yValue = toBN(bucket.profitsWei)
+                    .dividedBy(Math.pow(10, Number(tokenInfo?.decimals.toString())))
+                    .toNumber()
                 break
             default:
                 yValue = 0
