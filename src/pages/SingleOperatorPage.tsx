@@ -178,7 +178,8 @@ export const SingleOperatorPage = () => {
                                     },
                                     {
                                         displayName: 'Funded until',
-                                        valueMapper: (element) => element.date,
+                                        valueMapper: (element) =>
+                                            element.sponsorship?.projectedInsolvency,
                                         align: 'start',
                                         isSticky: false,
                                         key: 'fundedUntil',
@@ -187,6 +188,36 @@ export const SingleOperatorPage = () => {
                                 title="Sponsorships"
                             />
                         </SponsorshipsTable>
+                        <div>
+                            <ScrollTable
+                                elements={[]}
+                                columns={[
+                                    {
+                                        displayName: 'Address',
+                                        valueMapper: (element) => `${element}`,
+                                        align: 'start',
+                                        isSticky: true,
+                                        key: 'id',
+                                    },
+                                ]}
+                                title="Slashing history"
+                            />
+                        </div>
+                        <div>
+                            <ScrollTable
+                                elements={operator.nodes as unknown as object[]}
+                                columns={[
+                                    {
+                                        displayName: 'Address',
+                                        valueMapper: (element) => `${element}`,
+                                        align: 'start',
+                                        isSticky: true,
+                                        key: 'id',
+                                    },
+                                ]}
+                                title="Operator’s node addresses"
+                            />
+                        </div>
                     </SponsorshipGrid>
                 )}
             </PageContainer>

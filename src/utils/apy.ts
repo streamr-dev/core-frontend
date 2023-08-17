@@ -10,7 +10,8 @@ export function calculateOperatorSpotAPY(operator: OperatorElement): BN {
     }, BN(0))
 
     operator.stakes.forEach((s) => {
-        if (Number.parseInt(s.date) * 1000 > Date.now()) {
+        // Exclude any expired sponsorships
+        if (Number.parseInt(s.sponsorship?.projectedInsolvency) * 1000 < Date.now()) {
             operatorIncomePerYear.plus(
                 thisOperatorStake.multipliedBy(s.sponsorship?.spotAPY),
             )

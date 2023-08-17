@@ -105,6 +105,7 @@ export const mapOperatorToElement = (operator: Operator): OperatorElement => {
         freeFundsWei: toBN(operator.freeFundsWei),
         metadata: parseMetadata(operator),
         owner: operator.owner,
+        nodes: operator.nodes,
         poolTokenTotalSupplyWei: toBN(operator.poolTokenTotalSupplyWei),
         poolValue: toBN(operator.poolValue),
         poolValueBlockNumber: operator.poolValueBlockNumber,

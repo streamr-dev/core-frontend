@@ -26,6 +26,7 @@ export type OperatorElement = {
     exchangeRate: BN
     metadata?: object
     owner: string
+    nodes: string[]
 }
 
 export type OperatorStake = {

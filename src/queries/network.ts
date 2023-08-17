@@ -11,7 +11,7 @@ gql`
             allocatedWei
             date
             sponsorship {
-                id
+                ...SponsorshipFields
             }
         }
         delegators {
@@ -30,6 +30,7 @@ gql`
         exchangeRate
         metadataJsonString
         owner
+        nodes
     }
 
     query getAllOperators($first: Int, $skip: Int, $searchQuery: ID) {

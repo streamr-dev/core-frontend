@@ -3677,7 +3677,7 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny'
 }
 
-export type OperatorFieldsFragment = { __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, operator?: { __typename?: 'Operator', id: string } | null }> };
+export type OperatorFieldsFragment = { __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, operator?: { __typename?: 'Operator', id: string } | null }> };
 
 export type GetAllOperatorsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -3686,7 +3686,7 @@ export type GetAllOperatorsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllOperatorsQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, operator?: { __typename?: 'Operator', id: string } | null }> }> };
+export type GetAllOperatorsQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, operator?: { __typename?: 'Operator', id: string } | null }> }> };
 
 export type SearchOperatorsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -3695,14 +3695,14 @@ export type SearchOperatorsQueryVariables = Exact<{
 }>;
 
 
-export type SearchOperatorsQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, operator?: { __typename?: 'Operator', id: string } | null }> }> };
+export type SearchOperatorsQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, operator?: { __typename?: 'Operator', id: string } | null }> }> };
 
 export type GetOperatorByIdQueryVariables = Exact<{
   operatorId: Scalars['ID']['input'];
 }>;
 
 
-export type GetOperatorByIdQuery = { __typename?: 'Query', operator?: { __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, operator?: { __typename?: 'Operator', id: string } | null }> } | null };
+export type GetOperatorByIdQuery = { __typename?: 'Query', operator?: { __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, operator?: { __typename?: 'Operator', id: string } | null }> } | null };
 
 export type GetOperatorsByDelegationQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -3711,7 +3711,7 @@ export type GetOperatorsByDelegationQueryVariables = Exact<{
 }>;
 
 
-export type GetOperatorsByDelegationQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, operator?: { __typename?: 'Operator', id: string } | null }> }> };
+export type GetOperatorsByDelegationQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, operator?: { __typename?: 'Operator', id: string } | null }> }> };
 
 export type SponsorshipFieldsFragment = { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> };
 
@@ -3824,38 +3824,6 @@ export type GetOperatorDailyBucketsQueryVariables = Exact<{
 
 export type GetOperatorDailyBucketsQuery = { __typename?: 'Query', operatorDailyBuckets: Array<{ __typename?: 'OperatorDailyBucket', date: any, id: string, freeFundsWei: any, delegatorCountChange: number, delegatorCountAtStart: number, lossesWei: any, operatorsShareWei: any, poolValue: any, profitsWei: any, spotAPY: any, totalDelegatedWei: any, totalUndelegatedWei: any, totalValueInSponsorshipsWei: any }> };
 
-export const OperatorFieldsFragmentDoc = gql`
-    fragment OperatorFields on Operator {
-  id
-  stakes {
-    operator {
-      id
-    }
-    amount
-    allocatedWei
-    date
-    sponsorship {
-      id
-    }
-  }
-  delegators {
-    operator {
-      id
-    }
-    poolTokenWei
-  }
-  delegatorCount
-  poolValue
-  totalValueInSponsorshipsWei
-  freeFundsWei
-  poolValueTimestamp
-  poolValueBlockNumber
-  poolTokenTotalSupplyWei
-  exchangeRate
-  metadataJsonString
-  owner
-}
-    `;
 export const SponsorshipFieldsFragmentDoc = gql`
     fragment SponsorshipFields on Sponsorship {
   id
@@ -3883,6 +3851,39 @@ export const SponsorshipFieldsFragmentDoc = gql`
   spotAPY
 }
     `;
+export const OperatorFieldsFragmentDoc = gql`
+    fragment OperatorFields on Operator {
+  id
+  stakes {
+    operator {
+      id
+    }
+    amount
+    allocatedWei
+    date
+    sponsorship {
+      ...SponsorshipFields
+    }
+  }
+  delegators {
+    operator {
+      id
+    }
+    poolTokenWei
+  }
+  delegatorCount
+  poolValue
+  totalValueInSponsorshipsWei
+  freeFundsWei
+  poolValueTimestamp
+  poolValueBlockNumber
+  poolTokenTotalSupplyWei
+  exchangeRate
+  metadataJsonString
+  owner
+  nodes
+}
+    ${SponsorshipFieldsFragmentDoc}`;
 export const ProjectFieldsFragmentDoc = gql`
     fragment ProjectFields on Project {
   id
