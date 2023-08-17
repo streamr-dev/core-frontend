@@ -4,6 +4,7 @@ import Transaction from '~/shared/utils/Transaction'
 import TransactionError from '~/shared/errors/TransactionError'
 import { ProjectId } from '~/marketplace/types/project-types'
 import { NumberString, TransactionState, TransactionType } from './common-types'
+import { RPCProtocol } from '@streamr/config'
 export type Hash = string
 export type Address = string
 export type Receipt = TransactionReceipt
@@ -33,3 +34,18 @@ export type TransactionEntity = {
 }
 export type TransactionEntityList = Array<TransactionEntity>
 export type TransactionEntities = Record<Hash, TransactionEntity>
+
+export interface RPCEndpoint {
+    readonly url: string
+}
+
+export interface Contracts {
+    [name: string]: string
+}
+
+export interface Chain {
+    name: string
+    id: number
+    rpcEndpoints: RPCEndpoint[]
+    contracts: Contracts
+}

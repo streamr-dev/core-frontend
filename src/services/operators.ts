@@ -11,12 +11,10 @@ import { getSigner } from '~/shared/stores/wallet'
 import { Address } from '~/shared/types/web3-types'
 import { getERC20TokenContract } from '~/getters'
 import { BNish, toBN } from '~/utils/bn'
+import { defaultChainConfig } from '~/getters/getChainConfig'
 
 const getOperatorChainId = () => {
-    // TODO: add to .toml
-    const sponsorshipChainName = 'dev1'
-    const chainConfig = getConfigForChainByName(sponsorshipChainName)
-    return chainConfig.id
+    return defaultChainConfig.id
 }
 
 export type OperatorParams = {

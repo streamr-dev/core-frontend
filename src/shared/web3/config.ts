@@ -1,5 +1,6 @@
-import { Chain, Chains } from '@streamr/config'
+import { config as chainConfigs } from '@streamr/config'
 import formatConfigUrl from '~/utils/formatConfigUrl'
+import { Chain } from '~/shared/types/web3-types'
 
 type MetamaskNetworkConfig = {
     chainName: string
@@ -19,7 +20,6 @@ type Config = {
         }
     }
 }
-const chainConfigs = Chains.load()
 
 export const getConfigForChain = (chainId: number): Chain => {
     const configEntry = Object.entries(chainConfigs).find(

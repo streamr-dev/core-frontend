@@ -1,7 +1,7 @@
 import { TestToken, tokenABI, ERC677ABI, ERC677 } from '@streamr/network-contracts'
-import { BigNumber, Contract } from 'ethers'
-import { defaultAbiCoder, parseEther } from 'ethers/lib/utils'
-import { getConfigForChainByName, getConfigForChain } from '~/shared/web3/config'
+import { Contract } from 'ethers'
+import { defaultAbiCoder } from 'ethers/lib/utils'
+import { getConfigForChain } from '~/shared/web3/config'
 import networkPreflight from '~/utils/networkPreflight'
 import { getSigner } from '~/shared/stores/wallet'
 import { BNish, toBN } from '~/utils/bn'
@@ -10,12 +10,10 @@ import { toastedOperation } from '~/utils/toastedOperation'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
 import { TokenAndBalanceForSponsorship } from '~/getters/getTokenAndBalanceForSponsorship'
 import { getConfigFromChain } from '~/getters/getConfigFromChain'
+import { defaultChainConfig } from '~/getters/getChainConfig'
 
 const getSponsorshipChainId = () => {
-    // TODO: add to .toml
-    const sponsorshipChainName = 'dev1'
-    const chainConfig = getConfigForChainByName(sponsorshipChainName)
-    return chainConfig.id
+    return defaultChainConfig.id
 }
 
 export async function createSponsorship(
