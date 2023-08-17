@@ -110,6 +110,8 @@ export enum Delegation_OrderBy {
   OperatorExchangeRate = 'operator__exchangeRate',
   OperatorFreeFundsWei = 'operator__freeFundsWei',
   OperatorId = 'operator__id',
+  OperatorLatestHeartbeatMetadata = 'operator__latestHeartbeatMetadata',
+  OperatorLatestHeartbeatTimestamp = 'operator__latestHeartbeatTimestamp',
   OperatorMetadataJsonString = 'operator__metadataJsonString',
   OperatorOwner = 'operator__owner',
   OperatorPoolTokenTotalSupplyWei = 'operator__poolTokenTotalSupplyWei',
@@ -241,6 +243,8 @@ export enum Flag_OrderBy {
   FlaggerExchangeRate = 'flagger__exchangeRate',
   FlaggerFreeFundsWei = 'flagger__freeFundsWei',
   FlaggerId = 'flagger__id',
+  FlaggerLatestHeartbeatMetadata = 'flagger__latestHeartbeatMetadata',
+  FlaggerLatestHeartbeatTimestamp = 'flagger__latestHeartbeatTimestamp',
   FlaggerMetadataJsonString = 'flagger__metadataJsonString',
   FlaggerOwner = 'flagger__owner',
   FlaggerPoolTokenTotalSupplyWei = 'flagger__poolTokenTotalSupplyWei',
@@ -269,6 +273,8 @@ export enum Flag_OrderBy {
   TargetExchangeRate = 'target__exchangeRate',
   TargetFreeFundsWei = 'target__freeFundsWei',
   TargetId = 'target__id',
+  TargetLatestHeartbeatMetadata = 'target__latestHeartbeatMetadata',
+  TargetLatestHeartbeatTimestamp = 'target__latestHeartbeatTimestamp',
   TargetMetadataJsonString = 'target__metadataJsonString',
   TargetOwner = 'target__owner',
   TargetPoolTokenTotalSupplyWei = 'target__poolTokenTotalSupplyWei',
@@ -380,6 +386,9 @@ export type Operator = {
   /** DATA held by the operator, not yet staked. Updated by PoolValueUpdate event, so might be out of date if new DATA is sent via `ERC20.transfer`. */
   freeFundsWei: Scalars['BigInt']['output'];
   id: Scalars['ID']['output'];
+  /** Connection metadata, to be able to find a node in the Operator's fleet */
+  latestHeartbeatMetadata?: Maybe<Scalars['String']['output']>;
+  latestHeartbeatTimestamp?: Maybe<Scalars['BigInt']['output']>;
   metadataJsonString: Scalars['String']['output'];
   nodes: Array<Scalars['String']['output']>;
   owner: Scalars['String']['output'];
@@ -627,6 +636,8 @@ export enum OperatorDailyBucket_OrderBy {
   OperatorExchangeRate = 'operator__exchangeRate',
   OperatorFreeFundsWei = 'operator__freeFundsWei',
   OperatorId = 'operator__id',
+  OperatorLatestHeartbeatMetadata = 'operator__latestHeartbeatMetadata',
+  OperatorLatestHeartbeatTimestamp = 'operator__latestHeartbeatTimestamp',
   OperatorMetadataJsonString = 'operator__metadataJsonString',
   OperatorOwner = 'operator__owner',
   OperatorPoolTokenTotalSupplyWei = 'operator__poolTokenTotalSupplyWei',
@@ -683,6 +694,34 @@ export type Operator_Filter = {
   id_lte?: InputMaybe<Scalars['ID']['input']>;
   id_not?: InputMaybe<Scalars['ID']['input']>;
   id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  latestHeartbeatMetadata?: InputMaybe<Scalars['String']['input']>;
+  latestHeartbeatMetadata_contains?: InputMaybe<Scalars['String']['input']>;
+  latestHeartbeatMetadata_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  latestHeartbeatMetadata_ends_with?: InputMaybe<Scalars['String']['input']>;
+  latestHeartbeatMetadata_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  latestHeartbeatMetadata_gt?: InputMaybe<Scalars['String']['input']>;
+  latestHeartbeatMetadata_gte?: InputMaybe<Scalars['String']['input']>;
+  latestHeartbeatMetadata_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  latestHeartbeatMetadata_lt?: InputMaybe<Scalars['String']['input']>;
+  latestHeartbeatMetadata_lte?: InputMaybe<Scalars['String']['input']>;
+  latestHeartbeatMetadata_not?: InputMaybe<Scalars['String']['input']>;
+  latestHeartbeatMetadata_not_contains?: InputMaybe<Scalars['String']['input']>;
+  latestHeartbeatMetadata_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  latestHeartbeatMetadata_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  latestHeartbeatMetadata_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  latestHeartbeatMetadata_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  latestHeartbeatMetadata_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  latestHeartbeatMetadata_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  latestHeartbeatMetadata_starts_with?: InputMaybe<Scalars['String']['input']>;
+  latestHeartbeatMetadata_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  latestHeartbeatTimestamp?: InputMaybe<Scalars['BigInt']['input']>;
+  latestHeartbeatTimestamp_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  latestHeartbeatTimestamp_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  latestHeartbeatTimestamp_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  latestHeartbeatTimestamp_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  latestHeartbeatTimestamp_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  latestHeartbeatTimestamp_not?: InputMaybe<Scalars['BigInt']['input']>;
+  latestHeartbeatTimestamp_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   metadataJsonString?: InputMaybe<Scalars['String']['input']>;
   metadataJsonString_contains?: InputMaybe<Scalars['String']['input']>;
   metadataJsonString_contains_nocase?: InputMaybe<Scalars['String']['input']>;
@@ -791,6 +830,8 @@ export enum Operator_OrderBy {
   FlagsTargeted = 'flagsTargeted',
   FreeFundsWei = 'freeFundsWei',
   Id = 'id',
+  LatestHeartbeatMetadata = 'latestHeartbeatMetadata',
+  LatestHeartbeatTimestamp = 'latestHeartbeatTimestamp',
   MetadataJsonString = 'metadataJsonString',
   Nodes = 'nodes',
   Owner = 'owner',
@@ -2147,6 +2188,8 @@ export enum QueueEntry_OrderBy {
   OperatorExchangeRate = 'operator__exchangeRate',
   OperatorFreeFundsWei = 'operator__freeFundsWei',
   OperatorId = 'operator__id',
+  OperatorLatestHeartbeatMetadata = 'operator__latestHeartbeatMetadata',
+  OperatorLatestHeartbeatTimestamp = 'operator__latestHeartbeatTimestamp',
   OperatorMetadataJsonString = 'operator__metadataJsonString',
   OperatorOwner = 'operator__owner',
   OperatorPoolTokenTotalSupplyWei = 'operator__poolTokenTotalSupplyWei',
@@ -2248,6 +2291,8 @@ export enum SlashingEvent_OrderBy {
   OperatorExchangeRate = 'operator__exchangeRate',
   OperatorFreeFundsWei = 'operator__freeFundsWei',
   OperatorId = 'operator__id',
+  OperatorLatestHeartbeatMetadata = 'operator__latestHeartbeatMetadata',
+  OperatorLatestHeartbeatTimestamp = 'operator__latestHeartbeatTimestamp',
   OperatorMetadataJsonString = 'operator__metadataJsonString',
   OperatorOwner = 'operator__owner',
   OperatorPoolTokenTotalSupplyWei = 'operator__poolTokenTotalSupplyWei',
@@ -2444,7 +2489,6 @@ export type SponsorshipDailyBucket = {
   projectedInsolvency: Scalars['BigInt']['output'];
   sponsorship: Sponsorship;
   spotAPY: Scalars['BigInt']['output'];
-  totalPayoutsCumulative: Scalars['BigInt']['output'];
   totalStakedWei: Scalars['BigInt']['output'];
   unallocatedWei: Scalars['BigInt']['output'];
 };
@@ -2515,14 +2559,6 @@ export type SponsorshipDailyBucket_Filter = {
   spotAPY_lte?: InputMaybe<Scalars['BigInt']['input']>;
   spotAPY_not?: InputMaybe<Scalars['BigInt']['input']>;
   spotAPY_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  totalPayoutsCumulative?: InputMaybe<Scalars['BigInt']['input']>;
-  totalPayoutsCumulative_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  totalPayoutsCumulative_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  totalPayoutsCumulative_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  totalPayoutsCumulative_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  totalPayoutsCumulative_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  totalPayoutsCumulative_not?: InputMaybe<Scalars['BigInt']['input']>;
-  totalPayoutsCumulative_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   totalStakedWei?: InputMaybe<Scalars['BigInt']['input']>;
   totalStakedWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
   totalStakedWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
@@ -2559,7 +2595,6 @@ export enum SponsorshipDailyBucket_OrderBy {
   SponsorshipTotalStakedWei = 'sponsorship__totalStakedWei',
   SponsorshipUnallocatedWei = 'sponsorship__unallocatedWei',
   SpotApy = 'spotAPY',
-  TotalPayoutsCumulative = 'totalPayoutsCumulative',
   TotalStakedWei = 'totalStakedWei',
   UnallocatedWei = 'unallocatedWei'
 }
@@ -2830,6 +2865,8 @@ export enum Stake_OrderBy {
   OperatorExchangeRate = 'operator__exchangeRate',
   OperatorFreeFundsWei = 'operator__freeFundsWei',
   OperatorId = 'operator__id',
+  OperatorLatestHeartbeatMetadata = 'operator__latestHeartbeatMetadata',
+  OperatorLatestHeartbeatTimestamp = 'operator__latestHeartbeatTimestamp',
   OperatorMetadataJsonString = 'operator__metadataJsonString',
   OperatorOwner = 'operator__owner',
   OperatorPoolTokenTotalSupplyWei = 'operator__poolTokenTotalSupplyWei',
@@ -2943,6 +2980,8 @@ export enum StakingEvent_OrderBy {
   OperatorExchangeRate = 'operator__exchangeRate',
   OperatorFreeFundsWei = 'operator__freeFundsWei',
   OperatorId = 'operator__id',
+  OperatorLatestHeartbeatMetadata = 'operator__latestHeartbeatMetadata',
+  OperatorLatestHeartbeatTimestamp = 'operator__latestHeartbeatTimestamp',
   OperatorMetadataJsonString = 'operator__metadataJsonString',
   OperatorOwner = 'operator__owner',
   OperatorPoolTokenTotalSupplyWei = 'operator__poolTokenTotalSupplyWei',
@@ -3726,7 +3765,7 @@ export type GetStreamByIdQueryVariables = Exact<{
 
 export type GetStreamByIdQuery = { __typename?: 'Query', stream?: { __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userAddress: any }> | null } | null };
 
-export type SponsorshipDailyBucketFieldsFragment = { __typename?: 'SponsorshipDailyBucket', id: string, operatorCount: number, projectedInsolvency: any, spotAPY: any, totalPayoutsCumulative: any, totalStakedWei: any, unallocatedWei: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string } };
+export type SponsorshipDailyBucketFieldsFragment = { __typename?: 'SponsorshipDailyBucket', id: string, operatorCount: number, projectedInsolvency: any, spotAPY: any, totalStakedWei: any, unallocatedWei: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string } };
 
 export type GetSponsorshipDailyBucketsQueryVariables = Exact<{
   where: SponsorshipDailyBucket_Filter;
@@ -3735,7 +3774,7 @@ export type GetSponsorshipDailyBucketsQueryVariables = Exact<{
 }>;
 
 
-export type GetSponsorshipDailyBucketsQuery = { __typename?: 'Query', sponsorshipDailyBuckets: Array<{ __typename?: 'SponsorshipDailyBucket', id: string, operatorCount: number, projectedInsolvency: any, spotAPY: any, totalPayoutsCumulative: any, totalStakedWei: any, unallocatedWei: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string } }> };
+export type GetSponsorshipDailyBucketsQuery = { __typename?: 'Query', sponsorshipDailyBuckets: Array<{ __typename?: 'SponsorshipDailyBucket', id: string, operatorCount: number, projectedInsolvency: any, spotAPY: any, totalStakedWei: any, unallocatedWei: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string } }> };
 
 export type SponsoringEventFieldsFragment = { __typename?: 'SponsoringEvent', id: string, amount: any, date: any, sponsor: string };
 
@@ -3863,7 +3902,6 @@ export const SponsorshipDailyBucketFieldsFragmentDoc = gql`
   operatorCount
   projectedInsolvency
   spotAPY
-  totalPayoutsCumulative
   totalStakedWei
   unallocatedWei
   date

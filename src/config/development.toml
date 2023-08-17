@@ -14,8 +14,7 @@ projectsChain = 'dev2'
 theGraphUrl = ":8800"
 mainnetInfuraUrl = "https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206"
 dataUnionJoinServerUrl = "http://localhost:5555"
-theHubGraphName = "streamr-dev/hub-subgraph"
-streamsGraphName = "streamr-dev/network-subgraphs"
+theHubGraphName = "streamr-dev/network-subgraphs"
 streamIndexerUrl = ":4001/api"
 reverseRecordsAddress = "0x3671aE578E63FdF66ad4F3E12CC0c0d71Ac7510C"
 sponsorshipPaymentToken = "DATA"
@@ -35,7 +34,7 @@ ipfsUploadEndpoint = "https://ipfs.infura.io:5001/api/v0/add"
 ipfsGatewayUrl = "https://streamr-hub.infura-ipfs.io/ipfs/"
 
 [client]
-graphUrl = ":8800/subgraphs/name/streamr-dev/network-contracts"
+graphUrl = ":8800/subgraphs/name/streamr-dev/network-subgraphs"
 
 [[client.network.trackers]]
 id = "0xb9e7cEBF7b03AE26458E32a059488386b05798e8"

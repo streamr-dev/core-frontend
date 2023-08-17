@@ -9,8 +9,8 @@ import {
 } from '~/generated/gql/network'
 
 const getGraphUrl = () => {
-    const { theGraphUrl, streamsGraphName } = getCoreConfig()
-    return `${theGraphUrl}/subgraphs/name/${streamsGraphName}`
+    const { theGraphUrl, theHubGraphName } = getCoreConfig()
+    return `${theGraphUrl}/subgraphs/name/${theHubGraphName}`
 }
 
 export enum TheGraphOrderBy {
