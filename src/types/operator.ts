@@ -27,6 +27,7 @@ export type OperatorElement = {
     metadata?: object
     owner: string
     nodes: string[]
+    slashingEvents: OperatorSlashingEvent[]
 }
 
 export type OperatorStake = {
@@ -40,4 +41,10 @@ export type OperatorStake = {
 export type OperatorDelegator = {
     operatorId?: string
     amount: BN
+}
+
+export type OperatorSlashingEvent = {
+    amount: BN
+    date: string
+    streamId: string | undefined
 }

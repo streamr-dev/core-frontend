@@ -20,6 +20,16 @@ gql`
             }
             poolTokenWei
         }
+        slashingEvents {
+            amount
+            date
+            sponsorship {
+                id
+                stream {
+                    id
+                }
+            }
+        }
         delegatorCount
         poolValue
         totalValueInSponsorshipsWei

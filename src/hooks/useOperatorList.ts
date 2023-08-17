@@ -101,6 +101,11 @@ export const mapOperatorToElement = (operator: Operator): OperatorElement => {
             operatorId: d.operator?.id,
             amount: toBN(d.poolTokenWei),
         })),
+        slashingEvents: operator.slashingEvents.map((e) => ({
+            amount: e.amount,
+            date: e.date,
+            streamId: e.sponsorship.stream?.id,
+        })),
         exchangeRate: toBN(operator.exchangeRate),
         freeFundsWei: toBN(operator.freeFundsWei),
         metadata: parseMetadata(operator),

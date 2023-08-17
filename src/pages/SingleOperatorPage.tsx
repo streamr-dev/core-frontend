@@ -190,14 +190,29 @@ export const SingleOperatorPage = () => {
                         </SponsorshipsTable>
                         <div>
                             <ScrollTable
-                                elements={[]}
+                                elements={operator.slashingEvents}
                                 columns={[
                                     {
-                                        displayName: 'Address',
-                                        valueMapper: (element) => `${element}`,
+                                        displayName: 'Stream ID',
+                                        valueMapper: (element) => element.streamId || '',
                                         align: 'start',
                                         isSticky: true,
                                         key: 'id',
+                                    },
+                                    {
+                                        displayName: 'Date',
+                                        valueMapper: (element) => element.date,
+                                        align: 'start',
+                                        isSticky: false,
+                                        key: 'date',
+                                    },
+                                    {
+                                        displayName: 'Slashed',
+                                        valueMapper: (element) =>
+                                            element.amount.toString(),
+                                        align: 'start',
+                                        isSticky: false,
+                                        key: 'slashed',
                                     },
                                 ]}
                                 title="Slashing history"
