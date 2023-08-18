@@ -25,7 +25,7 @@ import usePreventNavigatingAway from '~/shared/hooks/usePreventNavigatingAway'
 import Layout from '~/shared/components/Layout'
 import { EditorNav } from '~/marketplace/containers/ProjectEditing/EditorNav'
 import styles from '~/shared/components/Layout/layout.pcss'
-import { MarketplaceHelmet } from '~/shared/components/Helmet'
+import Helmet from '~/components/Helmet'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import { ProjectEditor } from '~/marketplace/containers/ProjectEditing/ProjectEditor'
 import {
@@ -113,7 +113,7 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
             }
             innerClassName={styles.greyInner}
         >
-            <MarketplaceHelmet title={'Edit project'} />
+            <Helmet title="Edit project" />
             <DetailsPageHeader
                 pageTitle={pageTitle}
                 rightComponent={<ProjectLinkTabs />}

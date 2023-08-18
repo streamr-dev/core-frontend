@@ -2,7 +2,7 @@ import React, { useReducer } from 'react'
 import isEqual from 'lodash/isEqual'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import Layout from '~/shared/components/Layout'
-import { MarketplaceHelmet } from '~/shared/components/Helmet'
+import Helmet from '~/components/Helmet'
 import ActionBar from '~/components/ActionBar'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import useModal from '~/shared/hooks/useModal'
@@ -66,7 +66,7 @@ export default function ProjectListingPage() {
             innerClassName={styles.productsInner}
             footer={false}
         >
-            <MarketplaceHelmet title="Projects" />
+            <Helmet title="Projects" />
             <ActionBar
                 filter={filter}
                 onFilterChange={setFilter}

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
-import { MarketplaceHelmet } from '~/shared/components/Helmet'
+import Helmet from '~/components/Helmet'
 import { COLORS, DESKTOP, TABLET } from '~/shared/utils/styled'
 import Button from '~/shared/components/Button'
 import Layout from '~/shared/components/Layout'
@@ -215,7 +215,7 @@ const StreamListingPage: React.FC = () => {
 
     return (
         <Layout innerClassName={styles.greyInner}>
-            <MarketplaceHelmet title="Streams" />
+            <Helmet title="Streams" />
             <ActionBarContainer>
                 <SearchBarWrap>
                     <SearchBar

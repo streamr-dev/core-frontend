@@ -30,7 +30,7 @@ import {
 import useDecodedStreamId from '~/shared/hooks/useDecodedStreamId'
 import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
 import Layout from '~/shared/components/Layout/Core'
-import { MarketplaceHelmet } from '~/shared/components/Helmet'
+import Helmet from '~/components/Helmet'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import { truncateStreamName } from '~/shared/utils/text'
 import { CopyButton } from '~/shared/components/CopyButton/CopyButton'
@@ -344,7 +344,7 @@ function Header({ isNew = false }: { isNew?: boolean }) {
 
     return (
         <>
-            <MarketplaceHelmet title={streamId ? `Stream ${streamId}` : 'New stream'} />
+            <Helmet title={streamId ? `Stream ${streamId}` : 'New stream'} />
             <DetailsPageHeader
                 backButtonLink={routes.streams.index()}
                 pageTitle={

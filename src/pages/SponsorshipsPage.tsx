@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import styles from '~/pages/ProjectListingPage.pcss'
 import Layout, { PageContainer } from '~/shared/components/Layout'
-import { NetworkHelmet } from '~/shared/components/Helmet'
+import { NetworkHelmet } from '~/components/Helmet'
 import {
     WhiteBox,
     WhiteBoxPaddingStyles,
