@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import Nav from '~/shared/components/Layout/Nav'
-import Footer from '~/shared/components/Layout/Footer'
+import Footer from '~/components/Footer'
 import useScrollToTop from '~/shared/hooks/useScrollToTop'
 import Helmet from './Helmet'
 
