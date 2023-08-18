@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
-import styles from '~/marketplace/containers/Projects/projects.pcss'
+import styles from '~/pages/ProjectListingPage.pcss'
 import Layout, { PageContainer } from '~/shared/components/Layout'
 import { NetworkHelmet } from '~/shared/components/Helmet'
 import {

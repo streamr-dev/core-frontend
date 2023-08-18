@@ -6,7 +6,7 @@ import React, {
     useMemo,
     useState,
 } from 'react'
-import { DataUnionId, DataUnionSecret } from '~/marketplace/types/project-types'
+import { DataUnionSecret } from '~/marketplace/types/project-types'
 import {
     createSecret,
     deleteSecret,
@@ -16,24 +16,16 @@ import { getDataUnionSecrets } from '~/getters/du'
 import { Secret } from '~/marketplace/modules/dataUnion/types'
 
 export type DataUnionSecretsController = {
-    load: (dataUnionId: DataUnionId, chainId: number) => Promise<void>
+    load: (dataUnionId: string, chainId: number) => Promise<void>
     secrets: DataUnionSecret[]
-    add: (param: {
-        dataUnionId: DataUnionId
-        name: string
-        chainId: number
-    }) => Promise<void>
+    add: (param: { dataUnionId: string; name: string; chainId: number }) => Promise<void>
     edit: (param: {
-        dataUnionId: DataUnionId
+        dataUnionId: string
         id: string
         name: string
         chainId: number
     }) => Promise<void>
-    remove: (param: {
-        dataUnionId: DataUnionId
-        id: string
-        chainId: number
-    }) => Promise<void>
+    remove: (param: { dataUnionId: string; id: string; chainId: number }) => Promise<void>
     isLoading: boolean
     isLoaded: boolean
     isSaving: boolean
@@ -53,7 +45,7 @@ const useDataUnionSecretsControllerImplementation = (): DataUnionSecretsControll
     })
 
     const load = useCallback(
-        async (dataUnionId: DataUnionId, chainId: number) => {
+        async (dataUnionId: string, chainId: number) => {
             try {
                 setIsLoading(true)
 
@@ -82,7 +74,7 @@ const useDataUnionSecretsControllerImplementation = (): DataUnionSecretsControll
             name,
             chainId,
         }: {
-            dataUnionId: DataUnionId
+            dataUnionId: string
             name: string
             chainId: number
         }) => {
@@ -114,7 +106,7 @@ const useDataUnionSecretsControllerImplementation = (): DataUnionSecretsControll
             name,
             chainId,
         }: {
-            dataUnionId: DataUnionId
+            dataUnionId: string
             id: string
             name: string
             chainId: number
@@ -147,7 +139,7 @@ const useDataUnionSecretsControllerImplementation = (): DataUnionSecretsControll
             id,
             chainId,
         }: {
-            dataUnionId: DataUnionId
+            dataUnionId: string
             id: string
             chainId: number
         }) => {
