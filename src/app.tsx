@@ -14,7 +14,7 @@ import AnalyticsTracker from '~/shared/components/AnalyticsTracker'
 import GenericErrorPage from '~/shared/components/GenericErrorPage'
 import ErrorPage from '~/shared/components/ErrorPage'
 import Analytics from '~/shared/utils/Analytics'
-import NewStreamListingPage from '~/pages/NewStreamListingPage'
+import StreamListingPage from '~/pages/StreamListingPage'
 import StreamPage from '~/pages/StreamPage'
 import ProjectPage from '~/pages/ProjectPage'
 import ProjectsPage from '~/marketplace/containers/Projects'
@@ -72,7 +72,7 @@ const App = () => (
                                 <Route path=":id/*" element={<ProjectPage />} />
                             </Route>
                             <Route path="/hub/streams/*" errorElement={<ErrorPage />}>
-                                <Route index element={<NewStreamListingPage />} />
+                                <Route index element={<StreamListingPage />} />
                                 <Route path=":id/*" element={<StreamPage />} />
                             </Route>
                             {isFeatureEnabled(FeatureFlag.PhaseTwo) && (

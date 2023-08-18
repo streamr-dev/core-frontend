@@ -114,7 +114,7 @@ const TableContainer = styled.div`
     background-color: white;
 `
 
-const NewStreamListingPage: React.FC = () => {
+const StreamListingPage: React.FC = () => {
     const [search, setSearch] = useState<string>('')
     const [orderBy, setOrderBy] = useState(DEFAULT_ORDER_BY)
     const [orderDirection, setOrderDirection] = useState(DEFAULT_ORDER_DIRECTION)
@@ -299,4 +299,4 @@ const NewStreamListingPage: React.FC = () => {
     )
 }
 
-export default NewStreamListingPage
+export default StreamListingPage
