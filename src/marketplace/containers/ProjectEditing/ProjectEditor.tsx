@@ -11,7 +11,6 @@ import { ProjectStateContext } from '~/marketplace/contexts/ProjectStateContext'
 import { ProjectType, SalePoint } from '~/shared/types'
 import { StreamSelector } from '~/marketplace/containers/ProjectEditing/StreamSelector'
 import { TermsOfUse } from '~/marketplace/containers/ProjectEditing/TermsOfUse'
-import { SalePointSelector } from '~/marketplace/containers/ProjectEditing/SalePointSelector/SalePointSelector'
 import { DataUnionChainSelector } from '~/marketplace/containers/ProjectEditing/DataUnionChainSelector/DataUnionChainSelector'
 import { DataUnionTokenSelector } from '~/marketplace/containers/ProjectEditing/DataUnionTokenSelector/DataUnionTokenSelector'
 import { DataUnionFee } from '~/marketplace/containers/ProjectEditing/DataUnionFee'
@@ -22,8 +21,9 @@ import { useWalletAccount } from '~/shared/stores/wallet'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import DeleteProject from './DeleteProject'
 import { DataUnionSecrets } from './DataUnionSecrets'
-import SalePointSelector2 from '~/components/SalePointSelector'
+import SalePointSelector from '~/components/SalePointSelector'
 import { timeUnits } from '~/shared/utils/timeUnit'
+import { useEditableProjectActions } from '../ProductController/useEditableProjectActions'
 
 type ProjectEditorProps = {
     nonEditableSalePointChains?: number[] // array of chain ids
@@ -100,8 +100,28 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({
         useState<typeof salePoints>(salePoints)
 
     useEffect(() => {
-        setCustomSalePoints(salePoints)
+        setCustomSalePoints((c) => ({
+            ...c,
+            ...salePoints,
+        }))
     }, [salePoints])
+
+    const { updateSalePoints: setSalePoints } = useEditableProjectActions()
+
+    function updateSalePoints(
+        value: typeof customSalePoints,
+        chainIds: typeof selectedChainIds,
+    ) {
+        const newSalePoints: typeof value = {}
+
+        Object.entries(value).forEach(([, salePoint]) => {
+            if (salePoint && chainIds[salePoint.chainId]) {
+                newSalePoints[salePoint.chainId] = salePoint
+            }
+        })
+
+        setSalePoints(newSalePoints as unknown as NonNullable<typeof project.salePoints>)
+    }
 
     return (
         <ProjectPageContainer>
@@ -112,23 +132,23 @@ export const ProjectEditor: FunctionComponent<ProjectEditorProps> = ({
                 <ProjectDetails />
             </ProjectHeroContainer>
             {project?.type === ProjectType.PaidData && (
-                <>
-                    <WhiteBox className={'with-padding'}>
-                        <SalePointSelector
-                            nonEditableSalePointChains={nonEditableSalePointChains}
-                        />
-                    </WhiteBox>
-                    <WhiteBox className={'with-padding'}>
-                        <SalePointSelector2
-                            salePoints={customSalePoints}
-                            onSalePointsChange={(value) => {
-                                setCustomSalePoints(value)
-                            }}
-                            selectedChainIds={selectedChainIds}
-                            onSelectedChainIdsChange={setSelectedChainIds}
-                        />
-                    </WhiteBox>
-                </>
+                <WhiteBox className={'with-padding'}>
+                    {/* @TODO: We have to disable editing of the existing chains in existing projects. */}
+                    <SalePointSelector
+                        salePoints={customSalePoints}
+                        onSalePointsChange={(value) => {
+                            setCustomSalePoints(value)
+
+                            updateSalePoints(value, selectedChainIds)
+                        }}
+                        selectedChainIds={selectedChainIds}
+                        onSelectedChainIdsChange={(value) => {
+                            setSelectedChainIds(value)
+
+                            updateSalePoints(customSalePoints, value)
+                        }}
+                    />
+                </WhiteBox>
             )}
             {project?.type === ProjectType.DataUnion && (
                 <>
