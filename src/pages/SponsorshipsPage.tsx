@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
-import styles from '~/pages/ProjectListingPage.pcss'
-import Layout, { PageContainer } from '~/shared/components/Layout'
+import Layout from '~/components/Layout'
+import { PageContainer } from '~/shared/components/Layout'
 import { NetworkHelmet } from '~/components/Helmet'
 import {
     WhiteBox,
@@ -97,12 +97,7 @@ export const SponsorshipsPage = () => {
     }, [wallet, isMounted])
 
     return (
-        <Layout
-            className={styles.projectsListPage}
-            framedClassName={styles.productsFramed}
-            innerClassName={styles.productsInner}
-            footer={false}
-        >
+        <Layout>
             <NetworkHelmet title="Sponsorships" />
             <NetworkActionBar
                 searchEnabled={true}
@@ -243,7 +238,6 @@ export const SponsorshipsPage = () => {
                     </LoadMoreButton>
                 )}
             </PageContainer>
-            <Footer />
         </Layout>
     )
 }

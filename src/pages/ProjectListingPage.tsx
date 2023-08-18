@@ -1,8 +1,7 @@
 import React, { useReducer } from 'react'
 import isEqual from 'lodash/isEqual'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import Layout from '~/shared/components/Layout'
-import Helmet from '~/components/Helmet'
+import Layout from '~/components/Layout'
 import ActionBar from '~/components/ActionBar'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import useModal from '~/shared/hooks/useModal'
@@ -12,8 +11,6 @@ import { MaxSearchPhraseLength } from '~/consts'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import CreateProjectModal from '~/marketplace/containers/CreateProjectModal'
 import ProjectsComponent, { ProjectsContainer } from '~/marketplace/components/Projects'
-import Footer from '~/shared/components/Layout/Footer'
-import styles from './ProjectListingPage.pcss'
 
 const DefaultFilter: ProjectFilter = {
     search: '',
@@ -60,13 +57,7 @@ export default function ProjectListingPage() {
     const noOwnProjects = !!filter.owner && !filter.search && !filter.type
 
     return (
-        <Layout
-            className={styles.projectsListPage}
-            framedClassName={styles.productsFramed}
-            innerClassName={styles.productsInner}
-            footer={false}
-        >
-            <Helmet title="Projects" />
+        <Layout pageTitle="Projects">
             <ActionBar
                 filter={filter}
                 onFilterChange={setFilter}
@@ -88,7 +79,6 @@ export default function ProjectListingPage() {
                     noOwnProjects={noOwnProjects}
                 />
             </ProjectsContainer>
-            <Footer />
         </Layout>
     )
 }

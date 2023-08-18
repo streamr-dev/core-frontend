@@ -1,14 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
-import styles from '~/pages/ProjectListingPage.pcss'
-import Layout, { PageContainer } from '~/shared/components/Layout'
+import Layout from '~/components/Layout'
+import { PageContainer } from '~/shared/components/Layout'
 import { NetworkHelmet } from '~/components/Helmet'
 import {
     WhiteBox,
     WhiteBoxPaddingStyles,
     WhiteBoxSeparator,
 } from '~/shared/components/WhiteBox'
-import Footer from '~/shared/components/Layout/Footer'
 import { MD, TABLET } from '~/shared/utils/styled'
 import { NetworkSectionTitle } from '~/components/NetworkSectionTitle'
 import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
@@ -49,12 +48,7 @@ export const NetworkOverviewPage = () => {
     ]
 
     return (
-        <Layout
-            className={styles.projectsListPage}
-            framedClassName={styles.productsFramed}
-            innerClassName={styles.productsInner}
-            footer={false}
-        >
+        <Layout>
             <NetworkHelmet title="Network Overview" />
             <PageContainer>
                 <NetworkStats>
@@ -71,7 +65,6 @@ export const NetworkOverviewPage = () => {
                 <MyDelegationsTable />
                 <MySponsorshipsTable />
             </PageContainer>
-            <Footer />
         </Layout>
     )
 }

@@ -29,7 +29,7 @@ import {
 } from '~/shared/stores/streamEditor'
 import useDecodedStreamId from '~/shared/hooks/useDecodedStreamId'
 import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
-import Layout from '~/shared/components/Layout/Core'
+import Layout from '~/components/Layout'
 import Helmet from '~/components/Helmet'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import { truncateStreamName } from '~/shared/utils/text'
@@ -262,7 +262,7 @@ function StreamPageSwitch({ tab }: Props) {
          */
         return (
             <form onSubmit={defaultFormEventHandler}>
-                <Layout>
+                <Layout footer={null}>
                     <Header />
                     <LoadingIndicator loading />
                 </Layout>
@@ -273,7 +273,7 @@ function StreamPageSwitch({ tab }: Props) {
     if (loadError instanceof StreamNotFoundError) {
         return (
             <form onSubmit={defaultFormEventHandler}>
-                <Layout>
+                <Layout footer={null}>
                     <Header />
                     <LoadingIndicator />
                     <NotFoundPageContent />
@@ -285,7 +285,7 @@ function StreamPageSwitch({ tab }: Props) {
     if (loadError) {
         return (
             <form onSubmit={defaultFormEventHandler}>
-                <Layout>
+                <Layout footer={null}>
                     <Header />
                     <LoadingIndicator />
                     <GenericErrorPageContent />
@@ -298,7 +298,7 @@ function StreamPageSwitch({ tab }: Props) {
 
     return (
         <form onSubmit={editView ? onSubmit : defaultFormEventHandler}>
-            <Layout>
+            <Layout footer={null}>
                 <Header isNew={isNew} />
                 {editView && <EditPage isNew={isNew} />}
                 {tab === 'connect' && <ConnectPage />}
