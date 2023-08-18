@@ -438,9 +438,9 @@ export function useInitProject(projectId: string | undefined) {
 
     useEffect(() => {
         init(draftId, projectId)
-
-        return () => void abandon(draftId)
     }, [draftId, init, abandon, projectId])
+
+    useEffect(() => () => void abandon(draftId), [draftId, abandon])
 
     return draftId
 }
