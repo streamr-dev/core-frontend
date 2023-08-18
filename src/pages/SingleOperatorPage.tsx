@@ -20,6 +20,7 @@ import {
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
 import { errorToast } from '~/utils/toast'
+import { BN } from '~/utils/bn'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { useSponsorshipFundingHistory } from '~/hooks/useSponsorshipFundingHistory'
 import { OperatorStake } from '~/types/operator'
@@ -171,7 +172,9 @@ export const SingleOperatorPage = () => {
                                     {
                                         displayName: 'APY',
                                         valueMapper: (element) =>
-                                            element.sponsorship?.spotAPY,
+                                            BN(element.sponsorship?.spotAPY)
+                                                .multipliedBy(100)
+                                                .toString(),
                                         align: 'start',
                                         isSticky: false,
                                         key: 'apy',
