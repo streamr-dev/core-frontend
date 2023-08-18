@@ -422,13 +422,17 @@ export function useInitProject(projectId: string | undefined) {
     )
 
     const draftId = useMemo(() => {
+        /**
+         * This hook depends on project id just as much as it does on the current recycled draft it.
+         * Using it like below satisfies `react-hooks/exhaustive-deps` eslint rule.
+         */
+        projectId
+
         return recycledDraftId || uniqueId('ProjectDraft-')
         /**
          * We give each new project id a new draft id (unless we recycle), thus we've gotta
          * disable react-hooks/exhaustive-deps for the next line (`projectId` may seem redundant).
          */
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [projectId, recycledDraftId])
 
     const { init, abandon } = useProjectEditorStore(({ init, abandon }) => ({
