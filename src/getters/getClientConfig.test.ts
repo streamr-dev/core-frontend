@@ -1,4 +1,3 @@
-import { RPCProtocol } from '@streamr/config'
 import setTempEnv from '../../test/test-utils/setTempEnv'
 import getConfig from './getConfig'
 import { defaultChainConfig } from './getChainConfig'
@@ -39,12 +38,12 @@ describe('getClientConfig', () => {
             contracts: expect.objectContaining({
                 mainChainRPCs: {
                     chainId: defaultChainConfig.id,
-                    rpcs: defaultChainConfig.getRPCEndpointsByProtocol(RPCProtocol.HTTP),
+                    rpcs: defaultChainConfig.rpcEndpoints,
                 },
                 streamRegistryChainAddress: defaultChainConfig.contracts.StreamRegistry,
                 streamRegistryChainRPCs: {
                     chainId: defaultChainConfig.id,
-                    rpcs: defaultChainConfig.getRPCEndpointsByProtocol(RPCProtocol.HTTP),
+                    rpcs: defaultChainConfig.rpcEndpoints,
                 },
                 streamStorageRegistryChainAddress:
                     defaultChainConfig.contracts.StreamStorageRegistry,
