@@ -1,11 +1,11 @@
 import React from 'react'
 import Layout from '~/shared/components/Layout'
-import { MarketplaceHelmet } from '~/shared/components/Helmet'
+import Helmet from '~/components/Helmet'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 
 export const MarketplaceLoadingView = () => (
     <Layout>
-        <MarketplaceHelmet />
+        <Helmet />
         <LoadingIndicator loading />
     </Layout>
 )

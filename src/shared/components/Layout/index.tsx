@@ -6,8 +6,8 @@ import cx from 'classnames'
 import { COLORS, MAX_BODY_WIDTH } from '~/shared/utils/styled'
 import useScrollToTop from '~/shared/hooks/useScrollToTop'
 import useCurrentLocation from '~/shared/hooks/useCurrentLocation'
-import Nav from './Nav'
-import Footer from './Footer'
+import Footer from '~/components/Footer'
+import Nav from '~/components/Nav'
 import styles from './layout.pcss'
 
 const Inner = styled.div<{ $gray?: boolean }>`
@@ -33,6 +33,10 @@ type LayoutProps = {
     gray?: boolean
 }
 
+/**
+ * @deprecated Use `Layout` from `~/components/Layout`. This one is old and
+ * won't live for much longer.
+ */
 const Layout: FunctionComponent<LayoutProps> = ({
     theme = DefaultTheme,
     footer = true,

@@ -29,8 +29,8 @@ import {
 } from '~/shared/stores/streamEditor'
 import useDecodedStreamId from '~/shared/hooks/useDecodedStreamId'
 import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
-import Layout from '~/shared/components/Layout/Core'
-import { MarketplaceHelmet } from '~/shared/components/Helmet'
+import Layout from '~/components/Layout'
+import Helmet from '~/components/Helmet'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import { truncateStreamName } from '~/shared/utils/text'
 import { CopyButton } from '~/shared/components/CopyButton/CopyButton'
@@ -262,7 +262,7 @@ function StreamPageSwitch({ tab }: Props) {
          */
         return (
             <form onSubmit={defaultFormEventHandler}>
-                <Layout>
+                <Layout footer={null}>
                     <Header />
                     <LoadingIndicator loading />
                 </Layout>
@@ -273,7 +273,7 @@ function StreamPageSwitch({ tab }: Props) {
     if (loadError instanceof StreamNotFoundError) {
         return (
             <form onSubmit={defaultFormEventHandler}>
-                <Layout>
+                <Layout footer={null}>
                     <Header />
                     <LoadingIndicator />
                     <NotFoundPageContent />
@@ -285,7 +285,7 @@ function StreamPageSwitch({ tab }: Props) {
     if (loadError) {
         return (
             <form onSubmit={defaultFormEventHandler}>
-                <Layout>
+                <Layout footer={null}>
                     <Header />
                     <LoadingIndicator />
                     <GenericErrorPageContent />
@@ -298,7 +298,7 @@ function StreamPageSwitch({ tab }: Props) {
 
     return (
         <form onSubmit={editView ? onSubmit : defaultFormEventHandler}>
-            <Layout>
+            <Layout footer={null}>
                 <Header isNew={isNew} />
                 {editView && <EditPage isNew={isNew} />}
                 {tab === 'connect' && <ConnectPage />}
@@ -344,7 +344,7 @@ function Header({ isNew = false }: { isNew?: boolean }) {
 
     return (
         <>
-            <MarketplaceHelmet title={streamId ? `Stream ${streamId}` : 'New stream'} />
+            <Helmet title={streamId ? `Stream ${streamId}` : 'New stream'} />
             <DetailsPageHeader
                 backButtonLink={routes.streams.index()}
                 pageTitle={

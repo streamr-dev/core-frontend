@@ -2,9 +2,9 @@ import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import styles from '~/marketplace/containers/Projects/projects.pcss'
-import { NetworkHelmet } from '~/shared/components/Helmet'
-import Layout, { PageContainer } from '~/shared/components/Layout'
+import { NetworkHelmet } from '~/components/Helmet'
+import Layout from '~/components/Layout'
+import { PageContainer } from '~/shared/components/Layout'
 import { useSponsorship } from '~/hooks/useSponsorship'
 import { NoData } from '~/shared/components/NoData'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
@@ -13,7 +13,6 @@ import { WhiteBox, WhiteBoxPaddingStyles } from '~/shared/components/WhiteBox'
 import { NetworkSectionTitle } from '~/components/NetworkSectionTitle'
 import { HubAvatar } from '~/shared/components/AvatarImage'
 import { truncate } from '~/shared/utils/text'
-import Footer from '~/shared/components/Layout/Footer'
 import { ChartPeriod, NetworkChart } from '~/shared/components/NetworkChart/NetworkChart'
 import {
     formatLongDate,
@@ -23,8 +22,8 @@ import { truncateNumber } from '~/shared/utils/truncateNumber'
 import { errorToast } from '~/utils/toast'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { SponsorshipActionBar } from '~/components/ActionBars/SponsorshipActionBar'
-import { NetworkChartWrap } from '../components/NetworkUtils'
 import { useSponsorshipFundingHistory } from '~/hooks/useSponsorshipFundingHistory'
+import { NetworkChartWrap } from '../components/NetworkUtils'
 import { getSponsorshipStats } from '../getters/getSponsorshipStats'
 
 export const SingleSponsorshipPage = () => {
@@ -100,12 +99,7 @@ export const SingleSponsorshipPage = () => {
     const fundingEventsQuery = useSponsorshipFundingHistory(sponsorshipId)
 
     return (
-        <Layout
-            className={styles.projectsListPage}
-            framedClassName={styles.productsFramed}
-            innerClassName={styles.productsInner}
-            footer={false}
-        >
+        <Layout>
             <NetworkHelmet title="Sponsorship" />
             <LoadingIndicator
                 loading={sponsorshipQuery.isLoading || sponsorshipQuery.isFetching}
@@ -231,7 +225,6 @@ export const SingleSponsorshipPage = () => {
                     </SponsorshipGrid>
                 )}
             </PageContainer>
-            <Footer />
         </Layout>
     )
 }

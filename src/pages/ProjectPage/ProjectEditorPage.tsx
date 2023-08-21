@@ -1,5 +1,5 @@
 import React from 'react'
-import { MarketplaceHelmet } from '~/shared/components/Helmet'
+import Helmet from '~/components/Helmet'
 import Layout from '~/shared/components/Layout'
 import {
     useIsNewProject,
@@ -24,7 +24,7 @@ export default function ProjectEditorPage() {
 
     return (
         <Layout gray nav={<EditorNav />}>
-            <MarketplaceHelmet title={isNew ? 'Create a new project' : 'Edit project'} />
+            <Helmet title={isNew ? 'Create a new project' : 'Edit project'} />
             <DetailsPageHeader
                 pageTitle={
                     !!creator && (

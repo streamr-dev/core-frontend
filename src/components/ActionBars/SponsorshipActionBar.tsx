@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from 'react'
 import { toaster } from 'toasterhea'
+import styled from 'styled-components'
 import { SponsorshipElement } from '~/types/sponsorship'
 import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
@@ -27,7 +28,6 @@ import {
     SingleElementPageActionBarContainer,
     SingleElementPageActionBarTopPart,
 } from './NetworkActionBar.styles'
-import styled from 'styled-components'
 
 const joinSponsorshipModal = toaster(JoinSponsorshipModal, Layer.Modal)
 const fundSponsorshipModal = toaster(FundSponsorshipModal, Layer.Modal)

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
-import { MarketplaceHelmet } from '~/shared/components/Helmet'
+import Helmet from '~/components/Helmet'
 import { COLORS, DESKTOP, TABLET } from '~/shared/utils/styled'
 import Button from '~/shared/components/Button'
 import Layout from '~/shared/components/Layout'
@@ -114,7 +114,7 @@ const TableContainer = styled.div`
     background-color: white;
 `
 
-const NewStreamListingPage: React.FC = () => {
+const StreamListingPage: React.FC = () => {
     const [search, setSearch] = useState<string>('')
     const [orderBy, setOrderBy] = useState(DEFAULT_ORDER_BY)
     const [orderDirection, setOrderDirection] = useState(DEFAULT_ORDER_DIRECTION)
@@ -215,7 +215,7 @@ const NewStreamListingPage: React.FC = () => {
 
     return (
         <Layout innerClassName={styles.greyInner}>
-            <MarketplaceHelmet title="Streams" />
+            <Helmet title="Streams" />
             <ActionBarContainer>
                 <SearchBarWrap>
                     <SearchBar
@@ -299,4 +299,4 @@ const NewStreamListingPage: React.FC = () => {
     )
 }
 
-export default NewStreamListingPage
+export default StreamListingPage

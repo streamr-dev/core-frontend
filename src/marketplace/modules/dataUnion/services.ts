@@ -1,6 +1,6 @@
 import EventEmitter from 'events'
 import { SmartContractTransaction } from '~/shared/types/web3-types'
-import { ProjectId, DataUnionId } from '~/marketplace/types/project-types'
+import { ProjectId } from '~/marketplace/types/project-types'
 import { checkEthereumNetworkIsCorrect } from '~/shared/utils/web3'
 import TransactionError from '~/shared/errors/TransactionError'
 import Transaction from '~/shared/utils/Transaction'
@@ -59,7 +59,7 @@ export async function createSecret({
     name,
     chainId,
 }: {
-    dataUnionId: DataUnionId
+    dataUnionId: string
     name: string
     chainId: number
 }): Promise<Secret> {
@@ -72,7 +72,7 @@ export async function editSecret({
     name,
     chainId,
 }: {
-    dataUnionId: DataUnionId
+    dataUnionId: string
     id: string
     name: string
     chainId: number
@@ -96,7 +96,7 @@ export async function deleteSecret({
     id,
     chainId,
 }: {
-    dataUnionId: DataUnionId
+    dataUnionId: string
     id: string
     chainId: number
 }): Promise<Secret> {

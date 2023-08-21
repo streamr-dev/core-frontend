@@ -26,7 +26,7 @@ const LayoutFooter = styled(UnstyledLayoutFooter)`
 `
 
 const FooterColumns = styled(UnstyledFooterColumns)`
-    border-top: ${({ separate }) => (separate ? '1px' : '0')} solid #d8d8d8;
+    border-top: ${({ separate = false }) => (separate ? '1px' : '0')} solid #d8d8d8;
 `
 
 const Footer = ({ topBorder = false }) => (

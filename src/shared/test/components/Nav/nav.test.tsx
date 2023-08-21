@@ -1,7 +1,7 @@
 import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
 import { render, RenderResult, screen } from '@testing-library/react'
-import Nav from '~/shared/components/Layout/Nav'
+import Nav from '~/components/Nav'
 import { useWalletAccount, useEns } from '~/shared/stores/wallet'
 
 jest.mock('~/shared/stores/wallet', () => ({

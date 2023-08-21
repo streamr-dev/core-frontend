@@ -11,7 +11,7 @@ import {
     useCurrentProjectAbility,
 } from '~/shared/stores/projectAbilities'
 import Layout from '~/shared/components/Layout'
-import { MarketplaceHelmet } from '~/shared/components/Helmet'
+import Helmet from '~/components/Helmet'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import Button from '~/shared/components/Button'
@@ -156,7 +156,7 @@ export default function TabbedPage({ tab }: Props) {
 
     return (
         <Layout gray>
-            <MarketplaceHelmet title={name} />
+            <Helmet title={name} />
             <DetailsPageHeader
                 backButtonLink={routes.projects.index()}
                 pageTitle={

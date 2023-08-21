@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { truncate } from '~/shared/utils/text'
 import { MEDIUM } from '~/shared/utils/styled'
+
 export const Name = styled.div`
     font-weight: ${MEDIUM};
     line-height: 1em;

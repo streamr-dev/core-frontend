@@ -4,9 +4,9 @@ import styled, { css } from 'styled-components'
 import { Menu as UnstyledMenu, NavDropdown } from '@streamr/streamr-layout'
 import { AccordionBody, AccordionHeader } from 'reactstrap'
 import SvgIcon from '~/shared/components/SvgIcon'
-import { Avatarless, Name, Username } from '~/shared/components/Layout/User'
 import AvatarImage from '~/shared/components/AvatarImage'
 import { COLORS, DESKTOP, MEDIUM, REGULAR, TABLET } from '~/shared/utils/styled'
+import { Avatarless, Name, Username } from './User'
 
 export const MOBILE_LG = 576
 const CaretDownIcon = styled(SvgIcon)`

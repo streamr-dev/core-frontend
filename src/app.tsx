@@ -14,10 +14,10 @@ import AnalyticsTracker from '~/shared/components/AnalyticsTracker'
 import GenericErrorPage from '~/shared/components/GenericErrorPage'
 import ErrorPage from '~/shared/components/ErrorPage'
 import Analytics from '~/shared/utils/Analytics'
-import NewStreamListingPage from '~/pages/NewStreamListingPage'
+import StreamListingPage from '~/pages/StreamListingPage'
 import StreamPage from '~/pages/StreamPage'
 import ProjectPage from '~/pages/ProjectPage'
-import ProjectsPage from '~/marketplace/containers/Projects'
+import ProjectListingPage from '~/pages/ProjectListingPage'
 import NewProjectPage from '~/marketplace/containers/ProjectEditing/NewProjectPage'
 import EditProjectPage from '~/marketplace/containers/ProjectEditing/EditProjectPage'
 import { NetworkOverviewPage } from '~/pages/NetworkOverviewPage'
@@ -66,13 +66,13 @@ const App = () => (
                         <Globals />
                         <Routes>
                             <Route path="/hub/projects/*" errorElement={<ErrorPage />}>
-                                <Route index element={<ProjectsPage />} />
+                                <Route index element={<ProjectListingPage />} />
                                 <Route path="new" element={<NewProjectPage />} />
                                 <Route path=":id/edit" element={<EditProjectPage />} />
                                 <Route path=":id/*" element={<ProjectPage />} />
                             </Route>
                             <Route path="/hub/streams/*" errorElement={<ErrorPage />}>
-                                <Route index element={<NewStreamListingPage />} />
+                                <Route index element={<StreamListingPage />} />
                                 <Route path=":id/*" element={<StreamPage />} />
                             </Route>
                             {isFeatureEnabled(FeatureFlag.PhaseTwo) && (
