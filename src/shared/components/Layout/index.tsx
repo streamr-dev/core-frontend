@@ -33,6 +33,10 @@ type LayoutProps = {
     gray?: boolean
 }
 
+/**
+ * @deprecated Use `Layout` from `~/components/Layout`. This one is old and
+ * won't live for much longer.
+ */
 const Layout: FunctionComponent<LayoutProps> = ({
     theme = DefaultTheme,
     footer = true,
