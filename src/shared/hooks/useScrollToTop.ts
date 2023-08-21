@@ -1,13 +1,16 @@
-import { useEffect } from 'react'
+import { useRef } from 'react'
 import { useLocation } from 'react-router-dom'
-export const scrollTop = () => {
-    if (typeof window !== 'undefined') {
-        window.scroll(0, 0)
-    }
-}
+
 export default function useScrollToTop() {
     const { pathname } = useLocation()
-    useEffect(() => {
-        scrollTop()
-    }, [pathname])
+
+    const pathnameRef = useRef(pathname)
+
+    if (pathname !== pathnameRef.current) {
+        pathnameRef.current = pathname
+
+        if (typeof window !== 'undefined') {
+            window.scroll(0, 0)
+        }
+    }
 }
