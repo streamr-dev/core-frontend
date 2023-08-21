@@ -23,8 +23,8 @@ import { truncateNumber } from '~/shared/utils/truncateNumber'
 import { errorToast } from '~/utils/toast'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { SponsorshipActionBar } from '~/components/ActionBars/SponsorshipActionBar'
-import { NetworkChartWrap } from '../components/NetworkUtils'
 import { useSponsorshipFundingHistory } from '~/hooks/useSponsorshipFundingHistory'
+import { NetworkChartWrap } from '../components/NetworkUtils'
 import { getSponsorshipStats } from '../getters/getSponsorshipStats'
 
 export const SingleSponsorshipPage = () => {

@@ -24,13 +24,13 @@ import useIsMounted from '~/shared/hooks/useIsMounted'
 import { createSponsorship } from '~/services/sponsorships'
 import routes from '~/routes'
 import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
-import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
-import { StreamInfoCell } from '../components/NetworkUtils'
 import { SponsorshipElement } from '~/types/sponsorship'
 import {
     useAllSponsorshipsQuery,
     useMySponsorshipsQuery,
 } from '~/hooks/useSponsorshipsList'
+import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
+import { StreamInfoCell } from '../components/NetworkUtils'
 import {
     getTokenAndBalanceForSponsorship,
     TokenAndBalanceForSponsorship,

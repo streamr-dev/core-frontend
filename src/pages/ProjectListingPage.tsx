@@ -1,7 +1,7 @@
 import React, { useReducer } from 'react'
-import Layout from '~/shared/components/Layout'
 import isEqual from 'lodash/isEqual'
 import { useInfiniteQuery } from '@tanstack/react-query'
+import Layout from '~/shared/components/Layout'
 import { MarketplaceHelmet } from '~/shared/components/Helmet'
 import ActionBar from '~/components/ActionBar'
 import { useWalletAccount } from '~/shared/stores/wallet'
