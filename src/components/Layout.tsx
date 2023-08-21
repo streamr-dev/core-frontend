@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
-import Nav from '~/shared/components/Layout/Nav'
+import Nav from '~/components/Nav'
 import Footer from '~/components/Footer'
 import useScrollToTop from '~/shared/hooks/useScrollToTop'
 import Helmet from './Helmet'

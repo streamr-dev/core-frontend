@@ -7,7 +7,7 @@ import { COLORS, MAX_BODY_WIDTH } from '~/shared/utils/styled'
 import useScrollToTop from '~/shared/hooks/useScrollToTop'
 import useCurrentLocation from '~/shared/hooks/useCurrentLocation'
 import Footer from '~/components/Footer'
-import Nav from './Nav'
+import Nav from '~/components/Nav'
 import styles from './layout.pcss'
 
 const Inner = styled.div<{ $gray?: boolean }>`
