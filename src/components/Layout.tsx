@@ -84,13 +84,6 @@ const GlobalStyles = createGlobalStyle`
     }
 `
 
-export function SecondaryLayout({
-    innerBackgroundColor = '#EFEFEF',
-    ...props
-}: LayoutProps) {
-    return <Layout {...props} innerBackgroundColor={innerBackgroundColor} />
-}
-
 export const LayoutColumn = styled.div`
     margin: 0 auto;
     max-width: ${MAX_BODY_WIDTH}px;
