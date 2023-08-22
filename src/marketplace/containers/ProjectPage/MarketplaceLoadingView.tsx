@@ -1,5 +1,5 @@
 import React from 'react'
-import Layout from '~/shared/components/Layout'
+import Layout from '~/components/Layout'
 import Helmet from '~/components/Helmet'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 

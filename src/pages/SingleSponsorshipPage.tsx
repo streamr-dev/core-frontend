@@ -3,8 +3,7 @@ import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { NetworkHelmet } from '~/components/Helmet'
-import Layout from '~/components/Layout'
-import { PageContainer } from '~/shared/components/Layout'
+import Layout, { LayoutColumn } from '~/components/Layout'
 import { useSponsorship } from '~/hooks/useSponsorship'
 import { NoData } from '~/shared/components/NoData'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
@@ -105,7 +104,7 @@ export const SingleSponsorshipPage = () => {
                 loading={sponsorshipQuery.isLoading || sponsorshipQuery.isFetching}
             />
             {!!sponsorship && <SponsorshipActionBar sponsorship={sponsorship} />}
-            <PageContainer>
+            <LayoutColumn>
                 {sponsorship == null ? (
                     <>
                         {!(sponsorshipQuery.isLoading || sponsorshipQuery.isFetching) && (
@@ -224,7 +223,7 @@ export const SingleSponsorshipPage = () => {
                         />
                     </SponsorshipGrid>
                 )}
-            </PageContainer>
+            </LayoutColumn>
         </Layout>
     )
 }

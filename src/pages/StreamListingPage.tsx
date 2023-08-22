@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import Helmet from '~/components/Helmet'
 import { COLORS, DESKTOP, TABLET } from '~/shared/utils/styled'
 import Button from '~/shared/components/Button'
-import Layout from '~/shared/components/Layout'
+import Layout from '~/components/Layout'
 import SearchBar from '~/shared/components/SearchBar'
 import {
     IndexerOrderBy,
@@ -26,10 +26,8 @@ import {
     SearchBarWrap,
 } from '~/components/ActionBar.styles'
 import { PageWrap } from '~/shared/components/PageWrap'
-import styles from '~/shared/components/Layout/layout.pcss'
 import StreamTable, { OrderBy, OrderDirection } from '~/shared/components/StreamTable'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
-import StreamTable from '~/shared/components/StreamTable'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { RouteMemoryKey, useRecall, useRemember } from '~/shared/stores/routeMemory'
 import { useWalletAccount } from '~/shared/stores/wallet'
@@ -214,7 +212,7 @@ const StreamListingPage: React.FC = () => {
     }, [streamsQuery.isError, orderBy])
 
     return (
-        <Layout innerClassName={styles.greyInner}>
+        <Layout>
             <Helmet title="Streams" />
             <ActionBarContainer>
                 <SearchBarWrap>

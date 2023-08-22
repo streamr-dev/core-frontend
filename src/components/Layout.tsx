@@ -1,27 +1,32 @@
 import React, { ReactNode } from 'react'
-import styled, { createGlobalStyle } from 'styled-components'
+import styled, { createGlobalStyle, css } from 'styled-components'
 import Nav from '~/components/Nav'
 import Footer from '~/components/Footer'
 import useScrollToTop from '~/shared/hooks/useScrollToTop'
-import Helmet from './Helmet'
+import { MAX_BODY_WIDTH } from '~/shared/utils/styled'
+import Helmet from '~/components/Helmet'
+
+interface LayoutProps {
+    children?: ReactNode
+    footer?: ReactNode
+    nav?: ReactNode
+    columnize?: boolean
+    pageTitle?: string
+    innerBackgroundColor?: string
+    outerBackgroundColor?: string
+    rootBackgroundColor?: string
+}
 
 export default function Layout({
     children,
     footer = <Footer />,
     nav = <Nav />,
+    columnize = false,
     pageTitle,
     innerBackgroundColor,
     outerBackgroundColor,
     rootBackgroundColor = '#f5f5f5',
-}: {
-    children?: ReactNode
-    footer?: ReactNode
-    nav?: ReactNode
-    pageTitle?: string
-    innerBackgroundColor?: string
-    outerBackgroundColor?: string
-    rootBackgroundColor?: string
-}) {
+}: LayoutProps) {
     useScrollToTop()
 
     return (
@@ -31,7 +36,9 @@ export default function Layout({
             <LayoutRoot $bg={rootBackgroundColor}>
                 <LayoutOuter $bg={outerBackgroundColor}>
                     {nav}
-                    <LayoutInner $bg={innerBackgroundColor}>{children}</LayoutInner>
+                    <LayoutInner $bg={innerBackgroundColor}>
+                        {columnize ? <LayoutColumn>{children}</LayoutColumn> : children}
+                    </LayoutInner>
                 </LayoutOuter>
                 {footer}
             </LayoutRoot>
@@ -59,7 +66,37 @@ export const LayoutInner = styled.div<{ $bg?: string }>`
 `
 
 const GlobalStyles = createGlobalStyle`
+    body a {
+        text-decoration: none;
+    }
+
+    p a {
+        text-decoration: underline;
+    }
+
     strong {
         font-weight: 500;
+    }
+
+    .react-loading-skeleton {
+        animation: none !important;
+        background: #adadad none;
+    }
+`
+
+export function SecondaryLayout({
+    innerBackgroundColor = '#EFEFEF',
+    ...props
+}: LayoutProps) {
+    return <Layout {...props} innerBackgroundColor={innerBackgroundColor} />
+}
+
+export const LayoutColumn = styled.div`
+    margin: 0 auto;
+    max-width: ${MAX_BODY_WIDTH}px;
+    padding: 0 24px;
+
+    @media (min-width: ${MAX_BODY_WIDTH + 48}px) {
+        padding: 0;
     }
 `

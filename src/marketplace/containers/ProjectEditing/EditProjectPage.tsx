@@ -22,9 +22,8 @@ import {
     ProjectStateContextProvider,
 } from '~/marketplace/contexts/ProjectStateContext'
 import usePreventNavigatingAway from '~/shared/hooks/usePreventNavigatingAway'
-import Layout from '~/shared/components/Layout'
+import Layout from '~/components/Layout'
 import { EditorNav } from '~/marketplace/containers/ProjectEditing/EditorNav'
-import styles from '~/shared/components/Layout/layout.pcss'
 import Helmet from '~/components/Helmet'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import { ProjectEditor } from '~/marketplace/containers/ProjectEditing/ProjectEditor'
@@ -111,7 +110,6 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
                     editedProductHasChanged={!isEqual(loadedProject, project)}
                 />
             }
-            innerClassName={styles.greyInner}
         >
             <Helmet title="Edit project" />
             <DetailsPageHeader

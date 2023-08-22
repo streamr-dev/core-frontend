@@ -1,8 +1,7 @@
 import React from 'react'
 import { toaster } from 'toasterhea'
 import Button from '~/shared/components/Button'
-import Helmet from '~/components/Helmet'
-import Layout from '~/shared/components/Layout'
+import Layout from '~/components/Layout'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { PageWrap } from '~/shared/components/PageWrap'
 import { Layer } from '~/utils/Layer'
@@ -24,8 +23,7 @@ const joinSponsorshipModal = toaster(JoinSponsorshipModal, Layer.Modal)
 
 export default function OperatorsPage() {
     return (
-        <Layout gray>
-            <Helmet title="Streams" />
+        <Layout pageTitle="Operators">
             <LoadingIndicator />
             <PageWrap>
                 <Button
