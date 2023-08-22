@@ -1,7 +1,7 @@
 import React from 'react'
 import { useRouteError } from 'react-router-dom'
-import NotFoundPage from '~/shared/components/NotFoundPage'
-import GenericErrorPage from '~/shared/components/GenericErrorPage'
+import NotFoundPage from '~/pages/NotFoundPage'
+import GenericErrorPage from '~/pages/GenericErrorPage'
 import ResourceNotFoundError from '~/shared/errors/ResourceNotFoundError'
 
 export default function ErrorPage() {

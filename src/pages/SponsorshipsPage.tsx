@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
-import Layout from '~/components/Layout'
-import { PageContainer } from '~/shared/components/Layout'
+import Layout, { LayoutColumn } from '~/components/Layout'
 import { NetworkHelmet } from '~/components/Helmet'
 import {
     WhiteBox,
@@ -140,7 +139,7 @@ export const SponsorshipsPage = () => {
                     </Button>
                 }
             />
-            <PageContainer>
+            <LayoutColumn>
                 <SponsorshipsTableWrap>
                     <div className="title">
                         <NetworkSectionTitle>
@@ -236,7 +235,7 @@ export const SponsorshipsPage = () => {
                         Load more
                     </LoadMoreButton>
                 )}
-            </PageContainer>
+            </LayoutColumn>
         </Layout>
     )
 }

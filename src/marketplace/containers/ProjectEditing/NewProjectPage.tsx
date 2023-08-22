@@ -4,8 +4,7 @@ import qs from 'query-string'
 import { useLocation } from 'react-router-dom'
 import '~/marketplace/types/project-types'
 import { ProjectType } from '~/shared/types'
-import Layout from '~/shared/components/Layout'
-import Helmet from '~/components/Helmet'
+import Layout from '~/components/Layout'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import { EditorNav } from '~/marketplace/containers/ProjectEditing/EditorNav'
 import {
@@ -17,7 +16,6 @@ import {
     ValidationContextProvider,
 } from '~/marketplace/containers/ProductController/ValidationContextProvider'
 import { ProjectEditor } from '~/marketplace/containers/ProjectEditing/ProjectEditor'
-import styles from '~/shared/components/Layout/layout.pcss'
 import usePreventNavigatingAway from '~/shared/hooks/usePreventNavigatingAway'
 import {
     ProjectControllerContext,
@@ -64,8 +62,7 @@ const UnstyledNewProjectPage = ({ className }: Props) => {
     }, [project])
 
     return (
-        <Layout nav={<EditorNav isNewProject={true} />} innerClassName={styles.greyInner}>
-            <Helmet title="Create a new project" />
+        <Layout nav={<EditorNav isNewProject />} pageTitle="Create a new project">
             <DetailsPageHeader
                 pageTitle={pageTitle}
                 rightComponent={<ProjectLinkTabs />}

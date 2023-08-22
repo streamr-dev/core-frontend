@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import Layout from '~/components/Layout'
-import { PageContainer } from '~/shared/components/Layout'
 import { NetworkHelmet } from '~/components/Helmet'
 import {
     WhiteBox,
@@ -48,23 +47,21 @@ export const NetworkOverviewPage = () => {
     ]
 
     return (
-        <Layout>
+        <Layout columnize>
             <NetworkHelmet title="Network Overview" />
-            <PageContainer>
-                <NetworkStats>
-                    <div className="title">
-                        <NetworkSectionTitle>Network stats</NetworkSectionTitle>
-                    </div>
-                    <WhiteBoxSeparator />
-                    <div className="stat-box-wrap">
-                        <StatsBox stats={stubNetworkStats} columns={3} />
-                    </div>
-                </NetworkStats>
-                <MyOperatorSummary />
-                <MyDelegationsSummary />
-                <MyDelegationsTable />
-                <MySponsorshipsTable />
-            </PageContainer>
+            <NetworkStats>
+                <div className="title">
+                    <NetworkSectionTitle>Network stats</NetworkSectionTitle>
+                </div>
+                <WhiteBoxSeparator />
+                <div className="stat-box-wrap">
+                    <StatsBox stats={stubNetworkStats} columns={3} />
+                </div>
+            </NetworkStats>
+            <MyOperatorSummary />
+            <MyDelegationsSummary />
+            <MyDelegationsTable />
+            <MySponsorshipsTable />
         </Layout>
     )
 }

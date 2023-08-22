@@ -9,10 +9,10 @@ import '~/utils/setupSnippets'
 import StreamrClientProvider from '~/shared/components/StreamrClientProvider'
 import { Provider as ModalPortalProvider } from '~/shared/contexts/ModalPortal'
 import { Provider as ModalProvider } from '~/shared/contexts/ModalApi'
-import NotFoundPage from '~/shared/components/NotFoundPage'
+import NotFoundPage from '~/pages/NotFoundPage'
 import AnalyticsTracker from '~/shared/components/AnalyticsTracker'
-import GenericErrorPage from '~/shared/components/GenericErrorPage'
-import ErrorPage from '~/shared/components/ErrorPage'
+import GenericErrorPage from '~/pages/GenericErrorPage'
+import ErrorPage from '~/pages/ErrorPage'
 import Analytics from '~/shared/utils/Analytics'
 import StreamListingPage from '~/pages/StreamListingPage'
 import StreamPage from '~/pages/StreamPage'
@@ -50,7 +50,12 @@ const MiscRouter = () => [
         element={<GenericErrorPage />}
         key="GenericErrorPage"
     />,
-    <Route errorElement={<ErrorPage />} element={<NotFoundPage />} key="NotFoundPage" />,
+    <Route
+        errorElement={<ErrorPage />}
+        path="*"
+        element={<NotFoundPage />}
+        key="NotFoundPage"
+    />,
 ]
 
 // Create client for 'react-query'

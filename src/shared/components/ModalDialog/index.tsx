@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react'
-import styled, { css } from 'styled-components'
+import styled, { createGlobalStyle, css } from 'styled-components'
 import ReactModal2 from 'react-modal2'
-import BodyClass, { NO_SCROLL } from '~/shared/components/BodyClass'
 import './accessibility'
 export type Props = {
     fullpage?: boolean
@@ -31,6 +30,14 @@ const Fullpage = styled.div<{ noScroll: boolean }>`
         `}
 `
 
+const NoScrollStyles = createGlobalStyle`
+    body {
+        overflow: hidden !important;
+        overflow-y: hidden !important;
+        overflow-x: hidden !important;
+    }
+`
+
 const ModalDialog = ({
     onClose,
     children,
@@ -46,7 +53,7 @@ const ModalDialog = ({
         modalClassName={className}
         {...otherProps}
     >
-        <BodyClass className={NO_SCROLL} />
+        <NoScrollStyles />
         {fullpage ? <Fullpage noScroll={noScroll}>{children}</Fullpage> : children}
     </ReactModal2>
 )

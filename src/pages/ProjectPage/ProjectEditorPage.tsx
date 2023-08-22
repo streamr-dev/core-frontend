@@ -1,6 +1,5 @@
 import React from 'react'
-import Helmet from '~/components/Helmet'
-import Layout from '~/shared/components/Layout'
+import Layout from '~/components/Layout'
 import {
     useIsNewProject,
     useIsProjectBusy,
@@ -23,8 +22,10 @@ export default function ProjectEditorPage() {
     const busy = useIsProjectBusy()
 
     return (
-        <Layout gray nav={<EditorNav />}>
-            <Helmet title={isNew ? 'Create a new project' : 'Edit project'} />
+        <Layout
+            nav={<EditorNav />}
+            pageTitle={isNew ? 'Create a new project' : 'Edit project'}
+        >
             <DetailsPageHeader
                 pageTitle={
                     !!creator && (
