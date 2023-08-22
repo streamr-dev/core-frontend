@@ -24,7 +24,6 @@ import {
 import usePreventNavigatingAway from '~/shared/hooks/usePreventNavigatingAway'
 import Layout from '~/components/Layout'
 import { EditorNav } from '~/marketplace/containers/ProjectEditing/EditorNav'
-import Helmet from '~/components/Helmet'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import { ProjectEditor } from '~/marketplace/containers/ProjectEditing/ProjectEditor'
 import {
@@ -110,8 +109,8 @@ const UnstyledEditProjectPage: FunctionComponent = () => {
                     editedProductHasChanged={!isEqual(loadedProject, project)}
                 />
             }
+            pageTitle="Edit project"
         >
-            <Helmet title="Edit project" />
             <DetailsPageHeader
                 pageTitle={pageTitle}
                 rightComponent={<ProjectLinkTabs />}

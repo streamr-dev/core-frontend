@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import Helmet from '~/components/Helmet'
 import { COLORS, DESKTOP, TABLET } from '~/shared/utils/styled'
 import Button from '~/shared/components/Button'
 import Layout from '~/components/Layout'
@@ -212,8 +211,7 @@ const StreamListingPage: React.FC = () => {
     }, [streamsQuery.isError, orderBy])
 
     return (
-        <Layout>
-            <Helmet title="Streams" />
+        <Layout pageTitle="Streams">
             <ActionBarContainer>
                 <SearchBarWrap>
                     <SearchBar

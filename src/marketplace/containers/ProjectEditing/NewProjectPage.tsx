@@ -5,7 +5,6 @@ import { useLocation } from 'react-router-dom'
 import '~/marketplace/types/project-types'
 import { ProjectType } from '~/shared/types'
 import Layout from '~/components/Layout'
-import Helmet from '~/components/Helmet'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import { EditorNav } from '~/marketplace/containers/ProjectEditing/EditorNav'
 import {
@@ -63,8 +62,7 @@ const UnstyledNewProjectPage = ({ className }: Props) => {
     }, [project])
 
     return (
-        <Layout nav={<EditorNav isNewProject={true} />}>
-            <Helmet title="Create a new project" />
+        <Layout nav={<EditorNav isNewProject />} pageTitle="Create a new project">
             <DetailsPageHeader
                 pageTitle={pageTitle}
                 rightComponent={<ProjectLinkTabs />}
