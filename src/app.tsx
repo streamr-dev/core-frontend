@@ -50,7 +50,12 @@ const MiscRouter = () => [
         element={<GenericErrorPage />}
         key="GenericErrorPage"
     />,
-    <Route errorElement={<ErrorPage />} element={<NotFoundPage />} key="NotFoundPage" />,
+    <Route
+        errorElement={<ErrorPage />}
+        path="*"
+        element={<NotFoundPage />}
+        key="NotFoundPage"
+    />,
 ]
 
 // Create client for 'react-query'
