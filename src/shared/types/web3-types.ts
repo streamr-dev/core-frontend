@@ -4,7 +4,6 @@ import Transaction from '~/shared/utils/Transaction'
 import TransactionError from '~/shared/errors/TransactionError'
 import { ProjectId } from '~/marketplace/types/project-types'
 import { NumberString, TransactionState, TransactionType } from './common-types'
-import { RPCProtocol } from '@streamr/config'
 export type Hash = string
 export type Address = string
 export type Receipt = TransactionReceipt
