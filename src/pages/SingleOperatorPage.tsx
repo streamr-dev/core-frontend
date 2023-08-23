@@ -1,7 +1,9 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import sumBy from 'lodash/sumBy'
+import moment from 'moment'
 import styles from '~/marketplace/containers/Projects/projects.pcss'
 import { NetworkHelmet } from '~/shared/components/Helmet'
 import Layout, { PageContainer } from '~/shared/components/Layout'
@@ -22,10 +24,13 @@ import { truncateNumber } from '~/shared/utils/truncateNumber'
 import { errorToast } from '~/utils/toast'
 import { BN } from '~/utils/bn'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import { StatsLabel, StatsValue } from '~/shared/components/StatsBox/StatsBox'
 import { useSponsorshipFundingHistory } from '~/hooks/useSponsorshipFundingHistory'
-import { OperatorStake } from '~/types/operator'
+import { OperatorElement, OperatorStake } from '~/types/operator'
 import { useOperator } from '~/hooks/useOperator'
 import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
+import { getStakeForAddress } from '~/utils/delegation'
 import { NetworkChartWrap } from '../components/NetworkUtils'
 import { getOperatorStats } from '../getters/getOperatorStats'
 
@@ -33,6 +38,7 @@ export const SingleOperatorPage = () => {
     const operatorId = useParams().id
     const operatorQuery = useOperator(operatorId || '')
     const operator = operatorQuery.data
+    const walletAddress = useWalletAccount()
 
     const [selectedDataSource, setSelectedDataSource] = useState<string>('totalValue')
     const [selectedPeriod, setSelectedPeriod] = useState<string>(ChartPeriod.SevenDays)
@@ -53,6 +59,15 @@ export const SingleOperatorPage = () => {
             }
         },
     })
+
+    const myStakeAmount = useMemo(() => {
+        return getStakeForAddress(walletAddress, operator)
+    }, [operator, walletAddress])
+
+    const myDelegationPercentage = useMemo(() => {
+        const myShare = myStakeAmount.dividedBy(operator?.poolValue || 1)
+        return myShare.multipliedBy(100)
+    }, [operator, myStakeAmount])
 
     const tooltipPrefix = useMemo(() => {
         switch (selectedDataSource) {
@@ -91,8 +106,6 @@ export const SingleOperatorPage = () => {
         [selectedDataSource],
     )
 
-    const fundingEventsQuery = useSponsorshipFundingHistory(operatorId)
-
     return (
         <Layout
             className={styles.projectsListPage}
@@ -113,42 +126,61 @@ export const SingleOperatorPage = () => {
                         )}
                     </>
                 ) : (
-                    <SponsorshipGrid>
-                        <OverviewCharts>
-                            <div className="title">
-                                <NetworkSectionTitle>Overview charts</NetworkSectionTitle>
-                                {/*<SvgIcon
-                                    name="fullScreen"
-                                    className="icon"
-                                    onClick={() => alert('open fullscreen mode')}
-                                />*/}
-                            </div>
-                            <NetworkChartWrap>
-                                <NetworkChart
-                                    graphData={chartQuery?.data || []}
-                                    isLoading={
-                                        chartQuery.isLoading || chartQuery.isFetching
-                                    }
-                                    tooltipValuePrefix={tooltipPrefix}
-                                    dataSources={[
-                                        { label: 'Total value', value: 'totalValue' },
-                                        {
-                                            label: 'Cumulative earnings',
-                                            value: 'cumulativeEarnings',
-                                        },
-                                    ]}
-                                    onDataSourceChange={setSelectedDataSource}
-                                    onPeriodChange={setSelectedPeriod}
-                                    selectedDataSource={selectedDataSource}
-                                    selectedPeriod={selectedPeriod as ChartPeriod}
-                                    xAxisDisplayFormatter={formatShortDate}
-                                    yAxisAxisDisplayFormatter={formatYAxisValue}
-                                    tooltipLabelFormatter={formatLongDate}
-                                    tooltipValueFormatter={formatTooltipValue}
-                                />
-                            </NetworkChartWrap>
-                        </OverviewCharts>
-                        <OperatorsContainer>TODO: My delegation</OperatorsContainer>
+                    <OperatorGrid>
+                        <ChartGrid>
+                            <OverviewCharts>
+                                <div className="title">
+                                    <NetworkSectionTitle>
+                                        Overview charts
+                                    </NetworkSectionTitle>
+                                </div>
+                                <NetworkChartWrap>
+                                    <NetworkChart
+                                        graphData={chartQuery?.data || []}
+                                        isLoading={
+                                            chartQuery.isLoading || chartQuery.isFetching
+                                        }
+                                        tooltipValuePrefix={tooltipPrefix}
+                                        dataSources={[
+                                            { label: 'Total value', value: 'totalValue' },
+                                            {
+                                                label: 'Cumulative earnings',
+                                                value: 'cumulativeEarnings',
+                                            },
+                                        ]}
+                                        onDataSourceChange={setSelectedDataSource}
+                                        onPeriodChange={setSelectedPeriod}
+                                        selectedDataSource={selectedDataSource}
+                                        selectedPeriod={selectedPeriod as ChartPeriod}
+                                        xAxisDisplayFormatter={formatShortDate}
+                                        yAxisAxisDisplayFormatter={formatYAxisValue}
+                                        tooltipLabelFormatter={formatLongDate}
+                                        tooltipValueFormatter={formatTooltipValue}
+                                    />
+                                </NetworkChartWrap>
+                            </OverviewCharts>
+                            <MyDelegationContainer>
+                                <DelegationCell>
+                                    <NetworkSectionTitle>
+                                        My delegation
+                                    </NetworkSectionTitle>
+                                </DelegationCell>
+                                <DelegationSeparator />
+                                <DelegationCell>
+                                    <StatsLabel>Current value</StatsLabel>
+                                    <StatsValue>{myStakeAmount.toString()}</StatsValue>
+                                </DelegationCell>
+                                <DelegationSeparator />
+                                <DelegationCell>
+                                    <StatsLabel>
+                                        Share of operator&apos;s total value
+                                    </StatsLabel>
+                                    <StatsValue>
+                                        {`${myDelegationPercentage.toString()}%`}
+                                    </StatsValue>
+                                </DelegationCell>
+                            </MyDelegationContainer>
+                        </ChartGrid>
                         <SponsorshipsTable>
                             <ScrollTable
                                 elements={operator.stakes}
@@ -172,9 +204,9 @@ export const SingleOperatorPage = () => {
                                     {
                                         displayName: 'APY',
                                         valueMapper: (element) =>
-                                            BN(element.sponsorship?.spotAPY)
+                                            `${BN(element.sponsorship?.spotAPY)
                                                 .multipliedBy(100)
-                                                .toString(),
+                                                .toString()}%`,
                                         align: 'start',
                                         isSticky: false,
                                         key: 'apy',
@@ -182,7 +214,10 @@ export const SingleOperatorPage = () => {
                                     {
                                         displayName: 'Funded until',
                                         valueMapper: (element) =>
-                                            element.sponsorship?.projectedInsolvency,
+                                            moment(
+                                                element.sponsorship?.projectedInsolvency *
+                                                    1000,
+                                            ).format('YYYY-MM-DD'),
                                         align: 'start',
                                         isSticky: false,
                                         key: 'fundedUntil',
@@ -191,37 +226,35 @@ export const SingleOperatorPage = () => {
                                 title="Sponsorships"
                             />
                         </SponsorshipsTable>
-                        <div>
-                            <ScrollTable
-                                elements={operator.slashingEvents}
-                                columns={[
-                                    {
-                                        displayName: 'Stream ID',
-                                        valueMapper: (element) => element.streamId || '',
-                                        align: 'start',
-                                        isSticky: true,
-                                        key: 'id',
-                                    },
-                                    {
-                                        displayName: 'Date',
-                                        valueMapper: (element) => element.date,
-                                        align: 'start',
-                                        isSticky: false,
-                                        key: 'date',
-                                    },
-                                    {
-                                        displayName: 'Slashed',
-                                        valueMapper: (element) =>
-                                            element.amount.toString(),
-                                        align: 'start',
-                                        isSticky: false,
-                                        key: 'slashed',
-                                    },
-                                ]}
-                                title="Slashing history"
-                            />
-                        </div>
-                        <div>
+                        <ScrollTable
+                            elements={operator.slashingEvents}
+                            columns={[
+                                {
+                                    displayName: 'Stream ID',
+                                    valueMapper: (element) => element.streamId || '',
+                                    align: 'start',
+                                    isSticky: true,
+                                    key: 'id',
+                                },
+                                {
+                                    displayName: 'Date',
+                                    valueMapper: (element) =>
+                                        moment(element.date).format('YYYY-MM-DD'),
+                                    align: 'start',
+                                    isSticky: false,
+                                    key: 'date',
+                                },
+                                {
+                                    displayName: 'Slashed',
+                                    valueMapper: (element) => element.amount.toString(),
+                                    align: 'start',
+                                    isSticky: false,
+                                    key: 'slashed',
+                                },
+                            ]}
+                            title="Slashing history"
+                        />
+                        {walletAddress?.toLowerCase() === operator.owner && (
                             <ScrollTable
                                 elements={operator.nodes as unknown as object[]}
                                 columns={[
@@ -233,10 +266,10 @@ export const SingleOperatorPage = () => {
                                         key: 'id',
                                     },
                                 ]}
-                                title="Operator’s node addresses"
+                                title="Operator's node addresses"
                             />
-                        </div>
-                    </SponsorshipGrid>
+                        )}
+                    </OperatorGrid>
                 )}
             </PageContainer>
             <Footer />
@@ -244,35 +277,29 @@ export const SingleOperatorPage = () => {
     )
 }
 
-const SponsorshipGrid = styled.div`
+const OperatorGrid = styled.div`
     display: grid;
     gap: 20px;
-    grid-template-columns: 1fr;
-    grid-template-rows: min-content min-content min-content;
     margin-top: 20px;
 
     @media (${TABLET}) {
         margin-top: 60px;
     }
+`
+
+const ChartGrid = styled.div`
+    display: grid;
+    gap: 20px;
+    grid-template-columns: unset;
+    grid-template-rows: auto;
 
     @media (${LAPTOP}) {
-        grid-template-columns: 66.66% 33.33%;
-        grid-template-rows: max-content max-content;
+        grid-template-columns: 2fr 1fr;
+        grid-template-rows: auto;
     }
 `
 
 const OverviewCharts = styled(WhiteBox)`
-    grid-column-start: 1;
-    grid-column-end: 2;
-    grid-row-start: 1;
-    grid-row-end: 2;
-    @media (${LAPTOP}) {
-        grid-column-start: 1;
-        grid-column-end: 2;
-        grid-row-start: 1;
-        grid-row-end: 2;
-    }
-
     .icon {
         height: 24px;
         color: ${COLORS.primary};
@@ -287,35 +314,17 @@ const OverviewCharts = styled(WhiteBox)`
     }
 `
 
-const OperatorsContainer = styled.div`
-    grid-column-start: 1;
-    grid-column-end: 2;
-    grid-row-start: 2;
-    grid-row-end: 3;
-    @media (${LAPTOP}) {
-        grid-column-start: 2;
-        grid-column-end: 3;
-        grid-row-start: 1;
-        grid-row-end: 3;
-    }
+const MyDelegationContainer = styled(WhiteBox)`
+    padding: 32px 0;
+    height: fit-content;
 `
 
-const OperatorCell = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
+const DelegationSeparator = styled.div`
+    border-top: 1px solid #f5f5f5;
 `
 
-const SponsorshipsTable = styled.div`
-    grid-column-start: 1;
-    grid-column-end: 2;
-    grid-row-start: 3;
-    grid-row-end: 4;
-    @media (${LAPTOP}) {
-        grid-column-start: 1;
-        grid-column-end: 2;
-        grid-row-start: 2;
-        grid-row-end: 3;
-    }
+const DelegationCell = styled.div`
+    padding: 18px 40px 26px 40px;
 `
+
+const SponsorshipsTable = styled.div``

@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React, { FunctionComponent, useMemo } from 'react'
 import { toaster } from 'toasterhea'
 import { SponsorshipElement } from '~/types/sponsorship'
 import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
@@ -6,15 +6,18 @@ import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
 import JoinSponsorshipModal from '~/modals/JoinSponsorshipModal'
 import FundSponsorshipModal from '~/modals/FundSponsorshipModal'
+import DelegateFundsModal from '~/modals/DelegateFundsModal'
 import { BlackTooltip } from '~/shared/components/Tooltip/Tooltip'
 import Button from '~/shared/components/Button'
 import useCopy from '~/shared/hooks/useCopy'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
+import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import { Layer } from '~/utils/Layer'
 import routes from '~/routes'
 import { OperatorElement } from '~/types/operator'
 import { calculateOperatorSpotAPY } from '~/utils/apy'
+import { getStakeForAddress } from '~/utils/delegation'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -29,13 +32,19 @@ import {
     SingleElementPageActionBarTopPart,
 } from './NetworkActionBar.styles'
 
-const joinSponsorshipModal = toaster(JoinSponsorshipModal, Layer.Modal)
-const fundSponsorshipModal = toaster(FundSponsorshipModal, Layer.Modal)
+const delegateFundsModal = toaster(DelegateFundsModal, Layer.Modal)
+const undelegateFundsModal = toaster(DelegateFundsModal, Layer.Modal)
 
 export const OperatorActionBar: FunctionComponent<{
     operator: OperatorElement
 }> = ({ operator }) => {
     const { copy } = useCopy()
+    const { count: liveNodeCount } = useOperatorLiveNodes(operator.id)
+
+    const ownerDelegationPercentage = useMemo(() => {
+        const stake = getStakeForAddress(operator.owner, operator)
+        return stake.dividedBy(operator.poolValue).multipliedBy(100)
+    }, [operator])
 
     // TODO when Mariusz will merge his hook & getter for fetching Token information - use it here to display the proper token symbol
 
@@ -45,7 +54,7 @@ export const OperatorActionBar: FunctionComponent<{
                 <SingleElementPageActionBarTopPart>
                     <div>
                         <NetworkActionBarBackButtonAndTitle>
-                            <NetworkActionBarBackLink to={routes.network.sponsorships()}>
+                            <NetworkActionBarBackLink to={routes.network.operators()}>
                                 <NetworkActionBarBackButtonIcon
                                     name={'backArrow'}
                                 ></NetworkActionBarBackButtonIcon>
@@ -101,38 +110,36 @@ export const OperatorActionBar: FunctionComponent<{
                         <Button
                             onClick={async () => {
                                 try {
-                                    await fundSponsorshipModal.pop()
-                                } catch (e) {
-                                    // Ignore for now.
-                                }
-                            }}
-                        >
-                            Sponsor
-                        </Button>
-                        <Button
-                            onClick={async () => {
-                                try {
-                                    await joinSponsorshipModal.pop({
-                                        streamId: undefined,
+                                    await delegateFundsModal.pop({
+                                        operatorId: operator.id,
                                     })
                                 } catch (e) {
                                     // Ignore for now.
                                 }
                             }}
                         >
-                            Join as operator
+                            Delegate
+                        </Button>
+                        <Button
+                            onClick={async () => {
+                                try {
+                                    await undelegateFundsModal.pop({})
+                                } catch (e) {
+                                    // Ignore for now.
+                                }
+                            }}
+                        >
+                            Undelegate
                         </Button>
                     </NetworkActionBarCTAs>
                 </SingleElementPageActionBarTopPart>
-                <NetworkActionBarStatsTitle>
-                    Sponsorship summary
-                </NetworkActionBarStatsTitle>
+                <NetworkActionBarStatsTitle>Operator summary</NetworkActionBarStatsTitle>
                 <WhiteBoxSeparator />
                 <StatsBox
                     stats={[
                         {
                             label: 'Total value',
-                            value: operator.poolValue + ' DATA',
+                            value: operator.poolValue.toString(),
                         },
                         {
                             label: 'Deployed stake',
@@ -140,7 +147,7 @@ export const OperatorActionBar: FunctionComponent<{
                         },
                         {
                             label: "Owner's delegation",
-                            value: '0',
+                            value: `${ownerDelegationPercentage.toString()}%`,
                         },
                         {
                             label: 'Sponsorships',
@@ -148,22 +155,22 @@ export const OperatorActionBar: FunctionComponent<{
                         },
                         {
                             label: "Operator's cut",
-                            value: `TODO`,
+                            value: `TODO%`,
                         },
                         {
                             label: 'Spot APY',
-                            value: calculateOperatorSpotAPY(operator).toString(),
+                            value: `${calculateOperatorSpotAPY(operator)}%`,
                         },
                         {
                             label: 'Cumulative earnings',
-                            value: 'TODO' + ' DATA',
+                            value: 'TODO',
                         },
                         {
                             label: 'Live nodes',
-                            value: '1337',
+                            value: liveNodeCount.toString(),
                         },
                     ]}
-                    columns={3}
+                    columns={4}
                 />
             </SingleElementPageActionBarContainer>
         </SingleElementPageActionBar>
