@@ -1,7 +1,6 @@
 import { StreamrClientConfig } from 'streamr-client'
 import formatConfigUrl from '~/utils/formatConfigUrl'
 import formatRpc from '~/utils/formatRpc'
-import formatTrackers from '~/utils/formatTrackers'
 import getConfig from '~/getters/getConfig'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 
@@ -9,11 +8,6 @@ export default function getClientConfig(mods: any = {}): StreamrClientConfig {
     const { client } = getConfig()
     const config: StreamrClientConfig = {
         metrics: false,
-    }
-    if (client?.network?.trackers) {
-        config.network = {
-            trackers: formatTrackers(client?.network?.trackers),
-        }
     }
 
     const contracts: StreamrClientConfig['contracts'] = {}
