@@ -1,10 +1,10 @@
 import React, { FunctionComponent, useCallback, useContext, useMemo } from 'react'
-import { Chain } from '@streamr/config'
 import TokenSelector from '~/marketplace/containers/ProjectEditing/TokenSelector'
 import { PricingData } from '~/marketplace/types/project-types'
 import { ProjectStateContext } from '~/marketplace/contexts/ProjectStateContext'
 import { getConfigForChain } from '~/shared/web3/config'
 import { useEditableProjectActions } from '~/marketplace/containers/ProductController/useEditableProjectActions'
+import { Chain } from '~/shared/types/web3-types'
 
 export const DataUnionTokenSelector: FunctionComponent<{ editMode: boolean }> = ({
     editMode,

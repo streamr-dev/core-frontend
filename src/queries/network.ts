@@ -207,7 +207,6 @@ gql`
         operatorCount
         projectedInsolvency
         spotAPY
-        totalPayoutsCumulative
         totalStakedWei
         unallocatedWei
         date

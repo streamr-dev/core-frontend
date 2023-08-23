@@ -6,7 +6,6 @@ import React, {
     useMemo,
 } from 'react'
 import styled from 'styled-components'
-import { Chain } from '@streamr/config'
 import { REGULAR } from '~/shared/utils/styled'
 import getCoreConfig from '~/getters/getCoreConfig'
 import {
@@ -15,7 +14,7 @@ import {
 } from '~/marketplace/containers/ProjectEditing/DataUnionChainSelector/DataUnionChainSelectorContext'
 import { getConfigForChainByName } from '~/shared/web3/config'
 import { DataUnionChainOption } from '~/marketplace/containers/ProjectEditing/DataUnionChainSelector/DataUnionChainOption'
-import { Address } from '~/shared/types/web3-types'
+import { Address, Chain } from '~/shared/types/web3-types'
 import { useEditableProjectActions } from '~/marketplace/containers/ProductController/useEditableProjectActions'
 
 const getChainOptions = (chains: Array<string>): Chain[] =>
