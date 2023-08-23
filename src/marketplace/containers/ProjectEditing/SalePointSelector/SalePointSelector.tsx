@@ -6,7 +6,6 @@ import React, {
     useState,
 } from 'react'
 import styled from 'styled-components'
-import { Chain } from '@streamr/config'
 import { REGULAR } from '~/shared/utils/styled'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { PricingData, SalePoint } from '~/marketplace/types/project-types'
@@ -14,6 +13,7 @@ import { getConfigForChainByName } from '~/shared/web3/config'
 import { ProjectStateContext } from '~/marketplace/contexts/ProjectStateContext'
 import { useEditableProjectActions } from '~/marketplace/containers/ProductController/useEditableProjectActions'
 import { toBN } from '~/utils/bn'
+import { Chain } from '~/shared/types/web3-types'
 import { PricingOption } from './PricingOption'
 
 type Props = {

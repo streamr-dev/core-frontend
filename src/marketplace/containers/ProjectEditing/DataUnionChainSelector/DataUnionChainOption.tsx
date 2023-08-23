@@ -7,12 +7,11 @@ import React, {
     useState,
 } from 'react'
 import styled from 'styled-components'
-import { Chain } from '@streamr/config'
 import { COLORS } from '~/shared/utils/styled'
 import NetworkIcon from '~/shared/components/NetworkIcon'
 import { Radio } from '~/shared/components/Radio'
 import { DataUnionChainSelectorContext } from '~/marketplace/containers/ProjectEditing/DataUnionChainSelector/DataUnionChainSelectorContext'
-import { Address } from '~/shared/types/web3-types'
+import { Address, Chain } from '~/shared/types/web3-types'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { getDataUnionsOwnedByInChain, getDataUnion } from '~/getters/du'
 import SelectField2 from '~/marketplace/components/SelectField2'

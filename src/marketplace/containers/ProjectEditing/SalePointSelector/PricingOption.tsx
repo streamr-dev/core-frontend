@@ -6,7 +6,6 @@ import React, {
     useState,
 } from 'react'
 import styled from 'styled-components'
-import { Chain } from '@streamr/config'
 import { COLORS } from '~/shared/utils/styled'
 import Checkbox from '~/shared/components/Checkbox'
 import SvgIcon from '~/shared/components/SvgIcon'
@@ -14,7 +13,7 @@ import NetworkIcon from '~/shared/components/NetworkIcon'
 import { PricingData, SalePoint } from '~/marketplace/types/project-types'
 import TokenSelector from '~/marketplace/containers/ProjectEditing/TokenSelector'
 import { BeneficiaryAddress } from '~/marketplace/containers/ProjectEditing/BeneficiaryAddress'
-import { Address } from '~/shared/types/web3-types'
+import { Address, Chain } from '~/shared/types/web3-types'
 import { formatChainName } from '~/shared/utils/chains'
 
 export const PricingOption: FunctionComponent<{
