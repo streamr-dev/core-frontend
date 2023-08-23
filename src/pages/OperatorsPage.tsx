@@ -14,9 +14,11 @@ import Tabs, { Tab } from '~/shared/components/Tabs'
 import Button from '~/shared/components/Button'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
+import { fromAtto } from '~/marketplace/utils/math'
 import { useOperator } from '~/hooks/useOperator'
 import { fromAtto } from '~/marketplace/utils/math'
 import { calculateOperatorSpotAPY } from '~/utils/apy'
+import { createOperator } from '~/services/operators'
 import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
 import routes from '~/routes'
 import { NetworkActionBar } from '../components/ActionBars/NetworkActionBar'
@@ -101,7 +103,9 @@ export const OperatorsPage = () => {
                         <Button
                             onClick={async () => {
                                 try {
-                                    await becomeOperatorModal.pop()
+                                    await becomeOperatorModal.pop({
+                                        onSubmit: createOperator,
+                                    })
                                     await operatorsQuery.refetch()
                                 } catch (e) {
                                     // Ignore for now.
