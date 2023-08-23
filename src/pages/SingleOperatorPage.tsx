@@ -2,19 +2,14 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import sumBy from 'lodash/sumBy'
 import moment from 'moment'
-import styles from '~/marketplace/containers/Projects/projects.pcss'
-import { NetworkHelmet } from '~/shared/components/Helmet'
-import Layout, { PageContainer } from '~/shared/components/Layout'
+import { NetworkHelmet } from '~/components/Helmet'
+import Layout, { LayoutColumn } from '~/components/Layout'
 import { NoData } from '~/shared/components/NoData'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { COLORS, LAPTOP, TABLET } from '~/shared/utils/styled'
 import { WhiteBox, WhiteBoxPaddingStyles } from '~/shared/components/WhiteBox'
 import { NetworkSectionTitle } from '~/components/NetworkSectionTitle'
-import { HubAvatar } from '~/shared/components/AvatarImage'
-import { truncate } from '~/shared/utils/text'
-import Footer from '~/shared/components/Layout/Footer'
 import { ChartPeriod, NetworkChart } from '~/shared/components/NetworkChart/NetworkChart'
 import {
     formatLongDate,
@@ -26,8 +21,6 @@ import { BN } from '~/utils/bn'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { StatsLabel, StatsValue } from '~/shared/components/StatsBox/StatsBox'
-import { useSponsorshipFundingHistory } from '~/hooks/useSponsorshipFundingHistory'
-import { OperatorElement, OperatorStake } from '~/types/operator'
 import { useOperator } from '~/hooks/useOperator'
 import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
 import { getStakeForAddress } from '~/utils/delegation'
@@ -107,18 +100,13 @@ export const SingleOperatorPage = () => {
     )
 
     return (
-        <Layout
-            className={styles.projectsListPage}
-            framedClassName={styles.productsFramed}
-            innerClassName={styles.productsInner}
-            footer={false}
-        >
+        <Layout>
             <NetworkHelmet title="Operator" />
             <LoadingIndicator
                 loading={operatorQuery.isLoading || operatorQuery.isFetching}
             />
             {!!operator && <OperatorActionBar operator={operator} />}
-            <PageContainer>
+            <LayoutColumn>
                 {operator == null ? (
                     <>
                         {!(operatorQuery.isLoading || operatorQuery.isFetching) && (
@@ -271,8 +259,7 @@ export const SingleOperatorPage = () => {
                         )}
                     </OperatorGrid>
                 )}
-            </PageContainer>
-            <Footer />
+            </LayoutColumn>
         </Layout>
     )
 }

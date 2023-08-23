@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
-import styles from '~/marketplace/containers/Projects/projects.pcss'
-import Layout, { PageContainer } from '~/shared/components/Layout'
-import { NetworkHelmet } from '~/shared/components/Helmet'
+import { NetworkHelmet } from '~/components/Helmet'
+import Layout, { LayoutColumn } from '~/components/Layout'
 import {
     WhiteBox,
     WhiteBoxPaddingStyles,
@@ -11,16 +10,12 @@ import {
 } from '~/shared/components/WhiteBox'
 import { LAPTOP, TABLET } from '~/shared/utils/styled'
 import { Layer } from '~/utils/Layer'
-import { truncateNumber } from '~/shared/utils/truncateNumber'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import Button from '~/shared/components/Button'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import Footer from '~/shared/components/Layout/Footer'
-import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
-import useIsMounted from '~/shared/hooks/useIsMounted'
-import { createSponsorship } from '~/services/sponsorships'
 import { useOperator } from '~/hooks/useOperator'
+import { fromAtto } from '~/marketplace/utils/math'
 import { calculateOperatorSpotAPY } from '~/utils/apy'
 import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
 import routes from '~/routes'
@@ -31,7 +26,6 @@ import {
     useDelegatedOperatorsQuery,
 } from '../hooks/useOperatorList'
 import { OperatorElement } from '../types/operator'
-import { fromAtto } from '~/marketplace/utils/math'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -81,12 +75,7 @@ export const OperatorsPage = () => {
     }, [walletConnected, selectedTab, setSelectedTab])
 
     return (
-        <Layout
-            className={styles.projectsListPage}
-            framedClassName={styles.productsFramed}
-            innerClassName={styles.productsInner}
-            footer={false}
-        >
+        <Layout>
             <NetworkHelmet title="Operators" />
             <NetworkActionBar
                 searchEnabled={true}
@@ -125,7 +114,7 @@ export const OperatorsPage = () => {
                     )
                 }
             />
-            <PageContainer>
+            <LayoutColumn>
                 <OperatorsTableWrap>
                     <div className="title">
                         <NetworkSectionTitle>
@@ -217,8 +206,7 @@ export const OperatorsPage = () => {
                         Load more
                     </LoadMoreButton>
                 )}
-            </PageContainer>
-            <Footer />
+            </LayoutColumn>
         </Layout>
     )
 }
