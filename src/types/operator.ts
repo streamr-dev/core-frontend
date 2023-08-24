@@ -24,7 +24,7 @@ export type OperatorElement = {
     poolValueBlockNumber: string
     poolTokenTotalSupplyWei: BN
     exchangeRate: BN
-    metadata?: object
+    metadata?: OperatorMetadata
     owner: string
     nodes: string[]
     slashingEvents: OperatorSlashingEvent[]
@@ -48,3 +48,5 @@ export type OperatorSlashingEvent = {
     date: string
     streamId: string | undefined
 }
+
+export type OperatorMetadata = { name?: string; description?: string; imageUrl?: string }
