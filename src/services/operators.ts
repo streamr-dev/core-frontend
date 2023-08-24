@@ -77,8 +77,6 @@ export async function createOperator(
         operatorsShareFraction,
     ]
 
-    console.log('deploying', stringArgs, policies, initParams)
-
     await toastedOperation('Operator deployment', async () => {
         const tx = await factory.deployOperator(stringArgs, policies, initParams)
         await tx.wait()
