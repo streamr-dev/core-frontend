@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useRef } from 'react'
 import useModal from '~/shared/hooks/useModal'
 import useFilePreview from '~/shared/hooks/useFilePreview'
-import CropImageModal from '~/marketplace/components/Modal/CropImageModal'
+import CropImageModal from 'src/components/CropImageModal'
 
 type Props = {
     image: File
