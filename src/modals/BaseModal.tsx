@@ -239,7 +239,11 @@ const Wigglable = styled.div`
     min-height: 160px;
 `
 
-export const Footer = styled.div<{ $borderless?: boolean; $spacious?: boolean }>`
+export const Footer = styled.div<{
+    $borderless?: boolean
+    $spacious?: boolean
+    $autoHeight?: boolean
+}>`
     align-items: center;
     display: flex;
     height: 80px;
@@ -258,5 +262,11 @@ export const Footer = styled.div<{ $borderless?: boolean; $spacious?: boolean }>
             @media ${TABLET} {
                 height: 120px;
             }
+        `}
+
+    ${({ $autoHeight = false }) =>
+        $autoHeight &&
+        css`
+            height: auto !important;
         `}
 `

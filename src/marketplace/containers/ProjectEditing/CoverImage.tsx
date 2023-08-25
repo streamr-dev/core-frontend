@@ -1,19 +1,23 @@
 import React, { useContext, useCallback, useEffect, FunctionComponent } from 'react'
 import styled from 'styled-components'
+import { toaster } from 'toasterhea'
 import ImageUpload from '~/shared/components/ImageUpload'
 import Errors from '~/shared/components/Ui/Errors'
 import useModal from '~/shared/hooks/useModal'
 import useFilePreview from '~/shared/hooks/useFilePreview'
-import { COLORS, LAPTOP } from '~/shared/utils/styled'
+import { COLORS } from '~/shared/utils/styled'
 import { ProjectHeroImageStyles } from '~/marketplace/containers/ProjectPage/Hero/ProjectHero2.styles'
 import { useEditableProjectActions } from '~/marketplace/containers/ProductController/useEditableProjectActions'
 import { ProjectStateContext } from '~/marketplace/contexts/ProjectStateContext'
-import CropImageModalWrap from '~/marketplace/containers/ProjectEditing/CropImageModal'
+import { Layer } from '~/utils/Layer'
+import CropImageModal from '~/components/CropImageModal/CropImageModal'
 import useValidation from '../ProductController/useValidation'
 
 type Props = {
     disabled?: boolean
 }
+
+const cropModal = toaster(CropImageModal, Layer.Modal)
 
 const Container = styled.div`
     ${ProjectHeroImageStyles};
@@ -61,9 +65,23 @@ export const CoverImage: FunctionComponent<Props> = ({ disabled }) => {
     const { preview, createPreview } = useFilePreview()
     const onUpload = useCallback(
         async (image: File) => {
-            const newImage = await cropImageDialog.open({
-                image,
+            const newImage: File | null = await new Promise((resolve) => {
+                cropModal
+                    .pop({
+                        imageUrl: URL.createObjectURL(image),
+                        onResolve: (file) => {
+                            resolve(file)
+                        },
+                        onReject: () => {
+                            resolve(null)
+                        },
+                    })
+                    .catch((e) => {
+                        // modal was closed
+                        resolve(null)
+                    })
             })
+
             if (newImage) {
                 updateImageFile(newImage)
             }
@@ -89,7 +107,6 @@ export const CoverImage: FunctionComponent<Props> = ({ disabled }) => {
                 noPreview={true}
             />
             {!isValid && !!message && <Errors overlap>{message}</Errors>}
-            <CropImageModalWrap />
         </Container>
     )
 }

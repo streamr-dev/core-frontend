@@ -1262,6 +1262,56 @@ const sources = {
             </defs>
         </svg>
     ),
+    zoomOut: (
+        <svg
+            width="17"
+            height="16"
+            viewBox="0 0 17 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <g id="iconamoon:zoom-out">
+                <path
+                    id="Vector"
+                    d="M14.5 13.9999L11.6047 11.1046M11.6047 11.1046C12.0999 10.6093 12.4928 10.0213 12.7608 9.37426C13.0289 8.72717 13.1668 8.03363 13.1668 7.33323C13.1668 6.63283 13.0289 5.93928 12.7608 5.2922C12.4928 4.64511 12.0999 4.05715 11.6047 3.56189C11.1094 3.06663 10.5215 2.67377 9.87438 2.40574C9.22729 2.13771 8.53375 1.99976 7.83335 1.99976C7.13295 1.99976 6.4394 2.13771 5.79232 2.40574C5.14523 2.67377 4.55727 3.06663 4.06202 3.56189C3.0618 4.56211 2.49988 5.9187 2.49988 7.33323C2.49988 8.74775 3.0618 10.1043 4.06202 11.1046C5.06224 12.1048 6.41882 12.6667 7.83335 12.6667C9.24787 12.6667 10.6045 12.1048 11.6047 11.1046ZM5.83335 7.33323H9.83335"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+            </g>
+        </svg>
+    ),
+    zoomIn: (
+        <svg
+            width="17"
+            height="16"
+            viewBox="0 0 17 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <g id="lucide:zoom-in">
+                <g id="Group">
+                    <path
+                        id="Vector"
+                        d="M7.83333 12.6667C10.7789 12.6667 13.1667 10.2789 13.1667 7.33333C13.1667 4.38781 10.7789 2 7.83333 2C4.88781 2 2.5 4.38781 2.5 7.33333C2.5 10.2789 4.88781 12.6667 7.83333 12.6667Z"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    />
+                    <path
+                        id="Vector_2"
+                        d="M14.5 13.9999L11.6 11.0999M7.83331 5.33325V9.33325M5.83331 7.33325H9.83331"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    />
+                </g>
+            </g>
+        </svg>
+    ),
     github: <SocialIcons.GitHub />,
     medium: <SocialIcons.Medium />,
     peepeth: <SocialIcons.Peepeth />,
