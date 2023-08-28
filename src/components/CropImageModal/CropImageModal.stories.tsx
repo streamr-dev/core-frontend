@@ -18,17 +18,14 @@ const Story = ({ mask }) => {
                 await cropModal.pop({
                     imageUrl: URL.createObjectURL(image),
                     onResolve: (file) => {
-                        console.log('save', file)
                         setCroppedImage(file)
                     },
-                    onReject: () => {
-                        console.log('closed')
-                    },
+                    onReject: () => {},
                     mask,
                 })
             } catch (e) {}
         },
-        [setCroppedImage],
+        [setCroppedImage, mask],
     )
     return (
         <StoryContainer>
