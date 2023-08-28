@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { UseInfiniteQueryResult } from '@tanstack/react-query/src/types'
-import { OperatorElement } from '~/types/operator'
+import { OperatorElement, OperatorMetadata } from '~/types/operator'
 import { Operator } from '~/generated/gql/network'
 import { toBN } from '~/utils/bn'
 import { getAllOperators, getOperatorsByDelegation, searchOperators } from '~/getters'
@@ -76,10 +76,9 @@ export const useDelegatedOperatorsQuery = (
     })
 }
 
-const parseMetadata = (operator: Operator): object | undefined => {
+const parseMetadata = (operator: Operator): OperatorMetadata | undefined => {
     try {
-        const obj = JSON.parse(operator.metadataJsonString)
-        return obj
+        return JSON.parse(operator.metadataJsonString)
     } catch (e) {
         console.warn('Could not parse metadata for operator', operator.id)
         return undefined

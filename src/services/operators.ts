@@ -5,29 +5,26 @@ import {
     OperatorFactory,
     Operator,
 } from '@streamr/network-contracts'
-import { getConfigForChainByName, getConfigForChain } from '~/shared/web3/config'
+import { parseEther } from 'ethers/lib/utils'
+import { getConfigForChain } from '~/shared/web3/config'
 import networkPreflight from '~/utils/networkPreflight'
 import { getSigner } from '~/shared/stores/wallet'
 import { Address } from '~/shared/types/web3-types'
 import { getERC20TokenContract } from '~/getters'
 import { BNish, toBN } from '~/utils/bn'
 import { defaultChainConfig } from '~/getters/getChainConfig'
+import { toastedOperation } from '~/utils/toastedOperation'
 
 const getOperatorChainId = () => {
     return defaultChainConfig.id
 }
 
-export type OperatorParams = {
-    stringArgs: [string, string]
-    policies: [Address, Address, Address]
-    initParams: [number, number, number, number, number, number]
-}
-
-export async function createOperator({
-    stringArgs,
-    policies,
-    initParams,
-}: OperatorParams) {
+export async function createOperator(
+    operatorCut: number,
+    name: string,
+    description?: string,
+    imageUrl?: string,
+) {
     const chainId = getOperatorChainId()
 
     const chainConfig = getConfigForChain(chainId)
@@ -36,15 +33,54 @@ export async function createOperator({
 
     const signer = await getSigner()
 
+    const walletAddress = await signer.getAddress()
+
     const factory = new Contract(
         chainConfig.contracts['OperatorFactory'],
         operatorFactoryABI,
         signer,
     ) as OperatorFactory
 
-    const tx = await factory.deployOperator(stringArgs, policies, initParams)
+    const metadata = {
+        name,
+        description,
+        imageUrl,
+    }
 
-    await tx.wait()
+    /**
+     * - stringArgs[0] is poolTokenName - each operator contract creates its own token which is used
+     * for accounting and here we're defining its name
+     * - stringArgs[1] i metadata object as a JSON
+     * the metadata object should contain name and description fields
+     */
+    const stringArgs: [string, string] = [
+        `StreamrOperator-${walletAddress.slice(-5)}`,
+        JSON.stringify(metadata),
+    ]
+
+    const policies: [Address, Address, Address] = [
+        chainConfig.contracts.OperatorDefaultDelegationPolicy,
+        chainConfig.contracts.OperatorDefaultPoolYieldPolicy,
+        chainConfig.contracts.OperatorDefaultUndelegationPolicy,
+    ]
+
+    //hardcoded now, will be moved to global config later
+    const minimumMarginFraction = parseEther('1').mul(10).div(100)
+    const operatorsShareFraction = parseEther('1').mul(operatorCut).div(100)
+
+    const initParams = [
+        0,
+        minimumMarginFraction,
+        0,
+        0,
+        parseEther('1'), // initialMinimumDelegationWei - will be moved to global config
+        operatorsShareFraction,
+    ]
+
+    await toastedOperation('Operator deployment', async () => {
+        const tx = await factory.deployOperator(stringArgs, policies, initParams)
+        await tx.wait()
+    })
 }
 
 export async function delegateToOperator(operatorId: string, amount: BNish) {
