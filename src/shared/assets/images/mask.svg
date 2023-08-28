@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="500"
+   height="500"
+   viewBox="0 0 132.29166 132.29167"
+   version="1.1"
+   id="svg5"
+   inkscape:export-filename="mask.svg"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="rect353"
+       style="fill:#000000;fill-opacity:0.600683;stroke-width:0.264583"
+       d="M 0,0 V 66.145833 A 66.145836,66.145836 0 0 1 66.145833,0 Z M 66.145833,0 A 66.145836,66.145836 0 0 1 132.29167,66.145833 V 0 Z M 132.29167,66.145833 A 66.145836,66.145836 0 0 1 66.145833,132.29167 H 132.29167 Z M 66.145833,132.29167 A 66.145836,66.145836 0 0 1 0,66.145833 v 66.145837 z" />
+    <circle
+       style="fill:#000000;fill-opacity:1;stroke-width:0.264583"
+       id="path3669"
+       cx="66.145836"
+       cy="66.145836"
+       r="66.145836" />
+  </g>
+</svg>

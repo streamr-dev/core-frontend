@@ -10,7 +10,7 @@ import styled from 'styled-components'
 
 const cropModal = toaster(CropImageModal, Layer.Modal)
 
-const Story = ({ shape }) => {
+const Story = ({ mask }) => {
     const [croppedImage, setCroppedImage] = useState<File>()
     const onUpload = useCallback(
         async (image: File) => {
@@ -24,7 +24,7 @@ const Story = ({ shape }) => {
                     onReject: () => {
                         console.log('closed')
                     },
-                    shape,
+                    mask,
                 })
             } catch (e) {}
         },
@@ -44,11 +44,11 @@ const Story = ({ shape }) => {
     )
 }
 export const Default = () => {
-    return <Story shape={'square'} />
+    return <Story mask={'none'} />
 }
 
 export const Rounded = () => {
-    return <Story shape={'round'} />
+    return <Story mask={'round'} />
 }
 
 const meta: Meta<typeof Default> = {

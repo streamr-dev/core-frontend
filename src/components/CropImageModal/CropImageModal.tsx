@@ -13,15 +13,16 @@ import {
 } from '~/modals/FormModal'
 import Button from '~/shared/components/Button'
 import { COLORS } from '~/shared/utils/styled'
+import MaskSvg from '~/shared/assets/images/mask.svg'
 
-type ShapeOption = 'square' | 'round'
+type MaskOption = 'none' | 'round'
 
 type Props = {
     imageUrl: string
     onResolve: (file: File) => void
     onReject: () => void
     title?: string
-    shape?: ShapeOption
+    mask?: MaskOption
 } & Omit<BaseModalProps, 'children'>
 export const MAX_WIDTH = 1024
 // only width is considered because images returned from the cropper will always be squared
@@ -92,7 +93,7 @@ const CropImageModal = ({
     onResolve,
     onReject,
     title = 'Scale and crop your image',
-    shape = 'square',
+    mask = 'none',
     ...props
 }: Props) => {
     const editorRef = useRef<AvatarEditor>()
@@ -119,18 +120,20 @@ const CropImageModal = ({
                     </FormModalHead>
                     <FormModalContent>
                         <div>
-                            <StyledAvatarEditor
-                                ref={editorRef}
-                                image={imageUrl}
-                                width={1024}
-                                height={1024}
-                                border={[0, 0]}
-                                borderRadius={0}
-                                color={[255, 255, 255, 0.6]} // RGBA
-                                scale={(100 + sliderValue) / 100}
-                                rotate={0}
-                                $shape={shape}
-                            />
+                            <AvatarEditorWrap>
+                                <StyledAvatarEditor
+                                    ref={editorRef}
+                                    image={imageUrl}
+                                    width={1024}
+                                    height={1024}
+                                    border={[0, 0]}
+                                    borderRadius={0}
+                                    color={[255, 255, 255, 0.6]} // RGBA
+                                    scale={(100 + sliderValue) / 100}
+                                    rotate={0}
+                                    $shape={mask}
+                                />
+                            </AvatarEditorWrap>
                             <ZoomControls>
                                 <ZoomIcon name={'zoomOut'} />
                                 <ZoomSlider
@@ -159,7 +162,7 @@ const CropImageModal = ({
 
 export default CropImageModal
 
-const StyledAvatarEditor = styled(AvatarEditor)<{ $shape: ShapeOption }>`
+const StyledAvatarEditor = styled(AvatarEditor)<{ $shape: MaskOption }>`
     width: 100% !important;
     height: auto !important;
 
@@ -167,12 +170,18 @@ const StyledAvatarEditor = styled(AvatarEditor)<{ $shape: ShapeOption }>`
         switch ($shape) {
             case 'round':
                 return css`
-                    border-radius: 100%;
+                    mask: url(${MaskSvg}) center;
+                    mask-size: 100% 100%;
                 `
             default:
                 return null
         }
     }}
+`
+
+const AvatarEditorWrap = styled.div`
+    display: flex;
+    background-color: black;
 `
 
 const ZoomSlider = styled(Slider)`
