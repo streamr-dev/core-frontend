@@ -93,7 +93,10 @@ export const ScrollTableCore = <T extends object>({
     const stickyColumns = columns.filter((column) => column.isSticky)
     const nonStickyColumns = columns.filter((column) => !column.isSticky)
     return (
-        <ScrollTableCellsWrap>
+        <ScrollTableCellsWrap
+            stickyColumnCount={stickyColumns.length}
+            nonStickyColumnCount={nonStickyColumns.length}
+        >
             {stickyColumns.map((stickyColumn) => {
                 return (
                     <ScrollTableColumn key={stickyColumn.key}>

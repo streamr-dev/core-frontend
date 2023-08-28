@@ -41,6 +41,9 @@ gql`
         metadataJsonString
         owner
         nodes
+        cumulativeProfitsWei
+        cumulativeOperatorsShareWei
+        operatorsShareFraction
     }
 
     query getAllOperators($first: Int, $skip: Int, $searchQuery: ID) {

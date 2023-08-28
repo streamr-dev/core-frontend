@@ -155,7 +155,9 @@ export const OperatorActionBar: FunctionComponent<{
                         },
                         {
                             label: "Operator's cut",
-                            value: `TODO%`,
+                            value: `${operator.operatorsShareFraction
+                                .dividedBy(100)
+                                .toString()}%`,
                         },
                         {
                             label: 'Spot APY',
@@ -163,7 +165,9 @@ export const OperatorActionBar: FunctionComponent<{
                         },
                         {
                             label: 'Cumulative earnings',
-                            value: 'TODO',
+                            value: `${operator.cumulativeProfitsWei
+                                .plus(operator.cumulativeOperatorsShareWei)
+                                .toString()}`,
                         },
                         {
                             label: 'Live nodes',

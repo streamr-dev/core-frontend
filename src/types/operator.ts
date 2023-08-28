@@ -28,6 +28,9 @@ export type OperatorElement = {
     owner: string
     nodes: string[]
     slashingEvents: OperatorSlashingEvent[]
+    cumulativeProfitsWei: BN
+    cumulativeOperatorsShareWei: BN
+    operatorsShareFraction: BN
 }
 
 export type OperatorStake = {
