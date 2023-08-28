@@ -1,9 +1,5 @@
 import React, { forwardRef } from 'react'
-import { cleanup, screen, render, fireEvent, waitFor } from '@testing-library/react'
-jest.mock('~/shared/components/ModalPortal', () => ({
-    __esModule: true,
-    default: ({ children }) => children || null,
-}))
+import { cleanup, screen, render, fireEvent } from '@testing-library/react'
 const mockGetImage = jest.fn(() => ({
     width: 100,
     height: 100,
@@ -28,6 +24,23 @@ jest.doMock('react-avatar-editor', () => ({
     }),
 }))
 
+class FakeImg {
+    onload: () => void
+    constructor(public width: number, public height: number) {
+        setTimeout(() => {
+            this.callOnLoad()
+        }, 0)
+    }
+
+    private async callOnLoad() {
+        while (!this.onload) {
+            await new Promise((resolve) => void setTimeout(resolve, 10))
+        }
+
+        this.onload()
+    }
+}
+
 /* eslint-disable object-curly-newline */
 describe('CropImageModal', () => {
     let drawSpy
@@ -37,10 +50,7 @@ describe('CropImageModal', () => {
         jest.spyOn(document, 'createElement').mockImplementation((tag: string): any => {
             switch (tag) {
                 case 'img':
-                    return {
-                        width: imageWidth,
-                        height: imageHeight,
-                    }
+                    return new FakeImg(imageWidth, imageHeight)
                 case 'canvas':
                     return {
                         width: 0,
@@ -61,7 +71,9 @@ describe('CropImageModal', () => {
     afterEach(cleanup)
     describe('getResizedBlob', () => {
         it('returns the same image if smaller than max width', async () => {
-            const { getCroppedAndResizedBlob, MAX_WIDTH } = await import('./index')
+            const { getCroppedAndResizedBlob, MAX_WIDTH } = await import(
+                './CropImageModal'
+            )
             const cropSettings = { x: 0, y: 0, width: 0.5, height: 0.5 }
             prepareTest(400, 400)
             const result = await getCroppedAndResizedBlob(
@@ -72,7 +84,9 @@ describe('CropImageModal', () => {
             expect(result).toBe('crppedImage')
         })
         it('returns a resized image if bigger than max width', async () => {
-            const { getCroppedAndResizedBlob, MAX_WIDTH } = await import('./index')
+            const { getCroppedAndResizedBlob, MAX_WIDTH } = await import(
+                './CropImageModal'
+            )
             const cropSettings = { x: 0, y: 0, width: 0.85, height: 0.85 }
             prepareTest(3000, 3000)
             const result = await getCroppedAndResizedBlob(
@@ -83,17 +97,25 @@ describe('CropImageModal', () => {
         })
     })
     it('renders the avatar editor', async () => {
-        const { default: CropImageModal } = await import('./index')
+        const { default: CropImageModal } = await import('./CropImageModal')
         render(
-            <CropImageModal imageUrl="http://" onClose={jest.fn()} onSave={jest.fn()} />,
+            <CropImageModal
+                imageUrl="http://"
+                onReject={jest.fn()}
+                onResolve={jest.fn()}
+            />,
         )
         expect(screen.getByText(/Scale and crop your image/)).toBeInTheDocument()
     })
     it('closes the modal', async () => {
-        const { default: CropImageModal } = await import('./index')
+        const { default: CropImageModal } = await import('./CropImageModal')
         const closeStub = jest.fn()
         render(
-            <CropImageModal imageUrl="http://" onClose={closeStub} onSave={jest.fn()} />,
+            <CropImageModal
+                imageUrl="http://"
+                onReject={closeStub}
+                onResolve={jest.fn()}
+            />,
         )
         fireEvent.click(screen.getByText(/cancel/i))
         expect(closeStub).toHaveBeenCalled()
