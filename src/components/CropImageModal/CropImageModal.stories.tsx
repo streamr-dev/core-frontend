@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Container, toaster } from 'toasterhea'
+import styled from 'styled-components'
 import { Meta } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { COLORS } from '~/shared/utils/styled'
 import { Layer } from '~/utils/Layer'
 import ImageUpload from '~/shared/components/ImageUpload'
 import CropImageModal from './CropImageModal'
-import styled from 'styled-components'
 
 const cropModal = toaster(CropImageModal, Layer.Modal)
 
