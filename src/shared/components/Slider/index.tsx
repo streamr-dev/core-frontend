@@ -1,6 +1,7 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import styles from './slider.pcss'
+import { COLORS } from '~/shared/utils/styled'
 type Props = {
     min: number
     max: number
@@ -28,6 +29,9 @@ const Slider = ({
         },
         [onChangeProp],
     )
+
+    const borderPercentage = (100 * value) / (max - min)
+
     return (
         <div className={cx(styles.container, className)}>
             <input
@@ -38,6 +42,9 @@ const Slider = ({
                 value={value}
                 onChange={onChange}
                 disabled={disabled}
+                style={{
+                    background: `linear-gradient(to right, ${COLORS.link} calc(${borderPercentage}%), ${COLORS.linkInactive} 1%)`,
+                }}
             />
         </div>
     )

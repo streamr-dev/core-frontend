@@ -58,38 +58,38 @@ export default function FormModal({
                         await onSubmit?.()
                     }}
                 >
-                    <Root>
-                        <Head>
-                            <Title>{title}</Title>
-                            <CloseButton
+                    <FormModalRoot>
+                        <FormModalHead>
+                            <FormModalTitle>{title}</FormModalTitle>
+                            <FormModalCloseButton
                                 type="button"
                                 onClick={close}
                                 disabled={submitting}
                             >
                                 <SvgIcon name="crossMedium" />
-                            </CloseButton>
-                        </Head>
-                        <Content>{children}</Content>
+                            </FormModalCloseButton>
+                        </FormModalHead>
+                        <FormModalContent>{children}</FormModalContent>
                         <Footer $borderless $spacious>
                             <Buttons actions={actions} />
                         </Footer>
-                    </Root>
+                    </FormModalRoot>
                 </form>
             )}
         </BaseModal>
     )
 }
 
-const Content = styled.div`
+export const FormModalContent = styled.div`
     padding: 0 40px;
 `
 
-const Root = styled.div`
+export const FormModalRoot = styled.div`
     max-width: 672px;
     width: 90vw;
 `
 
-const Head = styled.div`
+export const FormModalHead = styled.div`
     align-items: center;
     display: flex;
     font-family: ${SANS};
@@ -108,11 +108,11 @@ const Head = styled.div`
     }
 `
 
-const Title = styled.div`
+export const FormModalTitle = styled.div`
     flex-grow: 1;
 `
 
-const CloseButton = styled.button`
+export const FormModalCloseButton = styled.button`
     color: ${COLORS.close};
     line-height: 14px;
     cursor: pointer;
