@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import AvatarEditor, { CroppedRect } from 'react-avatar-editor'
 import Slider from '~/shared/components/Slider'
-import BaseModal, { BaseModalProps, Footer } from '~/modals/BaseModal'
+import BaseModal, { BaseModalProps, Footer, RejectionReason } from '~/modals/BaseModal'
 import SvgIcon from '~/shared/components/SvgIcon'
 import {
     FormModalCloseButton,
@@ -19,8 +19,8 @@ type MaskOption = 'none' | 'round'
 
 type Props = {
     imageUrl: string
-    onResolve: (file: File) => void
-    onReject: () => void
+    onResolve?: (file: File) => void | File
+    onReject?: () => void
     title?: string
     mask?: MaskOption
 } & Omit<BaseModalProps, 'children'>
@@ -90,8 +90,8 @@ export const getCroppedAndResizedBlob = async (
 
 const CropImageModal = ({
     imageUrl,
-    onResolve,
-    onReject,
+    onResolve = (file) => file,
+    onReject = () => {},
     title = 'Scale and crop your image',
     mask = 'none',
     ...props
@@ -104,8 +104,7 @@ const CropImageModal = ({
                 imageUrl,
                 editorRef.current.getCroppingRect(),
             )
-            const file = new File([blob], 'coverImage.png')
-            onResolve(file)
+            onResolve(new File([blob], 'coverImage.png'))
         }
     }, [onResolve, editorRef, imageUrl])
     return (
@@ -131,7 +130,7 @@ const CropImageModal = ({
                                     color={[255, 255, 255, 0.6]} // RGBA
                                     scale={(100 + sliderValue) / 100}
                                     rotate={0}
-                                    $shape={mask}
+                                    $mask={mask}
                                 />
                             </AvatarEditorWrap>
                             <ZoomControls>
@@ -149,7 +148,10 @@ const CropImageModal = ({
                     <Footer $borderless $autoHeight>
                         <ButtonsContainer>
                             <StyledButton onClick={onSave}>Crop</StyledButton>
-                            <StyledButton kind="secondary" onClick={onReject}>
+                            <StyledButton
+                                kind="secondary"
+                                onClick={() => void close(RejectionReason.CancelButton)}
+                            >
                                 Cancel
                             </StyledButton>
                         </ButtonsContainer>
@@ -162,21 +164,16 @@ const CropImageModal = ({
 
 export default CropImageModal
 
-const StyledAvatarEditor = styled(AvatarEditor)<{ $shape: MaskOption }>`
+const StyledAvatarEditor = styled(AvatarEditor)<{ $mask: MaskOption }>`
     width: 100% !important;
     height: auto !important;
 
-    ${({ $shape }) => {
-        switch ($shape) {
-            case 'round':
-                return css`
-                    mask: url(${MaskSvg}) center;
-                    mask-size: 100% 100%;
-                `
-            default:
-                return null
-        }
-    }}
+    ${({ $mask }) =>
+        $mask === 'round' &&
+        css`
+            mask: url(${MaskSvg}) center;
+            mask-size: 100% 100%;
+        `}
 `
 
 const AvatarEditorWrap = styled.div`

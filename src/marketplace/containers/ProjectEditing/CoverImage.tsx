@@ -65,25 +65,14 @@ export const CoverImage: FunctionComponent<Props> = ({ disabled }) => {
     const { preview, createPreview } = useFilePreview()
     const onUpload = useCallback(
         async (image: File) => {
-            const newImage: File | null = await new Promise((resolve) => {
-                cropModal
-                    .pop({
+            try {
+                updateImageFile(
+                    await cropModal.pop({
                         imageUrl: URL.createObjectURL(image),
-                        onResolve: (file) => {
-                            resolve(file)
-                        },
-                        onReject: () => {
-                            resolve(null)
-                        },
-                    })
-                    .catch((e) => {
-                        // modal was closed
-                        resolve(null)
-                    })
-            })
-
-            if (newImage) {
-                updateImageFile(newImage)
+                    }),
+                )
+            } catch (e) {
+                // action cancelled
             }
         },
         [cropImageDialog, updateImageFile],

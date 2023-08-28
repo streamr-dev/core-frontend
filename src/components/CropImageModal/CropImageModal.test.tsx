@@ -33,14 +33,11 @@ class FakeImg {
     }
 
     private async callOnLoad() {
-        if (this.onload) {
-            return this.onload()
+        while (!this.onload) {
+            await new Promise((resolve) => void setTimeout(resolve, 10))
         }
-        await new Promise((resolve) => {
-            setTimeout(() => resolve, 10)
-        })
 
-        await this.callOnLoad()
+        this.onload()
     }
 }
 
