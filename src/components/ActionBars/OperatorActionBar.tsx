@@ -198,7 +198,7 @@ export const OperatorActionBar: FunctionComponent<{
                         },
                         {
                             label: "Operator's cut",
-                            value: `${operator.operatorsShareFraction
+                            value: `${operator.operatorsCutFraction
                                 .dividedBy(100)
                                 .toFixed(2)}%`,
                         },
@@ -210,7 +210,7 @@ export const OperatorActionBar: FunctionComponent<{
                             label: 'Cumulative earnings',
                             value: `${fromAtto(
                                 operator.cumulativeProfitsWei.plus(
-                                    operator.cumulativeOperatorsShareWei,
+                                    operator.cumulativeOperatorsCutWei,
                                 ),
                             ).toString()}`,
                         },

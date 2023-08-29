@@ -40,8 +40,8 @@ gql`
         owner
         nodes
         cumulativeProfitsWei
-        cumulativeOperatorsShareWei
-        operatorsShareFraction
+        cumulativeOperatorsCutWei
+        operatorsCutFraction
     }
 
     query getAllOperators($first: Int, $skip: Int, $searchQuery: ID) {
@@ -289,7 +289,7 @@ gql`
         delegatorCountChange
         delegatorCountAtStart
         lossesWei
-        operatorsShareWei
+        operatorsCutWei
         poolValue
         profitsWei
         spotAPY

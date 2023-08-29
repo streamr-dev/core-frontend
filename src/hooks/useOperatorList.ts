@@ -116,7 +116,7 @@ export const mapOperatorToElement = (operator: Operator): OperatorElement => {
         poolValueTimestamp: operator.poolValueTimestamp,
         totalValueInSponsorshipsWei: toBN(operator.totalValueInSponsorshipsWei),
         cumulativeProfitsWei: toBN(operator.cumulativeProfitsWei),
-        cumulativeOperatorsShareWei: toBN(operator.cumulativeOperatorsShareWei),
-        operatorsShareFraction: toBN(operator.operatorsShareFraction),
+        cumulativeOperatorsCutWei: toBN(operator.cumulativeOperatorsCutWei),
+        operatorsCutFraction: toBN(operator.operatorsCutFraction),
     }
 }

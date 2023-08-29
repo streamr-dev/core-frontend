@@ -106,7 +106,7 @@ export enum Delegation_OrderBy {
   Delegator = 'delegator',
   Id = 'id',
   Operator = 'operator',
-  OperatorCumulativeOperatorsShareWei = 'operator__cumulativeOperatorsShareWei',
+  OperatorCumulativeOperatorsCutWei = 'operator__cumulativeOperatorsCutWei',
   OperatorCumulativeProfitsWei = 'operator__cumulativeProfitsWei',
   OperatorDelegatorCount = 'operator__delegatorCount',
   OperatorExchangeRate = 'operator__exchangeRate',
@@ -115,7 +115,7 @@ export enum Delegation_OrderBy {
   OperatorLatestHeartbeatMetadata = 'operator__latestHeartbeatMetadata',
   OperatorLatestHeartbeatTimestamp = 'operator__latestHeartbeatTimestamp',
   OperatorMetadataJsonString = 'operator__metadataJsonString',
-  OperatorOperatorsShareFraction = 'operator__operatorsShareFraction',
+  OperatorOperatorsCutFraction = 'operator__operatorsCutFraction',
   OperatorOwner = 'operator__owner',
   OperatorPoolTokenTotalSupplyWei = 'operator__poolTokenTotalSupplyWei',
   OperatorPoolValue = 'operator__poolValue',
@@ -242,7 +242,7 @@ export type Flag_Filter = {
 export enum Flag_OrderBy {
   Date = 'date',
   Flagger = 'flagger',
-  FlaggerCumulativeOperatorsShareWei = 'flagger__cumulativeOperatorsShareWei',
+  FlaggerCumulativeOperatorsCutWei = 'flagger__cumulativeOperatorsCutWei',
   FlaggerCumulativeProfitsWei = 'flagger__cumulativeProfitsWei',
   FlaggerDelegatorCount = 'flagger__delegatorCount',
   FlaggerExchangeRate = 'flagger__exchangeRate',
@@ -251,7 +251,7 @@ export enum Flag_OrderBy {
   FlaggerLatestHeartbeatMetadata = 'flagger__latestHeartbeatMetadata',
   FlaggerLatestHeartbeatTimestamp = 'flagger__latestHeartbeatTimestamp',
   FlaggerMetadataJsonString = 'flagger__metadataJsonString',
-  FlaggerOperatorsShareFraction = 'flagger__operatorsShareFraction',
+  FlaggerOperatorsCutFraction = 'flagger__operatorsCutFraction',
   FlaggerOwner = 'flagger__owner',
   FlaggerPoolTokenTotalSupplyWei = 'flagger__poolTokenTotalSupplyWei',
   FlaggerPoolValue = 'flagger__poolValue',
@@ -275,7 +275,7 @@ export enum Flag_OrderBy {
   SponsorshipUnallocatedWei = 'sponsorship__unallocatedWei',
   Target = 'target',
   TargetSlashAmount = 'targetSlashAmount',
-  TargetCumulativeOperatorsShareWei = 'target__cumulativeOperatorsShareWei',
+  TargetCumulativeOperatorsCutWei = 'target__cumulativeOperatorsCutWei',
   TargetCumulativeProfitsWei = 'target__cumulativeProfitsWei',
   TargetDelegatorCount = 'target__delegatorCount',
   TargetExchangeRate = 'target__exchangeRate',
@@ -284,7 +284,7 @@ export enum Flag_OrderBy {
   TargetLatestHeartbeatMetadata = 'target__latestHeartbeatMetadata',
   TargetLatestHeartbeatTimestamp = 'target__latestHeartbeatTimestamp',
   TargetMetadataJsonString = 'target__metadataJsonString',
-  TargetOperatorsShareFraction = 'target__operatorsShareFraction',
+  TargetOperatorsCutFraction = 'target__operatorsCutFraction',
   TargetOwner = 'target__owner',
   TargetPoolTokenTotalSupplyWei = 'target__poolTokenTotalSupplyWei',
   TargetPoolValue = 'target__poolValue',
@@ -385,7 +385,7 @@ export enum Node_OrderBy {
 
 export type Operator = {
   __typename?: 'Operator';
-  cumulativeOperatorsShareWei: Scalars['BigInt']['output'];
+  cumulativeOperatorsCutWei: Scalars['BigInt']['output'];
   /** Total earnings excluding brokers shrare */
   cumulativeProfitsWei: Scalars['BigInt']['output'];
   /** All delegators who have delegated to this operator. Increased when Delegation is created and decreased when Delegation is removed */
@@ -403,7 +403,7 @@ export type Operator = {
   latestHeartbeatTimestamp?: Maybe<Scalars['BigInt']['output']>;
   metadataJsonString: Scalars['String']['output'];
   nodes: Array<Scalars['String']['output']>;
-  operatorsShareFraction: Scalars['BigInt']['output'];
+  operatorsCutFraction: Scalars['BigInt']['output'];
   owner: Scalars['String']['output'];
   /** Total number of pool tokens in existence */
   poolTokenTotalSupplyWei: Scalars['BigInt']['output'];
@@ -490,7 +490,7 @@ export type OperatorDailyBucket = {
   lossesWei: Scalars['BigInt']['output'];
   operator: Operator;
   /** Sum of operator's share of earnings during the bucket */
-  operatorsShareWei: Scalars['BigInt']['output'];
+  operatorsCutWei: Scalars['BigInt']['output'];
   /** DATA staked, earned and held by the Operator contract = totalValueInSponsorshipsWei + freeFundsWei (first event in bucket) */
   poolValue: Scalars['BigInt']['output'];
   /** Sum of earnings during the bucket, less operator's share */
@@ -578,14 +578,14 @@ export type OperatorDailyBucket_Filter = {
   operator_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
   operator_starts_with?: InputMaybe<Scalars['String']['input']>;
   operator_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
-  operatorsShareWei?: InputMaybe<Scalars['BigInt']['input']>;
-  operatorsShareWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  operatorsShareWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  operatorsShareWei_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  operatorsShareWei_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  operatorsShareWei_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  operatorsShareWei_not?: InputMaybe<Scalars['BigInt']['input']>;
-  operatorsShareWei_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  operatorsCutWei?: InputMaybe<Scalars['BigInt']['input']>;
+  operatorsCutWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  operatorsCutWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  operatorsCutWei_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  operatorsCutWei_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  operatorsCutWei_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  operatorsCutWei_not?: InputMaybe<Scalars['BigInt']['input']>;
+  operatorsCutWei_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   or?: InputMaybe<Array<InputMaybe<OperatorDailyBucket_Filter>>>;
   poolValue?: InputMaybe<Scalars['BigInt']['input']>;
   poolValue_gt?: InputMaybe<Scalars['BigInt']['input']>;
@@ -645,7 +645,7 @@ export enum OperatorDailyBucket_OrderBy {
   Id = 'id',
   LossesWei = 'lossesWei',
   Operator = 'operator',
-  OperatorCumulativeOperatorsShareWei = 'operator__cumulativeOperatorsShareWei',
+  OperatorCumulativeOperatorsCutWei = 'operator__cumulativeOperatorsCutWei',
   OperatorCumulativeProfitsWei = 'operator__cumulativeProfitsWei',
   OperatorDelegatorCount = 'operator__delegatorCount',
   OperatorExchangeRate = 'operator__exchangeRate',
@@ -654,7 +654,7 @@ export enum OperatorDailyBucket_OrderBy {
   OperatorLatestHeartbeatMetadata = 'operator__latestHeartbeatMetadata',
   OperatorLatestHeartbeatTimestamp = 'operator__latestHeartbeatTimestamp',
   OperatorMetadataJsonString = 'operator__metadataJsonString',
-  OperatorOperatorsShareFraction = 'operator__operatorsShareFraction',
+  OperatorOperatorsCutFraction = 'operator__operatorsCutFraction',
   OperatorOwner = 'operator__owner',
   OperatorPoolTokenTotalSupplyWei = 'operator__poolTokenTotalSupplyWei',
   OperatorPoolValue = 'operator__poolValue',
@@ -662,7 +662,7 @@ export enum OperatorDailyBucket_OrderBy {
   OperatorPoolValueTimestamp = 'operator__poolValueTimestamp',
   OperatorSlashingsCount = 'operator__slashingsCount',
   OperatorTotalValueInSponsorshipsWei = 'operator__totalValueInSponsorshipsWei',
-  OperatorsShareWei = 'operatorsShareWei',
+  OperatorsCutWei = 'operatorsCutWei',
   PoolValue = 'poolValue',
   ProfitsWei = 'profitsWei',
   SpotApy = 'spotAPY',
@@ -675,14 +675,14 @@ export type Operator_Filter = {
   /** Filter for the block changed event. */
   _change_block?: InputMaybe<BlockChangedFilter>;
   and?: InputMaybe<Array<InputMaybe<Operator_Filter>>>;
-  cumulativeOperatorsShareWei?: InputMaybe<Scalars['BigInt']['input']>;
-  cumulativeOperatorsShareWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  cumulativeOperatorsShareWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  cumulativeOperatorsShareWei_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  cumulativeOperatorsShareWei_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  cumulativeOperatorsShareWei_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  cumulativeOperatorsShareWei_not?: InputMaybe<Scalars['BigInt']['input']>;
-  cumulativeOperatorsShareWei_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  cumulativeOperatorsCutWei?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeOperatorsCutWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeOperatorsCutWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeOperatorsCutWei_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  cumulativeOperatorsCutWei_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeOperatorsCutWei_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeOperatorsCutWei_not?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeOperatorsCutWei_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   cumulativeProfitsWei?: InputMaybe<Scalars['BigInt']['input']>;
   cumulativeProfitsWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
   cumulativeProfitsWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
@@ -780,14 +780,14 @@ export type Operator_Filter = {
   nodes_not?: InputMaybe<Array<Scalars['String']['input']>>;
   nodes_not_contains?: InputMaybe<Array<Scalars['String']['input']>>;
   nodes_not_contains_nocase?: InputMaybe<Array<Scalars['String']['input']>>;
-  operatorsShareFraction?: InputMaybe<Scalars['BigInt']['input']>;
-  operatorsShareFraction_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  operatorsShareFraction_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  operatorsShareFraction_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  operatorsShareFraction_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  operatorsShareFraction_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  operatorsShareFraction_not?: InputMaybe<Scalars['BigInt']['input']>;
-  operatorsShareFraction_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  operatorsCutFraction?: InputMaybe<Scalars['BigInt']['input']>;
+  operatorsCutFraction_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  operatorsCutFraction_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  operatorsCutFraction_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  operatorsCutFraction_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  operatorsCutFraction_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  operatorsCutFraction_not?: InputMaybe<Scalars['BigInt']['input']>;
+  operatorsCutFraction_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   or?: InputMaybe<Array<InputMaybe<Operator_Filter>>>;
   owner?: InputMaybe<Scalars['String']['input']>;
   owner_contains?: InputMaybe<Scalars['String']['input']>;
@@ -863,7 +863,7 @@ export type Operator_Filter = {
 };
 
 export enum Operator_OrderBy {
-  CumulativeOperatorsShareWei = 'cumulativeOperatorsShareWei',
+  CumulativeOperatorsCutWei = 'cumulativeOperatorsCutWei',
   CumulativeProfitsWei = 'cumulativeProfitsWei',
   DelegatorCount = 'delegatorCount',
   Delegators = 'delegators',
@@ -876,7 +876,7 @@ export enum Operator_OrderBy {
   LatestHeartbeatTimestamp = 'latestHeartbeatTimestamp',
   MetadataJsonString = 'metadataJsonString',
   Nodes = 'nodes',
-  OperatorsShareFraction = 'operatorsShareFraction',
+  OperatorsCutFraction = 'operatorsCutFraction',
   Owner = 'owner',
   PoolTokenTotalSupplyWei = 'poolTokenTotalSupplyWei',
   PoolValue = 'poolValue',
@@ -2227,7 +2227,7 @@ export enum QueueEntry_OrderBy {
   Delegator = 'delegator',
   Id = 'id',
   Operator = 'operator',
-  OperatorCumulativeOperatorsShareWei = 'operator__cumulativeOperatorsShareWei',
+  OperatorCumulativeOperatorsCutWei = 'operator__cumulativeOperatorsCutWei',
   OperatorCumulativeProfitsWei = 'operator__cumulativeProfitsWei',
   OperatorDelegatorCount = 'operator__delegatorCount',
   OperatorExchangeRate = 'operator__exchangeRate',
@@ -2236,7 +2236,7 @@ export enum QueueEntry_OrderBy {
   OperatorLatestHeartbeatMetadata = 'operator__latestHeartbeatMetadata',
   OperatorLatestHeartbeatTimestamp = 'operator__latestHeartbeatTimestamp',
   OperatorMetadataJsonString = 'operator__metadataJsonString',
-  OperatorOperatorsShareFraction = 'operator__operatorsShareFraction',
+  OperatorOperatorsCutFraction = 'operator__operatorsCutFraction',
   OperatorOwner = 'operator__owner',
   OperatorPoolTokenTotalSupplyWei = 'operator__poolTokenTotalSupplyWei',
   OperatorPoolValue = 'operator__poolValue',
@@ -2333,7 +2333,7 @@ export enum SlashingEvent_OrderBy {
   Date = 'date',
   Id = 'id',
   Operator = 'operator',
-  OperatorCumulativeOperatorsShareWei = 'operator__cumulativeOperatorsShareWei',
+  OperatorCumulativeOperatorsCutWei = 'operator__cumulativeOperatorsCutWei',
   OperatorCumulativeProfitsWei = 'operator__cumulativeProfitsWei',
   OperatorDelegatorCount = 'operator__delegatorCount',
   OperatorExchangeRate = 'operator__exchangeRate',
@@ -2342,7 +2342,7 @@ export enum SlashingEvent_OrderBy {
   OperatorLatestHeartbeatMetadata = 'operator__latestHeartbeatMetadata',
   OperatorLatestHeartbeatTimestamp = 'operator__latestHeartbeatTimestamp',
   OperatorMetadataJsonString = 'operator__metadataJsonString',
-  OperatorOperatorsShareFraction = 'operator__operatorsShareFraction',
+  OperatorOperatorsCutFraction = 'operator__operatorsCutFraction',
   OperatorOwner = 'operator__owner',
   OperatorPoolTokenTotalSupplyWei = 'operator__poolTokenTotalSupplyWei',
   OperatorPoolValue = 'operator__poolValue',
@@ -2910,7 +2910,7 @@ export enum Stake_OrderBy {
   Date = 'date',
   Id = 'id',
   Operator = 'operator',
-  OperatorCumulativeOperatorsShareWei = 'operator__cumulativeOperatorsShareWei',
+  OperatorCumulativeOperatorsCutWei = 'operator__cumulativeOperatorsCutWei',
   OperatorCumulativeProfitsWei = 'operator__cumulativeProfitsWei',
   OperatorDelegatorCount = 'operator__delegatorCount',
   OperatorExchangeRate = 'operator__exchangeRate',
@@ -2919,7 +2919,7 @@ export enum Stake_OrderBy {
   OperatorLatestHeartbeatMetadata = 'operator__latestHeartbeatMetadata',
   OperatorLatestHeartbeatTimestamp = 'operator__latestHeartbeatTimestamp',
   OperatorMetadataJsonString = 'operator__metadataJsonString',
-  OperatorOperatorsShareFraction = 'operator__operatorsShareFraction',
+  OperatorOperatorsCutFraction = 'operator__operatorsCutFraction',
   OperatorOwner = 'operator__owner',
   OperatorPoolTokenTotalSupplyWei = 'operator__poolTokenTotalSupplyWei',
   OperatorPoolValue = 'operator__poolValue',
@@ -3028,7 +3028,7 @@ export enum StakingEvent_OrderBy {
   Date = 'date',
   Id = 'id',
   Operator = 'operator',
-  OperatorCumulativeOperatorsShareWei = 'operator__cumulativeOperatorsShareWei',
+  OperatorCumulativeOperatorsCutWei = 'operator__cumulativeOperatorsCutWei',
   OperatorCumulativeProfitsWei = 'operator__cumulativeProfitsWei',
   OperatorDelegatorCount = 'operator__delegatorCount',
   OperatorExchangeRate = 'operator__exchangeRate',
@@ -3037,7 +3037,7 @@ export enum StakingEvent_OrderBy {
   OperatorLatestHeartbeatMetadata = 'operator__latestHeartbeatMetadata',
   OperatorLatestHeartbeatTimestamp = 'operator__latestHeartbeatTimestamp',
   OperatorMetadataJsonString = 'operator__metadataJsonString',
-  OperatorOperatorsShareFraction = 'operator__operatorsShareFraction',
+  OperatorOperatorsCutFraction = 'operator__operatorsCutFraction',
   OperatorOwner = 'operator__owner',
   OperatorPoolTokenTotalSupplyWei = 'operator__poolTokenTotalSupplyWei',
   OperatorPoolValue = 'operator__poolValue',
@@ -3732,7 +3732,7 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny'
 }
 
-export type OperatorFieldsFragment = { __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsShareWei: any, operatorsShareFraction: any, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, delegator: string }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }> };
+export type OperatorFieldsFragment = { __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, delegator: string }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }> };
 
 export type GetAllOperatorsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -3741,7 +3741,7 @@ export type GetAllOperatorsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllOperatorsQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsShareWei: any, operatorsShareFraction: any, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, delegator: string }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }> }> };
+export type GetAllOperatorsQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, delegator: string }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }> }> };
 
 export type SearchOperatorsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -3750,14 +3750,14 @@ export type SearchOperatorsQueryVariables = Exact<{
 }>;
 
 
-export type SearchOperatorsQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsShareWei: any, operatorsShareFraction: any, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, delegator: string }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }> }> };
+export type SearchOperatorsQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, delegator: string }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }> }> };
 
 export type GetOperatorByIdQueryVariables = Exact<{
   operatorId: Scalars['ID']['input'];
 }>;
 
 
-export type GetOperatorByIdQuery = { __typename?: 'Query', operator?: { __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsShareWei: any, operatorsShareFraction: any, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, delegator: string }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }> } | null };
+export type GetOperatorByIdQuery = { __typename?: 'Query', operator?: { __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, delegator: string }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }> } | null };
 
 export type GetOperatorsByDelegationQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -3766,7 +3766,7 @@ export type GetOperatorsByDelegationQueryVariables = Exact<{
 }>;
 
 
-export type GetOperatorsByDelegationQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsShareWei: any, operatorsShareFraction: any, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, delegator: string }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }> }> };
+export type GetOperatorsByDelegationQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalValueInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, delegator: string }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }> }> };
 
 export type SponsorshipFieldsFragment = { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, date?: any | null, operator: { __typename?: 'Operator', id: string } }> };
 
@@ -3868,7 +3868,7 @@ export type GetSponsoringEventsQueryVariables = Exact<{
 
 export type GetSponsoringEventsQuery = { __typename?: 'Query', sponsoringEvents: Array<{ __typename?: 'SponsoringEvent', id: string, amount: any, date: any, sponsor: string }> };
 
-export type OperatorDailyBucketFieldsFragment = { __typename?: 'OperatorDailyBucket', date: any, id: string, freeFundsWei: any, delegatorCountChange: number, delegatorCountAtStart: number, lossesWei: any, operatorsShareWei: any, poolValue: any, profitsWei: any, spotAPY: any, totalDelegatedWei: any, totalUndelegatedWei: any, totalValueInSponsorshipsWei: any };
+export type OperatorDailyBucketFieldsFragment = { __typename?: 'OperatorDailyBucket', date: any, id: string, freeFundsWei: any, delegatorCountChange: number, delegatorCountAtStart: number, lossesWei: any, operatorsCutWei: any, poolValue: any, profitsWei: any, spotAPY: any, totalDelegatedWei: any, totalUndelegatedWei: any, totalValueInSponsorshipsWei: any };
 
 export type GetOperatorDailyBucketsQueryVariables = Exact<{
   where: OperatorDailyBucket_Filter;
@@ -3877,7 +3877,7 @@ export type GetOperatorDailyBucketsQueryVariables = Exact<{
 }>;
 
 
-export type GetOperatorDailyBucketsQuery = { __typename?: 'Query', operatorDailyBuckets: Array<{ __typename?: 'OperatorDailyBucket', date: any, id: string, freeFundsWei: any, delegatorCountChange: number, delegatorCountAtStart: number, lossesWei: any, operatorsShareWei: any, poolValue: any, profitsWei: any, spotAPY: any, totalDelegatedWei: any, totalUndelegatedWei: any, totalValueInSponsorshipsWei: any }> };
+export type GetOperatorDailyBucketsQuery = { __typename?: 'Query', operatorDailyBuckets: Array<{ __typename?: 'OperatorDailyBucket', date: any, id: string, freeFundsWei: any, delegatorCountChange: number, delegatorCountAtStart: number, lossesWei: any, operatorsCutWei: any, poolValue: any, profitsWei: any, spotAPY: any, totalDelegatedWei: any, totalUndelegatedWei: any, totalValueInSponsorshipsWei: any }> };
 
 export const SponsorshipFieldsFragmentDoc = gql`
     fragment SponsorshipFields on Sponsorship {
@@ -3946,8 +3946,8 @@ export const OperatorFieldsFragmentDoc = gql`
   owner
   nodes
   cumulativeProfitsWei
-  cumulativeOperatorsShareWei
-  operatorsShareFraction
+  cumulativeOperatorsCutWei
+  operatorsCutFraction
 }
     ${SponsorshipFieldsFragmentDoc}`;
 export const ProjectFieldsFragmentDoc = gql`
@@ -4030,7 +4030,7 @@ export const OperatorDailyBucketFieldsFragmentDoc = gql`
   delegatorCountChange
   delegatorCountAtStart
   lossesWei
-  operatorsShareWei
+  operatorsCutWei
   poolValue
   profitsWei
   spotAPY
