@@ -31,6 +31,8 @@ import {
     useDelegatedOperatorsQuery,
 } from '../hooks/useOperatorList'
 import { OperatorElement } from '../types/operator'
+import { truncate } from '~/shared/utils/text'
+import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -43,8 +45,20 @@ enum TabOptions {
 
 const getAllOperatorColumns = (): ScrollTableColumnDef<OperatorElement>[] => [
     {
-        displayName: 'Operator ID',
-        valueMapper: (element) => element.id,
+        displayName: 'Operator Name',
+        valueMapper: (element) => (
+            <OperatorNameCell>
+                {element.metadata?.imageUrl ? (
+                    <HubImageAvatar
+                        src={element.metadata.imageUrl}
+                        alt={element.metadata.imageUrl || element.id}
+                    />
+                ) : (
+                    <HubAvatar id={element.id} />
+                )}
+                <span>{element.metadata?.name || truncate(element.id)}</span>
+            </OperatorNameCell>
+        ),
         align: 'start',
         isSticky: true,
         key: 'operatorId',
@@ -281,4 +295,11 @@ const OperatorsTableWrap = styled(WhiteBox)`
 const LoadMoreButton = styled(Button)`
     display: block;
     margin: 130px auto 80px;
+`
+
+const OperatorNameCell = styled.div`
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
 `

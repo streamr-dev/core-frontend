@@ -246,7 +246,7 @@ export default function BecomeOperatorModal({
                                         <AvatarPlaceholder username={randomAddress} />
                                     )}
                                     {(imageUrlProp || imageToUpload) && (
-                                        <UserAvatar
+                                        <OperatorAvatar
                                             src={
                                                 imageToUpload
                                                     ? URL.createObjectURL(imageToUpload)
@@ -324,7 +324,7 @@ const AvatarPlaceholder = styled(AvatarImage)`
     ${AvatarImageStyles}
 `
 
-const UserAvatar = styled.img`
+const OperatorAvatar = styled.img`
     ${AvatarImageStyles}
 `
 

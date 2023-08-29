@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
+import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
 import { truncate } from '~/shared/utils/text'
@@ -21,10 +22,13 @@ import { getConfigForChain } from '~/shared/web3/config'
 import { getCustomTokenBalance } from '~/marketplace/utils/web3'
 import getChainId from '~/utils/web3/getChainId'
 import { BN, BNish } from '~/utils/bn'
+import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
+import { SimpleDropdown } from '~/components/SimpleDropdown'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
     NetworkActionBarBackLink,
+    NetworkActionBarCaret,
     NetworkActionBarCTAs,
     NetworkActionBarInfoButton,
     NetworkActionBarInfoButtons,
@@ -96,9 +100,44 @@ export const OperatorActionBar: FunctionComponent<{
                                     name={'backArrow'}
                                 ></NetworkActionBarBackButtonIcon>
                             </NetworkActionBarBackLink>
-                            <NetworkActionBarTitle>{operator.id}</NetworkActionBarTitle>
+                            <NetworkActionBarTitle>
+                                {operator.metadata?.imageUrl ? (
+                                    <HubImageAvatar
+                                        src={operator.metadata.imageUrl}
+                                        alt={operator.metadata.name || operator.id}
+                                    />
+                                ) : (
+                                    <HubAvatar id={operator.id} />
+                                )}
+                                <span>{operator.metadata?.name || operator.id}</span>
+                            </NetworkActionBarTitle>
                         </NetworkActionBarBackButtonAndTitle>
                         <NetworkActionBarInfoButtons>
+                            <SimpleDropdown
+                                toggleElement={
+                                    <NetworkActionBarInfoButton className="pointer bold">
+                                        <SvgIcon name="page" />
+                                        About Operators
+                                        <NetworkActionBarCaret name="caretDown" />
+                                    </NetworkActionBarInfoButton>
+                                }
+                                dropdownContent={
+                                    <AboutOperatorsContent>
+                                        {operator.metadata?.description && (
+                                            <p>{operator.metadata.description}</p>
+                                        )}
+                                        LOREM IPSUM DOLOR SIT AMET. Learn more{' '}
+                                        <a
+                                            href="https://docs.streamr.network/streamr-network/network-incentives"
+                                            target="_blank"
+                                            rel="noreferrer noopener"
+                                        >
+                                            here
+                                        </a>
+                                        .
+                                    </AboutOperatorsContent>
+                                }
+                            />
                             <NetworkActionBarInfoButton>
                                 <SvgIcon name="page" />
                                 About Operators
@@ -225,3 +264,8 @@ export const OperatorActionBar: FunctionComponent<{
         </SingleElementPageActionBar>
     )
 }
+
+const AboutOperatorsContent = styled.div`
+    margin: 0;
+    min-width: 250px;
+`

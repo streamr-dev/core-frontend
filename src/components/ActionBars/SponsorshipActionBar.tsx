@@ -19,6 +19,7 @@ import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
     NetworkActionBarBackLink,
+    NetworkActionBarCaret,
     NetworkActionBarCTAs,
     NetworkActionBarInfoButton,
     NetworkActionBarInfoButtons,
@@ -69,6 +70,7 @@ export const SponsorshipActionBar: FunctionComponent<{
                                     <NetworkActionBarInfoButton className="pointer bold">
                                         <SvgIcon name="page" />
                                         About Sponsorships
+                                        <NetworkActionBarCaret name="caretDown" />
                                     </NetworkActionBarInfoButton>
                                 }
                                 dropdownContent={

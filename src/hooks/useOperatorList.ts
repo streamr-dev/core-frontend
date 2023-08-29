@@ -5,6 +5,11 @@ import { OperatorElement, OperatorMetadata } from '~/types/operator'
 import { Operator } from '~/generated/gql/network'
 import { toBN } from '~/utils/bn'
 import { getAllOperators, getOperatorsByDelegation, searchOperators } from '~/getters'
+import getCoreConfig from '~/getters/getCoreConfig'
+
+const {
+    ipfs: { ipfsGatewayUrl },
+} = getCoreConfig()
 
 export const useAllOperatorsQuery = (
     pageSize = 10,
@@ -78,7 +83,14 @@ export const useDelegatedOperatorsQuery = (
 
 const parseMetadata = (operator: Operator): OperatorMetadata | undefined => {
     try {
-        return JSON.parse(operator.metadataJsonString)
+        const metadataObject = JSON.parse(operator.metadataJsonString)
+        return {
+            name: metadataObject.name,
+            description: metadataObject.description,
+            imageUrl: metadataObject.imageIpfsCid
+                ? `${ipfsGatewayUrl}${metadataObject.imageIpfsCid}`
+                : undefined,
+        }
     } catch (e) {
         console.warn('Could not parse metadata for operator', operator.id)
         return undefined

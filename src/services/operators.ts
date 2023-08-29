@@ -56,32 +56,26 @@ export async function createOperator(
      * - stringArgs[1] i metadata object as a JSON
      * the metadata object should contain name and description fields
      */
-    const stringArgs: [string, string] = [
-        `StreamrOperator-${walletAddress.slice(-5)}`,
-        JSON.stringify(metadata),
-    ]
+    const poolTokenName = `StreamrOperator-${walletAddress.slice(-5)}`
+    const operatorMetadata = JSON.stringify(metadata)
 
     const policies: [Address, Address, Address] = [
         chainConfig.contracts.OperatorDefaultDelegationPolicy,
         chainConfig.contracts.OperatorDefaultPoolYieldPolicy,
         chainConfig.contracts.OperatorDefaultUndelegationPolicy,
     ]
+    const operatorsCutFraction = parseEther('1').mul(operatorCut).div(100)
 
-    //hardcoded now, will be moved to global config later
-    const minimumMarginFraction = parseEther('1').mul(10).div(100)
-    const operatorsShareFraction = parseEther('1').mul(operatorCut).div(100)
-
-    const initParams = [
-        0,
-        minimumMarginFraction,
-        0,
-        0,
-        parseEther('1'), // initialMinimumDelegationWei - will be moved to global config
-        operatorsShareFraction,
-    ]
+    const policiesParams: [number, number, number] = [0, 0, 0]
 
     await toastedOperation('Operator deployment', async () => {
-        const tx = await factory.deployOperator(stringArgs, policies, initParams)
+        const tx = await factory.deployOperator(
+            operatorsCutFraction,
+            poolTokenName,
+            operatorMetadata,
+            policies,
+            policiesParams,
+        )
         await tx.wait()
     })
 }
