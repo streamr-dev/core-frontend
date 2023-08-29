@@ -67,7 +67,7 @@ const getAllOperatorColumns = (): ScrollTableColumnDef<OperatorElement>[] => [
     {
         displayName: "Operator's cut",
         valueMapper: (element) =>
-            `${element.operatorsShareFraction.dividedBy(100).toFixed(2)}%`,
+            `${element.operatorsCutFraction.dividedBy(100).toFixed(2)}%`,
         align: 'end',
         isSticky: false,
         key: 'operatorCut',
@@ -116,7 +116,7 @@ const getMyDelegationsColumns = (
     {
         displayName: "Operator's cut",
         valueMapper: (element) =>
-            `${element.operatorsShareFraction.dividedBy(100).toFixed(2)}%`,
+            `${element.operatorsCutFraction.dividedBy(100).toFixed(2)}%`,
         align: 'end',
         isSticky: false,
         key: 'operatorsCut',

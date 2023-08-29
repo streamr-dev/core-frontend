@@ -29,8 +29,8 @@ export type OperatorElement = {
     nodes: string[]
     slashingEvents: OperatorSlashingEvent[]
     cumulativeProfitsWei: BN
-    cumulativeOperatorsShareWei: BN
-    operatorsShareFraction: BN
+    cumulativeOperatorsCutWei: BN
+    operatorsCutFraction: BN
 }
 
 export type OperatorStake = {
