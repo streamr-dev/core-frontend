@@ -62,11 +62,11 @@ gql`
         }
     }
 
-    query getOperatorsByDelegation($first: Int, $skip: Int, $operatorId: String!) {
+    query getOperatorsByDelegation($first: Int, $skip: Int, $delegator: String!) {
         operators(
             first: $first
             skip: $skip
-            where: { delegators_: { operator: $operatorId } }
+            where: { delegators_: { delegator: $delegator } }
         ) {
             ...OperatorFields
         }

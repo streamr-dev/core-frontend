@@ -365,7 +365,7 @@ export async function getOperatorsByDelegation({
         variables: {
             first,
             skip,
-            operatorId: address,
+            delegator: address,
         },
     })
 

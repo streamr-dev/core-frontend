@@ -3762,7 +3762,7 @@ export type GetOperatorByIdQuery = { __typename?: 'Query', operator?: { __typena
 export type GetOperatorsByDelegationQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   skip?: InputMaybe<Scalars['Int']['input']>;
-  operatorId: Scalars['String']['input'];
+  delegator: Scalars['String']['input'];
 }>;
 
 
@@ -4064,11 +4064,11 @@ export const GetOperatorByIdDocument = gql`
     ${OperatorFieldsFragmentDoc}`;
 export type GetOperatorByIdQueryResult = Apollo.QueryResult<GetOperatorByIdQuery, GetOperatorByIdQueryVariables>;
 export const GetOperatorsByDelegationDocument = gql`
-    query getOperatorsByDelegation($first: Int, $skip: Int, $operatorId: String!) {
+    query getOperatorsByDelegation($first: Int, $skip: Int, $delegator: String!) {
   operators(
     first: $first
     skip: $skip
-    where: {delegators_: {operator: $operatorId}}
+    where: {delegators_: {delegator: $delegator}}
   ) {
     ...OperatorFields
   }

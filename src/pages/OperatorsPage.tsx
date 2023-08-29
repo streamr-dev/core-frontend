@@ -12,13 +12,17 @@ import { LAPTOP, TABLET } from '~/shared/utils/styled'
 import { Layer } from '~/utils/Layer'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import Button from '~/shared/components/Button'
-import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
+import {
+    ScrollTableColumnDef,
+    ScrollTableCore,
+} from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
 import { useOperator } from '~/hooks/useOperator'
 import { calculateOperatorSpotAPY } from '~/utils/apy'
 import { createOperator } from '~/services/operators'
 import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
+import { getDelegationAmountForAddress } from '~/utils/delegation'
 import routes from '~/routes'
 import { NetworkActionBar } from '../components/ActionBars/NetworkActionBar'
 import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
@@ -36,6 +40,102 @@ enum TabOptions {
     allOperators = 'allOperators',
     myDelegations = 'myDelegations',
 }
+
+const getAllOperatorColumns = (): ScrollTableColumnDef<OperatorElement>[] => [
+    {
+        displayName: 'Operator ID',
+        valueMapper: (element) => element.id,
+        align: 'start',
+        isSticky: true,
+        key: 'operatorId',
+    },
+    {
+        displayName: 'Total value',
+        valueMapper: (element) => fromAtto(element.poolValue).toString(),
+        align: 'start',
+        isSticky: false,
+        key: 'totalValue',
+    },
+    {
+        displayName: 'Deployed',
+        valueMapper: (element) =>
+            fromAtto(element.totalValueInSponsorshipsWei).toString(),
+        align: 'end',
+        isSticky: false,
+        key: 'deployed',
+    },
+    {
+        displayName: "Operator's cut",
+        valueMapper: (element) =>
+            `${element.operatorsShareFraction.dividedBy(100).toFixed(2)}%`,
+        align: 'end',
+        isSticky: false,
+        key: 'operatorCut',
+    },
+    {
+        displayName: 'APY',
+        valueMapper: (element) => `${calculateOperatorSpotAPY(element).toFixed(0)}%`,
+        align: 'end',
+        isSticky: false,
+        key: 'apy',
+    },
+    {
+        displayName: 'Sponsorships',
+        valueMapper: (element) => element.stakes.length,
+        align: 'end',
+        isSticky: false,
+        key: 'sponshorshipCount',
+    },
+]
+
+const getMyDelegationsColumns = (
+    myWalletAddress: string,
+): ScrollTableColumnDef<OperatorElement>[] => [
+    {
+        displayName: 'Operator ID',
+        valueMapper: (element) => element.id,
+        align: 'start',
+        isSticky: true,
+        key: 'operatorId',
+    },
+    {
+        displayName: 'My share',
+        valueMapper: (element) =>
+            fromAtto(getDelegationAmountForAddress(myWalletAddress, element)).toString(),
+        align: 'start',
+        isSticky: false,
+        key: 'myShare',
+    },
+    {
+        displayName: 'Total stake',
+        valueMapper: (element) => fromAtto(element.poolValue).toString(),
+        align: 'end',
+        isSticky: false,
+        key: 'totalStake',
+    },
+    {
+        displayName: "Operator's cut",
+        valueMapper: (element) =>
+            `${element.operatorsShareFraction.dividedBy(100).toFixed(2)}%`,
+        align: 'end',
+        isSticky: false,
+        key: 'operatorsCut',
+    },
+    {
+        displayName: 'APY',
+        valueMapper: (element) => `${calculateOperatorSpotAPY(element).toFixed(0)}%`,
+        align: 'end',
+        isSticky: false,
+        key: 'apy',
+    },
+    {
+        displayName: 'Sponsorships',
+        valueMapper: (element) => element.stakes.length,
+        align: 'end',
+        isSticky: false,
+        key: 'sponsorships',
+    },
+]
 
 export const OperatorsPage = () => {
     const [selectedTab, setSelectedTab] = useState<TabOptions>(TabOptions.allOperators)
@@ -134,65 +234,11 @@ export const OperatorsPage = () => {
                             operatorsQuery.isFetching ||
                             operatorsQuery.isFetchingNextPage
                         }
-                        columns={[
-                            {
-                                displayName: 'Operator ID',
-                                valueMapper: (element) => element.id,
-                                align: 'start',
-                                isSticky: true,
-                                key: 'operatorId',
-                            },
-                            {
-                                displayName: 'Total value',
-                                valueMapper: (element) =>
-                                    fromAtto(element.poolValue).toString(),
-                                align: 'start',
-                                isSticky: false,
-                                key: 'totalValue',
-                            },
-                            {
-                                displayName: 'Deployed',
-                                valueMapper: (element) =>
-                                    fromAtto(
-                                        element.totalValueInSponsorshipsWei,
-                                    ).toString(),
-                                align: 'start',
-                                isSticky: false,
-                                key: 'deployed',
-                            },
-                            {
-                                displayName: "Operator's cut",
-                                valueMapper: (element) =>
-                                    `${element.operatorsShareFraction
-                                        .dividedBy(100)
-                                        .toFixed(2)}%`,
-                                align: 'start',
-                                isSticky: false,
-                                key: 'operatorCut',
-                            },
-                            {
-                                displayName: 'APY',
-                                valueMapper: (element) =>
-                                    `${calculateOperatorSpotAPY(element).toFixed(0)}%`,
-                                align: 'start',
-                                isSticky: false,
-                                key: 'apy',
-                            },
-                            {
-                                displayName: 'Sponsorships',
-                                valueMapper: (element) => element.stakes.length,
-                                align: 'start',
-                                isSticky: false,
-                                key: 'sponshorshipCount',
-                            },
-                        ]}
-                        actions={[
-                            {
-                                displayName: 'Edit',
-                                callback: (element) =>
-                                    console.warn('editing! ' + element.id),
-                            },
-                        ]}
+                        columns={
+                            selectedTab === TabOptions.allOperators
+                                ? getAllOperatorColumns()
+                                : getMyDelegationsColumns(wallet || '')
+                        }
                         noDataFirstLine={
                             selectedTab === TabOptions.allOperators
                                 ? 'No operators found.'
