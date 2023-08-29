@@ -50,12 +50,6 @@ export async function createOperator(
         imageIpfsCid,
     }
 
-    /**
-     * - stringArgs[0] is poolTokenName - each operator contract creates its own token which is used
-     * for accounting and here we're defining its name
-     * - stringArgs[1] i metadata object as a JSON
-     * the metadata object should contain name and description fields
-     */
     const poolTokenName = `StreamrOperator-${walletAddress.slice(-5)}`
     const operatorMetadata = JSON.stringify(metadata)
 
