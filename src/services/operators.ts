@@ -14,6 +14,7 @@ import { getERC20TokenContract } from '~/getters'
 import { BNish, toBN } from '~/utils/bn'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import { toastedOperation } from '~/utils/toastedOperation'
+import { postImage } from '~/services/images'
 
 const getOperatorChainId = () => {
     return defaultChainConfig.id
@@ -23,7 +24,7 @@ export async function createOperator(
     operatorCut: number,
     name: string,
     description?: string,
-    imageUrl?: string,
+    imageToUpload?: File,
 ) {
     const chainId = getOperatorChainId()
 
@@ -35,6 +36,8 @@ export async function createOperator(
 
     const walletAddress = await signer.getAddress()
 
+    const imageIpfsCid = imageToUpload ? await postImage(imageToUpload) : undefined
+
     const factory = new Contract(
         chainConfig.contracts['OperatorFactory'],
         operatorFactoryABI,
@@ -44,7 +47,7 @@ export async function createOperator(
     const metadata = {
         name,
         description,
-        imageUrl,
+        imageIpfsCid,
     }
 
     /**

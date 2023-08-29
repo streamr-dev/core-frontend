@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import ImageUpload from '~/shared/components/ImageUpload'
 import Errors from '~/shared/components/Ui/Errors'
-import useModal from '~/shared/hooks/useModal'
 import useFilePreview from '~/shared/hooks/useFilePreview'
 import { COLORS } from '~/shared/utils/styled'
 import { ProjectHeroImageStyles } from '~/marketplace/containers/ProjectPage/Hero/ProjectHero2.styles'
@@ -61,7 +60,6 @@ export const CoverImage: FunctionComponent<Props> = ({ disabled }) => {
     const { state: product } = useContext(ProjectStateContext)
     const { updateImageFile } = useEditableProjectActions()
     const { isValid, message } = useValidation('imageUrl')
-    const { api: cropImageDialog, isOpen } = useModal('cropImage')
     const { preview, createPreview } = useFilePreview()
     const onUpload = useCallback(
         async (image: File) => {
@@ -75,7 +73,7 @@ export const CoverImage: FunctionComponent<Props> = ({ disabled }) => {
                 // action cancelled
             }
         },
-        [cropImageDialog, updateImageFile],
+        [updateImageFile],
     )
     const uploadedImage = product.newImageToUpload
     useEffect(() => {
@@ -91,7 +89,7 @@ export const CoverImage: FunctionComponent<Props> = ({ disabled }) => {
                 setImageToUpload={onUpload}
                 originalImage={preview || product.imageUrl}
                 dropZoneClassName={'imageUploadDropZone'}
-                disabled={!!disabled || isOpen}
+                disabled={!!disabled}
                 className={'coverImageUpload'}
                 noPreview={true}
             />

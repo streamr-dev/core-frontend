@@ -166,7 +166,7 @@ export const Section = styled.div`
         line-height: 20px;
     }
 
-    ul {
+    > ul {
         background: ${COLORS.secondaryLight};
         font-size: 14px;
         list-style: none;
@@ -174,15 +174,15 @@ export const Section = styled.div`
         padding: 16px;
         border-radius: 8px;
         box-shadow: 0 1px 1px rgba(0, 0, 0, 0.02);
-    }
 
-    li {
-        display: flex;
-        align-items: center;
-    }
+        li {
+            display: flex;
+            align-items: center;
+        }
 
-    li + li {
-        margin-top: 16px;
+        li + li {
+            margin-top: 16px;
+        }
     }
 
     & + & {

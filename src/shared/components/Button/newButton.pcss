@@ -222,6 +222,14 @@
     &[disabled] {
         color: rgba(255, 255, 255, 0.5);
     }
+
+    &.outline {
+        &,
+        &:link,
+        &:not([disabled]):--idle {
+            color: #ff0f2d;
+        }
+    }
 }
 
 .link {
