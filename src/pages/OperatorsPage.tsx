@@ -163,7 +163,10 @@ export const OperatorsPage = () => {
                             },
                             {
                                 displayName: "Operator's cut",
-                                valueMapper: (element) => element.exchangeRate.toString(),
+                                valueMapper: (element) =>
+                                    `${element.operatorsShareFraction
+                                        .dividedBy(100)
+                                        .toFixed(2)}%`,
                                 align: 'start',
                                 isSticky: false,
                                 key: 'operatorCut',
@@ -171,7 +174,7 @@ export const OperatorsPage = () => {
                             {
                                 displayName: 'APY',
                                 valueMapper: (element) =>
-                                    calculateOperatorSpotAPY(element).toString(),
+                                    `${calculateOperatorSpotAPY(element).toFixed(0)}%`,
                                 align: 'start',
                                 isSticky: false,
                                 key: 'apy',

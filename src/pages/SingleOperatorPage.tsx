@@ -22,8 +22,9 @@ import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { StatsLabel, StatsValue } from '~/shared/components/StatsBox/StatsBox'
 import { useOperator } from '~/hooks/useOperator'
+import { fromAtto } from '~/marketplace/utils/math'
 import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
-import { getStakeForAddress } from '~/utils/delegation'
+import { getDelegationAmountForAddress } from '~/utils/delegation'
 import { NetworkChartWrap } from '../components/NetworkUtils'
 import { getOperatorStats } from '../getters/getOperatorStats'
 
@@ -53,14 +54,14 @@ export const SingleOperatorPage = () => {
         },
     })
 
-    const myStakeAmount = useMemo(() => {
-        return getStakeForAddress(walletAddress, operator)
+    const myDelegationAmount = useMemo(() => {
+        return getDelegationAmountForAddress(walletAddress, operator)
     }, [operator, walletAddress])
 
     const myDelegationPercentage = useMemo(() => {
-        const myShare = myStakeAmount.dividedBy(operator?.poolValue || 1)
+        const myShare = myDelegationAmount.dividedBy(operator?.poolValue || 1)
         return myShare.multipliedBy(100)
-    }, [operator, myStakeAmount])
+    }, [operator, myDelegationAmount])
 
     const tooltipPrefix = useMemo(() => {
         switch (selectedDataSource) {
@@ -154,19 +155,30 @@ export const SingleOperatorPage = () => {
                                     </NetworkSectionTitle>
                                 </DelegationCell>
                                 <DelegationSeparator />
-                                <DelegationCell>
-                                    <StatsLabel>Current value</StatsLabel>
-                                    <StatsValue>{myStakeAmount.toString()}</StatsValue>
-                                </DelegationCell>
-                                <DelegationSeparator />
-                                <DelegationCell>
-                                    <StatsLabel>
-                                        Share of operator&apos;s total value
-                                    </StatsLabel>
-                                    <StatsValue>
-                                        {`${myDelegationPercentage.toString()}%`}
-                                    </StatsValue>
-                                </DelegationCell>
+                                {walletAddress == null && (
+                                    <DelegationCell>
+                                        Connect your wallet to show your delegation
+                                    </DelegationCell>
+                                )}
+                                {walletAddress != null && (
+                                    <>
+                                        <DelegationCell>
+                                            <StatsLabel>Current value</StatsLabel>
+                                            <StatsValue>
+                                                {fromAtto(myDelegationAmount).toString()}
+                                            </StatsValue>
+                                        </DelegationCell>
+                                        <DelegationSeparator />
+                                        <DelegationCell>
+                                            <StatsLabel>
+                                                Share of operator&apos;s total value
+                                            </StatsLabel>
+                                            <StatsValue>
+                                                {`${myDelegationPercentage.toFixed(0)}%`}
+                                            </StatsValue>
+                                        </DelegationCell>
+                                    </>
+                                )}
                             </MyDelegationContainer>
                         </ChartGrid>
                         <SponsorshipsTable>
@@ -184,7 +196,7 @@ export const SingleOperatorPage = () => {
                                     {
                                         displayName: 'Staked',
                                         valueMapper: (element) =>
-                                            element.amount.toString(),
+                                            fromAtto(element.amount).toString(),
                                         align: 'start',
                                         isSticky: false,
                                         key: 'staked',
@@ -194,7 +206,7 @@ export const SingleOperatorPage = () => {
                                         valueMapper: (element) =>
                                             `${BN(element.sponsorship?.spotAPY)
                                                 .multipliedBy(100)
-                                                .toString()}%`,
+                                                .toFixed(0)}%`,
                                         align: 'start',
                                         isSticky: false,
                                         key: 'apy',
@@ -234,7 +246,8 @@ export const SingleOperatorPage = () => {
                                 },
                                 {
                                     displayName: 'Slashed',
-                                    valueMapper: (element) => element.amount.toString(),
+                                    valueMapper: (element) =>
+                                        fromAtto(element.amount).toString(),
                                     align: 'start',
                                     isSticky: false,
                                     key: 'slashed',

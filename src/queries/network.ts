@@ -15,10 +15,8 @@ gql`
             }
         }
         delegators {
-            operator {
-                id
-            }
             poolTokenWei
+            delegator
         }
         slashingEvents {
             amount

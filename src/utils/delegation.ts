@@ -2,7 +2,7 @@ import sumBy from 'lodash/sumBy'
 import { OperatorElement } from '~/types/operator'
 import { BN } from './bn'
 
-export function getStakeForAddress(
+export function getDelegationAmountForAddress(
     address: string | undefined,
     operator: OperatorElement | null | undefined,
 ) {
@@ -10,7 +10,7 @@ export function getStakeForAddress(
         return BN(0)
     }
 
-    const stakes = operator?.stakes.filter((s) => s.operatorId === address)
-    const stakeValue = sumBy(stakes, 'amount')
-    return BN(stakeValue)
+    const myDelegations = operator?.delegators.filter((s) => s.delegator === address)
+    const value = sumBy(myDelegations, 'amount')
+    return BN(value)
 }

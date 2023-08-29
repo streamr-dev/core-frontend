@@ -42,8 +42,8 @@ export type OperatorStake = {
 }
 
 export type OperatorDelegator = {
-    operatorId?: string
     amount: BN
+    delegator: string
 }
 
 export type OperatorSlashingEvent = {

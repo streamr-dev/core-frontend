@@ -97,8 +97,8 @@ export const mapOperatorToElement = (operator: Operator): OperatorElement => {
         })),
         delegatorCount: operator.delegatorCount,
         delegators: operator.delegators.map((d) => ({
-            operatorId: d.operator?.id,
             amount: toBN(d.poolTokenWei),
+            delegator: d.delegator,
         })),
         slashingEvents: operator.slashingEvents.map((e) => ({
             amount: e.amount,

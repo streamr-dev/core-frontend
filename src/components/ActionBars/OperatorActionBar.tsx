@@ -1,11 +1,7 @@
-import React, { FunctionComponent, useMemo } from 'react'
+import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import { toaster } from 'toasterhea'
-import { SponsorshipElement } from '~/types/sponsorship'
 import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
-import { truncate, truncateStreamName } from '~/shared/utils/text'
-import { truncateNumber } from '~/shared/utils/truncateNumber'
-import JoinSponsorshipModal from '~/modals/JoinSponsorshipModal'
-import FundSponsorshipModal from '~/modals/FundSponsorshipModal'
+import { truncate } from '~/shared/utils/text'
 import DelegateFundsModal from '~/modals/DelegateFundsModal'
 import { BlackTooltip } from '~/shared/components/Tooltip/Tooltip'
 import Button from '~/shared/components/Button'
@@ -13,11 +9,18 @@ import useCopy from '~/shared/hooks/useCopy'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
+import { getOperatorDelegationAmount } from '~/services/operators'
 import { Layer } from '~/utils/Layer'
 import routes from '~/routes'
 import { OperatorElement } from '~/types/operator'
 import { calculateOperatorSpotAPY } from '~/utils/apy'
-import { getStakeForAddress } from '~/utils/delegation'
+import { getDelegationAmountForAddress } from '~/utils/delegation'
+import { fromAtto } from '~/marketplace/utils/math'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import { getConfigForChain } from '~/shared/web3/config'
+import { getCustomTokenBalance } from '~/marketplace/utils/web3'
+import getChainId from '~/utils/web3/getChainId'
+import { BN, BNish } from '~/utils/bn'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -38,13 +41,47 @@ const undelegateFundsModal = toaster(DelegateFundsModal, Layer.Modal)
 export const OperatorActionBar: FunctionComponent<{
     operator: OperatorElement
 }> = ({ operator }) => {
+    const [balance, setBalance] = useState<BNish | undefined>(undefined)
+    const [delegationAmount, setDelegationAmount] = useState<BN | undefined>(undefined)
     const { copy } = useCopy()
     const { count: liveNodeCount } = useOperatorLiveNodes(operator.id)
+    const walletAddress = useWalletAccount()
 
     const ownerDelegationPercentage = useMemo(() => {
-        const stake = getStakeForAddress(operator.owner, operator)
+        const stake = getDelegationAmountForAddress(operator.owner, operator)
         return stake.dividedBy(operator.poolValue).multipliedBy(100)
     }, [operator])
+
+    useEffect(() => {
+        const loadBalance = async () => {
+            if (operator.id && walletAddress) {
+                const chainId = await getChainId()
+                const chainConfig = getConfigForChain(chainId)
+                const balance = await getCustomTokenBalance(
+                    chainConfig.contracts['DATA'],
+                    walletAddress,
+                    chainId,
+                )
+                setBalance(balance)
+            }
+        }
+
+        loadBalance()
+    }, [operator.id, walletAddress])
+
+    useEffect(() => {
+        const loadAmount = async () => {
+            if (operator.id && walletAddress) {
+                const amount = await getOperatorDelegationAmount(
+                    operator.id,
+                    walletAddress,
+                )
+                setDelegationAmount(amount)
+            }
+        }
+
+        loadAmount()
+    }, [operator.id, walletAddress])
 
     // TODO when Mariusz will merge his hook & getter for fetching Token information - use it here to display the proper token symbol
 
@@ -112,6 +149,10 @@ export const OperatorActionBar: FunctionComponent<{
                                 try {
                                     await delegateFundsModal.pop({
                                         operatorId: operator.id,
+                                        balance: balance?.toString(),
+                                        delegatedTotal: delegationAmount
+                                            ?.dividedBy(1e18)
+                                            .toString(),
                                     })
                                 } catch (e) {
                                     // Ignore for now.
@@ -139,15 +180,17 @@ export const OperatorActionBar: FunctionComponent<{
                     stats={[
                         {
                             label: 'Total value',
-                            value: operator.poolValue.toString(),
+                            value: fromAtto(operator.poolValue).toString(),
                         },
                         {
                             label: 'Deployed stake',
-                            value: operator.totalValueInSponsorshipsWei.toString(),
+                            value: fromAtto(
+                                operator.totalValueInSponsorshipsWei,
+                            ).toString(),
                         },
                         {
                             label: "Owner's delegation",
-                            value: `${ownerDelegationPercentage.toString()}%`,
+                            value: `${ownerDelegationPercentage.toFixed(0)}%`,
                         },
                         {
                             label: 'Sponsorships',
@@ -157,17 +200,19 @@ export const OperatorActionBar: FunctionComponent<{
                             label: "Operator's cut",
                             value: `${operator.operatorsShareFraction
                                 .dividedBy(100)
-                                .toString()}%`,
+                                .toFixed(2)}%`,
                         },
                         {
                             label: 'Spot APY',
-                            value: `${calculateOperatorSpotAPY(operator)}%`,
+                            value: `${calculateOperatorSpotAPY(operator).toFixed(0)}%`,
                         },
                         {
                             label: 'Cumulative earnings',
-                            value: `${operator.cumulativeProfitsWei
-                                .plus(operator.cumulativeOperatorsShareWei)
-                                .toString()}`,
+                            value: `${fromAtto(
+                                operator.cumulativeProfitsWei.plus(
+                                    operator.cumulativeOperatorsShareWei,
+                                ),
+                            ).toString()}`,
                         },
                         {
                             label: 'Live nodes',
