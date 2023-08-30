@@ -53,6 +53,9 @@ export const OperatorActionBar: FunctionComponent<{
 
     const ownerDelegationPercentage = useMemo(() => {
         const stake = getDelegationAmountForAddress(operator.owner, operator)
+        if (stake.isEqualTo(BN(0)) || operator.poolValue.isEqualTo(BN(0))) {
+            return BN(0)
+        }
         return stake.dividedBy(operator.poolValue).multipliedBy(100)
     }, [operator])
 
@@ -238,9 +241,7 @@ export const OperatorActionBar: FunctionComponent<{
                         },
                         {
                             label: "Operator's cut",
-                            value: `${operator.operatorsCutFraction
-                                .dividedBy(100)
-                                .toFixed(2)}%`,
+                            value: `${operator.operatorsCutFraction}%`,
                         },
                         {
                             label: 'Spot APY',

@@ -6,6 +6,7 @@ import { Operator } from '~/generated/gql/network'
 import { toBN } from '~/utils/bn'
 import { getAllOperators, getOperatorsByDelegation, searchOperators } from '~/getters'
 import getCoreConfig from '~/getters/getCoreConfig'
+import { fromAtto } from '~/marketplace/utils/math'
 
 const {
     ipfs: { ipfsGatewayUrl },
@@ -129,6 +130,8 @@ export const mapOperatorToElement = (operator: Operator): OperatorElement => {
         totalValueInSponsorshipsWei: toBN(operator.totalValueInSponsorshipsWei),
         cumulativeProfitsWei: toBN(operator.cumulativeProfitsWei),
         cumulativeOperatorsCutWei: toBN(operator.cumulativeOperatorsCutWei),
-        operatorsCutFraction: toBN(operator.operatorsCutFraction),
+        operatorsCutFraction: fromAtto(
+            toBN(operator.operatorsCutFraction).multipliedBy(100),
+        ),
     }
 }
