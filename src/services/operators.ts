@@ -58,7 +58,8 @@ export async function createOperator(
         chainConfig.contracts.OperatorDefaultPoolYieldPolicy,
         chainConfig.contracts.OperatorDefaultUndelegationPolicy,
     ]
-    const operatorsCutFraction = parseEther('1').mul(operatorCut).div(100)
+    console.log('cut', operatorCut.toString())
+    const operatorsCutFraction = parseEther(operatorCut.toString()).div(100)
 
     const policiesParams: [number, number, number] = [0, 0, 0]
 

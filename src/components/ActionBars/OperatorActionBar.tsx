@@ -126,7 +126,12 @@ export const OperatorActionBar: FunctionComponent<{
                                         {operator.metadata?.description && (
                                             <p>{operator.metadata.description}</p>
                                         )}
-                                        LOREM IPSUM DOLOR SIT AMET. Learn more{' '}
+                                        Operators secure and stabilize the Streamr Network
+                                        by running nodes and contributing bandwidth. In
+                                        exchange, they earn DATA tokens from sponsorships
+                                        they stake on. The stake guarantees that the
+                                        operators do the work, otherwise they get slashed.
+                                        Learn more{' '}
                                         <a
                                             href="https://docs.streamr.network/streamr-network/network-incentives"
                                             target="_blank"
@@ -138,10 +143,6 @@ export const OperatorActionBar: FunctionComponent<{
                                     </AboutOperatorsContent>
                                 }
                             />
-                            <NetworkActionBarInfoButton>
-                                <SvgIcon name="page" />
-                                About Operators
-                            </NetworkActionBarInfoButton>
                             <NetworkActionBarInfoButton>
                                 <span>
                                     Owner: <strong>{operator.owner}</strong>

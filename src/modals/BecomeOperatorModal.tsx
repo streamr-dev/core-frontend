@@ -97,6 +97,7 @@ export default function BecomeOperatorModal({
                 setImageToUpload(
                     await cropModal.pop({
                         imageUrl: URL.createObjectURL(image),
+                        mask: 'round',
                     }),
                 )
             } catch (e) {
