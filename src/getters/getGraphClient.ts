@@ -8,7 +8,7 @@ export default function getGraphClient() {
         graphClient = new ApolloClient({
             uri:
                 process.env.NETWORK_GRAPH_SCHEMA_PATH ||
-                'http://localhost:8000/subgraphs/name/streamr-dev/network-subgraphs',
+                'http://localhost:8800/subgraphs/name/streamr-dev/network-subgraphs',
             cache: new InMemoryCache(),
         })
     }

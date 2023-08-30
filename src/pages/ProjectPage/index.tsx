@@ -1,7 +1,7 @@
 import React from 'react'
 import { Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { ProjectDraftContext, useInitProject } from '~/shared/stores/projectEditor'
-import NotFoundPage from '~/shared/components/NotFoundPage'
+import NotFoundPage from '~/pages/NotFoundPage'
 import routes from '~/routes'
 import TabbedPage from './TabbedPage'
 import ProjectEditorPage from './ProjectEditorPage'

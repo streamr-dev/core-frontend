@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from 'react'
 import { toaster } from 'toasterhea'
+import styled from 'styled-components'
 import { SponsorshipElement } from '~/types/sponsorship'
 import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
@@ -19,6 +20,7 @@ import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
     NetworkActionBarBackLink,
+    NetworkActionBarCaret,
     NetworkActionBarCTAs,
     NetworkActionBarInfoButton,
     NetworkActionBarInfoButtons,
@@ -28,7 +30,6 @@ import {
     SingleElementPageActionBarContainer,
     SingleElementPageActionBarTopPart,
 } from './NetworkActionBar.styles'
-import styled from 'styled-components'
 
 const joinSponsorshipModal = toaster(JoinSponsorshipModal, Layer.Modal)
 
@@ -71,6 +72,7 @@ export const SponsorshipActionBar: FunctionComponent<{
                                     <NetworkActionBarInfoButton className="pointer bold">
                                         <SvgIcon name="page" />
                                         About Sponsorships
+                                        <NetworkActionBarCaret name="caretDown" />
                                     </NetworkActionBarInfoButton>
                                 }
                                 dropdownContent={

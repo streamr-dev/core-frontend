@@ -1,39 +1,40 @@
 .container {
-  width: 100%;
+    width: 100%;
+    position: relative;
+    padding-bottom: 6px;
 }
 
 .sliderInput {
-  appearance: none;
-  width: 100%; /* Full-width */
-  background: #E8E6E6;
-  outline: none; /* Remove outline */
-  transition: opacity 0.2s;
-  height: 3px;
-  border-radius: 2px;
-
-  &::-webkit-slider-thumb {
     appearance: none;
-    width: 16px;
-    height: 16px;
-    background: #323232;
-    cursor: pointer;
-    border-radius: 50%;
-  }
+    width: 100%; /* Full-width */
+    outline: none; /* Remove outline */
+    transition: opacity 0.2s;
+    height: 3px;
+    border-radius: 2px;
 
-  &::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
-    background: #323232;
-    cursor: pointer;
-    border-radius: 50%;
-  }
+    &::-webkit-slider-thumb {
+        appearance: none;
+        width: 12px;
+        height: 12px;
+        background: #0324ff;
+        cursor: pointer;
+        border-radius: 50%;
+    }
 
-  &:focus {
-    outline: none;
-  }
+    &::-moz-range-thumb {
+        width: 12px;
+        height: 12px;
+        background: #0324ff;
+        cursor: pointer;
+        border-radius: 50%;
+    }
 
-  &[disabled] {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+    &:focus {
+        outline: none;
+    }
+
+    &[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
 }

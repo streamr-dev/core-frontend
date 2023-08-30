@@ -1,14 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-import styles from '~/marketplace/containers/Projects/projects.pcss'
-import Layout, { PageContainer } from '~/shared/components/Layout'
-import { NetworkHelmet } from '~/shared/components/Helmet'
+import Layout from '~/components/Layout'
+import { NetworkHelmet } from '~/components/Helmet'
 import {
     WhiteBox,
     WhiteBoxPaddingStyles,
     WhiteBoxSeparator,
 } from '~/shared/components/WhiteBox'
-import Footer from '~/shared/components/Layout/Footer'
 import { MD, TABLET } from '~/shared/utils/styled'
 import { NetworkSectionTitle } from '~/components/NetworkSectionTitle'
 import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
@@ -49,29 +47,21 @@ export const NetworkOverviewPage = () => {
     ]
 
     return (
-        <Layout
-            className={styles.projectsListPage}
-            framedClassName={styles.productsFramed}
-            innerClassName={styles.productsInner}
-            footer={false}
-        >
+        <Layout columnize>
             <NetworkHelmet title="Network Overview" />
-            <PageContainer>
-                <NetworkStats>
-                    <div className="title">
-                        <NetworkSectionTitle>Network stats</NetworkSectionTitle>
-                    </div>
-                    <WhiteBoxSeparator />
-                    <div className="stat-box-wrap">
-                        <StatsBox stats={stubNetworkStats} columns={3} />
-                    </div>
-                </NetworkStats>
-                <MyOperatorSummary />
-                <MyDelegationsSummary />
-                <MyDelegationsTable />
-                <MySponsorshipsTable />
-            </PageContainer>
-            <Footer />
+            <NetworkStats>
+                <div className="title">
+                    <NetworkSectionTitle>Network stats</NetworkSectionTitle>
+                </div>
+                <WhiteBoxSeparator />
+                <div className="stat-box-wrap">
+                    <StatsBox stats={stubNetworkStats} columns={3} />
+                </div>
+            </NetworkStats>
+            <MyOperatorSummary />
+            <MyDelegationsSummary />
+            <MyDelegationsTable />
+            <MySponsorshipsTable />
         </Layout>
     )
 }

@@ -91,7 +91,7 @@ const StatsCell = styled.div`
     }
 `
 
-const StatsLabel = styled.p`
+export const StatsLabel = styled.p`
     font-size: 14px;
     font-weight: ${REGULAR};
     color: ${COLORS.primaryLight};
@@ -105,7 +105,7 @@ const StatsLabel = styled.p`
     }
 `
 
-const StatsValue = styled.p`
+export const StatsValue = styled.p`
     font-size: 18px;
     font-weight: ${MEDIUM};
     color: ${COLORS.primary};

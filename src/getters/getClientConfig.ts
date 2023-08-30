@@ -1,8 +1,6 @@
 import { StreamrClientConfig } from 'streamr-client'
-import { RPCProtocol } from '@streamr/config'
 import formatConfigUrl from '~/utils/formatConfigUrl'
 import formatRpc from '~/utils/formatRpc'
-import formatTrackers from '~/utils/formatTrackers'
 import getConfig from '~/getters/getConfig'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 
@@ -11,20 +9,15 @@ export default function getClientConfig(mods: any = {}): StreamrClientConfig {
     const config: StreamrClientConfig = {
         metrics: false,
     }
-    if (client?.network?.trackers) {
-        config.network = {
-            trackers: formatTrackers(client?.network?.trackers),
-        }
-    }
 
     const contracts: StreamrClientConfig['contracts'] = {}
     ;[
         {
-            condition: !!defaultChainConfig.getRPCEndpointsByProtocol(RPCProtocol.HTTP),
+            condition: !!defaultChainConfig.rpcEndpoints,
             key: 'mainChainRPCs',
             value: formatRpc({
                 chainId: defaultChainConfig.id,
-                rpcs: defaultChainConfig.getRPCEndpointsByProtocol(RPCProtocol.HTTP),
+                rpcs: defaultChainConfig.rpcEndpoints,
             }),
         },
         {
@@ -33,11 +26,11 @@ export default function getClientConfig(mods: any = {}): StreamrClientConfig {
             value: defaultChainConfig.contracts.StreamRegistry,
         },
         {
-            condition: !!defaultChainConfig.getRPCEndpointsByProtocol(RPCProtocol.HTTP),
+            condition: !!defaultChainConfig.rpcEndpoints,
             key: 'streamRegistryChainRPCs',
             value: formatRpc({
                 chainId: defaultChainConfig.id,
-                rpcs: defaultChainConfig.getRPCEndpointsByProtocol(RPCProtocol.HTTP),
+                rpcs: defaultChainConfig.rpcEndpoints,
             }),
         },
         {

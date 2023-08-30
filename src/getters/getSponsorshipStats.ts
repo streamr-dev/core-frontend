@@ -12,7 +12,6 @@ export const getSponsorshipStats = async (
     ignoreToday?: boolean,
 ): Promise<{ x: number; y: number }[]> => {
     const tokenInfo = await getSponsorshipTokenInfo()
-    const today = moment()
     const start = ignoreToday ? moment().utc().startOf('day') : moment().utc()
 
     let result: GetSponsorshipDailyBucketsQuery['sponsorshipDailyBuckets']

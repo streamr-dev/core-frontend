@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
-import styles from '~/marketplace/containers/Projects/projects.pcss'
-import Layout, { PageContainer } from '~/shared/components/Layout'
-import { NetworkHelmet } from '~/shared/components/Helmet'
+import Layout, { LayoutColumn } from '~/components/Layout'
+import { NetworkHelmet } from '~/components/Helmet'
 import {
     WhiteBox,
     WhiteBoxPaddingStyles,
@@ -17,20 +16,19 @@ import Tabs, { Tab } from '~/shared/components/Tabs'
 import Button from '~/shared/components/Button'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import Footer from '~/shared/components/Layout/Footer'
 import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
 import { LoadMoreButton } from '~/components/LoadMore'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { createSponsorship } from '~/services/sponsorships'
 import routes from '~/routes'
 import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
-import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
-import { StreamInfoCell } from '../components/NetworkUtils'
 import { SponsorshipElement } from '~/types/sponsorship'
 import {
     useAllSponsorshipsQuery,
     useMySponsorshipsQuery,
 } from '~/hooks/useSponsorshipsList'
+import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
+import { StreamInfoCell } from '../components/NetworkUtils'
 import {
     getTokenAndBalanceForSponsorship,
     TokenAndBalanceForSponsorship,
@@ -100,12 +98,7 @@ export const SponsorshipsPage = () => {
     }, [wallet, isMounted])
 
     return (
-        <Layout
-            className={styles.projectsListPage}
-            framedClassName={styles.productsFramed}
-            innerClassName={styles.productsInner}
-            footer={false}
-        >
+        <Layout>
             <NetworkHelmet title="Sponsorships" />
             <NetworkActionBar
                 searchEnabled={true}
@@ -149,7 +142,7 @@ export const SponsorshipsPage = () => {
                     </Button>
                 }
             />
-            <PageContainer>
+            <LayoutColumn>
                 <SponsorshipsTableWrap>
                     <div className="title">
                         <NetworkSectionTitle>
@@ -254,8 +247,7 @@ export const SponsorshipsPage = () => {
                         Load more
                     </LoadMoreButton>
                 )}
-            </PageContainer>
-            <Footer />
+            </LayoutColumn>
         </Layout>
     )
 }

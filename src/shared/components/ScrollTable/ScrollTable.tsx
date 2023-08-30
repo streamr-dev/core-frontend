@@ -24,6 +24,7 @@ type ScrollTableProps<Element> = {
     actions?: ScrollTableAction<Element>[]
     noDataFirstLine?: ReactNode
     noDataSecondLine?: ReactNode
+    footerComponent?: ReactNode
     linkMapper?: (element: Element) => string
     hasMoreResults?: boolean
     onLoadMore?: () => void
@@ -51,6 +52,7 @@ export const ScrollTable = <T extends object>({
     isLoading,
     noDataFirstLine,
     noDataSecondLine,
+    footerComponent,
     linkMapper,
     hasMoreResults,
     onLoadMore,
@@ -77,6 +79,7 @@ export const ScrollTable = <T extends object>({
                     Load more
                 </LoadMoreButton>
             )}
+            {footerComponent != null && footerComponent}
         </ScrollTableContainer>
     )
 }
@@ -93,7 +96,10 @@ export const ScrollTableCore = <T extends object>({
     const stickyColumns = columns.filter((column) => column.isSticky)
     const nonStickyColumns = columns.filter((column) => !column.isSticky)
     return (
-        <ScrollTableCellsWrap>
+        <ScrollTableCellsWrap
+            stickyColumnCount={stickyColumns.length}
+            nonStickyColumnCount={nonStickyColumns.length}
+        >
             {stickyColumns.map((stickyColumn) => {
                 return (
                     <ScrollTableColumn key={stickyColumn.key}>

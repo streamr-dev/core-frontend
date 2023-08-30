@@ -1,4 +1,3 @@
-import { RPCProtocol } from '@streamr/config'
 import setTempEnv from '../../test/test-utils/setTempEnv'
 import getConfig from './getConfig'
 import { defaultChainConfig } from './getChainConfig'
@@ -26,25 +25,19 @@ describe('getClientConfig', () => {
     it('gets overwritten with config', () => {
         ;(getConfig as any).mockImplementation(() => ({
             client: {
-                network: {
-                    trackers: ['tracker1', 'tracker2'],
-                },
                 graphUrl: 'graph url',
             },
         }))
         expect(g()).toMatchObject({
-            network: {
-                trackers: ['tracker1', 'tracker2'],
-            },
             contracts: expect.objectContaining({
                 mainChainRPCs: {
                     chainId: defaultChainConfig.id,
-                    rpcs: defaultChainConfig.getRPCEndpointsByProtocol(RPCProtocol.HTTP),
+                    rpcs: defaultChainConfig.rpcEndpoints,
                 },
                 streamRegistryChainAddress: defaultChainConfig.contracts.StreamRegistry,
                 streamRegistryChainRPCs: {
                     chainId: defaultChainConfig.id,
-                    rpcs: defaultChainConfig.getRPCEndpointsByProtocol(RPCProtocol.HTTP),
+                    rpcs: defaultChainConfig.rpcEndpoints,
                 },
                 streamStorageRegistryChainAddress:
                     defaultChainConfig.contracts.StreamStorageRegistry,

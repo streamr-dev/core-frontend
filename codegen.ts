@@ -6,8 +6,8 @@ const dotenv = require('./scripts/dotenv')
 dotenv()
 
 const {
-    NETWORK_GRAPH_SCHEMA_PATH = 'http://localhost:8000/subgraphs/name/streamr-dev/network-subgraphs',
-    DU_GRAPH_SCHEMA_PATH = 'http://localhost:8000/subgraphs/name/streamr-dev/dataunion',
+    NETWORK_GRAPH_SCHEMA_PATH = 'http://localhost:8800/subgraphs/name/streamr-dev/network-subgraphs',
+    DU_GRAPH_SCHEMA_PATH = 'http://localhost:8800/subgraphs/name/streamr-dev/dataunion',
     ENS_GRAPH_SCHEMA_PATH = 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
 } = process.env
 

@@ -34,6 +34,7 @@ export enum COLORS {
     radioBorder = '#CDCDCD',
     close = '#848484',
     link = '#0324FF',
+    linkInactive = '#CDD3FF',
     error = '#D90C25',
     warning = '#FFF6F1',
     dialogBorder = '#F3F3F3',

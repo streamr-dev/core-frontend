@@ -9,25 +9,26 @@ import '~/utils/setupSnippets'
 import StreamrClientProvider from '~/shared/components/StreamrClientProvider'
 import { Provider as ModalPortalProvider } from '~/shared/contexts/ModalPortal'
 import { Provider as ModalProvider } from '~/shared/contexts/ModalApi'
-import NotFoundPage from '~/shared/components/NotFoundPage'
+import NotFoundPage from '~/pages/NotFoundPage'
 import AnalyticsTracker from '~/shared/components/AnalyticsTracker'
-import GenericErrorPage from '~/shared/components/GenericErrorPage'
-import ErrorPage from '~/shared/components/ErrorPage'
+import GenericErrorPage from '~/pages/GenericErrorPage'
+import ErrorPage from '~/pages/ErrorPage'
 import Analytics from '~/shared/utils/Analytics'
-import NewStreamListingPage from '~/pages/NewStreamListingPage'
+import StreamListingPage from '~/pages/StreamListingPage'
 import StreamPage from '~/pages/StreamPage'
 import ProjectPage from '~/pages/ProjectPage'
-import ProjectsPage from '~/marketplace/containers/Projects'
+import ProjectListingPage from '~/pages/ProjectListingPage'
 import NewProjectPage from '~/marketplace/containers/ProjectEditing/NewProjectPage'
 import EditProjectPage from '~/marketplace/containers/ProjectEditing/EditProjectPage'
 import { NetworkOverviewPage } from '~/pages/NetworkOverviewPage'
 import { SponsorshipsPage } from '~/pages/SponsorshipsPage'
 import { SingleSponsorshipPage } from '~/pages/SingleSponsorshipPage'
+import { OperatorsPage } from '~/pages/OperatorsPage'
+import { SingleOperatorPage } from '~/pages/SingleOperatorPage'
 import Globals from '~/shared/components/Globals'
 import { Layer } from '~/utils/Layer'
 import { FeatureFlag, isFeatureEnabled } from '~/shared/utils/isFeatureEnabled'
 import routes from '~/routes'
-import OperatorsPage from '~/pages/OperatorsPage'
 import { HubRouter } from '~/consts'
 import '~/analytics'
 
@@ -50,7 +51,12 @@ const MiscRouter = () => [
         element={<GenericErrorPage />}
         key="GenericErrorPage"
     />,
-    <Route errorElement={<ErrorPage />} element={<NotFoundPage />} key="NotFoundPage" />,
+    <Route
+        errorElement={<ErrorPage />}
+        path="*"
+        element={<NotFoundPage />}
+        key="NotFoundPage"
+    />,
 ]
 
 // Create client for 'react-query'
@@ -66,13 +72,13 @@ const App = () => (
                         <Globals />
                         <Routes>
                             <Route path="/hub/projects/*" errorElement={<ErrorPage />}>
-                                <Route index element={<ProjectsPage />} />
+                                <Route index element={<ProjectListingPage />} />
                                 <Route path="new" element={<NewProjectPage />} />
                                 <Route path=":id/edit" element={<EditProjectPage />} />
                                 <Route path=":id/*" element={<ProjectPage />} />
                             </Route>
                             <Route path="/hub/streams/*" errorElement={<ErrorPage />}>
-                                <Route index element={<NewStreamListingPage />} />
+                                <Route index element={<StreamListingPage />} />
                                 <Route path=":id/*" element={<StreamPage />} />
                             </Route>
                             {isFeatureEnabled(FeatureFlag.PhaseTwo) && (
@@ -86,6 +92,10 @@ const App = () => (
                                             errorElement={<ErrorPage />}
                                         >
                                             <Route index element={<OperatorsPage />} />
+                                            <Route
+                                                path=":id"
+                                                element={<SingleOperatorPage />}
+                                            />
                                         </Route>
                                         <Route
                                             path="sponsorships/*"

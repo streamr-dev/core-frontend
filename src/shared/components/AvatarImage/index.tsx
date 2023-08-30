@@ -51,3 +51,10 @@ export const HubAvatar = styled(Identicon)`
     border-radius: 50%;
     background-color: white;
 `
+export const HubImageAvatar = styled.img`
+    width: 32px;
+    height: 32px;
+    border: 1px solid #f3f3f3;
+    border-radius: 50%;
+    background-color: white;
+`
