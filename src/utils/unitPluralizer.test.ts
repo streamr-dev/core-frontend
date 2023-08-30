@@ -1,4 +1,4 @@
-import { unitPluralizer } from '~/utils/unitPluralizer'
+import { pluralizeUnit } from '~/utils/pluralizeUnit'
 
 describe('unitPluralizer', () => {
     ;[
@@ -29,7 +29,7 @@ describe('unitPluralizer', () => {
         },
     ].forEach((testCase) => {
         it(`should translate ${testCase.inputValue} of "${testCase.inputUnit}" as "${testCase.expectedOutput}`, () => {
-            expect(unitPluralizer(testCase.inputValue, testCase.inputUnit)).toEqual(
+            expect(pluralizeUnit(testCase.inputValue, testCase.inputUnit)).toEqual(
                 testCase.expectedOutput,
             )
         })

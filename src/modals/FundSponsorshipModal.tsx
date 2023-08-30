@@ -12,7 +12,7 @@ import FormModal, {
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
 import { toBN } from '~/utils/bn'
-import { unitPluralizer } from '~/utils/unitPluralizer'
+import { pluralizeUnit } from '~/utils/pluralizeUnit'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onResolve?: (amount: string) => void
@@ -71,17 +71,17 @@ export default function FundSponsorshipModal({
         const minutes = extensionDuration.get('minutes')
 
         if (!days && !hours) {
-            return `${minutes} ${unitPluralizer(minutes, 'minute')}`
+            return `${minutes} ${pluralizeUnit(minutes, 'minute')}`
         }
 
         if (!days) {
             return (
-                `${hours} ${unitPluralizer(hours, 'hour')}` +
-                (minutes ? ` & ${minutes} ${unitPluralizer(minutes, 'minute')}` : '')
+                `${hours} ${pluralizeUnit(hours, 'hour')}` +
+                (minutes ? ` & ${minutes} ${pluralizeUnit(minutes, 'minute')}` : '')
             )
         }
 
-        return `${days} ${unitPluralizer(days, 'day')} & ${hours} ${unitPluralizer(
+        return `${days} ${pluralizeUnit(days, 'day')} & ${hours} ${pluralizeUnit(
             hours,
             'hour',
         )}`
@@ -112,9 +112,6 @@ export default function FundSponsorshipModal({
                 setBusy(true)
 
                 try {
-                    /**
-                     * Replace the following with your favourite contract interaction! <3
-                     */
                     await onSubmit(finalValue.toString())
 
                     onResolve?.(finalValue.toString())
