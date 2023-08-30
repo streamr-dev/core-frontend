@@ -87,7 +87,7 @@ const getAllOperatorColumns = (): ScrollTableColumnDef<OperatorElement>[] => [
     },
     {
         displayName: 'APY',
-        valueMapper: (element) => `${calculateOperatorSpotAPY(element)}%`,
+        valueMapper: (element) => `${calculateOperatorSpotAPY(element).toFixed(0)}%`,
         align: 'end',
         isSticky: false,
         key: 'apy',
