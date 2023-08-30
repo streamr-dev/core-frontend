@@ -34,7 +34,12 @@ export const SingleSponsorshipPage = () => {
     const [selectedPeriod, setSelectedPeriod] = useState<string>(ChartPeriod.SevenDays)
 
     const chartQuery = useQuery({
-        queryKey: ['sponsorshipChartQuery', selectedPeriod, selectedDataSource],
+        queryKey: [
+            'sponsorshipChartQuery',
+            sponsorshipId,
+            selectedPeriod,
+            selectedDataSource,
+        ],
         queryFn: async () => {
             try {
                 return await getSponsorshipStats(

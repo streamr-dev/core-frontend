@@ -13,9 +13,13 @@ export const ScrollTableContainer = styled.div`
     border-radius: 16px;
 `
 
-export const ScrollTableCellsWrap = styled.div`
+export const ScrollTableCellsWrap = styled.div<{
+    stickyColumnCount: number
+    nonStickyColumnCount: number
+}>`
     display: grid;
-    grid-template-columns: min-content 1fr;
+    grid-template-columns: ${({ stickyColumnCount, nonStickyColumnCount }) =>
+        stickyColumnCount + nonStickyColumnCount === 1 ? '1fr' : 'min-content 1fr'};
     position: relative;
 `
 

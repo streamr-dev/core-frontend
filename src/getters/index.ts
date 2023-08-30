@@ -31,6 +31,18 @@ import {
     GetSponsorshipsByCreatorQuery,
     GetSponsorshipsByCreatorQueryVariables,
     GetSponsorshipsByCreatorDocument,
+    GetAllOperatorsQuery,
+    GetAllOperatorsQueryVariables,
+    GetAllOperatorsDocument,
+    GetOperatorByIdQuery,
+    GetOperatorByIdQueryVariables,
+    GetOperatorByIdDocument,
+    SearchOperatorsQuery,
+    SearchOperatorsQueryVariables,
+    GetOperatorsByDelegationQuery,
+    GetOperatorsByDelegationQueryVariables,
+    GetOperatorsByDelegationDocument,
+    SearchOperatorsDocument,
 } from '~/generated/gql/network'
 import getCoreConfig from './getCoreConfig'
 import getGraphClient from './getGraphClient'
@@ -310,4 +322,94 @@ export async function getSponsorshipsByCreator(
     })
 
     return sponsorships
+}
+
+export async function getAllOperators({
+    first,
+    skip,
+}: {
+    first?: number
+    skip?: number
+}): Promise<GetAllOperatorsQuery['operators']> {
+    const {
+        data: { operators },
+    } = await getGraphClient().query<GetAllOperatorsQuery, GetAllOperatorsQueryVariables>(
+        {
+            query: GetAllOperatorsDocument,
+            variables: {
+                first,
+                skip,
+            },
+        },
+    )
+
+    return operators
+}
+
+export async function getOperatorsByDelegation({
+    first,
+    skip,
+    address,
+}: {
+    first?: number
+    skip?: number
+    address: string
+}): Promise<GetOperatorsByDelegationQuery['operators']> {
+    const {
+        data: { operators },
+    } = await getGraphClient().query<
+        GetOperatorsByDelegationQuery,
+        GetOperatorsByDelegationQueryVariables
+    >({
+        query: GetOperatorsByDelegationDocument,
+        variables: {
+            first,
+            skip,
+            delegator: address,
+        },
+    })
+
+    return operators
+}
+
+export async function searchOperators({
+    first,
+    skip,
+    searchQuery,
+}: {
+    first?: number
+    skip?: number
+    searchQuery?: string
+}): Promise<SearchOperatorsQuery['operators']> {
+    const {
+        data: { operators },
+    } = await getGraphClient().query<SearchOperatorsQuery, SearchOperatorsQueryVariables>(
+        {
+            query: SearchOperatorsDocument,
+            variables: {
+                first,
+                skip,
+                searchQuery,
+            },
+        },
+    )
+
+    return operators
+}
+
+export async function getOperatorById(
+    operatorId: string,
+): Promise<NonNullable<GetOperatorByIdQuery['operator']> | null> {
+    const {
+        data: { operator },
+    } = await getGraphClient().query<GetOperatorByIdQuery, GetOperatorByIdQueryVariables>(
+        {
+            query: GetOperatorByIdDocument,
+            variables: {
+                operatorId,
+            },
+        },
+    )
+
+    return operator || null
 }

@@ -166,7 +166,7 @@ export const Section = styled.div`
         line-height: 20px;
     }
 
-    ul {
+    > ul {
         background: ${COLORS.secondaryLight};
         font-size: 14px;
         list-style: none;
@@ -174,15 +174,15 @@ export const Section = styled.div`
         padding: 16px;
         border-radius: 8px;
         box-shadow: 0 1px 1px rgba(0, 0, 0, 0.02);
-    }
 
-    li {
-        display: flex;
-        align-items: center;
-    }
+        li {
+            display: flex;
+            align-items: center;
+        }
 
-    li + li {
-        margin-top: 16px;
+        li + li {
+            margin-top: 16px;
+        }
     }
 
     & + & {
@@ -267,6 +267,49 @@ export const TextInput = styled.input`
         color: ${COLORS.primaryDisabled};
     }
 `
+
+export const TextareaInput = styled.textarea<{ $minHeight?: number }>`
+    background: none;
+    border: 0;
+    backface-visibility: hidden;
+    font-size: inherit;
+    height: 100%;
+    color: ${COLORS.primary};
+    padding: 8px 18px 36px;
+    flex-grow: 1;
+    outline: 0;
+    resize: none;
+
+    ${({ $minHeight }) =>
+        $minHeight &&
+        css`
+            min-height: ${$minHeight}px;
+        `}
+
+    ::-webkit-outer-spin-button,
+    ::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    &::placeholder {
+        color: ${COLORS.primaryDisabled};
+    }
+`
+
+export const TextareaCounter = styled.span<{ $invalid?: boolean }>`
+    position: absolute;
+    bottom: 8px;
+    right: 18px;
+    color: ${COLORS.primaryLight};
+
+    ${({ $invalid = false }) =>
+        $invalid &&
+        css`
+            color: ${COLORS.error};
+        `}
+`
+
 export const Appendix = styled.div`
     align-items: center;
     display: flex;
@@ -278,12 +321,13 @@ export const TextAppendix = styled(Appendix)`
 `
 export const FieldWrap = styled.div<{ $invalid?: boolean; $grayedOut?: boolean }>`
     display: flex;
+    position: relative;
     border: 1px solid transparent;
     align-items: center;
     background: ${COLORS.primaryContrast};
     font-size: 14px;
     border-radius: 8px;
-    height: 40px;
+    min-height: 40px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 
     :focus-within {

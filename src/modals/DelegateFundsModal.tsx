@@ -9,6 +9,7 @@ import FormModal, {
     TextAppendix,
     TextInput,
 } from '~/modals/FormModal'
+import { delegateToOperator } from '~/services/operators'
 import Label from '~/shared/components/Ui/Label'
 import { toBN } from '~/utils/bn'
 
@@ -40,7 +41,7 @@ export default function DelegateFundsModal({
 
     const value = rawAmount || '0'
 
-    const finalValue = toBN(value).multipliedBy(1e18)
+    const finalValue = toBN(value)
 
     const balance = toBN(balanceProp)
 
@@ -67,10 +68,7 @@ export default function DelegateFundsModal({
                 setBusy(true)
 
                 try {
-                    /**
-                     * Replace the following with your favourite contract interaction! <3
-                     */
-                    await new Promise((resolve) => void setTimeout(resolve, 2000))
+                    await delegateToOperator(operatorId, finalValue.multipliedBy(1e18))
 
                     onResolve?.(finalValue.toString())
                 } catch (e) {
@@ -112,7 +110,7 @@ export default function DelegateFundsModal({
                             )}
                         </Prop>
                         <div>
-                            {balance.dividedBy(1e18).toString()} {tokenSymbol}
+                            {balance.toString()} {tokenSymbol}
                         </div>
                     </li>
                     <li>
@@ -122,7 +120,7 @@ export default function DelegateFundsModal({
                     <li>
                         <Prop>Amount currently delegated to Operator</Prop>
                         <div>
-                            {delegatedTotal.dividedBy(1e18).toString()} {tokenSymbol}
+                            {delegatedTotal.toString()} {tokenSymbol}
                         </div>
                     </li>
                 </ul>

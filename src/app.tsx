@@ -23,11 +23,12 @@ import EditProjectPage from '~/marketplace/containers/ProjectEditing/EditProject
 import { NetworkOverviewPage } from '~/pages/NetworkOverviewPage'
 import { SponsorshipsPage } from '~/pages/SponsorshipsPage'
 import { SingleSponsorshipPage } from '~/pages/SingleSponsorshipPage'
+import { OperatorsPage } from '~/pages/OperatorsPage'
+import { SingleOperatorPage } from '~/pages/SingleOperatorPage'
 import Globals from '~/shared/components/Globals'
 import { Layer } from '~/utils/Layer'
 import { FeatureFlag, isFeatureEnabled } from '~/shared/utils/isFeatureEnabled'
 import routes from '~/routes'
-import OperatorsPage from '~/pages/OperatorsPage'
 import { HubRouter } from '~/consts'
 import '~/analytics'
 
@@ -91,6 +92,10 @@ const App = () => (
                                             errorElement={<ErrorPage />}
                                         >
                                             <Route index element={<OperatorsPage />} />
+                                            <Route
+                                                path=":id"
+                                                element={<SingleOperatorPage />}
+                                            />
                                         </Route>
                                         <Route
                                             path="sponsorships/*"

@@ -11,14 +11,22 @@ gql`
             allocatedWei
             date
             sponsorship {
-                id
+                ...SponsorshipFields
             }
         }
         delegators {
-            operator {
-                id
-            }
             poolTokenWei
+            delegator
+        }
+        slashingEvents {
+            amount
+            date
+            sponsorship {
+                id
+                stream {
+                    id
+                }
+            }
         }
         delegatorCount
         poolValue
@@ -30,10 +38,36 @@ gql`
         exchangeRate
         metadataJsonString
         owner
+        nodes
+        cumulativeProfitsWei
+        cumulativeOperatorsCutWei
+        operatorsCutFraction
     }
 
-    query getAllOperators($first: Int, $skip: Int) {
+    query getAllOperators($first: Int, $skip: Int, $searchQuery: ID) {
         operators(first: $first, skip: $skip) {
+            ...OperatorFields
+        }
+    }
+
+    query searchOperators($first: Int, $skip: Int, $searchQuery: ID) {
+        operators(first: $first, skip: $skip, where: { id: $searchQuery }) {
+            ...OperatorFields
+        }
+    }
+
+    query getOperatorById($operatorId: ID!) {
+        operator(id: $operatorId) {
+            ...OperatorFields
+        }
+    }
+
+    query getOperatorsByDelegation($first: Int, $skip: Int, $delegator: String!) {
+        operators(
+            first: $first
+            skip: $skip
+            where: { delegators_: { delegator: $delegator } }
+        ) {
             ...OperatorFields
         }
     }
@@ -243,6 +277,34 @@ gql`
             orderDirection: desc
         ) {
             ...SponsoringEventFields
+        }
+    }
+`
+
+gql`
+    fragment OperatorDailyBucketFields on OperatorDailyBucket {
+        date
+        id
+        freeFundsWei
+        delegatorCountChange
+        delegatorCountAtStart
+        lossesWei
+        operatorsCutWei
+        poolValue
+        profitsWei
+        spotAPY
+        totalDelegatedWei
+        totalUndelegatedWei
+        totalValueInSponsorshipsWei
+    }
+
+    query getOperatorDailyBuckets(
+        $where: OperatorDailyBucket_filter!
+        $first: Int
+        $skip: Int
+    ) {
+        operatorDailyBuckets(first: $first, skip: $skip, where: $where) {
+            ...OperatorDailyBucketFields
         }
     }
 `
