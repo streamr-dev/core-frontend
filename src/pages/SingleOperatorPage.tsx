@@ -24,6 +24,7 @@ import { StatsLabel, StatsValue } from '~/shared/components/StatsBox/StatsBox'
 import { useOperator } from '~/hooks/useOperator'
 import { fromAtto } from '~/marketplace/utils/math'
 import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
+import Button from '~/shared/components/Button'
 import { getDelegationAmountForAddress } from '~/utils/delegation'
 import { NetworkChartWrap } from '../components/NetworkUtils'
 import { getOperatorStats } from '../getters/getOperatorStats'
@@ -256,19 +257,26 @@ export const SingleOperatorPage = () => {
                             title="Slashing history"
                         />
                         {walletAddress?.toLowerCase() === operator.owner && (
-                            <ScrollTable
-                                elements={operator.nodes as unknown as object[]}
-                                columns={[
-                                    {
-                                        displayName: 'Address',
-                                        valueMapper: (element) => `${element}`,
-                                        align: 'start',
-                                        isSticky: true,
-                                        key: 'id',
-                                    },
-                                ]}
-                                title="Operator's node addresses"
-                            />
+                            <>
+                                <ScrollTable
+                                    elements={operator.nodes as unknown as object[]}
+                                    columns={[
+                                        {
+                                            displayName: 'Address',
+                                            valueMapper: (element) => `${element}`,
+                                            align: 'start',
+                                            isSticky: true,
+                                            key: 'id',
+                                        },
+                                    ]}
+                                    title="Operator's node addresses"
+                                    footerComponent={
+                                        <NodeAddressesFooter>
+                                            <Button>Add node address</Button>
+                                        </NodeAddressesFooter>
+                                    }
+                                />
+                            </>
                         )}
                     </OperatorGrid>
                 )}
@@ -328,3 +336,9 @@ const DelegationCell = styled.div`
 `
 
 const SponsorshipsTable = styled.div``
+
+const NodeAddressesFooter = styled.div`
+    display: flex;
+    justify-content: right;
+    padding: 32px;
+`

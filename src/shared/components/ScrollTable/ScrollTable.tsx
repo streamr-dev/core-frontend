@@ -24,6 +24,7 @@ type ScrollTableProps<Element> = {
     actions?: ScrollTableAction<Element>[]
     noDataFirstLine?: ReactNode
     noDataSecondLine?: ReactNode
+    footerComponent?: ReactNode
     linkMapper?: (element: Element) => string
     hasMoreResults?: boolean
     onLoadMore?: () => void
@@ -51,6 +52,7 @@ export const ScrollTable = <T extends object>({
     isLoading,
     noDataFirstLine,
     noDataSecondLine,
+    footerComponent,
     linkMapper,
     hasMoreResults,
     onLoadMore,
@@ -77,6 +79,7 @@ export const ScrollTable = <T extends object>({
                     Load more
                 </LoadMoreButton>
             )}
+            {footerComponent != null && footerComponent}
         </ScrollTableContainer>
     )
 }
