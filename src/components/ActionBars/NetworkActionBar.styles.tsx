@@ -49,11 +49,15 @@ export const NetworkActionBarBackButtonAndTitle = styled.div`
     align-items: center;
 `
 
-export const NetworkActionBarTitle = styled.p`
+export const NetworkActionBarTitle = styled.div`
     line-height: 30px;
     font-size: 24px;
     font-weight: ${MEDIUM};
     margin: 0;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
 `
 
 export const NetworkActionBarInfoButtons = styled.div`
@@ -131,4 +135,10 @@ export const NetworkActionBarStatsTitle = styled.p`
     color: ${COLORS.primaryLight};
     text-transform: uppercase;
     margin-top: 44px;
+`
+
+export const NetworkActionBarCaret = styled(SvgIcon)`
+    color: ${COLORS.primaryDisabled};
+    width: 12px;
+    margin-left: 5px;
 `

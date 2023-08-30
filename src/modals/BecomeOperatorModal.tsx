@@ -1,5 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { randomHex } from 'web3-utils'
+import { toaster } from 'toasterhea'
+import styled, { css } from 'styled-components'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     ErrorLabel,
@@ -15,12 +17,33 @@ import FormModal, {
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
 import Help from '~/components/Help'
+import AvatarImage from '~/shared/components/AvatarImage'
+import { COLORS } from '~/shared/utils/styled'
+import Button from '~/shared/components/Button'
+import SvgIcon from '~/shared/components/SvgIcon'
+import CropImageModal from '~/components/CropImageModal/CropImageModal'
+import { Layer } from '~/utils/Layer'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
-    onResolve?: (cut: number, name: string, description?: string) => void
-    onSubmit: (cut: number, name: string, description?: string) => Promise<void>
+    onResolve?: (
+        cut: number,
+        name: string,
+        description?: string,
+        imageToUpload?: File,
+    ) => void
+    onSubmit: (
+        cut: number,
+        name: string,
+        description?: string,
+        imageToUpload?: File,
+    ) => Promise<void>
     cut?: number
+    name?: string
+    description?: string
+    imageUrl?: string
 }
+
+const cropModal = toaster(CropImageModal, Layer.Modal)
 
 export default function BecomeOperatorModal({
     title = 'Become an Operator',
@@ -28,6 +51,9 @@ export default function BecomeOperatorModal({
     onResolve,
     onSubmit,
     cut: cutProp,
+    name: nameProp,
+    description: descriptionProp,
+    imageUrl: imageUrlProp,
     ...props
 }: Props) {
     const [busy, setBusy] = useState(false)
@@ -35,6 +61,7 @@ export default function BecomeOperatorModal({
     const [cutValue, setCutValue] = useState<string | undefined>(cutProp?.toString())
     const [name, setName] = useState<string | undefined>()
     const [description, setDescription] = useState<string | undefined>()
+    const [imageToUpload, setImageToUpload] = useState<File>()
 
     const cutValueNumeric = Number(cutValue || undefined) // so that it will be a NaN if it's empty string
 
@@ -60,6 +87,26 @@ export default function BecomeOperatorModal({
 
     const descriptionTooLong = (description?.length || 0) > 120
 
+    const randomAddress = useMemo<string>(() => randomHex(20), [])
+
+    const fileInputRef = useRef<HTMLInputElement>()
+
+    const handleCrop = useCallback(
+        async (image: File) => {
+            try {
+                setImageToUpload(
+                    await cropModal.pop({
+                        imageUrl: URL.createObjectURL(image),
+                        mask: 'round',
+                    }),
+                )
+            } catch (e) {
+                // action cancelled
+            }
+        },
+        [setImageToUpload],
+    )
+
     return (
         <FormModal
             {...props}
@@ -74,8 +121,18 @@ export default function BecomeOperatorModal({
                 setBusy(true)
 
                 try {
-                    await onSubmit(cutValueNumeric, name as string, description)
-                    onResolve?.(cutValueNumeric, name as string, description)
+                    await onSubmit(
+                        cutValueNumeric,
+                        name as string,
+                        description,
+                        imageToUpload,
+                    )
+                    onResolve?.(
+                        cutValueNumeric,
+                        name as string,
+                        description,
+                        imageToUpload,
+                    )
                 } catch (e) {
                     console.warn('Error while becoming an operator', e)
                     setBusy(false)
@@ -176,6 +233,59 @@ export default function BecomeOperatorModal({
                             </TextareaCounter>
                         </FieldWrap>
                     </AboutOperatorField>
+
+                    <AboutOperatorField>
+                        <Label>
+                            <LabelInner>
+                                <span>Operator Avatar</span>
+                            </LabelInner>
+                        </Label>
+                        <FieldWrap>
+                            <AvatarField>
+                                <AvatarDisplayContainer>
+                                    {!imageUrlProp && !imageToUpload && (
+                                        <AvatarPlaceholder username={randomAddress} />
+                                    )}
+                                    {(imageUrlProp || imageToUpload) && (
+                                        <OperatorAvatar
+                                            src={
+                                                imageToUpload
+                                                    ? URL.createObjectURL(imageToUpload)
+                                                    : imageUrlProp
+                                            }
+                                        />
+                                    )}
+                                </AvatarDisplayContainer>
+                                <div>
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        accept=".jpg,.jpeg,.png"
+                                        style={{ display: 'none' }}
+                                        onChange={() => {
+                                            if (fileInputRef.current?.files?.length) {
+                                                handleCrop(fileInputRef.current.files[0])
+                                            }
+                                        }}
+                                    />
+                                    <Button
+                                        kind="secondary"
+                                        size="normal"
+                                        type="button"
+                                        onClick={() => {
+                                            fileInputRef.current?.click()
+                                        }}
+                                    >
+                                        <ButtonIcon name="plus" />
+                                        Upload Avatar
+                                    </Button>
+                                    <AvatarRequirements>
+                                        <li>JPEG or PNG format only</li>
+                                    </AvatarRequirements>
+                                </div>
+                            </AvatarField>
+                        </FieldWrap>
+                    </AboutOperatorField>
                 </Section>
             </AboutOperator>
         </FormModal>
@@ -193,4 +303,40 @@ const AboutOperator = styled.div`
 
 const AboutOperatorField = styled.div`
     margin-top: 16px;
+`
+
+const AvatarField = styled.div`
+    display: flex;
+    padding: 20px;
+`
+
+const AvatarDisplayContainer = styled.div`
+    margin-right: 30px;
+`
+
+const AvatarImageStyles = css`
+    width: 80px;
+    height: 80px;
+    border: 1px solid ${COLORS.secondaryHover};
+    border-radius: 100%;
+`
+
+const AvatarPlaceholder = styled(AvatarImage)`
+    ${AvatarImageStyles}
+`
+
+const OperatorAvatar = styled.img`
+    ${AvatarImageStyles}
+`
+
+const AvatarRequirements = styled.ul`
+    padding: 0;
+    margin: 10px 0 0;
+    list-style-position: inside;
+`
+
+const ButtonIcon = styled(SvgIcon)`
+    width: 12px;
+    height: 12px;
+    margin-right: 8px;
 `

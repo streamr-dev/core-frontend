@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
+import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
 import { truncate } from '~/shared/utils/text'
@@ -21,10 +22,13 @@ import { getConfigForChain } from '~/shared/web3/config'
 import { getCustomTokenBalance } from '~/marketplace/utils/web3'
 import getChainId from '~/utils/web3/getChainId'
 import { BN, BNish } from '~/utils/bn'
+import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
+import { SimpleDropdown } from '~/components/SimpleDropdown'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
     NetworkActionBarBackLink,
+    NetworkActionBarCaret,
     NetworkActionBarCTAs,
     NetworkActionBarInfoButton,
     NetworkActionBarInfoButtons,
@@ -49,6 +53,9 @@ export const OperatorActionBar: FunctionComponent<{
 
     const ownerDelegationPercentage = useMemo(() => {
         const stake = getDelegationAmountForAddress(operator.owner, operator)
+        if (stake.isEqualTo(BN(0)) || operator.poolValue.isEqualTo(BN(0))) {
+            return BN(0)
+        }
         return stake.dividedBy(operator.poolValue).multipliedBy(100)
     }, [operator])
 
@@ -96,13 +103,49 @@ export const OperatorActionBar: FunctionComponent<{
                                     name={'backArrow'}
                                 ></NetworkActionBarBackButtonIcon>
                             </NetworkActionBarBackLink>
-                            <NetworkActionBarTitle>{operator.id}</NetworkActionBarTitle>
+                            <NetworkActionBarTitle>
+                                {operator.metadata?.imageUrl ? (
+                                    <HubImageAvatar
+                                        src={operator.metadata.imageUrl}
+                                        alt={operator.metadata.name || operator.id}
+                                    />
+                                ) : (
+                                    <HubAvatar id={operator.id} />
+                                )}
+                                <span>{operator.metadata?.name || operator.id}</span>
+                            </NetworkActionBarTitle>
                         </NetworkActionBarBackButtonAndTitle>
                         <NetworkActionBarInfoButtons>
-                            <NetworkActionBarInfoButton>
-                                <SvgIcon name="page" />
-                                About Operators
-                            </NetworkActionBarInfoButton>
+                            <SimpleDropdown
+                                toggleElement={
+                                    <NetworkActionBarInfoButton className="pointer bold">
+                                        <SvgIcon name="page" />
+                                        About Operators
+                                        <NetworkActionBarCaret name="caretDown" />
+                                    </NetworkActionBarInfoButton>
+                                }
+                                dropdownContent={
+                                    <AboutOperatorsContent>
+                                        {operator.metadata?.description && (
+                                            <p>{operator.metadata.description}</p>
+                                        )}
+                                        Operators secure and stabilize the Streamr Network
+                                        by running nodes and contributing bandwidth. In
+                                        exchange, they earn DATA tokens from sponsorships
+                                        they stake on. The stake guarantees that the
+                                        operators do the work, otherwise they get slashed.
+                                        Learn more{' '}
+                                        <a
+                                            href="https://docs.streamr.network/streamr-network/network-incentives"
+                                            target="_blank"
+                                            rel="noreferrer noopener"
+                                        >
+                                            here
+                                        </a>
+                                        .
+                                    </AboutOperatorsContent>
+                                }
+                            />
                             <NetworkActionBarInfoButton>
                                 <span>
                                     Owner: <strong>{operator.owner}</strong>
@@ -198,9 +241,7 @@ export const OperatorActionBar: FunctionComponent<{
                         },
                         {
                             label: "Operator's cut",
-                            value: `${fromAtto(operator.operatorsCutFraction).toFixed(
-                                2,
-                            )}%`,
+                            value: `${operator.operatorsCutFraction}%`,
                         },
                         {
                             label: 'Spot APY',
@@ -225,3 +266,8 @@ export const OperatorActionBar: FunctionComponent<{
         </SingleElementPageActionBar>
     )
 }
+
+const AboutOperatorsContent = styled.div`
+    margin: 0;
+    min-width: 250px;
+`

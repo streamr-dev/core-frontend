@@ -14,6 +14,7 @@ import { getERC20TokenContract } from '~/getters'
 import { BNish, toBN } from '~/utils/bn'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import { toastedOperation } from '~/utils/toastedOperation'
+import { postImage } from '~/services/images'
 
 const getOperatorChainId = () => {
     return defaultChainConfig.id
@@ -23,7 +24,7 @@ export async function createOperator(
     operatorCut: number,
     name: string,
     description?: string,
-    imageUrl?: string,
+    imageToUpload?: File,
 ) {
     const chainId = getOperatorChainId()
 
@@ -35,6 +36,8 @@ export async function createOperator(
 
     const walletAddress = await signer.getAddress()
 
+    const imageIpfsCid = imageToUpload ? await postImage(imageToUpload) : undefined
+
     const factory = new Contract(
         chainConfig.contracts['OperatorFactory'],
         operatorFactoryABI,
@@ -44,19 +47,11 @@ export async function createOperator(
     const metadata = {
         name,
         description,
-        imageUrl,
+        imageIpfsCid,
     }
 
-    /**
-     * - stringArgs[0] is poolTokenName - each operator contract creates its own token which is used
-     * for accounting and here we're defining its name
-     * - stringArgs[1] i metadata object as a JSON
-     * the metadata object should contain name and description fields
-     */
-    const stringArgs: [string, string] = [
-        `StreamrOperator-${walletAddress.slice(-5)}`,
-        JSON.stringify(metadata),
-    ]
+    const poolTokenName = `StreamrOperator-${walletAddress.slice(-5)}`
+    const operatorMetadata = JSON.stringify(metadata)
 
     const policies: [Address, Address, Address] = [
         chainConfig.contracts.OperatorDefaultDelegationPolicy,
@@ -64,21 +59,18 @@ export async function createOperator(
         chainConfig.contracts.OperatorDefaultUndelegationPolicy,
     ]
 
-    //hardcoded now, will be moved to global config later
-    const minimumMarginFraction = parseEther('1').mul(10).div(100)
-    const operatorsShareFraction = parseEther('1').mul(operatorCut).div(100)
+    const operatorsCutFraction = parseEther(operatorCut.toString()).div(100)
 
-    const initParams = [
-        0,
-        minimumMarginFraction,
-        0,
-        0,
-        parseEther('1'), // initialMinimumDelegationWei - will be moved to global config
-        operatorsShareFraction,
-    ]
+    const policiesParams: [number, number, number] = [0, 0, 0]
 
     await toastedOperation('Operator deployment', async () => {
-        const tx = await factory.deployOperator(stringArgs, policies, initParams)
+        const tx = await factory.deployOperator(
+            operatorsCutFraction,
+            poolTokenName,
+            operatorMetadata,
+            policies,
+            policiesParams,
+        )
         await tx.wait()
     })
 }

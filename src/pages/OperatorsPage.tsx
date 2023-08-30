@@ -23,6 +23,8 @@ import { calculateOperatorSpotAPY } from '~/utils/apy'
 import { createOperator } from '~/services/operators'
 import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
 import { getDelegationAmountForAddress } from '~/utils/delegation'
+import { truncate } from '~/shared/utils/text'
+import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import routes from '~/routes'
 import { NetworkActionBar } from '../components/ActionBars/NetworkActionBar'
 import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
@@ -43,8 +45,20 @@ enum TabOptions {
 
 const getAllOperatorColumns = (): ScrollTableColumnDef<OperatorElement>[] => [
     {
-        displayName: 'Operator ID',
-        valueMapper: (element) => element.id,
+        displayName: 'Operator Name',
+        valueMapper: (element) => (
+            <OperatorNameCell>
+                {element.metadata?.imageUrl ? (
+                    <HubImageAvatar
+                        src={element.metadata.imageUrl}
+                        alt={element.metadata.imageUrl || element.id}
+                    />
+                ) : (
+                    <HubAvatar id={element.id} />
+                )}
+                <span>{element.metadata?.name || truncate(element.id)}</span>
+            </OperatorNameCell>
+        ),
         align: 'start',
         isSticky: true,
         key: 'operatorId',
@@ -66,7 +80,7 @@ const getAllOperatorColumns = (): ScrollTableColumnDef<OperatorElement>[] => [
     },
     {
         displayName: "Operator's cut",
-        valueMapper: (element) => `${fromAtto(element.operatorsCutFraction).toFixed(2)}%`,
+        valueMapper: (element) => `${element.operatorsCutFraction}%`,
         align: 'end',
         isSticky: false,
         key: 'operatorCut',
@@ -91,8 +105,20 @@ const getMyDelegationsColumns = (
     myWalletAddress: string,
 ): ScrollTableColumnDef<OperatorElement>[] => [
     {
-        displayName: 'Operator ID',
-        valueMapper: (element) => element.id,
+        displayName: 'Operator Name',
+        valueMapper: (element) => (
+            <OperatorNameCell>
+                {element.metadata?.imageUrl ? (
+                    <HubImageAvatar
+                        src={element.metadata.imageUrl}
+                        alt={element.metadata.imageUrl || element.id}
+                    />
+                ) : (
+                    <HubAvatar id={element.id} />
+                )}
+                <span>{element.metadata?.name || truncate(element.id)}</span>
+            </OperatorNameCell>
+        ),
         align: 'start',
         isSticky: true,
         key: 'operatorId',
@@ -114,7 +140,7 @@ const getMyDelegationsColumns = (
     },
     {
         displayName: "Operator's cut",
-        valueMapper: (element) => `${fromAtto(element.operatorsCutFraction).toFixed(2)}%`,
+        valueMapper: (element) => `${element.operatorsCutFraction}%`,
         align: 'end',
         isSticky: false,
         key: 'operatorsCut',
@@ -279,4 +305,11 @@ const OperatorsTableWrap = styled(WhiteBox)`
 const LoadMoreButton = styled(Button)`
     display: block;
     margin: 130px auto 80px;
+`
+
+const OperatorNameCell = styled.div`
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
 `
