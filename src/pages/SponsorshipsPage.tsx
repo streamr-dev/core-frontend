@@ -23,6 +23,7 @@ import { createSponsorship } from '~/services/sponsorships'
 import routes from '~/routes'
 import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
 import { SponsorshipElement } from '~/types/sponsorship'
+import { useFundSponsorship } from '~/hooks/useFundSponsorship'
 import {
     useAllSponsorshipsQuery,
     useMySponsorshipsQuery,
@@ -33,7 +34,6 @@ import {
     getTokenAndBalanceForSponsorship,
     TokenAndBalanceForSponsorship,
 } from '../getters/getTokenAndBalanceForSponsorship'
-import { useFundSponsorship } from '~/hooks/useFundSponsorship'
 
 const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
 

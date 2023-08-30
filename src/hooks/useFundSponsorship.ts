@@ -1,10 +1,10 @@
 import { useCallback } from 'react'
+import { toaster } from 'toasterhea'
 import {
     getTokenAndBalanceForSponsorship,
     TokenAndBalanceForSponsorship,
 } from '~/getters/getTokenAndBalanceForSponsorship'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { toaster } from 'toasterhea'
 import FundSponsorshipModal from '~/modals/FundSponsorshipModal'
 import { Layer } from '~/utils/Layer'
 import { errorToast } from '~/utils/toast'

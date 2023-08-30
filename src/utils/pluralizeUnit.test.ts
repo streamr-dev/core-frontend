@@ -1,6 +1,6 @@
-import { pluralizeUnit } from '~/utils/pluralizeUnit'
+import { pluralizeUnit } from './pluralizeUnit'
 
-describe('unitPluralizer', () => {
+describe('pluralizeUnit', () => {
     ;[
         {
             inputValue: 1,
