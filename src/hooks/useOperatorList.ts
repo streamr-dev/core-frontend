@@ -91,6 +91,9 @@ const parseMetadata = (operator: Operator): OperatorMetadata | undefined => {
             imageUrl: metadataObject.imageIpfsCid
                 ? `${ipfsGatewayUrl}${metadataObject.imageIpfsCid}`
                 : undefined,
+            redundancyFactor: metadataObject.redundancyFactor
+                ? Number(metadataObject.redundancyFactor)
+                : undefined,
         }
     } catch (e) {
         console.warn('Could not parse metadata for operator', operator.id)

@@ -56,7 +56,7 @@ export const ScrollTable = <T extends object>({
     linkMapper,
     hasMoreResults,
     onLoadMore,
-}: ScrollTableProps<T> & { title: string }) => {
+}: ScrollTableProps<T> & { title: ReactNode }) => {
     return (
         <ScrollTableContainer>
             <ScrollTableTitle>{title}</ScrollTableTitle>

@@ -23,6 +23,7 @@ const getOperatorChainId = () => {
 export async function createOperator(
     operatorCut: number,
     name: string,
+    redundancyFactor: number,
     description?: string,
     imageToUpload?: File,
 ) {
@@ -47,6 +48,7 @@ export async function createOperator(
     const metadata = {
         name,
         description,
+        redundancyFactor,
         imageIpfsCid,
     }
 

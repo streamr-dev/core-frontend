@@ -137,7 +137,12 @@ export const SectionHeadline = styled.h4`
     font-size: 14px;
     font-weight: normal;
     line-height: 24px;
-    margin: 0 0 8px;
+    margin: 20px 0 8px;
+    display: flex;
+    align-items: center;
+    &:first-of-type {
+        margin: 0 0 8px;
+    }
 `
 
 export const Hint = styled.div`

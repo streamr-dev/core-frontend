@@ -18,7 +18,6 @@ import {
 } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
-import { useOperator } from '~/hooks/useOperator'
 import { calculateOperatorSpotAPY } from '~/utils/apy'
 import { createOperator } from '~/services/operators'
 import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
@@ -33,6 +32,8 @@ import {
     useDelegatedOperatorsQuery,
 } from '../hooks/useOperatorList'
 import { OperatorElement } from '../types/operator'
+import { useMyOperator } from '~/hooks/useMyOperator'
+import { Link } from 'react-router-dom'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -169,9 +170,9 @@ export const OperatorsPage = () => {
 
     const allOperatorsQuery = useAllOperatorsQuery(PAGE_SIZE, searchQuery)
     const myDelegationsQuery = useDelegatedOperatorsQuery(PAGE_SIZE, wallet)
-    const operatorQuery = useOperator(wallet || '')
+    const myOperatorQuery = useMyOperator(wallet || '')
 
-    const isOperatorCreated = !!operatorQuery.data?.id
+    const isOperatorCreated = !!myOperatorQuery.data?.id
 
     const operatorsQuery =
         selectedTab === TabOptions.allOperators ? allOperatorsQuery : myDelegationsQuery
@@ -219,7 +220,12 @@ export const OperatorsPage = () => {
                 }
                 rightSideContent={
                     isOperatorCreated ? (
-                        <Button href={routes.network.operator({ id: wallet })}>
+                        <Button
+                            tag={Link}
+                            to={routes.network.operator({
+                                id: myOperatorQuery.data?.id,
+                            })}
+                        >
                             View my Operator
                         </Button>
                     ) : (

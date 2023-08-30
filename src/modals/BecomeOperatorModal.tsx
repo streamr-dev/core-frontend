@@ -28,12 +28,14 @@ interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onResolve?: (
         cut: number,
         name: string,
+        redundancyFactor: number,
         description?: string,
         imageToUpload?: File,
     ) => void
     onSubmit: (
         cut: number,
         name: string,
+        redundancyFactor: number,
         description?: string,
         imageToUpload?: File,
     ) => Promise<void>
@@ -62,6 +64,7 @@ export default function BecomeOperatorModal({
     const [name, setName] = useState<string | undefined>()
     const [description, setDescription] = useState<string | undefined>()
     const [imageToUpload, setImageToUpload] = useState<File>()
+    const [redundancyFactor, setRedundancyFactor] = useState<string>('2')
 
     const cutValueNumeric = Number(cutValue || undefined) // so that it will be a NaN if it's empty string
 
@@ -87,6 +90,11 @@ export default function BecomeOperatorModal({
 
     const descriptionTooLong = (description?.length || 0) > 120
 
+    const redundancyFactorNumber = Number(redundancyFactor)
+
+    const redundancyFactorIsValid =
+        !isNaN(redundancyFactorNumber) && redundancyFactorNumber >= 1
+
     const randomAddress = useMemo<string>(() => randomHex(20), [])
 
     const fileInputRef = useRef<HTMLInputElement>()
@@ -111,7 +119,13 @@ export default function BecomeOperatorModal({
         <FormModal
             {...props}
             title={title}
-            canSubmit={cutValueIsValid && nameIsValid && !descriptionTooLong && !busy}
+            canSubmit={
+                cutValueIsValid &&
+                nameIsValid &&
+                !descriptionTooLong &&
+                redundancyFactorIsValid &&
+                !busy
+            }
             submitLabel={submitLabel}
             submitting={busy}
             onBeforeAbort={(reason) =>
@@ -124,12 +138,14 @@ export default function BecomeOperatorModal({
                     await onSubmit(
                         cutValueNumeric,
                         name as string,
+                        Number(redundancyFactor),
                         description,
                         imageToUpload,
                     )
                     onResolve?.(
                         cutValueNumeric,
                         name as string,
+                        Number(redundancyFactor),
                         description,
                         imageToUpload,
                     )
@@ -144,21 +160,20 @@ export default function BecomeOperatorModal({
             }}
         >
             <SectionHeadline>
-                Please choose the percentage for the Operator&apos;s cut
+                Please choose the percentage for the Operator&apos;s cut{' '}
+                <Help align="center">
+                    <p>
+                        The cut taken by the Operator from all earnings. This percentage
+                        can not be changed later. The rest is shared among Delegators
+                        including the Operator&apos;s own&nbsp;stake.
+                    </p>
+                </Help>
             </SectionHeadline>
             <Section>
                 <WingedLabelWrap>
                     <Label>
                         <LabelInner>
                             <span>Operator&apos;s cut percentage*</span>
-                            <Help align="center">
-                                <p>
-                                    The cut taken by the Operator from all earnings. This
-                                    percentage can not be changed later. The rest is
-                                    shared among Delegators including the Operator&apos;s
-                                    own&nbsp;stake.
-                                </p>
-                            </Help>
                         </LabelInner>
                     </Label>
                     {cutValueIsTouchedAndInvalid && (
@@ -182,6 +197,47 @@ export default function BecomeOperatorModal({
                         value={typeof cutValue !== 'undefined' ? cutValue : ''}
                     />
                     <TextAppendix>%</TextAppendix>
+                </FieldWrap>
+            </Section>
+            <SectionHeadline>
+                Please choose the redundancy factor{' '}
+                <Help align="center">
+                    <p>
+                        Sets the amount of duplicated work when running a fleet of
+                        multiple nodes. Doing redundant work protects against slashing in
+                        case some of your nodes experience failures. For example, setting
+                        this to 1 means that no duplication of work occurs (the feature is
+                        off), and setting it to 2 means that each stream assignment will
+                        be worked on by 2 nodes in your fleet.
+                    </p>
+                </Help>
+            </SectionHeadline>
+            <Section>
+                <WingedLabelWrap>
+                    <Label>
+                        <LabelInner>
+                            <span>Redundancy factor*</span>
+                        </LabelInner>
+                    </Label>
+                    {!redundancyFactorIsValid && (
+                        <ErrorLabel>Value must be greater or equal to 1</ErrorLabel>
+                    )}
+                </WingedLabelWrap>
+                <FieldWrap $invalid={!redundancyFactorIsValid}>
+                    <TextInput
+                        name="redundancyFactor"
+                        onChange={({ target }) => void setRedundancyFactor(target.value)}
+                        placeholder="2"
+                        readOnly={busy}
+                        type="number"
+                        min={1}
+                        max={100}
+                        value={
+                            typeof redundancyFactor !== 'undefined'
+                                ? redundancyFactor
+                                : ''
+                        }
+                    />
                 </FieldWrap>
             </Section>
             <AboutOperator>

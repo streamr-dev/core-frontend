@@ -43,6 +43,9 @@ import {
     GetOperatorsByDelegationQueryVariables,
     GetOperatorsByDelegationDocument,
     SearchOperatorsDocument,
+    GetOperatorByOwnerAddressQuery,
+    GetOperatorByOwnerAddressQueryVariables,
+    GetOperatorByOwnerAddressDocument,
 } from '~/generated/gql/network'
 import getCoreConfig from './getCoreConfig'
 import getGraphClient from './getGraphClient'
@@ -412,4 +415,22 @@ export async function getOperatorById(
     )
 
     return operator || null
+}
+
+export async function getOperatorByOwnerAddress(
+    address: string,
+): Promise<NonNullable<GetOperatorByOwnerAddressQuery['operators'][0]> | null> {
+    const {
+        data: { operators },
+    } = await getGraphClient().query<
+        GetOperatorByOwnerAddressQuery,
+        GetOperatorByOwnerAddressQueryVariables
+    >({
+        query: GetOperatorByOwnerAddressDocument,
+        variables: {
+            owner: address,
+        },
+    })
+
+    return operators?.length ? operators[0] : null
 }
