@@ -198,9 +198,9 @@ export const OperatorActionBar: FunctionComponent<{
                         },
                         {
                             label: "Operator's cut",
-                            value: `${operator.operatorsCutFraction
-                                .dividedBy(100)
-                                .toFixed(2)}%`,
+                            value: `${fromAtto(operator.operatorsCutFraction).toFixed(
+                                2,
+                            )}%`,
                         },
                         {
                             label: 'Spot APY',
