@@ -6,7 +6,6 @@ import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
 import JoinSponsorshipModal from '~/modals/JoinSponsorshipModal'
-import FundSponsorshipModal from '~/modals/FundSponsorshipModal'
 import { BlackTooltip } from '~/shared/components/Tooltip/Tooltip'
 import Button from '~/shared/components/Button'
 import useCopy from '~/shared/hooks/useCopy'
@@ -15,6 +14,7 @@ import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
 import { Layer } from '~/utils/Layer'
 import routes from '~/routes'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
+import { useFundSponsorship } from '~/hooks/useFundSponsorship'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -31,12 +31,13 @@ import {
 } from './NetworkActionBar.styles'
 
 const joinSponsorshipModal = toaster(JoinSponsorshipModal, Layer.Modal)
-const fundSponsorshipModal = toaster(FundSponsorshipModal, Layer.Modal)
 
 export const SponsorshipActionBar: FunctionComponent<{
     sponsorship: SponsorshipElement
 }> = ({ sponsorship }) => {
     const { copy } = useCopy()
+
+    const fundSponsorship = useFundSponsorship()
 
     // TODO when Mariusz will merge his hook & getter for fetching Token information - use it here to display the proper token symbol
 
@@ -134,13 +135,9 @@ export const SponsorshipActionBar: FunctionComponent<{
                     </div>
                     <NetworkActionBarCTAs>
                         <Button
-                            onClick={async () => {
-                                try {
-                                    await fundSponsorshipModal.pop()
-                                } catch (e) {
-                                    // Ignore for now.
-                                }
-                            }}
+                            onClick={() =>
+                                fundSponsorship(sponsorship.id, sponsorship.payoutPerDay)
+                            }
                         >
                             Sponsor
                         </Button>
