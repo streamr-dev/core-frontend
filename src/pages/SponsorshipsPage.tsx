@@ -23,6 +23,7 @@ import { createSponsorship } from '~/services/sponsorships'
 import routes from '~/routes'
 import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
 import { SponsorshipElement } from '~/types/sponsorship'
+import { useFundSponsorship } from '~/hooks/useFundSponsorship'
 import {
     useAllSponsorshipsQuery,
     useMySponsorshipsQuery,
@@ -51,6 +52,8 @@ export const SponsorshipsPage = () => {
     const [searchQuery, setSearchQuery] = useState<string>('')
     const wallet = useWalletAccount()
     const walletConnected = !!wallet
+
+    const fundSponsorship = useFundSponsorship()
 
     const allSponsorshipsQuery = useAllSponsorshipsQuery(PAGE_SIZE, searchQuery)
 
@@ -175,11 +178,13 @@ export const SponsorshipsPage = () => {
                                 key: 'streamInfo',
                             },
                             {
-                                displayName: 'DATA/day',
-                                valueMapper: (element) => element.DATAPerDay,
+                                displayName: balanceData
+                                    ? `${balanceData.tokenSymbol}/day`
+                                    : 'DATA/day',
+                                valueMapper: (element) => element.payoutPerDay,
                                 align: 'start',
                                 isSticky: false,
-                                key: 'dataPerDay',
+                                key: 'payoutPerDay',
                             },
                             {
                                 displayName: 'Operators',
@@ -209,9 +214,16 @@ export const SponsorshipsPage = () => {
                         ]}
                         actions={[
                             {
-                                displayName: 'Edit',
+                                displayName: 'Sponsor',
+                                disabled: !walletConnected,
                                 callback: (element) =>
-                                    console.warn('editing! ' + element.streamId),
+                                    fundSponsorship(element.id, element.payoutPerDay),
+                            },
+                            {
+                                displayName: 'Join As Operator',
+                                disabled: !walletConnected,
+                                callback: (element) =>
+                                    console.log('join as operator', element),
                             },
                         ]}
                         noDataFirstLine={
