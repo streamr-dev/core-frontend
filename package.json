@@ -106,7 +106,7 @@
         "reselect": "^4.1.8",
         "resize-observer-polyfill": "^1.5.1",
         "rich-markdown-editor": "^11.21.3",
-        "sass": "1.62.1",
+        "sass": "1.66.1",
         "sass-loader": "^13.3.2",
         "storybook": "^7.0.12",
         "storybook-react-router": "^1.0.8",
