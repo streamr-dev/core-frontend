@@ -236,8 +236,8 @@ export const OperatorActionBar: FunctionComponent<{
                             value: `${ownerDelegationPercentage.toFixed(0)}%`,
                         },
                         {
-                            label: 'Sponsorships',
-                            value: operator.stakes.length.toString(),
+                            label: 'Redundancy factor',
+                            value: operator.metadata?.redundancyFactor || '1',
                         },
                         {
                             label: "Operator's cut",

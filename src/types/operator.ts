@@ -52,4 +52,9 @@ export type OperatorSlashingEvent = {
     streamId: string | undefined
 }
 
-export type OperatorMetadata = { name?: string; description?: string; imageUrl?: string }
+export type OperatorMetadata = {
+    name?: string
+    description?: string
+    imageUrl?: string
+    redundancyFactor?: number
+}

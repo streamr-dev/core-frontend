@@ -71,6 +71,12 @@ gql`
             ...OperatorFields
         }
     }
+
+    query getOperatorByOwnerAddress($owner: String!) {
+        operators(where: { owner: $owner }) {
+            ...OperatorFields
+        }
+    }
 `
 
 gql`

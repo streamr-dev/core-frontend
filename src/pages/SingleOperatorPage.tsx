@@ -224,7 +224,14 @@ export const SingleOperatorPage = () => {
                                         key: 'fundedUntil',
                                     },
                                 ]}
-                                title="Sponsorships"
+                                title={
+                                    <SponsorshipsTableTitle>
+                                        <span>Sponsorships</span>
+                                        <SponsorshipsCount>
+                                            {operator.stakes.length}
+                                        </SponsorshipsCount>
+                                    </SponsorshipsTableTitle>
+                                }
                             />
                         </SponsorshipsTable>
                         <ScrollTable
@@ -341,4 +348,18 @@ const NodeAddressesFooter = styled.div`
     display: flex;
     justify-content: right;
     padding: 32px;
+`
+
+const SponsorshipsTableTitle = styled.div`
+    display: flex;
+    align-items: center;
+`
+
+const SponsorshipsCount = styled.div`
+    background-color: ${COLORS.secondary};
+    border-radius: 50%;
+    margin-left: 10px;
+    width: 30px;
+    font-size: 14px;
+    text-align: center;
 `
