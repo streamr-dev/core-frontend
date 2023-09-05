@@ -18,7 +18,7 @@ export type OperatorElement = {
     delegators: OperatorDelegator[]
     delegatorCount: number
     poolValue: BN
-    totalValueInSponsorshipsWei: BN
+    totalStakeInSponsorshipsWei: BN
     freeFundsWei: BN
     poolValueTimestamp: string
     poolValueBlockNumber: string
@@ -56,5 +56,6 @@ export type OperatorMetadata = {
     name?: string
     description?: string
     imageUrl?: string
+    imageIpfsCid?: string
     redundancyFactor?: number
 }

@@ -91,6 +91,7 @@ const parseMetadata = (operator: Operator): OperatorMetadata | undefined => {
             imageUrl: metadataObject.imageIpfsCid
                 ? `${ipfsGatewayUrl}${metadataObject.imageIpfsCid}`
                 : undefined,
+            imageIpfsCid: metadataObject.imageIpfsCid,
             redundancyFactor: metadataObject.redundancyFactor
                 ? Number(metadataObject.redundancyFactor)
                 : undefined,
@@ -130,7 +131,7 @@ export const mapOperatorToElement = (operator: Operator): OperatorElement => {
         poolValue: toBN(operator.poolValue),
         poolValueBlockNumber: operator.poolValueBlockNumber,
         poolValueTimestamp: operator.poolValueTimestamp,
-        totalValueInSponsorshipsWei: toBN(operator.totalValueInSponsorshipsWei),
+        totalStakeInSponsorshipsWei: toBN(operator.totalStakeInSponsorshipsWei),
         cumulativeProfitsWei: toBN(operator.cumulativeProfitsWei),
         cumulativeOperatorsCutWei: toBN(operator.cumulativeOperatorsCutWei),
         operatorsCutFraction: fromAtto(

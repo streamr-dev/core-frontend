@@ -74,7 +74,7 @@ const getAllOperatorColumns = (): ScrollTableColumnDef<OperatorElement>[] => [
     {
         displayName: 'Deployed',
         valueMapper: (element) =>
-            fromAtto(element.totalValueInSponsorshipsWei).toString(),
+            fromAtto(element.totalStakeInSponsorshipsWei).toString(),
         align: 'end',
         isSticky: false,
         key: 'deployed',

@@ -23,6 +23,7 @@ import Button from '~/shared/components/Button'
 import SvgIcon from '~/shared/components/SvgIcon'
 import CropImageModal from '~/components/CropImageModal/CropImageModal'
 import { Layer } from '~/utils/Layer'
+import { Alert } from '~/components/Alert'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onResolve?: (
@@ -43,6 +44,8 @@ interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     name?: string
     description?: string
     imageUrl?: string
+    redundancyFactor?: number
+    cutEditingDisabled?: boolean
 }
 
 const cropModal = toaster(CropImageModal, Layer.Modal)
@@ -56,21 +59,21 @@ export default function BecomeOperatorModal({
     name: nameProp,
     description: descriptionProp,
     imageUrl: imageUrlProp,
+    redundancyFactor: redundancyFactorProp,
+    cutEditingDisabled,
     ...props
 }: Props) {
     const [busy, setBusy] = useState(false)
 
     const [cutValue, setCutValue] = useState<string | undefined>(cutProp?.toString())
-    const [name, setName] = useState<string | undefined>()
-    const [description, setDescription] = useState<string | undefined>()
+    const [name, setName] = useState<string | undefined>(nameProp)
+    const [description, setDescription] = useState<string | undefined>(descriptionProp)
     const [imageToUpload, setImageToUpload] = useState<File>()
-    const [redundancyFactor, setRedundancyFactor] = useState<string>('2')
+    const [redundancyFactor, setRedundancyFactor] = useState<string>(
+        redundancyFactorProp?.toString() || '2',
+    )
 
     const cutValueNumeric = Number(cutValue || undefined) // so that it will be a NaN if it's empty string
-
-    useEffect(() => {
-        setCutValue(cutProp?.toString())
-    }, [cutProp])
 
     const cutValueIsValid = useMemo<boolean>(
         () => !isNaN(cutValueNumeric) && cutValueNumeric >= 0 && cutValueNumeric <= 100,
@@ -115,6 +118,17 @@ export default function BecomeOperatorModal({
         [setImageToUpload],
     )
 
+    const providedValuesDidChange =
+        nameProp !== name ||
+        descriptionProp !== description ||
+        redundancyFactorProp?.toString() !== redundancyFactor ||
+        cutProp?.toString() !== cutValue
+
+    const canSubmitEditForm =
+        !!nameProp || !!descriptionProp || !!redundancyFactorProp || !!cutProp // this means that we are in edit mode
+            ? providedValuesDidChange || (!providedValuesDidChange && !!imageToUpload)
+            : true
+
     return (
         <FormModal
             {...props}
@@ -124,6 +138,7 @@ export default function BecomeOperatorModal({
                 nameIsValid &&
                 !descriptionTooLong &&
                 redundancyFactorIsValid &&
+                canSubmitEditForm &&
                 !busy
             }
             submitLabel={submitLabel}
@@ -180,10 +195,13 @@ export default function BecomeOperatorModal({
                         <ErrorLabel>Value must be between 0 and 100</ErrorLabel>
                     )}
                 </WingedLabelWrap>
-                <FieldWrap $invalid={cutValueIsTouchedAndInvalid}>
+                <FieldWrap
+                    $invalid={cutValueIsTouchedAndInvalid}
+                    $grayedOut={cutEditingDisabled}
+                >
                     <TextInput
                         name="cut"
-                        autoFocus
+                        autoFocus={!cutProp}
                         onChange={({ target }) =>
                             void setCutValue(
                                 target.value ? Number(target.value).toString() : '',
@@ -195,10 +213,21 @@ export default function BecomeOperatorModal({
                         min={0}
                         max={100}
                         value={typeof cutValue !== 'undefined' ? cutValue : ''}
+                        disabled={cutEditingDisabled}
                     />
                     <TextAppendix>%</TextAppendix>
                 </FieldWrap>
             </Section>
+            {cutEditingDisabled && (
+                <AlertContainer>
+                    <Alert type="notice" title="Operator's cut locked">
+                        <span>
+                            The operator&apos;s cut can&apos;t be modified while staked.
+                            To change it, fully unstake from all sponsorships.
+                        </span>
+                    </Alert>
+                </AlertContainer>
+            )}
             <SectionHeadline>
                 Please choose the redundancy factor{' '}
                 <Help align="center">
@@ -395,4 +424,8 @@ const ButtonIcon = styled(SvgIcon)`
     width: 12px;
     height: 12px;
     margin-right: 8px;
+`
+
+const AlertContainer = styled.div`
+    margin-top: 10px;
 `

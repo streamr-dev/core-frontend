@@ -1,4 +1,6 @@
 import { Contract } from 'ethers'
+import { toaster, Toaster } from 'toasterhea'
+import { isEqual, omit } from 'lodash'
 import {
     operatorFactoryABI,
     operatorABI,
@@ -15,6 +17,12 @@ import { BNish, toBN } from '~/utils/bn'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import { toastedOperation } from '~/utils/toastedOperation'
 import { postImage } from '~/services/images'
+import { OperatorElement, OperatorMetadata } from '~/types/operator'
+import TransactionListToast, {
+    notify,
+    Operation,
+} from '~/shared/toasts/TransactionListToast'
+import { Layer } from '~/utils/Layer'
 
 const getOperatorChainId = () => {
     return defaultChainConfig.id
@@ -75,6 +83,141 @@ export async function createOperator(
         )
         await tx.wait()
     })
+}
+
+export const updateOperator = async (
+    currentOperatorObject: OperatorElement,
+    name: string,
+    redundancyFactor: number,
+    description?: string,
+    imageToUpload?: File,
+    cut?: number,
+): Promise<void> => {
+    let toast: Toaster<typeof TransactionListToast> | undefined = toaster(
+        TransactionListToast,
+        Layer.Toast,
+    )
+    try {
+        const chainId = getOperatorChainId()
+        const signer = await getSigner()
+
+        const operations: Operation[] = []
+
+        const updateCutOperation: Operation = {
+            id: 'updateCutOperation',
+            label: "Update the operator's cut value",
+            state: undefined,
+        }
+
+        const updateMetadataOperation: Operation = {
+            id: 'updateMetadataOperation',
+            label: "Update the operator's metadata",
+            state: undefined,
+        }
+
+        const newOperatorMetadataWithoutImage: OperatorMetadata = {
+            name,
+            description,
+            redundancyFactor,
+        }
+
+        const hasUpdateCutOperation =
+            !currentOperatorObject.stakes.length &&
+            cut &&
+            !currentOperatorObject.operatorsCutFraction.isEqualTo(toBN(cut))
+
+        const hasUpdateMetadataOperation =
+            !isEqual(
+                omit(currentOperatorObject.metadata, ['imageUrl', 'imageIpfsCid']),
+                newOperatorMetadataWithoutImage,
+            ) || !!imageToUpload
+
+        // 1. Prepare the operations array
+
+        if (hasUpdateCutOperation) {
+            operations.push(updateCutOperation)
+        }
+
+        if (hasUpdateMetadataOperation) {
+            operations.push(updateMetadataOperation)
+        }
+
+        // 2. Update cut
+        if (hasUpdateCutOperation) {
+            try {
+                updateCutOperation.state = 'ongoing'
+                notify(toast, operations)
+                await networkPreflight(chainId)
+
+                const operatorContract = new Contract(
+                    currentOperatorObject.id,
+                    operatorABI,
+                    signer,
+                ) as Operator
+                const tx = await operatorContract.updateOperatorsCutFraction(
+                    parseEther(cut.toString()).div(100),
+                )
+                await tx.wait()
+
+                updateCutOperation.state = 'complete'
+                notify(toast, operations)
+            } catch (e) {
+                if (updateCutOperation.state === 'ongoing') {
+                    updateCutOperation.state = 'error'
+                }
+                notify(toast, operations)
+                throw e
+            }
+        }
+
+        // 3. Update metadata
+        if (hasUpdateMetadataOperation) {
+            try {
+                updateMetadataOperation.state = 'ongoing'
+                notify(toast, operations)
+                await networkPreflight(chainId)
+
+                const operatorContract = new Contract(
+                    currentOperatorObject.id,
+                    operatorABI,
+                    signer,
+                ) as Operator
+                const imageIpfsCid = imageToUpload
+                    ? await postImage(imageToUpload)
+                    : currentOperatorObject.metadata?.imageIpfsCid
+                const metadata = {
+                    name: name || currentOperatorObject.metadata?.name,
+                    description:
+                        description || currentOperatorObject.metadata?.description,
+                    redundancyFactor:
+                        redundancyFactor ||
+                        currentOperatorObject.metadata?.redundancyFactor,
+                    imageIpfsCid,
+                }
+                const tx = await operatorContract.updateMetadata(JSON.stringify(metadata))
+                await tx.wait()
+
+                updateMetadataOperation.state = 'complete'
+                notify(toast, operations)
+            } catch (e) {
+                if (updateMetadataOperation.state === 'ongoing') {
+                    updateMetadataOperation.state = 'error'
+                }
+                notify(toast, operations)
+                throw e
+            }
+        }
+        if (!operations.length) {
+            throw new Error('No operations')
+        }
+    } catch (e) {
+        throw e
+    } finally {
+        setTimeout(() => {
+            toast?.discard()
+            toast = undefined
+        }, 3000)
+    }
 }
 
 export async function delegateToOperator(operatorId: string, amount: BNish) {
