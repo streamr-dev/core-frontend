@@ -47,82 +47,72 @@ const ScreenReaderText = styled.span`
     position: absolute;
 `
 
+const getSizeStyles = ({ $size }: { $size: SpinnerSize; $color: SpinnerColor }) => {
+    switch ($size) {
+        case 'small':
+            return css`
+                font-size: 2px;
+            `
+        case 'medium':
+            return css`
+                font-size: 2px;
+                &,
+                &::after {
+                    min-width: 22px;
+                    min-height: 22px;
+                }
+            `
+        case 'large':
+            return css`
+                font-size: 4px;
+
+                &,
+                &::after {
+                    min-width: 40px;
+                    min-height: 40px;
+                }
+            `
+    }
+}
+
+const getColorsStyles = ({ $color }: { $size: SpinnerSize; $color: SpinnerColor }) => {
+    switch ($color) {
+        case 'blue':
+            return css`
+                border: 2px solid ${COLORS.spinnerBorder};
+                border-left-color: ${COLORS.link};
+            `
+        case 'green':
+            return css`
+                border: 2px solid ${COLORS.greenSpinner};
+                border-left-color: ${COLORS.spinnerBorder};
+            `
+        case 'white':
+            return css`
+                border: 2px solid ${COLORS.primaryContrast};
+                border-left-color: ${COLORS.spinnerBorder};
+            `
+        case 'gray':
+            return css`
+                border: 2px solid ${COLORS.spinnerBorder};
+                border-left-color: ${COLORS.primaryContrast};
+            `
+    }
+}
+
 const SpinnerElement = styled.span<{ $color: SpinnerColor; $size: SpinnerSize }>`
-    ${({ $color, $size }) => {
-        let styles = css`
-            display: inline-block;
-            position: relative;
-            transform: translateZ(0);
-            animation: ${spin} 1.1s infinite linear;
+    display: inline-block;
+    position: relative;
+    transform: translateZ(0);
+    animation: ${spin} 1.1s infinite linear;
 
-            &,
-            &::after {
-                border-radius: 100%;
-                min-width: 16px;
-                min-height: 16px;
-                line-height: 1;
-            }
-        `
-        switch ($size) {
-            case 'small':
-                styles = css`
-                    ${styles};
-                    font-size: 2px;
-                `
-                break
-            case 'medium':
-                styles = css`
-                    ${styles};
-                    font-size: 2px;
-                    &,
-                    &::after {
-                        min-width: 22px;
-                        min-height: 22px;
-                    }
-                `
-                break
-            case 'large':
-                styles = css`
-                    ${styles};
-                    font-size: 4px;
-
-                    &,
-                    &::after {
-                        min-width: 40px;
-                        min-height: 40px;
-                    }
-                `
-        }
-        switch ($color) {
-            case 'blue':
-                styles = css`
-                    ${styles};
-                    border: 2px solid ${COLORS.spinnerBorder};
-                    border-left-color: ${COLORS.link};
-                `
-                break
-            case 'green':
-                styles = css`
-                    ${styles};
-                    border: 2px solid ${COLORS.greenSpinner};
-                    border-left-color: ${COLORS.spinnerBorder};
-                `
-                break
-            case 'white':
-                styles = css`
-                    ${styles};
-                    border: 2px solid ${COLORS.primaryContrast};
-                    border-left-color: ${COLORS.spinnerBorder};
-                `
-                break
-            case 'gray':
-                styles = css`
-                    ${styles};
-                    border: 2px solid ${COLORS.spinnerBorder};
-                    border-left-color: ${COLORS.primaryContrast};
-                `
-                break
-        }
-        return styles
-    }}
+    &,
+    &::after {
+        border-radius: 100%;
+        min-width: 16px;
+        min-height: 16px;
+        line-height: 1;
+    }
+    ${getSizeStyles};
+    ${getColorsStyles}
 `
