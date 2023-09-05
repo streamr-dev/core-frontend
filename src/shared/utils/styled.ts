@@ -41,4 +41,7 @@ export enum COLORS {
     black = '#000',
     active = '#0EAC1B',
     activeBackground = '#0eac1b1a',
+    alertInfoBackground = '#DEEBFF',
+    alertErrorBackground = '#FFF4EE',
+    alertSuccessBackground = '#E7F7E8',
 }
