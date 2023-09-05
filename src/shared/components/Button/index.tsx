@@ -1,5 +1,6 @@
 import { ComponentType, FunctionComponent, ReactNode } from 'react'
 import React, { HTMLProps } from 'react'
+import styled from 'styled-components'
 import cx from 'classnames'
 import { LinkProps } from 'react-router-dom'
 import { Optional } from 'utility-types'
@@ -93,12 +94,15 @@ const Button: FunctionComponent<ButtonProps> = ({
     >
         {children}
         {waiting && (
-            <Spinner
-                color={!outline && darkBgs.has(kind) ? 'white' : 'gray'}
-                containerClassname={styles.spinnerContainer}
-            />
+            <StyledSpinner color={!outline && darkBgs.has(kind) ? 'white' : 'gray'} />
         )}
     </Tag>
 )
 
 export default Button
+
+const StyledSpinner = styled(Spinner)`
+    width: 16px;
+    height: 16px;
+    margin-left: 0.5rem;
+`

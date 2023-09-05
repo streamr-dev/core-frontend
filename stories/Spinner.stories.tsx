@@ -22,6 +22,11 @@ SpinnerWhite.story = {
     name: 'white',
 }
 
+export const SpinnerBlue = () => <Spinner color="blue" />
+SpinnerWhite.story = {
+    name: 'blue',
+}
+
 const meta: Meta<typeof SpinnerSmall> = {
     title: 'Shared/Spinner',
     component: SpinnerSmall,

@@ -10,26 +10,9 @@ export const Alert: FunctionComponent<{
     title: string
     children: ReactNode
 }> = ({ type, title, children }) => {
-    const icon: ReactNode = useMemo(() => {
-        switch (type) {
-            case 'success':
-                return <StyledIcon name="checkmark" />
-            case 'error':
-                return <StyledIcon name="warnBadge" />
-            case 'loading':
-                return (
-                    <SpinnerWrapper>
-                        <Spinner color="blue" />
-                    </SpinnerWrapper>
-                )
-            case 'notice':
-                return <StyledIcon name="infoBadge" />
-        }
-    }, [type])
-
     return (
         <AlertWrap $type={type}>
-            {icon}
+            <AlertIcon type={type} />
             <div>
                 <Title>{title}</Title>
                 {children}
@@ -38,46 +21,50 @@ export const Alert: FunctionComponent<{
     )
 }
 
+const AlertIcon: FunctionComponent<{ type: AlertType }> = ({ type }) => {
+    switch (type) {
+        case 'success':
+            return <StyledIcon name="checkmark" />
+        case 'error':
+            return <StyledIcon name="warnBadge" />
+        case 'loading':
+            return <StyledSpinner color="blue" size="medium" />
+        case 'notice':
+            return <StyledIcon name="infoBadge" />
+    }
+}
+
+const getAlertBackgroundColor = ({ $type }: { $type: AlertType }) => {
+    switch ($type) {
+        case 'success':
+            return COLORS.alertSuccessBackground
+        case 'error':
+            return COLORS.alertErrorBackground
+        case 'loading':
+        case 'notice':
+            return COLORS.alertInfoBackground
+        default:
+            return 'transparent'
+    }
+}
+
 const AlertWrap = styled.div<{ $type: AlertType }>`
     display: flex;
     gap: 16px;
     padding: 20px 16px;
     border-radius: 8px;
-  
-  ${({ $type }) => {
-      let color = 'transparent'
-      switch ($type) {
-          case 'success':
-              color = COLORS.alertSuccessBackground
-              break
-          case 'error':
-              color = COLORS.alertErrorBackground
-              break
-          case 'loading':
-          case 'notice':
-              color = COLORS.alertInfoBackground
-              break
-      }
-      return css`
-          background-color: ${color};
-      `
-  }}}
+    background-color: ${getAlertBackgroundColor};
 `
 
 const StyledIcon = styled(SvgIcon)`
     width: 22px;
     height: 22px;
+    flex-shrink: 0;
 `
 
-const SpinnerWrapper = styled.div`
-    // hacky override of pcss styles
-    .shared_spinner_container {
-        align-self: auto;
-        .shared_spinner_spinner {
-            min-height: 20px;
-            min-width: 20px;
-        }
-    }
+const StyledSpinner = styled(Spinner)`
+    align-self: baseline !important;
+    flex-shrink: 0;
 `
 
 const Title = styled.p`
