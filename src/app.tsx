@@ -73,9 +73,7 @@ const App = () => (
                         <Routes>
                             <Route path="/hub/projects/*" errorElement={<ErrorPage />}>
                                 <Route index element={<ProjectListingPage />} />
-                                <Route path="new" element={<NewProjectPage />} />
-                                <Route path=":id/edit" element={<EditProjectPage />} />
-                                <Route path=":id/*" element={<ProjectPage />} />
+                                <Route path="*" element={<ProjectPage />} />
                             </Route>
                             <Route path="/hub/streams/*" errorElement={<ErrorPage />}>
                                 <Route index element={<StreamListingPage />} />

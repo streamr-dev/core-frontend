@@ -1,23 +1,31 @@
 import React from 'react'
-import { Navigate, Route, Routes, useParams } from 'react-router-dom'
+import { Navigate, Route, Routes, useMatch, useParams } from 'react-router-dom'
 import { ProjectDraftContext, useInitProject } from '~/shared/stores/projectEditor'
 import NotFoundPage from '~/pages/NotFoundPage'
-import routes from '~/routes'
 import TabbedPage from './TabbedPage'
 import ProjectEditorPage from './ProjectEditorPage'
-
-function NewProjectPage(): JSX.Element {
-    throw new Error('Not implemented.')
-}
+import routes from '~/routes'
 
 function ProjectRedirect() {
-    const { id } = useParams<{ id: string }>()
+    const { id = '' } = useParams<{ id: string }>()
 
-    return <Navigate to={routes.projects.overview({ id })} replace />
+    return (
+        <Navigate
+            to={routes.projects.overview({
+                id: encodeURIComponent(id),
+            })}
+            replace
+        />
+    )
 }
 
 export default function ProjectPage() {
-    const { id: projectId = 'new' } = useParams<{ id: string }>()
+    /**
+     * This component is meant to be attached to `/hub/projects/*` wildcard
+     * route. In such context there's no `:id` param available through
+     * `useParams` hook. We have to parse it manually using `useMatch`.
+     */
+    const { id: projectId = 'new' } = useMatch('/hub/projects/:id/*')?.params || {}
 
     return (
         <ProjectDraftContext.Provider
@@ -26,21 +34,15 @@ export default function ProjectPage() {
             )}
         >
             <Routes>
-                <Route
-                    path={routes.projects.new()}
-                    element={<NewProjectPage />}
-                    key="NewProjectPage"
-                />
-                <Route
-                    path={routes.projects.edit()}
-                    element={<ProjectEditorPage />}
-                    key="EditProjectPage"
-                />
-                <Route index element={<ProjectRedirect />} key="ProjectRedirect" />
-                <Route path="overview" element={<TabbedPage tab="overview" />} />
-                <Route path="connect" element={<TabbedPage tab="connect" />} />
-                <Route path="live-data" element={<TabbedPage tab="live-data" />} />
-                <Route path="*" element={<NotFoundPage />} />
+                <Route path="/new" element={<ProjectEditorPage />} />
+                <Route path="/:id/*">
+                    <Route index element={<ProjectRedirect />} />
+                    <Route path="edit" element={<ProjectEditorPage />} />
+                    <Route path="overview" element={<TabbedPage tab="overview" />} />
+                    <Route path="connect" element={<TabbedPage tab="connect" />} />
+                    <Route path="live-data" element={<TabbedPage tab="live-data" />} />
+                    <Route path="*" element={<NotFoundPage />} />
+                </Route>
             </Routes>
         </ProjectDraftContext.Provider>
     )

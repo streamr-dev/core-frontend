@@ -1,5 +1,5 @@
 import { produce } from 'immer'
-import { createContext, useContext, useEffect, useMemo } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo } from 'react'
 import { create } from 'zustand'
 import isEqual from 'lodash/isEqual'
 import uniqueId from 'lodash/uniqueId'
@@ -44,6 +44,7 @@ interface ProjectEditorStore {
     setError: (draftId: string, key: string, message: string) => void
     teardown: (draftId: string, options?: { onlyAbandoned?: boolean }) => void
     abandon: (draftId: string) => void
+    update: (draftId: string, upadte: (project: Project) => void) => void
 }
 
 const initialProject: Project = {
@@ -411,6 +412,8 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
                 }),
             )
         },
+
+        update: setProject,
     }
 })
 
@@ -507,4 +510,34 @@ export function useIsCurrentProjectDraftClean() {
 
 export function useIsNewProject() {
     return typeof useProject().id === 'undefined'
+}
+
+export function useUpdateProjectContactInfo() {
+    const update = useUpdateProject()
+
+    return useCallback(
+        (contact: Partial<Project['contact']>) => {
+            return update((project) => {
+                Object.assign(project.contact, contact)
+            })
+        },
+        [update],
+    )
+}
+
+export function useUpdateProject() {
+    const draftId = useDraftId()
+
+    const { update } = useProjectEditorStore()
+
+    return useCallback(
+        (updater: (project: Project) => void) => {
+            if (!draftId) {
+                return
+            }
+
+            return update(draftId, updater)
+        },
+        [draftId, update],
+    )
 }
