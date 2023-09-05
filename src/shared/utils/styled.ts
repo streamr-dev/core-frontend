@@ -40,5 +40,10 @@ export enum COLORS {
     dialogBorder = '#F3F3F3',
     black = '#000',
     active = '#0EAC1B',
+    greenSpinner = '#29C236',
+    spinnerBorder = '#ADADAD7F',
     activeBackground = '#0eac1b1a',
+    alertInfoBackground = '#DEEBFF',
+    alertErrorBackground = '#FFF4EE',
+    alertSuccessBackground = '#E7F7E8',
 }
