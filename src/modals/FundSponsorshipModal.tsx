@@ -66,25 +66,41 @@ export default function FundSponsorshipModal({
             return '0 days'
         }
 
+        const years = extensionDuration.get('years')
+        const months = extensionDuration.get('months')
         const days = extensionDuration.get('days')
         const hours = extensionDuration.get('hours')
         const minutes = extensionDuration.get('minutes')
 
-        if (!days && !hours) {
+        if (!years && !months && !days && !hours) {
             return `${minutes} ${pluralizeUnit(minutes, 'minute')}`
         }
 
-        if (!days) {
+        if (!years && !months && !days) {
             return (
                 `${hours} ${pluralizeUnit(hours, 'hour')}` +
                 (minutes ? ` & ${minutes} ${pluralizeUnit(minutes, 'minute')}` : '')
             )
         }
 
-        return `${days} ${pluralizeUnit(days, 'day')} & ${hours} ${pluralizeUnit(
-            hours,
-            'hour',
-        )}`
+        if (!years && !months) {
+            return `${days} ${pluralizeUnit(days, 'day')} & ${hours} ${pluralizeUnit(
+                hours,
+                'hour',
+            )}`
+        }
+
+        if (!years) {
+            return `${months} ${pluralizeUnit(months, 'month')} & ${days} ${pluralizeUnit(
+                days,
+                'day',
+            )}`
+        }
+
+        return `${years} ${pluralizeUnit(years, 'year')}, ${months} ${pluralizeUnit(
+            months,
+            'month',
+        )} & ${days} ${pluralizeUnit(days, 'day')}`
     }, [extensionDuration])
 
     const endDate = new Date(Date.now() + extensionInSeconds * 1000)
