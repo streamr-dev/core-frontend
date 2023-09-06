@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
+import { Alert } from '~/components/Alert'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     FieldWrap,
@@ -10,6 +12,7 @@ import FormModal, {
     TextInput,
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
+import { COLORS } from '~/shared/utils/styled'
 import { BN, toBN } from '~/utils/bn'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
@@ -20,18 +23,20 @@ interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     delegatedTotal?: string
     operatorId?: string
     amount?: string
+    freeFunds?: string
 }
 
-export default function DelegateFundsModal({
-    title = 'Delegate',
+export default function UndelegateFundsModal({
+    title = 'Undelegate',
     balance: balanceProp = '0',
     tokenSymbol = 'DATA',
     delegatedTotal: delegatedTotalProp = '0',
+    freeFunds: freeFundsProp = '0',
     operatorId = 'N/A',
     onResolve,
     onSubmit,
     amount: amountProp = '',
-    submitLabel = 'Delegate',
+    submitLabel = 'Undelegate',
     ...props
 }: Props) {
     const [rawAmount, setRawAmount] = useState(amountProp)
@@ -47,6 +52,8 @@ export default function DelegateFundsModal({
     const balance = toBN(balanceProp)
 
     const delegatedTotal = toBN(delegatedTotalProp)
+
+    const freeFunds = toBN(freeFundsProp)
 
     const insufficientFunds = finalValue.isGreaterThan(balance)
 
@@ -73,7 +80,7 @@ export default function DelegateFundsModal({
 
                     onResolve?.(finalValue.toString())
                 } catch (e) {
-                    console.warn('Error while delegating funds', e)
+                    console.warn('Error while undelegating funds', e)
                     setBusy(false)
                 } finally {
                     /**
@@ -83,12 +90,12 @@ export default function DelegateFundsModal({
             }}
         >
             <SectionHeadline>
-                Please set the amount of {tokenSymbol} to delegate to the selected
+                Please set the amount of {tokenSymbol} to undelegate to the selected
                 Operator
             </SectionHeadline>
             <Section>
-                <Label>Amount to delegate</Label>
-                <FieldWrap $invalid={insufficientFunds}>
+                <Label>Amount to undelegate</Label>
+                <FieldWrap $invalid={insufficientFunds} $top={true}>
                     <TextInput
                         name="amount"
                         autoFocus
@@ -100,6 +107,15 @@ export default function DelegateFundsModal({
                         value={rawAmount}
                     />
                     <TextAppendix>{tokenSymbol}</TextAppendix>
+                </FieldWrap>
+                <FieldWrap $invalid={insufficientFunds} $bottom={true} $padded={true}>
+                    <Prop>
+                        Amount currently delegated to Operator:{' '}
+                        {delegatedTotal.toString()} {tokenSymbol}
+                    </Prop>
+                    <LinkButton onClick={() => setRawAmount(delegatedTotal.toString())}>
+                        Max
+                    </LinkButton>
                 </FieldWrap>
                 <ul>
                     <li>
@@ -119,13 +135,36 @@ export default function DelegateFundsModal({
                         <div>{operatorId}</div>
                     </li>
                     <li>
-                        <Prop>Amount currently delegated to Operator</Prop>
+                        <Prop>Free funds on Operator</Prop>
                         <div>
-                            {delegatedTotal.toString()} {tokenSymbol}
+                            {freeFunds.toString()} {tokenSymbol}
                         </div>
                     </li>
                 </ul>
             </Section>
+            <Footer>
+                {toBN(rawAmount).isLessThanOrEqualTo(freeFunds) && (
+                    <Alert
+                        type="notice"
+                        title={`${rawAmount.toString()} DATA will be undelegated immediately`}
+                    />
+                )}
+                {toBN(rawAmount).isGreaterThan(freeFunds) && (
+                    <Alert type="notice" title="Undelegation will be queued">
+                        Your undelegation will be queued for a maximum of 30 days, after
+                        which you will be able to force undelegation.
+                    </Alert>
+                )}
+            </Footer>
         </FormModal>
     )
 }
+
+const LinkButton = styled.a`
+    cursor: pointer;
+    color: ${COLORS.link};
+`
+
+const Footer = styled.div`
+    margin-top: 8px;
+`

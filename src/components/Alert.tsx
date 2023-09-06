@@ -1,21 +1,22 @@
-import React, { FunctionComponent, ReactNode, useMemo } from 'react'
-import styled, { css } from 'styled-components'
+import React, { FunctionComponent, ReactNode } from 'react'
+import styled from 'styled-components'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import Spinner from '~/shared/components/Spinner'
 
 type AlertType = 'loading' | 'error' | 'success' | 'notice'
+
 export const Alert: FunctionComponent<{
     type: AlertType
     title: string
-    children: ReactNode
+    children?: ReactNode
 }> = ({ type, title, children }) => {
     return (
         <AlertWrap $type={type}>
             <AlertIcon type={type} />
             <div>
                 <Title>{title}</Title>
-                {children}
+                {children != null && <Content>{children}</Content>}
             </div>
         </AlertWrap>
     )
@@ -69,5 +70,11 @@ const StyledSpinner = styled(Spinner)`
 
 const Title = styled.p`
     font-weight: ${MEDIUM};
-    line-height: 22px;
+    line-height: 20px;
+    margin: 0;
+`
+
+const Content = styled.div`
+    margin-top: 4px;
+    line-height: 20px;
 `
