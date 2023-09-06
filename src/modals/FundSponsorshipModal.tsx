@@ -129,7 +129,7 @@ export default function FundSponsorshipModal({
                 Please set the amount of {tokenSymbol} to spend to extend the Sponsorship
             </SectionHeadline>
             <Section>
-                <Label>Amount to delegate</Label>
+                <Label>Amount to sponsor</Label>
                 <FieldWrap $invalid={insufficientFunds}>
                     <TextInput
                         name="amount"
