@@ -432,16 +432,9 @@ export function useInitProject(projectId: string | undefined) {
         projectId
 
         return recycledDraftId || uniqueId('ProjectDraft-')
-        /**
-         * We give each new project id a new draft id (unless we recycle), thus we've gotta
-         * disable react-hooks/exhaustive-deps for the next line (`projectId` may seem redundant).
-         */
     }, [projectId, recycledDraftId])
 
-    const { init, abandon } = useProjectEditorStore(({ init, abandon }) => ({
-        init,
-        abandon,
-    }))
+    const { init, abandon } = useProjectEditorStore()
 
     useEffect(() => {
         init(draftId, projectId)
