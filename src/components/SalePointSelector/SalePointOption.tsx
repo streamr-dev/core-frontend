@@ -12,27 +12,29 @@ import BeneficiaryAddressEditor from './BeneficiaryAddressEditor'
 
 export default function SalePointOption({
     onSalePointChange,
-    onToggle,
     salePoint,
-    selected = false,
-    readOnly = false,
 }: {
     onSalePointChange?: (value: SalePoint) => void
     onToggle?: (chainId: number, selected: boolean) => void
     salePoint: SalePoint
-    selected?: boolean
-    readOnly?: boolean
 }) {
-    const { chainId } = salePoint
+    const { chainId, enabled, readOnly } = salePoint
 
     const chain = getConfigForChain(chainId)
 
     const formattedChainName = formatChainName(chain.name)
 
     return (
-        <DropdownWrap $open={selected}>
-            <DropdownToggle onClick={() => void onToggle?.(chainId, !selected)}>
-                <Tick $checked={selected} $disabled={readOnly} />
+        <DropdownWrap $open={enabled}>
+            <DropdownToggle
+                onClick={() => {
+                    onSalePointChange?.({
+                        ...salePoint,
+                        enabled: !salePoint.enabled,
+                    })
+                }}
+            >
+                <Tick $checked={enabled} $disabled={readOnly} />
                 <ChainIcon chainId={chainId} />
                 <span>{formattedChainName}</span>
                 <PlusSymbol />
@@ -47,8 +49,9 @@ export default function SalePointOption({
                         project. The price can be set in DATA or any other ERC-20 token.
                     </p>
                     <SalePointTokenSelector
-                        salePoint={salePoint}
+                        disabled={readOnly}
                         onSalePointChange={onSalePointChange}
+                        salePoint={salePoint}
                     />
                     <h4>Set beneficiary</h4>
                     <p>
@@ -56,8 +59,9 @@ export default function SalePointOption({
                         {formattedChainName} chain.
                     </p>
                     <BeneficiaryAddressEditor
-                        value={salePoint.beneficiaryAddress}
                         chainName={chain.name}
+                        disabled={readOnly}
+                        value={salePoint.beneficiaryAddress}
                         onChange={(beneficiaryAddress) => {
                             onSalePointChange?.({
                                 ...salePoint,
@@ -96,10 +100,9 @@ function getPlusSymbolAttrs(): ComponentProps<typeof SvgIcon> {
 }
 
 const PlusSymbol = styled(SvgIcon).attrs(getPlusSymbolAttrs)`
-    width: 14px;
     margin-left: auto;
     transition: transform 0.3s ease-in-out;
-    cursor: pointer;
+    width: 14px;
 `
 
 const DropdownWrap = styled.div<{ $open?: boolean }>`

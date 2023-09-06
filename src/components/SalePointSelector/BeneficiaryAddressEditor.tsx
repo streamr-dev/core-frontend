@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { COLORS, MAX_CONTENT_WIDTH } from '~/shared/utils/styled'
 import PrestyledWithInputActions from '~/components/WithInputActions'
@@ -7,7 +7,6 @@ import Text from '~/shared/components/Ui/Text'
 import useCopy from '~/shared/hooks/useCopy'
 import { truncate } from '~/shared/utils/text'
 import { isEthereumAddress } from '~/marketplace/utils/validate'
-import useValidation from '~/marketplace/containers/ProductController/useValidation'
 import { SeverityLevel } from '~/marketplace/containers/ProductController/ValidationContextProvider'
 import { useWalletAccount } from '~/shared/stores/wallet'
 
@@ -38,9 +37,11 @@ export default function BeneficiaryAddressEditor({
 
     const { copy } = useCopy()
 
-    const { setStatus, clearStatus, isValid } = useValidation(
-        `salePoints.${chainName}.beneficiaryAddress`,
-    )
+    const setStatus = useCallback((..._: any) => {}, []) // @TODO
+
+    const clearStatus = useCallback((..._: any) => {}, []) // @TODO
+
+    const isValid = true // @TODO
 
     useEffect(() => {
         if (accountAddress && !valueRef.current) {

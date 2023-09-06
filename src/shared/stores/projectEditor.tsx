@@ -118,12 +118,14 @@ async function getSalePointsFromPaymentDetails<
             }
 
             result[chainName] = {
-                chainId,
-                pricingTokenAddress: pricingTokenAddress.toLowerCase(),
-                pricePerSecond,
                 beneficiaryAddress: beneficiary.toLowerCase(),
-                timeUnit,
+                chainId,
+                enabled: true,
                 price: pricePerSecondFromDecimals.multipliedBy(multiplier).toString(),
+                pricePerSecond,
+                pricingTokenAddress: pricingTokenAddress.toLowerCase(),
+                readOnly: true,
+                timeUnit,
             }
         } catch (e) {
             console.warn('Could not convert payment details to sale point', e)

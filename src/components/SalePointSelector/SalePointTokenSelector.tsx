@@ -1,15 +1,14 @@
-import React, { ComponentProps, useEffect, useRef, useState } from 'react'
+import React, { ComponentProps, useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { getDataAddress } from '~/marketplace/utils/web3'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
-import Text from '~/shared/components/Ui/Text'
+import TextInput from '~/shared/components/Ui/Text/StyledInput'
 import Button from '~/shared/components/Button'
 import SelectField2 from '~/marketplace/components/SelectField2'
 import { isEthereumAddress } from '~/marketplace/utils/validate'
 import { SalePoint } from '~/shared/types'
 import useTokenInfo, { getCachedTokenInfo, getTokenInfo } from '~/hooks/useTokenInfo'
-import { pricePerSecondFromTimeUnit } from '~/marketplace/utils/price'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
 import { errorToast } from '~/utils/toast'
 
@@ -32,7 +31,7 @@ export default function SalePointTokenSelector({
     salePoint: SalePoint
     onSalePointChange?: (value: SalePoint) => void
 }) {
-    const { pricingTokenAddress: tokenAddress, chainId } = salePoint
+    const { pricingTokenAddress: tokenAddress, chainId, price } = salePoint
 
     const dataTokenAddress = getDataAddress(chainId).toLowerCase()
 
@@ -56,11 +55,7 @@ export default function SalePointTokenSelector({
 
     const isLoadingTokenInfo = typeof tokenInfo === 'undefined'
 
-    const { symbol: tokenSymbol, decimals: tokenDecimals } = tokenInfo || {}
-
-    const [timeUnit, setTimeUnit] = useState<TimeUnit>(timeUnits.day)
-
-    const [price, setPrice] = useState('')
+    const { symbol: tokenSymbol } = tokenInfo || {}
 
     const isCustomTokenInfoCached = isTokenInfoCached(customTokenAddress, chainId)
 
@@ -69,60 +64,6 @@ export default function SalePointTokenSelector({
         isEthereumAddress(customTokenAddress) &&
         !isCustomTokenInfoCached &&
         !isLoadingTokenInfo
-
-    const recentPriceRef = useRef<{ price: string; timeUnit: TimeUnit }>({
-        price,
-        timeUnit,
-    })
-
-    function updatePricePerSecond(
-        newPrice: string,
-        newTimeUnit: TimeUnit,
-        decimals: number,
-    ) {
-        recentPriceRef.current = {
-            price: newPrice,
-            timeUnit: newTimeUnit,
-        }
-
-        onSalePointChange?.({
-            ...salePoint,
-            pricePerSecond: newPrice
-                ? pricePerSecondFromTimeUnit(newPrice, newTimeUnit, decimals).toString()
-                : '',
-        })
-    }
-
-    const onSalePointChangeRef = useRef(onSalePointChange)
-
-    useEffect(() => {
-        onSalePointChangeRef.current = onSalePointChange
-    }, [onSalePointChange])
-
-    const salePointRef = useRef(salePoint)
-
-    useEffect(() => {
-        salePointRef.current = salePoint
-    }, [salePoint])
-
-    useEffect(() => {
-        const { current: recentPrice } = recentPriceRef
-
-        if (tokenDecimals == null) {
-            return
-        }
-
-        onSalePointChangeRef.current?.({
-            ...salePointRef.current,
-            pricePerSecond: recentPrice.price
-                ? pricePerSecondFromTimeUnit(
-                      recentPrice.price,
-                      recentPrice.timeUnit,
-                      tokenDecimals,
-                  ).toString()
-                : '',
-        })
-    }, [tokenDecimals])
 
     return (
         <Root>
@@ -159,7 +100,7 @@ export default function SalePointTokenSelector({
                     </RadioButton>
                     <CustomTokenAddressInputContainer className="custom-">
                         <label>Token contract address</label>
-                        <Text
+                        <TextInput
                             autoComplete="off"
                             disabled={disabled || isLoadingTokenInfo}
                             placeholder="e.g 0xdac17f958d2ee523a2206206994597c13d831ec7"
@@ -176,8 +117,6 @@ export default function SalePointTokenSelector({
                                         : '',
                                 })
                             }}
-                            selectAllOnFocus
-                            smartCommit
                             invalid={
                                 !!tokenAddress &&
                                 getCachedTokenInfo(tokenAddress, chainId) === null
@@ -240,21 +179,17 @@ export default function SalePointTokenSelector({
             </ul>
             <PriceContainer>
                 <PriceInputWrap>
-                    <Text
+                    <TextInput
                         className="price-input"
                         placeholder="Set your price"
-                        onChange={(e: any) => {
-                            setPrice(e.target.value)
+                        onChange={(e) => {
+                            onSalePointChange?.({
+                                ...salePoint,
+                                price: e.target.value,
+                            })
                         }}
                         value={price}
                         disabled={disabled || !tokenInfo}
-                        onBlur={() => {
-                            if (disabled || !tokenInfo) {
-                                return
-                            }
-
-                            updatePricePerSecond(price, timeUnit, tokenInfo.decimals)
-                        }}
                     />
                     {tokenSymbol && <TokenSymbol>{tokenSymbol}</TokenSymbol>}
                 </PriceInputWrap>
@@ -264,15 +199,16 @@ export default function SalePointTokenSelector({
                         placeholder="Unit"
                         options={TimeUnitOptions}
                         isClearable={false}
-                        value={timeUnit}
-                        onChange={(newTimeUnit) => {
+                        value={salePoint.timeUnit}
+                        onChange={(timeUnit) => {
                             if (disabled || !tokenInfo) {
                                 return
                             }
 
-                            setTimeUnit(newTimeUnit)
-
-                            updatePricePerSecond(price, newTimeUnit, tokenInfo.decimals)
+                            onSalePointChange?.({
+                                ...salePoint,
+                                timeUnit,
+                            })
                         }}
                         disabled={disabled || !tokenInfo}
                     />
@@ -335,6 +271,7 @@ const DataTokenIcon = styled(SvgIcon).attrs(getDataTokenIconAttrs)`
 
 const CustomTokenAddressInputContainer = styled.div`
     padding: 0 20px 24px;
+
     label {
         font-weight: ${MEDIUM};
         font-size: 12px;
@@ -358,6 +295,7 @@ const PriceInputWrap = styled.div`
     position: relative;
     flex: 1;
     margin-right: 16px;
+
     .price-input {
         padding-right: 60px;
         &:disabled {

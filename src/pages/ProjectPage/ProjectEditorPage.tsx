@@ -19,13 +19,17 @@ import TermsOfUse from '~/pages/ProjectPage/TermsOfUse'
 import Button from '~/shared/components/Button'
 import EditorHero from './EditorHero'
 import EditorStreams from './EditorStreams'
+import SalePointSelector from '~/components/SalePointSelector'
+import { getConfigForChain } from '~/shared/web3/config'
 
 export default function ProjectEditorPage() {
-    const { type, creator } = useProject({ hot: true })
+    const { type, creator, salePoints } = useProject({ hot: true })
 
     const isNew = useIsNewProject()
 
     const busy = useIsProjectBusy()
+
+    const update = useUpdateProject()
 
     return (
         <Layout
@@ -49,11 +53,34 @@ export default function ProjectEditorPage() {
                     <EditorHero />
                 </Segment>
                 {type === ProjectType.PaidData && (
-                    <>
-                        {/* <WhiteBox> */}
-                        {/* <SalePointSelector nonEditableSalePointChains={nonEditableSalePointChains} /> */}
-                        {/* </WhiteBox> */}
-                    </>
+                    <Segment>
+                        <ColoredBox $pad>
+                            <Content>
+                                <h2>Select chains</h2>
+                                <p>
+                                    Access to the project data can be purchased on the
+                                    selected chains. You can set the payment token, price,
+                                    and beneficiary address on each chain separately.
+                                </p>
+                            </Content>
+                            <SalePointSelector
+                                salePoints={salePoints}
+                                onSalePointChange={(salePoint) => {
+                                    update((project) => {
+                                        const { name: chainName } = getConfigForChain(
+                                            salePoint.chainId,
+                                        )
+
+                                        if (project.salePoints[chainName]?.readOnly) {
+                                            return
+                                        }
+
+                                        project.salePoints[chainName] = salePoint
+                                    })
+                                }}
+                            />
+                        </ColoredBox>
+                    </Segment>
                 )}
                 {type === ProjectType.DataUnion && (
                     <>
