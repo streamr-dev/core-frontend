@@ -11,6 +11,7 @@ import { COLORS, LAPTOP, TABLET } from '~/shared/utils/styled'
 import { WhiteBox, WhiteBoxPaddingStyles } from '~/shared/components/WhiteBox'
 import { NetworkSectionTitle } from '~/components/NetworkSectionTitle'
 import { ChartPeriod, NetworkChart } from '~/shared/components/NetworkChart/NetworkChart'
+import Help from '~/components/Help'
 import {
     formatLongDate,
     formatShortDate,
@@ -276,7 +277,28 @@ export const SingleOperatorPage = () => {
                                             key: 'id',
                                         },
                                     ]}
-                                    title="Operator's node addresses"
+                                    title={
+                                        <NodeAddressHeader>
+                                            <span>Operator&apos;s node addresses</span>
+                                            <Help align="center">
+                                                <p>
+                                                    Your nodes need wallets for smart
+                                                    contract interactions. Generate
+                                                    Ethereum wallets using your tool of
+                                                    choice, add the private key to your
+                                                    node&apos;s config file, and add the
+                                                    corresponding address here. You can
+                                                    run multiple nodes with the same
+                                                    address/private key.
+                                                    <br />
+                                                    <br />
+                                                    Each node address should be supplied
+                                                    with some MATIC on Polygon chain for
+                                                    gas.
+                                                </p>
+                                            </Help>
+                                        </NodeAddressHeader>
+                                    }
                                     footerComponent={
                                         <NodeAddressesFooter>
                                             <Button>Add node address</Button>
@@ -362,4 +384,9 @@ const SponsorshipsCount = styled.div`
     width: 30px;
     font-size: 14px;
     text-align: center;
+`
+
+const NodeAddressHeader = styled.div`
+    display: flex;
+    align-items: center;
 `
