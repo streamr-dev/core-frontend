@@ -6,32 +6,26 @@ import {
     useIsProjectBusy,
     useProject,
     useUpdateProject,
-    useUpdateProjectContactInfo,
 } from '~/shared/stores/projectEditor'
 import { getProjectTypeTitle } from '~/getters'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
-import RichTextEditor from '~/components/RichTextEditor'
-import ProjectProperty from '~/components/ProjectProperty'
-import DetailDropdown, {
-    DetailIcon,
-    List as DetailDropdownList,
-} from '~/components/DetailDropdown'
 import ProjectLinkTabs from '~/pages/ProjectPage/ProjectLinkTabs'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { ProjectType } from '~/shared/types'
 import { ProjectPageContainer } from '~/shared/components/ProjectPage'
 import EditorNav from './EditorNav'
-import CoverImage, { Root as CoverImageRoot } from './CoverImage'
-import { COLORS, TABLET } from '~/shared/utils/styled'
+import ColoredBox from '~/components/ColoredBox'
+import TermsOfUse from '~/pages/ProjectPage/TermsOfUse'
+import Button from '~/shared/components/Button'
+import EditorHero from './EditorHero'
+import EditorStreams from './EditorStreams'
 
 export default function ProjectEditorPage() {
-    const { type, creator, contact, name, description } = useProject({ hot: true })
+    const { type, creator } = useProject({ hot: true })
 
     const isNew = useIsNewProject()
 
     const busy = useIsProjectBusy()
-
-    const update = useUpdateProject()
 
     return (
         <Layout
@@ -51,205 +45,9 @@ export default function ProjectEditorPage() {
             />
             <LoadingIndicator loading={busy} />
             <ProjectPageContainer>
-                <HeroContainer>
-                    <div>
-                        <CoverImage />
-                    </div>
-                    <DetailsWrap>
-                        <NameInput
-                            type="text"
-                            placeholder="Project name"
-                            value={name}
-                            onChange={(e) => {
-                                update((project) => {
-                                    project.name = e.target.value
-                                })
-                            }}
-                        />
-                        <Desc>
-                            <RichTextEditor
-                                placeholder="Type something great about your project…"
-                                defaultValue={description}
-                                onChange={(newDescription) => {
-                                    update((project) => {
-                                        project.description = newDescription
-                                    })
-                                }}
-                            />
-                        </Desc>
-                        <DetailDropdownList>
-                            <li>
-                                <DetailDropdown
-                                    icon={<DetailIcon name="userFull" />}
-                                    value={creator}
-                                    valuePlaceholder="Creator's name"
-                                >
-                                    {(close) => (
-                                        <ProjectProperty
-                                            required
-                                            submitLabel="Add creator's name"
-                                            title="Please provide your name"
-                                            value={creator}
-                                            onSubmit={(newCreator) => {
-                                                update((project) => {
-                                                    project.creator = newCreator
-                                                })
-
-                                                close()
-                                            }}
-                                        />
-                                    )}
-                                </DetailDropdown>
-                            </li>
-                            <li>
-                                <DetailDropdown
-                                    icon={<DetailIcon name="web" />}
-                                    value={contact.url}
-                                    valuePlaceholder="Site URL"
-                                >
-                                    {(close) => (
-                                        <ProjectProperty
-                                            placeholder="https://siteinfo.com"
-                                            submitLabel="Add site URL"
-                                            title="Please add a site URL"
-                                            value={contact.url}
-                                            onSubmit={(url) => {
-                                                update(({ contact }) => {
-                                                    contact.url = url
-                                                })
-
-                                                close()
-                                            }}
-                                        />
-                                    )}
-                                </DetailDropdown>
-                            </li>
-                            <li>
-                                <DetailDropdown
-                                    icon={<DetailIcon name="email" />}
-                                    value={contact.email}
-                                    valuePlaceholder="Contact email"
-                                >
-                                    {(close) => (
-                                        <ProjectProperty
-                                            placeholder="owner@example.com"
-                                            submitLabel="Add contact email"
-                                            title="Please add a contact email"
-                                            value={contact.email}
-                                            onSubmit={(email) => {
-                                                update(({ contact }) => {
-                                                    contact.email = email
-                                                })
-
-                                                close()
-                                            }}
-                                        />
-                                    )}
-                                </DetailDropdown>
-                            </li>
-                            <li>
-                                <DetailDropdown
-                                    icon={
-                                        <DetailIcon
-                                            name="twitter"
-                                            $color={contact.twitter ? '#1da1f2' : void 0}
-                                        />
-                                    }
-                                >
-                                    {(close) => (
-                                        <ProjectProperty
-                                            submitLabel="Add Twitter link"
-                                            title="Please add Twitter link"
-                                            value={contact.twitter}
-                                            onSubmit={(twitter) => {
-                                                update(({ contact }) => {
-                                                    contact.twitter = twitter
-                                                })
-
-                                                close()
-                                            }}
-                                        />
-                                    )}
-                                </DetailDropdown>
-                            </li>
-                            <li>
-                                <DetailDropdown
-                                    icon={
-                                        <DetailIcon
-                                            name="telegram"
-                                            $color={contact.telegram ? '#2aabee' : void 0}
-                                        />
-                                    }
-                                >
-                                    {(close) => (
-                                        <ProjectProperty
-                                            submitLabel="Telegram link"
-                                            title="Please add Telegram link"
-                                            value={contact.telegram}
-                                            onSubmit={(telegram) => {
-                                                update(({ contact }) => {
-                                                    contact.telegram = telegram
-                                                })
-
-                                                close()
-                                            }}
-                                        />
-                                    )}
-                                </DetailDropdown>
-                            </li>
-                            <li>
-                                <DetailDropdown
-                                    icon={
-                                        <DetailIcon
-                                            name="reddit"
-                                            $color={contact.reddit ? '#ff5700' : void 0}
-                                        />
-                                    }
-                                >
-                                    {(close) => (
-                                        <ProjectProperty
-                                            submitLabel="Reddit link"
-                                            title="Please add Reddit link"
-                                            value={contact.reddit}
-                                            onSubmit={(reddit) => {
-                                                update(({ contact }) => {
-                                                    contact.reddit = reddit
-                                                })
-
-                                                close()
-                                            }}
-                                        />
-                                    )}
-                                </DetailDropdown>
-                            </li>
-                            <li>
-                                <DetailDropdown
-                                    icon={
-                                        <DetailIcon
-                                            name="linkedin"
-                                            $color={contact.linkedIn ? '#0077b5' : void 0}
-                                        />
-                                    }
-                                >
-                                    {(close) => (
-                                        <ProjectProperty
-                                            value={contact.linkedIn}
-                                            title="Please add LinkedIn link"
-                                            submitLabel="LinkedIn link"
-                                            onSubmit={(linkedIn) => {
-                                                update(({ contact }) => {
-                                                    contact.linkedIn = linkedIn
-                                                })
-
-                                                close()
-                                            }}
-                                        />
-                                    )}
-                                </DetailDropdown>
-                            </li>
-                        </DetailDropdownList>
-                    </DetailsWrap>
-                </HeroContainer>
+                <Segment>
+                    <EditorHero />
+                </Segment>
                 {type === ProjectType.PaidData && (
                     <>
                         {/* <WhiteBox> */}
@@ -268,62 +66,85 @@ export default function ProjectEditorPage() {
                         {/* </WhiteBoxWithMargin> */}
                     </>
                 )}
-                {/* <WhiteBoxWithMargin> */}
-                {/* <StreamSelector /> */}
-                {/* </WhiteBoxWithMargin> */}
-                {/* <WhiteBoxWithMargin> */}
-                {/* <TermsOfUse /> */}
-                {/* </WhiteBoxWithMargin> */}
-                {/* <TransparentBoxWithMargin> */}
-                {/* <DeleteProject /> */}
-                {/* </TransparentBoxWithMargin> */}
-                {/* {busy && <EditorOverlay />} */}
+                <Segment>
+                    <ColoredBox $pad>
+                        <Content>
+                            <h2>Add streams</h2>
+                        </Content>
+                        <EditorStreams />
+                    </ColoredBox>
+                </Segment>
+                <Segment>
+                    <ColoredBox $pad>
+                        <Content>
+                            <h2>Set terms of use</h2>
+                            <p>
+                                Indicate the terms of use you prefer, either simply, by
+                                checking the appropriate boxes below to&nbsp;show usage
+                                types are permitted, or optionally, give more detail by
+                                providing a link to your own terms of use document.
+                            </p>
+                            <TermsOfUse />
+                        </Content>
+                    </ColoredBox>
+                </Segment>
+                {!isNew && (
+                    <Segment>
+                        <ColoredBox
+                            $borderColor="#cdcdcd"
+                            $backgroundColor="transparent"
+                            $pad
+                        >
+                            <Content>
+                                <h2>Delete project</h2>
+                                <p>
+                                    Delete this project forever. You can&apos;t undo this.
+                                </p>
+                            </Content>
+                            <Button
+                                kind="destructive"
+                                onClick={async () => {
+                                    try {
+                                        /**
+                                         * 1. async-delete the project.
+                                         * 2. Redirect away.
+                                         */
+                                    } catch (e) {
+                                        console.warn('Failed to delete a project', e)
+                                    }
+                                }}
+                            >
+                                Delete
+                            </Button>
+                        </ColoredBox>
+                    </Segment>
+                )}
             </ProjectPageContainer>
         </Layout>
     )
 }
 
-const NameInput = styled.input`
-    border: 0 !important;
-    font-size: 34px;
-    line-height: 44px;
-    margin: 10px 0 24px;
-    outline: 0 !important;
-    padding: 0;
-    width: 100%;
+const Segment = styled.div`
+    & + & {
+        margin-top: 24px;
+    }
 
-    ::placeholder {
-        color: ${COLORS.primaryDisabled};
+    h2 {
+        font-size: 34px;
+        line-height: 34px;
+        font-weight: 400;
+    }
+
+    p {
+        font-size: 16px;
+    }
+
+    h2,
+    p {
+        margin: 0 0 28px;
     }
 `
 
-const DetailsWrap = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    min-width: 0;
-
-    ${DetailDropdownList} {
-        margin-top: 48px;
-    }
-`
-
-const Desc = styled.div`
-    flex-grow: 1;
-`
-
-const HeroContainer = styled.div`
-    background-color: white;
-    border-radius: 16px;
-    display: flex;
-    padding: 24px;
-
-    @media ${TABLET} {
-        padding: 40px;
-    }
-
-    ${CoverImageRoot} {
-        flex-shrink: 0;
-        margin-right: 40px;
-    }
+const Content = styled.div`
+    max-width: 678px;
 `
