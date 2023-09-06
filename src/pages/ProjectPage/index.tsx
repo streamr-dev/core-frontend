@@ -1,5 +1,12 @@
 import React from 'react'
-import { Navigate, Route, Routes, useMatch, useParams } from 'react-router-dom'
+import {
+    Navigate,
+    Route,
+    Routes,
+    useMatch,
+    useParams,
+    useSearchParams,
+} from 'react-router-dom'
 import { ProjectDraftContext, useInitProject } from '~/shared/stores/projectEditor'
 import NotFoundPage from '~/pages/NotFoundPage'
 import TabbedPage from './TabbedPage'
@@ -27,10 +34,13 @@ export default function ProjectPage() {
      */
     const { id: projectId = 'new' } = useMatch('/hub/projects/:id/*')?.params || {}
 
+    const projectType = useSearchParams()[0].get('type')
+
     return (
         <ProjectDraftContext.Provider
             value={useInitProject(
                 projectId === 'new' ? undefined : decodeURIComponent(projectId),
+                projectType,
             )}
         >
             <Routes>

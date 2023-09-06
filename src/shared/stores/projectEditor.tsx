@@ -39,7 +39,11 @@ interface ProjectDraft {
 interface ProjectEditorStore {
     idMap: Record<string, string>
     drafts: Record<string, ProjectDraft | undefined>
-    init: (draftId: string, projectId: string | undefined) => void
+    init: (
+        draftId: string,
+        projectId: string | undefined,
+        projectType: string | null,
+    ) => void
     persist: (draftId: string) => Promise<void>
     setError: (draftId: string, key: string, message: string) => void
     teardown: (draftId: string, options?: { onlyAbandoned?: boolean }) => void
@@ -262,7 +266,7 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
 
         drafts: {},
 
-        init(draftId, projectId) {
+        init(draftId, projectId, projectType) {
             const recycled = !!get().drafts[draftId]
 
             setDraft(
@@ -270,9 +274,29 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
                 (draft) => {
                     draft.project.hot.id = projectId
 
-                    draft.project.cold.id = draft.project.hot.id
+                    draft.project.cold.id = projectId
 
                     draft.abandoned = false
+
+                    if (projectId) {
+                        return
+                    }
+
+                    let type: ProjectType | undefined
+
+                    switch (projectType) {
+                        case ProjectType.DataUnion:
+                        case ProjectType.PaidData:
+                            type = projectType
+                            break
+                        case ProjectType.OpenData:
+                        default:
+                            type = ProjectType.OpenData
+                    }
+
+                    draft.project.hot.type = type
+
+                    draft.project.cold.type = type
                 },
                 {
                     force: true,
@@ -419,7 +443,10 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
 
 export const ProjectDraftContext = createContext<string | undefined>(undefined)
 
-export function useInitProject(projectId: string | undefined) {
+export function useInitProject(
+    projectId: string | undefined,
+    projectType: string | null,
+) {
     const recycledDraftId = useProjectEditorStore(({ idMap }) =>
         projectId ? idMap[projectId] : undefined,
     )
@@ -437,8 +464,8 @@ export function useInitProject(projectId: string | undefined) {
     const { init, abandon } = useProjectEditorStore()
 
     useEffect(() => {
-        init(draftId, projectId)
-    }, [draftId, init, abandon, projectId])
+        init(draftId, projectId, projectType)
+    }, [draftId, init, abandon, projectId, projectType])
 
     useEffect(() => () => void abandon(draftId), [draftId, abandon])
 
