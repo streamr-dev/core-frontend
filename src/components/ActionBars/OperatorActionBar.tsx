@@ -49,12 +49,14 @@ const undelegateFundsModal = toaster(UndelegateFundsModal, Layer.Modal)
 
 export const OperatorActionBar: FunctionComponent<{
     operator: OperatorElement
-}> = ({ operator }) => {
+    handleEdit: (operator: OperatorElement) => void
+}> = ({ operator, handleEdit }) => {
     const [balance, setBalance] = useState<BNish | undefined>(undefined)
     const [delegationAmount, setDelegationAmount] = useState<BN | undefined>(undefined)
     const { copy } = useCopy()
     const { count: liveNodeCount } = useOperatorLiveNodes(operator.id)
     const walletAddress = useWalletAccount()
+    const canEdit = !!walletAddress && walletAddress == operator.owner
 
     const ownerDelegationPercentage = useMemo(() => {
         const stake = getDelegationAmountForAddress(operator.owner, operator)
@@ -121,6 +123,15 @@ export const OperatorActionBar: FunctionComponent<{
                             </NetworkActionBarTitle>
                         </NetworkActionBarBackButtonAndTitle>
                         <NetworkActionBarInfoButtons>
+                            {canEdit && (
+                                <NetworkActionBarInfoButton
+                                    className="pointer bold"
+                                    onClick={() => handleEdit(operator)}
+                                >
+                                    <span>Edit Operator</span>
+                                    <SvgIcon name={'pencil'} />
+                                </NetworkActionBarInfoButton>
+                            )}
                             <SimpleDropdown
                                 toggleElement={
                                     <NetworkActionBarInfoButton className="pointer bold">
@@ -153,8 +164,36 @@ export const OperatorActionBar: FunctionComponent<{
                             />
                             <NetworkActionBarInfoButton>
                                 <span>
-                                    Owner: <strong>{operator.owner}</strong>
+                                    Owner: <strong>{truncate(operator.owner)}</strong>
                                 </span>
+                                <span>
+                                    <SvgIcon
+                                        name="copy"
+                                        className="icon"
+                                        data-tooltip-id="copy-sponsorship-address"
+                                        onClick={() =>
+                                            copy(operator.owner, {
+                                                toastMessage: 'Copied!',
+                                            })
+                                        }
+                                    />
+                                    <BlackTooltip
+                                        id="copy-sponsorship-address"
+                                        openOnClick={false}
+                                    >
+                                        Copy address
+                                    </BlackTooltip>
+                                </span>
+                                <a
+                                    href={
+                                        'https://polygonscan.com/address/' +
+                                        operator.owner
+                                    }
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <SvgIcon name="externalLink" />
+                                </a>
                             </NetworkActionBarInfoButton>
 
                             <NetworkActionBarInfoButton>
@@ -242,7 +281,7 @@ export const OperatorActionBar: FunctionComponent<{
                         {
                             label: 'Deployed stake',
                             value: fromAtto(
-                                operator.totalValueInSponsorshipsWei,
+                                operator.totalStakeInSponsorshipsWei,
                             ).toString(),
                         },
                         {

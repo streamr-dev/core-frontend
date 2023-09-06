@@ -30,7 +30,7 @@ gql`
         }
         delegatorCount
         poolValue
-        totalValueInSponsorshipsWei
+        totalStakeInSponsorshipsWei
         freeFundsWei
         poolValueTimestamp
         poolValueBlockNumber
@@ -301,7 +301,7 @@ gql`
         spotAPY
         totalDelegatedWei
         totalUndelegatedWei
-        totalValueInSponsorshipsWei
+        totalStakeInSponsorshipsWei
     }
 
     query getOperatorDailyBuckets(

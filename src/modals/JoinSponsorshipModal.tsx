@@ -157,6 +157,7 @@ export default function JoinSponsorshipModal({
                     </li>
                 </ul>
             </Section>
+            {/*TODO Use Alert component here*/}
         </FormModal>
     )
 }

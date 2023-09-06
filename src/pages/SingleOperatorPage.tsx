@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
+import { toaster } from 'toasterhea'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import moment from 'moment'
@@ -27,8 +28,14 @@ import { fromAtto } from '~/marketplace/utils/math'
 import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
 import Button from '~/shared/components/Button'
 import { getDelegationAmountForAddress } from '~/utils/delegation'
+import { OperatorElement } from '~/types/operator'
+import { createOperator, updateOperator } from '~/services/operators'
+import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
+import { Layer } from '~/utils/Layer'
 import { NetworkChartWrap } from '../components/NetworkUtils'
 import { getOperatorStats } from '../getters/getOperatorStats'
+
+const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
 export const SingleOperatorPage = () => {
     const operatorId = useParams().id
@@ -102,13 +109,48 @@ export const SingleOperatorPage = () => {
         [selectedDataSource],
     )
 
+    const handleOperatorEdit = async (currentOperator: OperatorElement) => {
+        try {
+            await becomeOperatorModal.pop({
+                title: 'Edit operator',
+                cut: currentOperator.operatorsCutFraction.toNumber(),
+                name: currentOperator.metadata?.name,
+                description: currentOperator.metadata?.description,
+                imageUrl: currentOperator.metadata?.imageUrl,
+                redundancyFactor: currentOperator.metadata?.redundancyFactor,
+                submitLabel: 'Save',
+                onSubmit: async (
+                    cut: number,
+                    name: string,
+                    redundancyFactor: number,
+                    description?: string,
+                    imageToUpload?: File,
+                ) => {
+                    await updateOperator(
+                        currentOperator,
+                        name,
+                        redundancyFactor,
+                        description,
+                        imageToUpload,
+                        cut,
+                    )
+                },
+            })
+            await operatorQuery.refetch()
+        } catch (e) {
+            // Ignore for now.
+        }
+    }
+
     return (
         <Layout>
             <NetworkHelmet title="Operator" />
             <LoadingIndicator
                 loading={operatorQuery.isLoading || operatorQuery.isFetching}
             />
-            {!!operator && <OperatorActionBar operator={operator} />}
+            {!!operator && (
+                <OperatorActionBar operator={operator} handleEdit={handleOperatorEdit} />
+            )}
             <LayoutColumn>
                 {operator == null ? (
                     <>
