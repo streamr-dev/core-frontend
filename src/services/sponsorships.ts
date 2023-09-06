@@ -9,7 +9,6 @@ import getCoreConfig from '~/getters/getCoreConfig'
 import { toastedOperation } from '~/utils/toastedOperation'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
 import { TokenAndBalanceForSponsorship } from '~/getters/getTokenAndBalanceForSponsorship'
-import { getConfigFromChain } from '~/getters/getConfigFromChain'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 
 const getSponsorshipChainId = () => {
@@ -60,13 +59,9 @@ export async function createSponsorship(
     }
 
     await toastedOperation('Sponsorship deployment', async () => {
-        const contractConfig = await getConfigFromChain()
-
         const data = defaultAbiCoder.encode(
-            ['uint', 'uint32', 'uint32', 'string', 'string', 'address[]', 'uint[]'],
+            ['uint32', 'string', 'string', 'address[]', 'uint[]'],
             [
-                contractConfig.minimumStakeWei, // initialMinimumStakeWei
-                0, // initialMinHorizonSeconds - hardcoded for now
                 minOperatorCount,
                 streamId,
                 JSON.stringify({}), // metadata
