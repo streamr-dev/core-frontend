@@ -324,7 +324,13 @@ export const Appendix = styled.div`
 export const TextAppendix = styled(Appendix)`
     padding: 0 18px;
 `
-export const FieldWrap = styled.div<{ $invalid?: boolean; $grayedOut?: boolean }>`
+export const FieldWrap = styled.div<{
+    $invalid?: boolean
+    $grayedOut?: boolean
+    $top?: boolean
+    $bottom?: boolean
+    $padded?: boolean
+}>`
     display: flex;
     position: relative;
     border: 1px solid transparent;
@@ -362,6 +368,26 @@ export const FieldWrap = styled.div<{ $invalid?: boolean; $grayedOut?: boolean }
         css`
             border-color: ${COLORS.secondaryLight};
             background: ${COLORS.secondaryLight};
+        `}
+
+    ${({ $top = false }) =>
+        $top &&
+        css`
+            border-radius: 8px 8px 0 0;
+        `}
+
+    ${({ $bottom = false }) =>
+        $bottom &&
+        css`
+            border-radius: 0 0 8px 8px;
+            border-top: 1px solid;
+            border-color: ${COLORS.secondaryLight};
+        `}
+
+    ${({ $padded = false }) =>
+        $padded &&
+        css`
+            padding: 0 16px;
         `}
 `
 export const CopyButtonWrapAppendix = styled(Appendix)`

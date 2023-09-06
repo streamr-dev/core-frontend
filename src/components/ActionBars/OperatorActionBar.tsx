@@ -4,13 +4,18 @@ import { toaster } from 'toasterhea'
 import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
 import { truncate } from '~/shared/utils/text'
 import DelegateFundsModal from '~/modals/DelegateFundsModal'
+import UndelegateFundsModal from '~/modals/UndelegateFundsModal'
 import { BlackTooltip } from '~/shared/components/Tooltip/Tooltip'
 import Button from '~/shared/components/Button'
 import useCopy from '~/shared/hooks/useCopy'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
-import { getOperatorDelegationAmount } from '~/services/operators'
+import {
+    delegateToOperator,
+    getOperatorDelegationAmount,
+    undelegateFromOperator,
+} from '~/services/operators'
 import { Layer } from '~/utils/Layer'
 import routes from '~/routes'
 import { OperatorElement } from '~/types/operator'
@@ -40,7 +45,7 @@ import {
 } from './NetworkActionBar.styles'
 
 const delegateFundsModal = toaster(DelegateFundsModal, Layer.Modal)
-const undelegateFundsModal = toaster(DelegateFundsModal, Layer.Modal)
+const undelegateFundsModal = toaster(UndelegateFundsModal, Layer.Modal)
 
 export const OperatorActionBar: FunctionComponent<{
     operator: OperatorElement
@@ -189,29 +194,38 @@ export const OperatorActionBar: FunctionComponent<{
                     <NetworkActionBarCTAs>
                         <Button
                             onClick={async () => {
-                                try {
-                                    await delegateFundsModal.pop({
-                                        operatorId: operator.id,
-                                        balance: balance?.toString(),
-                                        delegatedTotal: delegationAmount
-                                            ?.dividedBy(1e18)
-                                            .toString(),
-                                    })
-                                } catch (e) {
-                                    // Ignore for now.
-                                }
+                                await delegateFundsModal.pop({
+                                    operatorId: operator.id,
+                                    balance: balance?.toString(),
+                                    delegatedTotal: delegationAmount
+                                        ?.dividedBy(1e18)
+                                        .toString(),
+                                    onSubmit: async (amount: BN) => {
+                                        await delegateToOperator(operator.id, amount)
+                                    },
+                                })
                             }}
+                            disabled={walletAddress == null}
                         >
                             Delegate
                         </Button>
                         <Button
                             onClick={async () => {
-                                try {
-                                    await undelegateFundsModal.pop({})
-                                } catch (e) {
-                                    // Ignore for now.
-                                }
+                                await undelegateFundsModal.pop({
+                                    operatorId: operator.id,
+                                    balance: balance?.toString(),
+                                    freeFunds: operator.freeFundsWei
+                                        .dividedBy(1e18)
+                                        .toString(),
+                                    delegatedTotal: delegationAmount
+                                        ?.dividedBy(1e18)
+                                        .toString(),
+                                    onSubmit: async (amount: BN) => {
+                                        await undelegateFromOperator(operator.id, amount)
+                                    },
+                                })
                             }}
+                            disabled={walletAddress == null}
                         >
                             Undelegate
                         </Button>
@@ -237,7 +251,7 @@ export const OperatorActionBar: FunctionComponent<{
                         },
                         {
                             label: 'Redundancy factor',
-                            value: operator.metadata?.redundancyFactor || '1',
+                            value: operator.metadata?.redundancyFactor?.toString() || '1',
                         },
                         {
                             label: "Operator's cut",
