@@ -29,19 +29,34 @@ import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
 import Button from '~/shared/components/Button'
 import { getDelegationAmountForAddress } from '~/utils/delegation'
 import { OperatorElement } from '~/types/operator'
-import { createOperator, updateOperator } from '~/services/operators'
+import { updateOperator } from '~/services/operators'
 import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
+import AddNodeAddressModal from '~/modals/AddNodeAddressModal'
+import { useOperatorStore } from '~/shared/stores/operator'
 import { Layer } from '~/utils/Layer'
 import { NetworkChartWrap } from '../components/NetworkUtils'
 import { getOperatorStats } from '../getters/getOperatorStats'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
+const addNodeAddressModal = toaster(AddNodeAddressModal, Layer.Modal)
 
 export const SingleOperatorPage = () => {
     const operatorId = useParams().id
     const operatorQuery = useOperator(operatorId || '')
     const operator = operatorQuery.data
     const walletAddress = useWalletAccount()
+    const {
+        addNodeAddress,
+        removeNodeAddress,
+        isNodeAddressAdded,
+        isNodeAddressRemoved,
+        addedNodeAddresses,
+        removedNodeAddresses,
+    } = useOperatorStore()
+
+    const operatorNodes = useMemo(() => {
+        return [operator?.nodes ?? [], ...addedNodeAddresses, ...removedNodeAddresses]
+    }, [operator?.nodes, addedNodeAddresses, removedNodeAddresses])
 
     const [selectedDataSource, setSelectedDataSource] = useState<string>('totalValue')
     const [selectedPeriod, setSelectedPeriod] = useState<string>(ChartPeriod.SevenDays)
@@ -309,7 +324,7 @@ export const SingleOperatorPage = () => {
                         {walletAddress?.toLowerCase() === operator.owner && (
                             <>
                                 <ScrollTable
-                                    elements={operator.nodes as unknown as object[]}
+                                    elements={operatorNodes as unknown as object[]}
                                     columns={[
                                         {
                                             displayName: 'Address',
@@ -343,7 +358,17 @@ export const SingleOperatorPage = () => {
                                     }
                                     footerComponent={
                                         <NodeAddressesFooter>
-                                            <Button>Add node address</Button>
+                                            <Button
+                                                onClick={() =>
+                                                    addNodeAddressModal.pop({
+                                                        onSubmit: async (address) => {
+                                                            addNodeAddress(address)
+                                                        },
+                                                    })
+                                                }
+                                            >
+                                                Add node address
+                                            </Button>
                                         </NodeAddressesFooter>
                                     }
                                 />
