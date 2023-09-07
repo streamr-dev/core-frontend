@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
 import CopyIcon from '@atlaskit/icon/glyph/copy'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
@@ -14,6 +15,10 @@ import FormModal, {
 import Label from '~/shared/components/Ui/Label'
 import useCopy from '~/shared/hooks/useCopy'
 import { toBN } from '~/utils/bn'
+import { Alert } from '~/components/Alert'
+import SvgIcon from '~/shared/components/SvgIcon'
+import { COLORS } from '~/shared/utils/styled'
+import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onSubmit: (amountWei: string) => void
@@ -57,13 +62,20 @@ export default function JoinSponsorshipModal({
 
     const finalAmount = amount.isFinite() && amount.isGreaterThan(0) ? amount : toBN(0)
 
+    const { count: liveNodesCount, isLoading: liveNodesCountLoading } =
+        useOperatorLiveNodes()
+
     useEffect(() => {
         setRawAmount(parseAmount(amountProp))
     }, [amountProp])
 
     const insufficientFunds = finalAmount.isGreaterThan(operatorBalance)
 
-    const canSubmit = finalAmount.isGreaterThan(0) && !insufficientFunds
+    const canSubmit =
+        finalAmount.isGreaterThan(0) &&
+        !insufficientFunds &&
+        !liveNodesCountLoading &&
+        liveNodesCount > 0
 
     const { copy } = useCopy()
 
@@ -158,7 +170,53 @@ export default function JoinSponsorshipModal({
                     </li>
                 </ul>
             </Section>
-            {/*TODO Use Alert component here*/}
+            {liveNodesCountLoading && (
+                <StyledAlert type="loading" title="Checking Streamr nodes">
+                    <span>
+                        In order to continue, you need to have one or more Streamr nodes
+                        running and correctly configured. You will be slashed if you stake
+                        without your nodes contributing resources to the stream.
+                    </span>
+                </StyledAlert>
+            )}
+            {!liveNodesCountLoading &&
+                (liveNodesCount > 0 ? (
+                    <StyledAlert type="success" title="Streamr nodes detected">
+                        <span>
+                            Once you stake, your nodes will start working on the stream.
+                            Please ensure your nodes have enough resources available to
+                            handle the traffic in the stream.
+                        </span>
+                    </StyledAlert>
+                ) : (
+                    <StyledAlert type="error" title="Streamr nodes not detected">
+                        <p>
+                            In order to continue, you need to have one or more Streamr
+                            nodes running and correctly configured. You will be slashed if
+                            you stake without your nodes contributing resources to the
+                            stream.
+                        </p>
+                        <a
+                            href="https://docs.streamr.network/node-runners/run-a-node"
+                            target="_blank"
+                            rel="noreferrer noopener"
+                        >
+                            How to run a Streamr node <LinkIcon name="externalLink" />
+                        </a>
+                    </StyledAlert>
+                ))}
         </FormModal>
     )
 }
+
+const StyledAlert = styled(Alert)`
+    margin-top: 16px;
+
+    a {
+        color: ${COLORS.link};
+    }
+`
+
+const LinkIcon = styled(SvgIcon)`
+    width: 24px;
+`

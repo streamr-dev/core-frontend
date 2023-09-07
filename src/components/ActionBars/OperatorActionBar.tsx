@@ -29,6 +29,7 @@ import getChainId from '~/utils/web3/getChainId'
 import { BN, BNish } from '~/utils/bn'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
+import Spinner from '~/shared/components/Spinner'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -54,7 +55,8 @@ export const OperatorActionBar: FunctionComponent<{
     const [balance, setBalance] = useState<BNish | undefined>(undefined)
     const [delegationAmount, setDelegationAmount] = useState<BN | undefined>(undefined)
     const { copy } = useCopy()
-    const { count: liveNodeCount } = useOperatorLiveNodes(operator.id)
+    const { count: liveNodeCount, isLoading: liveNodeCountIsLoading } =
+        useOperatorLiveNodes(operator.id)
     const walletAddress = useWalletAccount()
     const canEdit = !!walletAddress && walletAddress == operator.owner
 
@@ -310,7 +312,15 @@ export const OperatorActionBar: FunctionComponent<{
                         },
                         {
                             label: 'Live nodes',
-                            value: liveNodeCount.toString(),
+                            value: (
+                                <>
+                                    {liveNodeCountIsLoading ? (
+                                        <Spinner color="blue" />
+                                    ) : (
+                                        liveNodeCount.toString()
+                                    )}
+                                </>
+                            ),
                         },
                     ]}
                     columns={4}

@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSubscribe } from 'streamr-client-react'
 
 export default function useOperatorLiveNodes(operatorId?: string) {
     const streamId = `${operatorId}/operator/coordination/`
     const [liveNodes, setLiveNodes] = useState<string[]>([])
+    const [isLoading, setIsLoading] = useState(true)
 
     useSubscribe(
         { id: streamId },
@@ -23,7 +24,14 @@ export default function useOperatorLiveNodes(operatorId?: string) {
         },
     )
 
+    useEffect(() => {
+        setTimeout(() => {
+            setIsLoading(false)
+        }, 10500)
+    }, [])
+
     return {
-        count: liveNodes.length,
+        count: liveNodes?.length,
+        isLoading,
     }
 }
