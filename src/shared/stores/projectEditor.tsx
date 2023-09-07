@@ -74,6 +74,10 @@ function getEmptyTermsOfUse() {
     return {
         termsName: '',
         termsUrl: '',
+        commercialUse: false,
+        redistribution: false,
+        reselling: false,
+        storage: false,
     }
 }
 
@@ -208,7 +212,7 @@ async function getTransientProject<
         imageUrl: getProjectImageUrl({ imageUrl, imageIpfsCid }),
         imageIpfsCid,
         newImageToUpload: undefined,
-        streams,
+        streams: streams.sort(),
         termsOfUse: {
             ...termsOfUse,
             termsName: termsOfUse.termsName || '',
@@ -244,7 +248,7 @@ async function getTransientProject<
         return {
             ...result,
             type: ProjectType.DataUnion,
-            adminFee: '0',
+            adminFee: '',
             existingDUAddress: undefined,
             dataUnionChainId: undefined,
         }
@@ -263,9 +267,10 @@ async function getTransientProject<
     return {
         ...result,
         type: ProjectType.DataUnion,
-        adminFee: toBN(adminFee || 0)
-            .multipliedBy(100)
-            .toString(),
+        adminFee:
+            typeof adminFee === 'undefined'
+                ? ''
+                : toBN(adminFee).multipliedBy(100).toString(),
         existingDUAddress: dataUnionId,
         dataUnionChainId,
     }
@@ -567,7 +572,7 @@ export function useDoesUserHaveAccess() {
 }
 
 export function useIsCurrentProjectDraftClean() {
-    return true
+    return !useDraft()?.project.changed
 }
 
 export function useIsNewProject() {

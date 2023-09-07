@@ -10,6 +10,8 @@ export default function DataUnionFee({ disabled = false }: { disabled?: boolean 
 
     const project = useProject({ hot: true })
 
+    const coldProject = useProject()
+
     const isDataUnion = project.type === ProjectType.DataUnion
 
     return (
@@ -18,7 +20,7 @@ export default function DataUnionFee({ disabled = false }: { disabled?: boolean 
             <InputWrap>
                 <TextField
                     placeholder="0"
-                    value={isDataUnion ? project.adminFee : ''}
+                    value={(isDataUnion && project.adminFee) || ''}
                     readOnly={!isDataUnion}
                     disabled={disabled}
                     onChange={(e) => {
@@ -27,7 +29,23 @@ export default function DataUnionFee({ disabled = false }: { disabled?: boolean 
                                 return
                             }
 
-                            draft.adminFee = e.target.value
+                            if (coldProject.type !== draft.type) {
+                                throw new Error(
+                                    'Cold and hot projects have different type, lol. Code much?',
+                                )
+                            }
+
+                            const { value } = e.target
+
+                            if (value || typeof coldProject.adminFee !== 'undefined') {
+                                return void (draft.adminFee = value)
+                            }
+
+                            if ('adminFee' in coldProject) {
+                                return void (draft.adminFee = undefined)
+                            }
+
+                            delete draft.adminFee
                         })
                     }}
                 />

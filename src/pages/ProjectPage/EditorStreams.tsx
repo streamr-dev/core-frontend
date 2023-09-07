@@ -161,7 +161,7 @@ export default function EditorStreams() {
                 hasMoreResults={hasMore}
                 onSelectionChange={(streamIds) => {
                     update((project) => {
-                        project.streams = streamIds
+                        project.streams = streamIds.sort()
                     })
                 }}
                 selected={projectStreams}
