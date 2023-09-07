@@ -128,3 +128,27 @@ export async function fundSponsorship(sponsorshipId: string, amount: BNish) {
         await tx.wait()
     })
 }
+
+export async function stakeOnSponsorship(
+    sponsorshipId: string,
+    amountWei: string,
+    operatorAddress: string,
+): Promise<void> {
+    const chainId = getSponsorshipChainId()
+    const chainConfig = getConfigForChain(chainId)
+    const paymentTokenSymbolFromConfig = getCoreConfig().sponsorshipPaymentToken
+    await networkPreflight(chainId)
+
+    await toastedOperation('Stake on sponsorship', async () => {
+        const signer = await getSigner()
+
+        const token = new Contract(
+            chainConfig.contracts[paymentTokenSymbolFromConfig],
+            ERC677ABI,
+            signer,
+        ) as ERC677
+
+        const tx = await token.transferAndCall(sponsorshipId, amountWei, operatorAddress)
+        await tx.wait()
+    })
+}

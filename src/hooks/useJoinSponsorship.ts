@@ -5,6 +5,8 @@ import { useMyOperator } from '~/hooks/useMyOperator'
 import JoinSponsorshipModal from '~/modals/JoinSponsorshipModal'
 import { Layer } from '~/utils/Layer'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
+import { stakeOnSponsorship } from '~/services/sponsorships'
+import { toBN } from '~/utils/bn'
 
 const joinSponsorshipModal = toaster(JoinSponsorshipModal, Layer.Modal)
 
@@ -19,17 +21,28 @@ export const useJoinSponsorship = (): {
     return {
         canJoinSponsorship,
         joinSponsorship: async (sponsorshipId, sponsorshipStreamId) => {
+            if (!myOperatorQuery.data) {
+                return
+            }
+            const balance = myOperatorQuery.data?.poolValue.minus(
+                myOperatorQuery.data?.stakes.reduce((prev, curr, index) => {
+                    return prev.plus(curr.amount)
+                }, toBN(0)),
+            )
             try {
                 const tokenInfo = await getSponsorshipTokenInfo()
                 await joinSponsorshipModal.pop({
                     streamId: sponsorshipStreamId,
                     operatorId: myOperatorQuery.data?.id,
-                    operatorBalance: myOperatorQuery.data?.poolValue.toString(),
+                    operatorBalance: balance.toString(),
                     tokenSymbol: tokenInfo.symbol,
                     decimals: tokenInfo.decimals,
                     onSubmit: async (amount: string) => {
-                        console.log('submit', amount)
-                        await new Promise((resolve) => void setTimeout(resolve, 2000))
+                        stakeOnSponsorship(
+                            sponsorshipId,
+                            amount,
+                            myOperatorQuery.data?.id as string,
+                        )
                     },
                 })
             } catch (e) {
