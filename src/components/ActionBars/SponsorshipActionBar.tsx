@@ -14,6 +14,9 @@ import routes from '~/routes'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import { useFundSponsorship } from '~/hooks/useFundSponsorship'
 import { useJoinSponsorship } from '~/hooks/useJoinSponsorship'
+import useTokenInfo from '~/hooks/useTokenInfo'
+import { defaultChainConfig } from '~/getters/getChainConfig'
+import getCoreConfig from '~/getters/getCoreConfig'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -36,6 +39,11 @@ export const SponsorshipActionBar: FunctionComponent<{
 
     const fundSponsorship = useFundSponsorship()
     const { canJoinSponsorship, joinSponsorship } = useJoinSponsorship()
+    const tokenInfo = useTokenInfo(
+        defaultChainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
+        defaultChainConfig.id,
+    )
+    const tokenSymbol = tokenInfo?.symbol || 'DATA'
 
     // TODO when Mariusz will merge his hook & getter for fetching Token information - use it here to display the proper token symbol
 
@@ -157,7 +165,7 @@ export const SponsorshipActionBar: FunctionComponent<{
                     stats={[
                         {
                             label: 'Payout rate',
-                            value: sponsorship.payoutPerDay + ' DATA/day',
+                            value: sponsorship.payoutPerDay + ` ${tokenSymbol}/day`,
                         },
                         {
                             label: 'Operators',
@@ -165,10 +173,11 @@ export const SponsorshipActionBar: FunctionComponent<{
                         },
                         {
                             label: 'Total staked',
-                            value: truncateNumber(
-                                Number(sponsorship.totalStake),
-                                'thousands',
-                            ),
+                            value:
+                                truncateNumber(
+                                    Number(sponsorship.totalStake),
+                                    'thousands',
+                                ) + ` ${tokenSymbol}`,
                         },
                         {
                             label: 'APY',
@@ -176,11 +185,11 @@ export const SponsorshipActionBar: FunctionComponent<{
                         },
                         {
                             label: 'Cumulative sponsored',
-                            value: `${sponsorship.cumulativeSponsoring} DATA`,
+                            value: `${sponsorship.cumulativeSponsoring} ${tokenSymbol}`,
                         },
                         {
                             label: 'Minimum stake',
-                            value: sponsorship.minimumStake + ' DATA',
+                            value: sponsorship.minimumStake + ` ${tokenSymbol}`,
                         },
                     ]}
                     columns={3}
