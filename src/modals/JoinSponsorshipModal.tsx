@@ -15,10 +15,12 @@ import Label from '~/shared/components/Ui/Label'
 import useCopy from '~/shared/hooks/useCopy'
 import { toBN } from '~/utils/bn'
 
-interface Props extends Omit<FormModalProps, 'canSubmit'> {
-    onResolve?: (amount: string) => void
+interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
+    onSubmit: (amountWei: string) => void
+    onResolve?: (amountWei: string) => void
     operatorBalance?: string
     tokenSymbol?: string
+    decimals?: number
     operatorId?: string
     amount?: string
     streamId?: string
@@ -34,11 +36,13 @@ export default function JoinSponsorshipModal({
     title = 'Join Sponsorship as Operator',
     submitLabel = 'Join',
     onResolve,
+    onSubmit,
     operatorBalance: operatorBalanceProp = '0',
     operatorId = 'N/A',
     amount: amountProp = '0',
     streamId: streamIdProp,
     tokenSymbol = 'DATA',
+    decimals = 18,
     ...props
 }: Props) {
     const streamId = streamIdProp || 'N/A'
@@ -49,7 +53,7 @@ export default function JoinSponsorshipModal({
 
     const [rawAmount, setRawAmount] = useState(parseAmount(amountProp))
 
-    const amount = toBN(rawAmount || '0').multipliedBy(1e18)
+    const amount = toBN(rawAmount || '0').multipliedBy(Math.pow(10, decimals))
 
     const finalAmount = amount.isFinite() && amount.isGreaterThan(0) ? amount : toBN(0)
 
@@ -73,7 +77,7 @@ export default function JoinSponsorshipModal({
             onBeforeAbort={(reason) =>
                 !busy &&
                 (toBN(rawAmount || '0')
-                    .multipliedBy(1e18)
+                    .multipliedBy(Math.pow(10, decimals))
                     .eq(amountProp || '0') ||
                     reason !== RejectionReason.Backdrop)
             }
@@ -85,11 +89,7 @@ export default function JoinSponsorshipModal({
                 setBusy(true)
 
                 try {
-                    /**
-                     * Replace the following with your favourite contract interaction! <3
-                     */
-                    await new Promise((resolve) => void setTimeout(resolve, 2000))
-
+                    await onSubmit(finalAmount.toString())
                     onResolve?.(finalAmount.toString())
                 } catch (e) {
                     console.warn('Error while becoming an operator', e)
@@ -148,7 +148,8 @@ export default function JoinSponsorshipModal({
                             )}
                         </Prop>
                         <div>
-                            {operatorBalance.dividedBy(1e18).toString()} {tokenSymbol}
+                            {operatorBalance.dividedBy(Math.pow(10, decimals)).toString()}{' '}
+                            {tokenSymbol}
                         </div>
                     </li>
                     <li>
