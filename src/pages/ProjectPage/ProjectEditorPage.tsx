@@ -21,6 +21,7 @@ import EditorHero from './EditorHero'
 import EditorStreams from './EditorStreams'
 import SalePointSelector from '~/components/SalePointSelector'
 import { getConfigForChain } from '~/shared/web3/config'
+import { DESKTOP } from '~/shared/utils/styled'
 
 export default function ProjectEditorPage() {
     const { type, creator, salePoints } = useProject({ hot: true })
@@ -30,6 +31,18 @@ export default function ProjectEditorPage() {
     const busy = useIsProjectBusy()
 
     const update = useUpdateProject()
+
+    function onSalePointChange(value: SalePoint) {
+        update((project) => {
+            const { name: chainName } = getConfigForChain(value.chainId)
+
+            if (project.salePoints[chainName]?.readOnly) {
+                return
+            }
+
+            project.salePoints[chainName] = value
+        })
+    }
 
     return (
         <Layout
@@ -63,22 +76,12 @@ export default function ProjectEditorPage() {
                                     and beneficiary address on each chain separately.
                                 </p>
                             </Content>
-                            <SalePointSelector
-                                salePoints={salePoints}
-                                onSalePointChange={(salePoint) => {
-                                    update((project) => {
-                                        const { name: chainName } = getConfigForChain(
-                                            salePoint.chainId,
-                                        )
-
-                                        if (project.salePoints[chainName]?.readOnly) {
-                                            return
-                                        }
-
-                                        project.salePoints[chainName] = salePoint
-                                    })
-                                }}
-                            />
+                            <Content $desktopMaxWidth="728px">
+                                <SalePointSelector
+                                    salePoints={salePoints}
+                                    onSalePointChange={onSalePointChange}
+                                />
+                            </Content>
                         </ColoredBox>
                     </Segment>
                 )}
@@ -111,6 +114,8 @@ export default function ProjectEditorPage() {
                                 types are permitted, or optionally, give more detail by
                                 providing a link to your own terms of use document.
                             </p>
+                        </Content>
+                        <Content $desktopMaxWidth="728px">
                             <TermsOfUse />
                         </Content>
                     </ColoredBox>
@@ -158,20 +163,19 @@ const Segment = styled.div`
 
     h2 {
         font-size: 34px;
-        line-height: 34px;
         font-weight: 400;
-    }
-
-    p {
-        font-size: 16px;
-    }
-
-    h2,
-    p {
+        line-height: 1.5em;
         margin: 0 0 28px;
+    }
+
+    h2 + p {
+        font-size: 16px;
+        margin-bottom: 40px;
     }
 `
 
-const Content = styled.div`
-    max-width: 678px;
+const Content = styled.div<{ $desktopMaxWidth?: string }>`
+    @media ${DESKTOP} {
+        max-width: ${({ $desktopMaxWidth = '678px' }) => $desktopMaxWidth};
+    }
 `

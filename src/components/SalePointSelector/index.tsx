@@ -4,7 +4,6 @@ import getCoreConfig from '~/getters/getCoreConfig'
 import { getConfigForChainByName } from '~/shared/web3/config'
 import { SalePoint } from '~/shared/types'
 import SalePointOption from './SalePointOption'
-import styled from 'styled-components'
 import { getEmptySalePoint } from '~/shared/stores/projectEditor'
 
 export default function SalePointSelector({
@@ -20,7 +19,7 @@ export default function SalePointSelector({
     )
 
     return (
-        <Root>
+        <>
             {availableChains.map(({ id: chainId, name: chainName }) => (
                 <SalePointOption
                     key={chainId}
@@ -28,10 +27,6 @@ export default function SalePointSelector({
                     onSalePointChange={onSalePointChange}
                 />
             ))}
-        </Root>
+        </>
     )
 }
-
-const Root = styled.div`
-    max-width: 728px;
-`
