@@ -20,11 +20,6 @@ export interface SalePoint {
     chainId: number
     enabled: boolean
     price: string
-    /**
-     * @deprecated SalePoint is a draft-only entity and relies solely on
-     * the `timeUnit` and `price` from which price/s can be derived.
-     */
-    pricePerSecond: string
     pricingTokenAddress: string
     readOnly: boolean
     timeUnit: TimeUnit

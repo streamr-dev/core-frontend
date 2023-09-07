@@ -4,8 +4,12 @@ import { create } from 'zustand'
 import isEqual from 'lodash/isEqual'
 import uniqueId from 'lodash/uniqueId'
 import { getGraphProjectWithParsedMetadata, getProjectImageUrl } from '~/getters'
-import { TimeUnit, timeUnitSecondsMultiplierMap } from '~/shared/utils/timeUnit'
-import { getConfigForChain } from '~/shared/web3/config'
+import {
+    TimeUnit,
+    timeUnitSecondsMultiplierMap,
+    timeUnits,
+} from '~/shared/utils/timeUnit'
+import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
 import { getTokenInfo } from '~/hooks/useTokenInfo'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { getMostRelevantTimeUnit } from '~/marketplace/utils/price'
@@ -22,6 +26,9 @@ import { ProjectMetadata } from '~/shared/consts'
 import { getDataUnionAdminFee } from '~/getters/du'
 import { useHasActiveProjectSubscription } from './purchases'
 import { useWalletAccount } from './wallet'
+import getCoreConfig from '~/getters/getCoreConfig'
+import { SalePoint } from '~/shared/types'
+import { getDataAddress } from '~/marketplace/utils/web3'
 
 interface ProjectDraft {
     abandoned: boolean
@@ -51,48 +58,82 @@ interface ProjectEditorStore {
     update: (draftId: string, upadte: (project: Project) => void) => void
 }
 
-const initialProject: Project = {
-    id: undefined,
-    name: '',
-    description: '',
-    imageUrl: undefined,
-    imageIpfsCid: undefined,
-    newImageToUpload: undefined,
-    streams: [],
-    type: ProjectType.OpenData,
-    termsOfUse: {
+export function getEmptySalePoint(chainId: number): SalePoint {
+    return {
+        beneficiaryAddress: '',
+        chainId,
+        enabled: false,
+        price: '',
+        pricingTokenAddress: getDataAddress(chainId).toLowerCase(),
+        readOnly: false,
+        timeUnit: timeUnits.day,
+    }
+}
+
+function getEmptyTermsOfUse() {
+    return {
         termsName: '',
         termsUrl: '',
-    },
-    contact: {
+    }
+}
+
+function getEmptyContact() {
+    return {
         url: '',
         email: '',
         twitter: '',
         telegram: '',
         reddit: '',
         linkedIn: '',
-    },
-    creator: '',
-    salePoints: {},
+    }
 }
 
-const initialDraft: ProjectDraft = {
-    abandoned: false,
-    errors: {},
-    persisting: false,
-    project: {
-        hot: initialProject,
-        cold: initialProject,
-        graph: undefined,
-        changed: false,
-        fetching: false,
-    },
+function getEmptyProject(): Project {
+    const chains = getCoreConfig().marketplaceChains.map(getConfigForChainByName)
+
+    const salePoints: Record<string, SalePoint | undefined> = {}
+
+    chains.map(({ id: chainId, name: chainName }) => {
+        salePoints[chainName] = getEmptySalePoint(chainId)
+    })
+
+    return {
+        id: undefined,
+        name: '',
+        description: '',
+        imageUrl: undefined,
+        imageIpfsCid: undefined,
+        newImageToUpload: undefined,
+        streams: [],
+        type: ProjectType.OpenData,
+        termsOfUse: getEmptyTermsOfUse(),
+        contact: getEmptyContact(),
+        creator: '',
+        salePoints,
+    }
+}
+
+function getEmptyDraft(): ProjectDraft {
+    const emptyProject = getEmptyProject()
+
+    return {
+        abandoned: false,
+        errors: {},
+        persisting: false,
+        project: {
+            hot: emptyProject,
+            cold: emptyProject,
+            graph: undefined,
+            changed: false,
+            fetching: false,
+        },
+    }
 }
 
 async function getSalePointsFromPaymentDetails<
     T extends Pick<QueriedGraphProject, 'paymentDetails'>,
 >({ paymentDetails }: T): Promise<Project['salePoints']> {
-    const result: Project['salePoints'] = {}
+    const result = getEmptyProject().salePoints
 
     for (let i = 0; i < paymentDetails.length; i++) {
         try {
@@ -122,7 +163,6 @@ async function getSalePointsFromPaymentDetails<
                 chainId,
                 enabled: true,
                 price: pricePerSecondFromDecimals.multipliedBy(multiplier).toString(),
-                pricePerSecond,
                 pricingTokenAddress: pricingTokenAddress.toLowerCase(),
                 readOnly: true,
                 timeUnit,
@@ -149,8 +189,8 @@ async function getTransientProject<
         creator,
         imageUrl,
         imageIpfsCid,
-        termsOfUse = initialProject.termsOfUse,
-        contactDetails: contact = initialProject.contact,
+        termsOfUse = getEmptyTermsOfUse(),
+        contactDetails: contact = getEmptyContact(),
     } = metadata
 
     const [payment = { pricePerSecond: '0' }, secondPayment] = paymentDetails
@@ -248,7 +288,7 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
                 }
 
                 state.drafts[draftId] = produce(
-                    state.drafts[draftId] || initialDraft,
+                    state.drafts[draftId] || getEmptyDraft(),
                     update,
                 )
             }),
@@ -487,7 +527,7 @@ function useDraft() {
 export function useProject({ hot = false } = {}) {
     const draft = useDraft()
 
-    return (hot ? draft?.project.hot : draft?.project.cold) || initialProject
+    return (hot ? draft?.project.hot : draft?.project.cold) || getEmptyProject()
 }
 
 export function useIsProjectFetching() {
@@ -505,7 +545,7 @@ export function useIsProjectBusy() {
 export function useDoesUserHaveAccess() {
     const {
         project: { cold, graph },
-    } = useDraft() || initialDraft
+    } = useDraft() || getEmptyDraft()
 
     const address = useWalletAccount()
 
