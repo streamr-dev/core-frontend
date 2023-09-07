@@ -5,16 +5,15 @@ import { SponsorshipElement } from '~/types/sponsorship'
 import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
-import JoinSponsorshipModal from '~/modals/JoinSponsorshipModal'
 import { BlackTooltip } from '~/shared/components/Tooltip/Tooltip'
 import Button from '~/shared/components/Button'
 import useCopy from '~/shared/hooks/useCopy'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
-import { Layer } from '~/utils/Layer'
 import routes from '~/routes'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import { useFundSponsorship } from '~/hooks/useFundSponsorship'
+import { useJoinSponsorship } from '~/hooks/useJoinSponsorship'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -30,14 +29,13 @@ import {
     SingleElementPageActionBarTopPart,
 } from './NetworkActionBar.styles'
 
-const joinSponsorshipModal = toaster(JoinSponsorshipModal, Layer.Modal)
-
 export const SponsorshipActionBar: FunctionComponent<{
     sponsorship: SponsorshipElement
 }> = ({ sponsorship }) => {
     const { copy } = useCopy()
 
     const fundSponsorship = useFundSponsorship()
+    const { canJoinSponsorship, joinSponsorship } = useJoinSponsorship()
 
     // TODO when Mariusz will merge his hook & getter for fetching Token information - use it here to display the proper token symbol
 
@@ -142,14 +140,9 @@ export const SponsorshipActionBar: FunctionComponent<{
                             Sponsor
                         </Button>
                         <Button
-                            onClick={async () => {
-                                try {
-                                    await joinSponsorshipModal.pop({
-                                        streamId: sponsorship.streamId,
-                                    })
-                                } catch (e) {
-                                    // Ignore for now.
-                                }
+                            disabled={!canJoinSponsorship}
+                            onClick={() => {
+                                joinSponsorship(sponsorship.id, sponsorship.streamId)
                             }}
                         >
                             Join as operator

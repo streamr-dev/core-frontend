@@ -28,6 +28,7 @@ import {
     useAllSponsorshipsQuery,
     useMySponsorshipsQuery,
 } from '~/hooks/useSponsorshipsList'
+import { useJoinSponsorship } from '~/hooks/useJoinSponsorship'
 import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
 import { StreamInfoCell } from '../components/NetworkUtils'
 import {
@@ -58,6 +59,8 @@ export const SponsorshipsPage = () => {
     const allSponsorshipsQuery = useAllSponsorshipsQuery(PAGE_SIZE, searchQuery)
 
     const mySponsorshipsQuery = useMySponsorshipsQuery(PAGE_SIZE, searchQuery)
+
+    const { canJoinSponsorship, joinSponsorship } = useJoinSponsorship()
 
     const sponsorshipsQuery =
         selectedTab === TabOptions.allSponsorships
@@ -221,9 +224,9 @@ export const SponsorshipsPage = () => {
                             },
                             {
                                 displayName: 'Join As Operator',
-                                disabled: !walletConnected,
+                                disabled: !walletConnected || !canJoinSponsorship,
                                 callback: (element) =>
-                                    console.log('join as operator', element),
+                                    joinSponsorship(element.id, element.streamId),
                             },
                         ]}
                         noDataFirstLine={
