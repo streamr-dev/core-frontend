@@ -63,7 +63,7 @@ export default function RichTextEditor({
             {...props}
             disableExtensions={disableExtensions}
             onChange={(getValue) => {
-                onChange?.(getValue().trim())
+                onChange?.(getValue().replace(/\\$/gm, '').trim())
             }}
             theme={theme}
         />
