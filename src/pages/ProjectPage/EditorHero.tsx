@@ -2,13 +2,13 @@ import React from 'react'
 import styled from 'styled-components'
 import { useProject, useUpdateProject } from '~/shared/stores/projectEditor'
 import { COLORS, TABLET } from '~/shared/utils/styled'
-import CoverImage, { Root as CoverImageRoot } from './CoverImage'
 import RichTextEditor from '~/components/RichTextEditor'
 import DetailDropdown, {
     DetailIcon,
     List as DetailDropdownList,
 } from '~/components/DetailDropdown'
 import ProjectProperty from '~/components/ProjectProperty'
+import CoverImage, { Root as CoverImageRoot } from './CoverImage'
 
 export default function EditorHero() {
     const { creator, contact, name, description } = useProject({ hot: true })

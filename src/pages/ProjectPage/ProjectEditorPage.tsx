@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import Layout from '~/components/Layout'
 import {
+    getEmptySalePoint,
     useIsNewProject,
     useIsProjectBusy,
     useProject,
@@ -13,23 +14,27 @@ import ProjectLinkTabs from '~/pages/ProjectPage/ProjectLinkTabs'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { ProjectType, SalePoint } from '~/shared/types'
 import { ProjectPageContainer } from '~/shared/components/ProjectPage'
-import EditorNav from './EditorNav'
 import ColoredBox from '~/components/ColoredBox'
 import TermsOfUse from '~/pages/ProjectPage/TermsOfUse'
 import Button from '~/shared/components/Button'
-import EditorHero from './EditorHero'
-import EditorStreams from './EditorStreams'
-import SalePointSelector from '~/components/SalePointSelector'
-import { getConfigForChain } from '~/shared/web3/config'
-import DataUnionPayment from './DataUnionPayment'
+import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
 import { formatChainName } from '~/shared/utils/chains'
 import SalePointTokenSelector from '~/components/SalePointSelector/SalePointTokenSelector'
 import { DESKTOP } from '~/shared/utils/styled'
+import SalePointOption, {
+    DataUnionOption,
+    PaidOption,
+} from '~/components/SalePointSelector/SalePointOption'
+import { Chain } from '~/shared/types/web3-types'
+import getCoreConfig from '~/getters/getCoreConfig'
 import DataUnionFee from './DataUnionFee'
-import { DataUnionOption } from '~/components/SalePointSelector/SalePointOption'
+import DataUnionPayment from './DataUnionPayment'
+import EditorHero from './EditorHero'
+import EditorNav from './EditorNav'
+import EditorStreams from './EditorStreams'
 
 export default function ProjectEditorPage() {
-    const { type, creator, salePoints } = useProject({ hot: true })
+    const { type, creator, salePoints: existingSalePoints } = useProject({ hot: true })
 
     const isNew = useIsNewProject()
 
@@ -37,21 +42,31 @@ export default function ProjectEditorPage() {
 
     const update = useUpdateProject()
 
+    const availableChains = useMemo<Chain[]>(
+        () => getCoreConfig().marketplaceChains.map(getConfigForChainByName),
+        [],
+    )
+
+    const salePoints = availableChains.map<SalePoint>(
+        ({ id: chainId, name: chainName }) =>
+            existingSalePoints[chainName] || getEmptySalePoint(chainId),
+    )
+
     function onSalePointChange(value: SalePoint) {
-        update((project) => {
+        update((draft) => {
             const { name: chainName } = getConfigForChain(value.chainId)
 
-            if (project.salePoints[chainName]?.readOnly) {
+            if (draft.salePoints[chainName]?.readOnly) {
                 return
             }
 
-            project.salePoints[chainName] = value
+            draft.salePoints[chainName] = value
 
-            if (project.type !== ProjectType.DataUnion) {
+            if (draft.type !== ProjectType.DataUnion) {
                 return
             }
 
-            Object.values(project.salePoints).forEach((salePoint) => {
+            Object.values(draft.salePoints).forEach((salePoint) => {
                 if (!salePoint?.enabled || salePoint === value) {
                     return
                 }
@@ -94,10 +109,19 @@ export default function ProjectEditorPage() {
                                 </p>
                             </Content>
                             <Content $desktopMaxWidth="728px">
-                                <SalePointSelector
-                                    salePoints={salePoints}
-                                    onSalePointChange={onSalePointChange}
-                                />
+                                {salePoints.map((salePoint) => (
+                                    <SalePointOption
+                                        key={salePoint.chainId}
+                                        multiSelect
+                                        onSalePointChange={onSalePointChange}
+                                        salePoint={salePoint}
+                                    >
+                                        <PaidOption
+                                            onSalePointChange={onSalePointChange}
+                                            salePoint={salePoint}
+                                        />
+                                    </SalePointOption>
+                                ))}
                             </Content>
                         </ColoredBox>
                     </Segment>
@@ -113,11 +137,20 @@ export default function ProjectEditorPage() {
                                             <p>Select the chain for your Data Union.</p>
                                         </Content>
                                         <Content $desktopMaxWidth="728px">
-                                            <SalePointSelector
-                                                salePoints={salePoints}
-                                                onSalePointChange={onSalePointChange}
-                                                renderer={DataUnionOption}
-                                            />
+                                            {salePoints.map((salePoint) => (
+                                                <SalePointOption
+                                                    key={salePoint.chainId}
+                                                    onSalePointChange={onSalePointChange}
+                                                    salePoint={salePoint}
+                                                >
+                                                    <DataUnionOption
+                                                        salePoint={salePoint}
+                                                        onSalePointChange={
+                                                            onSalePointChange
+                                                        }
+                                                    />
+                                                </SalePointOption>
+                                            ))}
                                         </Content>
                                     </ColoredBox>
                                 </Segment>

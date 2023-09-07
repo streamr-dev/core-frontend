@@ -1,5 +1,7 @@
-import React, { ComponentProps, FC, useEffect, useState } from 'react'
+import React, { ComponentProps, ReactNode, useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
+import { z } from 'zod'
+import { produce } from 'immer'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { SalePoint } from '~/shared/types'
 import { COLORS } from '~/shared/utils/styled'
@@ -7,14 +9,13 @@ import { Tick as PrestyledTick } from '~/shared/components/Checkbox'
 import NetworkIcon from '~/shared/components/NetworkIcon'
 import { getConfigForChain } from '~/shared/web3/config'
 import { formatChainName } from '~/shared/utils/chains'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import Select from '~/marketplace/components/SelectField2'
+import { getDataUnion, getDataUnionsOwnedByInChain } from '~/getters/du'
 import SalePointTokenSelector, {
     Root as SalePointTokenSelectorRoot,
 } from './SalePointTokenSelector'
 import BeneficiaryAddressEditor from './BeneficiaryAddressEditor'
-import { useWalletAccount } from '~/shared/stores/wallet'
-import Select from '~/marketplace/components/SelectField2'
-import { getDataUnion, getDataUnionsOwnedByInChain } from '~/getters/du'
-import { z } from 'zod'
 
 export interface OptionProps {
     onSalePointChange?: (value: SalePoint) => void
@@ -22,21 +23,21 @@ export interface OptionProps {
 }
 
 interface SalePointOptionProps extends OptionProps {
-    renderer: FC<OptionProps>
+    children: ReactNode
+    multiSelect?: boolean
 }
 
 export default function SalePointOption({
     onSalePointChange,
     salePoint,
-    renderer: Renderer,
+    children,
+    multiSelect = false,
 }: SalePointOptionProps) {
     const { chainId, enabled, readOnly } = salePoint
 
     const chain = getConfigForChain(chainId)
 
     const formattedChainName = formatChainName(chain.name)
-
-    const multiSelect = Renderer === PaidOption
 
     return (
         <DropdownWrap $open={enabled}>
@@ -62,12 +63,7 @@ export default function SalePointOption({
                 {multiSelect && <PlusSymbol />}
             </DropdownToggle>
             <DropdownOuter>
-                <DropdownInner>
-                    <Renderer
-                        salePoint={salePoint}
-                        onSalePointChange={onSalePointChange}
-                    />
-                </DropdownInner>
+                <DropdownInner>{children}</DropdownInner>
             </DropdownOuter>
         </DropdownWrap>
     )
@@ -129,7 +125,7 @@ const DropdownToggle = styled.div`
 `
 
 const DropdownInner = styled.div`
-    padding: 24px 24px 64px;
+    padding: 8px 24px 64px;
     transition: margin-bottom 0.5s ease-in-out;
     margin-bottom: -200%;
 
@@ -262,8 +258,10 @@ function isNamedMetadata(metadata: unknown): metadata is NamedMetadata {
     return NamedMetadata.safeParse(metadata).success
 }
 
-export function DataUnionOption({ onSalePointChange, salePoint }: OptionProps) {
-    const [dataUnionId, setDataUnionId] = useState<string>()
+export function DataUnionOption({ salePoint, onSalePointChange }: OptionProps) {
+    const [dataUnionId, setDataUnionId] = useState<string>('')
+
+    const { chainId } = salePoint
 
     const [deployNew, setDeployNew] = useState(true)
 
@@ -273,9 +271,15 @@ export function DataUnionOption({ onSalePointChange, salePoint }: OptionProps) {
 
     const canUseExisting = !!dataUnions?.length
 
-    const { chainId } = salePoint
-
     const account = useWalletAccount()
+
+    function updateSalePoint(updater: (draft: SalePoint) => void) {
+        onSalePointChange?.(produce(salePoint, updater))
+    }
+
+    const updateSalePointRef = useRef(updateSalePoint)
+
+    updateSalePointRef.current = updateSalePoint
 
     useEffect(() => {
         let mounted = true
@@ -284,8 +288,23 @@ export function DataUnionOption({ onSalePointChange, salePoint }: OptionProps) {
             return () => {}
         }
 
+        /**
+         * Tell the app we're loading the Unions. See `isLoadingDataUnions`.
+         */
+        setDataUnions(undefined)
+
+        /**
+         * Reset the new/existing selection because it's impossible to select
+         * exisitng id from `undefined` set above.
+         */
+        setDeployNew(true)
+
+        updateSalePointRef.current((draft) => {
+            draft.beneficiaryAddress = ''
+        })
+
         setTimeout(async () => {
-            let result: NonNullable<typeof dataUnions> = []
+            const result: NonNullable<typeof dataUnions> = []
 
             try {
                 const foundDataUnions = await getDataUnionsOwnedByInChain(
@@ -293,19 +312,29 @@ export function DataUnionOption({ onSalePointChange, salePoint }: OptionProps) {
                     chainId,
                 )
 
+                if (!mounted) {
+                    return
+                }
+
                 for (const { id } of foundDataUnions) {
                     try {
-                        const metadata = await (
-                            await getDataUnion(id, chainId)
-                        ).getMetadata()
+                        const dataUnion = await getDataUnion(id, chainId)
 
-                        if (!isNamedMetadata(metadata)) {
-                            return
+                        if (!mounted) {
+                            // There's no need to carry on. The result is gonna get discarded.
+                            break
+                        }
+
+                        const metadata = await dataUnion.getMetadata()
+
+                        if (!mounted) {
+                            // Again, there's no need to carry on. See above.
+                            break
                         }
 
                         result.push({
                             value: id,
-                            label: metadata.name,
+                            label: isNamedMetadata(metadata) ? metadata.name : id,
                         })
                     } catch (e) {
                         console.warn(`Failed to load a Data Union: ${id}`, e)
@@ -338,6 +367,10 @@ export function DataUnionOption({ onSalePointChange, salePoint }: OptionProps) {
                         type="button"
                         onClick={() => {
                             setDeployNew(true)
+
+                            updateSalePoint((draft) => {
+                                draft.beneficiaryAddress = ''
+                            })
                         }}
                     >
                         <RadioCircle $checked={deployNew} />
@@ -354,6 +387,10 @@ export function DataUnionOption({ onSalePointChange, salePoint }: OptionProps) {
                             }
 
                             setDeployNew(false)
+
+                            updateSalePoint((draft) => {
+                                draft.beneficiaryAddress = dataUnionId
+                            })
                         }}
                     >
                         <RadioCircle $checked={!deployNew} $disabled={!canUseExisting} />
@@ -371,9 +408,15 @@ export function DataUnionOption({ onSalePointChange, salePoint }: OptionProps) {
                             options={dataUnions || []}
                             disabled={deployNew}
                             fullWidth={true}
-                            value={dataUnionId}
+                            value={dataUnionId || undefined}
                             isClearable={false}
-                            onChange={setDataUnionId}
+                            onChange={(newDataUnionId) => {
+                                setDataUnionId(newDataUnionId)
+
+                                updateSalePoint((draft) => {
+                                    draft.beneficiaryAddress = newDataUnionId
+                                })
+                            }}
                         />
                     </SelectWrap>
                 </li>

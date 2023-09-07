@@ -9,9 +9,9 @@ import {
 } from 'react-router-dom'
 import { ProjectDraftContext, useInitProject } from '~/shared/stores/projectEditor'
 import NotFoundPage from '~/pages/NotFoundPage'
+import routes from '~/routes'
 import TabbedPage from './TabbedPage'
 import ProjectEditorPage from './ProjectEditorPage'
-import routes from '~/routes'
 
 function ProjectRedirect() {
     const { id = '' } = useParams<{ id: string }>()
