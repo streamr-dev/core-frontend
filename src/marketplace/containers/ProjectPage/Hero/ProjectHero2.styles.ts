@@ -54,6 +54,7 @@ export const ProjectHeroImage = styled(ImageTile)`
     ${ProjectHeroImageStyles}
     img {
         border-radius: 16px;
+        border: 1px solid #f5f5f5;
     }
 `
 
