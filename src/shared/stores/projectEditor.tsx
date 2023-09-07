@@ -24,11 +24,11 @@ import {
 } from '~/generated/gql/network'
 import { ProjectMetadata } from '~/shared/consts'
 import { getDataUnionAdminFee } from '~/getters/du'
-import { useHasActiveProjectSubscription } from './purchases'
-import { useWalletAccount } from './wallet'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { SalePoint } from '~/shared/types'
 import { getDataAddress } from '~/marketplace/utils/web3'
+import { useWalletAccount } from './wallet'
+import { useHasActiveProjectSubscription } from './purchases'
 
 interface ProjectDraft {
     abandoned: boolean
