@@ -218,7 +218,7 @@ export default function SalePointTokenSelector({
     )
 }
 
-const Root = styled.div`
+export const Root = styled.div`
     background-color: ${COLORS.inputBackground};
     border-radius: 4px;
     padding: 24px;

@@ -11,7 +11,7 @@ import { getProjectTypeTitle } from '~/getters'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import ProjectLinkTabs from '~/pages/ProjectPage/ProjectLinkTabs'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
-import { ProjectType } from '~/shared/types'
+import { ProjectType, SalePoint } from '~/shared/types'
 import { ProjectPageContainer } from '~/shared/components/ProjectPage'
 import EditorNav from './EditorNav'
 import ColoredBox from '~/components/ColoredBox'
@@ -21,7 +21,12 @@ import EditorHero from './EditorHero'
 import EditorStreams from './EditorStreams'
 import SalePointSelector from '~/components/SalePointSelector'
 import { getConfigForChain } from '~/shared/web3/config'
+import DataUnionPayment from './DataUnionPayment'
+import { formatChainName } from '~/shared/utils/chains'
+import SalePointTokenSelector from '~/components/SalePointSelector/SalePointTokenSelector'
 import { DESKTOP } from '~/shared/utils/styled'
+import DataUnionFee from './DataUnionFee'
+import { DataUnionOption } from '~/components/SalePointSelector/SalePointOption'
 
 export default function ProjectEditorPage() {
     const { type, creator, salePoints } = useProject({ hot: true })
@@ -41,6 +46,18 @@ export default function ProjectEditorPage() {
             }
 
             project.salePoints[chainName] = value
+
+            if (project.type !== ProjectType.DataUnion) {
+                return
+            }
+
+            Object.values(project.salePoints).forEach((salePoint) => {
+                if (!salePoint?.enabled || salePoint === value) {
+                    return
+                }
+
+                salePoint.enabled = false
+            })
         })
     }
 
@@ -86,15 +103,74 @@ export default function ProjectEditorPage() {
                     </Segment>
                 )}
                 {type === ProjectType.DataUnion && (
-                    <>
-                        {/* <WhiteBox> */}
-                        {/* <DataUnionChainSelector /> */}
-                        {/* </WhiteBox> */}
-                        {/* <WhiteBoxWithMargin> */}
-                        {/* <DataUnionTokenSelector /> */}
-                        {/* <DataUnionFee /> */}
-                        {/* </WhiteBoxWithMargin> */}
-                    </>
+                    <DataUnionPayment>
+                        {(salePoint) => (
+                            <>
+                                <Segment>
+                                    <ColoredBox $pad>
+                                        <Content>
+                                            <h2>Select chain</h2>
+                                            <p>Select the chain for your Data Union.</p>
+                                        </Content>
+                                        <Content $desktopMaxWidth="728px">
+                                            <SalePointSelector
+                                                salePoints={salePoints}
+                                                onSalePointChange={onSalePointChange}
+                                                renderer={DataUnionOption}
+                                            />
+                                        </Content>
+                                    </ColoredBox>
+                                </Segment>
+                                <Segment>
+                                    <ColoredBox $pad>
+                                        <Content>
+                                            <h2>
+                                                {salePoint ? (
+                                                    <>
+                                                        Set the payment token and price
+                                                        on&nbsp;the&nbsp;
+                                                        {formatChainName(
+                                                            getConfigForChain(
+                                                                salePoint.chainId,
+                                                            ).name,
+                                                        )}{' '}
+                                                        chain
+                                                    </>
+                                                ) : (
+                                                    <>Set the payment token and price</>
+                                                )}
+                                            </h2>
+                                            <p>
+                                                You can set a price for others to access
+                                                the streams in your project. The price can
+                                                be set in DATA or any other ERC-20 token.
+                                            </p>
+                                        </Content>
+                                        {salePoint ? (
+                                            <Content $desktopMaxWidth="728px">
+                                                <SalePointTokenSelector
+                                                    salePoint={salePoint}
+                                                    onSalePointChange={onSalePointChange}
+                                                />
+                                            </Content>
+                                        ) : (
+                                            <>Select a chain first!</>
+                                        )}
+                                    </ColoredBox>
+                                </Segment>
+                                <Segment>
+                                    <ColoredBox $pad>
+                                        <Content>
+                                            <h2>Data Union admin fee</h2>
+                                        </Content>
+                                        <Content $desktopMaxWidth="728px">
+                                            <DataUnionFee />
+                                        </Content>
+                                    </ColoredBox>
+                                </Segment>
+                            </>
+                        )}
+                    </DataUnionPayment>
                 )}
                 <Segment>
                     <ColoredBox $pad>

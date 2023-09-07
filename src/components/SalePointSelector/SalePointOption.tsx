@@ -1,4 +1,4 @@
-import React, { ComponentProps } from 'react'
+import React, { ComponentProps, FC, useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { SalePoint } from '~/shared/types'
@@ -7,22 +7,36 @@ import { Tick as PrestyledTick } from '~/shared/components/Checkbox'
 import NetworkIcon from '~/shared/components/NetworkIcon'
 import { getConfigForChain } from '~/shared/web3/config'
 import { formatChainName } from '~/shared/utils/chains'
-import SalePointTokenSelector from './SalePointTokenSelector'
+import SalePointTokenSelector, {
+    Root as SalePointTokenSelectorRoot,
+} from './SalePointTokenSelector'
 import BeneficiaryAddressEditor from './BeneficiaryAddressEditor'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import Select from '~/marketplace/components/SelectField2'
+import { getDataUnion, getDataUnionsOwnedByInChain } from '~/getters/du'
+import { z } from 'zod'
+
+export interface OptionProps {
+    onSalePointChange?: (value: SalePoint) => void
+    salePoint: SalePoint
+}
+
+interface SalePointOptionProps extends OptionProps {
+    renderer: FC<OptionProps>
+}
 
 export default function SalePointOption({
     onSalePointChange,
     salePoint,
-}: {
-    onSalePointChange?: (value: SalePoint) => void
-    onToggle?: (chainId: number, selected: boolean) => void
-    salePoint: SalePoint
-}) {
+    renderer: Renderer,
+}: SalePointOptionProps) {
     const { chainId, enabled, readOnly } = salePoint
 
     const chain = getConfigForChain(chainId)
 
     const formattedChainName = formatChainName(chain.name)
+
+    const multiSelect = Renderer === PaidOption
 
     return (
         <DropdownWrap $open={enabled}>
@@ -30,44 +44,28 @@ export default function SalePointOption({
                 onClick={() => {
                     onSalePointChange?.({
                         ...salePoint,
-                        enabled: !salePoint.enabled,
+                        /**
+                         * In multi select mode we don't allow to toggle. It's a click-2-enable,
+                         * always. We let the parent component decide what to do with the value.
+                         */
+                        enabled: multiSelect ? !salePoint.enabled : true,
                     })
                 }}
             >
-                <Tick $checked={enabled} $disabled={readOnly} />
+                {multiSelect ? (
+                    <Tick $checked={enabled} $disabled={readOnly} />
+                ) : (
+                    <RadioCircle $checked={enabled} $disabled={readOnly} />
+                )}
                 <ChainIcon chainId={chainId} />
-                <span>{formattedChainName}</span>
-                <PlusSymbol />
+                <ToggleText>{formattedChainName}</ToggleText>
+                {multiSelect && <PlusSymbol />}
             </DropdownToggle>
             <DropdownOuter>
                 <DropdownInner>
-                    <h4>
-                        Set the payment token and price on the {formattedChainName} chain
-                    </h4>
-                    <p>
-                        You can set a price for others to access the streams in your
-                        project. The price can be set in DATA or any other ERC-20 token.
-                    </p>
-                    <SalePointTokenSelector
-                        disabled={readOnly}
-                        onSalePointChange={onSalePointChange}
+                    <Renderer
                         salePoint={salePoint}
-                    />
-                    <h4>Set beneficiary</h4>
-                    <p>
-                        This wallet address receives the payments for this product on{' '}
-                        {formattedChainName} chain.
-                    </p>
-                    <BeneficiaryAddressEditor
-                        chainName={chain.name}
-                        disabled={readOnly}
-                        value={salePoint.beneficiaryAddress}
-                        onChange={(beneficiaryAddress) => {
-                            onSalePointChange?.({
-                                ...salePoint,
-                                beneficiaryAddress,
-                            })
-                        }}
+                        onSalePointChange={onSalePointChange}
                     />
                 </DropdownInner>
             </DropdownOuter>
@@ -75,22 +73,85 @@ export default function SalePointOption({
     )
 }
 
+const RadioCircle = styled.div<{ $checked?: boolean; $disabled?: boolean }>`
+    border-radius: 50%;
+    border: 2px solid ${COLORS.radioBorder};
+    height: 15px;
+    transition: 0.5s border-color;
+    width: 15px;
+
+    ::before {
+        background: ${COLORS.link};
+        border-radius: 50%;
+        content: '';
+        display: block;
+        height: 7px;
+        opacity: 0;
+        transform: translate(2px, 2px) scale(0.5);
+        transition: 0.5s;
+        transition-property: transform, opacity;
+        width: 7px;
+    }
+
+    ${({ $disabled = false }) =>
+        $disabled &&
+        css`
+            opacity: 0.5;
+        `}
+
+    ${({ $checked }) =>
+        $checked &&
+        css`
+            border-color: ${COLORS.link};
+            transition-duration: 0.1s;
+
+            ::before {
+                opacity: 1;
+                transform: translate(2px, 2px) scale(1);
+                transition-duration: 0.1s;
+            }
+        `}
+`
+
 const DropdownToggle = styled.div`
-    padding: 24px 24px 24px 12px;
+    align-items: center;
     cursor: pointer;
     display: flex;
-    align-items: center;
-    justify-content: flex-start;
+    padding: 24px;
 
     :hover {
         background-color: ${COLORS.secondary};
     }
+
+    > ${RadioCircle} {
+        margin-right: 20px;
+    }
 `
 
 const DropdownInner = styled.div`
-    padding: 24px 24px 75px;
+    padding: 24px 24px 64px;
     transition: margin-bottom 0.5s ease-in-out;
     margin-bottom: -200%;
+
+    h4 {
+        font-weight: 400;
+        font-size: 20px;
+        margin: 0;
+    }
+
+    h4 + p {
+        font-size: 16px;
+        margin: 16px 0 28px;
+        line-height: 1.5em;
+    }
+
+    ${SalePointTokenSelectorRoot} {
+        margin-bottom: 48px;
+    }
+`
+
+const ToggleText = styled.div`
+    flex-grow: 1;
 `
 
 function getPlusSymbolAttrs(): ComponentProps<typeof SvgIcon> {
@@ -137,8 +198,7 @@ const DropdownOuter = styled.div`
 `
 
 const Tick = styled(PrestyledTick)<{ $disabled?: boolean }>`
-    cursor: pointer;
-    margin: 0 20px 0 12px;
+    margin: 0 20px 0 0;
 
     ${({ $disabled = false }) =>
         $disabled &&
@@ -151,4 +211,215 @@ const ChainIcon = styled(NetworkIcon)`
     width: 32px;
     height: 32px;
     margin-right: 12px;
+`
+
+export function PaidOption({ onSalePointChange, salePoint }: OptionProps) {
+    const { chainId, readOnly } = salePoint
+
+    const chain = getConfigForChain(chainId)
+
+    const formattedChainName = formatChainName(chain.name)
+
+    return (
+        <>
+            <h4>Set the payment token and price on the {formattedChainName} chain</h4>
+            <p>
+                You can set a price for others to access the streams in your project. The
+                price can be set in DATA or any other ERC-20 token.
+            </p>
+            <SalePointTokenSelector
+                disabled={readOnly}
+                onSalePointChange={onSalePointChange}
+                salePoint={salePoint}
+            />
+            <h4>Set beneficiary</h4>
+            <p>
+                This wallet address receives the payments for this product on{' '}
+                {formattedChainName} chain.
+            </p>
+            <BeneficiaryAddressEditor
+                chainName={chain.name}
+                disabled={readOnly}
+                value={salePoint.beneficiaryAddress}
+                onChange={(beneficiaryAddress) => {
+                    onSalePointChange?.({
+                        ...salePoint,
+                        beneficiaryAddress,
+                    })
+                }}
+            />
+        </>
+    )
+}
+
+const NamedMetadata = z.object({
+    name: z.string(),
+})
+
+type NamedMetadata = z.infer<typeof NamedMetadata>
+
+function isNamedMetadata(metadata: unknown): metadata is NamedMetadata {
+    return NamedMetadata.safeParse(metadata).success
+}
+
+export function DataUnionOption({ onSalePointChange, salePoint }: OptionProps) {
+    const [dataUnionId, setDataUnionId] = useState<string>()
+
+    const [deployNew, setDeployNew] = useState(true)
+
+    const [dataUnions, setDataUnions] = useState<{ label: string; value: string }[]>()
+
+    const isLoadingDataUnions = typeof dataUnions === 'undefined'
+
+    const canUseExisting = !!dataUnions?.length
+
+    const { chainId } = salePoint
+
+    const account = useWalletAccount()
+
+    useEffect(() => {
+        let mounted = true
+
+        if (!account) {
+            return () => {}
+        }
+
+        setTimeout(async () => {
+            let result: NonNullable<typeof dataUnions> = []
+
+            try {
+                const foundDataUnions = await getDataUnionsOwnedByInChain(
+                    account,
+                    chainId,
+                )
+
+                for (const { id } of foundDataUnions) {
+                    try {
+                        const metadata = await (
+                            await getDataUnion(id, chainId)
+                        ).getMetadata()
+
+                        if (!isNamedMetadata(metadata)) {
+                            return
+                        }
+
+                        result.push({
+                            value: id,
+                            label: metadata.name,
+                        })
+                    } catch (e) {
+                        console.warn(`Failed to load a Data Union: ${id}`, e)
+                    }
+                }
+            } catch (e) {
+                console.warn('Failed to load Data Unions', e)
+            } finally {
+                if (mounted) {
+                    setDataUnions(result)
+                }
+            }
+        })
+
+        return () => {
+            mounted = false
+        }
+    }, [chainId, account])
+
+    return (
+        <>
+            <h4>Deployment</h4>
+            <p>
+                You can deploy a new Data Union smart contract, or connect an existing
+                one.
+            </p>
+            <DeployList>
+                <li>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setDeployNew(true)
+                        }}
+                    >
+                        <RadioCircle $checked={deployNew} />
+                        <p>Deploy a new Data Union</p>
+                    </button>
+                </li>
+                <li>
+                    <button
+                        type="button"
+                        disabled={!canUseExisting}
+                        onClick={() => {
+                            if (!canUseExisting) {
+                                return
+                            }
+
+                            setDeployNew(false)
+                        }}
+                    >
+                        <RadioCircle $checked={!deployNew} $disabled={!canUseExisting} />
+                        <p>Connect an existing Data Union</p>
+                    </button>
+                    <SelectWrap>
+                        <Select
+                            placeholder={
+                                isLoadingDataUnions
+                                    ? 'Loading…'
+                                    : canUseExisting
+                                    ? 'Select a Data Union'
+                                    : "You don't have any deployed Data Unions"
+                            }
+                            options={dataUnions || []}
+                            disabled={deployNew}
+                            fullWidth={true}
+                            value={dataUnionId}
+                            isClearable={false}
+                            onChange={setDataUnionId}
+                        />
+                    </SelectWrap>
+                </li>
+            </DeployList>
+        </>
+    )
+}
+
+const DeployList = styled.ul`
+    background-color: ${COLORS.inputBackground};
+    border-radius: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 24px;
+
+    li {
+        background: #ffffff;
+        border-radius: 4px;
+    }
+
+    li > button {
+        align-items: center;
+        appearance: none;
+        background: none;
+        border: 0;
+        display: flex;
+        padding: 24px;
+        text-align: left;
+        width: 100%;
+    }
+
+    li + li {
+        margin-top: 16px;
+    }
+
+    p {
+        flex-grow: 1;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    ${RadioCircle} {
+        margin-right: 12px;
+    }
+`
+
+const SelectWrap = styled.div`
+    padding: 0 24px 24px;
 `
