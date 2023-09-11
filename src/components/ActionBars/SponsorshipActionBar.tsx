@@ -45,8 +45,6 @@ export const SponsorshipActionBar: FunctionComponent<{
     )
     const tokenSymbol = tokenInfo?.symbol || 'DATA'
 
-    // TODO when Mariusz will merge his hook & getter for fetching Token information - use it here to display the proper token symbol
-
     return (
         <SingleElementPageActionBar>
             <SingleElementPageActionBarContainer>
