@@ -19,6 +19,7 @@ import { Alert } from '~/components/Alert'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS } from '~/shared/utils/styled'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
+import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onSubmit: (amountWei: string) => void
@@ -58,7 +59,7 @@ export default function JoinSponsorshipModal({
 
     const [rawAmount, setRawAmount] = useState(parseAmount(amountProp))
 
-    const amount = toBN(rawAmount || '0').multipliedBy(Math.pow(10, decimals))
+    const amount = toDecimals(rawAmount || '0', decimals)
 
     const finalAmount = amount.isFinite() && amount.isGreaterThan(0) ? amount : toBN(0)
 
@@ -160,7 +161,7 @@ export default function JoinSponsorshipModal({
                             )}
                         </Prop>
                         <div>
-                            {operatorBalance.dividedBy(Math.pow(10, decimals)).toString()}{' '}
+                            {fromDecimals(operatorBalance, decimals).toString()}{' '}
                             {tokenSymbol}
                         </div>
                     </li>
