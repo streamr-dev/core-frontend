@@ -5,16 +5,18 @@ import { SponsorshipElement } from '~/types/sponsorship'
 import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
-import JoinSponsorshipModal from '~/modals/JoinSponsorshipModal'
 import { BlackTooltip } from '~/shared/components/Tooltip/Tooltip'
 import Button from '~/shared/components/Button'
 import useCopy from '~/shared/hooks/useCopy'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
-import { Layer } from '~/utils/Layer'
 import routes from '~/routes'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import { useFundSponsorship } from '~/hooks/useFundSponsorship'
+import { useJoinSponsorship } from '~/hooks/useJoinSponsorship'
+import useTokenInfo from '~/hooks/useTokenInfo'
+import { defaultChainConfig } from '~/getters/getChainConfig'
+import getCoreConfig from '~/getters/getCoreConfig'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -30,16 +32,18 @@ import {
     SingleElementPageActionBarTopPart,
 } from './NetworkActionBar.styles'
 
-const joinSponsorshipModal = toaster(JoinSponsorshipModal, Layer.Modal)
-
 export const SponsorshipActionBar: FunctionComponent<{
     sponsorship: SponsorshipElement
 }> = ({ sponsorship }) => {
     const { copy } = useCopy()
 
     const fundSponsorship = useFundSponsorship()
-
-    // TODO when Mariusz will merge his hook & getter for fetching Token information - use it here to display the proper token symbol
+    const { canJoinSponsorship, joinSponsorship } = useJoinSponsorship()
+    const tokenInfo = useTokenInfo(
+        defaultChainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
+        defaultChainConfig.id,
+    )
+    const tokenSymbol = tokenInfo?.symbol || 'DATA'
 
     return (
         <SingleElementPageActionBar>
@@ -142,14 +146,9 @@ export const SponsorshipActionBar: FunctionComponent<{
                             Sponsor
                         </Button>
                         <Button
-                            onClick={async () => {
-                                try {
-                                    await joinSponsorshipModal.pop({
-                                        streamId: sponsorship.streamId,
-                                    })
-                                } catch (e) {
-                                    // Ignore for now.
-                                }
+                            disabled={!canJoinSponsorship}
+                            onClick={() => {
+                                joinSponsorship(sponsorship.id, sponsorship.streamId)
                             }}
                         >
                             Join as operator
@@ -164,7 +163,7 @@ export const SponsorshipActionBar: FunctionComponent<{
                     stats={[
                         {
                             label: 'Payout rate',
-                            value: sponsorship.payoutPerDay + ' DATA/day',
+                            value: sponsorship.payoutPerDay + ` ${tokenSymbol}/day`,
                         },
                         {
                             label: 'Operators',
@@ -172,10 +171,11 @@ export const SponsorshipActionBar: FunctionComponent<{
                         },
                         {
                             label: 'Total staked',
-                            value: truncateNumber(
-                                Number(sponsorship.totalStake),
-                                'thousands',
-                            ),
+                            value:
+                                truncateNumber(
+                                    Number(sponsorship.totalStake),
+                                    'thousands',
+                                ) + ` ${tokenSymbol}`,
                         },
                         {
                             label: 'APY',
@@ -183,11 +183,11 @@ export const SponsorshipActionBar: FunctionComponent<{
                         },
                         {
                             label: 'Cumulative sponsored',
-                            value: `${sponsorship.cumulativeSponsoring} DATA`,
+                            value: `${sponsorship.cumulativeSponsoring} ${tokenSymbol}`,
                         },
                         {
                             label: 'Minimum stake',
-                            value: sponsorship.minimumStake + ' DATA',
+                            value: sponsorship.minimumStake + ` ${tokenSymbol}`,
                         },
                     ]}
                     columns={3}

@@ -1,4 +1,4 @@
-import { ERC677ABI, ERC677 } from '@streamr/network-contracts'
+import { ERC677ABI, ERC677, Operator, operatorABI } from '@streamr/network-contracts'
 import { Contract } from 'ethers'
 import { defaultAbiCoder } from 'ethers/lib/utils'
 import { getConfigForChain } from '~/shared/web3/config'
@@ -125,6 +125,26 @@ export async function fundSponsorship(sponsorshipId: string, amount: BNish) {
             '0x',
         )
 
+        await tx.wait()
+    })
+}
+
+export async function stakeOnSponsorship(
+    sponsorshipId: string,
+    amountWei: string,
+    operatorAddress: string,
+): Promise<void> {
+    const chainId = getSponsorshipChainId()
+    const chainConfig = getConfigForChain(chainId)
+    const paymentTokenSymbolFromConfig = getCoreConfig().sponsorshipPaymentToken
+    await networkPreflight(chainId)
+
+    await toastedOperation('Stake on sponsorship', async () => {
+        const signer = await getSigner()
+
+        const token = new Contract(operatorAddress, operatorABI, signer) as Operator
+
+        const tx = await token.stake(sponsorshipId, amountWei)
         await tx.wait()
     })
 }

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
 import CopyIcon from '@atlaskit/icon/glyph/copy'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
@@ -14,11 +15,18 @@ import FormModal, {
 import Label from '~/shared/components/Ui/Label'
 import useCopy from '~/shared/hooks/useCopy'
 import { toBN } from '~/utils/bn'
+import { Alert } from '~/components/Alert'
+import SvgIcon from '~/shared/components/SvgIcon'
+import { COLORS } from '~/shared/utils/styled'
+import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
+import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
 
-interface Props extends Omit<FormModalProps, 'canSubmit'> {
-    onResolve?: (amount: string) => void
+interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
+    onSubmit: (amountWei: string) => void
+    onResolve?: (amountWei: string) => void
     operatorBalance?: string
     tokenSymbol?: string
+    decimals?: number
     operatorId?: string
     amount?: string
     streamId?: string
@@ -34,11 +42,13 @@ export default function JoinSponsorshipModal({
     title = 'Join Sponsorship as Operator',
     submitLabel = 'Join',
     onResolve,
+    onSubmit,
     operatorBalance: operatorBalanceProp = '0',
     operatorId = 'N/A',
     amount: amountProp = '0',
     streamId: streamIdProp,
     tokenSymbol = 'DATA',
+    decimals = 18,
     ...props
 }: Props) {
     const streamId = streamIdProp || 'N/A'
@@ -49,9 +59,12 @@ export default function JoinSponsorshipModal({
 
     const [rawAmount, setRawAmount] = useState(parseAmount(amountProp))
 
-    const amount = toBN(rawAmount || '0').multipliedBy(1e18)
+    const amount = toDecimals(rawAmount || '0', decimals)
 
     const finalAmount = amount.isFinite() && amount.isGreaterThan(0) ? amount : toBN(0)
+
+    const { count: liveNodesCount, isLoading: liveNodesCountLoading } =
+        useOperatorLiveNodes()
 
     useEffect(() => {
         setRawAmount(parseAmount(amountProp))
@@ -59,7 +72,11 @@ export default function JoinSponsorshipModal({
 
     const insufficientFunds = finalAmount.isGreaterThan(operatorBalance)
 
-    const canSubmit = finalAmount.isGreaterThan(0) && !insufficientFunds
+    const canSubmit =
+        finalAmount.isGreaterThan(0) &&
+        !insufficientFunds &&
+        !liveNodesCountLoading &&
+        liveNodesCount > 0
 
     const { copy } = useCopy()
 
@@ -73,7 +90,7 @@ export default function JoinSponsorshipModal({
             onBeforeAbort={(reason) =>
                 !busy &&
                 (toBN(rawAmount || '0')
-                    .multipliedBy(1e18)
+                    .multipliedBy(Math.pow(10, decimals))
                     .eq(amountProp || '0') ||
                     reason !== RejectionReason.Backdrop)
             }
@@ -85,11 +102,7 @@ export default function JoinSponsorshipModal({
                 setBusy(true)
 
                 try {
-                    /**
-                     * Replace the following with your favourite contract interaction! <3
-                     */
-                    await new Promise((resolve) => void setTimeout(resolve, 2000))
-
+                    await onSubmit(finalAmount.toString())
                     onResolve?.(finalAmount.toString())
                 } catch (e) {
                     console.warn('Error while becoming an operator', e)
@@ -148,7 +161,8 @@ export default function JoinSponsorshipModal({
                             )}
                         </Prop>
                         <div>
-                            {operatorBalance.dividedBy(1e18).toString()} {tokenSymbol}
+                            {fromDecimals(operatorBalance, decimals).toString()}{' '}
+                            {tokenSymbol}
                         </div>
                     </li>
                     <li>
@@ -157,7 +171,53 @@ export default function JoinSponsorshipModal({
                     </li>
                 </ul>
             </Section>
-            {/*TODO Use Alert component here*/}
+            {liveNodesCountLoading && (
+                <StyledAlert type="loading" title="Checking Streamr nodes">
+                    <span>
+                        In order to continue, you need to have one or more Streamr nodes
+                        running and correctly configured. You will be slashed if you stake
+                        without your nodes contributing resources to the stream.
+                    </span>
+                </StyledAlert>
+            )}
+            {!liveNodesCountLoading &&
+                (liveNodesCount > 0 ? (
+                    <StyledAlert type="success" title="Streamr nodes detected">
+                        <span>
+                            Once you stake, your nodes will start working on the stream.
+                            Please ensure your nodes have enough resources available to
+                            handle the traffic in the stream.
+                        </span>
+                    </StyledAlert>
+                ) : (
+                    <StyledAlert type="error" title="Streamr nodes not detected">
+                        <p>
+                            In order to continue, you need to have one or more Streamr
+                            nodes running and correctly configured. You will be slashed if
+                            you stake without your nodes contributing resources to the
+                            stream.
+                        </p>
+                        <a
+                            href="https://docs.streamr.network/node-runners/run-a-node"
+                            target="_blank"
+                            rel="noreferrer noopener"
+                        >
+                            How to run a Streamr node <LinkIcon name="externalLink" />
+                        </a>
+                    </StyledAlert>
+                ))}
         </FormModal>
     )
 }
+
+const StyledAlert = styled(Alert)`
+    margin-top: 16px;
+
+    a {
+        color: ${COLORS.link};
+    }
+`
+
+const LinkIcon = styled(SvgIcon)`
+    width: 24px;
+`
