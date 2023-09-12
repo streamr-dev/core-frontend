@@ -5,14 +5,14 @@ import {
     useProject,
     useUpdateProject,
 } from '~/shared/stores/projectEditor'
-import { COLORS, TABLET } from '~/shared/utils/styled'
+import { COLORS } from '~/shared/utils/styled'
 import RichTextEditor from '~/components/RichTextEditor'
 import DetailDropdown, {
     DetailIcon,
     List as DetailDropdownList,
 } from '~/components/DetailDropdown'
 import ProjectProperty from '~/components/ProjectProperty'
-import CoverImage, { Root as CoverImageRoot } from './CoverImage'
+import CoverImage, { Wide, Root as CoverImageRoot } from './CoverImage'
 import { getBase64ForFile } from '~/getters'
 import { toaster } from 'toasterhea'
 import CropImageModal from '~/components/CropImageModal/CropImageModal'
@@ -41,7 +41,17 @@ export default function EditorHero() {
 
     return (
         <HeroContainer>
-            <div>
+            <ImageWrap>
+                <NameInput
+                    type="text"
+                    placeholder="Project name"
+                    value={name}
+                    onChange={(e) => {
+                        update((project) => {
+                            project.name = e.target.value
+                        })
+                    }}
+                />
                 <CoverImage
                     disabled={busy}
                     src={newImageUrl || imageUrl}
@@ -75,7 +85,7 @@ export default function EditorHero() {
                         setNewImageUrl(url)
                     }}
                 />
-            </div>
+            </ImageWrap>
             <DetailsWrap>
                 <NameInput
                     type="text"
@@ -276,15 +286,28 @@ export default function EditorHero() {
 
 const NameInput = styled.input`
     border: 0 !important;
+    display: block;
     font-size: 34px;
     line-height: 44px;
-    margin: 10px 0 24px;
+    margin: 0 0 24px;
     outline: 0 !important;
     padding: 0;
     width: 100%;
 
     ::placeholder {
         color: ${COLORS.primaryDisabled};
+    }
+
+    @media (min-width: ${Wide}px) {
+        margin-top: 10px;
+    }
+`
+
+const ImageWrap = styled.div`
+    @media (min-width: ${Wide}px) {
+        ${NameInput} {
+            display: none;
+        }
     }
 `
 
@@ -294,27 +317,38 @@ const DetailsWrap = styled.div`
     flex-grow: 1;
     min-width: 0;
 
-    ${DetailDropdownList} {
-        margin-top: 48px;
+    ${NameInput} {
+        display: none;
+    }
+
+    @media (min-width: ${Wide}px) {
+        ${NameInput} {
+            display: block;
+        }
     }
 `
 
 const Desc = styled.div`
     flex-grow: 1;
+    margin: 32px 0;
+
+    @media (min-width: ${Wide}px) {
+        margin: 0 0 48px;
+    }
 `
 
 const HeroContainer = styled.div`
     background-color: white;
     border-radius: 16px;
-    display: flex;
     padding: 24px;
 
-    @media ${TABLET} {
+    @media (min-width: ${Wide}px) {
+        display: flex;
         padding: 40px;
-    }
 
-    ${CoverImageRoot} {
-        flex-shrink: 0;
-        margin-right: 40px;
+        ${CoverImageRoot} {
+            flex-shrink: 0;
+            margin-right: 40px;
+        }
     }
 `

@@ -104,7 +104,7 @@ const Checkboxes = styled.div`
     border-radius: 4px;
     display: grid;
     gap: 32px;
-    grid-template-columns: repeat(4, auto);
+    grid-template-columns: repeat(auto-fit, 146px);
     padding: 24px;
 `
 
@@ -115,6 +115,8 @@ const TickButton = styled.button`
     border: 0;
     display: flex;
     line-height: normal;
+    padding: 0;
+    white-space: nowrap;
 
     ${Tick} {
         height: 24px;

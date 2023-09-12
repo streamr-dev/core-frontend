@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import Layout from '~/components/Layout'
 import {
     getEmptySalePoint,
@@ -20,7 +20,6 @@ import Button from '~/shared/components/Button'
 import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
 import { formatChainName } from '~/shared/utils/chains'
 import SalePointTokenSelector from '~/components/SalePointSelector/SalePointTokenSelector'
-import { DESKTOP } from '~/shared/utils/styled'
 import SalePointOption, {
     DataUnionOption,
     PaidOption,
@@ -108,7 +107,7 @@ export default function ProjectEditorPage() {
                                     and beneficiary address on each chain separately.
                                 </p>
                             </Content>
-                            <Content $desktopMaxWidth="728px">
+                            <Content $desktopMaxWidth={728}>
                                 {salePoints.map((salePoint) => (
                                     <SalePointOption
                                         key={salePoint.chainId}
@@ -136,7 +135,7 @@ export default function ProjectEditorPage() {
                                             <h2>Select chain</h2>
                                             <p>Select the chain for your Data Union.</p>
                                         </Content>
-                                        <Content $desktopMaxWidth="728px">
+                                        <Content $desktopMaxWidth={728}>
                                             {salePoints.map((salePoint) => (
                                                 <SalePointOption
                                                     key={salePoint.chainId}
@@ -180,7 +179,7 @@ export default function ProjectEditorPage() {
                                             </p>
                                         </Content>
                                         {salePoint ? (
-                                            <Content $desktopMaxWidth="728px">
+                                            <Content $desktopMaxWidth={728}>
                                                 <SalePointTokenSelector
                                                     salePoint={salePoint}
                                                     onSalePointChange={onSalePointChange}
@@ -196,7 +195,7 @@ export default function ProjectEditorPage() {
                                         <Content>
                                             <h2>Data Union admin fee</h2>
                                         </Content>
-                                        <Content $desktopMaxWidth="728px">
+                                        <Content $desktopMaxWidth={728}>
                                             <DataUnionFee />
                                         </Content>
                                     </ColoredBox>
@@ -224,7 +223,7 @@ export default function ProjectEditorPage() {
                                 providing a link to your own terms of use document.
                             </p>
                         </Content>
-                        <Content $desktopMaxWidth="728px">
+                        <Content $desktopMaxWidth={728}>
                             <TermsOfUse />
                         </Content>
                     </ColoredBox>
@@ -283,8 +282,10 @@ const Segment = styled.div`
     }
 `
 
-const Content = styled.div<{ $desktopMaxWidth?: string }>`
-    @media ${DESKTOP} {
-        max-width: ${({ $desktopMaxWidth = '678px' }) => $desktopMaxWidth};
-    }
+const Content = styled.div<{ $desktopMaxWidth?: number }>`
+    ${({ $desktopMaxWidth = 678 }) => css`
+        @media (min-width: ${$desktopMaxWidth + 64}px) {
+            max-width: ${$desktopMaxWidth}px;
+        }
+    `}
 `

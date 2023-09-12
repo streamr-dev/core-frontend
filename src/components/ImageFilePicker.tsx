@@ -67,10 +67,8 @@ export default function ImageFilePicker({
 
 export const ImageFilePickerRoot = styled.div<{ $isDragActive?: boolean }>`
     cursor: pointer;
-    height: 400px;
     overflow: hidden;
     position: relative;
-    width: 100%;
 
     &[area-disabled] {
         opacity: 0.5;

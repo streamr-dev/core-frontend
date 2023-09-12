@@ -6,6 +6,8 @@ import PngIcon from '~/shared/components/PngIcon'
 
 const Radius = 16
 
+export const Wide = 1100
+
 export default function CoverImage({
     disabled = false,
     onChange,
@@ -63,10 +65,12 @@ const Desktop = styled.p`
 `
 
 export const Root = styled.div`
-    aspect-ratio: 1 / 1;
     max-width: 100%;
     position: relative;
-    width: 400px;
+
+    @media (min-width: ${Wide}px) {
+        width: 400px;
+    }
 `
 
 const Preview = styled.img`
@@ -89,16 +93,17 @@ const Preview = styled.img`
 
 export const Dropzone = styled.div`
     align-items: center;
+    aspect-ratio: 1 / 1;
     background-color: ${COLORS.primaryLight};
     border-radius: ${Radius}px;
     color: #a3a3a3;
     display: flex;
     flex-direction: row;
     font-weight: 500;
-    height: 100%;
     justify-content: center;
     padding: 0 3em;
     text-align: center;
+    width: 100%;
 
     :hover ${Preview} {
         opacity: 0;
