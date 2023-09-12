@@ -281,22 +281,12 @@ export async function getOperatorDelegationAmount(operatorId: string, address: s
     return toBN(amount)
 }
 
-export async function addOperatorNodes(operatorId: string, addresses: string[]) {
+export async function setOperatorNodeAddresses(operatorId: string, addresses: string[]) {
     const chainId = getOperatorChainId()
 
     await networkPreflight(chainId)
 
-    const provider = getPublicWeb3Provider(chainId)
-    const operatorContract = new Contract(operatorId, operatorABI, provider) as Operator
-    await operatorContract.updateNodeAddresses(addresses, [])
-}
-
-export async function removeOperatorNodes(operatorId: string, addresses: string[]) {
-    const chainId = getOperatorChainId()
-
-    await networkPreflight(chainId)
-
-    const provider = getPublicWeb3Provider(chainId)
-    const operatorContract = new Contract(operatorId, operatorABI, provider) as Operator
-    await operatorContract.updateNodeAddresses([], addresses)
+    const signer = await getSigner()
+    const operatorContract = new Contract(operatorId, operatorABI, signer) as Operator
+    await operatorContract.setNodeAddresses(addresses)
 }

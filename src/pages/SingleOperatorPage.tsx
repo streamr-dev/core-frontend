@@ -34,11 +34,23 @@ import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
 import AddNodeAddressModal from '~/modals/AddNodeAddressModal'
 import { useOperatorStore } from '~/shared/stores/operator'
 import { Layer } from '~/utils/Layer'
+import Spinner from '~/shared/components/Spinner'
+import SvgIcon from '~/shared/components/SvgIcon'
 import { NetworkChartWrap } from '../components/NetworkUtils'
 import { getOperatorStats } from '../getters/getOperatorStats'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 const addNodeAddressModal = toaster(AddNodeAddressModal, Layer.Modal)
+
+const PendingIndicator = () => (
+    <PendingIndicatorContainer>
+        <Spinner />
+        pending
+        <Button type="button" onClick={() => console.log('pending clik')}>
+            <SvgIcon name="crossMedium" />
+        </Button>
+    </PendingIndicatorContainer>
+)
 
 export const SingleOperatorPage = () => {
     const operatorId = useParams().id
@@ -46,17 +58,23 @@ export const SingleOperatorPage = () => {
     const operator = operatorQuery.data
     const walletAddress = useWalletAccount()
     const {
+        setOperator,
         addNodeAddress,
         removeNodeAddress,
-        isNodeAddressAdded,
-        isNodeAddressRemoved,
         addedNodeAddresses,
         removedNodeAddresses,
+        persistNodeAddresses,
+        computed,
     } = useOperatorStore()
 
-    const operatorNodes = useMemo(() => {
-        return [operator?.nodes ?? [], ...addedNodeAddresses, ...removedNodeAddresses]
-    }, [operator?.nodes, addedNodeAddresses, removedNodeAddresses])
+    const operatorNodes = computed.nodeAddresses
+    console.log(computed.nodeAddresses)
+
+    console.log(operator?.nodes, addedNodeAddresses, removedNodeAddresses)
+
+    useEffect(() => {
+        setOperator(operator)
+    }, [operator, setOperator])
 
     const [selectedDataSource, setSelectedDataSource] = useState<string>('totalValue')
     const [selectedPeriod, setSelectedPeriod] = useState<string>(ChartPeriod.SevenDays)
@@ -324,14 +342,50 @@ export const SingleOperatorPage = () => {
                         {walletAddress?.toLowerCase() === operator.owner && (
                             <>
                                 <ScrollTable
-                                    elements={operatorNodes as unknown as object[]}
+                                    elements={operatorNodes}
                                     columns={[
                                         {
                                             displayName: 'Address',
-                                            valueMapper: (element) => `${element}`,
+                                            valueMapper: (element) =>
+                                                `${element.address}`,
                                             align: 'start',
                                             isSticky: true,
                                             key: 'id',
+                                        },
+                                        {
+                                            displayName: 'MATIC balance',
+                                            valueMapper: (element) =>
+                                                `${element.balance.toString()}`,
+                                            align: 'start',
+                                            isSticky: false,
+                                            key: 'balance',
+                                        },
+                                        {
+                                            displayName: '',
+                                            valueMapper: (element) => (
+                                                <>
+                                                    {element.isRemoved && (
+                                                        <PendingIndicator />
+                                                    )}
+                                                    {element.isAdded && 'added'}
+                                                    {!element.isAdded &&
+                                                        !element.isRemoved && (
+                                                            <Button
+                                                                kind="secondary"
+                                                                onClick={() => {
+                                                                    removeNodeAddress(
+                                                                        element.address,
+                                                                    )
+                                                                }}
+                                                            >
+                                                                Delete
+                                                            </Button>
+                                                        )}
+                                                </>
+                                            ),
+                                            align: 'end',
+                                            isSticky: false,
+                                            key: 'actions',
                                         },
                                     ]}
                                     title={
@@ -359,6 +413,7 @@ export const SingleOperatorPage = () => {
                                     footerComponent={
                                         <NodeAddressesFooter>
                                             <Button
+                                                kind="secondary"
                                                 onClick={() =>
                                                     addNodeAddressModal.pop({
                                                         onSubmit: async (address) => {
@@ -368,6 +423,16 @@ export const SingleOperatorPage = () => {
                                                 }
                                             >
                                                 Add node address
+                                            </Button>
+                                            <Button
+                                                kind="primary"
+                                                onClick={() => persistNodeAddresses()}
+                                                disabled={
+                                                    removedNodeAddresses.length === 0 &&
+                                                    addedNodeAddresses.length === 0
+                                                }
+                                            >
+                                                Save
                                             </Button>
                                         </NodeAddressesFooter>
                                     }
@@ -437,6 +502,7 @@ const NodeAddressesFooter = styled.div`
     display: flex;
     justify-content: right;
     padding: 32px;
+    gap: 10px;
 `
 
 const SponsorshipsTableTitle = styled.div`
@@ -456,4 +522,37 @@ const SponsorshipsCount = styled.div`
 const NodeAddressHeader = styled.div`
     display: flex;
     align-items: center;
+`
+
+const PendingIndicatorContainer = styled.div`
+    display: grid;
+    grid-template-columns: auto auto auto;
+    align-content: center;
+    height: 32px;
+    padding: 8px;
+    align-items: center;
+    gap: 4px;
+    border-radius: 4px;
+    background: #deebff;
+
+    & button {
+        color: ${COLORS.close};
+        line-height: 14px;
+        cursor: pointer;
+        padding: 0.5rem;
+        margin: 0;
+        background: none;
+        outline: none;
+        border: none;
+
+        &:disabled {
+            opacity: 0.2;
+            cursor: not-allowed;
+        }
+    }
+
+    & svg {
+        width: 14px;
+        height: 14px;
+    }
 `
