@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import styled, { css } from 'styled-components'
-import Layout from '~/components/Layout'
+import Layout, { LayoutInner as PrestyledLayoutInner } from '~/components/Layout'
 import {
     getEmptySalePoint,
     useIsNewProject,
@@ -77,6 +77,7 @@ export default function ProjectEditorPage() {
 
     return (
         <Layout
+            innerComponent={LayoutInner}
             nav={<EditorNav />}
             pageTitle={isNew ? 'Create a new project' : 'Edit project'}
         >
@@ -288,4 +289,9 @@ const Content = styled.div<{ $desktopMaxWidth?: number }>`
             max-width: ${$desktopMaxWidth}px;
         }
     `}
+`
+
+const LayoutInner = styled(PrestyledLayoutInner)`
+    width: 100%;
+    overflow: hidden;
 `
