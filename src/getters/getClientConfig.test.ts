@@ -5,7 +5,11 @@ import g from './getClientConfig'
 // Filter out what's unexpected. FIXME: fix the client.
 jest.mock('~//getters/getConfig', () => ({
     __esModule: true,
-    default: jest.fn(),
+    default: jest.fn(() => ({
+        core: {
+            defaultChain: 'dev2',
+        },
+    })),
 }))
 
 setTempEnv({ STREAMR_DOCKER_DEV_HOST: null })
