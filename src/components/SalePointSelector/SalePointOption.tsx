@@ -127,7 +127,7 @@ const DropdownToggle = styled.div`
 const DropdownInner = styled.div`
     padding: 8px 24px 64px;
     transition: margin-bottom 0.5s ease-in-out;
-    margin-bottom: -200%;
+    margin-bottom: -350%;
 
     h4 {
         font-weight: 400;
