@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+import { toaster } from 'toasterhea'
 import {
     useIsProjectBusy,
     useProject,
@@ -12,11 +13,10 @@ import DetailDropdown, {
     List as DetailDropdownList,
 } from '~/components/DetailDropdown'
 import ProjectProperty from '~/components/ProjectProperty'
-import CoverImage, { Wide, Root as CoverImageRoot } from './CoverImage'
 import { getBase64ForFile } from '~/getters'
-import { toaster } from 'toasterhea'
 import CropImageModal from '~/components/CropImageModal/CropImageModal'
 import { Layer } from '~/utils/Layer'
+import CoverImage, { Wide, Root as CoverImageRoot } from './CoverImage'
 
 const cropModal = toaster(CropImageModal, Layer.Modal)
 

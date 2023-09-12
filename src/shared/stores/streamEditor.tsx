@@ -26,22 +26,9 @@ import routes from '~/routes'
 import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
 import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
 import { isMessagedObject } from '~/utils'
+import { DraftValidationError } from '~/errors'
 
 type ErrorKey = 'streamId' | keyof StreamMetadata
-
-export class DraftValidationError extends Error {
-    name = 'DraftValidationError'
-
-    constructor(readonly key: ErrorKey, readonly message: string) {
-        super(message)
-
-        if (Error.captureStackTrace) {
-            Error.captureStackTrace(this, DraftValidationError)
-        }
-
-        Object.setPrototypeOf(this, DraftValidationError.prototype)
-    }
-}
 
 interface Actions {
     fetchPermissions(draftId: string, streamrClient: StreamrClient): Promise<void>

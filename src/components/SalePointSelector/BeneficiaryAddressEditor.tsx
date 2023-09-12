@@ -14,12 +14,10 @@ export default function BeneficiaryAddressEditor({
     disabled = false,
     value: valueProp = '',
     onChange: onChangeProp,
-    chainName,
 }: {
     disabled?: boolean
     value?: string
     onChange?: (value: string) => void
-    chainName: string
 }) {
     const [value, setValue] = useState(valueProp)
 

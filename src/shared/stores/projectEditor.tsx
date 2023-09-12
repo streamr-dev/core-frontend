@@ -579,19 +579,6 @@ export function useIsNewProject() {
     return typeof useProject().id === 'undefined'
 }
 
-export function useUpdateProjectContactInfo() {
-    const update = useUpdateProject()
-
-    return useCallback(
-        (contact: Partial<Project['contact']>) => {
-            return update((project) => {
-                Object.assign(project.contact, contact)
-            })
-        },
-        [update],
-    )
-}
-
 export function useUpdateProject() {
     const draftId = useDraftId()
 
