@@ -1,0 +1,35 @@
+[core]
+dataUnionPublishMemberLimit = 0
+platformOriginUrl = "https://staging.streamr.network"
+streamrUrl = "https://staging.streamr.network"
+uniswapAdaptorContractAddress = "0xE4eA76e830a659282368cA2e7E4d18C4AE52D8B3"
+web3TransactionConfirmationBlocks = 1
+defaultChain = 'mumbai'
+marketplaceChains = ['mumbai']
+dataunionChains = ['mumbai']
+streamChains = ['mumbai']
+projectsChain = 'mumbai'
+theGraphUrl = "https://api.thegraph.com"
+mainnetInfuraUrl = "https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206"
+dataUnionJoinServerUrl = "https://join.dataunions.org/"
+theHubGraphName = "samt1803/network-subgraphs"
+streamIndexerUrl = "https://stream-metrics-staging.streamr.network/api"
+reverseRecordsAddress = "0x3671aE578E63FdF66ad4F3E12CC0c0d71Ac7510C"
+sponsorshipPaymentToken = "DATA"
+
+[[core.dataunionGraphNames]]
+chainId = 80001
+name = "samt1803/dataunion-subgraphs"
+
+[[core.storageNodes]]
+name = "Streamr Germany"
+address = "0x31546eEA76F2B2b3C5cC06B1c93601dc35c9D916"
+
+[core.ipfs]
+projectId = "2KjYUpR265h6R5M5njkSue5RGm7"
+apiSecretKey = "c39492773b28820c8b3654178bf26946"
+ipfsUploadEndpoint = "https://ipfs.infura.io:5001/api/v0/add"
+ipfsGatewayUrl = "https://streamr-hub.infura-ipfs.io/ipfs/"
+
+[client]
+graphUrl = "https://api.thegraph.com/subgraphs/name/samt1803/network-subgraphs"
