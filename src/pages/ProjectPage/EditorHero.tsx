@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { useProject, useUpdateProject } from '~/shared/stores/projectEditor'
+import {
+    useIsProjectBusy,
+    useProject,
+    useUpdateProject,
+} from '~/shared/stores/projectEditor'
 import { COLORS, TABLET } from '~/shared/utils/styled'
 import RichTextEditor from '~/components/RichTextEditor'
 import DetailDropdown, {
@@ -9,16 +13,68 @@ import DetailDropdown, {
 } from '~/components/DetailDropdown'
 import ProjectProperty from '~/components/ProjectProperty'
 import CoverImage, { Root as CoverImageRoot } from './CoverImage'
+import { getBase64ForFile } from '~/getters'
+import { toaster } from 'toasterhea'
+import CropImageModal from '~/components/CropImageModal/CropImageModal'
+import { Layer } from '~/utils/Layer'
+
+const cropModal = toaster(CropImageModal, Layer.Modal)
 
 export default function EditorHero() {
-    const { creator, contact, name, description } = useProject({ hot: true })
+    const { creator, contact, name, description, imageUrl } = useProject({ hot: true })
+
+    const [newImageUrl, setNewImageUrl] = useState<string>()
 
     const update = useUpdateProject()
+
+    const busy = useIsProjectBusy()
+
+    const imageAbortControllerRef = useRef<AbortController>()
+
+    useEffect(() => {
+        const { current: abortController } = imageAbortControllerRef
+
+        return () => {
+            abortController?.abort()
+        }
+    }, [])
 
     return (
         <HeroContainer>
             <div>
-                <CoverImage />
+                <CoverImage
+                    disabled={busy}
+                    src={newImageUrl || imageUrl}
+                    onChange={async (file) => {
+                        imageAbortControllerRef.current?.abort()
+
+                        const abortController = new AbortController()
+
+                        imageAbortControllerRef.current = abortController
+
+                        const { signal } = abortController
+
+                        const croppedFile = await cropModal.pop({
+                            imageUrl: URL.createObjectURL(file),
+                        })
+
+                        if (signal.aborted) {
+                            return
+                        }
+
+                        update((draft) => {
+                            draft.newImageToUpload = croppedFile
+                        })
+
+                        const url = await getBase64ForFile(croppedFile)
+
+                        if (signal.aborted) {
+                            return
+                        }
+
+                        setNewImageUrl(url)
+                    }}
+                />
             </div>
             <DetailsWrap>
                 <NameInput
