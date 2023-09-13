@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import moment from 'moment'
+import styled from 'styled-components'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     ErrorLabel,
@@ -15,6 +17,7 @@ import Label from '~/shared/components/Ui/Label'
 import { toBN } from '~/utils/bn'
 import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
 import { useConfigFromChain } from '~/hooks/useConfigFromChain'
+import { Alert } from '~/components/Alert'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onSubmit: (amountWei: string, differenceWei: string) => void
@@ -24,6 +27,7 @@ interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     decimals: number
     operatorId: string
     currentStake: string
+    leavePenalty: string
 }
 
 export default function EditStakeModal({
@@ -36,6 +40,7 @@ export default function EditStakeModal({
     tokenSymbol = 'DATA',
     currentStake: currentStakeProp,
     decimals = 18,
+    leavePenalty: leavePenaltyWei,
     ...props
 }: Props) {
     const [busy, setBusy] = useState(false)
@@ -61,9 +66,11 @@ export default function EditStakeModal({
     const canSubmit =
         finalAmount.isGreaterThanOrEqualTo(0) &&
         !insufficientFunds &&
-        /*!liveNodesCountLoading &&
-        liveNodesCount > 0 &&*/
         !difference.isEqualTo(0)
+
+    const leavePenalty = fromDecimals(leavePenaltyWei, decimals)
+    // STUB - todo: calculate the date when we will have it in the graph
+    const minimumStakePeriodEndDate = moment().add(14, 'days')
 
     return (
         <FormModal
@@ -109,7 +116,7 @@ export default function EditStakeModal({
                     {rawAmount !== '' && !isZeroOrAboveMinimumStake && (
                         <ErrorLabel>
                             Minimum value is{' '}
-                            {fromDecimals(minimumStakeWei, decimals).toString()}{' '}
+                            {fromDecimals(minimumStakeWei || 0, decimals).toString()}{' '}
                             {tokenSymbol}
                         </ErrorLabel>
                     )}
@@ -131,8 +138,7 @@ export default function EditStakeModal({
                     <li>
                         <Prop>Current stake</Prop>
                         <div>
-                            {fromDecimals(currentStakeProp, decimals).toString()}{' '}
-                            {tokenSymbol}
+                            {currentStakeProp} {tokenSymbol}
                         </div>
                     </li>
                     <li>
@@ -154,12 +160,19 @@ export default function EditStakeModal({
                             {tokenSymbol}
                         </div>
                     </li>
-                    <li>
-                        <Prop>Operator ID</Prop>
-                        <div>{operatorId}</div>
-                    </li>
                 </ul>
             </Section>
+            {finalAmount.isEqualTo(0) && leavePenalty.isGreaterThan(0) && (
+                <StyledAlert type="error" title="Your stake will be slashed">
+                    Your minimum staking period is still ongoing and ends on{' '}
+                    {minimumStakePeriodEndDate.format('YYYY-MM-DD HH:mm')}. If you unstake
+                    now, you will lose {leavePenalty.toString()} {tokenSymbol}.
+                </StyledAlert>
+            )}
         </FormModal>
     )
 }
+
+const StyledAlert = styled(Alert)`
+    margin-top: 16px;
+`

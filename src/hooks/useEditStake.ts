@@ -8,6 +8,7 @@ import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
 import { reduceStakeOnSponsorship, stakeOnSponsorship } from '~/services/sponsorships'
 import { SponsorshipElement, SponsorshipStake } from '~/types/sponsorship'
 import { toBN } from '~/utils/bn'
+import { getLeavePenalty } from '~/getters/getLeavePenalty'
 
 const editStakeModal = toaster(EditStakeModal, Layer.Modal)
 export const useEditStake = (): {
@@ -43,12 +44,17 @@ export const useEditStake = (): {
             }
             try {
                 const tokenInfo = await getSponsorshipTokenInfo()
+                const leavePenalty = await getLeavePenalty(
+                    myOperatorQuery.data.id,
+                    sponsorship.id,
+                )
                 await editStakeModal.pop({
                     currentStake: currentStake.amount,
                     operatorId: myOperatorQuery.data.id,
                     operatorBalance: myOperatorQuery.data.freeFundsWei.toString(),
                     tokenSymbol: tokenInfo.symbol,
                     decimals: tokenInfo.decimals,
+                    leavePenalty: leavePenalty.toString(),
                     onSubmit: async (amount: string, difference: string) => {
                         const differenceBN = toBN(difference)
                         if (differenceBN.isGreaterThanOrEqualTo(0)) {

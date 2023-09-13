@@ -140,9 +140,9 @@ export async function stakeOnSponsorship(
     await toastedOperation('Stake on sponsorship', async () => {
         const signer = await getSigner()
 
-        const token = new Contract(operatorAddress, operatorABI, signer) as Operator
+        const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
 
-        const tx = await token.stake(sponsorshipId, amountWei)
+        const tx = await contract.stake(sponsorshipId, amountWei)
         await tx.wait()
     })
 }
@@ -158,9 +158,9 @@ export async function reduceStakeOnSponsorship(
     await toastedOperation('Reduce stake on sponsorship', async () => {
         const signer = await getSigner()
 
-        const token = new Contract(operatorAddress, operatorABI, signer) as Operator
+        const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
 
-        const tx = await token.reduceStakeTo(sponsorshipId, targetAmountWei)
+        const tx = await contract.reduceStakeTo(sponsorshipId, targetAmountWei)
         await tx.wait()
     })
 }
