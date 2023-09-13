@@ -29,6 +29,7 @@ import {
     useMySponsorshipsQuery,
 } from '~/hooks/useSponsorshipsList'
 import { useJoinSponsorship } from '~/hooks/useJoinSponsorship'
+import { useEditStake } from '~/hooks/useEditStake'
 import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
 import { StreamInfoCell } from '../components/NetworkUtils'
 import {
@@ -61,6 +62,7 @@ export const SponsorshipsPage = () => {
     const mySponsorshipsQuery = useMySponsorshipsQuery(PAGE_SIZE, searchQuery)
 
     const { canJoinSponsorship, joinSponsorship } = useJoinSponsorship()
+    const { canEditStake, editStake } = useEditStake()
 
     const sponsorshipsQuery =
         selectedTab === TabOptions.allSponsorships
@@ -223,10 +225,18 @@ export const SponsorshipsPage = () => {
                                     fundSponsorship(element.id, element.payoutPerDay),
                             },
                             {
-                                displayName: 'Join As Operator',
-                                disabled: !walletConnected || !canJoinSponsorship,
+                                displayName: (element) =>
+                                    canEditStake(element)
+                                        ? 'Edit stake'
+                                        : 'Join As Operator',
+                                disabled: (element) =>
+                                    canEditStake(element)
+                                        ? false
+                                        : !walletConnected || !canJoinSponsorship,
                                 callback: (element) =>
-                                    joinSponsorship(element.id, element.streamId),
+                                    canEditStake(element)
+                                        ? editStake(element)
+                                        : joinSponsorship(element.id, element.streamId),
                             },
                         ]}
                         noDataFirstLine={

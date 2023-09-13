@@ -135,8 +135,6 @@ export async function stakeOnSponsorship(
     operatorAddress: string,
 ): Promise<void> {
     const chainId = getSponsorshipChainId()
-    const chainConfig = getConfigForChain(chainId)
-    const paymentTokenSymbolFromConfig = getCoreConfig().sponsorshipPaymentToken
     await networkPreflight(chainId)
 
     await toastedOperation('Stake on sponsorship', async () => {
@@ -145,6 +143,24 @@ export async function stakeOnSponsorship(
         const token = new Contract(operatorAddress, operatorABI, signer) as Operator
 
         const tx = await token.stake(sponsorshipId, amountWei)
+        await tx.wait()
+    })
+}
+
+export async function reduceStakeOnSponsorship(
+    sponsorshipId: string,
+    targetAmountWei: string,
+    operatorAddress: string,
+): Promise<void> {
+    const chainId = getSponsorshipChainId()
+    await networkPreflight(chainId)
+
+    await toastedOperation('Reduce stake on sponsorship', async () => {
+        const signer = await getSigner()
+
+        const token = new Contract(operatorAddress, operatorABI, signer) as Operator
+
+        const tx = await token.reduceStakeTo(sponsorshipId, targetAmountWei)
         await tx.wait()
     })
 }

@@ -17,6 +17,7 @@ import { useJoinSponsorship } from '~/hooks/useJoinSponsorship'
 import useTokenInfo from '~/hooks/useTokenInfo'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import getCoreConfig from '~/getters/getCoreConfig'
+import { useEditStake } from '~/hooks/useEditStake'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -39,6 +40,7 @@ export const SponsorshipActionBar: FunctionComponent<{
 
     const fundSponsorship = useFundSponsorship()
     const { canJoinSponsorship, joinSponsorship } = useJoinSponsorship()
+    const { canEditStake, editStake } = useEditStake()
     const tokenInfo = useTokenInfo(
         defaultChainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
         defaultChainConfig.id,
@@ -145,14 +147,24 @@ export const SponsorshipActionBar: FunctionComponent<{
                         >
                             Sponsor
                         </Button>
-                        <Button
-                            disabled={!canJoinSponsorship}
-                            onClick={() => {
-                                joinSponsorship(sponsorship.id, sponsorship.streamId)
-                            }}
-                        >
-                            Join as operator
-                        </Button>
+                        {canEditStake(sponsorship) ? (
+                            <Button
+                                onClick={() => {
+                                    editStake(sponsorship)
+                                }}
+                            >
+                                Edit stake
+                            </Button>
+                        ) : (
+                            <Button
+                                disabled={!canJoinSponsorship}
+                                onClick={() => {
+                                    joinSponsorship(sponsorship.id, sponsorship.streamId)
+                                }}
+                            >
+                                Join as operator
+                            </Button>
+                        )}
                     </NetworkActionBarCTAs>
                 </SingleElementPageActionBarTopPart>
                 <NetworkActionBarStatsTitle>

@@ -32,7 +32,7 @@ export const useJoinSponsorship = (): {
                     tokenSymbol: tokenInfo.symbol,
                     decimals: tokenInfo.decimals,
                     onSubmit: async (amount: string) => {
-                        stakeOnSponsorship(
+                        await stakeOnSponsorship(
                             sponsorshipId,
                             amount,
                             myOperatorQuery.data?.id as string,

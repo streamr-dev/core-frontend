@@ -39,9 +39,9 @@ export type ScrollTableColumnDef<T> = {
 }
 
 export type ScrollTableAction<T> = {
-    displayName: string
+    displayName: string | ((element: T) => string)
     callback: (element: T) => void
-    disabled?: boolean
+    disabled?: boolean | ((element: T) => boolean)
 }
 
 export const ScrollTable = <T extends object>({
@@ -171,9 +171,15 @@ export const ScrollTableCore = <T extends object>({
                                             onClick={() => {
                                                 action.callback(element)
                                             }}
-                                            disabled={action.disabled}
+                                            disabled={
+                                                typeof action.disabled == 'function'
+                                                    ? action.disabled(element)
+                                                    : action.disabled
+                                            }
                                         >
-                                            {action.displayName}
+                                            {typeof action.displayName === 'function'
+                                                ? action.displayName(element)
+                                                : action.displayName}
                                         </PopoverItem>
                                     ))}
                                 </Popover>

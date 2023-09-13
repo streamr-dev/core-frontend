@@ -4,6 +4,7 @@ import CopyIcon from '@atlaskit/icon/glyph/copy'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     CopyButtonWrapAppendix,
+    ErrorLabel,
     FieldWrap,
     FormModalProps,
     Prop,
@@ -11,6 +12,7 @@ import FormModal, {
     SectionHeadline,
     TextAppendix,
     TextInput,
+    WingedLabelWrap,
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
 import useCopy from '~/shared/hooks/useCopy'
@@ -20,6 +22,7 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS } from '~/shared/utils/styled'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
+import { useConfigFromChain } from '~/hooks/useConfigFromChain'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onSubmit: (amountWei: string) => void
@@ -72,11 +75,17 @@ export default function JoinSponsorshipModal({
 
     const insufficientFunds = finalAmount.isGreaterThan(operatorBalance)
 
+    const { minimumStakeWei } = useConfigFromChain()
+    const isAboveMinimumStake = minimumStakeWei
+        ? finalAmount.isGreaterThan(toBN(minimumStakeWei))
+        : true
+
     const canSubmit =
         finalAmount.isGreaterThan(0) &&
         !insufficientFunds &&
         !liveNodesCountLoading &&
-        liveNodesCount > 0
+        liveNodesCount > 0 &&
+        isAboveMinimumStake
 
     const { copy } = useCopy()
 
@@ -137,8 +146,17 @@ export default function JoinSponsorshipModal({
                         </CopyButtonWrapAppendix>
                     )}
                 </FieldWrap>
-                <Label>Amount to stake</Label>
-                <FieldWrap>
+                <StyledLabelWrap>
+                    <Label>Amount to stake</Label>
+                    {rawAmount !== '' && !isAboveMinimumStake && (
+                        <ErrorLabel>
+                            Minimum value is{' '}
+                            {fromDecimals(minimumStakeWei, decimals).toString()}{' '}
+                            {tokenSymbol}
+                        </ErrorLabel>
+                    )}
+                </StyledLabelWrap>
+                <FieldWrap $invalid={rawAmount !== '' && !isAboveMinimumStake}>
                     <TextInput
                         autoFocus
                         name="amount"
@@ -220,4 +238,8 @@ const StyledAlert = styled(Alert)`
 
 const LinkIcon = styled(SvgIcon)`
     width: 24px;
+`
+
+const StyledLabelWrap = styled(WingedLabelWrap)`
+    margin-top: 10px;
 `
