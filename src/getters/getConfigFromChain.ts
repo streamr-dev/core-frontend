@@ -11,11 +11,11 @@ export const getConfigFromChain = async (): Promise<{
     maxPenaltyPeriodSeconds: BNish
     minimumStakeWei: BNish
 }> => {
-    const signer = await getPublicWeb3Provider(defaultChainConfig.id).getSigner()
+    const provider = await getPublicWeb3Provider(defaultChainConfig.id)
     const config = new Contract(
         defaultChainConfig.contracts.StreamrConfig,
         streamrConfigABI,
-        signer,
+        provider,
     ) as StreamrConfig
     return {
         maxPenaltyPeriodSeconds: await config.maxPenaltyPeriodSeconds(),
