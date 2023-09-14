@@ -30,7 +30,7 @@ export async function getTokenInfo(
     if (typeof current === 'undefined') {
         const contract = getERC20TokenContract({
             tokenAddress,
-            signer: getPublicWeb3Provider(chainId),
+            provider: getPublicWeb3Provider(chainId),
         })
 
         const promise = new Promise<TokenInfo>((resolve, reject) => {

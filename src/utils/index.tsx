@@ -74,12 +74,12 @@ export async function waitForPurchasePropagation(
     account: string,
     { attempts = 30 }: { attempts?: number } = {},
 ) {
-    const signer = getPublicWeb3Provider(chainId)
+    const provider = getPublicWeb3Provider(chainId)
 
-    const contract = getProjectRegistryContract({ chainId, signer })
+    const contract = getProjectRegistryContract({ chainId, provider })
 
     // Take a couple of blocks back to be sure.
-    const fromBlock = (await signer.getBlockNumber()) - 10
+    const fromBlock = (await provider.getBlockNumber()) - 10
 
     for (let i = 0; i < attempts; i++) {
         const events = await contract.queryFilter(

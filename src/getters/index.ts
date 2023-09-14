@@ -58,10 +58,10 @@ export function getGraphUrl(): string {
 
 export function getProjectRegistryContract({
     chainId,
-    signer,
+    provider,
 }: {
     chainId: number
-    signer?: Signer | providers.Provider
+    provider?: Signer | providers.Provider
 }) {
     const { contracts } = getConfigForChain(chainId)
 
@@ -74,7 +74,7 @@ export function getProjectRegistryContract({
     return new Contract(
         contractAddress,
         projectRegistryAbi,
-        signer,
+        provider,
     ) as ProjectRegistryContract
 }
 
@@ -84,25 +84,25 @@ export function getProjectRegistryChainId(): number {
 
 export function getERC20TokenContract({
     tokenAddress,
-    signer,
+    provider,
 }: {
     tokenAddress: string
-    signer?: Signer | providers.Provider
+    provider?: Signer | providers.Provider
 }) {
-    return new Contract(tokenAddress, tokenAbi, signer) as TokenContract
+    return new Contract(tokenAddress, tokenAbi, provider) as TokenContract
 }
 
 export function getMarketplaceContract({
     chainId,
-    signer,
+    provider,
 }: {
     chainId: number
-    signer?: Signer | providers.Provider
+    provider?: Signer | providers.Provider
 }) {
     return new Contract(
         getMarketplaceAddress(chainId),
         marketplaceAbi,
-        signer,
+        provider,
     ) as MarketplaceContract
 }
 
@@ -116,7 +116,7 @@ export async function getAllowance(
         try {
             return await getERC20TokenContract({
                 tokenAddress,
-                signer: getPublicWeb3Provider(chainId),
+                provider: getPublicWeb3Provider(chainId),
             }).allowance(account, getMarketplaceAddress(chainId))
         } catch (e) {
             console.warn('Allowance check failed', e)
@@ -163,7 +163,7 @@ export async function getProjectPermissions(
 
     const response = await getProjectRegistryContract({
         chainId,
-        signer: getPublicWeb3Provider(chainId),
+        provider: getPublicWeb3Provider(chainId),
     }).getPermission(projectId, account)
 
     const [canBuy = false, canDelete = false, canEdit = false, canGrant = false] = z
