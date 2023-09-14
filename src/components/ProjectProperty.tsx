@@ -1,8 +1,10 @@
 import React, { ComponentProps, useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
+import { z } from 'zod'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS } from '~/shared/utils/styled'
 import EnterIcon from '~/shared/assets/icons/enter.svg'
+import { useSetProjectErrors } from '~/shared/stores/projectEditor'
 
 export default function ProjectProperty({
     error = '',
@@ -27,12 +29,30 @@ export default function ProjectProperty({
         setValue(valueProp)
     }, [valueProp])
 
+    const setErrors = useSetProjectErrors()
+
     return (
         <Root
             onSubmit={async (e) => {
                 e.preventDefault()
 
-                await onSubmit?.(value)
+                try {
+                    await onSubmit?.(value)
+                } catch (e) {
+                    if (e instanceof z.ZodError) {
+                        const errors = {}
+
+                        e.issues.forEach(({ path, message }) => {
+                            errors[path.join('.')] = message
+                        })
+
+                        return void setErrors((existingErrors) => {
+                            Object.assign(existingErrors, errors)
+                        })
+                    }
+
+                    console.warn('Failed to submit a project property', e)
+                }
             }}
         >
             <Header>

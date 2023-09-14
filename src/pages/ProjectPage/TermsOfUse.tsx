@@ -1,9 +1,17 @@
 import React from 'react'
 import styled from 'styled-components'
+import { z } from 'zod'
 import { Tick } from '~/shared/components/Checkbox'
 import Label from '~/shared/components/Ui/Label'
 import Input from '~/shared/components/Ui/Text/StyledInput'
-import { useProject, useUpdateProject } from '~/shared/stores/projectEditor'
+import {
+    useDraft,
+    usePersistCurrentProjectDraft,
+    useProject,
+    useSetProjectErrors,
+    useUpdateProject,
+} from '~/shared/stores/projectEditor'
+import { OpenDataPayload } from '~/types/projects'
 
 export default function TermsOfUse() {
     const update = useUpdateProject()
@@ -18,6 +26,12 @@ export default function TermsOfUse() {
             termsName,
         },
     } = useProject({ hot: true })
+
+    const { 'termsOfUse.termsUrl': termsUrlError } = useDraft()?.errors || {}
+
+    const setErrors = useSetProjectErrors()
+
+    const persist = usePersistCurrentProjectDraft()
 
     return (
         <>
@@ -69,8 +83,9 @@ export default function TermsOfUse() {
             </Checkboxes>
             <Links>
                 <div>
-                    <Label>Link to detailed terms‌</Label>
+                    <Label>Link to detailed terms</Label>
                     <Input
+                        invalid={!!termsUrlError}
                         type="text"
                         placeholder="Add a URL"
                         value={termsUrl}
@@ -78,11 +93,45 @@ export default function TermsOfUse() {
                             update(({ termsOfUse }) => {
                                 termsOfUse.termsUrl = e.target.value
                             })
+
+                            if (!termsUrlError) {
+                                /**
+                                 * Only revalidate the URL if we're already in the red. This will prevent
+                                 * on-the-fly validation before hitting submit assuming the user
+                                 * knows what a URL is.
+                                 */
+                                return
+                            }
+
+                            try {
+                                OpenDataPayload.pick({
+                                    termsOfUse: true,
+                                }).parse({
+                                    termsOfUse: {
+                                        termsUrl: e.target.value,
+                                    },
+                                })
+
+                                setErrors((errors) => {
+                                    delete errors['termsOfUse.termsUrl']
+                                })
+                            } catch (e) {
+                                if (e instanceof z.ZodError) {
+                                    return
+                                }
+
+                                console.warn('Failed to validate terms of use', e)
+                            }
+                        }}
+                        onKeyDown={({ key }) => {
+                            if (key === 'Enter') {
+                                persist()
+                            }
                         }}
                     />
                 </div>
                 <div>
-                    <Label>Display name for link‌</Label>
+                    <Label>Display name for link</Label>
                     <Input
                         type="text"
                         placeholder="Add a display name"
@@ -91,6 +140,11 @@ export default function TermsOfUse() {
                             update(({ termsOfUse }) => {
                                 termsOfUse.termsName = e.target.value
                             })
+                        }}
+                        onKeyDown={({ key }) => {
+                            if (key === 'Enter') {
+                                persist()
+                            }
                         }}
                     />
                 </div>

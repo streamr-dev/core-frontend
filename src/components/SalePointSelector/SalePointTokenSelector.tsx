@@ -11,6 +11,7 @@ import { SalePoint } from '~/shared/types'
 import useTokenInfo, { getCachedTokenInfo, getTokenInfo } from '~/hooks/useTokenInfo'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
 import { errorToast } from '~/utils/toast'
+import { usePersistCurrentProjectDraft } from '~/shared/stores/projectEditor'
 
 const TimeUnitOptions = Object.values(timeUnits).map((unit: TimeUnit) => ({
     label: `Per ${unit}`,
@@ -64,6 +65,8 @@ export default function SalePointTokenSelector({
         isEthereumAddress(customTokenAddress) &&
         !isCustomTokenInfoCached &&
         !isLoadingTokenInfo
+
+    const persist = usePersistCurrentProjectDraft()
 
     return (
         <Root>
@@ -187,6 +190,11 @@ export default function SalePointTokenSelector({
                                 ...salePoint,
                                 price: e.target.value,
                             })
+                        }}
+                        onKeyDown={({ key }) => {
+                            if (key === 'Enter') {
+                                persist()
+                            }
                         }}
                         value={price}
                         disabled={disabled || !tokenInfo}

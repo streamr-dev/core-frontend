@@ -1,11 +1,14 @@
 import React, { useMemo } from 'react'
 import styled, { css } from 'styled-components'
+import { z } from 'zod'
 import Layout, { LayoutInner as PrestyledLayoutInner } from '~/components/Layout'
 import {
     getEmptySalePoint,
+    useDraft,
     useIsNewProject,
     useIsProjectBusy,
     useProject,
+    useSetProjectErrors,
     useUpdateProject,
 } from '~/shared/stores/projectEditor'
 import { getProjectTypeTitle } from '~/getters'
@@ -22,10 +25,11 @@ import { formatChainName } from '~/shared/utils/chains'
 import SalePointTokenSelector from '~/components/SalePointSelector/SalePointTokenSelector'
 import SalePointOption, {
     DataUnionOption,
-    PaidOption,
 } from '~/components/SalePointSelector/SalePointOption'
 import { Chain } from '~/shared/types/web3-types'
 import getCoreConfig from '~/getters/getCoreConfig'
+import BeneficiaryAddressEditor from '~/components/SalePointSelector/BeneficiaryAddressEditor'
+import { SalePointPayload } from '~/types/projects'
 import DataUnionFee from './DataUnionFee'
 import DataUnionPayment from './DataUnionPayment'
 import EditorHero from './EditorHero'
@@ -75,6 +79,10 @@ export default function ProjectEditorPage() {
         })
     }
 
+    const errors = useDraft()?.errors || {}
+
+    const setErrors = useSetProjectErrors()
+
     return (
         <Layout
             innerComponent={LayoutInner}
@@ -109,19 +117,113 @@ export default function ProjectEditorPage() {
                                 </p>
                             </Content>
                             <Content $desktopMaxWidth={728}>
-                                {salePoints.map((salePoint) => (
-                                    <SalePointOption
-                                        key={salePoint.chainId}
-                                        multiSelect
-                                        onSalePointChange={onSalePointChange}
-                                        salePoint={salePoint}
-                                    >
-                                        <PaidOption
+                                {salePoints.map((salePoint) => {
+                                    const chainName = getConfigForChain(
+                                        salePoint.chainId,
+                                    ).name
+
+                                    const formattedChainName = formatChainName(chainName)
+
+                                    const beneficiaryErrorKey = `salePoints.${chainName}.beneficiaryAddress`
+
+                                    const beneficiaryInvalid =
+                                        !!errors[beneficiaryErrorKey]
+
+                                    return (
+                                        <SalePointOption
+                                            key={salePoint.chainId}
+                                            multiSelect
                                             onSalePointChange={onSalePointChange}
                                             salePoint={salePoint}
-                                        />
-                                    </SalePointOption>
-                                ))}
+                                        >
+                                            <h4>
+                                                Set the payment token and price on the{' '}
+                                                {formattedChainName} chain
+                                            </h4>
+                                            <p>
+                                                You can set a price for others to access
+                                                the streams in your project. The price can
+                                                be set in DATA or any other ERC-20 token.
+                                            </p>
+                                            <SalePointTokenSelector
+                                                disabled={salePoint.readOnly}
+                                                onSalePointChange={onSalePointChange}
+                                                salePoint={salePoint}
+                                            />
+                                            <h4>Set beneficiary</h4>
+                                            <p>
+                                                This wallet address receives the payments
+                                                for this product on {formattedChainName}{' '}
+                                                chain.
+                                            </p>
+                                            <BeneficiaryAddressEditor
+                                                invalid={beneficiaryInvalid}
+                                                disabled={salePoint.readOnly}
+                                                value={salePoint.beneficiaryAddress}
+                                                onChange={(beneficiaryAddress) => {
+                                                    const newSalePoint = {
+                                                        ...salePoint,
+                                                        beneficiaryAddress,
+                                                    }
+
+                                                    onSalePointChange?.(newSalePoint)
+
+                                                    /**
+                                                     * If the field is valid we skip on-the-fly validation assuming
+                                                     * correct user input at first.
+                                                     */
+                                                    if (!beneficiaryInvalid) {
+                                                        return
+                                                    }
+
+                                                    try {
+                                                        try {
+                                                            SalePointPayload.parse({
+                                                                [chainName]: newSalePoint,
+                                                            })
+                                                        } catch (e) {
+                                                            if (
+                                                                !(e instanceof z.ZodError)
+                                                            ) {
+                                                                throw e
+                                                            }
+
+                                                            const issues =
+                                                                e.issues.filter(
+                                                                    ({ path }) =>
+                                                                        path.slice(
+                                                                            -1,
+                                                                        )[0] ===
+                                                                        'beneficiaryAddress',
+                                                                )
+
+                                                            if (issues.length) {
+                                                                throw new z.ZodError(
+                                                                    issues,
+                                                                )
+                                                            }
+                                                        }
+
+                                                        setErrors((errors0) => {
+                                                            delete errors0[
+                                                                beneficiaryErrorKey
+                                                            ]
+                                                        })
+                                                    } catch (e) {
+                                                        if (e instanceof z.ZodError) {
+                                                            return
+                                                        }
+
+                                                        console.warn(
+                                                            'Failed to validate beneficiary address',
+                                                            e,
+                                                        )
+                                                    }
+                                                }}
+                                            />
+                                        </SalePointOption>
+                                    )
+                                })}
                             </Content>
                         </ColoredBox>
                     </Segment>

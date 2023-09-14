@@ -1,8 +1,10 @@
 import { produce } from 'immer'
-import { createContext, useCallback, useContext, useEffect, useMemo } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useMemo } from 'react'
 import { create } from 'zustand'
 import isEqual from 'lodash/isEqual'
 import uniqueId from 'lodash/uniqueId'
+import { toaster } from 'toasterhea'
+import { z } from 'zod'
 import { getGraphProjectWithParsedMetadata, getProjectImageUrl } from '~/getters'
 import {
     TimeUnit,
@@ -27,6 +29,12 @@ import { getDataUnionAdminFee } from '~/getters/du'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { SalePoint } from '~/shared/types'
 import { getDataAddress } from '~/marketplace/utils/web3'
+import { ValidationError } from '~/marketplace/containers/ProjectEditing/ProjectController'
+import isCodedError from '~/utils/isCodedError'
+import { RejectionReason } from '~/modals/BaseModal'
+import { Layer } from '~/utils/Layer'
+import { PublishableProjectPayload } from '~/types/projects'
+import Toast, { ToastType } from '../toasts/Toast'
 import { useWalletAccount } from './wallet'
 import { useHasActiveProjectSubscription } from './purchases'
 
@@ -52,7 +60,7 @@ interface ProjectEditorStore {
         projectType: string | null,
     ) => void
     persist: (draftId: string) => Promise<void>
-    setError: (draftId: string, key: string, message: string) => void
+    setErrors: (draftId: string, update: (errors: ProjectDraft['errors']) => void) => void
     teardown: (draftId: string, options?: { onlyAbandoned?: boolean }) => void
     abandon: (draftId: string) => void
     update: (draftId: string, upadte: (project: Project) => void) => void
@@ -424,7 +432,43 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
                     }),
                 )
 
-                // @TODO implement persisting
+                const draft = get().drafts[draftId]
+
+                if (!draft) {
+                    throw new Error(`No such draft: ${draftId}`)
+                }
+
+                try {
+                    JSON.parse(
+                        JSON.stringify(
+                            PublishableProjectPayload.parse(draft.project.hot),
+                        ),
+                    )
+
+                    /**
+                     * PUBLISH!
+                     */
+                } catch (e) {
+                    if (e instanceof z.ZodError) {
+                        const errors: ProjectDraft['errors'] = {}
+
+                        e.issues.forEach(({ path, message }) => {
+                            errors[path.join('.')] = message
+                        })
+
+                        setDraft(draftId, (copy) => {
+                            copy.errors = errors
+                        })
+
+                        /**
+                         * @TODO: ValidationError seems to be a redundant abstraction we can get rid
+                         * of and use ZodError directly.
+                         */
+                        throw new ValidationError(e.issues.map(({ message }) => message))
+                    }
+
+                    console.warn('Failed to persist a project draft', e)
+                }
             } finally {
                 setDraft(draftId, (draft) => {
                     draft.persisting = false
@@ -434,14 +478,8 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
             }
         },
 
-        setError(draftId, key, message) {
-            setDraft(draftId, (state) => {
-                if (!message) {
-                    return void delete state.errors[key]
-                }
-
-                state.errors[key] = message
-            })
+        setErrors(draftId, update) {
+            setDraft(draftId, (state) => void update(state.errors))
         },
 
         abandon(draftId) {
@@ -523,7 +561,7 @@ function useDraftId() {
     return useContext(ProjectDraftContext)
 }
 
-function useDraft() {
+export function useDraft() {
     const draftId = useDraftId()
 
     return useProjectEditorStore(({ drafts }) => (draftId ? drafts[draftId] : undefined))
@@ -593,5 +631,81 @@ export function useUpdateProject() {
             return update(draftId, updater)
         },
         [draftId, update],
+    )
+}
+
+const persistErrorToast = toaster(Toast, Layer.Toast)
+
+export function usePersistCurrentProjectDraft() {
+    const { persist } = useProjectEditorStore()
+
+    const draftId = useDraftId()
+
+    const busy = useIsProjectBusy()
+
+    const clean = useIsCurrentProjectDraftClean()
+
+    return useCallback(() => {
+        if (!draftId || busy || clean) {
+            return
+        }
+
+        setTimeout(async () => {
+            try {
+                await persist(draftId)
+            } catch (e) {
+                if (e instanceof ValidationError) {
+                    const ve: ValidationError = e
+
+                    return void setTimeout(async () => {
+                        try {
+                            await persistErrorToast.pop({
+                                type: ToastType.Warning,
+                                title: 'Failed to publish',
+                                desc: (
+                                    <ul>
+                                        {ve.messages.map((message, index) => (
+                                            <li key={index}>{message}</li>
+                                        ))}
+                                    </ul>
+                                ),
+                            })
+                        } catch (e) {
+                            // Ignore.
+                        }
+                    })
+                }
+
+                if (isCodedError(e) && e.code === 4001) {
+                    return
+                }
+
+                if (
+                    e === RejectionReason.CancelButton ||
+                    e === RejectionReason.EscapeKey
+                ) {
+                    return
+                }
+
+                console.warn('Failed to publish', e)
+            }
+        })
+    }, [draftId, persist, busy, clean])
+}
+
+export function useSetProjectErrors() {
+    const draftId = useDraftId()
+
+    const { setErrors } = useProjectEditorStore()
+
+    return useCallback(
+        (update: (errors: Record<string, string | undefined>) => void) => {
+            if (!draftId) {
+                return
+            }
+
+            return setErrors(draftId, update)
+        },
+        [draftId, setErrors],
     )
 }

@@ -10,8 +10,13 @@ import {
     useIsCurrentProjectDraftClean,
     useIsNewProject,
     useIsProjectBusy,
+    usePersistCurrentProjectDraft,
 } from '~/shared/stores/projectEditor'
 import routes from '~/routes'
+import { ValidationError } from '~/marketplace/containers/ProjectEditing/ProjectController'
+import { errorToast } from '~/utils/toast'
+import isCodedError from '~/utils/isCodedError'
+import { RejectionReason } from '~/modals/BaseModal'
 
 const FlexNavbar = styled(Navbar)`
     display: flex;
@@ -42,6 +47,8 @@ export default function EditorNav() {
 
     const isNew = useIsNewProject()
 
+    const persist = usePersistCurrentProjectDraft()
+
     return (
         <NavContainer>
             <FlexNavbar>
@@ -55,10 +62,7 @@ export default function EditorNav() {
                     <Button tag={Link} to={routes.projects.index()} kind="transparent">
                         Exit
                     </Button>
-                    <Button
-                        disabled={busy || clean}
-                        onClick={() => void console.info('Publish clicked!')}
-                    >
+                    <Button disabled={busy || clean} onClick={() => void persist()}>
                         Publish
                     </Button>
                 </FlexNavbarItem>

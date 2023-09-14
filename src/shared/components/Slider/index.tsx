@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
-import styles from './slider.pcss'
 import { COLORS } from '~/shared/utils/styled'
+import styles from './slider.pcss'
+
 type Props = {
     min: number
     max: number

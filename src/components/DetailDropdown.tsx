@@ -4,10 +4,11 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS } from '~/shared/utils/styled'
 
 interface Props {
+    children?: (close: () => void) => ReactNode
     icon?: ReactNode
+    onClose?: () => void
     value?: string
     valuePlaceholder?: string
-    children?: (close: () => void) => ReactNode
 }
 
 const PopoverWidth = 320
@@ -17,6 +18,7 @@ const PopoverMargin = 8
 export default function DetailDropdown({
     children,
     icon,
+    onClose,
     value: valueProp = '',
     valuePlaceholder = '',
 }: Props) {
@@ -27,6 +29,18 @@ export default function DetailDropdown({
     const rootRef = useRef<HTMLDivElement>(null)
 
     const popoverRef = useRef<HTMLDivElement>(null)
+
+    function close() {
+        setOpen(false)
+
+        onClose?.()
+    }
+
+    const closeRef = useRef(close)
+
+    if (closeRef.current !== close) {
+        closeRef.current = close
+    }
 
     useEffect(() => {
         if (!open) {
@@ -42,7 +56,7 @@ export default function DetailDropdown({
                 return
             }
 
-            setOpen(false)
+            closeRef.current()
         }
 
         window.addEventListener('mousedown', onMouseDown)
@@ -56,7 +70,7 @@ export default function DetailDropdown({
                  * We only make the Escape key dismiss the dropdown if the
                  * active (focused) element is within `root`.
                  */
-                setOpen(false)
+                closeRef.current()
             }
         }
 
@@ -102,7 +116,7 @@ export default function DetailDropdown({
 
     return (
         <Root ref={rootRef}>
-            <Toggle type="button" onClick={() => void setOpen((c) => !c)} $active={open}>
+            <Toggle type="button" onClick={() => void setOpen(true)} $active={open}>
                 <IconWrap>{icon}</IconWrap>
                 {value && <Value $unset={!valueProp}>{value}</Value>}
             </Toggle>
@@ -113,7 +127,7 @@ export default function DetailDropdown({
                         transform: `translateX(${dwRef.current}px)`,
                     }}
                 >
-                    {children(() => void setOpen(false))}
+                    {children(close)}
                 </Popover>
             )}
         </Root>

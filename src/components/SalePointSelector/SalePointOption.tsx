@@ -12,10 +12,7 @@ import { formatChainName } from '~/shared/utils/chains'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import Select from '~/marketplace/components/SelectField2'
 import { getDataUnion, getDataUnionsOwnedByInChain } from '~/getters/du'
-import SalePointTokenSelector, {
-    Root as SalePointTokenSelectorRoot,
-} from './SalePointTokenSelector'
-import BeneficiaryAddressEditor from './BeneficiaryAddressEditor'
+import { Root as SalePointTokenSelectorRoot } from './SalePointTokenSelector'
 
 export interface OptionProps {
     onSalePointChange?: (value: SalePoint) => void
@@ -208,45 +205,6 @@ const ChainIcon = styled(NetworkIcon)`
     height: 32px;
     margin-right: 12px;
 `
-
-export function PaidOption({ onSalePointChange, salePoint }: OptionProps) {
-    const { chainId, readOnly } = salePoint
-
-    const chain = getConfigForChain(chainId)
-
-    const formattedChainName = formatChainName(chain.name)
-
-    return (
-        <>
-            <h4>Set the payment token and price on the {formattedChainName} chain</h4>
-            <p>
-                You can set a price for others to access the streams in your project. The
-                price can be set in DATA or any other ERC-20 token.
-            </p>
-            <SalePointTokenSelector
-                disabled={readOnly}
-                onSalePointChange={onSalePointChange}
-                salePoint={salePoint}
-            />
-            <h4>Set beneficiary</h4>
-            <p>
-                This wallet address receives the payments for this product on{' '}
-                {formattedChainName} chain.
-            </p>
-            <BeneficiaryAddressEditor
-                chainName={chain.name}
-                disabled={readOnly}
-                value={salePoint.beneficiaryAddress}
-                onChange={(beneficiaryAddress) => {
-                    onSalePointChange?.({
-                        ...salePoint,
-                        beneficiaryAddress,
-                    })
-                }}
-            />
-        </>
-    )
-}
 
 const NamedMetadata = z.object({
     name: z.string(),

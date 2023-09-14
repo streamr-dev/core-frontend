@@ -2,8 +2,11 @@ import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import {
+    useDraft,
     useIsProjectBusy,
+    usePersistCurrentProjectDraft,
     useProject,
+    useSetProjectErrors,
     useUpdateProject,
 } from '~/shared/stores/projectEditor'
 import { COLORS } from '~/shared/utils/styled'
@@ -16,6 +19,7 @@ import ProjectProperty from '~/components/ProjectProperty'
 import { getBase64ForFile } from '~/getters'
 import CropImageModal from '~/components/CropImageModal/CropImageModal'
 import { Layer } from '~/utils/Layer'
+import { OpenDataPayload } from '~/types/projects'
 import CoverImage, { Wide, Root as CoverImageRoot } from './CoverImage'
 
 const cropModal = toaster(CropImageModal, Layer.Modal)
@@ -26,6 +30,10 @@ export default function EditorHero() {
     const [newImageUrl, setNewImageUrl] = useState<string>()
 
     const update = useUpdateProject()
+
+    const errors = useDraft()?.errors || {}
+
+    const setErrors = useSetProjectErrors()
 
     const busy = useIsProjectBusy()
 
@@ -39,6 +47,8 @@ export default function EditorHero() {
         }
     }, [])
 
+    const persist = usePersistCurrentProjectDraft()
+
     return (
         <HeroContainer>
             <ImageWrap>
@@ -50,6 +60,11 @@ export default function EditorHero() {
                         update((project) => {
                             project.name = e.target.value
                         })
+                    }}
+                    onKeyDown={({ key }) => {
+                        if (key === 'Enter') {
+                            persist()
+                        }
                     }}
                 />
                 <CoverImage
@@ -96,6 +111,11 @@ export default function EditorHero() {
                             project.name = e.target.value
                         })
                     }}
+                    onKeyDown={({ key }) => {
+                        if (key === 'Enter') {
+                            persist()
+                        }
+                    }}
                 />
                 <Desc>
                     <RichTextEditor
@@ -114,14 +134,30 @@ export default function EditorHero() {
                             icon={<DetailIcon name="userFull" />}
                             value={creator}
                             valuePlaceholder="Creator's name"
+                            onClose={() => {
+                                setErrors((errors) => {
+                                    delete errors.creator
+                                })
+                            }}
                         >
                             {(close) => (
                                 <ProjectProperty
+                                    error={errors['creator']}
                                     required
                                     submitLabel="Add creator's name"
                                     title="Please provide your name"
                                     value={creator}
                                     onSubmit={(newCreator) => {
+                                        OpenDataPayload.pick({
+                                            creator: true,
+                                        }).parse({
+                                            creator: newCreator,
+                                        })
+
+                                        setErrors((errors) => {
+                                            delete errors.creator
+                                        })
+
                                         update((project) => {
                                             project.creator = newCreator
                                         })
@@ -137,14 +173,32 @@ export default function EditorHero() {
                             icon={<DetailIcon name="web" />}
                             value={contact.url}
                             valuePlaceholder="Site URL"
+                            onClose={() => {
+                                setErrors((errors) => {
+                                    delete errors['contact.url']
+                                })
+                            }}
                         >
                             {(close) => (
                                 <ProjectProperty
+                                    error={errors['contact.url']}
                                     placeholder="https://siteinfo.com"
                                     submitLabel="Add site URL"
                                     title="Please add a site URL"
                                     value={contact.url}
                                     onSubmit={(url) => {
+                                        OpenDataPayload.pick({
+                                            contact: true,
+                                        }).parse({
+                                            contact: {
+                                                url,
+                                            },
+                                        })
+
+                                        setErrors((errors) => {
+                                            delete errors['contact.url']
+                                        })
+
                                         update(({ contact }) => {
                                             contact.url = url
                                         })
@@ -160,14 +214,32 @@ export default function EditorHero() {
                             icon={<DetailIcon name="email" />}
                             value={contact.email}
                             valuePlaceholder="Contact email"
+                            onClose={() => {
+                                setErrors((errors) => {
+                                    delete errors['contact.email']
+                                })
+                            }}
                         >
                             {(close) => (
                                 <ProjectProperty
+                                    error={errors['contact.email']}
                                     placeholder="owner@example.com"
                                     submitLabel="Add contact email"
                                     title="Please add a contact email"
                                     value={contact.email}
                                     onSubmit={(email) => {
+                                        OpenDataPayload.pick({
+                                            contact: true,
+                                        }).parse({
+                                            contact: {
+                                                email,
+                                            },
+                                        })
+
+                                        setErrors((errors) => {
+                                            delete errors['contact.email']
+                                        })
+
                                         update(({ contact }) => {
                                             contact.email = email
                                         })
@@ -186,13 +258,31 @@ export default function EditorHero() {
                                     $color={contact.twitter ? '#1da1f2' : void 0}
                                 />
                             }
+                            onClose={() => {
+                                setErrors((errors) => {
+                                    delete errors['contact.twitter']
+                                })
+                            }}
                         >
                             {(close) => (
                                 <ProjectProperty
+                                    error={errors['contact.twitter']}
                                     submitLabel="Add Twitter link"
                                     title="Please add Twitter link"
                                     value={contact.twitter}
                                     onSubmit={(twitter) => {
+                                        OpenDataPayload.pick({
+                                            contact: true,
+                                        }).parse({
+                                            contact: {
+                                                twitter,
+                                            },
+                                        })
+
+                                        setErrors((errors) => {
+                                            delete errors['contact.twitter']
+                                        })
+
                                         update(({ contact }) => {
                                             contact.twitter = twitter
                                         })
@@ -211,13 +301,31 @@ export default function EditorHero() {
                                     $color={contact.telegram ? '#2aabee' : void 0}
                                 />
                             }
+                            onClose={() => {
+                                setErrors((errors) => {
+                                    delete errors['contact.telegram']
+                                })
+                            }}
                         >
                             {(close) => (
                                 <ProjectProperty
+                                    error={errors['contact.telegram']}
                                     submitLabel="Telegram link"
                                     title="Please add Telegram link"
                                     value={contact.telegram}
                                     onSubmit={(telegram) => {
+                                        OpenDataPayload.pick({
+                                            contact: true,
+                                        }).parse({
+                                            contact: {
+                                                telegram,
+                                            },
+                                        })
+
+                                        setErrors((errors) => {
+                                            delete errors['contact.telegram']
+                                        })
+
                                         update(({ contact }) => {
                                             contact.telegram = telegram
                                         })
@@ -236,13 +344,31 @@ export default function EditorHero() {
                                     $color={contact.reddit ? '#ff5700' : void 0}
                                 />
                             }
+                            onClose={() => {
+                                setErrors((errors) => {
+                                    delete errors['contact.reddit']
+                                })
+                            }}
                         >
                             {(close) => (
                                 <ProjectProperty
+                                    error={errors['contact.reddit']}
                                     submitLabel="Reddit link"
                                     title="Please add Reddit link"
                                     value={contact.reddit}
                                     onSubmit={(reddit) => {
+                                        OpenDataPayload.pick({
+                                            contact: true,
+                                        }).parse({
+                                            contact: {
+                                                reddit,
+                                            },
+                                        })
+
+                                        setErrors((errors) => {
+                                            delete errors['contact.reddit']
+                                        })
+
                                         update(({ contact }) => {
                                             contact.reddit = reddit
                                         })
@@ -261,13 +387,31 @@ export default function EditorHero() {
                                     $color={contact.linkedIn ? '#0077b5' : void 0}
                                 />
                             }
+                            onClose={() => {
+                                setErrors((errors) => {
+                                    delete errors['contact.linkedIn']
+                                })
+                            }}
                         >
                             {(close) => (
                                 <ProjectProperty
+                                    error={errors['contact.linkedIn']}
                                     value={contact.linkedIn}
                                     title="Please add LinkedIn link"
                                     submitLabel="LinkedIn link"
                                     onSubmit={(linkedIn) => {
+                                        OpenDataPayload.pick({
+                                            contact: true,
+                                        }).parse({
+                                            contact: {
+                                                linkedIn,
+                                            },
+                                        })
+
+                                        setErrors((errors) => {
+                                            delete errors['contact.linkedIn']
+                                        })
+
                                         update(({ contact }) => {
                                             contact.linkedIn = linkedIn
                                         })

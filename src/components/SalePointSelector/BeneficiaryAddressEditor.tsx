@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { COLORS, MAX_CONTENT_WIDTH } from '~/shared/utils/styled'
 import PrestyledWithInputActions from '~/components/WithInputActions'
@@ -6,18 +6,19 @@ import PopoverItem from '~/shared/components/Popover/PopoverItem'
 import Text from '~/shared/components/Ui/Text'
 import useCopy from '~/shared/hooks/useCopy'
 import { truncate } from '~/shared/utils/text'
-import { isEthereumAddress } from '~/marketplace/utils/validate'
-import { SeverityLevel } from '~/marketplace/containers/ProductController/ValidationContextProvider'
 import { useWalletAccount } from '~/shared/stores/wallet'
+import { usePersistCurrentProjectDraft } from '~/shared/stores/projectEditor'
 
 export default function BeneficiaryAddressEditor({
     disabled = false,
-    value: valueProp = '',
+    invalid = false,
     onChange: onChangeProp,
+    value: valueProp = '',
 }: {
     disabled?: boolean
-    value?: string
+    invalid?: boolean
     onChange?: (value: string) => void
+    value?: string
 }) {
     const [value, setValue] = useState(valueProp)
 
@@ -35,36 +36,13 @@ export default function BeneficiaryAddressEditor({
 
     const { copy } = useCopy()
 
-    const setStatus = useCallback((..._: any) => {}, []) // @TODO
-
-    const clearStatus = useCallback((..._: any) => {}, []) // @TODO
-
-    const isValid = true // @TODO
-
-    useEffect(() => {
-        if (accountAddress && !valueRef.current) {
-            /**
-             * Empty value is valid as long as the wallet is unlocked.
-             */
-            clearStatus()
-        }
-    }, [accountAddress, clearStatus])
-
     function onChange(newValue: string) {
         setValue(newValue)
 
-        const isValidAddress = isEthereumAddress(newValue)
-
-        if (isValidAddress) {
-            onChangeProp?.(newValue)
-        }
-
-        if (isValidAddress || (accountAddress && !newValue)) {
-            return void clearStatus()
-        }
-
-        setStatus(SeverityLevel.ERROR, 'Provided wallet address is invalid')
+        onChangeProp?.(newValue)
     }
+
+    const persist = usePersistCurrentProjectDraft()
 
     return (
         <Container>
@@ -106,18 +84,20 @@ export default function BeneficiaryAddressEditor({
             >
                 <Text
                     value={value}
-                    onCommit={setValue}
-                    onBlur={() => {
-                        onChange(value)
-                    }}
+                    onCommit={onChange}
                     placeholder={
                         accountAddress
                             ? accountAddress
                             : 'i.e. 0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1'
                     }
                     disabled={disabled}
-                    invalid={!isValid}
+                    invalid={invalid}
                     selectAllOnFocus
+                    onKeyDown={({ key }) => {
+                        if (key === 'Enter') {
+                            persist()
+                        }
+                    }}
                 />
             </WithInputActions>
         </Container>
