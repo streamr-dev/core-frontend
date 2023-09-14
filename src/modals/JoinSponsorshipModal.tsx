@@ -151,7 +151,7 @@ export default function JoinSponsorshipModal({
                     {rawAmount !== '' && !isAboveMinimumStake && (
                         <ErrorLabel>
                             Minimum value is{' '}
-                            {fromDecimals(minimumStakeWei, decimals).toString()}{' '}
+                            {fromDecimals(minimumStakeWei || 0, decimals).toString()}{' '}
                             {tokenSymbol}
                         </ErrorLabel>
                     )}

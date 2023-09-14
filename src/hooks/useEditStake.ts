@@ -5,7 +5,11 @@ import { useMyOperator } from '~/hooks/useMyOperator'
 import { Layer } from '~/utils/Layer'
 import EditStakeModal from '~/modals/EditStakeModal'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
-import { reduceStakeOnSponsorship, stakeOnSponsorship } from '~/services/sponsorships'
+import {
+    forceUnstakeFromSponsorship,
+    reduceStakeOnSponsorship,
+    stakeOnSponsorship,
+} from '~/services/sponsorships'
 import { SponsorshipElement, SponsorshipStake } from '~/types/sponsorship'
 import { toBN } from '~/utils/bn'
 import { getLeavePenalty } from '~/getters/getLeavePenalty'
@@ -55,12 +59,22 @@ export const useEditStake = (): {
                     tokenSymbol: tokenInfo.symbol,
                     decimals: tokenInfo.decimals,
                     leavePenalty: leavePenalty.toString(),
-                    onSubmit: async (amount: string, difference: string) => {
+                    onSubmit: async (
+                        amount: string,
+                        difference: string,
+                        forceUnstake = false,
+                    ) => {
                         const differenceBN = toBN(difference)
                         if (differenceBN.isGreaterThanOrEqualTo(0)) {
                             await stakeOnSponsorship(
                                 sponsorship.id,
                                 difference,
+                                myOperatorQuery.data?.id as string,
+                                'Increase stake on sponsorship',
+                            )
+                        } else if (forceUnstake) {
+                            await forceUnstakeFromSponsorship(
+                                sponsorship.id,
                                 myOperatorQuery.data?.id as string,
                             )
                         } else {
@@ -68,6 +82,9 @@ export const useEditStake = (): {
                                 sponsorship.id,
                                 amount,
                                 myOperatorQuery.data?.id as string,
+                                amount === '0'
+                                    ? 'Unstake from sponsorship'
+                                    : 'Reduce stake on sponsorship',
                             )
                         }
                     },

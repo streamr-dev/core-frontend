@@ -20,7 +20,7 @@ import { useConfigFromChain } from '~/hooks/useConfigFromChain'
 import { Alert } from '~/components/Alert'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
-    onSubmit: (amountWei: string, differenceWei: string) => void
+    onSubmit: (amountWei: string, differenceWei: string, forceUnstake?: boolean) => void
     onResolve?: (amountWei: string, differenceWei: string) => void
     operatorBalance: string
     tokenSymbol: string
@@ -32,7 +32,6 @@ interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
 
 export default function EditStakeModal({
     title = 'Edit stake',
-    submitLabel = 'Save',
     onResolve,
     onSubmit,
     operatorBalance: operatorBalanceProp,
@@ -68,6 +67,19 @@ export default function EditStakeModal({
         !insufficientFunds &&
         !difference.isEqualTo(0)
 
+    const getSubmitButtonLabel = () => {
+        if (finalAmount.isEqualTo(0)) {
+            return 'Unstake'
+        }
+        if (difference.isGreaterThan(0)) {
+            return 'Increase stake'
+        }
+        if (difference.isLessThan(0)) {
+            return 'Reduce stake'
+        }
+        return 'Save'
+    }
+
     const leavePenalty = fromDecimals(leavePenaltyWei, decimals)
     // STUB - todo: calculate the date when we will have it in the graph
     const minimumStakePeriodEndDate = moment().add(14, 'days')
@@ -77,7 +89,7 @@ export default function EditStakeModal({
             {...props}
             title={title}
             canSubmit={canSubmit && !busy}
-            submitLabel={submitLabel}
+            submitLabel={getSubmitButtonLabel()}
             submitting={busy}
             onBeforeAbort={(reason) =>
                 !busy &&

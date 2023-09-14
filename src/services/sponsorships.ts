@@ -133,11 +133,12 @@ export async function stakeOnSponsorship(
     sponsorshipId: string,
     amountWei: string,
     operatorAddress: string,
+    toastLabel = 'Stake on sponsorship',
 ): Promise<void> {
     const chainId = getSponsorshipChainId()
     await networkPreflight(chainId)
 
-    await toastedOperation('Stake on sponsorship', async () => {
+    await toastedOperation(toastLabel, async () => {
         const signer = await getSigner()
 
         const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
@@ -151,16 +152,35 @@ export async function reduceStakeOnSponsorship(
     sponsorshipId: string,
     targetAmountWei: string,
     operatorAddress: string,
+    toastLabel = 'Reduce stake on sponsorship',
 ): Promise<void> {
     const chainId = getSponsorshipChainId()
     await networkPreflight(chainId)
 
-    await toastedOperation('Reduce stake on sponsorship', async () => {
+    await toastedOperation(toastLabel, async () => {
         const signer = await getSigner()
 
         const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
 
         const tx = await contract.reduceStakeTo(sponsorshipId, targetAmountWei)
+        await tx.wait()
+    })
+}
+
+export async function forceUnstakeFromSponsorship(
+    sponsorshipId: string,
+    operatorAddress: string,
+): Promise<void> {
+    const chainId = getSponsorshipChainId()
+    await networkPreflight(chainId)
+
+    await toastedOperation('Force unstake from sponsorship', async () => {
+        const signer = await getSigner()
+
+        const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
+
+        // todo - check the second parameter
+        const tx = await contract.forceUnstake(sponsorshipId, 0)
         await tx.wait()
     })
 }
