@@ -3,12 +3,13 @@ import getCoreConfig from './getCoreConfig'
 
 let graphClient: ApolloClient<NormalizedCacheObject> | undefined
 
+const { theGraphUrl, theHubGraphName } = getCoreConfig()
+const networkGraphUrl = `${theGraphUrl}/subgraphs/name/${theHubGraphName}`
+
 export default function getGraphClient() {
     if (!graphClient) {
         graphClient = new ApolloClient({
-            uri:
-                process.env.NETWORK_GRAPH_SCHEMA_PATH ||
-                'http://localhost:8800/subgraphs/name/streamr-dev/network-subgraphs',
+            uri: networkGraphUrl,
             cache: new InMemoryCache(),
         })
     }
