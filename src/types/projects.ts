@@ -114,6 +114,8 @@ export const OpenDataPayload = z.object({
     streams: z.array(z.string()).min(1, {
         message: 'No streams selected',
     }),
+    imageUrl: z.string().optional(),
+    newImageToUpload: z.instanceof(File).optional(),
     termsOfUse: z.object({
         termsUrl: z
             .string()
@@ -235,10 +237,18 @@ export const PaidDataPayload = OpenDataPayload.merge(
     }),
 )
 
-export const PublishableProjectPayload = z.union([
-    OpenDataPayload,
-    PaidDataPayload,
-    DataUnionPayload,
-])
+export const PublishableProjectPayload = z
+    .union([OpenDataPayload, PaidDataPayload, DataUnionPayload])
+    .superRefine(({ imageUrl, newImageToUpload }, ctx) => {
+        if (imageUrl || newImageToUpload) {
+            return
+        }
+
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Cover image is required',
+            path: ['imageUrl'],
+        })
+    })
 
 export type PublishableProjectPayload = z.infer<typeof PublishableProjectPayload>
