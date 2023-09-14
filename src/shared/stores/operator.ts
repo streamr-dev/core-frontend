@@ -3,25 +3,31 @@ import { create } from 'zustand'
 import { setOperatorNodeAddresses } from '~/services/operators'
 import { OperatorElement } from '~/types/operator'
 import { BN } from '~/utils/bn'
+import { toastedOperation } from '~/utils/toastedOperation'
 
 interface OperatorStore {
     operator: OperatorElement | null | undefined
     addedNodeAddresses: string[]
     removedNodeAddresses: string[]
+    nodeBalances: Record<string, BN>
+    isBusy: boolean
     computed: {
         get nodeAddresses(): OperatorNodeAddress[]
     }
     setOperator: (operator: OperatorElement | null | undefined) => void
     addNodeAddress: (address: string) => void
     removeNodeAddress: (address: string) => void
+    cancelAdd: (address: string) => void
+    cancelRemove: (address: string) => void
     persistNodeAddresses: () => Promise<void>
+    updateNodeBalances: () => Promise<void>
 }
 
 type OperatorNodeAddress = {
     address: string
     isAdded: boolean
     isRemoved: boolean
-    balance: BN
+    balance: BN | undefined
 }
 
 const useOperatorStore = create<OperatorStore>((set, get) => {
@@ -29,9 +35,16 @@ const useOperatorStore = create<OperatorStore>((set, get) => {
         operator: undefined,
         addedNodeAddresses: [],
         removedNodeAddresses: [],
+        nodeBalances: {},
+        isBusy: false,
         computed: {
             get nodeAddresses() {
-                const { addedNodeAddresses, removedNodeAddresses, operator } = get()
+                const {
+                    addedNodeAddresses,
+                    removedNodeAddresses,
+                    operator,
+                    nodeBalances,
+                } = get()
                 const addresses = [
                     ...(operator?.nodes ?? [])
                         .filter((a) => !removedNodeAddresses.includes(a))
@@ -39,21 +52,21 @@ const useOperatorStore = create<OperatorStore>((set, get) => {
                             address: a,
                             isAdded: false,
                             isRemoved: false,
-                            balance: BN(0),
+                            balance: nodeBalances[a],
                         })),
                     ...addedNodeAddresses.map((a) => ({
                         address: a,
                         isAdded: true,
                         isRemoved: false,
-                        balance: BN(0),
+                        balance: nodeBalances[a],
                     })),
                     ...removedNodeAddresses.map((a) => ({
                         address: a,
                         isAdded: false,
                         isRemoved: true,
-                        balance: BN(0),
+                        balance: nodeBalances[a],
                     })),
-                ]
+                ].sort((a, b) => a.address.localeCompare(b.address))
                 return addresses
             },
         },
@@ -68,20 +81,48 @@ const useOperatorStore = create<OperatorStore>((set, get) => {
                     }
                 }),
             )
+            get().updateNodeBalances()
         },
 
         addNodeAddress(address: string) {
             set((current) =>
                 produce(current, (next) => {
-                    next.addedNodeAddresses.push(address)
+                    if (
+                        !current.addedNodeAddresses.includes(address) &&
+                        !current.operator?.nodes.includes(address)
+                    ) {
+                        next.addedNodeAddresses.push(address.toLowerCase())
+                    }
                 }),
             )
+            get().updateNodeBalances()
         },
 
         removeNodeAddress(address: string) {
             set((current) =>
                 produce(current, (next) => {
-                    next.removedNodeAddresses.push(address)
+                    next.removedNodeAddresses.push(address.toLowerCase())
+                }),
+            )
+            get().updateNodeBalances()
+        },
+
+        cancelAdd(address: string) {
+            set((current) =>
+                produce(current, (next) => {
+                    next.addedNodeAddresses = current.addedNodeAddresses.filter(
+                        (a) => a != address.toLowerCase(),
+                    )
+                }),
+            )
+        },
+
+        cancelRemove(address: string) {
+            set((current) =>
+                produce(current, (next) => {
+                    next.removedNodeAddresses = current.removedNodeAddresses.filter(
+                        (a) => a != address.toLowerCase(),
+                    )
                 }),
             )
         },
@@ -92,18 +133,38 @@ const useOperatorStore = create<OperatorStore>((set, get) => {
                 const addresses = [...operator.nodes, ...addedNodeAddresses].filter(
                     (a) => !removedNodeAddresses.includes(a),
                 )
-                console.log('original', operator.nodes)
-                console.log('added', addedNodeAddresses)
-                console.log('removed', removedNodeAddresses)
-                console.log('result', addresses)
-                await setOperatorNodeAddresses(operator.id, addresses)
+
                 set((current) =>
                     produce(current, (next) => {
-                        next.removedNodeAddresses = []
-                        next.addedNodeAddresses = []
+                        next.isBusy = true
                     }),
                 )
+
+                try {
+                    await toastedOperation('Save node addresses', () =>
+                        setOperatorNodeAddresses(operator.id, addresses),
+                    )
+                    set((current) =>
+                        produce(current, (next) => {
+                            next.removedNodeAddresses = []
+                            next.addedNodeAddresses = []
+                            if (next.operator != null) {
+                                next.operator.nodes = addresses
+                            }
+                        }),
+                    )
+                } finally {
+                    set((current) =>
+                        produce(current, (next) => {
+                            next.isBusy = false
+                        }),
+                    )
+                }
             }
+        },
+
+        async updateNodeBalances() {
+            console.log('TODO: update node balances')
         },
     }
 })

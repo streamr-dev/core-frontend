@@ -288,5 +288,6 @@ export async function setOperatorNodeAddresses(operatorId: string, addresses: st
 
     const signer = await getSigner()
     const operatorContract = new Contract(operatorId, operatorABI, signer) as Operator
-    await operatorContract.setNodeAddresses(addresses)
+    const tx = await operatorContract.setNodeAddresses(addresses)
+    await tx.wait()
 }

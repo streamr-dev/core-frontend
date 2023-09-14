@@ -42,13 +42,13 @@ import { getOperatorStats } from '../getters/getOperatorStats'
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 const addNodeAddressModal = toaster(AddNodeAddressModal, Layer.Modal)
 
-const PendingIndicator = () => (
+const PendingIndicator = ({ title, onClick }: { title: string; onClick: () => void }) => (
     <PendingIndicatorContainer>
-        <Spinner />
-        pending
-        <Button type="button" onClick={() => console.log('pending clik')}>
+        <span>{title}</span>
+        <PendingSeparator />
+        <PendingCloseButton onClick={onClick}>
             <SvgIcon name="crossMedium" />
-        </Button>
+        </PendingCloseButton>
     </PendingIndicatorContainer>
 )
 
@@ -61,16 +61,14 @@ export const SingleOperatorPage = () => {
         setOperator,
         addNodeAddress,
         removeNodeAddress,
+        cancelAdd,
+        cancelRemove,
         addedNodeAddresses,
         removedNodeAddresses,
         persistNodeAddresses,
         computed,
+        isBusy,
     } = useOperatorStore()
-
-    const operatorNodes = computed.nodeAddresses
-    console.log(computed.nodeAddresses)
-
-    console.log(operator?.nodes, addedNodeAddresses, removedNodeAddresses)
 
     useEffect(() => {
         setOperator(operator)
@@ -342,20 +340,30 @@ export const SingleOperatorPage = () => {
                         {walletAddress?.toLowerCase() === operator.owner && (
                             <>
                                 <ScrollTable
-                                    elements={operatorNodes}
+                                    elements={computed.nodeAddresses}
                                     columns={[
                                         {
                                             displayName: 'Address',
-                                            valueMapper: (element) =>
-                                                `${element.address}`,
+                                            valueMapper: (element) => (
+                                                <NodeAddress isAdded={element.isAdded}>
+                                                    {element.address}
+                                                </NodeAddress>
+                                            ),
                                             align: 'start',
                                             isSticky: true,
                                             key: 'id',
                                         },
                                         {
                                             displayName: 'MATIC balance',
-                                            valueMapper: (element) =>
-                                                `${element.balance.toString()}`,
+                                            valueMapper: (element) => (
+                                                <>
+                                                    {element.balance != null ? (
+                                                        element.balance.toString()
+                                                    ) : (
+                                                        <Spinner />
+                                                    )}
+                                                </>
+                                            ),
                                             align: 'start',
                                             isSticky: false,
                                             key: 'balance',
@@ -365,9 +373,23 @@ export const SingleOperatorPage = () => {
                                             valueMapper: (element) => (
                                                 <>
                                                     {element.isRemoved && (
-                                                        <PendingIndicator />
+                                                        <PendingIndicator
+                                                            title="Pending deletion"
+                                                            onClick={() =>
+                                                                cancelRemove(
+                                                                    element.address,
+                                                                )
+                                                            }
+                                                        />
                                                     )}
-                                                    {element.isAdded && 'added'}
+                                                    {element.isAdded && (
+                                                        <PendingIndicator
+                                                            title="Pending addition"
+                                                            onClick={() =>
+                                                                cancelAdd(element.address)
+                                                            }
+                                                        />
+                                                    )}
                                                     {!element.isAdded &&
                                                         !element.isRemoved && (
                                                             <Button
@@ -428,9 +450,12 @@ export const SingleOperatorPage = () => {
                                                 kind="primary"
                                                 onClick={() => persistNodeAddresses()}
                                                 disabled={
-                                                    removedNodeAddresses.length === 0 &&
-                                                    addedNodeAddresses.length === 0
+                                                    (removedNodeAddresses.length === 0 &&
+                                                        addedNodeAddresses.length ===
+                                                            0) ||
+                                                    isBusy
                                                 }
+                                                waiting={isBusy}
                                             >
                                                 Save
                                             </Button>
@@ -524,35 +549,40 @@ const NodeAddressHeader = styled.div`
     align-items: center;
 `
 
+const NodeAddress = styled.div<{ isAdded: boolean }>`
+    color: ${({ isAdded }) => (isAdded ? '#a3a3a3' : '#525252')};
+`
+
 const PendingIndicatorContainer = styled.div`
     display: grid;
     grid-template-columns: auto auto auto;
     align-content: center;
     height: 32px;
-    padding: 8px;
     align-items: center;
-    gap: 4px;
     border-radius: 4px;
     background: #deebff;
 
-    & button {
-        color: ${COLORS.close};
-        line-height: 14px;
-        cursor: pointer;
-        padding: 0.5rem;
-        margin: 0;
-        background: none;
-        outline: none;
-        border: none;
-
-        &:disabled {
-            opacity: 0.2;
-            cursor: not-allowed;
-        }
+    & span {
+        padding: 8px;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 20px;
     }
+`
+
+const PendingSeparator = styled.div`
+    border-left: 1px solid #d1dfff;
+    height: 32px;
+`
+
+const PendingCloseButton = styled.div`
+    color: ${COLORS.close};
+    padding: 8px;
+    cursor: pointer;
 
     & svg {
-        width: 14px;
-        height: 14px;
+        width: 8px;
+        height: 8px;
     }
 `
