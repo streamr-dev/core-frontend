@@ -316,7 +316,7 @@ const usePurchaseStore = create<Store>((set, get) => {
 
                                             const tx = await getERC20TokenContract({
                                                 tokenAddress,
-                                                signer,
+                                                provider: signer,
                                             }).approve(
                                                 getMarketplaceAddress(selectedChainId),
                                                 total,
