@@ -231,7 +231,7 @@ export async function delegateToOperator(operatorId: string, amount: BNish) {
 
     const tokenContract = getERC20TokenContract({
         tokenAddress: chainConfig.contracts['DATA'],
-        signer,
+        provider: signer,
     })
 
     const tokenTx = await tokenContract.approve(operatorId, toBN(amount).toString())
@@ -256,7 +256,7 @@ export async function undelegateFromOperator(operatorId: string, amount: BNish) 
 
     const tokenContract = getERC20TokenContract({
         tokenAddress: chainConfig.contracts['DATA'],
-        signer,
+        provider: signer,
     })
 
     const tokenTx = await tokenContract.approve(operatorId, toBN(amount).toString())
