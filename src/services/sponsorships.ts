@@ -179,8 +179,8 @@ export async function forceUnstakeFromSponsorship(
 
         const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
 
-        // todo - check the second parameter
-        const tx = await contract.forceUnstake(sponsorshipId, 0)
+        // Jusso asked to put a big value in the second parameter - big enough to pay out the whole queue after unstaking
+        const tx = await contract.forceUnstake(sponsorshipId, 1000000)
         await tx.wait()
     })
 }
