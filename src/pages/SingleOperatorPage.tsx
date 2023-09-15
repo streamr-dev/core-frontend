@@ -29,19 +29,50 @@ import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
 import Button from '~/shared/components/Button'
 import { getDelegationAmountForAddress } from '~/utils/delegation'
 import { OperatorElement } from '~/types/operator'
-import { createOperator, updateOperator } from '~/services/operators'
+import { updateOperator } from '~/services/operators'
 import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
+import AddNodeAddressModal from '~/modals/AddNodeAddressModal'
+import { useOperatorStore } from '~/shared/stores/operator'
 import { Layer } from '~/utils/Layer'
+import Spinner from '~/shared/components/Spinner'
+import SvgIcon from '~/shared/components/SvgIcon'
 import { NetworkChartWrap } from '../components/NetworkUtils'
 import { getOperatorStats } from '../getters/getOperatorStats'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
+const addNodeAddressModal = toaster(AddNodeAddressModal, Layer.Modal)
+
+const PendingIndicator = ({ title, onClick }: { title: string; onClick: () => void }) => (
+    <PendingIndicatorContainer>
+        <span>{title}</span>
+        <PendingSeparator />
+        <PendingCloseButton onClick={onClick}>
+            <SvgIcon name="crossMedium" />
+        </PendingCloseButton>
+    </PendingIndicatorContainer>
+)
 
 export const SingleOperatorPage = () => {
     const operatorId = useParams().id
     const operatorQuery = useOperator(operatorId || '')
     const operator = operatorQuery.data
     const walletAddress = useWalletAccount()
+    const {
+        setOperator,
+        addNodeAddress,
+        removeNodeAddress,
+        cancelAdd,
+        cancelRemove,
+        addedNodeAddresses,
+        removedNodeAddresses,
+        persistNodeAddresses,
+        computed,
+        isBusy,
+    } = useOperatorStore()
+
+    useEffect(() => {
+        setOperator(operator)
+    }, [operator, setOperator])
 
     const [selectedDataSource, setSelectedDataSource] = useState<string>('totalValue')
     const [selectedPeriod, setSelectedPeriod] = useState<string>(ChartPeriod.SevenDays)
@@ -312,14 +343,74 @@ export const SingleOperatorPage = () => {
                         {walletAddress?.toLowerCase() === operator.owner && (
                             <>
                                 <ScrollTable
-                                    elements={operator.nodes as unknown as object[]}
+                                    elements={computed.nodeAddresses}
                                     columns={[
                                         {
                                             displayName: 'Address',
-                                            valueMapper: (element) => `${element}`,
+                                            valueMapper: (element) => (
+                                                <NodeAddress isAdded={element.isAdded}>
+                                                    {element.address}
+                                                </NodeAddress>
+                                            ),
                                             align: 'start',
                                             isSticky: true,
                                             key: 'id',
+                                        },
+                                        {
+                                            displayName: 'MATIC balance',
+                                            valueMapper: (element) => (
+                                                <>
+                                                    {element.balance != null ? (
+                                                        element.balance.toString()
+                                                    ) : (
+                                                        <Spinner color="blue" />
+                                                    )}
+                                                </>
+                                            ),
+                                            align: 'start',
+                                            isSticky: false,
+                                            key: 'balance',
+                                        },
+                                        {
+                                            displayName: '',
+                                            valueMapper: (element) => (
+                                                <>
+                                                    {element.isRemoved && (
+                                                        <PendingIndicator
+                                                            title="Pending deletion"
+                                                            onClick={() =>
+                                                                cancelRemove(
+                                                                    element.address,
+                                                                )
+                                                            }
+                                                        />
+                                                    )}
+                                                    {element.isAdded && (
+                                                        <PendingIndicator
+                                                            title="Pending addition"
+                                                            onClick={() =>
+                                                                cancelAdd(element.address)
+                                                            }
+                                                        />
+                                                    )}
+                                                    {!element.isAdded &&
+                                                        !element.isRemoved && (
+                                                            <Button
+                                                                kind="secondary"
+                                                                onClick={() => {
+                                                                    removeNodeAddress(
+                                                                        element.address,
+                                                                    )
+                                                                }}
+                                                            >
+                                                                Delete
+                                                            </Button>
+                                                        )}
+                                                </>
+                                            ),
+                                            align: 'end',
+                                            isSticky: false,
+                                            key: 'actions',
                                         },
                                     ]}
                                     title={
@@ -346,7 +437,31 @@ export const SingleOperatorPage = () => {
                                     }
                                     footerComponent={
                                         <NodeAddressesFooter>
-                                            <Button>Add node address</Button>
+                                            <Button
+                                                kind="secondary"
+                                                onClick={() =>
+                                                    addNodeAddressModal.pop({
+                                                        onSubmit: async (address) => {
+                                                            addNodeAddress(address)
+                                                        },
+                                                    })
+                                                }
+                                            >
+                                                Add node address
+                                            </Button>
+                                            <Button
+                                                kind="primary"
+                                                onClick={() => persistNodeAddresses()}
+                                                disabled={
+                                                    (removedNodeAddresses.length === 0 &&
+                                                        addedNodeAddresses.length ===
+                                                            0) ||
+                                                    isBusy
+                                                }
+                                                waiting={isBusy}
+                                            >
+                                                Save
+                                            </Button>
                                         </NodeAddressesFooter>
                                     }
                                 />
@@ -415,6 +530,7 @@ const NodeAddressesFooter = styled.div`
     display: flex;
     justify-content: right;
     padding: 32px;
+    gap: 10px;
 `
 
 const SponsorshipsTableTitle = styled.div`
@@ -434,4 +550,42 @@ const SponsorshipsCount = styled.div`
 const NodeAddressHeader = styled.div`
     display: flex;
     align-items: center;
+`
+
+const NodeAddress = styled.div<{ isAdded: boolean }>`
+    color: ${({ isAdded }) => (isAdded ? '#a3a3a3' : '#525252')};
+`
+
+const PendingIndicatorContainer = styled.div`
+    display: grid;
+    grid-template-columns: auto auto auto;
+    align-content: center;
+    height: 32px;
+    align-items: center;
+    border-radius: 4px;
+    background: #deebff;
+
+    & span {
+        padding: 8px;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 20px;
+    }
+`
+
+const PendingSeparator = styled.div`
+    border-left: 1px solid #d1dfff;
+    height: 32px;
+`
+
+const PendingCloseButton = styled.div`
+    color: ${COLORS.close};
+    padding: 8px;
+    cursor: pointer;
+
+    & svg {
+        width: 8px;
+        height: 8px;
+    }
 `

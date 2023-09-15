@@ -23,7 +23,7 @@ export const ScrollTableCellsWrap = styled.div<{
     position: relative;
 `
 
-export const ScrollTableTitle = styled.p`
+export const ScrollTableTitle = styled.div`
     font-size: 20px;
     font-weight: ${MEDIUM};
     margin: 0;
