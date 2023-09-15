@@ -363,7 +363,7 @@ export const SingleOperatorPage = () => {
                                                     {element.balance != null ? (
                                                         element.balance.toString()
                                                     ) : (
-                                                        <Spinner />
+                                                        <Spinner color="blue" />
                                                     )}
                                                 </>
                                             ),
