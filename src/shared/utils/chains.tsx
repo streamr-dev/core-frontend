@@ -29,6 +29,9 @@ export const formatChainName = (apiChainName: string): string => {
         case 'AVALANCHE':
             return 'Avalanche'
 
+        case 'MUMBAI':
+            return 'Mumbai'
+
         default:
             return apiChainName
     }
