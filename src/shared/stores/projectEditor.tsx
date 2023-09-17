@@ -224,7 +224,10 @@ async function getTransientProject<
         newImageToUpload: undefined,
         streams: streams.sort(),
         termsOfUse: {
-            ...termsOfUse,
+            commercialUse: !!termsOfUse.commercialUse,
+            redistribution: !!termsOfUse.redistribution,
+            reselling: !!termsOfUse.reselling,
+            storage: !!termsOfUse.storage,
             termsName: termsOfUse.termsName || '',
             termsUrl: termsOfUse.termsUrl || '',
         },
