@@ -33,7 +33,6 @@ import { ValidationError } from '~/marketplace/containers/ProjectEditing/Project
 import isCodedError from '~/utils/isCodedError'
 import { RejectionReason } from '~/modals/BaseModal'
 import { Layer } from '~/utils/Layer'
-import { PublishableProjectPayload } from '~/types/projects'
 import Toast, { ToastType } from '../toasts/Toast'
 import { useWalletAccount } from './wallet'
 import { useHasActiveProjectSubscription } from './purchases'
@@ -156,7 +155,7 @@ async function getSalePointsFromPaymentDetails<
 
             const { id: chainId, name: chainName } = getConfigForChain(Number(domainId))
 
-            const { decimals } = (await getTokenInfo(pricingTokenAddress, chainId)) || {}
+            const decimals = (await getTokenInfo(pricingTokenAddress, chainId)).decimals
 
             if (!decimals) {
                 throw new Error('Invalid decimals')
@@ -177,6 +176,7 @@ async function getSalePointsFromPaymentDetails<
                 chainId,
                 enabled: true,
                 price: pricePerSecondFromDecimals.multipliedBy(multiplier).toString(),
+                pricePerSecond,
                 pricingTokenAddress: pricingTokenAddress.toLowerCase(),
                 readOnly: true,
                 timeUnit,

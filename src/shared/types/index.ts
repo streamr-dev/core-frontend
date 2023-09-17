@@ -20,6 +20,7 @@ export interface SalePoint {
     chainId: number
     enabled: boolean
     price: string
+    pricePerSecond: string
     pricingTokenAddress: string
     readOnly: boolean
     timeUnit: TimeUnit
