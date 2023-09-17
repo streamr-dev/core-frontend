@@ -5,7 +5,6 @@ import Layout, { LayoutInner as PrestyledLayoutInner } from '~/components/Layout
 import {
     getEmptySalePoint,
     useDraft,
-    useIsNewProject,
     useIsProjectBusy,
     useProject,
     useSetProjectErrors,
@@ -35,11 +34,16 @@ import DataUnionPayment from './DataUnionPayment'
 import EditorHero from './EditorHero'
 import EditorNav from './EditorNav'
 import EditorStreams from './EditorStreams'
+import { deleteProject } from '~/services/projects'
+import { toastedOperation } from '~/utils/toastedOperation'
 
 export default function ProjectEditorPage() {
-    const { type, creator, salePoints: existingSalePoints } = useProject({ hot: true })
-
-    const isNew = useIsNewProject()
+    const {
+        id: projectId,
+        type,
+        creator,
+        salePoints: existingSalePoints,
+    } = useProject({ hot: true })
 
     const busy = useIsProjectBusy()
 
@@ -87,7 +91,7 @@ export default function ProjectEditorPage() {
         <Layout
             innerComponent={LayoutInner}
             nav={<EditorNav />}
-            pageTitle={isNew ? 'Create a new project' : 'Edit project'}
+            pageTitle={projectId ? 'Edit project' : 'Create a new project'}
         >
             <DetailsPageHeader
                 pageTitle={
@@ -331,7 +335,7 @@ export default function ProjectEditorPage() {
                         </Content>
                     </ColoredBox>
                 </Segment>
-                {!isNew && (
+                {projectId && (
                     <Segment>
                         <ColoredBox
                             $borderColor="#cdcdcd"
@@ -348,10 +352,12 @@ export default function ProjectEditorPage() {
                                 kind="destructive"
                                 onClick={async () => {
                                     try {
-                                        /**
-                                         * 1. async-delete the project.
-                                         * 2. Redirect away.
-                                         */
+                                        await toastedOperation(
+                                            'Delete project',
+                                            async () => {
+                                                await deleteProject(projectId)
+                                            },
+                                        )
                                     } catch (e) {
                                         console.warn('Failed to delete a project', e)
                                     }

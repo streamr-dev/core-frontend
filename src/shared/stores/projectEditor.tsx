@@ -37,6 +37,7 @@ import { PublishableProjectPayload } from '~/types/projects'
 import Toast, { ToastType } from '../toasts/Toast'
 import { useWalletAccount } from './wallet'
 import { useHasActiveProjectSubscription } from './purchases'
+import { createProject2 } from '~/services/projects'
 
 interface ProjectDraft {
     abandoned: boolean
@@ -439,15 +440,13 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
                 }
 
                 try {
-                    JSON.parse(
-                        JSON.stringify(
-                            PublishableProjectPayload.parse(draft.project.hot),
-                        ),
-                    )
+                    const { hot: project } = draft.project
 
-                    /**
-                     * PUBLISH!
-                     */
+                    if (project.id) {
+                        throw new Error('Updating not implemented')
+                    }
+
+                    await createProject2(project)
                 } catch (e) {
                     if (e instanceof z.ZodError) {
                         const errors: ProjectDraft['errors'] = {}
@@ -611,10 +610,6 @@ export function useDoesUserHaveAccess() {
 
 export function useIsCurrentProjectDraftClean() {
     return !useDraft()?.project.changed
-}
-
-export function useIsNewProject() {
-    return typeof useProject().id === 'undefined'
 }
 
 export function useUpdateProject() {

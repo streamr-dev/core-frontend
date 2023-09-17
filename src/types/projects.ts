@@ -3,6 +3,10 @@ import { isEthereumAddress } from '~/marketplace/utils/validate'
 import { ProjectType, Project } from '~/shared/types'
 import { formatChainName } from '~/shared/utils/chains'
 import { toBN } from '~/utils/bn'
+import { defaultChainConfig } from '~/getters/getChainConfig'
+import { getDataAddress } from '~/marketplace/utils/web3'
+import address0 from '~/utils/address0'
+import { timeUnits } from '~/shared/utils/timeUnit'
 
 function getFormattedChainNameFromContext({ path: [, chainName] }: z.RefinementCtx) {
     if (typeof chainName !== 'string' || !chainName) {
@@ -114,9 +118,33 @@ export const OpenDataPayload = z.object({
     streams: z.array(z.string()).min(1, {
         message: 'No streams selected',
     }),
+    imageIpfsCid: z
+        .union([z.string(), z.null(), z.undefined()])
+        .transform((v) => v || ''),
     imageUrl: z.string().optional(),
     newImageToUpload: z.instanceof(File).optional(),
     termsOfUse: z.object({
+        commercialUse: z
+            .boolean()
+            .optional()
+            .transform((v) => v || undefined),
+        redistribution: z
+            .boolean()
+            .optional()
+            .transform((v) => v || undefined),
+        reselling: z
+            .boolean()
+            .optional()
+            .transform((v) => v || undefined),
+        storage: z
+            .boolean()
+            .optional()
+            .transform((v) => v || undefined),
+        termsName: z
+            .string()
+            .trim()
+            .optional()
+            .transform((v) => v || undefined),
         termsUrl: z
             .string()
             .trim()
@@ -169,7 +197,21 @@ export const OpenDataPayload = z.object({
             .or(z.literal(''))
             .transform((v) => v || undefined),
     }),
-    salePoints: z.record(z.string(), z.any()).transform(() => {}),
+    salePoints: SalePointPayload.transform(() => {
+        const { name: chainName, id: chainId } = defaultChainConfig
+
+        return {
+            [chainName]: {
+                beneficiaryAddress: address0,
+                chainId,
+                enabled: true,
+                price: '0',
+                pricingTokenAddress: getDataAddress(chainId),
+                readOnly: true,
+                timeUnit: timeUnits.second,
+            },
+        }
+    }),
 })
 
 export const DataUnionPayload = OpenDataPayload.merge(

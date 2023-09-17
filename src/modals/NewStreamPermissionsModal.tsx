@@ -11,6 +11,7 @@ import UnstyledErrors, { MarketplaceTheme } from '~/shared/components/Ui/Errors'
 import Text from '~/shared/components/Ui/Text'
 import FormModal, { FormModalProps } from './FormModal'
 import { RejectionReason } from './BaseModal'
+import { isMessaged } from '~/utils'
 
 const Separator = styled.div`
     border-bottom: 1px solid ${COLORS.separator};
@@ -38,14 +39,6 @@ interface PermissionBits {
 interface NewStreamPermissionsModalProps extends FormModalProps {
     onResolve?: (payload: PermissionBits) => void
     onBeforeSubmit?: (payload: PermissionBits) => void
-}
-
-const MessagedObject = z.object({
-    message: z.string(),
-})
-
-function isMessaged(e: unknown): e is z.infer<typeof MessagedObject> {
-    return MessagedObject.safeParse(e).success
 }
 
 export default function NewStreamPermissionsModal({

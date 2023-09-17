@@ -10,7 +10,19 @@ import {
     getRawGraphProjectsByText,
 } from '~/getters/hub'
 import { getProjectRegistryChainId } from '~/getters'
-import { TheGraph } from '~/shared/types'
+import { Project, ProjectType, TheGraph } from '~/shared/types'
+import { isMessaged } from '~/utils'
+import { errorToast } from '~/utils/toast'
+import { ContractTransaction } from 'ethers'
+import { truncate } from '~/shared/utils/text'
+import { randomHex } from 'web3-utils'
+import { PublishableProjectPayload } from '~/types/projects'
+import { getTokenInfo } from '~/hooks/useTokenInfo'
+import { toaster } from 'toasterhea'
+import Toast, { ToastType } from '~/shared/toasts/Toast'
+import { Layer } from '~/utils/Layer'
+import { pricePerSecondFromTimeUnit } from '~/marketplace/utils/price'
+import { postImage } from './images'
 
 export type TheGraphPaymentDetails = {
     domainId: string
@@ -202,6 +214,134 @@ const getPaymentDetails = (
     }))
 }
 
+async function formatMetadata({
+    contact: contactDetails,
+    creator,
+    description,
+    imageIpfsCid: existingImageIpfsCid,
+    newImageToUpload,
+    name,
+    termsOfUse,
+    type,
+}: PublishableProjectPayload) {
+    const imageIpfsCid = newImageToUpload
+        ? await postImage(newImageToUpload)
+        : existingImageIpfsCid
+
+    return JSON.stringify({
+        name,
+        description,
+        imageIpfsCid,
+        creator,
+        contactDetails,
+        termsOfUse,
+        isDataUnion: type === ProjectType.DataUnion,
+    })
+}
+
+export async function createProject2(project: Project) {
+    const chainId = getProjectRegistryChainId()
+
+    const id = randomHex(32)
+
+    const payload = PublishableProjectPayload.parse(project)
+
+    const salePoints = Object.values(payload.salePoints)
+
+    let domainIds: number[] = []
+
+    let paymentDetails: {
+        beneficiary: string
+        pricingTokenAddress: string
+        pricePerSecond: string
+    }[] = []
+
+    for (let i = 0; i < salePoints.length; i++) {
+        const {
+            chainId: domainId,
+            enabled,
+            beneficiaryAddress: beneficiary,
+            pricingTokenAddress,
+            price,
+            timeUnit,
+        } = salePoints[i]
+
+        if (!enabled) {
+            continue
+        }
+
+        let pricePerSecond = '0'
+
+        if (price !== '0') {
+            /**
+             * 0 tokens per time unit constitues 0 per second. No need
+             * to fetch decimals.
+             */
+            let decimals: number | undefined
+
+            while (true) {
+                try {
+                    decimals = (await getTokenInfo(pricingTokenAddress, domainId))
+                        .decimals
+
+                    break
+                } catch (e) {
+                    try {
+                        await toaster(Toast, Layer.Toast).pop({
+                            title: 'Warning',
+                            type: ToastType.Warning,
+                            desc: `Failed to fetch decimals for ${truncate(
+                                pricingTokenAddress,
+                            )}. Would you like to try again?`,
+                            okLabel: 'Yes',
+                            cancelLabel: 'No',
+                        })
+
+                        continue
+                    } catch (_) {
+                        throw e
+                    }
+                }
+            }
+
+            pricePerSecond = pricePerSecondFromTimeUnit(
+                price,
+                timeUnit,
+                decimals,
+            ).toString()
+        }
+
+        domainIds.push(domainId)
+
+        paymentDetails.push({
+            beneficiary,
+            pricePerSecond,
+            pricingTokenAddress,
+        })
+    }
+
+    const metadata = await formatMetadata(payload)
+
+    await networkPreflight(chainId)
+
+    const provider = await getSigner()
+
+    const tx = await getProjectRegistryContract({
+        chainId,
+        provider,
+    }).createProject(
+        id,
+        domainIds,
+        paymentDetails,
+        payload.streams,
+        0,
+        project.type !== ProjectType.OpenData,
+        metadata,
+    )
+
+    await tx.wait()
+}
+
 export async function createProject(project: SmartContractProjectCreate) {
     const chainId = getProjectRegistryChainId()
 
@@ -256,23 +396,30 @@ export async function updateProject(project: SmartContractProject) {
     await tx.wait()
 }
 
-export async function deleteProject(projectId: string | undefined) {
-    if (!projectId) {
-        throw new Error('No project')
-    }
-
+export async function deleteProject(projectId: string) {
     const chainId = getProjectRegistryChainId()
 
     await networkPreflight(chainId)
 
     const signer = await getSigner()
 
-    const tx = await getProjectRegistryContract({
-        chainId,
-        signer,
-    }).deleteProject(projectId)
+    try {
+        const tx = await getProjectRegistryContract({
+            chainId,
+            provider: signer,
+        }).deleteProject(projectId)
 
-    await tx.wait()
+        await tx.wait()
+    } catch (e) {
+        if (isMessaged(e) && /error_projectDoesNotExist/.test(e.message)) {
+            errorToast({
+                title: 'No such project',
+                desc: `Project ${truncate(projectId)} could not be found.`,
+            })
+        }
+
+        throw e
+    }
 }
 
 export async function deployDataUnionContract(
