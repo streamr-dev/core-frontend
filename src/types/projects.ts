@@ -35,12 +35,10 @@ export const SalePointsPayload = z.record(
                 z.literal('month'),
             ]),
         })
-        .superRefine(({ enabled, price }, ctx) => {
+        .superRefine(({ enabled, price, beneficiaryAddress }, ctx) => {
             if (!enabled) {
                 return
             }
-
-            const [, chainName] = ctx.path
 
             if (!price) {
                 return void ctx.addIssue({
@@ -50,7 +48,7 @@ export const SalePointsPayload = z.record(
                 })
             }
 
-            if (toBN(price).isGreaterThan(0)) {
+            if (toBN(price).isGreaterThan(0) || beneficiaryAddress === address0) {
                 return
             }
 

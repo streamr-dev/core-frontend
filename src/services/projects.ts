@@ -239,11 +239,7 @@ async function formatMetadata({
     })
 }
 
-export async function createProject2(project: Project) {
-    const chainId = getProjectRegistryChainId()
-
-    const id = randomHex(32)
-
+async function prepare(project: Project) {
     const payload = PublishableProjectPayload.parse(project)
 
     const salePoints = Object.values(payload.salePoints)
@@ -322,6 +318,21 @@ export async function createProject2(project: Project) {
 
     const metadata = await formatMetadata(payload)
 
+    return {
+        domainIds,
+        paymentDetails,
+        streams: payload.streams,
+        metadata,
+    }
+}
+
+export async function createProject2(project: Project) {
+    const { domainIds, paymentDetails, streams, metadata } = await prepare(project)
+
+    const chainId = getProjectRegistryChainId()
+
+    const id = randomHex(32)
+
     await networkPreflight(chainId)
 
     const provider = await getSigner()
@@ -333,7 +344,7 @@ export async function createProject2(project: Project) {
         id,
         domainIds,
         paymentDetails,
-        payload.streams,
+        streams,
         0,
         project.type !== ProjectType.OpenData,
         metadata,
@@ -342,6 +353,36 @@ export async function createProject2(project: Project) {
     await tx.wait()
 }
 
+export async function updataProject2(project: Project) {
+    const { id } = project
+
+    if (!id) {
+        throw new Error('Non-existing projects cannot be updated. Create it first.')
+    }
+
+    const { domainIds, paymentDetails, streams, metadata } = await prepare(project)
+
+    const chainId = getProjectRegistryChainId()
+
+    await networkPreflight(chainId)
+
+    const provider = await getSigner()
+
+    const tx = await getProjectRegistryContract({ chainId, provider }).updateProject(
+        id,
+        domainIds,
+        paymentDetails,
+        streams,
+        0,
+        metadata,
+    )
+
+    await tx.wait()
+}
+
+/**
+ * @deprecated Use createProject2.
+ */
 export async function createProject(project: SmartContractProjectCreate) {
     const chainId = getProjectRegistryChainId()
 
@@ -374,6 +415,9 @@ export async function createProject(project: SmartContractProjectCreate) {
     await tx.wait()
 }
 
+/**
+ * @deprecated Use updateProject2.
+ */
 export async function updateProject(project: SmartContractProject) {
     const chainId = getProjectRegistryChainId()
 
@@ -401,12 +445,12 @@ export async function deleteProject(projectId: string) {
 
     await networkPreflight(chainId)
 
-    const signer = await getSigner()
+    const provider = await getSigner()
 
     try {
         const tx = await getProjectRegistryContract({
             chainId,
-            provider: signer,
+            provider,
         }).deleteProject(projectId)
 
         await tx.wait()
@@ -414,7 +458,7 @@ export async function deleteProject(projectId: string) {
         if (isMessaged(e) && /error_projectDoesNotExist/.test(e.message)) {
             errorToast({
                 title: 'No such project',
-                desc: `Project ${truncate(projectId)} could not be found.`,
+                desc: `Project ${truncate(projectId)} does not exist.`,
             })
         }
 

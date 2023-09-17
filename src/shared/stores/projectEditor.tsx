@@ -37,7 +37,8 @@ import { PublishableProjectPayload } from '~/types/projects'
 import Toast, { ToastType } from '../toasts/Toast'
 import { useWalletAccount } from './wallet'
 import { useHasActiveProjectSubscription } from './purchases'
-import { createProject2 } from '~/services/projects'
+import { createProject2, updataProject2 } from '~/services/projects'
+import { toastedOperation } from '~/utils/toastedOperation'
 
 interface ProjectDraft {
     abandoned: boolean
@@ -443,10 +444,16 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
                     const { hot: project } = draft.project
 
                     if (project.id) {
-                        throw new Error('Updating not implemented')
+                        return void (await toastedOperation('Update project', () =>
+                            updataProject2(project),
+                        ))
                     }
 
-                    await createProject2(project)
+                    // @TODO Is data union?
+
+                    await toastedOperation('Create project', () =>
+                        createProject2(project),
+                    )
                 } catch (e) {
                     if (e instanceof z.ZodError) {
                         const errors: ProjectDraft['errors'] = {}
@@ -466,7 +473,7 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
                         throw new ValidationError(e.issues.map(({ message }) => message))
                     }
 
-                    console.warn('Failed to persist a project draft', e)
+                    throw e
                 }
             } finally {
                 setDraft(draftId, (draft) => {
@@ -640,52 +647,57 @@ export function usePersistCurrentProjectDraft() {
 
     const clean = useIsCurrentProjectDraftClean()
 
-    return useCallback(() => {
-        if (!draftId || busy || clean) {
-            return
-        }
-
-        setTimeout(async () => {
-            try {
-                await persist(draftId)
-            } catch (e) {
-                if (e instanceof ValidationError) {
-                    const ve: ValidationError = e
-
-                    return void setTimeout(async () => {
-                        try {
-                            await persistErrorToast.pop({
-                                type: ToastType.Warning,
-                                title: 'Failed to publish',
-                                desc: (
-                                    <ul>
-                                        {ve.messages.map((message, index) => (
-                                            <li key={index}>{message}</li>
-                                        ))}
-                                    </ul>
-                                ),
-                            })
-                        } catch (e) {
-                            // Ignore.
-                        }
-                    })
-                }
-
-                if (isCodedError(e) && e.code === 4001) {
-                    return
-                }
-
-                if (
-                    e === RejectionReason.CancelButton ||
-                    e === RejectionReason.EscapeKey
-                ) {
-                    return
-                }
-
-                console.warn('Failed to publish', e)
+    return useCallback(
+        ({ onDone }: { onDone?: () => void }) => {
+            if (!draftId || busy || clean) {
+                return
             }
-        })
-    }, [draftId, persist, busy, clean])
+
+            setTimeout(async () => {
+                try {
+                    await persist(draftId)
+
+                    onDone?.()
+                } catch (e) {
+                    if (e instanceof ValidationError) {
+                        const ve: ValidationError = e
+
+                        return void setTimeout(async () => {
+                            try {
+                                await persistErrorToast.pop({
+                                    type: ToastType.Warning,
+                                    title: 'Failed to publish',
+                                    desc: (
+                                        <ul>
+                                            {ve.messages.map((message, index) => (
+                                                <li key={index}>{message}</li>
+                                            ))}
+                                        </ul>
+                                    ),
+                                })
+                            } catch (e) {
+                                // Ignore.
+                            }
+                        })
+                    }
+
+                    if (isCodedError(e) && e.code === 4001) {
+                        return
+                    }
+
+                    if (
+                        e === RejectionReason.CancelButton ||
+                        e === RejectionReason.EscapeKey
+                    ) {
+                        return
+                    }
+
+                    console.warn('Failed to publish', e)
+                }
+            })
+        },
+        [draftId, persist, busy, clean],
+    )
 }
 
 export function useSetProjectErrors() {
