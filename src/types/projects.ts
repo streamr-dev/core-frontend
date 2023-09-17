@@ -16,7 +16,7 @@ function getFormattedChainNameFromContext({ path: [, chainName] }: z.RefinementC
     return `for ${formatChainName(chainName)} network`
 }
 
-export const SalePointPayload = z.record(
+export const SalePointsPayload = z.record(
     z.string(),
     z
         .object({
@@ -197,7 +197,7 @@ export const OpenDataPayload = z.object({
             .or(z.literal(''))
             .transform((v) => v || undefined),
     }),
-    salePoints: SalePointPayload.transform(() => {
+    salePoints: SalePointsPayload.transform(() => {
         const { name: chainName, id: chainId } = defaultChainConfig
 
         return {
@@ -217,7 +217,7 @@ export const OpenDataPayload = z.object({
 export const DataUnionPayload = OpenDataPayload.merge(
     z.object({
         type: z.literal(ProjectType.DataUnion),
-        salePoints: SalePointPayload.refine(
+        salePoints: SalePointsPayload.refine(
             (salePoints) => Object.values(salePoints).some(({ enabled }) => enabled),
             {
                 message: 'No chains selected',
@@ -258,7 +258,7 @@ export const DataUnionPayload = OpenDataPayload.merge(
 export const PaidDataPayload = OpenDataPayload.merge(
     z.object({
         type: z.literal(ProjectType.PaidData),
-        salePoints: SalePointPayload.refine(
+        salePoints: SalePointsPayload.refine(
             (salePoints) => Object.values(salePoints).some(({ enabled }) => enabled),
             {
                 message: 'No chains selected',

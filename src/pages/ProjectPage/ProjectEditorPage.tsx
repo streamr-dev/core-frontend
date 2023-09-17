@@ -28,7 +28,7 @@ import SalePointOption, {
 import { Chain } from '~/shared/types/web3-types'
 import getCoreConfig from '~/getters/getCoreConfig'
 import BeneficiaryAddressEditor from '~/components/SalePointSelector/BeneficiaryAddressEditor'
-import { SalePointPayload } from '~/types/projects'
+import { SalePointsPayload } from '~/types/projects'
 import DataUnionFee from './DataUnionFee'
 import DataUnionPayment from './DataUnionPayment'
 import EditorHero from './EditorHero'
@@ -182,7 +182,7 @@ export default function ProjectEditorPage() {
 
                                                     try {
                                                         try {
-                                                            SalePointPayload.parse({
+                                                            SalePointsPayload.parse({
                                                                 [chainName]: newSalePoint,
                                                             })
                                                         } catch (e) {
