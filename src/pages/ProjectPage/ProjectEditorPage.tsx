@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { z } from 'zod'
+import { useNavigate } from 'react-router-dom'
 import Layout, { LayoutInner as PrestyledLayoutInner } from '~/components/Layout'
 import {
     getEmptySalePoint,
@@ -29,13 +30,15 @@ import { Chain } from '~/shared/types/web3-types'
 import getCoreConfig from '~/getters/getCoreConfig'
 import BeneficiaryAddressEditor from '~/components/SalePointSelector/BeneficiaryAddressEditor'
 import { SalePointsPayload } from '~/types/projects'
+import { deleteProject } from '~/services/projects'
+import { toastedOperation } from '~/utils/toastedOperation'
+import useIsMounted from '~/shared/hooks/useIsMounted'
+import routes from '~/routes'
 import DataUnionFee from './DataUnionFee'
 import DataUnionPayment from './DataUnionPayment'
 import EditorHero from './EditorHero'
 import EditorNav from './EditorNav'
 import EditorStreams from './EditorStreams'
-import { deleteProject } from '~/services/projects'
-import { toastedOperation } from '~/utils/toastedOperation'
 
 export default function ProjectEditorPage() {
     const {
@@ -86,6 +89,10 @@ export default function ProjectEditorPage() {
     const errors = useDraft()?.errors || {}
 
     const setErrors = useSetProjectErrors()
+
+    const isMounted = useIsMounted()
+
+    const navigate = useNavigate()
 
     return (
         <Layout
@@ -352,12 +359,15 @@ export default function ProjectEditorPage() {
                                 kind="destructive"
                                 onClick={async () => {
                                     try {
-                                        await toastedOperation(
-                                            'Delete project',
-                                            async () => {
-                                                await deleteProject(projectId)
-                                            },
+                                        await toastedOperation('Delete project', () =>
+                                            deleteProject(projectId),
                                         )
+
+                                        if (!isMounted()) {
+                                            return
+                                        }
+
+                                        navigate(routes.projects.index())
                                     } catch (e) {
                                         console.warn('Failed to delete a project', e)
                                     }
