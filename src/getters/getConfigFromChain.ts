@@ -9,11 +9,11 @@ export type ConfigFromChain = { maxPenaltyPeriodSeconds: BNish; minimumStakeWei:
  * When we will be needing more of the fields, simply expand the return type and add them
  */
 export const getConfigFromChain = async (): Promise<ConfigFromChain> => {
-    const signer = await getPublicWeb3Provider(defaultChainConfig.id).getSigner()
+    const provider = await getPublicWeb3Provider(defaultChainConfig.id)
     const config = new Contract(
         defaultChainConfig.contracts.StreamrConfig,
         streamrConfigABI,
-        signer,
+        provider,
     ) as StreamrConfig
     return {
         maxPenaltyPeriodSeconds: await config.maxPenaltyPeriodSeconds(),
