@@ -15,6 +15,6 @@ export type SponsorshipElement = {
 
 export type SponsorshipStake = {
     operatorId: string
-    date: string
+    joinDate: string
     amount: string
 }

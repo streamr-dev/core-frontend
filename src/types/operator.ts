@@ -35,7 +35,7 @@ export type OperatorElement = {
 
 export type OperatorStake = {
     operatorId: string
-    date: string
+    joinDate: string
     amount: BN
     allocated: BN
     sponsorship?: Sponsorship | null

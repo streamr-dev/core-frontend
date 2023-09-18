@@ -9,7 +9,7 @@ gql`
             }
             amount
             allocatedWei
-            date
+            joinDate
             sponsorship {
                 ...SponsorshipFields
             }
@@ -95,7 +95,7 @@ gql`
             }
             amount
             allocatedWei
-            date
+            joinDate
         }
         operatorCount
         totalStakedWei

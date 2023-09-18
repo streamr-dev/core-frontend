@@ -146,7 +146,7 @@ export const mapSponsorshipToElement = (
             return {
                 operatorId: stake.operator.id,
                 amount: toBN(stake.amount).dividedBy(Math.pow(10, decimals)).toString(),
-                date: toBN(stake.date).multipliedBy(1000).toString(),
+                joinDate: toBN(stake.joinDate).multipliedBy(1000).toString(),
             }
         }),
         cumulativeSponsoring: toBN(sponsorship.cumulativeSponsoring)

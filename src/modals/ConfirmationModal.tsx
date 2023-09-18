@@ -11,7 +11,8 @@ export type ConfirmationModalProps = {
     cancelLabel: string
 }
 
-type Props = ConfirmationModalProps & Omit<BaseModalProps, 'children'>
+type Props = ConfirmationModalProps &
+    Omit<BaseModalProps, 'children'> & { onResolve?: () => void }
 export const ConfirmationModal: FunctionComponent<Props> = ({
     title,
     description,

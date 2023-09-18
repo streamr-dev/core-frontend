@@ -109,7 +109,7 @@ export const mapOperatorToElement = (operator: Operator): OperatorElement => {
             operatorId: s.operator.id,
             allocated: toBN(s.allocatedWei),
             amount: toBN(s.amount),
-            date: s.date,
+            joinDate: s.joinDate,
             sponsorship: s.sponsorship,
         })),
         delegatorCount: operator.delegatorCount,
