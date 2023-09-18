@@ -9,9 +9,9 @@ import address0 from '~/utils/address0'
 import UnstyledLabel from '~/shared/components/Ui/Label'
 import UnstyledErrors, { MarketplaceTheme } from '~/shared/components/Ui/Errors'
 import Text from '~/shared/components/Ui/Text'
+import { isMessaged } from '~/utils'
 import FormModal, { FormModalProps } from './FormModal'
 import { RejectionReason } from './BaseModal'
-import { isMessaged } from '~/utils'
 
 const Separator = styled.div`
     border-bottom: 1px solid ${COLORS.separator};

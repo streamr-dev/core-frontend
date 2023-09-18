@@ -1,3 +1,5 @@
+import { toaster } from 'toasterhea'
+import { randomHex } from 'web3-utils'
 import { Address } from '~/shared/types/web3-types'
 import { getSigner } from '~/shared/stores/wallet'
 import { getProjectRegistryContract } from '~/getters'
@@ -13,12 +15,9 @@ import { getProjectRegistryChainId } from '~/getters'
 import { Project, ProjectType, TheGraph } from '~/shared/types'
 import { isMessaged } from '~/utils'
 import { errorToast } from '~/utils/toast'
-import { ContractTransaction } from 'ethers'
 import { truncate } from '~/shared/utils/text'
-import { randomHex } from 'web3-utils'
 import { PublishableProjectPayload } from '~/types/projects'
 import { getTokenInfo } from '~/hooks/useTokenInfo'
-import { toaster } from 'toasterhea'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
 import { pricePerSecondFromTimeUnit } from '~/marketplace/utils/price'
@@ -244,9 +243,9 @@ async function prepare(project: Project) {
 
     const salePoints = Object.values(payload.salePoints)
 
-    let domainIds: number[] = []
+    const domainIds: number[] = []
 
-    let paymentDetails: {
+    const paymentDetails: {
         beneficiary: string
         pricingTokenAddress: string
         pricePerSecond: string

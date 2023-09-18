@@ -67,6 +67,9 @@ export default function ProjectEditorPage() {
             const { name: chainName } = getConfigForChain(value.chainId)
 
             if (draft.salePoints[chainName]?.readOnly) {
+                /**
+                 * Read-only sale point must not be updated.
+                 */
                 return
             }
 
@@ -76,13 +79,19 @@ export default function ProjectEditorPage() {
                 return
             }
 
-            Object.values(draft.salePoints).forEach((salePoint) => {
-                if (!salePoint?.enabled || salePoint === value) {
-                    return
-                }
+            if (value.enabled) {
+                /**
+                 * Disable all other sale points making the current one the sole
+                 * selection. We're mimicing radio's behaviour here.
+                 */
+                Object.values(draft.salePoints).forEach((salePoint) => {
+                    if (!salePoint?.enabled || salePoint === value) {
+                        return
+                    }
 
-                salePoint.enabled = false
-            })
+                    salePoint.enabled = false
+                })
+            }
         })
     }
 
