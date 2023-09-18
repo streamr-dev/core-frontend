@@ -45,6 +45,7 @@ import Toast, { ToastType } from '~/shared/toasts/Toast'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { createProject2, updataProject2 } from '~/services/projects'
 import { toastedOperation } from '~/utils/toastedOperation'
+import { Chain } from '~/shared/types/web3-types'
 import routes from '~/routes'
 import { useWalletAccount } from './wallet'
 import { useHasActiveProjectSubscription } from './purchases'
@@ -77,11 +78,14 @@ interface ProjectEditorStore {
     update: (draftId: string, upadte: (project: Project) => void) => void
 }
 
-export function getEmptySalePoint(chainId: number): SalePoint {
+export function getEmptySalePoint(
+    chainId: number,
+    { enabled = false }: { enabled?: boolean } = {},
+): SalePoint {
     return {
         beneficiaryAddress: '',
         chainId,
-        enabled: false,
+        enabled,
         price: '',
         pricePerSecond: '',
         pricingTokenAddress: getDataAddress(chainId).toLowerCase(),
@@ -113,12 +117,12 @@ function getEmptyContact() {
 }
 
 function getEmptyProject(): Project {
-    const chains = getCoreConfig().marketplaceChains.map(getConfigForChainByName)
+    const chains: Chain[] = getCoreConfig().marketplaceChains.map(getConfigForChainByName)
 
     const salePoints: Record<string, SalePoint | undefined> = {}
 
-    chains.map(({ id: chainId, name: chainName }) => {
-        salePoints[chainName] = getEmptySalePoint(chainId)
+    chains.map(({ id: chainId, name: chainName }, index) => {
+        salePoints[chainName] = getEmptySalePoint(chainId, { enabled: index === 0 })
     })
 
     return {
@@ -158,6 +162,12 @@ async function getSalePointsFromPaymentDetails<
     T extends Pick<QueriedGraphProject, 'paymentDetails'>,
 >({ paymentDetails }: T): Promise<Project['salePoints']> {
     const result = getEmptyProject().salePoints
+
+    Object.values(result).forEach((salePoint) => {
+        if (salePoint) {
+            salePoint.enabled = false
+        }
+    })
 
     for (let i = 0; i < paymentDetails.length; i++) {
         try {
