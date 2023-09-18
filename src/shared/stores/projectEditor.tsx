@@ -83,6 +83,7 @@ export function getEmptySalePoint(chainId: number): SalePoint {
         chainId,
         enabled: false,
         price: '',
+        pricePerSecond: '',
         pricingTokenAddress: getDataAddress(chainId).toLowerCase(),
         readOnly: false,
         timeUnit: timeUnits.day,
