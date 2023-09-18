@@ -78,14 +78,11 @@ interface ProjectEditorStore {
     update: (draftId: string, upadte: (project: Project) => void) => void
 }
 
-export function getEmptySalePoint(
-    chainId: number,
-    { enabled = false }: { enabled?: boolean } = {},
-): SalePoint {
+export function getEmptySalePoint(chainId: number): SalePoint {
     return {
         beneficiaryAddress: '',
         chainId,
-        enabled,
+        enabled: false,
         price: '',
         pricePerSecond: '',
         pricingTokenAddress: getDataAddress(chainId).toLowerCase(),
@@ -121,8 +118,8 @@ function getEmptyProject(): Project {
 
     const salePoints: Record<string, SalePoint | undefined> = {}
 
-    chains.map(({ id: chainId, name: chainName }, index) => {
-        salePoints[chainName] = getEmptySalePoint(chainId, { enabled: index === 0 })
+    chains.map(({ id: chainId, name: chainName }) => {
+        salePoints[chainName] = getEmptySalePoint(chainId)
     })
 
     return {
@@ -285,6 +282,32 @@ async function getTransientProject<
     }
 }
 
+function preselectSalePoint(project: Project) {
+    if (project.type === ProjectType.OpenData) {
+        return
+    }
+
+    const values = Object.values(project.salePoints)
+
+    if (values.some((salePoint) => salePoint?.enabled)) {
+        /**
+         * Project has at least one sale point selected already. We have to skip.
+         */
+        return
+    }
+
+    const [salePoint] = values
+
+    if (!salePoint) {
+        /**
+         * Nothing to enable, eh?
+         */
+        return
+    }
+
+    salePoint.enabled = true
+}
+
 const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
     function isPersisting(draftId: string) {
         return get().drafts[draftId]?.persisting === true
@@ -328,9 +351,11 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
             setDraft(
                 draftId,
                 (draft) => {
-                    draft.project.hot.id = projectId
+                    const { hot, cold } = draft.project
 
-                    draft.project.cold.id = projectId
+                    hot.id = projectId
+
+                    cold.id = projectId
 
                     draft.abandoned = false
 
@@ -350,9 +375,13 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
                             type = ProjectType.OpenData
                     }
 
-                    draft.project.hot.type = type
+                    hot.type = type
 
-                    draft.project.cold.type = type
+                    preselectSalePoint(hot)
+
+                    cold.type = type
+
+                    preselectSalePoint(cold)
                 },
                 {
                     force: true,
