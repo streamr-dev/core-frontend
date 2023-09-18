@@ -33,7 +33,7 @@ import {
     GetProjectQueryVariables,
 } from '~/generated/gql/network'
 import { ProjectMetadata } from '~/shared/consts'
-import { getDataUnionAdminFee } from '~/getters/du'
+import { getDataUnionAdminFeeForSalePoint } from '~/getters/du'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { SalePoint } from '~/shared/types'
 import { getDataAddress } from '~/marketplace/utils/web3'
@@ -41,13 +41,13 @@ import { ValidationError } from '~/marketplace/containers/ProjectEditing/Project
 import isCodedError from '~/utils/isCodedError'
 import { RejectionReason } from '~/modals/BaseModal'
 import { Layer } from '~/utils/Layer'
-import Toast, { ToastType } from '../toasts/Toast'
-import { useWalletAccount } from './wallet'
-import { useHasActiveProjectSubscription } from './purchases'
+import Toast, { ToastType } from '~/shared/toasts/Toast'
+import useIsMounted from '~/shared/hooks/useIsMounted'
 import { createProject2, updataProject2 } from '~/services/projects'
 import { toastedOperation } from '~/utils/toastedOperation'
 import routes from '~/routes'
-import useIsMounted from '../hooks/useIsMounted'
+import { useWalletAccount } from './wallet'
+import { useHasActiveProjectSubscription } from './purchases'
 
 interface ProjectDraft {
     abandoned: boolean
@@ -257,33 +257,10 @@ async function getTransientProject<
         return result
     }
 
-    const {
-        beneficiary: dataUnionId = undefined,
-        domainId = undefined,
-    }: { beneficiary?: unknown; domainId?: unknown } =
-        paymentDetails.find((pd) => pd.beneficiary.length > 0) || {}
-
-    if (
-        typeof domainId !== 'string' ||
-        !domainId ||
-        typeof dataUnionId !== 'string' ||
-        !dataUnionId
-    ) {
-        return {
-            ...result,
-            type: ProjectType.DataUnion,
-            adminFee: '',
-            existingDUAddress: undefined,
-            dataUnionChainId: undefined,
-        }
-    }
-
     let adminFee: number | undefined
 
-    const dataUnionChainId = Number(domainId)
-
     try {
-        adminFee = await getDataUnionAdminFee(dataUnionId, dataUnionChainId)
+        adminFee = await getDataUnionAdminFeeForSalePoint(payment)
     } catch (e) {
         console.warn('Failed to load Data Union admin fee', e)
     }
@@ -295,8 +272,6 @@ async function getTransientProject<
             typeof adminFee === 'undefined'
                 ? ''
                 : toBN(adminFee).multipliedBy(100).toString(),
-        existingDUAddress: dataUnionId,
-        dataUnionChainId,
     }
 }
 
@@ -463,11 +438,19 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
                         ))
                     }
 
-                    // @TODO Is data union?
+                    const shouldDeployDU =
+                        project.type === ProjectType.DataUnion &&
+                        !Object.values(project.salePoints).find(
+                            (salePoint) => salePoint?.enabled,
+                        )?.beneficiaryAddress
 
-                    await toastedOperation('Create project', () =>
-                        createProject2(project),
-                    )
+                    if (!shouldDeployDU) {
+                        return void (await toastedOperation('Create project', () =>
+                            createProject2(project),
+                        ))
+                    }
+
+                    throw new Error('Not implemented')
                 } catch (e) {
                     if (e instanceof z.ZodError) {
                         const errors: ProjectDraft['errors'] = {}
