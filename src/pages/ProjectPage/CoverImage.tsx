@@ -91,7 +91,7 @@ const Preview = styled.img`
     }
 `
 
-export const Dropzone = styled.div`
+const Dropzone = styled.div`
     align-items: center;
     aspect-ratio: 1 / 1;
     background-color: ${COLORS.primaryLight};

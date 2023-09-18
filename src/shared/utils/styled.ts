@@ -1,12 +1,11 @@
 export const SM = 375
 export const MD = 744
-export const MDLG = 1100
+const MDLG = 1100
 export const LG = 1440
 export const XL = 1920
 export const LIGHT = 300
 export const REGULAR = 400
 export const MEDIUM = 500
-export const TOOLBAR_SHADOW = '0 0 10px rgba(0, 0, 0, 0.1)'
 export const MONO =
     "'IBM Plex Mono', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', Courier, monospace"
 export const SANS = "'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif"

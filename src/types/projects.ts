@@ -212,7 +212,7 @@ export const OpenDataPayload = z.object({
     }),
 })
 
-export const DataUnionPayload = OpenDataPayload.merge(
+const DataUnionPayload = OpenDataPayload.merge(
     z.object({
         type: z.literal(ProjectType.DataUnion),
         salePoints: SalePointsPayload.refine(
@@ -252,7 +252,7 @@ export const DataUnionPayload = OpenDataPayload.merge(
     }),
 )
 
-export const PaidDataPayload = OpenDataPayload.merge(
+const PaidDataPayload = OpenDataPayload.merge(
     z.object({
         type: z.literal(ProjectType.PaidData),
         salePoints: SalePointsPayload.refine(

@@ -22,8 +22,6 @@ export const paymentCurrencies = {
     PRODUCT_DEFINED: 'PRODUCT_DEFINED',
     NATIVE: 'NATIVE',
 }
-export const DEFAULT_CURRENCY = contractCurrencies.DATA
-export const MIN_UNISWAP_AMOUNT_USD = 0.1
 // The order of these must be the same than in the smart contract
 export const projectStates = {
     NOT_DEPLOYED: 'NOT_DEPLOYED',
@@ -84,10 +82,3 @@ export const gasLimits = {
 export const dialogAutoCloseTimeout = 2000 // in milliseconds
 
 export const maxFileSizeForImageUpload = 5242880
-export const NotificationIcon = {
-    CHECKMARK: 'checkmark',
-    ERROR: 'error',
-    WARNING: 'warning',
-    INFO: 'info',
-    SPINNER: 'spinner',
-}

@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import Editor from 'rich-markdown-editor'
 import light from 'rich-markdown-editor/dist/styles/theme'
@@ -8,12 +8,11 @@ import {
     ProjectHeroDescriptionStyles,
     ProjectHeroImage,
     ProjectHeroMetadataContainer,
-    ProjectHeroSignalContainer,
     ProjectHeroTitle,
 } from '~/marketplace/containers/ProjectPage/Hero/ProjectHero2.styles'
 import { COLORS } from '~/shared/utils/styled'
 import { DetailDisplay } from '~/shared/components/DetailEditor/DetailDisplay'
-import { ProjectDetailIcon } from '~/marketplace/containers/ProjectEditing/ProjectDetails.styles'
+import { DetailIcon } from '~/components/DetailDropdown'
 
 const DescriptionEditor = styled(Editor)`
     ${ProjectHeroDescriptionStyles};
@@ -64,59 +63,39 @@ export default function ProjectHero2({
                     <>
                         {contact.url && (
                             <DetailDisplay
-                                icon={<ProjectDetailIcon name={'web'} />}
+                                icon={<DetailIcon name="web" />}
                                 value={contact.url}
                                 link={contact.url}
                             />
                         )}
                         {contact.email && (
                             <DetailDisplay
-                                icon={<ProjectDetailIcon name={'email'} />}
+                                icon={<DetailIcon name="email" />}
                                 value={contact.email}
                                 link={'mailto:' + contact.email}
                             />
                         )}
                         {contact.twitter && (
                             <DetailDisplay
-                                icon={
-                                    <ProjectDetailIcon
-                                        name={'twitter'}
-                                        className={'twitterColor'}
-                                    />
-                                }
+                                icon={<DetailIcon name="twitter" $color="#1da1f2" />}
                                 link={contact.twitter}
                             />
                         )}
                         {contact.telegram && (
                             <DetailDisplay
-                                icon={
-                                    <ProjectDetailIcon
-                                        name={'telegram'}
-                                        className={'telegramColor'}
-                                    />
-                                }
+                                icon={<DetailIcon name="telegram" $color="#2aabee" />}
                                 link={contact.telegram}
                             />
                         )}
                         {contact.reddit && (
                             <DetailDisplay
-                                icon={
-                                    <ProjectDetailIcon
-                                        name={'reddit'}
-                                        className={'redditColor'}
-                                    />
-                                }
+                                icon={<DetailIcon name="reddit" $color="#ff5700" />}
                                 link={contact.reddit}
                             />
                         )}
                         {contact.linkedIn && (
                             <DetailDisplay
-                                icon={
-                                    <ProjectDetailIcon
-                                        name={'linkedin'}
-                                        className={'linkedInColor'}
-                                    />
-                                }
+                                icon={<DetailIcon name="linkedin" $color="#0077b5" />}
                                 link={contact.linkedIn}
                             />
                         )}
