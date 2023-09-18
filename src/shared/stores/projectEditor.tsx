@@ -13,7 +13,11 @@ import uniqueId from 'lodash/uniqueId'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
 import { useNavigate } from 'react-router-dom'
-import { getGraphProjectWithParsedMetadata, getProjectImageUrl } from '~/getters'
+import {
+    getGraphProjectWithParsedMetadata,
+    getProjectImageUrl,
+    getProjectRegistryChainId,
+} from '~/getters'
 import {
     TimeUnit,
     timeUnitSecondsMultiplierMap,
@@ -43,9 +47,14 @@ import { RejectionReason } from '~/modals/BaseModal'
 import { Layer } from '~/utils/Layer'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import useIsMounted from '~/shared/hooks/useIsMounted'
-import { createProject2, updataProject2 } from '~/services/projects'
-import { toastedOperation } from '~/utils/toastedOperation'
+import {
+    createProject2,
+    deployDataUnionContract,
+    updataProject2,
+} from '~/services/projects'
+import { toastedOperation, toastedOperations } from '~/utils/toastedOperation'
 import { Chain } from '~/shared/types/web3-types'
+import networkPreflight from '~/utils/networkPreflight'
 import routes from '~/routes'
 import { useWalletAccount } from './wallet'
 import { useHasActiveProjectSubscription } from './purchases'
@@ -489,7 +498,71 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
                         ))
                     }
 
-                    throw new Error('Not implemented')
+                    await toastedOperations(
+                        [
+                            {
+                                id: uniqueId('operation-'),
+                                label: 'Deploy Data Union contract',
+                            },
+                            {
+                                id: uniqueId('operation-'),
+                                label: 'Create project',
+                            },
+                        ],
+                        (next) =>
+                            createProject2(project, {
+                                async onAfterPrepare(
+                                    projectId,
+                                    {
+                                        domainIds: [domainId],
+                                        paymentDetails: [paymentDetail],
+                                        adminFee,
+                                    },
+                                ) {
+                                    /**
+                                     * We deploy a new Data Union in the post-prepare phase where
+                                     * the project has already gone through validation.
+                                     */
+                                    if (!domainId) {
+                                        throw new Error('No chain id')
+                                    }
+
+                                    if (typeof adminFee === 'undefined') {
+                                        throw new Error('No admin fee')
+                                    }
+
+                                    if (!paymentDetail) {
+                                        throw new Error('No payment details')
+                                    }
+
+                                    if (paymentDetail.beneficiary) {
+                                        /**
+                                         * Something broke above. See `shouldDeployDU` for details. We
+                                         * only deploy a new Data Union if the `beneficiary` is empty.
+                                         */
+                                        throw new Error('Unexpected beneficiary')
+                                    }
+
+                                    const chainId = getProjectRegistryChainId()
+
+                                    await networkPreflight(chainId)
+
+                                    const dataUnionId = await deployDataUnionContract(
+                                        projectId,
+                                        adminFee,
+                                        domainId,
+                                    )
+
+                                    /**
+                                     * We assing the newly deployed Data Union to the project
+                                     * we're currently persisting.
+                                     */
+                                    paymentDetail.beneficiary = dataUnionId
+
+                                    next()
+                                },
+                            }),
+                    )
                 } catch (e) {
                     if (e instanceof z.ZodError) {
                         const errors: ProjectDraft['errors'] = {}

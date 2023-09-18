@@ -329,12 +329,26 @@ async function prepare(project: Project) {
     }
 }
 
-export async function createProject2(project: Project) {
-    const { domainIds, paymentDetails, streams, metadata } = await prepare(project)
+export async function createProject2(
+    project: Project,
+    {
+        onAfterPrepare,
+    }: {
+        onAfterPrepare?: (
+            projectId: string,
+            properties: Awaited<ReturnType<typeof prepare>>,
+        ) => void | Promise<void>
+    } = {},
+) {
+    const properties = await prepare(project)
+
+    const { domainIds, paymentDetails, streams, metadata } = properties
 
     const chainId = getProjectRegistryChainId()
 
-    const id = randomHex(32)
+    const productId = randomHex(32)
+
+    await onAfterPrepare?.(productId, properties)
 
     await networkPreflight(chainId)
 
@@ -344,7 +358,7 @@ export async function createProject2(project: Project) {
         chainId,
         provider,
     }).createProject(
-        id,
+        productId,
         domainIds,
         paymentDetails,
         streams,
