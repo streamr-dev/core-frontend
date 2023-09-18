@@ -1,10 +1,18 @@
 import { produce } from 'immer'
-import React, { createContext, useCallback, useContext, useEffect, useMemo } from 'react'
+import React, {
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useRef,
+} from 'react'
 import { create } from 'zustand'
 import isEqual from 'lodash/isEqual'
 import uniqueId from 'lodash/uniqueId'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
+import { useNavigate } from 'react-router-dom'
 import { getGraphProjectWithParsedMetadata, getProjectImageUrl } from '~/getters'
 import {
     TimeUnit,
@@ -38,6 +46,8 @@ import { useWalletAccount } from './wallet'
 import { useHasActiveProjectSubscription } from './purchases'
 import { createProject2, updataProject2 } from '~/services/projects'
 import { toastedOperation } from '~/utils/toastedOperation'
+import routes from '~/routes'
+import useIsMounted from '../hooks/useIsMounted'
 
 interface ProjectDraft {
     abandoned: boolean
@@ -650,57 +660,70 @@ export function usePersistCurrentProjectDraft() {
 
     const clean = useIsCurrentProjectDraftClean()
 
-    return useCallback(
-        ({ onDone }: { onDone?: () => void }) => {
-            if (!draftId || busy || clean) {
-                return
-            }
+    const navigate = useNavigate()
 
-            setTimeout(async () => {
-                try {
-                    await persist(draftId)
+    const isMounted = useIsMounted()
 
-                    onDone?.()
-                } catch (e) {
-                    if (e instanceof ValidationError) {
-                        const ve: ValidationError = e
+    const onDoneRef = useRef(() => {
+        if (!isMounted()) {
+            /**
+             * There's no way of getting to another project's edit page without unmountning
+             * the current one thus using `isMounted` is safe here.
+             */
+            return
+        }
 
-                        return void setTimeout(async () => {
-                            try {
-                                await persistErrorToast.pop({
-                                    type: ToastType.Warning,
-                                    title: 'Failed to publish',
-                                    desc: (
-                                        <ul>
-                                            {ve.messages.map((message, index) => (
-                                                <li key={index}>{message}</li>
-                                            ))}
-                                        </ul>
-                                    ),
-                                })
-                            } catch (e) {
-                                // Ignore.
-                            }
-                        })
-                    }
+        navigate(routes.project.index())
+    })
 
-                    if (isCodedError(e) && e.code === 4001) {
-                        return
-                    }
+    return useCallback(() => {
+        if (!draftId || busy || clean) {
+            return
+        }
 
-                    if (
-                        e === RejectionReason.CancelButton ||
-                        e === RejectionReason.EscapeKey
-                    ) {
-                        return
-                    }
+        setTimeout(async () => {
+            try {
+                await persist(draftId)
 
-                    console.warn('Failed to publish', e)
+                onDoneRef.current()
+            } catch (e) {
+                if (e instanceof ValidationError) {
+                    const ve: ValidationError = e
+
+                    return void setTimeout(async () => {
+                        try {
+                            await persistErrorToast.pop({
+                                type: ToastType.Warning,
+                                title: 'Failed to publish',
+                                desc: (
+                                    <ul>
+                                        {ve.messages.map((message, index) => (
+                                            <li key={index}>{message}</li>
+                                        ))}
+                                    </ul>
+                                ),
+                            })
+                        } catch (e) {
+                            // Ignore.
+                        }
+                    })
                 }
-            })
-        },
-        [draftId, persist, busy, clean],
-    )
+
+                if (isCodedError(e) && e.code === 4001) {
+                    return
+                }
+
+                if (
+                    e === RejectionReason.CancelButton ||
+                    e === RejectionReason.EscapeKey
+                ) {
+                    return
+                }
+
+                console.warn('Failed to publish', e)
+            }
+        })
+    }, [draftId, persist, busy, clean])
 }
 
 export function useSetProjectErrors() {

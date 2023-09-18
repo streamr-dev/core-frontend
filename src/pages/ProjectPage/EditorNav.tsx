@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { NavContainer } from '~/components/Nav'
 import { LogoLink, Navbar, NavbarItem } from '~/components/Nav/Nav.styles'
 import Logo from '~/shared/components/Logo'
@@ -13,7 +13,6 @@ import {
     useProject,
 } from '~/shared/stores/projectEditor'
 import routes from '~/routes'
-import useIsMounted from '~/shared/hooks/useIsMounted'
 
 const FlexNavbar = styled(Navbar)`
     display: flex;
@@ -46,10 +45,6 @@ export default function EditorNav() {
 
     const persist = usePersistCurrentProjectDraft()
 
-    const isMounted = useIsMounted()
-
-    const navigate = useNavigate()
-
     return (
         <NavContainer>
             <FlexNavbar>
@@ -63,20 +58,7 @@ export default function EditorNav() {
                     <Button tag={Link} to={routes.projects.index()} kind="transparent">
                         Exit
                     </Button>
-                    <Button
-                        disabled={busy || clean}
-                        onClick={() => {
-                            persist({
-                                onDone() {
-                                    if (!isMounted()) {
-                                        return
-                                    }
-
-                                    navigate(routes.projects.index())
-                                },
-                            })
-                        }}
-                    >
+                    <Button disabled={busy || clean} onClick={() => void persist()}>
                         Publish
                     </Button>
                 </FlexNavbarItem>
