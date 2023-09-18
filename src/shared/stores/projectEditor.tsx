@@ -696,7 +696,7 @@ export function usePersistCurrentProjectDraft() {
             return
         }
 
-        navigate(routes.project.index())
+        navigate(routes.projects.index())
     })
 
     return useCallback(() => {
