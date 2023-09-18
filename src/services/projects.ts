@@ -5,7 +5,7 @@ import { getSigner } from '~/shared/stores/wallet'
 import { getProjectRegistryContract } from '~/getters'
 import networkPreflight from '~/utils/networkPreflight'
 import { deployDataUnion } from '~/marketplace/modules/dataUnion/services'
-import { BN } from '~/utils/bn'
+import { BN, toBN } from '~/utils/bn'
 import {
     getRawGraphProject,
     getRawGraphProjects,
@@ -318,10 +318,14 @@ async function prepare(project: Project) {
     const metadata = await formatMetadata(payload)
 
     return {
+        adminFee:
+            'adminFee' in payload
+                ? toBN(payload.adminFee).dividedBy(100).toString()
+                : void 0,
         domainIds,
+        metadata,
         paymentDetails,
         streams: payload.streams,
-        metadata,
     }
 }
 

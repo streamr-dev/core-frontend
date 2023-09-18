@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { isEthereumAddress } from '~/marketplace/utils/validate'
-import { ProjectType, Project } from '~/shared/types'
+import { ProjectType } from '~/shared/types'
 import { formatChainName } from '~/shared/utils/chains'
 import { toBN } from '~/utils/bn'
 import { defaultChainConfig } from '~/getters/getChainConfig'
@@ -228,6 +228,7 @@ export const DataUnionPayload = OpenDataPayload.merge(
         }),
         adminFee: z
             .string()
+            .optional()
             .transform((value, ctx) => {
                 const result = Number.parseFloat(value || '0')
 
@@ -247,9 +248,7 @@ export const DataUnionPayload = OpenDataPayload.merge(
                     .number()
                     .min(0, 'Admin fee cannot be lower than 0%')
                     .max(100, 'Admin fee cannot be greater than 100%'),
-            )
-            .optional()
-            .or(z.literal('')),
+            ),
     }),
 )
 
