@@ -6,6 +6,7 @@ import Label from '~/shared/components/Ui/Label'
 import Input from '~/shared/components/Ui/Text/StyledInput'
 import {
     useDraft,
+    useIsProjectBusy,
     usePersistCurrentProjectDraft,
     useProject,
     useSetProjectErrors,
@@ -33,10 +34,13 @@ export default function TermsOfUse() {
 
     const persist = usePersistCurrentProjectDraft()
 
+    const busy = useIsProjectBusy()
+
     return (
         <>
             <Checkboxes>
                 <TickButton
+                    disabled={busy}
                     type="button"
                     onClick={() => {
                         update(({ termsOfUse }) => {
@@ -48,6 +52,7 @@ export default function TermsOfUse() {
                     <span>Redistribution</span>
                 </TickButton>
                 <TickButton
+                    disabled={busy}
                     type="button"
                     onClick={() => {
                         update(({ termsOfUse }) => {
@@ -59,6 +64,7 @@ export default function TermsOfUse() {
                     <span>Commercial use</span>
                 </TickButton>
                 <TickButton
+                    disabled={busy}
                     type="button"
                     onClick={() => {
                         update(({ termsOfUse }) => {
@@ -70,6 +76,7 @@ export default function TermsOfUse() {
                     <span>Reselling</span>
                 </TickButton>
                 <TickButton
+                    disabled={busy}
                     type="button"
                     onClick={() => {
                         update(({ termsOfUse }) => {
@@ -85,6 +92,7 @@ export default function TermsOfUse() {
                 <div>
                     <Label>Link to detailed terms</Label>
                     <Input
+                        disabled={busy}
                         invalid={!!termsUrlError}
                         type="text"
                         placeholder="Add a URL"
@@ -133,6 +141,7 @@ export default function TermsOfUse() {
                 <div>
                     <Label>Display name for link</Label>
                     <Input
+                        disabled={busy}
                         type="text"
                         placeholder="Add a display name"
                         value={termsName}
@@ -173,6 +182,7 @@ const TickButton = styled.button`
     white-space: nowrap;
 
     ${Tick} {
+        flex-shrink: 0;
         height: 24px;
         margin-right: 12px;
         width: 24px;

@@ -7,6 +7,7 @@ import {
     getEmptySalePoint,
     useDraft,
     useIsProjectBusy,
+    useIsProjectFetching,
     useProject,
     useSetProjectErrors,
     useUpdateProject,
@@ -50,6 +51,8 @@ export default function ProjectEditorPage() {
 
     const busy = useIsProjectBusy()
 
+    const fetching = useIsProjectFetching()
+
     const update = useUpdateProject()
 
     const availableChains = useMemo<Chain[]>(
@@ -63,6 +66,10 @@ export default function ProjectEditorPage() {
     )
 
     function onSalePointChange(value: SalePoint) {
+        if (busy) {
+            return
+        }
+
         update((draft) => {
             const { name: chainName } = getConfigForChain(value.chainId)
 
@@ -122,270 +129,313 @@ export default function ProjectEditorPage() {
             />
             <LoadingIndicator loading={busy} />
             <ProjectPageContainer>
-                <Segment>
-                    <EditorHero />
-                </Segment>
-                {type === ProjectType.PaidData && (
-                    <Segment>
-                        <ColoredBox $pad>
-                            <Content>
-                                <h2>Select chains</h2>
-                                <p>
-                                    Access to the project data can be purchased on the
-                                    selected chains. You can set the payment token, price,
-                                    and beneficiary address on each chain separately.
-                                </p>
-                            </Content>
-                            <Content $desktopMaxWidth={728}>
-                                {salePoints.map((salePoint) => {
-                                    const chainName = getConfigForChain(
-                                        salePoint.chainId,
-                                    ).name
+                {!fetching && (
+                    <>
+                        <Segment>
+                            <EditorHero />
+                        </Segment>
+                        {type === ProjectType.PaidData && (
+                            <Segment>
+                                <ColoredBox $pad>
+                                    <Content>
+                                        <h2>Select chains</h2>
+                                        <p>
+                                            Access to the project data can be purchased on
+                                            the selected chains. You can set the payment
+                                            token, price, and beneficiary address on each
+                                            chain separately.
+                                        </p>
+                                    </Content>
+                                    <Content $desktopMaxWidth={728}>
+                                        {salePoints.map((salePoint) => {
+                                            const chainName = getConfigForChain(
+                                                salePoint.chainId,
+                                            ).name
 
-                                    const formattedChainName = formatChainName(chainName)
+                                            const formattedChainName =
+                                                formatChainName(chainName)
 
-                                    const beneficiaryErrorKey = `salePoints.${chainName}.beneficiaryAddress`
+                                            const beneficiaryErrorKey = `salePoints.${chainName}.beneficiaryAddress`
 
-                                    const beneficiaryInvalid =
-                                        !!errors[beneficiaryErrorKey]
+                                            const beneficiaryInvalid =
+                                                !!errors[beneficiaryErrorKey]
 
-                                    return (
-                                        <SalePointOption
-                                            key={salePoint.chainId}
-                                            multiSelect
-                                            onSalePointChange={onSalePointChange}
-                                            salePoint={salePoint}
-                                        >
-                                            <h4>
-                                                Set the payment token and price on the{' '}
-                                                {formattedChainName} chain
-                                            </h4>
-                                            <p>
-                                                You can set a price for others to access
-                                                the streams in your project. The price can
-                                                be set in DATA or any other ERC-20 token.
-                                            </p>
-                                            <SalePointTokenSelector
-                                                disabled={salePoint.readOnly}
-                                                onSalePointChange={onSalePointChange}
-                                                salePoint={salePoint}
-                                            />
-                                            <h4>Set beneficiary</h4>
-                                            <p>
-                                                This wallet address receives the payments
-                                                for this product on {formattedChainName}{' '}
-                                                chain.
-                                            </p>
-                                            <BeneficiaryAddressEditor
-                                                invalid={beneficiaryInvalid}
-                                                disabled={salePoint.readOnly}
-                                                value={salePoint.beneficiaryAddress}
-                                                onChange={(beneficiaryAddress) => {
-                                                    const newSalePoint = {
-                                                        ...salePoint,
-                                                        beneficiaryAddress,
-                                                    }
-
-                                                    onSalePointChange?.(newSalePoint)
-
-                                                    /**
-                                                     * If the field is valid we skip on-the-fly validation assuming
-                                                     * correct user input at first.
-                                                     */
-                                                    if (!beneficiaryInvalid) {
-                                                        return
-                                                    }
-
-                                                    try {
-                                                        try {
-                                                            SalePointsPayload.parse({
-                                                                [chainName]: newSalePoint,
-                                                            })
-                                                        } catch (e) {
-                                                            if (
-                                                                !(e instanceof z.ZodError)
-                                                            ) {
-                                                                throw e
-                                                            }
-
-                                                            const issues =
-                                                                e.issues.filter(
-                                                                    ({ path }) =>
-                                                                        path.slice(
-                                                                            -1,
-                                                                        )[0] ===
-                                                                        'beneficiaryAddress',
-                                                                )
-
-                                                            if (issues.length) {
-                                                                throw new z.ZodError(
-                                                                    issues,
-                                                                )
-                                                            }
-                                                        }
-
-                                                        setErrors((errors0) => {
-                                                            delete errors0[
-                                                                beneficiaryErrorKey
-                                                            ]
-                                                        })
-                                                    } catch (e) {
-                                                        if (e instanceof z.ZodError) {
-                                                            return
-                                                        }
-
-                                                        console.warn(
-                                                            'Failed to validate beneficiary address',
-                                                            e,
-                                                        )
-                                                    }
-                                                }}
-                                            />
-                                        </SalePointOption>
-                                    )
-                                })}
-                            </Content>
-                        </ColoredBox>
-                    </Segment>
-                )}
-                {type === ProjectType.DataUnion && (
-                    <DataUnionPayment>
-                        {(salePoint) => (
-                            <>
-                                <Segment>
-                                    <ColoredBox $pad>
-                                        <Content>
-                                            <h2>Select chain</h2>
-                                            <p>Select the chain for your Data Union.</p>
-                                        </Content>
-                                        <Content $desktopMaxWidth={728}>
-                                            {salePoints.map((salePoint) => (
+                                            return (
                                                 <SalePointOption
                                                     key={salePoint.chainId}
+                                                    multiSelect
                                                     onSalePointChange={onSalePointChange}
                                                     salePoint={salePoint}
                                                 >
-                                                    <DataUnionOption
-                                                        salePoint={salePoint}
+                                                    <h4>
+                                                        Set the payment token and price on
+                                                        the {formattedChainName} chain
+                                                    </h4>
+                                                    <p>
+                                                        You can set a price for others to
+                                                        access the streams in your
+                                                        project. The price can be set in
+                                                        DATA or any other ERC-20 token.
+                                                    </p>
+                                                    <SalePointTokenSelector
+                                                        disabled={salePoint.readOnly}
                                                         onSalePointChange={
                                                             onSalePointChange
                                                         }
+                                                        salePoint={salePoint}
+                                                    />
+                                                    <h4>Set beneficiary</h4>
+                                                    <p>
+                                                        This wallet address receives the
+                                                        payments for this product on{' '}
+                                                        {formattedChainName} chain.
+                                                    </p>
+                                                    <BeneficiaryAddressEditor
+                                                        invalid={beneficiaryInvalid}
+                                                        disabled={
+                                                            busy || salePoint.readOnly
+                                                        }
+                                                        value={
+                                                            salePoint.beneficiaryAddress
+                                                        }
+                                                        onChange={(
+                                                            beneficiaryAddress,
+                                                        ) => {
+                                                            const newSalePoint = {
+                                                                ...salePoint,
+                                                                beneficiaryAddress,
+                                                            }
+
+                                                            onSalePointChange?.(
+                                                                newSalePoint,
+                                                            )
+
+                                                            /**
+                                                             * If the field is valid we skip on-the-fly validation assuming
+                                                             * correct user input at first.
+                                                             */
+                                                            if (!beneficiaryInvalid) {
+                                                                return
+                                                            }
+
+                                                            try {
+                                                                try {
+                                                                    SalePointsPayload.parse(
+                                                                        {
+                                                                            [chainName]:
+                                                                                newSalePoint,
+                                                                        },
+                                                                    )
+                                                                } catch (e) {
+                                                                    if (
+                                                                        !(
+                                                                            e instanceof
+                                                                            z.ZodError
+                                                                        )
+                                                                    ) {
+                                                                        throw e
+                                                                    }
+
+                                                                    const issues =
+                                                                        e.issues.filter(
+                                                                            ({ path }) =>
+                                                                                path.slice(
+                                                                                    -1,
+                                                                                )[0] ===
+                                                                                'beneficiaryAddress',
+                                                                        )
+
+                                                                    if (issues.length) {
+                                                                        throw new z.ZodError(
+                                                                            issues,
+                                                                        )
+                                                                    }
+                                                                }
+
+                                                                setErrors((errors0) => {
+                                                                    delete errors0[
+                                                                        beneficiaryErrorKey
+                                                                    ]
+                                                                })
+                                                            } catch (e) {
+                                                                if (
+                                                                    e instanceof
+                                                                    z.ZodError
+                                                                ) {
+                                                                    return
+                                                                }
+
+                                                                console.warn(
+                                                                    'Failed to validate beneficiary address',
+                                                                    e,
+                                                                )
+                                                            }
+                                                        }}
                                                     />
                                                 </SalePointOption>
-                                            ))}
-                                        </Content>
-                                    </ColoredBox>
-                                </Segment>
-                                <Segment>
-                                    <ColoredBox $pad>
-                                        <Content>
-                                            <h2>
-                                                {salePoint ? (
-                                                    <>
-                                                        Set the payment token and price
-                                                        on&nbsp;the&nbsp;
-                                                        {formatChainName(
-                                                            getConfigForChain(
-                                                                salePoint.chainId,
-                                                            ).name,
-                                                        )}{' '}
-                                                        chain
-                                                    </>
-                                                ) : (
-                                                    <>Set the payment token and price</>
-                                                )}
-                                            </h2>
-                                            <p>
-                                                You can set a price for others to access
-                                                the streams in your project. The price can
-                                                be set in DATA or any other ERC-20 token.
-                                            </p>
-                                        </Content>
-                                        {salePoint ? (
-                                            <Content $desktopMaxWidth={728}>
-                                                <SalePointTokenSelector
-                                                    salePoint={salePoint}
-                                                    onSalePointChange={onSalePointChange}
-                                                />
-                                            </Content>
-                                        ) : (
-                                            <>Select a chain first!</>
-                                        )}
-                                    </ColoredBox>
-                                </Segment>
-                                <Segment>
-                                    <ColoredBox $pad>
-                                        <Content>
-                                            <h2>Data Union admin fee</h2>
-                                        </Content>
-                                        <Content $desktopMaxWidth={728}>
-                                            <DataUnionFee />
-                                        </Content>
-                                    </ColoredBox>
-                                </Segment>
-                            </>
+                                            )
+                                        })}
+                                    </Content>
+                                </ColoredBox>
+                            </Segment>
                         )}
-                    </DataUnionPayment>
-                )}
-                <Segment>
-                    <ColoredBox $pad>
-                        <Content>
-                            <h2>Add streams</h2>
-                        </Content>
-                        <EditorStreams />
-                    </ColoredBox>
-                </Segment>
-                <Segment>
-                    <ColoredBox $pad>
-                        <Content>
-                            <h2>Set terms of use</h2>
-                            <p>
-                                Indicate the terms of use you prefer, either simply, by
-                                checking the appropriate boxes below to&nbsp;show usage
-                                types are permitted, or optionally, give more detail by
-                                providing a link to your own terms of use document.
-                            </p>
-                        </Content>
-                        <Content $desktopMaxWidth={728}>
-                            <TermsOfUse />
-                        </Content>
-                    </ColoredBox>
-                </Segment>
-                {projectId && (
-                    <Segment>
-                        <ColoredBox
-                            $borderColor="#cdcdcd"
-                            $backgroundColor="transparent"
-                            $pad
-                        >
-                            <Content>
-                                <h2>Delete project</h2>
-                                <p>
-                                    Delete this project forever. You can&apos;t undo this.
-                                </p>
-                            </Content>
-                            <Button
-                                kind="destructive"
-                                onClick={async () => {
-                                    try {
-                                        await toastedOperation('Delete project', () =>
-                                            deleteProject(projectId),
-                                        )
+                        {type === ProjectType.DataUnion && (
+                            <DataUnionPayment>
+                                {(salePoint) => (
+                                    <>
+                                        <Segment>
+                                            <ColoredBox $pad>
+                                                <Content>
+                                                    <h2>Select chain</h2>
+                                                    <p>
+                                                        Select the chain for your Data
+                                                        Union.
+                                                    </p>
+                                                </Content>
+                                                <Content $desktopMaxWidth={728}>
+                                                    {salePoints.map((salePoint) => (
+                                                        <SalePointOption
+                                                            key={salePoint.chainId}
+                                                            onSalePointChange={
+                                                                onSalePointChange
+                                                            }
+                                                            salePoint={salePoint}
+                                                        >
+                                                            <DataUnionOption
+                                                                salePoint={salePoint}
+                                                                onSalePointChange={
+                                                                    onSalePointChange
+                                                                }
+                                                            />
+                                                        </SalePointOption>
+                                                    ))}
+                                                </Content>
+                                            </ColoredBox>
+                                        </Segment>
+                                        <Segment>
+                                            <ColoredBox $pad>
+                                                <Content>
+                                                    <h2>
+                                                        {salePoint ? (
+                                                            <>
+                                                                Set the payment token and
+                                                                price on&nbsp;the&nbsp;
+                                                                {formatChainName(
+                                                                    getConfigForChain(
+                                                                        salePoint.chainId,
+                                                                    ).name,
+                                                                )}{' '}
+                                                                chain
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                Set the payment token and
+                                                                price
+                                                            </>
+                                                        )}
+                                                    </h2>
+                                                    <p>
+                                                        You can set a price for others to
+                                                        access the streams in your
+                                                        project. The price can be set in
+                                                        DATA or any other ERC-20 token.
+                                                    </p>
+                                                </Content>
+                                                {salePoint ? (
+                                                    <Content $desktopMaxWidth={728}>
+                                                        <SalePointTokenSelector
+                                                            salePoint={salePoint}
+                                                            onSalePointChange={
+                                                                onSalePointChange
+                                                            }
+                                                        />
+                                                    </Content>
+                                                ) : (
+                                                    <>Select a chain first!</>
+                                                )}
+                                            </ColoredBox>
+                                        </Segment>
+                                        <Segment>
+                                            <ColoredBox $pad>
+                                                <Content>
+                                                    <h2>Data Union admin fee</h2>
+                                                </Content>
+                                                <Content $desktopMaxWidth={728}>
+                                                    <DataUnionFee />
+                                                </Content>
+                                            </ColoredBox>
+                                        </Segment>
+                                    </>
+                                )}
+                            </DataUnionPayment>
+                        )}
+                        <Segment>
+                            <ColoredBox $pad>
+                                <Content>
+                                    <h2>Add streams</h2>
+                                </Content>
+                                <EditorStreams />
+                            </ColoredBox>
+                        </Segment>
+                        <Segment>
+                            <ColoredBox $pad>
+                                <Content>
+                                    <h2>Set terms of use</h2>
+                                    <p>
+                                        Indicate the terms of use you prefer, either
+                                        simply, by checking the appropriate boxes below
+                                        to&nbsp;show usage types are permitted, or
+                                        optionally, give more detail by providing a link
+                                        to your own terms of use document.
+                                    </p>
+                                </Content>
+                                <Content $desktopMaxWidth={728}>
+                                    <TermsOfUse />
+                                </Content>
+                            </ColoredBox>
+                        </Segment>
+                        {projectId && (
+                            <Segment>
+                                <ColoredBox
+                                    $borderColor="#cdcdcd"
+                                    $backgroundColor="transparent"
+                                    $pad
+                                >
+                                    <Content>
+                                        <h2>Delete project</h2>
+                                        <p>
+                                            Delete this project forever. You can&apos;t
+                                            undo this.
+                                        </p>
+                                    </Content>
+                                    <Button
+                                        kind="destructive"
+                                        onClick={async () => {
+                                            try {
+                                                await toastedOperation(
+                                                    'Delete project',
+                                                    () => deleteProject(projectId),
+                                                )
 
-                                        if (!isMounted()) {
-                                            return
-                                        }
+                                                if (!isMounted()) {
+                                                    return
+                                                }
 
-                                        navigate(routes.projects.index())
-                                    } catch (e) {
-                                        console.warn('Failed to delete a project', e)
-                                    }
-                                }}
-                            >
-                                Delete
-                            </Button>
-                        </ColoredBox>
-                    </Segment>
+                                                navigate(routes.projects.index())
+                                            } catch (e) {
+                                                console.warn(
+                                                    'Failed to delete a project',
+                                                    e,
+                                                )
+                                            }
+                                        }}
+                                    >
+                                        Delete
+                                    </Button>
+                                </ColoredBox>
+                            </Segment>
+                        )}
+                    </>
                 )}
             </ProjectPageContainer>
         </Layout>

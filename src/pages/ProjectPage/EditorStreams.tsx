@@ -7,7 +7,11 @@ import {
 } from '~/services/streams'
 import SearchBar from '~/shared/components/SearchBar'
 import { StreamSelectTable } from '~/shared/components/StreamSelectTable'
-import { useProject, useUpdateProject } from '~/shared/stores/projectEditor'
+import {
+    useIsProjectBusy,
+    useProject,
+    useUpdateProject,
+} from '~/shared/stores/projectEditor'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { ProjectType } from '~/shared/types'
 import address0 from '~/utils/address0'
@@ -16,6 +20,8 @@ const PageSize = 10
 
 export default function EditorStreams() {
     const { type: projectType, streams: projectStreams } = useProject({ hot: true })
+
+    const busy = useIsProjectBusy()
 
     const [searchValue, setSearchValue] = useState('')
 
@@ -138,6 +144,7 @@ export default function EditorStreams() {
     return (
         <>
             <SearchBar
+                disabled={busy}
                 placeholder="Search stream"
                 value={searchValue}
                 onChange={(value) => {
@@ -153,6 +160,7 @@ export default function EditorStreams() {
                 }}
             />
             <StreamSelectTable
+                disabled={busy}
                 streams={streams}
                 streamStats={streamStats}
                 loadMore={() => {

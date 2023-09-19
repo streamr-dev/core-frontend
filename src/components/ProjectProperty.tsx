@@ -7,6 +7,7 @@ import EnterIcon from '~/shared/assets/icons/enter.svg'
 import { useSetProjectErrors } from '~/shared/stores/projectEditor'
 
 export default function ProjectProperty({
+    disabled = false,
     error = '',
     onSubmit,
     placeholder = '',
@@ -15,6 +16,7 @@ export default function ProjectProperty({
     title = 'Title',
     value: valueProp = '',
 }: {
+    disabled?: boolean
     error?: string
     onSubmit?: (value: string) => void | Promise<void>
     placeholder?: string
@@ -35,6 +37,10 @@ export default function ProjectProperty({
         <Root
             onSubmit={async (e) => {
                 e.preventDefault()
+
+                if (disabled) {
+                    return
+                }
 
                 try {
                     await onSubmit?.(value)
@@ -61,6 +67,7 @@ export default function ProjectProperty({
             </Header>
             <InputWrap>
                 <Input
+                    disabled={disabled}
                     autoFocus
                     placeholder={placeholder}
                     type="text"
@@ -76,14 +83,18 @@ export default function ProjectProperty({
                         setValue(e.target.value)
                     }}
                 />
-                <EnterButton type="submit" $visible={!!value || !required}>
+                <EnterButton
+                    type="submit"
+                    $visible={!!value || !required}
+                    disabled={disabled}
+                >
                     <img src={EnterIcon} />
                 </EnterButton>
             </InputWrap>
             {error ? (
                 <ValidationError>{error}</ValidationError>
             ) : (
-                <Submit type="submit">
+                <Submit type="submit" disabled={disabled}>
                     <PlusIcon />
                     {submitLabel}
                 </Submit>

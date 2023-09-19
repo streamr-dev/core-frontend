@@ -53,6 +53,7 @@ export default function EditorHero() {
         <HeroContainer>
             <ImageWrap>
                 <NameInput
+                    disabled={busy}
                     type="text"
                     placeholder="Project name"
                     value={name}
@@ -103,6 +104,7 @@ export default function EditorHero() {
             </ImageWrap>
             <DetailsWrap>
                 <NameInput
+                    disabled={busy}
                     type="text"
                     placeholder="Project name"
                     value={name}
@@ -119,6 +121,7 @@ export default function EditorHero() {
                 />
                 <Desc>
                     <RichTextEditor
+                        readOnly={busy}
                         placeholder="Type something great about your project…"
                         defaultValue={description}
                         onChange={(newDescription) => {
@@ -142,6 +145,7 @@ export default function EditorHero() {
                         >
                             {(close) => (
                                 <ProjectProperty
+                                    disabled={busy}
                                     error={errors['creator']}
                                     required
                                     submitLabel="Add creator's name"
@@ -181,6 +185,7 @@ export default function EditorHero() {
                         >
                             {(close) => (
                                 <ProjectProperty
+                                    disabled={busy}
                                     error={errors['contact.url']}
                                     placeholder="https://siteinfo.com"
                                     submitLabel="Add site URL"
@@ -222,6 +227,7 @@ export default function EditorHero() {
                         >
                             {(close) => (
                                 <ProjectProperty
+                                    disabled={busy}
                                     error={errors['contact.email']}
                                     placeholder="owner@example.com"
                                     submitLabel="Add contact email"
@@ -266,6 +272,7 @@ export default function EditorHero() {
                         >
                             {(close) => (
                                 <ProjectProperty
+                                    disabled={busy}
                                     error={errors['contact.twitter']}
                                     submitLabel="Add Twitter link"
                                     title="Please add Twitter link"
@@ -309,6 +316,7 @@ export default function EditorHero() {
                         >
                             {(close) => (
                                 <ProjectProperty
+                                    disabled={busy}
                                     error={errors['contact.telegram']}
                                     submitLabel="Telegram link"
                                     title="Please add Telegram link"
@@ -352,6 +360,7 @@ export default function EditorHero() {
                         >
                             {(close) => (
                                 <ProjectProperty
+                                    disabled={busy}
                                     error={errors['contact.reddit']}
                                     submitLabel="Reddit link"
                                     title="Please add Reddit link"
@@ -395,6 +404,7 @@ export default function EditorHero() {
                         >
                             {(close) => (
                                 <ProjectProperty
+                                    disabled={busy}
                                     error={errors['contact.linkedIn']}
                                     value={contact.linkedIn}
                                     title="Please add LinkedIn link"
@@ -440,6 +450,10 @@ const NameInput = styled.input`
 
     ::placeholder {
         color: ${COLORS.primaryDisabled};
+    }
+
+    :disabled {
+        background: none;
     }
 
     @media (min-width: ${Wide}px) {

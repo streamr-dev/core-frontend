@@ -249,7 +249,7 @@ async function getTransientProject<
         imageUrl: getProjectImageUrl({ imageUrl, imageIpfsCid }),
         imageIpfsCid,
         newImageToUpload: undefined,
-        streams: streams.sort(),
+        streams: [...streams].sort(),
         termsOfUse: {
             commercialUse: !!termsOfUse.commercialUse,
             redistribution: !!termsOfUse.redistribution,
