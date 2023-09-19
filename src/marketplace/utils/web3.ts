@@ -32,6 +32,12 @@ export const getMarketplaceAddress = (chainId: number): Address => {
     return marketplaceAddress
 }
 
+export const getNativeTokenBalance = async (userAddress: Address, chainId: number) => {
+    const provider = getPublicWeb3Provider(chainId)
+    const balance = await provider.getBalance(userAddress)
+    return balance
+}
+
 export const getCustomTokenBalance = async (
     contractAddress: Address,
     userAddress: Address,

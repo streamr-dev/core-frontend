@@ -1,9 +1,12 @@
 import { produce } from 'immer'
 import { create } from 'zustand'
+import { fromDecimals } from '~/marketplace/utils/math'
+import { getNativeTokenBalance } from '~/marketplace/utils/web3'
 import { setOperatorNodeAddresses } from '~/services/operators'
 import { OperatorElement } from '~/types/operator'
 import { BN } from '~/utils/bn'
 import { toastedOperation } from '~/utils/toastedOperation'
+import getChainId from '~/utils/web3/getChainId'
 
 interface OperatorStore {
     operator: OperatorElement | null | undefined
@@ -148,6 +151,10 @@ const useOperatorStore = create<OperatorStore>((set, get) => {
                         produce(current, (next) => {
                             next.removedNodeAddresses = []
                             next.addedNodeAddresses = []
+
+                            // This is kinda hacky but waiting for The Graph to index
+                            // our event and reloading operator is not optimal either.
+                            // Just fake that we loaded new addresses from The Graph.
                             if (next.operator != null) {
                                 next.operator.nodes = addresses
                             }
@@ -164,7 +171,24 @@ const useOperatorStore = create<OperatorStore>((set, get) => {
         },
 
         async updateNodeBalances() {
-            console.log('TODO: update node balances')
+            const chainId = await getChainId()
+            const addresses = get().computed.nodeAddresses
+            const balances = addresses.map(async (node) => ({
+                address: node.address,
+                balance: await getNativeTokenBalance(node.address, chainId),
+            }))
+            const result = await Promise.allSettled(balances)
+            set((current) =>
+                produce(current, (next) => {
+                    next.nodeBalances = result.reduce((map, obj) => {
+                        if (obj.status === 'fulfilled') {
+                            // Native token should have 18 decimals in EVM
+                            map[obj.value.address] = fromDecimals(obj.value.balance, 18)
+                        }
+                        return map
+                    }, {})
+                }),
+            )
         },
     }
 })

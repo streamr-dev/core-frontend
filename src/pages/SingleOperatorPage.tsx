@@ -361,7 +361,7 @@ export const SingleOperatorPage = () => {
                                             valueMapper: (element) => (
                                                 <>
                                                     {element.balance != null ? (
-                                                        element.balance.toString()
+                                                        element.balance.toFixed(2)
                                                     ) : (
                                                         <Spinner color="blue" />
                                                     )}
