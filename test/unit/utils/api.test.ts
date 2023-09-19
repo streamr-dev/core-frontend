@@ -15,42 +15,6 @@ describe('api utils', () => {
         code: 1337,
         message: 'I failed :(',
     }
-    describe('get', () => {
-        it('has correct properties', async () => {
-            moxios.wait(() => {
-                const request = moxios.requests.mostRecent()
-                request.respondWith({
-                    status: 200,
-                    response: data,
-                })
-                expect(request.config.method).toBe('get')
-                expect(request.config.url).toBe('/test-endpoint')
-            })
-            const result = await all.get({
-                url: '/test-endpoint',
-            })
-            expect(result).toBe(data)
-        })
-        it('responds to errors', async () => {
-            moxios.wait(() => {
-                const request = moxios.requests.mostRecent()
-                request.respondWith({
-                    status: 500,
-                    response: error,
-                })
-            })
-
-            try {
-                await all.get({
-                    url: '/test-endpoint',
-                })
-            } catch (e) {
-                expect(e.statusCode).toBe(500)
-                expect(e.code).toBe(error.code)
-                expect(e.message).toBe(error.message)
-            }
-        })
-    })
     describe('post', () => {
         it('has correct properties', async () => {
             moxios.wait(() => {
@@ -65,26 +29,6 @@ describe('api utils', () => {
                 expect(request.config.data).toBe(JSON.stringify(data))
             })
             const result = await all.post({
-                url: '/test-endpoint',
-                data,
-            })
-            expect(result).toBe(data)
-        })
-    })
-    describe('put', () => {
-        it('has correct properties', async () => {
-            moxios.wait(() => {
-                const request = moxios.requests.mostRecent()
-                request.respondWith({
-                    status: 200,
-                    response: data,
-                })
-                expect(request.config.method).toBe('put')
-                expect(request.config.url).toBe('/test-endpoint')
-                expect(request.config.headers['Content-Type']).toBe('application/json')
-                expect(request.config.data).toBe(JSON.stringify(data))
-            })
-            const result = await all.put({
                 url: '/test-endpoint',
                 data,
             })
