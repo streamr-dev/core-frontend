@@ -153,5 +153,6 @@ export const mapSponsorshipToElement = (
             .dividedBy(Math.pow(10, decimals))
             .toString(),
         minimumStake,
+        minimumStakingPeriodSeconds: sponsorship.minimumStakingPeriodSeconds,
     }
 }

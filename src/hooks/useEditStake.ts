@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { toaster } from 'toasterhea'
+import moment from 'moment'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { useMyOperator } from '~/hooks/useMyOperator'
 import { Layer } from '~/utils/Layer'
@@ -13,6 +14,8 @@ import {
 import { SponsorshipElement, SponsorshipStake } from '~/types/sponsorship'
 import { toBN } from '~/utils/bn'
 import { getLeavePenalty } from '~/getters/getLeavePenalty'
+import { useConfirmationModal } from '~/hooks/useConfirmationModal'
+import { fromDecimals } from '~/marketplace/utils/math'
 
 const editStakeModal = toaster(EditStakeModal, Layer.Modal)
 export const useEditStake = (): {
@@ -31,12 +34,16 @@ export const useEditStake = (): {
             return (
                 !!myOperatorQuery.data &&
                 sponsorship.stakes.find(
-                    (stake) => stake.operatorId === myOperatorQuery.data?.id,
+                    (stake) =>
+                        stake.operatorId === myOperatorQuery.data?.id &&
+                        toBN(stake.amount).isGreaterThan(0),
                 )
             )
         },
         [myOperatorQuery.data],
     )
+
+    const confirmationModal = useConfirmationModal()
     return {
         canEditStake: (sponsorship: SponsorshipElement): boolean => {
             return canJoinSponsorship && !!getCurrentStake(sponsorship)
@@ -48,17 +55,33 @@ export const useEditStake = (): {
             }
             try {
                 const tokenInfo = await getSponsorshipTokenInfo()
-                const leavePenalty = await getLeavePenalty(
+                const leavePenaltyWei = await getLeavePenalty(
                     myOperatorQuery.data.id,
                     sponsorship.id,
                 )
+                const leavePenalty = fromDecimals(
+                    leavePenaltyWei,
+                    tokenInfo.decimals,
+                ).toString()
+                const joinDate = moment(
+                    myOperatorQuery.data.stakes.find(
+                        (stake) => stake.operatorId === myOperatorQuery.data?.id,
+                    )?.joinDate as string,
+                    'X',
+                )
+                const minLeaveDate = joinDate.add(
+                    sponsorship.minimumStakingPeriodSeconds,
+                    'seconds',
+                )
+
                 await editStakeModal.pop({
                     currentStake: currentStake.amount,
                     operatorId: myOperatorQuery.data.id,
                     operatorBalance: myOperatorQuery.data.freeFundsWei.toString(),
                     tokenSymbol: tokenInfo.symbol,
                     decimals: tokenInfo.decimals,
-                    leavePenalty: leavePenalty.toString(),
+                    leavePenalty: leavePenaltyWei.toString(),
+                    minLeaveDate: minLeaveDate.format('YYYY-MM-DD HH:mm'),
                     onSubmit: async (
                         amount: string,
                         difference: string,
@@ -72,12 +95,24 @@ export const useEditStake = (): {
                                 myOperatorQuery.data?.id as string,
                                 'Increase stake on sponsorship',
                             )
-                        } else if (forceUnstake) {
+                        } else if (
+                            forceUnstake &&
+                            (await confirmationModal({
+                                title: 'Your stake will be slashed',
+                                description: `Your minimum staking period is still ongoing and ends on ${minLeaveDate.format(
+                                    'YYYY-MM-DD HH:mm',
+                                )}. If you unstake now, you will lose ${leavePenalty} ${
+                                    tokenInfo.symbol
+                                }`,
+                                proceedLabel: 'Proceed anyway',
+                                cancelLabel: 'Cancel',
+                            }))
+                        ) {
                             await forceUnstakeFromSponsorship(
                                 sponsorship.id,
                                 myOperatorQuery.data?.id as string,
                             )
-                        } else {
+                        } else if (!forceUnstake) {
                             await reduceStakeOnSponsorship(
                                 sponsorship.id,
                                 amount,

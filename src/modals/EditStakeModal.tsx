@@ -28,6 +28,7 @@ interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     operatorId: string
     currentStake: string
     leavePenalty: string
+    minLeaveDate: string
 }
 
 export default function EditStakeModal({
@@ -40,6 +41,7 @@ export default function EditStakeModal({
     currentStake: currentStakeProp,
     decimals = 18,
     leavePenalty: leavePenaltyWei,
+    minLeaveDate,
     ...props
 }: Props) {
     const [busy, setBusy] = useState(false)
@@ -81,8 +83,6 @@ export default function EditStakeModal({
     }
 
     const leavePenalty = fromDecimals(leavePenaltyWei, decimals)
-    // STUB - todo: calculate the date when we will have it in the graph
-    const minimumStakePeriodEndDate = moment().add(14, 'days')
 
     return (
         <FormModal
@@ -106,7 +106,11 @@ export default function EditStakeModal({
                 setBusy(true)
 
                 try {
-                    await onSubmit(finalAmount.toString(), difference.toString())
+                    await onSubmit(
+                        finalAmount.toString(),
+                        difference.toString(),
+                        finalAmount.isEqualTo(0) && leavePenalty.isGreaterThan(0),
+                    )
                     onResolve?.(finalAmount.toString(), difference.toString())
                 } catch (e) {
                     console.warn('Error while becoming an operator', e)
@@ -177,8 +181,8 @@ export default function EditStakeModal({
             {finalAmount.isEqualTo(0) && leavePenalty.isGreaterThan(0) && (
                 <StyledAlert type="error" title="Your stake will be slashed">
                     Your minimum staking period is still ongoing and ends on{' '}
-                    {minimumStakePeriodEndDate.format('YYYY-MM-DD HH:mm')}. If you unstake
-                    now, you will lose {leavePenalty.toString()} {tokenSymbol}.
+                    {minLeaveDate}. If you unstake now, you will lose{' '}
+                    {leavePenalty.toString()} {tokenSymbol}.
                 </StyledAlert>
             )}
         </FormModal>

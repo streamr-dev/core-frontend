@@ -102,6 +102,7 @@ gql`
         unallocatedWei
         projectedInsolvency
         cumulativeSponsoring
+        minimumStakingPeriodSeconds
         creator
         spotAPY
     }

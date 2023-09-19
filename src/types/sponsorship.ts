@@ -11,6 +11,7 @@ export type SponsorshipElement = {
     stakes: SponsorshipStake[]
     cumulativeSponsoring: string
     minimumStake: string
+    minimumStakingPeriodSeconds: string
 }
 
 export type SponsorshipStake = {
