@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { FunctionComponent, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import CopyIcon from '@atlaskit/icon/glyph/copy'
 import { RejectionReason } from '~/modals/BaseModal'
@@ -30,7 +30,8 @@ interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     operatorBalance?: string
     tokenSymbol?: string
     decimals?: number
-    operatorId?: string
+    operatorId: string
+    hasUndelegationQueue: boolean
     amount?: string
     streamId?: string
 }
@@ -47,7 +48,8 @@ export default function JoinSponsorshipModal({
     onResolve,
     onSubmit,
     operatorBalance: operatorBalanceProp = '0',
-    operatorId = 'N/A',
+    operatorId,
+    hasUndelegationQueue,
     amount: amountProp = '0',
     streamId: streamIdProp,
     tokenSymbol = 'DATA',
@@ -85,7 +87,8 @@ export default function JoinSponsorshipModal({
         !insufficientFunds &&
         !liveNodesCountLoading &&
         liveNodesCount > 0 &&
-        isAboveMinimumStake
+        isAboveMinimumStake &&
+        !hasUndelegationQueue
 
     const { copy } = useCopy()
 
@@ -189,6 +192,26 @@ export default function JoinSponsorshipModal({
                     </li>
                 </ul>
             </Section>
+            {hasUndelegationQueue ? (
+                <StyledAlert type="error" title="Warning!">
+                    Cannot stake on sponsorship while delegators are awaiting undelegation
+                </StyledAlert>
+            ) : (
+                <LiveNodesCheck
+                    liveNodesCountLoading={liveNodesCountLoading}
+                    liveNodesCount={liveNodesCount}
+                />
+            )}
+        </FormModal>
+    )
+}
+
+const LiveNodesCheck: FunctionComponent<{
+    liveNodesCountLoading: boolean
+    liveNodesCount: number
+}> = ({ liveNodesCount, liveNodesCountLoading }) => {
+    return (
+        <>
             {liveNodesCountLoading && (
                 <StyledAlert type="loading" title="Checking Streamr nodes">
                     <span>
@@ -224,7 +247,7 @@ export default function JoinSponsorshipModal({
                         </a>
                     </StyledAlert>
                 ))}
-        </FormModal>
+        </>
     )
 }
 

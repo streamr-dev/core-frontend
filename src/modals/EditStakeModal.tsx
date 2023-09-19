@@ -29,6 +29,7 @@ interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     currentStake: string
     leavePenalty: string
     minLeaveDate: string
+    hasUndelegationQueue: boolean
 }
 
 export default function EditStakeModal({
@@ -42,6 +43,7 @@ export default function EditStakeModal({
     decimals = 18,
     leavePenalty: leavePenaltyWei,
     minLeaveDate,
+    hasUndelegationQueue,
     ...props
 }: Props) {
     const [busy, setBusy] = useState(false)
@@ -67,7 +69,8 @@ export default function EditStakeModal({
     const canSubmit =
         finalAmount.isGreaterThanOrEqualTo(0) &&
         !insufficientFunds &&
-        !difference.isEqualTo(0)
+        !difference.isEqualTo(0) &&
+        (difference.isGreaterThan(0) ? !hasUndelegationQueue : true)
 
     const getSubmitButtonLabel = () => {
         if (finalAmount.isEqualTo(0)) {
@@ -183,6 +186,11 @@ export default function EditStakeModal({
                     Your minimum staking period is still ongoing and ends on{' '}
                     {minLeaveDate}. If you unstake now, you will lose{' '}
                     {leavePenalty.toString()} {tokenSymbol}.
+                </StyledAlert>
+            )}
+            {difference.isGreaterThan(0) && hasUndelegationQueue && (
+                <StyledAlert type="error" title="Warning!">
+                    Cannot stake on sponsorship while delegators are awaiting undelegation
                 </StyledAlert>
             )}
         </FormModal>

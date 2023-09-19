@@ -28,6 +28,12 @@ gql`
                 }
             }
         }
+        queueEntries(first: 1000) {
+            amount
+            date
+            delegator
+            id
+        }
         delegatorCount
         poolValue
         totalStakeInSponsorshipsWei

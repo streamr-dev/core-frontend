@@ -82,6 +82,7 @@ export const useEditStake = (): {
                     decimals: tokenInfo.decimals,
                     leavePenalty: leavePenaltyWei.toString(),
                     minLeaveDate: minLeaveDate.format('YYYY-MM-DD HH:mm'),
+                    hasUndelegationQueue: myOperatorQuery.data.queueEntries.length > 0,
                     onSubmit: async (
                         amount: string,
                         difference: string,

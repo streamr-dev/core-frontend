@@ -137,5 +137,11 @@ export const mapOperatorToElement = (operator: Operator): OperatorElement => {
         operatorsCutFraction: fromAtto(
             toBN(operator.operatorsCutFraction).multipliedBy(100),
         ),
+        queueEntries: operator.queueEntries.map((entry) => ({
+            id: entry.id,
+            amount: toBN(entry.amount),
+            date: entry.date,
+            delegator: entry.delegator,
+        })),
     }
 }
