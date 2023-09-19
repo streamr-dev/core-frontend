@@ -104,64 +104,9 @@ export const ProjectHeroDescriptionStyles = css`
     }
 `
 export const ProjectHeroMetadataContainer = styled.div`
-    grid-column-start: 1;
-    grid-column-end: 2;
-    grid-row-start: 4;
-    grid-row-end: 4;
-    display: flex;
-    gap: 10px;
     margin-top: ${mobileSpacing};
 
     @media (${LAPTOP}) {
-        grid-column-start: 2;
-        grid-column-end: 2;
-        grid-row-start: 3;
-        grid-row-end: 3;
-        gap: 6px;
         margin: ${desktopSpacing} ${desktopSpacing} ${desktopSpacing} 0;
-    }
-`
-
-export const ProjectHeroSignalContainer = styled.div`
-    grid-column-start: 1;
-    grid-column-end: 2;
-    grid-row-start: 4;
-    grid-row-end: 4;
-    background-color: ${COLORS.secondaryLight};
-    padding: 20px;
-    border-radius: 8px;
-
-    p {
-        font-size: 16px;
-        line-height: 24px;
-        display: flex;
-        justify-content: space-between;
-        margin: 0;
-        strong {
-            margin-left: 10px;
-        }
-        @media (${TABLET}) {
-            justify-content: flex-start;
-            align-items: center;
-        }
-    }
-    button {
-        width: 100%;
-        margin-top: 20px;
-        @media (${TABLET}) {
-            width: inherit;
-            margin-top: 0;
-        }
-    }
-    @media (${TABLET}) {
-        display: flex;
-        justify-content: space-between;
-    }
-    @media (${LAPTOP}) {
-        grid-column-start: 2;
-        grid-column-end: 2;
-        grid-row-start: 3;
-        grid-row-end: 3;
-        margin: ${desktopSpacing};
     }
 `

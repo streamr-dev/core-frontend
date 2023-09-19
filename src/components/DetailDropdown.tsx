@@ -1,4 +1,12 @@
-import React, { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, {
+    AnchorHTMLAttributes,
+    HTMLAttributes,
+    ReactNode,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState,
+} from 'react'
 import styled, { css } from 'styled-components'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS } from '~/shared/utils/styled'
@@ -159,6 +167,10 @@ const Toggle = styled.button<{ $active?: boolean }>`
         transition-duration: 0.1s;
     }
 
+    a& {
+        color: inherit;
+    }
+
     ${({ $active = false }) =>
         $active &&
         css`
@@ -225,3 +237,30 @@ export const DetailIcon = styled(SvgIcon)<{ $color?: string }>`
     color: ${({ $color = 'currentColor' }) => $color};
     transition: 350ms color;
 `
+
+export function DetailDisplay({
+    icon,
+    href,
+    value = '',
+}: Pick<Props, 'icon' | 'value'> & {
+    href: string
+}) {
+    const toggleProps: Pick<
+        AnchorHTMLAttributes<HTMLAnchorElement>,
+        'target' | 'rel'
+    > = /^mailto:/.test(value)
+        ? {}
+        : {
+              rel: 'noopener noreferrer',
+              target: '_blank',
+          }
+
+    return (
+        <Root>
+            <Toggle as="a" href={href} {...toggleProps}>
+                <IconWrap>{icon}</IconWrap>
+                {value && <Value>{value}</Value>}
+            </Toggle>
+        </Root>
+    )
+}
