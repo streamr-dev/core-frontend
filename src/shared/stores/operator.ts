@@ -5,7 +5,6 @@ import { getNativeTokenBalance } from '~/marketplace/utils/web3'
 import { setOperatorNodeAddresses } from '~/services/operators'
 import { OperatorElement } from '~/types/operator'
 import { BN } from '~/utils/bn'
-import { toastedOperation } from '~/utils/toastedOperation'
 import getChainId from '~/utils/web3/getChainId'
 
 interface OperatorStore {
@@ -144,9 +143,7 @@ const useOperatorStore = create<OperatorStore>((set, get) => {
                 )
 
                 try {
-                    await toastedOperation('Save node addresses', () =>
-                        setOperatorNodeAddresses(operator.id, addresses),
-                    )
+                    setOperatorNodeAddresses(operator.id, addresses)
                     set((current) =>
                         produce(current, (next) => {
                             next.removedNodeAddresses = []

@@ -6,6 +6,8 @@ import {
     operatorABI,
     OperatorFactory,
     Operator,
+    ERC677ABI,
+    ERC677,
 } from '@streamr/network-contracts'
 import { parseEther } from 'ethers/lib/utils'
 import { getConfigForChain } from '~/shared/web3/config'
@@ -222,52 +224,39 @@ export const updateOperator = async (
 
 export async function delegateToOperator(operatorId: string, amount: BNish) {
     const chainId = getOperatorChainId()
-
     const chainConfig = getConfigForChain(chainId)
 
     await networkPreflight(chainId)
 
     const signer = await getSigner()
 
-    const tokenContract = getERC20TokenContract({
-        tokenAddress: chainConfig.contracts['DATA'],
-        provider: signer,
+    const contract = new Contract(chainConfig.contracts.DATA, ERC677ABI, signer) as ERC677
+
+    await toastedOperation('Delegate to operator', async () => {
+        const tx = await contract.transferAndCall(
+            operatorId,
+            toBN(amount).toString(),
+            '0x',
+        )
+
+        await tx.wait()
     })
-
-    const tokenTx = await tokenContract.approve(operatorId, toBN(amount).toString())
-
-    await tokenTx.wait()
-
-    const operatorContract = new Contract(operatorId, operatorABI, signer) as Operator
-
-    const operatorTx = await operatorContract.delegate(toBN(amount).toString())
-
-    await operatorTx.wait()
 }
 
 export async function undelegateFromOperator(operatorId: string, amount: BNish) {
     const chainId = getOperatorChainId()
 
-    const chainConfig = getConfigForChain(chainId)
-
     await networkPreflight(chainId)
 
     const signer = await getSigner()
 
-    const tokenContract = getERC20TokenContract({
-        tokenAddress: chainConfig.contracts['DATA'],
-        provider: signer,
-    })
-
-    const tokenTx = await tokenContract.approve(operatorId, toBN(amount).toString())
-
-    await tokenTx.wait()
-
     const operatorContract = new Contract(operatorId, operatorABI, signer) as Operator
 
-    const operatorTx = await operatorContract.undelegate(toBN(amount).toString())
+    await toastedOperation('Undelegate from operator', async () => {
+        const tx = await operatorContract.undelegate(toBN(amount).toString())
 
-    await operatorTx.wait()
+        await tx.wait()
+    })
 }
 
 export async function getOperatorDelegationAmount(operatorId: string, address: string) {
@@ -288,6 +277,9 @@ export async function setOperatorNodeAddresses(operatorId: string, addresses: st
 
     const signer = await getSigner()
     const operatorContract = new Contract(operatorId, operatorABI, signer) as Operator
-    const tx = await operatorContract.setNodeAddresses(addresses)
-    await tx.wait()
+
+    await toastedOperation('Save node addresses', async () => {
+        const tx = await operatorContract.setNodeAddresses(addresses)
+        await tx.wait()
+    })
 }
