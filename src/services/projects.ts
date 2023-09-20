@@ -198,20 +198,6 @@ export const searchProjects = async (
     return prepareProjectResult(projects as unknown as TheGraphProject[], first)
 }
 
-const getDomainIds = (paymentDetails: PaymentDetails[]): number[] => {
-    return paymentDetails.map((p) => p.chainId)
-}
-
-const getPaymentDetails = (
-    paymentDetails: PaymentDetails[],
-): SmartContractPaymentDetails[] => {
-    return paymentDetails.map((d) => ({
-        beneficiary: d.beneficiaryAddress,
-        pricingTokenAddress: d.pricingTokenAddress,
-        pricePerSecond: d.pricePerSecond.toString(),
-    }))
-}
-
 async function formatMetadata({
     contact: contactDetails,
     creator,
