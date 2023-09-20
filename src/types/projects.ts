@@ -24,6 +24,7 @@ export const SalePointsPayload = z.record(
             chainId: z.number(),
             enabled: z.boolean(),
             price: z.string().trim(),
+            pricePerSecond: z.string().trim(),
             pricingTokenAddress: z.string().trim(),
             readOnly: z.boolean(),
             timeUnit: z.union([
@@ -204,6 +205,7 @@ export const OpenDataPayload = z.object({
                 chainId,
                 enabled: true,
                 price: '0',
+                pricePerSecond: '0',
                 pricingTokenAddress: getDataAddress(chainId),
                 readOnly: true,
                 timeUnit: timeUnits.second,

@@ -257,6 +257,7 @@ async function prepare(project: Project) {
             chainId: domainId,
             enabled,
             price,
+            pricePerSecond: initialPricePerSecond,
             pricingTokenAddress,
             timeUnit,
         } = salePoints[i]
@@ -265,21 +266,33 @@ async function prepare(project: Project) {
             continue
         }
 
-        let pricePerSecond = '0'
+        const pricePerSecond = await (async () => {
+            if (initialPricePerSecond) {
+                /**
+                 * In the current implementation we disallow price changes, so
+                 * if initial `pricePerSecond` is defined we reuse it.
+                 */
+                return initialPricePerSecond
+            }
 
-        if (price !== '0') {
-            /**
-             * 0 tokens per time unit constitues 0 per second. No need
-             * to fetch decimals.
-             */
-            let decimals: number | undefined
+            if (price === '0') {
+                /**
+                 * 0 tokens per time unit constitues 0 per second. No need
+                 * to fetch decimals.
+                 */
+                return '0'
+            }
 
             while (true) {
                 try {
-                    decimals = (await getTokenInfo(pricingTokenAddress, domainId))
+                    const decimals = (await getTokenInfo(pricingTokenAddress, domainId))
                         .decimals
 
-                    break
+                    return pricePerSecondFromTimeUnit(
+                        price,
+                        timeUnit,
+                        decimals,
+                    ).toString()
                 } catch (e) {
                     try {
                         await toaster(Toast, Layer.Toast).pop({
@@ -298,13 +311,7 @@ async function prepare(project: Project) {
                     }
                 }
             }
-
-            pricePerSecond = pricePerSecondFromTimeUnit(
-                price,
-                timeUnit,
-                decimals,
-            ).toString()
-        }
+        })()
 
         domainIds.push(domainId)
 
