@@ -13,7 +13,7 @@ export function deployDataUnion({
     chainId,
 }: {
     productId: ProjectId
-    adminFee: string
+    adminFee: number
     chainId: number
 }): SmartContractTransaction {
     const emitter = new EventEmitter()
@@ -37,7 +37,7 @@ export function deployDataUnion({
         .then(([_, client]) => {
             return client.deployDataUnion({
                 dataUnionName: productId,
-                adminFee: +adminFee,
+                adminFee,
             })
         })
         .then((dataUnion) => {

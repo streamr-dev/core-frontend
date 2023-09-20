@@ -27,6 +27,5 @@ export type Stream = {
     uiChannel: boolean
     requireEncryptedData: boolean
 }
-export type StreamIdList = Array<StreamId>
 export type StreamList = Array<Stream>
 export type StreamEntities = Record<StreamId, Stream>

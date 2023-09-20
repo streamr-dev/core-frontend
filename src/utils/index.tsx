@@ -120,3 +120,13 @@ export function isProjectOwnedBy<
 
     return !!canGrant
 }
+
+const MessagedObject = z.object({
+    message: z.string(),
+})
+
+type MessagedObject = z.infer<typeof MessagedObject>
+
+export function isMessaged(e: unknown): e is MessagedObject {
+    return MessagedObject.safeParse(e).success
+}

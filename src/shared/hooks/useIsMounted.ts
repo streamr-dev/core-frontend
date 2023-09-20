@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef } from 'react'
 
 /**
- * @deprecated `useIsMounted` will often lead to confusing
- * behaviour. Alternatives:
+ * @requires Basic knowledge of what you're doing. ;) Checking on being mounted often
+ * leads to unexpected behaviour because it may not be the right condition to rely on.
+ *
+ * Better-control-giving alternatives worth looking into:
  * - in effects: use a local `mounted` flag and unset it on discard (see example),
  * - in callbacks: use `AbortController` and `AbortSignal`.
  * @example

@@ -6,28 +6,57 @@ import TransactionListToast, {
 } from '~/shared/toasts/TransactionListToast'
 import { Layer } from '~/utils/Layer'
 
-export async function toastedOperation(label: string, fn?: () => Promise<void>) {
+export async function toastedOperation(label: string, fn?: () => void | Promise<void>) {
+    await toastedOperations(
+        [
+            {
+                id: uniqueId('operation-'),
+                label: label,
+            },
+        ],
+        () => fn?.(),
+    )
+}
+
+export async function toastedOperations(
+    operations: Operation[],
+    fn?: (next: () => void) => void | Promise<void>,
+) {
     let toast: Toaster<typeof TransactionListToast> | undefined = toaster(
         TransactionListToast,
         Layer.Toast,
     )
 
-    const operation: Operation = {
-        id: uniqueId('operation-'),
-        label: label,
-        state: 'ongoing',
+    if (!operations.length) {
+        throw new Error('We toasting or hwhat?!')
     }
 
-    const operations = [operation]
+    operations.forEach((op) => {
+        delete op.state
+    })
+
+    let pos = -1
+
+    function next() {
+        if (pos >= 0) {
+            operations[pos].state = 'complete'
+        }
+
+        if (pos < operations.length - 1) {
+            pos += 1
+
+            operations[pos].state = 'ongoing'
+        }
+
+        notify(toast, operations)
+    }
 
     try {
-        notify(toast, operations)
+        next()
 
-        await fn?.()
+        await fn?.(next)
 
-        operation.state = 'complete'
-
-        notify(toast, operations)
+        next()
     } catch (e) {
         operations.forEach((op) => {
             if (op.state === 'ongoing') {

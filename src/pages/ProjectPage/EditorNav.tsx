@@ -8,8 +8,9 @@ import Button from '~/shared/components/Button'
 import { REGULAR } from '~/shared/utils/styled'
 import {
     useIsCurrentProjectDraftClean,
-    useIsNewProject,
     useIsProjectBusy,
+    usePersistCurrentProjectDraft,
+    useProject,
 } from '~/shared/stores/projectEditor'
 import routes from '~/routes'
 
@@ -40,7 +41,9 @@ export default function EditorNav() {
 
     const clean = useIsCurrentProjectDraftClean()
 
-    const isNew = useIsNewProject()
+    const { id: projectId } = useProject()
+
+    const persist = usePersistCurrentProjectDraft()
 
     return (
         <NavContainer>
@@ -49,16 +52,13 @@ export default function EditorNav() {
                     <LogoLink href={routes.root()}>
                         <Logo />
                     </LogoLink>
-                    <h1>{isNew ? <>Create a project</> : <>Edit a project</>}</h1>
+                    <h1>{projectId ? <>Edit a project</> : <>Create a project</>}</h1>
                 </FlexNavbarItem>
                 <FlexNavbarItem>
                     <Button tag={Link} to={routes.projects.index()} kind="transparent">
                         Exit
                     </Button>
-                    <Button
-                        disabled={busy || clean}
-                        onClick={() => void console.info('Publish clicked!')}
-                    >
+                    <Button disabled={busy || clean} onClick={() => void persist()}>
                         Publish
                     </Button>
                 </FlexNavbarItem>

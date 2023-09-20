@@ -11,7 +11,6 @@ import { COLORS } from '~/shared/utils/styled'
 import { TheGraphProject } from '~/services/projects'
 import { getProjectImageUrl } from '~/getters'
 import routes from '~/routes'
-import Label, { HAPPY, ANGRY, WORRIED } from './Label'
 import Summary from './Summary'
 import Menu from './Menu'
 import { DataUnionBadge, DeployingBadge } from './Badge'
@@ -200,21 +199,6 @@ const ImageTile = ({
 export const touchedAgo = ({ updated, created }: any): string => `
     ${updated === created ? 'Created' : 'Updated'} ${ago(new Date(updated))}
 `
-const remainingTimeToMood = (value: number) => {
-    switch (true) {
-        case value <= 0:
-            return undefined
-
-        case value < 300:
-            return ANGRY
-
-        case value < 3600:
-            return WORRIED
-
-        default:
-            return HAPPY
-    }
-}
 
 type ProductTileProps = {
     actions?: any

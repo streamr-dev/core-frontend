@@ -11,13 +11,13 @@ import Errors, { MarketplaceTheme } from '~/shared/components/Ui/Errors'
 import useCopy from '~/shared/hooks/useCopy'
 import { truncate } from '~/shared/utils/text'
 import {
-    DraftValidationError,
     useCurrentDraftError,
     useSetCurrentDraftError,
     useSetCurrentDraftTransientStreamId,
 } from '~/shared/stores/streamEditor'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import Help from '~/components/Help'
+import { DraftValidationError } from '~/errors'
 import useStreamOwnerOptionGroups, {
     ADD_ENS_DOMAIN_VALUE,
     OptionGroup,

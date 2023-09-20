@@ -1,9 +1,5 @@
 import styled, { css } from 'styled-components'
 
-export const SpaciousTheme = {
-    height: '64px',
-}
-
 const StyledInput = styled.input<{ dark?: boolean; invalid?: boolean; theme?: any }>`
     background-color: ${({ dark }) => (dark ? '#fdfdfd' : '#ffffff')};
     border: 1px solid #efefef;

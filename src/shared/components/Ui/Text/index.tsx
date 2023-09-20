@@ -15,7 +15,6 @@ import RevertOnEscapeDecorator from './RevertOnEscapeDecorator'
 import { Props as SelectAllOnFocusProps } from './SelectAllOnFocusDecorator'
 import SelectAllOnFocusDecorator from './SelectAllOnFocusDecorator'
 import StyledInput from './StyledInput'
-export { SpaciousTheme } from './StyledInput'
 export type TextInputProps = FlushHistoryProps &
     OnCommitProps &
     RevertOnEscapeProps &

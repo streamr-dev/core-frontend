@@ -15,6 +15,9 @@ interface LayoutProps {
     innerBackgroundColor?: string
     outerBackgroundColor?: string
     rootBackgroundColor?: string
+    rootComponent?: typeof LayoutRoot
+    outerComponent?: typeof LayoutOuter
+    innerComponent?: typeof LayoutInner
 }
 
 export default function Layout({
@@ -26,6 +29,9 @@ export default function Layout({
     innerBackgroundColor,
     outerBackgroundColor,
     rootBackgroundColor = '#f5f5f5',
+    rootComponent: Root = LayoutRoot,
+    outerComponent: Outer = LayoutOuter,
+    innerComponent: Inner = LayoutInner,
 }: LayoutProps) {
     useScrollToTop()
 
@@ -33,15 +39,15 @@ export default function Layout({
         <>
             {pageTitle && <Helmet title={pageTitle} />}
             <GlobalStyles />
-            <LayoutRoot $bg={rootBackgroundColor}>
-                <LayoutOuter $bg={outerBackgroundColor}>
+            <Root $bg={rootBackgroundColor}>
+                <Outer $bg={outerBackgroundColor}>
                     {nav}
-                    <LayoutInner $bg={innerBackgroundColor}>
+                    <Inner $bg={innerBackgroundColor}>
                         {columnize ? <LayoutColumn>{children}</LayoutColumn> : children}
-                    </LayoutInner>
-                </LayoutOuter>
+                    </Inner>
+                </Outer>
                 {footer}
-            </LayoutRoot>
+            </Root>
         </>
     )
 }

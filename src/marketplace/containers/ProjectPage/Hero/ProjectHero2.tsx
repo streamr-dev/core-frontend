@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import Editor from 'rich-markdown-editor'
 import light from 'rich-markdown-editor/dist/styles/theme'
@@ -8,12 +8,10 @@ import {
     ProjectHeroDescriptionStyles,
     ProjectHeroImage,
     ProjectHeroMetadataContainer,
-    ProjectHeroSignalContainer,
     ProjectHeroTitle,
 } from '~/marketplace/containers/ProjectPage/Hero/ProjectHero2.styles'
 import { COLORS } from '~/shared/utils/styled'
-import { DetailDisplay } from '~/shared/components/DetailEditor/DetailDisplay'
-import { ProjectDetailIcon } from '~/marketplace/containers/ProjectEditing/ProjectDetails.styles'
+import { DetailIcon, DetailDisplay, List } from '~/components/DetailDropdown'
 
 const DescriptionEditor = styled(Editor)`
     ${ProjectHeroDescriptionStyles};
@@ -54,82 +52,53 @@ export default function ProjectHero2({
             <ProjectHeroImage
                 src={imageUrl}
                 alt={name}
-                noBorderRadius={true}
+                noBorderRadius
                 key={imageUrl || ''}
             />
             <ProjectHeroTitle>{name}</ProjectHeroTitle>
-            <DescriptionEditor value={description} readOnly={true} theme={customTheme} />
+            <DescriptionEditor value={description} readOnly theme={customTheme} />
             <ProjectHeroMetadataContainer>
-                {contact && (
-                    <>
-                        {contact.url && (
-                            <DetailDisplay
-                                icon={<ProjectDetailIcon name={'web'} />}
-                                value={contact.url}
-                                link={contact.url}
-                            />
-                        )}
-                        {contact.email && (
-                            <DetailDisplay
-                                icon={<ProjectDetailIcon name={'email'} />}
-                                value={contact.email}
-                                link={'mailto:' + contact.email}
-                            />
-                        )}
-                        {contact.twitter && (
-                            <DetailDisplay
-                                icon={
-                                    <ProjectDetailIcon
-                                        name={'twitter'}
-                                        className={'twitterColor'}
-                                    />
-                                }
-                                link={contact.twitter}
-                            />
-                        )}
-                        {contact.telegram && (
-                            <DetailDisplay
-                                icon={
-                                    <ProjectDetailIcon
-                                        name={'telegram'}
-                                        className={'telegramColor'}
-                                    />
-                                }
-                                link={contact.telegram}
-                            />
-                        )}
-                        {contact.reddit && (
-                            <DetailDisplay
-                                icon={
-                                    <ProjectDetailIcon
-                                        name={'reddit'}
-                                        className={'redditColor'}
-                                    />
-                                }
-                                link={contact.reddit}
-                            />
-                        )}
-                        {contact.linkedIn && (
-                            <DetailDisplay
-                                icon={
-                                    <ProjectDetailIcon
-                                        name={'linkedin'}
-                                        className={'linkedInColor'}
-                                    />
-                                }
-                                link={contact.linkedIn}
-                            />
-                        )}
-                    </>
-                )}
+                <List>
+                    {contact?.url && (
+                        <DetailDisplay
+                            icon={<DetailIcon name="web" />}
+                            value={contact.url}
+                            href={contact.url}
+                        />
+                    )}
+                    {contact?.email && (
+                        <DetailDisplay
+                            icon={<DetailIcon name="email" />}
+                            value={contact.email}
+                            href={`mailto:${contact.email}`}
+                        />
+                    )}
+                    {contact?.twitter && (
+                        <DetailDisplay
+                            icon={<DetailIcon name="twitter" $color="#1da1f2" />}
+                            href={contact.twitter}
+                        />
+                    )}
+                    {contact?.telegram && (
+                        <DetailDisplay
+                            icon={<DetailIcon name="telegram" $color="#2aabee" />}
+                            href={contact.telegram}
+                        />
+                    )}
+                    {contact?.reddit && (
+                        <DetailDisplay
+                            icon={<DetailIcon name="reddit" $color="#ff5700" />}
+                            href={contact.reddit}
+                        />
+                    )}
+                    {contact?.linkedIn && (
+                        <DetailDisplay
+                            icon={<DetailIcon name="linkedin" $color="#0077b5" />}
+                            href={contact.linkedIn}
+                        />
+                    )}
+                </List>
             </ProjectHeroMetadataContainer>
-            {/*<ProjectHeroSignalContainer>
-            <p>
-                <span>Total signal</span>
-                <strong>120k DATA</strong>
-            </p>
-            <Button kind={'primary'} outline>Signal</Button>
-        </ProjectHeroSignalContainer>*/}
         </ProjectHeroContainer>
     )
 }

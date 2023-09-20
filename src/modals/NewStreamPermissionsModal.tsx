@@ -9,6 +9,7 @@ import address0 from '~/utils/address0'
 import UnstyledLabel from '~/shared/components/Ui/Label'
 import UnstyledErrors, { MarketplaceTheme } from '~/shared/components/Ui/Errors'
 import Text from '~/shared/components/Ui/Text'
+import { isMessaged } from '~/utils'
 import FormModal, { FormModalProps } from './FormModal'
 import { RejectionReason } from './BaseModal'
 
@@ -38,14 +39,6 @@ interface PermissionBits {
 interface NewStreamPermissionsModalProps extends FormModalProps {
     onResolve?: (payload: PermissionBits) => void
     onBeforeSubmit?: (payload: PermissionBits) => void
-}
-
-const MessagedObject = z.object({
-    message: z.string(),
-})
-
-function isMessaged(e: unknown): e is z.infer<typeof MessagedObject> {
-    return MessagedObject.safeParse(e).success
 }
 
 export default function NewStreamPermissionsModal({

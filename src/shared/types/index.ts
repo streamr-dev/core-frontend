@@ -16,12 +16,14 @@ export enum ProjectType {
 }
 
 export interface SalePoint {
-    chainId: number
     beneficiaryAddress: string
-    pricePerSecond: string
-    timeUnit: TimeUnit
+    chainId: number
+    enabled: boolean
     price: string
+    pricePerSecond: string
     pricingTokenAddress: string
+    readOnly: boolean
+    timeUnit: TimeUnit
 }
 
 interface RegularProject {
@@ -56,8 +58,6 @@ interface RegularProject {
 interface DataUnionProject extends Omit<RegularProject, 'type'> {
     type: ProjectType.DataUnion
     adminFee: string | undefined
-    existingDUAddress: string | undefined
-    dataUnionChainId: number | undefined
 }
 
 export type Project = RegularProject | DataUnionProject

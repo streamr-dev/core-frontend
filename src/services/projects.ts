@@ -1,16 +1,26 @@
+import { toaster } from 'toasterhea'
 import { Address } from '~/shared/types/web3-types'
-import { getSigner } from '~/shared/stores/wallet'
+import { getSigner, getWalletAccount } from '~/shared/stores/wallet'
 import { getProjectRegistryContract } from '~/getters'
 import networkPreflight from '~/utils/networkPreflight'
 import { deployDataUnion } from '~/marketplace/modules/dataUnion/services'
-import { BN } from '~/utils/bn'
+import { BN, toBN } from '~/utils/bn'
 import {
     getRawGraphProject,
     getRawGraphProjects,
     getRawGraphProjectsByText,
 } from '~/getters/hub'
 import { getProjectRegistryChainId } from '~/getters'
-import { TheGraph } from '~/shared/types'
+import { Project, ProjectType, TheGraph } from '~/shared/types'
+import { isMessaged } from '~/utils'
+import { errorToast } from '~/utils/toast'
+import { truncate } from '~/shared/utils/text'
+import { PublishableProjectPayload } from '~/types/projects'
+import { getTokenInfo } from '~/hooks/useTokenInfo'
+import Toast, { ToastType } from '~/shared/toasts/Toast'
+import { Layer } from '~/utils/Layer'
+import { pricePerSecondFromTimeUnit } from '~/marketplace/utils/price'
+import { postImage } from './images'
 
 export type TheGraphPaymentDetails = {
     domainId: string
@@ -188,96 +198,250 @@ export const searchProjects = async (
     return prepareProjectResult(projects as unknown as TheGraphProject[], first)
 }
 
-const getDomainIds = (paymentDetails: PaymentDetails[]): number[] => {
-    return paymentDetails.map((p) => p.chainId)
+async function formatMetadata({
+    contact: contactDetails,
+    creator,
+    description,
+    imageIpfsCid: existingImageIpfsCid,
+    newImageToUpload,
+    name,
+    termsOfUse,
+    type,
+}: PublishableProjectPayload) {
+    const imageIpfsCid = newImageToUpload
+        ? await postImage(newImageToUpload)
+        : existingImageIpfsCid
+
+    return JSON.stringify({
+        name,
+        description,
+        imageIpfsCid,
+        creator,
+        contactDetails,
+        termsOfUse,
+        isDataUnion: type === ProjectType.DataUnion,
+    })
 }
 
-const getPaymentDetails = (
-    paymentDetails: PaymentDetails[],
-): SmartContractPaymentDetails[] => {
-    return paymentDetails.map((d) => ({
-        beneficiary: d.beneficiaryAddress,
-        pricingTokenAddress: d.pricingTokenAddress,
-        pricePerSecond: d.pricePerSecond.toString(),
-    }))
-}
+export async function getPublishableProjectProperties(project: Project) {
+    const payload = PublishableProjectPayload.parse(project)
 
-export async function createProject(project: SmartContractProjectCreate) {
-    const chainId = getProjectRegistryChainId()
+    const salePoints = Object.values(payload.salePoints)
 
-    const {
-        id,
-        paymentDetails,
-        streams,
-        minimumSubscriptionInSeconds,
-        isPublicPurchasable,
-        metadata,
-    } = project
+    const domainIds: number[] = []
 
-    await networkPreflight(chainId)
+    const paymentDetails: {
+        beneficiary: string
+        pricingTokenAddress: string
+        pricePerSecond: string
+    }[] = []
 
-    const signer = await getSigner()
+    const wallet = (await getWalletAccount()) || ''
 
-    const tx = await getProjectRegistryContract({
-        chainId,
-        signer,
-    }).createProject(
-        id,
-        getDomainIds(paymentDetails),
-        getPaymentDetails(paymentDetails),
-        streams,
-        minimumSubscriptionInSeconds,
-        isPublicPurchasable,
-        metadata,
-    )
+    for (let i = 0; i < salePoints.length; i++) {
+        const {
+            beneficiaryAddress,
+            chainId: domainId,
+            enabled,
+            price,
+            pricePerSecond: initialPricePerSecond,
+            pricingTokenAddress,
+            timeUnit,
+        } = salePoints[i]
 
-    await tx.wait()
-}
+        if (!enabled) {
+            continue
+        }
 
-export async function updateProject(project: SmartContractProject) {
-    const chainId = getProjectRegistryChainId()
+        /**
+         * Use current wallet's address as the default beneficiary for *paid* projects
+         * that carry no beneficiary address information. The placeholder for the
+         * beneficiary address input field reflects it, too.
+         */
+        const beneficiary =
+            beneficiaryAddress || project.type === ProjectType.PaidData ? wallet : ''
 
-    const { id, paymentDetails, streams, minimumSubscriptionInSeconds, metadata } =
-        project
+        const pricePerSecond = await (async () => {
+            if (initialPricePerSecond) {
+                /**
+                 * In the current implementation we disallow price changes, so
+                 * if initial `pricePerSecond` is defined we reuse it.
+                 */
+                return initialPricePerSecond
+            }
 
-    await networkPreflight(chainId)
+            if (price === '0') {
+                /**
+                 * 0 tokens per time unit constitues 0 per second. No need
+                 * to fetch decimals.
+                 */
+                return '0'
+            }
 
-    const signer = await getSigner()
+            while (true) {
+                try {
+                    const decimals = (await getTokenInfo(pricingTokenAddress, domainId))
+                        .decimals
 
-    const tx = await getProjectRegistryContract({ chainId, signer }).updateProject(
-        id,
-        getDomainIds(paymentDetails),
-        getPaymentDetails(paymentDetails),
-        streams,
-        minimumSubscriptionInSeconds,
-        metadata,
-    )
+                    return pricePerSecondFromTimeUnit(
+                        price,
+                        timeUnit,
+                        decimals,
+                    ).toString()
+                } catch (e) {
+                    try {
+                        await toaster(Toast, Layer.Toast).pop({
+                            title: 'Warning',
+                            type: ToastType.Warning,
+                            desc: `Failed to fetch decimals for ${truncate(
+                                pricingTokenAddress,
+                            )}. Would you like to try again?`,
+                            okLabel: 'Yes',
+                            cancelLabel: 'No',
+                        })
 
-    await tx.wait()
-}
+                        continue
+                    } catch (_) {
+                        throw e
+                    }
+                }
+            }
+        })()
 
-export async function deleteProject(projectId: string | undefined) {
-    if (!projectId) {
-        throw new Error('No project')
+        domainIds.push(domainId)
+
+        paymentDetails.push({
+            beneficiary,
+            pricePerSecond,
+            pricingTokenAddress,
+        })
     }
 
+    const metadata = await formatMetadata(payload)
+
+    return {
+        adminFee:
+            'adminFee' in payload
+                ? toBN(payload.adminFee).dividedBy(100).toNumber()
+                : void 0,
+        domainIds,
+        metadata,
+        paymentDetails,
+        streams: payload.streams,
+    }
+}
+
+export async function createProject(
+    projectId: string,
+    {
+        domainIds,
+        isPublicPurchasable,
+        metadata,
+        minimumSubscriptionSeconds = 0,
+        paymentDetails,
+        streams,
+    }: {
+        domainIds: number[]
+        isPublicPurchasable: boolean
+        metadata: string
+        minimumSubscriptionSeconds?: number
+        paymentDetails: {
+            beneficiary: string
+            pricingTokenAddress: string
+            pricePerSecond: string
+        }[]
+        streams: string[]
+    },
+) {
     const chainId = getProjectRegistryChainId()
 
     await networkPreflight(chainId)
 
-    const signer = await getSigner()
+    const provider = await getSigner()
 
     const tx = await getProjectRegistryContract({
         chainId,
-        signer,
-    }).deleteProject(projectId)
+        provider,
+    }).createProject(
+        projectId,
+        domainIds,
+        paymentDetails,
+        streams,
+        minimumSubscriptionSeconds,
+        isPublicPurchasable,
+        metadata,
+    )
 
     await tx.wait()
+}
+
+export async function updateProject(
+    projectId: string,
+    {
+        domainIds,
+        metadata,
+        minimumSubscriptionSeconds = 0,
+        paymentDetails,
+        streams,
+    }: {
+        domainIds: number[]
+        metadata: string
+        minimumSubscriptionSeconds?: number
+        paymentDetails: {
+            beneficiary: string
+            pricingTokenAddress: string
+            pricePerSecond: string
+        }[]
+        streams: string[]
+    },
+) {
+    const chainId = getProjectRegistryChainId()
+
+    await networkPreflight(chainId)
+
+    const provider = await getSigner()
+
+    const tx = await getProjectRegistryContract({ chainId, provider }).updateProject(
+        projectId,
+        domainIds,
+        paymentDetails,
+        streams,
+        minimumSubscriptionSeconds,
+        metadata,
+    )
+
+    await tx.wait()
+}
+
+export async function deleteProject(projectId: string) {
+    const chainId = getProjectRegistryChainId()
+
+    await networkPreflight(chainId)
+
+    const provider = await getSigner()
+
+    try {
+        const tx = await getProjectRegistryContract({
+            chainId,
+            provider,
+        }).deleteProject(projectId)
+
+        await tx.wait()
+    } catch (e) {
+        if (isMessaged(e) && /error_projectDoesNotExist/.test(e.message)) {
+            errorToast({
+                title: 'No such project',
+                desc: `Project ${truncate(projectId)} does not exist.`,
+            })
+        }
+
+        throw e
+    }
 }
 
 export async function deployDataUnionContract(
     projectId: string,
-    adminFee: string,
+    adminFee: number,
     chainId: number,
 ) {
     await networkPreflight(chainId)

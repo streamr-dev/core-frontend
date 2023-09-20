@@ -18,6 +18,7 @@ type SearchBarProps = {
     placeholder?: string
     value?: string
     autoFocus?: boolean
+    disabled?: boolean
 }
 
 const SearchBar: FunctionComponent<SearchBarProps> = ({
@@ -26,6 +27,7 @@ const SearchBar: FunctionComponent<SearchBarProps> = ({
     debounceTime = 250,
     placeholder = 'Search',
     autoFocus = false,
+    disabled = false,
 }) => {
     const [focused, setFocused] = useState<boolean>()
     const [inputValue, setInputValue] = useState<string>('')
@@ -59,6 +61,7 @@ const SearchBar: FunctionComponent<SearchBarProps> = ({
         <FormWrapper onSubmit={(event) => event.preventDefault()}>
             <SearchIcon src={searchIcon} className={focused ? 'hidden' : ''} />
             <SearchInput
+                disabled={disabled}
                 placeholder={placeholder}
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
@@ -67,6 +70,7 @@ const SearchBar: FunctionComponent<SearchBarProps> = ({
                 autoFocus={autoFocus}
             />
             <ClearButton
+                disabled={disabled}
                 onClick={clearSearch}
                 className={!inputValue ? 'hidden' : ''}
                 type="button"
