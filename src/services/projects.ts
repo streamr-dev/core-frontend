@@ -1,6 +1,6 @@
 import { toaster } from 'toasterhea'
 import { Address } from '~/shared/types/web3-types'
-import { getSigner } from '~/shared/stores/wallet'
+import { getSigner, getWalletAccount } from '~/shared/stores/wallet'
 import { getProjectRegistryContract } from '~/getters'
 import networkPreflight from '~/utils/networkPreflight'
 import { deployDataUnion } from '~/marketplace/modules/dataUnion/services'
@@ -250,9 +250,11 @@ export async function getPublishableProjectProperties(project: Project) {
         pricePerSecond: string
     }[] = []
 
+    const wallet = (await getWalletAccount()) || ''
+
     for (let i = 0; i < salePoints.length; i++) {
         const {
-            beneficiaryAddress: beneficiary,
+            beneficiaryAddress,
             chainId: domainId,
             enabled,
             price,
@@ -264,6 +266,14 @@ export async function getPublishableProjectProperties(project: Project) {
         if (!enabled) {
             continue
         }
+
+        /**
+         * Use current wallet's address as the default beneficiary for *paid* projects
+         * that carry no beneficiary address information. The placeholder for the
+         * beneficiary address input field reflects it, too.
+         */
+        const beneficiary =
+            beneficiaryAddress || project.type === ProjectType.PaidData ? wallet : ''
 
         const pricePerSecond = await (async () => {
             if (initialPricePerSecond) {
