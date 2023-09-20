@@ -358,16 +358,20 @@ export default function ProjectEditorPage() {
                                                 )}
                                             </ColoredBox>
                                         </Segment>
-                                        <Segment>
-                                            <ColoredBox $pad>
-                                                <Content>
-                                                    <h2>Data Union admin fee</h2>
-                                                </Content>
-                                                <Content $desktopMaxWidth={728}>
-                                                    <DataUnionFee />
-                                                </Content>
-                                            </ColoredBox>
-                                        </Segment>
+                                        {(projectId ||
+                                            (salePoint &&
+                                                !salePoint.beneficiaryAddress)) && (
+                                            <Segment>
+                                                <ColoredBox $pad>
+                                                    <Content>
+                                                        <h2>Data Union admin fee</h2>
+                                                    </Content>
+                                                    <Content $desktopMaxWidth={728}>
+                                                        <DataUnionFee />
+                                                    </Content>
+                                                </ColoredBox>
+                                            </Segment>
+                                        )}
                                     </>
                                 )}
                             </DataUnionPayment>
