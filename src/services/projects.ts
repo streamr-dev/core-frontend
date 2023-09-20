@@ -253,11 +253,11 @@ async function prepare(project: Project) {
 
     for (let i = 0; i < salePoints.length; i++) {
         const {
+            beneficiaryAddress: beneficiary,
             chainId: domainId,
             enabled,
-            beneficiaryAddress: beneficiary,
-            pricingTokenAddress,
             price,
+            pricingTokenAddress,
             timeUnit,
         } = salePoints[i]
 
