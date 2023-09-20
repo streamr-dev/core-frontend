@@ -238,7 +238,7 @@ async function formatMetadata({
     })
 }
 
-async function prepare(project: Project) {
+export async function getPublishableProjectProperties(project: Project) {
     const payload = PublishableProjectPayload.parse(project)
 
     const salePoints = Object.values(payload.salePoints)
@@ -337,25 +337,28 @@ async function prepare(project: Project) {
 }
 
 export async function createProject(
-    project: Project,
+    projectId: string,
     {
-        onAfterPrepare,
+        domainIds,
+        isPublicPurchasable,
+        metadata,
+        minimumSubscriptionSeconds = 0,
+        paymentDetails,
+        streams,
     }: {
-        onAfterPrepare?: (
-            projectId: string,
-            properties: Awaited<ReturnType<typeof prepare>>,
-        ) => void | Promise<void>
-    } = {},
+        domainIds: number[]
+        isPublicPurchasable: boolean
+        metadata: string
+        minimumSubscriptionSeconds?: number
+        paymentDetails: {
+            beneficiary: string
+            pricingTokenAddress: string
+            pricePerSecond: string
+        }[]
+        streams: string[]
+    },
 ) {
-    const properties = await prepare(project)
-
-    const { domainIds, paymentDetails, streams, metadata } = properties
-
     const chainId = getProjectRegistryChainId()
-
-    const projectId = randomHex(32)
-
-    await onAfterPrepare?.(projectId, properties)
 
     await networkPreflight(chainId)
 
@@ -369,8 +372,8 @@ export async function createProject(
         domainIds,
         paymentDetails,
         streams,
-        0,
-        project.type !== ProjectType.OpenData,
+        minimumSubscriptionSeconds,
+        isPublicPurchasable,
         metadata,
     )
 
@@ -378,29 +381,26 @@ export async function createProject(
 }
 
 export async function updateProject(
-    project: Project,
+    projectId: string,
     {
-        onAfterPrepare,
+        domainIds,
+        metadata,
+        minimumSubscriptionSeconds = 0,
+        paymentDetails,
+        streams,
     }: {
-        onAfterPrepare?: (
-            projectId: string,
-            properties: Awaited<ReturnType<typeof prepare>>,
-        ) => void | Promise<void>
-    } = {},
+        domainIds: number[]
+        metadata: string
+        minimumSubscriptionSeconds?: number
+        paymentDetails: {
+            beneficiary: string
+            pricingTokenAddress: string
+            pricePerSecond: string
+        }[]
+        streams: string[]
+    },
 ) {
-    const { id: projectId } = project
-
-    if (!projectId) {
-        throw new Error('Non-existing projects cannot be updated. Create it first.')
-    }
-
-    const properties = await prepare(project)
-
-    const { domainIds, paymentDetails, streams, metadata } = properties
-
     const chainId = getProjectRegistryChainId()
-
-    await onAfterPrepare?.(projectId, properties)
 
     await networkPreflight(chainId)
 
@@ -411,7 +411,7 @@ export async function updateProject(
         domainIds,
         paymentDetails,
         streams,
-        0,
+        minimumSubscriptionSeconds,
         metadata,
     )
 

@@ -50,6 +50,7 @@ import useIsMounted from '~/shared/hooks/useIsMounted'
 import {
     createProject,
     deployDataUnionContract,
+    getPublishableProjectProperties,
     updateProject,
 } from '~/services/projects'
 import { toastedOperation, toastedOperations } from '~/utils/toastedOperation'
@@ -58,6 +59,8 @@ import networkPreflight from '~/utils/networkPreflight'
 import routes from '~/routes'
 import { useWalletAccount } from './wallet'
 import { useHasActiveProjectSubscription } from './purchases'
+import { Operation } from '../toasts/TransactionListToast'
+import { randomHex } from 'web3-utils'
 
 interface ProjectDraft {
     abandoned: boolean
@@ -498,144 +501,161 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
                 try {
                     const { hot: project, cold } = draft.project
 
+                    const operations: Operation[] = []
+
                     if (project.id) {
-                        if (!requiresAdminFeeUpdate(project, cold)) {
-                            return void (await toastedOperation('Update project', () =>
-                                updateProject(project),
-                            ))
+                        const projectId = project.id
+
+                        const shouldUpdateAdminFee = requiresAdminFeeUpdate(project, cold)
+
+                        const shouldUpdateMatadata = !isEqual(
+                            { ...project, adminFee: '' },
+                            { ...cold, adminFee: '' },
+                        )
+
+                        if (shouldUpdateAdminFee) {
+                            operations.push({
+                                id: uniqueId('operation-'),
+                                label: 'Update admin fee',
+                            })
                         }
 
-                        return void (await toastedOperations(
-                            [
-                                {
-                                    id: uniqueId('operation-'),
-                                    label: 'Update admin fee',
-                                },
-                                {
-                                    id: uniqueId('operation-'),
-                                    label: 'Create project',
-                                },
-                            ],
-                            (next) =>
-                                updateProject(project, {
-                                    async onAfterPrepare(
-                                        _,
-                                        {
-                                            domainIds: [domainId],
-                                            paymentDetails: [paymentDetail],
-                                            adminFee,
-                                        },
-                                    ) {
-                                        /**
-                                         * We update the Data Union in the post-prepare phase where
-                                         * the project has already gone through validation.
-                                         */
-                                        if (!domainId) {
-                                            throw new Error('No chain id')
-                                        }
+                        if (shouldUpdateMatadata) {
+                            operations.push({
+                                id: uniqueId('operation-'),
+                                label: 'Update project',
+                            })
+                        }
 
-                                        if (typeof adminFee === 'undefined') {
-                                            throw new Error('No admin fee')
-                                        }
+                        return void (await toastedOperations(operations, async (next) => {
+                            const {
+                                domainIds,
+                                paymentDetails,
+                                adminFee,
+                                streams,
+                                metadata,
+                            } = await getPublishableProjectProperties(project)
 
-                                        if (!paymentDetail) {
-                                            throw new Error('No payment details')
-                                        }
+                            if (shouldUpdateAdminFee) {
+                                const [domainId] = domainIds
 
-                                        const { beneficiary: dataUnionId } = paymentDetail
+                                const [paymentDetail] = paymentDetails
 
-                                        if (!dataUnionId) {
-                                            /**
-                                             * Something broke above. We can update a Data Union only when
-                                             * we know its deployment address.
-                                             */
-                                            throw new Error('No Data Union id')
-                                        }
+                                if (!domainId) {
+                                    throw new Error('No chain id')
+                                }
 
-                                        const dataUnion = await getDataUnion(
-                                            dataUnionId,
-                                            domainId,
-                                        )
+                                if (typeof adminFee === 'undefined') {
+                                    throw new Error('No admin fee')
+                                }
 
-                                        await dataUnion.setAdminFee(adminFee)
+                                if (!paymentDetail) {
+                                    throw new Error('No payment details')
+                                }
 
-                                        next()
-                                    },
-                                }),
-                        ))
+                                const { beneficiary: dataUnionId } = paymentDetail
+
+                                if (!dataUnionId) {
+                                    /**
+                                     * Something broke above. We can update a Data Union only when
+                                     * we know its deployment address.
+                                     */
+                                    throw new Error('No Data Union id')
+                                }
+
+                                const dataUnion = await getDataUnion(
+                                    dataUnionId,
+                                    domainId,
+                                )
+
+                                await dataUnion.setAdminFee(adminFee)
+
+                                next()
+                            }
+
+                            if (shouldUpdateMatadata) {
+                                await updateProject(projectId, {
+                                    domainIds,
+                                    metadata,
+                                    paymentDetails,
+                                    streams,
+                                })
+                            }
+                        }))
                     }
 
-                    if (!requiresDataUnionDeployment(project)) {
-                        return void (await toastedOperation('Create project', () =>
-                            createProject(project),
-                        ))
+                    const shouldDeployDataUnion = requiresDataUnionDeployment(project)
+
+                    if (shouldDeployDataUnion) {
+                        operations.push({
+                            id: uniqueId('operation-'),
+                            label: 'Deploy Data Union contract',
+                        })
                     }
 
-                    await toastedOperations(
-                        [
-                            {
-                                id: uniqueId('operation-'),
-                                label: 'Deploy Data Union contract',
-                            },
-                            {
-                                id: uniqueId('operation-'),
-                                label: 'Create project',
-                            },
-                        ],
-                        (next) =>
-                            createProject(project, {
-                                async onAfterPrepare(
-                                    projectId,
-                                    {
-                                        domainIds: [domainId],
-                                        paymentDetails: [paymentDetail],
-                                        adminFee,
-                                    },
-                                ) {
-                                    /**
-                                     * We deploy a new Data Union in the post-prepare phase where
-                                     * the project has already gone through validation.
-                                     */
-                                    if (!domainId) {
-                                        throw new Error('No chain id')
-                                    }
+                    operations.push({
+                        id: uniqueId('operation-'),
+                        label: 'Create project',
+                    })
 
-                                    if (typeof adminFee === 'undefined') {
-                                        throw new Error('No admin fee')
-                                    }
+                    await toastedOperations(operations, async (next) => {
+                        const projectId = randomHex(32)
 
-                                    if (!paymentDetail) {
-                                        throw new Error('No payment details')
-                                    }
+                        const { domainIds, paymentDetails, adminFee, streams, metadata } =
+                            await getPublishableProjectProperties(project)
 
-                                    if (paymentDetail.beneficiary) {
-                                        /**
-                                         * Something broke above. See `requiresDataUnionDeployment` for details.
-                                         * We only deploy a new Data Union if the `beneficiary` is empty.
-                                         */
-                                        throw new Error('Unexpected beneficiary')
-                                    }
+                        if (shouldDeployDataUnion) {
+                            const [domainId] = domainIds
 
-                                    const chainId = getProjectRegistryChainId()
+                            const [paymentDetail] = paymentDetails
 
-                                    await networkPreflight(chainId)
+                            if (!domainId) {
+                                throw new Error('No chain id')
+                            }
 
-                                    const dataUnionId = await deployDataUnionContract(
-                                        projectId,
-                                        adminFee,
-                                        domainId,
-                                    )
+                            if (typeof adminFee === 'undefined') {
+                                throw new Error('No admin fee')
+                            }
 
-                                    /**
-                                     * We assing the newly deployed Data Union to the project
-                                     * we're currently persisting.
-                                     */
-                                    paymentDetail.beneficiary = dataUnionId
+                            if (!paymentDetail) {
+                                throw new Error('No payment details')
+                            }
 
-                                    next()
-                                },
-                            }),
-                    )
+                            if (paymentDetail.beneficiary) {
+                                /**
+                                 * Something broke above. See `requiresDataUnionDeployment` for details.
+                                 * We only deploy a new Data Union if the `beneficiary` is empty.
+                                 */
+                                throw new Error('Unexpected beneficiary')
+                            }
+
+                            const chainId = getProjectRegistryChainId()
+
+                            await networkPreflight(chainId)
+
+                            const dataUnionId = await deployDataUnionContract(
+                                projectId,
+                                adminFee,
+                                domainId,
+                            )
+
+                            /**
+                             * We assing the newly deployed Data Union to the project
+                             * we're currently persisting.
+                             */
+                            paymentDetail.beneficiary = dataUnionId
+
+                            next()
+                        }
+
+                        await createProject(projectId, {
+                            domainIds,
+                            isPublicPurchasable: project.type !== ProjectType.OpenData,
+                            metadata,
+                            paymentDetails,
+                            streams,
+                        })
+                    })
                 } catch (e) {
                     if (e instanceof z.ZodError) {
                         const errors: ProjectDraft['errors'] = {}
