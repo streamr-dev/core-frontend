@@ -1,5 +1,4 @@
 import { toaster } from 'toasterhea'
-import { randomHex } from 'web3-utils'
 import { Address } from '~/shared/types/web3-types'
 import { getSigner } from '~/shared/stores/wallet'
 import { getProjectRegistryContract } from '~/getters'

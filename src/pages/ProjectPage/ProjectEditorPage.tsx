@@ -358,9 +358,9 @@ export default function ProjectEditorPage() {
                                                 )}
                                             </ColoredBox>
                                         </Segment>
-                                        {(projectId ||
-                                            (salePoint &&
-                                                !salePoint.beneficiaryAddress)) && (
+                                        {!projectId && salePoint?.beneficiaryAddress ? (
+                                            <>{/* Indentation fix. */}</>
+                                        ) : (
                                             <Segment>
                                                 <ColoredBox $pad>
                                                     <Content>

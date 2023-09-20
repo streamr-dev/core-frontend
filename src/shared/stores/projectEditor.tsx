@@ -13,6 +13,7 @@ import uniqueId from 'lodash/uniqueId'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
 import { useNavigate } from 'react-router-dom'
+import { randomHex } from 'web3-utils'
 import {
     getGraphProjectWithParsedMetadata,
     getProjectImageUrl,
@@ -60,7 +61,6 @@ import routes from '~/routes'
 import { useWalletAccount } from './wallet'
 import { useHasActiveProjectSubscription } from './purchases'
 import { Operation } from '../toasts/TransactionListToast'
-import { randomHex } from 'web3-utils'
 
 interface ProjectDraft {
     abandoned: boolean
