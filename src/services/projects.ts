@@ -336,7 +336,7 @@ async function prepare(project: Project) {
     }
 }
 
-export async function createProject2(
+export async function createProject(
     project: Project,
     {
         onAfterPrepare,
@@ -377,7 +377,7 @@ export async function createProject2(
     await tx.wait()
 }
 
-export async function updataProject2(project: Project) {
+export async function updateProject(project: Project) {
     const { id } = project
 
     if (!id) {

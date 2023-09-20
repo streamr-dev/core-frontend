@@ -48,9 +48,9 @@ import { Layer } from '~/utils/Layer'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import {
-    createProject2,
+    createProject,
     deployDataUnionContract,
-    updataProject2,
+    updateProject,
 } from '~/services/projects'
 import { toastedOperation, toastedOperations } from '~/utils/toastedOperation'
 import { Chain } from '~/shared/types/web3-types'
@@ -482,7 +482,7 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
 
                     if (project.id) {
                         return void (await toastedOperation('Update project', () =>
-                            updataProject2(project),
+                            updateProject(project),
                         ))
                     }
 
@@ -494,7 +494,7 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
 
                     if (!shouldDeployDU) {
                         return void (await toastedOperation('Create project', () =>
-                            createProject2(project),
+                            createProject(project),
                         ))
                     }
 
@@ -510,7 +510,7 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
                             },
                         ],
                         (next) =>
-                            createProject2(project, {
+                            createProject(project, {
                                 async onAfterPrepare(
                                     projectId,
                                     {
