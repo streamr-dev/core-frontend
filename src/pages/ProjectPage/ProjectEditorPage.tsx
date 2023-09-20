@@ -283,35 +283,37 @@ export default function ProjectEditorPage() {
                             <DataUnionPayment>
                                 {(salePoint) => (
                                     <>
-                                        <Segment>
-                                            <ColoredBox $pad>
-                                                <Content>
-                                                    <h2>Select chain</h2>
-                                                    <p>
-                                                        Select the chain for your Data
-                                                        Union.
-                                                    </p>
-                                                </Content>
-                                                <Content $desktopMaxWidth={728}>
-                                                    {salePoints.map((salePoint) => (
-                                                        <SalePointOption
-                                                            key={salePoint.chainId}
-                                                            onSalePointChange={
-                                                                onSalePointChange
-                                                            }
-                                                            salePoint={salePoint}
-                                                        >
-                                                            <DataUnionOption
-                                                                salePoint={salePoint}
+                                        {!projectId && (
+                                            <Segment>
+                                                <ColoredBox $pad>
+                                                    <Content>
+                                                        <h2>Select chain</h2>
+                                                        <p>
+                                                            Select the chain for your Data
+                                                            Union.
+                                                        </p>
+                                                    </Content>
+                                                    <Content $desktopMaxWidth={728}>
+                                                        {salePoints.map((salePoint) => (
+                                                            <SalePointOption
+                                                                key={salePoint.chainId}
                                                                 onSalePointChange={
                                                                     onSalePointChange
                                                                 }
-                                                            />
-                                                        </SalePointOption>
-                                                    ))}
-                                                </Content>
-                                            </ColoredBox>
-                                        </Segment>
+                                                                salePoint={salePoint}
+                                                            >
+                                                                <DataUnionOption
+                                                                    salePoint={salePoint}
+                                                                    onSalePointChange={
+                                                                        onSalePointChange
+                                                                    }
+                                                                />
+                                                            </SalePointOption>
+                                                        ))}
+                                                    </Content>
+                                                </ColoredBox>
+                                            </Segment>
+                                        )}
                                         <Segment>
                                             <ColoredBox $pad>
                                                 <Content>
@@ -344,6 +346,7 @@ export default function ProjectEditorPage() {
                                                 {salePoint ? (
                                                     <Content $desktopMaxWidth={728}>
                                                         <SalePointTokenSelector
+                                                            disabled={salePoint.readOnly}
                                                             salePoint={salePoint}
                                                             onSalePointChange={
                                                                 onSalePointChange
