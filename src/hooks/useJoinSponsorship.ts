@@ -28,11 +28,12 @@ export const useJoinSponsorship = (): {
                 await joinSponsorshipModal.pop({
                     streamId: sponsorshipStreamId,
                     operatorId: myOperatorQuery.data?.id,
+                    hasUndelegationQueue: myOperatorQuery.data.queueEntries.length > 0,
                     operatorBalance: myOperatorQuery.data?.freeFundsWei.toString(),
                     tokenSymbol: tokenInfo.symbol,
                     decimals: tokenInfo.decimals,
                     onSubmit: async (amount: string) => {
-                        stakeOnSponsorship(
+                        await stakeOnSponsorship(
                             sponsorshipId,
                             amount,
                             myOperatorQuery.data?.id as string,

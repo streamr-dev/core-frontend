@@ -31,11 +31,12 @@ export type OperatorElement = {
     cumulativeProfitsWei: BN
     cumulativeOperatorsCutWei: BN
     operatorsCutFraction: BN
+    queueEntries: OperatorQueueEntry[]
 }
 
 export type OperatorStake = {
     operatorId: string
-    date: string
+    joinDate: string
     amount: BN
     allocated: BN
     sponsorship?: Sponsorship | null
@@ -50,6 +51,13 @@ export type OperatorSlashingEvent = {
     amount: BN
     date: string
     streamId: string | undefined
+}
+
+export type OperatorQueueEntry = {
+    amount: BN
+    date: string
+    delegator: string
+    id: string
 }
 
 export type OperatorMetadata = {

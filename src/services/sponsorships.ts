@@ -133,18 +133,54 @@ export async function stakeOnSponsorship(
     sponsorshipId: string,
     amountWei: string,
     operatorAddress: string,
+    toastLabel = 'Stake on sponsorship',
 ): Promise<void> {
     const chainId = getSponsorshipChainId()
-    const chainConfig = getConfigForChain(chainId)
-    const paymentTokenSymbolFromConfig = getCoreConfig().sponsorshipPaymentToken
     await networkPreflight(chainId)
 
-    await toastedOperation('Stake on sponsorship', async () => {
+    await toastedOperation(toastLabel, async () => {
         const signer = await getSigner()
 
-        const token = new Contract(operatorAddress, operatorABI, signer) as Operator
+        const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
 
-        const tx = await token.stake(sponsorshipId, amountWei)
+        const tx = await contract.stake(sponsorshipId, amountWei)
+        await tx.wait()
+    })
+}
+
+export async function reduceStakeOnSponsorship(
+    sponsorshipId: string,
+    targetAmountWei: string,
+    operatorAddress: string,
+    toastLabel = 'Reduce stake on sponsorship',
+): Promise<void> {
+    const chainId = getSponsorshipChainId()
+    await networkPreflight(chainId)
+
+    await toastedOperation(toastLabel, async () => {
+        const signer = await getSigner()
+
+        const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
+
+        const tx = await contract.reduceStakeTo(sponsorshipId, targetAmountWei)
+        await tx.wait()
+    })
+}
+
+export async function forceUnstakeFromSponsorship(
+    sponsorshipId: string,
+    operatorAddress: string,
+): Promise<void> {
+    const chainId = getSponsorshipChainId()
+    await networkPreflight(chainId)
+
+    await toastedOperation('Force unstake from sponsorship', async () => {
+        const signer = await getSigner()
+
+        const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
+
+        // Jusso asked to put a big value in the second parameter - big enough to pay out the whole queue after unstaking
+        const tx = await contract.forceUnstake(sponsorshipId, 1000000)
         await tx.wait()
     })
 }

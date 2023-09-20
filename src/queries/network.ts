@@ -9,7 +9,7 @@ gql`
             }
             amount
             allocatedWei
-            date
+            joinDate
             sponsorship {
                 ...SponsorshipFields
             }
@@ -27,6 +27,12 @@ gql`
                     id
                 }
             }
+        }
+        queueEntries(first: 1000) {
+            amount
+            date
+            delegator
+            id
         }
         delegatorCount
         poolValue
@@ -95,13 +101,14 @@ gql`
             }
             amount
             allocatedWei
-            date
+            joinDate
         }
         operatorCount
         totalStakedWei
         unallocatedWei
         projectedInsolvency
         cumulativeSponsoring
+        minimumStakingPeriodSeconds
         creator
         spotAPY
     }

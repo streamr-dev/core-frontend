@@ -11,10 +11,11 @@ export type SponsorshipElement = {
     stakes: SponsorshipStake[]
     cumulativeSponsoring: string
     minimumStake: string
+    minimumStakingPeriodSeconds: string
 }
 
 export type SponsorshipStake = {
     operatorId: string
-    date: string
+    joinDate: string
     amount: string
 }

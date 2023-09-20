@@ -109,7 +109,7 @@ export const mapOperatorToElement = (operator: Operator): OperatorElement => {
             operatorId: s.operator.id,
             allocated: toBN(s.allocatedWei),
             amount: toBN(s.amount),
-            date: s.date,
+            joinDate: s.joinDate,
             sponsorship: s.sponsorship,
         })),
         delegatorCount: operator.delegatorCount,
@@ -137,5 +137,11 @@ export const mapOperatorToElement = (operator: Operator): OperatorElement => {
         operatorsCutFraction: fromAtto(
             toBN(operator.operatorsCutFraction).multipliedBy(100),
         ),
+        queueEntries: operator.queueEntries.map((entry) => ({
+            id: entry.id,
+            amount: toBN(entry.amount),
+            date: entry.date,
+            delegator: entry.delegator,
+        })),
     }
 }

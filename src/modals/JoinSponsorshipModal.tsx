@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { FunctionComponent, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import CopyIcon from '@atlaskit/icon/glyph/copy'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     CopyButtonWrapAppendix,
+    ErrorLabel,
     FieldWrap,
     FormModalProps,
     Prop,
@@ -11,6 +12,7 @@ import FormModal, {
     SectionHeadline,
     TextAppendix,
     TextInput,
+    WingedLabelWrap,
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
 import useCopy from '~/shared/hooks/useCopy'
@@ -20,6 +22,7 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS } from '~/shared/utils/styled'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
+import { useConfigFromChain } from '~/hooks/useConfigFromChain'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onSubmit: (amountWei: string) => void
@@ -27,7 +30,8 @@ interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     operatorBalance?: string
     tokenSymbol?: string
     decimals?: number
-    operatorId?: string
+    operatorId: string
+    hasUndelegationQueue: boolean
     amount?: string
     streamId?: string
 }
@@ -44,7 +48,8 @@ export default function JoinSponsorshipModal({
     onResolve,
     onSubmit,
     operatorBalance: operatorBalanceProp = '0',
-    operatorId = 'N/A',
+    operatorId,
+    hasUndelegationQueue,
     amount: amountProp = '0',
     streamId: streamIdProp,
     tokenSymbol = 'DATA',
@@ -72,11 +77,18 @@ export default function JoinSponsorshipModal({
 
     const insufficientFunds = finalAmount.isGreaterThan(operatorBalance)
 
+    const { minimumStakeWei } = useConfigFromChain()
+    const isAboveMinimumStake = minimumStakeWei
+        ? finalAmount.isGreaterThan(toBN(minimumStakeWei))
+        : true
+
     const canSubmit =
         finalAmount.isGreaterThan(0) &&
         !insufficientFunds &&
         !liveNodesCountLoading &&
-        liveNodesCount > 0
+        liveNodesCount > 0 &&
+        isAboveMinimumStake &&
+        !hasUndelegationQueue
 
     const { copy } = useCopy()
 
@@ -137,8 +149,17 @@ export default function JoinSponsorshipModal({
                         </CopyButtonWrapAppendix>
                     )}
                 </FieldWrap>
-                <Label>Amount to stake</Label>
-                <FieldWrap>
+                <StyledLabelWrap>
+                    <Label>Amount to stake</Label>
+                    {rawAmount !== '' && !isAboveMinimumStake && (
+                        <ErrorLabel>
+                            Minimum value is{' '}
+                            {fromDecimals(minimumStakeWei || 0, decimals).toString()}{' '}
+                            {tokenSymbol}
+                        </ErrorLabel>
+                    )}
+                </StyledLabelWrap>
+                <FieldWrap $invalid={rawAmount !== '' && !isAboveMinimumStake}>
                     <TextInput
                         autoFocus
                         name="amount"
@@ -171,6 +192,26 @@ export default function JoinSponsorshipModal({
                     </li>
                 </ul>
             </Section>
+            {hasUndelegationQueue ? (
+                <StyledAlert type="error" title="Warning!">
+                    Cannot stake on sponsorship while delegators are awaiting undelegation
+                </StyledAlert>
+            ) : (
+                <LiveNodesCheck
+                    liveNodesCountLoading={liveNodesCountLoading}
+                    liveNodesCount={liveNodesCount}
+                />
+            )}
+        </FormModal>
+    )
+}
+
+const LiveNodesCheck: FunctionComponent<{
+    liveNodesCountLoading: boolean
+    liveNodesCount: number
+}> = ({ liveNodesCount, liveNodesCountLoading }) => {
+    return (
+        <>
             {liveNodesCountLoading && (
                 <StyledAlert type="loading" title="Checking Streamr nodes">
                     <span>
@@ -206,7 +247,7 @@ export default function JoinSponsorshipModal({
                         </a>
                     </StyledAlert>
                 ))}
-        </FormModal>
+        </>
     )
 }
 
@@ -220,4 +261,8 @@ const StyledAlert = styled(Alert)`
 
 const LinkIcon = styled(SvgIcon)`
     width: 24px;
+`
+
+const StyledLabelWrap = styled(WingedLabelWrap)`
+    margin-top: 10px;
 `
