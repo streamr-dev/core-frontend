@@ -397,66 +397,6 @@ export async function updataProject2(project: Project) {
     await tx.wait()
 }
 
-/**
- * @deprecated Use createProject2.
- */
-export async function createProject(project: SmartContractProjectCreate) {
-    const chainId = getProjectRegistryChainId()
-
-    const {
-        id,
-        paymentDetails,
-        streams,
-        minimumSubscriptionInSeconds,
-        isPublicPurchasable,
-        metadata,
-    } = project
-
-    await networkPreflight(chainId)
-
-    const signer = await getSigner()
-
-    const tx = await getProjectRegistryContract({
-        chainId,
-        signer,
-    }).createProject(
-        id,
-        getDomainIds(paymentDetails),
-        getPaymentDetails(paymentDetails),
-        streams,
-        minimumSubscriptionInSeconds,
-        isPublicPurchasable,
-        metadata,
-    )
-
-    await tx.wait()
-}
-
-/**
- * @deprecated Use updateProject2.
- */
-export async function updateProject(project: SmartContractProject) {
-    const chainId = getProjectRegistryChainId()
-
-    const { id, paymentDetails, streams, minimumSubscriptionInSeconds, metadata } =
-        project
-
-    await networkPreflight(chainId)
-
-    const signer = await getSigner()
-
-    const tx = await getProjectRegistryContract({ chainId, signer }).updateProject(
-        id,
-        getDomainIds(paymentDetails),
-        getPaymentDetails(paymentDetails),
-        streams,
-        minimumSubscriptionInSeconds,
-        metadata,
-    )
-
-    await tx.wait()
-}
-
 export async function deleteProject(projectId: string) {
     const chainId = getProjectRegistryChainId()
 
