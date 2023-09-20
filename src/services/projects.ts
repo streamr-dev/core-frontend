@@ -327,7 +327,7 @@ async function prepare(project: Project) {
     return {
         adminFee:
             'adminFee' in payload
-                ? toBN(payload.adminFee).dividedBy(100).toString()
+                ? toBN(payload.adminFee).dividedBy(100).toNumber()
                 : void 0,
         domainIds,
         metadata,
@@ -353,9 +353,9 @@ export async function createProject(
 
     const chainId = getProjectRegistryChainId()
 
-    const productId = randomHex(32)
+    const projectId = randomHex(32)
 
-    await onAfterPrepare?.(productId, properties)
+    await onAfterPrepare?.(projectId, properties)
 
     await networkPreflight(chainId)
 
@@ -365,7 +365,7 @@ export async function createProject(
         chainId,
         provider,
     }).createProject(
-        productId,
+        projectId,
         domainIds,
         paymentDetails,
         streams,
@@ -377,23 +377,37 @@ export async function createProject(
     await tx.wait()
 }
 
-export async function updateProject(project: Project) {
-    const { id } = project
+export async function updateProject(
+    project: Project,
+    {
+        onAfterPrepare,
+    }: {
+        onAfterPrepare?: (
+            projectId: string,
+            properties: Awaited<ReturnType<typeof prepare>>,
+        ) => void | Promise<void>
+    } = {},
+) {
+    const { id: projectId } = project
 
-    if (!id) {
+    if (!projectId) {
         throw new Error('Non-existing projects cannot be updated. Create it first.')
     }
 
-    const { domainIds, paymentDetails, streams, metadata } = await prepare(project)
+    const properties = await prepare(project)
+
+    const { domainIds, paymentDetails, streams, metadata } = properties
 
     const chainId = getProjectRegistryChainId()
+
+    await onAfterPrepare?.(projectId, properties)
 
     await networkPreflight(chainId)
 
     const provider = await getSigner()
 
     const tx = await getProjectRegistryContract({ chainId, provider }).updateProject(
-        id,
+        projectId,
         domainIds,
         paymentDetails,
         streams,
@@ -432,7 +446,7 @@ export async function deleteProject(projectId: string) {
 
 export async function deployDataUnionContract(
     projectId: string,
-    adminFee: string,
+    adminFee: number,
     chainId: number,
 ) {
     await networkPreflight(chainId)

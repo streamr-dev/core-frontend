@@ -37,7 +37,7 @@ import {
     GetProjectQueryVariables,
 } from '~/generated/gql/network'
 import { ProjectMetadata } from '~/shared/consts'
-import { getDataUnionAdminFeeForSalePoint } from '~/getters/du'
+import { getDataUnion, getDataUnionAdminFeeForSalePoint } from '~/getters/du'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { SalePoint } from '~/shared/types'
 import { getDataAddress } from '~/marketplace/utils/web3'
@@ -317,6 +317,24 @@ function preselectSalePoint(project: Project) {
     salePoint.enabled = true
 }
 
+function requiresDataUnionDeployment(project: Project) {
+    return (
+        project.type === ProjectType.DataUnion &&
+        !Object.values(project.salePoints).find((salePoint) => salePoint?.enabled)
+            ?.beneficiaryAddress
+    )
+}
+
+function requiresAdminFeeUpdate(
+    hot: Project & { adminFee?: undefined | string },
+    cold: Project & { adminFee?: undefined | string },
+) {
+    return (
+        hot.type === ProjectType.DataUnion &&
+        (hot.adminFee || '0').trim() !== (cold.adminFee || '0').trim()
+    )
+}
+
 const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
     function isPersisting(draftId: string) {
         return get().drafts[draftId]?.persisting === true
@@ -478,21 +496,76 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
                 }
 
                 try {
-                    const { hot: project } = draft.project
+                    const { hot: project, cold } = draft.project
 
                     if (project.id) {
-                        return void (await toastedOperation('Update project', () =>
-                            updateProject(project),
+                        if (!requiresAdminFeeUpdate(project, cold)) {
+                            return void (await toastedOperation('Update project', () =>
+                                updateProject(project),
+                            ))
+                        }
+
+                        return void (await toastedOperations(
+                            [
+                                {
+                                    id: uniqueId('operation-'),
+                                    label: 'Update admin fee',
+                                },
+                                {
+                                    id: uniqueId('operation-'),
+                                    label: 'Create project',
+                                },
+                            ],
+                            (next) =>
+                                updateProject(project, {
+                                    async onAfterPrepare(
+                                        _,
+                                        {
+                                            domainIds: [domainId],
+                                            paymentDetails: [paymentDetail],
+                                            adminFee,
+                                        },
+                                    ) {
+                                        /**
+                                         * We update the Data Union in the post-prepare phase where
+                                         * the project has already gone through validation.
+                                         */
+                                        if (!domainId) {
+                                            throw new Error('No chain id')
+                                        }
+
+                                        if (typeof adminFee === 'undefined') {
+                                            throw new Error('No admin fee')
+                                        }
+
+                                        if (!paymentDetail) {
+                                            throw new Error('No payment details')
+                                        }
+
+                                        const { beneficiary: dataUnionId } = paymentDetail
+
+                                        if (!dataUnionId) {
+                                            /**
+                                             * Something broke above. We can update a Data Union only when
+                                             * we know its deployment address.
+                                             */
+                                            throw new Error('No Data Union id')
+                                        }
+
+                                        const dataUnion = await getDataUnion(
+                                            dataUnionId,
+                                            domainId,
+                                        )
+
+                                        await dataUnion.setAdminFee(adminFee)
+
+                                        next()
+                                    },
+                                }),
                         ))
                     }
 
-                    const shouldDeployDU =
-                        project.type === ProjectType.DataUnion &&
-                        !Object.values(project.salePoints).find(
-                            (salePoint) => salePoint?.enabled,
-                        )?.beneficiaryAddress
-
-                    if (!shouldDeployDU) {
+                    if (!requiresDataUnionDeployment(project)) {
                         return void (await toastedOperation('Create project', () =>
                             createProject(project),
                         ))
@@ -537,8 +610,8 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
 
                                     if (paymentDetail.beneficiary) {
                                         /**
-                                         * Something broke above. See `shouldDeployDU` for details. We
-                                         * only deploy a new Data Union if the `beneficiary` is empty.
+                                         * Something broke above. See `requiresDataUnionDeployment` for details.
+                                         * We only deploy a new Data Union if the `beneficiary` is empty.
                                          */
                                         throw new Error('Unexpected beneficiary')
                                     }
