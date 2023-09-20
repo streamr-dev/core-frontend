@@ -54,13 +54,13 @@ import {
     getPublishableProjectProperties,
     updateProject,
 } from '~/services/projects'
-import { toastedOperation, toastedOperations } from '~/utils/toastedOperation'
+import { toastedOperations } from '~/utils/toastedOperation'
 import { Chain } from '~/shared/types/web3-types'
 import networkPreflight from '~/utils/networkPreflight'
 import routes from '~/routes'
+import { Operation } from '../toasts/TransactionListToast'
 import { useWalletAccount } from './wallet'
 import { useHasActiveProjectSubscription } from './purchases'
-import { Operation } from '../toasts/TransactionListToast'
 
 interface ProjectDraft {
     abandoned: boolean
