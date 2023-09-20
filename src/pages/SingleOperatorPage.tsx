@@ -38,6 +38,7 @@ import Spinner from '~/shared/components/Spinner'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { NetworkChartWrap } from '../components/NetworkUtils'
 import { getOperatorStats } from '../getters/getOperatorStats'
+import { awaitGraphBlock } from '~/getters/awaitGraphBlock'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 const addNodeAddressModal = toaster(AddNodeAddressModal, Layer.Modal)
@@ -160,7 +161,7 @@ export const SingleOperatorPage = () => {
                     description?: string,
                     imageToUpload?: File,
                 ) => {
-                    await updateOperator(
+                    const blockNumber = await updateOperator(
                         currentOperator,
                         name,
                         redundancyFactor,
@@ -168,6 +169,7 @@ export const SingleOperatorPage = () => {
                         imageToUpload,
                         cut,
                     )
+                    await awaitGraphBlock(blockNumber)
                 },
             })
             await operatorQuery.refetch()
@@ -183,7 +185,11 @@ export const SingleOperatorPage = () => {
                 loading={operatorQuery.isLoading || operatorQuery.isFetching}
             />
             {!!operator && (
-                <OperatorActionBar operator={operator} handleEdit={handleOperatorEdit} />
+                <OperatorActionBar
+                    operator={operator}
+                    handleEdit={handleOperatorEdit}
+                    onDelegationChange={() => operatorQuery.refetch()}
+                />
             )}
             <LayoutColumn>
                 {operator == null ? (

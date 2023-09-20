@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 import { toaster } from 'toasterhea'
 import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
@@ -23,6 +24,8 @@ import { createOperator } from '~/services/operators'
 import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
 import { getDelegationAmountForAddress } from '~/utils/delegation'
 import { truncate } from '~/shared/utils/text'
+import { useMyOperator } from '~/hooks/useMyOperator'
+import { awaitGraphBlock } from '~/getters/awaitGraphBlock'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import routes from '~/routes'
 import { NetworkActionBar } from '../components/ActionBars/NetworkActionBar'
@@ -32,8 +35,6 @@ import {
     useDelegatedOperatorsQuery,
 } from '../hooks/useOperatorList'
 import { OperatorElement } from '../types/operator'
-import { useMyOperator } from '~/hooks/useMyOperator'
-import { Link } from 'react-router-dom'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -233,9 +234,25 @@ export const OperatorsPage = () => {
                             onClick={async () => {
                                 try {
                                     await becomeOperatorModal.pop({
-                                        onSubmit: createOperator,
+                                        onSubmit: async (
+                                            operatorCut: number,
+                                            name: string,
+                                            redundancyFactor: number,
+                                            description?: string,
+                                            imageToUpload?: File,
+                                        ) => {
+                                            const blockNumber = await createOperator(
+                                                operatorCut,
+                                                name,
+                                                redundancyFactor,
+                                                description,
+                                                imageToUpload,
+                                            )
+                                            await awaitGraphBlock(blockNumber)
+                                        },
                                     })
-                                    await operatorsQuery.refetch()
+                                    await allOperatorsQuery.refetch()
+                                    await myDelegationsQuery.refetch()
                                 } catch (e) {
                                     // Ignore for now.
                                 }

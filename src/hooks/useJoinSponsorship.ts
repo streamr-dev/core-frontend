@@ -6,6 +6,7 @@ import JoinSponsorshipModal from '~/modals/JoinSponsorshipModal'
 import { Layer } from '~/utils/Layer'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
 import { stakeOnSponsorship } from '~/services/sponsorships'
+import { awaitGraphBlock } from '~/getters/awaitGraphBlock'
 
 const joinSponsorshipModal = toaster(JoinSponsorshipModal, Layer.Modal)
 
@@ -33,11 +34,12 @@ export const useJoinSponsorship = (): {
                     tokenSymbol: tokenInfo.symbol,
                     decimals: tokenInfo.decimals,
                     onSubmit: async (amount: string) => {
-                        await stakeOnSponsorship(
+                        const blockNumber = await stakeOnSponsorship(
                             sponsorshipId,
                             amount,
                             myOperatorQuery.data?.id as string,
                         )
+                        await awaitGraphBlock(blockNumber)
                     },
                 })
             } catch (e) {

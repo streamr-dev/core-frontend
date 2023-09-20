@@ -6,7 +6,10 @@ import TransactionListToast, {
 } from '~/shared/toasts/TransactionListToast'
 import { Layer } from '~/utils/Layer'
 
-export async function toastedOperation(label: string, fn?: () => Promise<void>) {
+export async function toastedOperation(
+    label: string,
+    fn?: () => Promise<any>,
+): Promise<any> {
     let toast: Toaster<typeof TransactionListToast> | undefined = toaster(
         TransactionListToast,
         Layer.Toast,
@@ -23,11 +26,13 @@ export async function toastedOperation(label: string, fn?: () => Promise<void>) 
     try {
         notify(toast, operations)
 
-        await fn?.()
+        const result = await fn?.()
 
         operation.state = 'complete'
 
         notify(toast, operations)
+
+        return result
     } catch (e) {
         operations.forEach((op) => {
             if (op.state === 'ongoing') {

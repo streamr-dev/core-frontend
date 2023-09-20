@@ -35,7 +35,8 @@ import {
 
 export const SponsorshipActionBar: FunctionComponent<{
     sponsorship: SponsorshipElement
-}> = ({ sponsorship }) => {
+    onChange: () => void
+}> = ({ sponsorship, onChange }) => {
     const { copy } = useCopy()
 
     const fundSponsorship = useFundSponsorship()
@@ -141,16 +142,21 @@ export const SponsorshipActionBar: FunctionComponent<{
                     </div>
                     <NetworkActionBarCTAs>
                         <Button
-                            onClick={() =>
-                                fundSponsorship(sponsorship.id, sponsorship.payoutPerDay)
-                            }
+                            onClick={async () => {
+                                await fundSponsorship(
+                                    sponsorship.id,
+                                    sponsorship.payoutPerDay,
+                                )
+                                onChange()
+                            }}
                         >
                             Sponsor
                         </Button>
                         {canEditStake(sponsorship) ? (
                             <Button
-                                onClick={() => {
-                                    editStake(sponsorship)
+                                onClick={async () => {
+                                    await editStake(sponsorship)
+                                    onChange()
                                 }}
                             >
                                 Edit stake
@@ -158,8 +164,12 @@ export const SponsorshipActionBar: FunctionComponent<{
                         ) : (
                             <Button
                                 disabled={!canJoinSponsorship}
-                                onClick={() => {
-                                    joinSponsorship(sponsorship.id, sponsorship.streamId)
+                                onClick={async () => {
+                                    await joinSponsorship(
+                                        sponsorship.id,
+                                        sponsorship.streamId,
+                                    )
+                                    onChange()
                                 }}
                             >
                                 Join as operator

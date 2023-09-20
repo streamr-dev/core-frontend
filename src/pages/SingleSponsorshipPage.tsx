@@ -108,7 +108,16 @@ export const SingleSponsorshipPage = () => {
             <LoadingIndicator
                 loading={sponsorshipQuery.isLoading || sponsorshipQuery.isFetching}
             />
-            {!!sponsorship && <SponsorshipActionBar sponsorship={sponsorship} />}
+            {!!sponsorship && (
+                <SponsorshipActionBar
+                    sponsorship={sponsorship}
+                    onChange={() => {
+                        sponsorshipQuery.refetch()
+                        chartQuery.refetch()
+                        fundingEventsQuery.refetch()
+                    }}
+                />
+            )}
             <LayoutColumn>
                 {sponsorship == null ? (
                     <>

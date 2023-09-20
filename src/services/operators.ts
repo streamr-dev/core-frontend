@@ -36,7 +36,7 @@ export async function createOperator(
     redundancyFactor: number,
     description?: string,
     imageToUpload?: File,
-) {
+): Promise<number> {
     const chainId = getOperatorChainId()
 
     const chainConfig = getConfigForChain(chainId)
@@ -75,7 +75,7 @@ export async function createOperator(
 
     const policiesParams: [number, number, number] = [0, 0, 0]
 
-    await toastedOperation('Operator deployment', async () => {
+    return await toastedOperation('Operator deployment', async () => {
         const tx = await factory.deployOperator(
             operatorsCutFraction,
             poolTokenName,
@@ -83,7 +83,8 @@ export async function createOperator(
             policies,
             policiesParams,
         )
-        await tx.wait()
+        const receipt = await tx.wait()
+        return receipt.blockNumber
     })
 }
 
@@ -94,7 +95,7 @@ export const updateOperator = async (
     description?: string,
     imageToUpload?: File,
     cut?: number,
-): Promise<void> => {
+): Promise<number> => {
     let toast: Toaster<typeof TransactionListToast> | undefined = toaster(
         TransactionListToast,
         Layer.Toast,
@@ -104,6 +105,7 @@ export const updateOperator = async (
         const signer = await getSigner()
 
         const operations: Operation[] = []
+        const blockNumbers: number[] = []
 
         const updateCutOperation: Operation = {
             id: 'updateCutOperation',
@@ -159,10 +161,11 @@ export const updateOperator = async (
                 const tx = await operatorContract.updateOperatorsCutFraction(
                     parseEther(cut.toString()).div(100),
                 )
-                await tx.wait()
+                const receipt = await tx.wait()
 
                 updateCutOperation.state = 'complete'
                 notify(toast, operations)
+                blockNumbers.push(receipt.blockNumber)
             } catch (e) {
                 if (updateCutOperation.state === 'ongoing') {
                     updateCutOperation.state = 'error'
@@ -197,10 +200,11 @@ export const updateOperator = async (
                     imageIpfsCid,
                 }
                 const tx = await operatorContract.updateMetadata(JSON.stringify(metadata))
-                await tx.wait()
+                const receipt = await tx.wait()
 
                 updateMetadataOperation.state = 'complete'
                 notify(toast, operations)
+                blockNumbers.push(receipt.blockNumber)
             } catch (e) {
                 if (updateMetadataOperation.state === 'ongoing') {
                     updateMetadataOperation.state = 'error'
@@ -211,6 +215,8 @@ export const updateOperator = async (
         }
         if (!operations.length) {
             throw new Error('No operations')
+        } else {
+            return blockNumbers.pop() as number
         }
     } catch (e) {
         throw e
@@ -222,7 +228,10 @@ export const updateOperator = async (
     }
 }
 
-export async function delegateToOperator(operatorId: string, amount: BNish) {
+export async function delegateToOperator(
+    operatorId: string,
+    amount: BNish,
+): Promise<number> {
     const chainId = getOperatorChainId()
     const chainConfig = getConfigForChain(chainId)
 
@@ -232,18 +241,22 @@ export async function delegateToOperator(operatorId: string, amount: BNish) {
 
     const contract = new Contract(chainConfig.contracts.DATA, ERC677ABI, signer) as ERC677
 
-    await toastedOperation('Delegate to operator', async () => {
+    return await toastedOperation('Delegate to operator', async () => {
         const tx = await contract.transferAndCall(
             operatorId,
             toBN(amount).toString(),
             '0x',
         )
 
-        await tx.wait()
+        const receipt = await tx.wait()
+        return receipt.blockNumber
     })
 }
 
-export async function undelegateFromOperator(operatorId: string, amount: BNish) {
+export async function undelegateFromOperator(
+    operatorId: string,
+    amount: BNish,
+): Promise<number> {
     const chainId = getOperatorChainId()
 
     await networkPreflight(chainId)
@@ -252,10 +265,11 @@ export async function undelegateFromOperator(operatorId: string, amount: BNish) 
 
     const operatorContract = new Contract(operatorId, operatorABI, signer) as Operator
 
-    await toastedOperation('Undelegate from operator', async () => {
+    return await toastedOperation('Undelegate from operator', async () => {
         const tx = await operatorContract.undelegate(toBN(amount).toString())
 
-        await tx.wait()
+        const receipt = await tx.wait()
+        return receipt.blockNumber
     })
 }
 

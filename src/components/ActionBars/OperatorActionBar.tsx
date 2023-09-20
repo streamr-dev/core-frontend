@@ -30,6 +30,7 @@ import { BN, BNish } from '~/utils/bn'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import Spinner from '~/shared/components/Spinner'
+import { awaitGraphBlock } from '~/getters/awaitGraphBlock'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -51,7 +52,8 @@ const undelegateFundsModal = toaster(UndelegateFundsModal, Layer.Modal)
 export const OperatorActionBar: FunctionComponent<{
     operator: OperatorElement
     handleEdit: (operator: OperatorElement) => void
-}> = ({ operator, handleEdit }) => {
+    onDelegationChange: () => void
+}> = ({ operator, handleEdit, onDelegationChange }) => {
     const [balance, setBalance] = useState<BNish | undefined>(undefined)
     const [delegationAmount, setDelegationAmount] = useState<BN | undefined>(undefined)
     const { copy } = useCopy()
@@ -242,7 +244,12 @@ export const OperatorActionBar: FunctionComponent<{
                                         ?.dividedBy(1e18)
                                         .toString(),
                                     onSubmit: async (amount: BN) => {
-                                        await delegateToOperator(operator.id, amount)
+                                        const blockNumber = await delegateToOperator(
+                                            operator.id,
+                                            amount,
+                                        )
+                                        await awaitGraphBlock(blockNumber)
+                                        onDelegationChange()
                                     },
                                 })
                             }}
@@ -262,7 +269,12 @@ export const OperatorActionBar: FunctionComponent<{
                                         ?.dividedBy(1e18)
                                         .toString(),
                                     onSubmit: async (amount: BN) => {
-                                        await undelegateFromOperator(operator.id, amount)
+                                        const blockNumber = await undelegateFromOperator(
+                                            operator.id,
+                                            amount,
+                                        )
+                                        await awaitGraphBlock(blockNumber)
+                                        onDelegationChange()
                                     },
                                 })
                             }}
