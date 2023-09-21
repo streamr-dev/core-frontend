@@ -24,7 +24,7 @@ import TransactionListToast, {
     Operation,
 } from '~/shared/toasts/TransactionListToast'
 import { Layer } from '~/utils/Layer'
-import { awaitGraphBlock } from '~/getters/awaitGraphBlock'
+import { saveLastBlockNumber } from '~/getters/awaitGraphSync'
 
 const getOperatorChainId = () => {
     return defaultChainConfig.id
@@ -84,7 +84,7 @@ export async function createOperator(
             policiesParams,
         )
         const receipt = await tx.wait()
-        await awaitGraphBlock(receipt.blockNumber)
+        saveLastBlockNumber(receipt.blockNumber)
     })
 }
 
@@ -216,7 +216,7 @@ export const updateOperator = async (
         if (!operations.length) {
             throw new Error('No operations')
         } else {
-            await awaitGraphBlock(blockNumbers.pop() as number)
+            saveLastBlockNumber(blockNumbers.pop() as number)
         }
     } catch (e) {
         throw e
@@ -249,7 +249,7 @@ export async function delegateToOperator(
         )
 
         const receipt = await tx.wait()
-        await awaitGraphBlock(receipt.blockNumber)
+        saveLastBlockNumber(receipt.blockNumber)
     })
 }
 
@@ -269,7 +269,7 @@ export async function undelegateFromOperator(
         const tx = await operatorContract.undelegate(toBN(amount).toString())
 
         const receipt = await tx.wait()
-        await awaitGraphBlock(receipt.blockNumber)
+        saveLastBlockNumber(receipt.blockNumber)
     })
 }
 

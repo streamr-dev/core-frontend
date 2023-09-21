@@ -30,6 +30,7 @@ import { BN, BNish } from '~/utils/bn'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import Spinner from '~/shared/components/Spinner'
+import { awaitGraphSync } from '~/getters/awaitGraphSync'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -244,6 +245,7 @@ export const OperatorActionBar: FunctionComponent<{
                                         .toString(),
                                     onSubmit: async (amount: BN) => {
                                         await delegateToOperator(operator.id, amount)
+                                        await awaitGraphSync()
                                         onDelegationChange()
                                     },
                                 })
@@ -265,6 +267,7 @@ export const OperatorActionBar: FunctionComponent<{
                                         .toString(),
                                     onSubmit: async (amount: BN) => {
                                         await undelegateFromOperator(operator.id, amount)
+                                        await awaitGraphSync()
                                         onDelegationChange()
                                     },
                                 })

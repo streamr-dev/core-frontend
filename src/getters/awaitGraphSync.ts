@@ -5,8 +5,20 @@ import {
     GetMetadataQueryVariables,
 } from '~/generated/gql/network'
 
-export const awaitGraphBlock = async (blockNumber: number): Promise<void> => {
+const SESSION_STORAGE_KEY = 'StreamrHubLastBlockNumber'
+
+export const saveLastBlockNumber = (blockNumber: number): void => {
+    window.sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify({ blockNumber }))
+}
+export const awaitGraphSync = async (): Promise<void> => {
     let done = false
+    const { blockNumber } = JSON.parse(
+        window.sessionStorage.getItem(SESSION_STORAGE_KEY) || '{}',
+    )
+
+    if (!blockNumber) {
+        return
+    }
 
     async function fn() {
         while (true) {
@@ -26,6 +38,7 @@ export const awaitGraphBlock = async (blockNumber: number): Promise<void> => {
                 })
 
                 if (meta && meta.block.number >= blockNumber) {
+                    window.sessionStorage.removeItem(SESSION_STORAGE_KEY)
                     return
                 }
             } finally {
@@ -39,34 +52,14 @@ export const awaitGraphBlock = async (blockNumber: number): Promise<void> => {
     try {
         await Promise.race([
             new Promise((resolve, reject) => {
-                setTimeout(() => void reject(new Error('Timeout')), 15000)
+                setTimeout(() => {
+                    window.sessionStorage.removeItem(SESSION_STORAGE_KEY)
+                    reject(new Error('Timeout'))
+                }, 15000)
             }),
             fn(),
         ])
     } finally {
         done = true
     }
-    /*return new Promise((resolve) => {
-        const interval = setInterval(async () => {
-            const client = getGraphClient()
-            const {
-                data: { _meta: meta },
-            } = await client.query<GetMetadataQuery, GetMetadataQueryVariables>({
-                query: GetMetadataDocument,
-            })
-
-            if (!!meta && meta.block.number >= blockNumber) {
-                clearInterval(interval)
-                resolve()
-            }
-
-            await client.clearStore()
-        }, 500)
-
-        setTimeout(() => {
-            // cancel polling after 15 seconds
-            clearInterval(interval)
-            resolve()
-        }, 15000)
-    })*/
 }

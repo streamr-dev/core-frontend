@@ -26,6 +26,7 @@ import { getDelegationAmountForAddress } from '~/utils/delegation'
 import { truncate } from '~/shared/utils/text'
 import { useMyOperator } from '~/hooks/useMyOperator'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
+import { awaitGraphSync } from '~/getters/awaitGraphSync'
 import routes from '~/routes'
 import { NetworkActionBar } from '../components/ActionBars/NetworkActionBar'
 import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
@@ -235,6 +236,7 @@ export const OperatorsPage = () => {
                                     await becomeOperatorModal.pop({
                                         onSubmit: createOperator,
                                     })
+                                    await awaitGraphSync()
                                     await allOperatorsQuery.refetch()
                                     await myDelegationsQuery.refetch()
                                 } catch (e) {

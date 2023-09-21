@@ -36,6 +36,7 @@ import { useOperatorStore } from '~/shared/stores/operator'
 import { Layer } from '~/utils/Layer'
 import Spinner from '~/shared/components/Spinner'
 import SvgIcon from '~/shared/components/SvgIcon'
+import { awaitGraphSync } from '~/getters/awaitGraphSync'
 import { NetworkChartWrap } from '../components/NetworkUtils'
 import { getOperatorStats } from '../getters/getOperatorStats'
 
@@ -170,6 +171,7 @@ export const SingleOperatorPage = () => {
                     )
                 },
             })
+            await awaitGraphSync()
             await operatorQuery.refetch()
         } catch (e) {
             // Ignore for now.

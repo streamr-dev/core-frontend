@@ -10,7 +10,7 @@ import { toastedOperation } from '~/utils/toastedOperation'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
 import { TokenAndBalanceForSponsorship } from '~/getters/getTokenAndBalanceForSponsorship'
 import { defaultChainConfig } from '~/getters/getChainConfig'
-import { awaitGraphBlock } from '~/getters/awaitGraphBlock'
+import { saveLastBlockNumber } from '~/getters/awaitGraphSync'
 
 const getSponsorshipChainId = () => {
     return defaultChainConfig.id
@@ -99,8 +99,7 @@ export async function createSponsorship(
         if (!newSponsorshipAddress) {
             throw new Error('Sponsorship deployment failed')
         }
-
-        await awaitGraphBlock(sponsorshipDeployReceipt.blockNumber)
+        saveLastBlockNumber(sponsorshipDeployReceipt.blockNumber)
     })
 }
 
@@ -132,7 +131,7 @@ export async function fundSponsorship(
         )
 
         const receipt = await tx.wait()
-        await awaitGraphBlock(receipt.blockNumber)
+        saveLastBlockNumber(receipt.blockNumber)
     })
 }
 
@@ -152,7 +151,7 @@ export async function stakeOnSponsorship(
 
         const tx = await contract.stake(sponsorshipId, amountWei)
         const receipt = await tx.wait()
-        await awaitGraphBlock(receipt.blockNumber)
+        saveLastBlockNumber(receipt.blockNumber)
     })
 }
 
@@ -172,7 +171,7 @@ export async function reduceStakeOnSponsorship(
 
         const tx = await contract.reduceStakeTo(sponsorshipId, targetAmountWei)
         const receipt = await tx.wait()
-        await awaitGraphBlock(receipt.blockNumber)
+        saveLastBlockNumber(receipt.blockNumber)
     })
 }
 
@@ -191,6 +190,6 @@ export async function forceUnstakeFromSponsorship(
         // Jusso asked to put a big value in the second parameter - big enough to pay out the whole queue after unstaking
         const tx = await contract.forceUnstake(sponsorshipId, 1000000)
         const receipt = await tx.wait()
-        await awaitGraphBlock(receipt.blockNumber)
+        saveLastBlockNumber(receipt.blockNumber)
     })
 }
