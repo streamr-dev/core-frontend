@@ -79,7 +79,6 @@ export default function getClientConfig(mods: any = {}): StreamrClientConfig {
     if (Object.keys(contracts).length > 0) {
         config.contracts = contracts
     }
-    console.log({ ...config, ...mods })
     return {
         ...config,
         ...mods,
