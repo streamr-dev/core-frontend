@@ -20,7 +20,7 @@ export async function toastedOperation(label: string, fn?: () => void | Promise<
 
 export async function toastedOperations(
     operations: Operation[],
-    fn?: (next: () => void) => void | Promise<void>,
+    fn?: (next: () => void, refresh: () => void) => void | Promise<void>,
 ) {
     let toast: Toaster<typeof TransactionListToast> | undefined = toaster(
         TransactionListToast,
@@ -37,6 +37,10 @@ export async function toastedOperations(
 
     let pos = -1
 
+    function refresh() {
+        notify(toast, operations)
+    }
+
     function next() {
         if (pos >= 0) {
             operations[pos].state = 'complete'
@@ -48,13 +52,13 @@ export async function toastedOperations(
             operations[pos].state = 'ongoing'
         }
 
-        notify(toast, operations)
+        refresh()
     }
 
     try {
         next()
 
-        await fn?.(next)
+        await fn?.(next, refresh)
 
         next()
     } catch (e) {
@@ -64,7 +68,7 @@ export async function toastedOperations(
             }
         })
 
-        notify(toast, operations)
+        refresh()
 
         throw e
     } finally {
