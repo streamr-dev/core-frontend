@@ -24,7 +24,7 @@ import TransactionListToast, {
     Operation,
 } from '~/shared/toasts/TransactionListToast'
 import { Layer } from '~/utils/Layer'
-import { saveLastBlockNumber } from '~/getters/awaitGraphSync'
+import { saveLastBlockNumber } from '~/getters/waitForGraphSync'
 
 const getOperatorChainId = () => {
     return defaultChainConfig.id

@@ -18,7 +18,7 @@ import useTokenInfo from '~/hooks/useTokenInfo'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { useEditStake } from '~/hooks/useEditStake'
-import { awaitGraphSync } from '~/getters/awaitGraphSync'
+import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -148,7 +148,7 @@ export const SponsorshipActionBar: FunctionComponent<{
                                     sponsorship.id,
                                     sponsorship.payoutPerDay,
                                 )
-                                await awaitGraphSync()
+                                await waitForGraphSync()
                                 onChange()
                             }}
                         >
@@ -158,7 +158,7 @@ export const SponsorshipActionBar: FunctionComponent<{
                             <Button
                                 onClick={async () => {
                                     await editStake(sponsorship)
-                                    await awaitGraphSync()
+                                    await waitForGraphSync()
                                     onChange()
                                 }}
                             >
@@ -172,7 +172,7 @@ export const SponsorshipActionBar: FunctionComponent<{
                                         sponsorship.id,
                                         sponsorship.streamId,
                                     )
-                                    await awaitGraphSync()
+                                    await waitForGraphSync()
                                     onChange()
                                 }}
                             >

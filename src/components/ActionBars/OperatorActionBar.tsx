@@ -31,7 +31,7 @@ import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import Spinner from '~/shared/components/Spinner'
 import { useConfigFromChain } from '~/hooks/useConfigFromChain'
-import { awaitGraphSync } from '~/getters/awaitGraphSync'
+import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -253,7 +253,7 @@ export const OperatorActionBar: FunctionComponent<{
                                                     operator.id,
                                                     amount,
                                                 )
-                                                await awaitGraphSync()
+                                                await waitForGraphSync()
                                                 onDelegationChange()
                                             } catch (e) {
                                                 console.warn('Could not delegate', e)
@@ -308,9 +308,9 @@ export const OperatorActionBar: FunctionComponent<{
                                                 )
                                             } catch (e) {
                                                 console.warn('Could not undelegate', e)
-                                        await awaitGraphSync()
-                                        onDelegationChange()
-                                    }
+                                                await waitForGraphSync()
+                                                onDelegationChange()
+                                            }
                                         },
                                     })
                                 } catch (e) {

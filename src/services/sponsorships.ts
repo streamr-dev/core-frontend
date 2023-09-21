@@ -10,7 +10,7 @@ import { toastedOperation } from '~/utils/toastedOperation'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
 import { TokenAndBalanceForSponsorship } from '~/getters/getTokenAndBalanceForSponsorship'
 import { defaultChainConfig } from '~/getters/getChainConfig'
-import { saveLastBlockNumber } from '~/getters/awaitGraphSync'
+import { saveLastBlockNumber } from '~/getters/waitForGraphSync'
 
 const getSponsorshipChainId = () => {
     return defaultChainConfig.id

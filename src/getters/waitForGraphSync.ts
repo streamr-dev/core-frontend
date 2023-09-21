@@ -10,7 +10,7 @@ const SESSION_STORAGE_KEY = 'StreamrHubLastBlockNumber'
 export const saveLastBlockNumber = (blockNumber: number): void => {
     window.sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify({ blockNumber }))
 }
-export const awaitGraphSync = async (): Promise<void> => {
+export const waitForGraphSync = async (): Promise<void> => {
     let done = false
     const { blockNumber } = JSON.parse(
         window.sessionStorage.getItem(SESSION_STORAGE_KEY) || '{}',

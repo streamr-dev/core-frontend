@@ -30,7 +30,7 @@ import {
 } from '~/hooks/useSponsorshipsList'
 import { useJoinSponsorship } from '~/hooks/useJoinSponsorship'
 import { useEditStake } from '~/hooks/useEditStake'
-import { awaitGraphSync } from '~/getters/awaitGraphSync'
+import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
 import { StreamInfoCell } from '../components/NetworkUtils'
 import {
@@ -139,7 +139,7 @@ export const SponsorshipsPage = () => {
                                             await createSponsorship(formData, balanceData)
                                         },
                                     })
-                                    await awaitGraphSync()
+                                    await waitForGraphSync()
                                     await refetchQueries()
                                 } catch (e) {
                                     // Ignore for now.
@@ -231,7 +231,7 @@ export const SponsorshipsPage = () => {
                                         element.id,
                                         element.payoutPerDay,
                                     ).then(async () => {
-                                        await awaitGraphSync()
+                                        await waitForGraphSync()
                                         await refetchQueries()
                                     }),
                             },
@@ -247,14 +247,14 @@ export const SponsorshipsPage = () => {
                                 callback: (element) =>
                                     canEditStake(element)
                                         ? editStake(element).then(async () => {
-                                              await awaitGraphSync()
+                                              await waitForGraphSync()
                                               await refetchQueries()
                                           })
                                         : joinSponsorship(
                                               element.id,
                                               element.streamId,
                                           ).then(async () => {
-                                              await awaitGraphSync()
+                                              await waitForGraphSync()
                                               await refetchQueries()
                                           }),
                             },
