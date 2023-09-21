@@ -30,7 +30,6 @@ import { BN, BNish } from '~/utils/bn'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import Spinner from '~/shared/components/Spinner'
-import { awaitGraphBlock } from '~/getters/awaitGraphBlock'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -244,11 +243,7 @@ export const OperatorActionBar: FunctionComponent<{
                                         ?.dividedBy(1e18)
                                         .toString(),
                                     onSubmit: async (amount: BN) => {
-                                        const blockNumber = await delegateToOperator(
-                                            operator.id,
-                                            amount,
-                                        )
-                                        await awaitGraphBlock(blockNumber)
+                                        await delegateToOperator(operator.id, amount)
                                         onDelegationChange()
                                     },
                                 })
@@ -269,11 +264,7 @@ export const OperatorActionBar: FunctionComponent<{
                                         ?.dividedBy(1e18)
                                         .toString(),
                                     onSubmit: async (amount: BN) => {
-                                        const blockNumber = await undelegateFromOperator(
-                                            operator.id,
-                                            amount,
-                                        )
-                                        await awaitGraphBlock(blockNumber)
+                                        await undelegateFromOperator(operator.id, amount)
                                         onDelegationChange()
                                     },
                                 })

@@ -14,7 +14,6 @@ import { getConfigForChain } from '~/shared/web3/config'
 import networkPreflight from '~/utils/networkPreflight'
 import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
 import { Address } from '~/shared/types/web3-types'
-import { getERC20TokenContract } from '~/getters'
 import { BNish, toBN } from '~/utils/bn'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import { toastedOperation } from '~/utils/toastedOperation'
@@ -25,6 +24,7 @@ import TransactionListToast, {
     Operation,
 } from '~/shared/toasts/TransactionListToast'
 import { Layer } from '~/utils/Layer'
+import { awaitGraphBlock } from '~/getters/awaitGraphBlock'
 
 const getOperatorChainId = () => {
     return defaultChainConfig.id
@@ -36,7 +36,7 @@ export async function createOperator(
     redundancyFactor: number,
     description?: string,
     imageToUpload?: File,
-): Promise<number> {
+): Promise<void> {
     const chainId = getOperatorChainId()
 
     const chainConfig = getConfigForChain(chainId)
@@ -75,7 +75,7 @@ export async function createOperator(
 
     const policiesParams: [number, number, number] = [0, 0, 0]
 
-    return await toastedOperation('Operator deployment', async () => {
+    await toastedOperation('Operator deployment', async () => {
         const tx = await factory.deployOperator(
             operatorsCutFraction,
             poolTokenName,
@@ -84,7 +84,7 @@ export async function createOperator(
             policiesParams,
         )
         const receipt = await tx.wait()
-        return receipt.blockNumber
+        await awaitGraphBlock(receipt.blockNumber)
     })
 }
 
@@ -95,7 +95,7 @@ export const updateOperator = async (
     description?: string,
     imageToUpload?: File,
     cut?: number,
-): Promise<number> => {
+): Promise<void> => {
     let toast: Toaster<typeof TransactionListToast> | undefined = toaster(
         TransactionListToast,
         Layer.Toast,
@@ -216,7 +216,7 @@ export const updateOperator = async (
         if (!operations.length) {
             throw new Error('No operations')
         } else {
-            return blockNumbers.pop() as number
+            await awaitGraphBlock(blockNumbers.pop() as number)
         }
     } catch (e) {
         throw e
@@ -231,7 +231,7 @@ export const updateOperator = async (
 export async function delegateToOperator(
     operatorId: string,
     amount: BNish,
-): Promise<number> {
+): Promise<void> {
     const chainId = getOperatorChainId()
     const chainConfig = getConfigForChain(chainId)
 
@@ -241,7 +241,7 @@ export async function delegateToOperator(
 
     const contract = new Contract(chainConfig.contracts.DATA, ERC677ABI, signer) as ERC677
 
-    return await toastedOperation('Delegate to operator', async () => {
+    await toastedOperation('Delegate to operator', async () => {
         const tx = await contract.transferAndCall(
             operatorId,
             toBN(amount).toString(),
@@ -249,14 +249,14 @@ export async function delegateToOperator(
         )
 
         const receipt = await tx.wait()
-        return receipt.blockNumber
+        await awaitGraphBlock(receipt.blockNumber)
     })
 }
 
 export async function undelegateFromOperator(
     operatorId: string,
     amount: BNish,
-): Promise<number> {
+): Promise<void> {
     const chainId = getOperatorChainId()
 
     await networkPreflight(chainId)
@@ -265,11 +265,11 @@ export async function undelegateFromOperator(
 
     const operatorContract = new Contract(operatorId, operatorABI, signer) as Operator
 
-    return await toastedOperation('Undelegate from operator', async () => {
+    await toastedOperation('Undelegate from operator', async () => {
         const tx = await operatorContract.undelegate(toBN(amount).toString())
 
         const receipt = await tx.wait()
-        return receipt.blockNumber
+        await awaitGraphBlock(receipt.blockNumber)
     })
 }
 

@@ -5,8 +5,48 @@ import {
     GetMetadataQueryVariables,
 } from '~/generated/gql/network'
 
-export const awaitGraphBlock = (blockNumber: number): Promise<void> => {
-    return new Promise((resolve) => {
+export const awaitGraphBlock = async (blockNumber: number): Promise<void> => {
+    let done = false
+
+    async function fn() {
+        while (true) {
+            if (done) {
+                return
+            }
+
+            let client: ReturnType<typeof getGraphClient> | undefined
+
+            try {
+                client = getGraphClient()
+
+                const {
+                    data: { _meta: meta },
+                } = await client.query<GetMetadataQuery, GetMetadataQueryVariables>({
+                    query: GetMetadataDocument,
+                })
+
+                if (meta && meta.block.number >= blockNumber) {
+                    return
+                }
+            } finally {
+                await client?.clearStore()
+            }
+
+            await new Promise((resolve) => void setTimeout(resolve, 500))
+        }
+    }
+
+    try {
+        await Promise.race([
+            new Promise((resolve, reject) => {
+                setTimeout(() => void reject(new Error('Timeout')), 15000)
+            }),
+            fn(),
+        ])
+    } finally {
+        done = true
+    }
+    /*return new Promise((resolve) => {
         const interval = setInterval(async () => {
             const client = getGraphClient()
             const {
@@ -28,5 +68,5 @@ export const awaitGraphBlock = (blockNumber: number): Promise<void> => {
             clearInterval(interval)
             resolve()
         }, 15000)
-    })
+    })*/
 }

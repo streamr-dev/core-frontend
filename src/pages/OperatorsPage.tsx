@@ -25,7 +25,6 @@ import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
 import { getDelegationAmountForAddress } from '~/utils/delegation'
 import { truncate } from '~/shared/utils/text'
 import { useMyOperator } from '~/hooks/useMyOperator'
-import { awaitGraphBlock } from '~/getters/awaitGraphBlock'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import routes from '~/routes'
 import { NetworkActionBar } from '../components/ActionBars/NetworkActionBar'
@@ -234,22 +233,7 @@ export const OperatorsPage = () => {
                             onClick={async () => {
                                 try {
                                     await becomeOperatorModal.pop({
-                                        onSubmit: async (
-                                            operatorCut: number,
-                                            name: string,
-                                            redundancyFactor: number,
-                                            description?: string,
-                                            imageToUpload?: File,
-                                        ) => {
-                                            const blockNumber = await createOperator(
-                                                operatorCut,
-                                                name,
-                                                redundancyFactor,
-                                                description,
-                                                imageToUpload,
-                                            )
-                                            await awaitGraphBlock(blockNumber)
-                                        },
+                                        onSubmit: createOperator,
                                     })
                                     await allOperatorsQuery.refetch()
                                     await myDelegationsQuery.refetch()

@@ -9,7 +9,6 @@ import FundSponsorshipModal from '~/modals/FundSponsorshipModal'
 import { Layer } from '~/utils/Layer'
 import { errorToast } from '~/utils/toast'
 import { fundSponsorship } from '~/services/sponsorships'
-import { awaitGraphBlock } from '~/getters/awaitGraphBlock'
 
 const fundSponsorshipModal = toaster(FundSponsorshipModal, Layer.Modal)
 export const useFundSponsorship = (): ((
@@ -36,8 +35,7 @@ export const useFundSponsorship = (): ((
                     balance: tokenAndBalanceInfo.balance,
                     payoutPerDay,
                     onSubmit: async (value) => {
-                        const blockNumber = await fundSponsorship(sponsorshipId, value)
-                        await awaitGraphBlock(blockNumber)
+                        await fundSponsorship(sponsorshipId, value)
                     },
                 })
             } catch (e) {

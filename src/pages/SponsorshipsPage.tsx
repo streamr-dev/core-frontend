@@ -36,7 +36,6 @@ import {
     getTokenAndBalanceForSponsorship,
     TokenAndBalanceForSponsorship,
 } from '../getters/getTokenAndBalanceForSponsorship'
-import { awaitGraphBlock } from '~/getters/awaitGraphBlock'
 
 const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
 
@@ -131,11 +130,7 @@ export const SponsorshipsPage = () => {
                                         tokenSymbol: balanceData.tokenSymbol,
                                         tokenDecimals: balanceData.tokenDecimals,
                                         onSubmit: async (formData) => {
-                                            const blockNumber = await createSponsorship(
-                                                formData,
-                                                balanceData,
-                                            )
-                                            return await awaitGraphBlock(blockNumber)
+                                            await createSponsorship(formData, balanceData)
                                         },
                                     })
                                     await allSponsorshipsQuery.refetch()

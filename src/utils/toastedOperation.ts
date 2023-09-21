@@ -9,7 +9,7 @@ import { Layer } from '~/utils/Layer'
 export async function toastedOperation(
     label: string,
     fn?: () => Promise<any>,
-): Promise<any> {
+): Promise<void> {
     let toast: Toaster<typeof TransactionListToast> | undefined = toaster(
         TransactionListToast,
         Layer.Toast,

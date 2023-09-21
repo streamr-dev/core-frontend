@@ -16,7 +16,6 @@ import { toBN } from '~/utils/bn'
 import { getLeavePenalty } from '~/getters/getLeavePenalty'
 import { useConfirmationModal } from '~/hooks/useConfirmationModal'
 import { fromDecimals } from '~/marketplace/utils/math'
-import { awaitGraphBlock } from '~/getters/awaitGraphBlock'
 
 const editStakeModal = toaster(EditStakeModal, Layer.Modal)
 export const useEditStake = (): {
@@ -91,13 +90,12 @@ export const useEditStake = (): {
                     ) => {
                         const differenceBN = toBN(difference)
                         if (differenceBN.isGreaterThanOrEqualTo(0)) {
-                            const blockNumber = await stakeOnSponsorship(
+                            await stakeOnSponsorship(
                                 sponsorship.id,
                                 difference,
                                 myOperatorQuery.data?.id as string,
                                 'Increase stake on sponsorship',
                             )
-                            await awaitGraphBlock(blockNumber)
                         } else if (
                             forceUnstake &&
                             (await confirmationModal({
@@ -111,13 +109,12 @@ export const useEditStake = (): {
                                 cancelLabel: 'Cancel',
                             }))
                         ) {
-                            const blockNumber = await forceUnstakeFromSponsorship(
+                            await forceUnstakeFromSponsorship(
                                 sponsorship.id,
                                 myOperatorQuery.data?.id as string,
                             )
-                            await awaitGraphBlock(blockNumber)
                         } else if (!forceUnstake) {
-                            const blockNumber = await reduceStakeOnSponsorship(
+                            await reduceStakeOnSponsorship(
                                 sponsorship.id,
                                 amount,
                                 myOperatorQuery.data?.id as string,
@@ -125,7 +122,6 @@ export const useEditStake = (): {
                                     ? 'Unstake from sponsorship'
                                     : 'Reduce stake on sponsorship',
                             )
-                            await awaitGraphBlock(blockNumber)
                         }
                     },
                 })

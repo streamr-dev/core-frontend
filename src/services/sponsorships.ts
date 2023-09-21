@@ -10,6 +10,7 @@ import { toastedOperation } from '~/utils/toastedOperation'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
 import { TokenAndBalanceForSponsorship } from '~/getters/getTokenAndBalanceForSponsorship'
 import { defaultChainConfig } from '~/getters/getChainConfig'
+import { awaitGraphBlock } from '~/getters/awaitGraphBlock'
 
 const getSponsorshipChainId = () => {
     return defaultChainConfig.id
@@ -18,7 +19,7 @@ const getSponsorshipChainId = () => {
 export async function createSponsorship(
     formData: CreateSponsorshipForm,
     balanceData: TokenAndBalanceForSponsorship,
-): Promise<number> {
+): Promise<void> {
     const minOperatorCount = Number(formData.minNumberOfOperators)
     const maxOperatorCount = formData.maxNumberOfOperators
         ? String(formData.maxNumberOfOperators)
@@ -58,7 +59,7 @@ export async function createSponsorship(
         policyParams.push(maxOperatorCount)
     }
 
-    return await toastedOperation('Sponsorship deployment', async () => {
+    await toastedOperation('Sponsorship deployment', async () => {
         const data = defaultAbiCoder.encode(
             ['uint32', 'string', 'string', 'address[]', 'uint[]'],
             [
@@ -99,14 +100,14 @@ export async function createSponsorship(
             throw new Error('Sponsorship deployment failed')
         }
 
-        return sponsorshipDeployReceipt.blockNumber
+        await awaitGraphBlock(sponsorshipDeployReceipt.blockNumber)
     })
 }
 
 export async function fundSponsorship(
     sponsorshipId: string,
     amount: BNish,
-): Promise<number> {
+): Promise<void> {
     const chainId = getSponsorshipChainId()
 
     const chainConfig = getConfigForChain(chainId)
@@ -123,7 +124,7 @@ export async function fundSponsorship(
         signer,
     ) as ERC677
 
-    return await toastedOperation('Sponsorship funding', async () => {
+    await toastedOperation('Sponsorship funding', async () => {
         const tx = await contract.transferAndCall(
             sponsorshipId,
             toBN(amount).toString(),
@@ -131,7 +132,7 @@ export async function fundSponsorship(
         )
 
         const receipt = await tx.wait()
-        return receipt.blockNumber
+        await awaitGraphBlock(receipt.blockNumber)
     })
 }
 
@@ -140,18 +141,18 @@ export async function stakeOnSponsorship(
     amountWei: string,
     operatorAddress: string,
     toastLabel = 'Stake on sponsorship',
-): Promise<number> {
+): Promise<void> {
     const chainId = getSponsorshipChainId()
     await networkPreflight(chainId)
 
-    return await toastedOperation(toastLabel, async () => {
+    await toastedOperation(toastLabel, async () => {
         const signer = await getSigner()
 
         const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
 
         const tx = await contract.stake(sponsorshipId, amountWei)
         const receipt = await tx.wait()
-        return receipt.blockNumber
+        await awaitGraphBlock(receipt.blockNumber)
     })
 }
 
@@ -160,29 +161,29 @@ export async function reduceStakeOnSponsorship(
     targetAmountWei: string,
     operatorAddress: string,
     toastLabel = 'Reduce stake on sponsorship',
-): Promise<number> {
+): Promise<void> {
     const chainId = getSponsorshipChainId()
     await networkPreflight(chainId)
 
-    return await toastedOperation(toastLabel, async () => {
+    await toastedOperation(toastLabel, async () => {
         const signer = await getSigner()
 
         const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
 
         const tx = await contract.reduceStakeTo(sponsorshipId, targetAmountWei)
         const receipt = await tx.wait()
-        return receipt.blockNumber
+        await awaitGraphBlock(receipt.blockNumber)
     })
 }
 
 export async function forceUnstakeFromSponsorship(
     sponsorshipId: string,
     operatorAddress: string,
-): Promise<number> {
+): Promise<void> {
     const chainId = getSponsorshipChainId()
     await networkPreflight(chainId)
 
-    return await toastedOperation('Force unstake from sponsorship', async () => {
+    await toastedOperation('Force unstake from sponsorship', async () => {
         const signer = await getSigner()
 
         const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
@@ -190,6 +191,6 @@ export async function forceUnstakeFromSponsorship(
         // Jusso asked to put a big value in the second parameter - big enough to pay out the whole queue after unstaking
         const tx = await contract.forceUnstake(sponsorshipId, 1000000)
         const receipt = await tx.wait()
-        return receipt.blockNumber
+        await awaitGraphBlock(receipt.blockNumber)
     })
 }
