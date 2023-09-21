@@ -21,7 +21,7 @@ import { Alert } from '~/components/Alert'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onSubmit: (amountWei: string, differenceWei: string, forceUnstake?: boolean) => void
-    onResolve?: (amountWei: string, differenceWei: string) => void
+    onResolve?: (result: { amountWei: string; differenceWei: string }) => void
     operatorBalance: string
     tokenSymbol: string
     decimals: number
@@ -72,17 +72,16 @@ export default function EditStakeModal({
         !difference.isEqualTo(0) &&
         (difference.isGreaterThan(0) ? !hasUndelegationQueue : true)
 
-    const getSubmitButtonLabel = () => {
-        if (finalAmount.isEqualTo(0)) {
-            return 'Unstake'
-        }
-        if (difference.isGreaterThan(0)) {
-            return 'Increase stake'
-        }
-        if (difference.isLessThan(0)) {
-            return 'Reduce stake'
-        }
-        return 'Save'
+    let submitLabel = 'Save'
+
+    if (finalAmount.isEqualTo(0)) {
+        submitLabel = 'Unstake'
+    }
+    if (difference.isGreaterThan(0)) {
+        submitLabel = 'Increase stake'
+    }
+    if (difference.isLessThan(0) && !finalAmount.isEqualTo(0)) {
+        submitLabel = 'Reduce stake'
     }
 
     const leavePenalty = fromDecimals(leavePenaltyWei, decimals)
@@ -92,7 +91,7 @@ export default function EditStakeModal({
             {...props}
             title={title}
             canSubmit={canSubmit && !busy}
-            submitLabel={getSubmitButtonLabel()}
+            submitLabel={submitLabel}
             submitting={busy}
             onBeforeAbort={(reason) =>
                 !busy &&
@@ -114,7 +113,10 @@ export default function EditStakeModal({
                         difference.toString(),
                         finalAmount.isEqualTo(0) && leavePenalty.isGreaterThan(0),
                     )
-                    onResolve?.(finalAmount.toString(), difference.toString())
+                    onResolve?.({
+                        amountWei: finalAmount.toString(),
+                        differenceWei: difference.toString(),
+                    })
                 } catch (e) {
                     console.warn('Error while becoming an operator', e)
                     setBusy(false)

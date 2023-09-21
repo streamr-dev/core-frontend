@@ -4,7 +4,11 @@ import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { BNish } from '~/utils/bn'
 import { defaultChainConfig } from './getChainConfig'
 
-export type ConfigFromChain = { maxPenaltyPeriodSeconds: BNish; minimumStakeWei: BNish }
+export type ConfigFromChain = {
+    maxPenaltyPeriodSeconds: BNish
+    minimumStakeWei: BNish
+    minimumSelfDelegationFraction: BNish
+}
 /**
  * When we will be needing more of the fields, simply expand the return type and add them
  */
@@ -18,5 +22,6 @@ export const getConfigFromChain = async (): Promise<ConfigFromChain> => {
     return {
         maxPenaltyPeriodSeconds: await config.maxPenaltyPeriodSeconds(),
         minimumStakeWei: await config.minimumStakeWei(),
+        minimumSelfDelegationFraction: await config.minimumSelfDelegationFraction(),
     }
 }

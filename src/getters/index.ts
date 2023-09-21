@@ -434,3 +434,15 @@ export async function getOperatorByOwnerAddress(
 
     return operators?.length ? operators[0] : null
 }
+
+export async function getBase64ForFile<T extends File>(file: T): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+
+        reader.readAsDataURL(file)
+
+        reader.onload = () => void resolve(reader.result as string)
+
+        reader.onerror = reject
+    })
+}

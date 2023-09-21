@@ -1,9 +1,7 @@
 import { $ElementType, $Keys } from 'utility-types'
 import { projectStates } from '~/shared/utils/constants'
 import { ProjectType } from '~/shared/types'
-import { StreamIdList } from '~/shared/types/stream-types'
 import { NumberString } from '~/shared/types/common-types'
-import { Address } from '~/shared/types/web3-types'
 import { TimeUnit } from '~/shared/utils/timeUnit'
 import { BN } from '~/utils/bn'
 
@@ -13,11 +11,11 @@ export type ProjectState = $Keys<typeof projectStates>
 
 export type SalePoint = {
     chainId: number
-    beneficiaryAddress?: Address
+    beneficiaryAddress?: string
     pricePerSecond: BN | undefined // the value kept in this field should be multiplied by token's decimals
     timeUnit: TimeUnit | null | undefined
     price: BN | undefined
-    pricingTokenAddress: Address | undefined
+    pricingTokenAddress: string | undefined
 }
 export type TermsOfUse = {
     commercialUse: boolean
@@ -43,7 +41,7 @@ export type Project = {
     imageUrl?: string | null | undefined
     imageIpfsCid?: string | null | undefined
     newImageToUpload?: File | null | undefined
-    streams: StreamIdList
+    streams: string[]
     type: ProjectType
     termsOfUse: TermsOfUse
     contact: ContactDetails | null | undefined
@@ -60,7 +58,7 @@ export type ProjectSubscriptionId = string
 export type ProjectSubscriptionIdList = Array<ProjectSubscriptionId>
 export type ProjectSubscription = {
     id: ProjectSubscriptionId
-    address?: Address
+    address?: string
     user?: string
     endsAt: Date
     product: Project
@@ -72,17 +70,17 @@ export type SmartContractProduct = {
     id: ProjectId
     name: $ElementType<Project, 'name'>
     ownerAddress: $ElementType<Project, 'ownerAddress'>
-    beneficiaryAddress: Address
+    beneficiaryAddress: string
     pricePerSecond: NumberString
     minimumSubscriptionInSeconds: number
     state: $ElementType<Project, 'state'>
     chainId: number
-    pricingTokenAddress: Address
+    pricingTokenAddress: string
     pricingTokenDecimals: number // this isn't actually stored on the contract but we need it to piggyback information
 }
 export type WhitelistStatus = 'added' | 'removed' | 'subscribed'
 export type WhitelistedAddress = {
-    address: Address
+    address: string
     status: WhitelistStatus
     isPending: boolean
 }
@@ -106,7 +104,7 @@ export type MemberCount = {
 export type DataUnion = {
     id: string
     adminFee: number | string
-    owner: Address
+    owner: string
 }
 export type DataUnionStat = {
     id: string
@@ -119,13 +117,13 @@ export type DataUnionSecret = {
     id: DataUnionSecretId
     name: string
     secret: string
-    contractAddress: Address
+    contractAddress: string
 }
 
 export type PricingData = {
-    tokenAddress: Address | undefined
+    tokenAddress: string | undefined
     price: BN | undefined
     pricePerSecond: BN | undefined
     timeUnit: TimeUnit | undefined
-    beneficiaryAddress?: Address | undefined
+    beneficiaryAddress?: string | undefined
 }

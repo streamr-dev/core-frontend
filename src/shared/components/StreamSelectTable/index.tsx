@@ -166,6 +166,7 @@ type Props = {
     hasMoreResults?: boolean
     onSelectionChange: (selectedStreams: StreamId[]) => void
     selected: StreamId[]
+    disabled?: boolean
 }
 
 export const StreamSelectTable: FunctionComponent<Props> = ({
@@ -175,6 +176,7 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
     hasMoreResults,
     onSelectionChange,
     selected,
+    disabled = false,
 }: Props) => {
     const [selectedStreams, setSelectedStreams] = useState<Record<StreamId, boolean>>({})
     const [allSelected, setAllSelected] = useState<boolean>(false)
@@ -216,7 +218,7 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
 
     useEffect(() => {
         const selectedStreamsArray = Object.entries(selectedStreams)
-            .filter(([streamId, isSelected]) => isSelected)
+            .filter(([, isSelected]) => isSelected)
             .map(([streamId]) => streamId)
         if (
             streams.length > 0 &&
@@ -252,7 +254,11 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
                     <GridCell onlyDesktop>Publishers</GridCell>
                     <GridCell onlyDesktop>Subscribers</GridCell>
                     <GridCell flex={true}>
-                        <Checkbox value={allSelected} onChange={handleSelectAllChange} />
+                        <Checkbox
+                            value={allSelected}
+                            onChange={handleSelectAllChange}
+                            disabled={disabled}
+                        />
                     </GridCell>
                 </TableHeader>
                 <TableRows rowCount={streams.length}>
@@ -303,6 +309,7 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
                                         onChange={() => {
                                             handleSelectChange(s.id)
                                         }}
+                                        disabled={disabled}
                                     />
                                 </GridCell>
                             </TableRow>

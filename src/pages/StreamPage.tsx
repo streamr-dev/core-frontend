@@ -18,7 +18,6 @@ import {
     useInvalidateStreamAbilities,
 } from '~/shared/stores/streamAbilities'
 import {
-    DraftValidationError,
     StreamDraftContext,
     useCurrentDraft,
     useInitStreamDraft,
@@ -49,6 +48,7 @@ import { Layer } from '~/utils/Layer'
 import GetCryptoModal from '~/modals/GetCryptoModal'
 import NotFoundPage, { NotFoundPageContent } from '~/pages/NotFoundPage'
 import { GenericErrorPageContent } from '~/pages/GenericErrorPage'
+import { DraftValidationError } from '~/errors'
 import routes from '~/routes'
 import InfoSection from './AbstractStreamEditPage/InfoSection'
 import AccessControlSection from './AbstractStreamEditPage/AccessControlSection'

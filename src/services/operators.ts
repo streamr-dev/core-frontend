@@ -265,8 +265,14 @@ export async function undelegateFromOperator(
 
     const operatorContract = new Contract(operatorId, operatorABI, signer) as Operator
 
+    // If we are requesting all funds to be undelegated,
+    // send 'reallyBigNumber' instead of 'Infinity'
+    const amountBn = toBN(amount)
+    const reallyBigNumber = '110763745230805656649802800132303954225'
+    const actualAmount = amountBn.isFinite() ? amountBn : toBN(reallyBigNumber)
+
     await toastedOperation('Undelegate from operator', async () => {
-        const tx = await operatorContract.undelegate(toBN(amount).toString())
+        const tx = await operatorContract.undelegate(actualAmount.toString())
 
         const receipt = await tx.wait()
         saveLastBlockNumber(receipt.blockNumber)

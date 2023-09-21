@@ -1,11 +1,30 @@
 import { produce } from 'immer'
-import { createContext, useContext, useEffect, useMemo } from 'react'
+import React, {
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useRef,
+} from 'react'
 import { create } from 'zustand'
 import isEqual from 'lodash/isEqual'
 import uniqueId from 'lodash/uniqueId'
-import { getGraphProjectWithParsedMetadata, getProjectImageUrl } from '~/getters'
-import { TimeUnit, timeUnitSecondsMultiplierMap } from '~/shared/utils/timeUnit'
-import { getConfigForChain } from '~/shared/web3/config'
+import { toaster } from 'toasterhea'
+import { z } from 'zod'
+import { useNavigate } from 'react-router-dom'
+import { randomHex } from 'web3-utils'
+import {
+    getGraphProjectWithParsedMetadata,
+    getProjectImageUrl,
+    getProjectRegistryChainId,
+} from '~/getters'
+import {
+    TimeUnit,
+    timeUnitSecondsMultiplierMap,
+    timeUnits,
+} from '~/shared/utils/timeUnit'
+import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
 import { getTokenInfo } from '~/hooks/useTokenInfo'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { getMostRelevantTimeUnit } from '~/marketplace/utils/price'
@@ -19,9 +38,29 @@ import {
     GetProjectQueryVariables,
 } from '~/generated/gql/network'
 import { ProjectMetadata } from '~/shared/consts'
-import { getDataUnionAdminFee } from '~/getters/du'
-import { useHasActiveProjectSubscription } from './purchases'
+import { getDataUnion, getDataUnionAdminFeeForSalePoint } from '~/getters/du'
+import getCoreConfig from '~/getters/getCoreConfig'
+import { SalePoint } from '~/shared/types'
+import { getDataAddress } from '~/marketplace/utils/web3'
+import { ValidationError } from '~/errors'
+import isCodedError from '~/utils/isCodedError'
+import { RejectionReason } from '~/modals/BaseModal'
+import { Layer } from '~/utils/Layer'
+import Toast, { ToastType } from '~/shared/toasts/Toast'
+import useIsMounted from '~/shared/hooks/useIsMounted'
+import {
+    createProject,
+    deployDataUnionContract,
+    getPublishableProjectProperties,
+    updateProject,
+} from '~/services/projects'
+import { toastedOperations } from '~/utils/toastedOperation'
+import { Chain } from '~/shared/types/web3-types'
+import networkPreflight from '~/utils/networkPreflight'
+import routes from '~/routes'
+import { Operation } from '../toasts/TransactionListToast'
 import { useWalletAccount } from './wallet'
+import { useHasActiveProjectSubscription } from './purchases'
 
 interface ProjectDraft {
     abandoned: boolean
@@ -39,55 +78,105 @@ interface ProjectDraft {
 interface ProjectEditorStore {
     idMap: Record<string, string>
     drafts: Record<string, ProjectDraft | undefined>
-    init: (draftId: string, projectId: string | undefined) => void
+    init: (
+        draftId: string,
+        projectId: string | undefined,
+        projectType: string | null,
+    ) => void
     persist: (draftId: string) => Promise<void>
-    setError: (draftId: string, key: string, message: string) => void
+    setErrors: (draftId: string, update: (errors: ProjectDraft['errors']) => void) => void
     teardown: (draftId: string, options?: { onlyAbandoned?: boolean }) => void
     abandon: (draftId: string) => void
+    update: (draftId: string, upadte: (project: Project) => void) => void
 }
 
-const initialProject: Project = {
-    id: undefined,
-    name: '',
-    description: '',
-    imageUrl: undefined,
-    imageIpfsCid: undefined,
-    newImageToUpload: undefined,
-    streams: [],
-    type: ProjectType.OpenData,
-    termsOfUse: {
+export function getEmptySalePoint(chainId: number): SalePoint {
+    return {
+        beneficiaryAddress: '',
+        chainId,
+        enabled: false,
+        price: '',
+        pricePerSecond: '',
+        pricingTokenAddress: getDataAddress(chainId).toLowerCase(),
+        readOnly: false,
+        timeUnit: timeUnits.day,
+    }
+}
+
+function getEmptyTermsOfUse() {
+    return {
         termsName: '',
         termsUrl: '',
-    },
-    contact: {
+        commercialUse: false,
+        redistribution: false,
+        reselling: false,
+        storage: false,
+    }
+}
+
+function getEmptyContact() {
+    return {
         url: '',
         email: '',
         twitter: '',
         telegram: '',
         reddit: '',
         linkedIn: '',
-    },
-    creator: '',
-    salePoints: {},
+    }
 }
 
-const initialDraft: ProjectDraft = {
-    abandoned: false,
-    errors: {},
-    persisting: false,
-    project: {
-        hot: initialProject,
-        cold: initialProject,
-        graph: undefined,
-        changed: false,
-        fetching: false,
-    },
+function getEmptyProject(): Project {
+    const chains: Chain[] = getCoreConfig().marketplaceChains.map(getConfigForChainByName)
+
+    const salePoints: Record<string, SalePoint | undefined> = {}
+
+    chains.map(({ id: chainId, name: chainName }) => {
+        salePoints[chainName] = getEmptySalePoint(chainId)
+    })
+
+    return {
+        id: undefined,
+        name: '',
+        description: '',
+        imageUrl: undefined,
+        imageIpfsCid: undefined,
+        newImageToUpload: undefined,
+        streams: [],
+        type: ProjectType.OpenData,
+        termsOfUse: getEmptyTermsOfUse(),
+        contact: getEmptyContact(),
+        creator: '',
+        salePoints,
+    }
+}
+
+function getEmptyDraft(): ProjectDraft {
+    const emptyProject = getEmptyProject()
+
+    return {
+        abandoned: false,
+        errors: {},
+        persisting: false,
+        project: {
+            hot: emptyProject,
+            cold: emptyProject,
+            graph: undefined,
+            changed: false,
+            fetching: false,
+        },
+    }
 }
 
 async function getSalePointsFromPaymentDetails<
     T extends Pick<QueriedGraphProject, 'paymentDetails'>,
 >({ paymentDetails }: T): Promise<Project['salePoints']> {
-    const result: Project['salePoints'] = {}
+    const result = getEmptyProject().salePoints
+
+    Object.values(result).forEach((salePoint) => {
+        if (salePoint) {
+            salePoint.enabled = false
+        }
+    })
 
     for (let i = 0; i < paymentDetails.length; i++) {
         try {
@@ -96,7 +185,7 @@ async function getSalePointsFromPaymentDetails<
 
             const { id: chainId, name: chainName } = getConfigForChain(Number(domainId))
 
-            const { decimals } = (await getTokenInfo(pricingTokenAddress, chainId)) || {}
+            const decimals = (await getTokenInfo(pricingTokenAddress, chainId)).decimals
 
             if (!decimals) {
                 throw new Error('Invalid decimals')
@@ -113,12 +202,14 @@ async function getSalePointsFromPaymentDetails<
             }
 
             result[chainName] = {
-                chainId,
-                pricingTokenAddress: pricingTokenAddress.toLowerCase(),
-                pricePerSecond,
                 beneficiaryAddress: beneficiary.toLowerCase(),
-                timeUnit,
+                chainId,
+                enabled: true,
                 price: pricePerSecondFromDecimals.multipliedBy(multiplier).toString(),
+                pricePerSecond,
+                pricingTokenAddress: pricingTokenAddress.toLowerCase(),
+                readOnly: true,
+                timeUnit,
             }
         } catch (e) {
             console.warn('Could not convert payment details to sale point', e)
@@ -142,8 +233,8 @@ async function getTransientProject<
         creator,
         imageUrl,
         imageIpfsCid,
-        termsOfUse = initialProject.termsOfUse,
-        contactDetails: contact = initialProject.contact,
+        termsOfUse = getEmptyTermsOfUse(),
+        contactDetails: contact = getEmptyContact(),
     } = metadata
 
     const [payment = { pricePerSecond: '0' }, secondPayment] = paymentDetails
@@ -161,9 +252,12 @@ async function getTransientProject<
         imageUrl: getProjectImageUrl({ imageUrl, imageIpfsCid }),
         imageIpfsCid,
         newImageToUpload: undefined,
-        streams,
+        streams: [...streams].sort(),
         termsOfUse: {
-            ...termsOfUse,
+            commercialUse: !!termsOfUse.commercialUse,
+            redistribution: !!termsOfUse.redistribution,
+            reselling: !!termsOfUse.reselling,
+            storage: !!termsOfUse.storage,
             termsName: termsOfUse.termsName || '',
             termsUrl: termsOfUse.termsUrl || '',
         },
@@ -182,33 +276,10 @@ async function getTransientProject<
         return result
     }
 
-    const {
-        beneficiary: dataUnionId = undefined,
-        domainId = undefined,
-    }: { beneficiary?: unknown; domainId?: unknown } =
-        paymentDetails.find((pd) => pd.beneficiary.length > 0) || {}
-
-    if (
-        typeof domainId !== 'string' ||
-        !domainId ||
-        typeof dataUnionId !== 'string' ||
-        !dataUnionId
-    ) {
-        return {
-            ...result,
-            type: ProjectType.DataUnion,
-            adminFee: '0',
-            existingDUAddress: undefined,
-            dataUnionChainId: undefined,
-        }
-    }
-
     let adminFee: number | undefined
 
-    const dataUnionChainId = Number(domainId)
-
     try {
-        adminFee = await getDataUnionAdminFee(dataUnionId, dataUnionChainId)
+        adminFee = await getDataUnionAdminFeeForSalePoint(payment)
     } catch (e) {
         console.warn('Failed to load Data Union admin fee', e)
     }
@@ -216,12 +287,55 @@ async function getTransientProject<
     return {
         ...result,
         type: ProjectType.DataUnion,
-        adminFee: toBN(adminFee || 0)
-            .multipliedBy(100)
-            .toString(),
-        existingDUAddress: dataUnionId,
-        dataUnionChainId,
+        adminFee:
+            typeof adminFee === 'undefined'
+                ? ''
+                : toBN(adminFee).multipliedBy(100).toString(),
     }
+}
+
+function preselectSalePoint(project: Project) {
+    if (project.type === ProjectType.OpenData) {
+        return
+    }
+
+    const values = Object.values(project.salePoints)
+
+    if (values.some((salePoint) => salePoint?.enabled)) {
+        /**
+         * Project has at least one sale point selected already. We have to skip.
+         */
+        return
+    }
+
+    const [salePoint] = values
+
+    if (!salePoint) {
+        /**
+         * Nothing to enable, eh?
+         */
+        return
+    }
+
+    salePoint.enabled = true
+}
+
+function requiresDataUnionDeployment(project: Project) {
+    return (
+        project.type === ProjectType.DataUnion &&
+        !Object.values(project.salePoints).find((salePoint) => salePoint?.enabled)
+            ?.beneficiaryAddress
+    )
+}
+
+function requiresAdminFeeUpdate(
+    hot: Project & { adminFee?: undefined | string },
+    cold: Project & { adminFee?: undefined | string },
+) {
+    return (
+        hot.type === ProjectType.DataUnion &&
+        (hot.adminFee || '0').trim() !== (cold.adminFee || '0').trim()
+    )
 }
 
 const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
@@ -241,7 +355,7 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
                 }
 
                 state.drafts[draftId] = produce(
-                    state.drafts[draftId] || initialDraft,
+                    state.drafts[draftId] || getEmptyDraft(),
                     update,
                 )
             }),
@@ -261,17 +375,43 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
 
         drafts: {},
 
-        init(draftId, projectId) {
+        init(draftId, projectId, projectType) {
             const recycled = !!get().drafts[draftId]
 
             setDraft(
                 draftId,
                 (draft) => {
-                    draft.project.hot.id = projectId
+                    const { hot, cold } = draft.project
 
-                    draft.project.cold.id = draft.project.hot.id
+                    hot.id = projectId
+
+                    cold.id = projectId
 
                     draft.abandoned = false
+
+                    if (projectId) {
+                        return
+                    }
+
+                    let type: ProjectType | undefined
+
+                    switch (projectType) {
+                        case ProjectType.DataUnion:
+                        case ProjectType.PaidData:
+                            type = projectType
+                            break
+                        case ProjectType.OpenData:
+                        default:
+                            type = ProjectType.OpenData
+                    }
+
+                    hot.type = type
+
+                    preselectSalePoint(hot)
+
+                    cold.type = type
+
+                    preselectSalePoint(cold)
                 },
                 {
                     force: true,
@@ -352,7 +492,191 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
                     }),
                 )
 
-                // @TODO implement persisting
+                const draft = get().drafts[draftId]
+
+                if (!draft) {
+                    throw new Error(`No such draft: ${draftId}`)
+                }
+
+                try {
+                    const { hot: project, cold } = draft.project
+
+                    const operations: Operation[] = []
+
+                    if (project.id) {
+                        const projectId = project.id
+
+                        const shouldUpdateAdminFee = requiresAdminFeeUpdate(project, cold)
+
+                        const shouldUpdateMatadata = !isEqual(
+                            { ...project, adminFee: '' },
+                            { ...cold, adminFee: '' },
+                        )
+
+                        if (shouldUpdateAdminFee) {
+                            operations.push({
+                                id: uniqueId('operation-'),
+                                label: 'Update admin fee',
+                            })
+                        }
+
+                        if (shouldUpdateMatadata) {
+                            operations.push({
+                                id: uniqueId('operation-'),
+                                label: 'Update project',
+                            })
+                        }
+
+                        return void (await toastedOperations(operations, async (next) => {
+                            const {
+                                domainIds,
+                                paymentDetails,
+                                adminFee,
+                                streams,
+                                metadata,
+                            } = await getPublishableProjectProperties(project)
+
+                            if (shouldUpdateAdminFee) {
+                                const [domainId] = domainIds
+
+                                const [paymentDetail] = paymentDetails
+
+                                if (!domainId) {
+                                    throw new Error('No chain id')
+                                }
+
+                                if (typeof adminFee === 'undefined') {
+                                    throw new Error('No admin fee')
+                                }
+
+                                if (!paymentDetail) {
+                                    throw new Error('No payment details')
+                                }
+
+                                const { beneficiary: dataUnionId } = paymentDetail
+
+                                if (!dataUnionId) {
+                                    /**
+                                     * Something broke above. We can update a Data Union only when
+                                     * we know its deployment address.
+                                     */
+                                    throw new Error('No Data Union id')
+                                }
+
+                                const dataUnion = await getDataUnion(
+                                    dataUnionId,
+                                    domainId,
+                                )
+
+                                await dataUnion.setAdminFee(adminFee)
+
+                                next()
+                            }
+
+                            if (shouldUpdateMatadata) {
+                                await updateProject(projectId, {
+                                    domainIds,
+                                    metadata,
+                                    paymentDetails,
+                                    streams,
+                                })
+                            }
+                        }))
+                    }
+
+                    const shouldDeployDataUnion = requiresDataUnionDeployment(project)
+
+                    if (shouldDeployDataUnion) {
+                        operations.push({
+                            id: uniqueId('operation-'),
+                            label: 'Deploy Data Union contract',
+                        })
+                    }
+
+                    operations.push({
+                        id: uniqueId('operation-'),
+                        label: 'Create project',
+                    })
+
+                    await toastedOperations(operations, async (next) => {
+                        const projectId = randomHex(32)
+
+                        const { domainIds, paymentDetails, adminFee, streams, metadata } =
+                            await getPublishableProjectProperties(project)
+
+                        if (shouldDeployDataUnion) {
+                            const [domainId] = domainIds
+
+                            const [paymentDetail] = paymentDetails
+
+                            if (!domainId) {
+                                throw new Error('No chain id')
+                            }
+
+                            if (typeof adminFee === 'undefined') {
+                                throw new Error('No admin fee')
+                            }
+
+                            if (!paymentDetail) {
+                                throw new Error('No payment details')
+                            }
+
+                            if (paymentDetail.beneficiary) {
+                                /**
+                                 * Something broke above. See `requiresDataUnionDeployment` for details.
+                                 * We only deploy a new Data Union if the `beneficiary` is empty.
+                                 */
+                                throw new Error('Unexpected beneficiary')
+                            }
+
+                            const chainId = getProjectRegistryChainId()
+
+                            await networkPreflight(chainId)
+
+                            const dataUnionId = await deployDataUnionContract(
+                                projectId,
+                                adminFee,
+                                domainId,
+                            )
+
+                            /**
+                             * We assing the newly deployed Data Union to the project
+                             * we're currently persisting.
+                             */
+                            paymentDetail.beneficiary = dataUnionId
+
+                            next()
+                        }
+
+                        await createProject(projectId, {
+                            domainIds,
+                            isPublicPurchasable: project.type !== ProjectType.OpenData,
+                            metadata,
+                            paymentDetails,
+                            streams,
+                        })
+                    })
+                } catch (e) {
+                    if (e instanceof z.ZodError) {
+                        const errors: ProjectDraft['errors'] = {}
+
+                        e.issues.forEach(({ path, message }) => {
+                            errors[path.join('.')] = message
+                        })
+
+                        setDraft(draftId, (copy) => {
+                            copy.errors = errors
+                        })
+
+                        /**
+                         * @TODO: ValidationError seems to be a redundant abstraction we can get rid
+                         * of and use ZodError directly.
+                         */
+                        throw new ValidationError(e.issues.map(({ message }) => message))
+                    }
+
+                    throw e
+                }
             } finally {
                 setDraft(draftId, (draft) => {
                     draft.persisting = false
@@ -362,14 +686,8 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
             }
         },
 
-        setError(draftId, key, message) {
-            setDraft(draftId, (state) => {
-                if (!message) {
-                    return void delete state.errors[key]
-                }
-
-                state.errors[key] = message
-            })
+        setErrors(draftId, update) {
+            setDraft(draftId, (state) => void update(state.errors))
         },
 
         abandon(draftId) {
@@ -411,12 +729,17 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
                 }),
             )
         },
+
+        update: setProject,
     }
 })
 
 export const ProjectDraftContext = createContext<string | undefined>(undefined)
 
-export function useInitProject(projectId: string | undefined) {
+export function useInitProject(
+    projectId: string | undefined,
+    projectType: string | null,
+) {
     const recycledDraftId = useProjectEditorStore(({ idMap }) =>
         projectId ? idMap[projectId] : undefined,
     )
@@ -429,20 +752,13 @@ export function useInitProject(projectId: string | undefined) {
         projectId
 
         return recycledDraftId || uniqueId('ProjectDraft-')
-        /**
-         * We give each new project id a new draft id (unless we recycle), thus we've gotta
-         * disable react-hooks/exhaustive-deps for the next line (`projectId` may seem redundant).
-         */
     }, [projectId, recycledDraftId])
 
-    const { init, abandon } = useProjectEditorStore(({ init, abandon }) => ({
-        init,
-        abandon,
-    }))
+    const { init, abandon } = useProjectEditorStore()
 
     useEffect(() => {
-        init(draftId, projectId)
-    }, [draftId, init, abandon, projectId])
+        init(draftId, projectId, projectType)
+    }, [draftId, init, abandon, projectId, projectType])
 
     useEffect(() => () => void abandon(draftId), [draftId, abandon])
 
@@ -453,7 +769,7 @@ function useDraftId() {
     return useContext(ProjectDraftContext)
 }
 
-function useDraft() {
+export function useDraft() {
     const draftId = useDraftId()
 
     return useProjectEditorStore(({ drafts }) => (draftId ? drafts[draftId] : undefined))
@@ -462,7 +778,7 @@ function useDraft() {
 export function useProject({ hot = false } = {}) {
     const draft = useDraft()
 
-    return (hot ? draft?.project.hot : draft?.project.cold) || initialProject
+    return (hot ? draft?.project.hot : draft?.project.cold) || getEmptyProject()
 }
 
 export function useIsProjectFetching() {
@@ -480,7 +796,7 @@ export function useIsProjectBusy() {
 export function useDoesUserHaveAccess() {
     const {
         project: { cold, graph },
-    } = useDraft() || initialDraft
+    } = useDraft() || getEmptyDraft()
 
     const address = useWalletAccount()
 
@@ -502,9 +818,116 @@ export function useDoesUserHaveAccess() {
 }
 
 export function useIsCurrentProjectDraftClean() {
-    return true
+    return !useDraft()?.project.changed
 }
 
-export function useIsNewProject() {
-    return typeof useProject().id === 'undefined'
+export function useUpdateProject() {
+    const draftId = useDraftId()
+
+    const { update } = useProjectEditorStore()
+
+    return useCallback(
+        (updater: (project: Project) => void) => {
+            if (!draftId) {
+                return
+            }
+
+            return update(draftId, updater)
+        },
+        [draftId, update],
+    )
+}
+
+const persistErrorToast = toaster(Toast, Layer.Toast)
+
+export function usePersistCurrentProjectDraft() {
+    const { persist } = useProjectEditorStore()
+
+    const draftId = useDraftId()
+
+    const busy = useIsProjectBusy()
+
+    const clean = useIsCurrentProjectDraftClean()
+
+    const navigate = useNavigate()
+
+    const isMounted = useIsMounted()
+
+    const onDoneRef = useRef(() => {
+        if (!isMounted()) {
+            /**
+             * There's no way of getting to another project's edit page without unmountning
+             * the current one thus using `isMounted` is safe here.
+             */
+            return
+        }
+
+        navigate(routes.projects.index())
+    })
+
+    return useCallback(() => {
+        if (!draftId || busy || clean) {
+            return
+        }
+
+        setTimeout(async () => {
+            try {
+                await persist(draftId)
+
+                onDoneRef.current()
+            } catch (e) {
+                if (e instanceof ValidationError) {
+                    const ve: ValidationError = e
+
+                    return void setTimeout(async () => {
+                        try {
+                            await persistErrorToast.pop({
+                                type: ToastType.Warning,
+                                title: 'Failed to publish',
+                                desc: (
+                                    <ul>
+                                        {ve.messages.map((message, index) => (
+                                            <li key={index}>{message}</li>
+                                        ))}
+                                    </ul>
+                                ),
+                            })
+                        } catch (e) {
+                            // Ignore.
+                        }
+                    })
+                }
+
+                if (isCodedError(e) && e.code === 4001) {
+                    return
+                }
+
+                if (
+                    e === RejectionReason.CancelButton ||
+                    e === RejectionReason.EscapeKey
+                ) {
+                    return
+                }
+
+                console.warn('Failed to publish', e)
+            }
+        })
+    }, [draftId, persist, busy, clean])
+}
+
+export function useSetProjectErrors() {
+    const draftId = useDraftId()
+
+    const { setErrors } = useProjectEditorStore()
+
+    return useCallback(
+        (update: (errors: Record<string, string | undefined>) => void) => {
+            if (!draftId) {
+                return
+            }
+
+            return setErrors(draftId, update)
+        },
+        [draftId, setErrors],
+    )
 }

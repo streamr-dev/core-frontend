@@ -26,10 +26,11 @@ import { useWalletAccount } from '~/shared/stores/wallet'
 import { getConfigForChain } from '~/shared/web3/config'
 import { getCustomTokenBalance } from '~/marketplace/utils/web3'
 import getChainId from '~/utils/web3/getChainId'
-import { BN, BNish } from '~/utils/bn'
+import { BN, BNish, toBN } from '~/utils/bn'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import Spinner from '~/shared/components/Spinner'
+import { useConfigFromChain } from '~/hooks/useConfigFromChain'
 import { awaitGraphSync } from '~/getters/awaitGraphSync'
 import {
     NetworkActionBarBackButtonAndTitle,
@@ -69,6 +70,8 @@ export const OperatorActionBar: FunctionComponent<{
         }
         return stake.dividedBy(operator.poolValue).multipliedBy(100)
     }, [operator])
+
+    const { minimumSelfDelegationFraction } = useConfigFromChain()
 
     useEffect(() => {
         const loadBalance = async () => {
@@ -237,18 +240,29 @@ export const OperatorActionBar: FunctionComponent<{
                     <NetworkActionBarCTAs>
                         <Button
                             onClick={async () => {
-                                await delegateFundsModal.pop({
-                                    operatorId: operator.id,
-                                    balance: balance?.toString(),
-                                    delegatedTotal: delegationAmount
-                                        ?.dividedBy(1e18)
-                                        .toString(),
-                                    onSubmit: async (amount: BN) => {
-                                        await delegateToOperator(operator.id, amount)
-                                        await awaitGraphSync()
-                                        onDelegationChange()
-                                    },
-                                })
+                                try {
+                                    await delegateFundsModal.pop({
+                                        operatorId: operator.id,
+                                        balance: balance?.toString(),
+                                        delegatedTotal: delegationAmount
+                                            ?.dividedBy(1e18)
+                                            .toString(),
+                                        onSubmit: async (amount: BN) => {
+                                            try {
+                                                await delegateToOperator(
+                                                    operator.id,
+                                                    amount,
+                                                )
+                                                await awaitGraphSync()
+                                                onDelegationChange()
+                                            } catch (e) {
+                                                console.warn('Could not delegate', e)
+                                            }
+                                        },
+                                    })
+                                } catch (e) {
+                                    // Ignore for now.
+                                }
                             }}
                             disabled={walletAddress == null}
                         >
@@ -256,21 +270,52 @@ export const OperatorActionBar: FunctionComponent<{
                         </Button>
                         <Button
                             onClick={async () => {
-                                await undelegateFundsModal.pop({
-                                    operatorId: operator.id,
-                                    balance: balance?.toString(),
-                                    freeFunds: operator.freeFundsWei
-                                        .dividedBy(1e18)
-                                        .toString(),
-                                    delegatedTotal: delegationAmount
-                                        ?.dividedBy(1e18)
-                                        .toString(),
-                                    onSubmit: async (amount: BN) => {
-                                        await undelegateFromOperator(operator.id, amount)
+                                try {
+                                    await undelegateFundsModal.pop({
+                                        operatorId: operator.id,
+                                        isCurrentUserOwner:
+                                            operator.owner === walletAddress,
+                                        balance: balance?.toString(),
+                                        freeFunds: operator.freeFundsWei
+                                            .dividedBy(1e18)
+                                            .toString(),
+                                        delegatedTotal: delegationAmount
+                                            ?.dividedBy(1e18)
+                                            .toString(),
+                                        minimumSelfDelegation:
+                                            minimumSelfDelegationFraction != null
+                                                ? toBN(minimumSelfDelegationFraction)
+                                                      ?.dividedBy(1e18)
+                                                      .toString()
+                                                : '0',
+                                        onSubmit: async (amount: BN) => {
+                                            try {
+                                                let finalAmount = amount
+
+                                                // Check if we are undelegating all our funds
+                                                if (
+                                                    delegationAmount != null &&
+                                                    amount.isGreaterThanOrEqualTo(
+                                                        delegationAmount,
+                                                    )
+                                                ) {
+                                                    // Signal contract that we want to undelegate all of our funds
+                                                    finalAmount = BN(Infinity)
+                                                }
+                                                await undelegateFromOperator(
+                                                    operator.id,
+                                                    finalAmount,
+                                                )
+                                            } catch (e) {
+                                                console.warn('Could not undelegate', e)
                                         await awaitGraphSync()
                                         onDelegationChange()
-                                    },
-                                })
+                                    }
+                                        },
+                                    })
+                                } catch (e) {
+                                    // Ignore for now.
+                                }
                             }}
                             disabled={walletAddress == null}
                         >

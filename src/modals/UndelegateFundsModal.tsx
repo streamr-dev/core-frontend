@@ -13,7 +13,7 @@ import FormModal, {
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
 import { COLORS } from '~/shared/utils/styled'
-import { BN, toBN } from '~/utils/bn'
+import { BN, BNish, toBN } from '~/utils/bn'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onResolve?: (amount: string) => void
@@ -22,8 +22,10 @@ interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     tokenSymbol?: string
     delegatedTotal?: string
     operatorId?: string
+    isCurrentUserOwner?: boolean
     amount?: string
     freeFunds?: string
+    minimumSelfDelegation?: string
 }
 
 export default function UndelegateFundsModal({
@@ -32,7 +34,9 @@ export default function UndelegateFundsModal({
     tokenSymbol = 'DATA',
     delegatedTotal: delegatedTotalProp = '0',
     freeFunds: freeFundsProp = '0',
+    minimumSelfDelegation: minimumSelfDelegationProp = '0',
     operatorId = 'N/A',
+    isCurrentUserOwner = false,
     onResolve,
     onSubmit,
     amount: amountProp = '',
@@ -55,10 +59,21 @@ export default function UndelegateFundsModal({
 
     const freeFunds = toBN(freeFundsProp)
 
+    const minimumSelfDelegation = toBN(minimumSelfDelegationProp)
+
     const insufficientFunds = finalValue.isGreaterThan(balance)
 
+    const hasDelegatedTooLittle =
+        minimumSelfDelegation != null &&
+        isCurrentUserOwner &&
+        minimumSelfDelegation.isGreaterThan(0) &&
+        delegatedTotal.minus(toBN(rawAmount)).isLessThan(minimumSelfDelegation)
+
     const canSubmit =
-        finalValue.isFinite() && finalValue.isGreaterThan(0) && !insufficientFunds
+        finalValue.isFinite() &&
+        finalValue.isGreaterThan(0) &&
+        !insufficientFunds &&
+        !hasDelegatedTooLittle
 
     const [busy, setBusy] = useState(false)
 
@@ -143,16 +158,23 @@ export default function UndelegateFundsModal({
                 </ul>
             </Section>
             <Footer>
-                {toBN(rawAmount).isLessThanOrEqualTo(freeFunds) && (
-                    <Alert
-                        type="notice"
-                        title={`${rawAmount.toString()} DATA will be undelegated immediately`}
-                    />
-                )}
+                {toBN(rawAmount).isGreaterThan(0) &&
+                    toBN(rawAmount).isLessThanOrEqualTo(freeFunds) && (
+                        <Alert
+                            type="notice"
+                            title={`${rawAmount.toString()} DATA will be undelegated immediately`}
+                        />
+                    )}
                 {toBN(rawAmount).isGreaterThan(freeFunds) && (
                     <Alert type="notice" title="Undelegation will be queued">
                         Your undelegation will be queued for a maximum of 30 days, after
                         which you will be able to force undelegation.
+                    </Alert>
+                )}
+                {hasDelegatedTooLittle && (
+                    <Alert type="error" title="Self delegation too low">
+                        You must have self delegated at least{' '}
+                        {minimumSelfDelegation.toString()} DATA.
                     </Alert>
                 )}
             </Footer>
@@ -166,5 +188,7 @@ const LinkButton = styled.a`
 `
 
 const Footer = styled.div`
+    display: grid;
+    gap: 8px;
     margin-top: 8px;
 `
