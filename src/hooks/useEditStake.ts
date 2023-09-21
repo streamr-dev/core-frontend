@@ -14,8 +14,8 @@ import {
 import { SponsorshipElement, SponsorshipStake } from '~/types/sponsorship'
 import { toBN } from '~/utils/bn'
 import { getLeavePenalty } from '~/getters/getLeavePenalty'
-import { useConfirmationModal } from '~/hooks/useConfirmationModal'
 import { fromDecimals } from '~/marketplace/utils/math'
+import { confirm } from '~/getters/confirm'
 
 const editStakeModal = toaster(EditStakeModal, Layer.Modal)
 export const useEditStake = (): {
@@ -43,7 +43,6 @@ export const useEditStake = (): {
         [myOperatorQuery.data],
     )
 
-    const confirmationModal = useConfirmationModal()
     return {
         canEditStake: (sponsorship: SponsorshipElement): boolean => {
             return canJoinSponsorship && !!getCurrentStake(sponsorship)
@@ -89,6 +88,8 @@ export const useEditStake = (): {
                         forceUnstake = false,
                     ) => {
                         const differenceBN = toBN(difference)
+
+                        // increase stake
                         if (differenceBN.isGreaterThanOrEqualTo(0)) {
                             await stakeOnSponsorship(
                                 sponsorship.id,
@@ -96,9 +97,25 @@ export const useEditStake = (): {
                                 myOperatorQuery.data?.id as string,
                                 'Increase stake on sponsorship',
                             )
-                        } else if (
-                            forceUnstake &&
-                            (await confirmationModal({
+                            return
+                        }
+
+                        // reduce stake
+                        if (!forceUnstake) {
+                            await reduceStakeOnSponsorship(
+                                sponsorship.id,
+                                amount,
+                                myOperatorQuery.data?.id as string,
+                                amount === '0'
+                                    ? 'Unstake from sponsorship'
+                                    : 'Reduce stake on sponsorship',
+                            )
+                            return
+                        }
+
+                        // force unstake
+                        if (
+                            await confirm({
                                 title: 'Your stake will be slashed',
                                 description: `Your minimum staking period is still ongoing and ends on ${minLeaveDate.format(
                                     'YYYY-MM-DD HH:mm',
@@ -107,20 +124,11 @@ export const useEditStake = (): {
                                 }`,
                                 proceedLabel: 'Proceed anyway',
                                 cancelLabel: 'Cancel',
-                            }))
+                            })
                         ) {
                             await forceUnstakeFromSponsorship(
                                 sponsorship.id,
                                 myOperatorQuery.data?.id as string,
-                            )
-                        } else if (!forceUnstake) {
-                            await reduceStakeOnSponsorship(
-                                sponsorship.id,
-                                amount,
-                                myOperatorQuery.data?.id as string,
-                                amount === '0'
-                                    ? 'Unstake from sponsorship'
-                                    : 'Reduce stake on sponsorship',
                             )
                         }
                     },

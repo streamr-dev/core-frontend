@@ -4,15 +4,14 @@ import { Container } from 'toasterhea'
 import { Meta } from '@storybook/react'
 import { COLORS } from '~/shared/utils/styled'
 import { Layer } from '~/utils/Layer'
-import { useConfirmationModal } from '~/hooks/useConfirmationModal'
+import { confirm } from '~/getters/confirm'
 
 export const Default = () => {
-    const confirmationModal = useConfirmationModal()
     return (
         <div>
             <button
                 onClick={async () => {
-                    const result = await confirmationModal({
+                    const result = await confirm({
                         title: 'Are you sure?',
                         description:
                             'Proceeding forward might cause a vulcanic erruption!. It might destroy life on earth as we know it!',
