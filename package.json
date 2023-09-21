@@ -120,7 +120,7 @@
         "storybook": "^7.0.12",
         "storybook-react-router": "^1.0.8",
         "stream-browserify": "^3.0.0",
-        "streamr-client": "^0.0.1-tatum.1",
+        "streamr-client": "^0.0.1-tatum.2",
         "streamr-client-protocol": "^13.0.0",
         "streamr-client-react": "^3.0.0",
         "stringify-object": "^5.0.0",

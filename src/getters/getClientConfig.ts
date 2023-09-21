@@ -10,6 +10,34 @@ export default function getClientConfig(mods: any = {}): StreamrClientConfig {
         metrics: false,
     }
 
+    // TODO: This should be available in @streamr/config soonish
+    if (defaultChainConfig.name === 'mumbai') {
+        mods = {
+            network: {
+                controlLayer: {
+                    entryPoints: [
+                        {
+                            id: 'e1',
+                            websocket: {
+                                host: 'entrypoint-1.streamr.network',
+                                port: 40401,
+                                tls: true,
+                            },
+                        },
+                        {
+                            id: 'e2',
+                            websocket: {
+                                host: 'entrypoint-2.streamr.network',
+                                port: 40401,
+                                tls: true,
+                            },
+                        },
+                    ],
+                },
+            },
+        }
+    }
+
     const contracts: StreamrClientConfig['contracts'] = {}
     ;[
         {
@@ -51,6 +79,7 @@ export default function getClientConfig(mods: any = {}): StreamrClientConfig {
     if (Object.keys(contracts).length > 0) {
         config.contracts = contracts
     }
+    console.log({ ...config, ...mods })
     return {
         ...config,
         ...mods,
