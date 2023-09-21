@@ -444,6 +444,14 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                 return
             }
 
+            async function checkBalance() {
+                const address = await client?.getAddress()
+
+                if (address) {
+                    await requirePositiveBalance(address)
+                }
+            }
+
             try {
                 setDraft(draftId, (draft) => {
                     draft.persisting = true
@@ -516,9 +524,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                         client = await getTransactionalClient()
 
                         if (transientStreamId) {
-                            const address = await client.getAddress()
-
-                            await requirePositiveBalance(address)
+                            await checkBalance()
 
                             return client.createStream({
                                 id: transientStreamId,
@@ -531,9 +537,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                         }
 
                         if (metadataChanged) {
-                            const address = await client.getAddress()
-
-                            await requirePositiveBalance(address)
+                            await checkBalance()
 
                             return client.updateStream({
                                 ...metadata,
@@ -586,6 +590,8 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     if (shouldUpdatePermissions) {
                         client = await getTransactionalClient()
 
+                        await checkBalance()
+
                         await client.setPermissions({
                             streamId: currentStreamId,
                             assignments: permissionAssignments,
@@ -630,6 +636,8 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                         }
 
                         client = await getTransactionalClient()
+
+                        await checkBalance()
 
                         if (enabled) {
                             await client.addStreamToStorageNode(stream.id, address)
