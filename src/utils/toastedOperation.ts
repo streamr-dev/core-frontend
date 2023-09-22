@@ -58,11 +58,9 @@ export async function toastedOperations(
     try {
         next()
 
-        const result = await fn?.(next, refresh)
+        await fn?.(next, refresh)
 
         next()
-
-        return result
     } catch (e) {
         operations.forEach((op) => {
             if (op.state === 'ongoing') {

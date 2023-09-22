@@ -12,17 +12,18 @@ export const saveLastBlockNumber = (blockNumber: number): void => {
 }
 export const waitForGraphSync = async (): Promise<void> => {
     let done = false
-    const { blockNumber } = JSON.parse(
-        window.sessionStorage.getItem(SESSION_STORAGE_KEY) || '{}',
-    )
-
-    if (!blockNumber) {
-        return
-    }
 
     async function fn() {
         while (true) {
             if (done) {
+                return
+            }
+
+            const { blockNumber } = JSON.parse(
+                window.sessionStorage.getItem(SESSION_STORAGE_KEY) || '{}',
+            )
+
+            if (!blockNumber) {
                 return
             }
 
@@ -38,7 +39,6 @@ export const waitForGraphSync = async (): Promise<void> => {
                 })
 
                 if (meta && meta.block.number >= blockNumber) {
-                    window.sessionStorage.removeItem(SESSION_STORAGE_KEY)
                     return
                 }
             } finally {
@@ -53,7 +53,6 @@ export const waitForGraphSync = async (): Promise<void> => {
         await Promise.race([
             new Promise((resolve, reject) => {
                 setTimeout(() => {
-                    window.sessionStorage.removeItem(SESSION_STORAGE_KEY)
                     reject(new Error('Timeout'))
                 }, 15000)
             }),
@@ -61,5 +60,6 @@ export const waitForGraphSync = async (): Promise<void> => {
         ])
     } finally {
         done = true
+        window.sessionStorage.removeItem(SESSION_STORAGE_KEY)
     }
 }
