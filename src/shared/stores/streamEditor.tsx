@@ -9,7 +9,6 @@ import {
     StreamPermission,
 } from 'streamr-client'
 import styled from 'styled-components'
-import { Toaster, toaster } from 'toasterhea'
 import uniqueId from 'lodash/uniqueId'
 import { Link, useMatch } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
@@ -17,16 +16,13 @@ import { create } from 'zustand'
 import address0 from '~/utils/address0'
 import NoStreamIdError from '~/shared/errors/NoStreamIdError'
 import getTransactionalClient from '~/getters/getTransactionalClient'
-import { Layer } from '~/utils/Layer'
-import TransactionListToast, {
-    Operation,
-    notify,
-} from '~/shared/toasts/TransactionListToast'
+import { Operation } from '~/shared/toasts/TransactionListToast'
 import routes from '~/routes'
 import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
 import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
 import { isMessagedObject } from '~/utils'
 import { DraftValidationError } from '~/errors'
+import { toastedOperations } from '~/utils/toastedOperation'
 
 type ErrorKey = 'streamId' | keyof StreamMetadata
 
@@ -268,7 +264,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     next.loadError = null
                 })
             } catch (e: unknown) {
-                if (isMessagedObject(e) && /not_found/i.test(e.message)) {
+                if (isMessagedObject(e) && /not.found/i.test(e.message)) {
                     return void setDraft(draftId, (next) => {
                         next.loadError = new StreamNotFoundError(streamId)
                     })
@@ -397,11 +393,6 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
 
             let client: StreamrClient | undefined
 
-            let toast: Toaster<typeof TransactionListToast> | undefined = toaster(
-                TransactionListToast,
-                Layer.Toast,
-            )
-
             const updateOperation: Operation = {
                 id: uniqueId('operation-'),
                 label: streamId ? 'Update stream' : 'Create stream',
@@ -419,11 +410,15 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
 
             const operations: Operation[] = []
 
-            if (transientStreamId || metadataChanged) {
+            const shouldUpdateMetadata = !!transientStreamId || metadataChanged
+
+            if (shouldUpdateMetadata) {
                 operations.push(updateOperation)
             }
 
-            if (permissionAssignments.length) {
+            const shouldUpdatePermissions = permissionAssignments.length > 0
+
+            if (shouldUpdatePermissions) {
                 operations.push(permissionsOperation)
             }
 
@@ -439,7 +434,9 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                 storageNodeChanges.length,
             )
 
-            if (storageNodeChanges.length) {
+            const shouldUpdateStorage = storageNodeChanges.length > 0
+
+            if (shouldUpdateStorage) {
                 operations.push(storageOperation)
             }
 
@@ -447,206 +444,222 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                 return
             }
 
-            const firstOperation = operations[0]
+            async function checkBalance() {
+                const address = await client?.getAddress()
 
-            firstOperation.state = 'ongoing'
-
-            if (streamId) {
-                updateOperation.action = getOpenStreamLink(streamId)
+                if (address) {
+                    await requirePositiveBalance(address)
+                }
             }
-
-            notify(toast, operations)
 
             try {
                 setDraft(draftId, (draft) => {
                     draft.persisting = true
                 })
 
-                if (!transientStreamId && !streamId) {
-                    throw new DraftValidationError('streamId', 'is required')
-                }
-
-                if (streamId) {
-                    set((store) =>
-                        produce(store, ({ streamDraftMapping }) => {
-                            streamDraftMapping[streamId] = draftId
-                        }),
-                    )
-                }
-
-                if (transientStreamId) {
-                    client = await getTransactionalClient({ passiveNetworkCheck: true })
-
-                    try {
-                        if (await client.getStream(transientStreamId)) {
-                            throw new DraftValidationError(
-                                'streamId',
-                                'already exists, please try a different one',
-                            )
-                        }
-                    } catch (e) {
-                        if (e instanceof DraftValidationError) {
-                            throw e
-                        }
-
-                        // Ignore other errors.
+                await toastedOperations(operations, async (next, refresh) => {
+                    if (!transientStreamId && !streamId) {
+                        throw new DraftValidationError('streamId', 'is required')
                     }
-                }
 
-                stream = await (async () => {
-                    client = await getTransactionalClient()
+                    if (streamId) {
+                        /**
+                         * Assign a draft to a stream id for later re-use. Based
+                         * on this information we can recycle drafts that haven't
+                         * been abandoned.
+                         */
+                        set((store) =>
+                            produce(store, ({ streamDraftMapping }) => {
+                                streamDraftMapping[streamId] = draftId
+                            }),
+                        )
+                    }
 
-                    const address = await client.getAddress()
+                    if (shouldUpdateMetadata && streamId) {
+                        updateOperation.action = getOpenStreamLink(streamId)
 
-                    await requirePositiveBalance(address)
+                        refresh()
+                    }
 
                     if (transientStreamId) {
-                        return client.createStream({
-                            id: transientStreamId,
-                            ...metadata,
+                        client = await getTransactionalClient({
+                            passiveNetworkCheck: true,
                         })
-                    }
 
-                    if (!streamId) {
-                        throw new DraftValidationError('streamId', 'is invalid')
-                    }
-
-                    if (metadataChanged) {
-                        return client.updateStream({
-                            ...metadata,
-                            id: streamId,
-                        })
-                    }
-
-                    return client.getStream(streamId)
-                })()
-
-                const currentStreamId = stream.id
-
-                const currentMetadata = stream.getMetadata()
-
-                setDraft(draftId, (draft) => {
-                    draft.streamId = currentStreamId
-
-                    draft.transientStreamId = ''
-
-                    draft.loadedMetadata = currentMetadata
-
-                    draft.metadata = currentMetadata
-
-                    draft.metadataChanged = false
-                })
-
-                if (transientStreamId) {
-                    set((store) =>
-                        produce(store, ({ streamDraftMapping }) => {
-                            streamDraftMapping[currentStreamId] = draftId
-                        }),
-                    )
-
-                    onCreate?.(currentStreamId)
-                }
-
-                updateOperation.action = getOpenStreamLink(currentStreamId)
-
-                updateOperation.state = 'complete'
-
-                permissionsOperation.state = 'ongoing'
-
-                notify(toast, operations)
-
-                if (permissionAssignments.length) {
-                    client = await getTransactionalClient()
-
-                    await client.setPermissions({
-                        streamId: currentStreamId,
-                        assignments: permissionAssignments,
-                    })
-
-                    onPermissionsChange?.(currentStreamId, permissionAssignments)
-
-                    setDraft(draftId, (draft) => {
-                        draft.permissionAssignments = []
-
-                        for (const addr in draft.permissions) {
-                            const cache = draft.permissions[addr]
-
-                            if (
-                                !cache ||
-                                !Object.prototype.hasOwnProperty.call(
-                                    draft.permissions,
-                                    addr,
+                        try {
+                            if (await client.getStream(transientStreamId)) {
+                                throw new DraftValidationError(
+                                    'streamId',
+                                    'already exists, please try a different one',
                                 )
-                            ) {
-                                continue
+                            }
+                        } catch (e) {
+                            if (e instanceof DraftValidationError) {
+                                throw e
                             }
 
-                            cache.persistedBits = cache.bits
+                            if (
+                                !isMessagedObject(e) ||
+                                !/stream not found/i.test(e.message)
+                            ) {
+                                throw new DraftValidationError(
+                                    'streamId',
+                                    'failed to verify uniqueness',
+                                )
+                            }
+
+                            /**
+                             * At this point we know that the error thrown above tells us that
+                             * the stream with the given id hasn't been found. Good, onwards!
+                             */
                         }
-                    })
-                }
-
-                permissionsOperation.state = 'complete'
-
-                storageOperation.state = 'ongoing'
-
-                notify(toast, operations)
-
-                for (let i = 0; i < storageNodeChanges.length; i++) {
-                    const [address, enabled] = storageNodeChanges[i]
-
-                    storageOperation.label = formatStorageOperationLabel(
-                        i + 1,
-                        storageNodeChanges.length,
-                    )
-
-                    if (i !== 0) {
-                        // Already notifying above.
-                        notify(toast, operations)
                     }
 
-                    client = await getTransactionalClient()
+                    stream = await (async () => {
+                        /**
+                         * Whatever happens in here we end up fetching a stream instance. Conditions
+                         * dictate if it's a new stream or an existing stream (optionally updated).
+                         */
 
-                    if (enabled) {
-                        await client.addStreamToStorageNode(stream.id, address)
-                    } else {
-                        await client.removeStreamFromStorageNode(stream.id, address)
-                    }
+                        client = await getTransactionalClient()
+
+                        if (transientStreamId) {
+                            await checkBalance()
+
+                            return client.createStream({
+                                id: transientStreamId,
+                                ...metadata,
+                            })
+                        }
+
+                        if (!streamId) {
+                            throw new DraftValidationError('streamId', 'is invalid')
+                        }
+
+                        if (metadataChanged) {
+                            await checkBalance()
+
+                            return client.updateStream({
+                                ...metadata,
+                                id: streamId,
+                            })
+                        }
+
+                        return client.getStream(streamId)
+                    })()
+
+                    const currentStreamId = stream.id
+
+                    const currentMetadata = stream.getMetadata()
 
                     setDraft(draftId, (draft) => {
-                        const node = draft.storageNodes[address]
+                        draft.streamId = currentStreamId
 
-                        if (node) {
-                            node.enabled = enabled
+                        draft.transientStreamId = ''
 
-                            node.persistedEnabled = enabled
-                        }
+                        draft.loadedMetadata = currentMetadata
+
+                        draft.metadata = currentMetadata
+
+                        draft.metadataChanged = false
                     })
-                }
 
-                storageOperation.state = 'complete'
+                    if (transientStreamId) {
+                        /**
+                         * Again, associate the current draft with the (new) stream
+                         * id for later recycling purposes.
+                         */
+                        set((store) =>
+                            produce(store, ({ streamDraftMapping }) => {
+                                streamDraftMapping[currentStreamId] = draftId
+                            }),
+                        )
 
-                notify(toast, operations)
-            } catch (e) {
-                operations.forEach((op) => {
-                    if (op.state === 'ongoing') {
-                        op.state = 'error'
+                        onCreate?.(currentStreamId)
+                    }
+
+                    if (shouldUpdateMetadata) {
+                        updateOperation.action = getOpenStreamLink(currentStreamId)
+
+                        /**
+                         * We've either created a stream or updated one that exists. Onwards!
+                         */
+                        next()
+                    }
+
+                    if (shouldUpdatePermissions) {
+                        client = await getTransactionalClient()
+
+                        await checkBalance()
+
+                        await client.setPermissions({
+                            streamId: currentStreamId,
+                            assignments: permissionAssignments,
+                        })
+
+                        onPermissionsChange?.(currentStreamId, permissionAssignments)
+
+                        setDraft(draftId, (draft) => {
+                            draft.permissionAssignments = []
+
+                            for (const addr in draft.permissions) {
+                                const cache = draft.permissions[addr]
+
+                                if (
+                                    !cache ||
+                                    !Object.prototype.hasOwnProperty.call(
+                                        draft.permissions,
+                                        addr,
+                                    )
+                                ) {
+                                    continue
+                                }
+
+                                cache.persistedBits = cache.bits
+                            }
+                        })
+
+                        next()
+                    }
+
+                    for (let i = 0; i < storageNodeChanges.length; i++) {
+                        const [address, enabled] = storageNodeChanges[i]
+
+                        storageOperation.label = formatStorageOperationLabel(
+                            i + 1,
+                            storageNodeChanges.length,
+                        )
+
+                        if (i !== 0) {
+                            // Already notifying above.
+                            refresh()
+                        }
+
+                        client = await getTransactionalClient()
+
+                        await checkBalance()
+
+                        if (enabled) {
+                            await client.addStreamToStorageNode(stream.id, address)
+                        } else {
+                            await client.removeStreamFromStorageNode(stream.id, address)
+                        }
+
+                        setDraft(draftId, (draft) => {
+                            const node = draft.storageNodes[address]
+
+                            if (node) {
+                                node.enabled = enabled
+
+                                node.persistedEnabled = enabled
+                            }
+                        })
                     }
                 })
-
-                notify(toast, operations)
-
-                throw e
             } finally {
                 setDraft(draftId, (draft) => {
                     draft.persisting = false
                 })
-
-                setTimeout(() => {
-                    toast?.discard()
-
-                    toast = undefined
-                }, 1000)
 
                 get().teardown(draftId, { onlyAbandoned: true })
             }

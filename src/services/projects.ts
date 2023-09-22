@@ -12,7 +12,7 @@ import {
 } from '~/getters/hub'
 import { getProjectRegistryChainId } from '~/getters'
 import { Project, ProjectType, TheGraph } from '~/shared/types'
-import { isMessaged } from '~/utils'
+import { isMessagedObject } from '~/utils'
 import { errorToast } from '~/utils/toast'
 import { truncate } from '~/shared/utils/text'
 import { PublishableProjectPayload } from '~/types/projects'
@@ -428,7 +428,7 @@ export async function deleteProject(projectId: string) {
 
         await tx.wait()
     } catch (e) {
-        if (isMessaged(e) && /error_projectDoesNotExist/.test(e.message)) {
+        if (isMessagedObject(e) && /error_projectDoesNotExist/.test(e.message)) {
             errorToast({
                 title: 'No such project',
                 desc: `Project ${truncate(projectId)} does not exist.`,
