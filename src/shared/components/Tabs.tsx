@@ -45,7 +45,7 @@ function isTab<T extends keyof JSX.IntrinsicElements | JSXElementConstructor<any
     return !!child && typeof child === 'object' && 'type' in child && child.type === Tab
 }
 
-const Item = styled.button<{ $selected?: boolean; $flexBasis?: number }>`
+export const Item = styled.button<{ $selected?: boolean; $flexBasis?: number }>`
     border: 0;
     background: none;
     height: 100%;
@@ -58,6 +58,7 @@ const Item = styled.button<{ $selected?: boolean; $flexBasis?: number }>`
     flex-shrink: 0;
     font-size: inherit;
     justify-content: center;
+    line-height: 1.25em;
     text-align: center;
     min-width: 0;
 
@@ -125,7 +126,7 @@ const Inner = styled.div`
     height: 100%;
 `
 
-const Root = styled.div`
+export const Root = styled.div`
     background: #f5f5f5;
     box-sizing: border-box;
     border-radius: 8px;
