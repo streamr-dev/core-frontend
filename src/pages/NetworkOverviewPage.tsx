@@ -218,8 +218,8 @@ function MyDelegations() {
     const noData = false
 
     return (
-        <NetworkPageSegment title="My delegations">
-            <WalletPass resourceName="delegations" roundBorders>
+        <NetworkPageSegment title="My delegations" foot>
+            <WalletPass resourceName="delegations">
                 {noData ? (
                     <NoData
                         firstLine="You haven't delegated to anyone yet."
@@ -313,8 +313,8 @@ function MySponsorships() {
     const noData = false
 
     return (
-        <NetworkPageSegment title="My sponsorships">
-            <WalletPass resourceName="sponsorships" roundBorders>
+        <NetworkPageSegment title="My sponsorships" foot>
+            <WalletPass resourceName="sponsorships">
                 {noData ? (
                     <Pad>
                         <NoData

@@ -6,12 +6,14 @@ import { COLORS, MEDIUM, TABLET } from '~/shared/utils/styled'
 export default function NetworkPageSegment({
     bodyComponent: BodyComponent = Body,
     children,
+    foot = false,
     headerComponent: HeaderComponent = Header,
     rootComponent: RootComponent = Root,
     title = 'Title',
 }: {
     bodyComponent?: typeof Body
     children?: ReactNode
+    foot?: boolean
     headerComponent?: typeof Header
     rootComponent?: typeof Root
     title?: ReactNode
@@ -25,6 +27,7 @@ export default function NetworkPageSegment({
                     </Pad>
                 </HeaderComponent>
                 <BodyComponent>{children}</BodyComponent>
+                {foot ? <Foot /> : <></>}
             </ColoredBox>
         </RootComponent>
     )
@@ -48,6 +51,12 @@ const Body = styled.div`
         margin: 0;
         width: 100%;
     }
+`
+
+const Foot = styled.div`
+    border-top: 1px solid #efefef;
+    height: 32px;
+    margin-top: -1px;
 `
 
 const Header = styled.div`
