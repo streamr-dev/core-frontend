@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import Layout from '~/components/Layout'
@@ -6,13 +6,9 @@ import { NetworkHelmet } from '~/components/Helmet'
 import NetworkPageSegment, { Pad } from '~/components/NetworkPageSegment'
 import StatGrid, { StatCell } from '~/components/StatGrid'
 import {
-    useChartData,
-    useDelegationStats,
-    useDelegations,
     useIsOperator,
-    useNetworkStats,
-    useOperatorStats,
-    useSponsorships,
+    useLoadNetworkStatsEffect,
+    useNetworkStore,
 } from '~/shared/stores/network'
 import { TimeSeriesGraph } from '~/shared/components/TimeSeriesGraph'
 import {
@@ -30,8 +26,17 @@ import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { HubAvatar } from '~/shared/components/AvatarImage'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { StreamInfoCell } from '~/components/NetworkUtils'
+import { fromAtto } from '~/marketplace/utils/math'
 
-export const NetworkOverviewPage = () => {
+export function NetworkOverviewPage() {
+    const account = useWalletAccount()
+
+    const { setOwner } = useNetworkStore()
+
+    useEffect(() => {
+        setOwner(account || '')
+    }, [account, setOwner])
+
     return (
         <Layout columnize>
             <NetworkHelmet title="Network Overview" />
@@ -45,7 +50,10 @@ export const NetworkOverviewPage = () => {
 }
 
 function NetworkStats() {
-    const { totalStake, numOfSponsorships, numOfOperators } = useNetworkStats()
+    useLoadNetworkStatsEffect()
+
+    const { totalStake, numOfSponsorships, numOfOperators } =
+        useNetworkStore().networkStats.data
 
     return (
         <NetworkPageSegment title="Network stats">
@@ -61,74 +69,95 @@ function NetworkStats() {
 }
 
 function MyOperatorSummary() {
-    const { value, numOfDelegators, numOfSponsorships } = useOperatorStats()
-
-    const { operatorStakeData, operatorEarningsData } = useChartData()
-
-    const isOperator = useIsOperator()
-
-    const wallet = useWalletAccount()
+    const {
+        operatorStats: {
+            data: { value, numOfDelegators, numOfSponsorships },
+        },
+        chartData: {
+            operatorStake: { data: operatorStakeData },
+            operatorEarnings: { data: operatorEarningsData },
+        },
+        operator,
+        owner,
+    } = useNetworkStore()
 
     return (
         <NetworkPageSegment title="My operator summary">
             <WalletPass resourceName="operator summary" roundBorders>
-                {isOperator || !wallet ? (
+                {owner && typeof operator === 'undefined' ? (
+                    <Pad>Loading…</Pad>
+                ) : (
                     <>
-                        <Pad>
-                            <StatGrid>
-                                <StatCell label="Total value">{value} DATA</StatCell>
-                                <StatCell label="Delegators">{numOfDelegators}</StatCell>
-                                <StatCell label="Sponsorships">
-                                    {numOfSponsorships}
-                                </StatCell>
-                            </StatGrid>
-                        </Pad>
-                        <hr />
-                        <Pad>
-                            <NetworkChartDisplay
-                                dataSets={[
-                                    {
-                                        id: 'stake',
-                                        label: 'Total stake',
-                                        data: operatorStakeData,
-                                    },
-                                    {
-                                        id: 'earnings',
-                                        label: 'Cumulative earnings',
-                                        data: operatorEarningsData,
-                                    },
-                                ]}
-                            >
-                                {({ label, data }) => (
-                                    <Chart
-                                        tooltipValuePrefix={label}
-                                        graphData={data}
-                                        xAxisDisplayFormatter={formatShortDate}
-                                        yAxisAxisDisplayFormatter={(value) =>
-                                            truncateNumber(value, 'thousands')
-                                        }
-                                        tooltipLabelFormatter={formatLongDate}
-                                        tooltipValueFormatter={(value) =>
-                                            `${truncateNumber(value, 'thousands')} DATA`
+                        {!owner || operator ? (
+                            <>
+                                <Pad>
+                                    <StatGrid>
+                                        <StatCell label="Total value">
+                                            {fromAtto(value).toString()} DATA
+                                        </StatCell>
+                                        <StatCell label="Delegators">
+                                            {numOfDelegators}
+                                        </StatCell>
+                                        <StatCell label="Sponsorships">
+                                            {numOfSponsorships}
+                                        </StatCell>
+                                    </StatGrid>
+                                </Pad>
+                                <hr />
+                                <Pad>
+                                    <NetworkChartDisplay
+                                        dataSets={[
+                                            {
+                                                id: 'stake',
+                                                label: 'Total stake',
+                                                data: operatorStakeData,
+                                            },
+                                            {
+                                                id: 'earnings',
+                                                label: 'Cumulative earnings',
+                                                data: operatorEarningsData,
+                                            },
+                                        ]}
+                                    >
+                                        {({ label, data }) => (
+                                            <Chart
+                                                tooltipValuePrefix={label}
+                                                graphData={[...data]}
+                                                xAxisDisplayFormatter={formatShortDate}
+                                                yAxisAxisDisplayFormatter={(value) =>
+                                                    truncateNumber(value, 'thousands')
+                                                }
+                                                tooltipLabelFormatter={formatLongDate}
+                                                tooltipValueFormatter={(value) =>
+                                                    `${truncateNumber(
+                                                        value,
+                                                        'thousands',
+                                                    )} DATA`
+                                                }
+                                            />
+                                        )}
+                                    </NetworkChartDisplay>
+                                </Pad>
+                            </>
+                        ) : (
+                            <>
+                                <Pad>
+                                    <NoData
+                                        firstLine="You haven't initialized your operator."
+                                        secondLine={
+                                            <>
+                                                You can become an operator on the{' '}
+                                                <Link to={routes.network.operators()}>
+                                                    Operators
+                                                </Link>{' '}
+                                                page.
+                                            </>
                                         }
                                     />
-                                )}
-                            </NetworkChartDisplay>
-                        </Pad>
+                                </Pad>
+                            </>
+                        )}
                     </>
-                ) : (
-                    <Pad>
-                        <NoData
-                            firstLine="You haven't initialized your operator."
-                            secondLine={
-                                <>
-                                    You can become an operator on the{' '}
-                                    <Link to={routes.network.operators()}>Operators</Link>{' '}
-                                    page.
-                                </>
-                            }
-                        />
-                    </Pad>
                 )}
             </WalletPass>
         </NetworkPageSegment>
@@ -136,11 +165,23 @@ function MyOperatorSummary() {
 }
 
 function MyDelegationsSummary() {
-    const { value, numOfOperators, apy } = useDelegationStats()
-
-    const { delegationsValueData, delegationsEarningsData } = useChartData()
+    const {
+        delegationStats: {
+            data: {
+                value,
+                numOfOperators,
+                apyRange: [minApy, maxApy],
+            },
+        },
+        chartData: {
+            delegationsValue: { data: delegationsValueData },
+            delegationsEarnings: { data: delegationsEarningsData },
+        },
+    } = useNetworkStore()
 
     const noData = false
+
+    const apy = minApy === maxApy ? minApy : `${minApy}-${maxApy}`
 
     return (
         <NetworkPageSegment title="My delegations summary">
@@ -160,7 +201,9 @@ function MyDelegationsSummary() {
                     <>
                         <Pad>
                             <StatGrid>
-                                <StatCell label="Current value">{value} DATA</StatCell>
+                                <StatCell label="Current value">
+                                    {fromAtto(value).toString()} DATA
+                                </StatCell>
                                 <StatCell label="Operators">{numOfOperators}</StatCell>
                                 <StatCell label="APY">{apy}%</StatCell>
                             </StatGrid>
@@ -184,7 +227,7 @@ function MyDelegationsSummary() {
                                 {({ label, data }) => (
                                     <Chart
                                         tooltipValuePrefix={label}
-                                        graphData={data}
+                                        graphData={[...data]}
                                         xAxisDisplayFormatter={formatShortDate}
                                         yAxisAxisDisplayFormatter={(value) =>
                                             truncateNumber(value, 'thousands')
@@ -213,34 +256,23 @@ const Chart = styled(TimeSeriesGraph)`
 `
 
 function MyDelegations() {
-    const delegations = useDelegations()
-
-    const noData = false
+    const { delegations, operator, owner } = useNetworkStore()
 
     return (
         <NetworkPageSegment title="My delegations" foot>
             <WalletPass resourceName="delegations">
-                {noData ? (
-                    <NoData
-                        firstLine="You haven't delegated to anyone yet."
-                        secondLine={
-                            <>
-                                You can browse{' '}
-                                <Link to={routes.network.operators()}>operators</Link> to
-                                start delegating.
-                            </>
-                        }
-                    />
-                ) : (
+                {owner && typeof operator === 'undefined' ? (
+                    <Pad>Loading…</Pad>
+                ) : !owner || delegations.length ? (
                     <ScrollTableCore
                         elements={delegations}
                         columns={[
                             {
                                 displayName: 'Operator ID',
-                                valueMapper: (element) => (
+                                valueMapper: ({ operatorId }) => (
                                     <OperatorCell>
-                                        <HubAvatar id={element.operatorId} />{' '}
-                                        {truncate(element.operatorId)}
+                                        <HubAvatar id={operatorId} />{' '}
+                                        {truncate(operatorId)}
                                     </OperatorCell>
                                 ),
                                 align: 'start',
@@ -249,30 +281,30 @@ function MyDelegations() {
                             },
                             {
                                 displayName: 'My share',
-                                valueMapper: (element) =>
-                                    truncateNumber(element.myShare, 'thousands'),
+                                valueMapper: ({ myShare }) =>
+                                    fromAtto(myShare).toString(),
                                 align: 'start',
                                 isSticky: false,
                                 key: 'myShare',
                             },
                             {
                                 displayName: 'Total stake',
-                                valueMapper: (element) =>
-                                    truncateNumber(element.totalStake, 'thousands'),
+                                valueMapper: ({ totalStake }) =>
+                                    fromAtto(totalStake).toString(),
                                 align: 'end',
                                 isSticky: false,
                                 key: 'totalStake',
                             },
                             {
                                 displayName: "Operator's cut",
-                                valueMapper: (element) => `${element.operatorsCut}%`,
+                                valueMapper: ({ operatorsCut }) => `${operatorsCut}%`,
                                 align: 'end',
                                 isSticky: false,
                                 key: 'operatorsCut',
                             },
                             {
                                 displayName: 'APY',
-                                valueMapper: (element) => `${element.apy}%`,
+                                valueMapper: ({ apy }) => `${apy}%`,
                                 align: 'end',
                                 isSticky: false,
                                 key: 'apy',
@@ -293,6 +325,17 @@ function MyDelegations() {
                             },
                         ]}
                     />
+                ) : (
+                    <NoData
+                        firstLine="You haven't delegated to anyone yet."
+                        secondLine={
+                            <>
+                                You can browse{' '}
+                                <Link to={routes.network.operators()}>operators</Link> to
+                                start delegating.
+                            </>
+                        }
+                    />
                 )}
             </WalletPass>
         </NetworkPageSegment>
@@ -308,7 +351,7 @@ const OperatorCell = styled.div`
 `
 
 function MySponsorships() {
-    const sponsorships = useSponsorships()
+    const sponsorships = useNetworkStore().sponsorships.data
 
     const noData = false
 
