@@ -3914,6 +3914,11 @@ export type GetOperatorDailyBucketsQueryVariables = Exact<{
 
 export type GetOperatorDailyBucketsQuery = { __typename?: 'Query', operatorDailyBuckets: Array<{ __typename?: 'OperatorDailyBucket', date: any, id: string, freeFundsWei: any, delegatorCountChange: number, delegatorCountAtStart: number, lossesWei: any, operatorsCutWei: any, poolValue: any, profitsWei: any, spotAPY: any, totalDelegatedWei: any, totalUndelegatedWei: any, totalStakeInSponsorshipsWei: any }> };
 
+export type GetMetadataQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMetadataQuery = { __typename?: 'Query', _meta?: { __typename?: '_Meta_', block: { __typename?: '_Block_', hash?: any | null, number: number, timestamp?: number | null } } | null };
+
 export const SponsorshipFieldsFragmentDoc = gql`
     fragment SponsorshipFields on Sponsorship {
   id
@@ -4250,3 +4255,15 @@ export const GetOperatorDailyBucketsDocument = gql`
 }
     ${OperatorDailyBucketFieldsFragmentDoc}`;
 export type GetOperatorDailyBucketsQueryResult = Apollo.QueryResult<GetOperatorDailyBucketsQuery, GetOperatorDailyBucketsQueryVariables>;
+export const GetMetadataDocument = gql`
+    query getMetadata {
+  _meta {
+    block {
+      hash
+      number
+      timestamp
+    }
+  }
+}
+    `;
+export type GetMetadataQueryResult = Apollo.QueryResult<GetMetadataQuery, GetMetadataQueryVariables>;

@@ -10,6 +10,7 @@ import { toastedOperation } from '~/utils/toastedOperation'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
 import { TokenAndBalanceForSponsorship } from '~/getters/getTokenAndBalanceForSponsorship'
 import { defaultChainConfig } from '~/getters/getChainConfig'
+import { saveLastBlockNumber } from '~/getters/waitForGraphSync'
 
 const getSponsorshipChainId = () => {
     return defaultChainConfig.id
@@ -98,10 +99,14 @@ export async function createSponsorship(
         if (!newSponsorshipAddress) {
             throw new Error('Sponsorship deployment failed')
         }
+        saveLastBlockNumber(sponsorshipDeployReceipt.blockNumber)
     })
 }
 
-export async function fundSponsorship(sponsorshipId: string, amount: BNish) {
+export async function fundSponsorship(
+    sponsorshipId: string,
+    amount: BNish,
+): Promise<void> {
     const chainId = getSponsorshipChainId()
 
     const chainConfig = getConfigForChain(chainId)
@@ -125,7 +130,8 @@ export async function fundSponsorship(sponsorshipId: string, amount: BNish) {
             '0x',
         )
 
-        await tx.wait()
+        const receipt = await tx.wait()
+        saveLastBlockNumber(receipt.blockNumber)
     })
 }
 
@@ -144,7 +150,8 @@ export async function stakeOnSponsorship(
         const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
 
         const tx = await contract.stake(sponsorshipId, amountWei)
-        await tx.wait()
+        const receipt = await tx.wait()
+        saveLastBlockNumber(receipt.blockNumber)
     })
 }
 
@@ -163,7 +170,8 @@ export async function reduceStakeOnSponsorship(
         const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
 
         const tx = await contract.reduceStakeTo(sponsorshipId, targetAmountWei)
-        await tx.wait()
+        const receipt = await tx.wait()
+        saveLastBlockNumber(receipt.blockNumber)
     })
 }
 
@@ -181,6 +189,7 @@ export async function forceUnstakeFromSponsorship(
 
         // Jusso asked to put a big value in the second parameter - big enough to pay out the whole queue after unstaking
         const tx = await contract.forceUnstake(sponsorshipId, 1000000)
-        await tx.wait()
+        const receipt = await tx.wait()
+        saveLastBlockNumber(receipt.blockNumber)
     })
 }

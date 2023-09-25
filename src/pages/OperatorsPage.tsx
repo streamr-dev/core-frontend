@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 import { toaster } from 'toasterhea'
 import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
@@ -23,7 +24,9 @@ import { createOperator } from '~/services/operators'
 import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
 import { getDelegationAmountForAddress } from '~/utils/delegation'
 import { truncate } from '~/shared/utils/text'
+import { useMyOperator } from '~/hooks/useMyOperator'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
+import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import routes from '~/routes'
 import { NetworkActionBar } from '../components/ActionBars/NetworkActionBar'
 import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
@@ -32,8 +35,6 @@ import {
     useDelegatedOperatorsQuery,
 } from '../hooks/useOperatorList'
 import { OperatorElement } from '../types/operator'
-import { useMyOperator } from '~/hooks/useMyOperator'
-import { Link } from 'react-router-dom'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -235,7 +236,9 @@ export const OperatorsPage = () => {
                                     await becomeOperatorModal.pop({
                                         onSubmit: createOperator,
                                     })
-                                    await operatorsQuery.refetch()
+                                    await waitForGraphSync()
+                                    await allOperatorsQuery.refetch()
+                                    await myDelegationsQuery.refetch()
                                 } catch (e) {
                                     // Ignore for now.
                                 }

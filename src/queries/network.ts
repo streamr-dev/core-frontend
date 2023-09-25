@@ -321,3 +321,15 @@ gql`
         }
     }
 `
+
+gql`
+    query getMetadata {
+        _meta {
+            block {
+                hash
+                number
+                timestamp
+            }
+        }
+    }
+`

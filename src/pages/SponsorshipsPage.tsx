@@ -30,6 +30,7 @@ import {
 } from '~/hooks/useSponsorshipsList'
 import { useJoinSponsorship } from '~/hooks/useJoinSponsorship'
 import { useEditStake } from '~/hooks/useEditStake'
+import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
 import { StreamInfoCell } from '../components/NetworkUtils'
 import {
@@ -102,6 +103,11 @@ export const SponsorshipsPage = () => {
         }
     }, [wallet, isMounted])
 
+    const refetchQueries = async () => {
+        await allSponsorshipsQuery.refetch()
+        await mySponsorshipsQuery.refetch()
+    }
+
     return (
         <Layout>
             <NetworkHelmet title="Sponsorships" />
@@ -129,13 +135,12 @@ export const SponsorshipsPage = () => {
                                         balance: balanceData.balance,
                                         tokenSymbol: balanceData.tokenSymbol,
                                         tokenDecimals: balanceData.tokenDecimals,
-                                        onSubmit: async (formData) =>
-                                            await createSponsorship(
-                                                formData,
-                                                balanceData,
-                                            ),
+                                        onSubmit: async (formData) => {
+                                            await createSponsorship(formData, balanceData)
+                                        },
                                     })
-                                    await sponsorshipsQuery.refetch()
+                                    await waitForGraphSync()
+                                    await refetchQueries()
                                 } catch (e) {
                                     // Ignore for now.
                                 }
@@ -222,7 +227,13 @@ export const SponsorshipsPage = () => {
                                 displayName: 'Sponsor',
                                 disabled: !walletConnected,
                                 callback: (element) =>
-                                    fundSponsorship(element.id, element.payoutPerDay),
+                                    fundSponsorship(
+                                        element.id,
+                                        element.payoutPerDay,
+                                    ).then(async () => {
+                                        await waitForGraphSync()
+                                        await refetchQueries()
+                                    }),
                             },
                             {
                                 displayName: (element) =>
@@ -235,8 +246,17 @@ export const SponsorshipsPage = () => {
                                         : !walletConnected || !canJoinSponsorship,
                                 callback: (element) =>
                                     canEditStake(element)
-                                        ? editStake(element)
-                                        : joinSponsorship(element.id, element.streamId),
+                                        ? editStake(element).then(async () => {
+                                              await waitForGraphSync()
+                                              await refetchQueries()
+                                          })
+                                        : joinSponsorship(
+                                              element.id,
+                                              element.streamId,
+                                          ).then(async () => {
+                                              await waitForGraphSync()
+                                              await refetchQueries()
+                                          }),
                             },
                         ]}
                         noDataFirstLine={

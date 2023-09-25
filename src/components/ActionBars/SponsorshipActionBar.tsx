@@ -18,6 +18,7 @@ import useTokenInfo from '~/hooks/useTokenInfo'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { useEditStake } from '~/hooks/useEditStake'
+import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -35,7 +36,8 @@ import {
 
 export const SponsorshipActionBar: FunctionComponent<{
     sponsorship: SponsorshipElement
-}> = ({ sponsorship }) => {
+    onChange: () => void
+}> = ({ sponsorship, onChange }) => {
     const { copy } = useCopy()
 
     const fundSponsorship = useFundSponsorship()
@@ -141,16 +143,23 @@ export const SponsorshipActionBar: FunctionComponent<{
                     </div>
                     <NetworkActionBarCTAs>
                         <Button
-                            onClick={() =>
-                                fundSponsorship(sponsorship.id, sponsorship.payoutPerDay)
-                            }
+                            onClick={async () => {
+                                await fundSponsorship(
+                                    sponsorship.id,
+                                    sponsorship.payoutPerDay,
+                                )
+                                await waitForGraphSync()
+                                onChange()
+                            }}
                         >
                             Sponsor
                         </Button>
                         {canEditStake(sponsorship) ? (
                             <Button
-                                onClick={() => {
-                                    editStake(sponsorship)
+                                onClick={async () => {
+                                    await editStake(sponsorship)
+                                    await waitForGraphSync()
+                                    onChange()
                                 }}
                             >
                                 Edit stake
@@ -158,8 +167,13 @@ export const SponsorshipActionBar: FunctionComponent<{
                         ) : (
                             <Button
                                 disabled={!canJoinSponsorship}
-                                onClick={() => {
-                                    joinSponsorship(sponsorship.id, sponsorship.streamId)
+                                onClick={async () => {
+                                    await joinSponsorship(
+                                        sponsorship.id,
+                                        sponsorship.streamId,
+                                    )
+                                    await waitForGraphSync()
+                                    onChange()
                                 }}
                             >
                                 Join as operator

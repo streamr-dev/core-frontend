@@ -24,6 +24,7 @@ import TransactionListToast, {
     Operation,
 } from '~/shared/toasts/TransactionListToast'
 import { Layer } from '~/utils/Layer'
+import { saveLastBlockNumber } from '~/getters/waitForGraphSync'
 
 const getOperatorChainId = () => {
     return defaultChainConfig.id
@@ -35,7 +36,7 @@ export async function createOperator(
     redundancyFactor: number,
     description?: string,
     imageToUpload?: File,
-) {
+): Promise<void> {
     const chainId = getOperatorChainId()
 
     const chainConfig = getConfigForChain(chainId)
@@ -82,7 +83,8 @@ export async function createOperator(
             policies,
             policiesParams,
         )
-        await tx.wait()
+        const receipt = await tx.wait()
+        saveLastBlockNumber(receipt.blockNumber)
     })
 }
 
@@ -103,6 +105,7 @@ export const updateOperator = async (
         const signer = await getSigner()
 
         const operations: Operation[] = []
+        const blockNumbers: number[] = []
 
         const updateCutOperation: Operation = {
             id: 'updateCutOperation',
@@ -158,10 +161,11 @@ export const updateOperator = async (
                 const tx = await operatorContract.updateOperatorsCutFraction(
                     parseEther(cut.toString()).div(100),
                 )
-                await tx.wait()
+                const receipt = await tx.wait()
 
                 updateCutOperation.state = 'complete'
                 notify(toast, operations)
+                blockNumbers.push(receipt.blockNumber)
             } catch (e) {
                 if (updateCutOperation.state === 'ongoing') {
                     updateCutOperation.state = 'error'
@@ -196,10 +200,11 @@ export const updateOperator = async (
                     imageIpfsCid,
                 }
                 const tx = await operatorContract.updateMetadata(JSON.stringify(metadata))
-                await tx.wait()
+                const receipt = await tx.wait()
 
                 updateMetadataOperation.state = 'complete'
                 notify(toast, operations)
+                blockNumbers.push(receipt.blockNumber)
             } catch (e) {
                 if (updateMetadataOperation.state === 'ongoing') {
                     updateMetadataOperation.state = 'error'
@@ -210,6 +215,8 @@ export const updateOperator = async (
         }
         if (!operations.length) {
             throw new Error('No operations')
+        } else {
+            saveLastBlockNumber(blockNumbers.pop() as number)
         }
     } catch (e) {
         throw e
@@ -221,7 +228,10 @@ export const updateOperator = async (
     }
 }
 
-export async function delegateToOperator(operatorId: string, amount: BNish) {
+export async function delegateToOperator(
+    operatorId: string,
+    amount: BNish,
+): Promise<void> {
     const chainId = getOperatorChainId()
     const chainConfig = getConfigForChain(chainId)
 
@@ -238,11 +248,15 @@ export async function delegateToOperator(operatorId: string, amount: BNish) {
             '0x',
         )
 
-        await tx.wait()
+        const receipt = await tx.wait()
+        saveLastBlockNumber(receipt.blockNumber)
     })
 }
 
-export async function undelegateFromOperator(operatorId: string, amount: BNish) {
+export async function undelegateFromOperator(
+    operatorId: string,
+    amount: BNish,
+): Promise<void> {
     const chainId = getOperatorChainId()
 
     await networkPreflight(chainId)
@@ -260,7 +274,8 @@ export async function undelegateFromOperator(operatorId: string, amount: BNish) 
     await toastedOperation('Undelegate from operator', async () => {
         const tx = await operatorContract.undelegate(actualAmount.toString())
 
-        await tx.wait()
+        const receipt = await tx.wait()
+        saveLastBlockNumber(receipt.blockNumber)
     })
 }
 

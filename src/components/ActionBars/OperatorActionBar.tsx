@@ -31,6 +31,7 @@ import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import Spinner from '~/shared/components/Spinner'
 import { useConfigFromChain } from '~/hooks/useConfigFromChain'
+import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -52,7 +53,8 @@ const undelegateFundsModal = toaster(UndelegateFundsModal, Layer.Modal)
 export const OperatorActionBar: FunctionComponent<{
     operator: OperatorElement
     handleEdit: (operator: OperatorElement) => void
-}> = ({ operator, handleEdit }) => {
+    onDelegationChange: () => void
+}> = ({ operator, handleEdit, onDelegationChange }) => {
     const [balance, setBalance] = useState<BNish | undefined>(undefined)
     const [delegationAmount, setDelegationAmount] = useState<BN | undefined>(undefined)
     const { copy } = useCopy()
@@ -251,6 +253,8 @@ export const OperatorActionBar: FunctionComponent<{
                                                     operator.id,
                                                     amount,
                                                 )
+                                                await waitForGraphSync()
+                                                onDelegationChange()
                                             } catch (e) {
                                                 console.warn('Could not delegate', e)
                                             }
@@ -304,6 +308,8 @@ export const OperatorActionBar: FunctionComponent<{
                                                 )
                                             } catch (e) {
                                                 console.warn('Could not undelegate', e)
+                                                await waitForGraphSync()
+                                                onDelegationChange()
                                             }
                                         },
                                     })

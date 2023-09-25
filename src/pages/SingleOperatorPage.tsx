@@ -36,6 +36,7 @@ import { useOperatorStore } from '~/shared/stores/operator'
 import { Layer } from '~/utils/Layer'
 import Spinner from '~/shared/components/Spinner'
 import SvgIcon from '~/shared/components/SvgIcon'
+import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { NetworkChartWrap } from '../components/NetworkUtils'
 import { getOperatorStats } from '../getters/getOperatorStats'
 
@@ -170,6 +171,7 @@ export const SingleOperatorPage = () => {
                     )
                 },
             })
+            await waitForGraphSync()
             await operatorQuery.refetch()
         } catch (e) {
             // Ignore for now.
@@ -183,7 +185,11 @@ export const SingleOperatorPage = () => {
                 loading={operatorQuery.isLoading || operatorQuery.isFetching}
             />
             {!!operator && (
-                <OperatorActionBar operator={operator} handleEdit={handleOperatorEdit} />
+                <OperatorActionBar
+                    operator={operator}
+                    handleEdit={handleOperatorEdit}
+                    onDelegationChange={() => operatorQuery.refetch()}
+                />
             )}
             <LayoutColumn>
                 {operator == null ? (
