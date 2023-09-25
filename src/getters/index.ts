@@ -55,6 +55,9 @@ import {
     GetOperatorsByDelegationAndMetadataQuery,
     GetOperatorsByDelegationAndMetadataQueryVariables,
     GetOperatorsByDelegationAndMetadataDocument,
+    GetStreamByIdQuery,
+    GetStreamByIdQueryVariables,
+    GetStreamByIdDocument,
 } from '~/generated/gql/network'
 import getCoreConfig from './getCoreConfig'
 import getGraphClient from './getGraphClient'
@@ -539,4 +542,29 @@ export async function getBase64ForFile<T extends File>(file: T): Promise<string>
 
         reader.onerror = reject
     })
+}
+
+export async function getStreamDescription(streamId: string) {
+    const {
+        data: { stream },
+    } = await getGraphClient().query<GetStreamByIdQuery, GetStreamByIdQueryVariables>({
+        query: GetStreamByIdDocument,
+        variables: {
+            streamId,
+        },
+    })
+
+    return z
+        .object({
+            metadata: z
+                .string()
+                .transform((v) => JSON.parse(v))
+                .pipe(
+                    z.object({
+                        description: z.string(),
+                    }),
+                ),
+        })
+        .transform(({ metadata: { description } }) => description)
+        .parse(stream)
 }

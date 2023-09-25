@@ -5,11 +5,7 @@ import Layout from '~/components/Layout'
 import { NetworkHelmet } from '~/components/Helmet'
 import NetworkPageSegment, { Pad } from '~/components/NetworkPageSegment'
 import StatGrid, { StatCell } from '~/components/StatGrid'
-import {
-    useIsOperator,
-    useLoadNetworkStatsEffect,
-    useNetworkStore,
-} from '~/shared/stores/network'
+import { useLoadNetworkStatsEffect, useNetworkStore } from '~/shared/stores/network'
 import { TimeSeriesGraph } from '~/shared/components/TimeSeriesGraph'
 import {
     formatLongDate,
@@ -27,6 +23,9 @@ import { HubAvatar } from '~/shared/components/AvatarImage'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { StreamInfoCell } from '~/components/NetworkUtils'
 import { fromAtto } from '~/marketplace/utils/math'
+import { useSponsorshipsForCreatorQuery } from '~/hooks/sponsorships'
+import { StreamDescription } from '~/components/StreamDescription'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 
 export function NetworkOverviewPage() {
     const account = useWalletAccount()
@@ -351,44 +350,33 @@ const OperatorCell = styled.div`
 `
 
 function MySponsorships() {
-    const sponsorships = useNetworkStore().sponsorships.data
+    const { operator, owner } = useNetworkStore()
 
-    const noData = false
+    const { data } = useSponsorshipsForCreatorQuery(owner)
+
+    const sponsorships = data?.pages.flatMap((page) => page.sponsorships) || []
 
     return (
         <NetworkPageSegment title="My sponsorships" foot>
             <WalletPass resourceName="sponsorships">
-                {noData ? (
-                    <Pad>
-                        <NoData
-                            firstLine="You don't have any sponsorships yet."
-                            secondLine={
-                                <>
-                                    You can{' '}
-                                    <Link to={routes.network.sponsorships()}>
-                                        start a sponsorship
-                                    </Link>{' '}
-                                    here
-                                </>
-                            }
-                        />
-                    </Pad>
-                ) : (
+                {owner && typeof operator === 'undefined' ? (
+                    <Pad>Loading…</Pad>
+                ) : !owner || sponsorships.length ? (
                     <ScrollTableCore
                         elements={sponsorships}
                         columns={[
                             {
                                 displayName: 'Stream ID',
-                                valueMapper: (element) => (
+                                valueMapper: ({ streamId }) => (
                                     <StreamInfoCell>
                                         <span className="stream-id">
-                                            {truncateStreamName(element.streamId)}
+                                            {truncateStreamName(streamId)}
                                         </span>
-                                        {element.streamDescription && (
-                                            <span className="stream-description">
-                                                {element.streamDescription}
-                                            </span>
-                                        )}
+                                        <span className="stream-description">
+                                            <StreamDescription
+                                                streamId={streamId}
+                                            ></StreamDescription>
+                                        </span>
                                     </StreamInfoCell>
                                 ),
                                 align: 'start',
@@ -396,26 +384,27 @@ function MySponsorships() {
                                 key: 'streamInfo',
                             },
                             {
-                                displayName: 'DATA/day',
-                                valueMapper: (element) => element.payoutPerDay,
+                                displayName: (
+                                    <>
+                                        <SponsorshipPaymentTokenName />
+                                        /day
+                                    </>
+                                ),
+                                valueMapper: (element) => element.payoutPerDay.toString(),
                                 align: 'start',
                                 isSticky: false,
                                 key: 'dataPerDay',
                             },
                             {
                                 displayName: 'Operators',
-                                valueMapper: (element) => element.operators,
+                                valueMapper: (element) => element.operatorCount,
                                 align: 'end',
                                 isSticky: false,
                                 key: 'operators',
                             },
                             {
                                 displayName: 'Staked',
-                                valueMapper: (element) =>
-                                    truncateNumber(
-                                        Number(element.totalStake),
-                                        'thousands',
-                                    ),
+                                valueMapper: (element) => element.totalStake.toString(),
                                 align: 'end',
                                 isSticky: false,
                                 key: 'staked',
@@ -436,6 +425,21 @@ function MySponsorships() {
                             },
                         ]}
                     />
+                ) : (
+                    <Pad>
+                        <NoData
+                            firstLine="You don't have any sponsorships yet."
+                            secondLine={
+                                <>
+                                    You can{' '}
+                                    <Link to={routes.network.sponsorships()}>
+                                        start a sponsorship
+                                    </Link>{' '}
+                                    here
+                                </>
+                            }
+                        />
+                    </Pad>
                 )}
             </WalletPass>
         </NetworkPageSegment>

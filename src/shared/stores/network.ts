@@ -4,8 +4,13 @@ import { useEffect } from 'react'
 import { create } from 'zustand'
 import { growingValuesGenerator } from '~/components/NetworkUtils'
 import { Operator } from '~/generated/gql/network'
-import { getOperatorByOwnerAddress, getOperatorsByDelegation } from '~/getters'
+import {
+    getOperatorByOwnerAddress,
+    getOperatorsByDelegation,
+    getSponsorshipsByCreator,
+} from '~/getters'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
+import { SponsorshipParser } from '~/parsers/SponsorshipParser'
 import { getSpotApy } from '~/utils/apy'
 import { toBN, BN } from '~/utils/bn'
 import { getDelegationAmountForAddress2 } from '~/utils/delegation'
@@ -14,8 +19,8 @@ interface SponsorshipManifest {
     streamId: string
     streamDescription: string
     apy: number
-    payoutPerDay: string
-    totalStake: string
+    payoutPerDay: BN
+    totalStake: BN
     operators: number
     fundedUntil: string
     id: string
@@ -62,6 +67,11 @@ interface DelegationStatsData {
 
 type LoaderFunction = (options?: { signal?: AbortSignal }) => Promise<void>
 
+type ChartDataLoaderFunction = (
+    operatorId: string,
+    options?: { signal?: AbortSignal },
+) => Promise<void>
+
 interface NetworkStore {
     networkStats: Fetchable<NetworkStatsData>
     operatorStats: Fetchable<OperatorStatsData>
@@ -80,11 +90,10 @@ interface NetworkStore {
     loadNetworkStats: LoaderFunction
     loadOperatorStats: LoaderFunction
     loadDelegationsStats: LoaderFunction
-    loadOperatorStakeData: LoaderFunction
-    loadOperatorEarningsData: LoaderFunction
-    loadDelegationsValueData: LoaderFunction
-    loadDelegationsEarningsData: LoaderFunction
-    loadSponsorships: LoaderFunction
+    loadOperatorStakeData: ChartDataLoaderFunction
+    loadOperatorEarningsData: ChartDataLoaderFunction
+    loadDelegationsValueData: ChartDataLoaderFunction
+    loadDelegationsEarningsData: ChartDataLoaderFunction
 }
 
 export const useNetworkStore = create<NetworkStore>((set, get) => {
@@ -338,8 +347,6 @@ export const useNetworkStore = create<NetworkStore>((set, get) => {
         async loadDelegationsValueData() {},
 
         async loadDelegationsEarningsData() {},
-
-        async loadSponsorships() {},
     }
 })
 
