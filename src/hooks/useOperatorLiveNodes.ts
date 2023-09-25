@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSubscribe } from 'streamr-client-react'
 
-export default function useOperatorLiveNodes(operatorId?: string) {
+export default function useOperatorLiveNodes(operatorId: string) {
     const streamId = `${operatorId}/operator/coordination/`
     const [liveNodes, setLiveNodes] = useState<string[]>([])
     const [isLoading, setIsLoading] = useState(true)

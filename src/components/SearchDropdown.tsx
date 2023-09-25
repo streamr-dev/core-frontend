@@ -74,6 +74,11 @@ export const SearchDropdown: FunctionComponent<{
                                 {isLoadingOptions ? (
                                     <SpinnerContainer>
                                         <Spinner size="large" color="blue" />
+                                        {/*
+                                            We must render items:
+                                            https://github.com/reactjs/react-autocomplete#rendermenu-function-optional
+                                        */}
+                                        <Hidden>{items}</Hidden>
                                     </SpinnerContainer>
                                 ) : (
                                     <ul className="options-list">{items}</ul>
@@ -130,4 +135,8 @@ const SpinnerContainer = styled.div`
     padding: 20px;
     justify-content: center;
     align-items: center;
+`
+
+const Hidden = styled.div`
+    display: none;
 `

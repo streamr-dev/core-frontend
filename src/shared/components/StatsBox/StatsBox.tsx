@@ -112,6 +112,9 @@ export const StatsValue = styled.p`
     margin: 0;
     line-height: 24px;
     text-align: right;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     @media (${TABLET}) {
         font-size: 20px;
         text-align: left;
