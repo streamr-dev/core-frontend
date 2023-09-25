@@ -231,9 +231,7 @@ export const useNetworkStore = create<NetworkStore>((set, get) => {
             })
 
             await fetchable.perform(async () => {
-                const operator = (await getOperatorByOwnerAddress(
-                    owner,
-                )) as Operator | null
+                const operator = await getOperatorByOwnerAddress(owner)
 
                 if (signal?.aborted) {
                     return
