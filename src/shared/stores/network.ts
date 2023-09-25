@@ -3,39 +3,11 @@ import moment from 'moment'
 import { useEffect } from 'react'
 import { create } from 'zustand'
 import { growingValuesGenerator } from '~/components/NetworkUtils'
-import { Operator } from '~/generated/gql/network'
-import {
-    getOperatorByOwnerAddress,
-    getOperatorsByDelegation,
-    getSponsorshipsByCreator,
-} from '~/getters'
+import { getOperatorByOwnerAddress, getOperatorsByDelegation } from '~/getters'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
-import { SponsorshipParser } from '~/parsers/SponsorshipParser'
 import { getSpotApy } from '~/utils/apy'
 import { toBN, BN } from '~/utils/bn'
 import { getDelegationAmountForAddress2 } from '~/utils/delegation'
-
-interface SponsorshipManifest {
-    streamId: string
-    streamDescription: string
-    apy: number
-    payoutPerDay: BN
-    totalStake: BN
-    operators: number
-    fundedUntil: string
-    id: string
-    active: boolean
-    stakes: unknown[]
-}
-
-interface DelegationManifest {
-    apy: number
-    myShare: BN
-    operatorId: string
-    operatorsCut: number
-    sponsorships: number
-    totalStake: BN
-}
 
 interface XY {
     x: number
@@ -59,12 +31,6 @@ interface OperatorStatsData {
     numOfSponsorships: number
 }
 
-interface DelegationStatsData {
-    value: BN
-    numOfOperators: number
-    apyRange: [number, number]
-}
-
 type LoaderFunction = (options?: { signal?: AbortSignal }) => Promise<void>
 
 type ChartDataLoaderFunction = (
@@ -75,21 +41,17 @@ type ChartDataLoaderFunction = (
 interface NetworkStore {
     networkStats: Fetchable<NetworkStatsData>
     operatorStats: Fetchable<OperatorStatsData>
-    delegationStats: Fetchable<DelegationStatsData>
     chartData: {
         operatorStake: Fetchable<XY[]>
         operatorEarnings: Fetchable<XY[]>
         delegationsValue: Fetchable<XY[]>
         delegationsEarnings: Fetchable<XY[]>
     }
-    sponsorships: Fetchable<SponsorshipManifest[]>
-    delegations: DelegationManifest[]
     owner: string
     operator: ParsedOperator | null | undefined
     setOwner: (address: string) => void
     loadNetworkStats: LoaderFunction
     loadOperatorStats: LoaderFunction
-    loadDelegationsStats: LoaderFunction
     loadOperatorStakeData: ChartDataLoaderFunction
     loadOperatorEarningsData: ChartDataLoaderFunction
     loadDelegationsValueData: ChartDataLoaderFunction
@@ -131,15 +93,9 @@ export const useNetworkStore = create<NetworkStore>((set, get) => {
     return {
         chartData: getEmptyChartData({ dummy: true }),
 
-        delegations: getEmptyDelegations({ dummy: true }),
-
-        delegationStats: getEmptyDelegationStats(),
-
         networkStats: getEmptyNetworkStats(),
 
         operatorStats: getEmptyOperatorState(),
-
-        sponsorships: getEmptySponsorships({ dummy: true }),
 
         owner: '',
 
@@ -163,10 +119,6 @@ export const useNetworkStore = create<NetworkStore>((set, get) => {
 
                 draft.chartData = getEmptyChartData({ dummy })
 
-                draft.delegations = getEmptyDelegations({ dummy })
-
-                draft.delegationStats = getEmptyDelegationStats()
-
                 draft.networkStats = getEmptyNetworkStats()
 
                 draft.operator = undefined
@@ -174,8 +126,6 @@ export const useNetworkStore = create<NetworkStore>((set, get) => {
                 draft.operatorStats = getEmptyOperatorState()
 
                 draft.owner = addr
-
-                draft.sponsorships = getEmptySponsorships({ dummy })
             })
 
             if (!addr) {
@@ -191,14 +141,6 @@ export const useNetworkStore = create<NetworkStore>((set, get) => {
                     await get().loadOperatorStats({ signal })
                 } catch (e) {
                     console.warn('Failed to load operator stats', e)
-                }
-            })
-
-            setTimeout(async () => {
-                try {
-                    await get().loadDelegationsStats({ signal })
-                } catch (e) {
-                    console.warn('Failed to load delegations stats', e)
                 }
             })
         },
@@ -270,76 +212,6 @@ export const useNetworkStore = create<NetworkStore>((set, get) => {
             })
         },
 
-        async loadDelegationsStats({ signal } = {}) {
-            const { owner: delegator } = get()
-
-            if (!delegator) {
-                return
-            }
-
-            const fetchable = prepFetchable((store) => store.delegationStats, {
-                signal,
-            })
-
-            await fetchable.perform(async () => {
-                const operators = await getOperatorsByDelegation({ address: delegator })
-
-                if (signal?.aborted) {
-                    return
-                }
-
-                const delegations = operators.map<DelegationManifest>((operator) => {
-                    const {
-                        delegators,
-                        id: operatorId,
-                        operatorsCut,
-                        poolValue: totalStake,
-                        stakes,
-                    } = OperatorParser.parse(operator)
-
-                    return {
-                        apy: getSpotApy(totalStake, stakes),
-                        myShare: getDelegationAmountForAddress2(delegator, delegators),
-                        operatorId,
-                        operatorsCut,
-                        sponsorships: stakes.length,
-                        totalStake,
-                    }
-                })
-
-                const apyRange = { min: 1, max: 0 }
-
-                delegations.forEach(({ apy }) => {
-                    Object.assign(apyRange, {
-                        max: Math.max(apyRange.max, apy),
-                        min: Math.min(apyRange.min, apy),
-                    })
-                })
-
-                if (apyRange.min > apyRange.max) {
-                    Object.assign(apyRange, {
-                        max: 0,
-                        min: 0,
-                    })
-                }
-
-                const value = delegations.reduce(
-                    (sum, { myShare }) => sum.plus(myShare),
-                    toBN(0),
-                )
-
-                setStore((draft) => {
-                    draft.delegationStats.data = {
-                        apyRange: [apyRange.min, apyRange.max],
-                        numOfOperators: delegations.length,
-                        value,
-                    }
-
-                    draft.delegations = delegations
-                })
-            })
-        },
-
         async loadOperatorStakeData() {},
 
         async loadOperatorEarningsData() {},
@@ -357,17 +229,6 @@ function getEmptyNetworkStats(): Fetchable<NetworkStatsData> {
             totalStake: 0,
             numOfSponsorships: 0,
             numOfOperators: 0,
-        },
-    }
-}
-
-function getEmptyDelegationStats(): Fetchable<DelegationStatsData> {
-    return {
-        fetching: false,
-        data: {
-            value: toBN(0),
-            numOfOperators: 0,
-            apyRange: [0, 0],
         },
     }
 }
@@ -402,65 +263,6 @@ function getEmptyChartData({ dummy = false } = {}) {
         delegationsValue: getIncrementalValuesData(12300431, { days }),
         delegationsEarnings: getIncrementalValuesData(1400000, { days }),
     }
-}
-
-function getEmptySponsorships({ dummy = false } = {}): Fetchable<SponsorshipManifest[]> {
-    const data = dummy
-        ? [
-              {
-                  streamId: 'jollygood.eth/my/funded/stream',
-                  streamDescription: 'Price, volume data feed for the DATAUSD',
-                  apy: 24.6,
-                  payoutPerDay: '1200',
-                  totalStake: '1500000',
-                  operators: 54,
-                  fundedUntil: moment().add(1, 'month').format('DD-mm-YYYY'),
-                  id: '45c5027a-ce52-49e2-9787-7f5599ce85cf',
-                  active: true,
-                  stakes: [],
-              },
-              {
-                  streamId: 'HSL/helsinki/trams',
-                  streamDescription: 'Real-time location of Helsinki trams',
-                  apy: 14.5,
-                  payoutPerDay: '4347',
-                  totalStake: '2300000',
-                  operators: 10,
-                  fundedUntil: moment().add(50, 'days').format('DD-mm-YYYY'),
-                  id: 'add2771e-111d-451a-ae50-6fb93f5da616',
-                  active: false,
-                  stakes: [],
-              },
-          ]
-        : []
-
-    return {
-        fetching: false,
-        data,
-    }
-}
-
-function getEmptyDelegations({ dummy = false } = {}): DelegationManifest[] {
-    return dummy
-        ? [
-              '0x12e567661643698e7C86D3684e391D2C38950C0c',
-              '0xc94E24B76DF0cF39af431c8569Ee2D45a032d680',
-              '0xD59eC6CBFBe2Ee9C9c75ED7732d58d0FBeb99c1c',
-              '0x304B171463A828577a39155923bbDb09c227C588',
-              '0x91993A3dDD95e8b84E49B42ca1B0BA222B78477E',
-              '0xAe755C61Ca8707Ca01f3EdC634C4dA5B8DA5127D',
-              '0x86BBe0a84c68b2607C0830DFcDC11B7F9C880bEd',
-              '0x4178812b528f88bf0B2e73EB6ba4f0C8c4cd186c',
-              '0x93A717001d29cA011449C6CA1e5042c285c12f37',
-          ].map((operatorId) => ({
-              operatorId,
-              apy: Math.round(40 * Math.random()),
-              myShare: toBN(Math.round(3500000 * Math.random())),
-              operatorsCut: Math.round(30 * Math.random()),
-              sponsorships: Math.round(25 * Math.random()),
-              totalStake: toBN(Math.round(15000000 * Math.random())),
-          }))
-        : []
 }
 
 export function useLoadNetworkStatsEffect() {

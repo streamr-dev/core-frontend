@@ -7,15 +7,15 @@ import { errorToast } from '~/utils/toast'
 export function useSponsorshipsForCreatorQuery(
     address: string | undefined,
     { pageSize = 10, streamId }: { pageSize?: number; streamId?: string } = {},
-): UseInfiniteQueryResult<{ page: number; sponsorships: ParsedSponsorship[] }> {
+): UseInfiniteQueryResult<{ skip: number; sponsorships: ParsedSponsorship[] }> {
     const creator = address?.toLowerCase() || ''
 
     return useInfiniteQuery({
         queryKey: ['sponsorshipsForCreator', creator, streamId],
-        async queryFn({ pageParam: page = 0 }) {
+        async queryFn({ pageParam: skip = 0 }) {
             if (!creator) {
                 return {
-                    page,
+                    skip,
                     sponsorships: [],
                 }
             }
@@ -27,7 +27,7 @@ export function useSponsorshipsForCreatorQuery(
             try {
                 const rawSponsorships = await getSponsorshipsByCreator(creator, {
                     first: pageSize,
-                    skip: page * pageSize,
+                    skip,
                     streamId,
                 })
 
@@ -43,9 +43,9 @@ export function useSponsorshipsForCreatorQuery(
                     }
                 }
             } catch (e) {
-                console.warn('Could not fetch the sponsorships list', e)
+                console.warn('Could not fetch the sponsorships', e)
 
-                errorToast({ title: 'Could not fetch the sponsorships list' })
+                errorToast({ title: 'Could not fetch sponsorships' })
             }
 
             if (preparsedCount !== sponsorships.length) {
@@ -58,12 +58,12 @@ export function useSponsorshipsForCreatorQuery(
             }
 
             return {
-                page,
+                skip,
                 sponsorships,
             }
         },
-        getNextPageParam: ({ sponsorships, page }) => {
-            return sponsorships.length === pageSize ? page + 1 : undefined
+        getNextPageParam: ({ sponsorships, skip }) => {
+            return sponsorships.length === pageSize ? skip + pageSize : undefined
         },
         staleTime: 60 * 1000, // 1 minute
         keepPreviousData: true,
