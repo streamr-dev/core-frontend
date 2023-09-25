@@ -32,7 +32,7 @@ type ScrollTableProps<Element> = {
 
 export type ScrollTableColumnDef<T> = {
     key: string
-    displayName: string
+    displayName: ReactNode
     isSticky: boolean
     valueMapper: (element: T) => ReactNode
     align: 'start' | 'end'
