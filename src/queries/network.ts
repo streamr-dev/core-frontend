@@ -56,8 +56,18 @@ gql`
         }
     }
 
-    query searchOperators($first: Int, $skip: Int, $searchQuery: ID) {
-        operators(first: $first, skip: $skip, where: { id: $searchQuery }) {
+    query searchOperatorsById($first: Int, $skip: Int, $operatorId: ID) {
+        operators(first: $first, skip: $skip, where: { id: $operatorId }) {
+            ...OperatorFields
+        }
+    }
+
+    query searchOperatorsByMetadata($first: Int, $skip: Int, $searchQuery: String) {
+        operators(
+            first: $first
+            skip: $skip
+            where: { metadataJsonString_contains_nocase: $searchQuery }
+        ) {
             ...OperatorFields
         }
     }
