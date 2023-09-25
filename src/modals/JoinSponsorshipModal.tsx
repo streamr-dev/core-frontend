@@ -69,7 +69,7 @@ export default function JoinSponsorshipModal({
     const finalAmount = amount.isFinite() && amount.isGreaterThan(0) ? amount : toBN(0)
 
     const { count: liveNodesCount, isLoading: liveNodesCountLoading } =
-        useOperatorLiveNodes()
+        useOperatorLiveNodes(operatorId)
 
     useEffect(() => {
         setRawAmount(parseAmount(amountProp))
