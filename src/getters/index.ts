@@ -265,7 +265,7 @@ export function getGraphProjectWithParsedMetadata<T extends { metadata: string }
 export async function getAllSponsorships({
     first,
     skip,
-    streamId,
+    streamId = '',
 }: {
     first?: number
     skip?: number
@@ -311,7 +311,7 @@ export async function getSponsorshipsByCreator(
     {
         first,
         skip,
-        streamId,
+        streamId = '',
     }: {
         first?: number
         skip?: number

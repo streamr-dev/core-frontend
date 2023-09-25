@@ -3860,7 +3860,7 @@ export type SponsorshipFieldsFragment = { __typename?: 'Sponsorship', id: string
 export type GetAllSponsorshipsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   skip?: InputMaybe<Scalars['Int']['input']>;
-  streamContains?: InputMaybe<Scalars['String']['input']>;
+  streamContains: Scalars['String']['input'];
 }>;
 
 
@@ -3869,7 +3869,7 @@ export type GetAllSponsorshipsQuery = { __typename?: 'Query', sponsorships: Arra
 export type GetSponsorshipsByCreatorQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   skip?: InputMaybe<Scalars['Int']['input']>;
-  streamContains?: InputMaybe<Scalars['String']['input']>;
+  streamContains: Scalars['String']['input'];
   creator: Scalars['String']['input'];
 }>;
 
@@ -4236,7 +4236,7 @@ export const GetOperatorByOwnerAddressDocument = gql`
     ${OperatorFieldsFragmentDoc}`;
 export type GetOperatorByOwnerAddressQueryResult = Apollo.QueryResult<GetOperatorByOwnerAddressQuery, GetOperatorByOwnerAddressQueryVariables>;
 export const GetAllSponsorshipsDocument = gql`
-    query getAllSponsorships($first: Int, $skip: Int, $streamContains: String) {
+    query getAllSponsorships($first: Int, $skip: Int, $streamContains: String!) {
   sponsorships(
     first: $first
     skip: $skip
@@ -4248,7 +4248,7 @@ export const GetAllSponsorshipsDocument = gql`
     ${SponsorshipFieldsFragmentDoc}`;
 export type GetAllSponsorshipsQueryResult = Apollo.QueryResult<GetAllSponsorshipsQuery, GetAllSponsorshipsQueryVariables>;
 export const GetSponsorshipsByCreatorDocument = gql`
-    query getSponsorshipsByCreator($first: Int, $skip: Int, $streamContains: String, $creator: String!) {
+    query getSponsorshipsByCreator($first: Int, $skip: Int, $streamContains: String!, $creator: String!) {
   sponsorships(
     first: $first
     skip: $skip

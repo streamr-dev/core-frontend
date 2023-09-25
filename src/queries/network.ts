@@ -154,7 +154,7 @@ gql`
         spotAPY
     }
 
-    query getAllSponsorships($first: Int, $skip: Int, $streamContains: String) {
+    query getAllSponsorships($first: Int, $skip: Int, $streamContains: String!) {
         sponsorships(
             first: $first
             skip: $skip
@@ -167,7 +167,7 @@ gql`
     query getSponsorshipsByCreator(
         $first: Int
         $skip: Int
-        $streamContains: String
+        $streamContains: String!
         $creator: String!
     ) {
         sponsorships(
