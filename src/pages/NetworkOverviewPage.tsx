@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
@@ -7,7 +7,6 @@ import Layout from '~/components/Layout'
 import { NetworkHelmet } from '~/components/Helmet'
 import NetworkPageSegment, { Pad } from '~/components/NetworkPageSegment'
 import StatGrid, { StatCell } from '~/components/StatGrid'
-import { useLoadNetworkStatsEffect, useNetworkStore } from '~/shared/stores/network'
 import { TimeSeriesGraph } from '~/shared/components/TimeSeriesGraph'
 import {
     formatLongDate,
@@ -43,18 +42,9 @@ import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
 import { OperatorDailyBucket } from '~/generated/gql/network'
 import TimePeriodTabs from '~/components/TimePeriodTabs'
 import Tabs, { Tab } from '~/shared/components/Tabs'
+import { useGlobalNetworkStats } from '~/hooks/network'
 
 export function NetworkOverviewPage() {
-    const account = useWalletAccount()
-
-    const { setOwner } = useNetworkStore()
-
-    useEffect(() => {
-        setOwner(account || '')
-    }, [account, setOwner])
-
-    useLoadNetworkStatsEffect()
-
     return (
         <Layout columnize>
             <NetworkHelmet title="Network Overview" />
@@ -68,8 +58,7 @@ export function NetworkOverviewPage() {
 }
 
 function NetworkStats() {
-    const { totalStake, numOfSponsorships, numOfOperators } =
-        useNetworkStore().networkStats.data
+    const { totalStake, numOfSponsorships, numOfOperators } = useGlobalNetworkStats()
 
     return (
         <NetworkPageSegment title="Network stats">
