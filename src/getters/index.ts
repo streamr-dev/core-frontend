@@ -645,7 +645,7 @@ export async function getDelegacyForWallet(
  * Compute projected yearly earnings based on the current yield.
  * @param poolValue Total value of the pool.
  * @param stakes Collection of basic stake information (amount, spot apy, projected insolvency date).
- * @returns Number between 0 and 1 (inclusive) representing the APY. 0 = 0%, 1 = 100%.
+ * @returns Number representing the APY factor (0.01 is 1%).
  */
 export function getSpotApy({
     poolValue,

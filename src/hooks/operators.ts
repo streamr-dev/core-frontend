@@ -168,21 +168,24 @@ export function useDelegacyStats(address = '') {
                 return
             }
 
-            let minApy = 1
+            if (!operators.length) {
+                return void setStats({
+                    value: toBN(0),
+                    minApy: 0,
+                    maxApy: 0,
+                    numOfOperators: 0,
+                })
+            }
 
-            let maxApy = 0
+            let minApy = Number.POSITIVE_INFINITY
+
+            let maxApy = Number.NEGATIVE_INFINITY
 
             operators.forEach(({ apy }) => {
                 minApy = Math.min(minApy, apy)
 
                 maxApy = Math.max(maxApy, apy)
             })
-
-            if (minApy > maxApy) {
-                minApy = 0
-
-                maxApy = 0
-            }
 
             const value = operators.reduce(
                 (sum, { myShare }) => sum.plus(myShare),
