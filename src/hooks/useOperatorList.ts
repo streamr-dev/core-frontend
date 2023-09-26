@@ -1,12 +1,17 @@
-import moment from 'moment'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { UseInfiniteQueryResult } from '@tanstack/react-query/src/types'
 import { OperatorElement, OperatorMetadata } from '~/types/operator'
 import { Operator } from '~/generated/gql/network'
 import { toBN } from '~/utils/bn'
-import { getAllOperators, getOperatorsByDelegation, searchOperators } from '~/getters'
+import {
+    getAllOperators,
+    getOperatorsByDelegation,
+    searchOperatorsById,
+    searchOperatorsByMetadata,
+} from '~/getters'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { fromAtto } from '~/marketplace/utils/math'
+import { isEthereumAddress } from '~/marketplace/utils/validate'
 
 const {
     ipfs: { ipfsGatewayUrl },
@@ -23,15 +28,31 @@ export const useAllOperatorsQuery = (
         queryKey: ['allOperators', searchQuery],
         async queryFn(ctx) {
             let operators: Operator[] = []
-            if (searchQuery != null && searchQuery.length > 0) {
-                operators = (await searchOperators({
+
+            // no search query - get all
+            if (searchQuery == null || searchQuery.length === 0) {
+                operators = (await getAllOperators({
                     first: pageSize,
-                    searchQuery: searchQuery,
+                    skip: ctx.pageParam,
+                })) as Operator[]
+                return {
+                    skippedElements: ctx.pageParam || 0,
+                    elements: operators.map(mapOperatorToElement),
+                }
+            }
+
+            if (isEthereumAddress(searchQuery.toLowerCase())) {
+                // search query is an ethereum address - search by id
+                operators = (await searchOperatorsById({
+                    first: pageSize,
+                    operatorId: searchQuery.toLowerCase(),
                     skip: ctx.pageParam,
                 })) as Operator[]
             } else {
-                operators = (await getAllOperators({
+                // search by metadata
+                operators = (await searchOperatorsByMetadata({
                     first: pageSize,
+                    searchQuery,
                     skip: ctx.pageParam,
                 })) as Operator[]
             }

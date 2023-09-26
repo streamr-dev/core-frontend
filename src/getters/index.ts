@@ -37,15 +37,18 @@ import {
     GetOperatorByIdQuery,
     GetOperatorByIdQueryVariables,
     GetOperatorByIdDocument,
-    SearchOperatorsQuery,
-    SearchOperatorsQueryVariables,
     GetOperatorsByDelegationQuery,
     GetOperatorsByDelegationQueryVariables,
     GetOperatorsByDelegationDocument,
-    SearchOperatorsDocument,
     GetOperatorByOwnerAddressQuery,
     GetOperatorByOwnerAddressQueryVariables,
     GetOperatorByOwnerAddressDocument,
+    SearchOperatorsByIdQuery,
+    SearchOperatorsByIdQueryVariables,
+    SearchOperatorsByIdDocument,
+    SearchOperatorsByMetadataQuery,
+    SearchOperatorsByMetadataQueryVariables,
+    SearchOperatorsByMetadataDocument,
 } from '~/generated/gql/network'
 import getCoreConfig from './getCoreConfig'
 import getGraphClient from './getGraphClient'
@@ -375,7 +378,33 @@ export async function getOperatorsByDelegation({
     return operators
 }
 
-export async function searchOperators({
+export async function searchOperatorsById({
+    first,
+    skip,
+    operatorId,
+}: {
+    first?: number
+    skip?: number
+    operatorId?: string
+}): Promise<SearchOperatorsByIdQuery['operators']> {
+    const {
+        data: { operators },
+    } = await getGraphClient().query<
+        SearchOperatorsByIdQuery,
+        SearchOperatorsByIdQueryVariables
+    >({
+        query: SearchOperatorsByIdDocument,
+        variables: {
+            first,
+            skip,
+            operatorId,
+        },
+    })
+
+    return operators
+}
+
+export async function searchOperatorsByMetadata({
     first,
     skip,
     searchQuery,
@@ -383,19 +412,20 @@ export async function searchOperators({
     first?: number
     skip?: number
     searchQuery?: string
-}): Promise<SearchOperatorsQuery['operators']> {
+}): Promise<SearchOperatorsByMetadataQuery['operators']> {
     const {
         data: { operators },
-    } = await getGraphClient().query<SearchOperatorsQuery, SearchOperatorsQueryVariables>(
-        {
-            query: SearchOperatorsDocument,
-            variables: {
-                first,
-                skip,
-                searchQuery,
-            },
+    } = await getGraphClient().query<
+        SearchOperatorsByMetadataQuery,
+        SearchOperatorsByMetadataQueryVariables
+    >({
+        query: SearchOperatorsByMetadataDocument,
+        variables: {
+            first,
+            skip,
+            searchQuery,
         },
-    )
+    })
 
     return operators
 }
