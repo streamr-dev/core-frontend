@@ -555,6 +555,11 @@ export async function getBase64ForFile<T extends File>(file: T): Promise<string>
     })
 }
 
+/**
+ * Fetches stream descriptions from the Graph.
+ * @param streamId Stream ID
+ * @returns A string
+ */
 export async function getStreamDescription(streamId: string) {
     const {
         data: { stream },
@@ -572,7 +577,10 @@ export async function getStreamDescription(streamId: string) {
                 .transform((v) => JSON.parse(v))
                 .pipe(
                     z.object({
-                        description: z.string(),
+                        description: z
+                            .string()
+                            .optional()
+                            .transform((v) => v || ''),
                     }),
                 ),
         })
