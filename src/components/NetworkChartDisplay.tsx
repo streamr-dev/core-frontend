@@ -1,44 +1,25 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode } from 'react'
 import styled from 'styled-components'
-import Tabs, { Tab, Root as TabsRoot, Item as TabsItem } from '~/shared/components/Tabs'
+import { Root as TabsRoot, Item as TabsItem } from '~/shared/components/Tabs'
 import { TABLET } from '~/shared/utils/styled'
-import TimePeriodTabs from '~/components/TimePeriodTabs'
-import { TimePeriod } from '~/types'
 
-export default function NetworkChartDisplay<
-    T extends { id: string; label: string; data: { x: number; y: number }[] },
->({ dataSets = [], children }: { dataSets?: T[]; children?: (value: T) => ReactNode }) {
-    const [currentId, setCurrentId] = useState(dataSets[0]?.id)
-
-    const currentDataSet = dataSets.find(({ id }) => id === currentId) || undefined
-
-    const [chartPeriod, setChartPeriod] = useState<TimePeriod>(TimePeriod.SevenDays)
-
+export default function NetworkChartDisplay({
+    children,
+    periodTabs,
+    sourceTabs,
+}: {
+    children?: ReactNode
+    periodTabs: ReactNode
+    sourceTabs: ReactNode
+}) {
     return (
         <Root>
             <Header>
-                <SetSelector>
-                    <Tabs
-                        selection={currentId}
-                        onSelectionChange={(id) => {
-                            setCurrentId(id)
-                        }}
-                    >
-                        {dataSets.map(({ id, label }) => (
-                            <Tab key={id} id={id}>
-                                {label}
-                            </Tab>
-                        ))}
-                    </Tabs>
-                </SetSelector>
-                <TimePeriodWrap>
-                    <TimePeriodTabs value={chartPeriod} onChange={setChartPeriod} />
-                </TimePeriodWrap>
+                <SetSelector>{sourceTabs}</SetSelector>
+                <TimePeriodWrap>{periodTabs}</TimePeriodWrap>
             </Header>
-            <Body>{currentDataSet ? children?.(currentDataSet) : null}</Body>
-            <TimePeriodWrap>
-                <TimePeriodTabs value={chartPeriod} onChange={setChartPeriod} />
-            </TimePeriodWrap>
+            <Body>{children}</Body>
+            <TimePeriodWrap>{periodTabs}</TimePeriodWrap>
         </Root>
     )
 }

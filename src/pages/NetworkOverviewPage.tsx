@@ -1,6 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import moment from 'moment'
+import { useQuery } from '@tanstack/react-query'
 import Layout from '~/components/Layout'
 import { NetworkHelmet } from '~/components/Helmet'
 import NetworkPageSegment, { Pad } from '~/components/NetworkPageSegment'
@@ -22,17 +24,25 @@ import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { HubAvatar } from '~/shared/components/AvatarImage'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { StreamInfoCell } from '~/components/NetworkUtils'
-import { fromAtto } from '~/marketplace/utils/math'
+import { fromAtto, fromDecimals } from '~/marketplace/utils/math'
 import { useSponsorshipsForCreatorQuery } from '~/hooks/sponsorships'
 import { StreamDescription } from '~/components/StreamDescription'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { toBN } from '~/utils/bn'
+import { BNish, toBN } from '~/utils/bn'
 import {
     useDelegacyForWalletQuery,
     useDelegacyStats,
     useIsLoadingOperatorForWallet,
+    useOperatorForWallet,
     useOperatorStatsForWallet,
 } from '~/hooks/operators'
+import { TimePeriod, XY } from '~/types'
+import { errorToast } from '~/utils/toast'
+import { getOperatorDailyBuckets, getTimestampForTimePeriod } from '~/getters'
+import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
+import { OperatorDailyBucket } from '~/generated/gql/network'
+import TimePeriodTabs from '~/components/TimePeriodTabs'
+import Tabs, { Tab } from '~/shared/components/Tabs'
 
 export function NetworkOverviewPage() {
     const account = useWalletAccount()
@@ -81,12 +91,52 @@ function MyOperatorSummary() {
 
     const { value = toBN(0), numOfDelegators = 0, numOfSponsorships = 0 } = stats || {}
 
-    const {
-        chartData: {
-            operatorStake: { data: operatorStakeData },
-            operatorEarnings: { data: operatorEarningsData },
+    const [chartPeriod, setChartPeriod] = useState<TimePeriod>(TimePeriod.SevenDays)
+
+    const [chartId, setChartId] = useState<'stake' | 'earnings'>('stake')
+
+    const operator = useOperatorForWallet(wallet)
+
+    const { data: chartData = [] } = useQuery<XY[]>({
+        queryKey: ['operatorSummaryChartQuery', chartId, chartPeriod, operator?.id],
+        async queryFn() {
+            if (!operator) {
+                return []
+            }
+
+            try {
+                const end = moment().utc().subtract(1, 'day').endOf('day')
+
+                const buckets = await getOperatorDailyBuckets(operator.id, {
+                    dateGreaterEqualThan: getTimestampForTimePeriod(chartPeriod, end),
+                    dateLowerThan: end.unix(),
+                })
+
+                const { decimals } = await getSponsorshipTokenInfo()
+
+                const toValue: (bucket: OperatorDailyBucket) => BNish =
+                    chartId === 'stake'
+                        ? ({ poolValue }) => poolValue
+                        : ({ profitsWei }) => profitsWei
+
+                return buckets.map((bucket) => ({
+                    x: Number(bucket.date) * 1000,
+                    y: fromDecimals(
+                        toValue(bucket as OperatorDailyBucket),
+                        decimals,
+                    ).toNumber(),
+                }))
+            } catch (e) {
+                errorToast({ title: 'Could not load operator chart data' })
+
+                console.warn('Could not load operator chart data', e)
+            }
+
+            return []
         },
-    } = useNetworkStore()
+    })
+
+    const chartLabel = chartId === 'stake' ? 'Total stake' : 'Cumulative earnings'
 
     return (
         <NetworkPageSegment title="My operator summary">
@@ -107,33 +157,43 @@ function MyOperatorSummary() {
                         <hr />
                         <Pad>
                             <NetworkChartDisplay
-                                dataSets={[
-                                    {
-                                        id: 'stake',
-                                        label: 'Total stake',
-                                        data: operatorStakeData,
-                                    },
-                                    {
-                                        id: 'earnings',
-                                        label: 'Cumulative earnings',
-                                        data: operatorEarningsData,
-                                    },
-                                ]}
-                            >
-                                {({ label, data }) => (
-                                    <Chart
-                                        tooltipValuePrefix={label}
-                                        graphData={[...data]}
-                                        xAxisDisplayFormatter={formatShortDate}
-                                        yAxisAxisDisplayFormatter={(value) =>
-                                            truncateNumber(value, 'thousands')
-                                        }
-                                        tooltipLabelFormatter={formatLongDate}
-                                        tooltipValueFormatter={(value) =>
-                                            `${truncateNumber(value, 'thousands')} DATA`
-                                        }
+                                periodTabs={
+                                    <TimePeriodTabs
+                                        value={chartPeriod}
+                                        onChange={setChartPeriod}
                                     />
-                                )}
+                                }
+                                sourceTabs={
+                                    <Tabs
+                                        selection={chartId}
+                                        onSelectionChange={(newChartId) => {
+                                            if (
+                                                newChartId !== 'stake' &&
+                                                newChartId !== 'earnings'
+                                            ) {
+                                                return
+                                            }
+
+                                            setChartId(newChartId)
+                                        }}
+                                    >
+                                        <Tab id="stake">Total stake</Tab>
+                                        <Tab id="earnings">Cumulative earnings</Tab>
+                                    </Tabs>
+                                }
+                            >
+                                <Chart
+                                    tooltipValuePrefix={chartLabel}
+                                    graphData={chartData}
+                                    xAxisDisplayFormatter={formatShortDate}
+                                    yAxisAxisDisplayFormatter={(value) =>
+                                        truncateNumber(value, 'thousands')
+                                    }
+                                    tooltipLabelFormatter={formatLongDate}
+                                    tooltipValueFormatter={(value) =>
+                                        `${truncateNumber(value, 'thousands')} DATA`
+                                    }
+                                />
                             </NetworkChartDisplay>
                         </Pad>
                     </>
@@ -167,14 +227,25 @@ function MyDelegationsSummary() {
 
     const { value = toBN(0), numOfOperators = 0, minApy = 0, maxApy = 0 } = stats || {}
 
-    const {
-        chartData: {
-            delegationsValue: { data: delegationsValueData },
-            delegationsEarnings: { data: delegationsEarningsData },
-        },
-    } = useNetworkStore()
-
     const apy = minApy === maxApy ? [minApy] : [minApy, maxApy]
+
+    const [chartPeriod, setChartPeriod] = useState<TimePeriod>(TimePeriod.SevenDays)
+
+    const [chartId, setChartId] = useState<'value' | 'earnings'>('value')
+
+    const { data: chartData = [] } = useQuery<XY[]>({
+        queryKey: ['operatorSummaryChartQuery', chartId, chartPeriod, wallet],
+        async queryFn() {
+            /**
+             * @TODO There's no API for getting buckets with profits and amounts
+             * aggregated across all eligible operators. Find a way or drop
+             * the chart.
+             */
+            return []
+        },
+    })
+
+    const chartLabel = chartId === 'value' ? 'Current value' : 'Cumulative earnings'
 
     return (
         <NetworkPageSegment title="My delegations summary">
@@ -191,33 +262,43 @@ function MyDelegationsSummary() {
                 <hr />
                 <Pad>
                     <NetworkChartDisplay
-                        dataSets={[
-                            {
-                                id: 'value',
-                                label: 'Current value',
-                                data: delegationsValueData,
-                            },
-                            {
-                                id: 'earnings',
-                                label: 'Cumulative earnings',
-                                data: delegationsEarningsData,
-                            },
-                        ]}
-                    >
-                        {({ label, data }) => (
-                            <Chart
-                                tooltipValuePrefix={label}
-                                graphData={[...data]}
-                                xAxisDisplayFormatter={formatShortDate}
-                                yAxisAxisDisplayFormatter={(value) =>
-                                    truncateNumber(value, 'thousands')
-                                }
-                                tooltipLabelFormatter={formatLongDate}
-                                tooltipValueFormatter={(value) =>
-                                    `${truncateNumber(value, 'thousands')} DATA`
-                                }
+                        periodTabs={
+                            <TimePeriodTabs
+                                value={chartPeriod}
+                                onChange={setChartPeriod}
                             />
-                        )}
+                        }
+                        sourceTabs={
+                            <Tabs
+                                selection={chartId}
+                                onSelectionChange={(newChartId) => {
+                                    if (
+                                        newChartId !== 'value' &&
+                                        newChartId !== 'earnings'
+                                    ) {
+                                        return
+                                    }
+
+                                    setChartId(newChartId)
+                                }}
+                            >
+                                <Tab id="value">Current value</Tab>
+                                <Tab id="earnings">Cumulative earnings</Tab>
+                            </Tabs>
+                        }
+                    >
+                        <Chart
+                            tooltipValuePrefix={chartLabel}
+                            graphData={chartData}
+                            xAxisDisplayFormatter={formatShortDate}
+                            yAxisAxisDisplayFormatter={(value) =>
+                                truncateNumber(value, 'thousands')
+                            }
+                            tooltipLabelFormatter={formatLongDate}
+                            tooltipValueFormatter={(value) =>
+                                `${truncateNumber(value, 'thousands')} DATA`
+                            }
+                        />
                     </NetworkChartDisplay>
                 </Pad>
             </WalletPass>

@@ -8,6 +8,10 @@ export interface ProjectFilter {
     owner?: string | undefined
 }
 
+/**
+ * `ParsedOperator` enhanced with `apy` and `myShare`. It is *not* Delegation
+ * structure coming from the Graph directly in any way.
+ */
 export interface Delegation extends ParsedOperator {
     apy: number
     myShare: BN
@@ -21,14 +25,19 @@ export interface DelegacyStats {
 }
 
 export enum TimePeriod {
-    SevenDays = '7d',
-    OneMonth = '30d',
-    ThreeMonths = '90d',
-    OneYear = '365d',
-    YearToDate = 'ytd',
-    All = 'all',
+    SevenDays = 'SevenDays',
+    OneMonth = 'OneMonth',
+    ThreeMonths = 'ThreeMonths',
+    OneYear = 'OneYear',
+    YearToDate = 'YearToDate',
+    All = 'All',
 }
 
 export function isTimePeriod(value: string): value is TimePeriod {
     return Object.prototype.hasOwnProperty.call(TimePeriod, value)
+}
+
+export interface XY {
+    x: number
+    y: number
 }
