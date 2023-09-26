@@ -32,6 +32,7 @@ import { SimpleDropdown } from '~/components/SimpleDropdown'
 import Spinner from '~/shared/components/Spinner'
 import { useConfigFromChain } from '~/hooks/useConfigFromChain'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
+import { getBlockExplorerUrl } from '~/getters/getBlockExplorerUrl'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -192,10 +193,9 @@ export const OperatorActionBar: FunctionComponent<{
                                     </BlackTooltip>
                                 </span>
                                 <a
-                                    href={
-                                        'https://polygonscan.com/address/' +
+                                    href={`${getBlockExplorerUrl()}/address/${
                                         operator.owner
-                                    }
+                                    }`}
                                     target="_blank"
                                     rel="noreferrer"
                                 >
@@ -226,9 +226,9 @@ export const OperatorActionBar: FunctionComponent<{
                                     </BlackTooltip>
                                 </span>
                                 <a
-                                    href={
-                                        'https://polygonscan.com/address/' + operator.id
-                                    }
+                                    href={`${getBlockExplorerUrl()}/address/${
+                                        operator.id
+                                    }`}
                                     target="_blank"
                                     rel="noreferrer"
                                 >

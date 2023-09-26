@@ -281,9 +281,6 @@ export async function undelegateFromOperator(
 
 export async function getOperatorDelegationAmount(operatorId: string, address: string) {
     const chainId = getOperatorChainId()
-
-    await networkPreflight(chainId)
-
     const provider = getPublicWeb3Provider(chainId)
     const operatorContract = new Contract(operatorId, operatorABI, provider) as Operator
     const amount = await operatorContract.balanceOf(address)
