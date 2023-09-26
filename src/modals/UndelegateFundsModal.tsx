@@ -61,8 +61,6 @@ export default function UndelegateFundsModal({
 
     const minimumSelfDelegation = toBN(minimumSelfDelegationProp)
 
-    const insufficientFunds = finalValue.isGreaterThan(balance)
-
     const hasDelegatedTooLittle =
         minimumSelfDelegation != null &&
         isCurrentUserOwner &&
@@ -70,10 +68,7 @@ export default function UndelegateFundsModal({
         delegatedTotal.minus(toBN(rawAmount)).isLessThan(minimumSelfDelegation)
 
     const canSubmit =
-        finalValue.isFinite() &&
-        finalValue.isGreaterThan(0) &&
-        !insufficientFunds &&
-        !hasDelegatedTooLittle
+        finalValue.isFinite() && finalValue.isGreaterThan(0) && !hasDelegatedTooLittle
 
     const [busy, setBusy] = useState(false)
 
@@ -110,7 +105,7 @@ export default function UndelegateFundsModal({
             </SectionHeadline>
             <Section>
                 <Label>Amount to undelegate</Label>
-                <FieldWrap $invalid={insufficientFunds} $top={true}>
+                <FieldWrap $top={true}>
                     <TextInput
                         name="amount"
                         autoFocus
@@ -123,7 +118,7 @@ export default function UndelegateFundsModal({
                     />
                     <TextAppendix>{tokenSymbol}</TextAppendix>
                 </FieldWrap>
-                <FieldWrap $invalid={insufficientFunds} $bottom={true} $padded={true}>
+                <FieldWrap $bottom={true} $padded={true}>
                     <Prop>
                         Amount currently delegated to Operator:{' '}
                         {delegatedTotal.toString()} {tokenSymbol}
@@ -134,13 +129,7 @@ export default function UndelegateFundsModal({
                 </FieldWrap>
                 <ul>
                     <li>
-                        <Prop $invalid={insufficientFunds}>
-                            {insufficientFunds ? (
-                                <>Not enough balance in your wallet</>
-                            ) : (
-                                <>Your wallet balance</>
-                            )}
-                        </Prop>
+                        <Prop>Your wallet balance</Prop>
                         <div>
                             {balance.toString()} {tokenSymbol}
                         </div>
