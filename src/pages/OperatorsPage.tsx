@@ -67,7 +67,7 @@ const getAllOperatorColumns = (): ScrollTableColumnDef<OperatorElement>[] => [
     },
     {
         displayName: 'Total value',
-        valueMapper: (element) => fromAtto(element.poolValue).toString(),
+        valueMapper: (element) => fromAtto(element.valueWithoutEarnings).toString(),
         align: 'start',
         isSticky: false,
         key: 'totalValue',
@@ -135,7 +135,7 @@ const getMyDelegationsColumns = (
     },
     {
         displayName: 'Total stake',
-        valueMapper: (element) => fromAtto(element.poolValue).toString(),
+        valueMapper: (element) => fromAtto(element.valueWithoutEarnings).toString(),
         align: 'end',
         isSticky: false,
         key: 'totalStake',

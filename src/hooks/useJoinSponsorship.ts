@@ -29,7 +29,7 @@ export const useJoinSponsorship = (): {
                     streamId: sponsorshipStreamId,
                     operatorId: myOperatorQuery.data?.id,
                     hasUndelegationQueue: myOperatorQuery.data.queueEntries.length > 0,
-                    operatorBalance: myOperatorQuery.data?.freeFundsWei.toString(),
+                    operatorBalance: myOperatorQuery.data?.dataTokenBalance.toString(),
                     tokenSymbol: tokenInfo.symbol,
                     decimals: tokenInfo.decimals,
                     onSubmit: async (amount: string) => {

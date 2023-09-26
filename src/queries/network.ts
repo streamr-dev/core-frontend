@@ -8,14 +8,14 @@ gql`
                 id
             }
             amount
-            allocatedWei
+            earningsWei
             joinDate
             sponsorship {
                 ...SponsorshipFields
             }
         }
         delegators {
-            poolTokenWei
+            delegatedDataWei
             delegator
         }
         slashingEvents {
@@ -35,12 +35,10 @@ gql`
             id
         }
         delegatorCount
-        poolValue
+        valueWithoutEarnings
         totalStakeInSponsorshipsWei
-        freeFundsWei
-        poolValueTimestamp
-        poolValueBlockNumber
-        poolTokenTotalSupplyWei
+        dataTokenBalanceWei
+        operatorTokenTotalSupplyWei
         exchangeRate
         metadataJsonString
         owner
@@ -110,12 +108,12 @@ gql`
                 id
             }
             amount
-            allocatedWei
+            earningsWei
             joinDate
         }
         operatorCount
         totalStakedWei
-        unallocatedWei
+        remainingWei
         projectedInsolvency
         cumulativeSponsoring
         minimumStakingPeriodSeconds
@@ -265,7 +263,7 @@ gql`
         projectedInsolvency
         spotAPY
         totalStakedWei
-        unallocatedWei
+        remainingWei
         date
         sponsorship {
             id
@@ -308,12 +306,12 @@ gql`
     fragment OperatorDailyBucketFields on OperatorDailyBucket {
         date
         id
-        freeFundsWei
+        dataTokenBalanceWei
         delegatorCountChange
         delegatorCountAtStart
         lossesWei
         operatorsCutWei
-        poolValue
+        valueWithoutEarnings
         profitsWei
         spotAPY
         totalDelegatedWei

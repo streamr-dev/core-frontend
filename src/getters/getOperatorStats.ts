@@ -79,7 +79,7 @@ export const getOperatorStats = async (
         let yValue: number
         switch (dataSource) {
             case 'totalValue':
-                yValue = toBN(bucket.poolValue)
+                yValue = toBN(bucket.valueWithoutEarnings)
                     .dividedBy(Math.pow(10, Number(tokenInfo?.decimals.toString())))
                     .toNumber()
                 break

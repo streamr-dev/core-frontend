@@ -103,7 +103,7 @@ export const SingleOperatorPage = () => {
         if (myDelegationAmount.isZero()) {
             return 0
         }
-        const myShare = myDelegationAmount.dividedBy(operator?.poolValue || 1)
+        const myShare = myDelegationAmount.dividedBy(operator?.valueWithoutEarnings || 1)
         return myShare.multipliedBy(100)
     }, [operator, myDelegationAmount])
 

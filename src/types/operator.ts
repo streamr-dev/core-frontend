@@ -17,12 +17,12 @@ export type OperatorElement = {
     stakes: OperatorStake[]
     delegators: OperatorDelegator[]
     delegatorCount: number
-    poolValue: BN
+    valueWithoutEarnings: BN
     totalStakeInSponsorshipsWei: BN
-    freeFundsWei: BN
+    dataTokenBalance: BN
     poolValueTimestamp: string
     poolValueBlockNumber: string
-    poolTokenTotalSupplyWei: BN
+    operatorTokenTotalSupply: BN
     exchangeRate: BN
     metadata?: OperatorMetadata
     owner: string

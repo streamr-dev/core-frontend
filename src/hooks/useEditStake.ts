@@ -76,7 +76,7 @@ export const useEditStake = (): {
                 await editStakeModal.pop({
                     currentStake: currentStake.amount,
                     operatorId: myOperatorQuery.data.id,
-                    operatorBalance: myOperatorQuery.data.freeFundsWei.toString(),
+                    operatorBalance: myOperatorQuery.data.dataTokenBalance.toString(),
                     tokenSymbol: tokenInfo.symbol,
                     decimals: tokenInfo.decimals,
                     leavePenalty: leavePenaltyWei.toString(),

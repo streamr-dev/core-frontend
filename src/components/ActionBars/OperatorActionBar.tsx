@@ -66,10 +66,10 @@ export const OperatorActionBar: FunctionComponent<{
 
     const ownerDelegationPercentage = useMemo(() => {
         const stake = getDelegationAmountForAddress(operator.owner, operator)
-        if (stake.isEqualTo(BN(0)) || operator.poolValue.isEqualTo(BN(0))) {
+        if (stake.isEqualTo(BN(0)) || operator.valueWithoutEarnings.isEqualTo(BN(0))) {
             return BN(0)
         }
-        return stake.dividedBy(operator.poolValue).multipliedBy(100)
+        return stake.dividedBy(operator.valueWithoutEarnings).multipliedBy(100)
     }, [operator])
 
     const { minimumSelfDelegationFraction } = useConfigFromChain()
@@ -276,7 +276,7 @@ export const OperatorActionBar: FunctionComponent<{
                                         isCurrentUserOwner:
                                             operator.owner === walletAddress,
                                         balance: balance?.toString(),
-                                        freeFunds: operator.freeFundsWei
+                                        freeFunds: operator.dataTokenBalance
                                             .dividedBy(1e18)
                                             .toString(),
                                         delegatedTotal: delegationAmount
@@ -329,7 +329,7 @@ export const OperatorActionBar: FunctionComponent<{
                     stats={[
                         {
                             label: 'Total value',
-                            value: fromAtto(operator.poolValue).toString(),
+                            value: fromAtto(operator.valueWithoutEarnings).toString(),
                         },
                         {
                             label: 'Deployed stake',

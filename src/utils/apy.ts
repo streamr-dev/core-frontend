@@ -17,7 +17,8 @@ export function calculateOperatorSpotAPY(operator: OperatorElement): BN {
         }
     })
 
-    return operatorIncomePerYear.isEqualTo(BN(0)) || operator.poolValue.isEqualTo(BN(0))
+    return operatorIncomePerYear.isEqualTo(BN(0)) ||
+        operator.valueWithoutEarnings.isEqualTo(BN(0))
         ? BN(0)
-        : operatorIncomePerYear.dividedBy(operator.poolValue)
+        : operatorIncomePerYear.dividedBy(operator.valueWithoutEarnings)
 }
