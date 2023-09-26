@@ -61,6 +61,9 @@ import {
     GetOperatorDailyBucketsQuery,
     GetOperatorDailyBucketsDocument,
     GetOperatorDailyBucketsQueryVariables,
+    GetSponsorshipDailyBucketsQuery,
+    GetSponsorshipDailyBucketsQueryVariables,
+    GetSponsorshipDailyBucketsDocument,
 } from '~/generated/gql/network'
 import getCoreConfig from '~/getters/getCoreConfig'
 import getGraphClient from '~/getters/getGraphClient'
@@ -575,7 +578,7 @@ export async function getStreamDescription(streamId: string) {
 /**
  * Fetches a collection of daily Operator buckets.
  * @param operatorId Operator ID
- * @param options.dateLowerThan End unit timestamp
+ * @param options.dateLowerThan End unix timestamp
  * @param options.dateGreaterEqualThan Start unix timestamp
  * @param options.batchSize Number of buckets to scout for at once
  * @param options.skip Number of buckets to skip
@@ -616,4 +619,50 @@ export async function getOperatorDailyBuckets(
     })
 
     return data.operatorDailyBuckets
+}
+
+/**
+ * Fetches a collection of daily Sponsorship buckets.
+ * @param sponsorshipId Sponsorship ID
+ * @param options.dateLowerThan End unix timestamp
+ * @param options.dateGreaterEqualThan Start unix timestamp
+ * @param options.batchSize Number of buckets to scout for at once
+ * @param options.skip Number of buckets to skip
+ * @returns Sponsorship buckets
+ */
+export async function getSponsorshipDailyBuckets(
+    sponsorshipId: string,
+    options: {
+        dateLowerThan: number
+        dateGreaterEqualThan: number
+        batchSize?: number
+        skip?: number
+    },
+) {
+    const {
+        dateLowerThan: date_lt,
+        dateGreaterEqualThan: date_gte,
+        batchSize: first = 999,
+        skip,
+    } = options
+
+    const { data } = await getGraphClient().query<
+        GetSponsorshipDailyBucketsQuery,
+        GetSponsorshipDailyBucketsQueryVariables
+    >({
+        query: GetSponsorshipDailyBucketsDocument,
+        variables: {
+            first,
+            skip,
+            where: {
+                sponsorship_: {
+                    id: sponsorshipId,
+                },
+                date_lt,
+                date_gte,
+            },
+        },
+    })
+
+    return data.sponsorshipDailyBuckets
 }
