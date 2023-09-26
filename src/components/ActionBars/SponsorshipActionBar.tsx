@@ -19,6 +19,7 @@ import { defaultChainConfig } from '~/getters/getChainConfig'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { useEditStake } from '~/hooks/useEditStake'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
+import { getBlockExplorerUrl } from '~/getters/getBlockExplorerUrl'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -129,10 +130,9 @@ export const SponsorshipActionBar: FunctionComponent<{
                                     </BlackTooltip>
                                 </span>
                                 <a
-                                    href={
-                                        'https://polygonscan.com/address/' +
+                                    href={`${getBlockExplorerUrl()}/address/${
                                         sponsorship.id
-                                    }
+                                    }`}
                                     target="_blank"
                                     rel="noreferrer"
                                 >

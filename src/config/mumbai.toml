@@ -21,6 +21,10 @@ sponsorshipPaymentToken = "DATA"
 chainId = 80001
 name = "samt1803/dataunion-subgraphs"
 
+[[core.blockExplorerUrls]]
+chainId = 80001
+url = "https://mumbai.polygonscan.com"
+
 [[core.storageNodes]]
 name = "Streamr Germany"
 address = "0x31546eEA76F2B2b3C5cC06B1c93601dc35c9D916"
