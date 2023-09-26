@@ -127,7 +127,7 @@ gql`
         sponsorships(
             first: $first
             skip: $skip
-            where: { stream_contains: $streamContains }
+            where: { stream_contains_nocase: $streamContains }
         ) {
             ...SponsorshipFields
         }
@@ -142,7 +142,7 @@ gql`
         sponsorships(
             first: $first
             skip: $skip
-            where: { creator: $creator, stream_contains: $streamContains }
+            where: { creator: $creator, stream_contains_nocase: $streamContains }
         ) {
             ...SponsorshipFields
         }

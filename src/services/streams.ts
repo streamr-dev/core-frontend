@@ -177,7 +177,7 @@ export const getPagedStreams = async (
     // NOTE: Stream name fulltext search is done through subentity "permissions" because we cannot
     // use "id_contains" in query as it's not technically stored as a string on The Graph.
     const searchFilter =
-        search != null && search.length > 0 ? `stream_contains: "${search}"` : null
+        search != null && search.length > 0 ? `stream_contains_nocase: "${search}"` : null
     const ownerFilter =
         owner != null ? `userAddress: "${owner.toLowerCase()}", canGrant: true` : null
     const allPermissionFilters = [ownerFilter, searchFilter]
