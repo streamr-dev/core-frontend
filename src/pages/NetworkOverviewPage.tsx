@@ -43,6 +43,7 @@ import { OperatorDailyBucket } from '~/generated/gql/network'
 import TimePeriodTabs from '~/components/TimePeriodTabs'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { useGlobalNetworkStats } from '~/hooks/network'
+import { LoadMoreButton } from '~/components/LoadMore'
 
 export function NetworkOverviewPage() {
     return (
@@ -306,67 +307,83 @@ const Chart = styled(TimeSeriesGraph)`
 function MyDelegations() {
     const wallet = useWalletAccount()
 
-    const { data } = useDelegacyForWalletQuery(wallet)
+    const query = useDelegacyForWalletQuery(wallet)
 
-    const delegations = data?.pages.flatMap((page) => page.delegations) || []
+    const isLoading = query.isLoading || query.isFetching
+
+    const delegations = query.data?.pages.flatMap((page) => page.delegations) || []
 
     return (
         <NetworkPageSegment title="My delegations" foot>
             <WalletPass resourceName="delegations">
-                {!wallet || delegations.length ? (
-                    <ScrollTableCore
-                        elements={delegations}
-                        columns={[
-                            {
-                                displayName: 'Operator ID',
-                                valueMapper: ({ id }) => (
-                                    <OperatorCell>
-                                        <HubAvatar id={id} /> {truncate(id)}
-                                    </OperatorCell>
-                                ),
-                                align: 'start',
-                                isSticky: true,
-                                key: 'operatorId',
-                            },
-                            {
-                                displayName: 'My share',
-                                valueMapper: ({ myShare }) =>
-                                    fromAtto(myShare).toString(),
-                                align: 'start',
-                                isSticky: false,
-                                key: 'myShare',
-                            },
-                            {
-                                displayName: 'Total stake',
-                                valueMapper: ({ poolValue }) =>
-                                    fromAtto(poolValue).toString(),
-                                align: 'end',
-                                isSticky: false,
-                                key: 'totalStake',
-                            },
-                            {
-                                displayName: "Operator's cut",
-                                valueMapper: ({ operatorsCut }) => `${operatorsCut}%`,
-                                align: 'end',
-                                isSticky: false,
-                                key: 'operatorsCut',
-                            },
-                            {
-                                displayName: 'APY',
-                                valueMapper: ({ apy }) => `${apy}%`,
-                                align: 'end',
-                                isSticky: false,
-                                key: 'apy',
-                            },
-                            {
-                                displayName: 'Sponsorships',
-                                valueMapper: (element) => element.stakes.length,
-                                align: 'end',
-                                isSticky: false,
-                                key: 'sponsorships',
-                            },
-                        ]}
-                    />
+                {!wallet || delegations.length || isLoading ? (
+                    <>
+                        <ScrollTableCore
+                            isLoading={isLoading}
+                            elements={delegations}
+                            columns={[
+                                {
+                                    displayName: 'Operator ID',
+                                    valueMapper: ({ id }) => (
+                                        <OperatorCell>
+                                            <HubAvatar id={id} /> {truncate(id)}
+                                        </OperatorCell>
+                                    ),
+                                    align: 'start',
+                                    isSticky: true,
+                                    key: 'operatorId',
+                                },
+                                {
+                                    displayName: 'My share',
+                                    valueMapper: ({ myShare }) =>
+                                        fromAtto(myShare).toString(),
+                                    align: 'start',
+                                    isSticky: false,
+                                    key: 'myShare',
+                                },
+                                {
+                                    displayName: 'Total stake',
+                                    valueMapper: ({ poolValue }) =>
+                                        fromAtto(poolValue).toString(),
+                                    align: 'end',
+                                    isSticky: false,
+                                    key: 'totalStake',
+                                },
+                                {
+                                    displayName: "Operator's cut",
+                                    valueMapper: ({ operatorsCut }) => `${operatorsCut}%`,
+                                    align: 'end',
+                                    isSticky: false,
+                                    key: 'operatorsCut',
+                                },
+                                {
+                                    displayName: 'APY',
+                                    valueMapper: ({ apy }) => `${apy}%`,
+                                    align: 'end',
+                                    isSticky: false,
+                                    key: 'apy',
+                                },
+                                {
+                                    displayName: 'Sponsorships',
+                                    valueMapper: (element) => element.stakes.length,
+                                    align: 'end',
+                                    isSticky: false,
+                                    key: 'sponsorships',
+                                },
+                            ]}
+                        />
+                        {query.hasNextPage ? (
+                            <LoadMoreButton
+                                disabled={isLoading}
+                                onClick={() => void query.fetchNextPage()}
+                                kind="primary2"
+                            >
+                                Load more
+                            </LoadMoreButton>
+                        ) : (
+                            <></>
+                        )}
+                    </>
                 ) : (
                     <NoData
                         firstLine="You haven't delegated to anyone yet."
@@ -395,95 +412,104 @@ const OperatorCell = styled.div`
 function MySponsorships() {
     const wallet = useWalletAccount()
 
-    const { data } = useSponsorshipsForCreatorQuery(wallet)
+    const query = useSponsorshipsForCreatorQuery(wallet)
 
-    const sponsorships = data?.pages.flatMap((page) => page.sponsorships) || []
+    const sponsorships = query.data?.pages.flatMap((page) => page.sponsorships) || []
 
-    const isLoading = useIsLoadingOperatorForWallet(wallet)
+    const isLoading =
+        useIsLoadingOperatorForWallet(wallet) || query.isLoading || query.isFetching
 
     return (
         <NetworkPageSegment title="My sponsorships" foot>
             <WalletPass resourceName="sponsorships">
-                {wallet && isLoading ? (
-                    <Pad>Loading…</Pad>
-                ) : (
+                {!wallet || sponsorships.length || isLoading ? (
                     <>
-                        {!wallet || sponsorships.length ? (
-                            <ScrollTableCore
-                                elements={sponsorships}
-                                columns={[
-                                    {
-                                        displayName: 'Stream ID',
-                                        valueMapper: ({ streamId }) => (
-                                            <StreamInfoCell>
-                                                <span className="stream-id">
-                                                    {truncateStreamName(streamId)}
-                                                </span>
-                                                <span className="stream-description">
-                                                    <StreamDescription
-                                                        streamId={streamId}
-                                                    ></StreamDescription>
-                                                </span>
-                                            </StreamInfoCell>
-                                        ),
-                                        align: 'start',
-                                        isSticky: true,
-                                        key: 'streamInfo',
-                                    },
-                                    {
-                                        displayName: (
-                                            <>
-                                                <SponsorshipPaymentTokenName />
-                                                /day
-                                            </>
-                                        ),
-                                        valueMapper: (element) =>
-                                            element.payoutPerDay.toString(),
-                                        align: 'start',
-                                        isSticky: false,
-                                        key: 'dataPerDay',
-                                    },
-                                    {
-                                        displayName: 'Operators',
-                                        valueMapper: (element) => element.operatorCount,
-                                        align: 'end',
-                                        isSticky: false,
-                                        key: 'operators',
-                                    },
-                                    {
-                                        displayName: 'Staked',
-                                        valueMapper: (element) =>
-                                            element.totalStake.toString(),
-                                        align: 'end',
-                                        isSticky: false,
-                                        key: 'staked',
-                                    },
-                                    {
-                                        displayName: 'APY',
-                                        valueMapper: (element) => `${element.apy}%`,
-                                        align: 'end',
-                                        isSticky: false,
-                                        key: 'apy',
-                                    },
-                                ]}
-                            />
-                        ) : (
-                            <Pad>
-                                <NoData
-                                    firstLine="You don't have any sponsorships yet."
-                                    secondLine={
+                        <ScrollTableCore
+                            isLoading={isLoading}
+                            elements={sponsorships}
+                            columns={[
+                                {
+                                    displayName: 'Stream ID',
+                                    valueMapper: ({ streamId }) => (
+                                        <StreamInfoCell>
+                                            <span className="stream-id">
+                                                {truncateStreamName(streamId)}
+                                            </span>
+                                            <span className="stream-description">
+                                                <StreamDescription
+                                                    streamId={streamId}
+                                                ></StreamDescription>
+                                            </span>
+                                        </StreamInfoCell>
+                                    ),
+                                    align: 'start',
+                                    isSticky: true,
+                                    key: 'streamInfo',
+                                },
+                                {
+                                    displayName: (
                                         <>
-                                            You can{' '}
-                                            <Link to={routes.network.sponsorships()}>
-                                                start a sponsorship
-                                            </Link>{' '}
-                                            here
+                                            <SponsorshipPaymentTokenName />
+                                            /day
                                         </>
-                                    }
-                                />
-                            </Pad>
+                                    ),
+                                    valueMapper: (element) =>
+                                        element.payoutPerDay.toString(),
+                                    align: 'start',
+                                    isSticky: false,
+                                    key: 'dataPerDay',
+                                },
+                                {
+                                    displayName: 'Operators',
+                                    valueMapper: (element) => element.operatorCount,
+                                    align: 'end',
+                                    isSticky: false,
+                                    key: 'operators',
+                                },
+                                {
+                                    displayName: 'Staked',
+                                    valueMapper: (element) =>
+                                        element.totalStake.toString(),
+                                    align: 'end',
+                                    isSticky: false,
+                                    key: 'staked',
+                                },
+                                {
+                                    displayName: 'APY',
+                                    valueMapper: (element) => `${element.apy}%`,
+                                    align: 'end',
+                                    isSticky: false,
+                                    key: 'apy',
+                                },
+                            ]}
+                        />
+                        {query.hasNextPage ? (
+                            <LoadMoreButton
+                                disabled={isLoading}
+                                onClick={() => void query.fetchNextPage()}
+                                kind="primary2"
+                            >
+                                Load more
+                            </LoadMoreButton>
+                        ) : (
+                            <></>
                         )}
                     </>
+                ) : (
+                    <Pad>
+                        <NoData
+                            firstLine="You don't have any sponsorships yet."
+                            secondLine={
+                                <>
+                                    You can{' '}
+                                    <Link to={routes.network.sponsorships()}>
+                                        start a sponsorship
+                                    </Link>{' '}
+                                    here
+                                </>
+                            }
+                        />
+                    </Pad>
                 )}
             </WalletPass>
         </NetworkPageSegment>
