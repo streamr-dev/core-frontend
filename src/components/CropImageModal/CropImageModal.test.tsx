@@ -1,5 +1,7 @@
 import React, { forwardRef } from 'react'
 import { cleanup, screen, render, fireEvent } from '@testing-library/react'
+import { sleep } from '~/utils'
+
 const mockGetImage = jest.fn(() => ({
     width: 100,
     height: 100,
@@ -34,7 +36,7 @@ class FakeImg {
 
     private async callOnLoad() {
         while (!this.onload) {
-            await new Promise((resolve) => void setTimeout(resolve, 10))
+            await sleep(10)
         }
 
         this.onload()

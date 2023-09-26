@@ -4,6 +4,7 @@ import {
     GetMetadataQuery,
     GetMetadataQueryVariables,
 } from '~/generated/gql/network'
+import { sleep } from '~/utils'
 
 const SESSION_STORAGE_KEY = 'StreamrHubLastBlockNumber'
 
@@ -45,7 +46,7 @@ export const waitForGraphSync = async (): Promise<void> => {
                 await client?.clearStore()
             }
 
-            await new Promise((resolve) => void setTimeout(resolve, 500))
+            await sleep(500)
         }
     }
 

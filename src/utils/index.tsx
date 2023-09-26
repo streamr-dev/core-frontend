@@ -92,7 +92,7 @@ export async function waitForPurchasePropagation(
             return
         }
 
-        await new Promise((resolve) => void setTimeout(resolve, 3000))
+        await sleep(3000)
     }
 
     throw new Error('Finding `Subscribed` event timed out')
@@ -119,4 +119,8 @@ export function isProjectOwnedBy<
         ) || {}
 
     return !!canGrant
+}
+
+export async function sleep(millis: number) {
+    await new Promise((resolve) => void setTimeout(resolve, millis))
 }
