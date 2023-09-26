@@ -1,13 +1,10 @@
 import { produce } from 'immer'
-import moment from 'moment'
 import { useEffect } from 'react'
 import { create } from 'zustand'
 import { growingValuesGenerator } from '~/components/NetworkUtils'
-import { getOperatorByOwnerAddress, getOperatorsByDelegation } from '~/getters'
+import { getOperatorByOwnerAddress } from '~/getters'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
-import { getSpotApy } from '~/utils/apy'
 import { toBN, BN } from '~/utils/bn'
-import { getDelegationAmountForAddress2 } from '~/utils/delegation'
 
 interface XY {
     x: number

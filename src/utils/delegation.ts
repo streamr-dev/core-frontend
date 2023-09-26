@@ -1,9 +1,9 @@
 import { parseEther } from 'ethers/lib/utils'
 import { OperatorElement } from '~/types/operator'
-import { BN, toBN } from './bn'
+import { BN } from './bn'
 
 /**
- * @deprecated Use `getDelegationAmountForAddress2`. It's more flexible
+ * @deprecated Use `getDelegatedAmountForWallet`. It's more flexible
  * and operates on `BN` amounts.
  */
 export function getDelegationAmountForAddress(
@@ -39,15 +39,5 @@ export const getOwnerSelfDelegationPercentage = (
         )
             .div(100)
             .toString(),
-    )
-}
-
-export function getDelegationAmountForAddress2(
-    address: string,
-    delegators: { delegator: string; amount: BN }[],
-): BN {
-    return delegators.reduce(
-        (sum, { delegator, amount }) => (delegator === address ? sum.plus(amount) : sum),
-        toBN(0),
     )
 }

@@ -1,21 +1,9 @@
 import React from 'react'
 import Tabs, { Tab } from '~/shared/components/Tabs'
-
-export enum TimePeriod {
-    SevenDays = 'SevenDays',
-    OneMonth = 'OneMonth',
-    ThreeMonths = 'ThreeMonths',
-    OneYear = 'OneYear',
-    YearToDate = 'YearToDate',
-    All = 'All',
-}
-
-function isTimePeriod(value: string): value is TimePeriod {
-    return Object.prototype.hasOwnProperty.call(TimePeriod, value)
-}
+import { TimePeriod, isTimePeriod } from '~/types'
 
 export default function TimePeriodTabs({
-    value,
+    value = TimePeriod.SevenDays,
     onChange,
 }: {
     value?: TimePeriod

@@ -7,6 +7,7 @@ import {
     ProjectRegistryV1 as ProjectRegistryContract,
     MarketplaceV4 as MarketplaceContract,
 } from '@streamr/hub-contracts'
+import moment, { Moment } from 'moment'
 import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
 import reverseRecordsAbi from '~/shared/web3/abis/reverseRecords.json'
 import {
@@ -58,6 +59,7 @@ import {
     GetStreamByIdQuery,
     GetStreamByIdQueryVariables,
     GetStreamByIdDocument,
+    Operator,
     GetOperatorDailyBucketsQuery,
     GetOperatorDailyBucketsDocument,
     GetOperatorDailyBucketsQueryVariables,
@@ -67,6 +69,9 @@ import {
 } from '~/generated/gql/network'
 import getCoreConfig from '~/getters/getCoreConfig'
 import getGraphClient from '~/getters/getGraphClient'
+import { Delegation, TimePeriod } from '~/types'
+import { OperatorParser } from '~/parsers/OperatorParser'
+import { BN, toBN } from '~/utils/bn'
 
 export function getGraphUrl(): string {
     const { theGraphUrl, theHubGraphName } = getCoreConfig()
@@ -573,6 +578,146 @@ export async function getStreamDescription(streamId: string) {
         })
         .transform(({ metadata: { description } }) => description)
         .parse(stream)
+}
+
+/**
+ * Queries the Graph for wallet's delegacy.
+ * @param address Wallet address.
+ * @param options.batchSize Number of entries to scout for.
+ * @param options.skip Number of entries to skip.
+ * @param options.onParseError Callback triggered for *each* parser failure (see `OperatorParser`).
+ * @param options.onBeforeComplete Callback triggered just before returning the result. It carries
+ * a total number of found operators and the number of successfully parsed operators.
+ * @returns Collection of `Delegation` objects.
+ */
+export async function getDelegacyForWallet(
+    address = '',
+    {
+        batchSize,
+        skip,
+        onParseError,
+        onBeforeComplete,
+    }: {
+        batchSize?: number
+        skip?: number
+        onParseError?: (operator: Operator, error: unknown) => void
+        onBeforeComplete?: (total: number, parsed: number) => void
+    },
+): Promise<Delegation[]> {
+    if (!address) {
+        return []
+    }
+
+    const delegacy: Delegation[] = []
+
+    const operators = await getOperatorsByDelegation({
+        first: batchSize,
+        skip,
+        address,
+    })
+
+    const preparsedCount = operators.length
+
+    for (let i = 0; i < preparsedCount; i++) {
+        const rawOperator = operators[i]
+
+        try {
+            const operator = OperatorParser.parse(rawOperator)
+
+            delegacy.push({
+                ...operator,
+                apy: getSpotApy(operator),
+                myShare: getDelegatedAmountForWallet(address, operator),
+            })
+        } catch (e) {
+            onParseError
+                ? onParseError(rawOperator as Operator, e)
+                : console.warn('Failed to parse an operator', e)
+        }
+    }
+
+    onBeforeComplete?.(preparsedCount, delegacy.length)
+
+    return delegacy
+}
+
+/**
+ * Compute projected yearly earnings based on the current yield.
+ * @param poolValue Total value of the pool.
+ * @param stakes Collection of basic stake information (amount, spot apy, projected insolvency date).
+ * @returns Number between 0 and 1 (inclusive) representing the APY. 0 = 0%, 1 = 100%.
+ */
+export function getSpotApy({
+    poolValue,
+    stakes,
+}: {
+    poolValue: BN
+    stakes: { amount: BN; spotAPY: BN; projectedInsolvencyAt: number }[]
+}): number {
+    if (poolValue.isEqualTo(0)) {
+        return 0
+    }
+
+    const stake = stakes.reduce((sum, { amount }) => sum.plus(amount), toBN(0))
+
+    const now = Date.now()
+
+    const yearlyIncome = stakes.reduce((sum, { spotAPY, projectedInsolvencyAt }) => {
+        /**
+         * Only include sponsorships that haven't expired.
+         */
+        return projectedInsolvencyAt * 1000 < now
+            ? sum.plus(stake.multipliedBy(spotAPY))
+            : sum
+    }, toBN(0))
+
+    if (yearlyIncome.isEqualTo(0)) {
+        return 0
+    }
+
+    return yearlyIncome.dividedBy(poolValue).toNumber()
+}
+
+/**
+ * Sums amounts delegated to given operator by given wallet.
+ * @param address Wallet address.
+ * @param operator.delegators Collection of delegators.
+ * @returns Wallet's delegacy overall share.
+ */
+export function getDelegatedAmountForWallet(
+    address: string,
+    { delegators }: { delegators: { delegator: string; amount: BN }[] },
+): BN {
+    return delegators.reduce(
+        (sum, { delegator, amount }) =>
+            delegator.toLowerCase() === address.toLowerCase() ? sum.plus(amount) : sum,
+        toBN(0),
+    )
+}
+
+/**
+ * Turns `period` into a timestamp relative to `end` moment.
+ */
+export function getTimestampForTimePeriod(timePeriod: TimePeriod, end: Moment) {
+    const result = (() => {
+        switch (timePeriod) {
+            case TimePeriod.SevenDays:
+                return end.clone().subtract(7, 'days')
+            case TimePeriod.OneMonth:
+                return end.clone().subtract(30, 'days')
+            case TimePeriod.ThreeMonths:
+                return end.clone().subtract(90, 'days')
+            case TimePeriod.OneYear:
+                return end.clone().subtract(365, 'days')
+            case TimePeriod.YearToDate:
+                return end.clone().startOf('year')
+            case TimePeriod.All:
+            default:
+                return moment(0).utc()
+        }
+    })()
+
+    return result.unix()
 }
 
 /**

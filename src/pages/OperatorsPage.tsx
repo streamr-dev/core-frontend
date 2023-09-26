@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { toaster } from 'toasterhea'
+import { Link } from 'react-router-dom'
 import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import {
@@ -28,13 +29,10 @@ import { useMyOperator } from '~/hooks/useMyOperator'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import routes from '~/routes'
-import { NetworkActionBar } from '../components/ActionBars/NetworkActionBar'
-import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
-import {
-    useAllOperatorsQuery,
-    useDelegatedOperatorsQuery,
-} from '../hooks/useOperatorList'
-import { OperatorElement } from '../types/operator'
+import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
+import { NetworkSectionTitle } from '~/components/NetworkSectionTitle'
+import { useAllOperatorsQuery, useDelegatedOperatorsQuery } from '~/hooks/useOperatorList'
+import { OperatorElement } from '~/types/operator'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 

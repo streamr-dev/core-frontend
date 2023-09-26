@@ -26,9 +26,13 @@ import { fromAtto } from '~/marketplace/utils/math'
 import { useSponsorshipsForCreatorQuery } from '~/hooks/sponsorships'
 import { StreamDescription } from '~/components/StreamDescription'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { useDelegationStats, useDelegationsForWalletQuery } from '~/hooks/delegations'
 import { toBN } from '~/utils/bn'
-import { useOperatorStatsForWallet } from '~/hooks/operators'
+import {
+    useDelegacyForWalletQuery,
+    useDelegacyStats,
+    useIsLoadingOperatorForWallet,
+    useOperatorStatsForWallet,
+} from '~/hooks/operators'
 
 export function NetworkOverviewPage() {
     const account = useWalletAccount()
@@ -159,7 +163,7 @@ function MyOperatorSummary() {
 function MyDelegationsSummary() {
     const wallet = useWalletAccount()
 
-    const stats = useDelegationStats(wallet)
+    const stats = useDelegacyStats(wallet)
 
     const { value = toBN(0), numOfOperators = 0, minApy = 0, maxApy = 0 } = stats || {}
 
@@ -230,96 +234,80 @@ const Chart = styled(TimeSeriesGraph)`
 `
 
 function MyDelegations() {
-    const { operator, owner } = useNetworkStore()
+    const wallet = useWalletAccount()
 
-    const { data } = useDelegationsForWalletQuery(owner)
+    const { data } = useDelegacyForWalletQuery(wallet)
 
     const delegations = data?.pages.flatMap((page) => page.delegations) || []
 
     return (
         <NetworkPageSegment title="My delegations" foot>
             <WalletPass resourceName="delegations">
-                {owner && typeof operator === 'undefined' ? (
-                    <Pad>Loading…</Pad>
+                {!wallet || delegations.length ? (
+                    <ScrollTableCore
+                        elements={delegations}
+                        columns={[
+                            {
+                                displayName: 'Operator ID',
+                                valueMapper: ({ id }) => (
+                                    <OperatorCell>
+                                        <HubAvatar id={id} /> {truncate(id)}
+                                    </OperatorCell>
+                                ),
+                                align: 'start',
+                                isSticky: true,
+                                key: 'operatorId',
+                            },
+                            {
+                                displayName: 'My share',
+                                valueMapper: ({ myShare }) =>
+                                    fromAtto(myShare).toString(),
+                                align: 'start',
+                                isSticky: false,
+                                key: 'myShare',
+                            },
+                            {
+                                displayName: 'Total stake',
+                                valueMapper: ({ poolValue }) =>
+                                    fromAtto(poolValue).toString(),
+                                align: 'end',
+                                isSticky: false,
+                                key: 'totalStake',
+                            },
+                            {
+                                displayName: "Operator's cut",
+                                valueMapper: ({ operatorsCut }) => `${operatorsCut}%`,
+                                align: 'end',
+                                isSticky: false,
+                                key: 'operatorsCut',
+                            },
+                            {
+                                displayName: 'APY',
+                                valueMapper: ({ apy }) => `${apy}%`,
+                                align: 'end',
+                                isSticky: false,
+                                key: 'apy',
+                            },
+                            {
+                                displayName: 'Sponsorships',
+                                valueMapper: (element) => element.stakes.length,
+                                align: 'end',
+                                isSticky: false,
+                                key: 'sponsorships',
+                            },
+                        ]}
+                    />
                 ) : (
-                    <>
-                        {!owner || delegations.length ? (
-                            <ScrollTableCore
-                                elements={delegations}
-                                columns={[
-                                    {
-                                        displayName: 'Operator ID',
-                                        valueMapper: ({ id }) => (
-                                            <OperatorCell>
-                                                <HubAvatar id={id} /> {truncate(id)}
-                                            </OperatorCell>
-                                        ),
-                                        align: 'start',
-                                        isSticky: true,
-                                        key: 'operatorId',
-                                    },
-                                    {
-                                        displayName: 'My share',
-                                        valueMapper: ({ myShare }) =>
-                                            fromAtto(myShare).toString(),
-                                        align: 'start',
-                                        isSticky: false,
-                                        key: 'myShare',
-                                    },
-                                    {
-                                        displayName: 'Total stake',
-                                        valueMapper: ({ poolValue }) =>
-                                            fromAtto(poolValue).toString(),
-                                        align: 'end',
-                                        isSticky: false,
-                                        key: 'totalStake',
-                                    },
-                                    {
-                                        displayName: "Operator's cut",
-                                        valueMapper: ({ operatorsCut }) =>
-                                            `${operatorsCut}%`,
-                                        align: 'end',
-                                        isSticky: false,
-                                        key: 'operatorsCut',
-                                    },
-                                    {
-                                        displayName: 'APY',
-                                        valueMapper: ({ apy }) => `${apy}%`,
-                                        align: 'end',
-                                        isSticky: false,
-                                        key: 'apy',
-                                    },
-                                    {
-                                        displayName: 'Sponsorships',
-                                        valueMapper: (element) => element.stakes.length,
-                                        align: 'end',
-                                        isSticky: false,
-                                        key: 'sponsorships',
-                                    },
-                                ]}
-                                actions={[
-                                    {
-                                        displayName: 'Edit',
-                                        callback: (element) =>
-                                            console.warn('editing! ' + element.id),
-                                    },
-                                ]}
-                            />
-                        ) : (
-                            <NoData
-                                firstLine="You haven't delegated to anyone yet."
-                                secondLine={
-                                    <>
-                                        You can browse{' '}
-                                        <Link to={routes.network.operators()}>
-                                            operators
-                                        </Link>{' '}
-                                        to start delegating.
-                                    </>
-                                }
-                            />
-                        )}
-                    </>
+                    <NoData
+                        firstLine="You haven't delegated to anyone yet."
+                        secondLine={
+                            <>
+                                You can browse{' '}
+                                <Link to={routes.network.operators()}>operators</Link> to
+                                start delegating.
+                            </>
+                        }
+                    />
                 )}
             </WalletPass>
         </NetworkPageSegment>
@@ -335,20 +323,22 @@ const OperatorCell = styled.div`
 `
 
 function MySponsorships() {
-    const { operator, owner } = useNetworkStore()
+    const wallet = useWalletAccount()
 
-    const { data } = useSponsorshipsForCreatorQuery(owner)
+    const { data } = useSponsorshipsForCreatorQuery(wallet)
 
     const sponsorships = data?.pages.flatMap((page) => page.sponsorships) || []
+
+    const isLoading = useIsLoadingOperatorForWallet(wallet)
 
     return (
         <NetworkPageSegment title="My sponsorships" foot>
             <WalletPass resourceName="sponsorships">
-                {owner && typeof operator === 'undefined' ? (
+                {wallet && isLoading ? (
                     <Pad>Loading…</Pad>
                 ) : (
                     <>
-                        {!owner || sponsorships.length ? (
+                        {!wallet || sponsorships.length ? (
                             <ScrollTableCore
                                 elements={sponsorships}
                                 columns={[
@@ -404,13 +394,6 @@ function MySponsorships() {
                                         align: 'end',
                                         isSticky: false,
                                         key: 'apy',
-                                    },
-                                ]}
-                                actions={[
-                                    {
-                                        displayName: 'Edit',
-                                        callback: (element) =>
-                                            console.warn('editing! ' + element.streamId),
                                     },
                                 ]}
                             />

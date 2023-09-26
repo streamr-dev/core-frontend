@@ -2,7 +2,8 @@ import React, { ReactNode, useState } from 'react'
 import styled from 'styled-components'
 import Tabs, { Tab, Root as TabsRoot, Item as TabsItem } from '~/shared/components/Tabs'
 import { TABLET } from '~/shared/utils/styled'
-import TimePeriodTabs, { TimePeriod } from './TimePeriodTabs'
+import TimePeriodTabs from '~/components/TimePeriodTabs'
+import { TimePeriod } from '~/types'
 
 export default function NetworkChartDisplay<
     T extends { id: string; label: string; data: { x: number; y: number }[] },
