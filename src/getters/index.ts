@@ -58,9 +58,12 @@ import {
     GetStreamByIdQuery,
     GetStreamByIdQueryVariables,
     GetStreamByIdDocument,
+    GetOperatorDailyBucketsQuery,
+    GetOperatorDailyBucketsDocument,
+    GetOperatorDailyBucketsQueryVariables,
 } from '~/generated/gql/network'
-import getCoreConfig from './getCoreConfig'
-import getGraphClient from './getGraphClient'
+import getCoreConfig from '~/getters/getCoreConfig'
+import getGraphClient from '~/getters/getGraphClient'
 
 export function getGraphUrl(): string {
     const { theGraphUrl, theHubGraphName } = getCoreConfig()
@@ -567,4 +570,50 @@ export async function getStreamDescription(streamId: string) {
         })
         .transform(({ metadata: { description } }) => description)
         .parse(stream)
+}
+
+/**
+ * Fetches a collection of daily Operator buckets.
+ * @param operatorId Operator ID
+ * @param options.dateLowerThan End unit timestamp
+ * @param options.dateGreaterEqualThan Start unix timestamp
+ * @param options.batchSize Number of buckets to scout for at once
+ * @param options.skip Number of buckets to skip
+ * @returns Operator buckets
+ */
+export async function getOperatorDailyBuckets(
+    operatorId: string,
+    options: {
+        dateLowerThan: number
+        dateGreaterEqualThan: number
+        batchSize?: number
+        skip?: number
+    },
+) {
+    const {
+        dateLowerThan: date_lt,
+        dateGreaterEqualThan: date_gte,
+        batchSize: first = 999,
+        skip,
+    } = options
+
+    const { data } = await getGraphClient().query<
+        GetOperatorDailyBucketsQuery,
+        GetOperatorDailyBucketsQueryVariables
+    >({
+        query: GetOperatorDailyBucketsDocument,
+        variables: {
+            first,
+            skip,
+            where: {
+                operator_: {
+                    id: operatorId,
+                },
+                date_lt,
+                date_gte,
+            },
+        },
+    })
+
+    return data.operatorDailyBuckets
 }
