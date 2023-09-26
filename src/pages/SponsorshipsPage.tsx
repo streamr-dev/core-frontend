@@ -1,14 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import { NetworkHelmet } from '~/components/Helmet'
-import {
-    WhiteBox,
-    WhiteBoxPaddingStyles,
-    WhiteBoxSeparator,
-} from '~/shared/components/WhiteBox'
-import { LAPTOP, TABLET } from '~/shared/utils/styled'
 import { Layer } from '~/utils/Layer'
 import { truncateStreamName } from '~/shared/utils/text'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
@@ -31,12 +24,12 @@ import {
 import { useJoinSponsorship } from '~/hooks/useJoinSponsorship'
 import { useEditStake } from '~/hooks/useEditStake'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
-import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
 import { StreamInfoCell } from '../components/NetworkUtils'
 import {
     getTokenAndBalanceForSponsorship,
     TokenAndBalanceForSponsorship,
 } from '../getters/getTokenAndBalanceForSponsorship'
+import NetworkPageSegment from '~/components/NetworkPageSegment'
 
 const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
 
@@ -116,13 +109,13 @@ export const SponsorshipsPage = () => {
         <Layout>
             <NetworkHelmet title="Sponsorships" />
             <NetworkActionBar
-                searchEnabled={true}
+                searchEnabled
                 onSearch={handleSearch}
                 leftSideContent={
                     <Tabs
                         onSelectionChange={handleTabChange}
                         selection={selectedTab}
-                        fullWidthOnMobile={true}
+                        fullWidthOnMobile
                     >
                         <Tab id={TabOptions.allSponsorships}>All sponsorships</Tab>
                         <Tab id={TabOptions.mySponsorships} disabled={!walletConnected}>
@@ -157,14 +150,18 @@ export const SponsorshipsPage = () => {
                 }
             />
             <LayoutColumn>
-                <SponsorshipsTableWrap>
-                    <div className="title">
-                        <NetworkSectionTitle>
-                            {selectedTab === TabOptions.allSponsorships ? 'All' : 'My'}{' '}
-                            sponsorships
-                        </NetworkSectionTitle>
-                    </div>
-                    <WhiteBoxSeparator />
+                <NetworkPageSegment
+                    foot
+                    title={
+                        <>
+                            {selectedTab === TabOptions.allSponsorships ? (
+                                <>All sponsorships</>
+                            ) : (
+                                <>My sponsorships</>
+                            )}
+                        </>
+                    }
+                >
                     <ScrollTableCore
                         elements={sponsorships}
                         isLoading={
@@ -272,34 +269,20 @@ export const SponsorshipsPage = () => {
                             routes.network.sponsorship({ id: element.id })
                         }
                     />
-                </SponsorshipsTableWrap>
-                {sponsorshipsQuery.hasNextPage && (
-                    <LoadMoreButton
-                        disabled={
-                            sponsorshipsQuery.isLoading || sponsorshipsQuery.isFetching
-                        }
-                        onClick={() => sponsorshipsQuery.fetchNextPage()}
-                        kind="primary2"
-                    >
-                        Load more
-                    </LoadMoreButton>
-                )}
+                    {sponsorshipsQuery.hasNextPage && (
+                        <LoadMoreButton
+                            disabled={
+                                sponsorshipsQuery.isLoading ||
+                                sponsorshipsQuery.isFetching
+                            }
+                            onClick={() => sponsorshipsQuery.fetchNextPage()}
+                            kind="primary2"
+                        >
+                            Load more
+                        </LoadMoreButton>
+                    )}
+                </NetworkPageSegment>
             </LayoutColumn>
         </Layout>
     )
 }
-
-const SponsorshipsTableWrap = styled(WhiteBox)`
-    margin-top: 40px;
-    margin-bottom: 40px;
-    @media (${TABLET}) {
-        margin-top: 48px;
-    }
-    @media (${LAPTOP}) {
-        margin-top: 80px;
-    }
-
-    .title {
-        ${WhiteBoxPaddingStyles}
-    }
-`
