@@ -88,6 +88,39 @@ gql`
         }
     }
 
+    query getOperatorsByDelegationAndId(
+        $first: Int
+        $skip: Int
+        $delegator: String!
+        $operatorId: ID!
+    ) {
+        operators(
+            first: $first
+            skip: $skip
+            where: { delegators_: { delegator: $delegator }, id: $operatorId }
+        ) {
+            ...OperatorFields
+        }
+    }
+
+    query getOperatorsByDelegationAndMetadata(
+        $first: Int
+        $skip: Int
+        $delegator: String!
+        $searchQuery: String!
+    ) {
+        operators(
+            first: $first
+            skip: $skip
+            where: {
+                delegators_: { delegator: $delegator }
+                metadataJsonString_contains_nocase: $searchQuery
+            }
+        ) {
+            ...OperatorFields
+        }
+    }
+
     query getOperatorByOwnerAddress($owner: String!) {
         operators(where: { owner: $owner }) {
             ...OperatorFields

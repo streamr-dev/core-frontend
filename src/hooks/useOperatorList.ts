@@ -6,6 +6,8 @@ import { toBN } from '~/utils/bn'
 import {
     getAllOperators,
     getOperatorsByDelegation,
+    getOperatorsByDelegationAndId,
+    getOperatorsByDelegationAndMetadata,
     searchOperatorsById,
     searchOperatorsByMetadata,
 } from '~/getters'
@@ -75,18 +77,44 @@ export const useAllOperatorsQuery = (
 export const useDelegatedOperatorsQuery = (
     pageSize = 10,
     address?: string,
+    searchQuery?: string,
 ): UseInfiniteQueryResult<{
     skippedElements: number
     elements: OperatorElement[]
 }> => {
     return useInfiniteQuery({
-        queryKey: ['delegatedOperators', address],
+        queryKey: ['delegatedOperators', address, searchQuery],
         async queryFn(ctx) {
-            const operators = (await getOperatorsByDelegation({
-                first: pageSize,
-                skip: ctx.pageParam,
-                address: address || '',
-            })) as Operator[]
+            let operators: Operator[] = []
+
+            // no search query - get all
+            if (searchQuery == null || searchQuery.length === 0) {
+                operators = (await getOperatorsByDelegation({
+                    first: pageSize,
+                    skip: ctx.pageParam,
+                    address: address || '',
+                })) as Operator[]
+                return {
+                    skippedElements: ctx.pageParam || 0,
+                    elements: operators.map(mapOperatorToElement),
+                }
+            }
+
+            if (isEthereumAddress(searchQuery.toLowerCase())) {
+                operators = (await getOperatorsByDelegationAndId({
+                    first: pageSize,
+                    skip: ctx.pageParam,
+                    address: address || '',
+                    id: searchQuery.toLowerCase(),
+                })) as Operator[]
+            } else {
+                operators = (await getOperatorsByDelegationAndMetadata({
+                    first: pageSize,
+                    skip: ctx.pageParam,
+                    address: address || '',
+                    searchQuery: searchQuery.toLowerCase(),
+                })) as Operator[]
+            }
 
             return {
                 skippedElements: ctx.pageParam || 0,

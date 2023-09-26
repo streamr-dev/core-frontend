@@ -49,6 +49,12 @@ import {
     SearchOperatorsByMetadataQuery,
     SearchOperatorsByMetadataQueryVariables,
     SearchOperatorsByMetadataDocument,
+    GetOperatorsByDelegationAndIdQuery,
+    GetOperatorsByDelegationAndIdDocument,
+    GetOperatorsByDelegationAndIdQueryVariables,
+    GetOperatorsByDelegationAndMetadataQuery,
+    GetOperatorsByDelegationAndMetadataQueryVariables,
+    GetOperatorsByDelegationAndMetadataDocument,
 } from '~/generated/gql/network'
 import getCoreConfig from './getCoreConfig'
 import getGraphClient from './getGraphClient'
@@ -372,6 +378,64 @@ export async function getOperatorsByDelegation({
             first,
             skip,
             delegator: address,
+        },
+    })
+
+    return operators
+}
+
+export async function getOperatorsByDelegationAndId({
+    first,
+    skip,
+    address,
+    id,
+}: {
+    first?: number
+    skip?: number
+    address: string
+    id: string
+}): Promise<GetOperatorsByDelegationAndIdQuery['operators']> {
+    const {
+        data: { operators },
+    } = await getGraphClient().query<
+        GetOperatorsByDelegationAndIdQuery,
+        GetOperatorsByDelegationAndIdQueryVariables
+    >({
+        query: GetOperatorsByDelegationAndIdDocument,
+        variables: {
+            first,
+            skip,
+            delegator: address,
+            operatorId: id,
+        },
+    })
+
+    return operators
+}
+
+export async function getOperatorsByDelegationAndMetadata({
+    first,
+    skip,
+    address,
+    searchQuery,
+}: {
+    first?: number
+    skip?: number
+    address: string
+    searchQuery: string
+}): Promise<GetOperatorsByDelegationAndMetadataQuery['operators']> {
+    const {
+        data: { operators },
+    } = await getGraphClient().query<
+        GetOperatorsByDelegationAndMetadataQuery,
+        GetOperatorsByDelegationAndMetadataQueryVariables
+    >({
+        query: GetOperatorsByDelegationAndMetadataDocument,
+        variables: {
+            first,
+            skip,
+            delegator: address,
+            searchQuery,
         },
     })
 
