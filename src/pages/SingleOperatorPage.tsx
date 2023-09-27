@@ -37,6 +37,9 @@ import { Layer } from '~/utils/Layer'
 import Spinner from '~/shared/components/Spinner'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
+import useTokenInfo from '~/hooks/useTokenInfo'
+import { defaultChainConfig } from '~/getters/getChainConfig'
+import getCoreConfig from '~/getters/getCoreConfig'
 import { NetworkChartWrap } from '../components/NetworkUtils'
 import { getOperatorStats } from '../getters/getOperatorStats'
 
@@ -71,6 +74,12 @@ export const SingleOperatorPage = () => {
         isBusy,
     } = useOperatorStore()
 
+    const tokenInfo = useTokenInfo(
+        defaultChainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
+        defaultChainConfig.id,
+    )
+    const tokenSymbol = tokenInfo?.symbol || 'DATA'
+
     useEffect(() => {
         setOperator(operator)
     }, [operator, setOperator])
@@ -97,7 +106,8 @@ export const SingleOperatorPage = () => {
 
     const myDelegationAmount = useMemo(() => {
         return getDelegationAmountForAddress(walletAddress, operator)
-    }, [operator, walletAddress])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [operator, walletAddress, operator?.valueWithoutEarnings])
 
     const myDelegationPercentage = useMemo(() => {
         if (myDelegationAmount.isZero()) {
@@ -123,12 +133,12 @@ export const SingleOperatorPage = () => {
             switch (selectedDataSource) {
                 case 'totalValue':
                 case 'cumulativeEarnings':
-                    return truncateNumber(value, 'thousands') + ' DATA'
+                    return truncateNumber(value, 'thousands') + ' ' + tokenSymbol
                 default:
                     return ''
             }
         },
-        [selectedDataSource],
+        [selectedDataSource, tokenSymbol],
     )
 
     const formatYAxisValue = useCallback(

@@ -25,7 +25,6 @@ import { fromAtto } from '~/marketplace/utils/math'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { getConfigForChain } from '~/shared/web3/config'
 import { getCustomTokenBalance } from '~/marketplace/utils/web3'
-import getChainId from '~/utils/web3/getChainId'
 import { BN, BNish, toBN } from '~/utils/bn'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
@@ -33,6 +32,9 @@ import Spinner from '~/shared/components/Spinner'
 import { useConfigFromChain } from '~/hooks/useConfigFromChain'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { getBlockExplorerUrl } from '~/getters/getBlockExplorerUrl'
+import useTokenInfo from '~/hooks/useTokenInfo'
+import { defaultChainConfig } from '~/getters/getChainConfig'
+import getCoreConfig from '~/getters/getCoreConfig'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -77,7 +79,7 @@ export const OperatorActionBar: FunctionComponent<{
     useEffect(() => {
         const loadBalance = async () => {
             if (operator.id && walletAddress) {
-                const chainId = await getChainId()
+                const chainId = defaultChainConfig.id
                 const chainConfig = getConfigForChain(chainId)
                 const balance = await getCustomTokenBalance(
                     chainConfig.contracts['DATA'],
@@ -89,7 +91,7 @@ export const OperatorActionBar: FunctionComponent<{
         }
 
         loadBalance()
-    }, [operator.id, walletAddress])
+    }, [operator.id, walletAddress, operator.valueWithoutEarnings])
 
     useEffect(() => {
         const loadAmount = async () => {
@@ -103,9 +105,13 @@ export const OperatorActionBar: FunctionComponent<{
         }
 
         loadAmount()
-    }, [operator.id, walletAddress])
+    }, [operator.id, walletAddress, operator.valueWithoutEarnings])
 
-    // TODO when Mariusz will merge his hook & getter for fetching Token information - use it here to display the proper token symbol
+    const tokenInfo = useTokenInfo(
+        defaultChainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
+        defaultChainConfig.id,
+    )
+    const tokenSymbol = tokenInfo?.symbol || 'DATA'
 
     return (
         <SingleElementPageActionBar>
@@ -155,10 +161,10 @@ export const OperatorActionBar: FunctionComponent<{
                                         )}
                                         Operators secure and stabilize the Streamr Network
                                         by running nodes and contributing bandwidth. In
-                                        exchange, they earn DATA tokens from sponsorships
-                                        they stake on. The stake guarantees that the
-                                        operators do the work, otherwise they get slashed.
-                                        Learn more{' '}
+                                        exchange, they earn {tokenSymbol} tokens from
+                                        sponsorships they stake on. The stake guarantees
+                                        that the operators do the work, otherwise they get
+                                        slashed. Learn more{' '}
                                         <a
                                             href="https://docs.streamr.network/streamr-network/network-incentives"
                                             target="_blank"
@@ -243,6 +249,7 @@ export const OperatorActionBar: FunctionComponent<{
                                 try {
                                     await delegateFundsModal.pop({
                                         operatorId: operator.id,
+                                        tokenSymbol: tokenSymbol,
                                         balance: balance?.toString(),
                                         delegatedTotal: delegationAmount
                                             ?.dividedBy(1e18)
@@ -273,6 +280,7 @@ export const OperatorActionBar: FunctionComponent<{
                                 try {
                                     await undelegateFundsModal.pop({
                                         operatorId: operator.id,
+                                        tokenSymbol: tokenSymbol,
                                         isCurrentUserOwner:
                                             operator.owner === walletAddress,
                                         balance: balance?.toString(),
@@ -306,10 +314,10 @@ export const OperatorActionBar: FunctionComponent<{
                                                     operator.id,
                                                     finalAmount,
                                                 )
-                                            } catch (e) {
-                                                console.warn('Could not undelegate', e)
                                                 await waitForGraphSync()
                                                 onDelegationChange()
+                                            } catch (e) {
+                                                console.warn('Could not undelegate', e)
                                             }
                                         },
                                     })

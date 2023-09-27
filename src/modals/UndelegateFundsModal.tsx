@@ -151,7 +151,7 @@ export default function UndelegateFundsModal({
                     toBN(rawAmount).isLessThanOrEqualTo(freeFunds) && (
                         <Alert
                             type="notice"
-                            title={`${rawAmount.toString()} DATA will be undelegated immediately`}
+                            title={`${rawAmount.toString()} ${tokenSymbol} will be undelegated immediately`}
                         />
                     )}
                 {toBN(rawAmount).isGreaterThan(freeFunds) && (
@@ -163,7 +163,7 @@ export default function UndelegateFundsModal({
                 {hasDelegatedTooLittle && (
                     <Alert type="error" title="Self delegation too low">
                         You must have self delegated at least{' '}
-                        {minimumSelfDelegation.toString()} DATA.
+                        {minimumSelfDelegation.toString()} ${tokenSymbol}.
                     </Alert>
                 )}
             </Footer>
