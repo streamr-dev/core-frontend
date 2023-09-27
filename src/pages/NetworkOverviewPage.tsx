@@ -42,35 +42,17 @@ import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
 import { OperatorDailyBucket } from '~/generated/gql/network'
 import TimePeriodTabs from '~/components/TimePeriodTabs'
 import Tabs, { Tab } from '~/shared/components/Tabs'
-import { useGlobalNetworkStats } from '~/hooks/network'
 import { LoadMoreButton } from '~/components/LoadMore'
 
 export function NetworkOverviewPage() {
     return (
         <Layout columnize>
             <NetworkHelmet title="Network Overview" />
-            <NetworkStats />
             <MyOperatorSummary />
             <MyDelegationsSummary />
             <MyDelegations />
             <MySponsorships />
         </Layout>
-    )
-}
-
-function NetworkStats() {
-    const { totalStake, numOfSponsorships, numOfOperators } = useGlobalNetworkStats()
-
-    return (
-        <NetworkPageSegment title="Network stats">
-            <Pad>
-                <StatGrid>
-                    <StatCell label="Total stake">{totalStake} DATA</StatCell>
-                    <StatCell label="Sponsorships">{numOfSponsorships}</StatCell>
-                    <StatCell label="Operators">{numOfOperators}</StatCell>
-                </StatGrid>
-            </Pad>
-        </NetworkPageSegment>
     )
 }
 
