@@ -24,12 +24,12 @@ import {
 import { useJoinSponsorship } from '~/hooks/useJoinSponsorship'
 import { useEditStake } from '~/hooks/useEditStake'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
-import { StreamInfoCell } from '../components/NetworkUtils'
+import NetworkPageSegment from '~/components/NetworkPageSegment'
+import { StreamInfoCell } from '~/components/NetworkUtils'
 import {
     getTokenAndBalanceForSponsorship,
     TokenAndBalanceForSponsorship,
-} from '../getters/getTokenAndBalanceForSponsorship'
-import NetworkPageSegment from '~/components/NetworkPageSegment'
+} from '~/getters/getTokenAndBalanceForSponsorship'
 
 const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
 
