@@ -42,9 +42,19 @@ export interface Contracts {
     [name: string]: string
 }
 
+export interface Entrypoint {
+    id: string
+    websocket: {
+        host: string
+        port: number
+        tls: boolean
+    }
+}
+
 export interface Chain {
     name: string
     id: number
     rpcEndpoints: RPCEndpoint[]
     contracts: Contracts
+    entryPoints: Entrypoint[]
 }
