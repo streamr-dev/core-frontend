@@ -67,7 +67,7 @@ export async function createOperator(
 
     const policies: [Address, Address, Address] = [
         chainConfig.contracts.OperatorDefaultDelegationPolicy,
-        chainConfig.contracts.OperatorDefaultPoolYieldPolicy,
+        chainConfig.contracts.OperatorDefaultExchangeRatePolicy,
         chainConfig.contracts.OperatorDefaultUndelegationPolicy,
     ]
 
