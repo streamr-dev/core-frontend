@@ -11,7 +11,7 @@ import {
     ReferenceLine,
 } from 'recharts'
 import Spinner from '~/shared/components/Spinner'
-import { COLORS, MEDIUM, REGULAR } from '~/shared/utils/styled'
+import { COLORS, MEDIUM, REGULAR, TABLET } from '~/shared/utils/styled'
 import { NoData } from '~/shared/components/NoData'
 
 const Container = styled.div`
@@ -205,3 +205,11 @@ const CustomTooltip = (props) => {
         )
     )
 }
+
+export const NetworkChart = styled(TimeSeriesGraph)`
+    margin: 40px 0;
+
+    @media ${TABLET} {
+        margin: 64px 0 0;
+    }
+`

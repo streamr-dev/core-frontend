@@ -7,7 +7,7 @@ import Layout from '~/components/Layout'
 import { NetworkHelmet } from '~/components/Helmet'
 import NetworkPageSegment, { Pad } from '~/components/NetworkPageSegment'
 import StatGrid, { StatCell } from '~/components/StatGrid'
-import { TimeSeriesGraph } from '~/shared/components/TimeSeriesGraph'
+import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
 import {
     formatLongDate,
     formatShortDate,
@@ -154,7 +154,7 @@ function MyOperatorSummary() {
                                     </Tabs>
                                 }
                             >
-                                <Chart
+                                <NetworkChart
                                     tooltipValuePrefix={chartLabel}
                                     graphData={chartData}
                                     xAxisDisplayFormatter={formatShortDate}
@@ -259,7 +259,7 @@ function MyDelegationsSummary() {
                             </Tabs>
                         }
                     >
-                        <Chart
+                        <NetworkChart
                             tooltipValuePrefix={chartLabel}
                             graphData={chartData}
                             xAxisDisplayFormatter={formatShortDate}
@@ -277,14 +277,6 @@ function MyDelegationsSummary() {
         </NetworkPageSegment>
     )
 }
-
-const Chart = styled(TimeSeriesGraph)`
-    margin: 40px 0;
-
-    @media ${TABLET} {
-        margin: 64px 0 0;
-    }
-`
 
 function MyDelegations() {
     const wallet = useWalletAccount()
