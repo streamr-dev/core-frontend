@@ -45,36 +45,27 @@ const StatGridRoot = styled.div<{ $count: number }>`
 export function StatCell({
     children,
     label = 'Label',
-    tip,
 }: {
     children?: ReactNode
-    label?: string
-    tip?: ReactNode
+    label?: ReactNode
 }) {
     return (
         <StatCellRoot>
-            <StatCellLabel>
-                <div>{label}</div>
-                {tip ? <Tip>{tip}</Tip> : <></>}
-            </StatCellLabel>
+            <StatCellLabel>{label}</StatCellLabel>
             <StatCellBody>{children}</StatCellBody>
         </StatCellRoot>
     )
 }
 
-const StatCellLabel = styled.div`
+export const StatCellLabel = styled.div`
     align-items: center;
     color: #868686;
     display: flex;
     font-size: 14px;
     line-height: 24px;
-
-    @media ${TABLET} {
-        margin-bottom: 10px;
-    }
 `
 
-const StatCellBody = styled.div`
+export const StatCellBody = styled.div`
     color: ${COLORS.primary};
     font-size: 18px;
     font-weight: ${MEDIUM};
@@ -97,6 +88,10 @@ const StatCellRoot = styled.div`
 
     @media ${TABLET} {
         display: block;
+
+        ${StatCellLabel} {
+            margin-bottom: 10px;
+        }
     }
 `
 
@@ -113,7 +108,7 @@ const TooltipIcon = styled(SvgIcon).attrs(getTooltipIconAttrs)`
     width: 24px;
 `
 
-function Tip({ children }: { children?: ReactNode }) {
+export function StatCellLabelTip({ children }: { children?: ReactNode }) {
     return (
         <TipRoot>
             <TooltipIcon />

@@ -5,7 +5,7 @@ import moment from 'moment'
 import { useQuery } from '@tanstack/react-query'
 import Layout from '~/components/Layout'
 import { NetworkHelmet } from '~/components/Helmet'
-import NetworkPageSegment, { Pad } from '~/components/NetworkPageSegment'
+import NetworkPageSegment, { Pad, SegmentGrid } from '~/components/NetworkPageSegment'
 import StatGrid, { StatCell } from '~/components/StatGrid'
 import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
 import {
@@ -14,7 +14,7 @@ import {
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
 import NetworkChartDisplay from '~/components/NetworkChartDisplay'
-import { COLORS, MEDIUM, TABLET } from '~/shared/utils/styled'
+import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import WalletPass from '~/components/WalletPass'
 import { NoData } from '~/shared/components/NoData'
 import routes from '~/routes'
@@ -35,12 +35,12 @@ import {
     useOperatorForWallet,
     useOperatorStatsForWallet,
 } from '~/hooks/operators'
-import { TimePeriod, XY } from '~/types'
+import { ChartPeriod, XY } from '~/types'
 import { errorToast } from '~/utils/toast'
-import { getOperatorDailyBuckets, getTimestampForTimePeriod } from '~/getters'
+import { getOperatorDailyBuckets, getTimestampForChartPeriod } from '~/getters'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
 import { OperatorDailyBucket } from '~/generated/gql/network'
-import TimePeriodTabs from '~/components/TimePeriodTabs'
+import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { LoadMoreButton } from '~/components/LoadMore'
 
@@ -48,10 +48,12 @@ export function NetworkOverviewPage() {
     return (
         <Layout columnize>
             <NetworkHelmet title="Network Overview" />
-            <MyOperatorSummary />
-            <MyDelegationsSummary />
-            <MyDelegations />
-            <MySponsorships />
+            <SegmentGrid>
+                <MyOperatorSummary />
+                <MyDelegationsSummary />
+                <MyDelegations />
+                <MySponsorships />
+            </SegmentGrid>
         </Layout>
     )
 }
@@ -63,7 +65,7 @@ function MyOperatorSummary() {
 
     const { value = toBN(0), numOfDelegators = 0, numOfSponsorships = 0 } = stats || {}
 
-    const [chartPeriod, setChartPeriod] = useState<TimePeriod>(TimePeriod.SevenDays)
+    const [chartPeriod, setChartPeriod] = useState<ChartPeriod>(ChartPeriod.SevenDays)
 
     const [chartId, setChartId] = useState<'stake' | 'earnings'>('stake')
 
@@ -80,7 +82,10 @@ function MyOperatorSummary() {
                 const end = moment().utc().subtract(1, 'day').endOf('day')
 
                 const buckets = await getOperatorDailyBuckets(operator.id, {
-                    dateGreaterEqualThan: getTimestampForTimePeriod(chartPeriod, end),
+                    dateGreaterEqualThan: getTimestampForChartPeriod(
+                        chartPeriod,
+                        end,
+                    ).unix(),
                     dateLowerThan: end.unix(),
                 })
 
@@ -111,7 +116,7 @@ function MyOperatorSummary() {
     const chartLabel = chartId === 'stake' ? 'Total stake' : 'Cumulative earnings'
 
     return (
-        <NetworkPageSegment title="My operator summary">
+        <NetworkPageSegment title="My operator summary" headroom>
             <WalletPass resourceName="operator summary" roundBorders>
                 {!wallet || stats !== null ? (
                     <>
@@ -130,7 +135,7 @@ function MyOperatorSummary() {
                         <Pad>
                             <NetworkChartDisplay
                                 periodTabs={
-                                    <TimePeriodTabs
+                                    <ChartPeriodTabs
                                         value={chartPeriod}
                                         onChange={setChartPeriod}
                                     />
@@ -201,7 +206,7 @@ function MyDelegationsSummary() {
 
     const apy = minApy === maxApy ? [minApy] : [minApy, maxApy]
 
-    const [chartPeriod, setChartPeriod] = useState<TimePeriod>(TimePeriod.SevenDays)
+    const [chartPeriod, setChartPeriod] = useState<ChartPeriod>(ChartPeriod.SevenDays)
 
     const [chartId, setChartId] = useState<'value' | 'earnings'>('value')
 
@@ -235,7 +240,7 @@ function MyDelegationsSummary() {
                 <Pad>
                     <NetworkChartDisplay
                         periodTabs={
-                            <TimePeriodTabs
+                            <ChartPeriodTabs
                                 value={chartPeriod}
                                 onChange={setChartPeriod}
                             />

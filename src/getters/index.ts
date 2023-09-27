@@ -69,7 +69,7 @@ import {
 } from '~/generated/gql/network'
 import getCoreConfig from '~/getters/getCoreConfig'
 import getGraphClient from '~/getters/getGraphClient'
-import { Delegation, TimePeriod } from '~/types'
+import { Delegation, ChartPeriod } from '~/types'
 import { OperatorParser } from '~/parsers/OperatorParser'
 import { BN, toBN } from '~/utils/bn'
 
@@ -706,26 +706,26 @@ export function getDelegatedAmountForWallet(
 /**
  * Turns `period` into a timestamp relative to `end` moment.
  */
-export function getTimestampForTimePeriod(timePeriod: TimePeriod, end: Moment) {
+export function getTimestampForChartPeriod(period: ChartPeriod, end: Moment): Moment {
     const result = (() => {
-        switch (timePeriod) {
-            case TimePeriod.SevenDays:
+        switch (period) {
+            case ChartPeriod.SevenDays:
                 return end.clone().subtract(7, 'days')
-            case TimePeriod.OneMonth:
+            case ChartPeriod.OneMonth:
                 return end.clone().subtract(30, 'days')
-            case TimePeriod.ThreeMonths:
+            case ChartPeriod.ThreeMonths:
                 return end.clone().subtract(90, 'days')
-            case TimePeriod.OneYear:
+            case ChartPeriod.OneYear:
                 return end.clone().subtract(365, 'days')
-            case TimePeriod.YearToDate:
+            case ChartPeriod.YearToDate:
                 return end.clone().startOf('year')
-            case TimePeriod.All:
+            case ChartPeriod.All:
             default:
                 return moment(0).utc()
         }
     })()
 
-    return result.unix()
+    return result
 }
 
 /**

@@ -24,17 +24,17 @@ export interface DelegacyStats {
     numOfOperators: number
 }
 
-export enum TimePeriod {
-    SevenDays = 'SevenDays',
-    OneMonth = 'OneMonth',
-    ThreeMonths = 'ThreeMonths',
-    OneYear = 'OneYear',
-    YearToDate = 'YearToDate',
-    All = 'All',
+export enum ChartPeriod {
+    SevenDays = '7d',
+    OneMonth = '1m',
+    ThreeMonths = '3m',
+    OneYear = '1y',
+    YearToDate = 'ytd',
+    All = 'all',
 }
 
-export function isTimePeriod(value: string): value is TimePeriod {
-    return Object.prototype.hasOwnProperty.call(TimePeriod, value)
+export function isChartPeriod(value: string): value is ChartPeriod {
+    return Object.values<string>(ChartPeriod).includes(value)
 }
 
 export interface XY {

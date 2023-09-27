@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import ColoredBox from '~/components/ColoredBox'
 import { COLORS, MEDIUM, TABLET } from '~/shared/utils/styled'
 
@@ -33,13 +33,7 @@ export default function NetworkPageSegment({
     )
 }
 
-const Root = styled.div`
-    margin-top: 64px;
-
-    & + & {
-        margin-top: 24px;
-    }
-`
+const Root = styled.div``
 
 const Body = styled.div`
     border-top: 1px solid #efefef;
@@ -74,5 +68,16 @@ export const Pad = styled.div`
 
     @media ${TABLET} {
         padding: 32px 40px;
+    }
+`
+
+export const SegmentGrid = styled.div`
+    display: grid;
+    gap: 24px;
+    margin-top: 64px;
+
+    * + &,
+    & & {
+        margin-top: 0;
     }
 `

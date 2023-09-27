@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import { useParams } from 'react-router-dom'
@@ -9,9 +9,6 @@ import Layout, { LayoutColumn } from '~/components/Layout'
 import { NoData } from '~/shared/components/NoData'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { COLORS, LAPTOP, TABLET } from '~/shared/utils/styled'
-import { WhiteBox, WhiteBoxPaddingStyles } from '~/shared/components/WhiteBox'
-import { NetworkSectionTitle } from '~/components/NetworkSectionTitle'
-import { ChartPeriod, NetworkChart } from '~/shared/components/NetworkChart/NetworkChart'
 import Help from '~/components/Help'
 import {
     formatLongDate,
@@ -22,7 +19,6 @@ import { errorToast } from '~/utils/toast'
 import { BN } from '~/utils/bn'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { StatsLabel, StatsValue } from '~/shared/components/StatsBox/StatsBox'
 import { useOperator } from '~/hooks/useOperator'
 import { fromAtto } from '~/marketplace/utils/math'
 import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
@@ -40,8 +36,14 @@ import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import useTokenInfo from '~/hooks/useTokenInfo'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import getCoreConfig from '~/getters/getCoreConfig'
-import { NetworkChartWrap } from '../components/NetworkUtils'
-import { getOperatorStats } from '../getters/getOperatorStats'
+import { getOperatorStats } from '~/getters/getOperatorStats'
+import NetworkPageSegment, { Pad, SegmentGrid } from '~/components/NetworkPageSegment'
+import NetworkChartDisplay from '~/components/NetworkChartDisplay'
+import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
+import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
+import Tabs, { Tab } from '~/shared/components/Tabs'
+import { ChartPeriod } from '~/types'
+import { StatCellBody, StatCellLabel } from '~/components/StatGrid'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 const addNodeAddressModal = toaster(AddNodeAddressModal, Layer.Modal)
@@ -84,8 +86,13 @@ export const SingleOperatorPage = () => {
         setOperator(operator)
     }, [operator, setOperator])
 
-    const [selectedDataSource, setSelectedDataSource] = useState<string>('totalValue')
-    const [selectedPeriod, setSelectedPeriod] = useState<string>(ChartPeriod.SevenDays)
+    const [selectedDataSource, setSelectedDataSource] = useState<
+        'totalValue' | 'cumulativeEarnings'
+    >('totalValue')
+
+    const [selectedPeriod, setSelectedPeriod] = useState<ChartPeriod>(
+        ChartPeriod.SevenDays,
+    )
 
     const chartQuery = useQuery({
         queryKey: ['operatorChartQuery', operatorId, selectedPeriod, selectedDataSource],
@@ -104,6 +111,8 @@ export const SingleOperatorPage = () => {
         },
     })
 
+    const { data: chartData = [] } = chartQuery
+
     const myDelegationAmount = useMemo(() => {
         return getDelegationAmountForAddress(walletAddress, operator)
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -116,43 +125,6 @@ export const SingleOperatorPage = () => {
         const myShare = myDelegationAmount.dividedBy(operator?.valueWithoutEarnings || 1)
         return myShare.multipliedBy(100)
     }, [operator, myDelegationAmount])
-
-    const tooltipPrefix = useMemo(() => {
-        switch (selectedDataSource) {
-            case 'totalValue':
-                return 'Total value'
-            case 'cumulativeEarnings':
-                return 'Cumulative earnings'
-            default:
-                return ''
-        }
-    }, [selectedDataSource])
-
-    const formatTooltipValue = useCallback(
-        (value: number) => {
-            switch (selectedDataSource) {
-                case 'totalValue':
-                case 'cumulativeEarnings':
-                    return truncateNumber(value, 'thousands') + ' ' + tokenSymbol
-                default:
-                    return ''
-            }
-        },
-        [selectedDataSource, tokenSymbol],
-    )
-
-    const formatYAxisValue = useCallback(
-        (value: number) => {
-            switch (selectedDataSource) {
-                case 'totalValue':
-                case 'cumulativeEarnings':
-                    return truncateNumber(value, 'thousands')
-                default:
-                    return ''
-            }
-        },
-        [selectedDataSource],
-    )
 
     const handleOperatorEdit = async (currentOperator: OperatorElement) => {
         try {
@@ -188,6 +160,11 @@ export const SingleOperatorPage = () => {
         }
     }
 
+    const chartLabel =
+        selectedDataSource === 'cumulativeEarnings'
+            ? 'Cumulative earnings'
+            : 'Total value'
+
     return (
         <Layout>
             <NetworkHelmet title="Operator" />
@@ -209,73 +186,103 @@ export const SingleOperatorPage = () => {
                         )}
                     </>
                 ) : (
-                    <OperatorGrid>
+                    <SegmentGrid>
                         <ChartGrid>
-                            <OverviewCharts>
-                                <div className="title">
-                                    <NetworkSectionTitle>
-                                        Overview charts
-                                    </NetworkSectionTitle>
-                                </div>
-                                <NetworkChartWrap>
-                                    <NetworkChart
-                                        graphData={chartQuery?.data || []}
-                                        isLoading={
-                                            chartQuery.isLoading || chartQuery.isFetching
+                            <NetworkPageSegment title="Overview charts">
+                                <Pad>
+                                    <NetworkChartDisplay
+                                        periodTabs={
+                                            <ChartPeriodTabs
+                                                value={selectedPeriod}
+                                                onChange={setSelectedPeriod}
+                                            />
                                         }
-                                        tooltipValuePrefix={tooltipPrefix}
-                                        dataSources={[
-                                            { label: 'Total value', value: 'totalValue' },
-                                            {
-                                                label: 'Cumulative earnings',
-                                                value: 'cumulativeEarnings',
-                                            },
-                                        ]}
-                                        onDataSourceChange={setSelectedDataSource}
-                                        onPeriodChange={setSelectedPeriod}
-                                        selectedDataSource={selectedDataSource}
-                                        selectedPeriod={selectedPeriod as ChartPeriod}
-                                        xAxisDisplayFormatter={formatShortDate}
-                                        yAxisAxisDisplayFormatter={formatYAxisValue}
-                                        tooltipLabelFormatter={formatLongDate}
-                                        tooltipValueFormatter={formatTooltipValue}
-                                    />
-                                </NetworkChartWrap>
-                            </OverviewCharts>
-                            <MyDelegationContainer>
-                                <DelegationCell>
-                                    <NetworkSectionTitle>
-                                        My delegation
-                                    </NetworkSectionTitle>
-                                </DelegationCell>
-                                <DelegationSeparator />
-                                {walletAddress == null && (
-                                    <DelegationCell>
-                                        Connect your wallet to show your delegation
-                                    </DelegationCell>
-                                )}
-                                {walletAddress != null && (
+                                        sourceTabs={
+                                            <Tabs
+                                                selection={selectedDataSource}
+                                                onSelectionChange={(dataSource) => {
+                                                    if (
+                                                        dataSource !== 'totalValue' &&
+                                                        dataSource !==
+                                                            'cumulativeEarnings'
+                                                    ) {
+                                                        return
+                                                    }
+
+                                                    setSelectedDataSource(dataSource)
+                                                }}
+                                            >
+                                                <Tab id="totalValue">Total value</Tab>
+                                                <Tab id="cumulativeEarnings">
+                                                    Cumulative earnings
+                                                </Tab>
+                                            </Tabs>
+                                        }
+                                    >
+                                        <NetworkChart
+                                            isLoading={
+                                                chartQuery.isLoading ||
+                                                chartQuery.isFetching
+                                            }
+                                            tooltipValuePrefix={chartLabel}
+                                            graphData={chartData}
+                                            xAxisDisplayFormatter={formatShortDate}
+                                            yAxisAxisDisplayFormatter={
+                                                yAxisAxisDisplayFormatter
+                                            }
+                                            tooltipLabelFormatter={formatLongDate}
+                                            tooltipValueFormatter={(value) =>
+                                                tooltipValueFormatter(value, tokenSymbol)
+                                            }
+                                        />
+                                    </NetworkChartDisplay>
+                                </Pad>
+                            </NetworkPageSegment>
+                            <NetworkPageSegment title="My delegation">
+                                {walletAddress ? (
                                     <>
                                         <DelegationCell>
-                                            <StatsLabel>Current value</StatsLabel>
-                                            <StatsValue>
-                                                {fromAtto(myDelegationAmount).toString()}
-                                            </StatsValue>
+                                            <Pad>
+                                                <StatCellLabel>
+                                                    Current value
+                                                </StatCellLabel>
+                                                <StatCellBody>
+                                                    {fromAtto(
+                                                        myDelegationAmount,
+                                                    ).toString()}
+                                                </StatCellBody>
+                                            </Pad>
                                         </DelegationCell>
-                                        <DelegationSeparator />
+                                        <hr />
                                         <DelegationCell>
-                                            <StatsLabel>
-                                                Share of operator&apos;s total value
-                                            </StatsLabel>
-                                            <StatsValue>
-                                                {`${myDelegationPercentage.toFixed(0)}%`}
-                                            </StatsValue>
+                                            <Pad>
+                                                <StatCellLabel>
+                                                    Share of operator&apos;s total value
+                                                </StatCellLabel>
+                                                <StatCellBody>
+                                                    {`${myDelegationPercentage.toFixed(
+                                                        0,
+                                                    )}%`}
+                                                </StatCellBody>
+                                            </Pad>
                                         </DelegationCell>
                                     </>
+                                ) : (
+                                    <>Connect your wallet to show your delegation</>
                                 )}
-                            </MyDelegationContainer>
+                            </NetworkPageSegment>
                         </ChartGrid>
-                        <SponsorshipsTable>
+                        <NetworkPageSegment
+                            foot
+                            title={
+                                <SponsorshipsTableTitle>
+                                    <span>Sponsorships</span>
+                                    <SponsorshipsCount>
+                                        {operator.stakes.length}
+                                    </SponsorshipsCount>
+                                </SponsorshipsTableTitle>
+                            }
+                        >
                             <ScrollTable
                                 elements={operator.stakes}
                                 columns={[
@@ -317,47 +324,61 @@ export const SingleOperatorPage = () => {
                                         key: 'fundedUntil',
                                     },
                                 ]}
-                                title={
-                                    <SponsorshipsTableTitle>
-                                        <span>Sponsorships</span>
-                                        <SponsorshipsCount>
-                                            {operator.stakes.length}
-                                        </SponsorshipsCount>
-                                    </SponsorshipsTableTitle>
-                                }
                             />
-                        </SponsorshipsTable>
-                        <ScrollTable
-                            elements={operator.slashingEvents}
-                            columns={[
-                                {
-                                    displayName: 'Stream ID',
-                                    valueMapper: (element) => element.streamId || '',
-                                    align: 'start',
-                                    isSticky: true,
-                                    key: 'id',
-                                },
-                                {
-                                    displayName: 'Date',
-                                    valueMapper: (element) =>
-                                        moment(element.date).format('YYYY-MM-DD'),
-                                    align: 'start',
-                                    isSticky: false,
-                                    key: 'date',
-                                },
-                                {
-                                    displayName: 'Slashed',
-                                    valueMapper: (element) =>
-                                        fromAtto(element.amount).toString(),
-                                    align: 'start',
-                                    isSticky: false,
-                                    key: 'slashed',
-                                },
-                            ]}
-                            title="Slashing history"
-                        />
+                        </NetworkPageSegment>
+                        <NetworkPageSegment foot title="Slashing history">
+                            <ScrollTable
+                                elements={operator.slashingEvents}
+                                columns={[
+                                    {
+                                        displayName: 'Stream ID',
+                                        valueMapper: (element) => element.streamId || '',
+                                        align: 'start',
+                                        isSticky: true,
+                                        key: 'id',
+                                    },
+                                    {
+                                        displayName: 'Date',
+                                        valueMapper: (element) =>
+                                            moment(element.date).format('YYYY-MM-DD'),
+                                        align: 'start',
+                                        isSticky: false,
+                                        key: 'date',
+                                    },
+                                    {
+                                        displayName: 'Slashed',
+                                        valueMapper: (element) =>
+                                            fromAtto(element.amount).toString(),
+                                        align: 'start',
+                                        isSticky: false,
+                                        key: 'slashed',
+                                    },
+                                ]}
+                            />
+                        </NetworkPageSegment>
                         {walletAddress?.toLowerCase() === operator.owner && (
-                            <>
+                            <NetworkPageSegment
+                                title={
+                                    <NodeAddressHeader>
+                                        <span>Operator&apos;s node addresses</span>
+                                        <Help align="center">
+                                            <p>
+                                                Your nodes need wallets for smart contract
+                                                interactions. Generate Ethereum wallets
+                                                using your tool of choice, add the private
+                                                key to your node&apos;s config file, and
+                                                add the corresponding address here. You
+                                                can run multiple nodes with the same
+                                                address/private key.
+                                                <br />
+                                                <br />
+                                                Each node address should be supplied with
+                                                some MATIC on Polygon chain for gas.
+                                            </p>
+                                        </Help>
+                                    </NodeAddressHeader>
+                                }
+                            >
                                 <ScrollTable
                                     elements={computed.nodeAddresses}
                                     columns={[
@@ -429,28 +450,6 @@ export const SingleOperatorPage = () => {
                                             key: 'actions',
                                         },
                                     ]}
-                                    title={
-                                        <NodeAddressHeader>
-                                            <span>Operator&apos;s node addresses</span>
-                                            <Help align="center">
-                                                <p>
-                                                    Your nodes need wallets for smart
-                                                    contract interactions. Generate
-                                                    Ethereum wallets using your tool of
-                                                    choice, add the private key to your
-                                                    node&apos;s config file, and add the
-                                                    corresponding address here. You can
-                                                    run multiple nodes with the same
-                                                    address/private key.
-                                                    <br />
-                                                    <br />
-                                                    Each node address should be supplied
-                                                    with some MATIC on Polygon chain for
-                                                    gas.
-                                                </p>
-                                            </Help>
-                                        </NodeAddressHeader>
-                                    }
                                     footerComponent={
                                         <NodeAddressesFooter>
                                             <Button
@@ -481,66 +480,48 @@ export const SingleOperatorPage = () => {
                                         </NodeAddressesFooter>
                                     }
                                 />
-                            </>
+                            </NetworkPageSegment>
                         )}
-                    </OperatorGrid>
+                    </SegmentGrid>
                 )}
             </LayoutColumn>
         </Layout>
     )
 }
 
-const OperatorGrid = styled.div`
-    display: grid;
-    gap: 20px;
-    margin-top: 20px;
+function tooltipValueFormatter(value: number, tokenSymbol: string) {
+    return `${truncateNumber(value, 'thousands')} ${tokenSymbol}`
+}
 
-    @media (${TABLET}) {
-        margin-top: 60px;
+function yAxisAxisDisplayFormatter(value: number) {
+    return truncateNumber(value, 'thousands')
+}
+
+const ChartGrid = styled(SegmentGrid)`
+    grid-template-columns: minmax(0, 1fr);
+
+    @media ${LAPTOP} {
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
     }
-`
-
-const ChartGrid = styled.div`
-    display: grid;
-    gap: 20px;
-    grid-template-columns: unset;
-    grid-template-rows: auto;
-
-    @media (${LAPTOP}) {
-        grid-template-columns: 2fr 1fr;
-        grid-template-rows: auto;
-    }
-`
-
-const OverviewCharts = styled(WhiteBox)`
-    .icon {
-        height: 24px;
-        color: ${COLORS.primary};
-        cursor: pointer;
-    }
-
-    .title {
-        ${WhiteBoxPaddingStyles};
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-`
-
-const MyDelegationContainer = styled(WhiteBox)`
-    padding: 32px 0;
-    height: fit-content;
-`
-
-const DelegationSeparator = styled.div`
-    border-top: 1px solid #f5f5f5;
 `
 
 const DelegationCell = styled.div`
-    padding: 18px 40px 26px 40px;
-`
+    ${Pad} {
+        padding-bottom: 12px;
+        padding-top: 12px;
+    }
 
-const SponsorshipsTable = styled.div``
+    @media ${TABLET} {
+        ${StatCellLabel} {
+            line-height: 24px;
+        }
+
+        ${StatCellBody} {
+            font-size: 24px;
+            line-height: 40px;
+        }
+    }
+`
 
 const NodeAddressesFooter = styled.div`
     display: flex;

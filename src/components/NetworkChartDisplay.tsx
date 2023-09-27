@@ -16,15 +16,15 @@ export default function NetworkChartDisplay({
         <Root>
             <Header>
                 <SetSelector>{sourceTabs}</SetSelector>
-                <TimePeriodWrap>{periodTabs}</TimePeriodWrap>
+                <ChartPeriodWrap>{periodTabs}</ChartPeriodWrap>
             </Header>
             <Body>{children}</Body>
-            <TimePeriodWrap>{periodTabs}</TimePeriodWrap>
+            <ChartPeriodWrap>{periodTabs}</ChartPeriodWrap>
         </Root>
     )
 }
 
-const TimePeriodWrap = styled.div``
+const ChartPeriodWrap = styled.div``
 
 const Root = styled.div`
     ${TabsRoot} {
@@ -36,7 +36,7 @@ const Root = styled.div`
         padding: 0;
     }
 
-    > ${TimePeriodWrap} {
+    > ${ChartPeriodWrap} {
         display: block;
         margin-top: 24px;
     }
@@ -51,18 +51,18 @@ const Root = styled.div`
             padding: 0 20px;
         }
 
-        ${TimePeriodWrap} ${TabsItem} {
+        ${ChartPeriodWrap} ${TabsItem} {
             padding: 0 12px;
         }
 
-        > ${TimePeriodWrap} {
+        > ${ChartPeriodWrap} {
             display: none;
         }
     }
 `
 
 const Header = styled.div`
-    ${TimePeriodWrap} {
+    ${ChartPeriodWrap} {
         display: none;
     }
 
@@ -70,7 +70,7 @@ const Header = styled.div`
         align-items: center;
         display: flex;
 
-        ${TimePeriodWrap} {
+        ${ChartPeriodWrap} {
             display: block;
         }
     }

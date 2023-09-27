@@ -7,12 +7,9 @@ import Layout, { LayoutColumn } from '~/components/Layout'
 import { useSponsorship } from '~/hooks/useSponsorship'
 import { NoData } from '~/shared/components/NoData'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
-import { COLORS, LAPTOP, TABLET } from '~/shared/utils/styled'
-import { WhiteBox, WhiteBoxPaddingStyles } from '~/shared/components/WhiteBox'
-import { NetworkSectionTitle } from '~/components/NetworkSectionTitle'
+import { LAPTOP } from '~/shared/utils/styled'
 import { HubAvatar } from '~/shared/components/AvatarImage'
 import { truncate } from '~/shared/utils/text'
-import { ChartPeriod, NetworkChart } from '~/shared/components/NetworkChart/NetworkChart'
 import {
     formatLongDate,
     formatShortDate,
@@ -22,16 +19,25 @@ import { errorToast } from '~/utils/toast'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { SponsorshipActionBar } from '~/components/ActionBars/SponsorshipActionBar'
 import { useSponsorshipFundingHistory } from '~/hooks/useSponsorshipFundingHistory'
-import { NetworkChartWrap } from '../components/NetworkUtils'
-import { getSponsorshipStats } from '../getters/getSponsorshipStats'
+import { getSponsorshipStats } from '~/getters/getSponsorshipStats'
+import { ChartPeriod } from '~/types'
+import NetworkPageSegment, { SegmentGrid, Pad } from '~/components/NetworkPageSegment'
+import NetworkChartDisplay from '~/components/NetworkChartDisplay'
+import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
+import Tabs, { Tab } from '~/shared/components/Tabs'
+import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
 
 export const SingleSponsorshipPage = () => {
     const sponsorshipId = useParams().id
     const sponsorshipQuery = useSponsorship(sponsorshipId || '')
     const sponsorship = sponsorshipQuery.data
 
-    const [selectedDataSource, setSelectedDataSource] = useState<string>('amountStaked')
-    const [selectedPeriod, setSelectedPeriod] = useState<string>(ChartPeriod.SevenDays)
+    const [selectedDataSource, setSelectedDataSource] = useState<
+        'amountStaked' | 'numberOfOperators' | 'apy'
+    >('amountStaked')
+    const [selectedPeriod, setSelectedPeriod] = useState<ChartPeriod>(
+        ChartPeriod.SevenDays,
+    )
 
     const chartQuery = useQuery({
         queryKey: [
@@ -55,6 +61,8 @@ export const SingleSponsorshipPage = () => {
         },
     })
 
+    const { data: chartData = [] } = chartQuery
+
     const tooltipPrefix = useMemo(() => {
         switch (selectedDataSource) {
             case 'amountStaked':
@@ -72,11 +80,11 @@ export const SingleSponsorshipPage = () => {
         (value: number) => {
             switch (selectedDataSource) {
                 case 'amountStaked':
-                    return truncateNumber(value, 'thousands') + ' DATA'
+                    return `${truncateNumber(value, 'thousands')} DATA`
                 case 'numberOfOperators':
                     return value.toString()
                 case 'apy':
-                    return value + '%'
+                    return `${value}%`
                 default:
                     return ''
             }
@@ -92,7 +100,7 @@ export const SingleSponsorshipPage = () => {
                 case 'numberOfOperators':
                     return value.toString()
                 case 'apy':
-                    return value + '%'
+                    return `${value}%`
                 default:
                     return ''
             }
@@ -126,175 +134,151 @@ export const SingleSponsorshipPage = () => {
                         )}
                     </>
                 ) : (
-                    <SponsorshipGrid>
-                        <OverviewCharts>
-                            <div className="title">
-                                <NetworkSectionTitle>Overview charts</NetworkSectionTitle>
-                                {/*<SvgIcon
-                                    name="fullScreen"
-                                    className="icon"
-                                    onClick={() => alert('open fullscreen mode')}
-                                />*/}
-                            </div>
-                            <NetworkChartWrap>
-                                <NetworkChart
-                                    graphData={chartQuery?.data || []}
-                                    isLoading={
-                                        chartQuery.isLoading || chartQuery.isFetching
+                    <>
+                        <SegmentGrid>
+                            <ChartGrid>
+                                <NetworkPageSegment title="Overview charts">
+                                    <Pad>
+                                        <NetworkChartDisplay
+                                            periodTabs={
+                                                <ChartPeriodTabs
+                                                    value={selectedPeriod}
+                                                    onChange={setSelectedPeriod}
+                                                />
+                                            }
+                                            sourceTabs={
+                                                <Tabs
+                                                    selection={selectedDataSource}
+                                                    onSelectionChange={(dataSource) => {
+                                                        if (
+                                                            dataSource !==
+                                                                'amountStaked' &&
+                                                            dataSource !==
+                                                                'numberOfOperators' &&
+                                                            dataSource !== 'apy'
+                                                        ) {
+                                                            return
+                                                        }
+
+                                                        setSelectedDataSource(dataSource)
+                                                    }}
+                                                >
+                                                    <Tab id="amountStaked">
+                                                        Amount Staked
+                                                    </Tab>
+                                                    <Tab id="numberOfOperators">
+                                                        Number of Operators
+                                                    </Tab>
+                                                    <Tab id="apy">APY</Tab>
+                                                </Tabs>
+                                            }
+                                        >
+                                            <NetworkChart
+                                                isLoading={
+                                                    chartQuery.isLoading ||
+                                                    chartQuery.isFetching
+                                                }
+                                                tooltipValuePrefix={tooltipPrefix}
+                                                graphData={chartData}
+                                                xAxisDisplayFormatter={formatShortDate}
+                                                yAxisAxisDisplayFormatter={
+                                                    formatYAxisValue
+                                                }
+                                                tooltipLabelFormatter={formatLongDate}
+                                                tooltipValueFormatter={formatTooltipValue}
+                                            />
+                                        </NetworkChartDisplay>
+                                    </Pad>
+                                </NetworkPageSegment>
+                                <NetworkPageSegment title="Operators">
+                                    <ScrollTable
+                                        elements={sponsorship.stakes}
+                                        columns={[
+                                            {
+                                                displayName: 'Operator ID',
+                                                key: 'operatorId',
+                                                isSticky: true,
+                                                valueMapper: (stake) => (
+                                                    <OperatorCell>
+                                                        <HubAvatar
+                                                            id={stake.operatorId}
+                                                        />{' '}
+                                                        {truncate(stake.operatorId)}
+                                                    </OperatorCell>
+                                                ),
+                                                align: 'start',
+                                            },
+                                            {
+                                                displayName: 'Staked',
+                                                key: 'staked',
+                                                isSticky: true,
+                                                valueMapper: (stake) =>
+                                                    truncateNumber(
+                                                        Number(stake.amount),
+                                                        'thousands',
+                                                    ).toString(),
+                                                align: 'end',
+                                            },
+                                        ]}
+                                    />
+                                </NetworkPageSegment>
+                            </ChartGrid>
+                            <NetworkPageSegment foot title="Funding history">
+                                <ScrollTable
+                                    hasMoreResults={fundingEventsQuery.hasNextPage}
+                                    onLoadMore={() => fundingEventsQuery.fetchNextPage()}
+                                    elements={
+                                        fundingEventsQuery.data?.pages
+                                            .map((page) => page.events)
+                                            .flat() || []
                                     }
-                                    tooltipValuePrefix={tooltipPrefix}
-                                    dataSources={[
-                                        { label: 'Amount staked', value: 'amountStaked' },
+                                    isLoading={
+                                        fundingEventsQuery.isLoading ||
+                                        fundingEventsQuery.isFetching
+                                    }
+                                    columns={[
                                         {
-                                            label: 'Number of operators',
-                                            value: 'numberOfOperators',
+                                            displayName: 'Date',
+                                            valueMapper: (element: any) => element.date,
+                                            align: 'start',
+                                            isSticky: true,
+                                            key: 'date',
                                         },
-                                        { label: 'APY', value: 'apy' },
+                                        {
+                                            displayName: 'Amount',
+                                            valueMapper: (element: any) =>
+                                                truncateNumber(
+                                                    Number(element.amount),
+                                                    'thousands',
+                                                ),
+                                            align: 'start',
+                                            isSticky: false,
+                                            key: 'amount',
+                                        },
+                                        {
+                                            displayName: 'Sponsor',
+                                            valueMapper: (element: any) =>
+                                                truncate(element.sponsor),
+                                            align: 'start',
+                                            isSticky: false,
+                                            key: 'sponsor',
+                                        },
                                     ]}
-                                    onDataSourceChange={setSelectedDataSource}
-                                    onPeriodChange={setSelectedPeriod}
-                                    selectedDataSource={selectedDataSource}
-                                    selectedPeriod={selectedPeriod as ChartPeriod}
-                                    xAxisDisplayFormatter={formatShortDate}
-                                    yAxisAxisDisplayFormatter={formatYAxisValue}
-                                    tooltipLabelFormatter={formatLongDate}
-                                    tooltipValueFormatter={formatTooltipValue}
                                 />
-                            </NetworkChartWrap>
-                        </OverviewCharts>
-                        <OperatorsContainer>
-                            <ScrollTable
-                                elements={sponsorship.stakes}
-                                columns={[
-                                    {
-                                        displayName: 'Operator ID',
-                                        key: 'operatorId',
-                                        isSticky: true,
-                                        valueMapper: (stake) => (
-                                            <OperatorCell>
-                                                <HubAvatar id={stake.operatorId} />{' '}
-                                                {truncate(stake.operatorId)}
-                                            </OperatorCell>
-                                        ),
-                                        align: 'start',
-                                    },
-                                    {
-                                        displayName: 'Staked',
-                                        key: 'staked',
-                                        isSticky: true,
-                                        valueMapper: (stake) =>
-                                            truncateNumber(
-                                                Number(stake.amount),
-                                                'thousands',
-                                            ).toString(),
-                                        align: 'end',
-                                    },
-                                ]}
-                                title="Operators"
-                            />
-                        </OperatorsContainer>
-                        <FundingHistory
-                            hasMoreResults={fundingEventsQuery.hasNextPage}
-                            onLoadMore={() => fundingEventsQuery.fetchNextPage()}
-                            elements={
-                                fundingEventsQuery.data?.pages
-                                    .map((page) => page.events)
-                                    .flat() || []
-                            }
-                            isLoading={
-                                fundingEventsQuery.isLoading ||
-                                fundingEventsQuery.isFetching
-                            }
-                            columns={[
-                                {
-                                    displayName: 'Date',
-                                    valueMapper: (element: any) => element.date,
-                                    align: 'start',
-                                    isSticky: true,
-                                    key: 'date',
-                                },
-                                {
-                                    displayName: 'Amount',
-                                    valueMapper: (element: any) =>
-                                        truncateNumber(
-                                            Number(element.amount),
-                                            'thousands',
-                                        ),
-                                    align: 'start',
-                                    isSticky: false,
-                                    key: 'amount',
-                                },
-                                {
-                                    displayName: 'Sponsor',
-                                    valueMapper: (element: any) =>
-                                        truncate(element.sponsor),
-                                    align: 'start',
-                                    isSticky: false,
-                                    key: 'sponsor',
-                                },
-                            ]}
-                            title={'Funding history'}
-                        />
-                    </SponsorshipGrid>
+                            </NetworkPageSegment>
+                        </SegmentGrid>
+                    </>
                 )}
             </LayoutColumn>
         </Layout>
     )
 }
 
-const SponsorshipGrid = styled.div`
-    display: grid;
-    gap: 20px;
-    grid-template-columns: 1fr;
-    grid-template-rows: min-content min-content min-content;
-    margin-top: 20px;
+const ChartGrid = styled(SegmentGrid)`
+    grid-template-columns: minmax(0, 1fr);
 
-    @media (${TABLET}) {
-        margin-top: 60px;
-    }
-
-    @media (${LAPTOP}) {
-        grid-template-columns: 66.66% 33.33%;
-        grid-template-rows: max-content max-content;
-    }
-`
-
-const OverviewCharts = styled(WhiteBox)`
-    grid-column-start: 1;
-    grid-column-end: 2;
-    grid-row-start: 1;
-    grid-row-end: 2;
-    @media (${LAPTOP}) {
-        grid-column-start: 1;
-        grid-column-end: 2;
-        grid-row-start: 1;
-        grid-row-end: 2;
-    }
-
-    .icon {
-        height: 24px;
-        color: ${COLORS.primary};
-        cursor: pointer;
-    }
-
-    .title {
-        ${WhiteBoxPaddingStyles};
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-`
-
-const OperatorsContainer = styled.div`
-    grid-column-start: 1;
-    grid-column-end: 2;
-    grid-row-start: 2;
-    grid-row-end: 3;
-    @media (${LAPTOP}) {
-        grid-column-start: 2;
-        grid-column-end: 3;
-        grid-row-start: 1;
-        grid-row-end: 3;
+    @media ${LAPTOP} {
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
     }
 `
 
@@ -303,17 +287,4 @@ const OperatorCell = styled.div`
     align-items: center;
     justify-content: center;
     gap: 5px;
-`
-
-const FundingHistory = styled(ScrollTable)`
-    grid-column-start: 1;
-    grid-column-end: 2;
-    grid-row-start: 3;
-    grid-row-end: 4;
-    @media (${LAPTOP}) {
-        grid-column-start: 1;
-        grid-column-end: 2;
-        grid-row-start: 2;
-        grid-row-end: 3;
-    }
 `

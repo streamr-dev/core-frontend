@@ -200,7 +200,7 @@ const Rails = styled.div<{ $animated?: boolean }>`
         `}
 `
 
-interface Props extends HTMLAttributes<HTMLDivElement> {
+export interface Props extends HTMLAttributes<HTMLDivElement> {
     selection?: string
     onSelectionChange?: (selection: string) => void
     spreadEvenly?: boolean

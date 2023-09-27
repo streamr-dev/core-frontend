@@ -7,15 +7,7 @@ import {
 } from '~/shared/components/TimeSeriesGraph'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import UnstyledSpinner from '~/shared/components/Spinner'
-
-export enum ChartPeriod {
-    'SevenDays' = '7D',
-    'OneMonth' = '1M',
-    'ThreeMonths' = '3M',
-    'OneYear' = '1Y',
-    'YearToDate' = 'YTD',
-    'All' = 'ALL',
-}
+import { ChartPeriod } from '~/types'
 
 type Props = Omit<TimeSeriesGraphProps, 'isLoading'> & {
     dataSources: { label: string; value: string }[]

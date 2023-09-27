@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { ChartPeriod } from '~/shared/components/NetworkChart/NetworkChart'
+import { ChartPeriod } from '~/types'
 import { GetOperatorDailyBucketsQuery } from '~/generated/gql/network'
 import { toBN } from '~/utils/bn'
 import getSponsorshipTokenInfo from './getSponsorshipTokenInfo'
