@@ -19,6 +19,20 @@ export default function getClientConfig(mods: any = {}): StreamrClientConfig {
         }
     }
 
+    const websocketHost = process.env.ENTRYPOINT_WS_HOST
+
+    if (websocketHost && config.network?.controlLayer?.entryPoints) {
+        /**
+         * Edge case for local dev envs which don't use entry point hosts
+         * other than the default 10.200.10.1.
+         */
+        config.network.controlLayer.entryPoints.forEach((entryPoint) => {
+            if (entryPoint.websocket?.host === '10.200.10.1') {
+                entryPoint.websocket.host = websocketHost
+            }
+        })
+    }
+
     const contracts: StreamrClientConfig['contracts'] = {}
     ;[
         {
