@@ -79,5 +79,6 @@ const Header = styled.div`
 const Body = styled.div``
 
 const SetSelector = styled.div`
-    flex-grow: 1;
+    flex: 1;
+    min-width: 0;
 `
