@@ -44,6 +44,7 @@ import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { ChartPeriod } from '~/types'
 import { StatCellBody, StatCellLabel } from '~/components/StatGrid'
+import { Separator } from '~/components/Separator'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 const addNodeAddressModal = toaster(AddNodeAddressModal, Layer.Modal)
@@ -253,7 +254,7 @@ export const SingleOperatorPage = () => {
                                                 </StatCellBody>
                                             </Pad>
                                         </DelegationCell>
-                                        <hr />
+                                        <Separator />
                                         <DelegationCell>
                                             <Pad>
                                                 <StatCellLabel>

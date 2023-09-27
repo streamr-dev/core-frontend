@@ -37,14 +37,6 @@ const Root = styled.div``
 
 const Body = styled.div`
     border-top: 1px solid #efefef;
-
-    hr {
-        background: #efefef;
-        border: 0;
-        height: 1px;
-        margin: 0;
-        width: 100%;
-    }
 `
 
 const Foot = styled.div`
@@ -73,6 +65,7 @@ export const Pad = styled.div`
 
 export const SegmentGrid = styled.div`
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 24px;
     margin-top: 64px;
 

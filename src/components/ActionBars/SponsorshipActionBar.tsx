@@ -1,15 +1,12 @@
 import React, { FunctionComponent } from 'react'
-import { toaster } from 'toasterhea'
 import styled from 'styled-components'
 import { SponsorshipElement } from '~/types/sponsorship'
-import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
 import { BlackTooltip } from '~/shared/components/Tooltip/Tooltip'
 import Button from '~/shared/components/Button'
 import useCopy from '~/shared/hooks/useCopy'
 import SvgIcon from '~/shared/components/SvgIcon'
-import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
 import routes from '~/routes'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import { useFundSponsorship } from '~/hooks/useFundSponsorship'
@@ -20,6 +17,9 @@ import getCoreConfig from '~/getters/getCoreConfig'
 import { useEditStake } from '~/hooks/useEditStake'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { getBlockExplorerUrl } from '~/getters/getBlockExplorerUrl'
+import { Separator } from '~/components/Separator'
+import StatGrid, { StatCell } from '~/components/StatGrid'
+import { Pad } from '~/components/NetworkPageSegment'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -184,40 +184,31 @@ export const SponsorshipActionBar: FunctionComponent<{
                 <NetworkActionBarStatsTitle>
                     Sponsorship summary
                 </NetworkActionBarStatsTitle>
-                <WhiteBoxSeparator />
-                <StatsBox
-                    stats={[
-                        {
-                            label: 'Payout rate',
-                            value: sponsorship.payoutPerDay + ` ${tokenSymbol}/day`,
-                        },
-                        {
-                            label: 'Operators',
-                            value: String(sponsorship.operators),
-                        },
-                        {
-                            label: 'Total staked',
-                            value:
-                                truncateNumber(
-                                    Number(sponsorship.totalStake),
-                                    'thousands',
-                                ) + ` ${tokenSymbol}`,
-                        },
-                        {
-                            label: 'APY',
-                            value: sponsorship.apy + '%',
-                        },
-                        {
-                            label: 'Cumulative sponsored',
-                            value: `${sponsorship.cumulativeSponsoring} ${tokenSymbol}`,
-                        },
-                        {
-                            label: 'Minimum stake',
-                            value: sponsorship.minimumStake + ` ${tokenSymbol}`,
-                        },
-                    ]}
-                    columns={3}
-                />
+                <Separator />
+                <Pad>
+                    <StatGrid>
+                        <StatCell label="Payout rate">
+                            {sponsorship.payoutPerDay} {tokenSymbol}/day
+                        </StatCell>
+                        <StatCell label="Operators">{sponsorship.operators}</StatCell>
+                        <StatCell label="Total staked">
+                            {truncateNumber(Number(sponsorship.totalStake), 'thousands')}{' '}
+                            {tokenSymbol}
+                        </StatCell>
+                    </StatGrid>
+                </Pad>
+                <Separator />
+                <Pad>
+                    <StatGrid>
+                        <StatCell label="APY">{sponsorship.apy}%</StatCell>
+                        <StatCell label="Cumulative sponsored">
+                            {sponsorship.cumulativeSponsoring} {tokenSymbol}
+                        </StatCell>
+                        <StatCell label="Minimum stake">
+                            {sponsorship.minimumStake} {tokenSymbol}
+                        </StatCell>
+                    </StatGrid>
+                </Pad>
             </SingleElementPageActionBarContainer>
         </SingleElementPageActionBar>
     )

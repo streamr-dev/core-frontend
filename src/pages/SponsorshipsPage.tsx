@@ -24,7 +24,7 @@ import {
 import { useJoinSponsorship } from '~/hooks/useJoinSponsorship'
 import { useEditStake } from '~/hooks/useEditStake'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
-import NetworkPageSegment from '~/components/NetworkPageSegment'
+import NetworkPageSegment, { SegmentGrid } from '~/components/NetworkPageSegment'
 import { StreamInfoCell } from '~/components/NetworkUtils'
 import {
     getTokenAndBalanceForSponsorship,
@@ -150,138 +150,140 @@ export const SponsorshipsPage = () => {
                 }
             />
             <LayoutColumn>
-                <NetworkPageSegment
-                    foot
-                    title={
-                        <>
-                            {selectedTab === TabOptions.allSponsorships ? (
-                                <>All sponsorships</>
-                            ) : (
-                                <>My sponsorships</>
-                            )}
-                        </>
-                    }
-                >
-                    <ScrollTableCore
-                        elements={sponsorships}
-                        isLoading={
-                            sponsorshipsQuery.isLoading ||
-                            sponsorshipsQuery.isFetching ||
-                            sponsorshipsQuery.isFetchingNextPage
+                <SegmentGrid>
+                    <NetworkPageSegment
+                        foot
+                        title={
+                            <>
+                                {selectedTab === TabOptions.allSponsorships ? (
+                                    <>All sponsorships</>
+                                ) : (
+                                    <>My sponsorships</>
+                                )}
+                            </>
                         }
-                        columns={[
-                            {
-                                displayName: 'Stream ID',
-                                valueMapper: (element) => (
-                                    <StreamInfoCell>
-                                        <span className="stream-id">
-                                            {truncateStreamName(element.streamId)}
-                                        </span>
-                                        {element.streamDescription && (
-                                            <span className="stream-description">
-                                                {element.streamDescription}
-                                            </span>
-                                        )}
-                                    </StreamInfoCell>
-                                ),
-                                align: 'start',
-                                isSticky: true,
-                                key: 'streamInfo',
-                            },
-                            {
-                                displayName: balanceData
-                                    ? `${balanceData.tokenSymbol}/day`
-                                    : 'DATA/day',
-                                valueMapper: (element) => element.payoutPerDay,
-                                align: 'start',
-                                isSticky: false,
-                                key: 'payoutPerDay',
-                            },
-                            {
-                                displayName: 'Operators',
-                                valueMapper: (element) => element.operators,
-                                align: 'end',
-                                isSticky: false,
-                                key: 'operators',
-                            },
-                            {
-                                displayName: 'Staked',
-                                valueMapper: (element) =>
-                                    truncateNumber(
-                                        Number(element.totalStake),
-                                        'thousands',
-                                    ),
-                                align: 'end',
-                                isSticky: false,
-                                key: 'staked',
-                            },
-                            {
-                                displayName: 'APY',
-                                valueMapper: (element) => element.apy + '%',
-                                align: 'end',
-                                isSticky: false,
-                                key: 'apy',
-                            },
-                        ]}
-                        actions={[
-                            {
-                                displayName: 'Sponsor',
-                                disabled: !walletConnected,
-                                callback: (element) =>
-                                    fundSponsorship(
-                                        element.id,
-                                        element.payoutPerDay,
-                                    ).then(async () => {
-                                        await waitForGraphSync()
-                                        await refetchQueries()
-                                    }),
-                            },
-                            {
-                                displayName: (element) =>
-                                    canEditStake(element)
-                                        ? 'Edit stake'
-                                        : 'Join As Operator',
-                                disabled: (element) =>
-                                    canEditStake(element)
-                                        ? false
-                                        : !walletConnected || !canJoinSponsorship,
-                                callback: (element) =>
-                                    canEditStake(element)
-                                        ? editStake(element).then(async () => {
-                                              await waitForGraphSync()
-                                              await refetchQueries()
-                                          })
-                                        : joinSponsorship(
-                                              element.id,
-                                              element.streamId,
-                                          ).then(async () => {
-                                              await waitForGraphSync()
-                                              await refetchQueries()
-                                          }),
-                            },
-                        ]}
-                        noDataFirstLine={
-                            selectedTab === TabOptions.allSponsorships
-                                ? 'No sponsorships found.'
-                                : 'You do not have any sponsorships yet.'
-                        }
-                        linkMapper={(element) =>
-                            routes.network.sponsorship({ id: element.id })
-                        }
-                    />
-                    {sponsorshipsQuery.hasNextPage && (
-                        <LoadMoreButton
-                            disabled={
+                    >
+                        <ScrollTableCore
+                            elements={sponsorships}
+                            isLoading={
                                 sponsorshipsQuery.isLoading ||
-                                sponsorshipsQuery.isFetching
+                                sponsorshipsQuery.isFetching ||
+                                sponsorshipsQuery.isFetchingNextPage
                             }
-                            onClick={() => sponsorshipsQuery.fetchNextPage()}
-                            kind="primary2"
-                        >
-                            Load more
-                        </LoadMoreButton>
-                    )}
-                </NetworkPageSegment>
+                            columns={[
+                                {
+                                    displayName: 'Stream ID',
+                                    valueMapper: (element) => (
+                                        <StreamInfoCell>
+                                            <span className="stream-id">
+                                                {truncateStreamName(element.streamId)}
+                                            </span>
+                                            {element.streamDescription && (
+                                                <span className="stream-description">
+                                                    {element.streamDescription}
+                                                </span>
+                                            )}
+                                        </StreamInfoCell>
+                                    ),
+                                    align: 'start',
+                                    isSticky: true,
+                                    key: 'streamInfo',
+                                },
+                                {
+                                    displayName: balanceData
+                                        ? `${balanceData.tokenSymbol}/day`
+                                        : 'DATA/day',
+                                    valueMapper: (element) => element.payoutPerDay,
+                                    align: 'start',
+                                    isSticky: false,
+                                    key: 'payoutPerDay',
+                                },
+                                {
+                                    displayName: 'Operators',
+                                    valueMapper: (element) => element.operators,
+                                    align: 'end',
+                                    isSticky: false,
+                                    key: 'operators',
+                                },
+                                {
+                                    displayName: 'Staked',
+                                    valueMapper: (element) =>
+                                        truncateNumber(
+                                            Number(element.totalStake),
+                                            'thousands',
+                                        ),
+                                    align: 'end',
+                                    isSticky: false,
+                                    key: 'staked',
+                                },
+                                {
+                                    displayName: 'APY',
+                                    valueMapper: (element) => element.apy + '%',
+                                    align: 'end',
+                                    isSticky: false,
+                                    key: 'apy',
+                                },
+                            ]}
+                            actions={[
+                                {
+                                    displayName: 'Sponsor',
+                                    disabled: !walletConnected,
+                                    callback: (element) =>
+                                        fundSponsorship(
+                                            element.id,
+                                            element.payoutPerDay,
+                                        ).then(async () => {
+                                            await waitForGraphSync()
+                                            await refetchQueries()
+                                        }),
+                                },
+                                {
+                                    displayName: (element) =>
+                                        canEditStake(element)
+                                            ? 'Edit stake'
+                                            : 'Join As Operator',
+                                    disabled: (element) =>
+                                        canEditStake(element)
+                                            ? false
+                                            : !walletConnected || !canJoinSponsorship,
+                                    callback: (element) =>
+                                        canEditStake(element)
+                                            ? editStake(element).then(async () => {
+                                                  await waitForGraphSync()
+                                                  await refetchQueries()
+                                              })
+                                            : joinSponsorship(
+                                                  element.id,
+                                                  element.streamId,
+                                              ).then(async () => {
+                                                  await waitForGraphSync()
+                                                  await refetchQueries()
+                                              }),
+                                },
+                            ]}
+                            noDataFirstLine={
+                                selectedTab === TabOptions.allSponsorships
+                                    ? 'No sponsorships found.'
+                                    : 'You do not have any sponsorships yet.'
+                            }
+                            linkMapper={(element) =>
+                                routes.network.sponsorship({ id: element.id })
+                            }
+                        />
+                        {sponsorshipsQuery.hasNextPage && (
+                            <LoadMoreButton
+                                disabled={
+                                    sponsorshipsQuery.isLoading ||
+                                    sponsorshipsQuery.isFetching
+                                }
+                                onClick={() => sponsorshipsQuery.fetchNextPage()}
+                                kind="primary2"
+                            >
+                                Load more
+                            </LoadMoreButton>
+                        )}
+                    </NetworkPageSegment>
+                </SegmentGrid>
             </LayoutColumn>
         </Layout>
     )

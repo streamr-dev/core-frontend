@@ -25,7 +25,7 @@ import routes from '~/routes'
 import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
 import { useAllOperatorsQuery, useDelegatedOperatorsQuery } from '~/hooks/useOperatorList'
 import { OperatorElement } from '~/types/operator'
-import NetworkPageSegment from '~/components/NetworkPageSegment'
+import NetworkPageSegment, { SegmentGrid } from '~/components/NetworkPageSegment'
 import { LoadMoreButton } from '~/components/LoadMore'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
@@ -243,51 +243,53 @@ export const OperatorsPage = () => {
                 }
             />
             <LayoutColumn>
-                <NetworkPageSegment
-                    foot
-                    title={
-                        <>
-                            {selectedTab === TabOptions.allOperators ? (
-                                <>All operators</>
-                            ) : (
-                                <>My delegations</>
-                            )}
-                        </>
-                    }
-                >
-                    <ScrollTableCore
-                        elements={operators}
-                        isLoading={
-                            operatorsQuery.isLoading ||
-                            operatorsQuery.isFetching ||
-                            operatorsQuery.isFetchingNextPage
+                <SegmentGrid>
+                    <NetworkPageSegment
+                        foot
+                        title={
+                            <>
+                                {selectedTab === TabOptions.allOperators ? (
+                                    <>All operators</>
+                                ) : (
+                                    <>My delegations</>
+                                )}
+                            </>
                         }
-                        columns={
-                            selectedTab === TabOptions.allOperators
-                                ? getAllOperatorColumns()
-                                : getMyDelegationsColumns(wallet || '')
-                        }
-                        noDataFirstLine={
-                            selectedTab === TabOptions.allOperators
-                                ? 'No operators found.'
-                                : 'You have not delegated to any operator.'
-                        }
-                        linkMapper={(element) =>
-                            routes.network.operator({ id: element.id })
-                        }
-                    />
-                    {operatorsQuery.hasNextPage && (
-                        <LoadMoreButton
-                            disabled={
-                                operatorsQuery.isLoading || operatorsQuery.isFetching
+                    >
+                        <ScrollTableCore
+                            elements={operators}
+                            isLoading={
+                                operatorsQuery.isLoading ||
+                                operatorsQuery.isFetching ||
+                                operatorsQuery.isFetchingNextPage
                             }
-                            onClick={() => operatorsQuery.fetchNextPage()}
-                            kind="primary2"
-                        >
-                            Load more
-                        </LoadMoreButton>
-                    )}
-                </NetworkPageSegment>
+                            columns={
+                                selectedTab === TabOptions.allOperators
+                                    ? getAllOperatorColumns()
+                                    : getMyDelegationsColumns(wallet || '')
+                            }
+                            noDataFirstLine={
+                                selectedTab === TabOptions.allOperators
+                                    ? 'No operators found.'
+                                    : 'You have not delegated to any operator.'
+                            }
+                            linkMapper={(element) =>
+                                routes.network.operator({ id: element.id })
+                            }
+                        />
+                        {operatorsQuery.hasNextPage && (
+                            <LoadMoreButton
+                                disabled={
+                                    operatorsQuery.isLoading || operatorsQuery.isFetching
+                                }
+                                onClick={() => operatorsQuery.fetchNextPage()}
+                                kind="primary2"
+                            >
+                                Load more
+                            </LoadMoreButton>
+                        )}
+                    </NetworkPageSegment>
+                </SegmentGrid>
             </LayoutColumn>
         </Layout>
     )

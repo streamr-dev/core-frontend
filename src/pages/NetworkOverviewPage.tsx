@@ -43,6 +43,7 @@ import { OperatorDailyBucket } from '~/generated/gql/network'
 import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { LoadMoreButton } from '~/components/LoadMore'
+import { Separator } from '~/components/Separator'
 
 export function NetworkOverviewPage() {
     return (
@@ -116,7 +117,7 @@ function MyOperatorSummary() {
     const chartLabel = chartId === 'stake' ? 'Total stake' : 'Cumulative earnings'
 
     return (
-        <NetworkPageSegment title="My operator summary" headroom>
+        <NetworkPageSegment title="My operator summary">
             <WalletPass resourceName="operator summary" roundBorders>
                 {!wallet || stats !== null ? (
                     <>
@@ -131,7 +132,7 @@ function MyOperatorSummary() {
                                 </StatCell>
                             </StatGrid>
                         </Pad>
-                        <hr />
+                        <Separator />
                         <Pad>
                             <NetworkChartDisplay
                                 periodTabs={
@@ -236,7 +237,7 @@ function MyDelegationsSummary() {
                         <StatCell label="APY">{apy.join('-')}%</StatCell>
                     </StatGrid>
                 </Pad>
-                <hr />
+                <Separator />
                 <Pad>
                     <NetworkChartDisplay
                         periodTabs={

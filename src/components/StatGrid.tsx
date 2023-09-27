@@ -2,8 +2,9 @@ import React, { ComponentProps, ReactNode } from 'react'
 import styled from 'styled-components'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS, MEDIUM, TABLET } from '~/shared/utils/styled'
+import { Separator } from './Separator'
 
-export default function StatGrid({ children }) {
+export default function StatGrid({ children }: { children?: ReactNode }) {
     return (
         <StatGridRoot $count={React.Children.count(children)}>
             {React.Children.map(children, (child, index) => (
@@ -16,29 +17,27 @@ export default function StatGrid({ children }) {
     )
 }
 
-const Separator = styled.div`
-    background: #efefef;
-    height: 1px;
-    margin: 20px 0;
-
-    @media ${TABLET} {
-        height: auto;
-        margin: 0;
-        min-height: 88px;
-        width: 1px;
-    }
-`
-
 function template({ $count }: { $count: number }) {
     return [...Array($count)].map(() => '1fr').join(' auto ')
 }
 
 const StatGridRoot = styled.div<{ $count: number }>`
+    ${Separator} {
+        margin: 20px 0;
+    }
+
     @media ${TABLET} {
         align-items: center;
         gap: 24px;
         display: grid;
         grid-template-columns: ${template};
+
+        ${Separator} {
+            height: auto;
+            margin: 0;
+            min-height: 88px;
+            width: 1px;
+        }
     }
 `
 
