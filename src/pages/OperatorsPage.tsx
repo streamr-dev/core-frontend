@@ -170,7 +170,7 @@ export const OperatorsPage = () => {
     const walletConnected = !!wallet
 
     const allOperatorsQuery = useAllOperatorsQuery(PAGE_SIZE, searchQuery)
-    const myDelegationsQuery = useDelegatedOperatorsQuery(PAGE_SIZE, wallet)
+    const myDelegationsQuery = useDelegatedOperatorsQuery(PAGE_SIZE, wallet, searchQuery)
     const myOperatorQuery = useMyOperator(wallet || '')
 
     const isOperatorCreated = !!myOperatorQuery.data?.id

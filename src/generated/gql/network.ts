@@ -3828,6 +3828,26 @@ export type GetOperatorsByDelegationQueryVariables = Exact<{
 
 export type GetOperatorsByDelegationQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amount: any, earningsWei: any, joinDate: any, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, earningsWei: any, joinDate: any, operator: { __typename?: 'Operator', id: string } }> } | null }>, delegators: Array<{ __typename?: 'Delegation', delegatedDataWei: any, delegator: string }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, delegator: string, id: string }> }> };
 
+export type GetOperatorsByDelegationAndIdQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['Int']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  delegator: Scalars['String']['input'];
+  operatorId: Scalars['ID']['input'];
+}>;
+
+
+export type GetOperatorsByDelegationAndIdQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalStakeInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, joinDate: any, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, joinDate: any, operator: { __typename?: 'Operator', id: string } }> } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, delegator: string }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, delegator: string, id: string }> }> };
+
+export type GetOperatorsByDelegationAndMetadataQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['Int']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  delegator: Scalars['String']['input'];
+  searchQuery: Scalars['String']['input'];
+}>;
+
+
+export type GetOperatorsByDelegationAndMetadataQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, poolValue: any, totalStakeInSponsorshipsWei: any, freeFundsWei: any, poolValueTimestamp: any, poolValueBlockNumber: any, poolTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, joinDate: any, operator: { __typename?: 'Operator', id: string }, sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, unallocatedWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amount: any, allocatedWei: any, joinDate: any, operator: { __typename?: 'Operator', id: string } }> } | null }>, delegators: Array<{ __typename?: 'Delegation', poolTokenWei: any, delegator: string }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, delegator: string, id: string }> }> };
+
 export type GetOperatorByOwnerAddressQueryVariables = Exact<{
   owner: Scalars['String']['input'];
 }>;
@@ -4164,6 +4184,30 @@ export const GetOperatorsByDelegationDocument = gql`
 }
     ${OperatorFieldsFragmentDoc}`;
 export type GetOperatorsByDelegationQueryResult = Apollo.QueryResult<GetOperatorsByDelegationQuery, GetOperatorsByDelegationQueryVariables>;
+export const GetOperatorsByDelegationAndIdDocument = gql`
+    query getOperatorsByDelegationAndId($first: Int, $skip: Int, $delegator: String!, $operatorId: ID!) {
+  operators(
+    first: $first
+    skip: $skip
+    where: {delegators_: {delegator: $delegator}, id: $operatorId}
+  ) {
+    ...OperatorFields
+  }
+}
+    ${OperatorFieldsFragmentDoc}`;
+export type GetOperatorsByDelegationAndIdQueryResult = Apollo.QueryResult<GetOperatorsByDelegationAndIdQuery, GetOperatorsByDelegationAndIdQueryVariables>;
+export const GetOperatorsByDelegationAndMetadataDocument = gql`
+    query getOperatorsByDelegationAndMetadata($first: Int, $skip: Int, $delegator: String!, $searchQuery: String!) {
+  operators(
+    first: $first
+    skip: $skip
+    where: {delegators_: {delegator: $delegator}, metadataJsonString_contains_nocase: $searchQuery}
+  ) {
+    ...OperatorFields
+  }
+}
+    ${OperatorFieldsFragmentDoc}`;
+export type GetOperatorsByDelegationAndMetadataQueryResult = Apollo.QueryResult<GetOperatorsByDelegationAndMetadataQuery, GetOperatorsByDelegationAndMetadataQueryVariables>;
 export const GetOperatorByOwnerAddressDocument = gql`
     query getOperatorByOwnerAddress($owner: String!) {
   operators(where: {owner: $owner}) {
@@ -4177,7 +4221,7 @@ export const GetAllSponsorshipsDocument = gql`
   sponsorships(
     first: $first
     skip: $skip
-    where: {stream_contains: $streamContains}
+    where: {stream_contains_nocase: $streamContains}
   ) {
     ...SponsorshipFields
   }
@@ -4189,7 +4233,7 @@ export const GetSponsorshipsByCreatorDocument = gql`
   sponsorships(
     first: $first
     skip: $skip
-    where: {creator: $creator, stream_contains: $streamContains}
+    where: {creator: $creator, stream_contains_nocase: $streamContains}
   ) {
     ...SponsorshipFields
   }

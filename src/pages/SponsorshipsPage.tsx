@@ -103,6 +103,10 @@ export const SponsorshipsPage = () => {
         }
     }, [wallet, isMounted])
 
+    useEffect(() => {
+        sponsorshipsQuery.refetch()
+    }, [selectedTab])
+
     const refetchQueries = async () => {
         await allSponsorshipsQuery.refetch()
         await mySponsorshipsQuery.refetch()

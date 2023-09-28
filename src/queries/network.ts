@@ -86,6 +86,39 @@ gql`
         }
     }
 
+    query getOperatorsByDelegationAndId(
+        $first: Int
+        $skip: Int
+        $delegator: String!
+        $operatorId: ID!
+    ) {
+        operators(
+            first: $first
+            skip: $skip
+            where: { delegators_: { delegator: $delegator }, id: $operatorId }
+        ) {
+            ...OperatorFields
+        }
+    }
+
+    query getOperatorsByDelegationAndMetadata(
+        $first: Int
+        $skip: Int
+        $delegator: String!
+        $searchQuery: String!
+    ) {
+        operators(
+            first: $first
+            skip: $skip
+            where: {
+                delegators_: { delegator: $delegator }
+                metadataJsonString_contains_nocase: $searchQuery
+            }
+        ) {
+            ...OperatorFields
+        }
+    }
+
     query getOperatorByOwnerAddress($owner: String!) {
         operators(where: { owner: $owner }) {
             ...OperatorFields
@@ -125,7 +158,7 @@ gql`
         sponsorships(
             first: $first
             skip: $skip
-            where: { stream_contains: $streamContains }
+            where: { stream_contains_nocase: $streamContains }
         ) {
             ...SponsorshipFields
         }
@@ -140,7 +173,7 @@ gql`
         sponsorships(
             first: $first
             skip: $skip
-            where: { creator: $creator, stream_contains: $streamContains }
+            where: { creator: $creator, stream_contains_nocase: $streamContains }
         ) {
             ...SponsorshipFields
         }

@@ -141,7 +141,7 @@ const StreamListingPage: React.FC = () => {
                     PAGE_SIZE,
                     ctx.pageParam,
                     owner,
-                    search,
+                    search.toLowerCase(),
                     mapOrderByToIndexer(orderBy),
                     mapOrderDirectionToIndexer(orderDirection),
                 )
@@ -150,7 +150,7 @@ const StreamListingPage: React.FC = () => {
                     PAGE_SIZE,
                     ctx.pageParam,
                     owner,
-                    search,
+                    search.toLowerCase(),
                     mapOrderByToGraph(orderBy),
                     mapOrderDirectionToGraph(orderDirection),
                 )

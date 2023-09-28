@@ -25,7 +25,7 @@ export const useAllSponsorshipsQuery = (
                 const configFromChain = await getConfigFromChain()
                 const sponsorships = (await getAllSponsorships({
                     first: pageSize,
-                    streamId: searchQuery,
+                    streamId: searchQuery?.toLowerCase(),
                     skip: ctx.pageParam,
                 })) as Sponsorship[]
 
@@ -85,7 +85,7 @@ export const useMySponsorshipsQuery = (
                 const configFromChain = await getConfigFromChain()
                 const sponsorships = (await getSponsorshipsByCreator(account, {
                     first: pageSize,
-                    streamId: searchQuery,
+                    streamId: searchQuery?.toLowerCase(),
                 })) as Sponsorship[]
 
                 return {
