@@ -11,27 +11,36 @@ import FormModal, {
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
 import { BN, toBN } from '~/utils/bn'
+import { toDecimals } from '~/marketplace/utils/math'
+import styled from 'styled-components'
+import { Alert } from '~/components/Alert'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onResolve?: (amount: string) => void
     onSubmit: (amount: BN) => Promise<void>
     balance?: string
-    tokenSymbol?: string
+    tokenSymbol: string
+    decimals: number
     delegatedTotal?: string
     operatorId?: string
     amount?: string
+    tooLowOwnerSelfDelegation: boolean
+    isCurrentUserOwner: boolean
 }
 
 export default function DelegateFundsModal({
     title = 'Delegate',
     balance: balanceProp = '0',
-    tokenSymbol = 'DATA',
+    tokenSymbol,
+    decimals,
     delegatedTotal: delegatedTotalProp = '0',
     operatorId = 'N/A',
     onResolve,
     onSubmit,
     amount: amountProp = '',
     submitLabel = 'Delegate',
+    tooLowOwnerSelfDelegation,
+    isCurrentUserOwner,
     ...props
 }: Props) {
     const [rawAmount, setRawAmount] = useState(amountProp)
@@ -51,7 +60,10 @@ export default function DelegateFundsModal({
     const insufficientFunds = finalValue.isGreaterThan(balance)
 
     const canSubmit =
-        finalValue.isFinite() && finalValue.isGreaterThan(0) && !insufficientFunds
+        finalValue.isFinite() &&
+        finalValue.isGreaterThan(0) &&
+        !insufficientFunds &&
+        (isCurrentUserOwner ? true : !tooLowOwnerSelfDelegation)
 
     const [busy, setBusy] = useState(false)
 
@@ -69,7 +81,7 @@ export default function DelegateFundsModal({
                 setBusy(true)
 
                 try {
-                    onSubmit(finalValue.multipliedBy(1e18))
+                    await onSubmit(toDecimals(finalValue, decimals))
 
                     onResolve?.(finalValue.toString())
                 } catch (e) {
@@ -126,6 +138,18 @@ export default function DelegateFundsModal({
                     </li>
                 </ul>
             </Section>
+            {!isCurrentUserOwner && tooLowOwnerSelfDelegation ? (
+                <StyledAlert type="error" title="Too low self-delegation">
+                    Cannot delegate funds to the operator because it&apos;s owner has a
+                    too low self-delegation percentage
+                </StyledAlert>
+            ) : (
+                <></>
+            )}
         </FormModal>
     )
 }
+
+const StyledAlert = styled(Alert)`
+    margin-top: 10px;
+`

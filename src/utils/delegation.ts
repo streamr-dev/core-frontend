@@ -10,7 +10,11 @@ export function getDelegationAmountForAddress(
         return BN(0)
     }
 
-    const myDelegations = operator?.delegators.filter((s) => s.delegator === address)
-    const value = sumBy(myDelegations, 'amount')
-    return BN(value)
+    const myDelegations = operator?.delegators.filter(
+        (s) => s.delegator.toLowerCase() === address.toLowerCase(),
+    )
+
+    return myDelegations?.reduce((previous, current) => {
+        return previous.plus(current.amount)
+    }, BN(0))
 }
