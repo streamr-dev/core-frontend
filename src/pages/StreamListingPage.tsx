@@ -10,8 +10,6 @@ import {
     IndexerOrderBy,
     IndexerOrderDirection,
     IndexerResult,
-    TheGraphOrderBy,
-    TheGraphOrderDirection,
     TheGraphStreamResult,
     getPagedStreams,
     getPagedStreamsFromIndexer,
@@ -25,11 +23,15 @@ import {
     SearchBarWrap,
 } from '~/components/ActionBar.styles'
 import { PageWrap } from '~/shared/components/PageWrap'
-import StreamTable, { OrderBy, OrderDirection } from '~/shared/components/StreamTable'
+import StreamTable, {
+    ListOrderBy,
+    ListOrderDirection,
+} from '~/shared/components/StreamTable'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { RouteMemoryKey, useRecall, useRemember } from '~/shared/stores/routeMemory'
 import { useWalletAccount } from '~/shared/stores/wallet'
+import { OrderDirection, Stream_OrderBy } from '~/generated/gql/network'
 import address0 from '~/utils/address0'
 import routes from '~/routes'
 
@@ -39,18 +41,18 @@ enum StreamSelection {
 }
 
 const PAGE_SIZE = 10
-const DEFAULT_ORDER_BY = OrderBy.MessagesPerSecond
-const DEFAULT_ORDER_DIRECTION = OrderDirection.Desc
+const DEFAULT_ORDER_BY = ListOrderBy.MessagesPerSecond
+const DEFAULT_ORDER_DIRECTION = ListOrderDirection.Desc
 
-const mapOrderByToIndexer = (orderBy: OrderBy): IndexerOrderBy => {
+const mapOrderByToIndexer = (orderBy: ListOrderBy): IndexerOrderBy => {
     switch (orderBy) {
-        case OrderBy.Id: {
+        case ListOrderBy.Id: {
             return IndexerOrderBy.Id
         }
-        case OrderBy.MessagesPerSecond: {
+        case ListOrderBy.MessagesPerSecond: {
             return IndexerOrderBy.MsgPerSecond
         }
-        case OrderBy.PeerCount: {
+        case ListOrderBy.PeerCount: {
             return IndexerOrderBy.PeerCount
         }
         default:
@@ -59,37 +61,35 @@ const mapOrderByToIndexer = (orderBy: OrderBy): IndexerOrderBy => {
 }
 
 const mapOrderDirectionToIndexer = (
-    orderDirection: OrderDirection,
+    orderDirection: ListOrderDirection,
 ): IndexerOrderDirection => {
-    if (orderDirection === OrderDirection.Desc) {
+    if (orderDirection === ListOrderDirection.Desc) {
         return IndexerOrderDirection.Desc
     }
 
     return IndexerOrderDirection.Asc
 }
 
-const mapOrderByToGraph = (orderBy: OrderBy): TheGraphOrderBy => {
+const mapOrderByToGraph = (orderBy: ListOrderBy): Stream_OrderBy => {
     switch (orderBy) {
-        case OrderBy.Id: {
-            return TheGraphOrderBy.Id
+        case ListOrderBy.Id: {
+            return Stream_OrderBy.Id
         }
         default:
-            return TheGraphOrderBy.Id
+            return Stream_OrderBy.Id
     }
 }
 
-const mapOrderDirectionToGraph = (
-    orderDirection: OrderDirection,
-): TheGraphOrderDirection => {
-    if (orderDirection === OrderDirection.Desc) {
-        return TheGraphOrderDirection.Desc
+const mapOrderDirectionToGraph = (orderDirection: ListOrderDirection): OrderDirection => {
+    if (orderDirection === ListOrderDirection.Desc) {
+        return OrderDirection.Desc
     }
 
-    return TheGraphOrderDirection.Asc
+    return OrderDirection.Asc
 }
 
-const shouldUseIndexer = (orderBy: OrderBy) => {
-    return orderBy === OrderBy.MessagesPerSecond || orderBy === OrderBy.PeerCount
+const shouldUseIndexer = (orderBy: ListOrderBy) => {
+    return orderBy === ListOrderBy.MessagesPerSecond || orderBy === ListOrderBy.PeerCount
 }
 
 const Container = styled.div`
@@ -205,8 +205,8 @@ const StreamListingPage: React.FC = () => {
     // If indexer errors fall back to using The Graph
     useEffect(() => {
         if (streamsQuery.isError && shouldUseIndexer(orderBy)) {
-            setOrderBy(OrderBy.Id)
-            setOrderDirection(OrderDirection.Asc)
+            setOrderBy(ListOrderBy.Id)
+            setOrderDirection(ListOrderDirection.Asc)
         }
     }, [streamsQuery.isError, orderBy])
 

@@ -24,13 +24,13 @@ import SvgIcon from '../SvgIcon'
 
 const ROW_HEIGHT = 88
 
-export enum OrderBy {
+export enum ListOrderBy {
     MessagesPerSecond,
     PeerCount,
     Id,
 }
 
-export enum OrderDirection {
+export enum ListOrderDirection {
     Asc,
     Desc,
 }
@@ -235,18 +235,18 @@ const Stat = styled.div`
     }
 `
 
-const OrderDirectionIcon = styled(SvgIcon)<{ direction: OrderDirection }>`
+const OrderDirectionIcon = styled(SvgIcon)<{ direction: ListOrderDirection }>`
     width: 12px;
     transform: ${({ direction }) =>
-        direction === OrderDirection.Asc ? 'rotate(180deg)' : 'rotate(0deg)'};
+        direction === ListOrderDirection.Asc ? 'rotate(180deg)' : 'rotate(0deg)'};
     transition: transform 180ms ease-in-out;
     margin-left: 8px;
 `
 
-const DirectionDefaults: Record<OrderBy, OrderDirection> = {
-    [OrderBy.Id]: OrderDirection.Asc,
-    [OrderBy.PeerCount]: OrderDirection.Desc,
-    [OrderBy.MessagesPerSecond]: OrderDirection.Desc,
+const DirectionDefaults: Record<ListOrderBy, ListOrderDirection> = {
+    [ListOrderBy.Id]: ListOrderDirection.Asc,
+    [ListOrderBy.PeerCount]: ListOrderDirection.Desc,
+    [ListOrderBy.MessagesPerSecond]: ListOrderDirection.Desc,
 }
 
 function isIndexerStream(
@@ -262,9 +262,9 @@ type Props = {
     loadMore?: () => void
     hasMoreResults?: boolean
     showGlobalStats: boolean
-    orderBy?: OrderBy
-    orderDirection?: OrderDirection
-    onSortChange?: (orderBy: OrderBy, orderDirection: OrderDirection) => void
+    orderBy?: ListOrderBy
+    orderDirection?: ListOrderDirection
+    onSortChange?: (orderBy: ListOrderBy, orderDirection: ListOrderDirection) => void
     noStreamsText?: ReactNode
 }
 
@@ -284,12 +284,12 @@ const StreamTable: React.FC<Props> = ({
     const isMounted = useIsMounted()
 
     const handleHeaderClick = useCallback(
-        (field: OrderBy) => {
+        (field: ListOrderBy) => {
             if (typeof onSortChange === 'function') {
-                let newDirection = DirectionDefaults[field] ?? OrderDirection.Desc
+                let newDirection = DirectionDefaults[field] ?? ListOrderDirection.Desc
                 // If field was not changed, flip the direction
                 if (orderBy === field) {
-                    newDirection = Number(!orderDirection) as OrderDirection
+                    newDirection = Number(!orderDirection) as ListOrderDirection
                 }
                 onSortChange(field, newDirection)
             }
@@ -333,37 +333,37 @@ const StreamTable: React.FC<Props> = ({
             </Heading>
             <Table>
                 <TableHeader>
-                    <GridCell onClick={() => handleHeaderClick(OrderBy.Id)}>
+                    <GridCell onClick={() => handleHeaderClick(ListOrderBy.Id)}>
                         Stream ID
-                        {orderBy === OrderBy.Id && (
+                        {orderBy === ListOrderBy.Id && (
                             <OrderDirectionIcon
                                 name="caretDown"
-                                direction={orderDirection ?? OrderDirection.Asc}
+                                direction={orderDirection ?? ListOrderDirection.Asc}
                             />
                         )}
                     </GridCell>
                     <GridCell onlyTablet>Description</GridCell>
                     <GridCell
                         onlyDesktop
-                        onClick={() => handleHeaderClick(OrderBy.PeerCount)}
+                        onClick={() => handleHeaderClick(ListOrderBy.PeerCount)}
                     >
                         Live peers
-                        {orderBy === OrderBy.PeerCount && (
+                        {orderBy === ListOrderBy.PeerCount && (
                             <OrderDirectionIcon
                                 name="caretDown"
-                                direction={orderDirection ?? OrderDirection.Asc}
+                                direction={orderDirection ?? ListOrderDirection.Asc}
                             />
                         )}
                     </GridCell>
                     <GridCell
                         onlyDesktop
-                        onClick={() => handleHeaderClick(OrderBy.MessagesPerSecond)}
+                        onClick={() => handleHeaderClick(ListOrderBy.MessagesPerSecond)}
                     >
                         Msg/s
-                        {orderBy === OrderBy.MessagesPerSecond && (
+                        {orderBy === ListOrderBy.MessagesPerSecond && (
                             <OrderDirectionIcon
                                 name="caretDown"
-                                direction={orderDirection ?? OrderDirection.Asc}
+                                direction={orderDirection ?? ListOrderDirection.Asc}
                             />
                         )}
                     </GridCell>

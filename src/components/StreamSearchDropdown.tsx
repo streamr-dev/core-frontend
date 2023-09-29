@@ -5,10 +5,9 @@ import { SearchDropdown } from '~/components/SearchDropdown'
 import {
     checkIfStreamExists,
     getPagedStreams,
-    TheGraphOrderBy,
-    TheGraphOrderDirection,
     TheGraphStreamResult,
 } from '~/services/streams'
+import { OrderDirection, Stream_OrderBy } from '~/generated/gql/network'
 
 export const StreamSearchDropdown: FunctionComponent<{
     onStreamChange: (streamId: string) => void
@@ -26,8 +25,8 @@ export const StreamSearchDropdown: FunctionComponent<{
                 ctx.pageParam,
                 undefined,
                 streamSearchValue,
-                TheGraphOrderBy.Id,
-                TheGraphOrderDirection.Asc,
+                Stream_OrderBy.Id,
+                OrderDirection.Asc,
             )
 
             return result
