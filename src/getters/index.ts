@@ -656,13 +656,13 @@ export async function getDelegacyForWallet(
  * @returns Number representing the APY factor (0.01 is 1%).
  */
 export function getSpotApy({
-    poolValue,
+    valueWithoutEarnings,
     stakes,
 }: {
-    poolValue: BN
+    valueWithoutEarnings: BN
     stakes: { amount: BN; spotAPY: BN; projectedInsolvencyAt: number }[]
 }): number {
-    if (poolValue.isEqualTo(0)) {
+    if (valueWithoutEarnings.isEqualTo(0)) {
         return 0
     }
 
@@ -683,7 +683,7 @@ export function getSpotApy({
         return 0
     }
 
-    return yearlyIncome.dividedBy(poolValue).toNumber()
+    return yearlyIncome.dividedBy(valueWithoutEarnings).toNumber()
 }
 
 /**

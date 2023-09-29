@@ -49,7 +49,11 @@ export function useOperatorStatsForWallet(address = '') {
         return operator
     }
 
-    const { delegatorCount: numOfDelegators, poolValue: value, stakes } = operator
+    const {
+        delegatorCount: numOfDelegators,
+        valueWithoutEarnings: value,
+        stakes,
+    } = operator
 
     return {
         numOfDelegators,

@@ -94,7 +94,7 @@ function MyOperatorSummary() {
 
                 const toValue: (bucket: OperatorDailyBucket) => BNish =
                     chartId === 'stake'
-                        ? ({ poolValue }) => poolValue
+                        ? ({ valueWithoutEarnings }) => valueWithoutEarnings
                         : ({ profitsWei }) => profitsWei
 
                 return buckets.map((bucket) => ({
@@ -323,8 +323,8 @@ function MyDelegations() {
                                 },
                                 {
                                     displayName: 'Total stake',
-                                    valueMapper: ({ poolValue }) =>
-                                        fromAtto(poolValue).toString(),
+                                    valueMapper: ({ valueWithoutEarnings }) =>
+                                        fromAtto(valueWithoutEarnings).toString(),
                                     align: 'end',
                                     isSticky: false,
                                     key: 'totalStake',

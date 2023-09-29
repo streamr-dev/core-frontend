@@ -12,15 +12,14 @@ export const OperatorParser = z
             z
                 .object({
                     delegator: z.string(),
-                    poolTokenWei: z.string().transform(toBN),
+                    delegatedDataWei: z.string().transform(toBN),
                 })
-                .transform(({ poolTokenWei: amount, delegator }) => ({
+                .transform(({ delegatedDataWei: amount, delegator }) => ({
                     amount,
                     delegator,
                 })),
         ),
         exchangeRate: z.string().transform(toBN),
-        freeFundsWei: z.string().transform(toBN),
         id: z.string(),
         metadata: z
             .string()
@@ -64,10 +63,10 @@ export const OperatorParser = z
         nodes: z.array(z.unknown()), // @TODO If needed!
         operatorsCutFraction: z.string().transform(fromAtto),
         owner: z.string(),
-        poolTokenTotalSupplyWei: z.string().transform(toBN),
-        poolValue: z.string().transform(toBN),
-        poolValueBlockNumber: z.coerce.number(),
-        poolValueTimestamp: z.coerce.number(),
+        operatorTokenTotalSupplyWei: z.string().transform(toBN),
+        valueWithoutEarnings: z.string().transform(toBN),
+        valueUpdateBlockNumber: z.coerce.number().optional(),
+        valueUpdateTimestamp: z.coerce.number().optional(),
         queueEntries: z.array(
             z.object({
                 amount: z.string().transform(toBN),
@@ -96,7 +95,7 @@ export const OperatorParser = z
             z
                 .object({
                     amount: z.string().transform(toBN),
-                    allocatedWei: z.string().transform(toBN),
+                    earningsWei: z.string().transform(toBN),
                     joinDate: z.coerce.number(),
                     operator: z.object({
                         id: z.string(),
