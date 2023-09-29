@@ -17,7 +17,7 @@ export interface Delegation extends ParsedOperator {
     myShare: BN
 }
 
-export interface DelegacyStats {
+export interface DelegationsStats {
     value: BN
     minApy: number
     maxApy: number

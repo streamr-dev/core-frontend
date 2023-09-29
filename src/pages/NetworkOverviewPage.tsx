@@ -29,8 +29,8 @@ import { StreamDescription } from '~/components/StreamDescription'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { BNish, toBN } from '~/utils/bn'
 import {
-    useDelegacyForWalletQuery,
-    useDelegacyStats,
+    useDelegationsForWalletQuery,
+    useDelegationsStats,
     useIsLoadingOperatorForWallet,
     useOperatorForWallet,
     useOperatorStatsForWallet,
@@ -201,7 +201,7 @@ function MyOperatorSummary() {
 function MyDelegationsSummary() {
     const wallet = useWalletAccount()
 
-    const stats = useDelegacyStats(wallet)
+    const stats = useDelegationsStats(wallet)
 
     const { value = toBN(0), numOfOperators = 0, minApy = 0, maxApy = 0 } = stats || {}
 
@@ -227,7 +227,7 @@ function MyDelegationsSummary() {
 function MyDelegations() {
     const wallet = useWalletAccount()
 
-    const query = useDelegacyForWalletQuery(wallet)
+    const query = useDelegationsForWalletQuery(wallet)
 
     const isLoading = query.isLoading || query.isFetching
 

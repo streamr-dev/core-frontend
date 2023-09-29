@@ -1,9 +1,9 @@
 import { UseInfiniteQueryResult, useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { z } from 'zod'
-import { getDelegacyForWallet, getOperatorByOwnerAddress } from '~/getters'
+import { getDelegationsForWallet, getOperatorByOwnerAddress } from '~/getters'
 import { OperatorParser } from '~/parsers/OperatorParser'
-import { DelegacyStats, Delegation } from '~/types'
+import { DelegationsStats, Delegation } from '~/types'
 import { toBN } from '~/utils/bn'
 import { errorToast } from '~/utils/toast'
 
@@ -62,8 +62,8 @@ export function useOperatorStatsForWallet(address = '') {
     }
 }
 
-export function useDelegacyStats(address = '') {
-    const [stats, setStats] = useState<DelegacyStats | undefined | null>()
+export function useDelegationsStats(address = '') {
+    const [stats, setStats] = useState<DelegationsStats | undefined | null>()
 
     const addr = address.toLowerCase()
 
@@ -79,7 +79,7 @@ export function useDelegacyStats(address = '') {
         setStats(undefined)
 
         setTimeout(async () => {
-            const operators = await getDelegacyForWallet(addr, {
+            const operators = await getDelegationsForWallet(addr, {
                 batchSize: 1000,
                 onBeforeComplete(total, parsed) {
                     if (total !== parsed) {
@@ -135,7 +135,7 @@ export function useDelegacyStats(address = '') {
     return stats
 }
 
-export function useDelegacyForWalletQuery(
+export function useDelegationsForWalletQuery(
     address = '',
     { pageSize = 10 }: { pageSize?: number } = {},
 ): UseInfiniteQueryResult<{ skip: number; delegations: Delegation[] }> {
@@ -145,7 +145,7 @@ export function useDelegacyForWalletQuery(
             let delegations: Delegation[] = []
 
             try {
-                delegations = await getDelegacyForWallet(address, {
+                delegations = await getDelegationsForWallet(address, {
                     batchSize: pageSize,
                     skip,
                     onBeforeComplete(total, parsed) {

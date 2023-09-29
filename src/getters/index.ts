@@ -589,7 +589,7 @@ export async function getStreamDescription(streamId: string) {
 }
 
 /**
- * Queries the Graph for wallet's delegacy.
+ * Queries the Graph for a collection of wallet's delegations.
  * @param address Wallet address.
  * @param options.batchSize Number of entries to scout for.
  * @param options.skip Number of entries to skip.
@@ -598,7 +598,7 @@ export async function getStreamDescription(streamId: string) {
  * a total number of found operators and the number of successfully parsed operators.
  * @returns Collection of `Delegation` objects.
  */
-export async function getDelegacyForWallet(
+export async function getDelegationsForWallet(
     address = '',
     {
         batchSize,
@@ -616,7 +616,7 @@ export async function getDelegacyForWallet(
         return []
     }
 
-    const delegacy: Delegation[] = []
+    const delegations: Delegation[] = []
 
     const operators = await getOperatorsByDelegation({
         first: batchSize,
@@ -632,7 +632,7 @@ export async function getDelegacyForWallet(
         try {
             const operator = OperatorParser.parse(rawOperator)
 
-            delegacy.push({
+            delegations.push({
                 ...operator,
                 apy: getSpotApy(operator),
                 myShare: getDelegatedAmountForWallet(address, operator),
@@ -644,9 +644,9 @@ export async function getDelegacyForWallet(
         }
     }
 
-    onBeforeComplete?.(preparsedCount, delegacy.length)
+    onBeforeComplete?.(preparsedCount, delegations.length)
 
-    return delegacy
+    return delegations
 }
 
 /**
@@ -686,7 +686,7 @@ export function getSpotApy<
  * Sums amounts delegated to given operator by given wallet.
  * @param address Wallet address.
  * @param operator.delegators Collection of delegators.
- * @returns Wallet's delegacy overall share.
+ * @returns Wallet's delegation amount sum across all operators.
  */
 export function getDelegatedAmountForWallet<T extends Pick<ParsedOperator, 'delegators'>>(
     address: string,
