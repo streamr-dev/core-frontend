@@ -70,7 +70,7 @@ import {
 import getCoreConfig from '~/getters/getCoreConfig'
 import getGraphClient from '~/getters/getGraphClient'
 import { Delegation, ChartPeriod } from '~/types'
-import { OperatorParser } from '~/parsers/OperatorParser'
+import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { BN, toBN } from '~/utils/bn'
 
 export function getGraphUrl(): string {
@@ -651,17 +651,13 @@ export async function getDelegacyForWallet(
 
 /**
  * Compute projected yearly earnings based on the current yield.
- * @param poolValue Total value of the pool.
+ * @param valueWithoutEarnings Total value of the pool.
  * @param stakes Collection of basic stake information (amount, spot apy, projected insolvency date).
  * @returns Number representing the APY factor (0.01 is 1%).
  */
-export function getSpotApy({
-    valueWithoutEarnings,
-    stakes,
-}: {
-    valueWithoutEarnings: BN
-    stakes: { amount: BN; spotAPY: BN; projectedInsolvencyAt: number }[]
-}): number {
+export function getSpotApy<
+    T extends Pick<ParsedOperator, 'valueWithoutEarnings' | 'stakes'>,
+>({ valueWithoutEarnings, stakes }: T): number {
     if (valueWithoutEarnings.isEqualTo(0)) {
         return 0
     }
@@ -692,9 +688,9 @@ export function getSpotApy({
  * @param operator.delegators Collection of delegators.
  * @returns Wallet's delegacy overall share.
  */
-export function getDelegatedAmountForWallet(
+export function getDelegatedAmountForWallet<T extends Pick<ParsedOperator, 'delegators'>>(
     address: string,
-    { delegators }: { delegators: { delegator: string; amount: BN }[] },
+    { delegators }: T,
 ): BN {
     return delegators.reduce(
         (sum, { delegator, amount }) =>
