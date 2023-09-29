@@ -279,11 +279,35 @@ gql`
             canEdit
             canDelete
             userAddress
+            subscribeExpiration
+            publishExpiration
         }
     }
 
     query getStreamById($streamId: ID!) {
         stream(id: $streamId) {
+            ...StreamFields
+        }
+    }
+
+    query getStreams($streamIds: [ID!]!) {
+        streams(where: { id_in: $streamIds }) {
+            ...StreamFields
+        }
+    }
+
+    query getPagedStreams(
+        $first: Int
+        $orderBy: Stream_orderBy
+        $orderDirection: OrderDirection
+        $where: Stream_filter
+    ) {
+        streams(
+            first: $first
+            orderBy: $orderBy
+            orderDirection: $orderDirection
+            where: $where
+        ) {
             ...StreamFields
         }
     }

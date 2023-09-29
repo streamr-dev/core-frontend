@@ -1,28 +1,24 @@
+import _ from 'lodash'
 import getCoreConfig from '~/getters/getCoreConfig'
 import address0 from '~/utils/address0'
 import { post } from '~/shared/utils/api'
 import getGraphClient from '~/getters/getGraphClient'
 import {
+    GetPagedStreamsDocument,
+    GetPagedStreamsQuery,
+    GetPagedStreamsQueryVariables,
     GetStreamByIdDocument,
     GetStreamByIdQuery,
     GetStreamByIdQueryVariables,
+    GetStreamsDocument,
+    GetStreamsQuery,
+    GetStreamsQueryVariables,
+    OrderDirection,
+    Stream,
+    Stream_Filter,
+    Stream_OrderBy,
+    StreamPermission,
 } from '~/generated/gql/network'
-
-const getGraphUrl = () => {
-    const { theGraphUrl, theHubGraphName } = getCoreConfig()
-    return `${theGraphUrl}/subgraphs/name/${theHubGraphName}`
-}
-
-export enum TheGraphOrderBy {
-    Id = 'id',
-    CreatedAt = 'createdAt',
-    UpdatedAt = 'updatedAt',
-}
-
-export enum TheGraphOrderDirection {
-    Asc = 'asc',
-    Desc = 'desc',
-}
 
 export type TheGraphStreamPermission = {
     userAddress: string
@@ -51,7 +47,7 @@ export type TheGraphStreamResult = {
     lastId: string | null
 }
 
-const calculatePubSubCount = (permissions: TheGraphStreamPermission[]) => {
+const calculatePubSubCount = (permissions: StreamPermission[]) => {
     let publisherCount: number | null = 0
     let subscriberCount: number | null = 0
 
@@ -88,19 +84,23 @@ const calculatePubSubCount = (permissions: TheGraphStreamPermission[]) => {
     }
 }
 
-const mapStream = (stream: TheGraphStream): TheGraphStream => {
-    const result = { ...stream }
+const mapStream = (stream: Stream): TheGraphStream => {
+    const result: TheGraphStream = {
+        id: stream.id,
+        publisherCount: 0,
+        subscriberCount: 0,
+        permissions: stream.permissions as TheGraphStreamPermission[],
+    }
 
     // Get publisher and subscriber counts
-    const counts = calculatePubSubCount(stream.permissions)
+    const counts = calculatePubSubCount(stream.permissions || [])
     result.publisherCount = counts.publisherCount
     result.subscriberCount = counts.subscriberCount
 
     // Try to parse metadata JSON
     if (stream.metadata != null) {
         try {
-            const metadata = JSON.parse(stream.metadata as string)
-            result.metadata = metadata
+            result.metadata = JSON.parse(stream.metadata as string)
         } catch (e) {
             console.error(`Could not parse metadata for stream ${stream.id}`, e)
             result.metadata = {}
@@ -111,7 +111,7 @@ const mapStream = (stream: TheGraphStream): TheGraphStream => {
 }
 
 const prepareStreamResult = (
-    result: TheGraphStream[],
+    result: Stream[],
     pageSize: number,
 ): TheGraphStreamResult => {
     let hasNextPage = false
@@ -131,34 +131,17 @@ const prepareStreamResult = (
 }
 
 export const getStreams = async (streamIds: Array<string>): Promise<TheGraphStream[]> => {
-    const theGraphUrl = getGraphUrl()
-
-    const result = await post({
-        url: theGraphUrl,
-        data: {
-            query: `
-                {
-                    streams(
-                        where: { id_in: [${streamIds.map((s) => `"${s}"`).join(',')}] }
-                    ) {
-                        id
-                        metadata
-                        permissions {
-                            userAddress
-                            canEdit
-                            canGrant
-                            canDelete
-                            subscribeExpiration
-                            publishExpiration
-                        }
-                    }
-                }
-            `,
+    const {
+        data: { streams },
+    } = await getGraphClient().query<GetStreamsQuery, GetStreamsQueryVariables>({
+        query: GetStreamsDocument,
+        variables: {
+            streamIds,
         },
     })
 
-    if (result && result.data && result.data.streams && result.data.streams.length > 0) {
-        return result.data.streams.map((s) => mapStream(s))
+    if (streams && streams.length > 0) {
+        return streams.map((s) => mapStream(s))
     }
 
     return []
@@ -169,60 +152,38 @@ export const getPagedStreams = async (
     lastId?: string,
     owner?: string,
     search?: string,
-    orderBy?: TheGraphOrderBy,
-    orderDirection?: TheGraphOrderDirection,
+    orderBy = Stream_OrderBy.Id,
+    orderDirection = OrderDirection.Asc,
 ): Promise<TheGraphStreamResult> => {
-    const theGraphUrl = getGraphUrl()
+    const orderOperator = orderDirection === OrderDirection.Asc ? 'gt' : 'lt'
 
-    // NOTE: Stream name fulltext search is done through subentity "permissions" because we cannot
-    // use "id_contains" in query as it's not technically stored as a string on The Graph.
-    const searchFilter =
-        search != null && search.length > 0 ? `stream_contains_nocase: "${search}"` : null
-    const ownerFilter =
-        owner != null ? `userAddress: "${owner.toLowerCase()}", canGrant: true` : null
-    const allPermissionFilters = [ownerFilter, searchFilter]
-        .filter((filter) => !!filter)
-        .join(',')
-    const permissionFilter =
-        allPermissionFilters.length > 0 && `permissions_: { ${allPermissionFilters} }`
-    const comparisonOperator = orderDirection === TheGraphOrderDirection.Asc ? 'gt' : 'lt'
-    const cursorFilter = lastId != null ? `id_${comparisonOperator}: "${lastId}"` : null
-    const allFilters = [cursorFilter, permissionFilter]
-        .filter((filter) => !!filter)
-        .join(',')
-
-    const result = await post({
-        url: theGraphUrl,
-        data: {
-            query: `
-                {
-                    streams(
-                        first: ${first + 1},
-                        orderBy: ${orderBy?.toString() ?? TheGraphOrderBy.Id.toString()},
-                        orderDirection: ${
-                            orderDirection?.toString() ??
-                            TheGraphOrderDirection.Asc.toString()
-                        },
-                        ${allFilters != null ? `where: { ${allFilters} }` : ''},
-                    ) {
-                        id
-                        metadata
-                        permissions {
-                            userAddress
-                            canEdit
-                            canGrant
-                            canDelete
-                            subscribeExpiration
-                            publishExpiration
-                        }
-                    }
-                }
-            `,
+    let where: Stream_Filter = {
+        permissions_: {
+            stream_contains_nocase: search,
+            userAddress: owner,
         },
-    })
+        [`id_${orderOperator}`]: lastId,
+    }
 
-    if (result && result.data && result.data.streams && result.data.streams.length > 0) {
-        return prepareStreamResult(result.data.streams, first)
+    where.permissions_ = _.omitBy(where.permissions_, _.isEmpty)
+    where = _.omitBy(where, _.isEmpty)
+
+    const {
+        data: { streams },
+    } = await getGraphClient().query<GetPagedStreamsQuery, GetPagedStreamsQueryVariables>(
+        {
+            query: GetPagedStreamsDocument,
+            variables: {
+                first: first + 1,
+                orderBy,
+                orderDirection,
+                where,
+            },
+        },
+    )
+
+    if (streams && streams.length > 0) {
+        return prepareStreamResult(streams, first)
     }
 
     return {
@@ -396,8 +357,8 @@ export const getStreamsOwnedBy = async (
         undefined,
         owner,
         search,
-        TheGraphOrderBy.Id,
-        TheGraphOrderDirection.Asc,
+        Stream_OrderBy.Id,
+        OrderDirection.Asc,
     )
 
     let result = allOwnedStreams.streams
