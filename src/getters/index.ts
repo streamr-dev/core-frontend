@@ -640,7 +640,7 @@ export async function getDelegacyForWallet(
         } catch (e) {
             onParseError
                 ? onParseError(rawOperator as Operator, e)
-                : console.warn('Failed to parse an operator', e)
+                : console.warn('Failed to parse an operator', rawOperator, e)
         }
     }
 

@@ -1,122 +1,45 @@
-import { UseInfiniteQueryResult, useInfiniteQuery } from '@tanstack/react-query'
-import { produce } from 'immer'
+import { UseInfiniteQueryResult, useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
-import { create } from 'zustand'
+import { z } from 'zod'
 import { getDelegacyForWallet, getOperatorByOwnerAddress } from '~/getters'
-import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
+import { OperatorParser } from '~/parsers/OperatorParser'
 import { DelegacyStats, Delegation } from '~/types'
 import { toBN } from '~/utils/bn'
 import { errorToast } from '~/utils/toast'
 
-interface WalletOperatorEntry {
-    fetchedAt: number
-    fetching: boolean
-    value: ParsedOperator | null | undefined
-}
-
-interface WalletOperatorsStore {
-    operators: Record<string, WalletOperatorEntry | undefined>
-}
-
-interface WalletOperatorsActions {
-    fetch: (
-        address: string,
-        options?: {
-            onDone?: () => void
-            onError?: (e: unknown) => void
-        },
-    ) => void
-
-    fetchAsync: (address: string) => Promise<void>
-}
-
-const useWalletOperatorsStore = create<WalletOperatorsStore & WalletOperatorsActions>(
-    (set, get) => {
-        function setEntry(address = '', fn: (entryDraft: WalletOperatorEntry) => void) {
-            set((store) =>
-                produce(store, (draft) => {
-                    const current = draft.operators[address] || {
-                        fetchedAt: -1,
-                        fetching: false,
-                        value: undefined,
-                    }
-
-                    draft.operators[address] = current
-
-                    fn(current as WalletOperatorEntry)
-                }),
-            )
-        }
-
-        function expired(address = '') {
-            return (get().operators[address]?.fetchedAt || 0) < Date.now() - 60 * 1000
-        }
-
-        function isFetching(address = '') {
-            return get().operators[address]?.fetching === true
-        }
-
-        async function fetchAsync(address = '') {
-            const addr = address.toLowerCase()
-
-            if (!addr || isFetching(addr) || !expired(addr)) {
-                return
-            }
-
-            try {
-                setEntry(addr, (draft) => {
-                    draft.fetching = true
-                })
-
-                const operator = await getOperatorByOwnerAddress(addr)
-
-                setEntry(addr, (draft) => {
-                    draft.fetchedAt = Date.now()
-
-                    draft.value = operator ? OperatorParser.parse(operator) : null
-                })
-            } finally {
-                setEntry(addr, (draft) => {
-                    draft.fetching = false
-                })
-            }
-        }
-
-        return {
-            operators: {},
-
-            fetchAsync,
-
-            fetch(address = '', { onDone, onError } = {}) {
-                setTimeout(async () => {
-                    try {
-                        await fetchAsync(address)
-
-                        onDone?.()
-                    } catch (e) {
-                        onError?.(e)
-                    }
-                })
-            },
-        }
-    },
-)
-
-export function useOperatorForWallet(address = '') {
+function useOperatorForWalletQuery(address = '') {
     const addr = address.toLowerCase()
 
-    const {
-        operators: { [addr]: { value: operator = null } = {} },
-        fetch,
-    } = useWalletOperatorsStore()
+    return useQuery({
+        queryKey: ['useOperatorForWalletQuery', addr],
+        async queryFn() {
+            const operator = await getOperatorByOwnerAddress(addr)
 
-    useEffect(() => void fetch(addr), [addr, fetch])
+            if (operator) {
+                try {
+                    return OperatorParser.parse(operator)
+                } catch (e) {
+                    if (!(e instanceof z.ZodError)) {
+                        throw e
+                    }
 
-    return operator
+                    console.warn('Failed to parse an operator', operator, e)
+                }
+            }
+
+            return null
+        },
+    })
+}
+
+export function useOperatorForWallet(address = '') {
+    return useOperatorForWalletQuery(address).data || null
 }
 
 export function useIsLoadingOperatorForWallet(address = ''): boolean {
-    return useWalletOperatorsStore().operators[address.toLowerCase()]?.fetching === true
+    const query = useOperatorForWalletQuery(address)
+
+    return query.isLoading || query.isFetching
 }
 
 export function useOperatorStatsForWallet(address = '') {
