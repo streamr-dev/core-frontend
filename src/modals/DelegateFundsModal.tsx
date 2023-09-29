@@ -179,20 +179,21 @@ export default function DelegateFundsModal({
                 </ul>
             </Section>
             {tooLowCurrentSelfDelegation ? (
-                <StyledAlert type="error" title="Too low self-delegation">
-                    Cannot delegate funds to the operator because it&apos;s owner has a
-                    too low self-delegation percentage
+                <StyledAlert type="error" title="Unable to delegate">
+                    This operator can not accept any further delegations at the moment,
+                    because the operator’s own share of funds is below the required limit.
                 </StyledAlert>
             ) : (
                 <></>
             )}
             {!tooLowCurrentSelfDelegation && tooLowSelfDelegationWithNewAmount ? (
                 <StyledAlert type="error" title="Amount too high">
-                    Cannot exceed the owner&apos;s minimum self-delegation precentage.
-                    Please use value lower or equal than{' '}
+                    This operator can currently only accept{' '}
                     <strong>
                         {maxAmount.toString()} {tokenSymbol}
-                    </strong>
+                    </strong>{' '}
+                    in further delegations, because operators must stay above a certain
+                    proportion of their own funds vs. delegations.
                 </StyledAlert>
             ) : (
                 <></>
