@@ -198,9 +198,11 @@ export const OperatorActionBar: FunctionComponent<{
                     <NetworkActionBarCTAs>
                         <Button
                             onClick={async () => {
-                                const success = await delegateFunds(operator)
-                                if (success) {
+                                try {
+                                    await delegateFunds(operator)
                                     onDelegationChange()
+                                } catch (e) {
+                                    console.warn(e)
                                 }
                             }}
                             disabled={walletAddress == null}
@@ -209,9 +211,11 @@ export const OperatorActionBar: FunctionComponent<{
                         </Button>
                         <Button
                             onClick={async () => {
-                                const success = await undelegateFunds(operator)
-                                if (success) {
+                                try {
+                                    await undelegateFunds(operator)
                                     onDelegationChange()
+                                } catch (e) {
+                                    console.warn(e)
                                 }
                             }}
                             disabled={walletAddress == null}

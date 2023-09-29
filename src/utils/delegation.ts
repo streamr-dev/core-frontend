@@ -21,12 +21,11 @@ export function getDelegationAmountForAddress(
 
 export const getOwnerSelfDelegationPercentage = (
     operator: OperatorElement,
-    additionalValue?: BN,
+    additionalValue = toBN(0),
 ): BN => {
     const stake = getDelegationAmountForAddress(operator.owner, operator)
-    const operatorValueWithoutEarnings = operator.valueWithoutEarnings.plus(
-        additionalValue ?? 0,
-    )
+    const operatorValueWithoutEarnings =
+        operator.valueWithoutEarnings.plus(additionalValue)
     if (stake.isEqualTo(BN(0)) || operatorValueWithoutEarnings.isEqualTo(BN(0))) {
         return BN(0)
     }

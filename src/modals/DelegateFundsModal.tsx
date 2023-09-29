@@ -74,6 +74,7 @@ export default function DelegateFundsModal({
         const percentage = getOwnerSelfDelegationPercentage(operator)
         return percentage.isLessThan(toBN(minimumSelfDelegationFraction))
     }, [operator, minimumSelfDelegationFraction, walletAddress])
+
     const tooLowSelfDelegationWithNewAmount = useMemo(() => {
         if (operator.owner === walletAddress || !minimumSelfDelegationFraction) {
             return false
