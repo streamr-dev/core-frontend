@@ -71,6 +71,9 @@ export const StatCellBody = styled.div`
     letter-spacing: -0.05em;
     line-height: 24px;
     margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 
     @media ${TABLET} {
         font-size: 20px;
@@ -80,6 +83,7 @@ export const StatCellBody = styled.div`
 const StatCellRoot = styled.div`
     align-items: center;
     display: flex;
+    min-width: 0;
 
     ${StatCellLabel} {
         flex-grow: 1;
