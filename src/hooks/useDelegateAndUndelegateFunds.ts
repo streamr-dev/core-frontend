@@ -17,6 +17,8 @@ import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import UndelegateFundsModal from '~/modals/UndelegateFundsModal'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
 import { fromDecimals } from '~/marketplace/utils/math'
+import { getBalance } from '~/getters/getBalance'
+import getCoreConfig from '~/getters/getCoreConfig'
 export const useDelegateAndUndelegateFunds = (): {
     delegateFunds: (operator: OperatorElement) => Promise<void>
     undelegateFunds: (operator: OperatorElement) => Promise<void>
@@ -25,33 +27,14 @@ export const useDelegateAndUndelegateFunds = (): {
     const undelegateFundsModal = toaster(UndelegateFundsModal, Layer.Modal)
     const walletAddress = useWalletAccount()
     const { minimumSelfDelegationFraction } = useConfigFromChain()
-
-    const getDelegationAmount = async (
-        operator: OperatorElement,
-        address: string,
-    ): Promise<BN> => {
-        return await getOperatorDelegationAmount(operator.id, address)
-    }
-
-    const getBalance = async (
-        operator: OperatorElement,
-        address: string,
-    ): Promise<BN> => {
-        const chainId = await getChainId()
-        const chainConfig = getConfigForChain(chainId)
-        return await getCustomTokenBalance(
-            chainConfig.contracts['DATA'],
-            address,
-            chainId,
-        )
-    }
+    const tokenSymbol = getCoreConfig().sponsorshipPaymentToken
 
     return {
         delegateFunds: async (operator: OperatorElement): Promise<void> => {
             if (!walletAddress) {
                 throw new Error('No wallet connected')
             }
-            const balance = await getBalance(operator, walletAddress)
+            const balance = await getBalance(walletAddress, tokenSymbol)
             const delegationAmount = await getOperatorDelegationAmount(
                 operator.id,
                 walletAddress,
@@ -80,8 +63,11 @@ export const useDelegateAndUndelegateFunds = (): {
             if (!walletAddress) {
                 throw new Error('No wallet connected')
             }
-            const balance = await getBalance(operator, walletAddress)
-            const delegationAmount = await getDelegationAmount(operator, walletAddress)
+            const balance = await getBalance(walletAddress, tokenSymbol)
+            const delegationAmount = await await getOperatorDelegationAmount(
+                operator.id,
+                walletAddress,
+            )
             const tokenInfo = await getSponsorshipTokenInfo()
             await undelegateFundsModal.pop({
                 operatorId: operator.id,
