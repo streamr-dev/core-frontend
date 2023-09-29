@@ -1,15 +1,12 @@
 import { toaster } from 'toasterhea'
 import DelegateFundsModal from '~/modals/DelegateFundsModal'
 import { Layer } from '~/utils/Layer'
-import { BN, toBN } from '~/utils/bn'
+import { BN } from '~/utils/bn'
 import {
     delegateToOperator,
     getOperatorDelegationAmount,
     undelegateFromOperator,
 } from '~/services/operators'
-import getChainId from '~/utils/web3/getChainId'
-import { getConfigForChain } from '~/shared/web3/config'
-import { getCustomTokenBalance } from '~/marketplace/utils/web3'
 import { OperatorElement } from '~/types/operator'
 import { useConfigFromChain } from '~/hooks/useConfigFromChain'
 import { useWalletAccount } from '~/shared/stores/wallet'
