@@ -56,5 +56,5 @@ export interface Chain {
     id: number
     rpcEndpoints: RPCEndpoint[]
     contracts: Contracts
-    entryPoints: Entrypoint[]
+    entryPoints?: Entrypoint[]
 }

@@ -11,7 +11,7 @@ export default function getClientConfig(mods: any = {}): StreamrClientConfig {
     }
 
     // Set network entrypoints if provided
-    if (defaultChainConfig.entryPoints.length > 0) {
+    if (defaultChainConfig.entryPoints && defaultChainConfig.entryPoints.length > 0) {
         config.network = {
             controlLayer: {
                 entryPoints: defaultChainConfig.entryPoints,
