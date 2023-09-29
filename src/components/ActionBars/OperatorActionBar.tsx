@@ -23,7 +23,7 @@ import getCoreConfig from '~/getters/getCoreConfig'
 import { useDelegateAndUndelegateFunds } from '~/hooks/useDelegateAndUndelegateFunds'
 import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
-import { Pad } from '~/components/NetworkPageSegment'
+import { TABLET } from '~/shared/utils/styled'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -278,4 +278,12 @@ export const OperatorActionBar: FunctionComponent<{
 const AboutOperatorsContent = styled.div`
     margin: 0;
     min-width: 250px;
+`
+
+export const Pad = styled.div`
+    padding: 20px 0;
+
+    @media ${TABLET} {
+        padding: 32px 40px;
+    }
 `

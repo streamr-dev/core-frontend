@@ -19,7 +19,7 @@ import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { getBlockExplorerUrl } from '~/getters/getBlockExplorerUrl'
 import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
-import { Pad } from '~/components/NetworkPageSegment'
+import { Pad } from '~/components/ActionBars/OperatorActionBar'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
