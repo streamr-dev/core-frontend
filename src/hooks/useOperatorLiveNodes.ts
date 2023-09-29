@@ -14,8 +14,8 @@ export default function useOperatorLiveNodes(operatorId: string) {
             },
             onMessage(msg) {
                 const data = msg.parsedContent as any
-                if (data.type === 'heartbeat' && data.nodeId != null) {
-                    const address = (data.nodeId as string).toLowerCase()
+                if (data?.msgType === 'heartbeat' && data?.peerDescriptor?.id != null) {
+                    const address = (data.peerDescriptor.id as string).toLowerCase()
                     if (!liveNodes.includes(address)) {
                         setLiveNodes((prev) => [...prev, address])
                     }
@@ -27,7 +27,7 @@ export default function useOperatorLiveNodes(operatorId: string) {
     useEffect(() => {
         setTimeout(() => {
             setIsLoading(false)
-        }, 10500)
+        }, 15000)
     }, [])
 
     return {
