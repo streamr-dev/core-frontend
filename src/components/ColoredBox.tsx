@@ -8,6 +8,7 @@ const ColoredBox = styled.div<{
 }>`
     background-color: ${({ $backgroundColor = '#ffffff' }) => $backgroundColor};
     border-radius: 16px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.01);
 
     ${({ $borderColor }) =>
         typeof $borderColor === 'string' &&

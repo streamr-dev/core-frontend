@@ -1,9 +1,9 @@
 import moment from 'moment'
-import { ChartPeriod } from '~/shared/components/NetworkChart/NetworkChart'
+import { ChartPeriod } from '~/types'
 import { GetSponsorshipDailyBucketsQuery } from '~/generated/gql/network'
 import { toBN } from '~/utils/bn'
-import { getSponsorshipDailyBuckets } from './getSponsorshipDailyBuckets'
-import getSponsorshipTokenInfo from './getSponsorshipTokenInfo'
+import { getSponsorshipDailyBuckets } from '~/getters'
+import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
 
 export const getSponsorshipStats = async (
     sponsorshipId: string,
@@ -17,39 +17,34 @@ export const getSponsorshipStats = async (
     let result: GetSponsorshipDailyBucketsQuery['sponsorshipDailyBuckets']
     switch (selectedPeriod) {
         case ChartPeriod.SevenDays:
-            result = await getSponsorshipDailyBuckets(
-                sponsorshipId,
-                start.unix(),
-                start.clone().subtract(7, 'days').unix(),
-            )
+            result = await getSponsorshipDailyBuckets(sponsorshipId, {
+                dateGreaterEqualThan: start.clone().subtract(7, 'days').unix(),
+                dateLowerThan: start.unix(),
+            })
             break
         case ChartPeriod.OneMonth:
-            result = await getSponsorshipDailyBuckets(
-                sponsorshipId,
-                start.unix(),
-                start.clone().subtract(30, 'days').unix(),
-            )
+            result = await getSponsorshipDailyBuckets(sponsorshipId, {
+                dateGreaterEqualThan: start.clone().subtract(30, 'days').unix(),
+                dateLowerThan: start.unix(),
+            })
             break
         case ChartPeriod.ThreeMonths:
-            result = await getSponsorshipDailyBuckets(
-                sponsorshipId,
-                start.unix(),
-                start.clone().subtract(90, 'days').unix(),
-            )
+            result = await getSponsorshipDailyBuckets(sponsorshipId, {
+                dateGreaterEqualThan: start.clone().subtract(90, 'days').unix(),
+                dateLowerThan: start.unix(),
+            })
             break
         case ChartPeriod.OneYear:
-            result = await getSponsorshipDailyBuckets(
-                sponsorshipId,
-                start.unix(),
-                start.clone().subtract(365, 'days').unix(),
-            )
+            result = await getSponsorshipDailyBuckets(sponsorshipId, {
+                dateGreaterEqualThan: start.clone().subtract(365, 'days').unix(),
+                dateLowerThan: start.unix(),
+            })
             break
         case ChartPeriod.YearToDate:
-            result = await getSponsorshipDailyBuckets(
-                sponsorshipId,
-                start.unix(),
-                start.clone().startOf('year').unix(),
-            )
+            result = await getSponsorshipDailyBuckets(sponsorshipId, {
+                dateGreaterEqualThan: start.clone().startOf('year').unix(),
+                dateLowerThan: start.unix(),
+            })
             break
         case ChartPeriod.All:
             const maxAmount = 999
@@ -59,13 +54,13 @@ export const getSponsorshipStats = async (
                 []
             // yeah - I'm guessing we will not have a history longer than 5 thousand days :)
             for (let i = 0; i < maxIterations; i++) {
-                const partialResult = await getSponsorshipDailyBuckets(
-                    sponsorshipId,
-                    start.unix(),
-                    endDate.unix(),
-                    maxAmount,
-                    maxAmount * i,
-                )
+                const partialResult = await getSponsorshipDailyBuckets(sponsorshipId, {
+                    dateLowerThan: start.unix(),
+                    dateGreaterEqualThan: endDate.unix(),
+                    batchSize: maxAmount,
+                    skip: maxAmount * i,
+                })
+
                 elements.push(...partialResult)
                 if (partialResult.length < maxAmount) {
                     break // we're breaking the FOR loop here

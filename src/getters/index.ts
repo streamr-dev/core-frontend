@@ -7,6 +7,7 @@ import {
     ProjectRegistryV1 as ProjectRegistryContract,
     MarketplaceV4 as MarketplaceContract,
 } from '@streamr/hub-contracts'
+import moment, { Moment } from 'moment'
 import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
 import reverseRecordsAbi from '~/shared/web3/abis/reverseRecords.json'
 import {
@@ -55,9 +56,22 @@ import {
     GetOperatorsByDelegationAndMetadataQuery,
     GetOperatorsByDelegationAndMetadataQueryVariables,
     GetOperatorsByDelegationAndMetadataDocument,
+    GetStreamByIdQuery,
+    GetStreamByIdQueryVariables,
+    GetStreamByIdDocument,
+    Operator,
+    GetOperatorDailyBucketsQuery,
+    GetOperatorDailyBucketsDocument,
+    GetOperatorDailyBucketsQueryVariables,
+    GetSponsorshipDailyBucketsQuery,
+    GetSponsorshipDailyBucketsQueryVariables,
+    GetSponsorshipDailyBucketsDocument,
 } from '~/generated/gql/network'
-import getCoreConfig from './getCoreConfig'
-import getGraphClient from './getGraphClient'
+import getCoreConfig from '~/getters/getCoreConfig'
+import getGraphClient from '~/getters/getGraphClient'
+import { Delegation, ChartPeriod } from '~/types'
+import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
+import { BN, toBN } from '~/utils/bn'
 
 export function getGraphUrl(): string {
     const { theGraphUrl, theHubGraphName } = getCoreConfig()
@@ -265,7 +279,7 @@ export function getGraphProjectWithParsedMetadata<T extends { metadata: string }
 export async function getAllSponsorships({
     first,
     skip,
-    streamId,
+    streamId = '',
 }: {
     first?: number
     skip?: number
@@ -311,7 +325,7 @@ export async function getSponsorshipsByCreator(
     {
         first,
         skip,
-        streamId,
+        streamId = '',
     }: {
         first?: number
         skip?: number
@@ -539,4 +553,265 @@ export async function getBase64ForFile<T extends File>(file: T): Promise<string>
 
         reader.onerror = reject
     })
+}
+
+/**
+ * Fetches stream descriptions from the Graph.
+ * @param streamId Stream ID
+ * @returns A string
+ */
+export async function getStreamDescription(streamId: string) {
+    const {
+        data: { stream },
+    } = await getGraphClient().query<GetStreamByIdQuery, GetStreamByIdQueryVariables>({
+        query: GetStreamByIdDocument,
+        variables: {
+            streamId,
+        },
+    })
+
+    return z
+        .object({
+            metadata: z
+                .string()
+                .transform((v) => JSON.parse(v))
+                .pipe(
+                    z.object({
+                        description: z
+                            .string()
+                            .optional()
+                            .transform((v) => v || ''),
+                    }),
+                ),
+        })
+        .transform(({ metadata: { description } }) => description)
+        .parse(stream)
+}
+
+/**
+ * Queries the Graph for a collection of wallet's delegations.
+ * @param address Wallet address.
+ * @param options.batchSize Number of entries to scout for.
+ * @param options.skip Number of entries to skip.
+ * @param options.onParseError Callback triggered for *each* parser failure (see `OperatorParser`).
+ * @param options.onBeforeComplete Callback triggered just before returning the result. It carries
+ * a total number of found operators and the number of successfully parsed operators.
+ * @returns Collection of `Delegation` objects.
+ */
+export async function getDelegationsForWallet(
+    address = '',
+    {
+        batchSize,
+        skip,
+        onParseError,
+        onBeforeComplete,
+    }: {
+        batchSize?: number
+        skip?: number
+        onParseError?: (operator: Operator, error: unknown) => void
+        onBeforeComplete?: (total: number, parsed: number) => void
+    },
+): Promise<Delegation[]> {
+    if (!address) {
+        return []
+    }
+
+    const delegations: Delegation[] = []
+
+    const operators = await getOperatorsByDelegation({
+        first: batchSize,
+        skip,
+        address,
+    })
+
+    const preparsedCount = operators.length
+
+    for (let i = 0; i < preparsedCount; i++) {
+        const rawOperator = operators[i]
+
+        try {
+            const operator = OperatorParser.parse(rawOperator)
+
+            delegations.push({
+                ...operator,
+                apy: getSpotApy(operator),
+                myShare: getDelegatedAmountForWallet(address, operator),
+            })
+        } catch (e) {
+            onParseError
+                ? onParseError(rawOperator as Operator, e)
+                : console.warn('Failed to parse an operator', rawOperator, e)
+        }
+    }
+
+    onBeforeComplete?.(preparsedCount, delegations.length)
+
+    return delegations
+}
+
+/**
+ * Compute projected yearly earnings based on the current yield.
+ * @param operator.valueWithoutEarnings Total value of the pool.
+ * @param operator.stakes Collection of basic stake information (amount, spot apy, projected insolvency date).
+ * @returns Number representing the APY factor (0.01 is 1%).
+ */
+export function getSpotApy<
+    T extends Pick<ParsedOperator, 'valueWithoutEarnings' | 'stakes'>,
+>({ valueWithoutEarnings, stakes }: T): number {
+    if (valueWithoutEarnings.isEqualTo(0)) {
+        return 0
+    }
+
+    const stake = stakes.reduce((sum, { amount }) => sum.plus(amount), toBN(0))
+
+    const now = Date.now()
+
+    const yearlyIncome = stakes.reduce((sum, { spotAPY, projectedInsolvencyAt }) => {
+        /**
+         * Only include sponsorships that haven't expired.
+         */
+        return projectedInsolvencyAt * 1000 < now
+            ? sum.plus(stake.multipliedBy(spotAPY))
+            : sum
+    }, toBN(0))
+
+    if (yearlyIncome.isEqualTo(0)) {
+        return 0
+    }
+
+    return yearlyIncome.dividedBy(valueWithoutEarnings).toNumber()
+}
+
+/**
+ * Sums amounts delegated to given operator by given wallet.
+ * @param address Wallet address.
+ * @param operator.delegators Collection of delegators.
+ * @returns Wallet's delegation amount sum across all operators.
+ */
+export function getDelegatedAmountForWallet<T extends Pick<ParsedOperator, 'delegators'>>(
+    address: string,
+    { delegators }: T,
+): BN {
+    return delegators.reduce(
+        (sum, { delegator, amount }) =>
+            delegator.toLowerCase() === address.toLowerCase() ? sum.plus(amount) : sum,
+        toBN(0),
+    )
+}
+
+/**
+ * Turns `period` into a timestamp relative to `end` moment.
+ */
+export function getTimestampForChartPeriod(period: ChartPeriod, end: Moment): Moment {
+    const result = (() => {
+        switch (period) {
+            case ChartPeriod.SevenDays:
+                return end.clone().subtract(7, 'days')
+            case ChartPeriod.OneMonth:
+                return end.clone().subtract(30, 'days')
+            case ChartPeriod.ThreeMonths:
+                return end.clone().subtract(90, 'days')
+            case ChartPeriod.OneYear:
+                return end.clone().subtract(365, 'days')
+            case ChartPeriod.YearToDate:
+                return end.clone().startOf('year')
+            case ChartPeriod.All:
+            default:
+                return moment(0).utc()
+        }
+    })()
+
+    return result
+}
+
+/**
+ * Fetches a collection of daily Operator buckets.
+ * @param operatorId Operator ID
+ * @param options.dateLowerThan End unix timestamp
+ * @param options.dateGreaterEqualThan Start unix timestamp
+ * @param options.batchSize Number of buckets to scout for at once
+ * @param options.skip Number of buckets to skip
+ * @returns Operator buckets
+ */
+export async function getOperatorDailyBuckets(
+    operatorId: string,
+    options: {
+        dateLowerThan: number
+        dateGreaterEqualThan: number
+        batchSize?: number
+        skip?: number
+    },
+) {
+    const {
+        dateLowerThan: date_lt,
+        dateGreaterEqualThan: date_gte,
+        batchSize: first = 999,
+        skip,
+    } = options
+
+    const { data } = await getGraphClient().query<
+        GetOperatorDailyBucketsQuery,
+        GetOperatorDailyBucketsQueryVariables
+    >({
+        query: GetOperatorDailyBucketsDocument,
+        variables: {
+            first,
+            skip,
+            where: {
+                operator_: {
+                    id: operatorId,
+                },
+                date_lt,
+                date_gte,
+            },
+        },
+    })
+
+    return data.operatorDailyBuckets
+}
+
+/**
+ * Fetches a collection of daily Sponsorship buckets.
+ * @param sponsorshipId Sponsorship ID
+ * @param options.dateLowerThan End unix timestamp
+ * @param options.dateGreaterEqualThan Start unix timestamp
+ * @param options.batchSize Number of buckets to scout for at once
+ * @param options.skip Number of buckets to skip
+ * @returns Sponsorship buckets
+ */
+export async function getSponsorshipDailyBuckets(
+    sponsorshipId: string,
+    options: {
+        dateLowerThan: number
+        dateGreaterEqualThan: number
+        batchSize?: number
+        skip?: number
+    },
+) {
+    const {
+        dateLowerThan: date_lt,
+        dateGreaterEqualThan: date_gte,
+        batchSize: first = 999,
+        skip,
+    } = options
+
+    const { data } = await getGraphClient().query<
+        GetSponsorshipDailyBucketsQuery,
+        GetSponsorshipDailyBucketsQueryVariables
+    >({
+        query: GetSponsorshipDailyBucketsDocument,
+        variables: {
+            first,
+            skip,
+            where: {
+                sponsorship_: {
+                    id: sponsorshipId,
+                },
+                date_lt,
+                date_gte,
+            },
+        },
+    })
+
+    return data.sponsorshipDailyBuckets
 }

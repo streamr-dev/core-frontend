@@ -1,7 +1,11 @@
 import { parseEther } from 'ethers/lib/utils'
 import { OperatorElement } from '~/types/operator'
-import { BN, toBN } from './bn'
+import { BN } from './bn'
 
+/**
+ * @deprecated Use `getDelegatedAmountForWallet`. It's more flexible
+ * and operates on `BN` amounts.
+ */
 export function getDelegationAmountForAddress(
     address: string | undefined,
     operator: OperatorElement | null | undefined,

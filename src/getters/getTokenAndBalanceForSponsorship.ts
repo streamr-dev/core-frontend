@@ -14,9 +14,6 @@ export const getTokenAndBalanceForSponsorship = async (
 ): Promise<TokenAndBalanceForSponsorship> => {
     const tokenInformation = await getSponsorshipTokenInfo()
 
-    if (!tokenInformation) {
-        throw new Error('Invalid token for sponsorship balanance')
-    }
     const balance = await getCustomTokenBalance(
         defaultChainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
         walletAddress,

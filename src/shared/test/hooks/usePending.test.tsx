@@ -2,15 +2,12 @@ import React, { useEffect, useContext, useState } from 'react'
 import { render, act } from '@testing-library/react'
 import usePending, { useAnyPending } from '~/shared/hooks/usePending'
 import * as PendingContext from '~/shared/contexts/Pending'
-
-function wait(timeout) {
-    return new Promise((resolve) => setTimeout(resolve, timeout))
-}
+import { sleep } from '~/utils'
 
 function Unmounter({ children, unmountAfter }) {
     const [shouldUnmount, setShouldUnmount] = useState(false)
     useEffect(() => {
-        wait(unmountAfter).then(() => {
+        sleep(unmountAfter).then(() => {
             setShouldUnmount(true)
         })
     }, [unmountAfter])
@@ -36,7 +33,7 @@ describe.skip('usePending', () => {
             const { wrap } = currentPendingState
             useEffect(() => {
                 fn()
-                wrap(() => wait(timeout))
+                wrap(() => sleep(timeout))
             }, [wrap])
             return null
         }
@@ -49,10 +46,10 @@ describe.skip('usePending', () => {
             )
             expect(currentPendingState.isPending).not.toBeTruthy()
             expect(isAnyPending).not.toBeTruthy()
-            await wait(timeout * 0.1)
+            await sleep(timeout * 0.1)
             expect(currentPendingState.isPending).toBeTruthy()
             expect(isAnyPending).toBeTruthy()
-            await wait(timeout * 1.1)
+            await sleep(timeout * 1.1)
             expect(currentPendingState.isPending).not.toBeTruthy()
             expect(isAnyPending).not.toBeTruthy()
             expect(fn).toHaveBeenCalledTimes(1)
@@ -70,11 +67,11 @@ describe.skip('usePending', () => {
             const { wrap } = currentPendingState
             useEffect(() => {
                 started(1)
-                wrap(() => wait(timeout * 0.5)).then(() => ended(1))
+                wrap(() => sleep(timeout * 0.5)).then(() => ended(1))
             }, [wrap])
             useEffect(() => {
                 started(2)
-                wrap(() => wait(timeout)).then(() => ended(2))
+                wrap(() => sleep(timeout)).then(() => ended(2))
             }, [wrap])
             return null
         }
@@ -86,13 +83,13 @@ describe.skip('usePending', () => {
                 </PendingContext.Provider>,
             )
             expect(currentPendingState.isPending).not.toBeTruthy()
-            await wait(timeout * 0.6)
+            await sleep(timeout * 0.6)
             expect(started).toHaveBeenCalledWith(1)
             expect(started).toHaveBeenCalledWith(2)
             expect(ended).toHaveBeenCalledWith(1)
             expect(ended).not.toHaveBeenCalledWith(2)
             expect(currentPendingState.isPending).toBeTruthy()
-            await wait(timeout * 1.1)
+            await sleep(timeout * 1.1)
             expect(currentPendingState.isPending).not.toBeTruthy()
             expect(started).toHaveBeenCalledTimes(2)
             expect(ended).toHaveBeenCalledTimes(2)
@@ -106,7 +103,7 @@ describe.skip('usePending', () => {
         function Test({ name, timeout }) {
             const { wrap } = usePending(name)
             useEffect(() => {
-                wrap(() => wait(timeout))
+                wrap(() => sleep(timeout))
             }, [wrap, timeout])
             return null
         }
@@ -125,11 +122,11 @@ describe.skip('usePending', () => {
                 </PendingContext.Provider>,
             )
             expect(currentPendingContext.isPending).not.toBeTruthy()
-            await wait(timeout * 0.1)
+            await sleep(timeout * 0.1)
             expect(currentPendingContext.isPending).toBeTruthy()
-            await wait(timeout * 0.6)
+            await sleep(timeout * 0.6)
             expect(currentPendingContext.isPending).toBeTruthy()
-            await wait(timeout * 1.1)
+            await sleep(timeout * 1.1)
             expect(currentPendingContext.isPending).not.toBeTruthy()
             result.unmount()
         })
@@ -149,7 +146,7 @@ describe.skip('usePending', () => {
             const { wrap } = usePending('test')
             useEffect(() => {
                 fn()
-                wrap(() => wait(timeout))
+                wrap(() => sleep(timeout))
             }, [wrap])
             return null
         }
@@ -164,9 +161,9 @@ describe.skip('usePending', () => {
                 </PendingContext.Provider>,
             )
             expect(currentPendingContext.isPending).not.toBeTruthy()
-            await wait(timeout * 0.1)
+            await sleep(timeout * 0.1)
             expect(currentPendingContext.isPending).toBeTruthy()
-            await wait(unmountTime * 1.5)
+            await sleep(unmountTime * 1.5)
             expect(currentPendingContext.isPending).not.toBeTruthy()
             result.unmount()
         })
@@ -178,7 +175,7 @@ describe.skip('usePending', () => {
         function Test({ name, timeout }) {
             const { wrap } = usePending(name)
             useEffect(() => {
-                wrap(() => wait(timeout))
+                wrap(() => sleep(timeout))
             }, [wrap, timeout])
             return null
         }
@@ -199,11 +196,11 @@ describe.skip('usePending', () => {
                 </PendingContext.Provider>,
             )
             expect(currentPendingContext.isPending).not.toBeTruthy()
-            await wait(maxTimeout * 0.1)
+            await sleep(maxTimeout * 0.1)
             expect(currentPendingContext.isPending).toBeTruthy()
-            await wait(maxTimeout * 0.6)
+            await sleep(maxTimeout * 0.6)
             expect(currentPendingContext.isPending).toBeTruthy()
-            await wait(maxTimeout * 1.1)
+            await sleep(maxTimeout * 1.1)
             expect(currentPendingContext.isPending).not.toBeTruthy()
             result.unmount()
         })

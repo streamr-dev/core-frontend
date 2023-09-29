@@ -9,6 +9,9 @@ export type DelegationStats = {
     apy: number
 }
 
+/**
+ * @deprecated Does not use BN and forces redundant mapping. Use Delegation from ~/types.
+ */
 export type Delegation = {
     operatorId: string
     myShare: number

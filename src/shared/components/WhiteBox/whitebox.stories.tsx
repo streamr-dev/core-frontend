@@ -1,6 +1,7 @@
 import React from 'react'
 import { Meta } from '@storybook/react'
-import { WhiteBox, WhiteBoxSeparator } from './index'
+import { Separator } from '~/components/Separator'
+import { WhiteBox } from './index'
 
 export const Default = () => (
     <WhiteBox>
@@ -20,7 +21,7 @@ export const WithPadding = () => (
 export const WithSeparator = () => (
     <WhiteBox>
         <p style={{ padding: '24px' }}>Lorem ipsum dolor sit amet.</p>
-        <WhiteBoxSeparator />
+        <Separator />
         <p style={{ padding: '24px' }}>
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id, sed!
         </p>

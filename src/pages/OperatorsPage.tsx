@@ -4,12 +4,6 @@ import { Link } from 'react-router-dom'
 import { toaster } from 'toasterhea'
 import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
-import {
-    WhiteBox,
-    WhiteBoxPaddingStyles,
-    WhiteBoxSeparator,
-} from '~/shared/components/WhiteBox'
-import { LAPTOP, TABLET } from '~/shared/utils/styled'
 import { Layer } from '~/utils/Layer'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import Button from '~/shared/components/Button'
@@ -28,13 +22,11 @@ import { useMyOperator } from '~/hooks/useMyOperator'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import routes from '~/routes'
-import { NetworkActionBar } from '../components/ActionBars/NetworkActionBar'
-import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
-import {
-    useAllOperatorsQuery,
-    useDelegatedOperatorsQuery,
-} from '../hooks/useOperatorList'
-import { OperatorElement } from '../types/operator'
+import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
+import { useAllOperatorsQuery, useDelegatedOperatorsQuery } from '~/hooks/useOperatorList'
+import { OperatorElement } from '~/types/operator'
+import NetworkPageSegment, { SegmentGrid } from '~/components/NetworkPageSegment'
+import { LoadMoreButton } from '~/components/LoadMore'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -251,70 +243,57 @@ export const OperatorsPage = () => {
                 }
             />
             <LayoutColumn>
-                <OperatorsTableWrap>
-                    <div className="title">
-                        <NetworkSectionTitle>
-                            {selectedTab === TabOptions.allOperators
-                                ? 'All operators'
-                                : 'My delegations'}
-                        </NetworkSectionTitle>
-                    </div>
-                    <WhiteBoxSeparator />
-                    <ScrollTableCore
-                        elements={operators}
-                        isLoading={
-                            operatorsQuery.isLoading ||
-                            operatorsQuery.isFetching ||
-                            operatorsQuery.isFetchingNextPage
+                <SegmentGrid>
+                    <NetworkPageSegment
+                        foot
+                        title={
+                            <>
+                                {selectedTab === TabOptions.allOperators ? (
+                                    <>All operators</>
+                                ) : (
+                                    <>My delegations</>
+                                )}
+                            </>
                         }
-                        columns={
-                            selectedTab === TabOptions.allOperators
-                                ? getAllOperatorColumns()
-                                : getMyDelegationsColumns(wallet || '')
-                        }
-                        noDataFirstLine={
-                            selectedTab === TabOptions.allOperators
-                                ? 'No operators found.'
-                                : 'You have not delegated to any operator.'
-                        }
-                        linkMapper={(element) =>
-                            routes.network.operator({ id: element.id })
-                        }
-                    />
-                </OperatorsTableWrap>
-                {operatorsQuery.hasNextPage && (
-                    <LoadMoreButton
-                        disabled={operatorsQuery.isLoading || operatorsQuery.isFetching}
-                        onClick={() => operatorsQuery.fetchNextPage()}
-                        kind="primary2"
                     >
-                        Load more
-                    </LoadMoreButton>
-                )}
+                        <ScrollTableCore
+                            elements={operators}
+                            isLoading={
+                                operatorsQuery.isLoading ||
+                                operatorsQuery.isFetching ||
+                                operatorsQuery.isFetchingNextPage
+                            }
+                            columns={
+                                selectedTab === TabOptions.allOperators
+                                    ? getAllOperatorColumns()
+                                    : getMyDelegationsColumns(wallet || '')
+                            }
+                            noDataFirstLine={
+                                selectedTab === TabOptions.allOperators
+                                    ? 'No operators found.'
+                                    : 'You have not delegated to any operator.'
+                            }
+                            linkMapper={(element) =>
+                                routes.network.operator({ id: element.id })
+                            }
+                        />
+                        {operatorsQuery.hasNextPage && (
+                            <LoadMoreButton
+                                disabled={
+                                    operatorsQuery.isLoading || operatorsQuery.isFetching
+                                }
+                                onClick={() => operatorsQuery.fetchNextPage()}
+                                kind="primary2"
+                            >
+                                Load more
+                            </LoadMoreButton>
+                        )}
+                    </NetworkPageSegment>
+                </SegmentGrid>
             </LayoutColumn>
         </Layout>
     )
 }
-
-const OperatorsTableWrap = styled(WhiteBox)`
-    margin-top: 40px;
-    margin-bottom: 40px;
-    @media (${TABLET}) {
-        margin-top: 48px;
-    }
-    @media (${LAPTOP}) {
-        margin-top: 80px;
-    }
-
-    .title {
-        ${WhiteBoxPaddingStyles}
-    }
-`
-
-const LoadMoreButton = styled(Button)`
-    display: block;
-    margin: 130px auto 80px;
-`
 
 const OperatorNameCell = styled.div`
     display: flex;

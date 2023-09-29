@@ -1,14 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import { NetworkHelmet } from '~/components/Helmet'
-import {
-    WhiteBox,
-    WhiteBoxPaddingStyles,
-    WhiteBoxSeparator,
-} from '~/shared/components/WhiteBox'
-import { LAPTOP, TABLET } from '~/shared/utils/styled'
 import { Layer } from '~/utils/Layer'
 import { truncateStreamName } from '~/shared/utils/text'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
@@ -31,12 +24,12 @@ import {
 import { useJoinSponsorship } from '~/hooks/useJoinSponsorship'
 import { useEditStake } from '~/hooks/useEditStake'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
-import { NetworkSectionTitle } from '../components/NetworkSectionTitle'
-import { StreamInfoCell } from '../components/NetworkUtils'
+import NetworkPageSegment, { SegmentGrid } from '~/components/NetworkPageSegment'
+import { StreamInfoCell } from '~/components/NetworkUtils'
 import {
     getTokenAndBalanceForSponsorship,
     TokenAndBalanceForSponsorship,
-} from '../getters/getTokenAndBalanceForSponsorship'
+} from '~/getters/getTokenAndBalanceForSponsorship'
 
 const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
 
@@ -116,13 +109,13 @@ export const SponsorshipsPage = () => {
         <Layout>
             <NetworkHelmet title="Sponsorships" />
             <NetworkActionBar
-                searchEnabled={true}
+                searchEnabled
                 onSearch={handleSearch}
                 leftSideContent={
                     <Tabs
                         onSelectionChange={handleTabChange}
                         selection={selectedTab}
-                        fullWidthOnMobile={true}
+                        fullWidthOnMobile
                     >
                         <Tab id={TabOptions.allSponsorships}>All sponsorships</Tab>
                         <Tab id={TabOptions.mySponsorships} disabled={!walletConnected}>
@@ -157,149 +150,141 @@ export const SponsorshipsPage = () => {
                 }
             />
             <LayoutColumn>
-                <SponsorshipsTableWrap>
-                    <div className="title">
-                        <NetworkSectionTitle>
-                            {selectedTab === TabOptions.allSponsorships ? 'All' : 'My'}{' '}
-                            sponsorships
-                        </NetworkSectionTitle>
-                    </div>
-                    <WhiteBoxSeparator />
-                    <ScrollTableCore
-                        elements={sponsorships}
-                        isLoading={
-                            sponsorshipsQuery.isLoading ||
-                            sponsorshipsQuery.isFetching ||
-                            sponsorshipsQuery.isFetchingNextPage
+                <SegmentGrid>
+                    <NetworkPageSegment
+                        foot
+                        title={
+                            <>
+                                {selectedTab === TabOptions.allSponsorships ? (
+                                    <>All sponsorships</>
+                                ) : (
+                                    <>My sponsorships</>
+                                )}
+                            </>
                         }
-                        columns={[
-                            {
-                                displayName: 'Stream ID',
-                                valueMapper: (element) => (
-                                    <StreamInfoCell>
-                                        <span className="stream-id">
-                                            {truncateStreamName(element.streamId)}
-                                        </span>
-                                        {element.streamDescription && (
-                                            <span className="stream-description">
-                                                {element.streamDescription}
-                                            </span>
-                                        )}
-                                    </StreamInfoCell>
-                                ),
-                                align: 'start',
-                                isSticky: true,
-                                key: 'streamInfo',
-                            },
-                            {
-                                displayName: balanceData
-                                    ? `${balanceData.tokenSymbol}/day`
-                                    : 'DATA/day',
-                                valueMapper: (element) => element.payoutPerDay,
-                                align: 'start',
-                                isSticky: false,
-                                key: 'payoutPerDay',
-                            },
-                            {
-                                displayName: 'Operators',
-                                valueMapper: (element) => element.operators,
-                                align: 'end',
-                                isSticky: false,
-                                key: 'operators',
-                            },
-                            {
-                                displayName: 'Staked',
-                                valueMapper: (element) =>
-                                    truncateNumber(
-                                        Number(element.totalStake),
-                                        'thousands',
-                                    ),
-                                align: 'end',
-                                isSticky: false,
-                                key: 'staked',
-                            },
-                            {
-                                displayName: 'APY',
-                                valueMapper: (element) => element.apy + '%',
-                                align: 'end',
-                                isSticky: false,
-                                key: 'apy',
-                            },
-                        ]}
-                        actions={[
-                            {
-                                displayName: 'Sponsor',
-                                disabled: !walletConnected,
-                                callback: (element) =>
-                                    fundSponsorship(
-                                        element.id,
-                                        element.payoutPerDay,
-                                    ).then(async () => {
-                                        await waitForGraphSync()
-                                        await refetchQueries()
-                                    }),
-                            },
-                            {
-                                displayName: (element) =>
-                                    canEditStake(element)
-                                        ? 'Edit stake'
-                                        : 'Join As Operator',
-                                disabled: (element) =>
-                                    canEditStake(element)
-                                        ? false
-                                        : !walletConnected || !canJoinSponsorship,
-                                callback: (element) =>
-                                    canEditStake(element)
-                                        ? editStake(element).then(async () => {
-                                              await waitForGraphSync()
-                                              await refetchQueries()
-                                          })
-                                        : joinSponsorship(
-                                              element.id,
-                                              element.streamId,
-                                          ).then(async () => {
-                                              await waitForGraphSync()
-                                              await refetchQueries()
-                                          }),
-                            },
-                        ]}
-                        noDataFirstLine={
-                            selectedTab === TabOptions.allSponsorships
-                                ? 'No sponsorships found.'
-                                : 'You do not have any sponsorships yet.'
-                        }
-                        linkMapper={(element) =>
-                            routes.network.sponsorship({ id: element.id })
-                        }
-                    />
-                </SponsorshipsTableWrap>
-                {sponsorshipsQuery.hasNextPage && (
-                    <LoadMoreButton
-                        disabled={
-                            sponsorshipsQuery.isLoading || sponsorshipsQuery.isFetching
-                        }
-                        onClick={() => sponsorshipsQuery.fetchNextPage()}
-                        kind="primary2"
                     >
-                        Load more
-                    </LoadMoreButton>
-                )}
+                        <ScrollTableCore
+                            elements={sponsorships}
+                            isLoading={
+                                sponsorshipsQuery.isLoading ||
+                                sponsorshipsQuery.isFetching ||
+                                sponsorshipsQuery.isFetchingNextPage
+                            }
+                            columns={[
+                                {
+                                    displayName: 'Stream ID',
+                                    valueMapper: (element) => (
+                                        <StreamInfoCell>
+                                            <span className="stream-id">
+                                                {truncateStreamName(element.streamId)}
+                                            </span>
+                                            {element.streamDescription && (
+                                                <span className="stream-description">
+                                                    {element.streamDescription}
+                                                </span>
+                                            )}
+                                        </StreamInfoCell>
+                                    ),
+                                    align: 'start',
+                                    isSticky: true,
+                                    key: 'streamInfo',
+                                },
+                                {
+                                    displayName: balanceData
+                                        ? `${balanceData.tokenSymbol}/day`
+                                        : 'DATA/day',
+                                    valueMapper: (element) => element.payoutPerDay,
+                                    align: 'start',
+                                    isSticky: false,
+                                    key: 'payoutPerDay',
+                                },
+                                {
+                                    displayName: 'Operators',
+                                    valueMapper: (element) => element.operators,
+                                    align: 'end',
+                                    isSticky: false,
+                                    key: 'operators',
+                                },
+                                {
+                                    displayName: 'Staked',
+                                    valueMapper: (element) =>
+                                        truncateNumber(
+                                            Number(element.totalStake),
+                                            'thousands',
+                                        ),
+                                    align: 'end',
+                                    isSticky: false,
+                                    key: 'staked',
+                                },
+                                {
+                                    displayName: 'APY',
+                                    valueMapper: (element) => element.apy + '%',
+                                    align: 'end',
+                                    isSticky: false,
+                                    key: 'apy',
+                                },
+                            ]}
+                            actions={[
+                                {
+                                    displayName: 'Sponsor',
+                                    disabled: !walletConnected,
+                                    callback: (element) =>
+                                        fundSponsorship(
+                                            element.id,
+                                            element.payoutPerDay,
+                                        ).then(async () => {
+                                            await waitForGraphSync()
+                                            await refetchQueries()
+                                        }),
+                                },
+                                {
+                                    displayName: (element) =>
+                                        canEditStake(element)
+                                            ? 'Edit stake'
+                                            : 'Join As Operator',
+                                    disabled: (element) =>
+                                        canEditStake(element)
+                                            ? false
+                                            : !walletConnected || !canJoinSponsorship,
+                                    callback: (element) =>
+                                        canEditStake(element)
+                                            ? editStake(element).then(async () => {
+                                                  await waitForGraphSync()
+                                                  await refetchQueries()
+                                              })
+                                            : joinSponsorship(
+                                                  element.id,
+                                                  element.streamId,
+                                              ).then(async () => {
+                                                  await waitForGraphSync()
+                                                  await refetchQueries()
+                                              }),
+                                },
+                            ]}
+                            noDataFirstLine={
+                                selectedTab === TabOptions.allSponsorships
+                                    ? 'No sponsorships found.'
+                                    : 'You do not have any sponsorships yet.'
+                            }
+                            linkMapper={(element) =>
+                                routes.network.sponsorship({ id: element.id })
+                            }
+                        />
+                        {sponsorshipsQuery.hasNextPage && (
+                            <LoadMoreButton
+                                disabled={
+                                    sponsorshipsQuery.isLoading ||
+                                    sponsorshipsQuery.isFetching
+                                }
+                                onClick={() => sponsorshipsQuery.fetchNextPage()}
+                                kind="primary2"
+                            >
+                                Load more
+                            </LoadMoreButton>
+                        )}
+                    </NetworkPageSegment>
+                </SegmentGrid>
             </LayoutColumn>
         </Layout>
     )
 }
-
-const SponsorshipsTableWrap = styled(WhiteBox)`
-    margin-top: 40px;
-    margin-bottom: 40px;
-    @media (${TABLET}) {
-        margin-top: 48px;
-    }
-    @media (${LAPTOP}) {
-        margin-top: 80px;
-    }
-
-    .title {
-        ${WhiteBoxPaddingStyles}
-    }
-`

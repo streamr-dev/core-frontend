@@ -1,7 +1,10 @@
 import { BN } from '~/utils/bn'
 import { OperatorElement } from '~/types/operator'
 
-// Compute projected Operator yearly earnings based on its currently yielding Sponsorships
+/**
+ * Compute projected Operator yearly earnings based on its currently yielding Sponsorships.
+ * @deprecated Use `getSpotApy`. It's faster, more flexible and accurate.
+ */
 export function calculateOperatorSpotAPY(operator: OperatorElement): BN {
     const operatorIncomePerYear = BN(0)
 

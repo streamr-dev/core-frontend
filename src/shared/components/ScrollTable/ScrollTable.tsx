@@ -6,14 +6,11 @@ import {
     ScrollTableCell,
     ScrollTableCellsWrap,
     ScrollTableColumn,
-    ScrollTableContainer,
     ScrollTableHeaderCell,
     ScrollTableNonStickyColumnsWrap,
-    ScrollTableTitle,
 } from '~/shared/components/ScrollTable/ScrollTable.styles'
 import Popover from '~/shared/components/Popover'
 import PopoverItem from '~/shared/components/Popover/PopoverItem'
-import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
 import { NoData } from '~/shared/components/NoData'
 import { LoadMoreButton } from '~/components/LoadMore'
 
@@ -32,7 +29,7 @@ type ScrollTableProps<Element> = {
 
 export type ScrollTableColumnDef<T> = {
     key: string
-    displayName: string
+    displayName: ReactNode
     isSticky: boolean
     valueMapper: (element: T) => ReactNode
     align: 'start' | 'end'
@@ -46,7 +43,6 @@ export type ScrollTableAction<T> = {
 
 export const ScrollTable = <T extends object>({
     elements,
-    title,
     columns,
     actions,
     isLoading,
@@ -56,11 +52,9 @@ export const ScrollTable = <T extends object>({
     linkMapper,
     hasMoreResults,
     onLoadMore,
-}: ScrollTableProps<T> & { title: ReactNode }) => {
+}: ScrollTableProps<T>) => {
     return (
-        <ScrollTableContainer>
-            <ScrollTableTitle>{title}</ScrollTableTitle>
-            <WhiteBoxSeparator />
+        <>
             <ScrollTableCore
                 columns={columns}
                 elements={elements}
@@ -80,7 +74,7 @@ export const ScrollTable = <T extends object>({
                 </LoadMoreButton>
             )}
             {footerComponent != null && footerComponent}
-        </ScrollTableContainer>
+        </>
     )
 }
 

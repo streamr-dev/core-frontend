@@ -1,12 +1,10 @@
 import React, { FunctionComponent, useMemo } from 'react'
 import styled from 'styled-components'
-import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
 import { truncate } from '~/shared/utils/text'
 import { BlackTooltip } from '~/shared/components/Tooltip/Tooltip'
 import Button from '~/shared/components/Button'
 import useCopy from '~/shared/hooks/useCopy'
 import SvgIcon from '~/shared/components/SvgIcon'
-import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import routes from '~/routes'
 import { OperatorElement } from '~/types/operator'
@@ -23,6 +21,9 @@ import useTokenInfo from '~/hooks/useTokenInfo'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { useDelegateAndUndelegateFunds } from '~/hooks/useDelegateAndUndelegateFunds'
+import { Separator } from '~/components/Separator'
+import StatGrid, { StatCell } from '~/components/StatGrid'
+import { TABLET } from '~/shared/utils/styled'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -225,58 +226,50 @@ export const OperatorActionBar: FunctionComponent<{
                     </NetworkActionBarCTAs>
                 </SingleElementPageActionBarTopPart>
                 <NetworkActionBarStatsTitle>Operator summary</NetworkActionBarStatsTitle>
-                <WhiteBoxSeparator />
-                <StatsBox
-                    stats={[
-                        {
-                            label: 'Total value',
-                            value: fromAtto(operator.valueWithoutEarnings).toString(),
-                        },
-                        {
-                            label: 'Deployed stake',
-                            value: fromAtto(
-                                operator.totalStakeInSponsorshipsWei,
-                            ).toString(),
-                        },
-                        {
-                            label: "Owner's delegation",
-                            value: `${ownerDelegationPercentage.toFixed(0)}%`,
-                        },
-                        {
-                            label: 'Redundancy factor',
-                            value: operator.metadata?.redundancyFactor?.toString() || '1',
-                        },
-                        {
-                            label: "Operator's cut",
-                            value: `${operator.operatorsCutFraction}%`,
-                        },
-                        {
-                            label: 'Spot APY',
-                            value: `${calculateOperatorSpotAPY(operator).toFixed(0)}%`,
-                        },
-                        {
-                            label: 'Cumulative earnings',
-                            value: `${fromAtto(
+                <Separator />
+                <Pad>
+                    <StatGrid>
+                        <StatCell label="Total value">
+                            {fromAtto(operator.valueWithoutEarnings).toString()}
+                        </StatCell>
+                        <StatCell label="Deployed stake">
+                            {fromAtto(operator.totalStakeInSponsorshipsWei).toString()}
+                        </StatCell>
+                        <StatCell label="Owner's delegation">
+                            {ownerDelegationPercentage.toFixed(0)}%
+                        </StatCell>
+                        <StatCell label="Redundancy factor">
+                            {operator.metadata?.redundancyFactor?.toString() || '1'}
+                        </StatCell>
+                    </StatGrid>
+                </Pad>
+                <Separator />
+                <Pad>
+                    <StatGrid>
+                        <StatCell label="Operator's cut">
+                            {operator.operatorsCutFraction.toString()}%
+                        </StatCell>
+                        <StatCell label="Spot APY">
+                            {calculateOperatorSpotAPY(operator).toFixed(0)}%
+                        </StatCell>
+                        <StatCell label="Cumulative earnings">
+                            {fromAtto(
                                 operator.cumulativeProfitsWei.plus(
                                     operator.cumulativeOperatorsCutWei,
                                 ),
-                            ).toString()}`,
-                        },
-                        {
-                            label: 'Live nodes',
-                            value: (
-                                <>
-                                    {liveNodeCountIsLoading ? (
-                                        <Spinner color="blue" />
-                                    ) : (
-                                        liveNodeCount.toString()
-                                    )}
-                                </>
-                            ),
-                        },
-                    ]}
-                    columns={4}
-                />
+                            ).toString()}
+                        </StatCell>
+                        <StatCell label="Live nodes">
+                            <>
+                                {liveNodeCountIsLoading ? (
+                                    <Spinner color="blue" />
+                                ) : (
+                                    liveNodeCount.toString()
+                                )}
+                            </>
+                        </StatCell>
+                    </StatGrid>
+                </Pad>
             </SingleElementPageActionBarContainer>
         </SingleElementPageActionBar>
     )
@@ -285,4 +278,12 @@ export const OperatorActionBar: FunctionComponent<{
 const AboutOperatorsContent = styled.div`
     margin: 0;
     min-width: 250px;
+`
+
+export const Pad = styled.div`
+    padding: 20px 0;
+
+    @media ${TABLET} {
+        padding: 32px 40px;
+    }
 `

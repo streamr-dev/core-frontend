@@ -7,5 +7,13 @@
             "~/*": ["src/*"]
         }
     },
-    "exclude": ["**/*.test.ts", "**/*.test.tsx", "./test/test-utils/setupTests.ts"]
+    "exclude": [
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "test/test-utils/setupTests.ts",
+        "dist/**/*.*",
+        "storybook-static/**/*.*",
+        "src/generated/**/*.ts",
+        "coverage/**/*"
+    ]
 }

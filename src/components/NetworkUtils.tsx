@@ -51,6 +51,10 @@ export const StreamInfoCell = styled.div`
     .stream-description {
         font-size: 14px;
     }
+
+    .stream-description:empty {
+        display: none;
+    }
 `
 
 const WalletNotConnectedBackground = styled.div`
