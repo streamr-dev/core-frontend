@@ -12,7 +12,6 @@ import { getConfigForChain } from '~/shared/web3/config'
 import { getCustomTokenBalance } from '~/marketplace/utils/web3'
 import { OperatorElement } from '~/types/operator'
 import { useConfigFromChain } from '~/hooks/useConfigFromChain'
-import { getDelegationAmountForAddress } from '~/utils/delegation'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import UndelegateFundsModal from '~/modals/UndelegateFundsModal'
@@ -47,14 +46,6 @@ export const useDelegateAndUndelegateFunds = (): {
         )
     }
 
-    const getOwnerDelegationPercentage = (operator: OperatorElement): BN => {
-        const stake = getDelegationAmountForAddress(operator.owner, operator)
-        if (stake.isEqualTo(BN(0)) || operator.valueWithoutEarnings.isEqualTo(BN(0))) {
-            return BN(0)
-        }
-        return stake.dividedBy(operator.valueWithoutEarnings).multipliedBy(100)
-    }
-
     return {
         delegateFunds: async (operator: OperatorElement) => {
             if (!walletAddress) {
@@ -62,31 +53,20 @@ export const useDelegateAndUndelegateFunds = (): {
             }
             try {
                 const balance = await getBalance(operator, walletAddress)
-                const delegationAmount = await getDelegationAmount(
-                    operator,
+                const delegationAmount = await getOperatorDelegationAmount(
+                    operator.id,
                     walletAddress,
                 )
                 const tokenInfo = await getSponsorshipTokenInfo()
-                const ownerStakePercentage = await getOwnerDelegationPercentage(operator)
-
-                console.log(
-                    'ooo',
-                    ownerStakePercentage.toString(),
-                    toBN(minimumSelfDelegationFraction).toString(),
-                )
 
                 await delegateFundsModal.pop({
-                    operatorId: operator.id,
+                    operator: operator,
                     tokenSymbol: tokenInfo.symbol,
                     decimals: tokenInfo.decimals,
                     balance: balance?.toString(),
                     delegatedTotal: delegationAmount
                         ? fromDecimals(delegationAmount, tokenInfo.decimals).toString()
                         : '0',
-                    tooLowOwnerSelfDelegation: ownerStakePercentage.isLessThan(
-                        toBN(minimumSelfDelegationFraction),
-                    ),
-                    isCurrentUserOwner: operator.owner === walletAddress,
                     onSubmit: async (amount: BN) => {
                         try {
                             await delegateToOperator(operator.id, amount)

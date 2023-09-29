@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
+import styled from 'styled-components'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     FieldWrap,
@@ -11,9 +12,15 @@ import FormModal, {
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
 import { BN, toBN } from '~/utils/bn'
-import { toDecimals } from '~/marketplace/utils/math'
-import styled from 'styled-components'
+import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
 import { Alert } from '~/components/Alert'
+import { OperatorElement } from '~/types/operator'
+import {
+    getDelegationAmountForAddress,
+    getOwnerSelfDelegationPercentage,
+} from '~/utils/delegation'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import { useConfigFromChain } from '~/hooks/useConfigFromChain'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onResolve?: (amount: string) => void
@@ -22,10 +29,8 @@ interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     tokenSymbol: string
     decimals: number
     delegatedTotal?: string
-    operatorId?: string
     amount?: string
-    tooLowOwnerSelfDelegation: boolean
-    isCurrentUserOwner: boolean
+    operator: OperatorElement
 }
 
 export default function DelegateFundsModal({
@@ -34,15 +39,16 @@ export default function DelegateFundsModal({
     tokenSymbol,
     decimals,
     delegatedTotal: delegatedTotalProp = '0',
-    operatorId = 'N/A',
     onResolve,
     onSubmit,
     amount: amountProp = '',
     submitLabel = 'Delegate',
-    tooLowOwnerSelfDelegation,
-    isCurrentUserOwner,
+    operator,
     ...props
 }: Props) {
+    const walletAddress = useWalletAccount()
+    const { minimumSelfDelegationFraction } = useConfigFromChain()
+
     const [rawAmount, setRawAmount] = useState(amountProp)
 
     useEffect(() => {
@@ -53,17 +59,50 @@ export default function DelegateFundsModal({
 
     const finalValue = toBN(value)
 
+    const finalValueDecimals = toDecimals(finalValue, decimals)
+
     const balance = toBN(balanceProp)
 
     const delegatedTotal = toBN(delegatedTotalProp)
 
     const insufficientFunds = finalValue.isGreaterThan(balance)
 
+    const tooLowCurrentSelfDelegation = useMemo<boolean>(() => {
+        if (operator.owner === walletAddress || !minimumSelfDelegationFraction) {
+            return false
+        }
+        const percentage = getOwnerSelfDelegationPercentage(operator)
+        return percentage.isLessThan(toBN(minimumSelfDelegationFraction))
+    }, [operator, minimumSelfDelegationFraction, walletAddress])
+    const tooLowSelfDelegationWithNewAmount = useMemo(() => {
+        if (operator.owner === walletAddress || !minimumSelfDelegationFraction) {
+            return false
+        }
+        const percentage = getOwnerSelfDelegationPercentage(operator, finalValueDecimals)
+        return percentage.isLessThan(toBN(minimumSelfDelegationFraction))
+    }, [operator, minimumSelfDelegationFraction, walletAddress, finalValueDecimals])
+
+    const tooLowOwnerSelfDelegation =
+        tooLowCurrentSelfDelegation || tooLowSelfDelegationWithNewAmount
+
+    const maxAmount = useMemo<BN>(() => {
+        if (!minimumSelfDelegationFraction) {
+            return toBN(0)
+        }
+        const operatorSelfStake = getDelegationAmountForAddress(operator.owner, operator)
+        return fromDecimals(
+            operatorSelfStake
+                .dividedBy(fromDecimals(minimumSelfDelegationFraction, 18))
+                .minus(operatorSelfStake),
+            decimals,
+        )
+    }, [operator, minimumSelfDelegationFraction, decimals])
+
     const canSubmit =
         finalValue.isFinite() &&
         finalValue.isGreaterThan(0) &&
         !insufficientFunds &&
-        (isCurrentUserOwner ? true : !tooLowOwnerSelfDelegation)
+        !tooLowOwnerSelfDelegation
 
     const [busy, setBusy] = useState(false)
 
@@ -128,7 +167,7 @@ export default function DelegateFundsModal({
                     </li>
                     <li>
                         <Prop>Operator ID</Prop>
-                        <div>{operatorId}</div>
+                        <div>{operator.id}</div>
                     </li>
                     <li>
                         <Prop>Amount currently delegated to Operator</Prop>
@@ -138,10 +177,21 @@ export default function DelegateFundsModal({
                     </li>
                 </ul>
             </Section>
-            {!isCurrentUserOwner && tooLowOwnerSelfDelegation ? (
+            {tooLowCurrentSelfDelegation ? (
                 <StyledAlert type="error" title="Too low self-delegation">
                     Cannot delegate funds to the operator because it&apos;s owner has a
                     too low self-delegation percentage
+                </StyledAlert>
+            ) : (
+                <></>
+            )}
+            {!tooLowCurrentSelfDelegation && tooLowSelfDelegationWithNewAmount ? (
+                <StyledAlert type="error" title="Amount too high">
+                    Cannot exceed the owner&apos;s minimum self-delegation precentage.
+                    Please use value lower or equal than{' '}
+                    <strong>
+                        {maxAmount.toString()} {tokenSymbol}
+                    </strong>
                 </StyledAlert>
             ) : (
                 <></>
