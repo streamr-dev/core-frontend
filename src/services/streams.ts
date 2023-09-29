@@ -136,7 +136,7 @@ export const getStreams = async (streamIds: Array<string>): Promise<TheGraphStre
     } = await getGraphClient().query<GetStreamsQuery, GetStreamsQueryVariables>({
         query: GetStreamsDocument,
         variables: {
-            streamIds: streamIds,
+            streamIds,
         },
     })
 
@@ -152,8 +152,8 @@ export const getPagedStreams = async (
     lastId?: string,
     owner?: string,
     search?: string,
-    orderBy?: Stream_OrderBy,
-    orderDirection?: OrderDirection,
+    orderBy = Stream_OrderBy.Id,
+    orderDirection = OrderDirection.Asc,
 ): Promise<TheGraphStreamResult> => {
     const orderOperator = orderDirection === OrderDirection.Asc ? 'gt' : 'lt'
 
@@ -175,8 +175,8 @@ export const getPagedStreams = async (
             query: GetPagedStreamsDocument,
             variables: {
                 first: first + 1,
-                orderBy: orderBy ?? Stream_OrderBy.Id,
-                orderDirection: orderDirection ?? OrderDirection.Asc,
+                orderBy,
+                orderDirection,
                 where,
             },
         },
