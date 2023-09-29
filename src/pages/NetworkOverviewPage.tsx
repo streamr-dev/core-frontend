@@ -207,24 +207,6 @@ function MyDelegationsSummary() {
 
     const apy = minApy === maxApy ? [minApy] : [minApy, maxApy]
 
-    const [chartPeriod, setChartPeriod] = useState<ChartPeriod>(ChartPeriod.SevenDays)
-
-    const [chartId, setChartId] = useState<'value' | 'earnings'>('value')
-
-    const { data: chartData = [] } = useQuery<XY[]>({
-        queryKey: ['operatorSummaryChartQuery', chartId, chartPeriod, wallet],
-        async queryFn() {
-            /**
-             * @TODO There's no API for getting buckets with profits and amounts
-             * aggregated across all eligible operators. Find a way or drop
-             * the chart.
-             */
-            return []
-        },
-    })
-
-    const chartLabel = chartId === 'value' ? 'Current value' : 'Cumulative earnings'
-
     return (
         <NetworkPageSegment title="My delegations summary">
             <WalletPass resourceName="delegations summary" roundBorders>
@@ -236,48 +218,6 @@ function MyDelegationsSummary() {
                         <StatCell label="Operators">{numOfOperators}</StatCell>
                         <StatCell label="APY">{apy.join('-')}%</StatCell>
                     </StatGrid>
-                </Pad>
-                <Separator />
-                <Pad>
-                    <NetworkChartDisplay
-                        periodTabs={
-                            <ChartPeriodTabs
-                                value={chartPeriod}
-                                onChange={setChartPeriod}
-                            />
-                        }
-                        sourceTabs={
-                            <Tabs
-                                selection={chartId}
-                                onSelectionChange={(newChartId) => {
-                                    if (
-                                        newChartId !== 'value' &&
-                                        newChartId !== 'earnings'
-                                    ) {
-                                        return
-                                    }
-
-                                    setChartId(newChartId)
-                                }}
-                            >
-                                <Tab id="value">Current value</Tab>
-                                <Tab id="earnings">Cumulative earnings</Tab>
-                            </Tabs>
-                        }
-                    >
-                        <NetworkChart
-                            tooltipValuePrefix={chartLabel}
-                            graphData={chartData}
-                            xAxisDisplayFormatter={formatShortDate}
-                            yAxisAxisDisplayFormatter={(value) =>
-                                truncateNumber(value, 'thousands')
-                            }
-                            tooltipLabelFormatter={formatLongDate}
-                            tooltipValueFormatter={(value) =>
-                                `${truncateNumber(value, 'thousands')} DATA`
-                            }
-                        />
-                    </NetworkChartDisplay>
                 </Pad>
             </WalletPass>
         </NetworkPageSegment>
