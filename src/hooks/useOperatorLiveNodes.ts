@@ -25,9 +25,17 @@ export default function useOperatorLiveNodes(operatorId: string) {
     )
 
     useEffect(() => {
+        let mounted = true
+
         setTimeout(() => {
-            setIsLoading(false)
+            if (mounted) {
+                setIsLoading(false)
+            }
         }, 15000)
+
+        return () => {
+            mounted = false
+        }
     }, [])
 
     return {
