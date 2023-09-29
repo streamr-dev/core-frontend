@@ -1,6 +1,6 @@
-import sumBy from 'lodash/sumBy'
+import { parseEther } from 'ethers/lib/utils'
 import { OperatorElement } from '~/types/operator'
-import { BN } from './bn'
+import { BN, toBN } from './bn'
 
 export function getDelegationAmountForAddress(
     address: string | undefined,
@@ -10,7 +10,30 @@ export function getDelegationAmountForAddress(
         return BN(0)
     }
 
-    const myDelegations = operator?.delegators.filter((s) => s.delegator === address)
-    const value = sumBy(myDelegations, 'amount')
-    return BN(value)
+    const myDelegations = operator?.delegators.filter(
+        (s) => s.delegator.toLowerCase() === address.toLowerCase(),
+    )
+
+    return myDelegations?.reduce((previous, current) => {
+        return previous.plus(current.amount)
+    }, BN(0))
+}
+
+export const getOwnerSelfDelegationPercentage = (
+    operator: OperatorElement,
+    additionalValue = toBN(0),
+): BN => {
+    const stake = getDelegationAmountForAddress(operator.owner, operator)
+    const operatorValueWithoutEarnings =
+        operator.valueWithoutEarnings.plus(additionalValue)
+    if (stake.isEqualTo(BN(0)) || operatorValueWithoutEarnings.isEqualTo(BN(0))) {
+        return BN(0)
+    }
+    return toBN(
+        parseEther(
+            stake.dividedBy(operatorValueWithoutEarnings).multipliedBy(100).toString(),
+        )
+            .div(100)
+            .toString(),
+    )
 }

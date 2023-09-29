@@ -1,40 +1,28 @@
-import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
+import React, { FunctionComponent, useMemo } from 'react'
 import styled from 'styled-components'
-import { toaster } from 'toasterhea'
 import { StatsBox } from '~/shared/components/StatsBox/StatsBox'
 import { truncate } from '~/shared/utils/text'
-import DelegateFundsModal from '~/modals/DelegateFundsModal'
-import UndelegateFundsModal from '~/modals/UndelegateFundsModal'
 import { BlackTooltip } from '~/shared/components/Tooltip/Tooltip'
 import Button from '~/shared/components/Button'
 import useCopy from '~/shared/hooks/useCopy'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { WhiteBoxSeparator } from '~/shared/components/WhiteBox'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
-import {
-    delegateToOperator,
-    getOperatorDelegationAmount,
-    undelegateFromOperator,
-} from '~/services/operators'
-import { Layer } from '~/utils/Layer'
 import routes from '~/routes'
 import { OperatorElement } from '~/types/operator'
 import { calculateOperatorSpotAPY } from '~/utils/apy'
 import { getDelegationAmountForAddress } from '~/utils/delegation'
 import { fromAtto } from '~/marketplace/utils/math'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { getConfigForChain } from '~/shared/web3/config'
-import { getCustomTokenBalance } from '~/marketplace/utils/web3'
-import { BN, BNish, toBN } from '~/utils/bn'
+import { BN } from '~/utils/bn'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import Spinner from '~/shared/components/Spinner'
-import { useConfigFromChain } from '~/hooks/useConfigFromChain'
-import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { getBlockExplorerUrl } from '~/getters/getBlockExplorerUrl'
 import useTokenInfo from '~/hooks/useTokenInfo'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import getCoreConfig from '~/getters/getCoreConfig'
+import { useDelegateAndUndelegateFunds } from '~/hooks/useDelegateAndUndelegateFunds'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -50,16 +38,11 @@ import {
     SingleElementPageActionBarTopPart,
 } from './NetworkActionBar.styles'
 
-const delegateFundsModal = toaster(DelegateFundsModal, Layer.Modal)
-const undelegateFundsModal = toaster(UndelegateFundsModal, Layer.Modal)
-
 export const OperatorActionBar: FunctionComponent<{
     operator: OperatorElement
     handleEdit: (operator: OperatorElement) => void
     onDelegationChange: () => void
 }> = ({ operator, handleEdit, onDelegationChange }) => {
-    const [balance, setBalance] = useState<BNish | undefined>(undefined)
-    const [delegationAmount, setDelegationAmount] = useState<BN | undefined>(undefined)
     const { copy } = useCopy()
     const { count: liveNodeCount, isLoading: liveNodeCountIsLoading } =
         useOperatorLiveNodes(operator.id)
@@ -74,38 +57,7 @@ export const OperatorActionBar: FunctionComponent<{
         return stake.dividedBy(operator.valueWithoutEarnings).multipliedBy(100)
     }, [operator])
 
-    const { minimumSelfDelegationFraction } = useConfigFromChain()
-
-    useEffect(() => {
-        const loadBalance = async () => {
-            if (operator.id && walletAddress) {
-                const chainId = defaultChainConfig.id
-                const chainConfig = getConfigForChain(chainId)
-                const balance = await getCustomTokenBalance(
-                    chainConfig.contracts['DATA'],
-                    walletAddress,
-                    chainId,
-                )
-                setBalance(balance)
-            }
-        }
-
-        loadBalance()
-    }, [operator.id, walletAddress, operator.valueWithoutEarnings])
-
-    useEffect(() => {
-        const loadAmount = async () => {
-            if (operator.id && walletAddress) {
-                const amount = await getOperatorDelegationAmount(
-                    operator.id,
-                    walletAddress,
-                )
-                setDelegationAmount(amount)
-            }
-        }
-
-        loadAmount()
-    }, [operator.id, walletAddress, operator.valueWithoutEarnings])
+    const { delegateFunds, undelegateFunds } = useDelegateAndUndelegateFunds()
 
     const tokenInfo = useTokenInfo(
         defaultChainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
@@ -247,28 +199,10 @@ export const OperatorActionBar: FunctionComponent<{
                         <Button
                             onClick={async () => {
                                 try {
-                                    await delegateFundsModal.pop({
-                                        operatorId: operator.id,
-                                        tokenSymbol: tokenSymbol,
-                                        balance: balance?.toString(),
-                                        delegatedTotal: delegationAmount
-                                            ?.dividedBy(1e18)
-                                            .toString(),
-                                        onSubmit: async (amount: BN) => {
-                                            try {
-                                                await delegateToOperator(
-                                                    operator.id,
-                                                    amount,
-                                                )
-                                                await waitForGraphSync()
-                                                onDelegationChange()
-                                            } catch (e) {
-                                                console.warn('Could not delegate', e)
-                                            }
-                                        },
-                                    })
+                                    await delegateFunds(operator)
+                                    onDelegationChange()
                                 } catch (e) {
-                                    // Ignore for now.
+                                    console.warn(e)
                                 }
                             }}
                             disabled={walletAddress == null}
@@ -278,51 +212,10 @@ export const OperatorActionBar: FunctionComponent<{
                         <Button
                             onClick={async () => {
                                 try {
-                                    await undelegateFundsModal.pop({
-                                        operatorId: operator.id,
-                                        tokenSymbol: tokenSymbol,
-                                        isCurrentUserOwner:
-                                            operator.owner === walletAddress,
-                                        balance: balance?.toString(),
-                                        freeFunds: operator.dataTokenBalance
-                                            .dividedBy(1e18)
-                                            .toString(),
-                                        delegatedTotal: delegationAmount
-                                            ?.dividedBy(1e18)
-                                            .toString(),
-                                        minimumSelfDelegation:
-                                            minimumSelfDelegationFraction != null
-                                                ? toBN(minimumSelfDelegationFraction)
-                                                      ?.dividedBy(1e18)
-                                                      .toString()
-                                                : '0',
-                                        onSubmit: async (amount: BN) => {
-                                            try {
-                                                let finalAmount = amount
-
-                                                // Check if we are undelegating all our funds
-                                                if (
-                                                    delegationAmount != null &&
-                                                    amount.isGreaterThanOrEqualTo(
-                                                        delegationAmount,
-                                                    )
-                                                ) {
-                                                    // Signal contract that we want to undelegate all of our funds
-                                                    finalAmount = BN(Infinity)
-                                                }
-                                                await undelegateFromOperator(
-                                                    operator.id,
-                                                    finalAmount,
-                                                )
-                                                await waitForGraphSync()
-                                                onDelegationChange()
-                                            } catch (e) {
-                                                console.warn('Could not undelegate', e)
-                                            }
-                                        },
-                                    })
+                                    await undelegateFunds(operator)
+                                    onDelegationChange()
                                 } catch (e) {
-                                    // Ignore for now.
+                                    console.warn(e)
                                 }
                             }}
                             disabled={walletAddress == null}

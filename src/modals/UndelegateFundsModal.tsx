@@ -14,12 +14,14 @@ import FormModal, {
 import Label from '~/shared/components/Ui/Label'
 import { COLORS } from '~/shared/utils/styled'
 import { BN, BNish, toBN } from '~/utils/bn'
+import { toDecimals } from '~/marketplace/utils/math'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onResolve?: (amount: string) => void
     onSubmit: (amount: BN) => Promise<void>
     balance?: string
-    tokenSymbol?: string
+    tokenSymbol: string
+    decimals: number
     delegatedTotal?: string
     operatorId?: string
     isCurrentUserOwner?: boolean
@@ -31,7 +33,8 @@ interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
 export default function UndelegateFundsModal({
     title = 'Undelegate',
     balance: balanceProp = '0',
-    tokenSymbol = 'DATA',
+    tokenSymbol,
+    decimals,
     delegatedTotal: delegatedTotalProp = '0',
     freeFunds: freeFundsProp = '0',
     minimumSelfDelegation: minimumSelfDelegationProp = '0',
@@ -86,7 +89,7 @@ export default function UndelegateFundsModal({
                 setBusy(true)
 
                 try {
-                    onSubmit(finalValue.multipliedBy(1e18))
+                    await onSubmit(toDecimals(finalValue, decimals))
 
                     onResolve?.(finalValue.toString())
                 } catch (e) {
