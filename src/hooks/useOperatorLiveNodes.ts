@@ -3,7 +3,7 @@ import { useSubscribe } from 'streamr-client-react'
 
 export default function useOperatorLiveNodes(operatorId: string) {
     const streamId = `${operatorId}/operator/coordination`
-    const [liveNodes, setLiveNodes] = useState<string[]>([])
+    const [liveNodes, setLiveNodes] = useState<Record<string, boolean>>({})
     const [isLoading, setIsLoading] = useState(true)
 
     useSubscribe(
@@ -16,8 +16,8 @@ export default function useOperatorLiveNodes(operatorId: string) {
                 const data = msg.parsedContent as any
                 if (data?.msgType === 'heartbeat' && data?.peerDescriptor?.id != null) {
                     const address = (data.peerDescriptor.id as string).toLowerCase()
-                    if (!liveNodes.includes(address)) {
-                        setLiveNodes((prev) => [...prev, address])
+                    if (!liveNodes[address]) {
+                        setLiveNodes((prev) => ({...prev, [address]: true}))
                     }
                 }
             },
@@ -31,7 +31,7 @@ export default function useOperatorLiveNodes(operatorId: string) {
     }, [])
 
     return {
-        count: liveNodes?.length,
+        count: Object.keys(liveNodes).length,
         isLoading,
     }
 }
