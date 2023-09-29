@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { toaster } from 'toasterhea'
 import DelegateFundsModal from '~/modals/DelegateFundsModal'
 import { Layer } from '~/utils/Layer'
@@ -27,84 +28,95 @@ export const useDelegateAndUndelegateFunds = (): {
     const tokenSymbol = getCoreConfig().sponsorshipPaymentToken
 
     return {
-        delegateFunds: async (operator: OperatorElement): Promise<void> => {
-            if (!walletAddress) {
-                throw new Error('No wallet connected')
-            }
-            const balance = await getBalance(walletAddress, tokenSymbol)
-            const delegationAmount = await getOperatorDelegationAmount(
-                operator.id,
-                walletAddress,
-            )
-            const tokenInfo = await getSponsorshipTokenInfo()
+        delegateFunds: useCallback(
+            async (operator: OperatorElement): Promise<void> => {
+                if (!walletAddress) {
+                    throw new Error('No wallet connected')
+                }
+                const balance = await getBalance(walletAddress, tokenSymbol)
+                const delegationAmount = await getOperatorDelegationAmount(
+                    operator.id,
+                    walletAddress,
+                )
+                const tokenInfo = await getSponsorshipTokenInfo()
 
-            await delegateFundsModal.pop({
-                operator: operator,
-                tokenSymbol: tokenInfo.symbol,
-                decimals: tokenInfo.decimals,
-                balance: balance?.toString(),
-                delegatedTotal: delegationAmount
-                    ? fromDecimals(delegationAmount, tokenInfo.decimals).toString()
-                    : '0',
-                onSubmit: async (amount: BN) => {
-                    try {
-                        await delegateToOperator(operator.id, amount)
-                        await waitForGraphSync()
-                    } catch (e) {
-                        console.warn('Could not delegate', e)
-                    }
-                },
-            })
-        },
-        undelegateFunds: async (operator: OperatorElement): Promise<void> => {
-            if (!walletAddress) {
-                throw new Error('No wallet connected')
-            }
-            const balance = await getBalance(walletAddress, tokenSymbol)
-            const delegationAmount = await await getOperatorDelegationAmount(
-                operator.id,
-                walletAddress,
-            )
-            const tokenInfo = await getSponsorshipTokenInfo()
-            await undelegateFundsModal.pop({
-                operatorId: operator.id,
-                isCurrentUserOwner: operator.owner === walletAddress,
-                tokenSymbol: tokenInfo.symbol,
-                decimals: tokenInfo.decimals,
-                balance: balance?.toString(),
-                freeFunds: fromDecimals(
-                    operator.dataTokenBalance,
-                    tokenInfo.decimals,
-                ).toString(),
-                delegatedTotal: delegationAmount
-                    ? fromDecimals(delegationAmount, tokenInfo.decimals).toString()
-                    : '0',
-                minimumSelfDelegation:
-                    minimumSelfDelegationFraction != null
-                        ? fromDecimals(
-                              minimumSelfDelegationFraction,
-                              tokenInfo.decimals,
-                          ).toString()
+                await delegateFundsModal.pop({
+                    operator: operator,
+                    tokenSymbol: tokenInfo.symbol,
+                    decimals: tokenInfo.decimals,
+                    balance: balance?.toString(),
+                    delegatedTotal: delegationAmount
+                        ? fromDecimals(delegationAmount, tokenInfo.decimals).toString()
                         : '0',
-                onSubmit: async (amount: BN) => {
-                    try {
-                        let finalAmount = amount
-
-                        // Check if we are undelegating all our funds
-                        if (
-                            delegationAmount != null &&
-                            amount.isGreaterThanOrEqualTo(delegationAmount)
-                        ) {
-                            // Signal contract that we want to undelegate all of our funds
-                            finalAmount = BN(Infinity)
+                    onSubmit: async (amount: BN) => {
+                        try {
+                            await delegateToOperator(operator.id, amount)
+                            await waitForGraphSync()
+                        } catch (e) {
+                            console.warn('Could not delegate', e)
                         }
-                        await undelegateFromOperator(operator.id, finalAmount)
-                        await waitForGraphSync()
-                    } catch (e) {
-                        console.warn('Could not undelegate', e)
-                    }
-                },
-            })
-        },
+                    },
+                })
+            },
+            [walletAddress, tokenSymbol, delegateFundsModal],
+        ),
+        undelegateFunds: useCallback(
+            async (operator: OperatorElement): Promise<void> => {
+                if (!walletAddress) {
+                    throw new Error('No wallet connected')
+                }
+                const balance = await getBalance(walletAddress, tokenSymbol)
+                const delegationAmount = await await getOperatorDelegationAmount(
+                    operator.id,
+                    walletAddress,
+                )
+                const tokenInfo = await getSponsorshipTokenInfo()
+                await undelegateFundsModal.pop({
+                    operatorId: operator.id,
+                    isCurrentUserOwner: operator.owner === walletAddress,
+                    tokenSymbol: tokenInfo.symbol,
+                    decimals: tokenInfo.decimals,
+                    balance: balance?.toString(),
+                    freeFunds: fromDecimals(
+                        operator.dataTokenBalance,
+                        tokenInfo.decimals,
+                    ).toString(),
+                    delegatedTotal: delegationAmount
+                        ? fromDecimals(delegationAmount, tokenInfo.decimals).toString()
+                        : '0',
+                    minimumSelfDelegation:
+                        minimumSelfDelegationFraction != null
+                            ? fromDecimals(
+                                  minimumSelfDelegationFraction,
+                                  tokenInfo.decimals,
+                              ).toString()
+                            : '0',
+                    onSubmit: async (amount: BN) => {
+                        try {
+                            let finalAmount = amount
+
+                            // Check if we are undelegating all our funds
+                            if (
+                                delegationAmount != null &&
+                                amount.isGreaterThanOrEqualTo(delegationAmount)
+                            ) {
+                                // Signal contract that we want to undelegate all of our funds
+                                finalAmount = BN(Infinity)
+                            }
+                            await undelegateFromOperator(operator.id, finalAmount)
+                            await waitForGraphSync()
+                        } catch (e) {
+                            console.warn('Could not undelegate', e)
+                        }
+                    },
+                })
+            },
+            [
+                walletAddress,
+                minimumSelfDelegationFraction,
+                tokenSymbol,
+                undelegateFundsModal,
+            ],
+        ),
     }
 }
