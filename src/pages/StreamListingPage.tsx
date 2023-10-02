@@ -32,7 +32,7 @@ import Tabs, { Tab } from '~/shared/components/Tabs'
 import { RouteMemoryKey, useRecall, useRemember } from '~/shared/stores/routeMemory'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { OrderDirection, Stream_OrderBy } from '~/generated/gql/network'
-import address0 from '~/utils/address0'
+import { address0 } from '~/consts'
 import routes from '~/routes'
 
 enum StreamSelection {

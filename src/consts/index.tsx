@@ -33,3 +33,5 @@ export function HubRouter({ history: historyProp = history, ...props }: HubRoute
 }
 
 export const MaxSearchPhraseLength = 250
+
+export const address0 = '0x0000000000000000000000000000000000000000'

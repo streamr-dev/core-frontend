@@ -14,7 +14,7 @@ import {
 } from '~/shared/stores/projectEditor'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { ProjectType } from '~/shared/types'
-import address0 from '~/utils/address0'
+import { address0 } from '~/consts'
 
 const PageSize = 10
 

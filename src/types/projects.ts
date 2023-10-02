@@ -5,7 +5,7 @@ import { formatChainName } from '~/shared/utils/chains'
 import { toBN } from '~/utils/bn'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import { getDataAddress } from '~/marketplace/utils/web3'
-import address0 from '~/utils/address0'
+import { address0 } from '~/consts'
 import { timeUnits } from '~/shared/utils/timeUnit'
 
 function getFormattedChainNameFromContext({ path: [, chainName] }: z.RefinementCtx) {

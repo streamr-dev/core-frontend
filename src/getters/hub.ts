@@ -19,7 +19,7 @@ import {
     Project_Filter,
 } from '~/generated/gql/network'
 import { TheGraph } from '~/shared/types'
-import address0 from '~/utils/address0'
+import { address0 } from '~/consts'
 import { GraphProject } from '~/shared/consts'
 import { getGraphUrl } from '.'
 

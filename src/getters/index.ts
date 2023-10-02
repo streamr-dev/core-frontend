@@ -20,7 +20,7 @@ import { Layer } from '~/utils/Layer'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { ProjectType } from '~/shared/types'
 import tokenAbi from '~/shared/web3/abis/token.json'
-import address0 from '~/utils/address0'
+import { address0 } from '~/consts'
 import { ProjectMetadata } from '~/shared/consts'
 import {
     GetSponsorshipByIdQuery,
