@@ -33,9 +33,6 @@ import { Layer } from '~/utils/Layer'
 import Spinner from '~/shared/components/Spinner'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
-import useTokenInfo from '~/hooks/useTokenInfo'
-import { defaultChainConfig } from '~/getters/getChainConfig'
-import getCoreConfig from '~/getters/getCoreConfig'
 import { getOperatorStats } from '~/getters/getOperatorStats'
 import NetworkPageSegment, { Pad, SegmentGrid } from '~/components/NetworkPageSegment'
 import NetworkChartDisplay from '~/components/NetworkChartDisplay'
@@ -45,6 +42,7 @@ import Tabs, { Tab } from '~/shared/components/Tabs'
 import { ChartPeriod } from '~/types'
 import { StatCellBody, StatCellLabel } from '~/components/StatGrid'
 import { Separator } from '~/components/Separator'
+import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 const addNodeAddressModal = toaster(AddNodeAddressModal, Layer.Modal)
@@ -77,11 +75,7 @@ export const SingleOperatorPage = () => {
         isBusy,
     } = useOperatorStore()
 
-    const tokenInfo = useTokenInfo(
-        defaultChainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
-        defaultChainConfig.id,
-    )
-    const tokenSymbol = tokenInfo?.symbol || 'DATA'
+    const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
     useEffect(() => {
         setOperator(operator)

@@ -1,4 +1,5 @@
 import { useInfiniteQuery, UseInfiniteQueryResult, useQuery } from '@tanstack/react-query'
+import { config } from '@streamr/config'
 import { Sponsorship } from '~/generated/gql/network'
 import {
     getAllSponsorships,
@@ -7,6 +8,9 @@ import {
 } from '~/getters'
 import { ParsedSponsorship, SponsorshipParser } from '~/parsers/SponsorshipParser'
 import { errorToast } from '~/utils/toast'
+import useTokenInfo from './useTokenInfo'
+import getCoreConfig from '~/getters/getCoreConfig'
+import { Chain } from '~/shared/types/web3-types'
 
 function getDefaultQueryParams(pageSize: number) {
     return {
@@ -148,4 +152,12 @@ export function useSponsorshipQuery(sponsorshipId: string) {
         staleTime: 60 * 1000, // 1 minute
         keepPreviousData: true,
     })
+}
+
+export function useSponsorshipTokenInfo() {
+    const { contracts, id: chainId } = config[
+        getCoreConfig().defaultChain || 'polygon'
+    ] as Chain
+
+    return useTokenInfo(contracts[getCoreConfig().sponsorshipPaymentToken], chainId)
 }

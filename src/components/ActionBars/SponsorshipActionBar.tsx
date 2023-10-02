@@ -9,9 +9,6 @@ import useCopy from '~/shared/hooks/useCopy'
 import SvgIcon from '~/shared/components/SvgIcon'
 import routes from '~/routes'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
-import useTokenInfo from '~/hooks/useTokenInfo'
-import { defaultChainConfig } from '~/getters/getChainConfig'
-import getCoreConfig from '~/getters/getCoreConfig'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { getBlockExplorerUrl } from '~/getters/getBlockExplorerUrl'
 import { Separator } from '~/components/Separator'
@@ -40,6 +37,7 @@ import {
     SingleElementPageActionBarContainer,
     SingleElementPageActionBarTopPart,
 } from './NetworkActionBar.styles'
+import { SponsorshipPaymentTokenName } from '../SponsorshipPaymentTokenName'
 
 export function SponsorshipActionBar({
     sponsorship,
@@ -53,12 +51,6 @@ export function SponsorshipActionBar({
     const wallet = useWalletAccount()
 
     const operator = useOperatorForWallet(wallet)
-
-    const tokenInfo = useTokenInfo(
-        defaultChainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
-        defaultChainConfig.id,
-    )
-    const tokenSymbol = tokenInfo?.symbol || 'DATA'
 
     const canEditStake = isSponsorshipFundedByOperator(sponsorship, operator)
 
@@ -223,12 +215,14 @@ export function SponsorshipActionBar({
                 <Pad>
                     <StatGrid>
                         <StatCell label="Payout rate">
-                            {sponsorship.payoutPerDay.toString()} {tokenSymbol}/day
+                            {sponsorship.payoutPerDay.toString()}{' '}
+                            <SponsorshipPaymentTokenName />
+                            /day
                         </StatCell>
                         <StatCell label="Operators">{sponsorship.operatorCount}</StatCell>
                         <StatCell label="Total staked">
                             {truncateNumber(Number(sponsorship.totalStake), 'thousands')}{' '}
-                            {tokenSymbol}
+                            <SponsorshipPaymentTokenName />
                         </StatCell>
                     </StatGrid>
                 </Pad>
@@ -237,10 +231,12 @@ export function SponsorshipActionBar({
                     <StatGrid>
                         <StatCell label="APY">{sponsorship.apy}%</StatCell>
                         <StatCell label="Cumulative sponsored">
-                            {sponsorship.cumulativeSponsoring.toString()} {tokenSymbol}
+                            {sponsorship.cumulativeSponsoring.toString()}{' '}
+                            <SponsorshipPaymentTokenName />
                         </StatCell>
                         <StatCell label="Minimum stake">
-                            {sponsorship.minimumStake.toString()} {tokenSymbol}
+                            {sponsorship.minimumStake.toString()}{' '}
+                            <SponsorshipPaymentTokenName />
                         </StatCell>
                     </StatGrid>
                 </Pad>

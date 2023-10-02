@@ -17,9 +17,6 @@ import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import Spinner from '~/shared/components/Spinner'
 import { getBlockExplorerUrl } from '~/getters/getBlockExplorerUrl'
-import useTokenInfo from '~/hooks/useTokenInfo'
-import { defaultChainConfig } from '~/getters/getChainConfig'
-import getCoreConfig from '~/getters/getCoreConfig'
 import { useDelegateAndUndelegateFunds } from '~/hooks/useDelegateAndUndelegateFunds'
 import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
@@ -38,6 +35,7 @@ import {
     SingleElementPageActionBarContainer,
     SingleElementPageActionBarTopPart,
 } from './NetworkActionBar.styles'
+import { SponsorshipPaymentTokenName } from '../SponsorshipPaymentTokenName'
 
 export const OperatorActionBar: FunctionComponent<{
     operator: OperatorElement
@@ -59,12 +57,6 @@ export const OperatorActionBar: FunctionComponent<{
     }, [operator])
 
     const { delegateFunds, undelegateFunds } = useDelegateAndUndelegateFunds()
-
-    const tokenInfo = useTokenInfo(
-        defaultChainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
-        defaultChainConfig.id,
-    )
-    const tokenSymbol = tokenInfo?.symbol || 'DATA'
 
     return (
         <SingleElementPageActionBar>
@@ -114,7 +106,8 @@ export const OperatorActionBar: FunctionComponent<{
                                         )}
                                         Operators secure and stabilize the Streamr Network
                                         by running nodes and contributing bandwidth. In
-                                        exchange, they earn {tokenSymbol} tokens from
+                                        exchange, they earn{' '}
+                                        <SponsorshipPaymentTokenName /> tokens from
                                         sponsorships they stake on. The stake guarantees
                                         that the operators do the work, otherwise they get
                                         slashed. Learn more{' '}
