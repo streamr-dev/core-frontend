@@ -662,18 +662,21 @@ export function getSpotApy<
         return 0
     }
 
-    const stake = stakes.reduce((sum, { amount }) => sum.plus(amount), toBN(0))
-
     const now = Date.now()
 
-    const yearlyIncome = stakes.reduce((sum, { spotAPY, projectedInsolvencyAt }) => {
-        /**
-         * Only include sponsorships that haven't expired.
-         */
-        return projectedInsolvencyAt * 1000 < now
-            ? sum.plus(stake.multipliedBy(spotAPY))
-            : sum
-    }, toBN(0))
+    const yearlyIncome = stakes.reduce(
+        (sum, { spotAPY, projectedInsolvencyAt, amount }) => {
+            if (projectedInsolvencyAt * 1000 >= now) {
+                /**
+                 * Skip expired stakes.
+                 */
+                return sum
+            }
+
+            return sum.plus(amount.multipliedBy(spotAPY))
+        },
+        toBN(0),
+    )
 
     if (yearlyIncome.isEqualTo(0)) {
         return 0
