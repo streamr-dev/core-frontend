@@ -18,7 +18,7 @@ type ScrollTableProps<Element> = {
     elements: Element[]
     isLoading?: boolean
     columns: ScrollTableColumnDef<Element>[]
-    actions?: ScrollTableAction<Element>[]
+    actions?: (ScrollTableAction<Element> | ScrollTableActionCallback<Element>)[]
     noDataFirstLine?: ReactNode
     noDataSecondLine?: ReactNode
     footerComponent?: ReactNode
@@ -33,6 +33,12 @@ export type ScrollTableColumnDef<T> = {
     isSticky: boolean
     valueMapper: (element: T) => ReactNode
     align: 'start' | 'end'
+}
+
+type ScrollTableActionCallback<T> = (element: T) => {
+    displayName: string
+    callback: () => void
+    disabled?: boolean
 }
 
 export type ScrollTableAction<T> = {
@@ -159,23 +165,38 @@ export const ScrollTableCore = <T extends object>({
                                     type={'verticalMeatball'}
                                     caret={false}
                                 >
-                                    {actions.map((action, actionIndex) => (
-                                        <PopoverItem
-                                            key={actionIndex}
-                                            onClick={() => {
-                                                action.callback(element)
-                                            }}
-                                            disabled={
-                                                typeof action.disabled == 'function'
-                                                    ? action.disabled(element)
-                                                    : action.disabled
-                                            }
-                                        >
-                                            {typeof action.displayName === 'function'
-                                                ? action.displayName(element)
-                                                : action.displayName}
-                                        </PopoverItem>
-                                    ))}
+                                    {actions.map((action, actionIndex) => {
+                                        const { displayName, callback, disabled } =
+                                            typeof action === 'function'
+                                                ? action(element)
+                                                : {
+                                                      displayName:
+                                                          typeof action.displayName ===
+                                                          'function'
+                                                              ? action.displayName(
+                                                                    element,
+                                                                )
+                                                              : action.displayName,
+                                                      callback() {
+                                                          action.callback(element)
+                                                      },
+                                                      disabled:
+                                                          typeof action.disabled ===
+                                                          'function'
+                                                              ? action.disabled(element)
+                                                              : action.disabled,
+                                                  }
+
+                                        return (
+                                            <PopoverItem
+                                                key={actionIndex}
+                                                onClick={() => void callback()}
+                                                disabled={disabled}
+                                            >
+                                                {displayName}
+                                            </PopoverItem>
+                                        )
+                                    })}
                                 </Popover>
                             </ScrollTableCell>
                         ))}
