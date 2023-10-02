@@ -63,7 +63,7 @@ export default function FormModal({
                             <FormModalTitle>{title}</FormModalTitle>
                             <FormModalCloseButton
                                 type="button"
-                                onClick={close}
+                                onClick={() => void close(RejectionReason.CloseButton)}
                                 disabled={submitting}
                             >
                                 <SvgIcon name="crossMedium" />

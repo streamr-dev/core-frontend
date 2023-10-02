@@ -1,108 +1,66 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { toaster } from 'toasterhea'
+import React, { useEffect, useRef, useState } from 'react'
+import { UseInfiniteQueryResult } from '@tanstack/react-query'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import { NetworkHelmet } from '~/components/Helmet'
-import { Layer } from '~/utils/Layer'
-import { truncateStreamName } from '~/shared/utils/text'
-import { truncateNumber } from '~/shared/utils/truncateNumber'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import Button from '~/shared/components/Button'
-import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
-import { LoadMoreButton } from '~/components/LoadMore'
-import useIsMounted from '~/shared/hooks/useIsMounted'
-import { createSponsorship } from '~/services/sponsorships'
-import routes from '~/routes'
 import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
-import { SponsorshipElement } from '~/types/sponsorship'
-import { useFundSponsorship } from '~/hooks/useFundSponsorship'
-import {
-    useAllSponsorshipsQuery,
-    useMySponsorshipsQuery,
-} from '~/hooks/useSponsorshipsList'
-import { useJoinSponsorship } from '~/hooks/useJoinSponsorship'
-import { useEditStake } from '~/hooks/useEditStake'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import NetworkPageSegment, { SegmentGrid } from '~/components/NetworkPageSegment'
-import { StreamInfoCell } from '~/components/NetworkUtils'
+import { QueriedSponsorshipsTable } from '~/components/QueriedSponsorshipsTable'
 import {
-    getTokenAndBalanceForSponsorship,
-    TokenAndBalanceForSponsorship,
-} from '~/getters/getTokenAndBalanceForSponsorship'
-
-const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
+    useAllSponsorshipsQuery,
+    useSponsorshipsForCreatorQuery,
+} from '~/hooks/sponsorships'
+import { createSponsorship } from '~/utils/sponsorships'
+import { refetchQuery } from '~/utils'
 
 const PAGE_SIZE = 20
 
-enum TabOptions {
-    allSponsorships = 'allSponsorships',
-    mySponsorships = 'mySponsorships',
+enum TabOption {
+    AllSponsorships = 'AllSponsorships',
+    MySponsorships = 'MySponsorships',
 }
+
 export const SponsorshipsPage = () => {
-    const isMounted = useIsMounted()
-    const [selectedTab, setSelectedTab] = useState<TabOptions>(TabOptions.allSponsorships)
-    const [balanceData, setBalanceData] = useState<TokenAndBalanceForSponsorship | null>(
-        null,
-    )
-    const [searchQuery, setSearchQuery] = useState<string>('')
+    const [selectedTab, setSelectedTab] = useState<TabOption>(TabOption.AllSponsorships)
+
+    const [searchQuery, setSearchQuery] = useState('')
+
     const wallet = useWalletAccount()
-    const walletConnected = !!wallet
 
-    const fundSponsorship = useFundSponsorship()
+    const allSponsorshipsQuery = useAllSponsorshipsQuery({
+        pageSize: PAGE_SIZE,
+        streamId: searchQuery,
+    })
 
-    const allSponsorshipsQuery = useAllSponsorshipsQuery(PAGE_SIZE, searchQuery)
+    const mySponsorshipsQuery = useSponsorshipsForCreatorQuery(wallet, {
+        pageSize: PAGE_SIZE,
+        streamId: searchQuery,
+    })
 
-    const mySponsorshipsQuery = useMySponsorshipsQuery(PAGE_SIZE, searchQuery)
+    const tabQueryMap = {
+        [TabOption.AllSponsorships]: allSponsorshipsQuery,
+        [TabOption.MySponsorships]: mySponsorshipsQuery,
+    }
 
-    const { canJoinSponsorship, joinSponsorship } = useJoinSponsorship()
-    const { canEditStake, editStake } = useEditStake()
+    const tabQueryMapRef = useRef(tabQueryMap)
 
-    const sponsorshipsQuery =
-        selectedTab === TabOptions.allSponsorships
-            ? allSponsorshipsQuery
-            : mySponsorshipsQuery
-
-    const sponsorships: SponsorshipElement[] =
-        sponsorshipsQuery.data?.pages.map((page) => page.elements).flat() || []
-
-    const handleSearch = useCallback(
-        (searchTerm: string) => {
-            setSearchQuery(searchTerm)
-        },
-        [setSearchQuery],
-    )
-
-    const handleTabChange = useCallback(
-        (tab: string) => {
-            setSelectedTab(tab as TabOptions)
-        },
-        [setSelectedTab],
-    )
+    tabQueryMapRef.current = tabQueryMap
 
     useEffect(() => {
-        if (!walletConnected && selectedTab === TabOptions.mySponsorships) {
-            setSelectedTab(TabOptions.allSponsorships)
+        if (!wallet) {
+            setSelectedTab(TabOption.AllSponsorships)
         }
-    }, [walletConnected, selectedTab, setSelectedTab])
+    }, [wallet, selectedTab])
 
     useEffect(() => {
-        if (wallet) {
-            getTokenAndBalanceForSponsorship(wallet).then((balanceInfo) => {
-                if (isMounted()) {
-                    setBalanceData(balanceInfo)
-                }
-            })
-        }
-    }, [wallet, isMounted])
-
-    useEffect(() => {
-        sponsorshipsQuery.refetch()
+        refetchQuery(tabQueryMapRef.current[selectedTab])
     }, [selectedTab])
 
-    const refetchQueries = async () => {
-        await allSponsorshipsQuery.refetch()
-        await mySponsorshipsQuery.refetch()
+    function refetchQueries() {
+        Object.values(tabQueryMap).forEach(refetchQuery)
     }
 
     return (
@@ -110,15 +68,24 @@ export const SponsorshipsPage = () => {
             <NetworkHelmet title="Sponsorships" />
             <NetworkActionBar
                 searchEnabled
-                onSearch={handleSearch}
+                onSearch={setSearchQuery}
                 leftSideContent={
                     <Tabs
-                        onSelectionChange={handleTabChange}
+                        onSelectionChange={(value) => {
+                            if (
+                                value !== TabOption.AllSponsorships &&
+                                value !== TabOption.MySponsorships
+                            ) {
+                                return
+                            }
+
+                            setSelectedTab(value)
+                        }}
                         selection={selectedTab}
                         fullWidthOnMobile
                     >
-                        <Tab id={TabOptions.allSponsorships}>All sponsorships</Tab>
-                        <Tab id={TabOptions.mySponsorships} disabled={!walletConnected}>
+                        <Tab id={TabOption.AllSponsorships}>All sponsorships</Tab>
+                        <Tab id={TabOption.MySponsorships} disabled={!wallet}>
                             My sponsorships
                         </Tab>
                     </Tabs>
@@ -126,24 +93,17 @@ export const SponsorshipsPage = () => {
                 rightSideContent={
                     <Button
                         onClick={async () => {
-                            if (balanceData) {
-                                try {
-                                    await createSponsorshipModal.pop({
-                                        balance: balanceData.balance,
-                                        tokenSymbol: balanceData.tokenSymbol,
-                                        tokenDecimals: balanceData.tokenDecimals,
-                                        onSubmit: async (formData) => {
-                                            await createSponsorship(formData, balanceData)
-                                        },
-                                    })
-                                    await waitForGraphSync()
-                                    await refetchQueries()
-                                } catch (e) {
-                                    // Ignore for now.
-                                }
+                            if (!wallet) {
+                                return
                             }
+
+                            await createSponsorship(wallet)
+
+                            await waitForGraphSync()
+
+                            refetchQueries()
                         }}
-                        disabled={!walletConnected || !balanceData}
+                        disabled={!wallet}
                     >
                         Create sponsorship
                     </Button>
@@ -155,7 +115,7 @@ export const SponsorshipsPage = () => {
                         foot
                         title={
                             <>
-                                {selectedTab === TabOptions.allSponsorships ? (
+                                {selectedTab === TabOption.AllSponsorships ? (
                                     <>All sponsorships</>
                                 ) : (
                                     <>My sponsorships</>
@@ -163,125 +123,21 @@ export const SponsorshipsPage = () => {
                             </>
                         }
                     >
-                        <ScrollTableCore
-                            elements={sponsorships}
-                            isLoading={
-                                sponsorshipsQuery.isLoading ||
-                                sponsorshipsQuery.isFetching ||
-                                sponsorshipsQuery.isFetchingNextPage
+                        <QueriedSponsorshipsTable
+                            query={
+                                selectedTab === TabOption.AllSponsorships
+                                    ? allSponsorshipsQuery
+                                    : mySponsorshipsQuery
                             }
-                            columns={[
-                                {
-                                    displayName: 'Stream ID',
-                                    valueMapper: (element) => (
-                                        <StreamInfoCell>
-                                            <span className="stream-id">
-                                                {truncateStreamName(element.streamId)}
-                                            </span>
-                                            {element.streamDescription && (
-                                                <span className="stream-description">
-                                                    {element.streamDescription}
-                                                </span>
-                                            )}
-                                        </StreamInfoCell>
-                                    ),
-                                    align: 'start',
-                                    isSticky: true,
-                                    key: 'streamInfo',
-                                },
-                                {
-                                    displayName: balanceData
-                                        ? `${balanceData.tokenSymbol}/day`
-                                        : 'DATA/day',
-                                    valueMapper: (element) => element.payoutPerDay,
-                                    align: 'start',
-                                    isSticky: false,
-                                    key: 'payoutPerDay',
-                                },
-                                {
-                                    displayName: 'Operators',
-                                    valueMapper: (element) => element.operators,
-                                    align: 'end',
-                                    isSticky: false,
-                                    key: 'operators',
-                                },
-                                {
-                                    displayName: 'Staked',
-                                    valueMapper: (element) =>
-                                        truncateNumber(
-                                            Number(element.totalStake),
-                                            'thousands',
-                                        ),
-                                    align: 'end',
-                                    isSticky: false,
-                                    key: 'staked',
-                                },
-                                {
-                                    displayName: 'APY',
-                                    valueMapper: (element) => element.apy + '%',
-                                    align: 'end',
-                                    isSticky: false,
-                                    key: 'apy',
-                                },
-                            ]}
-                            actions={[
-                                {
-                                    displayName: 'Sponsor',
-                                    disabled: !walletConnected,
-                                    callback: (element) =>
-                                        fundSponsorship(
-                                            element.id,
-                                            element.payoutPerDay,
-                                        ).then(async () => {
-                                            await waitForGraphSync()
-                                            await refetchQueries()
-                                        }),
-                                },
-                                {
-                                    displayName: (element) =>
-                                        canEditStake(element)
-                                            ? 'Edit stake'
-                                            : 'Join As Operator',
-                                    disabled: (element) =>
-                                        canEditStake(element)
-                                            ? false
-                                            : !walletConnected || !canJoinSponsorship,
-                                    callback: (element) =>
-                                        canEditStake(element)
-                                            ? editStake(element).then(async () => {
-                                                  await waitForGraphSync()
-                                                  await refetchQueries()
-                                              })
-                                            : joinSponsorship(
-                                                  element.id,
-                                                  element.streamId,
-                                              ).then(async () => {
-                                                  await waitForGraphSync()
-                                                  await refetchQueries()
-                                              }),
-                                },
-                            ]}
+                            onSponsorshipFunded={refetchQueries}
+                            onSponsorshipJoined={refetchQueries}
+                            onStakeEdited={refetchQueries}
                             noDataFirstLine={
-                                selectedTab === TabOptions.allSponsorships
+                                selectedTab === TabOption.AllSponsorships
                                     ? 'No sponsorships found.'
                                     : 'You do not have any sponsorships yet.'
                             }
-                            linkMapper={(element) =>
-                                routes.network.sponsorship({ id: element.id })
-                            }
                         />
-                        {sponsorshipsQuery.hasNextPage && (
-                            <LoadMoreButton
-                                disabled={
-                                    sponsorshipsQuery.isLoading ||
-                                    sponsorshipsQuery.isFetching
-                                }
-                                onClick={() => sponsorshipsQuery.fetchNextPage()}
-                                kind="primary2"
-                            >
-                                Load more
-                            </LoadMoreButton>
-                        )}
                     </NetworkPageSegment>
                 </SegmentGrid>
             </LayoutColumn>

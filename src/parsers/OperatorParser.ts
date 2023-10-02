@@ -7,6 +7,7 @@ export const OperatorParser = z
     .object({
         cumulativeOperatorsCutWei: z.string().transform(toBN),
         cumulativeProfitsWei: z.string().transform(toBN),
+        dataTokenBalanceWei: z.string().transform(toBN),
         delegatorCount: z.number(),
         delegators: z.array(
             z

@@ -41,6 +41,16 @@ export const RejectionReason = {
     BackButton: Symbol('back button'),
 }
 
+export function isRejectionReason(value: unknown) {
+    return (
+        value === RejectionReason.CloseButton ||
+        value === RejectionReason.Backdrop ||
+        value === RejectionReason.EscapeKey ||
+        value === RejectionReason.CancelButton ||
+        value === RejectionReason.BackButton
+    )
+}
+
 export interface BaseModalProps {
     children?: ReactNode | ((close: (reason?: unknown) => void) => ReactNode)
     onReject?: (reason?: any) => void

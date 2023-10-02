@@ -20,7 +20,11 @@ import { useConfigFromChain } from '~/hooks/useConfigFromChain'
 import { Alert } from '~/components/Alert'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
-    onSubmit: (amountWei: string, differenceWei: string, forceUnstake?: boolean) => void
+    onSubmit: (
+        amountWei: string,
+        differenceWei: string,
+        forceUnstake?: boolean,
+    ) => void | Promise<void>
     onResolve?: (result: { amountWei: string; differenceWei: string }) => void
     operatorBalance: string
     tokenSymbol: string

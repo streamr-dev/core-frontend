@@ -1,6 +1,6 @@
-import React, { FunctionComponent } from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import { SponsorshipElement } from '~/types/sponsorship'
+import moment from 'moment'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
 import { BlackTooltip } from '~/shared/components/Tooltip/Tooltip'
@@ -9,17 +9,23 @@ import useCopy from '~/shared/hooks/useCopy'
 import SvgIcon from '~/shared/components/SvgIcon'
 import routes from '~/routes'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
-import { useFundSponsorship } from '~/hooks/useFundSponsorship'
-import { useJoinSponsorship } from '~/hooks/useJoinSponsorship'
 import useTokenInfo from '~/hooks/useTokenInfo'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import getCoreConfig from '~/getters/getCoreConfig'
-import { useEditStake } from '~/hooks/useEditStake'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { getBlockExplorerUrl } from '~/getters/getBlockExplorerUrl'
 import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
 import { Pad } from '~/components/ActionBars/OperatorActionBar'
+import { useOperatorForWallet } from '~/hooks/operators'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import {
+    editSponsorshipFunding,
+    fundSponsorship,
+    isSponsorshipFundedByOperator,
+    joinSponsorshipAsOperator,
+} from '~/utils/sponsorships'
+import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
@@ -35,20 +41,33 @@ import {
     SingleElementPageActionBarTopPart,
 } from './NetworkActionBar.styles'
 
-export const SponsorshipActionBar: FunctionComponent<{
-    sponsorship: SponsorshipElement
+export function SponsorshipActionBar({
+    sponsorship,
+    onChange,
+}: {
+    sponsorship: ParsedSponsorship
     onChange: () => void
-}> = ({ sponsorship, onChange }) => {
+}) {
     const { copy } = useCopy()
 
-    const fundSponsorship = useFundSponsorship()
-    const { canJoinSponsorship, joinSponsorship } = useJoinSponsorship()
-    const { canEditStake, editStake } = useEditStake()
+    const wallet = useWalletAccount()
+
+    const operator = useOperatorForWallet(wallet)
+
     const tokenInfo = useTokenInfo(
         defaultChainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
         defaultChainConfig.id,
     )
     const tokenSymbol = tokenInfo?.symbol || 'DATA'
+
+    const canEditStake = isSponsorshipFundedByOperator(sponsorship, operator)
+
+    const { projectedInsolvencyAt } = sponsorship
+
+    const fundedUntil = useMemo(
+        () => moment(projectedInsolvencyAt * 1000).format('D MMM YYYY'),
+        [projectedInsolvencyAt],
+    )
 
     return (
         <SingleElementPageActionBar>
@@ -57,9 +76,7 @@ export const SponsorshipActionBar: FunctionComponent<{
                     <div>
                         <NetworkActionBarBackButtonAndTitle>
                             <NetworkActionBarBackLink to={routes.network.sponsorships()}>
-                                <NetworkActionBarBackButtonIcon
-                                    name={'backArrow'}
-                                ></NetworkActionBarBackButtonIcon>
+                                <NetworkActionBarBackButtonIcon name="backArrow"></NetworkActionBarBackButtonIcon>
                             </NetworkActionBarBackLink>
                             <NetworkActionBarTitle>
                                 {truncateStreamName(sponsorship.streamId, 30)}
@@ -74,7 +91,6 @@ export const SponsorshipActionBar: FunctionComponent<{
                             >
                                 {sponsorship.active ? 'Active' : 'Inactive'}
                             </NetworkActionBarInfoButton>
-
                             <SimpleDropdown
                                 toggleElement={
                                     <NetworkActionBarInfoButton className="pointer bold">
@@ -102,11 +118,9 @@ export const SponsorshipActionBar: FunctionComponent<{
                             />
                             <NetworkActionBarInfoButton>
                                 <span>
-                                    Funded until:{' '}
-                                    <strong>{sponsorship.fundedUntil}</strong>
+                                    Funded until: <strong>{fundedUntil}</strong>
                                 </span>
                             </NetworkActionBarInfoButton>
-
                             <NetworkActionBarInfoButton>
                                 <span>
                                     Contract <strong>{truncate(sponsorship.id)}</strong>
@@ -144,21 +158,35 @@ export const SponsorshipActionBar: FunctionComponent<{
                     <NetworkActionBarCTAs>
                         <Button
                             onClick={async () => {
+                                if (!wallet) {
+                                    return
+                                }
+
                                 await fundSponsorship(
                                     sponsorship.id,
-                                    sponsorship.payoutPerDay,
+                                    sponsorship.payoutPerDay.toString(),
+                                    wallet,
                                 )
+
                                 await waitForGraphSync()
+
                                 onChange()
                             }}
                         >
                             Sponsor
                         </Button>
-                        {canEditStake(sponsorship) ? (
+                        {canEditStake ? (
                             <Button
+                                disabled={!operator}
                                 onClick={async () => {
-                                    await editStake(sponsorship)
+                                    if (!operator) {
+                                        return
+                                    }
+
+                                    await editSponsorshipFunding(sponsorship, operator)
+
                                     await waitForGraphSync()
+
                                     onChange()
                                 }}
                             >
@@ -166,13 +194,20 @@ export const SponsorshipActionBar: FunctionComponent<{
                             </Button>
                         ) : (
                             <Button
-                                disabled={!canJoinSponsorship}
+                                disabled={!operator}
                                 onClick={async () => {
-                                    await joinSponsorship(
+                                    if (!operator) {
+                                        return
+                                    }
+
+                                    await joinSponsorshipAsOperator(
                                         sponsorship.id,
+                                        operator,
                                         sponsorship.streamId,
                                     )
+
                                     await waitForGraphSync()
+
                                     onChange()
                                 }}
                             >
@@ -188,9 +223,9 @@ export const SponsorshipActionBar: FunctionComponent<{
                 <Pad>
                     <StatGrid>
                         <StatCell label="Payout rate">
-                            {sponsorship.payoutPerDay} {tokenSymbol}/day
+                            {sponsorship.payoutPerDay.toString()} {tokenSymbol}/day
                         </StatCell>
-                        <StatCell label="Operators">{sponsorship.operators}</StatCell>
+                        <StatCell label="Operators">{sponsorship.operatorCount}</StatCell>
                         <StatCell label="Total staked">
                             {truncateNumber(Number(sponsorship.totalStake), 'thousands')}{' '}
                             {tokenSymbol}
@@ -202,10 +237,10 @@ export const SponsorshipActionBar: FunctionComponent<{
                     <StatGrid>
                         <StatCell label="APY">{sponsorship.apy}%</StatCell>
                         <StatCell label="Cumulative sponsored">
-                            {sponsorship.cumulativeSponsoring} {tokenSymbol}
+                            {sponsorship.cumulativeSponsoring.toString()} {tokenSymbol}
                         </StatCell>
                         <StatCell label="Minimum stake">
-                            {sponsorship.minimumStake} {tokenSymbol}
+                            {sponsorship.minimumStake.toString()} {tokenSymbol}
                         </StatCell>
                     </StatGrid>
                 </Pad>

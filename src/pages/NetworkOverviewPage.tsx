@@ -19,19 +19,15 @@ import WalletPass from '~/components/WalletPass'
 import { NoData } from '~/shared/components/NoData'
 import routes from '~/routes'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { truncate, truncateStreamName } from '~/shared/utils/text'
+import { truncate } from '~/shared/utils/text'
 import { HubAvatar } from '~/shared/components/AvatarImage'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
-import { StreamInfoCell } from '~/components/NetworkUtils'
 import { fromAtto, fromDecimals } from '~/marketplace/utils/math'
 import { useSponsorshipsForCreatorQuery } from '~/hooks/sponsorships'
-import { StreamDescription } from '~/components/StreamDescription'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { BNish, toBN } from '~/utils/bn'
 import {
     useDelegationsForWalletQuery,
     useDelegationsStats,
-    useIsLoadingOperatorForWallet,
     useOperatorForWallet,
     useOperatorStatsForWallet,
 } from '~/hooks/operators'
@@ -44,6 +40,8 @@ import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { LoadMoreButton } from '~/components/LoadMore'
 import { Separator } from '~/components/Separator'
+import { QueriedSponsorshipsTable } from '~/components/QueriedSponsorshipsTable'
+import { refetchQuery } from '~/utils'
 
 export function NetworkOverviewPage() {
     return (
@@ -334,103 +332,29 @@ function MySponsorships() {
 
     const query = useSponsorshipsForCreatorQuery(wallet)
 
-    const sponsorships = query.data?.pages.flatMap((page) => page.sponsorships) || []
-
-    const isLoading =
-        useIsLoadingOperatorForWallet(wallet) || query.isLoading || query.isFetching
+    function refetch() {
+        refetchQuery(query)
+    }
 
     return (
         <NetworkPageSegment title="My sponsorships" foot>
             <WalletPass resourceName="sponsorships">
-                {!wallet || sponsorships.length || isLoading ? (
-                    <>
-                        <ScrollTableCore
-                            isLoading={isLoading}
-                            elements={sponsorships}
-                            columns={[
-                                {
-                                    displayName: 'Stream ID',
-                                    valueMapper: ({ streamId }) => (
-                                        <StreamInfoCell>
-                                            <span className="stream-id">
-                                                {truncateStreamName(streamId)}
-                                            </span>
-                                            <span className="stream-description">
-                                                <StreamDescription
-                                                    streamId={streamId}
-                                                ></StreamDescription>
-                                            </span>
-                                        </StreamInfoCell>
-                                    ),
-                                    align: 'start',
-                                    isSticky: true,
-                                    key: 'streamInfo',
-                                },
-                                {
-                                    displayName: (
-                                        <>
-                                            <SponsorshipPaymentTokenName />
-                                            /day
-                                        </>
-                                    ),
-                                    valueMapper: (element) =>
-                                        element.payoutPerDay.toString(),
-                                    align: 'start',
-                                    isSticky: false,
-                                    key: 'dataPerDay',
-                                },
-                                {
-                                    displayName: 'Operators',
-                                    valueMapper: (element) => element.operatorCount,
-                                    align: 'end',
-                                    isSticky: false,
-                                    key: 'operators',
-                                },
-                                {
-                                    displayName: 'Staked',
-                                    valueMapper: (element) =>
-                                        element.totalStake.toString(),
-                                    align: 'end',
-                                    isSticky: false,
-                                    key: 'staked',
-                                },
-                                {
-                                    displayName: 'APY',
-                                    valueMapper: (element) => `${element.apy}%`,
-                                    align: 'end',
-                                    isSticky: false,
-                                    key: 'apy',
-                                },
-                            ]}
-                        />
-                        {query.hasNextPage ? (
-                            <LoadMoreButton
-                                disabled={isLoading}
-                                onClick={() => void query.fetchNextPage()}
-                                kind="primary2"
-                            >
-                                Load more
-                            </LoadMoreButton>
-                        ) : (
-                            <></>
-                        )}
-                    </>
-                ) : (
-                    <Pad>
-                        <NoData
-                            firstLine="You don't have any sponsorships yet."
-                            secondLine={
-                                <>
-                                    You can{' '}
-                                    <Link to={routes.network.sponsorships()}>
-                                        start a sponsorship
-                                    </Link>{' '}
-                                    here
-                                </>
-                            }
-                        />
-                    </Pad>
-                )}
+                <QueriedSponsorshipsTable
+                    query={query}
+                    onSponsorshipFunded={refetch}
+                    onSponsorshipJoined={refetch}
+                    onStakeEdited={refetch}
+                    noDataFirstLine="You don't have any sponsorships yet."
+                    noDataSecondLine={
+                        <>
+                            You can{' '}
+                            <Link to={routes.network.sponsorships()}>
+                                start a sponsorship
+                            </Link>{' '}
+                            here
+                        </>
+                    }
+                />
             </WalletPass>
         </NetworkPageSegment>
     )

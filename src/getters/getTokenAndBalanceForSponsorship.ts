@@ -9,19 +9,10 @@ export type TokenAndBalanceForSponsorship = {
     tokenDecimals: number
 }
 
-export const getTokenAndBalanceForSponsorship = async (
-    walletAddress: string,
-): Promise<TokenAndBalanceForSponsorship> => {
-    const tokenInformation = await getSponsorshipTokenInfo()
-
-    const balance = await getCustomTokenBalance(
+export async function getBalanceForSponsorship(wallet: string) {
+    return getCustomTokenBalance(
         defaultChainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
-        walletAddress,
+        wallet,
         defaultChainConfig.id,
     )
-    return {
-        balance: balance.toString(), // human readable value (wei / decimals)
-        tokenSymbol: tokenInformation.symbol,
-        tokenDecimals: Number(tokenInformation.decimals.toString()),
-    }
 }
