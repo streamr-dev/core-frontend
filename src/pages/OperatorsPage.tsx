@@ -29,13 +29,6 @@ import { getDelegatedAmountForWallet, getSpotApy } from '~/getters'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
-const PAGE_SIZE = 20
-
-enum TabOptions {
-    allOperators = 'allOperators',
-    myDelegations = 'myDelegations',
-}
-
 const getAllOperatorColumns = (): ScrollTableColumnDef<OperatorElement>[] => [
     {
         displayName: 'Operator Name',
@@ -154,20 +147,32 @@ const getMyDelegationsColumns = (
     },
 ]
 
+const PAGE_SIZE = 20
+
+enum TabOption {
+    AllOperators = 'AllOperators',
+    MyDelegations = 'MyDelegations',
+}
+
 export const OperatorsPage = () => {
-    const [selectedTab, setSelectedTab] = useState<TabOptions>(TabOptions.allOperators)
-    const [searchQuery, setSearchQuery] = useState<string>('')
+    const [selectedTab, setSelectedTab] = useState<TabOption>(TabOption.AllOperators)
+
+    const [searchQuery, setSearchQuery] = useState('')
+
     const wallet = useWalletAccount()
+
     const walletConnected = !!wallet
 
     const allOperatorsQuery = useAllOperatorsQuery(PAGE_SIZE, searchQuery)
+
     const myDelegationsQuery = useDelegatedOperatorsQuery(PAGE_SIZE, wallet, searchQuery)
+
     const myOperatorQuery = useMyOperator(wallet || '')
 
     const isOperatorCreated = !!myOperatorQuery.data?.id
 
     const operatorsQuery =
-        selectedTab === TabOptions.allOperators ? allOperatorsQuery : myDelegationsQuery
+        selectedTab === TabOption.AllOperators ? allOperatorsQuery : myDelegationsQuery
 
     const operators: OperatorElement[] =
         operatorsQuery.data?.pages.map((page) => page.elements).flat() || []
@@ -181,14 +186,14 @@ export const OperatorsPage = () => {
 
     const handleTabChange = useCallback(
         (tab: string) => {
-            setSelectedTab(tab as TabOptions)
+            setSelectedTab(tab as TabOption)
         },
         [setSelectedTab],
     )
 
     useEffect(() => {
-        if (!walletConnected && selectedTab === TabOptions.myDelegations) {
-            setSelectedTab(TabOptions.allOperators)
+        if (!walletConnected && selectedTab === TabOption.MyDelegations) {
+            setSelectedTab(TabOption.AllOperators)
         }
     }, [walletConnected, selectedTab, setSelectedTab])
 
@@ -204,8 +209,8 @@ export const OperatorsPage = () => {
                         selection={selectedTab}
                         fullWidthOnMobile={true}
                     >
-                        <Tab id={TabOptions.allOperators}>All operators</Tab>
-                        <Tab id={TabOptions.myDelegations} disabled={!walletConnected}>
+                        <Tab id={TabOption.AllOperators}>All operators</Tab>
+                        <Tab id={TabOption.MyDelegations} disabled={!walletConnected}>
                             My delegations
                         </Tab>
                     </Tabs>
@@ -247,7 +252,7 @@ export const OperatorsPage = () => {
                         foot
                         title={
                             <>
-                                {selectedTab === TabOptions.allOperators ? (
+                                {selectedTab === TabOption.AllOperators ? (
                                     <>All operators</>
                                 ) : (
                                     <>My delegations</>
@@ -263,12 +268,12 @@ export const OperatorsPage = () => {
                                 operatorsQuery.isFetchingNextPage
                             }
                             columns={
-                                selectedTab === TabOptions.allOperators
+                                selectedTab === TabOption.AllOperators
                                     ? getAllOperatorColumns()
                                     : getMyDelegationsColumns(wallet || '')
                             }
                             noDataFirstLine={
-                                selectedTab === TabOptions.allOperators
+                                selectedTab === TabOption.AllOperators
                                     ? 'No operators found.'
                                     : 'You have not delegated to any operator.'
                             }
