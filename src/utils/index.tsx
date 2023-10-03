@@ -135,3 +135,18 @@ export function refetchQuery(query: UseInfiniteQueryResult | UseQueryResult) {
         }
     })
 }
+
+function titleize(value: string): string {
+    return value.toLowerCase().replace(/\w/, (firstLetter) => firstLetter.toUpperCase())
+}
+
+export function formatChainName(chainName: string): string {
+    switch (chainName.toLowerCase()) {
+        case 'xdai':
+            return formatChainName('gnosis')
+        case 'bsc':
+            return 'Binance Smart Chain'
+        default:
+            return titleize(chainName)
+    }
+}

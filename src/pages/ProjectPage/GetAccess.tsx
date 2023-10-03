@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import FormattedPaymentRate from '~/components/FormattedPaymentRate'
-import { formatChainName } from '~/shared/utils/chains'
+import { formatChainName } from '~/utils'
 import Button from '~/shared/components/Button'
 import ProjectPng from '~/shared/assets/images/project.png'
 import { MEDIUM } from '~/shared/utils/styled'

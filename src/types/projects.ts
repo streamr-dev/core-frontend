@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { isEthereumAddress } from '~/marketplace/utils/validate'
 import { ProjectType } from '~/shared/types'
-import { formatChainName } from '~/shared/utils/chains'
+import { formatChainName } from '~/utils'
 import { toBN } from '~/utils/bn'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import { getDataAddress } from '~/marketplace/utils/web3'
