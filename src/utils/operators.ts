@@ -1,5 +1,6 @@
 import { toaster } from 'toasterhea'
 import { getBalance } from '~/getters/getBalance'
+import getCoreConfig from '~/getters/getCoreConfig'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { fromDecimals } from '~/marketplace/utils/math'
@@ -26,9 +27,11 @@ export async function delegateFunds({
     operator: ParsedOperator
     wallet: string
 }) {
-    const { symbol: tokenSymbol, decimals } = await getSponsorshipTokenInfo()
+    const paymentTokenSymbol = getCoreConfig().sponsorshipPaymentToken
 
-    const balance = (await getBalance(wallet, tokenSymbol)).toString()
+    const balance = (await getBalance(wallet, paymentTokenSymbol)).toString()
+
+    const { symbol: tokenSymbol, decimals } = await getSponsorshipTokenInfo()
 
     const delegationAmount = await getOperatorDelegationAmount(operator.id, wallet)
 
@@ -60,9 +63,11 @@ export async function undelegateFunds({
     operator: ParsedOperator
     wallet: string
 }) {
-    const { symbol: tokenSymbol, decimals } = await getSponsorshipTokenInfo()
+    const paymentTokenSymbol = getCoreConfig().sponsorshipPaymentToken
 
-    const balance = (await getBalance(wallet, tokenSymbol)).toString()
+    const balance = (await getBalance(wallet, paymentTokenSymbol)).toString()
+
+    const { symbol: tokenSymbol, decimals } = await getSponsorshipTokenInfo()
 
     const delegationAmount = await getOperatorDelegationAmount(operator.id, wallet)
 
