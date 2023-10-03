@@ -61,7 +61,7 @@ const Button: FunctionComponent<ButtonProps> = ({
     waiting = false,
     onClick,
     children,
-    external,
+    external: _external,
     ...args
 }) => (
     <Tag

@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import moment from 'moment'
 import styled from 'styled-components'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
@@ -29,7 +28,6 @@ interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     operatorBalance: string
     tokenSymbol: string
     decimals: number
-    operatorId: string
     currentStake: string
     leavePenalty: string
     minLeaveDate: string
@@ -41,7 +39,6 @@ export default function EditStakeModal({
     onResolve,
     onSubmit,
     operatorBalance: operatorBalanceProp,
-    operatorId = 'N/A',
     tokenSymbol = 'DATA',
     currentStake: currentStakeProp,
     decimals = 18,

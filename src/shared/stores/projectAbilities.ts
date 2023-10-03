@@ -40,7 +40,7 @@ function key(chainId: number, projectId: string, account: string) {
     return JSON.stringify([chainId, projectId, account.toLowerCase()])
 }
 
-const useProjectAbilitiesStore = create<Store>((set, get) => {
+const useProjectAbilitiesStore = create<Store>((set) => {
     const fetching: Record<string, boolean | undefined> = {}
 
     return {

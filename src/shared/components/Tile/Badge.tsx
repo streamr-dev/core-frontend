@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react'
 import styled, { css } from 'styled-components'
 import UnstyledSpinner from '~/shared/components/Spinner'
-import SvgIcon from '~/shared/components/SvgIcon'
 import Link from '~/shared/components/Link'
 const SharedTheme = {
     backgroundColor: '#525252',

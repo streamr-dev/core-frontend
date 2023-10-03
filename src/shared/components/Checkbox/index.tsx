@@ -1,9 +1,4 @@
-import React, {
-    ChangeEvent,
-    FunctionComponent,
-    HTMLProps,
-    MouseEventHandler,
-} from 'react'
+import React, { ChangeEvent, FunctionComponent, MouseEventHandler } from 'react'
 import styled, { css } from 'styled-components'
 import ImageChecked from './checkbox-checked.svg'
 import ImageUnchecked from './checkbox.svg'

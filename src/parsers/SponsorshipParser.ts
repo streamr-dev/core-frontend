@@ -2,7 +2,6 @@ import { z } from 'zod'
 import { getConfigFromChain } from '~/getters/getConfigFromChain'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
 import { fromAtto, fromDecimals } from '~/marketplace/utils/math'
-import { toBN } from '~/utils/bn'
 
 export const SponsorshipParser = z
     .object({

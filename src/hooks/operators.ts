@@ -1,11 +1,10 @@
-import { UseInfiniteQueryResult, useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { z } from 'zod'
 import { Operator } from '~/generated/gql/network'
 import {
     getAllOperators,
     getDelegatedAmountForWallet,
-    getDelegationsForWallet,
     getOperatorById,
     getOperatorByOwnerAddress,
     getOperatorsByDelegation,

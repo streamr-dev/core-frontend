@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo, useState } from 'react'
+import React, { FunctionComponent, useState } from 'react'
 import styled from 'styled-components'
 import { CodeSnippet, Tabs } from '@streamr/streamr-layout'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'

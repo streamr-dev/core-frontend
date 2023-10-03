@@ -4,18 +4,7 @@ import PrestyledButton from '~/shared/components/Button'
 import { SM, LG } from '~/shared/utils/styled'
 import Selector from './Selector'
 import Layout from './Layout'
-const MobileText = styled.span`
-    @media (min-width: ${SM}px) {
-        display: none;
-    }
-`
-const TabletText = styled.span`
-    display: none;
 
-    @media (min-width: ${SM}px) {
-        display: inline-block;
-    }
-`
 const Button = styled(PrestyledButton)`
     && {
         font-size: 12px;

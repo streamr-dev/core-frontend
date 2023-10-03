@@ -231,7 +231,7 @@ export default function Tabs({
 
     const selectedId = useMemo(
         () =>
-            tabs.find(({ selected = 'id', tag, ...rest }) => {
+            tabs.find(({ selected = 'id', tag: _tag, ...rest }) => {
                 /**
                  * First we check it `selected` is a string. If it is then we use it as
                  * a peroperty key. We take its property value and check if it matches
@@ -407,7 +407,7 @@ export default function Tabs({
                                 tag = 'button',
                                 onClick,
                                 disabled = false,
-                                selected,
+                                selected: _selected,
                                 children,
                                 ...rest
                             },

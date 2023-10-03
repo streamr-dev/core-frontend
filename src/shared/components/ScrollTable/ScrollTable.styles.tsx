@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import { COLORS, MEDIUM, TABLET } from '~/shared/utils/styled'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
-import { NoData } from '~/shared/components/NoData'
 
 const horizontalPaddingMobile = '24px'
 const verticalPaddingMobile = '20px'

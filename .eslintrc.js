@@ -16,7 +16,7 @@ module.exports = {
         'react-hooks/rules-of-hooks': 'error',
         'react-hooks/exhaustive-deps': 'warn',
         'no-unused-vars': 'off', // as we prefer the typescript version of this rule
-        '@typescript-eslint/no-unused-vars': 'off',
+        '@typescript-eslint/no-unused-vars': 'warn',
         '@typescript-eslint/ban-ts-comment': 'warn',
         'no-multiple-empty-lines': 'warn',
         'jsx-a11y/no-noninteractive-tabindex': 'warn',

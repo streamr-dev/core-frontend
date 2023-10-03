@@ -3,7 +3,6 @@ import React, {
     FunctionComponent,
     MouseEventHandler,
     useEffect,
-    useMemo,
     useState,
 } from 'react'
 import styled from 'styled-components'

@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { UseInfiniteQueryResult } from '@tanstack/react-query'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import { NetworkHelmet } from '~/components/Helmet'
 import Tabs, { Tab } from '~/shared/components/Tabs'

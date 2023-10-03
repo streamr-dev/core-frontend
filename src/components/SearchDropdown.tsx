@@ -2,7 +2,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react'
 import SearchIcon from '@atlaskit/icon/glyph/search'
 import Autocomplete from 'react-autocomplete'
 import { useDebouncedCallback } from 'use-debounce'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import Spinner from '~/shared/components/Spinner'
 import { COLORS } from '~/shared/utils/styled'
 import { FieldWrap, IconWrapAppendix, TextInput } from '~/modals/FormModal'
@@ -61,12 +61,12 @@ export const SearchDropdown: FunctionComponent<{
                 setInputValue(event.target.value)
                 debouncedSearchChangeHandler(event.target.value)
             }}
-            renderItem={(item, isHighlighted, styles) => (
+            renderItem={(item) => (
                 <li key={item.value} className="option-element">
                     {item.label}
                 </li>
             )}
-            renderMenu={(items, value, styles) => {
+            renderMenu={(items) => {
                 return (
                     <div>
                         {options.length || isLoadingOptions ? (

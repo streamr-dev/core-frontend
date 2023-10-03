@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
 import Label from '~/shared/components/Ui/Label'

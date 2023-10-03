@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import { useProject } from '~/shared/stores/projectEditor'
 import { SalePoint } from '~/shared/types'
 

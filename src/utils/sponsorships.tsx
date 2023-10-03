@@ -110,7 +110,6 @@ export async function editSponsorshipFunding(
     try {
         await editStakeModal.pop({
             currentStake: stake.amount.toString(),
-            operatorId: operator.id,
             operatorBalance: operator.dataTokenBalanceWei.toString(),
             tokenSymbol,
             decimals,

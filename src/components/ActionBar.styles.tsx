@@ -3,7 +3,6 @@ import {
     COLORS,
     DESKTOP,
     MD,
-    LG,
     MEDIUM,
     TABLET,
     MAX_BODY_WIDTH,

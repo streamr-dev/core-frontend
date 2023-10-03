@@ -1,9 +1,7 @@
 import React, {
     AnchorHTMLAttributes,
-    HTMLAttributes,
     ReactNode,
     useEffect,
-    useLayoutEffect,
     useRef,
     useState,
 } from 'react'

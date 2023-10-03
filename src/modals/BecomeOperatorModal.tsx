@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { randomHex } from 'web3-utils'
 import { toaster } from 'toasterhea'
 import styled, { css } from 'styled-components'

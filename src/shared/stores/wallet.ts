@@ -9,11 +9,6 @@ import { getFirstEnsNameFor } from '~/getters'
 import { getConfigForChain } from '~/shared/web3/config'
 import getCoreConfig from '~/getters/getCoreConfig'
 
-interface RequestArguments {
-    readonly method: string
-    readonly params?: readonly unknown[] | object
-}
-
 interface MetaMaskProvider extends MetaMaskInpageProvider {
     providers?: MetaMaskProvider[]
 }

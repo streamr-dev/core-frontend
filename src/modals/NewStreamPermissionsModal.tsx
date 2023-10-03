@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { z } from 'zod'
 import { COLORS, TABLET } from '~/shared/utils/styled'
 import { Bits, setBits, unsetBits } from '~/shared/stores/streamEditor'
 import PermissionEditor from '~/pages/AbstractStreamEditPage/AccessControlSection/PermissionEditor'

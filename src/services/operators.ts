@@ -1,6 +1,4 @@
 import { Contract } from 'ethers'
-import { toaster, Toaster } from 'toasterhea'
-import { isEqual, omit } from 'lodash'
 import {
     operatorFactoryABI,
     operatorABI,
@@ -18,12 +16,7 @@ import { BNish, toBN } from '~/utils/bn'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import { toastedOperation, toastedOperations } from '~/utils/toastedOperation'
 import { postImage } from '~/services/images'
-import { OperatorElement, OperatorMetadata } from '~/types/operator'
-import TransactionListToast, {
-    notify,
-    Operation,
-} from '~/shared/toasts/TransactionListToast'
-import { Layer } from '~/utils/Layer'
+import { Operation } from '~/shared/toasts/TransactionListToast'
 import { saveLastBlockNumber } from '~/getters/waitForGraphSync'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 

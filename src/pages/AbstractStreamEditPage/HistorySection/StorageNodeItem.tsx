@@ -1,8 +1,11 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
-import Checkbox, { Tick } from '~/shared/components/Checkbox'
+import { Tick } from '~/shared/components/Checkbox'
 import Spinner from '~/shared/components/Spinner'
-import { useCurrentDraft, useToggleCurrentStorageNode } from '~/shared/stores/streamEditor'
+import {
+    useCurrentDraft,
+    useToggleCurrentStorageNode,
+} from '~/shared/stores/streamEditor'
 
 type Props = {
     address: string
