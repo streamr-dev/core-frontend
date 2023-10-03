@@ -16,7 +16,7 @@ import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
 import { Address } from '~/shared/types/web3-types'
 import { BNish, toBN } from '~/utils/bn'
 import { defaultChainConfig } from '~/getters/getChainConfig'
-import { toastedOperation } from '~/utils/toastedOperation'
+import { toastedOperation, toastedOperations } from '~/utils/toastedOperation'
 import { postImage } from '~/services/images'
 import { OperatorElement, OperatorMetadata } from '~/types/operator'
 import TransactionListToast, {
@@ -25,6 +25,7 @@ import TransactionListToast, {
 } from '~/shared/toasts/TransactionListToast'
 import { Layer } from '~/utils/Layer'
 import { saveLastBlockNumber } from '~/getters/waitForGraphSync'
+import { ParsedOperator } from '~/parsers/OperatorParser'
 
 const getOperatorChainId = () => {
     return defaultChainConfig.id
@@ -88,143 +89,107 @@ export async function createOperator(
     })
 }
 
-export const updateOperator = async (
-    currentOperatorObject: OperatorElement,
-    name: string,
-    redundancyFactor: number,
-    description?: string,
-    imageToUpload?: File,
-    cut?: number,
-): Promise<void> => {
-    let toast: Toaster<typeof TransactionListToast> | undefined = toaster(
-        TransactionListToast,
-        Layer.Toast,
-    )
-    try {
-        const chainId = getOperatorChainId()
-        const signer = await getSigner()
+export async function updateOperator(
+    operator: ParsedOperator,
+    mods: {
+        name: string
+        redundancyFactor: number
+        description: string
+        imageToUpload?: File
+        cut: number
+    },
+) {
+    const { name, redundancyFactor, description = '', imageToUpload, cut } = mods
 
-        const operations: Operation[] = []
-        const blockNumbers: number[] = []
+    const { metadata } = operator
 
-        const updateCutOperation: Operation = {
+    const operations: Operation[] = []
+
+    const hasUpdateCutOperation = !operator.stakes.length && operator.operatorsCut !== cut
+
+    const hasUpdateMetadataOperation =
+        !!imageToUpload ||
+        name !== metadata.name ||
+        description !== metadata.description ||
+        redundancyFactor !== metadata.redundancyFactor
+
+    if (hasUpdateCutOperation) {
+        operations.push({
             id: 'updateCutOperation',
             label: "Update the operator's cut value",
-            state: undefined,
-        }
+        })
+    }
 
-        const updateMetadataOperation: Operation = {
+    if (hasUpdateMetadataOperation) {
+        operations.push({
             id: 'updateMetadataOperation',
             label: "Update the operator's metadata",
-            state: undefined,
-        }
+        })
+    }
 
-        const newOperatorMetadataWithoutImage: OperatorMetadata = {
-            name,
-            description,
-            redundancyFactor,
-        }
+    if (!operations.length) {
+        return
+    }
 
-        const hasUpdateCutOperation =
-            !currentOperatorObject.stakes.length &&
-            cut &&
-            !currentOperatorObject.operatorsCutFraction.isEqualTo(toBN(cut))
+    const blockNumbers: number[] = []
 
-        const hasUpdateMetadataOperation =
-            !isEqual(
-                omit(currentOperatorObject.metadata, ['imageUrl', 'imageIpfsCid']),
-                newOperatorMetadataWithoutImage,
-            ) || !!imageToUpload
+    await toastedOperations(operations, async (next) => {
+        const chainId = getOperatorChainId()
 
-        // 1. Prepare the operations array
+        const signer = await getSigner()
 
         if (hasUpdateCutOperation) {
-            operations.push(updateCutOperation)
+            await networkPreflight(chainId)
+
+            const operatorContract = new Contract(
+                operator.id,
+                operatorABI,
+                signer,
+            ) as Operator
+
+            const tx = await operatorContract.updateOperatorsCutFraction(
+                parseEther(toBN(cut).toString()).div(100),
+            )
+
+            const receipt = await tx.wait()
+
+            blockNumbers.push(receipt.blockNumber)
+
+            next()
         }
 
         if (hasUpdateMetadataOperation) {
-            operations.push(updateMetadataOperation)
-        }
+            await networkPreflight(chainId)
 
-        // 2. Update cut
-        if (hasUpdateCutOperation) {
-            try {
-                updateCutOperation.state = 'ongoing'
-                notify(toast, operations)
-                await networkPreflight(chainId)
+            const operatorContract = new Contract(
+                operator.id,
+                operatorABI,
+                signer,
+            ) as Operator
 
-                const operatorContract = new Contract(
-                    currentOperatorObject.id,
-                    operatorABI,
-                    signer,
-                ) as Operator
-                const tx = await operatorContract.updateOperatorsCutFraction(
-                    parseEther(cut.toString()).div(100),
-                )
-                const receipt = await tx.wait()
+            const imageIpfsCid = imageToUpload
+                ? await postImage(imageToUpload)
+                : operator.metadata.imageIpfsCid
 
-                updateCutOperation.state = 'complete'
-                notify(toast, operations)
-                blockNumbers.push(receipt.blockNumber)
-            } catch (e) {
-                if (updateCutOperation.state === 'ongoing') {
-                    updateCutOperation.state = 'error'
-                }
-                notify(toast, operations)
-                throw e
-            }
-        }
-
-        // 3. Update metadata
-        if (hasUpdateMetadataOperation) {
-            try {
-                updateMetadataOperation.state = 'ongoing'
-                notify(toast, operations)
-                await networkPreflight(chainId)
-
-                const operatorContract = new Contract(
-                    currentOperatorObject.id,
-                    operatorABI,
-                    signer,
-                ) as Operator
-                const imageIpfsCid = imageToUpload
-                    ? await postImage(imageToUpload)
-                    : currentOperatorObject.metadata?.imageIpfsCid
-                const metadata = {
-                    name: name || currentOperatorObject.metadata?.name,
-                    description:
-                        description || currentOperatorObject.metadata?.description,
-                    redundancyFactor:
-                        redundancyFactor ||
-                        currentOperatorObject.metadata?.redundancyFactor,
+            const tx = await operatorContract.updateMetadata(
+                JSON.stringify({
+                    name: name || undefined,
+                    description: description || undefined,
+                    redundancyFactor,
                     imageIpfsCid,
-                }
-                const tx = await operatorContract.updateMetadata(JSON.stringify(metadata))
-                const receipt = await tx.wait()
+                }),
+            )
 
-                updateMetadataOperation.state = 'complete'
-                notify(toast, operations)
-                blockNumbers.push(receipt.blockNumber)
-            } catch (e) {
-                if (updateMetadataOperation.state === 'ongoing') {
-                    updateMetadataOperation.state = 'error'
-                }
-                notify(toast, operations)
-                throw e
-            }
+            const receipt = await tx.wait()
+
+            blockNumbers.push(receipt.blockNumber)
         }
-        if (!operations.length) {
-            throw new Error('No operations')
-        } else {
-            saveLastBlockNumber(blockNumbers.pop() as number)
-        }
-    } catch (e) {
-        throw e
-    } finally {
-        setTimeout(() => {
-            toast?.discard()
-            toast = undefined
-        }, 3000)
+    })
+
+    const blockNumber = blockNumbers.pop()
+
+    if (typeof blockNumber !== 'undefined') {
+        saveLastBlockNumber(blockNumber)
     }
 }
 

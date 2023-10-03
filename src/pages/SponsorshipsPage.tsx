@@ -53,7 +53,7 @@ export const SponsorshipsPage = () => {
         if (!wallet) {
             setSelectedTab(TabOption.AllSponsorships)
         }
-    }, [wallet, selectedTab])
+    }, [wallet])
 
     useEffect(() => {
         refetchQuery(tabQueryMapRef.current[selectedTab])

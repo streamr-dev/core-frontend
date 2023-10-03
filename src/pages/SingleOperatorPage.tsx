@@ -16,14 +16,12 @@ import {
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
 import { errorToast } from '~/utils/toast'
-import { BN, toBN } from '~/utils/bn'
+import { toBN } from '~/utils/bn'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { useOperator } from '~/hooks/useOperator'
 import { fromAtto } from '~/marketplace/utils/math'
 import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
 import Button from '~/shared/components/Button'
-import { OperatorElement } from '~/types/operator'
 import { updateOperator } from '~/services/operators'
 import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
 import AddNodeAddressModal from '~/modals/AddNodeAddressModal'
@@ -42,9 +40,13 @@ import { ChartPeriod } from '~/types'
 import { StatCellBody, StatCellLabel } from '~/components/StatGrid'
 import { Separator } from '~/components/Separator'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
-import { getDelegatedAmountForWallet } from '~/getters'
+import { getDelegatedAmountForWallet, getDelegationFractionForWallet } from '~/getters'
+import { useOperatorByIdQuery } from '~/hooks/operators'
+import { refetchQuery } from '~/utils'
+import { isRejectionReason } from '~/modals/BaseModal'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
+
 const addNodeAddressModal = toaster(AddNodeAddressModal, Layer.Modal)
 
 const PendingIndicator = ({ title, onClick }: { title: string; onClick: () => void }) => (
@@ -59,9 +61,13 @@ const PendingIndicator = ({ title, onClick }: { title: string; onClick: () => vo
 
 export const SingleOperatorPage = () => {
     const operatorId = useParams().id
-    const operatorQuery = useOperator(operatorId || '')
-    const operator = operatorQuery.data
+
+    const operatorQuery = useOperatorByIdQuery(operatorId)
+
+    const operator = operatorQuery.data || null
+
     const walletAddress = useWalletAccount()
+
     const {
         setOperator,
         addNodeAddress,
@@ -77,9 +83,7 @@ export const SingleOperatorPage = () => {
 
     const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
-    useEffect(() => {
-        setOperator(operator)
-    }, [operator, setOperator])
+    useEffect(() => void setOperator(operator), [operator, setOperator])
 
     const [selectedDataSource, setSelectedDataSource] = useState<
         'totalValue' | 'cumulativeEarnings'
@@ -93,9 +97,13 @@ export const SingleOperatorPage = () => {
         queryKey: ['operatorChartQuery', operatorId, selectedPeriod, selectedDataSource],
         queryFn: async () => {
             try {
+                if (!operatorId) {
+                    return []
+                }
+
                 return await getOperatorStats(
-                    operatorId as string,
-                    selectedPeriod as ChartPeriod,
+                    operatorId,
+                    selectedPeriod,
                     selectedDataSource,
                     false, // ignore today
                 )
@@ -109,52 +117,20 @@ export const SingleOperatorPage = () => {
     const { data: chartData = [] } = chartQuery
 
     const myDelegationAmount = useMemo(() => {
-        return walletAddress
-            ? getDelegatedAmountForWallet(walletAddress, operator)
-            : toBN(0)
+        if (!walletAddress || !operator) {
+            return toBN(0)
+        }
+
+        return getDelegatedAmountForWallet(walletAddress, operator)
     }, [operator, walletAddress])
 
     const myDelegationPercentage = useMemo(() => {
-        if (myDelegationAmount.isZero()) {
-            return 0
+        if (!walletAddress || !operator) {
+            return toBN(0)
         }
-        const myShare = myDelegationAmount.dividedBy(operator?.valueWithoutEarnings || 1)
-        return myShare.multipliedBy(100)
-    }, [operator, myDelegationAmount])
 
-    const handleOperatorEdit = async (currentOperator: OperatorElement) => {
-        try {
-            await becomeOperatorModal.pop({
-                title: 'Edit operator',
-                cut: currentOperator.operatorsCutFraction.toNumber(),
-                name: currentOperator.metadata?.name,
-                description: currentOperator.metadata?.description,
-                imageUrl: currentOperator.metadata?.imageUrl,
-                redundancyFactor: currentOperator.metadata?.redundancyFactor,
-                submitLabel: 'Save',
-                onSubmit: async (
-                    cut: number,
-                    name: string,
-                    redundancyFactor: number,
-                    description?: string,
-                    imageToUpload?: File,
-                ) => {
-                    await updateOperator(
-                        currentOperator,
-                        name,
-                        redundancyFactor,
-                        description,
-                        imageToUpload,
-                        cut,
-                    )
-                },
-            })
-            await waitForGraphSync()
-            await operatorQuery.refetch()
-        } catch (e) {
-            // Ignore for now.
-        }
-    }
+        return getDelegationFractionForWallet(walletAddress, operator).multipliedBy(100)
+    }, [walletAddress, operator])
 
     const chartLabel =
         selectedDataSource === 'cumulativeEarnings'
@@ -170,8 +146,48 @@ export const SingleOperatorPage = () => {
             {!!operator && (
                 <OperatorActionBar
                     operator={operator}
-                    handleEdit={handleOperatorEdit}
-                    onDelegationChange={() => operatorQuery.refetch()}
+                    handleEdit={async (currentOperator) => {
+                        const {
+                            operatorsCut: cut,
+                            metadata: { name, description, imageUrl, redundancyFactor },
+                        } = currentOperator
+
+                        try {
+                            await becomeOperatorModal.pop({
+                                title: 'Edit operator',
+                                cut,
+                                name,
+                                description,
+                                imageUrl,
+                                redundancyFactor,
+                                submitLabel: 'Save',
+                                async onSubmit(
+                                    newCut,
+                                    newName,
+                                    newRedundancyFactor,
+                                    newDescription,
+                                    newImageToUpload,
+                                ) {
+                                    await updateOperator(operator, {
+                                        cut: newCut,
+                                        description: newDescription || '',
+                                        imageToUpload: newImageToUpload,
+                                        name: newName,
+                                        redundancyFactor: newRedundancyFactor,
+                                    })
+                                },
+                            })
+
+                            await waitForGraphSync()
+
+                            refetchQuery(operatorQuery)
+                        } catch (e) {
+                            if (!isRejectionReason(e)) {
+                                throw e
+                            }
+                        }
+                    }}
+                    onDelegationChange={() => void refetchQuery(operatorQuery)}
                 />
             )}
             <LayoutColumn>
@@ -284,8 +300,7 @@ export const SingleOperatorPage = () => {
                                 columns={[
                                     {
                                         displayName: 'Stream ID',
-                                        valueMapper: (element) =>
-                                            element.sponsorship?.stream?.id,
+                                        valueMapper: (element) => element.streamId,
                                         align: 'start',
                                         isSticky: true,
                                         key: 'streamId',
@@ -301,7 +316,7 @@ export const SingleOperatorPage = () => {
                                     {
                                         displayName: 'APY',
                                         valueMapper: (element) =>
-                                            `${BN(element.sponsorship?.spotAPY)
+                                            `${element.spotAPY
                                                 .multipliedBy(100)
                                                 .toFixed(0)}%`,
                                         align: 'start',
@@ -312,8 +327,7 @@ export const SingleOperatorPage = () => {
                                         displayName: 'Funded until',
                                         valueMapper: (element) =>
                                             moment(
-                                                element.sponsorship?.projectedInsolvency *
-                                                    1000,
+                                                element.projectedInsolvencyAt * 1000,
                                             ).format('YYYY-MM-DD'),
                                         align: 'start',
                                         isSticky: false,
@@ -328,7 +342,7 @@ export const SingleOperatorPage = () => {
                                 columns={[
                                     {
                                         displayName: 'Stream ID',
-                                        valueMapper: (element) => element.streamId || '',
+                                        valueMapper: (element) => element.streamId,
                                         align: 'start',
                                         isSticky: true,
                                         key: 'id',

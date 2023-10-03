@@ -7,7 +7,6 @@ import useCopy from '~/shared/hooks/useCopy'
 import SvgIcon from '~/shared/components/SvgIcon'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import routes from '~/routes'
-import { OperatorElement } from '~/types/operator'
 import { fromAtto } from '~/marketplace/utils/math'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
@@ -34,10 +33,11 @@ import {
 } from '~/components/ActionBars/NetworkActionBar.styles'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { getSelfDelegationFraction, getSpotApy } from '~/getters'
+import { ParsedOperator } from '~/parsers/OperatorParser'
 
 export const OperatorActionBar: FunctionComponent<{
-    operator: OperatorElement
-    handleEdit: (operator: OperatorElement) => void
+    operator: ParsedOperator
+    handleEdit: (operator: ParsedOperator) => void
     onDelegationChange: () => void
 }> = ({ operator, handleEdit, onDelegationChange }) => {
     const { copy } = useCopy()
@@ -188,6 +188,8 @@ export const OperatorActionBar: FunctionComponent<{
                     <NetworkActionBarCTAs>
                         <Button
                             onClick={async () => {
+                                throw new Error('Not implemented')
+
                                 try {
                                     await delegateFunds(operator)
                                     onDelegationChange()
@@ -201,6 +203,8 @@ export const OperatorActionBar: FunctionComponent<{
                         </Button>
                         <Button
                             onClick={async () => {
+                                throw new Error('Not implemented')
+
                                 try {
                                     await undelegateFunds(operator)
                                     onDelegationChange()
@@ -236,7 +240,7 @@ export const OperatorActionBar: FunctionComponent<{
                 <Pad>
                     <StatGrid>
                         <StatCell label="Operator's cut">
-                            {operator.operatorsCutFraction.toString()}%
+                            {operator.operatorsCut}%
                         </StatCell>
                         <StatCell label="Spot APY">
                             {getSpotApy(operator).toFixed(0)}%

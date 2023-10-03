@@ -225,11 +225,11 @@ function MyDelegationsSummary() {
 function MyDelegations() {
     const wallet = useWalletAccount()
 
-    const query = useDelegationsForWalletQuery(wallet)
+    const query = useDelegationsForWalletQuery({ address: wallet })
 
     const isLoading = query.isLoading || query.isFetching
 
-    const delegations = query.data?.pages.flatMap((page) => page.delegations) || []
+    const delegations = query.data?.pages.flatMap((page) => page.elements) || []
 
     return (
         <NetworkPageSegment title="My delegations" foot>

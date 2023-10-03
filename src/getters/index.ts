@@ -72,6 +72,7 @@ import getGraphClient from '~/getters/getGraphClient'
 import { Delegation, ChartPeriod } from '~/types'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { BN, toBN } from '~/utils/bn'
+import { isEthereumAddress } from '~/marketplace/utils/validate'
 
 export function getGraphUrl(): string {
     const { theGraphUrl, theHubGraphName } = getCoreConfig()
@@ -402,12 +403,12 @@ export async function getOperatorsByDelegationAndId({
     first,
     skip,
     address,
-    id,
+    operatorId,
 }: {
     first?: number
     skip?: number
     address: string
-    id: string
+    operatorId: string
 }): Promise<GetOperatorsByDelegationAndIdQuery['operators']> {
     const {
         data: { operators },
@@ -420,7 +421,7 @@ export async function getOperatorsByDelegationAndId({
             first,
             skip,
             delegator: address,
-            operatorId: id,
+            operatorId,
         },
     })
 
@@ -588,9 +589,62 @@ export async function getStreamDescription(streamId: string) {
         .parse(stream)
 }
 
+type GetMappedType<T> = T extends (...args: any[]) => infer R ? R : ParsedOperator
+
+/**
+ * Gets a collection of parsed Operators.
+ * @param getter Callback that "gets" raw Operator objects.
+ * @param options.mapper A mapping function that translates `ParsedOperator` instances into
+ * something different.
+ * @param options.onParseError Callback triggered for *each* parser failure (see `OperatorParser`).
+ * @param options.onBeforeComplete Callback triggered just before returning the result. It carries
+ * a total number of found operators and the number of successfully parsed operators.
+ */
+export async function getParsedOperators<
+    Mapper extends (operator: ParsedOperator) => any = (
+        operator: ParsedOperator,
+    ) => ParsedOperator,
+>(
+    getter: () => Operator[] | Promise<Operator[]>,
+    {
+        mapper,
+        onParseError,
+        onBeforeComplete,
+    }: {
+        mapper?: Mapper
+        onParseError?: (operator: Operator, error: unknown) => void
+        onBeforeComplete?: (total: number, parsed: number) => void
+    } = {},
+): Promise<GetMappedType<Mapper>[]> {
+    const rawOperators = await getter()
+
+    const operators: GetMappedType<Mapper>[] = []
+
+    const preparsedCount = rawOperators.length
+
+    for (let i = 0; i < preparsedCount; i++) {
+        const rawOperator = rawOperators[i]
+
+        try {
+            const operator = OperatorParser.parse(rawOperator)
+
+            operators.push(mapper ? mapper(operator) : operator)
+        } catch (e) {
+            onParseError
+                ? onParseError(rawOperator as Operator, e)
+                : console.warn('Failed to parse an operator', rawOperator, e)
+        }
+    }
+
+    onBeforeComplete?.(preparsedCount, operators.length)
+
+    return operators
+}
+
 /**
  * Queries the Graph for a collection of wallet's delegations.
  * @param address Wallet address.
+ * @param searchQuery Filter.
  * @param options.batchSize Number of entries to scout for.
  * @param options.skip Number of entries to skip.
  * @param options.onParseError Callback triggered for *each* parser failure (see `OperatorParser`).
@@ -600,6 +654,7 @@ export async function getStreamDescription(streamId: string) {
  */
 export async function getDelegationsForWallet(
     address = '',
+    searchQuery = '',
     {
         batchSize,
         skip,
@@ -612,41 +667,50 @@ export async function getDelegationsForWallet(
         onBeforeComplete?: (total: number, parsed: number) => void
     },
 ): Promise<Delegation[]> {
-    if (!address) {
-        return []
-    }
+    const search = searchQuery.toLowerCase()
 
-    const delegations: Delegation[] = []
+    return getParsedOperators(
+        () => {
+            const params = {
+                first: batchSize,
+                skip,
+                address: address.toLowerCase(),
+            }
 
-    const operators = await getOperatorsByDelegation({
-        first: batchSize,
-        skip,
-        address,
-    })
+            if (!search) {
+                /**
+                 * Empty search = look for all operators.
+                 */
+                return getOperatorsByDelegation(params) as Promise<Operator[]>
+            }
 
-    const preparsedCount = operators.length
+            if (isEthereumAddress(search)) {
+                /**
+                 * Look for a delegation for a given operator id.
+                 */
+                return getOperatorsByDelegationAndId({
+                    ...params,
+                    operatorId: search,
+                }) as Promise<Operator[]>
+            }
 
-    for (let i = 0; i < preparsedCount; i++) {
-        const rawOperator = operators[i]
-
-        try {
-            const operator = OperatorParser.parse(rawOperator)
-
-            delegations.push({
-                ...operator,
-                apy: getSpotApy(operator),
-                myShare: getDelegatedAmountForWallet(address, operator),
-            })
-        } catch (e) {
-            onParseError
-                ? onParseError(rawOperator as Operator, e)
-                : console.warn('Failed to parse an operator', rawOperator, e)
-        }
-    }
-
-    onBeforeComplete?.(preparsedCount, delegations.length)
-
-    return delegations
+            return getOperatorsByDelegationAndMetadata({
+                ...params,
+                searchQuery: search,
+            }) as Promise<Operator[]>
+        },
+        {
+            mapper(operator): Delegation {
+                return {
+                    ...operator,
+                    apy: getSpotApy(operator),
+                    myShare: getDelegatedAmountForWallet(address, operator),
+                }
+            },
+            onParseError,
+            onBeforeComplete,
+        },
+    )
 }
 
 /**
@@ -712,10 +776,11 @@ export function getSelfDelegatedAmount(operator: ParsedOperator) {
 }
 
 /**
- * Calculates owner's own delegation's ratio out of the total optionally
+ * Calculates wallet's delegation's ratio out of the total optionally
  * modded with `offset`.
  */
-export function getSelfDelegationFraction(
+export function getDelegationFractionForWallet(
+    address: string,
     operator: ParsedOperator,
     { offset = toBN(0) }: { offset?: BN } = {},
 ) {
@@ -725,7 +790,18 @@ export function getSelfDelegationFraction(
         return toBN(0)
     }
 
-    return getSelfDelegatedAmount(operator).dividedBy(value)
+    return getDelegatedAmountForWallet(address, operator).dividedBy(value)
+}
+
+/**
+ * Calculates owner's own delegation's ratio out of the total optionally
+ * modded with `offset`.
+ */
+export function getSelfDelegationFraction(
+    operator: ParsedOperator,
+    { offset = toBN(0) }: { offset?: BN } = {},
+) {
+    return getDelegationFractionForWallet(operator.owner, operator, { offset })
 }
 
 /**

@@ -1,7 +1,7 @@
 import React from 'react'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
-import { UseInfiniteQueryResult } from '@tanstack/react-query'
+import { UseInfiniteQueryResult, UseQueryResult } from '@tanstack/react-query'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import getNativeTokenName from '~/shared/utils/nativeToken'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
@@ -126,7 +126,7 @@ export async function sleep(millis: number) {
     await new Promise((resolve) => void setTimeout(resolve, millis))
 }
 
-export function refetchQuery(query: UseInfiniteQueryResult) {
+export function refetchQuery(query: UseInfiniteQueryResult | UseQueryResult) {
     setTimeout(async () => {
         try {
             await query.refetch()

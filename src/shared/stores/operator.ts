@@ -3,12 +3,12 @@ import { create } from 'zustand'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { getNativeTokenBalance } from '~/marketplace/utils/web3'
 import { setOperatorNodeAddresses } from '~/services/operators'
-import { OperatorElement } from '~/types/operator'
+import { ParsedOperator } from '~/parsers/OperatorParser'
 import { BN } from '~/utils/bn'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 
 interface OperatorStore {
-    operator: OperatorElement | null | undefined
+    operator: ParsedOperator | null | undefined
     addedNodeAddresses: string[]
     removedNodeAddresses: string[]
     nodeBalances: Record<string, BN>
@@ -16,7 +16,7 @@ interface OperatorStore {
     computed: {
         get nodeAddresses(): OperatorNodeAddress[]
     }
-    setOperator: (operator: OperatorElement | null | undefined) => void
+    setOperator: (operator: ParsedOperator | null | undefined) => void
     addNodeAddress: (address: string) => void
     removeNodeAddress: (address: string) => void
     cancelAdd: (address: string) => void
@@ -73,16 +73,18 @@ const useOperatorStore = create<OperatorStore>((set, get) => {
             },
         },
 
-        setOperator(operator: OperatorElement | null | undefined) {
+        setOperator(operator: ParsedOperator | null | undefined) {
             set((current) =>
                 produce(current, (next) => {
                     next.operator = operator
+
                     if (current.operator?.id != operator?.id) {
                         next.addedNodeAddresses = []
                         next.removedNodeAddresses = []
                     }
                 }),
             )
+
             get().updateNodeBalances()
         },
 
@@ -143,6 +145,10 @@ const useOperatorStore = create<OperatorStore>((set, get) => {
                 )
 
                 try {
+                    /**
+                     * @TODO async called this way won't block. that ok? we can't assume this'll
+                     * succeed, plus try…catch here is useless.
+                     */
                     setOperatorNodeAddresses(operator.id, addresses)
                     set((current) =>
                         produce(current, (next) => {
