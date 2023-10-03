@@ -51,9 +51,13 @@ export const SingleSponsorshipPage = () => {
         ],
         queryFn: async () => {
             try {
+                if (!sponsorshipId) {
+                    return []
+                }
+
                 return await getSponsorshipStats(
-                    sponsorshipId as string,
-                    selectedPeriod as ChartPeriod,
+                    sponsorshipId,
+                    selectedPeriod,
                     selectedDataSource,
                     false, // ignore today
                 )

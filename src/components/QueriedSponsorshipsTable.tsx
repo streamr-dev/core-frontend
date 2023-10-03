@@ -95,7 +95,7 @@ export function QueriedSponsorshipsTable({
                     },
                     {
                         displayName: 'APY',
-                        valueMapper: ({ apy }) => `${apy}%`,
+                        valueMapper: ({ apy }) => `${(apy * 100).toFixed(0)}%`,
                         align: 'end',
                         isSticky: false,
                         key: 'apy',

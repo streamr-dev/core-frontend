@@ -214,7 +214,9 @@ function MyDelegationsSummary() {
                             {fromAtto(value).toString()} DATA
                         </StatCell>
                         <StatCell label="Operators">{numOfOperators}</StatCell>
-                        <StatCell label="APY">{apy.join('-')}%</StatCell>
+                        <StatCell label="APY">
+                            {apy.map((v) => (v * 100).toFixed(0)).join('-')}%
+                        </StatCell>
                     </StatGrid>
                 </Pad>
             </WalletPass>

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { getConfigFromChain } from '~/getters/getConfigFromChain'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
-import { fromAtto, fromDecimals } from '~/marketplace/utils/math'
+import { fromAtto, fromDecimals, toDecimals } from '~/marketplace/utils/math'
 
 export const SponsorshipParser = z
     .object({
@@ -51,7 +51,7 @@ export const SponsorshipParser = z
             return {
                 ...rest,
                 active,
-                apy: spotAPY.toNumber(),
+                apy: toDecimals(spotAPY, decimals).toNumber(),
                 cumulativeSponsoring: fromDecimals(cumulativeSponsoringWei, decimals),
                 minimumStake: fromDecimals(minimumStakeWei, decimals),
                 payoutPerDay: fromDecimals(totalPayoutWeiPerSec, decimals).dividedBy(

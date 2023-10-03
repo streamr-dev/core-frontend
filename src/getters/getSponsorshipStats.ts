@@ -83,7 +83,7 @@ export const getSponsorshipStats = async (
                 yValue = Number(bucket.operatorCount)
                 break
             case 'apy':
-                yValue = Number(bucket.spotAPY)
+                yValue = Number(bucket.spotAPY) * 100
                 break
             default:
                 yValue = 0

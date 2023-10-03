@@ -229,7 +229,9 @@ export function SponsorshipActionBar({
                 <Separator />
                 <Pad>
                     <StatGrid>
-                        <StatCell label="APY">{sponsorship.apy}%</StatCell>
+                        <StatCell label="APY">
+                            {(sponsorship.apy * 100).toFixed(0)}%
+                        </StatCell>
                         <StatCell label="Cumulative sponsored">
                             {sponsorship.cumulativeSponsoring.toString()}{' '}
                             <SponsorshipPaymentTokenName />

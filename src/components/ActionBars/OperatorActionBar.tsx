@@ -257,7 +257,7 @@ export const OperatorActionBar: FunctionComponent<{
                             {operator.operatorsCut}%
                         </StatCell>
                         <StatCell label="Spot APY">
-                            {getSpotApy(operator).toFixed(0)}%
+                            {(getSpotApy(operator) * 100).toFixed(0)}%
                         </StatCell>
                         <StatCell label="Cumulative earnings">
                             {fromAtto(
