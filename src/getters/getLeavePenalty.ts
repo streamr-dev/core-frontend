@@ -1,6 +1,6 @@
 import { Contract } from 'ethers'
 import { Sponsorship, sponsorshipABI } from '@streamr/network-contracts'
-import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
+import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { BNish } from '~/utils/bn'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 

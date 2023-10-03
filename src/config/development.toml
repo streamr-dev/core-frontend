@@ -13,7 +13,6 @@ dataunionChains = ['dev2']
 streamChains = ['dev2']
 projectsChain = 'dev2'
 theGraphUrl = ":8800"
-mainnetInfuraUrl = "https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206"
 dataUnionJoinServerUrl = "http://localhost:5555"
 theHubGraphName = "streamr-dev/network-subgraphs"
 streamIndexerUrl = ":4001/api"

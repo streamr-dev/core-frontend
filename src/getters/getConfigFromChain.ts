@@ -13,7 +13,7 @@ export type ConfigFromChain = {
  * When we will be needing more of the fields, simply expand the return type and add them
  */
 export const getConfigFromChain = async (): Promise<ConfigFromChain> => {
-    const provider = await getPublicWeb3Provider(defaultChainConfig.id)
+    const provider = getPublicWeb3Provider(defaultChainConfig.id)
     const config = new Contract(
         defaultChainConfig.contracts.StreamrConfig,
         streamrConfigABI,
