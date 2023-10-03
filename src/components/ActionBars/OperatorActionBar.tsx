@@ -13,7 +13,6 @@ import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import Spinner from '~/shared/components/Spinner'
 import { getBlockExplorerUrl } from '~/getters/getBlockExplorerUrl'
-import { useDelegateAndUndelegateFunds } from '~/hooks/useDelegateAndUndelegateFunds'
 import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
 import { TABLET } from '~/shared/utils/styled'
@@ -34,6 +33,8 @@ import {
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { getSelfDelegationFraction, getSpotApy } from '~/getters'
 import { ParsedOperator } from '~/parsers/OperatorParser'
+import { delegateFunds, undelegateFunds } from '~/utils/operators'
+import { useConfigFromChain } from '~/hooks/useConfigFromChain'
 
 export const OperatorActionBar: FunctionComponent<{
     operator: ParsedOperator
@@ -53,7 +54,7 @@ export const OperatorActionBar: FunctionComponent<{
         return getSelfDelegationFraction(operator).multipliedBy(100)
     }, [operator])
 
-    const { delegateFunds, undelegateFunds } = useDelegateAndUndelegateFunds()
+    const { minimumSelfDelegationFraction } = useConfigFromChain()
 
     return (
         <SingleElementPageActionBar>
@@ -188,13 +189,19 @@ export const OperatorActionBar: FunctionComponent<{
                     <NetworkActionBarCTAs>
                         <Button
                             onClick={async () => {
-                                throw new Error('Not implemented')
+                                if (!walletAddress) {
+                                    return
+                                }
 
                                 try {
-                                    await delegateFunds(operator)
+                                    await delegateFunds({
+                                        operator,
+                                        wallet: walletAddress,
+                                    })
+
                                     onDelegationChange()
                                 } catch (e) {
-                                    console.warn(e)
+                                    console.warn('Could not delegate funds', e)
                                 }
                             }}
                             disabled={walletAddress == null}
@@ -203,13 +210,20 @@ export const OperatorActionBar: FunctionComponent<{
                         </Button>
                         <Button
                             onClick={async () => {
-                                throw new Error('Not implemented')
-
                                 try {
-                                    await undelegateFunds(operator)
+                                    if (!walletAddress) {
+                                        return
+                                    }
+
+                                    await undelegateFunds({
+                                        minimumSelfDelegationFraction,
+                                        operator,
+                                        wallet: walletAddress,
+                                    })
+
                                     onDelegationChange()
                                 } catch (e) {
-                                    console.warn(e)
+                                    console.warn('Could not undelegate funds', e)
                                 }
                             }}
                             disabled={walletAddress == null}

@@ -14,10 +14,10 @@ import Label from '~/shared/components/Ui/Label'
 import { BN, toBN } from '~/utils/bn'
 import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
 import { Alert } from '~/components/Alert'
-import { OperatorElement } from '~/types/operator'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { useConfigFromChain } from '~/hooks/useConfigFromChain'
 import { getSelfDelegatedAmount, getSelfDelegationFraction } from '~/getters'
+import { ParsedOperator } from '~/parsers/OperatorParser'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onResolve?: (amount: string) => void
@@ -27,7 +27,7 @@ interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     decimals: number
     delegatedTotal?: string
     amount?: string
-    operator: OperatorElement
+    operator: ParsedOperator
 }
 
 export default function DelegateFundsModal({
