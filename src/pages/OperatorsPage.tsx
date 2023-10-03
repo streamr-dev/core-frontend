@@ -13,10 +13,8 @@ import {
 } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
-import { calculateOperatorSpotAPY } from '~/utils/apy'
 import { createOperator } from '~/services/operators'
 import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
-import { getDelegationAmountForAddress } from '~/utils/delegation'
 import { truncate } from '~/shared/utils/text'
 import { useMyOperator } from '~/hooks/useMyOperator'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
@@ -27,6 +25,7 @@ import { useAllOperatorsQuery, useDelegatedOperatorsQuery } from '~/hooks/useOpe
 import { OperatorElement } from '~/types/operator'
 import NetworkPageSegment, { SegmentGrid } from '~/components/NetworkPageSegment'
 import { LoadMoreButton } from '~/components/LoadMore'
+import { getDelegatedAmountForWallet, getSpotApy } from '~/getters'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -81,7 +80,7 @@ const getAllOperatorColumns = (): ScrollTableColumnDef<OperatorElement>[] => [
     },
     {
         displayName: 'APY',
-        valueMapper: (element) => `${calculateOperatorSpotAPY(element).toFixed(0)}%`,
+        valueMapper: (element) => `${getSpotApy(element).toFixed(0)}%`,
         align: 'end',
         isSticky: false,
         key: 'apy',
@@ -120,7 +119,7 @@ const getMyDelegationsColumns = (
     {
         displayName: 'My share',
         valueMapper: (element) =>
-            fromAtto(getDelegationAmountForAddress(myWalletAddress, element)).toString(),
+            fromAtto(getDelegatedAmountForWallet(myWalletAddress, element)).toString(),
         align: 'start',
         isSticky: false,
         key: 'myShare',
@@ -141,7 +140,7 @@ const getMyDelegationsColumns = (
     },
     {
         displayName: 'APY',
-        valueMapper: (element) => `${calculateOperatorSpotAPY(element).toFixed(0)}%`,
+        valueMapper: (element) => `${getSpotApy(element).toFixed(0)}%`,
         align: 'end',
         isSticky: false,
         key: 'apy',

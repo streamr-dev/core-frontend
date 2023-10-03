@@ -8,7 +8,7 @@ import {
 } from '~/getters'
 import { ParsedSponsorship, SponsorshipParser } from '~/parsers/SponsorshipParser'
 import { errorToast } from '~/utils/toast'
-import useTokenInfo from './useTokenInfo'
+import useTokenInfo from '~/hooks/useTokenInfo'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { Chain } from '~/shared/types/web3-types'
 

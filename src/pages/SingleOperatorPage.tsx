@@ -16,14 +16,13 @@ import {
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
 import { truncateNumber } from '~/shared/utils/truncateNumber'
 import { errorToast } from '~/utils/toast'
-import { BN } from '~/utils/bn'
+import { BN, toBN } from '~/utils/bn'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { useOperator } from '~/hooks/useOperator'
 import { fromAtto } from '~/marketplace/utils/math'
 import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
 import Button from '~/shared/components/Button'
-import { getDelegationAmountForAddress } from '~/utils/delegation'
 import { OperatorElement } from '~/types/operator'
 import { updateOperator } from '~/services/operators'
 import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
@@ -43,6 +42,7 @@ import { ChartPeriod } from '~/types'
 import { StatCellBody, StatCellLabel } from '~/components/StatGrid'
 import { Separator } from '~/components/Separator'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
+import { getDelegatedAmountForWallet } from '~/getters'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 const addNodeAddressModal = toaster(AddNodeAddressModal, Layer.Modal)
@@ -109,9 +109,10 @@ export const SingleOperatorPage = () => {
     const { data: chartData = [] } = chartQuery
 
     const myDelegationAmount = useMemo(() => {
-        return getDelegationAmountForAddress(walletAddress, operator)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [operator, walletAddress, operator?.valueWithoutEarnings])
+        return walletAddress
+            ? getDelegatedAmountForWallet(walletAddress, operator)
+            : toBN(0)
+    }, [operator, walletAddress])
 
     const myDelegationPercentage = useMemo(() => {
         if (myDelegationAmount.isZero()) {

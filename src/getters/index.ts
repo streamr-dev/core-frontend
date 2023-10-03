@@ -695,11 +695,37 @@ export function getDelegatedAmountForWallet<T extends Pick<ParsedOperator, 'dele
     address: string,
     { delegators }: T,
 ): BN {
+    const addr = address.toLowerCase()
+
     return delegators.reduce(
         (sum, { delegator, amount }) =>
-            delegator.toLowerCase() === address.toLowerCase() ? sum.plus(amount) : sum,
+            delegator.toLowerCase() === addr ? sum.plus(amount) : sum,
         toBN(0),
     )
+}
+
+/**
+ * Sums amounts delegated to given operator by its owner.
+ */
+export function getSelfDelegatedAmount(operator: ParsedOperator) {
+    return getDelegatedAmountForWallet(operator.owner, operator)
+}
+
+/**
+ * Calculates owner's own delegation's ratio out of the total optionally
+ * modded with `offset`.
+ */
+export function getSelfDelegationFraction(
+    operator: ParsedOperator,
+    { offset = toBN(0) }: { offset?: BN } = {},
+) {
+    const value = operator.valueWithoutEarnings.plus(offset)
+
+    if (value.isEqualTo(0)) {
+        return toBN(0)
+    }
+
+    return getSelfDelegatedAmount(operator).dividedBy(value)
 }
 
 /**

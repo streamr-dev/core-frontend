@@ -36,8 +36,8 @@ import {
     SingleElementPageActionBar,
     SingleElementPageActionBarContainer,
     SingleElementPageActionBarTopPart,
-} from './NetworkActionBar.styles'
-import { SponsorshipPaymentTokenName } from '../SponsorshipPaymentTokenName'
+} from '~/components/ActionBars/NetworkActionBar.styles'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 
 export function SponsorshipActionBar({
     sponsorship,

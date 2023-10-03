@@ -8,11 +8,8 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import routes from '~/routes'
 import { OperatorElement } from '~/types/operator'
-import { calculateOperatorSpotAPY } from '~/utils/apy'
-import { getDelegationAmountForAddress } from '~/utils/delegation'
 import { fromAtto } from '~/marketplace/utils/math'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { BN } from '~/utils/bn'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import Spinner from '~/shared/components/Spinner'
@@ -34,8 +31,9 @@ import {
     SingleElementPageActionBar,
     SingleElementPageActionBarContainer,
     SingleElementPageActionBarTopPart,
-} from './NetworkActionBar.styles'
-import { SponsorshipPaymentTokenName } from '../SponsorshipPaymentTokenName'
+} from '~/components/ActionBars/NetworkActionBar.styles'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { getSelfDelegationFraction, getSpotApy } from '~/getters'
 
 export const OperatorActionBar: FunctionComponent<{
     operator: OperatorElement
@@ -43,17 +41,16 @@ export const OperatorActionBar: FunctionComponent<{
     onDelegationChange: () => void
 }> = ({ operator, handleEdit, onDelegationChange }) => {
     const { copy } = useCopy()
+
     const { count: liveNodeCount, isLoading: liveNodeCountIsLoading } =
         useOperatorLiveNodes(operator.id)
+
     const walletAddress = useWalletAccount()
+
     const canEdit = !!walletAddress && walletAddress == operator.owner
 
     const ownerDelegationPercentage = useMemo(() => {
-        const stake = getDelegationAmountForAddress(operator.owner, operator)
-        if (stake.isEqualTo(BN(0)) || operator.valueWithoutEarnings.isEqualTo(BN(0))) {
-            return BN(0)
-        }
-        return stake.dividedBy(operator.valueWithoutEarnings).multipliedBy(100)
+        return getSelfDelegationFraction(operator).multipliedBy(100)
     }, [operator])
 
     const { delegateFunds, undelegateFunds } = useDelegateAndUndelegateFunds()
@@ -154,7 +151,6 @@ export const OperatorActionBar: FunctionComponent<{
                                     <SvgIcon name="externalLink" />
                                 </a>
                             </NetworkActionBarInfoButton>
-
                             <NetworkActionBarInfoButton>
                                 <span>
                                     Contract <strong>{truncate(operator.id)}</strong>
@@ -243,7 +239,7 @@ export const OperatorActionBar: FunctionComponent<{
                             {operator.operatorsCutFraction.toString()}%
                         </StatCell>
                         <StatCell label="Spot APY">
-                            {calculateOperatorSpotAPY(operator).toFixed(0)}%
+                            {getSpotApy(operator).toFixed(0)}%
                         </StatCell>
                         <StatCell label="Cumulative earnings">
                             {fromAtto(
