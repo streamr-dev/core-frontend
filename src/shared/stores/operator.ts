@@ -5,7 +5,7 @@ import { getNativeTokenBalance } from '~/marketplace/utils/web3'
 import { setOperatorNodeAddresses } from '~/services/operators'
 import { OperatorElement } from '~/types/operator'
 import { BN } from '~/utils/bn'
-import getChainId from '~/utils/web3/getChainId'
+import { defaultChainConfig } from '~/getters/getChainConfig'
 
 interface OperatorStore {
     operator: OperatorElement | null | undefined
@@ -168,7 +168,7 @@ const useOperatorStore = create<OperatorStore>((set, get) => {
         },
 
         async updateNodeBalances() {
-            const chainId = await getChainId()
+            const chainId = defaultChainConfig.id
             const addresses = get().computed.nodeAddresses
             const balances = addresses.map(async (node) => ({
                 address: node.address,
