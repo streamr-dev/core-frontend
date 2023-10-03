@@ -15,6 +15,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { GitRevisionPlugin } = require('git-revision-webpack-plugin')
 const SentryPlugin = require('@sentry/webpack-plugin')
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const createStyledComponentsTransformer =
     require('typescript-plugin-styled-components').default
@@ -164,9 +165,7 @@ module.exports = {
         // TODO: Disable logging of typescript errors for now as there's so many of them.
         // new ForkTsCheckerWebpackPlugin({
         //     issue: {
-        //         include: [
-        //             { file: '**/src/**/*' }
-        //         ],
+        //         include: [{ file: '**/src/**/*' }],
         //     },
         // }),
         new HtmlWebpackPlugin({

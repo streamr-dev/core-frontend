@@ -1,16 +1,10 @@
 import * as all from '~/shared/utils/web3'
-import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import getChainId from '~/utils/web3/getChainId'
 
 jest.mock('~/shared/stores/wallet', () => ({
     __esModule: true,
     getPublicWeb3Provider: jest.fn(() => Promise.reject(new Error('Not implemented'))),
 }))
-
-function mockPublicWeb3(publicWeb3) {
-    const getPublicWeb3ProviderMock = getPublicWeb3Provider as jest.Mock
-    return getPublicWeb3ProviderMock.mockImplementation(() => publicWeb3)
-}
 
 jest.mock('~/utils/web3/getChainId', () => ({
     __esModule: true,

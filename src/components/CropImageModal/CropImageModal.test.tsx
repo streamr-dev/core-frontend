@@ -73,9 +73,7 @@ describe('CropImageModal', () => {
     afterEach(cleanup)
     describe('getResizedBlob', () => {
         it('returns the same image if smaller than max width', async () => {
-            const { getCroppedAndResizedBlob, MAX_WIDTH } = await import(
-                './CropImageModal'
-            )
+            const { getCroppedAndResizedBlob } = await import('./CropImageModal')
             const cropSettings = { x: 0, y: 0, width: 0.5, height: 0.5 }
             prepareTest(400, 400)
             const result = await getCroppedAndResizedBlob(
@@ -86,15 +84,10 @@ describe('CropImageModal', () => {
             expect(result).toBe('crppedImage')
         })
         it('returns a resized image if bigger than max width', async () => {
-            const { getCroppedAndResizedBlob, MAX_WIDTH } = await import(
-                './CropImageModal'
-            )
+            const { getCroppedAndResizedBlob } = await import('./CropImageModal')
             const cropSettings = { x: 0, y: 0, width: 0.85, height: 0.85 }
             prepareTest(3000, 3000)
-            const result = await getCroppedAndResizedBlob(
-                'https://imageUrl',
-                cropSettings,
-            )
+            await getCroppedAndResizedBlob('https://imageUrl', cropSettings)
             expect(drawSpy).toHaveBeenCalledTimes(4)
         })
     })

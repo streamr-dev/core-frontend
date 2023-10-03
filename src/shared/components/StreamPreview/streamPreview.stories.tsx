@@ -30,30 +30,6 @@ const streamList = [
     },
 ]
 
-const generateData = (rows) =>
-    [...new Array(rows)].map((value, index) => {
-        const factor = index + 1
-        const timestamp = new Date('2020-08-19T13:36:00')
-        timestamp.setMinutes(timestamp.getMinutes() + factor)
-        return {
-            metadata: {
-                timestamp: timestamp.getTime(),
-            },
-            data: {
-                NO2: factor * 14,
-                CO2: factor * 405,
-                PM: factor * 2.5,
-                temp: factor * 18.5,
-                pressure: factor * 1029.1,
-            },
-        }
-    })
-
-const streamData = {
-    [streamList[0].id]: generateData(10),
-    [streamList[1].id]: generateData(2),
-    [streamList[2].id]: generateData(25),
-}
 const streamIds = streamList.map(({ id }) => id)
 
 export const LoadingStream = () => (
@@ -121,7 +97,6 @@ LoadingStreamIPhone.story = {
 }
 
 const ActiveStream = () => {
-    const [streamId, setStreamId] = useState(streamIds[0])
     return (
         <StreamPreview
             streamsList={['0x4855a3caa2d338349feb918fc65b4d7184540dbe/lorem292929']}
@@ -160,9 +135,8 @@ LoadingStreamWithNavigationIPhone.story = {
 }
 
 const PrefixedPreview = () => {
-    const [streamId, setStreamId] = useState(streamIds[0])
-    const linkToStreamSettings = true
-    const [activePartition, setActivePartition] = useState(0)
+    const [streamId] = useState(streamIds[0])
+    const [, setActivePartition] = useState(0)
     useEffect(() => {
         setActivePartition(0)
     }, [streamId])
@@ -204,8 +178,8 @@ StreamPrefixSettingsLinkIPhone.story = {
 }
 
 const DefaultPreview = () => {
-    const [streamId, setStreamId] = useState(streamIds[0])
-    const [activePartition, setActivePartition] = useState(0)
+    const [streamId] = useState(streamIds[0])
+    const [, setActivePartition] = useState(0)
     useEffect(() => {
         setActivePartition(0)
     }, [streamId])

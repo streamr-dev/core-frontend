@@ -1,5 +1,4 @@
 import * as all from '~/marketplace/utils/validate'
-import { validateSalePoint } from '~/marketplace/utils/validate'
 import { MaxSearchPhraseLength } from '~/consts'
 import { ProjectType } from '~/shared/types'
 import { SalePoint } from '~/marketplace/types/project-types'
