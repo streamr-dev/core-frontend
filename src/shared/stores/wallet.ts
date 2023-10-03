@@ -123,20 +123,15 @@ export async function getWalletAccount({
     return promise
 }
 
-export function getPublicWeb3Provider(chainId?: number) {
-    let url: string = getCoreConfig().mainnetInfuraUrl
+export function getPublicWeb3Provider(chainId: number) {
+	const config = getConfigForChain(chainId)
+	const httpEntry = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))
 
-    if (typeof chainId !== 'undefined') {
-        const config = getConfigForChain(chainId)
-
-        const httpEntry = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))
-
-        if (httpEntry) {
-            url = httpEntry.url
-        }
-    }
-
-    return new providers.JsonRpcProvider(url)
+	if (httpEntry) {
+		return new providers.JsonRpcProvider(httpEntry.url)
+	} else {
+		throw new Error(`No rpcEndpoints configured for chainId ${chainId}`)
+	}
 }
 
 interface WalletStore {
