@@ -19,3 +19,9 @@ export type SponsorshipStake = {
     joinDate: string
     amount: string
 }
+
+export type TokenAndBalanceForSponsorship = {
+    balance: string
+    tokenSymbol: string
+    tokenDecimals: number
+}

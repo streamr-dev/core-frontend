@@ -7,7 +7,6 @@ import { MetaMaskInpageProvider } from '@metamask/providers'
 import { isEthereumAddress } from '~/marketplace/utils/validate'
 import { getFirstEnsNameFor } from '~/getters'
 import { getConfigForChain } from '~/shared/web3/config'
-import getCoreConfig from '~/getters/getCoreConfig'
 
 interface MetaMaskProvider extends MetaMaskInpageProvider {
     providers?: MetaMaskProvider[]

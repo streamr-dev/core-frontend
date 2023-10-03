@@ -5,7 +5,6 @@ import { Sponsorship, sponsorshipABI } from '@streamr/network-contracts'
 import { config } from '@streamr/config'
 import { Contract } from 'ethers'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
-import { getBalanceForSponsorship } from '~/getters/getTokenAndBalanceForSponsorship'
 import FundSponsorshipModal from '~/modals/FundSponsorshipModal'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
@@ -26,6 +25,8 @@ import getCoreConfig from '~/getters/getCoreConfig'
 import JoinSponsorshipModal from '~/modals/JoinSponsorshipModal'
 import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
 import { createSponsorship as createSponsorshipService } from '~/services/sponsorships'
+import { getCustomTokenBalance } from '~/marketplace/utils/web3'
+import { defaultChainConfig } from '~/getters/getChainConfig'
 
 /**
  * Scouts for Operator's funding share.
@@ -237,4 +238,16 @@ export async function createSponsorship(wallet: string) {
             })
         },
     })
+}
+
+/**
+ * Fetches wallet's balance of the Sponsorship-native token
+ * on the default chain.
+ */
+async function getBalanceForSponsorship(wallet: string) {
+    return getCustomTokenBalance(
+        defaultChainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
+        wallet,
+        defaultChainConfig.id,
+    )
 }
