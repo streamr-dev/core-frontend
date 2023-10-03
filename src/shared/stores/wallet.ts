@@ -124,14 +124,15 @@ export async function getWalletAccount({
 }
 
 export function getPublicWeb3Provider(chainId: number) {
-	const config = getConfigForChain(chainId)
-	const httpEntry = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))
+    const config = getConfigForChain(chainId)
 
-	if (httpEntry) {
-		return new providers.JsonRpcProvider(httpEntry.url)
-	} else {
-		throw new Error(`No rpcEndpoints configured for chainId ${chainId}`)
-	}
+    const httpEntry = config.rpcEndpoints.find(({ url }) => url.startsWith('http'))
+
+    if (!httpEntry) {
+        throw new Error(`No rpcEndpoints configured for chainId "${chainId}"`)
+    }
+
+    return new providers.JsonRpcProvider(httpEntry.url)
 }
 
 interface WalletStore {
