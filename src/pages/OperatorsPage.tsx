@@ -153,7 +153,7 @@ export const OperatorsPage = () => {
                                 disabled={
                                     currentQuery.isLoading || currentQuery.isFetching
                                 }
-                                onClick={() => currentQuery.fetchNextPage()}
+                                onClick={() => void currentQuery.fetchNextPage()}
                                 kind="primary2"
                             >
                                 Load more
