@@ -28,6 +28,7 @@ import {
 } from '~/hooks/operators'
 import { Delegation } from '~/types'
 import { ParsedOperator } from '~/parsers/OperatorParser'
+import { refetchQuery } from '~/utils'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -111,9 +112,12 @@ export const OperatorsPage = () => {
                                     await becomeOperatorModal.pop({
                                         onSubmit: createOperator,
                                     })
+
                                     await waitForGraphSync()
-                                    await allOperatorsQuery.refetch()
-                                    await myDelegationsQuery.refetch()
+
+                                    refetchQuery(allOperatorsQuery)
+
+                                    refetchQuery(myDelegationsQuery)
                                 } catch (e) {
                                     // Ignore for now.
                                 }
