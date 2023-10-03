@@ -10,7 +10,6 @@ dataunionChains = ['mumbai']
 streamChains = ['mumbai']
 projectsChain = 'mumbai'
 theGraphUrl = "https://api.thegraph.com"
-mainnetInfuraUrl = "https://rpc-mumbai.maticvigil.com"
 dataUnionJoinServerUrl = "https://join.dataunions.org/"
 theHubGraphName = "samt1803/network-subgraphs"
 streamIndexerUrl = "https://stream-metrics-staging.streamr.network/api"
