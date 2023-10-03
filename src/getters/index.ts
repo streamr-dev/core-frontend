@@ -589,8 +589,6 @@ export async function getStreamDescription(streamId: string) {
         .parse(stream)
 }
 
-type GetMappedType<T> = T extends (...args: any[]) => infer R ? R : ParsedOperator
-
 /**
  * Gets a collection of parsed Operators.
  * @param getter Callback that "gets" raw Operator objects.
@@ -615,10 +613,10 @@ export async function getParsedOperators<
         onParseError?: (operator: Operator, error: unknown) => void
         onBeforeComplete?: (total: number, parsed: number) => void
     } = {},
-): Promise<GetMappedType<Mapper>[]> {
+): Promise<ReturnType<Mapper>[]> {
     const rawOperators = await getter()
 
-    const operators: GetMappedType<Mapper>[] = []
+    const operators: ReturnType<Mapper>[] = []
 
     const preparsedCount = rawOperators.length
 
