@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { useInfiniteQuery, UseInfiniteQueryResult, useQuery } from '@tanstack/react-query'
 import { config } from '@streamr/config'
 import { Sponsorship } from '~/generated/gql/network'
@@ -11,6 +12,14 @@ import { errorToast } from '~/utils/toast'
 import useTokenInfo from '~/hooks/useTokenInfo'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { Chain } from '~/shared/types/web3-types'
+import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
+import {
+    createSponsorship,
+    editSponsorshipFunding,
+    fundSponsorship,
+    joinSponsorshipAsOperator,
+} from '~/utils/sponsorships'
+import { ParsedOperator } from '~/parsers/OperatorParser'
 
 function getDefaultQueryParams(pageSize: number) {
     return {
@@ -160,4 +169,112 @@ export function useSponsorshipTokenInfo() {
     ] as Chain
 
     return useTokenInfo(contracts[getCoreConfig().sponsorshipPaymentToken], chainId)
+}
+
+export function useIsCreatingSponsorshipForWallet(wallet: string | undefined) {
+    return useIsFlagged(flagKey('isCreatingSponsorship', wallet || ''))
+}
+
+export function useCreateSponsorship() {
+    const withFlag = useFlagger()
+
+    return useCallback(
+        (wallet: string) =>
+            withFlag(flagKey('isCreatingSponsorship', wallet), () =>
+                createSponsorship(wallet),
+            ),
+        [withFlag],
+    )
+}
+
+export function useIsFundingSponsorship(
+    sponsorshipId: string | undefined,
+    wallet: string | undefined,
+) {
+    return useIsFlagged(
+        flagKey('isFundingSponsorship', sponsorshipId || '', wallet || ''),
+    )
+}
+
+export function useFundSponsorship() {
+    const withFlag = useFlagger()
+
+    return useCallback(
+        ({ sponsorship, wallet }: { sponsorship: ParsedSponsorship; wallet: string }) =>
+            withFlag(flagKey('isFundingSponsorship', sponsorship.id, wallet), () =>
+                fundSponsorship(
+                    sponsorship.id,
+                    sponsorship.payoutPerDay.toString(),
+                    wallet,
+                ),
+            ),
+        [withFlag],
+    )
+}
+
+export function useIsJoiningSponsorshipAsOperator(
+    sponsorshipId: string | undefined,
+    operatorId: string | undefined,
+    streamId: string | undefined,
+) {
+    return useIsFlagged(
+        flagKey(
+            'isJoiningSponsorshipAsOperator',
+            sponsorshipId || '',
+            operatorId || '',
+            streamId || '',
+        ),
+    )
+}
+
+export function useJoinSponsorshipAsOperator() {
+    const withFlag = useFlagger()
+
+    return useCallback(
+        ({
+            sponsorship: { id: sponsorshipId, streamId },
+            operator,
+        }: {
+            sponsorship: ParsedSponsorship
+            operator: ParsedOperator
+        }) =>
+            withFlag(
+                flagKey(
+                    'isJoiningSponsorshipAsOperator',
+                    sponsorshipId,
+                    operator.id,
+                    streamId,
+                ),
+                () => joinSponsorshipAsOperator(sponsorshipId, operator, streamId),
+            ),
+        [withFlag],
+    )
+}
+
+export function useIsEditingSponsorshipFunding(
+    sponsorshipId: string | undefined,
+    operatorId: string | undefined,
+) {
+    return useIsFlagged(
+        flagKey('isEditingSponsorshipFunding', sponsorshipId || '', operatorId || ''),
+    )
+}
+
+export function useEditSponsorshipFunding() {
+    const withFlag = useFlagger()
+
+    return useCallback(
+        ({
+            sponsorship,
+            operator,
+        }: {
+            sponsorship: ParsedSponsorship
+            operator: ParsedOperator
+        }) =>
+            withFlag(
+                flagKey('isEditingSponsorshipFunding', sponsorship.id, operator.id),
+                () => editSponsorshipFunding(sponsorship, operator),
+            ),
+        [withFlag],
+    )
 }

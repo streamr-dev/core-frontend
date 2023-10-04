@@ -10,14 +10,31 @@ const Flag = {
         operatorId,
         wallet.toLowerCase(),
     ],
+    isCreatingSponsorship: (wallet: string) => [wallet.toLowerCase()],
+    isFundingSponsorship: (sponsorshipId: string, wallet: string) => [
+        sponsorshipId,
+        wallet.toLowerCase(),
+    ],
+    isJoiningSponsorshipAsOperator: (
+        sponsorshipId: string,
+        operatorId: string,
+        streamId: string,
+    ) => [sponsorshipId, operatorId, streamId],
+    isEditingSponsorshipFunding: (sponsorshipId: string, operatorId: string) => [
+        sponsorshipId,
+        operatorId,
+    ],
 }
 
 type Flag = typeof Flag
 
-type FlagKey = keyof Flag
+export function flagKey<K extends keyof typeof Flag>(
+    key: K,
+    ...params: Parameters<Flag[K]>
+): string {
+    const fn = Flag[key] as unknown as (...args: Parameters<Flag[K]>) => string
 
-export function flag<K extends FlagKey>(key: K, ...params: Parameters<Flag[K]>): string {
-    return JSON.stringify([key, ...Flag[key].apply(null, params as any)])
+    return JSON.stringify([key, ...fn(...params)])
 }
 
 type WrapFunction = <F extends () => any = () => void>(
@@ -32,14 +49,14 @@ const useFlagStore = create<{
     return {
         flags: {},
 
-        async wrap(flag, fn) {
-            if (get().flags[flag]) {
-                throw new Error(`Already processing ${flag}`)
+        async wrap(key, fn) {
+            if (get().flags[key]) {
+                throw new Error(`Already processing ${key}`)
             }
 
             set((store) =>
                 produce(store, ({ flags }) => {
-                    flags[flag] = true
+                    flags[key] = true
                 }),
             )
 
@@ -48,7 +65,7 @@ const useFlagStore = create<{
             } finally {
                 set((store) =>
                     produce(store, ({ flags }) => {
-                        delete flags[flag]
+                        delete flags[key]
                     }),
                 )
             }
@@ -56,10 +73,10 @@ const useFlagStore = create<{
     }
 })
 
-export function useIsFlagged(flag: string | undefined) {
+export function useIsFlagged(key: string | undefined) {
     const { flags } = useFlagStore()
 
-    return typeof flag === 'string' && !!flags[flag]
+    return typeof key === 'string' && !!flags[key]
 }
 
 export function useFlagger() {

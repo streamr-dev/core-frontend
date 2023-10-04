@@ -16,12 +16,7 @@ import StatGrid, { StatCell } from '~/components/StatGrid'
 import { Pad } from '~/components/ActionBars/OperatorActionBar'
 import { useOperatorForWallet } from '~/hooks/operators'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import {
-    editSponsorshipFunding,
-    fundSponsorship,
-    isSponsorshipFundedByOperator,
-    joinSponsorshipAsOperator,
-} from '~/utils/sponsorships'
+import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import {
     NetworkActionBarBackButtonAndTitle,
@@ -38,6 +33,15 @@ import {
     SingleElementPageActionBarTopPart,
 } from '~/components/ActionBars/NetworkActionBar.styles'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import {
+    useEditSponsorshipFunding,
+    useFundSponsorship,
+    useIsEditingSponsorshipFunding,
+    useIsFundingSponsorship,
+    useIsJoiningSponsorshipAsOperator,
+    useJoinSponsorshipAsOperator,
+} from '~/hooks/sponsorships'
+import { isRejectionReason } from '~/modals/BaseModal'
 
 export function SponsorshipActionBar({
     sponsorship,
@@ -59,6 +63,25 @@ export function SponsorshipActionBar({
     const fundedUntil = useMemo(
         () => moment(projectedInsolvencyAt * 1000).format('D MMM YYYY'),
         [projectedInsolvencyAt],
+    )
+
+    const fundSponsorship = useFundSponsorship()
+
+    const isFundingSponsorship = useIsFundingSponsorship(sponsorship.id, wallet)
+
+    const joinSponsorshipAsOperator = useJoinSponsorshipAsOperator()
+
+    const isJoiningSponsorshipAsOperator = useIsJoiningSponsorshipAsOperator(
+        sponsorship.id,
+        operator?.id,
+        sponsorship.streamId,
+    )
+
+    const editSponsorshipFunding = useEditSponsorshipFunding()
+
+    const isEditingSponsorshipFunding = useIsEditingSponsorshipFunding(
+        sponsorship.id,
+        operator?.id,
     )
 
     return (
@@ -149,20 +172,28 @@ export function SponsorshipActionBar({
                     </div>
                     <NetworkActionBarCTAs>
                         <Button
+                            waiting={isFundingSponsorship}
                             onClick={async () => {
                                 if (!wallet) {
                                     return
                                 }
 
-                                await fundSponsorship(
-                                    sponsorship.id,
-                                    sponsorship.payoutPerDay.toString(),
-                                    wallet,
-                                )
+                                try {
+                                    await fundSponsorship({
+                                        sponsorship,
+                                        wallet,
+                                    })
 
-                                await waitForGraphSync()
+                                    await waitForGraphSync()
 
-                                onChange()
+                                    onChange()
+                                } catch (e) {
+                                    if (isRejectionReason(e)) {
+                                        return
+                                    }
+
+                                    console.warn('Could not fund a Sponsorship', e)
+                                }
                             }}
                         >
                             Sponsor
@@ -170,16 +201,28 @@ export function SponsorshipActionBar({
                         {canEditStake ? (
                             <Button
                                 disabled={!operator}
+                                waiting={isEditingSponsorshipFunding}
                                 onClick={async () => {
                                     if (!operator) {
                                         return
                                     }
 
-                                    await editSponsorshipFunding(sponsorship, operator)
+                                    try {
+                                        await editSponsorshipFunding({
+                                            sponsorship,
+                                            operator,
+                                        })
 
-                                    await waitForGraphSync()
+                                        await waitForGraphSync()
 
-                                    onChange()
+                                        onChange()
+                                    } catch (e) {
+                                        if (isRejectionReason(e)) {
+                                            return
+                                        }
+
+                                        console.warn('Could not edit a Sponsorship', e)
+                                    }
                                 }}
                             >
                                 Edit stake
@@ -187,20 +230,31 @@ export function SponsorshipActionBar({
                         ) : (
                             <Button
                                 disabled={!operator}
+                                waiting={isJoiningSponsorshipAsOperator}
                                 onClick={async () => {
                                     if (!operator) {
                                         return
                                     }
 
-                                    await joinSponsorshipAsOperator(
-                                        sponsorship.id,
-                                        operator,
-                                        sponsorship.streamId,
-                                    )
+                                    try {
+                                        await joinSponsorshipAsOperator({
+                                            sponsorship,
+                                            operator,
+                                        })
 
-                                    await waitForGraphSync()
+                                        await waitForGraphSync()
 
-                                    onChange()
+                                        onChange()
+                                    } catch (e) {
+                                        if (isRejectionReason(e)) {
+                                            return
+                                        }
+
+                                        console.warn(
+                                            'Could not join a Sponsorship as an Operator',
+                                            e,
+                                        )
+                                    }
                                 }}
                             >
                                 Join as operator

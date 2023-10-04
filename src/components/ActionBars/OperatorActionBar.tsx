@@ -33,9 +33,13 @@ import {
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { getSelfDelegationFraction, getSpotApy } from '~/getters'
 import { ParsedOperator } from '~/parsers/OperatorParser'
-import { delegateFunds, undelegateFunds } from '~/utils/operators'
-import { useConfigFromChain } from '~/hooks/useConfigFromChain'
-import { flag, useFlagger, useIsFlagged } from '~/shared/stores/flags'
+import {
+    useDelegateFunds,
+    useIsDelegatingFundsToOperator,
+    useIsUndelegatingFundsToOperator,
+    useUndelegateFunds,
+} from '~/hooks/operators'
+import { isRejectionReason } from '~/modals/BaseModal'
 
 export const OperatorActionBar: FunctionComponent<{
     operator: ParsedOperator
@@ -55,17 +59,16 @@ export const OperatorActionBar: FunctionComponent<{
         return getSelfDelegationFraction(operator).multipliedBy(100)
     }, [operator])
 
-    const { minimumSelfDelegationFraction } = useConfigFromChain()
+    const isDelegatingFunds = useIsDelegatingFundsToOperator(operator.id, walletAddress)
 
-    const isDelegatingFunds = useIsFlagged(
-        flag('isDelegatingFunds', operator.id, walletAddress),
+    const delegateFunds = useDelegateFunds()
+
+    const isUndelegatingFunds = useIsUndelegatingFundsToOperator(
+        operator.id,
+        walletAddress,
     )
 
-    const isUndelegatingFunds = useIsFlagged(
-        flag('isUndelegatingFunds', operator.id, walletAddress),
-    )
-
-    const withFlag = useFlagger()
+    const undelegateFunds = useUndelegateFunds()
 
     return (
         <SingleElementPageActionBar>
@@ -200,26 +203,22 @@ export const OperatorActionBar: FunctionComponent<{
                     <NetworkActionBarCTAs>
                         <Button
                             onClick={async () => {
-                                if (!walletAddress) {
-                                    return
-                                }
-
                                 try {
-                                    await withFlag(
-                                        flag(
-                                            'isDelegatingFunds',
-                                            operator.id,
-                                            walletAddress,
-                                        ),
-                                        () =>
-                                            delegateFunds({
-                                                operator,
-                                                wallet: walletAddress,
-                                            }),
-                                    )
+                                    if (!walletAddress) {
+                                        return
+                                    }
+
+                                    await delegateFunds({
+                                        operator,
+                                        wallet: walletAddress,
+                                    })
 
                                     onDelegationChange()
                                 } catch (e) {
+                                    if (isRejectionReason(e)) {
+                                        return
+                                    }
+
                                     console.warn('Could not delegate funds', e)
                                 }
                             }}
@@ -235,22 +234,17 @@ export const OperatorActionBar: FunctionComponent<{
                                         return
                                     }
 
-                                    await withFlag(
-                                        flag(
-                                            'isUndelegatingFunds',
-                                            operator.id,
-                                            walletAddress,
-                                        ),
-                                        () =>
-                                            undelegateFunds({
-                                                minimumSelfDelegationFraction,
-                                                operator,
-                                                wallet: walletAddress,
-                                            }),
-                                    )
+                                    await undelegateFunds({
+                                        operator,
+                                        wallet: walletAddress,
+                                    })
 
                                     onDelegationChange()
                                 } catch (e) {
+                                    if (isRejectionReason(e)) {
+                                        return
+                                    }
+
                                     console.warn('Could not undelegate funds', e)
                                 }
                             }}
