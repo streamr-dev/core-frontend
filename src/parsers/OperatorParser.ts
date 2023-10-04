@@ -22,7 +22,7 @@ export const OperatorParser = z
         ),
         exchangeRate: z.string().transform(toBN),
         id: z.string(),
-        metadata: z
+        metadataJsonString: z
             .string()
             .optional()
             .transform((value = '{}') => {
@@ -129,8 +129,9 @@ export const OperatorParser = z
         ),
         totalStakeInSponsorshipsWei: z.string().transform(toBN),
     })
-    .transform(({ operatorsCutFraction, ...rest }) => ({
+    .transform(({ operatorsCutFraction, metadataJsonString: metadata, ...rest }) => ({
         ...rest,
+        metadata,
         operatorsCut: operatorsCutFraction.multipliedBy(100).toNumber(),
     }))
 
