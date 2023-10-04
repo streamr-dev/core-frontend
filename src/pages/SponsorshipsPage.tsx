@@ -10,10 +10,12 @@ import NetworkPageSegment, { SegmentGrid } from '~/components/NetworkPageSegment
 import { QueriedSponsorshipsTable } from '~/components/QueriedSponsorshipsTable'
 import {
     useAllSponsorshipsQuery,
+    useCreateSponsorship,
+    useIsCreatingSponsorshipForWallet,
     useSponsorshipsForCreatorQuery,
 } from '~/hooks/sponsorships'
-import { createSponsorship } from '~/utils/sponsorships'
 import { refetchQuery } from '~/utils'
+import { isRejectionReason } from '~/modals/BaseModal'
 
 const PAGE_SIZE = 20
 
@@ -62,6 +64,10 @@ export const SponsorshipsPage = () => {
         Object.values(tabQueryMap).forEach(refetchQuery)
     }
 
+    const createSponsorship = useCreateSponsorship()
+
+    const isCreatingSponsorship = useIsCreatingSponsorshipForWallet(wallet)
+
     return (
         <Layout>
             <NetworkHelmet title="Sponsorships" />
@@ -91,16 +97,25 @@ export const SponsorshipsPage = () => {
                 }
                 rightSideContent={
                     <Button
+                        waiting={isCreatingSponsorship}
                         onClick={async () => {
                             if (!wallet) {
                                 return
                             }
 
-                            await createSponsorship(wallet)
+                            try {
+                                await createSponsorship(wallet)
 
-                            await waitForGraphSync()
+                                await waitForGraphSync()
 
-                            refetchQueries()
+                                refetchQueries()
+                            } catch (e) {
+                                if (isRejectionReason(e)) {
+                                    return
+                                }
+
+                                console.warn('Could not create a Sponsorship', e)
+                            }
                         }}
                         disabled={!wallet}
                     >

@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { z } from 'zod'
 import { Operator } from '~/generated/gql/network'
 import {
@@ -17,9 +17,12 @@ import {
 } from '~/getters'
 import { isEthereumAddress } from '~/marketplace/utils/validate'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
+import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
 import { DelegationsStats, Delegation } from '~/types'
 import { toBN } from '~/utils/bn'
+import { delegateFunds, undelegateFunds } from '~/utils/operators'
 import { errorToast } from '~/utils/toast'
+import { useConfigFromChain } from './useConfigFromChain'
 
 export function useOperatorForWalletQuery(address = '') {
     const addr = address.toLowerCase()
@@ -325,4 +328,59 @@ export function useAllOperatorsQuery({
         staleTime: 60 * 1000, // 1 minute
         keepPreviousData: true,
     })
+}
+
+export function useIsDelegatingFundsToOperator(
+    operatorId: string | undefined,
+    wallet: string | undefined,
+) {
+    return useIsFlagged(flagKey('isDelegatingFunds', operatorId || '', wallet || ''))
+}
+
+/**
+ * Triggers funds delegation and raises an associated flag for the
+ * duration of the process.
+ */
+export function useDelegateFunds() {
+    const withFlag = useFlagger()
+
+    return useCallback(
+        ({ operator, wallet }: { operator: ParsedOperator; wallet: string }) =>
+            withFlag(flagKey('isDelegatingFunds', operator.id, wallet), () =>
+                delegateFunds({
+                    operator,
+                    wallet,
+                }),
+            ),
+        [withFlag],
+    )
+}
+
+export function useIsUndelegatingFundsToOperator(
+    operatorId: string | undefined,
+    wallet: string | undefined,
+) {
+    return useIsFlagged(flagKey('isUndelegatingFunds', operatorId || '', wallet || ''))
+}
+
+/**
+ * Triggers funds undelegation and raises an associated flag for the
+ * duration of the process.
+ */
+export function useUndelegateFunds() {
+    const withFlag = useFlagger()
+
+    const { minimumSelfDelegationFraction } = useConfigFromChain()
+
+    return useCallback(
+        ({ operator, wallet }: { operator: ParsedOperator; wallet: string }) =>
+            withFlag(flagKey('isUndelegatingFunds', operator.id, wallet), () =>
+                undelegateFunds({
+                    minimumSelfDelegationFraction,
+                    operator,
+                    wallet,
+                }),
+            ),
+        [minimumSelfDelegationFraction, withFlag],
+    )
 }

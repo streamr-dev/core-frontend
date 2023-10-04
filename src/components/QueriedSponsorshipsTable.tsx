@@ -11,12 +11,13 @@ import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { useOperatorForWallet } from '~/hooks/operators'
 import { LoadMoreButton } from '~/components/LoadMore'
 import routes from '~/routes'
+import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
 import {
-    editSponsorshipFunding,
-    fundSponsorship,
-    isSponsorshipFundedByOperator,
-    joinSponsorshipAsOperator,
-} from '~/utils/sponsorships'
+    useEditSponsorshipFunding,
+    useFundSponsorship,
+    useJoinSponsorshipAsOperator,
+} from '~/hooks/sponsorships'
+import { isRejectionReason } from '~/modals/BaseModal'
 import { StreamInfoCell } from './NetworkUtils'
 
 interface Props {
@@ -41,6 +42,12 @@ export function QueriedSponsorshipsTable({
     const wallet = useWalletAccount()
 
     const operator = useOperatorForWallet(wallet)
+
+    const fundSponsorship = useFundSponsorship()
+
+    const joinSponsorshipAsOperator = useJoinSponsorshipAsOperator()
+
+    const editSponsorshipFunding = useEditSponsorshipFunding()
 
     return (
         <>
@@ -110,15 +117,22 @@ export function QueriedSponsorshipsTable({
                                 return
                             }
 
-                            await fundSponsorship(
-                                element.id,
-                                element.payoutPerDay.toString(),
-                                wallet,
-                            )
+                            try {
+                                await fundSponsorship({
+                                    sponsorship: element,
+                                    wallet,
+                                })
 
-                            await waitForGraphSync()
+                                await waitForGraphSync()
 
-                            await onSponsorshipFunded?.()
+                                await onSponsorshipFunded?.()
+                            } catch (e) {
+                                if (isRejectionReason(e)) {
+                                    return
+                                }
+
+                                console.warn('Could not fund a Sponsorship', e)
+                            }
                         },
                     },
                     (element) => {
@@ -130,11 +144,22 @@ export function QueriedSponsorshipsTable({
                                         return
                                     }
 
-                                    await editSponsorshipFunding(element, operator)
+                                    try {
+                                        await editSponsorshipFunding({
+                                            sponsorship: element,
+                                            operator,
+                                        })
 
-                                    await waitForGraphSync()
+                                        await waitForGraphSync()
 
-                                    await onStakeEdited?.()
+                                        await onStakeEdited?.()
+                                    } catch (e) {
+                                        if (isRejectionReason(e)) {
+                                            return
+                                        }
+
+                                        console.warn('Could not edit a Sponsorship', e)
+                                    }
                                 },
                             }
                         }
@@ -147,15 +172,25 @@ export function QueriedSponsorshipsTable({
                                     return
                                 }
 
-                                await joinSponsorshipAsOperator(
-                                    element.id,
-                                    operator,
-                                    element.streamId,
-                                )
+                                try {
+                                    await joinSponsorshipAsOperator({
+                                        sponsorship: element,
+                                        operator,
+                                    })
 
-                                await waitForGraphSync()
+                                    await waitForGraphSync()
 
-                                await onSponsorshipJoined?.()
+                                    await onSponsorshipJoined?.()
+                                } catch (e) {
+                                    if (isRejectionReason(e)) {
+                                        return
+                                    }
+
+                                    console.warn(
+                                        'Could not join a Sponsorship as an Operator',
+                                        e,
+                                    )
+                                }
                             },
                         }
                     },
@@ -168,7 +203,7 @@ export function QueriedSponsorshipsTable({
                 {query.hasNextPage && (
                     <LoadMoreButton
                         disabled={query.isLoading || query.isFetching}
-                        onClick={() => query.fetchNextPage()}
+                        onClick={() => void query.fetchNextPage()}
                         kind="primary2"
                     >
                         Load more

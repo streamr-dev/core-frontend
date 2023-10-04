@@ -280,7 +280,9 @@ export const SingleOperatorPage = () => {
                                         </DelegationCell>
                                     </>
                                 ) : (
-                                    <>Connect your wallet to show your delegation</>
+                                    <Pad>
+                                        Connect your wallet to show your delegation.
+                                    </Pad>
                                 )}
                             </NetworkPageSegment>
                         </ChartGrid>

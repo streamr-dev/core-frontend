@@ -15,7 +15,6 @@ import {
     reduceStakeOnSponsorship,
     stakeOnSponsorship,
 } from '~/services/sponsorships'
-import { isRejectionReason } from '~/modals/BaseModal'
 import EditStakeModal from '~/modals/EditStakeModal'
 import { toBN } from '~/utils/bn'
 import { confirm } from '~/getters/confirm'
@@ -65,21 +64,15 @@ export async function fundSponsorship(
 
     const balance = (await getBalanceForSponsorship(wallet)).toString()
 
-    try {
-        await fundSponsorshipModal.pop({
-            decimals,
-            tokenSymbol,
-            balance,
-            payoutPerDay,
-            async onSubmit(value) {
-                await fundSponsorshipService(sponsorshipId, value)
-            },
-        })
-    } catch (e) {
-        if (!isRejectionReason(e)) {
-            throw e
-        }
-    }
+    await fundSponsorshipModal.pop({
+        decimals,
+        tokenSymbol,
+        balance,
+        payoutPerDay,
+        async onSubmit(value) {
+            await fundSponsorshipService(sponsorshipId, value)
+        },
+    })
 }
 
 const editStakeModal = toaster(EditStakeModal, Layer.Modal)
@@ -108,65 +101,59 @@ export async function editSponsorshipFunding(
         .add(sponsorship.minimumStakingPeriodSeconds, 'seconds')
         .format('YYYY-MM-DD HH:mm')
 
-    try {
-        await editStakeModal.pop({
-            currentStake: stake.amount.toString(),
-            operatorBalance: operator.dataTokenBalanceWei.toString(),
-            tokenSymbol,
-            decimals,
-            leavePenalty: leavePenaltyWei.toString(),
-            minLeaveDate,
-            hasUndelegationQueue: operator.queueEntries.length > 0,
-            async onSubmit(amount, difference, forceUnstake = false) {
-                const differenceBN = toBN(difference)
+    await editStakeModal.pop({
+        currentStake: stake.amount.toString(),
+        operatorBalance: operator.dataTokenBalanceWei.toString(),
+        tokenSymbol,
+        decimals,
+        leavePenalty: leavePenaltyWei.toString(),
+        minLeaveDate,
+        hasUndelegationQueue: operator.queueEntries.length > 0,
+        async onSubmit(amount, difference, forceUnstake = false) {
+            const differenceBN = toBN(difference)
 
-                if (differenceBN.isGreaterThanOrEqualTo(0)) {
-                    return void (await stakeOnSponsorship(
-                        sponsorship.id,
-                        difference,
-                        operator.id,
-                        'Increase stake on sponsorship',
-                    ))
-                }
+            if (differenceBN.isGreaterThanOrEqualTo(0)) {
+                return void (await stakeOnSponsorship(
+                    sponsorship.id,
+                    difference,
+                    operator.id,
+                    'Increase stake on sponsorship',
+                ))
+            }
 
-                if (!forceUnstake) {
-                    return void (await reduceStakeOnSponsorship(
-                        sponsorship.id,
-                        amount,
-                        operator.id,
-                        amount === '0'
-                            ? 'Unstake from sponsorship'
-                            : 'Reduce stake on sponsorship',
-                    ))
-                }
+            if (!forceUnstake) {
+                return void (await reduceStakeOnSponsorship(
+                    sponsorship.id,
+                    amount,
+                    operator.id,
+                    amount === '0'
+                        ? 'Unstake from sponsorship'
+                        : 'Reduce stake on sponsorship',
+                ))
+            }
 
-                if (
-                    await confirm({
-                        title: 'Your stake will be slashed',
-                        description: (
-                            <>
-                                Your minimum staking period is still ongoing and ends on
-                                {minLeaveDate}. If you unstake now, you will lose
-                                {fromDecimals(leavePenaltyWei, decimals).toString()}
-                                {tokenSymbol}
-                            </>
-                        ),
-                        proceedLabel: 'Proceed anyway',
-                        cancelLabel: 'Cancel',
-                    })
-                ) {
-                    return void (await forceUnstakeFromSponsorship(
-                        sponsorship.id,
-                        operator.id,
-                    ))
-                }
-            },
-        })
-    } catch (e) {
-        if (!isRejectionReason(e)) {
-            throw e
-        }
-    }
+            if (
+                await confirm({
+                    title: 'Your stake will be slashed',
+                    description: (
+                        <>
+                            Your minimum staking period is still ongoing and ends on
+                            {minLeaveDate}. If you unstake now, you will lose
+                            {fromDecimals(leavePenaltyWei, decimals).toString()}
+                            {tokenSymbol}
+                        </>
+                    ),
+                    proceedLabel: 'Proceed anyway',
+                    cancelLabel: 'Cancel',
+                })
+            ) {
+                return void (await forceUnstakeFromSponsorship(
+                    sponsorship.id,
+                    operator.id,
+                ))
+            }
+        },
+    })
 }
 
 /**
@@ -196,23 +183,17 @@ export async function joinSponsorshipAsOperator(
 ) {
     const { symbol: tokenSymbol, decimals } = await getSponsorshipTokenInfo()
 
-    try {
-        await joinSponsorshipModal.pop({
-            streamId,
-            operatorId: operator.id,
-            hasUndelegationQueue: operator.queueEntries.length > 0,
-            operatorBalance: operator.dataTokenBalanceWei.toString(),
-            tokenSymbol,
-            decimals,
-            async onSubmit(amount) {
-                await stakeOnSponsorship(sponsorshipId, amount, operator.id)
-            },
-        })
-    } catch (e) {
-        if (!isRejectionReason(e)) {
-            throw e
-        }
-    }
+    await joinSponsorshipModal.pop({
+        streamId,
+        operatorId: operator.id,
+        hasUndelegationQueue: operator.queueEntries.length > 0,
+        operatorBalance: operator.dataTokenBalanceWei.toString(),
+        tokenSymbol,
+        decimals,
+        async onSubmit(amount) {
+            await stakeOnSponsorship(sponsorshipId, amount, operator.id)
+        },
+    })
 }
 
 const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
