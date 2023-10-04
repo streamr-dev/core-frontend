@@ -1,5 +1,5 @@
 import React, { FunctionComponent, ReactElement, ReactNode } from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import ReactSelect, { components } from 'react-select'
 import cx from 'classnames'
 import SvgIcon, { SvgIconProps } from '~/shared/components/SvgIcon'

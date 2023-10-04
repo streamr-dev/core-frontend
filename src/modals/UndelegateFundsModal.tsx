@@ -13,7 +13,7 @@ import FormModal, {
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
 import { COLORS } from '~/shared/utils/styled'
-import { BN, BNish, toBN } from '~/utils/bn'
+import { BN, toBN } from '~/utils/bn'
 import { toDecimals } from '~/marketplace/utils/math'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {

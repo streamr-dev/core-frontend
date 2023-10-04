@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import ImageFilePicker from '~/components/ImageFilePicker'
-import { COLORS, DESKTOP, TABLET } from '~/shared/utils/styled'
+import { COLORS, DESKTOP } from '~/shared/utils/styled'
 import PngIcon from '~/shared/components/PngIcon'
 
 const Radius = 16

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback } from 'react'
 import cx from 'classnames'
 import { COLORS } from '~/shared/utils/styled'
 import styles from './slider.pcss'

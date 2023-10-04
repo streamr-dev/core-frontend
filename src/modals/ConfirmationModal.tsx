@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React, { FunctionComponent, ReactNode } from 'react'
 import styled from 'styled-components'
 import BaseModal, { BaseModalProps, RejectionReason } from '~/modals/BaseModal'
 import SvgIcon from '~/shared/components/SvgIcon'
@@ -6,7 +6,7 @@ import { COLORS, MEDIUM } from '~/shared/utils/styled'
 
 export type ConfirmationModalProps = {
     title: string
-    description: string
+    description: ReactNode
     proceedLabel: string
     cancelLabel: string
 }

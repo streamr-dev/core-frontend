@@ -5,7 +5,7 @@ import { produce } from 'immer'
 import { create } from 'zustand'
 import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
 import { isMessagedObject } from '~/utils'
-import address0 from '~/utils/address0'
+import { address0 } from '~/consts'
 import { useCurrentDraft } from './streamEditor'
 import { useWalletAccount } from './wallet'
 

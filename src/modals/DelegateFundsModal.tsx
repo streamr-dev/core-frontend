@@ -14,13 +14,10 @@ import Label from '~/shared/components/Ui/Label'
 import { BN, toBN } from '~/utils/bn'
 import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
 import { Alert } from '~/components/Alert'
-import { OperatorElement } from '~/types/operator'
-import {
-    getDelegationAmountForAddress,
-    getOwnerSelfDelegationPercentage,
-} from '~/utils/delegation'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { useConfigFromChain } from '~/hooks/useConfigFromChain'
+import { getSelfDelegatedAmount, getSelfDelegationFraction } from '~/getters'
+import { ParsedOperator } from '~/parsers/OperatorParser'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onResolve?: (amount: string) => void
@@ -30,7 +27,7 @@ interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     decimals: number
     delegatedTotal?: string
     amount?: string
-    operator: OperatorElement
+    operator: ParsedOperator
 }
 
 export default function DelegateFundsModal({
@@ -71,7 +68,7 @@ export default function DelegateFundsModal({
         if (operator.owner === walletAddress || !minimumSelfDelegationFraction) {
             return false
         }
-        const percentage = getOwnerSelfDelegationPercentage(operator)
+        const percentage = getSelfDelegationFraction(operator)
         return percentage.isLessThan(toBN(minimumSelfDelegationFraction))
     }, [operator, minimumSelfDelegationFraction, walletAddress])
 
@@ -79,7 +76,9 @@ export default function DelegateFundsModal({
         if (operator.owner === walletAddress || !minimumSelfDelegationFraction) {
             return false
         }
-        const percentage = getOwnerSelfDelegationPercentage(operator, finalValueDecimals)
+        const percentage = getSelfDelegationFraction(operator, {
+            offset: finalValueDecimals,
+        })
         return percentage.isLessThan(toBN(minimumSelfDelegationFraction))
     }, [operator, minimumSelfDelegationFraction, walletAddress, finalValueDecimals])
 
@@ -90,7 +89,7 @@ export default function DelegateFundsModal({
         if (!minimumSelfDelegationFraction) {
             return toBN(0)
         }
-        const operatorSelfStake = getDelegationAmountForAddress(operator.owner, operator)
+        const operatorSelfStake = getSelfDelegatedAmount(operator)
         return fromDecimals(
             operatorSelfStake
                 .dividedBy(fromDecimals(minimumSelfDelegationFraction, 18))

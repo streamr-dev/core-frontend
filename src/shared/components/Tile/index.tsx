@@ -48,7 +48,7 @@ const UnstyledThumbnail = ({ src, skeletonize, alt, ...props }: ThumbnailProps) 
     ) : (
         <Image
             {...props}
-            alt={alt}
+            alt={alt || undefined}
             src={src}
             loader={<Image {...props} as={Skeleton} block />}
             unloader={
@@ -212,8 +212,8 @@ type ProductTileProps = {
 
 const ProductTile = ({
     actions,
-    deployed,
-    published,
+    deployed: _deployed,
+    published: _published,
     numMembers,
     product,
     showDataUnionBadge,

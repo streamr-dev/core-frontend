@@ -11,8 +11,8 @@ type Props = {
 const UnstyledSkeleton: React.FunctionComponent<Props> = ({
     disabled,
     children,
-    width,
-    block,
+    width: _width,
+    block: _block,
     ...props
 }: Props) => (disabled ? children || null : ((<span {...props}>&zwnj;</span>) as any))
 

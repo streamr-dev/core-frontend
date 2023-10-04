@@ -5,7 +5,9 @@ import { getCustomTokenBalance } from '~/marketplace/utils/web3'
 
 export const getBalance = async (address: string, tokenSymbol = 'DATA'): Promise<BN> => {
     const chainId = await getChainId()
+
     const chainConfig = getConfigForChain(chainId)
+
     return await getCustomTokenBalance(
         chainConfig.contracts[tokenSymbol],
         address,

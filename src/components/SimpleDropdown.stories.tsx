@@ -1,8 +1,5 @@
 import React from 'react'
 import { Meta } from '@storybook/react'
-import WithInputActions from '~/components/WithInputActions'
-import PopoverItem from '~/shared/components/Popover/PopoverItem'
-import Text from '~/shared/components/Ui/Text'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 
 export const Basic = () => (

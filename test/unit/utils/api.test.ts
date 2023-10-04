@@ -11,10 +11,6 @@ describe('api utils', () => {
         test: true,
         test2: 'test',
     }
-    const error = {
-        code: 1337,
-        message: 'I failed :(',
-    }
     describe('post', () => {
         it('has correct properties', async () => {
             moxios.wait(() => {

@@ -7,7 +7,7 @@ import {
     useDraftId,
     useStreamEditorStore,
 } from '~/shared/stores/streamEditor'
-import address0 from '~/utils/address0'
+import { address0 } from '~/consts'
 import NewStreamPermissionsModal from '~/modals/NewStreamPermissionsModal'
 import { isAbandonment } from '~/modals/ProjectModal'
 import { Layer } from '~/utils/Layer'

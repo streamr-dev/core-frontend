@@ -110,12 +110,6 @@ export interface SmartContractProjectCreate extends SmartContractProject {
     isPublicPurchasable: boolean
 }
 
-type SmartContractPaymentDetails = {
-    beneficiary: string
-    pricePerSecond: string
-    pricingTokenAddress: string
-}
-
 const mapProject = (project: any): TheGraphProject => {
     let metadata = {}
 
@@ -452,9 +446,6 @@ export async function deployDataUnionContract(
             chainId,
             adminFee,
         })
-            .onTransactionHash((contractAddress) => {
-                // deployDataUnion() returns the calculated contract address as the tx hash
-            })
             .onTransactionComplete(({ contractAddress }) => {
                 if (contractAddress == null) {
                     reject(new Error('DU contract deploy did not return an address!'))

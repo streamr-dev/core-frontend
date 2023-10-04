@@ -8,7 +8,7 @@ import { BNish, toBN } from '~/utils/bn'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { toastedOperation } from '~/utils/toastedOperation'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
-import { TokenAndBalanceForSponsorship } from '~/getters/getTokenAndBalanceForSponsorship'
+import { TokenAndBalanceForSponsorship } from '~/types/sponsorship'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import { saveLastBlockNumber } from '~/getters/waitForGraphSync'
 

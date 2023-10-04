@@ -7,20 +7,12 @@ import useCopy from '~/shared/hooks/useCopy'
 import SvgIcon from '~/shared/components/SvgIcon'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import routes from '~/routes'
-import { OperatorElement } from '~/types/operator'
-import { calculateOperatorSpotAPY } from '~/utils/apy'
-import { getDelegationAmountForAddress } from '~/utils/delegation'
 import { fromAtto } from '~/marketplace/utils/math'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { BN } from '~/utils/bn'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import Spinner from '~/shared/components/Spinner'
 import { getBlockExplorerUrl } from '~/getters/getBlockExplorerUrl'
-import useTokenInfo from '~/hooks/useTokenInfo'
-import { defaultChainConfig } from '~/getters/getChainConfig'
-import getCoreConfig from '~/getters/getCoreConfig'
-import { useDelegateAndUndelegateFunds } from '~/hooks/useDelegateAndUndelegateFunds'
 import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
 import { TABLET } from '~/shared/utils/styled'
@@ -37,34 +29,32 @@ import {
     SingleElementPageActionBar,
     SingleElementPageActionBarContainer,
     SingleElementPageActionBarTopPart,
-} from './NetworkActionBar.styles'
+} from '~/components/ActionBars/NetworkActionBar.styles'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { getSelfDelegationFraction, getSpotApy } from '~/getters'
+import { ParsedOperator } from '~/parsers/OperatorParser'
+import { delegateFunds, undelegateFunds } from '~/utils/operators'
+import { useConfigFromChain } from '~/hooks/useConfigFromChain'
 
 export const OperatorActionBar: FunctionComponent<{
-    operator: OperatorElement
-    handleEdit: (operator: OperatorElement) => void
+    operator: ParsedOperator
+    handleEdit: (operator: ParsedOperator) => void
     onDelegationChange: () => void
 }> = ({ operator, handleEdit, onDelegationChange }) => {
     const { copy } = useCopy()
+
     const { count: liveNodeCount, isLoading: liveNodeCountIsLoading } =
         useOperatorLiveNodes(operator.id)
+
     const walletAddress = useWalletAccount()
+
     const canEdit = !!walletAddress && walletAddress == operator.owner
 
     const ownerDelegationPercentage = useMemo(() => {
-        const stake = getDelegationAmountForAddress(operator.owner, operator)
-        if (stake.isEqualTo(BN(0)) || operator.valueWithoutEarnings.isEqualTo(BN(0))) {
-            return BN(0)
-        }
-        return stake.dividedBy(operator.valueWithoutEarnings).multipliedBy(100)
+        return getSelfDelegationFraction(operator).multipliedBy(100)
     }, [operator])
 
-    const { delegateFunds, undelegateFunds } = useDelegateAndUndelegateFunds()
-
-    const tokenInfo = useTokenInfo(
-        defaultChainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
-        defaultChainConfig.id,
-    )
-    const tokenSymbol = tokenInfo?.symbol || 'DATA'
+    const { minimumSelfDelegationFraction } = useConfigFromChain()
 
     return (
         <SingleElementPageActionBar>
@@ -114,7 +104,8 @@ export const OperatorActionBar: FunctionComponent<{
                                         )}
                                         Operators secure and stabilize the Streamr Network
                                         by running nodes and contributing bandwidth. In
-                                        exchange, they earn {tokenSymbol} tokens from
+                                        exchange, they earn{' '}
+                                        <SponsorshipPaymentTokenName /> tokens from
                                         sponsorships they stake on. The stake guarantees
                                         that the operators do the work, otherwise they get
                                         slashed. Learn more{' '}
@@ -161,7 +152,6 @@ export const OperatorActionBar: FunctionComponent<{
                                     <SvgIcon name="externalLink" />
                                 </a>
                             </NetworkActionBarInfoButton>
-
                             <NetworkActionBarInfoButton>
                                 <span>
                                     Contract <strong>{truncate(operator.id)}</strong>
@@ -199,11 +189,19 @@ export const OperatorActionBar: FunctionComponent<{
                     <NetworkActionBarCTAs>
                         <Button
                             onClick={async () => {
+                                if (!walletAddress) {
+                                    return
+                                }
+
                                 try {
-                                    await delegateFunds(operator)
+                                    await delegateFunds({
+                                        operator,
+                                        wallet: walletAddress,
+                                    })
+
                                     onDelegationChange()
                                 } catch (e) {
-                                    console.warn(e)
+                                    console.warn('Could not delegate funds', e)
                                 }
                             }}
                             disabled={walletAddress == null}
@@ -213,10 +211,19 @@ export const OperatorActionBar: FunctionComponent<{
                         <Button
                             onClick={async () => {
                                 try {
-                                    await undelegateFunds(operator)
+                                    if (!walletAddress) {
+                                        return
+                                    }
+
+                                    await undelegateFunds({
+                                        minimumSelfDelegationFraction,
+                                        operator,
+                                        wallet: walletAddress,
+                                    })
+
                                     onDelegationChange()
                                 } catch (e) {
-                                    console.warn(e)
+                                    console.warn('Could not undelegate funds', e)
                                 }
                             }}
                             disabled={walletAddress == null}
@@ -247,10 +254,10 @@ export const OperatorActionBar: FunctionComponent<{
                 <Pad>
                     <StatGrid>
                         <StatCell label="Operator's cut">
-                            {operator.operatorsCutFraction.toString()}%
+                            {operator.operatorsCut}%
                         </StatCell>
                         <StatCell label="Spot APY">
-                            {calculateOperatorSpotAPY(operator).toFixed(0)}%
+                            {(getSpotApy(operator) * 100).toFixed(0)}%
                         </StatCell>
                         <StatCell label="Cumulative earnings">
                             {fromAtto(

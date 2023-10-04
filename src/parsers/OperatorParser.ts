@@ -7,6 +7,7 @@ export const OperatorParser = z
     .object({
         cumulativeOperatorsCutWei: z.string().transform(toBN),
         cumulativeProfitsWei: z.string().transform(toBN),
+        dataTokenBalanceWei: z.string().transform(toBN),
         delegatorCount: z.number(),
         delegators: z.array(
             z
@@ -21,7 +22,7 @@ export const OperatorParser = z
         ),
         exchangeRate: z.string().transform(toBN),
         id: z.string(),
-        metadata: z
+        metadataJsonString: z
             .string()
             .optional()
             .transform((value = '{}') => {
@@ -60,7 +61,7 @@ export const OperatorParser = z
                         }
                     }),
             ),
-        nodes: z.array(z.unknown()), // @TODO If needed!
+        nodes: z.array(z.string()),
         operatorsCutFraction: z.string().transform(fromAtto),
         owner: z.string(),
         operatorTokenTotalSupplyWei: z.string().transform(toBN),
@@ -79,7 +80,7 @@ export const OperatorParser = z
             z
                 .object({
                     amount: z.string().transform(toBN),
-                    data: z.coerce.number(),
+                    date: z.coerce.number(),
                     sponsorship: z.object({
                         stream: z.object({
                             id: z.string(),
@@ -103,28 +104,34 @@ export const OperatorParser = z
                     sponsorship: z.object({
                         spotAPY: z.string().transform(toBN),
                         projectedInsolvency: z.coerce.number(),
+                        stream: z.object({
+                            id: z.string(),
+                        }),
                     }),
                 })
                 .transform(
                     ({
                         operator: { id: operatorId },
                         sponsorship: {
-                            spotAPY,
                             projectedInsolvency: projectedInsolvencyAt,
+                            spotAPY,
+                            stream: { id: streamId },
                         },
                         ...rest
                     }) => ({
                         ...rest,
                         operatorId,
-                        spotAPY,
                         projectedInsolvencyAt,
+                        spotAPY,
+                        streamId,
                     }),
                 ),
         ),
         totalStakeInSponsorshipsWei: z.string().transform(toBN),
     })
-    .transform(({ operatorsCutFraction, ...rest }) => ({
+    .transform(({ operatorsCutFraction, metadataJsonString: metadata, ...rest }) => ({
         ...rest,
+        metadata,
         operatorsCut: operatorsCutFraction.multipliedBy(100).toNumber(),
     }))
 

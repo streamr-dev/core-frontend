@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import styled, { createGlobalStyle, css } from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import Nav from '~/components/Nav'
 import Footer from '~/components/Footer'
 import useScrollToTop from '~/shared/hooks/useScrollToTop'

@@ -8,7 +8,7 @@ import {
     useDraftId,
     useStreamEditorStore,
 } from '~/shared/stores/streamEditor'
-import address0 from '~/utils/address0'
+import { address0 } from '~/consts'
 
 const Container = styled.div`
     background: #f1f1f1;

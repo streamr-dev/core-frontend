@@ -123,7 +123,10 @@ export const LoadMoreButton = styled(Button)`
 
 const UnstyledProjects = ({
     projects,
-    type,
+    /**
+     * @todo We don't seem to use `type` no more, eh? Hard to tell.
+     */
+    type: _type,
     error,
     isFetching,
     loadProducts,

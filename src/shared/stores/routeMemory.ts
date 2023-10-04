@@ -34,7 +34,7 @@ interface Store {
     >
 }
 
-const useRouteMemoryStore = create<Store>((set, get) => {
+const useRouteMemoryStore = create<Store>((set) => {
     return {
         items: {},
 

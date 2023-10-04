@@ -1,15 +1,8 @@
-import React, {
-    useCallback,
-    useMemo,
-    useEffect,
-    useState,
-    FunctionComponent,
-} from 'react'
+import React, { useCallback, useMemo, useEffect, useState } from 'react'
 import { Stream, StreamID } from 'streamr-client'
 import styled from 'styled-components'
 import { TABLET } from '~/shared/utils/styled'
 import StreamTable, { StreamTableLight } from '~/shared/components/StreamTable'
-import { Project } from '~/marketplace/types/project-types'
 import { getStreamsFromIndexer, IndexerStream } from '~/services/streams'
 import useLoadProductStreamsCallback from '~/marketplace/containers/ProductController/useLoadProductStreamsCallback'
 

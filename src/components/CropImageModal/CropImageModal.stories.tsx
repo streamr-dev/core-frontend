@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Container, toaster } from 'toasterhea'
 import styled from 'styled-components'
 import { Meta } from '@storybook/react'

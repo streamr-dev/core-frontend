@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo, useReducer, useRef } from 'react'
+import { useState, useCallback, useEffect, useReducer } from 'react'
 import copyToClipboard from 'copy-to-clipboard'
 import { successToast } from '~/utils/toast'
 

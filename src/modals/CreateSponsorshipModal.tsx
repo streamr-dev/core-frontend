@@ -35,10 +35,8 @@ interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onResolve?: (formData: CreateSponsorshipForm) => void
     onSubmit: (formData: CreateSponsorshipForm) => Promise<void>
     balance: string
-    formData?: Partial<CreateSponsorshipForm>
     tokenSymbol: string
     tokenDecimals: number
-    streamId?: string
 }
 
 export default function CreateSponsorshipModal({
@@ -47,10 +45,8 @@ export default function CreateSponsorshipModal({
     onResolve,
     onSubmit,
     balance: balanceProp = '0',
-    formData: formDataProp = {},
     tokenSymbol,
     tokenDecimals,
-    streamId: streamIdProp,
     ...props
 }: Props) {
     const isMounted = useIsMounted()
@@ -128,6 +124,11 @@ export default function CreateSponsorshipModal({
                 }
             })
             .catch((e) => {
+                console.warn(
+                    'Could not load the data from the chain. Please try again later.',
+                    e,
+                )
+
                 errorToast({
                     title: 'Could not load the data from the chain. Please try again later.',
                 })

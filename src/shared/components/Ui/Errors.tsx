@@ -15,9 +15,12 @@ const DefaultTheme = {
     color: ERROR,
 }
 
-const UnstyledErrors = ({ children, theme, overlap, ...props }: Props) => (
-    <div {...props}>{children || <Fragment>&zwnj;</Fragment>}</div>
-)
+const UnstyledErrors = ({
+    children,
+    theme: _theme,
+    overlap: _overlap,
+    ...props
+}: Props) => <div {...props}>{children || <Fragment>&zwnj;</Fragment>}</div>
 
 const Errors = styled(UnstyledErrors)`
     color: ${({ theme }) => theme.color};

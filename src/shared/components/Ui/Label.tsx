@@ -1,4 +1,4 @@
-import React, { FunctionComponent, HTMLProps, ReactNode } from 'react'
+import React, { HTMLProps } from 'react'
 import styled from 'styled-components'
 import * as Colors from '~/shared/components/Ui/StateColors'
 import { MEDIUM } from '~/shared/utils/styled'

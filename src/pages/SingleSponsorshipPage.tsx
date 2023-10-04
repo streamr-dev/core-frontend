@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
-import { useSponsorship } from '~/hooks/useSponsorship'
 import { NoData } from '~/shared/components/NoData'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { LAPTOP } from '~/shared/utils/styled'
@@ -26,15 +25,19 @@ import NetworkChartDisplay from '~/components/NetworkChartDisplay'
 import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
+import { useSponsorshipQuery } from '~/hooks/sponsorships'
 
 export const SingleSponsorshipPage = () => {
-    const sponsorshipId = useParams().id
-    const sponsorshipQuery = useSponsorship(sponsorshipId || '')
-    const sponsorship = sponsorshipQuery.data
+    const sponsorshipId = useParams().id || ''
+
+    const sponsorshipQuery = useSponsorshipQuery(sponsorshipId)
+
+    const sponsorship = sponsorshipQuery.data || null
 
     const [selectedDataSource, setSelectedDataSource] = useState<
         'amountStaked' | 'numberOfOperators' | 'apy'
     >('amountStaked')
+
     const [selectedPeriod, setSelectedPeriod] = useState<ChartPeriod>(
         ChartPeriod.SevenDays,
     )
@@ -48,16 +51,23 @@ export const SingleSponsorshipPage = () => {
         ],
         queryFn: async () => {
             try {
+                if (!sponsorshipId) {
+                    return []
+                }
+
                 return await getSponsorshipStats(
-                    sponsorshipId as string,
-                    selectedPeriod as ChartPeriod,
+                    sponsorshipId,
+                    selectedPeriod,
                     selectedDataSource,
                     false, // ignore today
                 )
             } catch (e) {
+                console.warn('Could not load sponsorship chart data', e)
+
                 errorToast({ title: 'Could not load sponsorship chart data' })
-                return []
             }
+
+            return []
         },
     })
 

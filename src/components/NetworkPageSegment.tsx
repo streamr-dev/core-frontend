@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import ColoredBox from '~/components/ColoredBox'
 import { COLORS, MEDIUM, TABLET } from '~/shared/utils/styled'
 

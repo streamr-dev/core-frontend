@@ -1,6 +1,5 @@
 import moment from 'moment-timezone'
 import * as all from '~/marketplace/utils/time'
-import { toBN } from '~/utils/bn'
 
 describe('time utils', () => {
     describe('toSeconds', () => {

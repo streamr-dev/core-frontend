@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
-import { Stream, StreamID } from 'streamr-client'
+import { StreamID } from 'streamr-client'
 import { Link } from 'react-router-dom'
 
 import LoadMore from '~/marketplace/components/LoadMore'
@@ -185,7 +185,7 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
         (streams: Record<StreamId, boolean>) => {
             if (onSelectionChange) {
                 const selectedStreamsArray = Object.entries(streams)
-                    .filter(([streamId, isSelected]) => isSelected)
+                    .filter(([, isSelected]) => isSelected)
                     .map(([streamId]) => streamId)
                 onSelectionChange(selectedStreamsArray)
             }

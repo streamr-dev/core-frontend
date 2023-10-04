@@ -1,4 +1,4 @@
-import React, { Fragment, FunctionComponent, useState } from 'react'
+import React, { Fragment, FunctionComponent, HTMLAttributes, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import { useLocation, Link } from 'react-router-dom'
@@ -478,9 +478,7 @@ const MobileNav = styled(UnstyledMobileNav)`
     }
 `
 
-const UnstyledContainer: FunctionComponent = (props) => <div {...props} />
-
-export const NavContainer = styled(UnstyledContainer)`
+export const NavContainer = styled.div`
     background-color: #ffffff;
     color: #323232;
 
@@ -535,16 +533,18 @@ export const NavContainer = styled(UnstyledContainer)`
     }
 `
 
-const N: FunctionComponent<{ children?: any; shadow?: any }> = ({
-    children,
-    shadow,
-    ...props
-}) => (
-    <NavContainer {...props}>
-        <DesktopNav data-shadow={!!shadow} />
-        <MobileNav />
-    </NavContainer>
-)
+interface NProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
+    shadow?: boolean
+}
+
+function N({ shadow = false, ...props }: NProps) {
+    return (
+        <NavContainer {...props}>
+            <DesktopNav data-shadow={!!shadow} />
+            <MobileNav />
+        </NavContainer>
+    )
+}
 
 Object.assign(N, {
     Container: NavContainer,

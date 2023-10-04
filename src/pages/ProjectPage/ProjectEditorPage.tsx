@@ -22,7 +22,7 @@ import ColoredBox from '~/components/ColoredBox'
 import TermsOfUse from '~/pages/ProjectPage/TermsOfUse'
 import Button from '~/shared/components/Button'
 import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
-import { formatChainName } from '~/shared/utils/chains'
+import { formatChainName } from '~/utils'
 import SalePointTokenSelector from '~/components/SalePointSelector/SalePointTokenSelector'
 import SalePointOption, {
     DataUnionOption,

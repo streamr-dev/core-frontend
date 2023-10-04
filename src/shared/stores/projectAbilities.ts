@@ -4,7 +4,7 @@ import { create } from 'zustand'
 import { getProjectPermissions } from '~/getters'
 import { useProject } from '~/shared/stores/projectEditor'
 import { defaultChainConfig } from '~/getters/getChainConfig'
-import address0 from '~/utils/address0'
+import { address0 } from '~/consts'
 import { useWalletAccount } from './wallet'
 
 export enum ProjectPermission {
@@ -40,7 +40,7 @@ function key(chainId: number, projectId: string, account: string) {
     return JSON.stringify([chainId, projectId, account.toLowerCase()])
 }
 
-const useProjectAbilitiesStore = create<Store>((set, get) => {
+const useProjectAbilitiesStore = create<Store>((set) => {
     const fetching: Record<string, boolean | undefined> = {}
 
     return {
