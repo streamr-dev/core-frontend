@@ -228,7 +228,7 @@ function DelegationsTable({
                 },
                 {
                     displayName: 'APY',
-                    valueMapper: (element) => `${element.apy.toFixed(0)}%`,
+                    valueMapper: (element) => `${(element.apy * 100).toFixed(0)}%`,
                     align: 'end',
                     isSticky: false,
                     key: 'apy',
@@ -303,7 +303,8 @@ function OperatorsTable({
                 },
                 {
                     displayName: 'APY',
-                    valueMapper: (element) => `${getSpotApy(element).toFixed(0)}%`,
+                    valueMapper: (element) =>
+                        `${(getSpotApy(element) * 100).toFixed(0)}%`,
                     align: 'end',
                     isSticky: false,
                     key: 'apy',
