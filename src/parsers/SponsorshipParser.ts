@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { getConfigFromChain } from '~/getters/getConfigFromChain'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
 import { fromAtto, fromDecimals, toDecimals } from '~/marketplace/utils/math'
-import { toBN } from '~/utils/bn'
+import { BN, toBN } from '~/utils/bn'
 
 export const SponsorshipParser = z
     .object({
@@ -58,7 +58,7 @@ export const SponsorshipParser = z
                 payoutPerDay: fromDecimals(
                     toBN(totalPayoutWeiPerSec).multipliedBy(86400),
                     decimals,
-                ),
+                ).dp(3, BN.ROUND_HALF_UP),
                 projectedInsolvencyAt,
                 stakes: stakes.map(({ amount: amountWei, ...stake }) => ({
                     ...stake,
