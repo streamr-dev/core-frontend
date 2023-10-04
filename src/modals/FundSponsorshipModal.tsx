@@ -45,8 +45,6 @@ export default function FundSponsorshipModal({
         .multipliedBy(decimals)
         .dividedBy(DayInSeconds)
 
-    const rate = pricePerSecond.multipliedBy(DayInSeconds).dividedBy(decimals)
-
     useEffect(() => {
         setRawAmount(amountProp)
     }, [amountProp])
@@ -183,7 +181,7 @@ export default function FundSponsorshipModal({
                     <li>
                         <Prop>Rate</Prop>
                         <div>
-                            {rate.toString()} {tokenSymbol}/day
+                            {payoutPerDay} {tokenSymbol}/day
                         </div>
                     </li>
                 </ul>
