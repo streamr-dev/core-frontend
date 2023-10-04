@@ -35,6 +35,7 @@ import { getSelfDelegationFraction, getSpotApy } from '~/getters'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { delegateFunds, undelegateFunds } from '~/utils/operators'
 import { useConfigFromChain } from '~/hooks/useConfigFromChain'
+import { flag, useFlagger, useIsFlagged } from '~/shared/stores/flags'
 
 export const OperatorActionBar: FunctionComponent<{
     operator: ParsedOperator
@@ -55,6 +56,16 @@ export const OperatorActionBar: FunctionComponent<{
     }, [operator])
 
     const { minimumSelfDelegationFraction } = useConfigFromChain()
+
+    const isDelegatingFunds = useIsFlagged(
+        flag('isDelegatingFunds', operator.id, walletAddress),
+    )
+
+    const isUndelegatingFunds = useIsFlagged(
+        flag('isUndelegatingFunds', operator.id, walletAddress),
+    )
+
+    const withFlag = useFlagger()
 
     return (
         <SingleElementPageActionBar>
@@ -194,17 +205,26 @@ export const OperatorActionBar: FunctionComponent<{
                                 }
 
                                 try {
-                                    await delegateFunds({
-                                        operator,
-                                        wallet: walletAddress,
-                                    })
+                                    await withFlag(
+                                        flag(
+                                            'isDelegatingFunds',
+                                            operator.id,
+                                            walletAddress,
+                                        ),
+                                        () =>
+                                            delegateFunds({
+                                                operator,
+                                                wallet: walletAddress,
+                                            }),
+                                    )
 
                                     onDelegationChange()
                                 } catch (e) {
                                     console.warn('Could not delegate funds', e)
                                 }
                             }}
-                            disabled={walletAddress == null}
+                            disabled={!walletAddress}
+                            waiting={isDelegatingFunds}
                         >
                             Delegate
                         </Button>
@@ -215,18 +235,27 @@ export const OperatorActionBar: FunctionComponent<{
                                         return
                                     }
 
-                                    await undelegateFunds({
-                                        minimumSelfDelegationFraction,
-                                        operator,
-                                        wallet: walletAddress,
-                                    })
+                                    await withFlag(
+                                        flag(
+                                            'isUndelegatingFunds',
+                                            operator.id,
+                                            walletAddress,
+                                        ),
+                                        () =>
+                                            undelegateFunds({
+                                                minimumSelfDelegationFraction,
+                                                operator,
+                                                wallet: walletAddress,
+                                            }),
+                                    )
 
                                     onDelegationChange()
                                 } catch (e) {
                                     console.warn('Could not undelegate funds', e)
                                 }
                             }}
-                            disabled={walletAddress == null}
+                            disabled={!walletAddress}
+                            waiting={isUndelegatingFunds}
                         >
                             Undelegate
                         </Button>
