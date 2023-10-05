@@ -21,6 +21,7 @@ const createStyledComponentsTransformer =
     require('typescript-plugin-styled-components').default
 const validateEnv = require('./scripts/validateEnv')
 const pkg = require('./package')
+const pkgLock = require('./package-lock')
 
 const dotenv = require('./scripts/dotenv')
 
@@ -202,6 +203,9 @@ module.exports = {
             DU_GRAPH_SCHEMA_PATH: process.env.DU_GRAPH_SCHEMA_PATH || '',
             ENS_GRAPH_SCHEMA_PATH: process.env.ENS_GRAPH_SCHEMA_PATH || '',
             ENTRYPOINT_WS_HOST: process.env.ENTRYPOINT_WS_HOST || '',
+            HUB_VERSION: pkg.version,
+            STREAMR_CLIENT_VERSION:
+                pkgLock.packages['node_modules/streamr-client'].version,
         }),
         new webpack.EnvironmentPlugin(loadedDotenv),
         ...(analyze

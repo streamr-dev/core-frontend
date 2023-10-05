@@ -5,6 +5,7 @@ import { useRouteMemoryWipeEffect } from '~/shared/stores/routeMemory'
 import usePreventNavigatingAway, {
     useBlockHistoryEffect,
 } from '~/shared/hooks/usePreventNavigatingAway'
+import { useInfoToastEffect } from '~/hooks'
 
 export default function Globals() {
     const isPersistingAnyStreamDraft = useIsPersistingAnyStreamDraft()
@@ -27,6 +28,8 @@ export default function Globals() {
     useBlockHistoryEffect()
 
     useRouteMemoryWipeEffect()
+
+    useInfoToastEffect()
 
     return null
 }
