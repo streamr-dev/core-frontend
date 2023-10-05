@@ -279,7 +279,11 @@ async function getTransientProject<
     let adminFee: number | undefined
 
     try {
-        adminFee = await getDataUnionAdminFeeForSalePoint(payment)
+        adminFee = await getDataUnionAdminFeeForSalePoint(
+            z
+                .object({ beneficiary: z.string(), domainId: z.coerce.number() })
+                .parse(payment),
+        )
     } catch (e) {
         console.warn('Failed to load Data Union admin fee', e)
     }

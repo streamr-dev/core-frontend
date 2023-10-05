@@ -150,13 +150,10 @@ export async function getDataUnionStats(
     }
 }
 
-export function getDataUnionAdminFeeForSalePoint(salePoint: unknown) {
-    const { beneficiary: dataUnionId, domainId: chainId } = z
-        .object({
-            beneficiary: z.string().refine((addr) => isEthereumAddress(addr)),
-            domainId: z.coerce.number(),
-        })
-        .parse(salePoint)
+export function getDataUnionAdminFeeForSalePoint<
+    T extends { beneficiary: string; domainId: number },
+>(salePoint: T) {
+    const { beneficiary: dataUnionId, domainId: chainId } = salePoint
 
     return getDataUnionAdminFee(dataUnionId, chainId)
 }
