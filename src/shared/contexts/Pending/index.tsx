@@ -114,4 +114,4 @@ function PendingContextProvider({ name, children }: Props) {
 PendingContextProvider.propTypes = {
     name: t.string.isRequired,
 }
-export { PendingContextProvider as Provider, PendingContext as Context }
+export { PendingContext as Context }

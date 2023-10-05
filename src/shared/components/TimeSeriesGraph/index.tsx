@@ -47,7 +47,7 @@ export type TimeSeriesGraphProps = {
     noDataText?: string
 }
 
-export const TimeSeriesGraph = ({
+const TimeSeriesGraph = ({
     graphData,
     isLoading,
     xAxisDisplayFormatter,

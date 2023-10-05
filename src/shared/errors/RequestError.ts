@@ -1,5 +1,5 @@
 import get from 'lodash/get'
-export const getError = (res) => ({
+const getError = (res) => ({
     message:
         get(res, 'response.data.error') ||
         get(res, 'response.data.message') ||

@@ -1,8 +1,7 @@
 import React, { ReactNode } from 'react'
 import styled from 'styled-components'
 import Popover from '~/shared/components/Popover'
-import PopoverItem from '~/shared/components/Popover/PopoverItem'
-export const MenuItem = PopoverItem
+
 type Props = {
     children: ReactNode
     onToggle?: (arg0: boolean) => any
@@ -33,4 +32,5 @@ const Menu = styled(UnstyledMenu)`
         position: absolute;
     }
 `
+
 export default Menu

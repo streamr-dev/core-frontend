@@ -1,8 +1,4 @@
-import {
-    PaymentCurrency,
-    ContractCurrency,
-    NumberString,
-} from '~/shared/types/common-types'
+import { PaymentCurrency, ContractCurrency } from '~/shared/types/common-types'
 import { contractCurrencies, paymentCurrencies } from '~/shared/utils/constants'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
 import { BN, BNish, toBN } from '~/utils/bn'
@@ -38,29 +34,6 @@ export function pricePerSecondFromTimeUnit(
     return toDecimals(pricePerTimeUnit, decimals)
         .dividedBy(toSeconds(1, timeUnit))
         .dp(0, BN.ROUND_HALF_UP)
-}
-
-/**
- * Make sure the amount is a non-negative number.
- * @param amount Numberish value to sanitize.
- */
-export function sanitize(amount: BNish) {
-    const amountBN = toBN(amount)
-
-    return amountBN.isNaN() ? toBN(0) : BN.max(0, amountBN)
-}
-
-/**
- * Limit the number of fraction digits.
- * @param value Amount to limit.
- * @param maxDigits Max. number of fraction digits.
- */
-export function formatAmount(value: BNish, maxDigits?: number) {
-    if (typeof maxDigits === 'number' && maxDigits >= 0) {
-        return sanitize(value).decimalPlaces(maxDigits)
-    }
-
-    return toBN(value)
 }
 
 /**
@@ -115,8 +88,6 @@ export function formatDecimals(
 
     return bn.decimalPlaces(0).toString()
 }
-export const arePricesEqual = (first: NumberString, second: NumberString): boolean =>
-    toBN(first).isEqualTo(new BN(second))
 
 /**
  * Gets most relevant time unit for given price per second.

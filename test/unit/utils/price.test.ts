@@ -38,6 +38,26 @@ describe('price utils', () => {
             expect(() => all.priceForTimeUnits(pps, 7, 'asdf')).toThrow()
         })
     })
+    describe('formatDecimals', () => {
+        it('displays, rounds and recognizes currency', () => {
+            expect(all.formatDecimals(1, 'DATA')).toBe('1')
+            expect(all.formatDecimals(1.234, 'DATA')).toBe('1.234')
+            expect(all.formatDecimals(10, 'DATA')).toBe('10')
+            expect(all.formatDecimals(12.34, 'DATA')).toBe('12.34')
+            expect(all.formatDecimals(12.345, 'DATA')).toBe('12.35')
+            expect(all.formatDecimals(123.45, 'DATA')).toBe('123.5')
+            expect(all.formatDecimals(1234.5, 'DATA')).toBe('1235')
+            expect(all.formatDecimals(1234, 'DATA')).toBe('1234')
+            expect(all.formatDecimals(1, 'USD')).toBe('1.00')
+            expect(all.formatDecimals(1.234, 'USD')).toBe('1.23')
+            expect(all.formatDecimals(10, 'USD')).toBe('10.00')
+            expect(all.formatDecimals(12.34, 'USD')).toBe('12.34')
+            expect(all.formatDecimals(12.345, 'USD')).toBe('12.35')
+            expect(all.formatDecimals(123.45, 'USD')).toBe('123.5')
+            expect(all.formatDecimals(1234.5, 'USD')).toBe('1235')
+            expect(all.formatDecimals(1234, 'USD')).toBe('1234')
+        })
+    })
     describe('pricePerSecondFromTimeUnit', () => {
         it('calculates PPS for time units', () => {
             expect(
@@ -61,24 +81,6 @@ describe('price utils', () => {
             expect(() => all.pricePerSecondFromTimeUnit(0, 'asdf', 18)).toThrow()
         })
     })
-    describe('sanitize', () => {
-        it('sanitizes correctly', () => {
-            expect(all.sanitize(toBN(-500))).toStrictEqual(toBN(0))
-            expect(all.sanitize(toBN(-1.345345))).toStrictEqual(toBN(0))
-            expect(all.sanitize(toBN(12300))).toStrictEqual(toBN(12300))
-            expect(all.sanitize(toBN(1.012030123012))).toStrictEqual(toBN(1.012030123012))
-        })
-    })
-    describe('formatAmount', () => {
-        it('formats amount', () => {
-            // TODO fix: expects 1, gets "1"
-            // expect(all.formatAmount(toBN(1), -2123123)).toStrictEqual(1)
-            expect(all.formatAmount(toBN(1), 5)).toStrictEqual(toBN(1))
-            expect(all.formatAmount(toBN(0.0005), 3)).toStrictEqual(toBN(0.001))
-            expect(all.formatAmount(toBN(0.000551), 4)).toStrictEqual(toBN(0.0006))
-            expect(all.formatAmount(toBN(0.000541), 4)).toStrictEqual(toBN(0.0005))
-        })
-    })
     describe('formatDecimals', () => {
         it('displays, rounds and recognizes currency', () => {
             expect(all.formatDecimals(1, 'DATA')).toBe('1')
@@ -97,19 +99,6 @@ describe('price utils', () => {
             expect(all.formatDecimals(123.45, 'USD')).toBe('123.5')
             expect(all.formatDecimals(1234.5, 'USD')).toBe('1235')
             expect(all.formatDecimals(1234, 'USD')).toBe('1234')
-        })
-    })
-    describe('arePricesEqual', () => {
-        it('checks prices', () => {
-            expect(all.arePricesEqual('1', '0.5')).toBe(false)
-            expect(all.arePricesEqual('1', '1')).toBe(true)
-            expect(all.arePricesEqual('-1.123123', '-1.123123')).toBe(true)
-            expect(
-                all.arePricesEqual('0.00000000000000001', '-0.00000000000000001'),
-            ).toBe(false)
-            expect(all.arePricesEqual('0.00000000000000001', '0.00000000000000001')).toBe(
-                true,
-            )
         })
     })
     describe('getMostRelevantTimeUnit', () => {

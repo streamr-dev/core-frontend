@@ -12,10 +12,6 @@ export const ProjectPermissions = z.object({
     canGrant: z.boolean(),
 })
 
-export const GraphProjectPermissions = ProjectPermissions.extend({
-    userAddress: z.string(),
-})
-
 export const ObjectWithMessage = z.object({
     message: z.string(),
 })
