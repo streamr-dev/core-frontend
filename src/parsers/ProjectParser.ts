@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { getProjectImageUrl } from '~/getters'
 import { getDataUnionAdminFeeForSalePoint } from '~/getters/du'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { getTokenInfo } from '~/hooks/useTokenInfo'
@@ -15,9 +16,21 @@ import {
 import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
 import { toBN } from '~/utils/bn'
 
+const ParsedPaymentDetail = z.object({
+    beneficiary: z.string(),
+    domainId: z.coerce.number(),
+    pricePerSecond: z
+        .string()
+        .optional()
+        .transform((v) => v || '0'),
+    pricingTokenAddress: z.string(),
+})
+
+export type ParsedPaymentDetail = z.infer<typeof ParsedPaymentDetail>
+
 export const ProjectParser = z
     .object({
-        id: z.string(),
+        id: z.union([z.string(), z.undefined()]),
         isDataUnion: z.boolean().optional().default(false),
         streams: z.array(z.string()).transform((streams) => streams.sort()),
         metadata: z
@@ -45,7 +58,7 @@ export const ProjectParser = z
                         .string()
                         .optional()
                         .transform((v) => v || undefined),
-                    tarmsOfUse: z
+                    termsOfUse: z
                         .object({
                             commercialUse: z.boolean().optional().default(false),
                             redistribution: z.boolean().optional().default(false),
@@ -63,7 +76,7 @@ export const ProjectParser = z
                             termsName: '',
                             termsUrl: '',
                         }),
-                    contact: z
+                    contactDetails: z
                         .object({
                             url: z.string().optional().default(''),
                             email: z.string().optional().default(''),
@@ -83,103 +96,181 @@ export const ProjectParser = z
                         }),
                 }),
             ),
-        paymentDetails: z.array(
-            z.object({
-                beneficiary: z.string(),
-                domainId: z.coerce.number(),
-                pricePerSecond: z.string(),
-                pricingTokenAddress: z.string(),
-            }),
-        ),
+        paymentDetails: z.array(ParsedPaymentDetail),
     })
-    .transform(async ({ paymentDetails, isDataUnion, ...rest }) => {
-        const [payment, secondPayment] = paymentDetails
-
-        const isOpenData = payment?.pricePerSecond === '0' && !secondPayment
-
-        let adminFee: number | undefined
-
-        if (isDataUnion) {
-            try {
-                adminFee = await getDataUnionAdminFeeForSalePoint(payment)
-            } catch (e) {
-                console.warn('Failed to load Data Union admin fee', e)
-            }
-        }
-
-        const chains: Chain[] = getCoreConfig().marketplaceChains.map(
-            getConfigForChainByName,
-        )
-
-        const salePoints: Record<string, SalePoint | undefined> = {}
-
-        chains.map(({ id: chainId, name: chainName }) => {
-            salePoints[chainName] = {
-                beneficiaryAddress: '',
-                chainId,
-                enabled: false,
-                price: '',
-                pricePerSecond: '',
-                pricingTokenAddress: getDataAddress(chainId).toLowerCase(),
-                readOnly: false,
-                timeUnit: timeUnits.day,
-            }
-        })
-
-        for (let i = 0; i < paymentDetails.length; i++) {
-            try {
-                const { domainId, pricingTokenAddress, pricePerSecond, beneficiary } =
-                    paymentDetails[i]
-
-                const { id: chainId, name: chainName } = getConfigForChain(
-                    Number(domainId),
-                )
-
-                const { decimals } = await getTokenInfo(pricingTokenAddress, chainId)
-
-                const pricePerSecondFromDecimals = fromDecimals(pricePerSecond, decimals)
-
-                const timeUnit: TimeUnit = getMostRelevantTimeUnit(
-                    pricePerSecondFromDecimals,
-                )
-
-                const multiplier = timeUnitSecondsMultiplierMap.get(timeUnit)
-
-                if (!multiplier) {
-                    throw new Error('Invalid multiplier')
-                }
-
-                salePoints[chainName] = {
-                    beneficiaryAddress: beneficiary.toLowerCase(),
-                    chainId,
-                    enabled: true,
-                    price: pricePerSecondFromDecimals.multipliedBy(multiplier).toString(),
-                    pricePerSecond,
-                    pricingTokenAddress: pricingTokenAddress.toLowerCase(),
-                    readOnly: true,
-                    timeUnit,
-                }
-            } catch (e) {
-                console.warn('Could not convert a payment details into a sale point', e)
-            }
-        }
-
-        return {
-            ...rest,
-            adminFee:
-                typeof adminFee === 'undefined'
-                    ? ''
-                    : toBN(adminFee).multipliedBy(100).toString(),
+    .transform(
+        async ({
+            id,
             isDataUnion,
-            salePoints,
-            type: isDataUnion
-                ? ProjectType.DataUnion
-                : isOpenData
-                ? ProjectType.OpenData
-                : ProjectType.PaidData,
-        }
-    })
+            streams,
+            metadata: {
+                contactDetails: contact,
+                creator,
+                description,
+                imageIpfsCid,
+                imageUrl,
+                name,
+                termsOfUse,
+            },
+            paymentDetails,
+        }) => {
+            const [payment, secondPayment] = paymentDetails
+
+            const isOpenData = payment?.pricePerSecond === '0' && !secondPayment
+
+            let adminFee: number | undefined
+
+            if (isDataUnion) {
+                try {
+                    adminFee = await getDataUnionAdminFeeForSalePoint(payment)
+                } catch (e) {
+                    console.warn('Failed to load Data Union admin fee', e)
+                }
+            }
+
+            const chains: Chain[] = getCoreConfig().marketplaceChains.map(
+                getConfigForChainByName,
+            )
+
+            const salePoints: Record<string, SalePoint | undefined> = {}
+
+            chains.map(({ id: chainId, name: chainName }) => {
+                salePoints[chainName] = {
+                    beneficiaryAddress: '',
+                    chainId,
+                    enabled: false,
+                    price: '',
+                    pricePerSecond: '',
+                    pricingTokenAddress: getDataAddress(chainId).toLowerCase(),
+                    readOnly: false,
+                    timeUnit: timeUnits.day,
+                }
+            })
+
+            for (let i = 0; i < paymentDetails.length; i++) {
+                try {
+                    const { domainId, pricingTokenAddress, pricePerSecond, beneficiary } =
+                        paymentDetails[i]
+
+                    const { id: chainId, name: chainName } = getConfigForChain(
+                        Number(domainId),
+                    )
+
+                    const { decimals } = await getTokenInfo(pricingTokenAddress, chainId)
+
+                    const pricePerSecondFromDecimals = fromDecimals(
+                        pricePerSecond,
+                        decimals,
+                    )
+
+                    const timeUnit: TimeUnit = getMostRelevantTimeUnit(
+                        pricePerSecondFromDecimals,
+                    )
+
+                    const multiplier = timeUnitSecondsMultiplierMap.get(timeUnit)
+
+                    if (!multiplier) {
+                        throw new Error('Invalid multiplier')
+                    }
+
+                    salePoints[chainName] = {
+                        beneficiaryAddress: beneficiary.toLowerCase(),
+                        chainId,
+                        enabled: true,
+                        price: pricePerSecondFromDecimals
+                            .multipliedBy(multiplier)
+                            .toString(),
+                        pricePerSecond,
+                        pricingTokenAddress: pricingTokenAddress.toLowerCase(),
+                        readOnly: true,
+                        timeUnit,
+                    }
+                } catch (e) {
+                    console.warn(
+                        'Could not convert a payment details into a sale point',
+                        e,
+                    )
+                }
+            }
+
+            return {
+                adminFee:
+                    typeof adminFee === 'undefined'
+                        ? ''
+                        : toBN(adminFee).multipliedBy(100).toString(),
+                contact,
+                creator,
+                description,
+                id,
+                imageIpfsCid,
+                imageUrl: getProjectImageUrl({ imageUrl, imageIpfsCid }),
+                isDataUnion,
+                name,
+                newImageToUpload: undefined,
+                paymentDetails,
+                salePoints,
+                streams,
+                termsOfUse,
+                type: isDataUnion
+                    ? ProjectType.DataUnion
+                    : isOpenData
+                    ? ProjectType.OpenData
+                    : ProjectType.PaidData,
+            }
+        },
+    )
 
 export type ParsedProject = z.infer<typeof ProjectParser>
 
-type T = ParsedProject['salePoints']
+function getEmptySalePoints() {
+    const chains: Chain[] = getCoreConfig().marketplaceChains.map(getConfigForChainByName)
+
+    const salePoints: Record<string, SalePoint | undefined> = {}
+
+    chains.map(({ id: chainId, name: chainName }) => {
+        salePoints[chainName] = {
+            beneficiaryAddress: '',
+            chainId,
+            enabled: false,
+            price: '',
+            pricePerSecond: '',
+            pricingTokenAddress: getDataAddress(chainId).toLowerCase(),
+            readOnly: false,
+            timeUnit: timeUnits.day,
+        }
+    })
+
+    return salePoints
+}
+
+export function getEmptyParsedProject(): ParsedProject {
+    return {
+        adminFee: '',
+        contact: {
+            url: '',
+            email: '',
+            twitter: '',
+            telegram: '',
+            reddit: '',
+            linkedIn: '',
+        },
+        creator: '',
+        description: '',
+        id: undefined,
+        imageIpfsCid: undefined,
+        imageUrl: undefined,
+        isDataUnion: false,
+        name: '',
+        newImageToUpload: undefined,
+        salePoints: getEmptySalePoints(),
+        termsOfUse: {
+            commercialUse: false,
+            redistribution: false,
+            reselling: false,
+            storage: false,
+            termsName: '',
+            termsUrl: '',
+        },
+        type: ProjectType.OpenData,
+    }
+}

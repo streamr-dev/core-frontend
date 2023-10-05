@@ -14,32 +14,17 @@ import { toaster } from 'toasterhea'
 import { z } from 'zod'
 import { useNavigate } from 'react-router-dom'
 import { randomHex } from 'web3-utils'
-import {
-    getGraphProjectWithParsedMetadata,
-    getProjectImageUrl,
-    getProjectRegistryChainId,
-} from '~/getters'
-import {
-    TimeUnit,
-    timeUnitSecondsMultiplierMap,
-    timeUnits,
-} from '~/shared/utils/timeUnit'
-import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
-import { getTokenInfo } from '~/hooks/useTokenInfo'
-import { fromDecimals } from '~/marketplace/utils/math'
-import { getMostRelevantTimeUnit } from '~/marketplace/utils/price'
+import { getProjectRegistryChainId } from '~/getters'
+import { timeUnits } from '~/shared/utils/timeUnit'
 import { isProjectOwnedBy } from '~/utils'
 import getGraphClient from '~/getters/getGraphClient'
-import { ProjectType, Project, QueriedGraphProject } from '~/shared/types'
-import { toBN } from '~/utils/bn'
+import { ProjectType, QueriedGraphProject } from '~/shared/types'
 import {
     GetProjectQuery,
     GetProjectDocument,
     GetProjectQueryVariables,
 } from '~/generated/gql/network'
-import { ProjectMetadata } from '~/shared/consts'
-import { getDataUnion, getDataUnionAdminFeeForSalePoint } from '~/getters/du'
-import getCoreConfig from '~/getters/getCoreConfig'
+import { getDataUnion } from '~/getters/du'
 import { SalePoint } from '~/shared/types'
 import { getDataAddress } from '~/marketplace/utils/web3'
 import { ValidationError } from '~/errors'
@@ -55,9 +40,13 @@ import {
     updateProject,
 } from '~/services/projects'
 import { toastedOperations } from '~/utils/toastedOperation'
-import { Chain } from '~/shared/types/web3-types'
 import networkPreflight from '~/utils/networkPreflight'
 import routes from '~/routes'
+import {
+    ParsedProject,
+    ProjectParser,
+    getEmptyParsedProject,
+} from '~/parsers/ProjectParser'
 import { Operation } from '../toasts/TransactionListToast'
 import { useWalletAccount } from './wallet'
 import { useHasActiveProjectSubscription } from './purchases'
@@ -67,8 +56,8 @@ interface ProjectDraft {
     errors: Record<string, string | undefined>
     persisting: boolean
     project: {
-        hot: Project
-        cold: Project
+        hot: ParsedProject
+        cold: ParsedProject
         graph: QueriedGraphProject | undefined
         changed: boolean
         fetching: boolean
@@ -87,9 +76,14 @@ interface ProjectEditorStore {
     setErrors: (draftId: string, update: (errors: ProjectDraft['errors']) => void) => void
     teardown: (draftId: string, options?: { onlyAbandoned?: boolean }) => void
     abandon: (draftId: string) => void
-    update: (draftId: string, upadte: (project: Project) => void) => void
+    update: (draftId: string, update: (project: ParsedProject) => void) => void
 }
 
+/**
+ * @deprecated It's necessary. ParsedProject instances already have
+ * all the sale points baked into them. Some of them enabled,
+ * other diabled. Rely on it.
+ */
 export function getEmptySalePoint(chainId: number): SalePoint {
     return {
         beneficiaryAddress: '',
@@ -103,55 +97,8 @@ export function getEmptySalePoint(chainId: number): SalePoint {
     }
 }
 
-function getEmptyTermsOfUse() {
-    return {
-        termsName: '',
-        termsUrl: '',
-        commercialUse: false,
-        redistribution: false,
-        reselling: false,
-        storage: false,
-    }
-}
-
-function getEmptyContact() {
-    return {
-        url: '',
-        email: '',
-        twitter: '',
-        telegram: '',
-        reddit: '',
-        linkedIn: '',
-    }
-}
-
-function getEmptyProject(): Project {
-    const chains: Chain[] = getCoreConfig().marketplaceChains.map(getConfigForChainByName)
-
-    const salePoints: Record<string, SalePoint | undefined> = {}
-
-    chains.map(({ id: chainId, name: chainName }) => {
-        salePoints[chainName] = getEmptySalePoint(chainId)
-    })
-
-    return {
-        id: undefined,
-        name: '',
-        description: '',
-        imageUrl: undefined,
-        imageIpfsCid: undefined,
-        newImageToUpload: undefined,
-        streams: [],
-        type: ProjectType.OpenData,
-        termsOfUse: getEmptyTermsOfUse(),
-        contact: getEmptyContact(),
-        creator: '',
-        salePoints,
-    }
-}
-
 function getEmptyDraft(): ProjectDraft {
-    const emptyProject = getEmptyProject()
+    const emptyProject = getEmptyParsedProject()
 
     return {
         abandoned: false,
@@ -167,138 +114,7 @@ function getEmptyDraft(): ProjectDraft {
     }
 }
 
-async function getSalePointsFromPaymentDetails<
-    T extends Pick<QueriedGraphProject, 'paymentDetails'>,
->({ paymentDetails }: T): Promise<Project['salePoints']> {
-    const result = getEmptyProject().salePoints
-
-    Object.values(result).forEach((salePoint) => {
-        if (salePoint) {
-            salePoint.enabled = false
-        }
-    })
-
-    for (let i = 0; i < paymentDetails.length; i++) {
-        try {
-            const { domainId, pricingTokenAddress, pricePerSecond, beneficiary } =
-                paymentDetails[i]
-
-            const { id: chainId, name: chainName } = getConfigForChain(Number(domainId))
-
-            const decimals = (await getTokenInfo(pricingTokenAddress, chainId)).decimals
-
-            if (!decimals) {
-                throw new Error('Invalid decimals')
-            }
-
-            const pricePerSecondFromDecimals = fromDecimals(pricePerSecond, decimals)
-
-            const timeUnit: TimeUnit = getMostRelevantTimeUnit(pricePerSecondFromDecimals)
-
-            const multiplier = timeUnitSecondsMultiplierMap.get(timeUnit)
-
-            if (!multiplier) {
-                throw new Error('Invalid multiplier')
-            }
-
-            result[chainName] = {
-                beneficiaryAddress: beneficiary.toLowerCase(),
-                chainId,
-                enabled: true,
-                price: pricePerSecondFromDecimals.multipliedBy(multiplier).toString(),
-                pricePerSecond,
-                pricingTokenAddress: pricingTokenAddress.toLowerCase(),
-                readOnly: true,
-                timeUnit,
-            }
-        } catch (e) {
-            console.warn('Could not convert payment details to sale point', e)
-        }
-    }
-
-    return result
-}
-
-async function getTransientProject<
-    T extends Pick<
-        QueriedGraphProject,
-        'id' | 'streams' | 'paymentDetails' | 'isDataUnion'
-    > & {
-        metadata: ProjectMetadata
-    },
->({ id, metadata, streams, paymentDetails, isDataUnion }: T): Promise<Project> {
-    const {
-        name,
-        description,
-        creator,
-        imageUrl,
-        imageIpfsCid,
-        termsOfUse = getEmptyTermsOfUse(),
-        contactDetails: contact = getEmptyContact(),
-    } = metadata
-
-    const [payment = { pricePerSecond: '0' }, secondPayment] = paymentDetails
-
-    const isOpenData = payment.pricePerSecond === '0' && !secondPayment
-
-    const salePoints = await getSalePointsFromPaymentDetails({ paymentDetails })
-
-    const result: Project = {
-        id,
-        type: isOpenData ? ProjectType.OpenData : ProjectType.PaidData,
-        name,
-        description,
-        creator,
-        imageUrl: getProjectImageUrl({ imageUrl, imageIpfsCid }),
-        imageIpfsCid,
-        newImageToUpload: undefined,
-        streams: [...streams].sort(),
-        termsOfUse: {
-            commercialUse: !!termsOfUse.commercialUse,
-            redistribution: !!termsOfUse.redistribution,
-            reselling: !!termsOfUse.reselling,
-            storage: !!termsOfUse.storage,
-            termsName: termsOfUse.termsName || '',
-            termsUrl: termsOfUse.termsUrl || '',
-        },
-        contact: {
-            url: contact.url || '',
-            email: contact.email || '',
-            twitter: contact.twitter || '',
-            telegram: contact.telegram || '',
-            reddit: contact.reddit || '',
-            linkedIn: contact.linkedIn || '',
-        },
-        salePoints,
-    }
-
-    if (!isDataUnion) {
-        return result
-    }
-
-    let adminFee: number | undefined
-
-    try {
-        adminFee = await getDataUnionAdminFeeForSalePoint(
-            z
-                .object({ beneficiary: z.string(), domainId: z.coerce.number() })
-                .parse(payment),
-        )
-    } catch (e) {
-        console.warn('Failed to load Data Union admin fee', e)
-    }
-
-    return {
-        ...result,
-        type: ProjectType.DataUnion,
-        adminFee:
-            typeof adminFee === 'undefined'
-                ? ''
-                : toBN(adminFee).multipliedBy(100).toString(),
-    }
-}
-
-function preselectSalePoint(project: Project) {
+function preselectSalePoint(project: ParsedProject) {
     if (project.type === ProjectType.OpenData) {
         return
     }
@@ -324,7 +140,7 @@ function preselectSalePoint(project: Project) {
     salePoint.enabled = true
 }
 
-function requiresDataUnionDeployment(project: Project) {
+function requiresDataUnionDeployment(project: ParsedProject) {
     return (
         project.type === ProjectType.DataUnion &&
         !Object.values(project.salePoints).find((salePoint) => salePoint?.enabled)
@@ -332,10 +148,7 @@ function requiresDataUnionDeployment(project: Project) {
     )
 }
 
-function requiresAdminFeeUpdate(
-    hot: Project & { adminFee?: undefined | string },
-    cold: Project & { adminFee?: undefined | string },
-) {
+function requiresAdminFeeUpdate(hot: ParsedProject, cold: ParsedProject) {
     return (
         hot.type === ProjectType.DataUnion &&
         (hot.adminFee || '0').trim() !== (cold.adminFee || '0').trim()
@@ -366,7 +179,7 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
         )
     }
 
-    function setProject(draftId: string, update: (project: Project) => void) {
+    function setProject(draftId: string, update: (project: ParsedProject) => void) {
         setDraft(draftId, (draft) => {
             update(draft.project.hot)
 
@@ -448,12 +261,7 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
                         throw new Error('Not found or invalid')
                     }
 
-                    const graphProjectWithMetadata =
-                        getGraphProjectWithParsedMetadata(graphProject)
-
-                    const transientProject = await getTransientProject(
-                        graphProjectWithMetadata,
-                    )
+                    const transientProject = await ProjectParser.parseAsync(graphProject)
 
                     setDraft(draftId, (draft) => {
                         draft.project.hot = transientProject
@@ -782,7 +590,7 @@ export function useDraft() {
 export function useProject({ hot = false } = {}) {
     const draft = useDraft()
 
-    return (hot ? draft?.project.hot : draft?.project.cold) || getEmptyProject()
+    return (hot ? draft?.project.hot : draft?.project.cold) || getEmptyParsedProject()
 }
 
 export function useIsProjectFetching() {
@@ -831,7 +639,7 @@ export function useUpdateProject() {
     const { update } = useProjectEditorStore()
 
     return useCallback(
-        (updater: (project: Project) => void) => {
+        (updater: (project: ParsedProject) => void) => {
             if (!draftId) {
                 return
             }

@@ -1,10 +1,6 @@
-import { z } from 'zod'
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
 import {
     GetProjectDocument,
-    GetProjectForPurchaseDocument,
-    GetProjectForPurchaseQuery,
-    GetProjectForPurchaseQueryVariables,
     GetProjectQuery,
     GetProjectQueryVariables,
     GetProjectSubscriptionsDocument,
@@ -20,7 +16,7 @@ import {
 } from '~/generated/gql/network'
 import { TheGraph } from '~/shared/types'
 import { address0 } from '~/consts'
-import { GraphProject } from '~/shared/consts'
+import { ProjectParser } from '~/parsers/ProjectParser'
 import { getGraphUrl } from '.'
 
 let apolloClient: undefined | ApolloClient<NormalizedCacheObject>
@@ -49,6 +45,12 @@ export async function getRawGraphProject(
     })
 
     return project || null
+}
+
+export async function getParsedProjectById(projectId: string) {
+    const project = await getRawGraphProject(projectId)
+
+    return (project || null) && (await ProjectParser.parseAsync(project))
 }
 
 export async function getRawGraphProjects({
@@ -144,26 +146,4 @@ export async function getProjectSubscriptions(
     })
 
     return project?.subscriptions || []
-}
-
-export async function getProjectForPurchase(
-    projectId: string,
-): Promise<Pick<z.infer<typeof GraphProject>, 'paymentDetails' | 'streams'> | null> {
-    const {
-        data: { project },
-    } = await getApolloClient().query<
-        GetProjectForPurchaseQuery,
-        GetProjectForPurchaseQueryVariables
-    >({
-        query: GetProjectForPurchaseDocument,
-        variables: {
-            id: projectId,
-        },
-    })
-
-    if (project) {
-        return GraphProject.pick({ paymentDetails: true, streams: true }).parse(project)
-    }
-
-    return null
 }

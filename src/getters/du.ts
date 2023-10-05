@@ -1,6 +1,5 @@
 import DataUnionClient, { DataUnion, SecretsResponse } from '@dataunions/client'
 import { hexToNumber } from 'web3-utils'
-import { z } from 'zod'
 import { getConfigForChain } from '~/shared/web3/config'
 import { TheGraph } from '~/shared/types'
 import { getWalletAccount, getWalletProvider } from '~/shared/stores/wallet'
@@ -12,7 +11,6 @@ import {
 import getClientConfig from '~/getters/getClientConfig'
 import { toBN } from '~/utils/bn'
 import { getDataUnionGraphClient } from '~/getters/getGraphClient'
-import { isEthereumAddress } from '~/marketplace/utils/validate'
 import getCoreConfig from './getCoreConfig'
 
 export async function getDataUnionsOwnedByInChain(

@@ -1,12 +1,6 @@
 import { z } from 'zod'
 import { TimeUnit } from '~/shared/utils/timeUnit'
-import {
-    GraphProject,
-    GraphProjectPermissions,
-    ProjectPermissions,
-    ProjectSubscription,
-    PaymentDetail,
-} from '~/shared/consts'
+import { ProjectPermissions } from '~/shared/consts'
 import { GetProjectQuery } from '~/generated/gql/network'
 
 export enum ProjectType {
@@ -26,45 +20,7 @@ export interface SalePoint {
     timeUnit: TimeUnit
 }
 
-interface RegularProject {
-    id: string | undefined
-    name: string
-    description: string
-    imageUrl: string | undefined
-    imageIpfsCid: string | undefined
-    newImageToUpload: File | undefined
-    streams: string[]
-    type: ProjectType.OpenData | ProjectType.PaidData
-    termsOfUse: {
-        commercialUse?: boolean
-        redistribution?: boolean
-        reselling?: boolean
-        storage?: boolean
-        termsName: string
-        termsUrl: string
-    }
-    contact: {
-        url: string
-        email: string
-        twitter: string
-        telegram: string
-        reddit: string
-        linkedIn: string
-    }
-    creator: string | undefined
-    salePoints: Record<string, SalePoint | undefined>
-}
-
-interface DataUnionProject extends Omit<RegularProject, 'type'> {
-    type: ProjectType.DataUnion
-    adminFee: string | undefined
-}
-
-export type Project = RegularProject | DataUnionProject
-
 export type QueriedGraphProject = NonNullable<GetProjectQuery['project']>
-
-export type PaymentDetail = z.infer<typeof PaymentDetail>
 
 export type ProjectPermissions = z.infer<typeof ProjectPermissions>
 
@@ -88,9 +44,8 @@ export namespace TheGraph {
         DataUnion = 'dataUnion',
     }
 
-    export type Project = z.infer<typeof GraphProject>
-
-    export type ProjectSubscription = z.infer<typeof ProjectSubscription>
-
-    export type ProjectPermissions = z.infer<typeof GraphProjectPermissions>
+    export interface ProjectSubscription {
+        userAddress: string
+        endTimestamp?: string
+    }
 }

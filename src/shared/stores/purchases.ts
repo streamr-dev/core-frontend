@@ -25,7 +25,7 @@ import { RejectionReason } from '~/modals/BaseModal'
 import FailedPurchaseModal from '~/modals/FailedPurchaseModal'
 import { ensureGasMonies, waitForPurchasePropagation } from '~/utils'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
-import { getProjectForPurchase, getProjectSubscriptions } from '~/getters/hub'
+import { getParsedProjectById, getProjectSubscriptions } from '~/getters/hub'
 import { TheGraph } from '../types'
 import { getSigner } from './wallet'
 
@@ -117,15 +117,14 @@ const usePurchaseStore = create<Store>((set, get) => {
                 )
 
                 const { paymentDetails = [], streams = [] } =
-                    (await getProjectForPurchase(projectId)) || {}
+                    (await getParsedProjectById(projectId)) || {}
 
-                const chainIds = paymentDetails
-                    .map(({ domainId }) => Number(domainId))
-                    .filter(Number.isSafeInteger)
+                const chainIds = paymentDetails.map(({ domainId }) => domainId)
 
                 let chainId: number | undefined = chainIds[0]
 
-                const skipChainSelector = !!chainId && chainIds.length === 1
+                const skipChainSelector =
+                    typeof chainId !== 'undefined' && chainIds.length === 1
 
                 let chainSelectorResult: ChainSelectorResult | undefined
 
@@ -304,7 +303,7 @@ const usePurchaseStore = create<Store>((set, get) => {
 
                                             await networkPreflight(selectedChainId)
 
-                                            const signer = await getSigner()
+                                            const provider = await getSigner()
 
                                             /**
                                              * Send the `approve` method on the selected
@@ -316,7 +315,7 @@ const usePurchaseStore = create<Store>((set, get) => {
 
                                             const tx = await getERC20TokenContract({
                                                 tokenAddress,
-                                                provider: signer,
+                                                provider,
                                             }).approve(
                                                 getMarketplaceAddress(selectedChainId),
                                                 total,
@@ -449,7 +448,7 @@ const usePurchaseStore = create<Store>((set, get) => {
 
                                         await networkPreflight(selectedChainId)
 
-                                        const signer = await getSigner()
+                                        const provider = await getSigner()
 
                                         let accessingProjectModal:
                                             | Toaster<typeof AccessingProjectModal>
@@ -466,7 +465,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                              */
                                             const tx = await getMarketplaceContract({
                                                 chainId: selectedChainId,
-                                                provider: signer,
+                                                provider,
                                             }).buy(projectId, seconds, {
                                                 gasLimit: 2e5 + streams.length * 1e5,
                                             })
