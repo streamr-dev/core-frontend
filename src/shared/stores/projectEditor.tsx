@@ -15,7 +15,6 @@ import { z } from 'zod'
 import { useNavigate } from 'react-router-dom'
 import { randomHex } from 'web3-utils'
 import { getProjectRegistryChainId } from '~/getters'
-import { timeUnits } from '~/shared/utils/timeUnit'
 import { isProjectOwnedBy } from '~/utils'
 import getGraphClient from '~/getters/getGraphClient'
 import { ProjectType, QueriedGraphProject } from '~/shared/types'
@@ -25,8 +24,6 @@ import {
     GetProjectQueryVariables,
 } from '~/generated/gql/network'
 import { getDataUnion } from '~/getters/du'
-import { SalePoint } from '~/shared/types'
-import { getDataAddress } from '~/marketplace/utils/web3'
 import { ValidationError } from '~/errors'
 import isCodedError from '~/utils/isCodedError'
 import { RejectionReason } from '~/modals/BaseModal'
@@ -77,24 +74,6 @@ interface ProjectEditorStore {
     teardown: (draftId: string, options?: { onlyAbandoned?: boolean }) => void
     abandon: (draftId: string) => void
     update: (draftId: string, update: (project: ParsedProject) => void) => void
-}
-
-/**
- * @deprecated It's necessary. ParsedProject instances already have
- * all the sale points baked into them. Some of them enabled,
- * other diabled. Rely on it.
- */
-export function getEmptySalePoint(chainId: number): SalePoint {
-    return {
-        beneficiaryAddress: '',
-        chainId,
-        enabled: false,
-        price: '',
-        pricePerSecond: '',
-        pricingTokenAddress: getDataAddress(chainId).toLowerCase(),
-        readOnly: false,
-        timeUnit: timeUnits.day,
-    }
 }
 
 function getEmptyDraft(): ProjectDraft {

@@ -4,7 +4,6 @@ import { z } from 'zod'
 import { useNavigate } from 'react-router-dom'
 import Layout, { LayoutInner as PrestyledLayoutInner } from '~/components/Layout'
 import {
-    getEmptySalePoint,
     useDraft,
     useIsProjectBusy,
     useIsProjectFetching,
@@ -60,10 +59,11 @@ export default function ProjectEditorPage() {
         [],
     )
 
-    const salePoints = availableChains.map<SalePoint>(
-        ({ id: chainId, name: chainName }) =>
-            existingSalePoints[chainName] || getEmptySalePoint(chainId),
-    )
+    const salePoints = availableChains
+        .map<SalePoint | undefined>(
+            ({ name: chainName }) => existingSalePoints[chainName],
+        )
+        .filter(Boolean) as SalePoint[]
 
     function onSalePointChange(value: SalePoint) {
         if (busy) {
