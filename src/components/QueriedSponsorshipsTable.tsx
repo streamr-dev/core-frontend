@@ -205,17 +205,15 @@ export function QueriedSponsorshipsTable({
                 noDataSecondLine={noDataSecondLine}
                 linkMapper={(element) => routes.network.sponsorship({ id: element.id })}
             />
-            <>
-                {query.hasNextPage && (
-                    <LoadMoreButton
-                        disabled={query.isLoading || query.isFetching}
-                        onClick={() => void query.fetchNextPage()}
-                        kind="primary2"
-                    >
-                        Load more
-                    </LoadMoreButton>
-                )}
-            </>
+            {query.hasNextPage && (
+                <LoadMoreButton
+                    disabled={query.isLoading || query.isFetching}
+                    onClick={() => void query.fetchNextPage()}
+                    kind="primary2"
+                >
+                    Load more
+                </LoadMoreButton>
+            )}
         </>
     )
 }
