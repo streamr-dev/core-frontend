@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { fromAtto } from '~/marketplace/utils/math'
 import { toBN } from '~/utils/bn'
+import { OperatorMetadataParser } from '~/parsers/OperatorMetadataParser'
 
 export const OperatorParser = z
     .object({

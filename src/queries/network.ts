@@ -139,6 +139,7 @@ gql`
         stakes {
             operator {
                 id
+                metadataJsonString
             }
             amount
             earningsWei
