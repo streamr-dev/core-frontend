@@ -252,46 +252,52 @@ export const SingleOperatorPage = () => {
                                     </NetworkChartDisplay>
                                 </Pad>
                             </NetworkPageSegment>
-                            <NetworkPageSegment title="My delegation">
-                                {walletAddress ? (
-                                    <>
-                                        <DelegationCell>
+                            <div>
+                                <SegmentGrid>
+                                    <NetworkPageSegment title="My delegation">
+                                        {walletAddress ? (
+                                            <>
+                                                <DelegationCell>
+                                                    <Pad>
+                                                        <StatCellLabel>
+                                                            Current value
+                                                        </StatCellLabel>
+                                                        <StatCellBody>
+                                                            {`${abbreviateNumber(
+                                                                fromAtto(
+                                                                    myDelegationAmount,
+                                                                ).toNumber(),
+                                                            )} ${tokenSymbol}`}
+                                                        </StatCellBody>
+                                                    </Pad>
+                                                </DelegationCell>
+                                                <Separator />
+                                                <DelegationCell>
+                                                    <Pad>
+                                                        <StatCellLabel>
+                                                            Share of operator&apos;s total
+                                                            value
+                                                        </StatCellLabel>
+                                                        <StatCellBody>
+                                                            {`${myDelegationPercentage.toFixed(
+                                                                0,
+                                                            )}%`}
+                                                        </StatCellBody>
+                                                    </Pad>
+                                                </DelegationCell>
+                                            </>
+                                        ) : (
                                             <Pad>
-                                                <StatCellLabel>
-                                                    Current value
-                                                </StatCellLabel>
-                                                <StatCellBody>
-                                                    {`${abbreviateNumber(
-                                                        fromAtto(
-                                                            myDelegationAmount,
-                                                        ).toNumber(),
-                                                    )} ${tokenSymbol}`}
-                                                </StatCellBody>
+                                                Connect your wallet to show your
+                                                delegation.
                                             </Pad>
-                                        </DelegationCell>
-                                        <Separator />
-                                        <DelegationCell>
-                                            <Pad>
-                                                <StatCellLabel>
-                                                    Share of operator&apos;s total value
-                                                </StatCellLabel>
-                                                <StatCellBody>
-                                                    {`${myDelegationPercentage.toFixed(
-                                                        0,
-                                                    )}%`}
-                                                </StatCellBody>
-                                            </Pad>
-                                        </DelegationCell>
-                                    </>
-                                ) : (
-                                    <Pad>
-                                        Connect your wallet to show your delegation.
-                                    </Pad>
-                                )}
-                            </NetworkPageSegment>
-                            <NetworkPageSegment title="Operator checklist">
-                                <OperatorChecklist operatorId={operatorId} />
-                            </NetworkPageSegment>
+                                        )}
+                                    </NetworkPageSegment>
+                                    <NetworkPageSegment title="Operator checklist">
+                                        <OperatorChecklist operatorId={operatorId} />
+                                    </NetworkPageSegment>
+                                </SegmentGrid>
+                            </div>
                         </ChartGrid>
                         <NetworkPageSegment
                             foot
