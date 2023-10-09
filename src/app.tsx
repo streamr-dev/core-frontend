@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Container } from 'toasterhea'
 import styled from 'styled-components'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { NavProvider } from '@streamr/streamr-layout'
 import '~/shared/assets/stylesheets'
 import '@ibm/plex/css/ibm-plex.css'
 import '~/utils/setupSnippets'
@@ -61,65 +62,39 @@ const MiscRouter = () => [
 const queryClient = new QueryClient()
 
 const App = () => (
-    <HubRouter>
-        <QueryClientProvider client={queryClient}>
-            <StreamrClientProvider>
-                <ModalPortalProvider>
-                    <ModalProvider>
-                        <Analytics />
-                        <Globals />
-                        <Routes>
-                            <Route path="/hub/projects/*" errorElement={<ErrorPage />}>
-                                <Route index element={<ProjectListingPage />} />
-                                <Route path="*" element={<ProjectPage />} />
-                            </Route>
-                            <Route path="/hub/streams/*" errorElement={<ErrorPage />}>
-                                <Route index element={<StreamListingPage />} />
-                                <Route path=":id/*" element={<StreamPage />} />
-                            </Route>
-                            {isFeatureEnabled(FeatureFlag.PhaseTwo) && (
-                                <>
-                                    <Route
-                                        path="/hub/network/*"
-                                        errorElement={<ErrorPage />}
-                                    >
-                                        <Route
-                                            path="operators/*"
-                                            errorElement={<ErrorPage />}
-                                        >
-                                            <Route index element={<OperatorsPage />} />
-                                            <Route
-                                                path=":id"
-                                                element={<SingleOperatorPage />}
-                                            />
-                                        </Route>
-                                        <Route
-                                            path="sponsorships/*"
-                                            errorElement={<ErrorPage />}
-                                        >
-                                            <Route index element={<SponsorshipsPage />} />
-                                            <Route
-                                                path=":id"
-                                                element={<SingleSponsorshipPage />}
-                                            />
-                                        </Route>
-                                        <Route
-                                            path="overview"
-                                            element={<NetworkOverviewPage />}
-                                        />
-                                    </Route>
-                                </>
-                            )}
-                            {MiscRouter()}
-                        </Routes>
-                        <Container id={Layer.Modal} />
-                        <ToastContainer id={Layer.Toast} />
-                        <AnalyticsTracker />
-                    </ModalProvider>
-                </ModalPortalProvider>
-            </StreamrClientProvider>
-        </QueryClientProvider>
-    </HubRouter>
+    <Root>
+        <Analytics />
+        <Globals />
+        <Routes>
+            <Route path="/hub/projects/*" errorElement={<ErrorPage />}>
+                <Route index element={<ProjectListingPage />} />
+                <Route path="*" element={<ProjectPage />} />
+            </Route>
+            <Route path="/hub/streams/*" errorElement={<ErrorPage />}>
+                <Route index element={<StreamListingPage />} />
+                <Route path=":id/*" element={<StreamPage />} />
+            </Route>
+            {isFeatureEnabled(FeatureFlag.PhaseTwo) && (
+                <>
+                    <Route path="/hub/network/*" errorElement={<ErrorPage />}>
+                        <Route path="operators/*" errorElement={<ErrorPage />}>
+                            <Route index element={<OperatorsPage />} />
+                            <Route path=":id" element={<SingleOperatorPage />} />
+                        </Route>
+                        <Route path="sponsorships/*" errorElement={<ErrorPage />}>
+                            <Route index element={<SponsorshipsPage />} />
+                            <Route path=":id" element={<SingleSponsorshipPage />} />
+                        </Route>
+                        <Route path="overview" element={<NetworkOverviewPage />} />
+                    </Route>
+                </>
+            )}
+            {MiscRouter()}
+        </Routes>
+        <Container id={Layer.Modal} />
+        <ToastContainer id={Layer.Toast} />
+        <AnalyticsTracker />
+    </Root>
 )
 
 export default App
@@ -133,3 +108,19 @@ const ToastContainer = styled(Container)`
     position: fixed;
     z-index: 10;
 `
+
+function Root({ children }: { children: ReactNode }) {
+    return (
+        <HubRouter>
+            <QueryClientProvider client={queryClient}>
+                <NavProvider>
+                    <StreamrClientProvider>
+                        <ModalPortalProvider>
+                            <ModalProvider>{children}</ModalProvider>
+                        </ModalPortalProvider>
+                    </StreamrClientProvider>
+                </NavProvider>
+            </QueryClientProvider>
+        </HubRouter>
+    )
+}
