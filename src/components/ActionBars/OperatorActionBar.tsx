@@ -40,12 +40,14 @@ import {
     useUndelegateFunds,
 } from '~/hooks/operators'
 import { isRejectionReason } from '~/modals/BaseModal'
+import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 
 export const OperatorActionBar: FunctionComponent<{
     operator: ParsedOperator
     handleEdit: (operator: ParsedOperator) => void
     onDelegationChange: () => void
-}> = ({ operator, handleEdit, onDelegationChange }) => {
+    tokenSymbol: string
+}> = ({ operator, handleEdit, onDelegationChange, tokenSymbol }) => {
     const { copy } = useCopy()
 
     const { count: liveNodeCount, isLoading: liveNodeCountIsLoading } =
@@ -260,10 +262,14 @@ export const OperatorActionBar: FunctionComponent<{
                 <Pad>
                     <StatGrid>
                         <StatCell label="Total value">
-                            {fromAtto(operator.valueWithoutEarnings).toString()}
+                            {`${abbreviateNumber(
+                                fromAtto(operator.valueWithoutEarnings).toNumber(),
+                            )} ${tokenSymbol}`}
                         </StatCell>
                         <StatCell label="Deployed stake">
-                            {fromAtto(operator.totalStakeInSponsorshipsWei).toString()}
+                            {`${abbreviateNumber(
+                                fromAtto(operator.totalStakeInSponsorshipsWei).toNumber(),
+                            )} ${tokenSymbol}`}
                         </StatCell>
                         <StatCell label="Owner's delegation">
                             {ownerDelegationPercentage.toFixed(0)}%
@@ -283,11 +289,13 @@ export const OperatorActionBar: FunctionComponent<{
                             {(getSpotApy(operator) * 100).toFixed(0)}%
                         </StatCell>
                         <StatCell label="Cumulative earnings">
-                            {fromAtto(
-                                operator.cumulativeProfitsWei.plus(
-                                    operator.cumulativeOperatorsCutWei,
-                                ),
-                            ).toString()}
+                            {`${abbreviateNumber(
+                                fromAtto(
+                                    operator.cumulativeProfitsWei.plus(
+                                        operator.cumulativeOperatorsCutWei,
+                                    ),
+                                ).toNumber(),
+                            )} ${tokenSymbol}`}
                         </StatCell>
                         <StatCell label="Live nodes">
                             <>

@@ -5,7 +5,7 @@ import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { truncateStreamName } from '~/shared/utils/text'
 import { StreamDescription } from '~/components/StreamDescription'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { truncateNumber } from '~/shared/utils/truncateNumber'
+import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { useOperatorForWallet } from '~/hooks/operators'
@@ -16,6 +16,7 @@ import {
     useEditSponsorshipFunding,
     useFundSponsorship,
     useJoinSponsorshipAsOperator,
+    useSponsorshipTokenInfo,
 } from '~/hooks/sponsorships'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { StreamInfoCell } from './NetworkUtils'
@@ -42,6 +43,8 @@ export function QueriedSponsorshipsTable({
     const wallet = useWalletAccount()
 
     const operator = useOperatorForWallet(wallet)
+
+    const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
     const fundSponsorship = useFundSponsorship()
 
@@ -80,7 +83,8 @@ export function QueriedSponsorshipsTable({
                                 /day
                             </>
                         ),
-                        valueMapper: (element) => element.payoutPerDay.toString(),
+                        valueMapper: (element) =>
+                            abbreviateNumber(element.payoutPerDay.toNumber()),
                         align: 'start',
                         isSticky: false,
                         key: 'payoutPerDay',
@@ -95,7 +99,9 @@ export function QueriedSponsorshipsTable({
                     {
                         displayName: 'Staked',
                         valueMapper: (element) =>
-                            truncateNumber(element.totalStake.toNumber(), 'thousands'),
+                            `${abbreviateNumber(
+                                element.totalStake.toNumber(),
+                            )} ${tokenSymbol}`,
                         align: 'end',
                         isSticky: false,
                         key: 'staked',

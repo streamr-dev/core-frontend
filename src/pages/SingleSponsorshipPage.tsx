@@ -13,7 +13,7 @@ import {
     formatLongDate,
     formatShortDate,
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
-import { truncateNumber } from '~/shared/utils/truncateNumber'
+import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { errorToast } from '~/utils/toast'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { SponsorshipActionBar } from '~/components/ActionBars/SponsorshipActionBar'
@@ -25,7 +25,7 @@ import NetworkChartDisplay from '~/components/NetworkChartDisplay'
 import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
-import { useSponsorshipQuery } from '~/hooks/sponsorships'
+import { useSponsorshipQuery, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 
 export const SingleSponsorshipPage = () => {
     const sponsorshipId = useParams().id || ''
@@ -33,6 +33,8 @@ export const SingleSponsorshipPage = () => {
     const sponsorshipQuery = useSponsorshipQuery(sponsorshipId)
 
     const sponsorship = sponsorshipQuery.data || null
+
+    const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
     const [selectedDataSource, setSelectedDataSource] = useState<
         'amountStaked' | 'numberOfOperators' | 'apy'
@@ -90,7 +92,7 @@ export const SingleSponsorshipPage = () => {
         (value: number) => {
             switch (selectedDataSource) {
                 case 'amountStaked':
-                    return `${truncateNumber(value, 'thousands')} DATA`
+                    return `${abbreviateNumber(value)} ${tokenSymbol}`
                 case 'numberOfOperators':
                     return value.toString()
                 case 'apy':
@@ -99,14 +101,14 @@ export const SingleSponsorshipPage = () => {
                     return ''
             }
         },
-        [selectedDataSource],
+        [selectedDataSource, tokenSymbol],
     )
 
     const formatYAxisValue = useCallback(
         (value: number) => {
             switch (selectedDataSource) {
                 case 'amountStaked':
-                    return truncateNumber(value, 'thousands')
+                    return `${abbreviateNumber(value)}`
                 case 'numberOfOperators':
                     return value.toString()
                 case 'apy':
@@ -235,9 +237,8 @@ export const SingleSponsorshipPage = () => {
                                                 key: 'staked',
                                                 isSticky: true,
                                                 valueMapper: (stake) =>
-                                                    truncateNumber(
+                                                    abbreviateNumber(
                                                         Number(stake.amount),
-                                                        'thousands',
                                                     ).toString(),
                                                 align: 'end',
                                             },
@@ -269,10 +270,9 @@ export const SingleSponsorshipPage = () => {
                                         {
                                             displayName: 'Amount',
                                             valueMapper: (element: any) =>
-                                                truncateNumber(
+                                                `${abbreviateNumber(
                                                     Number(element.amount),
-                                                    'thousands',
-                                                ),
+                                                )} ${tokenSymbol}`,
                                             align: 'start',
                                             isSticky: false,
                                             key: 'amount',

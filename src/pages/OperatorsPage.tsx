@@ -29,6 +29,8 @@ import {
 import { Delegation } from '~/types'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { refetchQuery } from '~/utils'
+import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
+import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -56,6 +58,8 @@ export const OperatorsPage = () => {
         pageSize: PAGE_SIZE,
         searchQuery,
     })
+
+    const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
     const operator = useOperatorForWallet(wallet)
 
@@ -144,9 +148,15 @@ export const OperatorsPage = () => {
                         }
                     >
                         {selectedTab === TabOption.AllOperators ? (
-                            <OperatorsTable query={allOperatorsQuery} />
+                            <OperatorsTable
+                                query={allOperatorsQuery}
+                                tokenSymbol={tokenSymbol}
+                            />
                         ) : (
-                            <DelegationsTable query={myDelegationsQuery} />
+                            <DelegationsTable
+                                query={myDelegationsQuery}
+                                tokenSymbol={tokenSymbol}
+                            />
                         )}
                         {currentQuery.hasNextPage && (
                             <LoadMoreButton
@@ -175,8 +185,10 @@ const OperatorNameCell = styled.div`
 
 function DelegationsTable({
     query,
+    tokenSymbol,
 }: {
     query: UseInfiniteQueryResult<{ skip: number; elements: Delegation[] }>
+    tokenSymbol: string
 }) {
     const elements = query.data?.pages.flatMap((page) => page.elements) || []
 
@@ -206,7 +218,10 @@ function DelegationsTable({
                 },
                 {
                     displayName: 'My share',
-                    valueMapper: (element) => fromAtto(element.myShare).toString(),
+                    valueMapper: (element) =>
+                        `${abbreviateNumber(
+                            fromAtto(element.myShare).toNumber(),
+                        )} ${tokenSymbol}`,
                     align: 'start',
                     isSticky: false,
                     key: 'myShare',
@@ -214,7 +229,9 @@ function DelegationsTable({
                 {
                     displayName: 'Total stake',
                     valueMapper: (element) =>
-                        fromAtto(element.valueWithoutEarnings).toString(),
+                        `${abbreviateNumber(
+                            fromAtto(element.valueWithoutEarnings).toNumber(),
+                        )} ${tokenSymbol}`,
                     align: 'end',
                     isSticky: false,
                     key: 'totalStake',
@@ -249,8 +266,10 @@ function DelegationsTable({
 
 function OperatorsTable({
     query,
+    tokenSymbol,
 }: {
     query: UseInfiniteQueryResult<{ skip: number; elements: ParsedOperator[] }>
+    tokenSymbol: string
 }) {
     const elements = query.data?.pages.flatMap((page) => page.elements) || []
 
@@ -281,7 +300,9 @@ function OperatorsTable({
                 {
                     displayName: 'Total value',
                     valueMapper: (element) =>
-                        fromAtto(element.valueWithoutEarnings).toString(),
+                        `${abbreviateNumber(
+                            fromAtto(element.valueWithoutEarnings).toNumber(),
+                        )} ${tokenSymbol}`,
                     align: 'start',
                     isSticky: false,
                     key: 'totalValue',
@@ -289,7 +310,9 @@ function OperatorsTable({
                 {
                     displayName: 'Deployed',
                     valueMapper: (element) =>
-                        fromAtto(element.totalStakeInSponsorshipsWei).toString(),
+                        `${abbreviateNumber(
+                            fromAtto(element.totalStakeInSponsorshipsWei).toNumber(),
+                        )} ${tokenSymbol}`,
                     align: 'end',
                     isSticky: false,
                     key: 'deployed',

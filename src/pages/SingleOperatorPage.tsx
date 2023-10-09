@@ -14,7 +14,7 @@ import {
     formatLongDate,
     formatShortDate,
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
-import { truncateNumber } from '~/shared/utils/truncateNumber'
+import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { errorToast } from '~/utils/toast'
 import { toBN } from '~/utils/bn'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
@@ -188,6 +188,7 @@ export const SingleOperatorPage = () => {
                         }
                     }}
                     onDelegationChange={() => void refetchQuery(operatorQuery)}
+                    tokenSymbol={tokenSymbol}
                 />
             )}
             <LayoutColumn>
@@ -259,9 +260,11 @@ export const SingleOperatorPage = () => {
                                                     Current value
                                                 </StatCellLabel>
                                                 <StatCellBody>
-                                                    {fromAtto(
-                                                        myDelegationAmount,
-                                                    ).toString()}
+                                                    {`${abbreviateNumber(
+                                                        fromAtto(
+                                                            myDelegationAmount,
+                                                        ).toNumber(),
+                                                    )} ${tokenSymbol}`}
                                                 </StatCellBody>
                                             </Pad>
                                         </DelegationCell>
@@ -310,7 +313,9 @@ export const SingleOperatorPage = () => {
                                     {
                                         displayName: 'Staked',
                                         valueMapper: (element) =>
-                                            fromAtto(element.amount).toString(),
+                                            `${abbreviateNumber(
+                                                fromAtto(element.amount).toNumber(),
+                                            )} ${tokenSymbol}`,
                                         align: 'start',
                                         isSticky: false,
                                         key: 'staked',
@@ -360,7 +365,9 @@ export const SingleOperatorPage = () => {
                                     {
                                         displayName: 'Slashed',
                                         valueMapper: (element) =>
-                                            fromAtto(element.amount).toString(),
+                                            `${abbreviateNumber(
+                                                fromAtto(element.amount).toNumber(),
+                                            )} ${tokenSymbol}`,
                                         align: 'start',
                                         isSticky: false,
                                         key: 'slashed',
@@ -502,11 +509,11 @@ export const SingleOperatorPage = () => {
 }
 
 function tooltipValueFormatter(value: number, tokenSymbol: string) {
-    return `${truncateNumber(value, 'thousands')} ${tokenSymbol}`
+    return `${abbreviateNumber(value)} ${tokenSymbol}`
 }
 
 function yAxisAxisDisplayFormatter(value: number) {
-    return truncateNumber(value, 'thousands')
+    return abbreviateNumber(value)
 }
 
 const ChartGrid = styled(SegmentGrid)`

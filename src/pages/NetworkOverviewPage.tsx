@@ -12,7 +12,7 @@ import {
     formatLongDate,
     formatShortDate,
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
-import { truncateNumber } from '~/shared/utils/truncateNumber'
+import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import NetworkChartDisplay from '~/components/NetworkChartDisplay'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import WalletPass from '~/components/WalletPass'
@@ -23,7 +23,10 @@ import { truncate } from '~/shared/utils/text'
 import { HubAvatar } from '~/shared/components/AvatarImage'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { fromAtto, fromDecimals } from '~/marketplace/utils/math'
-import { useSponsorshipsForCreatorQuery } from '~/hooks/sponsorships'
+import {
+    useSponsorshipTokenInfo,
+    useSponsorshipsForCreatorQuery,
+} from '~/hooks/sponsorships'
 import { BNish, toBN } from '~/utils/bn'
 import {
     useDelegationsForWalletQuery,
@@ -59,6 +62,8 @@ export function NetworkOverviewPage() {
 
 function MyOperatorSummary() {
     const wallet = useWalletAccount()
+
+    const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
     const stats = useOperatorStatsForWallet(wallet)
 
@@ -122,7 +127,9 @@ function MyOperatorSummary() {
                         <Pad>
                             <StatGrid>
                                 <StatCell label="Total value">
-                                    {fromAtto(value).toString()} DATA
+                                    {`${abbreviateNumber(
+                                        fromAtto(value).toNumber(),
+                                    )} ${tokenSymbol}`}
                                 </StatCell>
                                 <StatCell label="Delegators">{numOfDelegators}</StatCell>
                                 <StatCell label="Sponsorships">
@@ -163,11 +170,11 @@ function MyOperatorSummary() {
                                     graphData={chartData}
                                     xAxisDisplayFormatter={formatShortDate}
                                     yAxisAxisDisplayFormatter={(value) =>
-                                        truncateNumber(value, 'thousands')
+                                        abbreviateNumber(value)
                                     }
                                     tooltipLabelFormatter={formatLongDate}
                                     tooltipValueFormatter={(value) =>
-                                        `${truncateNumber(value, 'thousands')} DATA`
+                                        `${abbreviateNumber(value)} ${tokenSymbol}`
                                     }
                                 />
                             </NetworkChartDisplay>
@@ -201,6 +208,8 @@ function MyDelegationsSummary() {
 
     const stats = useDelegationsStats(wallet)
 
+    const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
+
     const { value = toBN(0), numOfOperators = 0, minApy = 0, maxApy = 0 } = stats || {}
 
     const apy = minApy === maxApy ? [minApy] : [minApy, maxApy]
@@ -211,7 +220,9 @@ function MyDelegationsSummary() {
                 <Pad>
                     <StatGrid>
                         <StatCell label="Current value">
-                            {fromAtto(value).toString()} DATA
+                            {`${abbreviateNumber(
+                                fromAtto(value).toNumber(),
+                            )} ${tokenSymbol}`}
                         </StatCell>
                         <StatCell label="Operators">{numOfOperators}</StatCell>
                         <StatCell label="APY">
@@ -226,6 +237,8 @@ function MyDelegationsSummary() {
 
 function MyDelegations() {
     const wallet = useWalletAccount()
+
+    const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
     const query = useDelegationsForWalletQuery({ address: wallet })
 
@@ -256,7 +269,9 @@ function MyDelegations() {
                                 {
                                     displayName: 'My share',
                                     valueMapper: ({ myShare }) =>
-                                        fromAtto(myShare).toString(),
+                                        `${abbreviateNumber(
+                                            fromAtto(myShare).toNumber(),
+                                        )} ${tokenSymbol}`,
                                     align: 'start',
                                     isSticky: false,
                                     key: 'myShare',
@@ -264,7 +279,9 @@ function MyDelegations() {
                                 {
                                     displayName: 'Total stake',
                                     valueMapper: ({ valueWithoutEarnings }) =>
-                                        fromAtto(valueWithoutEarnings).toString(),
+                                        `${abbreviateNumber(
+                                            fromAtto(valueWithoutEarnings).toNumber(),
+                                        )} ${tokenSymbol}`,
                                     align: 'end',
                                     isSticky: false,
                                     key: 'totalStake',

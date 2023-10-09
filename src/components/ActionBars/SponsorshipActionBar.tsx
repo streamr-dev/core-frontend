@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import moment from 'moment'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
-import { truncateNumber } from '~/shared/utils/truncateNumber'
+import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { BlackTooltip } from '~/shared/components/Tooltip/Tooltip'
 import Button from '~/shared/components/Button'
 import useCopy from '~/shared/hooks/useCopy'
@@ -269,13 +269,13 @@ export function SponsorshipActionBar({
                 <Pad>
                     <StatGrid>
                         <StatCell label="Payout rate">
-                            {sponsorship.payoutPerDay.toString()}{' '}
+                            {abbreviateNumber(sponsorship.payoutPerDay.toNumber())}{' '}
                             <SponsorshipPaymentTokenName />
                             /day
                         </StatCell>
                         <StatCell label="Operators">{sponsorship.operatorCount}</StatCell>
                         <StatCell label="Total staked">
-                            {truncateNumber(Number(sponsorship.totalStake), 'thousands')}{' '}
+                            {abbreviateNumber(sponsorship.totalStake.toNumber())}{' '}
                             <SponsorshipPaymentTokenName />
                         </StatCell>
                     </StatGrid>
@@ -287,11 +287,13 @@ export function SponsorshipActionBar({
                             {(sponsorship.apy * 100).toFixed(0)}%
                         </StatCell>
                         <StatCell label="Cumulative sponsored">
-                            {sponsorship.cumulativeSponsoring.toString()}{' '}
+                            {abbreviateNumber(
+                                sponsorship.cumulativeSponsoring.toNumber(),
+                            )}{' '}
                             <SponsorshipPaymentTokenName />
                         </StatCell>
                         <StatCell label="Minimum stake">
-                            {sponsorship.minimumStake.toString()}{' '}
+                            {abbreviateNumber(sponsorship.minimumStake.toNumber())}{' '}
                             <SponsorshipPaymentTokenName />
                         </StatCell>
                     </StatGrid>
