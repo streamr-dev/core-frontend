@@ -7,7 +7,7 @@ import Layout, { LayoutColumn } from '~/components/Layout'
 import { NoData } from '~/shared/components/NoData'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { LAPTOP } from '~/shared/utils/styled'
-import { HubAvatar } from '~/shared/components/AvatarImage'
+import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { truncate } from '~/shared/utils/text'
 import {
     formatLongDate,
@@ -208,12 +208,24 @@ export const SingleSponsorshipPage = () => {
                                                 displayName: 'Operator ID',
                                                 key: 'operatorId',
                                                 isSticky: true,
-                                                valueMapper: (stake) => (
+                                                valueMapper: ({
+                                                    operatorId,
+                                                    metadata: { imageUrl, name },
+                                                }) => (
                                                     <OperatorCell>
-                                                        <HubAvatar
-                                                            id={stake.operatorId}
-                                                        />{' '}
-                                                        {truncate(stake.operatorId)}
+                                                        {imageUrl ? (
+                                                            <HubImageAvatar
+                                                                src={imageUrl}
+                                                                alt={
+                                                                    imageUrl || operatorId
+                                                                }
+                                                            />
+                                                        ) : (
+                                                            <HubAvatar id={operatorId} />
+                                                        )}
+                                                        <span>
+                                                            {name || truncate(operatorId)}
+                                                        </span>
                                                     </OperatorCell>
                                                 ),
                                                 align: 'start',
@@ -293,8 +305,8 @@ const ChartGrid = styled(SegmentGrid)`
 `
 
 const OperatorCell = styled.div`
-    display: flex;
     align-items: center;
+    display: flex;
     justify-content: center;
-    gap: 5px;
+    gap: 12px;
 `

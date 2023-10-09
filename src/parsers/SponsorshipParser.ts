@@ -3,6 +3,7 @@ import { getConfigFromChain } from '~/getters/getConfigFromChain'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
 import { fromAtto, fromDecimals, toDecimals } from '~/marketplace/utils/math'
 import { BN, toBN } from '~/utils/bn'
+import { OperatorMetadataParser } from './OperatorMetadataParser'
 
 export const SponsorshipParser = z
     .object({
@@ -21,14 +22,21 @@ export const SponsorshipParser = z
                 .object({
                     operator: z.object({
                         id: z.string(),
+                        metadataJsonString: OperatorMetadataParser,
                     }),
                     amount: z.string(), // wei
                     joinDate: z.coerce.number(),
                 })
-                .transform(({ operator: { id: operatorId }, ...stake }) => ({
-                    ...stake,
-                    operatorId,
-                })),
+                .transform(
+                    ({
+                        operator: { id: operatorId, metadataJsonString: metadata },
+                        ...stake
+                    }) => ({
+                        ...stake,
+                        operatorId,
+                        metadata,
+                    }),
+                ),
         ),
         totalPayoutWeiPerSec: z.string(),
         totalStakedWei: z.string(),
