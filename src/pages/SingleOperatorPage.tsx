@@ -44,7 +44,7 @@ import { getDelegatedAmountForWallet, getDelegationFractionForWallet } from '~/g
 import { useOperatorByIdQuery } from '~/hooks/operators'
 import { refetchQuery } from '~/utils'
 import { isRejectionReason } from '~/modals/BaseModal'
-import { Stake } from '~/generated/gql/network'
+import { OperatorChecklist } from '~/components/OperatorChecklist'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -288,6 +288,9 @@ export const SingleOperatorPage = () => {
                                         Connect your wallet to show your delegation.
                                     </Pad>
                                 )}
+                            </NetworkPageSegment>
+                            <NetworkPageSegment title="Operator checklist">
+                                <OperatorChecklist operatorId={operatorId} />
                             </NetworkPageSegment>
                         </ChartGrid>
                         <NetworkPageSegment

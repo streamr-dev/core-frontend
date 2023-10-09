@@ -27,6 +27,7 @@ export default function useOperatorLiveNodes(operatorId: string) {
     useSubscribe(
         { id: streamId },
         {
+            disabled: !!operatorId,
             onError: (e) => {
                 console.warn('Failed to count live nodes', e)
             },
@@ -44,7 +45,13 @@ export default function useOperatorLiveNodes(operatorId: string) {
         },
     )
 
+    const detected = Object.keys(liveNodes).length > 0
+
     useEffect(() => {
+        if (detected) {
+            return void setIsLoading(false)
+        }
+
         let mounted = true
 
         setIsLoading(true)
@@ -58,7 +65,7 @@ export default function useOperatorLiveNodes(operatorId: string) {
         return () => {
             mounted = false
         }
-    }, [])
+    }, [detected])
 
     return {
         count: Object.keys(liveNodes).length,
