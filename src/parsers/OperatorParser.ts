@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import getCoreConfig from '~/getters/getCoreConfig'
 import { fromAtto } from '~/marketplace/utils/math'
 import { toBN } from '~/utils/bn'
 
@@ -22,45 +21,7 @@ export const OperatorParser = z
         ),
         exchangeRate: z.string().transform(toBN),
         id: z.string(),
-        metadataJsonString: z
-            .string()
-            .optional()
-            .transform((value = '{}') => {
-                try {
-                    return JSON.parse(value)
-                } catch (e) {
-                    console.warn('Failed to parse metadata JSON. Is it JSON?', value, e)
-                }
-
-                return {}
-            })
-            .pipe(
-                z
-                    .object({
-                        name: z
-                            .string()
-                            .optional()
-                            .transform((v) => v || ''),
-                        description: z
-                            .string()
-                            .optional()
-                            .transform((v) => v || ''),
-                        imageIpfsCid: z.string().optional(),
-                        redundancyFactor: z.coerce.number().optional(),
-                    })
-                    .transform(({ imageIpfsCid, redundancyFactor, ...metadata }) => {
-                        const imageUrl = imageIpfsCid
-                            ? `${getCoreConfig().ipfs.ipfsGatewayUrl}${imageIpfsCid}`
-                            : undefined
-
-                        return {
-                            ...metadata,
-                            imageUrl,
-                            imageIpfsCid,
-                            redundancyFactor,
-                        }
-                    }),
-            ),
+        metadataJsonString: OperatorMetadataParser,
         nodes: z.array(z.string()),
         operatorsCutFraction: z.string().transform(fromAtto),
         owner: z.string(),
