@@ -1,8 +1,12 @@
-import React from 'react'
+import { StreamrConfig } from '@streamr/network-contracts'
+import React, { useState } from 'react'
 import { useEffect } from 'react'
 import { toaster } from 'toasterhea'
+import { getConfigValueFromChain } from '~/getters/getConfigValueFromChain'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
+import { ConfigKey } from '~/types'
 import { Layer } from '~/utils/Layer'
+import { errorToast } from '~/utils/toast'
 
 const infoToast = toaster(Toast, Layer.Toast)
 
@@ -68,4 +72,37 @@ export function useInfoToastEffect() {
             onKeyUp()
         }
     }, [])
+}
+
+export function useConfigValueFromChain<
+    T extends ConfigKey,
+    U extends Awaited<ReturnType<StreamrConfig[T]>>,
+>(key: T): U | undefined {
+    const [value, setValue] = useState<U>()
+
+    useEffect(() => {
+        let mounted = true
+
+        void (async () => {
+            try {
+                const newValue = await getConfigValueFromChain(key)
+
+                if (!mounted) {
+                    return
+                }
+
+                setValue(newValue as U)
+            } catch (e) {
+                console.warn(`Could not load ${key} config from chain`, e)
+
+                errorToast({ title: 'Could not load config from chain' })
+            }
+        })()
+
+        return () => {
+            mounted = false
+        }
+    }, [key])
+
+    return value
 }

@@ -22,7 +22,7 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS } from '~/shared/utils/styled'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
-import { useConfigFromChain } from '~/hooks/useConfigFromChain'
+import { useConfigValueFromChain } from '~/hooks'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onSubmit: (amountWei: string) => void
@@ -77,7 +77,8 @@ export default function JoinSponsorshipModal({
 
     const insufficientFunds = finalAmount.isGreaterThan(operatorBalance)
 
-    const { minimumStakeWei } = useConfigFromChain()
+    const minimumStakeWei = useConfigValueFromChain('minimumStakeWei')
+
     const isAboveMinimumStake = minimumStakeWei
         ? finalAmount.isGreaterThan(toBN(minimumStakeWei))
         : true

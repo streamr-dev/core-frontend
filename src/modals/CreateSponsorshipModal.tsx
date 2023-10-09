@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useReducer, useState } from 'react'
+import React, { useMemo, useReducer, useState } from 'react'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     ErrorLabel,
@@ -18,9 +18,7 @@ import Label from '~/shared/components/Ui/Label'
 import { toBN } from '~/utils/bn'
 import { StreamSearchDropdown } from '~/components/StreamSearchDropdown'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
-import useIsMounted from '~/shared/hooks/useIsMounted'
-import { getConfigFromChain } from '~/getters/getConfigFromChain'
-import { errorToast } from '~/utils/toast'
+import { useConfigValueFromChain } from '~/hooks'
 
 const defaultFormData: CreateSponsorshipForm = {
     streamId: '',
@@ -49,8 +47,6 @@ export default function CreateSponsorshipModal({
     tokenDecimals,
     ...props
 }: Props) {
-    const isMounted = useIsMounted()
-
     const [busy, setBusy] = useState(false)
 
     const decimalMultiplier = useMemo(() => Math.pow(10, tokenDecimals), [tokenDecimals])
@@ -109,31 +105,15 @@ export default function CreateSponsorshipModal({
     const invalidMinStakeDuration =
         !!initialAmount && !!payoutRate && extensionInDays < minStakeDuration
 
-    const [maxPenaltyPeriod, setMaxPenaltyPeriod] = useState<number>()
+    const maxPenaltyPeriodSeconds = useConfigValueFromChain('maxPenaltyPeriodSeconds')
+
+    const maxPenaltyPeriod =
+        typeof maxPenaltyPeriodSeconds === 'undefined'
+            ? void 0
+            : toBN(maxPenaltyPeriodSeconds).dividedBy(86400).toNumber()
 
     const tooLongMinStakeDuration =
         !!maxPenaltyPeriod && minStakeDuration > maxPenaltyPeriod
-
-    useEffect(() => {
-        getConfigFromChain()
-            .then((config) => {
-                if (isMounted() && config) {
-                    setMaxPenaltyPeriod(
-                        toBN(config.maxPenaltyPeriodSeconds).dividedBy(86400).toNumber(),
-                    )
-                }
-            })
-            .catch((e) => {
-                console.warn(
-                    'Could not load the data from the chain. Please try again later.',
-                    e,
-                )
-
-                errorToast({
-                    title: 'Could not load the data from the chain. Please try again later.',
-                })
-            })
-    }, [isMounted])
 
     return (
         <FormModal

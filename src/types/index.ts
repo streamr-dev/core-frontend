@@ -41,3 +41,8 @@ export interface XY {
     x: number
     y: number
 }
+
+export type ConfigKey =
+    | 'maxPenaltyPeriodSeconds'
+    | 'minimumStakeWei'
+    | 'minimumSelfDelegationFraction'
