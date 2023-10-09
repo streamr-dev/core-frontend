@@ -727,8 +727,8 @@ export function getSpotApy<
     const now = Date.now()
 
     const yearlyIncome = stakes.reduce(
-        (sum, { spotAPY, projectedInsolvencyAt, amount }) => {
-            if (projectedInsolvencyAt * 1000 < now) {
+        (sum, { spotAPY, projectedInsolvencyAt, amount, isSponsorshipRunning }) => {
+            if (projectedInsolvencyAt * 1000 < now || !isSponsorshipRunning) {
                 /**
                  * Skip expired stakes.
                  */
