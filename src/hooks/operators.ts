@@ -22,7 +22,7 @@ import { DelegationsStats, Delegation } from '~/types'
 import { toBN } from '~/utils/bn'
 import { delegateFunds, undelegateFunds } from '~/utils/operators'
 import { errorToast } from '~/utils/toast'
-import { useConfigFromChain } from './useConfigFromChain'
+import { useConfigValueFromChain } from '~/hooks'
 
 export function useOperatorForWalletQuery(address = '') {
     const addr = address.toLowerCase()
@@ -370,7 +370,9 @@ export function useIsUndelegatingFundsToOperator(
 export function useUndelegateFunds() {
     const withFlag = useFlagger()
 
-    const { minimumSelfDelegationFraction } = useConfigFromChain()
+    const minimumSelfDelegationFraction = useConfigValueFromChain(
+        'minimumSelfDelegationFraction',
+    )
 
     return useCallback(
         ({ operator, wallet }: { operator: ParsedOperator; wallet: string }) =>

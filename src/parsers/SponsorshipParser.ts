@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { getConfigFromChain } from '~/getters/getConfigFromChain'
+import { getConfigValueFromChain } from '~/getters/getConfigValueFromChain'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
 import { fromAtto, fromDecimals, toDecimals } from '~/marketplace/utils/math'
 import { BN, toBN } from '~/utils/bn'
@@ -55,7 +55,7 @@ export const SponsorshipParser = z
         }) => {
             const { decimals } = await getSponsorshipTokenInfo()
 
-            const { minimumStakeWei } = await getConfigFromChain()
+            const minimumStakeWei = await getConfigValueFromChain('minimumStakeWei')
 
             return {
                 ...rest,

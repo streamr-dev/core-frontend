@@ -15,9 +15,9 @@ import { BN, toBN } from '~/utils/bn'
 import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
 import { Alert } from '~/components/Alert'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { useConfigFromChain } from '~/hooks/useConfigFromChain'
 import { getSelfDelegatedAmount, getSelfDelegationFraction } from '~/getters'
 import { ParsedOperator } from '~/parsers/OperatorParser'
+import { useConfigValueFromChain } from '~/hooks'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onResolve?: (amount: string) => void
@@ -44,7 +44,10 @@ export default function DelegateFundsModal({
     ...props
 }: Props) {
     const walletAddress = useWalletAccount()
-    const { minimumSelfDelegationFraction } = useConfigFromChain()
+
+    const minimumSelfDelegationFraction = useConfigValueFromChain(
+        'minimumSelfDelegationFraction',
+    )
 
     const [rawAmount, setRawAmount] = useState(amountProp)
 

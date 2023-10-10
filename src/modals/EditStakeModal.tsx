@@ -15,8 +15,8 @@ import FormModal, {
 import Label from '~/shared/components/Ui/Label'
 import { toBN } from '~/utils/bn'
 import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
-import { useConfigFromChain } from '~/hooks/useConfigFromChain'
 import { Alert } from '~/components/Alert'
+import { useConfigValueFromChain } from '~/hooks'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onSubmit: (
@@ -62,7 +62,8 @@ export default function EditStakeModal({
 
     const difference = finalAmount.minus(toDecimals(currentStakeProp, decimals))
 
-    const { minimumStakeWei } = useConfigFromChain()
+    const minimumStakeWei = useConfigValueFromChain('minimumStakeWei')
+
     const isZeroOrAboveMinimumStake =
         finalAmount.isEqualTo(0) ||
         (minimumStakeWei ? finalAmount.isGreaterThan(toBN(minimumStakeWei)) : true)
