@@ -1,5 +1,6 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useState } from 'react'
 import { Link } from 'react-router-dom'
+import cx from 'classnames'
 import {
     FloatingLoadingIndicator,
     NoDataWrap,
@@ -95,6 +96,7 @@ export const ScrollTableCore = <T extends object>({
 }: ScrollTableProps<T>) => {
     const stickyColumns = columns.filter((column) => column.isSticky)
     const nonStickyColumns = columns.filter((column) => !column.isSticky)
+    const [hoveredRowIndex, setHoveredRowIndex] = useState<number | null>(null)
     return (
         <ScrollTableCellsWrap
             stickyColumnCount={stickyColumns.length}
@@ -112,9 +114,14 @@ export const ScrollTableCore = <T extends object>({
                                     return (
                                         <ScrollTableCell
                                             key={id}
-                                            className={'align-' + stickyColumn.align}
+                                            className={cx(
+                                                'align-' + stickyColumn.align,
+                                                hoveredRowIndex === id && ' hover',
+                                            )}
                                             as={linkMapper ? Link : 'div'}
                                             to={linkMapper ? linkMapper(element) : ''}
+                                            onMouseEnter={() => setHoveredRowIndex(id)}
+                                            onMouseLeave={() => setHoveredRowIndex(null)}
                                         >
                                             {stickyColumn.valueMapper(element)}
                                         </ScrollTableCell>
@@ -142,8 +149,15 @@ export const ScrollTableCore = <T extends object>({
                                                 as={linkMapper ? Link : 'div'}
                                                 to={linkMapper ? linkMapper(element) : ''}
                                                 key={id}
-                                                className={
-                                                    'align-' + nonStickyColumn.align
+                                                className={cx(
+                                                    'align-' + nonStickyColumn.align,
+                                                    hoveredRowIndex === id && ' hover',
+                                                )}
+                                                onMouseEnter={() =>
+                                                    setHoveredRowIndex(id)
+                                                }
+                                                onMouseLeave={() =>
+                                                    setHoveredRowIndex(null)
                                                 }
                                             >
                                                 {nonStickyColumn.valueMapper(element)}
@@ -158,8 +172,16 @@ export const ScrollTableCore = <T extends object>({
                 {actions && actions.length && (
                     <ScrollTableColumn className="action-column">
                         <ScrollTableHeaderCell />
-                        {elements.map((element, index) => (
-                            <ScrollTableCell key={index} className="action-cell">
+                        {elements.map((element, id) => (
+                            <ScrollTableCell
+                                key={id}
+                                className={cx(
+                                    'action-cell',
+                                    hoveredRowIndex === id && ' hover',
+                                )}
+                                onMouseEnter={() => setHoveredRowIndex(id)}
+                                onMouseLeave={() => setHoveredRowIndex(null)}
+                            >
                                 <Popover
                                     title={'actions'}
                                     type={'verticalMeatball'}

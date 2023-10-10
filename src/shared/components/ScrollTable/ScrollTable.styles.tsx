@@ -93,6 +93,9 @@ export const ScrollTableCell = styled.div`
     &.action-cell {
         border-left: 1px solid ${COLORS.secondary};
     }
+    &.hover {
+        background-color: ${COLORS.secondaryLight};
+    }
 `
 
 export const FloatingLoadingIndicator = styled(LoadingIndicator)`
