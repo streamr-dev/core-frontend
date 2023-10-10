@@ -127,6 +127,8 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
         setTimeout(async () => {
             class InsufficientFundsError {}
 
+            let result = false
+
             try {
                 for (const nodeAddress of operator.nodes) {
                     const balance = toBN(
@@ -142,17 +144,17 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
                     }
                 }
 
-                /**
-                 * We've checked if each node's MATIC balance is sufficient
-                 * and now we can report back.
-                 */
-                setNodesFunded(true)
+                result = true
             } catch (e) {
                 if (e instanceof InsufficientFundsError) {
                     return
                 }
 
                 console.warn('Failed to check if nodes are funded', e)
+            } finally {
+                if (mounted) {
+                    setNodesFunded(result)
+                }
             }
         })
 
