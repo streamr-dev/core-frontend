@@ -84,8 +84,8 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
 
         if (!operator.nodes.length) {
             /**
-             * No nodes means the are no funded nodes, pretty
-             * much. Let's report that and cut it short!
+             * No nodes = no funded nodes, eh? Let's report that
+             * and cut it short!
              */
             return void setNodesFunded(false)
         }
@@ -133,14 +133,14 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
 
     if (isLoading || isFetching) {
         /**
-         * We're loading the operator. Make all the point undefined (all TBD).
+         * We're loading the operator. Make all checklist items undefined (all TBD).
          */
         return {}
     }
 
     if (!operator) {
         /**
-         * We're done loading and found no Operator. There are no checklist
+         * We're done loading, and found no Operator. There are no checklist
          * items to dash out.
          */
         return {
