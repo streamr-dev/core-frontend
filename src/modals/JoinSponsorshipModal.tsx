@@ -80,7 +80,7 @@ export default function JoinSponsorshipModal({
     const minimumStakeWei = useConfigValueFromChain('minimumStakeWei')
 
     const isAboveMinimumStake = minimumStakeWei
-        ? finalAmount.isGreaterThan(toBN(minimumStakeWei))
+        ? finalAmount.isGreaterThanOrEqualTo(toBN(minimumStakeWei))
         : true
 
     const canSubmit =
