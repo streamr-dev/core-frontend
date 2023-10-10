@@ -77,6 +77,12 @@ const App = () => (
             {isFeatureEnabled(FeatureFlag.PhaseTwo) && (
                 <>
                     <Route path="/hub/network/*" errorElement={<ErrorPage />}>
+                        <Route
+                            index
+                            element={
+                                <Navigate to={routes.network.sponsorships()} replace />
+                            }
+                        />
                         <Route path="operators/*" errorElement={<ErrorPage />}>
                             <Route index element={<OperatorsPage />} />
                             <Route path=":id" element={<SingleOperatorPage />} />
