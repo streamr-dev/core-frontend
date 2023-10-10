@@ -262,7 +262,9 @@ export function getEmptyParsedProject(): ParsedProject {
         isDataUnion: false,
         name: '',
         newImageToUpload: undefined,
+        paymentDetails: [],
         salePoints: getEmptySalePoints(),
+        streams: [],
         termsOfUse: {
             commercialUse: false,
             redistribution: false,
