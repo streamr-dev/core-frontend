@@ -23,6 +23,7 @@ import { COLORS } from '~/shared/utils/styled'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
 import { useConfigValueFromChain } from '~/hooks'
+import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onSubmit: (amountWei: string) => void
@@ -68,8 +69,10 @@ export default function JoinSponsorshipModal({
 
     const finalAmount = amount.isFinite() && amount.isGreaterThan(0) ? amount : toBN(0)
 
+    const heartbeats = useInterceptHeartbeats(operatorId)
+
     const { count: liveNodesCount, isLoading: liveNodesCountLoading } =
-        useOperatorLiveNodes(operatorId)
+        useOperatorLiveNodes(heartbeats)
 
     useEffect(() => {
         setRawAmount(parseAmount(amountProp))

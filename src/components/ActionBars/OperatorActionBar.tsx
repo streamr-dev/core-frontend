@@ -41,6 +41,7 @@ import {
 } from '~/hooks/operators'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
+import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 
 export const OperatorActionBar: FunctionComponent<{
     operator: ParsedOperator
@@ -50,8 +51,10 @@ export const OperatorActionBar: FunctionComponent<{
 }> = ({ operator, handleEdit, onDelegationChange, tokenSymbol }) => {
     const { copy } = useCopy()
 
+    const heartbeats = useInterceptHeartbeats(operator.id)
+
     const { count: liveNodeCount, isLoading: liveNodeCountIsLoading } =
-        useOperatorLiveNodes(operator.id)
+        useOperatorLiveNodes(heartbeats)
 
     const walletAddress = useWalletAccount()
 

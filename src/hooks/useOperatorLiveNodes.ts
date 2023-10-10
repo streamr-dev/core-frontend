@@ -1,54 +1,17 @@
 import { useEffect, useState } from 'react'
-import { useSubscribe } from 'streamr-client-react'
-import { z } from 'zod'
+import { Heartbeat, useInterceptHeartbeats } from './useInterceptHeartbeats'
 
-const HeartbeatMessage = z.object({
-    parsedContent: z.object({
-        msgType: z.literal('heartbeat'),
-        peerDescriptor: z.object({
-            id: z.string(),
-        }),
-    }),
-})
-
-type HeartbeatMessage = z.infer<typeof HeartbeatMessage>
-
-function isHeartbeatMessage(arg: unknown): arg is HeartbeatMessage {
-    return HeartbeatMessage.safeParse(arg).success
-}
-
-export default function useOperatorLiveNodes(operatorId: string) {
-    const streamId = `${operatorId}/operator/coordination`
-
-    const [liveNodes, setLiveNodes] = useState<Record<string, true>>({})
+export default function useOperatorLiveNodes(
+    heartbeats: Record<string, Heartbeat | undefined>,
+) {
+    const count = Object.keys(heartbeats).length
 
     const [isLoading, setIsLoading] = useState(false)
 
-    useSubscribe(
-        { id: streamId },
-        {
-            disabled: !!operatorId,
-            onError: (e) => {
-                console.warn('Failed to count live nodes', e)
-            },
-            onMessage(msg) {
-                if (!isHeartbeatMessage(msg)) {
-                    return
-                }
-
-                const address = msg.parsedContent.peerDescriptor.id.toLowerCase()
-
-                setLiveNodes((prev) =>
-                    prev[address] ? prev : { ...prev, [address]: true },
-                )
-            },
-        },
-    )
-
-    const detected = Object.keys(liveNodes).length > 0
+    const detectedAny = count > 0
 
     useEffect(() => {
-        if (detected) {
+        if (detectedAny) {
             return void setIsLoading(false)
         }
 
@@ -65,10 +28,10 @@ export default function useOperatorLiveNodes(operatorId: string) {
         return () => {
             mounted = false
         }
-    }, [detected])
+    }, [detectedAny])
 
     return {
-        count: Object.keys(liveNodes).length,
+        count,
         isLoading,
     }
 }
