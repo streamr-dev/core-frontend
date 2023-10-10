@@ -58,9 +58,12 @@ export default function EditStakeModal({
     const finalAmount =
         amount.isFinite() && amount.isGreaterThanOrEqualTo(0) ? amount : toBN(0)
 
-    const insufficientFunds = finalAmount.isGreaterThan(operatorBalance)
-
     const difference = finalAmount.minus(toDecimals(currentStakeProp, decimals))
+
+    // only check for insufficient funds when increasing stake
+    const insufficientFunds = difference.isGreaterThan(0)
+        ? finalAmount.isGreaterThan(operatorBalance)
+        : false
 
     const minimumStakeWei = useConfigValueFromChain('minimumStakeWei')
 
