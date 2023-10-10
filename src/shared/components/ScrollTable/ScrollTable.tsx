@@ -1,5 +1,6 @@
 import React, { ReactNode, useState } from 'react'
 import { Link } from 'react-router-dom'
+import cx from 'classnames'
 import {
     FloatingLoadingIndicator,
     NoDataWrap,
@@ -113,11 +114,10 @@ export const ScrollTableCore = <T extends object>({
                                     return (
                                         <ScrollTableCell
                                             key={id}
-                                            className={
-                                                'align-' +
-                                                stickyColumn.align +
-                                                (hoveredRowIndex === id ? ' hover' : '')
-                                            }
+                                            className={cx(
+                                                'align-' + stickyColumn.align,
+                                                hoveredRowIndex === id && ' hover',
+                                            )}
                                             as={linkMapper ? Link : 'div'}
                                             to={linkMapper ? linkMapper(element) : ''}
                                             onMouseEnter={() => setHoveredRowIndex(id)}
@@ -149,13 +149,10 @@ export const ScrollTableCore = <T extends object>({
                                                 as={linkMapper ? Link : 'div'}
                                                 to={linkMapper ? linkMapper(element) : ''}
                                                 key={id}
-                                                className={
-                                                    'align-' +
-                                                    nonStickyColumn.align +
-                                                    (hoveredRowIndex === id
-                                                        ? ' hover'
-                                                        : '')
-                                                }
+                                                className={cx(
+                                                    'align-' + nonStickyColumn.align,
+                                                    hoveredRowIndex === id && ' hover',
+                                                )}
                                                 onMouseEnter={() =>
                                                     setHoveredRowIndex(id)
                                                 }
@@ -178,10 +175,10 @@ export const ScrollTableCore = <T extends object>({
                         {elements.map((element, id) => (
                             <ScrollTableCell
                                 key={id}
-                                className={
-                                    'action-cell' +
-                                    (hoveredRowIndex === id ? ' hover' : '')
-                                }
+                                className={cx(
+                                    'action-cell',
+                                    hoveredRowIndex === id && ' hover',
+                                )}
                                 onMouseEnter={() => setHoveredRowIndex(id)}
                                 onMouseLeave={() => setHoveredRowIndex(null)}
                             >
