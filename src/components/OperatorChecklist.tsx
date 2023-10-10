@@ -1,10 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React, { ComponentProps, ReactNode, useEffect, useState } from 'react'
+import styled, { css } from 'styled-components'
+import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle'
+import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import { useOperatorByIdQuery } from '~/hooks/operators'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import { toAtto } from '~/marketplace/utils/math'
 import { getNativeTokenBalance } from '~/marketplace/utils/web3'
 import { toBN } from '~/utils/bn'
+import Spinner from '~/shared/components/Spinner'
+import SvgIcon from '~/shared/components/SvgIcon'
+import { Separator } from '~/components/Separator'
+import { TABLET } from '~/shared/utils/styled'
+import { StatCellLabelTip } from '~/components/StatGrid'
+import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
+import { SponsorshipPaymentTokenName } from './SponsorshipPaymentTokenName'
 
 export function OperatorChecklist({ operatorId }: { operatorId: string | undefined }) {
     const { funded, nodesDeclared, nodesFunded, nodesReachable, nodesRunning } =
@@ -12,42 +22,64 @@ export function OperatorChecklist({ operatorId }: { operatorId: string | undefin
 
     return (
         <>
-            <div>
-                Operator funded:{' '}
-                {typeof funded === 'undefined' ? 'Loading' : funded ? 'Yes' : 'No'}
-            </div>
-            <div>
-                Node addresses declared:{' '}
-                {typeof nodesDeclared === 'undefined'
-                    ? 'Loading'
-                    : nodesDeclared
-                    ? 'Yes'
-                    : 'No'}
-            </div>
-            <div>
-                Nodes funded:{' '}
-                {typeof nodesFunded === 'undefined'
-                    ? 'Loading'
-                    : nodesFunded
-                    ? 'Yes'
-                    : 'No'}
-            </div>
-            <div>
-                Nodes reachable:{' '}
-                {typeof nodesReachable === 'undefined'
-                    ? 'Loading'
-                    : nodesReachable
-                    ? 'Yes'
-                    : 'No'}
-            </div>
-            <div>
-                Nodes running:{' '}
-                {typeof nodesRunning === 'undefined'
-                    ? 'Loading'
-                    : nodesRunning
-                    ? 'Yes'
-                    : 'No'}
-            </div>
+            <ChecklistItem
+                state={funded}
+                tip={
+                    <p>
+                        You need to deposit <SponsorshipPaymentTokenName /> tokens into
+                        your operator contract before you can stake on sponsorships or
+                        receive delegations.
+                    </p>
+                }
+            >
+                Operator funded
+            </ChecklistItem>
+            <Separator />
+            <ChecklistItem
+                state={nodesDeclared}
+                tip={
+                    <p>
+                        Configure your nodes with private keys and declare the
+                        corresponding addresses to the operator contract.
+                    </p>
+                }
+            >
+                Node addresses declared
+            </ChecklistItem>
+            <Separator />
+            <ChecklistItem
+                state={nodesFunded}
+                tip={
+                    <p>
+                        Your node addresses must be funded with some MATIC for Polygon
+                        transaction fees. This alert triggers if a balance is less than
+                        0.1 MATIC.
+                    </p>
+                }
+            >
+                Node addresses funded
+            </ChecklistItem>
+            <Separator />
+            <ChecklistItem
+                state={nodesRunning}
+                tip={
+                    <p>
+                        You need to run Streamr nodes with the operator plugin enabled.
+                        The nodes will do the work you sign up for when you stake on
+                        sponsorships.
+                    </p>
+                }
+            >
+                Nodes running
+            </ChecklistItem>
+            <Separator />
+            <ChecklistItem
+                disabled
+                state={nodesReachable}
+                tip={<p>The websocket port on your nodes should be reachable.</p>}
+            >
+                Nodes reachable
+            </ChecklistItem>
         </>
     )
 }
@@ -67,11 +99,11 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
 
     const [nodesFunded, setNodesFunded] = useState<boolean>()
 
-    const [nodesReachable] = useState<boolean>()
+    const [nodesReachable] = useState<boolean>(false)
 
-    const { isLoading: isLoadingLiveNodes, count } = useOperatorLiveNodes(
-        operatorId || '',
-    )
+    const heartbeats = useInterceptHeartbeats(operatorId)
+
+    const { count, isLoading: isLoadingLiveNodes } = useOperatorLiveNodes(heartbeats)
 
     const nodesRunning = isLoadingLiveNodes ? undefined : count > 0
 
@@ -124,8 +156,6 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
             }
         })
 
-        setTimeout(async () => {})
-
         return () => {
             mounted = false
         }
@@ -164,3 +194,94 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
         nodesRunning,
     }
 }
+
+function ChecklistItem({
+    children,
+    disabled = false,
+    state,
+    tip = '',
+}: {
+    children: ReactNode
+    disabled?: boolean
+    state?: boolean
+    tip?: ReactNode
+}) {
+    return (
+        <ChecklistItemRoot $disabled={disabled}>
+            <div>
+                {state === false && (
+                    <IconWrap $color={disabled ? void 0 : '#FF5C00'}>
+                        <JiraFailedBuildStatusIcon label="Error" size="medium" />
+                    </IconWrap>
+                )}
+                {typeof state === 'undefined' && (
+                    <IconWrap>
+                        <Spinner color="blue" />
+                    </IconWrap>
+                )}
+                {state === true && (
+                    <IconWrap $color={disabled ? void 0 : '#0EAC1B'}>
+                        <CheckCircleIcon label="Ok" size="medium" />
+                    </IconWrap>
+                )}
+            </div>
+            <div>{children}</div>
+            {tip ? (
+                <div>
+                    <StatCellLabelTip
+                        shift="left"
+                        handle={
+                            <IconWrap>
+                                <QuestionMarkIcon />
+                            </IconWrap>
+                        }
+                    >
+                        {tip}
+                    </StatCellLabelTip>
+                </div>
+            ) : (
+                <></>
+            )}
+        </ChecklistItemRoot>
+    )
+}
+
+const ChecklistItemRoot = styled.div<{ $disabled: boolean }>`
+    align-items: center;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 24px 1fr 24px;
+    padding: 12px 24px;
+
+    @media ${TABLET} {
+        padding: 16px 40px;
+    }
+
+    ${({ $disabled }) =>
+        $disabled &&
+        css`
+            > :not(:last-child) {
+                opacity: 0.3;
+            }
+        `}
+`
+
+function getQuestionMarkIconAttrs(): ComponentProps<typeof SvgIcon> {
+    return { name: 'outlineQuestionMark' }
+}
+
+const QuestionMarkIcon = styled(SvgIcon).attrs(getQuestionMarkIconAttrs)`
+    display: block;
+    height: 16px;
+    width: 16px;
+`
+
+const IconWrap = styled.div<{ $color?: string }>`
+    align-items: center;
+    color: ${({ $color = 'inherit' }) => $color};
+    display: flex;
+    height: 24px;
+    justify-content: center;
+    position: relative;
+    width: 24px;
+`

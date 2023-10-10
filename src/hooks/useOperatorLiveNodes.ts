@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Heartbeat, useInterceptHeartbeats } from './useInterceptHeartbeats'
+import { Heartbeat } from './useInterceptHeartbeats'
 
 export default function useOperatorLiveNodes(
     heartbeats: Record<string, Heartbeat | undefined>,
