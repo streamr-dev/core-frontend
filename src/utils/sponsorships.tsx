@@ -95,9 +95,9 @@ export async function editSponsorshipFunding(
 
     const leavePenaltyWei = await getSponsorshipLeavePenalty(sponsorship.id, operator.id)
 
-    const joinDate = moment(stake.joinDate, 'X')
+    const joinTimestamp = moment(stake.joinTimestamp, 'X')
 
-    const minLeaveDate = joinDate
+    const minLeaveDate = joinTimestamp
         .add(sponsorship.minimumStakingPeriodSeconds, 'seconds')
         .format('YYYY-MM-DD HH:mm')
 

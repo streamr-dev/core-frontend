@@ -44,6 +44,7 @@ import { getDelegatedAmountForWallet, getDelegationFractionForWallet } from '~/g
 import { useOperatorByIdQuery } from '~/hooks/operators'
 import { refetchQuery } from '~/utils'
 import { isRejectionReason } from '~/modals/BaseModal'
+import { Stake } from '~/generated/gql/network'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -314,7 +315,7 @@ export const SingleOperatorPage = () => {
                                         displayName: 'Staked',
                                         valueMapper: (element) =>
                                             `${abbreviateNumber(
-                                                fromAtto(element.amount).toNumber(),
+                                                fromAtto(element.amountWei).toNumber(),
                                             )} ${tokenSymbol}`,
                                         align: 'start',
                                         isSticky: false,

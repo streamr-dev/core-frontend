@@ -96,7 +96,7 @@ export const SingleSponsorshipPage = () => {
                 case 'numberOfOperators':
                     return value.toString()
                 case 'apy':
-                    return `${value}%`
+                    return `${value.toFixed(2)}%`
                 default:
                     return ''
             }
@@ -112,7 +112,7 @@ export const SingleSponsorshipPage = () => {
                 case 'numberOfOperators':
                     return value.toString()
                 case 'apy':
-                    return `${value}%`
+                    return `${value.toFixed(2)}%`
                 default:
                     return ''
             }

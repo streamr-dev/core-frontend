@@ -57,9 +57,9 @@ export const OperatorParser = z
         stakes: z.array(
             z
                 .object({
-                    amount: z.string().transform(toBN),
+                    amountWei: z.string().transform(toBN),
                     earningsWei: z.string().transform(toBN),
-                    joinDate: z.coerce.number(),
+                    joinTimestamp: z.coerce.number(),
                     operator: z.object({
                         id: z.string(),
                     }),
