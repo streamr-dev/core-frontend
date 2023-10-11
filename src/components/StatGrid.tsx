@@ -1,5 +1,5 @@
 import React, { ComponentProps, ReactNode } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS, MEDIUM, TABLET } from '~/shared/utils/styled'
 import { Separator } from './Separator'
@@ -111,10 +111,20 @@ const TooltipIcon = styled(SvgIcon).attrs(getTooltipIconAttrs)`
     width: 24px;
 `
 
-export function StatCellLabelTip({ children }: { children?: ReactNode }) {
+type Shift = 'left' | 'right'
+
+export function StatCellLabelTip({
+    handle = <TooltipIcon />,
+    children,
+    shift,
+}: {
+    handle?: ReactNode
+    children?: ReactNode
+    shift?: Shift
+}) {
     return (
-        <TipRoot>
-            <TooltipIcon />
+        <TipRoot $shift={shift}>
+            {handle}
             <TipBody>
                 <TipEffects />
                 <TipContent>{children}</TipContent>
@@ -146,6 +156,14 @@ const TipContent = styled.div`
     min-width: 240px;
     padding: 8px 12px;
     position: relative;
+
+    p {
+        margin: 0;
+    }
+
+    p + p {
+        margin-top: 1em;
+    }
 `
 
 const TipEffects = styled.div`
@@ -180,7 +198,7 @@ const TipEffects = styled.div`
     }
 `
 
-const TipRoot = styled.div`
+const TipRoot = styled.div<{ $shift?: Shift }>`
     height: 24px;
     position: relative;
     width: 24px;
@@ -191,4 +209,41 @@ const TipRoot = styled.div`
         transition-delay: 0s;
         transform: translateY(-100%) translateY(-6px) translateX(-50%);
     }
+
+    ${({ $shift }) =>
+        $shift === 'left' &&
+        css`
+            ${TipEffects}::before {
+                left: 100%;
+                transform: translate(-50%, -50%) translateX(-24px) translateY(-4px)
+                    rotate(45deg);
+            }
+
+            ${TipBody} {
+                transform: translateY(-100%) translateX(-100%) translateX(24px);
+            }
+
+            :hover ${TipBody} {
+                transform: translateY(-100%) translateX(-100%) translateX(24px)
+                    translateY(-6px);
+            }
+        `}
+
+    ${({ $shift }) =>
+        $shift === 'right' &&
+        css`
+            ${TipEffects}::before {
+                left: 0%;
+                transform: translate(-50%, -50%) translateX(24px) translateY(-4px)
+                    rotate(45deg);
+            }
+
+            ${TipBody} {
+                transform: translateY(-100%) translateX(-24px);
+            }
+
+            :hover ${TipBody} {
+                transform: translateY(-100%) translateX(-24px) translateY(-6px);
+            }
+        `}
 `
