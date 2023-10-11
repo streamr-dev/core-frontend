@@ -9,7 +9,7 @@ type Props = {
 
 const CheckmarkIcon = ({ size, className }: Props) => (
     <svg
-        className={classNames(className, styles[size], styles.checkmark)}
+        className={classNames(className, size && styles[size], styles.checkmark)}
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 20 20"
     >
