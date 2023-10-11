@@ -1,9 +1,10 @@
-import React, { ReactNode, useState } from 'react'
+import React, { FunctionComponent, ReactNode, useState } from 'react'
 import { Link } from 'react-router-dom'
 import cx from 'classnames'
 import {
     FloatingLoadingIndicator,
     NoDataWrap,
+    OrderCaretIcon,
     ScrollTableCell,
     ScrollTableCellsWrap,
     ScrollTableColumn,
@@ -15,11 +16,19 @@ import PopoverItem from '~/shared/components/Popover/PopoverItem'
 import { NoData } from '~/shared/components/NoData'
 import { LoadMoreButton } from '~/components/LoadMore'
 
+export enum ScrollTableOrderDirection {
+    asc = 'asc',
+    desc = 'desc',
+}
+
 type ScrollTableProps<Element> = {
     elements: Element[]
     isLoading?: boolean
     columns: ScrollTableColumnDef<Element>[]
     actions?: (ScrollTableAction<Element> | ScrollTableActionCallback<Element>)[]
+    orderDirection?: ScrollTableOrderDirection
+    orderBy?: string
+    onOrderChange?: (columnKey: string) => void
     noDataFirstLine?: ReactNode
     noDataSecondLine?: ReactNode
     footerComponent?: ReactNode
@@ -34,6 +43,7 @@ export type ScrollTableColumnDef<T> = {
     isSticky: boolean
     valueMapper: (element: T) => ReactNode
     align: 'start' | 'end'
+    orderingEnabled?: boolean
 }
 
 type ScrollTableActionCallback<T> = (element: T) => {
@@ -49,28 +59,15 @@ export type ScrollTableAction<T> = {
 }
 
 export const ScrollTable = <T extends object>({
-    elements,
-    columns,
-    actions,
     isLoading,
-    noDataFirstLine,
-    noDataSecondLine,
     footerComponent,
-    linkMapper,
     hasMoreResults,
     onLoadMore,
+    ...tableProps
 }: ScrollTableProps<T>) => {
     return (
         <>
-            <ScrollTableCore
-                columns={columns}
-                elements={elements}
-                actions={actions}
-                isLoading={isLoading}
-                noDataFirstLine={noDataFirstLine}
-                noDataSecondLine={noDataSecondLine}
-                linkMapper={linkMapper}
-            />
+            <ScrollTableCore isLoading={isLoading} {...tableProps} />
             {hasMoreResults && (
                 <LoadMoreButton
                     disabled={isLoading}
@@ -92,11 +89,15 @@ export const ScrollTableCore = <T extends object>({
     isLoading,
     noDataFirstLine,
     noDataSecondLine,
+    orderDirection,
+    orderBy,
+    onOrderChange,
     linkMapper,
 }: ScrollTableProps<T>) => {
     const stickyColumns = columns.filter((column) => column.isSticky)
     const nonStickyColumns = columns.filter((column) => !column.isSticky)
     const [hoveredRowIndex, setHoveredRowIndex] = useState<number | null>(null)
+    const hasOrderingEnabled = orderBy && orderDirection && onOrderChange
     return (
         <ScrollTableCellsWrap
             stickyColumnCount={stickyColumns.length}
@@ -105,8 +106,23 @@ export const ScrollTableCore = <T extends object>({
             {stickyColumns.map((stickyColumn) => {
                 return (
                     <ScrollTableColumn key={stickyColumn.key}>
-                        <ScrollTableHeaderCell className={'align-' + stickyColumn.align}>
-                            <span>{stickyColumn.displayName}</span>
+                        <ScrollTableHeaderCell
+                            className={cx(
+                                'align-' + stickyColumn.align,
+                                onOrderChange &&
+                                    stickyColumn.orderingEnabled &&
+                                    'pointer',
+                            )}
+                            onClick={() => {
+                                if (onOrderChange && stickyColumn.orderingEnabled) {
+                                    onOrderChange(stickyColumn.key)
+                                }
+                            }}
+                        >
+                            <span>{stickyColumn.displayName}</span>{' '}
+                            {hasOrderingEnabled && stickyColumn.key === orderBy && (
+                                <OrderCaret orderDirection={orderDirection} />
+                            )}
                         </ScrollTableHeaderCell>
                         {elements && elements.length > 0 && (
                             <>
@@ -137,9 +153,26 @@ export const ScrollTableCore = <T extends object>({
                     return (
                         <ScrollTableColumn key={nonStickyColumn.key}>
                             <ScrollTableHeaderCell
-                                className={'align-' + nonStickyColumn.align}
+                                className={cx(
+                                    'align-' + nonStickyColumn.align,
+                                    onOrderChange &&
+                                        nonStickyColumn.orderingEnabled &&
+                                        'pointer',
+                                )}
+                                onClick={() => {
+                                    if (
+                                        onOrderChange &&
+                                        nonStickyColumn.orderingEnabled
+                                    ) {
+                                        onOrderChange(nonStickyColumn.key)
+                                    }
+                                }}
                             >
                                 <span>{nonStickyColumn.displayName}</span>
+                                {hasOrderingEnabled &&
+                                    nonStickyColumn.key === orderBy && (
+                                        <OrderCaret orderDirection={orderDirection} />
+                                    )}
                             </ScrollTableHeaderCell>
                             {elements && elements.length > 0 && (
                                 <>
@@ -236,4 +269,49 @@ export const ScrollTableCore = <T extends object>({
             <FloatingLoadingIndicator loading={isLoading} />
         </ScrollTableCellsWrap>
     )
+}
+
+const OrderCaret: FunctionComponent<{
+    orderDirection: ScrollTableOrderDirection
+}> = ({ orderDirection }) => {
+    return <OrderCaretIcon name={'caretUp'} className={orderDirection} />
+}
+
+const ORDER_ITERATION_CYCLE = [
+    ScrollTableOrderDirection.asc,
+    ScrollTableOrderDirection.desc,
+    undefined,
+]
+export const getNextSortingParameters = (
+    currentOrderBy: string | undefined,
+    newOrderBy: string,
+    currentOrderDirection: ScrollTableOrderDirection | undefined,
+): {
+    orderBy: string | undefined
+    orderDirection: ScrollTableOrderDirection | undefined
+} => {
+    if (currentOrderBy !== newOrderBy) {
+        return {
+            orderBy: newOrderBy,
+            orderDirection: ORDER_ITERATION_CYCLE[0],
+        }
+    }
+    const currentDirectionCycleIndex = ORDER_ITERATION_CYCLE.findIndex(
+        (el) => el === currentOrderDirection,
+    )
+    const newDirectionCycleIndex =
+        currentDirectionCycleIndex + 1 == ORDER_ITERATION_CYCLE.length
+            ? 0
+            : currentDirectionCycleIndex + 1
+    const newDirection = ORDER_ITERATION_CYCLE[newDirectionCycleIndex]
+    if (!newDirection) {
+        return {
+            orderBy: undefined,
+            orderDirection: undefined,
+        }
+    }
+    return {
+        orderBy: newOrderBy,
+        orderDirection: newDirection,
+    }
 }

@@ -1,6 +1,8 @@
 import styled from 'styled-components'
 import { COLORS, MEDIUM, TABLET } from '~/shared/utils/styled'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
+import SvgIcon from '~/shared/components/SvgIcon'
+import { ComponentProps, FunctionComponent } from 'react'
 
 const horizontalPaddingMobile = '24px'
 const verticalPaddingMobile = '20px'
@@ -69,6 +71,9 @@ export const ScrollTableHeaderCell = styled.div`
     &.align-end {
         justify-content: flex-end;
     }
+    &.pointer {
+        cursor: pointer;
+    }
 `
 
 export const ScrollTableCell = styled.div`
@@ -95,6 +100,18 @@ export const ScrollTableCell = styled.div`
     }
     &.hover {
         background-color: ${COLORS.secondaryLight};
+    }
+`
+
+export const OrderCaretIcon = styled(SvgIcon)`
+    width: 10px;
+    margin-left: 10px;
+    transition: transform 200ms ease-in-out;
+    &.asc {
+        transform: rotate(0deg);
+    }
+    &.desc {
+        transform: rotate(180deg);
     }
 `
 
