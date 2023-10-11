@@ -66,6 +66,7 @@ export const OperatorParser = z
                     sponsorship: z.object({
                         id: z.string(),
                         isRunning: z.boolean(),
+                        minimumStakingPeriodSeconds: z.coerce.number(),
                         spotAPY: z.string().transform(toBN),
                         projectedInsolvency: z.coerce.number(),
                         stream: z.object({
@@ -79,6 +80,7 @@ export const OperatorParser = z
                         sponsorship: {
                             id: sponsorshipId,
                             isRunning: isSponsorshipRunning,
+                            minimumStakingPeriodSeconds,
                             projectedInsolvency: projectedInsolvencyAt,
                             spotAPY,
                             stream: { id: streamId },
@@ -86,7 +88,9 @@ export const OperatorParser = z
                         ...rest
                     }) => ({
                         ...rest,
+                        sponsorshipId,
                         isSponsorshipRunning,
+                        minimumStakingPeriodSeconds,
                         operatorId,
                         projectedInsolvencyAt,
                         sponsorshipId,

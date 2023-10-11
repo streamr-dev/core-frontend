@@ -39,7 +39,7 @@ import Tabs, { Tab } from '~/shared/components/Tabs'
 import { ChartPeriod } from '~/types'
 import { StatCellBody, StatCellLabel } from '~/components/StatGrid'
 import { Separator } from '~/components/Separator'
-import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
+import { useEditSponsorshipFunding, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { getDelegatedAmountForWallet, getDelegationFractionForWallet } from '~/getters'
 import { useOperatorByIdQuery } from '~/hooks/operators'
 import { refetchQuery } from '~/utils'
@@ -86,6 +86,8 @@ export const SingleOperatorPage = () => {
     const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
     useEffect(() => void setOperator(operator), [operator, setOperator])
+
+    const editSponsorshipFunding = useEditSponsorshipFunding()
 
     const [selectedDataSource, setSelectedDataSource] = useState<
         'totalValue' | 'cumulativeEarnings'
@@ -353,6 +355,66 @@ export const SingleOperatorPage = () => {
                                         align: 'start',
                                         isSticky: false,
                                         key: 'fundedUntil',
+                                    },
+                                ]}
+                                actions={[
+                                    (element) => {
+                                        return {
+                                            displayName: 'Edit',
+                                            async callback() {
+                                                if (!operator) {
+                                                    return
+                                                }
+
+                                                try {
+                                                    // Operator Stake entry is not the same as Sponsorship
+                                                    // so we need to do some massaging.
+                                                    const sponsorship = {
+                                                        id: element.sponsorshipId,
+                                                        minimumStakingPeriodSeconds:
+                                                            element.minimumStakingPeriodSeconds,
+                                                        stakes: [
+                                                            {
+                                                                amount: fromAtto(
+                                                                    element.amount,
+                                                                ),
+                                                                operatorId:
+                                                                    element.operatorId,
+                                                                joinDate:
+                                                                    element.joinDate,
+                                                                metadata: {
+                                                                    imageUrl: undefined,
+                                                                    imageIpfsCid:
+                                                                        undefined,
+                                                                    redundancyFactor:
+                                                                        undefined,
+                                                                    name: '',
+                                                                    description: '',
+                                                                },
+                                                            },
+                                                        ],
+                                                    }
+
+                                                    await editSponsorshipFunding({
+                                                        sponsorship,
+                                                        operator,
+                                                    })
+
+                                                    await waitForGraphSync()
+
+                                                    await operatorQuery.refetch()
+                                                } catch (e) {
+                                                    if (isRejectionReason(e)) {
+                                                        return
+                                                    }
+
+                                                    console.warn(
+                                                        'Could not edit a Sponsorship',
+                                                        e,
+                                                    )
+                                                }
+                                            },
+                                        }
                                     },
                                 ]}
                             />

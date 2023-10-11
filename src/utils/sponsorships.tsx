@@ -31,10 +31,10 @@ import { defaultChainConfig } from '~/getters/getChainConfig'
  * Scouts for Operator's funding share.
  */
 function getSponsorshipStakeForOperator(
-    sponsorship: ParsedSponsorship,
+    stakes: ParsedSponsorship['stakes'],
     operatorId: string,
 ) {
-    return sponsorship.stakes.find(
+    return stakes.find(
         (stake) => stake.operatorId === operatorId && stake.amount.isGreaterThan(0),
     )
 }
@@ -46,7 +46,7 @@ export function isSponsorshipFundedByOperator(
     sponsorship: ParsedSponsorship,
     operator: ParsedOperator | null,
 ): boolean {
-    return !!operator && !!getSponsorshipStakeForOperator(sponsorship, operator.id)
+    return !!operator && !!getSponsorshipStakeForOperator(sponsorship.stakes, operator.id)
 }
 
 const fundSponsorshipModal = toaster(FundSponsorshipModal, Layer.Modal)
@@ -82,13 +82,13 @@ const editStakeModal = toaster(EditStakeModal, Layer.Modal)
  * funding stake.
  */
 export async function editSponsorshipFunding(
-    sponsorship: ParsedSponsorship,
-    operator: ParsedOperator,
+    sponsorship: Pick<ParsedSponsorship, 'id' | 'minimumStakingPeriodSeconds' | 'stakes'>,
+    operator: Pick<ParsedOperator, 'id' | 'dataTokenBalanceWei' | 'queueEntries'>,
 ) {
-    const stake = getSponsorshipStakeForOperator(sponsorship, operator.id)
+    const stake = getSponsorshipStakeForOperator(sponsorship.stakes, operator.id)
 
     if (!stake) {
-        throw new Error('No fund to edit')
+        throw new Error('Cannot edit: Operator has no stake in sponsorship')
     }
 
     const { decimals, symbol: tokenSymbol } = await getSponsorshipTokenInfo()
