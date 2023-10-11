@@ -1,6 +1,5 @@
 import EventEmitter from 'events'
 import { SmartContractTransaction } from '~/shared/types/web3-types'
-import { ProjectId } from '~/marketplace/types/project-types'
 import { checkEthereumNetworkIsCorrect } from '~/shared/utils/web3'
 import TransactionError from '~/shared/errors/TransactionError'
 import Transaction from '~/shared/utils/Transaction'
@@ -12,7 +11,7 @@ export function deployDataUnion({
     adminFee,
     chainId,
 }: {
-    productId: ProjectId
+    productId: string
     adminFee: number
     chainId: number
 }): SmartContractTransaction {

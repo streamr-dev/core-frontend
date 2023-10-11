@@ -1,7 +1,6 @@
-import React, { FunctionComponent, useMemo } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import { Project, SalePoint } from '~/marketplace/types/project-types'
 import { REGULAR, TABLET } from '~/shared/utils/styled'
 import Button from '~/shared/components/Button'
 import { getProjectTypeName } from '~/getters'
@@ -16,24 +15,33 @@ import {
     useIsProjectBeingPurchased,
 } from '~/shared/stores/purchases'
 import routes from '~/routes'
+import { ParsedProject } from '~/parsers/ProjectParser'
 
-const Description: FunctionComponent<{ project: Project }> = ({ project }) => {
-    const firstSalePoint = useMemo<SalePoint>(
-        () => Object.values(project.salePoints)[0],
-        [project.salePoints],
-    )
-    const firstSalePointChainName = useMemo<string>(
-        () => getConfigForChain(firstSalePoint.chainId).name,
-        [firstSalePoint],
-    )
-    const moreSalePoints = useMemo<number>(
-        () => Object.values(project.salePoints).length - 1,
-        [project.salePoints],
-    )
-
+export default function Description({ project }: { project: ParsedProject }) {
     const purchase = usePurchaseCallback()
 
     const isBeingPurchased = useIsProjectBeingPurchased(project?.id || '')
+
+    const [payment = undefined, ...furtherPayments] = project.paymentDetails
+
+    const chainName = payment ? getConfigForChain(payment.domainId).name : undefined
+
+    const firstSalePoint = payment
+        ? project.salePoints[getConfigForChain(payment.domainId).name]
+        : undefined
+
+    const numOfFurtherPayments = furtherPayments.length
+
+    const invalid = !payment || !chainName || !firstSalePoint
+
+    if (invalid) {
+        /**
+         * This shouldn't happen, at all. Ending up here means the project payment
+         * information either got corrupted, or the schema changed and we've
+         * got some catchng up to do.
+         */
+        return <></>
+    }
 
     return (
         <WhiteBox className={'with-padding'}>
@@ -62,12 +70,12 @@ const Description: FunctionComponent<{ project: Project }> = ({ project }) => {
                     {project.type !== ProjectType.OpenData && (
                         <>
                             <span> on </span>
-                            <strong>{formatChainName(firstSalePointChainName)}</strong>
-                            {moreSalePoints > 0 && (
+                            <strong>{formatChainName(chainName)}</strong>
+                            {numOfFurtherPayments > 0 && (
                                 <span>
                                     {' '}
-                                    [and on {moreSalePoints} other{' '}
-                                    {moreSalePoints === 1 ? 'chain' : 'chains'}]
+                                    [and on {numOfFurtherPayments} other{' '}
+                                    {numOfFurtherPayments === 1 ? 'chain' : 'chains'}]
                                 </span>
                             )}
                         </>
@@ -100,8 +108,6 @@ const Description: FunctionComponent<{ project: Project }> = ({ project }) => {
         </WhiteBox>
     )
 }
-
-export default Description
 
 const DescriptionContainer = styled.div`
     display: flex;

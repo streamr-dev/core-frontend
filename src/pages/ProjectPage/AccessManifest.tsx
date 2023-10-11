@@ -55,7 +55,7 @@ interface Props {
 }
 
 export default function AccessManifest({ projectId, projectType, salePoints }: Props) {
-    const [firstSalePoint, ...otherSalePoints] = salePoints
+    const [firstSalePoint = undefined, ...otherSalePoints] = salePoints
 
     const prefix = `The streams in this ${getProjectTypeName(projectType)}`
 

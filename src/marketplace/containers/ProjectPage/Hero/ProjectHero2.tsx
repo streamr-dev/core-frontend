@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 import Editor from 'rich-markdown-editor'
 import light from 'rich-markdown-editor/dist/styles/theme'
-import { Project } from '~/marketplace/types/project-types'
 import {
     ProjectHeroContainer,
     ProjectHeroDescriptionStyles,
@@ -12,6 +11,7 @@ import {
 } from '~/marketplace/containers/ProjectPage/Hero/ProjectHero2.styles'
 import { COLORS } from '~/shared/utils/styled'
 import { DetailIcon, DetailDisplay, List } from '~/components/DetailDropdown'
+import { ParsedProject } from '~/parsers/ProjectParser'
 
 const DescriptionEditor = styled(Editor)`
     ${ProjectHeroDescriptionStyles};
@@ -38,15 +38,10 @@ interface Props {
     name: string
     description: string
     imageUrl: string | undefined
-    contact: Project['contact']
+    contact: ParsedProject['contact']
 }
 
-export default function ProjectHero2({
-    name,
-    description,
-    imageUrl,
-    contact = {},
-}: Props) {
+export default function ProjectHero2({ name, description, imageUrl, contact }: Props) {
     return (
         <ProjectHeroContainer>
             <ProjectHeroImage
@@ -59,39 +54,39 @@ export default function ProjectHero2({
             <DescriptionEditor value={description} readOnly theme={customTheme} />
             <ProjectHeroMetadataContainer>
                 <List>
-                    {contact?.url && (
+                    {contact.url && (
                         <DetailDisplay
                             icon={<DetailIcon name="web" />}
                             value={contact.url}
                             href={contact.url}
                         />
                     )}
-                    {contact?.email && (
+                    {contact.email && (
                         <DetailDisplay
                             icon={<DetailIcon name="email" />}
                             value={contact.email}
                             href={`mailto:${contact.email}`}
                         />
                     )}
-                    {contact?.twitter && (
+                    {contact.twitter && (
                         <DetailDisplay
                             icon={<DetailIcon name="twitter" $color="#1da1f2" />}
                             href={contact.twitter}
                         />
                     )}
-                    {contact?.telegram && (
+                    {contact.telegram && (
                         <DetailDisplay
                             icon={<DetailIcon name="telegram" $color="#2aabee" />}
                             href={contact.telegram}
                         />
                     )}
-                    {contact?.reddit && (
+                    {contact.reddit && (
                         <DetailDisplay
                             icon={<DetailIcon name="reddit" $color="#ff5700" />}
                             href={contact.reddit}
                         />
                     )}
-                    {contact?.linkedIn && (
+                    {contact.linkedIn && (
                         <DetailDisplay
                             icon={<DetailIcon name="linkedin" $color="#0077b5" />}
                             href={contact.linkedIn}
