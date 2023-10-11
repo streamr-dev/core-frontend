@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { isEthereumAddress } from '~/marketplace/utils/validate'
+import { isEthereumAddress } from '~/utils'
 import FormModal, {
     FieldWrap,
     FormModalProps,

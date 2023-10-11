@@ -73,7 +73,7 @@ import getGraphClient from '~/getters/getGraphClient'
 import { Delegation, ChartPeriod } from '~/types'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { BN, toBN } from '~/utils/bn'
-import { isEthereumAddress } from '~/marketplace/utils/validate'
+import { isEthereumAddress } from '~/utils'
 
 const DEFAULT_ORDER_BY = Operator_OrderBy.Id
 const DEFAULT_ORDER_DIRECTION = OrderDirection.Asc

@@ -4,7 +4,7 @@ import detectProvider from '@metamask/detect-provider'
 import { create } from 'zustand'
 import { providers } from 'ethers'
 import { MetaMaskInpageProvider } from '@metamask/providers'
-import { isEthereumAddress } from '~/marketplace/utils/validate'
+import { isEthereumAddress } from '~/utils'
 import { getFirstEnsNameFor } from '~/getters'
 import { getConfigForChain } from '~/shared/web3/config'
 

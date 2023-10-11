@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import UnstyledFallbackImage from '~/shared/components/FallbackImage'
-import { isEthereumAddress } from '~/marketplace/utils/validate'
+import { isEthereumAddress } from '~/utils'
 import SvgIcon from '~/shared/components/SvgIcon'
 import Initials from './Initials'
 import Identicon from './Identicon'
