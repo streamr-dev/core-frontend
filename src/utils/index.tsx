@@ -12,7 +12,6 @@ import { Layer } from '~/utils/Layer'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { ObjectWithMessage } from '~/shared/consts'
 import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
-import { QueriedGraphProject } from '~/shared/types'
 
 /**
  * Gas money checker.
@@ -118,10 +117,18 @@ export function isProjectOwnedBy<
     return !!canGrant
 }
 
+/**
+ * Returns a promise that resolves after a given number
+ * of milliseconds. Uses `setTimeout` internally.
+ */
 export async function sleep(millis: number) {
     await new Promise((resolve) => void setTimeout(resolve, millis))
 }
 
+/**
+ * Quietly (and in a non-blocking manner) refetches a given query
+ * and reports failures to the console.
+ */
 export function refetchQuery(query: UseInfiniteQueryResult | UseQueryResult) {
     setTimeout(async () => {
         try {
@@ -132,10 +139,16 @@ export function refetchQuery(query: UseInfiniteQueryResult | UseQueryResult) {
     })
 }
 
+/**
+ * Turns `abc`, `ABC`, `aBc` into `Abc`.
+ */
 function titleize(value: string): string {
     return value.toLowerCase().replace(/\w/, (firstLetter) => firstLetter.toUpperCase())
 }
 
+/**
+ * Converts a string into a good-looking display-ready chain name.
+ */
 export function formatChainName(chainName: string): string {
     switch (chainName.toLowerCase()) {
         case 'xdai':
