@@ -34,9 +34,7 @@ function getSponsorshipStakeForOperator(
     stakes: ParsedSponsorship['stakes'],
     operatorId: string,
 ) {
-    return stakes.find(
-        (stake) => stake.operatorId === operatorId && stake.amount.isGreaterThan(0),
-    )
+    return stakes.find((stake) => stake.operatorId === operatorId)
 }
 
 /**
@@ -46,7 +44,12 @@ export function isSponsorshipFundedByOperator(
     sponsorship: ParsedSponsorship,
     operator: ParsedOperator | null,
 ): boolean {
-    return !!operator && !!getSponsorshipStakeForOperator(sponsorship.stakes, operator.id)
+    if (operator == null) {
+        return false
+    }
+
+    const operatorStake = getSponsorshipStakeForOperator(sponsorship.stakes, operator.id)
+    return operatorStake != null && operatorStake.amount.isGreaterThan(0)
 }
 
 const fundSponsorshipModal = toaster(FundSponsorshipModal, Layer.Modal)
@@ -87,7 +90,7 @@ export async function editSponsorshipFunding(
 ) {
     const stake = getSponsorshipStakeForOperator(sponsorship.stakes, operator.id)
 
-    if (!stake) {
+    if (stake == null) {
         throw new Error('Cannot edit: Operator has no stake in sponsorship')
     }
 
