@@ -45,6 +45,7 @@ import { useOperatorByIdQuery } from '~/hooks/operators'
 import { refetchQuery } from '~/utils'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { OperatorChecklist } from '~/components/OperatorChecklist'
+import routes from '~/routes'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -311,6 +312,9 @@ export const SingleOperatorPage = () => {
                             }
                         >
                             <ScrollTable
+                                linkMapper={({ sponsorshipId: id }) =>
+                                    routes.network.sponsorship({ id })
+                                }
                                 elements={operator.stakes}
                                 columns={[
                                     {
