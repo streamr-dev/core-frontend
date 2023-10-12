@@ -15,6 +15,7 @@ import { TABLET } from '~/shared/utils/styled'
 import { StatCellLabelTip } from '~/components/StatGrid'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { useOperatorReachability } from '~/shared/stores/operatorReachability'
 
 export function OperatorChecklist({ operatorId }: { operatorId: string | undefined }) {
     const { funded, nodesDeclared, nodesFunded, nodesReachable, nodesRunning } =
@@ -98,13 +99,16 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
 
     const [nodesFunded, setNodesFunded] = useState<boolean>()
 
-    const [nodesReachable] = useState<boolean>(false)
-
     const heartbeats = useInterceptHeartbeats(operatorId)
 
     const { count, isLoading: isLoadingLiveNodes } = useOperatorLiveNodes(heartbeats)
 
     const nodesRunning = isLoadingLiveNodes ? undefined : count > 0
+
+    const reachability = useOperatorReachability(heartbeats)
+
+    const nodesReachable =
+        isLoadingLiveNodes || reachability === 'probing' ? void 0 : reachability === 'all'
 
     useEffect(() => {
         setNodesFunded(undefined)
