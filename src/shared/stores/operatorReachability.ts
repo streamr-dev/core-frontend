@@ -60,7 +60,7 @@ const useOperatorReachabilityStore = create<{
 
             if (pending || updatedAt + TTL >= Date.now()) {
                 /**
-                 * Ignore cache hits and prending probes. Note that we probe based
+                 * Ignore cache hits and pending probes. Note that we probe based
                  * on WebSocket URLs not on node addresses. We support the unlikely
                  * but technically possible scenario where nodes share a URL.
                  */
