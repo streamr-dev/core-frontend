@@ -17,6 +17,7 @@ gql`
         delegators {
             delegatedDataWei
             delegator
+            operatorTokenBalanceWei
         }
         slashingEvents {
             amount
