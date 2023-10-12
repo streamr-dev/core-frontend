@@ -105,12 +105,6 @@ export function isMessagedObject(e: unknown): e is z.infer<typeof ObjectWithMess
     return ObjectWithMessage.safeParse(e).success
 }
 
-export function isDataUnionProject<T extends Pick<QueriedGraphProject, 'isDataUnion'>>({
-    isDataUnion,
-}: T) {
-    return !!isDataUnion
-}
-
 export function isProjectOwnedBy<
     T extends { userAddress: unknown; canGrant?: boolean | null | undefined }[],
 >(permissions: T, address: string) {
