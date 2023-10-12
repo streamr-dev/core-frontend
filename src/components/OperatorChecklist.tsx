@@ -1,5 +1,5 @@
 import React, { ComponentProps, ReactNode, useEffect, useState } from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import { defaultChainConfig } from '~/getters/getChainConfig'
@@ -14,7 +14,7 @@ import { Separator } from '~/components/Separator'
 import { TABLET } from '~/shared/utils/styled'
 import { StatCellLabelTip } from '~/components/StatGrid'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
-import { SponsorshipPaymentTokenName } from './SponsorshipPaymentTokenName'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 
 export function OperatorChecklist({ operatorId }: { operatorId: string | undefined }) {
     const { funded, nodesDeclared, nodesFunded, nodesReachable, nodesRunning } =
@@ -74,7 +74,6 @@ export function OperatorChecklist({ operatorId }: { operatorId: string | undefin
             </ChecklistItem>
             <Separator />
             <ChecklistItem
-                disabled
                 state={nodesReachable}
                 tip={<p>The websocket port on your nodes should be reachable.</p>}
             >
@@ -199,20 +198,18 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
 
 function ChecklistItem({
     children,
-    disabled = false,
     state,
     tip = '',
 }: {
     children: ReactNode
-    disabled?: boolean
     state?: boolean
     tip?: ReactNode
 }) {
     return (
-        <ChecklistItemRoot $disabled={disabled}>
+        <ChecklistItemRoot>
             <div>
                 {state === false && (
-                    <IconWrap $color={disabled ? void 0 : '#FF5C00'}>
+                    <IconWrap $color="#FF5C00">
                         <JiraFailedBuildStatusIcon label="Error" size="medium" />
                     </IconWrap>
                 )}
@@ -222,7 +219,7 @@ function ChecklistItem({
                     </IconWrap>
                 )}
                 {state === true && (
-                    <IconWrap $color={disabled ? void 0 : '#0EAC1B'}>
+                    <IconWrap $color="#0EAC1B">
                         <CheckCircleIcon label="Ok" size="medium" />
                     </IconWrap>
                 )}
@@ -248,7 +245,7 @@ function ChecklistItem({
     )
 }
 
-const ChecklistItemRoot = styled.div<{ $disabled: boolean }>`
+const ChecklistItemRoot = styled.div`
     align-items: center;
     display: grid;
     gap: 20px;
@@ -258,14 +255,6 @@ const ChecklistItemRoot = styled.div<{ $disabled: boolean }>`
     @media ${TABLET} {
         padding: 16px 40px;
     }
-
-    ${({ $disabled }) =>
-        $disabled &&
-        css`
-            > :not(:last-child) {
-                opacity: 0.3;
-            }
-        `}
 `
 
 function getQuestionMarkIconAttrs(): ComponentProps<typeof SvgIcon> {
