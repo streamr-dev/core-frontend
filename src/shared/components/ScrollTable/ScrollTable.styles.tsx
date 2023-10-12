@@ -6,6 +6,7 @@ const horizontalPaddingMobile = '24px'
 const verticalPaddingMobile = '20px'
 const horizontalPaddingDesktop = '40px'
 const verticalPaddingDesktop = '32px'
+const actionPadding = '16px'
 
 export const ScrollTableContainer = styled.div`
     background-color: ${COLORS.primaryContrast};
@@ -69,6 +70,9 @@ export const ScrollTableHeaderCell = styled.div`
     &.align-end {
         justify-content: flex-end;
     }
+    &.action-cell {
+        padding: ${actionPadding};
+    }
 `
 
 export const ScrollTableCell = styled.div`
@@ -92,6 +96,8 @@ export const ScrollTableCell = styled.div`
     }
     &.action-cell {
         border-left: 1px solid ${COLORS.secondary};
+        padding: ${actionPadding};
+        justify-content: center;
     }
     &.hover {
         background-color: ${COLORS.secondaryLight};
