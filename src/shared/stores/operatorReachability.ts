@@ -156,8 +156,6 @@ export function useOperatorReachability(
 
         if (reachable) {
             numOfReachableNodes += 1
-
-            continue
         }
     }
 
