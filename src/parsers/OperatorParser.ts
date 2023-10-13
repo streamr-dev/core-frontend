@@ -93,7 +93,6 @@ export const OperatorParser = z
                         minimumStakingPeriodSeconds,
                         operatorId,
                         projectedInsolvencyAt,
-                        sponsorshipId,
                         spotAPY,
                         streamId,
                     }),
