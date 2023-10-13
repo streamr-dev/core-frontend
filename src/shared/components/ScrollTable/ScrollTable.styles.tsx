@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { COLORS, MEDIUM, TABLET } from '~/shared/utils/styled'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import SvgIcon from '~/shared/components/SvgIcon'
@@ -35,13 +35,17 @@ export const ScrollTableTitle = styled.div`
     }
 `
 
-export const ScrollTableColumn = styled.div`
+export const ScrollTableColumn = styled.div<{ $actionColumn?: boolean }>`
     display: flex;
     flex-direction: column;
     flex: 1;
-    &.action-column {
-        flex: 0.1;
-    }
+    ${({ $actionColumn }) => {
+        if ($actionColumn) {
+            return css`
+                flex: 0.1;
+            `
+        }
+    }}
 `
 
 export const ScrollTableNonStickyColumnsWrap = styled.div`
@@ -51,7 +55,11 @@ export const ScrollTableNonStickyColumnsWrap = styled.div`
     overflow-y: hidden;
 `
 
-export const ScrollTableHeaderCell = styled.div`
+export const ScrollTableHeaderCell = styled.div<{
+    $align?: 'start' | 'end'
+    $pointer?: boolean
+    $actionCell?: boolean
+}>`
     border-bottom: 1.5px solid ${COLORS.separator};
     padding: 5px ${horizontalPaddingMobile};
     height: 80px;
@@ -65,21 +73,41 @@ export const ScrollTableHeaderCell = styled.div`
         padding: 5px ${horizontalPaddingDesktop};
     }
 
-    &.align-start {
-        justify-content: flex-start;
-    }
-    &.align-end {
-        justify-content: flex-end;
-    }
-    &.action-cell {
-        padding: ${actionPadding};
-    }
-    &.pointer {
-        cursor: pointer;
-    }
+    ${({ $align }) => {
+        switch ($align) {
+            case 'start':
+                return css`
+                    justify-content: flex-start;
+                `
+            case 'end':
+                return css`
+                    justify-content: flex-end;
+                `
+        }
+    }}
+
+    ${({ $pointer }) => {
+        if ($pointer) {
+            return css`
+                cursor: pointer;
+            `
+        }
+    }}
+
+    ${({ $actionCell }) => {
+        if ($actionCell) {
+            return css`
+                padding: ${actionPadding};
+            `
+        }
+    }}
 `
 
-export const ScrollTableCell = styled.div`
+export const ScrollTableCell = styled.div<{
+    $align?: 'start' | 'end'
+    $actionCell?: boolean
+    $hover?: boolean
+}>`
     padding: 5px ${horizontalPaddingMobile};
     font-size: 16px;
     color: ${COLORS.primaryLight} !important; //to override the link styled when we use this StyledComponent as Link
@@ -92,32 +120,53 @@ export const ScrollTableCell = styled.div`
     @media (${TABLET}) {
         padding: 5px ${horizontalPaddingDesktop};
     }
-    &.align-start {
-        justify-content: flex-start;
-    }
-    &.align-end {
-        justify-content: flex-end;
-    }
-    &.action-cell {
-        border-left: 1px solid ${COLORS.secondary};
-        padding: ${actionPadding};
-        justify-content: center;
-    }
-    &.hover {
-        background-color: ${COLORS.secondaryLight};
-    }
+    ${({ $align }) => {
+        switch ($align) {
+            case 'start':
+                return css`
+                    justify-content: flex-start;
+                `
+            case 'end':
+                return css`
+                    justify-content: flex-end;
+                `
+        }
+    }}
+    ${({ $actionCell }) => {
+        if ($actionCell) {
+            return css`
+                border-left: 1px solid ${COLORS.secondary};
+                padding: ${actionPadding};
+                justify-content: center;
+            `
+        }
+    }}
+    ${({ $hover }) => {
+        if ($hover) {
+            return css`
+                background-color: ${COLORS.secondaryLight};
+            `
+        }
+    }}
 `
 
-export const OrderCaretIcon = styled(SvgIcon)`
+export const OrderCaretIcon = styled(SvgIcon)<{ $direction?: 'asc' | 'desc' }>`
     width: 10px;
     margin-left: 10px;
     transition: transform 200ms ease-in-out;
-    &.asc {
-        transform: rotate(0deg);
-    }
-    &.desc {
-        transform: rotate(180deg);
-    }
+
+    ${({ $direction }) => {
+        switch ($direction) {
+            case 'asc':
+                return css`
+                    transform: rotate(0deg);
+                `
+            case 'desc':
+                return css`
+                    transform: rotate(180deg);
+                `
+        }
+    }}
 `
 
 export const FloatingLoadingIndicator = styled(LoadingIndicator)`

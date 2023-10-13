@@ -52,10 +52,10 @@ export const OperatorsPage = () => {
 
     const wallet = useWalletAccount()
 
-    const [orderBy, setOrderBy] = useState<string | undefined>(undefined)
+    const [orderBy, setOrderBy] = useState<string | undefined>()
     const [orderDirection, setOrderDirection] = useState<
         ScrollTableOrderDirection | undefined
-    >(undefined)
+    >()
 
     const allOperatorsQuery = useAllOperatorsQuery({
         batchSize: PAGE_SIZE,
@@ -339,7 +339,7 @@ function OperatorsTable({
                     align: 'start',
                     isSticky: false,
                     key: 'totalValue',
-                    orderingEnabled: true,
+                    sortable: true,
                 },
                 {
                     displayName: 'Deployed',
@@ -350,7 +350,7 @@ function OperatorsTable({
                     align: 'end',
                     isSticky: false,
                     key: 'deployed',
-                    orderingEnabled: true,
+                    sortable: true,
                 },
                 {
                     displayName: "Operator's cut",
@@ -358,7 +358,7 @@ function OperatorsTable({
                     align: 'end',
                     isSticky: false,
                     key: 'operatorCut',
-                    orderingEnabled: true,
+                    sortable: true,
                 },
                 {
                     displayName: 'APY',

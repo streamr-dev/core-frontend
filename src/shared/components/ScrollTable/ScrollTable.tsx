@@ -17,8 +17,8 @@ import { NoData } from '~/shared/components/NoData'
 import { LoadMoreButton } from '~/components/LoadMore'
 
 export enum ScrollTableOrderDirection {
-    asc = 'asc',
-    desc = 'desc',
+    Asc = 'Asc',
+    Desc = 'Desc',
 }
 
 type ScrollTableProps<Element> = {
@@ -43,7 +43,7 @@ export type ScrollTableColumnDef<T> = {
     isSticky: boolean
     valueMapper: (element: T) => ReactNode
     align: 'start' | 'end'
-    orderingEnabled?: boolean
+    sortable?: boolean
 }
 
 type ScrollTableActionCallback<T> = (element: T) => {
@@ -107,14 +107,10 @@ export const ScrollTableCore = <T extends object>({
                 return (
                     <ScrollTableColumn key={stickyColumn.key}>
                         <ScrollTableHeaderCell
-                            className={cx(
-                                'align-' + stickyColumn.align,
-                                onOrderChange &&
-                                    stickyColumn.orderingEnabled &&
-                                    'pointer',
-                            )}
+                            $align={stickyColumn.align}
+                            $pointer={onOrderChange && stickyColumn.sortable}
                             onClick={() => {
-                                if (onOrderChange && stickyColumn.orderingEnabled) {
+                                if (onOrderChange && stickyColumn.sortable) {
                                     onOrderChange(stickyColumn.key)
                                 }
                             }}
@@ -130,10 +126,8 @@ export const ScrollTableCore = <T extends object>({
                                     return (
                                         <ScrollTableCell
                                             key={id}
-                                            className={cx(
-                                                'align-' + stickyColumn.align,
-                                                hoveredRowIndex === id && ' hover',
-                                            )}
+                                            $align={stickyColumn.align}
+                                            $hover={hoveredRowIndex === id}
                                             as={linkMapper ? Link : 'div'}
                                             to={linkMapper ? linkMapper(element) : ''}
                                             onMouseEnter={() => setHoveredRowIndex(id)}
@@ -153,17 +147,10 @@ export const ScrollTableCore = <T extends object>({
                     return (
                         <ScrollTableColumn key={nonStickyColumn.key}>
                             <ScrollTableHeaderCell
-                                className={cx(
-                                    'align-' + nonStickyColumn.align,
-                                    onOrderChange &&
-                                        nonStickyColumn.orderingEnabled &&
-                                        'pointer',
-                                )}
+                                $align={nonStickyColumn.align}
+                                $pointer={onOrderChange && nonStickyColumn.sortable}
                                 onClick={() => {
-                                    if (
-                                        onOrderChange &&
-                                        nonStickyColumn.orderingEnabled
-                                    ) {
+                                    if (onOrderChange && nonStickyColumn.sortable) {
                                         onOrderChange(nonStickyColumn.key)
                                     }
                                 }}
@@ -182,10 +169,8 @@ export const ScrollTableCore = <T extends object>({
                                                 as={linkMapper ? Link : 'div'}
                                                 to={linkMapper ? linkMapper(element) : ''}
                                                 key={id}
-                                                className={cx(
-                                                    'align-' + nonStickyColumn.align,
-                                                    hoveredRowIndex === id && ' hover',
-                                                )}
+                                                $align={nonStickyColumn.align}
+                                                $hover={hoveredRowIndex === id}
                                                 onMouseEnter={() =>
                                                     setHoveredRowIndex(id)
                                                 }
@@ -203,15 +188,13 @@ export const ScrollTableCore = <T extends object>({
                     )
                 })}
                 {actions && actions.length && (
-                    <ScrollTableColumn className="action-column">
-                        <ScrollTableHeaderCell className="action-cell" />
+                    <ScrollTableColumn $actionColumn={true}>
+                        <ScrollTableHeaderCell $actionCell={true} />
                         {elements.map((element, id) => (
                             <ScrollTableCell
                                 key={id}
-                                className={cx(
-                                    'action-cell',
-                                    hoveredRowIndex === id && ' hover',
-                                )}
+                                $actionCell={true}
+                                $hover={hoveredRowIndex === id}
                                 onMouseEnter={() => setHoveredRowIndex(id)}
                                 onMouseLeave={() => setHoveredRowIndex(null)}
                             >
@@ -274,12 +257,12 @@ export const ScrollTableCore = <T extends object>({
 const OrderCaret: FunctionComponent<{
     orderDirection: ScrollTableOrderDirection
 }> = ({ orderDirection }) => {
-    return <OrderCaretIcon name={'caretUp'} className={orderDirection} />
+    return <OrderCaretIcon name="caretUp" $direction={orderDirection} />
 }
 
 const ORDER_ITERATION_CYCLE = [
-    ScrollTableOrderDirection.asc,
-    ScrollTableOrderDirection.desc,
+    ScrollTableOrderDirection.Asc,
+    ScrollTableOrderDirection.Desc,
     undefined,
 ]
 export const getNextSortingParameters = (
