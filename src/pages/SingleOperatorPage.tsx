@@ -317,9 +317,6 @@ export const SingleOperatorPage = () => {
                             }
                         >
                             <ScrollTable
-                                linkMapper={({ sponsorshipId: id }) =>
-                                    routes.network.sponsorship({ id })
-                                }
                                 elements={operator.stakes}
                                 columns={[
                                     {
@@ -383,10 +380,8 @@ export const SingleOperatorPage = () => {
                                         key: 'earnings',
                                     },
                                 ]}
-                                linkMapper={(element) =>
-                                    routes.network.sponsorship({
-                                        id: element.sponsorshipId,
-                                    })
+                                linkMapper={({ sponsorshipId: id }) =>
+                                    routes.network.sponsorship({ id })
                                 }
                                 actions={[
                                     (element) => ({
