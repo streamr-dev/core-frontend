@@ -7,9 +7,9 @@ gql`
             operator {
                 id
             }
-            amount
+            amountWei
             earningsWei
-            joinDate
+            joinTimestamp
             sponsorship {
                 ...SponsorshipFields
             }
@@ -188,9 +188,9 @@ gql`
                 id
                 metadataJsonString
             }
-            amount
+            amountWei
             earningsWei
-            joinDate
+            joinTimestamp
         }
         operatorCount
         totalStakedWei
@@ -418,7 +418,6 @@ gql`
         operatorsCutWei
         valueWithoutEarnings
         profitsWei
-        spotAPY
         totalDelegatedWei
         totalUndelegatedWei
         totalStakeInSponsorshipsWei

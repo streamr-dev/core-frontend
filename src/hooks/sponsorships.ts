@@ -263,14 +263,10 @@ export function useIsEditingSponsorshipFunding(
 export function useEditSponsorshipFunding() {
     const withFlag = useFlagger()
 
+    type params = Parameters<typeof editSponsorshipFunding>
+
     return useCallback(
-        ({
-            sponsorship,
-            operator,
-        }: {
-            sponsorship: ParsedSponsorship
-            operator: ParsedOperator
-        }) =>
+        ({ sponsorship, operator }: { sponsorship: params[0]; operator: params[1] }) =>
             withFlag(
                 flagKey('isEditingSponsorshipFunding', sponsorship.id, operator.id),
                 () => editSponsorshipFunding(sponsorship, operator),

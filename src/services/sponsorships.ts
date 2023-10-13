@@ -3,8 +3,8 @@ import { Contract } from 'ethers'
 import { defaultAbiCoder } from 'ethers/lib/utils'
 import { getConfigForChain } from '~/shared/web3/config'
 import networkPreflight from '~/utils/networkPreflight'
-import { getSigner } from '~/shared/stores/wallet'
-import { BNish, toBN } from '~/utils/bn'
+import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
+import { BN, BNish, toBN } from '~/utils/bn'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { toastedOperation } from '~/utils/toastedOperation'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
@@ -187,8 +187,43 @@ export async function forceUnstakeFromSponsorship(
 
         const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
 
-        // Jusso asked to put a big value in the second parameter - big enough to pay out the whole queue after unstaking
+        // Juuso asked to put a big value in the second parameter - big enough to pay out the whole queue after unstaking
         const tx = await contract.forceUnstake(sponsorshipId, 1000000)
+        const receipt = await tx.wait()
+        saveLastBlockNumber(receipt.blockNumber)
+    })
+}
+
+export async function getEarningsForSponsorships(
+    operatorAddress: string,
+): Promise<Record<string, BN>> {
+    const chainId = getSponsorshipChainId()
+    const provider = getPublicWeb3Provider(chainId)
+
+    const contract = new Contract(operatorAddress, operatorABI, provider) as Operator
+    const earnings = await contract.getSponsorshipsAndEarnings()
+
+    const result: Record<string, BN> = {}
+    for (let i = 0; i < earnings.addresses.length; i++) {
+        const address = earnings.addresses[i].toLowerCase()
+        result[address] = toBN(earnings.earnings[i])
+    }
+    return result
+}
+
+export async function collectEarnings(
+    sponsorshipId: string,
+    operatorAddress: string,
+): Promise<void> {
+    const chainId = getSponsorshipChainId()
+    await networkPreflight(chainId)
+
+    const signer = await getSigner()
+
+    const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
+
+    await toastedOperation('Collect earnings', async () => {
+        const tx = await contract.withdrawEarningsFromSponsorships([sponsorshipId])
         const receipt = await tx.wait()
         saveLastBlockNumber(receipt.blockNumber)
     })

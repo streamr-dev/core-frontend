@@ -204,7 +204,7 @@ export const ScrollTableCore = <T extends object>({
                 })}
                 {actions && actions.length && (
                     <ScrollTableColumn className="action-column">
-                        <ScrollTableHeaderCell />
+                        <ScrollTableHeaderCell className="action-cell" />
                         {elements.map((element, id) => (
                             <ScrollTableCell
                                 key={id}

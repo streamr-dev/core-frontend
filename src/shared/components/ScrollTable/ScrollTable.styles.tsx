@@ -2,12 +2,12 @@ import styled from 'styled-components'
 import { COLORS, MEDIUM, TABLET } from '~/shared/utils/styled'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import SvgIcon from '~/shared/components/SvgIcon'
-import { ComponentProps, FunctionComponent } from 'react'
 
 const horizontalPaddingMobile = '24px'
 const verticalPaddingMobile = '20px'
 const horizontalPaddingDesktop = '40px'
 const verticalPaddingDesktop = '32px'
+const actionPadding = '16px'
 
 export const ScrollTableContainer = styled.div`
     background-color: ${COLORS.primaryContrast};
@@ -71,6 +71,9 @@ export const ScrollTableHeaderCell = styled.div`
     &.align-end {
         justify-content: flex-end;
     }
+    &.action-cell {
+        padding: ${actionPadding};
+    }
     &.pointer {
         cursor: pointer;
     }
@@ -97,6 +100,8 @@ export const ScrollTableCell = styled.div`
     }
     &.action-cell {
         border-left: 1px solid ${COLORS.secondary};
+        padding: ${actionPadding};
+        justify-content: center;
     }
     &.hover {
         background-color: ${COLORS.secondaryLight};

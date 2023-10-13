@@ -31,12 +31,10 @@ import { defaultChainConfig } from '~/getters/getChainConfig'
  * Scouts for Operator's funding share.
  */
 function getSponsorshipStakeForOperator(
-    sponsorship: ParsedSponsorship,
+    stakes: ParsedSponsorship['stakes'],
     operatorId: string,
 ) {
-    return sponsorship.stakes.find(
-        (stake) => stake.operatorId === operatorId && stake.amount.isGreaterThan(0),
-    )
+    return stakes.find((stake) => stake.operatorId === operatorId)
 }
 
 /**
@@ -46,7 +44,12 @@ export function isSponsorshipFundedByOperator(
     sponsorship: ParsedSponsorship,
     operator: ParsedOperator | null,
 ): boolean {
-    return !!operator && !!getSponsorshipStakeForOperator(sponsorship, operator.id)
+    if (operator == null) {
+        return false
+    }
+
+    const operatorStake = getSponsorshipStakeForOperator(sponsorship.stakes, operator.id)
+    return operatorStake != null && operatorStake.amount.isGreaterThan(0)
 }
 
 const fundSponsorshipModal = toaster(FundSponsorshipModal, Layer.Modal)
@@ -82,22 +85,22 @@ const editStakeModal = toaster(EditStakeModal, Layer.Modal)
  * funding stake.
  */
 export async function editSponsorshipFunding(
-    sponsorship: ParsedSponsorship,
-    operator: ParsedOperator,
+    sponsorship: Pick<ParsedSponsorship, 'id' | 'minimumStakingPeriodSeconds' | 'stakes'>,
+    operator: Pick<ParsedOperator, 'id' | 'dataTokenBalanceWei' | 'queueEntries'>,
 ) {
-    const stake = getSponsorshipStakeForOperator(sponsorship, operator.id)
+    const stake = getSponsorshipStakeForOperator(sponsorship.stakes, operator.id)
 
-    if (!stake) {
-        throw new Error('No fund to edit')
+    if (stake == null) {
+        throw new Error('Cannot edit: Operator has no stake in sponsorship')
     }
 
     const { decimals, symbol: tokenSymbol } = await getSponsorshipTokenInfo()
 
     const leavePenaltyWei = await getSponsorshipLeavePenalty(sponsorship.id, operator.id)
 
-    const joinDate = moment(stake.joinDate, 'X')
+    const joinTimestamp = moment(stake.joinTimestamp, 'X')
 
-    const minLeaveDate = joinDate
+    const minLeaveDate = joinTimestamp
         .add(sponsorship.minimumStakingPeriodSeconds, 'seconds')
         .format('YYYY-MM-DD HH:mm')
 

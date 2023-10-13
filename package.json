@@ -1,6 +1,6 @@
 {
     "name": "core-frontend",
-    "version": "4.1.3",
+    "version": "4.1.4",
     "description": "Streamr Hub",
     "main": "src/index.jsx",
     "scripts": {
@@ -45,7 +45,7 @@
         "@sambego/storybook-styles": "^1.0.0",
         "@sentry/browser": "^7.51.2",
         "@sentry/integrations": "^7.51.2",
-        "@streamr/config": "^4.0.8",
+        "@streamr/config": "^4.0.9",
         "@streamr/hub-contracts": "^1.0.2",
         "@streamr/network-contracts": "^7.0.0",
         "@streamr/po-loader": "^1.0.0",
@@ -120,7 +120,7 @@
         "storybook": "^7.0.12",
         "storybook-react-router": "^1.0.8",
         "stream-browserify": "^3.0.0",
-        "streamr-client": "^0.0.1-tatum.4",
+        "streamr-client": "^0.0.1-tatum.5",
         "streamr-client-protocol": "^13.0.0",
         "streamr-client-react": "^3.1.0-internal.0",
         "stringify-object": "^5.0.0",

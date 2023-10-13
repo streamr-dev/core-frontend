@@ -48,6 +48,9 @@ export default function DelegateFundsModal({
     const minimumSelfDelegationFraction = useConfigValueFromChain(
         'minimumSelfDelegationFraction',
     )
+    const minimumSelfDelegation = minimumSelfDelegationFraction
+        ? fromDecimals(minimumSelfDelegationFraction, 18)
+        : toBN(0)
 
     const [rawAmount, setRawAmount] = useState(amountProp)
 
@@ -68,38 +71,36 @@ export default function DelegateFundsModal({
     const insufficientFunds = finalValue.isGreaterThan(balance)
 
     const tooLowCurrentSelfDelegation = useMemo<boolean>(() => {
-        if (operator.owner === walletAddress || !minimumSelfDelegationFraction) {
+        if (operator.owner === walletAddress) {
             return false
         }
         const percentage = getSelfDelegationFraction(operator)
-        return percentage.isLessThan(toBN(minimumSelfDelegationFraction))
-    }, [operator, minimumSelfDelegationFraction, walletAddress])
+        return percentage.isLessThan(minimumSelfDelegation)
+    }, [operator, minimumSelfDelegation, walletAddress])
 
     const tooLowSelfDelegationWithNewAmount = useMemo(() => {
-        if (operator.owner === walletAddress || !minimumSelfDelegationFraction) {
+        if (operator.owner === walletAddress) {
             return false
         }
         const percentage = getSelfDelegationFraction(operator, {
             offset: finalValueDecimals,
         })
-        return percentage.isLessThan(toBN(minimumSelfDelegationFraction))
-    }, [operator, minimumSelfDelegationFraction, walletAddress, finalValueDecimals])
+        return percentage.isLessThan(minimumSelfDelegation)
+    }, [operator, minimumSelfDelegation, walletAddress, finalValueDecimals])
 
     const tooLowOwnerSelfDelegation =
         tooLowCurrentSelfDelegation || tooLowSelfDelegationWithNewAmount
 
     const maxAmount = useMemo<BN>(() => {
-        if (!minimumSelfDelegationFraction) {
+        if (minimumSelfDelegation.isZero()) {
             return toBN(0)
         }
         const operatorSelfStake = getSelfDelegatedAmount(operator)
         return fromDecimals(
-            operatorSelfStake
-                .dividedBy(fromDecimals(minimumSelfDelegationFraction, 18))
-                .minus(operatorSelfStake),
+            operatorSelfStake.dividedBy(minimumSelfDelegation).minus(operatorSelfStake),
             decimals,
         )
-    }, [operator, minimumSelfDelegationFraction, decimals])
+    }, [operator, minimumSelfDelegation, decimals])
 
     const canSubmit =
         finalValue.isFinite() &&

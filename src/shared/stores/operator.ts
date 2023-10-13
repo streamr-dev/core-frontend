@@ -6,12 +6,14 @@ import { setOperatorNodeAddresses } from '~/services/operators'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { BN } from '~/utils/bn'
 import { defaultChainConfig } from '~/getters/getChainConfig'
+import { getEarningsForSponsorships } from '~/services/sponsorships'
 
 interface OperatorStore {
     operator: ParsedOperator | null | undefined
     addedNodeAddresses: string[]
     removedNodeAddresses: string[]
     nodeBalances: Record<string, BN>
+    uncollectedEarnings: Record<string, BN>
     isBusy: boolean
     computed: {
         get nodeAddresses(): OperatorNodeAddress[]
@@ -23,6 +25,7 @@ interface OperatorStore {
     cancelRemove: (address: string) => void
     persistNodeAddresses: () => Promise<void>
     updateNodeBalances: () => Promise<void>
+    updateUncollectedEarnings: () => Promise<void>
 }
 
 type OperatorNodeAddress = {
@@ -38,6 +41,7 @@ const useOperatorStore = create<OperatorStore>((set, get) => {
         addedNodeAddresses: [],
         removedNodeAddresses: [],
         nodeBalances: {},
+        uncollectedEarnings: {},
         isBusy: false,
         computed: {
             get nodeAddresses() {
@@ -86,6 +90,7 @@ const useOperatorStore = create<OperatorStore>((set, get) => {
             )
 
             get().updateNodeBalances()
+            get().updateUncollectedEarnings()
         },
 
         addNodeAddress(address: string) {
@@ -192,6 +197,22 @@ const useOperatorStore = create<OperatorStore>((set, get) => {
                     }, {})
                 }),
             )
+        },
+
+        async updateUncollectedEarnings() {
+            const operator = get().operator
+            if (operator) {
+                try {
+                    const earnings = await getEarningsForSponsorships(operator.id)
+                    set((current) =>
+                        produce(current, (next) => {
+                            next.uncollectedEarnings = earnings
+                        }),
+                    )
+                } catch (e) {
+                    console.error('Could not update earnings', e)
+                }
+            }
         },
     }
 })

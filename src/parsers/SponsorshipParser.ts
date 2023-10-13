@@ -24,8 +24,8 @@ export const SponsorshipParser = z
                         id: z.string(),
                         metadataJsonString: OperatorMetadataParser,
                     }),
-                    amount: z.string(), // wei
-                    joinDate: z.coerce.number(),
+                    amountWei: z.string(), // wei
+                    joinTimestamp: z.coerce.number(),
                 })
                 .transform(
                     ({
@@ -68,7 +68,7 @@ export const SponsorshipParser = z
                     decimals,
                 ).dp(3, BN.ROUND_HALF_UP),
                 projectedInsolvencyAt,
-                stakes: stakes.map(({ amount: amountWei, ...stake }) => ({
+                stakes: stakes.map(({ amountWei, ...stake }) => ({
                     ...stake,
                     amount: fromDecimals(amountWei, decimals),
                 })),

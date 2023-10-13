@@ -57,14 +57,16 @@ export const OperatorParser = z
         stakes: z.array(
             z
                 .object({
-                    amount: z.string().transform(toBN),
+                    amountWei: z.string().transform(toBN),
                     earningsWei: z.string().transform(toBN),
-                    joinDate: z.coerce.number(),
+                    joinTimestamp: z.coerce.number(),
                     operator: z.object({
                         id: z.string(),
                     }),
                     sponsorship: z.object({
+                        id: z.string(),
                         isRunning: z.boolean(),
+                        minimumStakingPeriodSeconds: z.coerce.number(),
                         spotAPY: z.string().transform(toBN),
                         projectedInsolvency: z.coerce.number(),
                         stream: z.object({
@@ -76,7 +78,9 @@ export const OperatorParser = z
                     ({
                         operator: { id: operatorId },
                         sponsorship: {
+                            id: sponsorshipId,
                             isRunning: isSponsorshipRunning,
+                            minimumStakingPeriodSeconds,
                             projectedInsolvency: projectedInsolvencyAt,
                             spotAPY,
                             stream: { id: streamId },
@@ -84,7 +88,9 @@ export const OperatorParser = z
                         ...rest
                     }) => ({
                         ...rest,
+                        sponsorshipId,
                         isSponsorshipRunning,
+                        minimumStakingPeriodSeconds,
                         operatorId,
                         projectedInsolvencyAt,
                         spotAPY,
