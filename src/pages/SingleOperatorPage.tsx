@@ -425,8 +425,7 @@ export const SingleOperatorPage = () => {
                                                 })
 
                                                 await waitForGraphSync()
-
-                                                await operatorQuery.refetch()
+                                                refetchQuery(operatorQuery)
                                             } catch (e) {
                                                 if (isRejectionReason(e)) {
                                                     return
@@ -454,6 +453,9 @@ export const SingleOperatorPage = () => {
                                                         desc: 'Earnings have been successfully collected and are now available in your operator balance.',
                                                     })
                                                     await updateUncollectedEarnings()
+
+                                                    await waitForGraphSync()
+                                                    refetchQuery(operatorQuery)
                                                 } catch (e) {
                                                     console.error(
                                                         'Could not collect earnings',
