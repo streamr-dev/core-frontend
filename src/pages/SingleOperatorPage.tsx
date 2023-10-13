@@ -15,7 +15,7 @@ import {
     formatShortDate,
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
 import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
-import { errorToast } from '~/utils/toast'
+import { errorToast, successToast } from '~/utils/toast'
 import { toBN } from '~/utils/bn'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
@@ -39,12 +39,13 @@ import Tabs, { Tab } from '~/shared/components/Tabs'
 import { ChartPeriod } from '~/types'
 import { StatCellBody, StatCellLabel } from '~/components/StatGrid'
 import { Separator } from '~/components/Separator'
-import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
+import { useEditSponsorshipFunding, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { getDelegatedAmountForWallet, getDelegationFractionForWallet } from '~/getters'
 import { useOperatorByIdQuery } from '~/hooks/operators'
 import { refetchQuery } from '~/utils'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { OperatorChecklist } from '~/components/OperatorChecklist'
+import { collectEarnings } from '~/services/sponsorships'
 import routes from '~/routes'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
@@ -81,11 +82,15 @@ export const SingleOperatorPage = () => {
         persistNodeAddresses,
         computed,
         isBusy,
+        uncollectedEarnings,
+        updateUncollectedEarnings,
     } = useOperatorStore()
 
     const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
     useEffect(() => void setOperator(operator), [operator, setOperator])
+
+    const editSponsorshipFunding = useEditSponsorshipFunding()
 
     const [selectedDataSource, setSelectedDataSource] = useState<
         'totalValue' | 'cumulativeEarnings'
@@ -312,9 +317,6 @@ export const SingleOperatorPage = () => {
                             }
                         >
                             <ScrollTable
-                                linkMapper={({ sponsorshipId: id }) =>
-                                    routes.network.sponsorship({ id })
-                                }
                                 elements={operator.stakes}
                                 columns={[
                                     {
@@ -354,6 +356,119 @@ export const SingleOperatorPage = () => {
                                         isSticky: false,
                                         key: 'fundedUntil',
                                     },
+                                    {
+                                        displayName: 'Uncollected earnings',
+                                        valueMapper: (element) => {
+                                            if (
+                                                uncollectedEarnings[
+                                                    element.sponsorshipId
+                                                ] != null
+                                            ) {
+                                                return `${abbreviateNumber(
+                                                    fromAtto(
+                                                        uncollectedEarnings[
+                                                            element.sponsorshipId
+                                                        ],
+                                                    ).toNumber(),
+                                                )} ${tokenSymbol}`
+                                            }
+
+                                            return <Spinner color="blue" />
+                                        },
+                                        align: 'end',
+                                        isSticky: false,
+                                        key: 'earnings',
+                                    },
+                                ]}
+                                linkMapper={({ sponsorshipId: id }) =>
+                                    routes.network.sponsorship({ id })
+                                }
+                                actions={[
+                                    (element) => ({
+                                        displayName: 'Edit',
+                                        async callback() {
+                                            if (!operator) {
+                                                return
+                                            }
+
+                                            try {
+                                                // Operator Stake entry is not the same as Sponsorship
+                                                // so we need to do some massaging.
+                                                const sponsorship = {
+                                                    id: element.sponsorshipId,
+                                                    minimumStakingPeriodSeconds:
+                                                        element.minimumStakingPeriodSeconds,
+                                                    stakes: [
+                                                        {
+                                                            amount: fromAtto(
+                                                                element.amountWei,
+                                                            ),
+                                                            operatorId:
+                                                                element.operatorId,
+                                                            joinTimestamp:
+                                                                element.joinTimestamp,
+                                                            metadata: {
+                                                                imageUrl: undefined,
+                                                                imageIpfsCid: undefined,
+                                                                redundancyFactor:
+                                                                    undefined,
+                                                                name: '',
+                                                                description: '',
+                                                            },
+                                                        },
+                                                    ],
+                                                }
+
+                                                await editSponsorshipFunding({
+                                                    sponsorship,
+                                                    operator,
+                                                })
+
+                                                await waitForGraphSync()
+
+                                                await operatorQuery.refetch()
+                                            } catch (e) {
+                                                if (isRejectionReason(e)) {
+                                                    return
+                                                }
+
+                                                console.warn(
+                                                    'Could not edit a Sponsorship',
+                                                    e,
+                                                )
+                                            }
+                                        },
+                                    }),
+                                    (element) => ({
+                                        displayName: 'Collect earnings',
+                                        async callback() {
+                                            if (operatorId) {
+                                                try {
+                                                    await collectEarnings(
+                                                        element.sponsorshipId,
+                                                        operatorId,
+                                                    )
+                                                    successToast({
+                                                        title: 'Earnings collected!',
+                                                        // eslint-disable-next-line max-len
+                                                        desc: 'Earnings have been successfully collected and are now available in your operator balance.',
+                                                    })
+                                                    await updateUncollectedEarnings()
+                                                } catch (e) {
+                                                    console.error(
+                                                        'Could not collect earnings',
+                                                        e,
+                                                    )
+                                                }
+                                            }
+                                        },
+                                        disabled:
+                                            uncollectedEarnings[element.sponsorshipId] !=
+                                                null &&
+                                            uncollectedEarnings[
+                                                element.sponsorshipId
+                                            ].isLessThanOrEqualTo(0),
+                                    }),
                                 ]}
                             />
                         </NetworkPageSegment>
