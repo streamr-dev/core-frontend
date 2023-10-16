@@ -129,7 +129,7 @@ export const SingleOperatorPage = () => {
 
     useEffect(() => void setNodes(persistedNodes), [persistedNodes])
 
-    const [saveNodes, isSavingNodeAddresses] = useSubmitNodeAddressesCallback()
+    const [saveNodeAddresses, isSavingNodeAddresses] = useSubmitNodeAddressesCallback()
 
     return (
         <Layout>
@@ -540,30 +540,34 @@ export const SingleOperatorPage = () => {
                                         }
 
                                         try {
-                                            await saveNodes(operatorId, addresses, {
-                                                onSuccess() {
-                                                    setNodes((current) => {
-                                                        const newNodes: OperatorNode[] =
-                                                            []
+                                            await saveNodeAddresses(
+                                                operatorId,
+                                                addresses,
+                                                {
+                                                    onSuccess() {
+                                                        setNodes((current) => {
+                                                            const newNodes: OperatorNode[] =
+                                                                []
 
-                                                        current.forEach((node) => {
-                                                            if (node.enabled) {
-                                                                newNodes.push({
-                                                                    ...node,
-                                                                    persisted: true,
-                                                                })
-                                                            }
+                                                            current.forEach((node) => {
+                                                                if (node.enabled) {
+                                                                    newNodes.push({
+                                                                        ...node,
+                                                                        persisted: true,
+                                                                    })
+                                                                }
+                                                            })
+
+                                                            return newNodes
                                                         })
-
-                                                        return newNodes
-                                                    })
+                                                    },
+                                                    onError() {
+                                                        errorToast({
+                                                            title: 'Faild to save the new node addresses',
+                                                        })
+                                                    },
                                                 },
-                                                onError() {
-                                                    errorToast({
-                                                        title: 'Faild to save the new node addresses',
-                                                    })
-                                                },
-                                            })
+                                            )
                                         } catch (e) {}
                                     }}
                                 />
