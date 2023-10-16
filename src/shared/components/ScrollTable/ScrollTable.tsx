@@ -17,8 +17,8 @@ import { NoData } from '~/shared/components/NoData'
 import { LoadMoreButton } from '~/components/LoadMore'
 
 export enum ScrollTableOrderDirection {
-    Asc = 'Asc',
-    Desc = 'Desc',
+    Asc = 'asc',
+    Desc = 'desc',
 }
 
 type ScrollTableProps<Element> = {
@@ -260,11 +260,15 @@ const OrderCaret: FunctionComponent<{
     return <OrderCaretIcon name="caretUp" $direction={orderDirection} />
 }
 
-const ORDER_ITERATION_CYCLE = [
-    ScrollTableOrderDirection.Asc,
-    ScrollTableOrderDirection.Desc,
-    undefined,
-]
+const ORDER_ITERATION_CYCLE = new Map<
+    ScrollTableOrderDirection | undefined,
+    ScrollTableOrderDirection | undefined
+>([
+    [ScrollTableOrderDirection.Asc, ScrollTableOrderDirection.Desc],
+    [ScrollTableOrderDirection.Desc, undefined],
+    [undefined, ScrollTableOrderDirection.Asc],
+])
+
 export const getNextSortingParameters = (
     currentOrderBy: string | undefined,
     newOrderBy: string,
@@ -276,25 +280,12 @@ export const getNextSortingParameters = (
     if (currentOrderBy !== newOrderBy) {
         return {
             orderBy: newOrderBy,
-            orderDirection: ORDER_ITERATION_CYCLE[0],
+            orderDirection: ScrollTableOrderDirection.Asc,
         }
     }
-    const currentDirectionCycleIndex = ORDER_ITERATION_CYCLE.findIndex(
-        (el) => el === currentOrderDirection,
-    )
-    const newDirectionCycleIndex =
-        currentDirectionCycleIndex + 1 == ORDER_ITERATION_CYCLE.length
-            ? 0
-            : currentDirectionCycleIndex + 1
-    const newDirection = ORDER_ITERATION_CYCLE[newDirectionCycleIndex]
-    if (!newDirection) {
-        return {
-            orderBy: undefined,
-            orderDirection: undefined,
-        }
-    }
+    const newDirection = ORDER_ITERATION_CYCLE.get(currentOrderDirection)
     return {
-        orderBy: newOrderBy,
+        orderBy: newDirection ? newOrderBy : undefined,
         orderDirection: newDirection,
     }
 }
