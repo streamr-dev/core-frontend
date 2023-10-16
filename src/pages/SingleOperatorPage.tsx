@@ -48,8 +48,13 @@ import {
     OperatorNode,
     useSubmitNodeAddressesCallback,
 } from '~/components/NodesTable'
-import { useOperatorStore } from '~/shared/stores/operator'
 import Spinner from '~/shared/components/Spinner'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import {
+    useCanCollectEarningsCallback,
+    useUncollectedEarnings,
+    useUncollectedEarningsStore,
+} from '~/shared/stores/uncollectedEarnings'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -62,12 +67,14 @@ export const SingleOperatorPage = () => {
 
     const walletAddress = useWalletAccount()
 
-    const { setOperator, uncollectedEarnings, updateUncollectedEarnings } =
-        useOperatorStore()
+    const { fetch: fetchUncollectedEarnings } = useUncollectedEarningsStore()
+
+    const isOwner =
+        walletAddress && walletAddress.toLowerCase() === operator?.owner.toLowerCase()
+
+    const canCollect = useCanCollectEarningsCallback()
 
     const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
-
-    useEffect(() => void setOperator(operator), [operator, setOperator])
 
     const editSponsorshipFunding = useEditSponsorshipFunding()
 
@@ -359,23 +366,12 @@ export const SingleOperatorPage = () => {
                                     },
                                     {
                                         displayName: 'Uncollected earnings',
-                                        valueMapper: (element) => {
-                                            if (
-                                                uncollectedEarnings[
-                                                    element.sponsorshipId
-                                                ] != null
-                                            ) {
-                                                return `${abbreviateNumber(
-                                                    fromAtto(
-                                                        uncollectedEarnings[
-                                                            element.sponsorshipId
-                                                        ],
-                                                    ).toNumber(),
-                                                )} ${tokenSymbol}`
-                                            }
-
-                                            return <Spinner color="blue" />
-                                        },
+                                        valueMapper: (element) => (
+                                            <UncollectedEarnings
+                                                operatorId={operatorId}
+                                                sponsorshipId={element.sponsorshipId}
+                                            />
+                                        ),
                                         align: 'end',
                                         isSticky: false,
                                         key: 'earnings',
@@ -387,6 +383,7 @@ export const SingleOperatorPage = () => {
                                 actions={[
                                     (element) => ({
                                         displayName: 'Edit',
+                                        disabled: !isOwner,
                                         async callback() {
                                             if (!operator) {
                                                 return
@@ -448,14 +445,26 @@ export const SingleOperatorPage = () => {
                                                         element.sponsorshipId,
                                                         operatorId,
                                                     )
+
                                                     successToast({
                                                         title: 'Earnings collected!',
-                                                        // eslint-disable-next-line max-len
-                                                        desc: 'Earnings have been successfully collected and are now available in your operator balance.',
+                                                        autoCloseAfter: 5,
+                                                        desc: (
+                                                            <p>
+                                                                Earnings have been
+                                                                successfully collected and
+                                                                are now available in your
+                                                                operator&nbsp;balance.
+                                                            </p>
+                                                        ),
                                                     })
-                                                    await updateUncollectedEarnings()
+
+                                                    await fetchUncollectedEarnings(
+                                                        operatorId,
+                                                    )
 
                                                     await waitForGraphSync()
+
                                                     refetchQuery(operatorQuery)
                                                 } catch (e) {
                                                     console.error(
@@ -466,11 +475,11 @@ export const SingleOperatorPage = () => {
                                             }
                                         },
                                         disabled:
-                                            uncollectedEarnings[element.sponsorshipId] !=
-                                                null &&
-                                            uncollectedEarnings[
-                                                element.sponsorshipId
-                                            ].isLessThanOrEqualTo(0),
+                                            !isOwner ||
+                                            !canCollect(
+                                                operatorId || '',
+                                                element.sponsorshipId,
+                                            ),
                                     }),
                                 ]}
                             />
@@ -632,3 +641,22 @@ const NodeAddressHeader = styled.div`
     display: flex;
     align-items: center;
 `
+
+function UncollectedEarnings({
+    operatorId,
+    sponsorshipId,
+}: {
+    operatorId: string | undefined
+    sponsorshipId: string
+}) {
+    const value = useUncollectedEarnings(operatorId, sponsorshipId)
+
+    return typeof value !== 'undefined' ? (
+        <>
+            {abbreviateNumber(fromAtto(value || '0').toNumber())}{' '}
+            <SponsorshipPaymentTokenName />
+        </>
+    ) : (
+        <Spinner color="blue" />
+    )
+}
