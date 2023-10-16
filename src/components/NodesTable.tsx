@@ -274,6 +274,14 @@ export function useSubmitNodeAddressesCallback(): [SubmitNodeAddressesCallback, 
 
     const abortControllerRef = useRef<AbortController>()
 
+    useEffect(() => {
+        const { current: abortController } = abortControllerRef
+
+        return () => {
+            abortController?.abort()
+        }
+    }, [])
+
     const cb: SubmitNodeAddressesCallback = useCallback(
         async (operatorId, addresses, { onSuccess, onError } = {}) => {
             abortControllerRef.current?.abort()
