@@ -23,7 +23,13 @@ export const OperatorParser = z
         exchangeRate: z.string().transform(toBN),
         id: z.string(),
         metadataJsonString: OperatorMetadataParser,
-        nodes: z.array(z.string()),
+        nodes: z.array(z.string()).transform((nodes) =>
+            nodes.map((address) => ({
+                address: address.toLowerCase(),
+                enabled: true,
+                persisted: true,
+            })),
+        ),
         operatorsCutFraction: z.string().transform(fromAtto),
         owner: z.string(),
         operatorTokenTotalSupplyWei: z.string().transform(toBN),
