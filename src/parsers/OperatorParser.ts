@@ -14,10 +14,11 @@ export const OperatorParser = z
                 .object({
                     delegator: z.string(),
                     delegatedDataWei: z.string().transform(toBN),
+                    operatorTokenBalanceWei: z.string().transform(toBN),
                 })
-                .transform(({ delegatedDataWei: amount, delegator }) => ({
+                .transform(({ delegatedDataWei: amount, ...rest }) => ({
+                    ...rest,
                     amount,
-                    delegator,
                 })),
         ),
         exchangeRate: z.string().transform(toBN),

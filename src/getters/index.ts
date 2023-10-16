@@ -790,21 +790,22 @@ export function getSpotApy<
 
 /**
  * Sums amounts delegated to given operator by given wallet.
- * @param address Wallet address.
- * @param operator.delegators Collection of delegators.
- * @returns Wallet's delegation amount sum across all operators.
  */
-export function getDelegatedAmountForWallet<T extends Pick<ParsedOperator, 'delegators'>>(
+export function getDelegatedAmountForWallet(
     address: string,
-    { delegators }: T,
+    { delegators, exchangeRate }: ParsedOperator,
 ): BN {
     const addr = address.toLowerCase()
 
-    return delegators.reduce(
-        (sum, { delegator, amount }) =>
-            delegator.toLowerCase() === addr ? sum.plus(amount) : sum,
-        toBN(0),
-    )
+    return delegators
+        .reduce(
+            (sum, { delegator, operatorTokenBalanceWei }) =>
+                delegator.toLowerCase() === addr
+                    ? sum.plus(operatorTokenBalanceWei)
+                    : sum,
+            toBN(0),
+        )
+        .multipliedBy(exchangeRate)
 }
 
 /**
@@ -823,13 +824,15 @@ export function getDelegationFractionForWallet(
     operator: ParsedOperator,
     { offset = toBN(0) }: { offset?: BN } = {},
 ) {
-    const value = operator.valueWithoutEarnings.plus(offset)
+    const total = operator.operatorTokenTotalSupplyWei
+        .multipliedBy(operator.exchangeRate)
+        .plus(offset)
 
-    if (value.isEqualTo(0)) {
+    if (total.isEqualTo(0)) {
         return toBN(0)
     }
 
-    return getDelegatedAmountForWallet(address, operator).dividedBy(value)
+    return getDelegatedAmountForWallet(address, operator).dividedBy(total)
 }
 
 /**

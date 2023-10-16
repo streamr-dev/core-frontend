@@ -263,11 +263,12 @@ export const SingleOperatorPage = () => {
                                                             Current value
                                                         </StatCellLabel>
                                                         <StatCellBody>
-                                                            {`${abbreviateNumber(
+                                                            {abbreviateNumber(
                                                                 fromAtto(
                                                                     myDelegationAmount,
                                                                 ).toNumber(),
-                                                            )} ${tokenSymbol}`}
+                                                            )}{' '}
+                                                            {tokenSymbol}
                                                         </StatCellBody>
                                                     </Pad>
                                                 </DelegationCell>
@@ -279,9 +280,10 @@ export const SingleOperatorPage = () => {
                                                             value
                                                         </StatCellLabel>
                                                         <StatCellBody>
-                                                            {`${myDelegationPercentage.toFixed(
+                                                            {myDelegationPercentage.toFixed(
                                                                 0,
-                                                            )}%`}
+                                                            )}
+                                                            %
                                                         </StatCellBody>
                                                     </Pad>
                                                 </DelegationCell>
