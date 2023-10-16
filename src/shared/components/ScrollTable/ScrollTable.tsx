@@ -1,9 +1,9 @@
-import React, { ReactNode, useState } from 'react'
+import React, { FunctionComponent, ReactNode, useState } from 'react'
 import { Link } from 'react-router-dom'
-import cx from 'classnames'
 import {
     FloatingLoadingIndicator,
     NoDataWrap,
+    OrderCaretIcon,
     ScrollTableCell,
     ScrollTableCellsWrap,
     ScrollTableColumn,
@@ -15,11 +15,19 @@ import PopoverItem from '~/shared/components/Popover/PopoverItem'
 import { NoData } from '~/shared/components/NoData'
 import { LoadMoreButton } from '~/components/LoadMore'
 
+export enum ScrollTableOrderDirection {
+    Asc = 'asc',
+    Desc = 'desc',
+}
+
 type ScrollTableProps<Element> = {
     elements: Element[]
     isLoading?: boolean
     columns: ScrollTableColumnDef<Element>[]
     actions?: (ScrollTableAction<Element> | ScrollTableActionCallback<Element>)[]
+    orderDirection?: ScrollTableOrderDirection
+    orderBy?: string
+    onOrderChange?: (columnKey: string) => void
     noDataFirstLine?: ReactNode
     noDataSecondLine?: ReactNode
     footerComponent?: ReactNode
@@ -34,6 +42,7 @@ export type ScrollTableColumnDef<T> = {
     isSticky: boolean
     valueMapper: (element: T) => ReactNode
     align: 'start' | 'end'
+    sortable?: boolean
 }
 
 type ScrollTableActionCallback<T> = (element: T) => {
@@ -49,28 +58,15 @@ export type ScrollTableAction<T> = {
 }
 
 export const ScrollTable = <T extends object>({
-    elements,
-    columns,
-    actions,
     isLoading,
-    noDataFirstLine,
-    noDataSecondLine,
     footerComponent,
-    linkMapper,
     hasMoreResults,
     onLoadMore,
+    ...tableProps
 }: ScrollTableProps<T>) => {
     return (
         <>
-            <ScrollTableCore
-                columns={columns}
-                elements={elements}
-                actions={actions}
-                isLoading={isLoading}
-                noDataFirstLine={noDataFirstLine}
-                noDataSecondLine={noDataSecondLine}
-                linkMapper={linkMapper}
-            />
+            <ScrollTableCore isLoading={isLoading} {...tableProps} />
             {hasMoreResults && (
                 <LoadMoreButton
                     disabled={isLoading}
@@ -92,11 +88,15 @@ export const ScrollTableCore = <T extends object>({
     isLoading,
     noDataFirstLine,
     noDataSecondLine,
+    orderDirection,
+    orderBy,
+    onOrderChange,
     linkMapper,
 }: ScrollTableProps<T>) => {
     const stickyColumns = columns.filter((column) => column.isSticky)
     const nonStickyColumns = columns.filter((column) => !column.isSticky)
     const [hoveredRowIndex, setHoveredRowIndex] = useState<number | null>(null)
+    const hasOrderingEnabled = orderBy && orderDirection && onOrderChange
     return (
         <ScrollTableCellsWrap
             stickyColumnCount={stickyColumns.length}
@@ -105,8 +105,19 @@ export const ScrollTableCore = <T extends object>({
             {stickyColumns.map((stickyColumn) => {
                 return (
                     <ScrollTableColumn key={stickyColumn.key}>
-                        <ScrollTableHeaderCell className={'align-' + stickyColumn.align}>
-                            <span>{stickyColumn.displayName}</span>
+                        <ScrollTableHeaderCell
+                            $align={stickyColumn.align}
+                            $pointer={onOrderChange && stickyColumn.sortable}
+                            onClick={() => {
+                                if (onOrderChange && stickyColumn.sortable) {
+                                    onOrderChange(stickyColumn.key)
+                                }
+                            }}
+                        >
+                            <span>{stickyColumn.displayName}</span>{' '}
+                            {hasOrderingEnabled && stickyColumn.key === orderBy && (
+                                <OrderCaret orderDirection={orderDirection} />
+                            )}
                         </ScrollTableHeaderCell>
                         {elements && elements.length > 0 && (
                             <>
@@ -114,10 +125,8 @@ export const ScrollTableCore = <T extends object>({
                                     return (
                                         <ScrollTableCell
                                             key={id}
-                                            className={cx(
-                                                'align-' + stickyColumn.align,
-                                                hoveredRowIndex === id && ' hover',
-                                            )}
+                                            $align={stickyColumn.align}
+                                            $hover={hoveredRowIndex === id}
                                             as={linkMapper ? Link : 'div'}
                                             to={linkMapper ? linkMapper(element) : ''}
                                             onMouseEnter={() => setHoveredRowIndex(id)}
@@ -137,9 +146,19 @@ export const ScrollTableCore = <T extends object>({
                     return (
                         <ScrollTableColumn key={nonStickyColumn.key}>
                             <ScrollTableHeaderCell
-                                className={'align-' + nonStickyColumn.align}
+                                $align={nonStickyColumn.align}
+                                $pointer={onOrderChange && nonStickyColumn.sortable}
+                                onClick={() => {
+                                    if (onOrderChange && nonStickyColumn.sortable) {
+                                        onOrderChange(nonStickyColumn.key)
+                                    }
+                                }}
                             >
                                 <span>{nonStickyColumn.displayName}</span>
+                                {hasOrderingEnabled &&
+                                    nonStickyColumn.key === orderBy && (
+                                        <OrderCaret orderDirection={orderDirection} />
+                                    )}
                             </ScrollTableHeaderCell>
                             {elements && elements.length > 0 && (
                                 <>
@@ -149,10 +168,8 @@ export const ScrollTableCore = <T extends object>({
                                                 as={linkMapper ? Link : 'div'}
                                                 to={linkMapper ? linkMapper(element) : ''}
                                                 key={id}
-                                                className={cx(
-                                                    'align-' + nonStickyColumn.align,
-                                                    hoveredRowIndex === id && ' hover',
-                                                )}
+                                                $align={nonStickyColumn.align}
+                                                $hover={hoveredRowIndex === id}
                                                 onMouseEnter={() =>
                                                     setHoveredRowIndex(id)
                                                 }
@@ -170,15 +187,13 @@ export const ScrollTableCore = <T extends object>({
                     )
                 })}
                 {actions && actions.length && (
-                    <ScrollTableColumn className="action-column">
-                        <ScrollTableHeaderCell className="action-cell" />
+                    <ScrollTableColumn $actionColumn={true}>
+                        <ScrollTableHeaderCell $actionCell={true} />
                         {elements.map((element, id) => (
                             <ScrollTableCell
                                 key={id}
-                                className={cx(
-                                    'action-cell',
-                                    hoveredRowIndex === id && ' hover',
-                                )}
+                                $actionCell={true}
+                                $hover={hoveredRowIndex === id}
                                 onMouseEnter={() => setHoveredRowIndex(id)}
                                 onMouseLeave={() => setHoveredRowIndex(null)}
                             >
@@ -236,4 +251,40 @@ export const ScrollTableCore = <T extends object>({
             <FloatingLoadingIndicator loading={isLoading} />
         </ScrollTableCellsWrap>
     )
+}
+
+const OrderCaret: FunctionComponent<{
+    orderDirection: ScrollTableOrderDirection
+}> = ({ orderDirection }) => {
+    return <OrderCaretIcon name="caretUp" $direction={orderDirection} />
+}
+
+const ORDER_ITERATION_CYCLE = new Map<
+    ScrollTableOrderDirection | undefined,
+    ScrollTableOrderDirection | undefined
+>([
+    [ScrollTableOrderDirection.Asc, ScrollTableOrderDirection.Desc],
+    [ScrollTableOrderDirection.Desc, undefined],
+    [undefined, ScrollTableOrderDirection.Asc],
+])
+
+export const getNextSortingParameters = (
+    currentOrderBy: string | undefined,
+    newOrderBy: string,
+    currentOrderDirection: ScrollTableOrderDirection | undefined,
+): {
+    orderBy: string | undefined
+    orderDirection: ScrollTableOrderDirection | undefined
+} => {
+    if (currentOrderBy !== newOrderBy) {
+        return {
+            orderBy: newOrderBy,
+            orderDirection: ScrollTableOrderDirection.Asc,
+        }
+    }
+    const newDirection = ORDER_ITERATION_CYCLE.get(currentOrderDirection)
+    return {
+        orderBy: newDirection ? newOrderBy : undefined,
+        orderDirection: newDirection,
+    }
 }

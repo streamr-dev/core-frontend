@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { useCallback, useEffect, useState } from 'react'
 import { z } from 'zod'
-import { Operator } from '~/generated/gql/network'
+import { Operator, Operator_OrderBy, OrderDirection } from '~/generated/gql/network'
 import {
     getAllOperators,
     getDelegatedAmountForWallet,
@@ -18,7 +18,7 @@ import {
 import { isEthereumAddress } from '~/marketplace/utils/validate'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
-import { DelegationsStats, Delegation } from '~/types'
+import { Delegation, DelegationsStats } from '~/types'
 import { toBN } from '~/utils/bn'
 import { delegateFunds, undelegateFunds } from '~/utils/operators'
 import { errorToast } from '~/utils/toast'
@@ -196,10 +196,14 @@ export function useDelegationsForWalletQuery({
     address: addressProp = '',
     pageSize = 10,
     searchQuery: searchQueryProp = '',
+    orderBy,
+    orderDirection,
 }: {
     address?: string
     pageSize?: number
     searchQuery?: string
+    orderBy?: string
+    orderDirection?: 'asc' | 'desc'
 }) {
     const address = addressProp.toLowerCase()
 
@@ -214,6 +218,8 @@ export function useDelegationsForWalletQuery({
                         first: pageSize,
                         skip,
                         address,
+                        orderBy: mapOperatorOrder(orderBy),
+                        orderDirection: orderDirection as OrderDirection,
                     }
 
                     if (!searchQuery) {
@@ -271,20 +277,32 @@ export function useDelegationsForWalletQuery({
 export function useAllOperatorsQuery({
     batchSize = 10,
     searchQuery: searchQueryProp = '',
+    orderBy,
+    orderDirection,
 }: {
     batchSize?: number
     searchQuery?: string
+    orderBy?: string
+    orderDirection?: 'asc' | 'desc'
 }) {
     const searchQuery = searchQueryProp.toLowerCase()
 
     return useInfiniteQuery({
-        queryKey: ['useAllOperatorsQuery', searchQuery, batchSize],
+        queryKey: [
+            'useAllOperatorsQuery',
+            searchQuery,
+            batchSize,
+            orderBy,
+            orderDirection,
+        ],
         async queryFn({ pageParam: skip = 0 }) {
             const elements = await getParsedOperators(
                 () => {
                     const params = {
                         first: batchSize,
                         skip,
+                        orderBy: mapOperatorOrder(orderBy),
+                        orderDirection: orderDirection as OrderDirection,
                     }
 
                     if (!searchQuery) {
@@ -385,4 +403,17 @@ export function useUndelegateFunds() {
             ),
         [minimumSelfDelegationFraction, withFlag],
     )
+}
+
+const mapOperatorOrder = (orderBy: string | undefined): Operator_OrderBy => {
+    switch (orderBy) {
+        case 'totalValue':
+            return Operator_OrderBy.ValueWithoutEarnings
+        case 'deployed':
+            return Operator_OrderBy.TotalStakeInSponsorshipsWei
+        case 'operatorCut':
+            return Operator_OrderBy.OperatorsCutFraction
+        default:
+            return Operator_OrderBy.Id
+    }
 }

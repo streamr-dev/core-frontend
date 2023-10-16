@@ -48,23 +48,54 @@ gql`
         operatorsCutFraction
     }
 
-    query getAllOperators($first: Int, $skip: Int, $searchQuery: ID) {
-        operators(first: $first, skip: $skip) {
+    query getAllOperators(
+        $first: Int
+        $skip: Int
+        $searchQuery: ID
+        $orderBy: Operator_orderBy
+        $orderDirection: OrderDirection
+    ) {
+        operators(
+            first: $first
+            skip: $skip
+            orderBy: $orderBy
+            orderDirection: $orderDirection
+        ) {
             ...OperatorFields
         }
     }
 
-    query searchOperatorsById($first: Int, $skip: Int, $operatorId: ID) {
-        operators(first: $first, skip: $skip, where: { id: $operatorId }) {
+    query searchOperatorsById(
+        $first: Int
+        $skip: Int
+        $operatorId: ID
+        $orderBy: Operator_orderBy
+        $orderDirection: OrderDirection
+    ) {
+        operators(
+            first: $first
+            skip: $skip
+            where: { id: $operatorId }
+            orderBy: $orderBy
+            orderDirection: $orderDirection
+        ) {
             ...OperatorFields
         }
     }
 
-    query searchOperatorsByMetadata($first: Int, $skip: Int, $searchQuery: String) {
+    query searchOperatorsByMetadata(
+        $first: Int
+        $skip: Int
+        $searchQuery: String
+        $orderBy: Operator_orderBy
+        $orderDirection: OrderDirection
+    ) {
         operators(
             first: $first
             skip: $skip
             where: { metadataJsonString_contains_nocase: $searchQuery }
+            orderBy: $orderBy
+            orderDirection: $orderDirection
         ) {
             ...OperatorFields
         }
@@ -76,11 +107,19 @@ gql`
         }
     }
 
-    query getOperatorsByDelegation($first: Int, $skip: Int, $delegator: String!) {
+    query getOperatorsByDelegation(
+        $first: Int
+        $skip: Int
+        $delegator: String!
+        $orderBy: Operator_orderBy
+        $orderDirection: OrderDirection
+    ) {
         operators(
             first: $first
             skip: $skip
             where: { delegators_: { delegator: $delegator } }
+            orderBy: $orderBy
+            orderDirection: $orderDirection
         ) {
             ...OperatorFields
         }
@@ -91,11 +130,15 @@ gql`
         $skip: Int
         $delegator: String!
         $operatorId: ID!
+        $orderBy: Operator_orderBy
+        $orderDirection: OrderDirection
     ) {
         operators(
             first: $first
             skip: $skip
             where: { delegators_: { delegator: $delegator }, id: $operatorId }
+            orderBy: $orderBy
+            orderDirection: $orderDirection
         ) {
             ...OperatorFields
         }
@@ -106,6 +149,8 @@ gql`
         $skip: Int
         $delegator: String!
         $searchQuery: String!
+        $orderBy: Operator_orderBy
+        $orderDirection: OrderDirection
     ) {
         operators(
             first: $first
@@ -114,6 +159,8 @@ gql`
                 delegators_: { delegator: $delegator }
                 metadataJsonString_contains_nocase: $searchQuery
             }
+            orderBy: $orderBy
+            orderDirection: $orderDirection
         ) {
             ...OperatorFields
         }

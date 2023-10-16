@@ -8,7 +8,11 @@ import Layout, { LayoutColumn } from '~/components/Layout'
 import { Layer } from '~/utils/Layer'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import Button from '~/shared/components/Button'
-import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
+import {
+    getNextSortingParameters,
+    ScrollTableCore,
+    ScrollTableOrderDirection,
+} from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
 import { createOperator } from '~/services/operators'
@@ -48,9 +52,16 @@ export const OperatorsPage = () => {
 
     const wallet = useWalletAccount()
 
+    const [orderBy, setOrderBy] = useState<string | undefined>()
+    const [orderDirection, setOrderDirection] = useState<
+        ScrollTableOrderDirection | undefined
+    >()
+
     const allOperatorsQuery = useAllOperatorsQuery({
         batchSize: PAGE_SIZE,
         searchQuery,
+        orderBy,
+        orderDirection,
     })
 
     const myDelegationsQuery = useDelegationsForWalletQuery({
@@ -58,6 +69,16 @@ export const OperatorsPage = () => {
         pageSize: PAGE_SIZE,
         searchQuery,
     })
+
+    const handleOrderChange = (columnKey: string) => {
+        const newOrderSettings = getNextSortingParameters(
+            orderBy,
+            columnKey,
+            orderDirection,
+        )
+        setOrderBy(newOrderSettings.orderBy)
+        setOrderDirection(newOrderSettings.orderDirection)
+    }
 
     const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
@@ -151,6 +172,9 @@ export const OperatorsPage = () => {
                             <OperatorsTable
                                 query={allOperatorsQuery}
                                 tokenSymbol={tokenSymbol}
+                                orderBy={orderBy}
+                                orderDirection={orderDirection}
+                                onOrderChange={handleOrderChange}
                             />
                         ) : (
                             <DelegationsTable
@@ -267,9 +291,15 @@ function DelegationsTable({
 function OperatorsTable({
     query,
     tokenSymbol,
+    orderBy,
+    orderDirection,
+    onOrderChange,
 }: {
     query: UseInfiniteQueryResult<{ skip: number; elements: ParsedOperator[] }>
     tokenSymbol: string
+    orderBy?: string
+    orderDirection?: ScrollTableOrderDirection
+    onOrderChange: (columnKey: string) => void
 }) {
     const elements = query.data?.pages.flatMap((page) => page.elements) || []
 
@@ -277,6 +307,9 @@ function OperatorsTable({
         <ScrollTableCore
             elements={elements}
             isLoading={query.isLoading || query.isFetching || query.isFetchingNextPage}
+            orderDirection={orderDirection}
+            orderBy={orderBy}
+            onOrderChange={onOrderChange}
             columns={[
                 {
                     displayName: 'Operator Name',
@@ -306,6 +339,7 @@ function OperatorsTable({
                     align: 'start',
                     isSticky: false,
                     key: 'totalValue',
+                    sortable: true,
                 },
                 {
                     displayName: 'Deployed',
@@ -316,6 +350,7 @@ function OperatorsTable({
                     align: 'end',
                     isSticky: false,
                     key: 'deployed',
+                    sortable: true,
                 },
                 {
                     displayName: "Operator's cut",
@@ -323,6 +358,7 @@ function OperatorsTable({
                     align: 'end',
                     isSticky: false,
                     key: 'operatorCut',
+                    sortable: true,
                 },
                 {
                     displayName: 'APY',
@@ -337,7 +373,7 @@ function OperatorsTable({
                     valueMapper: (element) => element.stakes.length,
                     align: 'end',
                     isSticky: false,
-                    key: 'sponshorshipCount',
+                    key: 'sponsorshipCount',
                 },
             ]}
             noDataFirstLine="No operators found."

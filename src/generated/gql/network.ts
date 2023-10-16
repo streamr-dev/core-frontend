@@ -3912,6 +3912,8 @@ export type GetAllOperatorsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   skip?: InputMaybe<Scalars['Int']['input']>;
   searchQuery?: InputMaybe<Scalars['ID']['input']>;
+  orderBy?: InputMaybe<Operator_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
 }>;
 
 
@@ -3921,6 +3923,8 @@ export type SearchOperatorsByIdQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   skip?: InputMaybe<Scalars['Int']['input']>;
   operatorId?: InputMaybe<Scalars['ID']['input']>;
+  orderBy?: InputMaybe<Operator_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
 }>;
 
 
@@ -3930,6 +3934,8 @@ export type SearchOperatorsByMetadataQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   skip?: InputMaybe<Scalars['Int']['input']>;
   searchQuery?: InputMaybe<Scalars['String']['input']>;
+  orderBy?: InputMaybe<Operator_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
 }>;
 
 
@@ -3946,6 +3952,8 @@ export type GetOperatorsByDelegationQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   skip?: InputMaybe<Scalars['Int']['input']>;
   delegator: Scalars['String']['input'];
+  orderBy?: InputMaybe<Operator_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
 }>;
 
 
@@ -3956,6 +3964,8 @@ export type GetOperatorsByDelegationAndIdQueryVariables = Exact<{
   skip?: InputMaybe<Scalars['Int']['input']>;
   delegator: Scalars['String']['input'];
   operatorId: Scalars['ID']['input'];
+  orderBy?: InputMaybe<Operator_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
 }>;
 
 
@@ -3966,6 +3976,8 @@ export type GetOperatorsByDelegationAndMetadataQueryVariables = Exact<{
   skip?: InputMaybe<Scalars['Int']['input']>;
   delegator: Scalars['String']['input'];
   searchQuery: Scalars['String']['input'];
+  orderBy?: InputMaybe<Operator_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
 }>;
 
 
@@ -4279,27 +4291,40 @@ export const OperatorDailyBucketFieldsFragmentDoc = gql`
 }
     `;
 export const GetAllOperatorsDocument = gql`
-    query getAllOperators($first: Int, $skip: Int, $searchQuery: ID) {
-  operators(first: $first, skip: $skip) {
+    query getAllOperators($first: Int, $skip: Int, $searchQuery: ID, $orderBy: Operator_orderBy, $orderDirection: OrderDirection) {
+  operators(
+    first: $first
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
     ...OperatorFields
   }
 }
     ${OperatorFieldsFragmentDoc}`;
 export type GetAllOperatorsQueryResult = Apollo.QueryResult<GetAllOperatorsQuery, GetAllOperatorsQueryVariables>;
 export const SearchOperatorsByIdDocument = gql`
-    query searchOperatorsById($first: Int, $skip: Int, $operatorId: ID) {
-  operators(first: $first, skip: $skip, where: {id: $operatorId}) {
+    query searchOperatorsById($first: Int, $skip: Int, $operatorId: ID, $orderBy: Operator_orderBy, $orderDirection: OrderDirection) {
+  operators(
+    first: $first
+    skip: $skip
+    where: {id: $operatorId}
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
     ...OperatorFields
   }
 }
     ${OperatorFieldsFragmentDoc}`;
 export type SearchOperatorsByIdQueryResult = Apollo.QueryResult<SearchOperatorsByIdQuery, SearchOperatorsByIdQueryVariables>;
 export const SearchOperatorsByMetadataDocument = gql`
-    query searchOperatorsByMetadata($first: Int, $skip: Int, $searchQuery: String) {
+    query searchOperatorsByMetadata($first: Int, $skip: Int, $searchQuery: String, $orderBy: Operator_orderBy, $orderDirection: OrderDirection) {
   operators(
     first: $first
     skip: $skip
     where: {metadataJsonString_contains_nocase: $searchQuery}
+    orderBy: $orderBy
+    orderDirection: $orderDirection
   ) {
     ...OperatorFields
   }
@@ -4315,11 +4340,13 @@ export const GetOperatorByIdDocument = gql`
     ${OperatorFieldsFragmentDoc}`;
 export type GetOperatorByIdQueryResult = Apollo.QueryResult<GetOperatorByIdQuery, GetOperatorByIdQueryVariables>;
 export const GetOperatorsByDelegationDocument = gql`
-    query getOperatorsByDelegation($first: Int, $skip: Int, $delegator: String!) {
+    query getOperatorsByDelegation($first: Int, $skip: Int, $delegator: String!, $orderBy: Operator_orderBy, $orderDirection: OrderDirection) {
   operators(
     first: $first
     skip: $skip
     where: {delegators_: {delegator: $delegator}}
+    orderBy: $orderBy
+    orderDirection: $orderDirection
   ) {
     ...OperatorFields
   }
@@ -4327,11 +4354,13 @@ export const GetOperatorsByDelegationDocument = gql`
     ${OperatorFieldsFragmentDoc}`;
 export type GetOperatorsByDelegationQueryResult = Apollo.QueryResult<GetOperatorsByDelegationQuery, GetOperatorsByDelegationQueryVariables>;
 export const GetOperatorsByDelegationAndIdDocument = gql`
-    query getOperatorsByDelegationAndId($first: Int, $skip: Int, $delegator: String!, $operatorId: ID!) {
+    query getOperatorsByDelegationAndId($first: Int, $skip: Int, $delegator: String!, $operatorId: ID!, $orderBy: Operator_orderBy, $orderDirection: OrderDirection) {
   operators(
     first: $first
     skip: $skip
     where: {delegators_: {delegator: $delegator}, id: $operatorId}
+    orderBy: $orderBy
+    orderDirection: $orderDirection
   ) {
     ...OperatorFields
   }
@@ -4339,11 +4368,13 @@ export const GetOperatorsByDelegationAndIdDocument = gql`
     ${OperatorFieldsFragmentDoc}`;
 export type GetOperatorsByDelegationAndIdQueryResult = Apollo.QueryResult<GetOperatorsByDelegationAndIdQuery, GetOperatorsByDelegationAndIdQueryVariables>;
 export const GetOperatorsByDelegationAndMetadataDocument = gql`
-    query getOperatorsByDelegationAndMetadata($first: Int, $skip: Int, $delegator: String!, $searchQuery: String!) {
+    query getOperatorsByDelegationAndMetadata($first: Int, $skip: Int, $delegator: String!, $searchQuery: String!, $orderBy: Operator_orderBy, $orderDirection: OrderDirection) {
   operators(
     first: $first
     skip: $skip
     where: {delegators_: {delegator: $delegator}, metadataJsonString_contains_nocase: $searchQuery}
+    orderBy: $orderBy
+    orderDirection: $orderDirection
   ) {
     ...OperatorFields
   }
