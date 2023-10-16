@@ -445,15 +445,17 @@ export const SingleOperatorPage = () => {
                                                         element.sponsorshipId,
                                                         operatorId,
                                                     )
+
                                                     successToast({
                                                         title: 'Earnings collected!',
+                                                        autoCloseAfter: 5,
                                                         desc: (
-                                                            <>
+                                                            <p>
                                                                 Earnings have been
                                                                 successfully collected and
                                                                 are now available in your
-                                                                operator balance.
-                                                            </>
+                                                                operator&nbsp;balance.
+                                                            </p>
                                                         ),
                                                     })
 
@@ -462,6 +464,7 @@ export const SingleOperatorPage = () => {
                                                     )
 
                                                     await waitForGraphSync()
+
                                                     refetchQuery(operatorQuery)
                                                 } catch (e) {
                                                     console.error(
