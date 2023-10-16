@@ -42,6 +42,7 @@ import {
 import { isRejectionReason } from '~/modals/BaseModal'
 import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
+import { IconTooltip } from '~/components/IconTooltip'
 
 export const OperatorActionBar: FunctionComponent<{
     operator: ParsedOperator
@@ -265,9 +266,26 @@ export const OperatorActionBar: FunctionComponent<{
                 <Pad>
                     <StatGrid>
                         <StatCell label="Total value">
-                            {`${abbreviateNumber(
-                                fromAtto(operator.valueWithoutEarnings).toNumber(),
-                            )} ${tokenSymbol}`}
+                            <>
+                                {abbreviateNumber(
+                                    fromAtto(operator.valueWithoutEarnings).toNumber(),
+                                )}{' '}
+                                {tokenSymbol}
+                                {operator.valueWithoutEarnings.isZero() && (
+                                    <IconTooltip
+                                        id="total-value-tooltip"
+                                        iconName="warnBadge"
+                                        content={
+                                            <span>
+                                                You need to deposit {tokenSymbol} tokens
+                                                into your operator contract before you can
+                                                stake on sponsorships or receive
+                                                delegations.
+                                            </span>
+                                        }
+                                    />
+                                )}
+                            </>
                         </StatCell>
                         <StatCell label="Deployed stake">
                             {`${abbreviateNumber(

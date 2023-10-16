@@ -46,6 +46,7 @@ import { refetchQuery } from '~/utils'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { OperatorChecklist } from '~/components/OperatorChecklist'
 import { collectEarnings } from '~/services/sponsorships'
+import { IconTooltip } from '~/components/IconTooltip'
 import routes from '~/routes'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
@@ -348,10 +349,24 @@ export const SingleOperatorPage = () => {
                                     },
                                     {
                                         displayName: 'Funded until',
-                                        valueMapper: (element) =>
-                                            moment(
+                                        valueMapper: (element) => {
+                                            const fundedUntil = moment(
                                                 element.projectedInsolvencyAt * 1000,
-                                            ).format('YYYY-MM-DD'),
+                                            )
+
+                                            return (
+                                                <>
+                                                    {fundedUntil.format('YYYY-MM-DD')}
+                                                    {fundedUntil.isBefore(Date.now()) && (
+                                                        <IconTooltip
+                                                            id="funded-until-tooltip"
+                                                            iconName="warnBadge"
+                                                            content="Sponsorship expired"
+                                                        />
+                                                    )}
+                                                </>
+                                            )
+                                        },
                                         align: 'start',
                                         isSticky: false,
                                         key: 'fundedUntil',
