@@ -55,6 +55,8 @@ import {
     useUncollectedEarnings,
     useUncollectedEarningsStore,
 } from '~/shared/stores/uncollectedEarnings'
+import { confirm } from '~/getters/confirm'
+import { truncate } from '~/shared/utils/text'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -443,6 +445,26 @@ export const SingleOperatorPage = () => {
                                         async callback() {
                                             if (operatorId) {
                                                 try {
+                                                    if (
+                                                        !(await confirm({
+                                                            cancelLabel: 'Cancel',
+                                                            proceedLabel: 'Proceed',
+                                                            title: 'Confirm',
+                                                            description: (
+                                                                <>
+                                                                    This action transfers
+                                                                    uncollected earnings
+                                                                    to the Operator
+                                                                    contract (
+                                                                    {truncate(operatorId)}
+                                                                    ).
+                                                                </>
+                                                            ),
+                                                        }))
+                                                    ) {
+                                                        return
+                                                    }
+
                                                     await collectEarnings(
                                                         element.sponsorshipId,
                                                         operatorId,
@@ -455,8 +477,8 @@ export const SingleOperatorPage = () => {
                                                             <p>
                                                                 Earnings have been
                                                                 successfully collected and
-                                                                are now available in your
-                                                                operator&nbsp;balance.
+                                                                are now available in the
+                                                                Operator&nbsp;balance.
                                                             </p>
                                                         ),
                                                     })
@@ -476,12 +498,10 @@ export const SingleOperatorPage = () => {
                                                 }
                                             }
                                         },
-                                        disabled:
-                                            !isOwner ||
-                                            !canCollect(
-                                                operatorId || '',
-                                                element.sponsorshipId,
-                                            ),
+                                        disabled: !canCollect(
+                                            operatorId || '',
+                                            element.sponsorshipId,
+                                        ),
                                     }),
                                 ]}
                             />
