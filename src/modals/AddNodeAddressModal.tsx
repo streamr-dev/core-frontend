@@ -33,7 +33,7 @@ export default function AddNodeAddressModal({
             title={title}
             submitLabel={submitLabel}
             canSubmit={isValidAddress && address.length > 0}
-            onSubmit={async () => {
+            onSubmit={() => {
                 onSubmit(address)
                 onResolve?.(address)
             }}

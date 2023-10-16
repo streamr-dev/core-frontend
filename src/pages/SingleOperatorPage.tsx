@@ -21,14 +21,9 @@ import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
 import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
-import Button from '~/shared/components/Button'
-import { updateOperator } from '~/services/operators'
+import { setOperatorNodeAddresses, updateOperator } from '~/services/operators'
 import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
-import AddNodeAddressModal from '~/modals/AddNodeAddressModal'
-import { useOperatorStore } from '~/shared/stores/operator'
 import { Layer } from '~/utils/Layer'
-import Spinner from '~/shared/components/Spinner'
-import SvgIcon from '~/shared/components/SvgIcon'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { getOperatorStats } from '~/getters/getOperatorStats'
 import NetworkPageSegment, { Pad, SegmentGrid } from '~/components/NetworkPageSegment'
@@ -42,26 +37,21 @@ import { Separator } from '~/components/Separator'
 import { useEditSponsorshipFunding, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { getDelegatedAmountForWallet, getDelegationFractionForWallet } from '~/getters'
 import { useOperatorByIdQuery } from '~/hooks/operators'
-import { refetchQuery } from '~/utils'
+import { isMessagedObject, refetchQuery } from '~/utils'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { OperatorChecklist } from '~/components/OperatorChecklist'
 import { collectEarnings } from '~/services/sponsorships'
 import { IconTooltip } from '~/components/IconTooltip'
 import routes from '~/routes'
+import {
+    NodesTable,
+    OperatorNode,
+    useSubmitNodeAddressesCallback,
+} from '~/components/NodesTable'
+import { useOperatorStore } from '~/shared/stores/operator'
+import Spinner from '~/shared/components/Spinner'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
-
-const addNodeAddressModal = toaster(AddNodeAddressModal, Layer.Modal)
-
-const PendingIndicator = ({ title, onClick }: { title: string; onClick: () => void }) => (
-    <PendingIndicatorContainer>
-        <span>{title}</span>
-        <PendingSeparator />
-        <PendingCloseButton onClick={onClick}>
-            <SvgIcon name="crossMedium" />
-        </PendingCloseButton>
-    </PendingIndicatorContainer>
-)
 
 export const SingleOperatorPage = () => {
     const operatorId = useParams().id
@@ -72,20 +62,8 @@ export const SingleOperatorPage = () => {
 
     const walletAddress = useWalletAccount()
 
-    const {
-        setOperator,
-        addNodeAddress,
-        removeNodeAddress,
-        cancelAdd,
-        cancelRemove,
-        addedNodeAddresses,
-        removedNodeAddresses,
-        persistNodeAddresses,
-        computed,
-        isBusy,
-        uncollectedEarnings,
-        updateUncollectedEarnings,
-    } = useOperatorStore()
+    const { setOperator, uncollectedEarnings, updateUncollectedEarnings } =
+        useOperatorStore()
 
     const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
@@ -144,6 +122,14 @@ export const SingleOperatorPage = () => {
         selectedDataSource === 'cumulativeEarnings'
             ? 'Cumulative earnings'
             : 'Total value'
+
+    const { nodes: persistedNodes = [] } = operator || {}
+
+    const [nodes, setNodes] = useState(persistedNodes)
+
+    useEffect(() => void setNodes(persistedNodes), [persistedNodes])
+
+    const [saveNodes, isSavingNodeAddresses] = useSubmitNodeAddressesCallback()
 
     return (
         <Layout>
@@ -544,106 +530,42 @@ export const SingleOperatorPage = () => {
                                     </NodeAddressHeader>
                                 }
                             >
-                                <ScrollTable
-                                    elements={computed.nodeAddresses}
-                                    columns={[
-                                        {
-                                            displayName: 'Address',
-                                            valueMapper: (element) => (
-                                                <NodeAddress isAdded={element.isAdded}>
-                                                    {element.address}
-                                                </NodeAddress>
-                                            ),
-                                            align: 'start',
-                                            isSticky: true,
-                                            key: 'id',
-                                        },
-                                        {
-                                            displayName: 'MATIC balance',
-                                            valueMapper: (element) => (
-                                                <>
-                                                    {element.balance != null ? (
-                                                        element.balance.toFixed(2)
-                                                    ) : (
-                                                        <Spinner color="blue" />
-                                                    )}
-                                                </>
-                                            ),
-                                            align: 'start',
-                                            isSticky: false,
-                                            key: 'balance',
-                                        },
-                                        {
-                                            displayName: '',
-                                            valueMapper: (element) => (
-                                                <>
-                                                    {element.isRemoved && (
-                                                        <PendingIndicator
-                                                            title="Pending deletion"
-                                                            onClick={() =>
-                                                                cancelRemove(
-                                                                    element.address,
-                                                                )
+                                <NodesTable
+                                    busy={isSavingNodeAddresses}
+                                    value={nodes}
+                                    onChange={setNodes}
+                                    onSaveClick={async (addresses) => {
+                                        if (!operatorId) {
+                                            return
+                                        }
+
+                                        try {
+                                            await saveNodes(operatorId, addresses, {
+                                                onSuccess() {
+                                                    setNodes((current) => {
+                                                        const newNodes: OperatorNode[] =
+                                                            []
+
+                                                        current.forEach((node) => {
+                                                            if (node.enabled) {
+                                                                newNodes.push({
+                                                                    ...node,
+                                                                    persisted: true,
+                                                                })
                                                             }
-                                                        />
-                                                    )}
-                                                    {element.isAdded && (
-                                                        <PendingIndicator
-                                                            title="Pending addition"
-                                                            onClick={() =>
-                                                                cancelAdd(element.address)
-                                                            }
-                                                        />
-                                                    )}
-                                                    {!element.isAdded &&
-                                                        !element.isRemoved && (
-                                                            <Button
-                                                                kind="secondary"
-                                                                onClick={() => {
-                                                                    removeNodeAddress(
-                                                                        element.address,
-                                                                    )
-                                                                }}
-                                                            >
-                                                                Delete
-                                                            </Button>
-                                                        )}
-                                                </>
-                                            ),
-                                            align: 'end',
-                                            isSticky: false,
-                                            key: 'actions',
-                                        },
-                                    ]}
-                                    footerComponent={
-                                        <NodeAddressesFooter>
-                                            <Button
-                                                kind="secondary"
-                                                onClick={() =>
-                                                    addNodeAddressModal.pop({
-                                                        onSubmit: async (address) => {
-                                                            addNodeAddress(address)
-                                                        },
+                                                        })
+
+                                                        return newNodes
                                                     })
-                                                }
-                                            >
-                                                Add node address
-                                            </Button>
-                                            <Button
-                                                kind="primary"
-                                                onClick={() => persistNodeAddresses()}
-                                                disabled={
-                                                    (removedNodeAddresses.length === 0 &&
-                                                        addedNodeAddresses.length ===
-                                                            0) ||
-                                                    isBusy
-                                                }
-                                                waiting={isBusy}
-                                            >
-                                                Save
-                                            </Button>
-                                        </NodeAddressesFooter>
-                                    }
+                                                },
+                                                onError() {
+                                                    errorToast({
+                                                        title: 'Faild to save the new node addresses',
+                                                    })
+                                                },
+                                            })
+                                        } catch (e) {}
+                                    }}
                                 />
                             </NetworkPageSegment>
                         )}
@@ -688,13 +610,6 @@ const DelegationCell = styled.div`
     }
 `
 
-const NodeAddressesFooter = styled.div`
-    display: flex;
-    justify-content: right;
-    padding: 32px;
-    gap: 10px;
-`
-
 const SponsorshipsTableTitle = styled.div`
     display: flex;
     align-items: center;
@@ -712,42 +627,4 @@ const SponsorshipsCount = styled.div`
 const NodeAddressHeader = styled.div`
     display: flex;
     align-items: center;
-`
-
-const NodeAddress = styled.div<{ isAdded: boolean }>`
-    color: ${({ isAdded }) => (isAdded ? '#a3a3a3' : '#525252')};
-`
-
-const PendingIndicatorContainer = styled.div`
-    display: grid;
-    grid-template-columns: auto auto auto;
-    align-content: center;
-    height: 32px;
-    align-items: center;
-    border-radius: 4px;
-    background: #deebff;
-
-    & span {
-        padding: 8px;
-        font-size: 12px;
-        font-style: normal;
-        font-weight: 500;
-        line-height: 20px;
-    }
-`
-
-const PendingSeparator = styled.div`
-    border-left: 1px solid #d1dfff;
-    height: 32px;
-`
-
-const PendingCloseButton = styled.div`
-    color: ${COLORS.close};
-    padding: 8px;
-    cursor: pointer;
-
-    & svg {
-        width: 8px;
-        height: 8px;
-    }
 `

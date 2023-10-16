@@ -133,7 +133,7 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
             let result = false
 
             try {
-                for (const nodeAddress of operator.nodes) {
+                for (const { address: nodeAddress } of operator.nodes) {
                     const balance = toBN(
                         await getNativeTokenBalance(nodeAddress, defaultChainConfig.id),
                     )
