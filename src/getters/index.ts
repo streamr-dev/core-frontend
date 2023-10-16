@@ -825,8 +825,8 @@ export function getDelegationFractionForWallet(
     { offset = toBN(0) }: { offset?: BN } = {},
 ) {
     const total = operator.operatorTokenTotalSupplyWei
-        .plus(offset)
         .multipliedBy(operator.exchangeRate)
+        .plus(offset)
 
     if (total.isEqualTo(0)) {
         return toBN(0)
