@@ -15,7 +15,7 @@ import {
     searchOperatorsById,
     searchOperatorsByMetadata,
 } from '~/getters'
-import { isEthereumAddress } from '~/marketplace/utils/validate'
+import { isEthereumAddress } from '~/utils'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
 import { Delegation, DelegationsStats } from '~/types'

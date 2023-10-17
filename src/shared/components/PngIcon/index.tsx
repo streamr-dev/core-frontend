@@ -41,12 +41,12 @@ const sources = {
     txFailed: <img src={WalletErrorPng} srcSet={`${WalletErrorPng2x} 2x`} alt="" />,
 }
 export type PngIconName = $Keys<typeof sources>
-type Props = HTMLProps<HTMLImageElement> & {
+type Props = Omit<HTMLProps<HTMLImageElement>, 'name'> & {
     name: PngIconName
 }
 
 const PngIcon = ({ name, ...props }: Props) =>
     React.cloneElement(sources[name], { ...props })
 
-PngIcon.names = Object.keys(sources).sort()
+PngIcon.names = Object.keys(sources).sort() as PngIconName[]
 export default PngIcon

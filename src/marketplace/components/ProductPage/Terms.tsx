@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import { TermsOfUse } from '~/marketplace/types/project-types'
+import { ParsedProject } from '~/parsers/ProjectParser'
 import { DESKTOP, MEDIUM, REGULAR, TABLET } from '~/shared/utils/styled'
 
 interface Props {
-    terms: Partial<TermsOfUse>
+    terms: ParsedProject['termsOfUse']
 }
 
 const termNames = {
@@ -26,16 +26,16 @@ const getTermStrings = (ids: Array<string>) =>
         return term
     }, '')
 
-const Terms = ({ terms: { termsUrl = '', termsName = '', ...terms } }: Props) => {
-    const entries = Object.entries(terms)
-    const permitted = entries.filter((e) => e[1] === true).map((e) => e[0])
-    const notPermitted = entries.filter((e) => e[1] === false).map((e) => e[0])
-    const permittedStr = useMemo(() => getTermStrings(permitted), [permitted])
-    const notPermittedStr = useMemo(() => getTermStrings(notPermitted), [notPermitted])
+export default function Terms({ terms: { termsUrl, termsName, ...flags } }: Props) {
+    const entries = Object.entries(flags)
 
-    if (!permitted.length && !notPermitted.length && !termsUrl) {
-        return null
-    }
+    const permitted = entries.filter(([, flag]) => flag).map(([name]) => name)
+
+    const notPermitted = entries.filter(([, flag]) => !flag).map(([name]) => name)
+
+    const permittedStr = useMemo(() => getTermStrings(permitted), [permitted])
+
+    const notPermittedStr = useMemo(() => getTermStrings(notPermitted), [notPermitted])
 
     return (
         <TermsContainer>
@@ -45,18 +45,18 @@ const Terms = ({ terms: { termsUrl = '', termsName = '', ...terms } }: Props) =>
                     <p>
                         <strong>Basic terms</strong>{' '}
                         {permitted.length > 0 && (
-                            <React.Fragment>
+                            <>
                                 {permittedStr}
                                 {permitted.length === 1
                                     ? ' is permitted.'
                                     : ' are permitted.'}{' '}
-                            </React.Fragment>
+                            </>
                         )}
                         {notPermitted.length > 0 && (
-                            <React.Fragment>
+                            <>
                                 {notPermittedStr}
                                 {notPermitted.length === 1 ? ' is not' : ' are not'}
-                            </React.Fragment>
+                            </>
                         )}
                         {permitted.length === 0 && ' permitted'}
                         {notPermitted.length > 0 && '.'}
@@ -107,5 +107,3 @@ const TermsContainer = styled.div`
         padding: 30px 55px;
     }
 `
-
-export default Terms

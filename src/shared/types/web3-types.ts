@@ -2,7 +2,6 @@ import { AbiItem } from 'web3-utils'
 import { TransactionReceipt } from 'web3-core'
 import Transaction from '~/shared/utils/Transaction'
 import TransactionError from '~/shared/errors/TransactionError'
-import { ProjectId } from '~/marketplace/types/project-types'
 import { NumberString, TransactionState, TransactionType } from './common-types'
 export type Hash = string
 export type Address = string
@@ -28,7 +27,7 @@ export type TransactionEntity = {
     value?: NumberString
     gasUsed?: number
     gasPrice?: number
-    productId?: ProjectId
+    productId?: string
     timestamp?: number
 }
 export type TransactionEntityList = Array<TransactionEntity>

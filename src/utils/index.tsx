@@ -2,6 +2,8 @@ import React from 'react'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
 import { UseInfiniteQueryResult, UseQueryResult } from '@tanstack/react-query'
+export { isAddress as isEthereumAddress } from 'web3-validator'
+import StreamrClient, { Stream } from 'streamr-client'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import getNativeTokenName from '~/shared/utils/nativeToken'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
@@ -10,7 +12,6 @@ import { Layer } from '~/utils/Layer'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { ObjectWithMessage } from '~/shared/consts'
 import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
-import { QueriedGraphProject } from '~/shared/types'
 
 /**
  * Gas money checker.
@@ -103,12 +104,6 @@ export function isMessagedObject(e: unknown): e is z.infer<typeof ObjectWithMess
     return ObjectWithMessage.safeParse(e).success
 }
 
-export function isDataUnionProject<T extends Pick<QueriedGraphProject, 'isDataUnion'>>({
-    isDataUnion,
-}: T) {
-    return !!isDataUnion
-}
-
 export function isProjectOwnedBy<
     T extends { userAddress: unknown; canGrant?: boolean | null | undefined }[],
 >(permissions: T, address: string) {
@@ -122,10 +117,18 @@ export function isProjectOwnedBy<
     return !!canGrant
 }
 
+/**
+ * Returns a promise that resolves after a given number
+ * of milliseconds. Uses `setTimeout` internally.
+ */
 export async function sleep(millis: number) {
     await new Promise((resolve) => void setTimeout(resolve, millis))
 }
 
+/**
+ * Quietly (and in a non-blocking manner) refetches a given query
+ * and reports failures to the console.
+ */
 export function refetchQuery(query: UseInfiniteQueryResult | UseQueryResult) {
     setTimeout(async () => {
         try {
@@ -136,10 +139,16 @@ export function refetchQuery(query: UseInfiniteQueryResult | UseQueryResult) {
     })
 }
 
+/**
+ * Turns `abc`, `ABC`, `aBc` into `Abc`.
+ */
 function titleize(value: string): string {
     return value.toLowerCase().replace(/\w/, (firstLetter) => firstLetter.toUpperCase())
 }
 
+/**
+ * Converts a string into a good-looking display-ready chain name.
+ */
 export function formatChainName(chainName: string): string {
     switch (chainName.toLowerCase()) {
         case 'xdai':
@@ -149,4 +158,26 @@ export function formatChainName(chainName: string): string {
         default:
             return titleize(chainName)
     }
+}
+
+/**
+ * Fetches a list of Stream associated with the given list of stream ids. Items
+ * that cause fetching failures map to Stream-like `{ id: string }` objects.
+ */
+export async function fetchStreamlikesByIds(streamIds: string[], client: StreamrClient) {
+    const streams: (Stream | { id: string })[] = []
+
+    for (const streamId of streamIds) {
+        let stream: Stream | undefined
+
+        try {
+            stream = await client.getStream(streamId)
+        } catch (e) {
+            console.warn(`Failed to get a stream "${streamId}"`, e)
+        }
+
+        streams.push(stream || { id: streamId })
+    }
+
+    return streams
 }

@@ -12,7 +12,7 @@ import Spinner from '~/shared/components/Spinner'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { Separator } from '~/components/Separator'
 import { TABLET } from '~/shared/utils/styled'
-import { StatCellLabelTip } from '~/components/StatGrid'
+import { Tip } from '~/components/Tip'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { useOperatorReachability } from '~/shared/stores/operatorReachability'
@@ -51,11 +51,13 @@ export function OperatorChecklist({ operatorId }: { operatorId: string | undefin
             <ChecklistItem
                 state={nodesFunded}
                 tip={
-                    <p>
-                        Your node addresses must be funded with some MATIC for Polygon
-                        transaction fees. This alert triggers if a balance is less than
-                        0.1 MATIC.
-                    </p>
+                    <>
+                        <p>
+                            Your node addresses must be funded with some MATIC for Polygon
+                            transaction fees.
+                        </p>
+                        <p>This alert triggers if a balance is less than 0.1 MATIC.</p>
+                    </>
                 }
             >
                 Node addresses funded
@@ -231,7 +233,7 @@ function ChecklistItem({
             <div>{children}</div>
             {tip ? (
                 <div>
-                    <StatCellLabelTip
+                    <Tip
                         shift="left"
                         handle={
                             <IconWrap>
@@ -240,7 +242,7 @@ function ChecklistItem({
                         }
                     >
                         {tip}
-                    </StatCellLabelTip>
+                    </Tip>
                 </div>
             ) : (
                 <></>

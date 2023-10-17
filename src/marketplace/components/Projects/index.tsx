@@ -1,7 +1,6 @@
 import React, { HTMLAttributes } from 'react'
 import styled from 'styled-components'
 import classnames from 'classnames'
-import { isDataUnionProject } from '~/utils'
 import { MarketplaceProductTile as UnstyledMarketplaceProductTile } from '~/shared/components/Tile'
 import {
     REGULAR,
@@ -86,7 +85,7 @@ const listProjects = (
                 <MarketplaceProjectCol key={project.id}>
                     <MarketplaceProductTile
                         product={project}
-                        showDataUnionBadge={isDataUnionProject(project)}
+                        showDataUnionBadge={!!project.isDataUnion}
                         showEditButton={isEditable(project.id)}
                     />
                 </MarketplaceProjectCol>

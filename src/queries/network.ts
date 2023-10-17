@@ -304,18 +304,6 @@ gql`
             }
         }
     }
-
-    query getProjectForPurchase($id: ID!) {
-        project(id: $id) {
-            streams
-            paymentDetails {
-                domainId
-                beneficiary
-                pricingTokenAddress
-                pricePerSecond
-            }
-        }
-    }
 `
 
 gql`

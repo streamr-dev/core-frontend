@@ -1,10 +1,11 @@
-import React, { useCallback, useMemo, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Stream, StreamID } from 'streamr-client'
 import styled from 'styled-components'
+import { useClient } from 'streamr-client-react'
 import { TABLET } from '~/shared/utils/styled'
 import StreamTable, { StreamTableLight } from '~/shared/components/StreamTable'
 import { getStreamsFromIndexer, IndexerStream } from '~/services/streams'
-import useLoadProductStreamsCallback from '~/marketplace/containers/ProductController/useLoadProductStreamsCallback'
+import { fetchStreamlikesByIds } from '~/utils'
 
 const PAGE_SIZE = 5
 const INITIAL_OFFSET = 2 * PAGE_SIZE
@@ -27,17 +28,30 @@ export default function Streams({ streams: streamsProp }: Props) {
     const [streamStats, setStreamStats] = useState<Record<StreamID, IndexerStream>>({})
     const [offset, setOffset] = useState(INITIAL_OFFSET)
 
-    const appendStreams = useCallback((streams: Stream[]) => {
-        setStreams((prev) => [...prev, ...streams])
-    }, [])
-
-    const loadStreams = useLoadProductStreamsCallback({
-        setProductStreams: appendStreams,
-    })
+    const client = useClient()
 
     useEffect(() => {
-        loadStreams(streamsProp.slice(0, INITIAL_OFFSET))
-    }, [streamsProp, loadStreams])
+        let mounted = true
+
+        if (!client) {
+            return
+        }
+
+        void (async () => {
+            const streams = await fetchStreamlikesByIds(
+                streamsProp.slice(0, INITIAL_OFFSET),
+                client,
+            )
+
+            if (mounted) {
+                setStreams((prev) => [...prev, ...(streams as Stream[])])
+            }
+        })()
+
+        return () => {
+            mounted = false
+        }
+    }, [streamsProp, client])
 
     useEffect(() => {
         const getStreamStats = async () => {
@@ -57,16 +71,6 @@ export default function Streams({ streams: streamsProp }: Props) {
         getStreamStats()
     }, [streams])
 
-    const hasMoreResults = useMemo(
-        () => offset < streamsProp.length,
-        [offset, streamsProp],
-    )
-
-    const onLoadMore = useCallback(() => {
-        loadStreams(streamsProp.slice(offset, offset + PAGE_SIZE))
-        setOffset(offset + PAGE_SIZE)
-    }, [offset, setOffset, loadStreams, streamsProp])
-
     return (
         <>
             {streamsProp &&
@@ -82,8 +86,27 @@ export default function Streams({ streams: streamsProp }: Props) {
                 <StreamsContainer>
                     <StreamTable
                         streams={streams}
-                        loadMore={onLoadMore}
-                        hasMoreResults={hasMoreResults}
+                        loadMore={() => {
+                            /**
+                             * @TODO Cancel interrupted loading.
+                             */
+
+                            if (!client) {
+                                return
+                            }
+
+                            void (async () => {
+                                const streams = await fetchStreamlikesByIds(
+                                    streamsProp.slice(offset, offset + PAGE_SIZE),
+                                    client,
+                                )
+
+                                setStreams((prev) => [...prev, ...(streams as Stream[])])
+                            })()
+
+                            setOffset((c) => c + PAGE_SIZE)
+                        }}
+                        hasMoreResults={offset < streamsProp.length}
                         streamStats={streamStats}
                         showGlobalStats={false}
                     />

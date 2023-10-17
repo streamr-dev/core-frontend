@@ -21,7 +21,6 @@ import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { ProjectType } from '~/shared/types'
 import tokenAbi from '~/shared/web3/abis/token.json'
 import { address0 } from '~/consts'
-import { ProjectMetadata } from '~/shared/consts'
 import {
     GetSponsorshipByIdQuery,
     GetSponsorshipByIdDocument,
@@ -74,7 +73,7 @@ import getGraphClient from '~/getters/getGraphClient'
 import { Delegation, ChartPeriod } from '~/types'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { BN, toBN } from '~/utils/bn'
-import { isEthereumAddress } from '~/marketplace/utils/validate'
+import { isEthereumAddress } from '~/utils'
 
 const DEFAULT_ORDER_BY = Operator_OrderBy.Id
 const DEFAULT_ORDER_DIRECTION = OrderDirection.Asc
@@ -261,25 +260,6 @@ export async function getFirstEnsNameFor(address: string): Promise<string> {
     const [domain] = await contract.getNames([address])
 
     return domain
-}
-
-export function getGraphProjectWithParsedMetadata<T extends { metadata: string }>(
-    rawProject: T,
-): Omit<T, 'metadata'> & {
-    metadata: ProjectMetadata
-} {
-    let metadata: ProjectMetadata = {}
-
-    try {
-        metadata = ProjectMetadata.parse(JSON.parse(rawProject.metadata))
-    } catch (e) {
-        console.warn('Failed to parse project metadata', e)
-    }
-
-    return {
-        ...rawProject,
-        metadata,
-    }
 }
 
 export async function getAllSponsorships({

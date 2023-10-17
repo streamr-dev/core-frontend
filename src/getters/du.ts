@@ -1,6 +1,5 @@
 import DataUnionClient, { DataUnion, SecretsResponse } from '@dataunions/client'
 import { hexToNumber } from 'web3-utils'
-import { z } from 'zod'
 import { getConfigForChain } from '~/shared/web3/config'
 import { TheGraph } from '~/shared/types'
 import { getWalletAccount, getWalletProvider } from '~/shared/stores/wallet'
@@ -12,7 +11,6 @@ import {
 import getClientConfig from '~/getters/getClientConfig'
 import { toBN } from '~/utils/bn'
 import { getDataUnionGraphClient } from '~/getters/getGraphClient'
-import { isEthereumAddress } from '~/marketplace/utils/validate'
 import getCoreConfig from './getCoreConfig'
 
 export async function getDataUnionsOwnedByInChain(
@@ -150,13 +148,10 @@ export async function getDataUnionStats(
     }
 }
 
-export function getDataUnionAdminFeeForSalePoint(salePoint: unknown) {
-    const { beneficiary: dataUnionId, domainId: chainId } = z
-        .object({
-            beneficiary: z.string().refine((addr) => isEthereumAddress(addr)),
-            domainId: z.coerce.number(),
-        })
-        .parse(salePoint)
+export function getDataUnionAdminFeeForSalePoint<
+    T extends { beneficiary: string; domainId: number },
+>(salePoint: T) {
+    const { beneficiary: dataUnionId, domainId: chainId } = salePoint
 
     return getDataUnionAdminFee(dataUnionId, chainId)
 }

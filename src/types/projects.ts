@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { isEthereumAddress } from '~/marketplace/utils/validate'
+import { isEthereumAddress } from '~/utils'
 import { ProjectType } from '~/shared/types'
 import { formatChainName } from '~/utils'
 import { toBN } from '~/utils/bn'

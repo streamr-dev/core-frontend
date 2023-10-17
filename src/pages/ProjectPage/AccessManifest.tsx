@@ -55,7 +55,7 @@ interface Props {
 }
 
 export default function AccessManifest({ projectId, projectType, salePoints }: Props) {
-    const [firstSalePoint, ...otherSalePoints] = salePoints
+    const [firstSalePoint = undefined, ...otherSalePoints] = salePoints
 
     const prefix = `The streams in this ${getProjectTypeName(projectType)}`
 
@@ -95,9 +95,10 @@ export default function AccessManifest({ projectId, projectType, salePoints }: P
                         on{' '}
                         <strong>
                             {formatChainName(getConfigForChain(chainId).name)}
-                        </strong>{' '}
+                        </strong>
                         {count > 0 && (
                             <>
+                                {' '}
                                 and on {count} other chain{count > 1 && 's'}
                             </>
                         )}

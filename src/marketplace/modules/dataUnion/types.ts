@@ -1,5 +1,4 @@
 import { PayloadAction } from '~/shared/types/common-types'
-import { DataUnionSecretId } from '~/marketplace/types/project-types'
 export type DataUnionIdAction = PayloadAction<{
     id: string
 }>
@@ -15,17 +14,17 @@ export type Secret = {
 }
 export type DataUnionSecretsAction = PayloadAction<{
     id: string
-    secrets: Array<DataUnionSecretId>
+    secrets: Array<string>
 }>
 export type DataUnionSecretsActionCreator = (
     id: string,
-    secrets: Array<DataUnionSecretId>,
+    secrets: Array<string>,
 ) => DataUnionSecretsAction
 export type DataUnionSecretAction = PayloadAction<{
     id: string
-    secret: DataUnionSecretId
+    secret: string
 }>
 export type DataUnionSecretActionCreator = (
     id: string,
-    secret: DataUnionSecretId,
+    secret: string,
 ) => DataUnionSecretAction

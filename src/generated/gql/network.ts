@@ -4054,13 +4054,6 @@ export type GetProjectSubscriptionsQueryVariables = Exact<{
 
 export type GetProjectSubscriptionsQuery = { __typename?: 'Query', project?: { __typename?: 'Project', subscriptions: Array<{ __typename?: 'ProjectSubscription', userAddress: any, endTimestamp?: any | null }> } | null };
 
-export type GetProjectForPurchaseQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
-
-
-export type GetProjectForPurchaseQuery = { __typename?: 'Query', project?: { __typename?: 'Project', streams: Array<string>, paymentDetails: Array<{ __typename?: 'ProjectPaymentDetails', domainId?: any | null, beneficiary: any, pricingTokenAddress: any, pricePerSecond?: any | null }> } | null };
-
 export type StreamFieldsFragment = { __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userAddress: any, subscribeExpiration?: any | null, publishExpiration?: any | null }> | null };
 
 export type GetStreamByIdQueryVariables = Exact<{
@@ -4465,20 +4458,6 @@ export const GetProjectSubscriptionsDocument = gql`
 }
     `;
 export type GetProjectSubscriptionsQueryResult = Apollo.QueryResult<GetProjectSubscriptionsQuery, GetProjectSubscriptionsQueryVariables>;
-export const GetProjectForPurchaseDocument = gql`
-    query getProjectForPurchase($id: ID!) {
-  project(id: $id) {
-    streams
-    paymentDetails {
-      domainId
-      beneficiary
-      pricingTokenAddress
-      pricePerSecond
-    }
-  }
-}
-    `;
-export type GetProjectForPurchaseQueryResult = Apollo.QueryResult<GetProjectForPurchaseQuery, GetProjectForPurchaseQueryVariables>;
 export const GetStreamByIdDocument = gql`
     query getStreamById($streamId: ID!) {
   stream(id: $streamId) {

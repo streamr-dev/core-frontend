@@ -183,7 +183,7 @@ const SingleValue = ({ children, ...props }) => {
 
 const ClearIndicator = () => <></>
 
-export const UnstyledSelect = ({
+const UnstyledSelect = ({
     controlClassName,
     required = false,
     clearable = true,

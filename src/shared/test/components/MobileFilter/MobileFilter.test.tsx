@@ -8,7 +8,7 @@ import {
     waitFor,
 } from '@testing-library/react'
 import MobileFilter from '~/shared/components/MobileFilter'
-import { ModalPortalProvider } from '~/shared/contexts/ModalPortal'
+import { Provider as ModalPortalProvider } from '~/shared/contexts/ModalPortal'
 import Mock = jest.Mock
 
 const filters = [

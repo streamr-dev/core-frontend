@@ -4,6 +4,7 @@ import { toaster } from 'toasterhea'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import moment from 'moment'
+import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import { NoData } from '~/shared/components/NoData'
@@ -32,7 +33,7 @@ import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
 import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { ChartPeriod } from '~/types'
-import { StatCellBody, StatCellLabel } from '~/components/StatGrid'
+import { StatCellContent, StatCellLabel } from '~/components/StatGrid'
 import { Separator } from '~/components/Separator'
 import { useEditSponsorshipFunding, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { getDelegatedAmountForWallet, getDelegationFractionForWallet } from '~/getters'
@@ -41,7 +42,6 @@ import { refetchQuery } from '~/utils'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { OperatorChecklist } from '~/components/OperatorChecklist'
 import { collectEarnings } from '~/services/sponsorships'
-import { IconTooltip } from '~/components/IconTooltip'
 import routes from '~/routes'
 import {
     NodesTable,
@@ -57,6 +57,7 @@ import {
 } from '~/shared/stores/uncollectedEarnings'
 import { confirm } from '~/getters/confirm'
 import { truncate } from '~/shared/utils/text'
+import { Tip, TipIconWrap } from '~/components/Tip'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -264,14 +265,14 @@ export const SingleOperatorPage = () => {
                                                         <StatCellLabel>
                                                             Current value
                                                         </StatCellLabel>
-                                                        <StatCellBody>
+                                                        <StatCellContent>
                                                             {abbreviateNumber(
                                                                 fromAtto(
                                                                     myDelegationAmount,
                                                                 ).toNumber(),
                                                             )}{' '}
                                                             {tokenSymbol}
-                                                        </StatCellBody>
+                                                        </StatCellContent>
                                                     </Pad>
                                                 </DelegationCell>
                                                 <Separator />
@@ -281,12 +282,12 @@ export const SingleOperatorPage = () => {
                                                             Share of operator&apos;s total
                                                             value
                                                         </StatCellLabel>
-                                                        <StatCellBody>
+                                                        <StatCellContent>
                                                             {myDelegationPercentage.toFixed(
                                                                 0,
                                                             )}
                                                             %
-                                                        </StatCellBody>
+                                                        </StatCellContent>
                                                     </Pad>
                                                 </DelegationCell>
                                             </>
@@ -352,16 +353,20 @@ export const SingleOperatorPage = () => {
                                             )
 
                                             return (
-                                                <>
+                                                <FundedUntil>
                                                     {fundedUntil.format('YYYY-MM-DD')}
                                                     {fundedUntil.isBefore(Date.now()) && (
-                                                        <IconTooltip
-                                                            id="funded-until-tooltip"
-                                                            iconName="warnBadge"
-                                                            content="Sponsorship expired"
-                                                        />
+                                                        <Tip
+                                                            handle={
+                                                                <TipIconWrap $color="#ff5c00">
+                                                                    <JiraFailedBuildStatusIcon label="Error" />
+                                                                </TipIconWrap>
+                                                            }
+                                                        >
+                                                            Sponsorship expired
+                                                        </Tip>
                                                     )}
-                                                </>
+                                                </FundedUntil>
                                             )
                                         },
                                         align: 'start',
@@ -638,7 +643,7 @@ const DelegationCell = styled.div`
             line-height: 24px;
         }
 
-        ${StatCellBody} {
+        ${StatCellContent} {
             font-size: 24px;
             line-height: 40px;
         }
@@ -682,3 +687,15 @@ function UncollectedEarnings({
         <Spinner color="blue" />
     )
 }
+
+const FundedUntil = styled.div`
+    align-items: center;
+    display: grid;
+    gap: 8px;
+    grid-template-columns: auto auto;
+
+    ${TipIconWrap} svg {
+        width: 18px;
+        height: 18px;
+    }
+`

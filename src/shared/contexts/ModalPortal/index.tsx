@@ -10,7 +10,7 @@ const defaultContext: ModalPortalContextModel = {
     registerModal: undefined,
     unregisterModal: undefined,
 }
-export const ModalPortalContext: ReactContext<ModalPortalContextModel> =
+const ModalPortalContext: ReactContext<ModalPortalContextModel> =
     React.createContext(defaultContext)
 type Props = {
     children: ReactNode
@@ -20,7 +20,7 @@ type State = {
     registerModal: () => void
     unregisterModal: () => void
 }
-export class ModalPortalProvider extends React.Component<Props, State> {
+class ModalPortalProvider extends React.Component<Props, State> {
     state = {
         isModalOpen: false,
         registerModal: this.registerModal.bind(this),

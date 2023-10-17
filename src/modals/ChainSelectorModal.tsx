@@ -11,8 +11,8 @@ import { getCustomTokenBalance } from '~/marketplace/utils/web3'
 import { getTokenInfo } from '~/hooks/useTokenInfo'
 import { getUsdRate } from '~/shared/utils/coingecko'
 import { Layer } from '~/utils/Layer'
-import { PaymentDetail } from '~/shared/types'
 import networkPreflight from '~/utils/networkPreflight'
+import { ParsedPaymentDetail } from '~/parsers/ProjectParser'
 import ProjectModal, { Actions } from './ProjectModal'
 import ConnectModal from './ConnectModal'
 import { RejectionReason } from './BaseModal'
@@ -115,19 +115,17 @@ export async function getPurchasePreconditions({
     paymentDetails,
 }: {
     chainId: number
-    paymentDetails: PaymentDetail[]
+    paymentDetails: ParsedPaymentDetail[]
 }): Promise<ChainSelectorResult> {
     await networkPreflight(chainId)
 
-    const paymentDetail = paymentDetails.find(
-        ({ domainId }) => Number(domainId) === chainId,
-    )
+    const paymentDetail = paymentDetails.find(({ domainId }) => domainId === chainId)
 
     if (!paymentDetail) {
         throw new Error('No matching payment detail')
     }
 
-    const { pricingTokenAddress: tokenAddress, pricePerSecond = '0' } = paymentDetail
+    const { pricingTokenAddress: tokenAddress, pricePerSecond } = paymentDetail
 
     const tokenInfo = await getTokenInfo(tokenAddress, chainId)
 
@@ -159,7 +157,7 @@ interface Props {
     onReject?: (reason?: unknown) => void
     chainIds?: number[]
     selectedChainId?: number
-    paymentDetails?: PaymentDetail[]
+    paymentDetails?: ParsedPaymentDetail[]
 }
 
 export default function ChainSelectorModal({

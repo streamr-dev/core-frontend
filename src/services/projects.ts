@@ -11,7 +11,7 @@ import {
     getRawGraphProjectsByText,
 } from '~/getters/hub'
 import { getProjectRegistryChainId } from '~/getters'
-import { Project, ProjectType, TheGraph } from '~/shared/types'
+import { ProjectType, TheGraph } from '~/shared/types'
 import { isMessagedObject } from '~/utils'
 import { errorToast } from '~/utils/toast'
 import { truncate } from '~/shared/utils/text'
@@ -21,6 +21,10 @@ import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
 import { pricePerSecondFromTimeUnit } from '~/marketplace/utils/price'
 import { postImage } from './images'
+
+/**
+ * @todo Let's shake off the unnecessary types.
+ */
 
 export type TheGraphPaymentDetails = {
     domainId: string
