@@ -466,7 +466,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                              */
                                             const tx = await getMarketplaceContract({
                                                 chainId: selectedChainId,
-                                                signer,
+                                                provider: signer,
                                             }).buy(projectId, seconds, {
                                                 gasLimit: 2e5 + streams.length * 1e5,
                                             })
