@@ -62,14 +62,6 @@ const extendedNetworkNav: {
         subtitle: 'Explore Operators and delegate',
         link: routes.network.operators(),
     },
-    {
-        title: 'The Network Explorer',
-        subtitle:
-            'View and search for nodes, streams and connections, with live and historical metrics.',
-        link: routes.networkExplorer(),
-        rel: 'noopener',
-        target: '_blank',
-    },
 ]
 
 const networkLinks = [
