@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useInfiniteQuery, UseInfiniteQueryResult, useQuery } from '@tanstack/react-query'
 import { config } from '@streamr/config'
-import { Sponsorship } from '~/generated/gql/network'
+import { OrderDirection, Sponsorship, Sponsorship_OrderBy } from '~/generated/gql/network'
 import {
     getAllSponsorships,
     getSponsorshipById,
@@ -68,12 +68,29 @@ async function getSponsorshipsAndParse(getter: () => Promise<Sponsorship[]>) {
 
 export function useSponsorshipsForCreatorQuery(
     address: string | undefined,
-    { pageSize = 10, streamId }: { pageSize?: number; streamId?: string } = {},
+    {
+        pageSize = 10,
+        streamId,
+        orderBy,
+        orderDirection,
+    }: {
+        pageSize?: number
+        streamId?: string
+        orderBy?: string
+        orderDirection?: 'asc' | 'desc'
+    } = {},
 ): UseInfiniteQueryResult<{ skip: number; sponsorships: ParsedSponsorship[] }> {
     const creator = address?.toLowerCase() || ''
 
     return useInfiniteQuery({
-        queryKey: ['useSponsorshipsForCreatorQuery', pageSize, creator, streamId],
+        queryKey: [
+            'useSponsorshipsForCreatorQuery',
+            pageSize,
+            creator,
+            streamId,
+            orderBy,
+            orderDirection,
+        ],
         async queryFn({ pageParam: skip = 0 }) {
             if (!creator) {
                 return {
@@ -88,6 +105,8 @@ export function useSponsorshipsForCreatorQuery(
                         first: pageSize,
                         skip,
                         streamId,
+                        orderBy: mapSponsorshipOrder(orderBy),
+                        orderDirection: orderDirection as OrderDirection,
                     }) as Promise<Sponsorship[]>,
             )
 
@@ -103,12 +122,22 @@ export function useSponsorshipsForCreatorQuery(
 export function useAllSponsorshipsQuery({
     pageSize = 10,
     streamId,
+    orderBy,
+    orderDirection,
 }: {
     pageSize?: number
     streamId?: string
+    orderBy?: string
+    orderDirection?: 'asc' | 'desc'
 }) {
     return useInfiniteQuery({
-        queryKey: ['useAllSponsorshipsQuery', pageSize, streamId],
+        queryKey: [
+            'useAllSponsorshipsQuery',
+            pageSize,
+            streamId,
+            orderBy,
+            orderDirection,
+        ],
         async queryFn({ pageParam: skip = 0 }) {
             const sponsorships = await getSponsorshipsAndParse(
                 () =>
@@ -116,6 +145,8 @@ export function useAllSponsorshipsQuery({
                         first: pageSize,
                         skip,
                         streamId,
+                        orderBy: mapSponsorshipOrder(orderBy),
+                        orderDirection: orderDirection as OrderDirection,
                     }) as Promise<Sponsorship[]>,
             )
 
@@ -273,4 +304,19 @@ export function useEditSponsorshipFunding() {
             ),
         [withFlag],
     )
+}
+
+export const mapSponsorshipOrder = (columnKey?: string): Sponsorship_OrderBy => {
+    console.log('key', columnKey)
+    switch (columnKey) {
+        case 'operators':
+            return Sponsorship_OrderBy.OperatorCount
+        case 'staked':
+            return Sponsorship_OrderBy.TotalStakedWei
+        case 'apy':
+            return Sponsorship_OrderBy.SpotApy
+        case 'streamInfo':
+        default:
+            return Sponsorship_OrderBy.Id
+    }
 }

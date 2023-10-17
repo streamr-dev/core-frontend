@@ -68,6 +68,7 @@ import {
     GetSponsorshipDailyBucketsDocument,
     OrderDirection,
     Operator_OrderBy,
+    Sponsorship_OrderBy,
 } from '~/generated/gql/network'
 import getCoreConfig from '~/getters/getCoreConfig'
 import getGraphClient from '~/getters/getGraphClient'
@@ -76,7 +77,8 @@ import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { BN, toBN } from '~/utils/bn'
 import { isEthereumAddress } from '~/marketplace/utils/validate'
 
-const DEFAULT_ORDER_BY = Operator_OrderBy.Id
+const DEFAULT_OPERATOR_ORDER_BY = Operator_OrderBy.Id
+const DEFAULT_SPONSORSHIP_ORDER_BY = Sponsorship_OrderBy.Id
 const DEFAULT_ORDER_DIRECTION = OrderDirection.Asc
 
 export function getGraphUrl(): string {
@@ -286,10 +288,14 @@ export async function getAllSponsorships({
     first,
     skip,
     streamId = '',
+    orderBy = DEFAULT_SPONSORSHIP_ORDER_BY,
+    orderDirection = DEFAULT_ORDER_DIRECTION,
 }: {
     first?: number
     skip?: number
     streamId?: string
+    orderBy?: Sponsorship_OrderBy
+    orderDirection?: OrderDirection
 }): Promise<GetAllSponsorshipsQuery['sponsorships']> {
     const {
         data: { sponsorships },
@@ -302,6 +308,8 @@ export async function getAllSponsorships({
             first,
             skip,
             streamContains: streamId,
+            orderBy,
+            orderDirection,
         },
     })
 
@@ -332,10 +340,14 @@ export async function getSponsorshipsByCreator(
         first,
         skip,
         streamId = '',
+        orderBy = DEFAULT_SPONSORSHIP_ORDER_BY,
+        orderDirection = DEFAULT_ORDER_DIRECTION,
     }: {
         first?: number
         skip?: number
         streamId?: string
+        orderBy?: Sponsorship_OrderBy
+        orderDirection?: OrderDirection
     } = {},
 ): Promise<GetSponsorshipsByCreatorQuery['sponsorships']> {
     const {
@@ -350,6 +362,8 @@ export async function getSponsorshipsByCreator(
             skip,
             streamContains: streamId,
             creator,
+            orderBy,
+            orderDirection,
         },
     })
 
@@ -359,12 +373,12 @@ export async function getSponsorshipsByCreator(
 export async function getAllOperators({
     first,
     skip,
-    orderBy = DEFAULT_ORDER_BY,
+    orderBy = DEFAULT_OPERATOR_ORDER_BY,
     orderDirection = DEFAULT_ORDER_DIRECTION,
 }: {
     first?: number
     skip?: number
-    orderBy?: GetAllOperatorsQueryVariables['orderBy']
+    orderBy?: Operator_OrderBy
     orderDirection?: OrderDirection
 }): Promise<GetAllOperatorsQuery['operators']> {
     const {
@@ -388,13 +402,13 @@ export async function getOperatorsByDelegation({
     first,
     skip,
     address,
-    orderBy = DEFAULT_ORDER_BY,
+    orderBy = DEFAULT_OPERATOR_ORDER_BY,
     orderDirection = DEFAULT_ORDER_DIRECTION,
 }: {
     first?: number
     skip?: number
     address: string
-    orderBy?: GetAllOperatorsQueryVariables['orderBy']
+    orderBy?: Operator_OrderBy
     orderDirection?: OrderDirection
 }): Promise<GetOperatorsByDelegationQuery['operators']> {
     const {
@@ -421,14 +435,14 @@ export async function getOperatorsByDelegationAndId({
     skip,
     address,
     operatorId,
-    orderBy = DEFAULT_ORDER_BY,
+    orderBy = DEFAULT_OPERATOR_ORDER_BY,
     orderDirection = DEFAULT_ORDER_DIRECTION,
 }: {
     first?: number
     skip?: number
     address: string
     operatorId: string
-    orderBy?: GetAllOperatorsQueryVariables['orderBy']
+    orderBy?: Operator_OrderBy
     orderDirection?: OrderDirection
 }): Promise<GetOperatorsByDelegationAndIdQuery['operators']> {
     const {
@@ -456,14 +470,14 @@ export async function getOperatorsByDelegationAndMetadata({
     skip,
     address,
     searchQuery,
-    orderBy = DEFAULT_ORDER_BY,
+    orderBy = DEFAULT_OPERATOR_ORDER_BY,
     orderDirection = DEFAULT_ORDER_DIRECTION,
 }: {
     first?: number
     skip?: number
     address: string
     searchQuery: string
-    orderBy?: GetAllOperatorsQueryVariables['orderBy']
+    orderBy?: Operator_OrderBy
     orderDirection?: OrderDirection
 }): Promise<GetOperatorsByDelegationAndMetadataQuery['operators']> {
     const {
@@ -490,13 +504,13 @@ export async function searchOperatorsById({
     first,
     skip,
     operatorId,
-    orderBy = DEFAULT_ORDER_BY,
+    orderBy = DEFAULT_OPERATOR_ORDER_BY,
     orderDirection = DEFAULT_ORDER_DIRECTION,
 }: {
     first?: number
     skip?: number
     operatorId?: string
-    orderBy?: GetAllOperatorsQueryVariables['orderBy']
+    orderBy?: Operator_OrderBy
     orderDirection?: OrderDirection
 }): Promise<SearchOperatorsByIdQuery['operators']> {
     const {
@@ -522,13 +536,13 @@ export async function searchOperatorsByMetadata({
     first,
     skip,
     searchQuery,
-    orderBy = DEFAULT_ORDER_BY,
+    orderBy = DEFAULT_OPERATOR_ORDER_BY,
     orderDirection = DEFAULT_ORDER_DIRECTION,
 }: {
     first?: number
     skip?: number
     searchQuery?: string
-    orderBy?: GetAllOperatorsQueryVariables['orderBy']
+    orderBy?: Operator_OrderBy
     orderDirection?: OrderDirection
 }): Promise<SearchOperatorsByMetadataQuery['operators']> {
     const {

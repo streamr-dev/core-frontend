@@ -35,6 +35,7 @@ import { ParsedOperator } from '~/parsers/OperatorParser'
 import { refetchQuery } from '~/utils'
 import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
+import { useTableOrder } from '~/hooks/useTableOrder'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -52,10 +53,7 @@ export const OperatorsPage = () => {
 
     const wallet = useWalletAccount()
 
-    const [orderBy, setOrderBy] = useState<string | undefined>()
-    const [orderDirection, setOrderDirection] = useState<
-        ScrollTableOrderDirection | undefined
-    >()
+    const { orderBy, orderDirection, handleOrderChange } = useTableOrder()
 
     const allOperatorsQuery = useAllOperatorsQuery({
         batchSize: PAGE_SIZE,
@@ -69,16 +67,6 @@ export const OperatorsPage = () => {
         pageSize: PAGE_SIZE,
         searchQuery,
     })
-
-    const handleOrderChange = (columnKey: string) => {
-        const newOrderSettings = getNextSortingParameters(
-            orderBy,
-            columnKey,
-            orderDirection,
-        )
-        setOrderBy(newOrderSettings.orderBy)
-        setOrderDirection(newOrderSettings.orderDirection)
-    }
 
     const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
