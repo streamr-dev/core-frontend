@@ -694,8 +694,8 @@ const FundedUntil = styled.div`
     gap: 8px;
     grid-template-columns: auto auto;
 
-    svg {
-        width: 16px;
-        height: 16px;
+    ${TipIconWrap} svg {
+        width: 18px;
+        height: 18px;
     }
 `

@@ -51,11 +51,13 @@ export function OperatorChecklist({ operatorId }: { operatorId: string | undefin
             <ChecklistItem
                 state={nodesFunded}
                 tip={
-                    <p>
-                        Your node addresses must be funded with some MATIC for Polygon
-                        transaction fees. This alert triggers if a balance is less than
-                        0.1 MATIC.
-                    </p>
+                    <>
+                        <p>
+                            Your node addresses must be funded with some MATIC for Polygon
+                            transaction fees.
+                        </p>
+                        <p>This alert triggers if a balance is less than 0.1 MATIC.</p>
+                    </>
                 }
             >
                 Node addresses funded

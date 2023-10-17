@@ -358,9 +358,3 @@ export const Pad = styled.div`
         padding: 32px 40px;
     }
 `
-
-const TotalValue = styled.div`
-    align-items: center;
-    display: grid;
-    grid-template-columns: auto auto;
-`
