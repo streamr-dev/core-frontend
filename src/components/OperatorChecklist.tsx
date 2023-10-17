@@ -12,7 +12,7 @@ import Spinner from '~/shared/components/Spinner'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { Separator } from '~/components/Separator'
 import { TABLET } from '~/shared/utils/styled'
-import { StatCellLabelTip } from '~/components/StatGrid'
+import { Tip } from '~/components/Tip'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { useOperatorReachability } from '~/shared/stores/operatorReachability'
@@ -231,7 +231,7 @@ function ChecklistItem({
             <div>{children}</div>
             {tip ? (
                 <div>
-                    <StatCellLabelTip
+                    <Tip
                         shift="left"
                         handle={
                             <IconWrap>
@@ -240,7 +240,7 @@ function ChecklistItem({
                         }
                     >
                         {tip}
-                    </StatCellLabelTip>
+                    </Tip>
                 </div>
             ) : (
                 <></>

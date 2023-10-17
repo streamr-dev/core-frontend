@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useMemo } from 'react'
 import styled from 'styled-components'
+import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import { truncate } from '~/shared/utils/text'
 import { BlackTooltip } from '~/shared/components/Tooltip/Tooltip'
 import Button from '~/shared/components/Button'
@@ -42,7 +43,7 @@ import {
 import { isRejectionReason } from '~/modals/BaseModal'
 import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
-import { IconTooltip } from '~/components/IconTooltip'
+import { Tip, TipIconWrap } from '../Tip'
 
 export const OperatorActionBar: FunctionComponent<{
     operator: ParsedOperator
@@ -265,27 +266,33 @@ export const OperatorActionBar: FunctionComponent<{
                 <Separator />
                 <Pad>
                     <StatGrid>
-                        <StatCell label="Total value">
-                            <>
-                                {abbreviateNumber(
-                                    fromAtto(operator.valueWithoutEarnings).toNumber(),
-                                )}{' '}
-                                {tokenSymbol}
-                                {operator.valueWithoutEarnings.isZero() && (
-                                    <IconTooltip
-                                        id="total-value-tooltip"
-                                        iconName="warnBadge"
-                                        content={
-                                            <span>
+                        <StatCell
+                            label="Total value"
+                            tip={
+                                <>
+                                    {operator.valueWithoutEarnings.isZero() && (
+                                        <Tip
+                                            handle={
+                                                <TipIconWrap $color="#ff5c00">
+                                                    <JiraFailedBuildStatusIcon label="Error" />
+                                                </TipIconWrap>
+                                            }
+                                        >
+                                            <p>
                                                 You need to deposit {tokenSymbol} tokens
                                                 into your operator contract before you can
                                                 stake on sponsorships or receive
                                                 delegations.
-                                            </span>
-                                        }
-                                    />
-                                )}
-                            </>
+                                            </p>
+                                        </Tip>
+                                    )}
+                                </>
+                            }
+                        >
+                            {abbreviateNumber(
+                                fromAtto(operator.valueWithoutEarnings).toNumber(),
+                            )}{' '}
+                            {tokenSymbol}
                         </StatCell>
                         <StatCell label="Deployed stake">
                             {`${abbreviateNumber(
@@ -342,7 +349,18 @@ const AboutOperatorsContent = styled.div`
 export const Pad = styled.div`
     padding: 20px 0;
 
+    ${TipIconWrap} svg {
+        height: 18px;
+        width: 18px;
+    }
+
     @media ${TABLET} {
         padding: 32px 40px;
     }
+`
+
+const TotalValue = styled.div`
+    align-items: center;
+    display: grid;
+    grid-template-columns: auto auto;
 `
