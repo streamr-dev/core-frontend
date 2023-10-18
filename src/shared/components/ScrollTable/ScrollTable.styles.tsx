@@ -69,9 +69,6 @@ export const ScrollTableHeaderCell = styled.div<{
     font-size: 14px;
     font-weight: ${MEDIUM};
     white-space: nowrap;
-    @media (${TABLET}) {
-        padding: 5px ${horizontalPaddingDesktop};
-    }
 
     ${({ $align }) => {
         switch ($align) {
@@ -100,6 +97,12 @@ export const ScrollTableHeaderCell = styled.div<{
                 padding: ${actionPadding};
             `
         }
+
+        return css`
+            @media (${TABLET}) {
+                padding: 5px ${horizontalPaddingDesktop};
+            }
+        `
     }}
 `
 
@@ -117,9 +120,7 @@ export const ScrollTableCell = styled.div<{
     justify-content: flex-start;
     border-bottom: 1px solid ${COLORS.secondary};
     white-space: nowrap;
-    @media (${TABLET}) {
-        padding: 5px ${horizontalPaddingDesktop};
-    }
+
     ${({ $align }) => {
         switch ($align) {
             case 'start':
@@ -140,6 +141,12 @@ export const ScrollTableCell = styled.div<{
                 justify-content: center;
             `
         }
+
+        return css`
+            @media (${TABLET}) {
+                padding: 5px ${horizontalPaddingDesktop};
+            }
+        `
     }}
     ${({ $hover }) => {
         if ($hover) {
