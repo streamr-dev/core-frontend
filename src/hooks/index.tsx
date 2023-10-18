@@ -6,6 +6,7 @@ import { getConfigValueFromChain } from '~/getters/getConfigValueFromChain'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { ConfigKey } from '~/types'
 import { Layer } from '~/utils/Layer'
+import { toBN } from '~/utils/bn'
 import { errorToast } from '~/utils/toast'
 
 const infoToast = toaster(Toast, Layer.Toast)
@@ -105,4 +106,13 @@ export function useConfigValueFromChain<
     }, [key])
 
     return value
+}
+
+export function useMaxUndelegationQueueDays() {
+    const maxQueueSeconds = useConfigValueFromChain('maxQueueSeconds')
+    const maxQueueDays =
+        maxQueueSeconds != null && maxQueueSeconds.gt(0)
+            ? maxQueueSeconds.div(60).div(60).div(24)
+            : toBN(0)
+    return maxQueueDays
 }

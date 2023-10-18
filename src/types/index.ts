@@ -46,3 +46,4 @@ export type ConfigKey =
     | 'maxPenaltyPeriodSeconds'
     | 'minimumStakeWei'
     | 'minimumSelfDelegationFraction'
+    | 'maxQueueSeconds'

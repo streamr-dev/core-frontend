@@ -15,6 +15,7 @@ import Label from '~/shared/components/Ui/Label'
 import { COLORS } from '~/shared/utils/styled'
 import { BN, toBN } from '~/utils/bn'
 import { toDecimals } from '~/marketplace/utils/math'
+import { useMaxUndelegationQueueDays } from '~/hooks'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onResolve?: (amount: string) => void
@@ -51,6 +52,8 @@ export default function UndelegateFundsModal({
     useEffect(() => {
         setRawAmount(amountProp)
     }, [amountProp])
+
+    const maxUndelegationQueueDays = useMaxUndelegationQueueDays()
 
     const value = rawAmount || '0'
 
@@ -159,8 +162,9 @@ export default function UndelegateFundsModal({
                     )}
                 {toBN(rawAmount).isGreaterThan(freeFunds) && (
                     <Alert type="notice" title="Undelegation will be queued">
-                        Your undelegation will be queued for a maximum of 30 days, after
-                        which you will be able to force undelegation.
+                        Your undelegation will be queued for a maximum of{' '}
+                        {maxUndelegationQueueDays.toNumber().toFixed(0)} days, after which
+                        you will be able to force undelegation.
                     </Alert>
                 )}
                 {hasDelegatedTooLittle && (
