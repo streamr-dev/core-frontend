@@ -298,7 +298,7 @@ export const SingleOperatorPage = () => {
                                             </Pad>
                                         )}
                                     </NetworkPageSegment>
-                                    <NetworkPageSegment title="Operator checklist">
+                                    <NetworkPageSegment title="Operator status">
                                         <OperatorChecklist operatorId={operatorId} />
                                     </NetworkPageSegment>
                                 </SegmentGrid>
