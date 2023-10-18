@@ -99,6 +99,12 @@ export default function CreateSponsorshipModal({
         typeof formData.maxNumberOfOperators !== 'undefined' &&
         formData.minNumberOfOperators > formData.maxNumberOfOperators
 
+    const tooLowOperatorCount = !!CreateSponsorshipForm.safeParse(
+        formData,
+    )?.error?.issues?.find(
+        (issue) => issue.path[0] === 'minNumberOfOperators' && issue.code === 'too_small',
+    )
+
     const canSubmit =
         CreateSponsorshipForm.safeParse(formData).success && !insufficientFunds
 
@@ -262,7 +268,9 @@ export default function CreateSponsorshipModal({
                 </Section>
                 <Section>
                     <Label>Minimum number of operators to start payout</Label>
-                    <FieldWrap $invalid={invalidOperatorNumberRange}>
+                    <FieldWrap
+                        $invalid={invalidOperatorNumberRange || tooLowOperatorCount}
+                    >
                         <TextInput
                             name="minNumberOfOperators"
                             onChange={({ target }) =>

@@ -14,7 +14,7 @@ export const CreateSponsorshipForm = z
             .refine((value) => Number.isSafeInteger(value)),
         minNumberOfOperators: z
             .number()
-            .gte(0)
+            .gte(1)
             .refine((value) => Number.isSafeInteger(value)),
         maxNumberOfOperators: z
             .number()
