@@ -50,6 +50,10 @@ export const StreamInfoCell = styled.div`
 
     .stream-description {
         font-size: 14px;
+        max-width: 208px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .stream-description:empty {

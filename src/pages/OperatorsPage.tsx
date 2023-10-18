@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { toaster } from 'toasterhea'
 import { UseInfiniteQueryResult } from '@tanstack/react-query'
@@ -16,8 +15,6 @@ import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
 import { createOperator } from '~/services/operators'
 import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
-import { truncate } from '~/shared/utils/text'
-import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import routes from '~/routes'
 import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
@@ -35,6 +32,7 @@ import { refetchQuery } from '~/utils'
 import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
+import { OperatorIdCell } from '~/components/Table'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -187,13 +185,6 @@ export const OperatorsPage = () => {
     )
 }
 
-const OperatorNameCell = styled.div`
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-`
-
 function DelegationsTable({
     query,
     tokenSymbol,
@@ -210,18 +201,12 @@ function DelegationsTable({
             columns={[
                 {
                     displayName: 'Operator Name',
-                    valueMapper: (element) => (
-                        <OperatorNameCell>
-                            {element.metadata?.imageUrl ? (
-                                <HubImageAvatar
-                                    src={element.metadata.imageUrl}
-                                    alt={element.metadata.imageUrl || element.id}
-                                />
-                            ) : (
-                                <HubAvatar id={element.id} />
-                            )}
-                            <span>{element.metadata?.name || truncate(element.id)}</span>
-                        </OperatorNameCell>
+                    valueMapper: ({ id, metadata: { name, imageUrl } }) => (
+                        <OperatorIdCell
+                            operatorId={id}
+                            operatorName={name}
+                            imageUrl={imageUrl}
+                        />
                     ),
                     align: 'start',
                     isSticky: true,
@@ -300,18 +285,12 @@ function OperatorsTable({
             columns={[
                 {
                     displayName: 'Operator Name',
-                    valueMapper: (element) => (
-                        <OperatorNameCell>
-                            {element.metadata?.imageUrl ? (
-                                <HubImageAvatar
-                                    src={element.metadata.imageUrl}
-                                    alt={element.metadata.imageUrl || element.id}
-                                />
-                            ) : (
-                                <HubAvatar id={element.id} />
-                            )}
-                            <span>{element.metadata?.name || truncate(element.id)}</span>
-                        </OperatorNameCell>
+                    valueMapper: ({ id, metadata: { name, imageUrl } }) => (
+                        <OperatorIdCell
+                            operatorId={id}
+                            operatorName={name}
+                            imageUrl={imageUrl}
+                        />
                     ),
                     align: 'start',
                     isSticky: true,
