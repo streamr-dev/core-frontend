@@ -42,7 +42,7 @@ export const CreateSponsorshipForm = z
                 payoutRateBN.isGreaterThan(0) && initialAmountBN.isGreaterThanOrEqualTo(0)
                     ? initialAmountBN.dividedBy(payoutRateBN).toNumber()
                     : 0
-            return toBN(extensionInDays).isGreaterThan(toBN(minStakeDuration))
+            return toBN(extensionInDays).isGreaterThanOrEqualTo(toBN(minStakeDuration))
         },
         {
             message: 'Payout rate is lower than minimum stake duration',
