@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { useQuery } from '@tanstack/react-query'
@@ -14,13 +13,10 @@ import {
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
 import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import NetworkChartDisplay from '~/components/NetworkChartDisplay'
-import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import WalletPass from '~/components/WalletPass'
 import { NoData } from '~/shared/components/NoData'
 import routes from '~/routes'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { truncate } from '~/shared/utils/text'
-import { HubAvatar } from '~/shared/components/AvatarImage'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { fromAtto, fromDecimals } from '~/marketplace/utils/math'
 import {
@@ -45,6 +41,7 @@ import { LoadMoreButton } from '~/components/LoadMore'
 import { Separator } from '~/components/Separator'
 import { QueriedSponsorshipsTable } from '~/components/QueriedSponsorshipsTable'
 import { refetchQuery } from '~/utils'
+import { OperatorIdCell } from '~/components/Table'
 
 export function NetworkOverviewPage() {
     return (
@@ -257,10 +254,15 @@ function MyDelegations() {
                             columns={[
                                 {
                                     displayName: 'Operator ID',
-                                    valueMapper: ({ id }) => (
-                                        <OperatorCell>
-                                            <HubAvatar id={id} /> {truncate(id)}
-                                        </OperatorCell>
+                                    valueMapper: ({
+                                        id,
+                                        metadata: { imageUrl, name },
+                                    }) => (
+                                        <OperatorIdCell
+                                            operatorId={id}
+                                            imageUrl={imageUrl}
+                                            operatorName={name}
+                                        />
                                     ),
                                     align: 'start',
                                     isSticky: true,
@@ -338,14 +340,6 @@ function MyDelegations() {
         </NetworkPageSegment>
     )
 }
-
-const OperatorCell = styled.div`
-    align-items: center;
-    color: ${COLORS.primary};
-    display: flex;
-    font-weight: ${MEDIUM};
-    gap: 5px;
-`
 
 function MySponsorships() {
     const wallet = useWalletAccount()

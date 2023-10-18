@@ -7,7 +7,6 @@ import Layout, { LayoutColumn } from '~/components/Layout'
 import { NoData } from '~/shared/components/NoData'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { LAPTOP } from '~/shared/utils/styled'
-import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { truncate } from '~/shared/utils/text'
 import {
     formatLongDate,
@@ -26,6 +25,7 @@ import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
 import { useSponsorshipQuery, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
+import { OperatorIdCell } from '~/components/Table'
 
 export const SingleSponsorshipPage = () => {
     const sponsorshipId = useParams().id || ''
@@ -214,21 +214,11 @@ export const SingleSponsorshipPage = () => {
                                                     operatorId,
                                                     metadata: { imageUrl, name },
                                                 }) => (
-                                                    <OperatorCell>
-                                                        {imageUrl ? (
-                                                            <HubImageAvatar
-                                                                src={imageUrl}
-                                                                alt={
-                                                                    imageUrl || operatorId
-                                                                }
-                                                            />
-                                                        ) : (
-                                                            <HubAvatar id={operatorId} />
-                                                        )}
-                                                        <span>
-                                                            {name || truncate(operatorId)}
-                                                        </span>
-                                                    </OperatorCell>
+                                                    <OperatorIdCell
+                                                        operatorId={operatorId}
+                                                        imageUrl={imageUrl}
+                                                        operatorName={name}
+                                                    />
                                                 ),
                                                 align: 'start',
                                             },
@@ -302,11 +292,4 @@ const ChartGrid = styled(SegmentGrid)`
     @media ${LAPTOP} {
         grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
     }
-`
-
-const OperatorCell = styled.div`
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    gap: 12px;
 `

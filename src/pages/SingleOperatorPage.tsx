@@ -4,7 +4,6 @@ import { toaster } from 'toasterhea'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import moment from 'moment'
-import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import { NoData } from '~/shared/components/NoData'
@@ -57,7 +56,7 @@ import {
 } from '~/shared/stores/uncollectedEarnings'
 import { confirm } from '~/getters/confirm'
 import { truncate } from '~/shared/utils/text'
-import { Tip, TipIconWrap } from '~/components/Tip'
+import { FundedUntilCell, StreamIdCell } from '~/components/Table'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -320,7 +319,9 @@ export const SingleOperatorPage = () => {
                                 columns={[
                                     {
                                         displayName: 'Stream ID',
-                                        valueMapper: (element) => element.streamId,
+                                        valueMapper: ({ streamId }) => (
+                                            <StreamIdCell streamId={streamId} />
+                                        ),
                                         align: 'start',
                                         isSticky: true,
                                         key: 'streamId',
@@ -347,28 +348,13 @@ export const SingleOperatorPage = () => {
                                     },
                                     {
                                         displayName: 'Funded until',
-                                        valueMapper: (element) => {
-                                            const fundedUntil = moment(
-                                                element.projectedInsolvencyAt * 1000,
-                                            )
-
-                                            return (
-                                                <FundedUntil>
-                                                    {fundedUntil.format('YYYY-MM-DD')}
-                                                    {fundedUntil.isBefore(Date.now()) && (
-                                                        <Tip
-                                                            handle={
-                                                                <TipIconWrap $color="#ff5c00">
-                                                                    <JiraFailedBuildStatusIcon label="Error" />
-                                                                </TipIconWrap>
-                                                            }
-                                                        >
-                                                            Sponsorship expired
-                                                        </Tip>
-                                                    )}
-                                                </FundedUntil>
-                                            )
-                                        },
+                                        valueMapper: (element) => (
+                                            <FundedUntilCell
+                                                projectedInsolvencyAt={
+                                                    element.projectedInsolvencyAt
+                                                }
+                                            />
+                                        ),
                                         align: 'start',
                                         isSticky: false,
                                         key: 'fundedUntil',
@@ -687,15 +673,3 @@ function UncollectedEarnings({
         <Spinner color="blue" />
     )
 }
-
-const FundedUntil = styled.div`
-    align-items: center;
-    display: grid;
-    gap: 8px;
-    grid-template-columns: auto auto;
-
-    ${TipIconWrap} svg {
-        width: 18px;
-        height: 18px;
-    }
-`

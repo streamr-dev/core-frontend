@@ -5,8 +5,6 @@ import {
     ScrollTableCore,
     ScrollTableOrderDirection,
 } from '~/shared/components/ScrollTable/ScrollTable'
-import { truncateStreamName } from '~/shared/utils/text'
-import { StreamDescription } from '~/components/StreamDescription'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { useWalletAccount } from '~/shared/stores/wallet'
@@ -22,7 +20,7 @@ import {
     useSponsorshipTokenInfo,
 } from '~/hooks/sponsorships'
 import { isRejectionReason } from '~/modals/BaseModal'
-import { StreamInfoCell } from './NetworkUtils'
+import { FundedUntilCell, StreamIdCell } from '~/components/Table'
 
 interface Props {
     noDataFirstLine?: ReactNode
@@ -75,14 +73,7 @@ export function QueriedSponsorshipsTable({
                     {
                         displayName: 'Stream ID',
                         valueMapper: ({ streamId }) => (
-                            <StreamInfoCell>
-                                <span className="stream-id">
-                                    {truncateStreamName(streamId)}
-                                </span>
-                                <span className="stream-description">
-                                    <StreamDescription streamId={streamId} />
-                                </span>
-                            </StreamInfoCell>
+                            <StreamIdCell streamId={streamId} />
                         ),
                         align: 'start',
                         isSticky: true,
@@ -128,6 +119,17 @@ export function QueriedSponsorshipsTable({
                         isSticky: false,
                         key: 'apy',
                         sortable: true,
+                    },
+                    {
+                        displayName: 'Funded until',
+                        valueMapper: (element) => (
+                            <FundedUntilCell
+                                projectedInsolvencyAt={element.projectedInsolvencyAt}
+                            />
+                        ),
+                        align: 'start',
+                        isSticky: false,
+                        key: 'fundedUntil',
                     },
                 ]}
                 actions={[
