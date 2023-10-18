@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import {
     getNextSortingParameters,
     ScrollTableOrderDirection,
@@ -13,14 +13,17 @@ export const useTableOrder = (): {
         orderBy: undefined,
         orderDirection: undefined,
     })
-    const handleOrderChange = (columnKey: string) => {
-        const newOrderSettings = getNextSortingParameters(
-            order.orderBy,
-            columnKey,
-            order.orderDirection,
-        )
-        setOrder(newOrderSettings)
-    }
+    const handleOrderChange = useCallback(
+        (columnKey: string) => {
+            const newOrderSettings = getNextSortingParameters(
+                order.orderBy,
+                columnKey,
+                order.orderDirection,
+            )
+            setOrder(newOrderSettings)
+        },
+        [order, setOrder],
+    )
 
     return {
         ...order,
