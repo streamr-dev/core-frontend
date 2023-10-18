@@ -15,14 +15,15 @@ export const useTableOrder = (): {
     })
     const handleOrderChange = useCallback(
         (columnKey: string) => {
-            const newOrderSettings = getNextSortingParameters(
-                order.orderBy,
-                columnKey,
-                order.orderDirection,
-            )
-            setOrder(newOrderSettings)
+            setOrder((currentOrder) => {
+                return getNextSortingParameters(
+                    currentOrder.orderBy,
+                    columnKey,
+                    currentOrder.orderDirection,
+                )
+            })
         },
-        [order, setOrder],
+        [setOrder],
     )
 
     return {
