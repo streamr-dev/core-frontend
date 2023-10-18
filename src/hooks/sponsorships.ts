@@ -307,7 +307,6 @@ export function useEditSponsorshipFunding() {
 }
 
 export const mapSponsorshipOrder = (columnKey?: string): Sponsorship_OrderBy => {
-    console.log('key', columnKey)
     switch (columnKey) {
         case 'operators':
             return Sponsorship_OrderBy.OperatorCount

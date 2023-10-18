@@ -9,7 +9,6 @@ import { Layer } from '~/utils/Layer'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import Button from '~/shared/components/Button'
 import {
-    getNextSortingParameters,
     ScrollTableCore,
     ScrollTableOrderDirection,
 } from '~/shared/components/ScrollTable/ScrollTable'
