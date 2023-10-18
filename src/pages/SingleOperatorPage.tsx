@@ -4,11 +4,13 @@ import { toaster } from 'toasterhea'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import moment from 'moment'
+import { BigNumber } from 'ethers'
+import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import { NoData } from '~/shared/components/NoData'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
-import { COLORS, LAPTOP, TABLET } from '~/shared/utils/styled'
+import { COLORS, LAPTOP, MEDIUM, TABLET } from '~/shared/utils/styled'
 import Help from '~/components/Help'
 import {
     formatLongDate,
@@ -23,6 +25,7 @@ import { fromAtto } from '~/marketplace/utils/math'
 import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
 import { updateOperator } from '~/services/operators'
 import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
+import ForceUndelegateModal from '~/modals/ForceUndelegateModal'
 import { Layer } from '~/utils/Layer'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { getOperatorStats } from '~/getters/getOperatorStats'
@@ -40,7 +43,7 @@ import { useOperatorByIdQuery } from '~/hooks/operators'
 import { refetchQuery } from '~/utils'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { OperatorChecklist } from '~/components/OperatorChecklist'
-import { collectEarnings } from '~/services/sponsorships'
+import { collectEarnings, forceUnstakeFromSponsorship } from '~/services/sponsorships'
 import routes from '~/routes'
 import {
     NodesTable,
@@ -56,9 +59,13 @@ import {
 } from '~/shared/stores/uncollectedEarnings'
 import { confirm } from '~/getters/confirm'
 import { truncate } from '~/shared/utils/text'
+import { useConfigValueFromChain } from '~/hooks'
+import Button from '~/shared/components/Button'
 import { FundedUntilCell, StreamIdCell } from '~/components/Table'
+import { Tip, TipIconWrap } from '~/components/Tip'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
+const forceUndelegateModal = toaster(ForceUndelegateModal, Layer.Modal)
 
 export const SingleOperatorPage = () => {
     const operatorId = useParams().id
@@ -68,6 +75,8 @@ export const SingleOperatorPage = () => {
     const operator = operatorQuery.data || null
 
     const walletAddress = useWalletAccount()
+
+    const maxUndelegationQueueSeconds = useConfigValueFromChain('maxQueueSeconds')
 
     const { fetch: fetchUncollectedEarnings } = useUncollectedEarningsStore()
 
@@ -497,6 +506,130 @@ export const SingleOperatorPage = () => {
                                 ]}
                             />
                         </NetworkPageSegment>
+                        <NetworkPageSegment foot title="Undelegation queue">
+                            <ScrollTable
+                                elements={operator.queueEntries}
+                                columns={[
+                                    {
+                                        displayName: 'Delegator address',
+                                        valueMapper: (element) => (
+                                            <>
+                                                {element.delegator}
+                                                {element.delegator === walletAddress && (
+                                                    <Badge>You</Badge>
+                                                )}
+                                            </>
+                                        ),
+                                        align: 'start',
+                                        isSticky: true,
+                                        key: 'id',
+                                    },
+                                    {
+                                        displayName: 'Amount',
+                                        valueMapper: (element) =>
+                                            `${abbreviateNumber(
+                                                fromAtto(element.amount).toNumber(),
+                                            )} ${tokenSymbol}`,
+                                        align: 'end',
+                                        isSticky: false,
+                                        key: 'amount',
+                                    },
+                                    {
+                                        displayName: 'Expiration date',
+                                        valueMapper: (element) => {
+                                            const expirationDate =
+                                                getUndelegationExpirationDate(
+                                                    element.date,
+                                                    maxUndelegationQueueSeconds,
+                                                )
+                                            return (
+                                                <WarningCell>
+                                                    {expirationDate.format('YYYY-MM-DD')}
+                                                    {expirationDate.isAfter(
+                                                        Date.now(),
+                                                    ) && (
+                                                        <Tip
+                                                            handle={
+                                                                <TipIconWrap $color="#ff5c00">
+                                                                    <JiraFailedBuildStatusIcon label="Error" />
+                                                                </TipIconWrap>
+                                                            }
+                                                        >
+                                                            <p>
+                                                                Payout time exceeded. You
+                                                                can force undelegate now.
+                                                            </p>
+                                                        </Tip>
+                                                    )}
+                                                </WarningCell>
+                                            )
+                                        },
+                                        align: 'start',
+                                        isSticky: false,
+                                        key: 'date',
+                                    },
+                                    {
+                                        displayName: '',
+                                        valueMapper: (element) => (
+                                            <>
+                                                {getUndelegationExpirationDate(
+                                                    element.date,
+                                                    maxUndelegationQueueSeconds,
+                                                ).isAfter(Date.now()) && (
+                                                    <Button
+                                                        type="button"
+                                                        kind="secondary"
+                                                        onClick={async () => {
+                                                            try {
+                                                                await forceUndelegateModal.pop(
+                                                                    {
+                                                                        sponsorships:
+                                                                            operator.stakes.map(
+                                                                                (s) => ({
+                                                                                    id: s.sponsorshipId,
+                                                                                    streamId:
+                                                                                        s.streamId,
+                                                                                    amount: toBN(
+                                                                                        s.amountWei,
+                                                                                    ),
+                                                                                }),
+                                                                            ),
+                                                                        tokenSymbol:
+                                                                            tokenSymbol,
+                                                                        onSubmit: async (
+                                                                            sponsorshipId,
+                                                                        ) => {
+                                                                            if (
+                                                                                operatorId
+                                                                            ) {
+                                                                                await forceUnstakeFromSponsorship(
+                                                                                    sponsorshipId,
+                                                                                    operatorId,
+                                                                                )
+                                                                            }
+                                                                        },
+                                                                    },
+                                                                )
+                                                            } catch (e) {
+                                                                console.error(
+                                                                    'Could not force undelegate',
+                                                                    e,
+                                                                )
+                                                            }
+                                                        }}
+                                                    >
+                                                        Force undelegate
+                                                    </Button>
+                                                )}
+                                            </>
+                                        ),
+                                        align: 'end',
+                                        isSticky: false,
+                                        key: 'actions',
+                                    },
+                                ]}
+                            />
+                        </NetworkPageSegment>
                         <NetworkPageSegment foot title="Slashing history">
                             <ScrollTable
                                 elements={operator.slashingEvents}
@@ -511,7 +644,9 @@ export const SingleOperatorPage = () => {
                                     {
                                         displayName: 'Date',
                                         valueMapper: (element) =>
-                                            moment(element.date).format('YYYY-MM-DD'),
+                                            moment(element.date * 1000).format(
+                                                'YYYY-MM-DD HH:mm',
+                                            ),
                                         align: 'start',
                                         isSticky: false,
                                         key: 'date',
@@ -610,6 +745,16 @@ function yAxisAxisDisplayFormatter(value: number) {
     return abbreviateNumber(value)
 }
 
+function getUndelegationExpirationDate(
+    date: number,
+    maxUndelegationQueueSeconds: BigNumber | undefined,
+) {
+    const expirationDate = moment(
+        date * 1000 + (maxUndelegationQueueSeconds?.toNumber() ?? 0) * 1000,
+    )
+    return expirationDate
+}
+
 const ChartGrid = styled(SegmentGrid)`
     grid-template-columns: minmax(0, 1fr);
 
@@ -636,6 +781,18 @@ const DelegationCell = styled.div`
     }
 `
 
+const Badge = styled.div`
+    border-radius: 8px;
+    background: ${COLORS.secondary};
+    color: ${COLORS.primaryLight};
+    font-size: 14px;
+    font-weight: ${MEDIUM};
+    line-height: 30px;
+    letter-spacing: 0.14px;
+    padding: 0px 10px;
+    margin-left: 12px;
+`
+
 const SponsorshipsTableTitle = styled.h2`
     display: flex;
     align-items: center;
@@ -653,6 +810,18 @@ const SponsorshipsCount = styled.div`
 const NodeAddressHeader = styled.h2`
     display: flex;
     align-items: center;
+`
+
+const WarningCell = styled.div`
+    align-items: center;
+    display: grid;
+    gap: 8px;
+    grid-template-columns: auto auto;
+
+    ${TipIconWrap} svg {
+        width: 18px;
+        height: 18px;
+    }
 `
 
 function UncollectedEarnings({
