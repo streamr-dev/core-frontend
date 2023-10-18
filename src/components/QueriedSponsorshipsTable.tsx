@@ -1,7 +1,10 @@
 import React, { ReactNode } from 'react'
 import { UseInfiniteQueryResult } from '@tanstack/react-query'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
-import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
+import {
+    ScrollTableCore,
+    ScrollTableOrderDirection,
+} from '~/shared/components/ScrollTable/ScrollTable'
 import { truncateStreamName } from '~/shared/utils/text'
 import { StreamDescription } from '~/components/StreamDescription'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
@@ -27,6 +30,9 @@ interface Props {
     onSponsorshipFunded?: () => void | Promise<void>
     onSponsorshipJoined?: () => void | Promise<void>
     onStakeEdited?: () => void | Promise<void>
+    orderBy?: string
+    orderDirection?: ScrollTableOrderDirection
+    onOrderChange?: (columnKey: string) => void
     query: UseInfiniteQueryResult<{ skip: number; sponsorships: ParsedSponsorship[] }>
 }
 
@@ -36,6 +42,9 @@ export function QueriedSponsorshipsTable({
     onSponsorshipFunded,
     onSponsorshipJoined,
     onStakeEdited,
+    orderBy,
+    orderDirection,
+    onOrderChange,
     query,
 }: Props) {
     const sponsorships = query.data?.pages.map((page) => page.sponsorships).flat() || []
@@ -59,6 +68,9 @@ export function QueriedSponsorshipsTable({
                 isLoading={
                     query.isLoading || query.isFetching || query.isFetchingNextPage
                 }
+                orderBy={orderBy}
+                orderDirection={orderDirection}
+                onOrderChange={onOrderChange}
                 columns={[
                     {
                         displayName: 'Stream ID',
@@ -75,6 +87,7 @@ export function QueriedSponsorshipsTable({
                         align: 'start',
                         isSticky: true,
                         key: 'streamInfo',
+                        sortable: true,
                     },
                     {
                         displayName: (
@@ -95,6 +108,7 @@ export function QueriedSponsorshipsTable({
                         align: 'end',
                         isSticky: false,
                         key: 'operators',
+                        sortable: true,
                     },
                     {
                         displayName: 'Staked',
@@ -105,6 +119,7 @@ export function QueriedSponsorshipsTable({
                         align: 'end',
                         isSticky: false,
                         key: 'staked',
+                        sortable: true,
                     },
                     {
                         displayName: 'APY',
@@ -112,6 +127,7 @@ export function QueriedSponsorshipsTable({
                         align: 'end',
                         isSticky: false,
                         key: 'apy',
+                        sortable: true,
                     },
                 ]}
                 actions={[

@@ -16,6 +16,7 @@ import {
 } from '~/hooks/sponsorships'
 import { refetchQuery } from '~/utils'
 import { isRejectionReason } from '~/modals/BaseModal'
+import { useTableOrder } from '~/hooks/useTableOrder'
 
 const PAGE_SIZE = 20
 
@@ -31,14 +32,20 @@ export const SponsorshipsPage = () => {
 
     const wallet = useWalletAccount()
 
+    const { orderBy, orderDirection, handleOrderChange } = useTableOrder()
+
     const allSponsorshipsQuery = useAllSponsorshipsQuery({
         pageSize: PAGE_SIZE,
         streamId: searchQuery,
+        orderBy,
+        orderDirection,
     })
 
     const mySponsorshipsQuery = useSponsorshipsForCreatorQuery(wallet, {
         pageSize: PAGE_SIZE,
         streamId: searchQuery,
+        orderBy,
+        orderDirection,
     })
 
     const tabQueryMap = {
@@ -151,6 +158,9 @@ export const SponsorshipsPage = () => {
                                     ? 'No sponsorships found.'
                                     : 'You do not have any sponsorships yet.'
                             }
+                            orderBy={orderBy}
+                            orderDirection={orderDirection}
+                            onOrderChange={handleOrderChange}
                         />
                     </NetworkPageSegment>
                 </SegmentGrid>

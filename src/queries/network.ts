@@ -203,11 +203,19 @@ gql`
         spotAPY
     }
 
-    query getAllSponsorships($first: Int, $skip: Int, $streamContains: String!) {
+    query getAllSponsorships(
+        $first: Int
+        $skip: Int
+        $streamContains: String!
+        $orderBy: Sponsorship_orderBy
+        $orderDirection: OrderDirection
+    ) {
         sponsorships(
             first: $first
             skip: $skip
             where: { stream_contains_nocase: $streamContains }
+            orderBy: $orderBy
+            orderDirection: $orderDirection
         ) {
             ...SponsorshipFields
         }
@@ -218,11 +226,15 @@ gql`
         $skip: Int
         $streamContains: String!
         $creator: String!
+        $orderBy: Sponsorship_orderBy
+        $orderDirection: OrderDirection
     ) {
         sponsorships(
             first: $first
             skip: $skip
             where: { creator: $creator, stream_contains_nocase: $streamContains }
+            orderBy: $orderBy
+            orderDirection: $orderDirection
         ) {
             ...SponsorshipFields
         }
