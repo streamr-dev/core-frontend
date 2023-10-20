@@ -72,11 +72,7 @@ export default function BeneficiaryAddressEditor({
                     <PopoverItem
                         key="copy"
                         disabled={!value}
-                        onClick={() => {
-                            copy(value, {
-                                toastMessage: 'Copied',
-                            })
-                        }}
+                        onClick={() => void copy(value)}
                     >
                         Copy
                     </PopoverItem>,

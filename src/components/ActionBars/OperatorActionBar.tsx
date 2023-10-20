@@ -1,19 +1,15 @@
 import React, { FunctionComponent, useMemo } from 'react'
 import styled from 'styled-components'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
-import { truncate } from '~/shared/utils/text'
-import { BlackTooltip } from '~/shared/components/Tooltip/Tooltip'
 import Button from '~/shared/components/Button'
-import useCopy from '~/shared/hooks/useCopy'
 import SvgIcon from '~/shared/components/SvgIcon'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import routes from '~/routes'
 import { fromAtto } from '~/marketplace/utils/math'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
-import { SimpleDropdown } from '~/components/SimpleDropdown'
+import { SimpleDropdown2 } from '~/components/SimpleDropdown'
 import Spinner from '~/shared/components/Spinner'
-import { getBlockExplorerUrl } from '~/getters/getBlockExplorerUrl'
 import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
 import { TABLET } from '~/shared/utils/styled'
@@ -21,9 +17,7 @@ import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
     NetworkActionBarBackLink,
-    NetworkActionBarCaret,
     NetworkActionBarCTAs,
-    NetworkActionBarInfoButton,
     NetworkActionBarInfoButtons,
     NetworkActionBarStatsTitle,
     NetworkActionBarTitle,
@@ -31,7 +25,6 @@ import {
     SingleElementPageActionBarContainer,
     SingleElementPageActionBarTopPart,
 } from '~/components/ActionBars/NetworkActionBar.styles'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { getSelfDelegationFraction, getSpotApy } from '~/getters'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import {
@@ -43,7 +36,15 @@ import {
 import { isRejectionReason } from '~/modals/BaseModal'
 import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
-import { Tip, TipIconWrap } from '../Tip'
+import { Tip, TipIconWrap } from '~/components/Tip'
+import { AboutOperator } from '~/components/AboutOperator'
+import { PencilIcon } from '~/icons'
+import {
+    ActionBarButton,
+    ActionBarButtonCaret,
+    ActionBarButtonInnerBody,
+    ActionBarWalletDisplay,
+} from './ActionBarButton'
 
 export const OperatorActionBar: FunctionComponent<{
     operator: ParsedOperator
@@ -51,8 +52,6 @@ export const OperatorActionBar: FunctionComponent<{
     onDelegationChange: () => void
     tokenSymbol: string
 }> = ({ operator, handleEdit, onDelegationChange, tokenSymbol }) => {
-    const { copy } = useCopy()
-
     const heartbeats = useInterceptHeartbeats(operator.id)
 
     const { count: liveNodeCount, isLoading: liveNodeCountIsLoading } =
@@ -102,109 +101,31 @@ export const OperatorActionBar: FunctionComponent<{
                         </NetworkActionBarBackButtonAndTitle>
                         <NetworkActionBarInfoButtons>
                             {canEdit && (
-                                <NetworkActionBarInfoButton
-                                    className="pointer bold"
-                                    onClick={() => handleEdit(operator)}
+                                <ActionBarButton
+                                    onClick={() => void handleEdit(operator)}
                                 >
-                                    <span>Edit Operator</span>
-                                    <SvgIcon name={'pencil'} />
-                                </NetworkActionBarInfoButton>
+                                    <strong>Edit Operator</strong>
+                                    <PencilIcon />
+                                </ActionBarButton>
                             )}
-                            <SimpleDropdown
-                                toggleElement={
-                                    <NetworkActionBarInfoButton className="pointer bold">
-                                        <SvgIcon name="page" />
-                                        About Operators
-                                        <NetworkActionBarCaret name="caretDown" />
-                                    </NetworkActionBarInfoButton>
-                                }
-                                dropdownContent={
-                                    <AboutOperatorsContent>
-                                        {operator.metadata?.description && (
-                                            <p>{operator.metadata.description}</p>
-                                        )}
-                                        Operators secure and stabilize the Streamr Network
-                                        by running nodes and contributing bandwidth. In
-                                        exchange, they earn{' '}
-                                        <SponsorshipPaymentTokenName /> tokens from
-                                        sponsorships they stake on. The stake guarantees
-                                        that the operators do the work, otherwise they get
-                                        slashed. Learn more{' '}
-                                        <a
-                                            href="https://docs.streamr.network/streamr-network/network-incentives"
-                                            target="_blank"
-                                            rel="noreferrer noopener"
-                                        >
-                                            here
-                                        </a>
-                                        .
-                                    </AboutOperatorsContent>
-                                }
+                            <SimpleDropdown2 menu={<AboutOperator operator={operator} />}>
+                                {(toggle, isOpen) => (
+                                    <ActionBarButton
+                                        active={isOpen}
+                                        onClick={() => void toggle((c) => !c)}
+                                    >
+                                        <ActionBarButtonInnerBody>
+                                            <SvgIcon name="page" />
+                                            <strong>About Operator</strong>
+                                        </ActionBarButtonInnerBody>
+                                        <ActionBarButtonCaret $invert={isOpen} />
+                                    </ActionBarButton>
+                                )}
+                            </SimpleDropdown2>
+                            <ActionBarWalletDisplay
+                                address={operator.id}
+                                label="Contract"
                             />
-                            <NetworkActionBarInfoButton>
-                                <span>
-                                    Owner: <strong>{truncate(operator.owner)}</strong>
-                                </span>
-                                <span>
-                                    <SvgIcon
-                                        name="copy"
-                                        className="icon"
-                                        data-tooltip-id="copy-sponsorship-address"
-                                        onClick={() =>
-                                            copy(operator.owner, {
-                                                toastMessage: 'Copied!',
-                                            })
-                                        }
-                                    />
-                                    <BlackTooltip
-                                        id="copy-sponsorship-address"
-                                        openOnClick={false}
-                                    >
-                                        Copy address
-                                    </BlackTooltip>
-                                </span>
-                                <a
-                                    href={`${getBlockExplorerUrl()}/address/${
-                                        operator.owner
-                                    }`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
-                                    <SvgIcon name="externalLink" />
-                                </a>
-                            </NetworkActionBarInfoButton>
-                            <NetworkActionBarInfoButton>
-                                <span>
-                                    Contract <strong>{truncate(operator.id)}</strong>
-                                </span>
-                                <span>
-                                    <SvgIcon
-                                        name="copy"
-                                        className="icon"
-                                        data-tooltip-id="copy-sponsorship-address"
-                                        onClick={() =>
-                                            copy(operator.id, {
-                                                toastMessage: 'Copied!',
-                                            })
-                                        }
-                                    />
-                                    <BlackTooltip
-                                        id="copy-sponsorship-address"
-                                        openOnClick={false}
-                                    >
-                                        Copy address
-                                    </BlackTooltip>
-                                </span>
-                                <a
-                                    href={`${getBlockExplorerUrl()}/address/${
-                                        operator.id
-                                    }`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
-                                    <SvgIcon name="externalLink" />
-                                </a>
-                            </NetworkActionBarInfoButton>
                         </NetworkActionBarInfoButtons>
                     </div>
                     <NetworkActionBarCTAs>
@@ -340,11 +261,6 @@ export const OperatorActionBar: FunctionComponent<{
         </SingleElementPageActionBar>
     )
 }
-
-const AboutOperatorsContent = styled.div`
-    margin: 0;
-    min-width: 250px;
-`
 
 export const Pad = styled.div`
     padding: 20px 0;

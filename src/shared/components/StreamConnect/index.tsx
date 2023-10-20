@@ -263,11 +263,7 @@ export const StreamConnect: FunctionComponent<{ streams: StreamId[] }> = ({
                         <StreamConnectSnippetCopyContainer>
                             <Button
                                 kind="secondary"
-                                onClick={() =>
-                                    void copy(lightNodeSnippet, {
-                                        toastMessage: 'Copied',
-                                    })
-                                }
+                                onClick={() => void copy(lightNodeSnippet)}
                             >
                                 Copy
                             </Button>
@@ -300,11 +296,7 @@ export const StreamConnect: FunctionComponent<{ streams: StreamId[] }> = ({
                         <StreamConnectSnippetCopyContainer>
                             <Button
                                 kind="secondary"
-                                onClick={() =>
-                                    void copy(currentBrokerSnippet, {
-                                        toastMessage: 'Copied',
-                                    })
-                                }
+                                onClick={() => void copy(currentBrokerSnippet)}
                             >
                                 Copy
                             </Button>

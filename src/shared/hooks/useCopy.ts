@@ -25,7 +25,7 @@ export default function useCopy() {
             value: string,
             {
                 onAfterCopied,
-                toastMessage,
+                toastMessage = 'Copied!',
             }: {
                 onAfterCopied?: (value: string) => void
                 toastMessage?: string
