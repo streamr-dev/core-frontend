@@ -71,8 +71,13 @@ export default function JoinSponsorshipModal({
 
     const heartbeats = useInterceptHeartbeats(operatorId)
 
+    /*
     const { count: liveNodesCount, isLoading: liveNodesCountLoading } =
         useOperatorLiveNodes(heartbeats)
+    */
+
+    const liveNodesCount = 2
+    const liveNodesCountLoading = false
 
     useEffect(() => {
         setRawAmount(parseAmount(amountProp))

@@ -592,10 +592,16 @@ export const SingleOperatorPage = () => {
                                                                                     amount: toBN(
                                                                                         s.amountWei,
                                                                                     ),
+                                                                                    minimumStakingPeriodSeconds:
+                                                                                        s.minimumStakingPeriodSeconds,
+                                                                                    joinTimestamp:
+                                                                                        s.joinTimestamp,
                                                                                 }),
                                                                             ),
                                                                         tokenSymbol:
                                                                             tokenSymbol,
+                                                                        totalAmount:
+                                                                            element.amount,
                                                                         onSubmit: async (
                                                                             sponsorshipId,
                                                                         ) => {
@@ -605,6 +611,11 @@ export const SingleOperatorPage = () => {
                                                                                 await forceUnstakeFromSponsorship(
                                                                                     sponsorshipId,
                                                                                     operatorId,
+                                                                                )
+
+                                                                                await waitForGraphSync()
+                                                                                refetchQuery(
+                                                                                    operatorQuery,
                                                                                 )
                                                                             }
                                                                         },

@@ -1,34 +1,47 @@
 import React, { useState } from 'react'
+import moment from 'moment'
 import styled from 'styled-components'
+import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import { truncateStreamName } from '~/shared/utils/text'
-import FormModal, { FormModalProps, Section, SectionHeadline } from '~/modals/FormModal'
+import FormModal, {
+    FormModalProps,
+    FormModalRoot,
+    Section,
+    SectionHeadline,
+} from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
-
+import { Tip, TipIconWrap } from '~/components/Tip'
 import { SearchDropdown } from '~/components/SearchDropdown'
 import { BN } from '~/utils/bn'
 import { fromAtto } from '~/marketplace/utils/math'
 import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
+import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
+import Checkbox from '~/shared/components/Checkbox'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onResolve?: (sponsorshipId: string) => void
     onSubmit: (sponsorshipId: string) => Promise<void>
     tokenSymbol: string
     sponsorships: UndelegateSponsorship[]
+    totalAmount: BN
 }
 
 interface UndelegateSponsorship {
     id: string
     streamId: string
     amount: BN
+    minimumStakingPeriodSeconds: number
+    joinTimestamp: number
 }
 
 export default function ForceUndelegateModal({
     title = 'Force unstake',
     onResolve,
     onSubmit,
-    submitLabel = 'Undelegate',
+    submitLabel = 'Force unstake',
     tokenSymbol,
     sponsorships,
+    totalAmount,
     ...props
 }: Props) {
     const [selectedSponsorshipId, setSelectedSponsorshipId] = useState<string>()
@@ -37,7 +50,7 @@ export default function ForceUndelegateModal({
     const canSubmit = selectedSponsorshipId != null
 
     return (
-        <FormModal
+        <ForceUndelegateFormModal
             {...props}
             title={title}
             canSubmit={canSubmit && !busy}
@@ -57,30 +70,119 @@ export default function ForceUndelegateModal({
             }}
         >
             <SectionHeadline>
-                Please select sponsorship to undelegate from
+                Please select a sponsorship to undelegate{' '}
+                {abbreviateNumber(fromAtto(totalAmount).toNumber())} {tokenSymbol} from
             </SectionHeadline>
-            <Section>
-                <Label>Sponsorship</Label>
-                <SearchDropdown
-                    name="sponsorship"
-                    onSelect={(selection) => {
-                        console.log('select', selection)
-                        setSelectedSponsorshipId(selection)
-                    }}
-                    onSearchInputChange={(input) => {
-                        console.log('input changed', input)
-                    }}
-                    options={sponsorships.map((s) => ({
-                        label: `${truncateStreamName(s.streamId)} (${abbreviateNumber(
-                            fromAtto(s.amount).toNumber(),
-                        )} ${tokenSymbol})`,
-                        value: s.id,
-                    }))}
-                    isLoadingOptions={false}
-                    placeholder="Type to select a sponsorship"
-                    value={selectedSponsorshipId}
-                />
-            </Section>
-        </FormModal>
+            <ScrollTable
+                elements={sponsorships}
+                columns={[
+                    {
+                        displayName: 'Stream ID',
+                        valueMapper: (element) => (
+                            <>{truncateStreamName(element.streamId)}</>
+                        ),
+                        align: 'start',
+                        isSticky: true,
+                        key: 'streamid',
+                    },
+                    {
+                        displayName: 'Amount',
+                        valueMapper: (element) => (
+                            <WarningCell>
+                                {abbreviateNumber(fromAtto(element.amount).toNumber())}{' '}
+                                {tokenSymbol}
+                                {element.amount.isLessThan(totalAmount) && (
+                                    <Tip
+                                        handle={
+                                            <TipIconWrap $color="#ff5c00">
+                                                <JiraFailedBuildStatusIcon label="Error" />
+                                            </TipIconWrap>
+                                        }
+                                    >
+                                        <p>Not enough stake</p>
+                                    </Tip>
+                                )}
+                            </WarningCell>
+                        ),
+                        align: 'start',
+                        isSticky: false,
+                        key: 'amount',
+                    },
+                    {
+                        displayName: 'Joined',
+                        valueMapper: (element) => {
+                            const joinDate = moment(element.joinTimestamp * 1000)
+                            const slashedBeforeDate = joinDate
+                                .clone()
+                                .add(element.minimumStakingPeriodSeconds, 'seconds')
+                            return (
+                                <WarningCell>
+                                    {joinDate.format('YYYY-MM-DD')}
+                                    {moment().isBefore(slashedBeforeDate) && (
+                                        <Tip
+                                            handle={
+                                                <TipIconWrap $color="#ff5c00">
+                                                    <JiraFailedBuildStatusIcon label="Error" />
+                                                </TipIconWrap>
+                                            }
+                                        >
+                                            <p>
+                                                Minimum stake period of{' '}
+                                                {element.minimumStakingPeriodSeconds /
+                                                    60 /
+                                                    60 /
+                                                    24}{' '}
+                                                days not reached. You will be slashed.
+                                            </p>
+                                        </Tip>
+                                    )}
+                                </WarningCell>
+                            )
+                        },
+                        align: 'start',
+                        isSticky: false,
+                        key: 'joined',
+                    },
+                    {
+                        displayName: '',
+                        valueMapper: (element) => (
+                            <>
+                                <Checkbox
+                                    value={selectedSponsorshipId === element.id}
+                                    onChange={(e) => {
+                                        if (e.target.checked) {
+                                            setSelectedSponsorshipId(element.id)
+                                        } else {
+                                            setSelectedSponsorshipId(undefined)
+                                        }
+                                    }}
+                                />
+                            </>
+                        ),
+                        align: 'end',
+                        isSticky: false,
+                        key: 'actions',
+                    },
+                ]}
+            />
+        </ForceUndelegateFormModal>
     )
 }
+
+const ForceUndelegateFormModal = styled(FormModal)`
+    & ${FormModalRoot} {
+        max-width: 800px;
+    }
+`
+
+const WarningCell = styled.div`
+    align-items: center;
+    display: grid;
+    gap: 8px;
+    grid-template-columns: auto auto;
+
+    ${TipIconWrap} svg {
+        width: 18px;
+        height: 18px;
+    }
+`
