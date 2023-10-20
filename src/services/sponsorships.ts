@@ -50,9 +50,11 @@ export async function createSponsorship(
     const policies = [
         chainConfig.contracts.SponsorshipStakeWeightedAllocationPolicy,
         chainConfig.contracts.SponsorshipDefaultLeavePolicy,
+        chainConfig.contracts.SponsorshipVoteKickPolicy,
     ]
 
-    const policyParams = [payoutRate, minimumStakeTime]
+    // No params for SponsorshipVoteKickPolicy, so just pass 0 for that one
+    const policyParams = [payoutRate, minimumStakeTime, 0]
 
     if (maxOperatorCount) {
         policies.push(chainConfig.contracts.SponsorshipMaxOperatorsJoinPolicy)
