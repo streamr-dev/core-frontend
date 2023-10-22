@@ -8,7 +8,7 @@ import routes from '~/routes'
 import { fromAtto } from '~/marketplace/utils/math'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
-import { SimpleDropdown2 } from '~/components/SimpleDropdown'
+import { SimpleDropdown } from '~/components/SimpleDropdown'
 import Spinner from '~/shared/components/Spinner'
 import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
@@ -108,7 +108,7 @@ export const OperatorActionBar: FunctionComponent<{
                                     <PencilIcon />
                                 </ActionBarButton>
                             )}
-                            <SimpleDropdown2 menu={<AboutOperator operator={operator} />}>
+                            <SimpleDropdown menu={<AboutOperator operator={operator} />}>
                                 {(toggle, isOpen) => (
                                     <ActionBarButton
                                         active={isOpen}
@@ -121,7 +121,7 @@ export const OperatorActionBar: FunctionComponent<{
                                         <ActionBarButtonCaret $invert={isOpen} />
                                     </ActionBarButton>
                                 )}
-                            </SimpleDropdown2>
+                            </SimpleDropdown>
                             <ActionBarWalletDisplay
                                 address={operator.id}
                                 label="Contract"

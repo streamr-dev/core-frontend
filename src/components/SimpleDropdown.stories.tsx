@@ -1,6 +1,6 @@
 import React from 'react'
 import { Meta } from '@storybook/react'
-import { SimpleDropdown } from '~/components/SimpleDropdown'
+import { DefaultSimpleDropdownMenu, SimpleDropdown } from '~/components/SimpleDropdown'
 
 export const Basic = () => (
     <div>
@@ -9,15 +9,30 @@ export const Basic = () => (
             Toogle
         </p>
         <SimpleDropdown
-            toggleElement={<button>Button as trigger</button>}
-            dropdownContent={<div>Content</div>}
-        />
+            menu={<DefaultSimpleDropdownMenu>Content</DefaultSimpleDropdownMenu>}
+        >
+            {(toggle, isOpen) => (
+                <button type="button" onClick={() => void toggle((c) => !c)}>
+                    Button as trigger (click to {isOpen ? 'close' : 'open'})
+                </button>
+            )}
+        </SimpleDropdown>
         <SimpleDropdown
-            toggleElement={
-                <p style={{ backgroundColor: 'lightblue' }}>Paragraph as trigger</p>
-            }
-            dropdownContent={<div>Content</div>}
-        />
+            menu={<DefaultSimpleDropdownMenu>Content</DefaultSimpleDropdownMenu>}
+        >
+            {(toggle, isOpen) => (
+                <a
+                    href="#"
+                    onClick={(e) => {
+                        e.preventDefault()
+
+                        toggle((c) => !c)
+                    }}
+                >
+                    Link as trigger (click to {isOpen ? 'close' : 'open'})
+                </a>
+            )}
+        </SimpleDropdown>
     </div>
 )
 

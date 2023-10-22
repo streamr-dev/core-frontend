@@ -5,7 +5,7 @@ import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import Button from '~/shared/components/Button'
 import SvgIcon from '~/shared/components/SvgIcon'
 import routes from '~/routes'
-import { DefaultSimpleDropdownMenu, SimpleDropdown2 } from '~/components/SimpleDropdown'
+import { DefaultSimpleDropdownMenu, SimpleDropdown } from '~/components/SimpleDropdown'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
@@ -106,7 +106,7 @@ export function SponsorshipActionBar({
                             >
                                 {sponsorship.active ? 'Active' : 'Inactive'}
                             </NetworkActionBarInfoButton>
-                            <SimpleDropdown2
+                            <SimpleDropdown
                                 menu={
                                     <DefaultSimpleDropdownMenu>
                                         <p>
@@ -139,7 +139,7 @@ export function SponsorshipActionBar({
                                         <ActionBarButtonCaret $invert={isOpen} />
                                     </ActionBarButton>
                                 )}
-                            </SimpleDropdown2>
+                            </SimpleDropdown>
                             <ActionBarButtonBody>
                                 <div>
                                     Funded until: <strong>{fundedUntil}</strong>
