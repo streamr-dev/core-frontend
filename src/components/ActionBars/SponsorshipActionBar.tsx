@@ -19,7 +19,6 @@ import {
     NetworkActionBarBackButtonIcon,
     NetworkActionBarBackLink,
     NetworkActionBarCTAs,
-    NetworkActionBarInfoButton,
     NetworkActionBarInfoButtons,
     NetworkActionBarStatsTitle,
     NetworkActionBarTitle,
@@ -37,6 +36,7 @@ import {
     useJoinSponsorshipAsOperator,
 } from '~/hooks/sponsorships'
 import { isRejectionReason } from '~/modals/BaseModal'
+import { COLORS } from '~/shared/utils/styled'
 import {
     ActionBarButton,
     ActionBarButtonBody,
@@ -58,7 +58,7 @@ export function SponsorshipActionBar({
 
     const canEditStake = isSponsorshipFundedByOperator(sponsorship, operator)
 
-    const { projectedInsolvencyAt } = sponsorship
+    const { projectedInsolvencyAt, active } = sponsorship
 
     const fundedUntil = useMemo(
         () => moment(projectedInsolvencyAt * 1000).format('D MMM YYYY'),
@@ -98,14 +98,14 @@ export function SponsorshipActionBar({
                             </NetworkActionBarTitle>
                         </NetworkActionBarBackButtonAndTitle>
                         <NetworkActionBarInfoButtons>
-                            <NetworkActionBarInfoButton
-                                className={
-                                    (sponsorship.active ? 'active ' : 'inactive') +
-                                    ' bold'
+                            <ActionBarButtonBody
+                                $background={
+                                    active ? COLORS.activeBackground : COLORS.radioBorder
                                 }
+                                $color={active ? COLORS.active : COLORS.primary}
                             >
-                                {sponsorship.active ? 'Active' : 'Inactive'}
-                            </NetworkActionBarInfoButton>
+                                <strong>{active ? 'Active' : 'Inactive'}</strong>
+                            </ActionBarButtonBody>
                             <SimpleDropdown
                                 menu={
                                     <DefaultSimpleDropdownMenu>

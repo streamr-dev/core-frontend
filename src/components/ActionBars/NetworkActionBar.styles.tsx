@@ -70,49 +70,6 @@ export const NetworkActionBarInfoButtons = styled.div`
     }
 `
 
-export const NetworkActionBarInfoButton = styled.div`
-    background-color: ${COLORS.secondary};
-    border-radius: 8px;
-    display: flex;
-    height: 40px;
-    padding: 0px 12px;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-
-    &.pointer {
-        cursor: pointer;
-    }
-
-    &.bold {
-        font-weight: 500;
-    }
-
-    &.active {
-        color: ${COLORS.active};
-        background-color: ${COLORS.activeBackground};
-    }
-
-    &.inactive {
-        color: ${COLORS.primary};
-        background-color: ${COLORS.radioBorder};
-    }
-
-    a {
-        color: ${COLORS.primaryDisabled};
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .icon {
-        height: 20px;
-        color: ${COLORS.primaryDisabled};
-        outline: none;
-        cursor: pointer;
-    }
-`
-
 export const NetworkActionBarCTAs = styled.div`
     display: none;
 

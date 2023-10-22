@@ -9,11 +9,9 @@ import { Tip } from '~/components/Tip'
 import { getBlockExplorerUrl } from '~/getters/getBlockExplorerUrl'
 import { truncate } from '~/shared/utils/text'
 
-export const ActionBarButtonBody = styled.div`
+export const ActionBarButtonBody = styled.div<{ $background?: string; $color?: string }>`
     align-items: center;
-    background: ${COLORS.secondary};
     border-radius: 8px;
-    color: ${COLORS.primary};
     display: grid;
     font-size: 14px;
     gap: 12px;
@@ -24,6 +22,11 @@ export const ActionBarButtonBody = styled.div`
     height: 40px;
     padding: 0 12px;
     transition: 250ms background;
+
+    ${({ $background = COLORS.secondary, $color = COLORS.primary }) => css`
+        background: ${$background};
+        color: ${$color};
+    `}
 `
 
 const ActionBarButtonRoot = styled.button<{ $active?: boolean }>`
