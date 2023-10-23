@@ -22,9 +22,7 @@ export default function NetworkPageSegment({
         <RootComponent>
             <ColoredBox>
                 <HeaderComponent>
-                    <Pad>
-                        <h2>{title}</h2>
-                    </Pad>
+                    <Pad>{typeof title === 'string' ? <h2>{title}</h2> : title}</Pad>
                 </HeaderComponent>
                 <BodyComponent>{children}</BodyComponent>
                 {foot ? <Foot /> : <></>}

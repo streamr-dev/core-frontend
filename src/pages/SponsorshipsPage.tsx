@@ -135,13 +135,13 @@ export const SponsorshipsPage = () => {
                     <NetworkPageSegment
                         foot
                         title={
-                            <>
+                            <h2>
                                 {selectedTab === TabOption.AllSponsorships ? (
                                     <>All sponsorships</>
                                 ) : (
                                     <>My sponsorships</>
                                 )}
-                            </>
+                            </h2>
                         }
                     >
                         <QueriedSponsorshipsTable
