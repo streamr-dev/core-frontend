@@ -47,6 +47,8 @@ import {
     ActionBarButtonInnerBody,
     ActionBarWalletDisplay,
 } from './ActionBarButton'
+import { RouteMemoryKey, useKeep, useRecall } from '~/shared/stores/routeMemory'
+import { history } from '~/consts'
 
 export const OperatorActionBar: FunctionComponent<{
     operator: ParsedOperator
@@ -100,13 +102,24 @@ export const OperatorActionBar: FunctionComponent<{
         },
     })
 
+    const keep = useKeep()
+
+    const operatorPageGoBackUrl: string =
+        useRecall(RouteMemoryKey.operatorPageGoBackUrl()) || routes.network.operators()
+
     return (
         <SingleElementPageActionBar>
             <SingleElementPageActionBarContainer>
                 <SingleElementPageActionBarTopPart>
                     <div>
                         <NetworkActionBarBackButtonAndTitle>
-                            <NetworkActionBarBackLink to={routes.network.operators()}>
+                            <NetworkActionBarBackLink
+                                to={operatorPageGoBackUrl}
+                                onClick={() => {
+                                    keep(RouteMemoryKey.lastOperatorListingSelection())
+                                    keep(RouteMemoryKey.lastSponsorshipListingSelection())
+                                }}
+                            >
                                 <NetworkActionBarBackButtonIcon name="backArrow" />
                             </NetworkActionBarBackLink>
                             <NetworkActionBarTitle>

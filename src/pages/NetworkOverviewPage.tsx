@@ -44,6 +44,7 @@ import { QueriedSponsorshipsTable } from '~/components/QueriedSponsorshipsTable'
 import { refetchQuery } from '~/utils'
 import { OperatorIdCell } from '~/components/Table'
 import Button from '~/shared/components/Button'
+import { RouteMemoryKey, useRemember } from '~/shared/stores/routeMemory'
 
 export function NetworkOverviewPage() {
     return (
@@ -277,6 +278,8 @@ function MyDelegations() {
 
     const delegations = query.data?.pages.flatMap((page) => page.elements) || []
 
+    const remember = useRemember()
+
     return (
         <NetworkPageSegment title="My delegations" foot>
             <WalletPass resourceName="delegations">
@@ -346,6 +349,12 @@ function MyDelegations() {
                                 },
                             ]}
                             linkMapper={({ id }) => routes.network.operator({ id })}
+                            onClick={() => {
+                                remember(
+                                    RouteMemoryKey.operatorPageGoBackUrl(),
+                                    routes.network.overview(),
+                                )
+                            }}
                         />
                         {query.hasNextPage ? (
                             <LoadMoreButton

@@ -33,6 +33,7 @@ import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import { OperatorIdCell } from '~/components/Table'
+import { RouteMemoryKey, useRecall, useRemember } from '~/shared/stores/routeMemory'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
@@ -44,7 +45,19 @@ enum TabOption {
 }
 
 export const OperatorsPage = () => {
-    const [selectedTab, setSelectedTab] = useState<TabOption>(TabOption.AllOperators)
+    const lastSelectedTab = useRecall(RouteMemoryKey.lastOperatorListingSelection()) as
+        | TabOption
+        | undefined
+
+    const [selectedTab, setSelectedTab] = useState<TabOption>(
+        lastSelectedTab || TabOption.AllOperators,
+    )
+
+    const remember = useRemember()
+
+    useEffect(() => {
+        remember(RouteMemoryKey.lastOperatorListingSelection(), selectedTab)
+    }, [remember, selectedTab])
 
     const [searchQuery, setSearchQuery] = useState('')
 

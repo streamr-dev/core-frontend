@@ -44,6 +44,7 @@ import {
     ActionBarButtonInnerBody,
     ActionBarWalletDisplay,
 } from './ActionBarButton'
+import { RouteMemoryKey, useKeep } from '~/shared/stores/routeMemory'
 
 export function SponsorshipActionBar({
     sponsorship,
@@ -84,13 +85,20 @@ export function SponsorshipActionBar({
         operator?.id,
     )
 
+    const keep = useKeep()
+
     return (
         <SingleElementPageActionBar>
             <SingleElementPageActionBarContainer>
                 <SingleElementPageActionBarTopPart>
                     <div>
                         <NetworkActionBarBackButtonAndTitle>
-                            <NetworkActionBarBackLink to={routes.network.sponsorships()}>
+                            <NetworkActionBarBackLink
+                                to={routes.network.sponsorships()}
+                                onClick={() => {
+                                    keep(RouteMemoryKey.lastSponsorshipListingSelection())
+                                }}
+                            >
                                 <NetworkActionBarBackButtonIcon name="backArrow" />
                             </NetworkActionBarBackLink>
                             <NetworkActionBarTitle>

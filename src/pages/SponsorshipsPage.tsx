@@ -17,6 +17,7 @@ import {
 import { refetchQuery } from '~/utils'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { useTableOrder } from '~/hooks/useTableOrder'
+import { RouteMemoryKey, useRecall, useRemember } from '~/shared/stores/routeMemory'
 
 const PAGE_SIZE = 20
 
@@ -26,7 +27,19 @@ enum TabOption {
 }
 
 export const SponsorshipsPage = () => {
-    const [selectedTab, setSelectedTab] = useState<TabOption>(TabOption.AllSponsorships)
+    const lastSelectedTab = useRecall(
+        RouteMemoryKey.lastSponsorshipListingSelection(),
+    ) as TabOption | undefined
+
+    const [selectedTab, setSelectedTab] = useState<TabOption>(
+        lastSelectedTab || TabOption.AllSponsorships,
+    )
+
+    const remember = useRemember()
+
+    useEffect(() => {
+        remember(RouteMemoryKey.lastSponsorshipListingSelection(), selectedTab)
+    }, [remember, selectedTab])
 
     const [searchQuery, setSearchQuery] = useState('')
 

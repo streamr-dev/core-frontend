@@ -15,7 +15,19 @@ import { history } from '~/consts'
 
 export const RouteMemoryKey = {
     lastStreamListingSelection() {
-        return JSON.stringify(['lastStreamListingSelection'])
+        return 'lastStreamListingSelection'
+    },
+    lastOperatorListingSelection() {
+        return 'lastOperatorListingSelection'
+    },
+    operatorPageGoBackUrl() {
+        return 'operatorPageGoBackUrl'
+    },
+    lastSponsorshipListingSelection() {
+        return 'lastSponsorshipListingSelection'
+    },
+    sponsorshipPageGoBackUrl() {
+        return 'sponsorshipPageGoBackUrl'
     },
 }
 
