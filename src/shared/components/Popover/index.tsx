@@ -7,6 +7,7 @@ import { DropdownToggleProps } from 'reactstrap/lib/DropdownToggle'
 import cx from 'classnames'
 import SvgIcon from '~/shared/components/SvgIcon'
 import Meatball from '~/shared/components/Meatball'
+import { COLORS } from '~/shared/utils/styled'
 
 type Props = {
     title: ReactNode
@@ -113,8 +114,21 @@ export const StyledDropdownMenu = styled(DropdownMenu)`
         padding: 16px 0;
         margin: 0;
         overflow: hidden;
+
         .dropdown-item {
             padding: 16px 32px !important;
+        }
+
+        .dropdown-item:active {
+            background: ${COLORS.primary};
+        }
+
+        .dropdown-item:active .title {
+            color: #ffffff;
+        }
+
+        .dropdown-item:active .subtitle {
+            color: ${COLORS.radioBorder};
         }
     }
 `
