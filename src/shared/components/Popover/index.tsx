@@ -106,7 +106,8 @@ export const ToggleLabel = styled.span`
 export const StyledDropdownMenu = styled(DropdownMenu)`
     min-width: 8rem;
     &.nav-dropdown {
-        box-shadow: 0px 6px 12px 0px #52525226;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.05),
+            0 5px 15px rgba(0, 0, 0, 0.1);
         border: none;
         border-radius: 8px;
         padding: 16px 0;
