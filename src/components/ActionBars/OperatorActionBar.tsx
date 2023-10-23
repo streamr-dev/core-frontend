@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo } from 'react'
+import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import Button from '~/shared/components/Button'
@@ -38,6 +38,7 @@ import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { Tip, TipIconWrap } from '~/components/Tip'
 import { AboutOperator } from '~/components/AboutOperator'
+import { getOperatorDelegationAmount } from '~/services/operators'
 import { PencilIcon } from '~/icons'
 import {
     ActionBarButton,
@@ -76,6 +77,8 @@ export const OperatorActionBar: FunctionComponent<{
 
     const undelegateFunds = useUndelegateFunds()
 
+    const canUndelegate = useDidDelegate(operator.id, walletAddress)
+
     return (
         <SingleElementPageActionBar>
             <SingleElementPageActionBarContainer>
@@ -83,9 +86,7 @@ export const OperatorActionBar: FunctionComponent<{
                     <div>
                         <NetworkActionBarBackButtonAndTitle>
                             <NetworkActionBarBackLink to={routes.network.operators()}>
-                                <NetworkActionBarBackButtonIcon
-                                    name={'backArrow'}
-                                ></NetworkActionBarBackButtonIcon>
+                                <NetworkActionBarBackButtonIcon name="backArrow"></NetworkActionBarBackButtonIcon>
                             </NetworkActionBarBackLink>
                             <NetworkActionBarTitle>
                                 {operator.metadata?.imageUrl ? (
@@ -176,7 +177,7 @@ export const OperatorActionBar: FunctionComponent<{
                                     console.warn('Could not undelegate funds', e)
                                 }
                             }}
-                            disabled={!walletAddress}
+                            disabled={!canUndelegate}
                             waiting={isUndelegatingFunds}
                         >
                             Undelegate
@@ -274,3 +275,37 @@ export const Pad = styled.div`
         padding: 32px 40px;
     }
 `
+
+function useDidDelegate(operatorId: string | undefined, address: string | undefined) {
+    const [delegated, setDelegated] = useState<boolean>()
+
+    useEffect(() => {
+        if (!operatorId || !address) {
+            return void setDelegated(false)
+        }
+
+        let mounted = true
+
+        void (async () => {
+            let result = false
+
+            try {
+                result = (
+                    await getOperatorDelegationAmount(operatorId, address)
+                ).isGreaterThan(0)
+            } catch (e) {
+                console.warn('Failed to load delegation amount', operatorId, address, e)
+            }
+
+            if (mounted) {
+                setDelegated(result)
+            }
+        })()
+
+        return () => {
+            mounted = false
+        }
+    }, [operatorId, address])
+
+    return delegated
+}
