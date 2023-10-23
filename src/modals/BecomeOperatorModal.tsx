@@ -178,9 +178,9 @@ export default function BecomeOperatorModal({
                 Please choose the percentage for the Operator&apos;s cut{' '}
                 <Help align="center">
                     <p>
-                        The cut taken by the Operator from all earnings. This percentage
-                        can not be changed later. The rest is shared among Delegators
-                        including the Operator&apos;s own&nbsp;stake.
+                        The Operator&apos;s cut percentage is the earnings split between
+                        the Operator and its Delegators. This value can be updated as long
+                        as the Operator is not staked on any&nbsp;Sponsorships.
                     </p>
                 </Help>
             </SectionHeadline>
