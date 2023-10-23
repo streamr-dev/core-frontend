@@ -91,7 +91,7 @@ export function SponsorshipActionBar({
                     <div>
                         <NetworkActionBarBackButtonAndTitle>
                             <NetworkActionBarBackLink to={routes.network.sponsorships()}>
-                                <NetworkActionBarBackButtonIcon name="backArrow"></NetworkActionBarBackButtonIcon>
+                                <NetworkActionBarBackButtonIcon name="backArrow" />
                             </NetworkActionBarBackLink>
                             <NetworkActionBarTitle>
                                 {truncateStreamName(sponsorship.streamId, 30)}

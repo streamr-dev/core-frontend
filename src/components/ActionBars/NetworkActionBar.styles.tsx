@@ -38,11 +38,16 @@ export const SingleElementPageActionBarTopPart = styled.div`
 `
 
 export const NetworkActionBarBackLink = styled(Link)`
-    padding: 9px;
-    line-height: 30px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin: 0 7px 0 -9px;
+    width: 42px;
 `
+
 export const NetworkActionBarBackButtonIcon = styled(SvgIcon)`
     color: ${COLORS.primaryLight};
+    display: block;
 `
 export const NetworkActionBarBackButtonAndTitle = styled.div`
     display: flex;
