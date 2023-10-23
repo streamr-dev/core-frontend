@@ -107,7 +107,7 @@ export const OperatorActionBar: FunctionComponent<{
                     <div>
                         <NetworkActionBarBackButtonAndTitle>
                             <NetworkActionBarBackLink to={routes.network.operators()}>
-                                <NetworkActionBarBackButtonIcon name="backArrow"></NetworkActionBarBackButtonIcon>
+                                <NetworkActionBarBackButtonIcon name="backArrow" />
                             </NetworkActionBarBackLink>
                             <NetworkActionBarTitle>
                                 {operator.metadata?.imageUrl ? (
