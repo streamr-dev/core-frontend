@@ -38,11 +38,16 @@ export const SingleElementPageActionBarTopPart = styled.div`
 `
 
 export const NetworkActionBarBackLink = styled(Link)`
-    padding: 9px;
-    line-height: 30px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin: 0 7px 0 -9px;
+    width: 42px;
 `
+
 export const NetworkActionBarBackButtonIcon = styled(SvgIcon)`
     color: ${COLORS.primaryLight};
+    display: block;
 `
 export const NetworkActionBarBackButtonAndTitle = styled.div`
     display: flex;
@@ -67,49 +72,6 @@ export const NetworkActionBarInfoButtons = styled.div`
     margin-top: 10px;
     @media (${LAPTOP}) {
         padding-left: 40px;
-    }
-`
-
-export const NetworkActionBarInfoButton = styled.div`
-    background-color: ${COLORS.secondary};
-    border-radius: 8px;
-    display: flex;
-    height: 40px;
-    padding: 0px 12px;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-
-    &.pointer {
-        cursor: pointer;
-    }
-
-    &.bold {
-        font-weight: 500;
-    }
-
-    &.active {
-        color: ${COLORS.active};
-        background-color: ${COLORS.activeBackground};
-    }
-
-    &.inactive {
-        color: ${COLORS.primary};
-        background-color: ${COLORS.radioBorder};
-    }
-
-    a {
-        color: ${COLORS.primaryDisabled};
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .icon {
-        height: 20px;
-        color: ${COLORS.primaryDisabled};
-        outline: none;
-        cursor: pointer;
     }
 `
 

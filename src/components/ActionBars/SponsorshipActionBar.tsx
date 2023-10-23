@@ -1,16 +1,12 @@
 import React, { useMemo } from 'react'
-import styled from 'styled-components'
 import moment from 'moment'
-import { truncate, truncateStreamName } from '~/shared/utils/text'
+import { truncateStreamName } from '~/shared/utils/text'
 import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
-import { BlackTooltip } from '~/shared/components/Tooltip/Tooltip'
 import Button from '~/shared/components/Button'
-import useCopy from '~/shared/hooks/useCopy'
 import SvgIcon from '~/shared/components/SvgIcon'
 import routes from '~/routes'
-import { SimpleDropdown } from '~/components/SimpleDropdown'
+import { DefaultSimpleDropdownMenu, SimpleDropdown } from '~/components/SimpleDropdown'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
-import { getBlockExplorerUrl } from '~/getters/getBlockExplorerUrl'
 import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
 import { Pad } from '~/components/ActionBars/OperatorActionBar'
@@ -22,9 +18,7 @@ import {
     NetworkActionBarBackButtonAndTitle,
     NetworkActionBarBackButtonIcon,
     NetworkActionBarBackLink,
-    NetworkActionBarCaret,
     NetworkActionBarCTAs,
-    NetworkActionBarInfoButton,
     NetworkActionBarInfoButtons,
     NetworkActionBarStatsTitle,
     NetworkActionBarTitle,
@@ -42,6 +36,14 @@ import {
     useJoinSponsorshipAsOperator,
 } from '~/hooks/sponsorships'
 import { isRejectionReason } from '~/modals/BaseModal'
+import { COLORS } from '~/shared/utils/styled'
+import {
+    ActionBarButton,
+    ActionBarButtonBody,
+    ActionBarButtonCaret,
+    ActionBarButtonInnerBody,
+    ActionBarWalletDisplay,
+} from './ActionBarButton'
 
 export function SponsorshipActionBar({
     sponsorship,
@@ -50,15 +52,13 @@ export function SponsorshipActionBar({
     sponsorship: ParsedSponsorship
     onChange: () => void
 }) {
-    const { copy } = useCopy()
-
     const wallet = useWalletAccount()
 
     const operator = useOperatorForWallet(wallet)
 
     const canEditStake = isSponsorshipFundedByOperator(sponsorship, operator)
 
-    const { projectedInsolvencyAt } = sponsorship
+    const { projectedInsolvencyAt, active } = sponsorship
 
     const fundedUntil = useMemo(
         () => moment(projectedInsolvencyAt * 1000).format('D MMM YYYY'),
@@ -91,83 +91,64 @@ export function SponsorshipActionBar({
                     <div>
                         <NetworkActionBarBackButtonAndTitle>
                             <NetworkActionBarBackLink to={routes.network.sponsorships()}>
-                                <NetworkActionBarBackButtonIcon name="backArrow"></NetworkActionBarBackButtonIcon>
+                                <NetworkActionBarBackButtonIcon name="backArrow" />
                             </NetworkActionBarBackLink>
                             <NetworkActionBarTitle>
                                 {truncateStreamName(sponsorship.streamId, 30)}
                             </NetworkActionBarTitle>
                         </NetworkActionBarBackButtonAndTitle>
                         <NetworkActionBarInfoButtons>
-                            <NetworkActionBarInfoButton
-                                className={
-                                    (sponsorship.active ? 'active ' : 'inactive') +
-                                    ' bold'
+                            <ActionBarButtonBody
+                                $background={
+                                    active ? COLORS.activeBackground : COLORS.radioBorder
+                                }
+                                $color={active ? COLORS.active : COLORS.primary}
+                            >
+                                <strong>{active ? 'Active' : 'Inactive'}</strong>
+                            </ActionBarButtonBody>
+                            <SimpleDropdown
+                                menu={
+                                    <DefaultSimpleDropdownMenu>
+                                        <p>
+                                            Sponsorships pay out tokens to staked
+                                            operators for doing work in&nbsp;the network,
+                                            i.e. relaying data in the associated stream.
+                                            Sponsorships can be funded by anyone.
+                                        </p>
+                                        <p>
+                                            <a
+                                                href="https://docs.streamr.network/streamr-network/network-incentives"
+                                                target="_blank"
+                                                rel="noreferrer noopener"
+                                            >
+                                                Learn more
+                                            </a>
+                                        </p>
+                                    </DefaultSimpleDropdownMenu>
                                 }
                             >
-                                {sponsorship.active ? 'Active' : 'Inactive'}
-                            </NetworkActionBarInfoButton>
-                            <SimpleDropdown
-                                toggleElement={
-                                    <NetworkActionBarInfoButton className="pointer bold">
-                                        <SvgIcon name="page" />
-                                        About Sponsorships
-                                        <NetworkActionBarCaret name="caretDown" />
-                                    </NetworkActionBarInfoButton>
-                                }
-                                dropdownContent={
-                                    <AboutSponsorshipsContent>
-                                        Sponsorships pay out tokens to staked operators
-                                        for doing work in the network, i.e. relaying data
-                                        in the associated stream. Sponsorships can be
-                                        funded by anyone. Learn more{' '}
-                                        <a
-                                            href="https://docs.streamr.network/streamr-network/network-incentives"
-                                            target="_blank"
-                                            rel="noreferrer noopener"
-                                        >
-                                            here
-                                        </a>
-                                        .
-                                    </AboutSponsorshipsContent>
-                                }
-                            />
-                            <NetworkActionBarInfoButton>
-                                <span>
-                                    Funded until: <strong>{fundedUntil}</strong>
-                                </span>
-                            </NetworkActionBarInfoButton>
-                            <NetworkActionBarInfoButton>
-                                <span>
-                                    Contract <strong>{truncate(sponsorship.id)}</strong>
-                                </span>
-                                <span>
-                                    <SvgIcon
-                                        name="copy"
-                                        className="icon"
-                                        data-tooltip-id="copy-sponsorship-address"
-                                        onClick={() =>
-                                            copy(sponsorship.id, {
-                                                toastMessage: 'Copied!',
-                                            })
-                                        }
-                                    />
-                                    <BlackTooltip
-                                        id="copy-sponsorship-address"
-                                        openOnClick={false}
+                                {(toggle, isOpen) => (
+                                    <ActionBarButton
+                                        active={isOpen}
+                                        onClick={() => void toggle((c) => !c)}
                                     >
-                                        Copy address
-                                    </BlackTooltip>
-                                </span>
-                                <a
-                                    href={`${getBlockExplorerUrl()}/address/${
-                                        sponsorship.id
-                                    }`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
-                                    <SvgIcon name="externalLink" />
-                                </a>
-                            </NetworkActionBarInfoButton>
+                                        <ActionBarButtonInnerBody>
+                                            <SvgIcon name="page" />
+                                            <strong>About Sponsorships</strong>
+                                        </ActionBarButtonInnerBody>
+                                        <ActionBarButtonCaret $invert={isOpen} />
+                                    </ActionBarButton>
+                                )}
+                            </SimpleDropdown>
+                            <ActionBarButtonBody>
+                                <div>
+                                    Funded until: <strong>{fundedUntil}</strong>
+                                </div>
+                            </ActionBarButtonBody>
+                            <ActionBarWalletDisplay
+                                address={sponsorship.id}
+                                label="Contract"
+                            />
                         </NetworkActionBarInfoButtons>
                     </div>
                     <NetworkActionBarCTAs>
@@ -302,8 +283,3 @@ export function SponsorshipActionBar({
         </SingleElementPageActionBar>
     )
 }
-
-const AboutSponsorshipsContent = styled.div`
-    margin: 0;
-    min-width: 250px;
-`

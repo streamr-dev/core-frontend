@@ -140,14 +140,7 @@ export default function JoinSponsorshipModal({
                     <TextInput defaultValue={streamId} readOnly />
                     {!!streamIdProp && (
                         <CopyButtonWrapAppendix>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    copy(streamIdProp, {
-                                        toastMessage: 'Copied!',
-                                    })
-                                }}
-                            >
+                            <button type="button" onClick={() => void copy(streamIdProp)}>
                                 <CopyIcon label="Copy" size="small" />
                             </button>
                         </CopyButtonWrapAppendix>

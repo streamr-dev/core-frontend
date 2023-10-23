@@ -1,8 +1,13 @@
 import { useState, useCallback, useEffect, useReducer } from 'react'
 import copyToClipboard from 'copy-to-clipboard'
+import { toaster } from 'toasterhea'
 import { successToast } from '~/utils/toast'
+import Toast from '~/shared/toasts/Toast'
+import { Layer } from '~/utils/Layer'
 
 const SUSTAIN_FOR = 3000 // ms
+
+const copyToast = toaster(Toast, Layer.Toast)
 
 export default function useCopy() {
     const [isCopied, setIsCopied] = useState(false)
@@ -20,7 +25,7 @@ export default function useCopy() {
             value: string,
             {
                 onAfterCopied,
-                toastMessage,
+                toastMessage = 'Copied!',
             }: {
                 onAfterCopied?: (value: string) => void
                 toastMessage?: string
@@ -31,9 +36,12 @@ export default function useCopy() {
             onAfterCopied?.(value)
 
             if (typeof toastMessage === 'string') {
-                successToast({
-                    title: toastMessage,
-                })
+                successToast(
+                    {
+                        title: toastMessage,
+                    },
+                    copyToast,
+                )
             }
 
             touch(Date.now())
