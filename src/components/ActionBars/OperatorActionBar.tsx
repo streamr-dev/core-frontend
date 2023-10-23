@@ -1,5 +1,6 @@
-import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
+import React, { FunctionComponent, useMemo } from 'react'
 import styled from 'styled-components'
+import { useQuery } from '@tanstack/react-query'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import Button from '~/shared/components/Button'
 import SvgIcon from '~/shared/components/SvgIcon'
@@ -77,7 +78,27 @@ export const OperatorActionBar: FunctionComponent<{
 
     const undelegateFunds = useUndelegateFunds()
 
-    const canUndelegate = useDidDelegate(operator.id, walletAddress)
+    const { data: canUndelegate = false } = useQuery({
+        queryKey: [operator.id, walletAddress?.toLowerCase()],
+        async queryFn() {
+            try {
+                if (!operator.id || !walletAddress) {
+                    return false
+                }
+
+                return (
+                    await getOperatorDelegationAmount(operator.id, walletAddress)
+                ).isGreaterThan(0)
+            } catch (e) {
+                console.warn(
+                    'Failed to load delegation amount',
+                    operator.id,
+                    walletAddress,
+                    e,
+                )
+            }
+        },
+    })
 
     return (
         <SingleElementPageActionBar>
@@ -275,37 +296,3 @@ export const Pad = styled.div`
         padding: 32px 40px;
     }
 `
-
-function useDidDelegate(operatorId: string | undefined, address: string | undefined) {
-    const [delegated, setDelegated] = useState<boolean>()
-
-    useEffect(() => {
-        if (!operatorId || !address) {
-            return void setDelegated(false)
-        }
-
-        let mounted = true
-
-        void (async () => {
-            let result = false
-
-            try {
-                result = (
-                    await getOperatorDelegationAmount(operatorId, address)
-                ).isGreaterThan(0)
-            } catch (e) {
-                console.warn('Failed to load delegation amount', operatorId, address, e)
-            }
-
-            if (mounted) {
-                setDelegated(result)
-            }
-        })()
-
-        return () => {
-            mounted = false
-        }
-    }, [operatorId, address])
-
-    return delegated
-}
