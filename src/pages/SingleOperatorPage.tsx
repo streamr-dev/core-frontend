@@ -636,7 +636,7 @@ const DelegationCell = styled.div`
     }
 `
 
-const SponsorshipsTableTitle = styled.div`
+const SponsorshipsTableTitle = styled.h2`
     display: flex;
     align-items: center;
 `
@@ -650,7 +650,7 @@ const SponsorshipsCount = styled.div`
     text-align: center;
 `
 
-const NodeAddressHeader = styled.div`
+const NodeAddressHeader = styled.h2`
     display: flex;
     align-items: center;
 `

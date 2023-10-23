@@ -144,13 +144,13 @@ export const OperatorsPage = () => {
                     <NetworkPageSegment
                         foot
                         title={
-                            <>
+                            <h2>
                                 {selectedTab === TabOption.AllOperators ? (
                                     <>All operators</>
                                 ) : (
                                     <>My delegations</>
                                 )}
-                            </>
+                            </h2>
                         }
                     >
                         {selectedTab === TabOption.AllOperators ? (
