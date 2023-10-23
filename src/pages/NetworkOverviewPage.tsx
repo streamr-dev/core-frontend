@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { useQuery } from '@tanstack/react-query'
+import styled from 'styled-components'
 import Layout from '~/components/Layout'
 import { NetworkHelmet } from '~/components/Helmet'
 import NetworkPageSegment, { Pad, SegmentGrid } from '~/components/NetworkPageSegment'
@@ -42,6 +43,7 @@ import { Separator } from '~/components/Separator'
 import { QueriedSponsorshipsTable } from '~/components/QueriedSponsorshipsTable'
 import { refetchQuery } from '~/utils'
 import { OperatorIdCell } from '~/components/Table'
+import Button from '~/shared/components/Button'
 
 export function NetworkOverviewPage() {
     return (
@@ -117,7 +119,24 @@ function MyOperatorSummary() {
     const chartLabel = chartId === 'stake' ? 'Total stake' : 'Cumulative earnings'
 
     return (
-        <NetworkPageSegment title="My operator summary">
+        <NetworkPageSegment
+            title={
+                <MyOperatorSummaryTitle>
+                    <h2>My operator summary</h2>
+                    <div>
+                        {operator && (
+                            <Button
+                                kind="secondary"
+                                tag={Link}
+                                to={routes.network.operator({ id: operator.id })}
+                            >
+                                View Operator
+                            </Button>
+                        )}
+                    </div>
+                </MyOperatorSummaryTitle>
+            }
+        >
             <WalletPass resourceName="operator summary" roundBorders>
                 {!wallet || stats !== null ? (
                     <>
@@ -199,6 +218,21 @@ function MyOperatorSummary() {
         </NetworkPageSegment>
     )
 }
+
+const MyOperatorSummaryTitle = styled.div`
+    align-items: center;
+    display: flex;
+    height: 30px;
+
+    h2 {
+        flex-grow: 1;
+        margin: 0 8px 0 0;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+`
 
 function MyDelegationsSummary() {
     const wallet = useWalletAccount()
