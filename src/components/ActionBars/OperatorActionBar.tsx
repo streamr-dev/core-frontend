@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useMemo } from 'react'
 import styled from 'styled-components'
+import { useQuery } from '@tanstack/react-query'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import Button from '~/shared/components/Button'
 import SvgIcon from '~/shared/components/SvgIcon'
@@ -38,6 +39,7 @@ import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { Tip, TipIconWrap } from '~/components/Tip'
 import { AboutOperator } from '~/components/AboutOperator'
+import { getOperatorDelegationAmount } from '~/services/operators'
 import { PencilIcon } from '~/icons'
 import {
     ActionBarButton,
@@ -76,6 +78,28 @@ export const OperatorActionBar: FunctionComponent<{
 
     const undelegateFunds = useUndelegateFunds()
 
+    const { data: canUndelegate = false } = useQuery({
+        queryKey: [operator.id, walletAddress?.toLowerCase()],
+        async queryFn() {
+            try {
+                if (!operator.id || !walletAddress) {
+                    return false
+                }
+
+                return (
+                    await getOperatorDelegationAmount(operator.id, walletAddress)
+                ).isGreaterThan(0)
+            } catch (e) {
+                console.warn(
+                    'Failed to load delegation amount',
+                    operator.id,
+                    walletAddress,
+                    e,
+                )
+            }
+        },
+    })
+
     return (
         <SingleElementPageActionBar>
             <SingleElementPageActionBarContainer>
@@ -83,9 +107,7 @@ export const OperatorActionBar: FunctionComponent<{
                     <div>
                         <NetworkActionBarBackButtonAndTitle>
                             <NetworkActionBarBackLink to={routes.network.operators()}>
-                                <NetworkActionBarBackButtonIcon
-                                    name={'backArrow'}
-                                ></NetworkActionBarBackButtonIcon>
+                                <NetworkActionBarBackButtonIcon name="backArrow" />
                             </NetworkActionBarBackLink>
                             <NetworkActionBarTitle>
                                 {operator.metadata?.imageUrl ? (
@@ -176,7 +198,7 @@ export const OperatorActionBar: FunctionComponent<{
                                     console.warn('Could not undelegate funds', e)
                                 }
                             }}
-                            disabled={!walletAddress}
+                            disabled={!canUndelegate}
                             waiting={isUndelegatingFunds}
                         >
                             Undelegate
