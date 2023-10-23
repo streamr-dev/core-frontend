@@ -26,6 +26,7 @@ import Tabs, { Tab } from '~/shared/components/Tabs'
 import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
 import { useSponsorshipQuery, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { OperatorIdCell } from '~/components/Table'
+import routes from '~/routes'
 
 export const SingleSponsorshipPage = () => {
     const sponsorshipId = useParams().id || ''
@@ -233,6 +234,9 @@ export const SingleSponsorshipPage = () => {
                                                 align: 'end',
                                             },
                                         ]}
+                                        linkMapper={({ operatorId: id }) =>
+                                            routes.network.operator({ id })
+                                        }
                                     />
                                 </NetworkPageSegment>
                             </ChartGrid>

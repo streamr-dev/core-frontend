@@ -311,6 +311,7 @@ function MyDelegations() {
                                     key: 'sponsorships',
                                 },
                             ]}
+                            linkMapper={({ id }) => routes.network.operator({ id })}
                         />
                         {query.hasNextPage ? (
                             <LoadMoreButton
