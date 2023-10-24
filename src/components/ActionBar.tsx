@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import SearchBar from '~/shared/components/SearchBar'
 import SelectField2 from '~/marketplace/components/SelectField2'
 import MobileFilter from '~/shared/components/MobileFilter'
@@ -7,6 +8,7 @@ import Tabs, { Tab } from '~/shared/components/Tabs'
 import { TheGraph } from '~/shared/types'
 import { ProjectFilter } from '~/types'
 import { useWalletAccount } from '~/shared/stores/wallet'
+import routes from '~/routes'
 import {
     ActionBarContainer,
     CreateProjectButton,
@@ -19,9 +21,17 @@ import {
     SelectFieldWrap,
 } from './ActionBar.styles'
 
-enum ProjectsScope {
-    Any = 'any',
-    Owned = 'owned',
+enum TabOption {
+    Any = 'all',
+    Owned = 'my',
+}
+
+export function isOwnedTabOption(value: unknown) {
+    return value === TabOption.Owned
+}
+
+function isTabOption(value: unknown): value is TabOption {
+    return value === TabOption.Any || value === TabOption.Owned
 }
 
 export type Props = {
@@ -51,9 +61,15 @@ const UnstyledActionBar = ({
     onFilterChange,
     ...props
 }: Props) => {
-    const [scope, setScope] = useState<ProjectsScope>(ProjectsScope.Any)
+    const [params] = useSearchParams()
+
+    const tab = params.get('tab')
+
+    const scope = isTabOption(tab) ? tab : TabOption.Any
 
     const walletAccount = useWalletAccount()
+
+    const navigate = useNavigate()
 
     return (
         <ActionBarContainer {...props}>
@@ -73,20 +89,12 @@ const UnstyledActionBar = ({
                     <Tabs
                         selection={scope}
                         onSelectionChange={(id) => {
-                            onFilterChange?.({
-                                ...filter,
-                                owner:
-                                    id === ProjectsScope.Owned
-                                        ? walletAccount || undefined
-                                        : undefined,
-                            })
-
-                            setScope(id as ProjectsScope)
+                            navigate(routes.projects.index({ tab: id }))
                         }}
                     >
-                        <Tab id={ProjectsScope.Any}>All projects</Tab>
+                        <Tab id={TabOption.Any}>All projects</Tab>
                         <Tab
-                            id={ProjectsScope.Owned}
+                            id={TabOption.Owned}
                             disabled={!walletAccount}
                             title={
                                 walletAccount
@@ -101,7 +109,7 @@ const UnstyledActionBar = ({
                         <span>Filter by</span>
                         <SelectFieldWrap>
                             <SelectField2
-                                placeholder={'Project type'}
+                                placeholder="Project type"
                                 options={productTypeOptions}
                                 value={filter.type}
                                 onChange={(type) => {

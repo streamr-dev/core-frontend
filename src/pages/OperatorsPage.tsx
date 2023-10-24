@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { toaster } from 'toasterhea'
 import { UseInfiniteQueryResult } from '@tanstack/react-query'
 import { NetworkHelmet } from '~/components/Helmet'
@@ -39,12 +39,20 @@ const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 const PAGE_SIZE = 20
 
 enum TabOption {
-    AllOperators = 'AllOperators',
-    MyDelegations = 'MyDelegations',
+    AllOperators = 'all',
+    MyDelegations = 'my',
+}
+
+function isTabOption(value: unknown): value is TabOption {
+    return value === TabOption.AllOperators || value === TabOption.MyDelegations
 }
 
 export const OperatorsPage = () => {
-    const [selectedTab, setSelectedTab] = useState<TabOption>(TabOption.AllOperators)
+    const [params] = useSearchParams()
+
+    const tab = params.get('tab')
+
+    const selectedTab = isTabOption(tab) ? tab : TabOption.AllOperators
 
     const [searchQuery, setSearchQuery] = useState('')
 
@@ -72,11 +80,13 @@ export const OperatorsPage = () => {
     const currentQuery =
         selectedTab === TabOption.AllOperators ? allOperatorsQuery : myDelegationsQuery
 
+    const navigate = useNavigate()
+
     useEffect(() => {
         if (!wallet) {
-            setSelectedTab(TabOption.AllOperators)
+            navigate(routes.network.operators({ tab: TabOption.AllOperators }))
         }
-    }, [wallet])
+    }, [wallet, navigate])
 
     return (
         <Layout>
@@ -87,14 +97,7 @@ export const OperatorsPage = () => {
                 leftSideContent={
                     <Tabs
                         onSelectionChange={(value) => {
-                            if (
-                                value !== TabOption.AllOperators &&
-                                value !== TabOption.MyDelegations
-                            ) {
-                                return
-                            }
-
-                            setSelectedTab(value)
+                            navigate(routes.network.operators({ tab: value }))
                         }}
                         selection={selectedTab}
                         fullWidthOnMobile={true}

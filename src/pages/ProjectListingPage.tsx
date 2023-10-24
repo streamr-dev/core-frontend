@@ -1,8 +1,9 @@
 import React, { useReducer } from 'react'
 import isEqual from 'lodash/isEqual'
 import { useInfiniteQuery } from '@tanstack/react-query'
+import { useSearchParams } from 'react-router-dom'
 import Layout from '~/components/Layout'
-import ActionBar from '~/components/ActionBar'
+import ActionBar, { isOwnedTabOption } from '~/components/ActionBar'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import useModal from '~/shared/hooks/useModal'
 import { getProjects, searchProjects } from '~/services/projects'
@@ -34,12 +35,16 @@ export default function ProjectListingPage() {
 
     const account = useWalletAccount()
 
+    const [params] = useSearchParams()
+
+    const owner = isOwnedTabOption(params.get('tab')) ? account : undefined
+
     const { api: createProductModal } = useModal('marketplace.createProduct')
 
     const query = useInfiniteQuery({
-        queryKey: ['projects', filter.owner, filter.search, filter.type],
+        queryKey: ['projects', owner, filter.search, filter.type],
         queryFn({ pageParam: page }) {
-            const { search, owner, type } = filter
+            const { search, type } = filter
 
             if (search) {
                 return searchProjects(search, PageSize, page)
@@ -54,7 +59,7 @@ export default function ProjectListingPage() {
         keepPreviousData: true,
     })
 
-    const noOwnProjects = !!filter.owner && !filter.search && !filter.type
+    const noOwnProjects = !!owner && !filter.search && !filter.type
 
     return (
         <Layout pageTitle="Projects">

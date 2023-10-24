@@ -37,6 +37,7 @@ import {
 } from '~/hooks/sponsorships'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { COLORS } from '~/shared/utils/styled'
+import { goBack } from '~/utils'
 import {
     ActionBarButton,
     ActionBarButtonBody,
@@ -90,7 +91,16 @@ export function SponsorshipActionBar({
                 <SingleElementPageActionBarTopPart>
                     <div>
                         <NetworkActionBarBackButtonAndTitle>
-                            <NetworkActionBarBackLink to={routes.network.sponsorships()}>
+                            <NetworkActionBarBackLink
+                                to={routes.network.sponsorships()}
+                                onClick={(e) => {
+                                    goBack({
+                                        onBeforeNavigate() {
+                                            e.preventDefault()
+                                        },
+                                    })
+                                }}
+                            >
                                 <NetworkActionBarBackButtonIcon name="backArrow" />
                             </NetworkActionBarBackLink>
                             <NetworkActionBarTitle>

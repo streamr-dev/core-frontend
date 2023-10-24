@@ -41,6 +41,7 @@ import { Tip, TipIconWrap } from '~/components/Tip'
 import { AboutOperator } from '~/components/AboutOperator'
 import { getOperatorDelegationAmount } from '~/services/operators'
 import { PencilIcon } from '~/icons'
+import { goBack } from '~/utils'
 import {
     ActionBarButton,
     ActionBarButtonCaret,
@@ -106,7 +107,16 @@ export const OperatorActionBar: FunctionComponent<{
                 <SingleElementPageActionBarTopPart>
                     <div>
                         <NetworkActionBarBackButtonAndTitle>
-                            <NetworkActionBarBackLink to={routes.network.operators()}>
+                            <NetworkActionBarBackLink
+                                to={routes.network.operators()}
+                                onClick={(e) => {
+                                    goBack({
+                                        onBeforeNavigate() {
+                                            e.preventDefault()
+                                        },
+                                    })
+                                }}
+                            >
                                 <NetworkActionBarBackButtonIcon name="backArrow" />
                             </NetworkActionBarBackLink>
                             <NetworkActionBarTitle>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { COLORS, DESKTOP, TABLET } from '~/shared/utils/styled'
 import Button from '~/shared/components/Button'
@@ -29,15 +29,18 @@ import StreamTable, {
 } from '~/shared/components/StreamTable'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import Tabs, { Tab } from '~/shared/components/Tabs'
-import { RouteMemoryKey, useRecall, useRemember } from '~/shared/stores/routeMemory'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { OrderDirection, Stream_OrderBy } from '~/generated/gql/network'
 import { address0 } from '~/consts'
 import routes from '~/routes'
 
-enum StreamSelection {
-    All = 'All',
-    Your = 'Your',
+enum TabOption {
+    All = 'all',
+    Your = 'your',
+}
+
+function isTabOption(value: unknown): value is TabOption {
+    return value === TabOption.All || value === TabOption.Your
 }
 
 const PAGE_SIZE = 10
@@ -112,28 +115,33 @@ const TableContainer = styled.div`
 `
 
 const StreamListingPage: React.FC = () => {
+    const [params] = useSearchParams()
+
+    const tab = params.get('tab')
+
+    const streamsSelection = isTabOption(tab) ? tab : TabOption.All
+
     const [search, setSearch] = useState<string>('')
+
     const [orderBy, setOrderBy] = useState(DEFAULT_ORDER_BY)
+
     const [orderDirection, setOrderDirection] = useState(DEFAULT_ORDER_DIRECTION)
-    const [streamsSelection, setStreamsSelection] = useState<StreamSelection>(
-        (useRecall(RouteMemoryKey.lastStreamListingSelection()) as StreamSelection) ||
-            StreamSelection.All,
-    )
+
     const account = useWalletAccount()
 
-    const remember = useRemember()
+    const navigate = useNavigate()
 
     useEffect(() => {
-        remember(RouteMemoryKey.lastStreamListingSelection(), streamsSelection)
-    }, [remember, streamsSelection])
+        if (!account) {
+            navigate(routes.streams.index({ tab: TabOption.All }))
+        }
+    }, [account, navigate])
 
     const streamsQuery = useInfiniteQuery({
         queryKey: ['streams', search, streamsSelection, account, orderBy, orderDirection],
         queryFn: async (ctx) => {
             const owner =
-                streamsSelection === StreamSelection.Your
-                    ? account || address0
-                    : undefined
+                streamsSelection === TabOption.Your ? account || address0 : undefined
 
             let result: TheGraphStreamResult | IndexerResult
             if (shouldUseIndexer(orderBy)) {
@@ -225,13 +233,13 @@ const StreamListingPage: React.FC = () => {
                     <FiltersWrap>
                         <Tabs
                             selection={streamsSelection}
-                            onSelectionChange={(id) =>
-                                void setStreamsSelection(id as StreamSelection)
-                            }
+                            onSelectionChange={(id) => {
+                                navigate(routes.streams.index({ tab: id }))
+                            }}
                         >
-                            <Tab id={StreamSelection.All}>All streams</Tab>
+                            <Tab id={TabOption.All}>All streams</Tab>
                             <Tab
-                                id={StreamSelection.Your}
+                                id={TabOption.Your}
                                 disabled={!account}
                                 title={
                                     account
@@ -260,7 +268,7 @@ const StreamListingPage: React.FC = () => {
                     <TableContainer>
                         <StreamTable
                             title={`${
-                                streamsSelection === StreamSelection.All ? 'All' : 'Your'
+                                streamsSelection === TabOption.All ? 'All' : 'Your'
                             } Streams`}
                             streams={
                                 streamsQuery.data?.pages.flatMap((d) => d.streams) ?? []
@@ -273,7 +281,7 @@ const StreamListingPage: React.FC = () => {
                             )}
                             loadMore={() => streamsQuery.fetchNextPage()}
                             hasMoreResults={streamsQuery.hasNextPage ?? false}
-                            showGlobalStats={streamsSelection === StreamSelection.All}
+                            showGlobalStats={streamsSelection === TabOption.All}
                             orderBy={orderBy}
                             orderDirection={orderDirection}
                             onSortChange={(orderBy, orderDirection) => {
@@ -281,7 +289,7 @@ const StreamListingPage: React.FC = () => {
                                 setOrderDirection(orderDirection)
                             }}
                             noStreamsText={
-                                streamsSelection === StreamSelection.Your && !search ? (
+                                streamsSelection === TabOption.Your && !search ? (
                                     <>You haven&apos;t created any streams yet</>
                                 ) : (
                                     void 0
