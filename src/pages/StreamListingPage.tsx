@@ -35,7 +35,7 @@ import { OrderDirection, Stream_OrderBy } from '~/generated/gql/network'
 import { address0 } from '~/consts'
 import routes from '~/routes'
 
-enum StreamSelection {
+enum TabOption {
     All = 'All',
     Your = 'Your',
 }
@@ -115,9 +115,10 @@ const StreamListingPage: React.FC = () => {
     const [search, setSearch] = useState<string>('')
     const [orderBy, setOrderBy] = useState(DEFAULT_ORDER_BY)
     const [orderDirection, setOrderDirection] = useState(DEFAULT_ORDER_DIRECTION)
-    const [streamsSelection, setStreamsSelection] = useState<StreamSelection>(
-        (useRecall(RouteMemoryKey.lastStreamListingSelection()) as StreamSelection) ||
-            StreamSelection.All,
+
+    const [streamsSelection, setStreamsSelection] = useState<TabOption>(
+        (useRecall(RouteMemoryKey.lastStreamListingSelection()) as TabOption) ||
+            TabOption.All,
     )
     const account = useWalletAccount()
 
@@ -131,9 +132,7 @@ const StreamListingPage: React.FC = () => {
         queryKey: ['streams', search, streamsSelection, account, orderBy, orderDirection],
         queryFn: async (ctx) => {
             const owner =
-                streamsSelection === StreamSelection.Your
-                    ? account || address0
-                    : undefined
+                streamsSelection === TabOption.Your ? account || address0 : undefined
 
             let result: TheGraphStreamResult | IndexerResult
             if (shouldUseIndexer(orderBy)) {
@@ -226,12 +225,12 @@ const StreamListingPage: React.FC = () => {
                         <Tabs
                             selection={streamsSelection}
                             onSelectionChange={(id) =>
-                                void setStreamsSelection(id as StreamSelection)
+                                void setStreamsSelection(id as TabOption)
                             }
                         >
-                            <Tab id={StreamSelection.All}>All streams</Tab>
+                            <Tab id={TabOption.All}>All streams</Tab>
                             <Tab
-                                id={StreamSelection.Your}
+                                id={TabOption.Your}
                                 disabled={!account}
                                 title={
                                     account
@@ -260,7 +259,7 @@ const StreamListingPage: React.FC = () => {
                     <TableContainer>
                         <StreamTable
                             title={`${
-                                streamsSelection === StreamSelection.All ? 'All' : 'Your'
+                                streamsSelection === TabOption.All ? 'All' : 'Your'
                             } Streams`}
                             streams={
                                 streamsQuery.data?.pages.flatMap((d) => d.streams) ?? []
@@ -273,7 +272,7 @@ const StreamListingPage: React.FC = () => {
                             )}
                             loadMore={() => streamsQuery.fetchNextPage()}
                             hasMoreResults={streamsQuery.hasNextPage ?? false}
-                            showGlobalStats={streamsSelection === StreamSelection.All}
+                            showGlobalStats={streamsSelection === TabOption.All}
                             orderBy={orderBy}
                             orderDirection={orderDirection}
                             onSortChange={(orderBy, orderDirection) => {
@@ -281,7 +280,7 @@ const StreamListingPage: React.FC = () => {
                                 setOrderDirection(orderDirection)
                             }}
                             noStreamsText={
-                                streamsSelection === StreamSelection.Your && !search ? (
+                                streamsSelection === TabOption.Your && !search ? (
                                     <>You haven&apos;t created any streams yet</>
                                 ) : (
                                     void 0
