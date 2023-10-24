@@ -34,7 +34,6 @@ import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import { truncateStreamName } from '~/shared/utils/text'
 import { CopyButton } from '~/shared/components/CopyButton/CopyButton'
 import Tabs, { Tab } from '~/shared/components/Tabs'
-import { RouteMemoryKey, useKeep } from '~/shared/stores/routeMemory'
 import Button from '~/shared/components/Button'
 import usePreventNavigatingAway from '~/shared/hooks/usePreventNavigatingAway'
 import { DESKTOP, TABLET } from '~/shared/utils/styled'
@@ -336,8 +335,6 @@ function Header({ isNew = false }: { isNew?: boolean }) {
 
     const { pathname } = useLocation()
 
-    const keep = useKeep()
-
     const busy = useIsCurrentDraftBusy()
 
     const clean = useIsCurrentDraftClean()
@@ -367,9 +364,6 @@ function Header({ isNew = false }: { isNew?: boolean }) {
                                     id: streamId,
                                 })}
                                 selected="to"
-                                onClick={() =>
-                                    void keep(RouteMemoryKey.lastStreamListingSelection())
-                                }
                             >
                                 Stream overview
                                 {!clean && <Asterisk />}
@@ -381,9 +375,6 @@ function Header({ isNew = false }: { isNew?: boolean }) {
                                     id: streamId,
                                 })}
                                 selected="to"
-                                onClick={() =>
-                                    void keep(RouteMemoryKey.lastStreamListingSelection())
-                                }
                             >
                                 Connect
                             </Tab>
@@ -394,9 +385,6 @@ function Header({ isNew = false }: { isNew?: boolean }) {
                                     id: streamId,
                                 })}
                                 selected="to"
-                                onClick={() =>
-                                    void keep(RouteMemoryKey.lastStreamListingSelection())
-                                }
                             >
                                 Live data
                             </Tab>

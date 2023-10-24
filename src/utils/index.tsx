@@ -12,6 +12,7 @@ import { Layer } from '~/utils/Layer'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { ObjectWithMessage } from '~/shared/consts'
 import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
+import { history } from '~/consts'
 
 /**
  * Gas money checker.
@@ -180,4 +181,25 @@ export async function fetchStreamlikesByIds(streamIds: string[], client: Streamr
     }
 
     return streams
+}
+
+/**
+ * Takes the user back in history, but only if they've already navigated
+ * somewhere within the app.
+ * @param options.before Optional callback triggered right before
+ * the actual step back. It does not get triggered if we can't take
+ * the step.
+ */
+export function goBack(options: { before?: () => void } = {}) {
+    const backable = z
+        .object({ idx: z.number().min(1) })
+        .safeParse(window.history.state).success
+
+    if (!backable) {
+        return
+    }
+
+    options.before?.()
+
+    history.back()
 }
