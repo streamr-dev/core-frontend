@@ -30,7 +30,7 @@ export const DetailsPageHeader: FunctionComponent<DetailsPageHeaderProps> = ({
                                     keep(RouteMemoryKey.lastStreamListingSelection())
                                 }}
                             >
-                                <BackButtonIcon name={'backArrow'}></BackButtonIcon>
+                                <BackButtonIcon name="backArrow" />
                             </BackLink>
                         )}
                         {!!pageTitle && (
