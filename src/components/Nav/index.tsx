@@ -283,7 +283,7 @@ const UnstyledMobileNav: FunctionComponent<{ className?: string }> = ({ classNam
                 </NavbarLinkMobile>
                 <NavbarLinkMobile highlight={isNetworkTabActive(pathname)}>
                     {isFeatureEnabled(FeatureFlag.PhaseTwo) ? (
-                        <NavLink onClick={(event) => event.stopPropagation()} as={'div'}>
+                        <NavLink as="div">
                             <Accordion
                                 flush
                                 open={accordionOpen}
