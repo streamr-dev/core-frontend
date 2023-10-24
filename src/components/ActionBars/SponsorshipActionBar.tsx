@@ -37,6 +37,7 @@ import {
 } from '~/hooks/sponsorships'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { COLORS } from '~/shared/utils/styled'
+import { RouteMemoryKey, useKeep } from '~/shared/stores/routeMemory'
 import {
     ActionBarButton,
     ActionBarButtonBody,
@@ -44,7 +45,6 @@ import {
     ActionBarButtonInnerBody,
     ActionBarWalletDisplay,
 } from './ActionBarButton'
-import { RouteMemoryKey, useKeep } from '~/shared/stores/routeMemory'
 
 export function SponsorshipActionBar({
     sponsorship,

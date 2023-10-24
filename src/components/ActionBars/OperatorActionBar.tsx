@@ -41,14 +41,13 @@ import { Tip, TipIconWrap } from '~/components/Tip'
 import { AboutOperator } from '~/components/AboutOperator'
 import { getOperatorDelegationAmount } from '~/services/operators'
 import { PencilIcon } from '~/icons'
+import { RouteMemoryKey, useKeep, useRecall } from '~/shared/stores/routeMemory'
 import {
     ActionBarButton,
     ActionBarButtonCaret,
     ActionBarButtonInnerBody,
     ActionBarWalletDisplay,
 } from './ActionBarButton'
-import { RouteMemoryKey, useKeep, useRecall } from '~/shared/stores/routeMemory'
-import { history } from '~/consts'
 
 export const OperatorActionBar: FunctionComponent<{
     operator: ParsedOperator
