@@ -27,7 +27,6 @@ import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
 import { useSponsorshipQuery, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { OperatorIdCell } from '~/components/Table'
 import routes from '~/routes'
-import { RouteMemoryKey, useKeep, useRemember } from '~/shared/stores/routeMemory'
 
 export const SingleSponsorshipPage = () => {
     const sponsorshipId = useParams().id || ''
@@ -123,10 +122,6 @@ export const SingleSponsorshipPage = () => {
     )
 
     const fundingEventsQuery = useSponsorshipFundingHistory(sponsorshipId)
-
-    const remember = useRemember()
-
-    const keep = useKeep()
 
     return (
         <Layout>
@@ -242,18 +237,6 @@ export const SingleSponsorshipPage = () => {
                                         linkMapper={({ operatorId: id }) =>
                                             routes.network.operator({ id })
                                         }
-                                        onClick={() => {
-                                            remember(
-                                                RouteMemoryKey.operatorPageGoBackUrl(),
-                                                routes.network.sponsorship({
-                                                    id: sponsorship.id,
-                                                }),
-                                            )
-
-                                            keep(
-                                                RouteMemoryKey.lastSponsorshipListingSelection(),
-                                            )
-                                        }}
                                     />
                                 </NetworkPageSegment>
                             </ChartGrid>

@@ -37,7 +37,7 @@ import {
 } from '~/hooks/sponsorships'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { COLORS } from '~/shared/utils/styled'
-import { RouteMemoryKey, useKeep } from '~/shared/stores/routeMemory'
+import { goBack } from '~/utils'
 import {
     ActionBarButton,
     ActionBarButtonBody,
@@ -85,8 +85,6 @@ export function SponsorshipActionBar({
         operator?.id,
     )
 
-    const keep = useKeep()
-
     return (
         <SingleElementPageActionBar>
             <SingleElementPageActionBarContainer>
@@ -95,8 +93,12 @@ export function SponsorshipActionBar({
                         <NetworkActionBarBackButtonAndTitle>
                             <NetworkActionBarBackLink
                                 to={routes.network.sponsorships()}
-                                onClick={() => {
-                                    keep(RouteMemoryKey.lastSponsorshipListingSelection())
+                                onClick={(e) => {
+                                    goBack({
+                                        before() {
+                                            e.preventDefault()
+                                        },
+                                    })
                                 }}
                             >
                                 <NetworkActionBarBackButtonIcon name="backArrow" />

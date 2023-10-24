@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import { NetworkHelmet } from '~/components/Helmet'
 import Tabs, { Tab } from '~/shared/components/Tabs'
@@ -17,29 +18,25 @@ import {
 import { refetchQuery } from '~/utils'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { useTableOrder } from '~/hooks/useTableOrder'
-import { RouteMemoryKey, useRecall, useRemember } from '~/shared/stores/routeMemory'
+import routes from '~/routes'
 
 const PAGE_SIZE = 20
 
 enum TabOption {
-    AllSponsorships = 'AllSponsorships',
-    MySponsorships = 'MySponsorships',
+    AllSponsorships = 'all',
+    MySponsorships = 'my',
+}
+
+function isTabOption(value: unknown): value is TabOption {
+    return value === TabOption.AllSponsorships || value === TabOption.MySponsorships
 }
 
 export const SponsorshipsPage = () => {
-    const lastSelectedTab = useRecall(
-        RouteMemoryKey.lastSponsorshipListingSelection(),
-    ) as TabOption | undefined
+    const [params] = useSearchParams()
 
-    const [selectedTab, setSelectedTab] = useState<TabOption>(
-        lastSelectedTab || TabOption.AllSponsorships,
-    )
+    const tab = params.get('tab')
 
-    const remember = useRemember()
-
-    useEffect(() => {
-        remember(RouteMemoryKey.lastSponsorshipListingSelection(), selectedTab)
-    }, [remember, selectedTab])
+    const selectedTab = isTabOption(tab) ? tab : TabOption.AllSponsorships
 
     const [searchQuery, setSearchQuery] = useState('')
 
@@ -70,11 +67,13 @@ export const SponsorshipsPage = () => {
 
     tabQueryMapRef.current = tabQueryMap
 
+    const navigate = useNavigate()
+
     useEffect(() => {
         if (!wallet) {
-            setSelectedTab(TabOption.AllSponsorships)
+            navigate(routes.network.sponsorships({ tab: TabOption.AllSponsorships }))
         }
-    }, [wallet])
+    }, [wallet, navigate])
 
     useEffect(() => {
         refetchQuery(tabQueryMapRef.current[selectedTab])
@@ -97,14 +96,11 @@ export const SponsorshipsPage = () => {
                 leftSideContent={
                     <Tabs
                         onSelectionChange={(value) => {
-                            if (
-                                value !== TabOption.AllSponsorships &&
-                                value !== TabOption.MySponsorships
-                            ) {
+                            if (!isTabOption(value)) {
                                 return
                             }
 
-                            setSelectedTab(value)
+                            navigate(routes.network.sponsorships({ tab: value }))
                         }}
                         selection={selectedTab}
                         fullWidthOnMobile

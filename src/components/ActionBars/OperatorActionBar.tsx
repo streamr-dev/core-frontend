@@ -41,7 +41,7 @@ import { Tip, TipIconWrap } from '~/components/Tip'
 import { AboutOperator } from '~/components/AboutOperator'
 import { getOperatorDelegationAmount } from '~/services/operators'
 import { PencilIcon } from '~/icons'
-import { RouteMemoryKey, useKeep, useRecall } from '~/shared/stores/routeMemory'
+import { goBack } from '~/utils'
 import {
     ActionBarButton,
     ActionBarButtonCaret,
@@ -101,11 +101,6 @@ export const OperatorActionBar: FunctionComponent<{
         },
     })
 
-    const keep = useKeep()
-
-    const operatorPageGoBackUrl: string =
-        useRecall(RouteMemoryKey.operatorPageGoBackUrl()) || routes.network.operators()
-
     return (
         <SingleElementPageActionBar>
             <SingleElementPageActionBarContainer>
@@ -113,10 +108,13 @@ export const OperatorActionBar: FunctionComponent<{
                     <div>
                         <NetworkActionBarBackButtonAndTitle>
                             <NetworkActionBarBackLink
-                                to={operatorPageGoBackUrl}
-                                onClick={() => {
-                                    keep(RouteMemoryKey.lastOperatorListingSelection())
-                                    keep(RouteMemoryKey.lastSponsorshipListingSelection())
+                                to={routes.network.operators()}
+                                onClick={(e) => {
+                                    goBack({
+                                        before() {
+                                            e.preventDefault()
+                                        },
+                                    })
                                 }}
                             >
                                 <NetworkActionBarBackButtonIcon name="backArrow" />

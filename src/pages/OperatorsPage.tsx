@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { toaster } from 'toasterhea'
 import { UseInfiniteQueryResult } from '@tanstack/react-query'
 import { NetworkHelmet } from '~/components/Helmet'
@@ -33,31 +33,26 @@ import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import { OperatorIdCell } from '~/components/Table'
-import { RouteMemoryKey, useRecall, useRemember } from '~/shared/stores/routeMemory'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
 const PAGE_SIZE = 20
 
 enum TabOption {
-    AllOperators = 'AllOperators',
-    MyDelegations = 'MyDelegations',
+    AllOperators = 'all',
+    MyDelegations = 'my',
+}
+
+function isTabOption(value: unknown): value is TabOption {
+    return value === TabOption.AllOperators || value === TabOption.MyDelegations
 }
 
 export const OperatorsPage = () => {
-    const lastSelectedTab = useRecall(RouteMemoryKey.lastOperatorListingSelection()) as
-        | TabOption
-        | undefined
+    const [params] = useSearchParams()
 
-    const [selectedTab, setSelectedTab] = useState<TabOption>(
-        lastSelectedTab || TabOption.AllOperators,
-    )
+    const tab = params.get('tab')
 
-    const remember = useRemember()
-
-    useEffect(() => {
-        remember(RouteMemoryKey.lastOperatorListingSelection(), selectedTab)
-    }, [remember, selectedTab])
+    const selectedTab = isTabOption(tab) ? tab : TabOption.AllOperators
 
     const [searchQuery, setSearchQuery] = useState('')
 
@@ -85,11 +80,13 @@ export const OperatorsPage = () => {
     const currentQuery =
         selectedTab === TabOption.AllOperators ? allOperatorsQuery : myDelegationsQuery
 
+    const navigate = useNavigate()
+
     useEffect(() => {
         if (!wallet) {
-            setSelectedTab(TabOption.AllOperators)
+            navigate(routes.network.operators({ tab: TabOption.AllOperators }))
         }
-    }, [wallet])
+    }, [wallet, navigate])
 
     return (
         <Layout>
@@ -100,14 +97,11 @@ export const OperatorsPage = () => {
                 leftSideContent={
                     <Tabs
                         onSelectionChange={(value) => {
-                            if (
-                                value !== TabOption.AllOperators &&
-                                value !== TabOption.MyDelegations
-                            ) {
+                            if (!isTabOption(value)) {
                                 return
                             }
 
-                            setSelectedTab(value)
+                            navigate(routes.network.operators({ tab: value }))
                         }}
                         selection={selectedTab}
                         fullWidthOnMobile={true}
