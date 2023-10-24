@@ -1,7 +1,7 @@
 import React, { Fragment, FunctionComponent, HTMLAttributes, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
-import { useLocation, Link } from 'react-router-dom'
+import { useLocation, Link, useNavigate } from 'react-router-dom'
 import { Accordion, AccordionItem } from 'reactstrap'
 import { Button, HamburgerButton, Logo, NavOverlay } from '@streamr/streamr-layout'
 import { DESKTOP, TABLET } from '~/shared/utils/styled'
@@ -84,6 +84,8 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
 
     const ensName = useEns(account)
 
+    const navigate = useNavigate()
+
     return (
         <div {...props} data-testid={'desktop-nav'}>
             <Navbar>
@@ -120,36 +122,22 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                     menuProps={{ className: 'nav-dropdown' }}
                                     openOnHover
                                 >
-                                    {extendedNetworkNav.map(
-                                        (networkNavElement, index) => {
-                                            const { title, subtitle, link, ...rest } =
-                                                networkNavElement
-                                            return (
-                                                <PopoverItem key={index}>
-                                                    <NetworkNavElement
-                                                        as={Link}
-                                                        to={link}
-                                                        onClick={() => {
-                                                            if (
-                                                                rest.target &&
-                                                                rest.target === '_blank'
-                                                            ) {
-                                                                // a bit of a hack for the Network Explorer as the Popover
-                                                                // from ReactStrap somehow blocks links with target=_blank
-                                                                window.open(link)
-                                                            }
-                                                        }}
-                                                        {...rest}
-                                                    >
-                                                        <p className="title">{title}</p>
-                                                        <p className="subtitle">
-                                                            {subtitle}
-                                                        </p>
-                                                    </NetworkNavElement>
-                                                </PopoverItem>
-                                            )
-                                        },
-                                    )}
+                                    {extendedNetworkNav.map((networkNavElement) => {
+                                        const { title, subtitle, link, ...rest } =
+                                            networkNavElement
+
+                                        return (
+                                            <PopoverItem
+                                                key={link}
+                                                onClick={() => void navigate(link)}
+                                            >
+                                                <NetworkNavElement>
+                                                    <p className="title">{title}</p>
+                                                    <p className="subtitle">{subtitle}</p>
+                                                </NetworkNavElement>
+                                            </PopoverItem>
+                                        )
+                                    })}
                                 </Popover>
                             ) : (
                                 <NavLink
