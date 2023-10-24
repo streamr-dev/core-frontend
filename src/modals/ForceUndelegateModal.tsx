@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import moment from 'moment'
 import styled from 'styled-components'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
@@ -6,12 +6,9 @@ import { truncateStreamName } from '~/shared/utils/text'
 import FormModal, {
     FormModalProps,
     FormModalRoot,
-    Section,
     SectionHeadline,
 } from '~/modals/FormModal'
-import Label from '~/shared/components/Ui/Label'
 import { Tip, TipIconWrap } from '~/components/Tip'
-import { SearchDropdown } from '~/components/SearchDropdown'
 import { BN } from '~/utils/bn'
 import { fromAtto } from '~/marketplace/utils/math'
 import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
@@ -34,17 +31,44 @@ interface UndelegateSponsorship {
     joinTimestamp: number
 }
 
+function getOptimalSponsorship(
+    sponsorships: UndelegateSponsorship[],
+    requestedAmount: BN,
+): UndelegateSponsorship | undefined {
+    return sponsorships.find(
+        (s) =>
+            hasStakedLongEnough(s.joinTimestamp, s.minimumStakingPeriodSeconds) &&
+            s.amount.isGreaterThanOrEqualTo(requestedAmount),
+    )
+}
+
+function hasStakedLongEnough(joinTimestamp: number, minimumStakingPeriodSeconds: number) {
+    const joinDate = moment(joinTimestamp * 1000)
+    const slashedBeforeDate = joinDate.clone().add(minimumStakingPeriodSeconds, 'seconds')
+    return moment().isAfter(slashedBeforeDate)
+}
+
 export default function ForceUndelegateModal({
     title = 'Force unstake',
     onResolve,
     onSubmit,
     submitLabel = 'Force unstake',
     tokenSymbol,
-    sponsorships,
+    sponsorships: unsortedSponsorships,
     totalAmount,
     ...props
 }: Props) {
-    const [selectedSponsorshipId, setSelectedSponsorshipId] = useState<string>()
+    const sponsorships = useMemo(
+        () => [...unsortedSponsorships].sort((a, b) => b.amount.comparedTo(a.amount)),
+        [unsortedSponsorships],
+    )
+
+    const [selectedSponsorshipId, setSelectedSponsorshipId] = useState<
+        string | undefined
+    >(
+        getOptimalSponsorship(sponsorships, totalAmount)?.id ??
+            (sponsorships.length > 0 ? sponsorships[0].id : undefined),
+    )
     const [busy, setBusy] = useState(false)
 
     const canSubmit = selectedSponsorshipId != null
@@ -110,35 +134,34 @@ export default function ForceUndelegateModal({
                     },
                     {
                         displayName: 'Joined',
-                        valueMapper: (element) => {
-                            const joinDate = moment(element.joinTimestamp * 1000)
-                            const slashedBeforeDate = joinDate
-                                .clone()
-                                .add(element.minimumStakingPeriodSeconds, 'seconds')
-                            return (
-                                <WarningCell>
-                                    {joinDate.format('YYYY-MM-DD')}
-                                    {moment().isBefore(slashedBeforeDate) && (
-                                        <Tip
-                                            handle={
-                                                <TipIconWrap $color="#ff5c00">
-                                                    <JiraFailedBuildStatusIcon label="Error" />
-                                                </TipIconWrap>
-                                            }
-                                        >
-                                            <p>
-                                                Minimum stake period of{' '}
-                                                {element.minimumStakingPeriodSeconds /
-                                                    60 /
-                                                    60 /
-                                                    24}{' '}
-                                                days not reached. You will be slashed.
-                                            </p>
-                                        </Tip>
-                                    )}
-                                </WarningCell>
-                            )
-                        },
+                        valueMapper: (element) => (
+                            <WarningCell>
+                                {moment(element.joinTimestamp * 1000).format(
+                                    'YYYY-MM-DD',
+                                )}
+                                {!hasStakedLongEnough(
+                                    element.joinTimestamp,
+                                    element.minimumStakingPeriodSeconds,
+                                ) && (
+                                    <Tip
+                                        handle={
+                                            <TipIconWrap $color="#ff5c00">
+                                                <JiraFailedBuildStatusIcon label="Error" />
+                                            </TipIconWrap>
+                                        }
+                                    >
+                                        <p>
+                                            Minimum stake period of{' '}
+                                            {element.minimumStakingPeriodSeconds /
+                                                60 /
+                                                60 /
+                                                24}{' '}
+                                            days not reached. You will be slashed.
+                                        </p>
+                                    </Tip>
+                                )}
+                            </WarningCell>
+                        ),
                         align: 'start',
                         isSticky: false,
                         key: 'joined',
@@ -171,7 +194,7 @@ export default function ForceUndelegateModal({
 
 const ForceUndelegateFormModal = styled(FormModal)`
     & ${FormModalRoot} {
-        max-width: 800px;
+        max-width: 848px;
     }
 `
 
