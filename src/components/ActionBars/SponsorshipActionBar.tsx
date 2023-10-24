@@ -95,7 +95,7 @@ export function SponsorshipActionBar({
                                 to={routes.network.sponsorships()}
                                 onClick={(e) => {
                                     goBack({
-                                        before() {
+                                        onBeforeNavigate() {
                                             e.preventDefault()
                                         },
                                     })

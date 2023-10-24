@@ -111,7 +111,7 @@ export const OperatorActionBar: FunctionComponent<{
                                 to={routes.network.operators()}
                                 onClick={(e) => {
                                     goBack({
-                                        before() {
+                                        onBeforeNavigate() {
                                             e.preventDefault()
                                         },
                                     })

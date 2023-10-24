@@ -186,11 +186,11 @@ export async function fetchStreamlikesByIds(streamIds: string[], client: Streamr
 /**
  * Takes the user back in history, but only if they've already navigated
  * somewhere within the app.
- * @param options.before Optional callback triggered right before
+ * @param options.onBeforeNavigate Optional callback triggered right before
  * the actual step back. It does not get triggered if we can't take
  * the step.
  */
-export function goBack(options: { before?: () => void } = {}) {
+export function goBack(options: { onBeforeNavigate?: () => void } = {}) {
     const backable = z
         .object({ idx: z.number().min(1) })
         .safeParse(window.history.state).success
@@ -199,7 +199,7 @@ export function goBack(options: { before?: () => void } = {}) {
         return
     }
 
-    options.before?.()
+    options.onBeforeNavigate?.()
 
     history.back()
 }

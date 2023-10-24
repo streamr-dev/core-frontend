@@ -26,7 +26,7 @@ export const DetailsPageHeader: FunctionComponent<DetailsPageHeaderProps> = ({
                                 to={backButtonLink}
                                 onClick={(e) => {
                                     goBack({
-                                        before() {
+                                        onBeforeNavigate() {
                                             e.preventDefault()
                                         },
                                     })
