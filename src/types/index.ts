@@ -5,7 +5,6 @@ import { BN } from '~/utils/bn'
 export interface ProjectFilter {
     search: string
     type?: TheGraph.ProjectType | undefined
-    owner?: string | undefined
 }
 
 /**
