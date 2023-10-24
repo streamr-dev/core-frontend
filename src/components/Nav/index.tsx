@@ -123,7 +123,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                     openOnHover
                                 >
                                     {extendedNetworkNav.map((networkNavElement) => {
-                                        const { title, subtitle, link, ...rest } =
+                                        const { title, subtitle, link } =
                                             networkNavElement
 
                                         return (
