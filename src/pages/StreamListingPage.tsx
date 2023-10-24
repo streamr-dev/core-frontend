@@ -131,6 +131,12 @@ const StreamListingPage: React.FC = () => {
 
     const navigate = useNavigate()
 
+    useEffect(() => {
+        if (!account) {
+            navigate(routes.streams.index({ tab: TabOption.All }))
+        }
+    }, [account, navigate])
+
     const streamsQuery = useInfiniteQuery({
         queryKey: ['streams', search, streamsSelection, account, orderBy, orderDirection],
         queryFn: async (ctx) => {
