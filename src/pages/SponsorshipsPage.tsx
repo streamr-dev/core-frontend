@@ -96,10 +96,6 @@ export const SponsorshipsPage = () => {
                 leftSideContent={
                     <Tabs
                         onSelectionChange={(value) => {
-                            if (!isTabOption(value)) {
-                                return
-                            }
-
                             navigate(routes.network.sponsorships({ tab: value }))
                         }}
                         selection={selectedTab}

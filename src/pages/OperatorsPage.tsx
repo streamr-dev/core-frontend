@@ -97,10 +97,6 @@ export const OperatorsPage = () => {
                 leftSideContent={
                     <Tabs
                         onSelectionChange={(value) => {
-                            if (!isTabOption(value)) {
-                                return
-                            }
-
                             navigate(routes.network.operators({ tab: value }))
                         }}
                         selection={selectedTab}
