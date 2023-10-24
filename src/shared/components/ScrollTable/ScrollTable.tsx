@@ -32,7 +32,6 @@ type ScrollTableProps<Element> = {
     noDataSecondLine?: ReactNode
     footerComponent?: ReactNode
     linkMapper?: (element: Element) => string
-    onClick?: (element: Element) => void
     hasMoreResults?: boolean
     onLoadMore?: () => void
 }
@@ -93,7 +92,6 @@ export const ScrollTableCore = <T extends object>({
     orderBy,
     onOrderChange,
     linkMapper,
-    onClick,
 }: ScrollTableProps<T>) => {
     const stickyColumns = columns.filter((column) => column.isSticky)
     const nonStickyColumns = columns.filter((column) => !column.isSticky)
@@ -133,7 +131,6 @@ export const ScrollTableCore = <T extends object>({
                                             to={linkMapper ? linkMapper(element) : ''}
                                             onMouseEnter={() => setHoveredRowIndex(id)}
                                             onMouseLeave={() => setHoveredRowIndex(null)}
-                                            onClick={() => void onClick?.(element)}
                                         >
                                             {stickyColumn.valueMapper(element)}
                                         </ScrollTableCell>
