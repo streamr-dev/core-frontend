@@ -4586,6 +4586,17 @@ export type GetOperatorDailyBucketsQueryVariables = Exact<{
 
 export type GetOperatorDailyBucketsQuery = { __typename?: 'Query', operatorDailyBuckets: Array<{ __typename?: 'OperatorDailyBucket', date: any, id: string, dataTokenBalanceWei: any, delegatorCountChange: number, delegatorCountAtStart: number, lossesWei: any, operatorsCutWei: any, valueWithoutEarnings: any, profitsWei: any, totalDelegatedWei: any, totalUndelegatedWei: any, totalStakeInSponsorshipsWei: any }> };
 
+export type DelegatorDailyBucketFieldsFragment = { __typename?: 'DelegatorDailyBucket', id: string, totalValueDataWei: any, date: any, cumulativeEarningsWei: any, operatorCount: number };
+
+export type GetDelegatorDailyBucketsQueryVariables = Exact<{
+  where: DelegatorDailyBucket_Filter;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GetDelegatorDailyBucketsQuery = { __typename?: 'Query', delegatorDailyBuckets: Array<{ __typename?: 'DelegatorDailyBucket', id: string, totalValueDataWei: any, date: any, cumulativeEarningsWei: any, operatorCount: number }> };
+
 export type GetMetadataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -4762,6 +4773,15 @@ export const OperatorDailyBucketFieldsFragmentDoc = gql`
   totalDelegatedWei
   totalUndelegatedWei
   totalStakeInSponsorshipsWei
+}
+    `;
+export const DelegatorDailyBucketFieldsFragmentDoc = gql`
+    fragment DelegatorDailyBucketFields on DelegatorDailyBucket {
+  id
+  totalValueDataWei
+  date
+  cumulativeEarningsWei
+  operatorCount
 }
     `;
 export const GetAllOperatorsDocument = gql`
@@ -4999,6 +5019,14 @@ export const GetOperatorDailyBucketsDocument = gql`
 }
     ${OperatorDailyBucketFieldsFragmentDoc}`;
 export type GetOperatorDailyBucketsQueryResult = Apollo.QueryResult<GetOperatorDailyBucketsQuery, GetOperatorDailyBucketsQueryVariables>;
+export const GetDelegatorDailyBucketsDocument = gql`
+    query getDelegatorDailyBuckets($where: DelegatorDailyBucket_filter!, $first: Int, $skip: Int) {
+  delegatorDailyBuckets(first: $first, skip: $skip, where: $where) {
+    ...DelegatorDailyBucketFields
+  }
+}
+    ${DelegatorDailyBucketFieldsFragmentDoc}`;
+export type GetDelegatorDailyBucketsQueryResult = Apollo.QueryResult<GetDelegatorDailyBucketsQuery, GetDelegatorDailyBucketsQueryVariables>;
 export const GetMetadataDocument = gql`
     query getMetadata {
   _meta {

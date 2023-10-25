@@ -21,8 +21,8 @@ import { useWalletAccount } from '~/shared/stores/wallet'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { fromAtto, fromDecimals } from '~/marketplace/utils/math'
 import {
-    useSponsorshipTokenInfo,
     useSponsorshipsForCreatorQuery,
+    useSponsorshipTokenInfo,
 } from '~/hooks/sponsorships'
 import { BNish, toBN } from '~/utils/bn'
 import {
@@ -44,6 +44,7 @@ import { QueriedSponsorshipsTable } from '~/components/QueriedSponsorshipsTable'
 import { refetchQuery } from '~/utils'
 import { OperatorIdCell } from '~/components/Table'
 import Button from '~/shared/components/Button'
+import { getDelegationStats } from '~/getters/getDelegationStats'
 
 export function NetworkOverviewPage() {
     return (
@@ -245,6 +246,35 @@ function MyDelegationsSummary() {
 
     const apy = minApy === maxApy ? [minApy] : [minApy, maxApy]
 
+    const [chartPeriod, setChartPeriod] = useState<ChartPeriod>(ChartPeriod.SevenDays)
+    const [chartDataSource, setChartDataSource] = useState<
+        'currentValue' | 'cumulativeEarnings'
+    >('currentValue')
+
+    const chartQuery = useQuery({
+        queryKey: ['operatorChartQuery', wallet, chartPeriod, chartDataSource],
+        queryFn: async () => {
+            try {
+                if (!wallet) {
+                    return []
+                }
+
+                return await getDelegationStats(
+                    wallet,
+                    chartPeriod,
+                    chartDataSource,
+                    false, // ignore today
+                )
+            } catch (e) {
+                errorToast({ title: 'Could not load my delegations chart data' })
+                return []
+            }
+        },
+    })
+
+    const chartLabel =
+        chartDataSource === 'currentValue' ? 'Current value' : 'Cumulative earnings'
+
     return (
         <NetworkPageSegment title="My delegations summary">
             <WalletPass resourceName="delegations summary" roundBorders>
@@ -260,6 +290,47 @@ function MyDelegationsSummary() {
                             {apy.map((v) => (v * 100).toFixed(0)).join('-')}%
                         </StatCell>
                     </StatGrid>
+                </Pad>
+                <Separator />
+                <Pad>
+                    <NetworkChartDisplay
+                        periodTabs={
+                            <ChartPeriodTabs
+                                value={chartPeriod}
+                                onChange={setChartPeriod}
+                            />
+                        }
+                        sourceTabs={
+                            <Tabs
+                                selection={chartDataSource}
+                                onSelectionChange={(newChartId) => {
+                                    if (
+                                        newChartId !== 'currentValue' &&
+                                        newChartId !== 'cumulativeEarnings'
+                                    ) {
+                                        return
+                                    }
+
+                                    setChartDataSource(newChartId)
+                                }}
+                            >
+                                <Tab id="currentValue">Current value</Tab>
+                                <Tab id="cumulativeEarnings">Cumulative earnings</Tab>
+                            </Tabs>
+                        }
+                    >
+                        <NetworkChart
+                            tooltipValuePrefix={chartLabel}
+                            graphData={chartQuery.data || []}
+                            xAxisDisplayFormatter={formatShortDate}
+                            yAxisAxisDisplayFormatter={(value) => abbreviateNumber(value)}
+                            isLoading={chartQuery.isLoading}
+                            tooltipLabelFormatter={formatLongDate}
+                            tooltipValueFormatter={(value) =>
+                                `${abbreviateNumber(value)} ${tokenSymbol}`
+                            }
+                        />
+                    </NetworkChartDisplay>
                 </Pad>
             </WalletPass>
         </NetworkPageSegment>

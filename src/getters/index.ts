@@ -68,6 +68,9 @@ import {
     OrderDirection,
     Operator_OrderBy,
     Sponsorship_OrderBy,
+    GetDelegatorDailyBucketsQuery,
+    GetDelegatorDailyBucketsQueryVariables,
+    GetDelegatorDailyBucketsDocument,
 } from '~/generated/gql/network'
 import getCoreConfig from '~/getters/getCoreConfig'
 import getGraphClient from '~/getters/getGraphClient'
@@ -955,4 +958,48 @@ export async function getSponsorshipDailyBuckets(
     })
 
     return data.sponsorshipDailyBuckets
+}
+
+/**
+ * Fetches a collection of daily Delegator buckets.
+ * @param delegatorId Delegator ID
+ * @param options.dateLowerThan End unix timestamp
+ * @param options.dateGreaterEqualThan Start unix timestamp
+ * @param options.batchSize Number of buckets to scout for at once
+ * @param options.skip Number of buckets to skip
+ * @returns Delegator buckets
+ */
+export const getDelegatorDailyBuckets = async (
+    delegatorId: string,
+    options: {
+        dateLowerThan: number
+        dateGreaterEqualThan: number
+        batchSize?: number
+        skip?: number
+    },
+): Promise<GetDelegatorDailyBucketsQuery['delegatorDailyBuckets']> => {
+    const {
+        dateLowerThan: date_lt,
+        dateGreaterEqualThan: date_gte,
+        batchSize: first = 999,
+        skip,
+    } = options
+
+    const { data } = await getGraphClient().query<
+        GetDelegatorDailyBucketsQuery,
+        GetDelegatorDailyBucketsQueryVariables
+    >({
+        query: GetDelegatorDailyBucketsDocument,
+        variables: {
+            first,
+            skip,
+            where: {
+                delegator: delegatorId,
+                date_lt,
+                date_gte,
+            },
+        },
+    })
+
+    return data.delegatorDailyBuckets
 }

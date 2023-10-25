@@ -441,6 +441,26 @@ gql`
 `
 
 gql`
+    fragment DelegatorDailyBucketFields on DelegatorDailyBucket {
+        id
+        totalValueDataWei
+        date
+        cumulativeEarningsWei
+        operatorCount
+    }
+
+    query getDelegatorDailyBuckets(
+        $where: DelegatorDailyBucket_filter!
+        $first: Int
+        $skip: Int
+    ) {
+        delegatorDailyBuckets(first: $first, skip: $skip, where: $where) {
+            ...DelegatorDailyBucketFields
+        }
+    }
+`
+
+gql`
     query getMetadata {
         _meta {
             block {
