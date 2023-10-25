@@ -14,10 +14,13 @@ gql`
                 ...SponsorshipFields
             }
         }
-        delegators {
-            delegatedDataWei
-            delegator
+        delegations {
+            delegator {
+                id
+            }
+            valueDataWei
             operatorTokenBalanceWei
+            id
         }
         slashingEvents {
             amount
@@ -32,7 +35,9 @@ gql`
         queueEntries(first: 1000) {
             amount
             date
-            delegator
+            delegator {
+                id
+            }
             id
         }
         delegatorCount
@@ -118,7 +123,7 @@ gql`
         operators(
             first: $first
             skip: $skip
-            where: { delegators_: { delegator: $delegator } }
+            where: { delegations_: { delegator: $delegator } }
             orderBy: $orderBy
             orderDirection: $orderDirection
         ) {
@@ -137,7 +142,7 @@ gql`
         operators(
             first: $first
             skip: $skip
-            where: { delegators_: { delegator: $delegator }, id: $operatorId }
+            where: { delegations_: { delegator: $delegator }, id: $operatorId }
             orderBy: $orderBy
             orderDirection: $orderDirection
         ) {
@@ -157,7 +162,7 @@ gql`
             first: $first
             skip: $skip
             where: {
-                delegators_: { delegator: $delegator }
+                delegations_: { delegator: $delegator }
                 metadataJsonString_contains_nocase: $searchQuery
             }
             orderBy: $orderBy

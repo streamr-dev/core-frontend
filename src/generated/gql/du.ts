@@ -17,6 +17,7 @@ export type Scalars = {
   BigDecimal: { input: any; output: any; }
   BigInt: { input: any; output: any; }
   Bytes: { input: any; output: any; }
+  Int8: { input: any; output: any; }
 };
 
 export type BlockChangedFilter = {
