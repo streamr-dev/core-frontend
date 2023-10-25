@@ -14,6 +14,7 @@ import { fromAtto } from '~/marketplace/utils/math'
 import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import Checkbox from '~/shared/components/Checkbox'
+import { Alert } from '~/components/Alert'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onResolve?: (sponsorshipId: string) => void
@@ -71,6 +72,25 @@ export default function ForceUndelegateModal({
     )
     const [busy, setBusy] = useState(false)
 
+    const willSlash = useMemo(() => {
+        const sponsorship = sponsorships.find((s) => s.id === selectedSponsorshipId)
+        if (sponsorship) {
+            return !hasStakedLongEnough(
+                sponsorship.joinTimestamp,
+                sponsorship.minimumStakingPeriodSeconds,
+            )
+        }
+        return false
+    }, [selectedSponsorshipId, sponsorships])
+
+    const isPartialPayout = useMemo(() => {
+        const sponsorship = sponsorships.find((s) => s.id === selectedSponsorshipId)
+        if (sponsorship) {
+            return sponsorship.amount.isLessThan(totalAmount)
+        }
+        return false
+    }, [selectedSponsorshipId, sponsorships, totalAmount])
+
     const canSubmit = selectedSponsorshipId != null
 
     return (
@@ -88,109 +108,134 @@ export default function ForceUndelegateModal({
                         onResolve?.(selectedSponsorshipId)
                     }
                 } catch (e) {
-                    console.warn('Error while force undelegating', e)
+                    console.warn('Error while force unstaking', e)
                     setBusy(false)
                 }
             }}
         >
-            <SectionHeadline>
-                Please select a sponsorship to undelegate{' '}
-                {abbreviateNumber(fromAtto(totalAmount).toNumber())} {tokenSymbol} from
-            </SectionHeadline>
-            <ScrollTable
-                elements={sponsorships}
-                columns={[
-                    {
-                        displayName: 'Stream ID',
-                        valueMapper: (element) => (
-                            <>{truncateStreamName(element.streamId)}</>
-                        ),
-                        align: 'start',
-                        isSticky: true,
-                        key: 'streamid',
-                    },
-                    {
-                        displayName: 'Amount',
-                        valueMapper: (element) => (
-                            <WarningCell>
-                                {abbreviateNumber(fromAtto(element.amount).toNumber())}{' '}
-                                {tokenSymbol}
-                                {element.amount.isLessThan(totalAmount) && (
-                                    <Tip
-                                        handle={
-                                            <TipIconWrap $color="#ff5c00">
-                                                <JiraFailedBuildStatusIcon label="Error" />
-                                            </TipIconWrap>
-                                        }
-                                    >
-                                        <p>Not enough stake</p>
-                                    </Tip>
-                                )}
-                            </WarningCell>
-                        ),
-                        align: 'start',
-                        isSticky: false,
-                        key: 'amount',
-                    },
-                    {
-                        displayName: 'Joined',
-                        valueMapper: (element) => (
-                            <WarningCell>
-                                {moment(element.joinTimestamp * 1000).format(
-                                    'YYYY-MM-DD',
-                                )}
-                                {!hasStakedLongEnough(
-                                    element.joinTimestamp,
-                                    element.minimumStakingPeriodSeconds,
-                                ) && (
-                                    <Tip
-                                        handle={
-                                            <TipIconWrap $color="#ff5c00">
-                                                <JiraFailedBuildStatusIcon label="Error" />
-                                            </TipIconWrap>
-                                        }
-                                    >
-                                        <p>
-                                            Minimum stake period of{' '}
-                                            {element.minimumStakingPeriodSeconds /
-                                                60 /
-                                                60 /
-                                                24}{' '}
-                                            days not reached. You will be slashed.
-                                        </p>
-                                    </Tip>
-                                )}
-                            </WarningCell>
-                        ),
-                        align: 'start',
-                        isSticky: false,
-                        key: 'joined',
-                    },
-                    {
-                        displayName: '',
-                        valueMapper: (element) => (
-                            <>
-                                <Checkbox
-                                    value={selectedSponsorshipId === element.id}
-                                    onChange={(e) => {
-                                        if (e.target.checked) {
-                                            setSelectedSponsorshipId(element.id)
-                                        } else {
-                                            setSelectedSponsorshipId(undefined)
-                                        }
-                                    }}
-                                />
-                            </>
-                        ),
-                        align: 'end',
-                        isSticky: false,
-                        key: 'actions',
-                    },
-                ]}
-            />
+            <Root>
+                <SectionHeadline>
+                    Because there are expired items in the undelegation queue, you can
+                    force the Operator to unstake from any Sponsorship, in order to pay
+                    out the queued undelegations.
+                </SectionHeadline>
+                <ScrollTable
+                    elements={sponsorships}
+                    columns={[
+                        {
+                            displayName: 'Stream ID',
+                            valueMapper: (element) => (
+                                <>{truncateStreamName(element.streamId)}</>
+                            ),
+                            align: 'start',
+                            isSticky: true,
+                            key: 'streamid',
+                        },
+                        {
+                            displayName: 'Amount',
+                            valueMapper: (element) => (
+                                <WarningCell>
+                                    {abbreviateNumber(
+                                        fromAtto(element.amount).toNumber(),
+                                    )}{' '}
+                                    {tokenSymbol}
+                                    {element.amount.isLessThan(totalAmount) && (
+                                        <Tip
+                                            handle={
+                                                <TipIconWrap $color="#ff5c00">
+                                                    <JiraFailedBuildStatusIcon label="Error" />
+                                                </TipIconWrap>
+                                            }
+                                        >
+                                            <p>Partial payout</p>
+                                        </Tip>
+                                    )}
+                                </WarningCell>
+                            ),
+                            align: 'start',
+                            isSticky: false,
+                            key: 'amount',
+                        },
+                        {
+                            displayName: 'Joined',
+                            valueMapper: (element) => (
+                                <WarningCell>
+                                    {moment(element.joinTimestamp * 1000).format(
+                                        'YYYY-MM-DD',
+                                    )}
+                                    {!hasStakedLongEnough(
+                                        element.joinTimestamp,
+                                        element.minimumStakingPeriodSeconds,
+                                    ) && (
+                                        <Tip
+                                            handle={
+                                                <TipIconWrap $color="#ff5c00">
+                                                    <JiraFailedBuildStatusIcon label="Error" />
+                                                </TipIconWrap>
+                                            }
+                                        >
+                                            <p>
+                                                Minimum stake period of{' '}
+                                                {element.minimumStakingPeriodSeconds /
+                                                    60 /
+                                                    60 /
+                                                    24}{' '}
+                                                days not reached. Operator will be
+                                                slashed.
+                                            </p>
+                                        </Tip>
+                                    )}
+                                </WarningCell>
+                            ),
+                            align: 'start',
+                            isSticky: false,
+                            key: 'joined',
+                        },
+                        {
+                            displayName: '',
+                            valueMapper: (element) => (
+                                <>
+                                    <Checkbox
+                                        value={selectedSponsorshipId === element.id}
+                                        onChange={(e) => {
+                                            if (e.target.checked) {
+                                                setSelectedSponsorshipId(element.id)
+                                            } else {
+                                                setSelectedSponsorshipId(undefined)
+                                            }
+                                        }}
+                                    />
+                                </>
+                            ),
+                            align: 'end',
+                            isSticky: false,
+                            key: 'actions',
+                        },
+                    ]}
+                />
+                {willSlash && (
+                    <Alert type="error" title="Operator will be slashed">
+                        Selecting this Sponsorship will result in slashing. Please
+                        consider selecting a different Sponsorship if available.
+                    </Alert>
+                )}
+                {isPartialPayout && (
+                    <Alert type="error" title="Partial payout">
+                        Unstaking from this Sponsorship will not completely cover the
+                        queued undelegation. After unstaking, you can select additional
+                        Sponsorships to continue payouts.
+                    </Alert>
+                )}
+            </Root>
         </ForceUndelegateFormModal>
     )
 }
+
+const Root = styled.div`
+    display: grid;
+    grid-template-rows: auto auto auto;
+    gap: 16px;
+`
 
 const ForceUndelegateFormModal = styled(FormModal)`
     & ${FormModalRoot} {
