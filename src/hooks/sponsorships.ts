@@ -314,6 +314,8 @@ export const mapSponsorshipOrder = (columnKey?: string): Sponsorship_OrderBy => 
             return Sponsorship_OrderBy.TotalStakedWei
         case 'apy':
             return Sponsorship_OrderBy.SpotApy
+        case 'fundedUntil':
+            return Sponsorship_OrderBy.ProjectedInsolvency
         case 'streamInfo':
         default:
             return Sponsorship_OrderBy.Id

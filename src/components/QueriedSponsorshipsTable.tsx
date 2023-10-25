@@ -130,6 +130,7 @@ export function QueriedSponsorshipsTable({
                         align: 'start',
                         isSticky: false,
                         key: 'fundedUntil',
+                        sortable: true,
                     },
                 ]}
                 actions={[
