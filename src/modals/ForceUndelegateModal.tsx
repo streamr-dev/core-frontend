@@ -44,9 +44,7 @@ function getOptimalSponsorship(
 }
 
 function hasStakedLongEnough(joinTimestamp: number, minimumStakingPeriodSeconds: number) {
-    const joinDate = moment(joinTimestamp * 1000)
-    const slashedBeforeDate = joinDate.clone().add(minimumStakingPeriodSeconds, 'seconds')
-    return moment().isAfter(slashedBeforeDate)
+    return (joinTimestamp + minimumStakingPeriodSeconds) * 1000 < Date.now()
 }
 
 export default function ForceUndelegateModal({
@@ -66,10 +64,7 @@ export default function ForceUndelegateModal({
 
     const [selectedSponsorshipId, setSelectedSponsorshipId] = useState<
         string | undefined
-    >(
-        getOptimalSponsorship(sponsorships, totalAmount)?.id ??
-            (sponsorships.length > 0 ? sponsorships[0].id : undefined),
-    )
+    >(getOptimalSponsorship(sponsorships, totalAmount)?.id || sponsorships[0]?.id)
     const [busy, setBusy] = useState(false)
 
     const willSlash = useMemo(() => {
@@ -109,6 +104,7 @@ export default function ForceUndelegateModal({
                     }
                 } catch (e) {
                     console.warn('Error while force unstaking', e)
+                } finally {
                     setBusy(false)
                 }
             }}

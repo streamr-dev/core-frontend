@@ -18,7 +18,7 @@ import {
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
 import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { errorToast, successToast } from '~/utils/toast'
-import { toBN } from '~/utils/bn'
+import { BNish, toBN } from '~/utils/bn'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
@@ -598,30 +598,36 @@ export const SingleOperatorPage = () => {
                                                                                         s.joinTimestamp,
                                                                                 }),
                                                                             ),
-                                                                        tokenSymbol:
-                                                                            tokenSymbol,
+                                                                        tokenSymbol,
                                                                         totalAmount:
                                                                             element.amount,
                                                                         onSubmit: async (
                                                                             sponsorshipId,
                                                                         ) => {
                                                                             if (
-                                                                                operatorId
+                                                                                !operatorId
                                                                             ) {
-                                                                                await forceUnstakeFromSponsorship(
-                                                                                    sponsorshipId,
-                                                                                    operatorId,
-                                                                                )
-
-                                                                                await waitForGraphSync()
-                                                                                refetchQuery(
-                                                                                    operatorQuery,
-                                                                                )
+                                                                                return
                                                                             }
+
+                                                                            await forceUnstakeFromSponsorship(
+                                                                                sponsorshipId,
+                                                                                operatorId,
+                                                                            )
+
+                                                                            await waitForGraphSync()
+                                                                            refetchQuery(
+                                                                                operatorQuery,
+                                                                            )
                                                                         },
                                                                     },
                                                                 )
                                                             } catch (e) {
+                                                                if (
+                                                                    isRejectionReason(e)
+                                                                ) {
+                                                                    return
+                                                                }
                                                                 console.error(
                                                                     'Could not force undelegate',
                                                                     e,
@@ -758,12 +764,9 @@ function yAxisAxisDisplayFormatter(value: number) {
 
 function getUndelegationExpirationDate(
     date: number,
-    maxUndelegationQueueSeconds: BigNumber | undefined,
+    maxUndelegationQueueSeconds: BNish | undefined = '0',
 ) {
-    const expirationDate = moment(
-        date * 1000 + (maxUndelegationQueueSeconds?.toNumber() ?? 0) * 1000,
-    )
-    return expirationDate
+    return moment((date + toBN(maxUndelegationQueueSeconds).toNumber()) * 1000)
 }
 
 const ChartGrid = styled(SegmentGrid)`
