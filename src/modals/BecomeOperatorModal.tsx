@@ -212,6 +212,7 @@ export default function BecomeOperatorModal({
                         type="number"
                         min={0}
                         max={100}
+                        step="0.01"
                         value={typeof cutValue !== 'undefined' ? cutValue : ''}
                         disabled={cutEditingDisabled}
                     />
