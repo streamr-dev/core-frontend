@@ -545,7 +545,7 @@ export const SingleOperatorPage = () => {
                                             return (
                                                 <WarningCell>
                                                     {expirationDate.format('YYYY-MM-DD')}
-                                                    {expirationDate.isAfter(
+                                                    {expirationDate.isBefore(
                                                         Date.now(),
                                                     ) && (
                                                         <Tip
@@ -557,7 +557,7 @@ export const SingleOperatorPage = () => {
                                                         >
                                                             <p>
                                                                 Payout time exceeded. You
-                                                                can force undelegate now.
+                                                                can force unstake now.
                                                             </p>
                                                         </Tip>
                                                     )}
@@ -575,7 +575,7 @@ export const SingleOperatorPage = () => {
                                                 {getUndelegationExpirationDate(
                                                     element.date,
                                                     maxUndelegationQueueSeconds,
-                                                ).isAfter(Date.now()) && (
+                                                ).isBefore(Date.now()) && (
                                                     <Button
                                                         type="button"
                                                         kind="secondary"
@@ -629,7 +629,7 @@ export const SingleOperatorPage = () => {
                                                             }
                                                         }}
                                                     >
-                                                        Force undelegate
+                                                        Force unstake
                                                     </Button>
                                                 )}
                                             </>
