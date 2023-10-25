@@ -9,14 +9,19 @@ export const OperatorParser = z
         cumulativeProfitsWei: z.string().transform(toBN),
         dataTokenBalanceWei: z.string().transform(toBN),
         delegatorCount: z.number(),
-        delegators: z.array(
+        delegations: z.array(
             z
                 .object({
-                    delegator: z.string(),
-                    delegatedDataWei: z.string().transform(toBN),
+                    id: z.string(),
+                    delegator: z
+                        .object({
+                            id: z.string(),
+                        })
+                        .transform(({ id }) => id),
+                    valueDataWei: z.string().transform(toBN),
                     operatorTokenBalanceWei: z.string().transform(toBN),
                 })
-                .transform(({ delegatedDataWei: amount, ...rest }) => ({
+                .transform(({ valueDataWei: amount, ...rest }) => ({
                     ...rest,
                     amount,
                 })),
@@ -41,7 +46,7 @@ export const OperatorParser = z
             z.object({
                 amount: z.string().transform(toBN),
                 date: z.coerce.number(),
-                delegator: z.string(),
+                delegator: z.object({ id: z.string() }).transform(({ id }) => id),
                 id: z.string(),
             }),
         ),

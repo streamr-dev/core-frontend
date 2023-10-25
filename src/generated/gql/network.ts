@@ -32,30 +32,22 @@ export type Block_Height = {
 
 export type Delegation = {
   __typename?: 'Delegation';
-  /** Amount of DATA tokens this delegator has moved into the Operator contract */
-  delegatedDataWei: Scalars['BigInt']['output'];
-  delegator: Scalars['String']['output'];
+  delegator: Delegator;
+  /** 0xoperatorAddress-0xdelegatorAddress */
   id: Scalars['ID']['output'];
-  operator?: Maybe<Operator>;
+  operator: Operator;
   /** Amount of internal Operator tokens this delegator holds */
   operatorTokenBalanceWei: Scalars['BigInt']['output'];
-  /** Amount of DATA tokens this delegator has moved out of the Operator contract */
-  undelegatedDataWei: Scalars['BigInt']['output'];
+  /** DATA value of the Operator tokens this delegator holds */
+  valueDataWei: Scalars['BigInt']['output'];
 };
 
 export type Delegation_Filter = {
   /** Filter for the block changed event. */
   _change_block?: InputMaybe<BlockChangedFilter>;
   and?: InputMaybe<Array<InputMaybe<Delegation_Filter>>>;
-  delegatedDataWei?: InputMaybe<Scalars['BigInt']['input']>;
-  delegatedDataWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  delegatedDataWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  delegatedDataWei_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  delegatedDataWei_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  delegatedDataWei_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  delegatedDataWei_not?: InputMaybe<Scalars['BigInt']['input']>;
-  delegatedDataWei_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   delegator?: InputMaybe<Scalars['String']['input']>;
+  delegator_?: InputMaybe<Delegator_Filter>;
   delegator_contains?: InputMaybe<Scalars['String']['input']>;
   delegator_contains_nocase?: InputMaybe<Scalars['String']['input']>;
   delegator_ends_with?: InputMaybe<Scalars['String']['input']>;
@@ -113,22 +105,25 @@ export type Delegation_Filter = {
   operator_starts_with?: InputMaybe<Scalars['String']['input']>;
   operator_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
   or?: InputMaybe<Array<InputMaybe<Delegation_Filter>>>;
-  undelegatedDataWei?: InputMaybe<Scalars['BigInt']['input']>;
-  undelegatedDataWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  undelegatedDataWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  undelegatedDataWei_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  undelegatedDataWei_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  undelegatedDataWei_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  undelegatedDataWei_not?: InputMaybe<Scalars['BigInt']['input']>;
-  undelegatedDataWei_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  valueDataWei?: InputMaybe<Scalars['BigInt']['input']>;
+  valueDataWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  valueDataWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  valueDataWei_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  valueDataWei_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  valueDataWei_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  valueDataWei_not?: InputMaybe<Scalars['BigInt']['input']>;
+  valueDataWei_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
 };
 
 export enum Delegation_OrderBy {
-  DelegatedDataWei = 'delegatedDataWei',
   Delegator = 'delegator',
+  DelegatorId = 'delegator__id',
+  DelegatorNumberOfDelegations = 'delegator__numberOfDelegations',
+  DelegatorTotalValueDataWei = 'delegator__totalValueDataWei',
   Id = 'id',
   Operator = 'operator',
   OperatorTokenBalanceWei = 'operatorTokenBalanceWei',
+  OperatorCumulativeEarningsWei = 'operator__cumulativeEarningsWei',
   OperatorCumulativeOperatorsCutWei = 'operator__cumulativeOperatorsCutWei',
   OperatorCumulativeProfitsWei = 'operator__cumulativeProfitsWei',
   OperatorDataTokenBalanceWei = 'operator__dataTokenBalanceWei',
@@ -146,7 +141,165 @@ export enum Delegation_OrderBy {
   OperatorValueUpdateBlockNumber = 'operator__valueUpdateBlockNumber',
   OperatorValueUpdateTimestamp = 'operator__valueUpdateTimestamp',
   OperatorValueWithoutEarnings = 'operator__valueWithoutEarnings',
-  UndelegatedDataWei = 'undelegatedDataWei'
+  ValueDataWei = 'valueDataWei'
+}
+
+export type Delegator = {
+  __typename?: 'Delegator';
+  delegations: Array<Delegation>;
+  id: Scalars['ID']['output'];
+  numberOfDelegations: Scalars['Int']['output'];
+  queueEntries: Array<QueueEntry>;
+  totalValueDataWei: Scalars['BigInt']['output'];
+};
+
+
+export type DelegatorDelegationsArgs = {
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Delegation_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<Delegation_Filter>;
+};
+
+
+export type DelegatorQueueEntriesArgs = {
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<QueueEntry_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<QueueEntry_Filter>;
+};
+
+export type DelegatorDailyBucket = {
+  __typename?: 'DelegatorDailyBucket';
+  cumulativeEarningsWei: Scalars['BigInt']['output'];
+  date: Scalars['BigInt']['output'];
+  delegator: Delegator;
+  id: Scalars['ID']['output'];
+  operatorCount: Scalars['Int']['output'];
+  totalValueDataWei: Scalars['BigInt']['output'];
+};
+
+export type DelegatorDailyBucket_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  and?: InputMaybe<Array<InputMaybe<DelegatorDailyBucket_Filter>>>;
+  cumulativeEarningsWei?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  cumulativeEarningsWei_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_not?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  date?: InputMaybe<Scalars['BigInt']['input']>;
+  date_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  date_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  date_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  date_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  date_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  date_not?: InputMaybe<Scalars['BigInt']['input']>;
+  date_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  delegator?: InputMaybe<Scalars['String']['input']>;
+  delegator_?: InputMaybe<Delegator_Filter>;
+  delegator_contains?: InputMaybe<Scalars['String']['input']>;
+  delegator_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  delegator_ends_with?: InputMaybe<Scalars['String']['input']>;
+  delegator_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  delegator_gt?: InputMaybe<Scalars['String']['input']>;
+  delegator_gte?: InputMaybe<Scalars['String']['input']>;
+  delegator_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  delegator_lt?: InputMaybe<Scalars['String']['input']>;
+  delegator_lte?: InputMaybe<Scalars['String']['input']>;
+  delegator_not?: InputMaybe<Scalars['String']['input']>;
+  delegator_not_contains?: InputMaybe<Scalars['String']['input']>;
+  delegator_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  delegator_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  delegator_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  delegator_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  delegator_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  delegator_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  delegator_starts_with?: InputMaybe<Scalars['String']['input']>;
+  delegator_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  id_gt?: InputMaybe<Scalars['ID']['input']>;
+  id_gte?: InputMaybe<Scalars['ID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_lt?: InputMaybe<Scalars['ID']['input']>;
+  id_lte?: InputMaybe<Scalars['ID']['input']>;
+  id_not?: InputMaybe<Scalars['ID']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  operatorCount?: InputMaybe<Scalars['Int']['input']>;
+  operatorCount_gt?: InputMaybe<Scalars['Int']['input']>;
+  operatorCount_gte?: InputMaybe<Scalars['Int']['input']>;
+  operatorCount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  operatorCount_lt?: InputMaybe<Scalars['Int']['input']>;
+  operatorCount_lte?: InputMaybe<Scalars['Int']['input']>;
+  operatorCount_not?: InputMaybe<Scalars['Int']['input']>;
+  operatorCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  or?: InputMaybe<Array<InputMaybe<DelegatorDailyBucket_Filter>>>;
+  totalValueDataWei?: InputMaybe<Scalars['BigInt']['input']>;
+  totalValueDataWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalValueDataWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalValueDataWei_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalValueDataWei_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalValueDataWei_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalValueDataWei_not?: InputMaybe<Scalars['BigInt']['input']>;
+  totalValueDataWei_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+};
+
+export enum DelegatorDailyBucket_OrderBy {
+  CumulativeEarningsWei = 'cumulativeEarningsWei',
+  Date = 'date',
+  Delegator = 'delegator',
+  DelegatorId = 'delegator__id',
+  DelegatorNumberOfDelegations = 'delegator__numberOfDelegations',
+  DelegatorTotalValueDataWei = 'delegator__totalValueDataWei',
+  Id = 'id',
+  OperatorCount = 'operatorCount',
+  TotalValueDataWei = 'totalValueDataWei'
+}
+
+export type Delegator_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  and?: InputMaybe<Array<InputMaybe<Delegator_Filter>>>;
+  delegations_?: InputMaybe<Delegation_Filter>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  id_gt?: InputMaybe<Scalars['ID']['input']>;
+  id_gte?: InputMaybe<Scalars['ID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_lt?: InputMaybe<Scalars['ID']['input']>;
+  id_lte?: InputMaybe<Scalars['ID']['input']>;
+  id_not?: InputMaybe<Scalars['ID']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  numberOfDelegations?: InputMaybe<Scalars['Int']['input']>;
+  numberOfDelegations_gt?: InputMaybe<Scalars['Int']['input']>;
+  numberOfDelegations_gte?: InputMaybe<Scalars['Int']['input']>;
+  numberOfDelegations_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  numberOfDelegations_lt?: InputMaybe<Scalars['Int']['input']>;
+  numberOfDelegations_lte?: InputMaybe<Scalars['Int']['input']>;
+  numberOfDelegations_not?: InputMaybe<Scalars['Int']['input']>;
+  numberOfDelegations_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  or?: InputMaybe<Array<InputMaybe<Delegator_Filter>>>;
+  queueEntries_?: InputMaybe<QueueEntry_Filter>;
+  totalValueDataWei?: InputMaybe<Scalars['BigInt']['input']>;
+  totalValueDataWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalValueDataWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalValueDataWei_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalValueDataWei_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalValueDataWei_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalValueDataWei_not?: InputMaybe<Scalars['BigInt']['input']>;
+  totalValueDataWei_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+};
+
+export enum Delegator_OrderBy {
+  Delegations = 'delegations',
+  Id = 'id',
+  NumberOfDelegations = 'numberOfDelegations',
+  QueueEntries = 'queueEntries',
+  TotalValueDataWei = 'totalValueDataWei'
 }
 
 export type Flag = {
@@ -154,14 +307,25 @@ export type Flag = {
   flagger: Operator;
   flaggingTimestamp: Scalars['Int']['output'];
   id: Scalars['ID']['output'];
+  lastFlagIndex: Scalars['Int']['output'];
   metadata: Scalars['String']['output'];
   result: Scalars['String']['output'];
   reviewerCount: Scalars['Int']['output'];
   sponsorship: Sponsorship;
   target: Operator;
   targetStakeAtRiskWei: Scalars['BigInt']['output'];
-  votesAgainstKick: Scalars['Int']['output'];
-  votesForKick: Scalars['Int']['output'];
+  votes: Array<Vote>;
+  votesAgainstKick: Scalars['BigInt']['output'];
+  votesForKick: Scalars['BigInt']['output'];
+};
+
+
+export type FlagVotesArgs = {
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Vote_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<Vote_Filter>;
 };
 
 export type Flag_Filter = {
@@ -205,6 +369,14 @@ export type Flag_Filter = {
   id_lte?: InputMaybe<Scalars['ID']['input']>;
   id_not?: InputMaybe<Scalars['ID']['input']>;
   id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  lastFlagIndex?: InputMaybe<Scalars['Int']['input']>;
+  lastFlagIndex_gt?: InputMaybe<Scalars['Int']['input']>;
+  lastFlagIndex_gte?: InputMaybe<Scalars['Int']['input']>;
+  lastFlagIndex_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  lastFlagIndex_lt?: InputMaybe<Scalars['Int']['input']>;
+  lastFlagIndex_lte?: InputMaybe<Scalars['Int']['input']>;
+  lastFlagIndex_not?: InputMaybe<Scalars['Int']['input']>;
+  lastFlagIndex_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
   metadata?: InputMaybe<Scalars['String']['input']>;
   metadata_contains?: InputMaybe<Scalars['String']['input']>;
   metadata_contains_nocase?: InputMaybe<Scalars['String']['input']>;
@@ -304,26 +476,28 @@ export type Flag_Filter = {
   target_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
   target_starts_with?: InputMaybe<Scalars['String']['input']>;
   target_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
-  votesAgainstKick?: InputMaybe<Scalars['Int']['input']>;
-  votesAgainstKick_gt?: InputMaybe<Scalars['Int']['input']>;
-  votesAgainstKick_gte?: InputMaybe<Scalars['Int']['input']>;
-  votesAgainstKick_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  votesAgainstKick_lt?: InputMaybe<Scalars['Int']['input']>;
-  votesAgainstKick_lte?: InputMaybe<Scalars['Int']['input']>;
-  votesAgainstKick_not?: InputMaybe<Scalars['Int']['input']>;
-  votesAgainstKick_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  votesForKick?: InputMaybe<Scalars['Int']['input']>;
-  votesForKick_gt?: InputMaybe<Scalars['Int']['input']>;
-  votesForKick_gte?: InputMaybe<Scalars['Int']['input']>;
-  votesForKick_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  votesForKick_lt?: InputMaybe<Scalars['Int']['input']>;
-  votesForKick_lte?: InputMaybe<Scalars['Int']['input']>;
-  votesForKick_not?: InputMaybe<Scalars['Int']['input']>;
-  votesForKick_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  votesAgainstKick?: InputMaybe<Scalars['BigInt']['input']>;
+  votesAgainstKick_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  votesAgainstKick_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  votesAgainstKick_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  votesAgainstKick_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  votesAgainstKick_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  votesAgainstKick_not?: InputMaybe<Scalars['BigInt']['input']>;
+  votesAgainstKick_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  votesForKick?: InputMaybe<Scalars['BigInt']['input']>;
+  votesForKick_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  votesForKick_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  votesForKick_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  votesForKick_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  votesForKick_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  votesForKick_not?: InputMaybe<Scalars['BigInt']['input']>;
+  votesForKick_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  votes_?: InputMaybe<Vote_Filter>;
 };
 
 export enum Flag_OrderBy {
   Flagger = 'flagger',
+  FlaggerCumulativeEarningsWei = 'flagger__cumulativeEarningsWei',
   FlaggerCumulativeOperatorsCutWei = 'flagger__cumulativeOperatorsCutWei',
   FlaggerCumulativeProfitsWei = 'flagger__cumulativeProfitsWei',
   FlaggerDataTokenBalanceWei = 'flagger__dataTokenBalanceWei',
@@ -343,6 +517,7 @@ export enum Flag_OrderBy {
   FlaggerValueWithoutEarnings = 'flagger__valueWithoutEarnings',
   FlaggingTimestamp = 'flaggingTimestamp',
   Id = 'id',
+  LastFlagIndex = 'lastFlagIndex',
   Metadata = 'metadata',
   Result = 'result',
   ReviewerCount = 'reviewerCount',
@@ -362,6 +537,7 @@ export enum Flag_OrderBy {
   SponsorshipTotalStakedWei = 'sponsorship__totalStakedWei',
   Target = 'target',
   TargetStakeAtRiskWei = 'targetStakeAtRiskWei',
+  TargetCumulativeEarningsWei = 'target__cumulativeEarningsWei',
   TargetCumulativeOperatorsCutWei = 'target__cumulativeOperatorsCutWei',
   TargetCumulativeProfitsWei = 'target__cumulativeProfitsWei',
   TargetDataTokenBalanceWei = 'target__dataTokenBalanceWei',
@@ -379,6 +555,7 @@ export enum Flag_OrderBy {
   TargetValueUpdateBlockNumber = 'target__valueUpdateBlockNumber',
   TargetValueUpdateTimestamp = 'target__valueUpdateTimestamp',
   TargetValueWithoutEarnings = 'target__valueWithoutEarnings',
+  Votes = 'votes',
   VotesAgainstKick = 'votesAgainstKick',
   VotesForKick = 'votesForKick'
 }
@@ -474,15 +651,17 @@ export enum Node_OrderBy {
 
 export type Operator = {
   __typename?: 'Operator';
+  /** Operator earnings (cumulative) from all sponsorships. Includes the operator's share of earnings + delegators earnings */
+  cumulativeEarningsWei: Scalars['BigInt']['output'];
   /** Operator's share of the earnings (cumulative) */
   cumulativeOperatorsCutWei: Scalars['BigInt']['output'];
   /** Increase in the Operator's value (cumulative, after fees) */
   cumulativeProfitsWei: Scalars['BigInt']['output'];
   /** DATA held by the operator, not yet staked. Last updated at valueUpdateBlockNumber/Timestamp, might be out of date if new DATA is sent via `ERC20.transfer`. */
   dataTokenBalanceWei: Scalars['BigInt']['output'];
+  delegations: Array<Delegation>;
   /** All delegators who have delegated to this operator. Increased when Delegation is created and decreased when Delegation is removed */
   delegatorCount: Scalars['Int']['output'];
-  delegators: Array<Delegation>;
   /** DATA/operatortoken exchange rate, equal to valueWithoutEarnings / totalSupply. Operator tokens are worth (exchangeRate * amount) DATA when undelegating. */
   exchangeRate: Scalars['BigDecimal']['output'];
   flagsOpened: Array<Flag>;
@@ -512,10 +691,11 @@ export type Operator = {
   valueUpdateTimestamp: Scalars['BigInt']['output'];
   /** DATA staked + held by the Operator contract = totalStakeInSponsorshipsWei + dataTokenBalanceWei. Last updated at valueUpdateBlockNumber/Timestamp. */
   valueWithoutEarnings: Scalars['BigInt']['output'];
+  votesOnFlags: Array<Vote>;
 };
 
 
-export type OperatorDelegatorsArgs = {
+export type OperatorDelegationsArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Delegation_OrderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
@@ -595,8 +775,19 @@ export type OperatorStakingEventsArgs = {
   where?: InputMaybe<StakingEvent_Filter>;
 };
 
+
+export type OperatorVotesOnFlagsArgs = {
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Vote_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<Vote_Filter>;
+};
+
 export type OperatorDailyBucket = {
   __typename?: 'OperatorDailyBucket';
+  /** Sum of the operator's lifetime earnings (including operator's cut) */
+  cumulativeEarningsWei: Scalars['BigInt']['output'];
   /** DATA held by the operator, not yet staked (first event in bucket) */
   dataTokenBalanceWei: Scalars['BigInt']['output'];
   /** The day of the bucket. This is a timestamp in seconds */
@@ -627,6 +818,14 @@ export type OperatorDailyBucket_Filter = {
   /** Filter for the block changed event. */
   _change_block?: InputMaybe<BlockChangedFilter>;
   and?: InputMaybe<Array<InputMaybe<OperatorDailyBucket_Filter>>>;
+  cumulativeEarningsWei?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  cumulativeEarningsWei_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_not?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   dataTokenBalanceWei?: InputMaybe<Scalars['BigInt']['input']>;
   dataTokenBalanceWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
   dataTokenBalanceWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
@@ -748,6 +947,7 @@ export type OperatorDailyBucket_Filter = {
 };
 
 export enum OperatorDailyBucket_OrderBy {
+  CumulativeEarningsWei = 'cumulativeEarningsWei',
   DataTokenBalanceWei = 'dataTokenBalanceWei',
   Date = 'date',
   DelegatorCountAtStart = 'delegatorCountAtStart',
@@ -755,6 +955,7 @@ export enum OperatorDailyBucket_OrderBy {
   Id = 'id',
   LossesWei = 'lossesWei',
   Operator = 'operator',
+  OperatorCumulativeEarningsWei = 'operator__cumulativeEarningsWei',
   OperatorCumulativeOperatorsCutWei = 'operator__cumulativeOperatorsCutWei',
   OperatorCumulativeProfitsWei = 'operator__cumulativeProfitsWei',
   OperatorDataTokenBalanceWei = 'operator__dataTokenBalanceWei',
@@ -784,6 +985,14 @@ export type Operator_Filter = {
   /** Filter for the block changed event. */
   _change_block?: InputMaybe<BlockChangedFilter>;
   and?: InputMaybe<Array<InputMaybe<Operator_Filter>>>;
+  cumulativeEarningsWei?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  cumulativeEarningsWei_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_not?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   cumulativeOperatorsCutWei?: InputMaybe<Scalars['BigInt']['input']>;
   cumulativeOperatorsCutWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
   cumulativeOperatorsCutWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
@@ -808,6 +1017,7 @@ export type Operator_Filter = {
   dataTokenBalanceWei_lte?: InputMaybe<Scalars['BigInt']['input']>;
   dataTokenBalanceWei_not?: InputMaybe<Scalars['BigInt']['input']>;
   dataTokenBalanceWei_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  delegations_?: InputMaybe<Delegation_Filter>;
   delegatorCount?: InputMaybe<Scalars['Int']['input']>;
   delegatorCount_gt?: InputMaybe<Scalars['Int']['input']>;
   delegatorCount_gte?: InputMaybe<Scalars['Int']['input']>;
@@ -816,7 +1026,6 @@ export type Operator_Filter = {
   delegatorCount_lte?: InputMaybe<Scalars['Int']['input']>;
   delegatorCount_not?: InputMaybe<Scalars['Int']['input']>;
   delegatorCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  delegators_?: InputMaybe<Delegation_Filter>;
   exchangeRate?: InputMaybe<Scalars['BigDecimal']['input']>;
   exchangeRate_gt?: InputMaybe<Scalars['BigDecimal']['input']>;
   exchangeRate_gte?: InputMaybe<Scalars['BigDecimal']['input']>;
@@ -972,14 +1181,16 @@ export type Operator_Filter = {
   valueWithoutEarnings_lte?: InputMaybe<Scalars['BigInt']['input']>;
   valueWithoutEarnings_not?: InputMaybe<Scalars['BigInt']['input']>;
   valueWithoutEarnings_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  votesOnFlags_?: InputMaybe<Vote_Filter>;
 };
 
 export enum Operator_OrderBy {
+  CumulativeEarningsWei = 'cumulativeEarningsWei',
   CumulativeOperatorsCutWei = 'cumulativeOperatorsCutWei',
   CumulativeProfitsWei = 'cumulativeProfitsWei',
   DataTokenBalanceWei = 'dataTokenBalanceWei',
+  Delegations = 'delegations',
   DelegatorCount = 'delegatorCount',
-  Delegators = 'delegators',
   ExchangeRate = 'exchangeRate',
   FlagsOpened = 'flagsOpened',
   FlagsTargeted = 'flagsTargeted',
@@ -1001,7 +1212,8 @@ export enum Operator_OrderBy {
   TotalStakeInSponsorshipsWei = 'totalStakeInSponsorshipsWei',
   ValueUpdateBlockNumber = 'valueUpdateBlockNumber',
   ValueUpdateTimestamp = 'valueUpdateTimestamp',
-  ValueWithoutEarnings = 'valueWithoutEarnings'
+  ValueWithoutEarnings = 'valueWithoutEarnings',
+  VotesOnFlags = 'votesOnFlags'
 }
 
 /** Defines the order direction, either ascending or descending */
@@ -1828,6 +2040,10 @@ export type Query = {
   _meta?: Maybe<_Meta_>;
   delegation?: Maybe<Delegation>;
   delegations: Array<Delegation>;
+  delegator?: Maybe<Delegator>;
+  delegatorDailyBucket?: Maybe<DelegatorDailyBucket>;
+  delegatorDailyBuckets: Array<DelegatorDailyBucket>;
+  delegators: Array<Delegator>;
   flag?: Maybe<Flag>;
   flags: Array<Flag>;
   node?: Maybe<Node>;
@@ -1868,6 +2084,8 @@ export type Query = {
   streamPermission?: Maybe<StreamPermission>;
   streamPermissions: Array<StreamPermission>;
   streams: Array<Stream>;
+  vote?: Maybe<Vote>;
+  votes: Array<Vote>;
 };
 
 
@@ -1891,6 +2109,42 @@ export type QueryDelegationsArgs = {
   skip?: InputMaybe<Scalars['Int']['input']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<Delegation_Filter>;
+};
+
+
+export type QueryDelegatorArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryDelegatorDailyBucketArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryDelegatorDailyBucketsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<DelegatorDailyBucket_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<DelegatorDailyBucket_Filter>;
+};
+
+
+export type QueryDelegatorsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Delegator_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Delegator_Filter>;
 };
 
 
@@ -2256,11 +2510,29 @@ export type QueryStreamsArgs = {
   where?: InputMaybe<Stream_Filter>;
 };
 
+
+export type QueryVoteArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryVotesArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Vote_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Vote_Filter>;
+};
+
 export type QueueEntry = {
   __typename?: 'QueueEntry';
   amount: Scalars['BigInt']['output'];
   date: Scalars['BigInt']['output'];
-  delegator: Scalars['String']['output'];
+  delegator: Delegator;
   id: Scalars['ID']['output'];
   operator: Operator;
 };
@@ -2286,6 +2558,7 @@ export type QueueEntry_Filter = {
   date_not?: InputMaybe<Scalars['BigInt']['input']>;
   date_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   delegator?: InputMaybe<Scalars['String']['input']>;
+  delegator_?: InputMaybe<Delegator_Filter>;
   delegator_contains?: InputMaybe<Scalars['String']['input']>;
   delegator_contains_nocase?: InputMaybe<Scalars['String']['input']>;
   delegator_ends_with?: InputMaybe<Scalars['String']['input']>;
@@ -2341,8 +2614,12 @@ export enum QueueEntry_OrderBy {
   Amount = 'amount',
   Date = 'date',
   Delegator = 'delegator',
+  DelegatorId = 'delegator__id',
+  DelegatorNumberOfDelegations = 'delegator__numberOfDelegations',
+  DelegatorTotalValueDataWei = 'delegator__totalValueDataWei',
   Id = 'id',
   Operator = 'operator',
+  OperatorCumulativeEarningsWei = 'operator__cumulativeEarningsWei',
   OperatorCumulativeOperatorsCutWei = 'operator__cumulativeOperatorsCutWei',
   OperatorCumulativeProfitsWei = 'operator__cumulativeProfitsWei',
   OperatorDataTokenBalanceWei = 'operator__dataTokenBalanceWei',
@@ -2449,6 +2726,7 @@ export enum SlashingEvent_OrderBy {
   Date = 'date',
   Id = 'id',
   Operator = 'operator',
+  OperatorCumulativeEarningsWei = 'operator__cumulativeEarningsWei',
   OperatorCumulativeOperatorsCutWei = 'operator__cumulativeOperatorsCutWei',
   OperatorCumulativeProfitsWei = 'operator__cumulativeProfitsWei',
   OperatorDataTokenBalanceWei = 'operator__dataTokenBalanceWei',
@@ -2586,24 +2864,40 @@ export enum SponsoringEvent_OrderBy {
 
 export type Sponsorship = {
   __typename?: 'Sponsorship';
+  /** who deployed the Sponsorship contract */
   creator: Scalars['String']['output'];
+  /** how much DATA has entered or travelled through this contract */
   cumulativeSponsoring: Scalars['BigInt']['output'];
+  /** what the operators think about each other: 'flag' means an operator proposes another operator be kicked out */
   flags: Array<Flag>;
+  /** id = sponsorship address */
   id: Scalars['ID']['output'];
+  /** are there enough operators? Is this sponsorship paying? */
   isRunning: Scalars['Boolean']['output'];
+  /** how many stakers are accepted (if MaxOperatorsJoinPolicy is used) */
   maxOperators?: Maybe<Scalars['Int']['output']>;
+  /** connection metadata */
   metadata?: Maybe<Scalars['String']['output']>;
+  /** how long you have to stay staked, or else you get slashed when you forceUnstake */
   minimumStakingPeriodSeconds: Scalars['BigInt']['output'];
+  /** how many operators are staked right now */
   operatorCount: Scalars['Int']['output'];
+  /** when will the contract run out of DATA if more is not added */
   projectedInsolvency: Scalars['BigInt']['output'];
+  /** how much DATA is there still in this contract */
   remainingWei: Scalars['BigInt']['output'];
   slashingEvents: Array<SlashingEvent>;
   sponsoringEvents: Array<SponsoringEvent>;
+  /** how much 'ROI' you could make by staking, extrapolated from current payments */
   spotAPY: Scalars['BigDecimal']['output'];
+  /** who has staked how much */
   stakes: Array<Stake>;
   stakingEvents: Array<StakingEvent>;
+  /** sponsored stream */
   stream?: Maybe<Stream>;
+  /** how much is split between staked operators per second, weighted by their stake */
   totalPayoutWeiPerSec: Scalars['BigInt']['output'];
+  /** how much stake in total is sharing on the sponsorship revenue */
   totalStakedWei: Scalars['BigInt']['output'];
 };
 
@@ -2959,7 +3253,6 @@ export type Stake = {
   __typename?: 'Stake';
   amountWei: Scalars['BigInt']['output'];
   earningsWei: Scalars['BigInt']['output'];
-  flagCount: Scalars['Int']['output'];
   id: Scalars['ID']['output'];
   joinTimestamp: Scalars['Int']['output'];
   lockedWei: Scalars['BigInt']['output'];
@@ -2988,14 +3281,6 @@ export type Stake_Filter = {
   earningsWei_lte?: InputMaybe<Scalars['BigInt']['input']>;
   earningsWei_not?: InputMaybe<Scalars['BigInt']['input']>;
   earningsWei_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  flagCount?: InputMaybe<Scalars['Int']['input']>;
-  flagCount_gt?: InputMaybe<Scalars['Int']['input']>;
-  flagCount_gte?: InputMaybe<Scalars['Int']['input']>;
-  flagCount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  flagCount_lt?: InputMaybe<Scalars['Int']['input']>;
-  flagCount_lte?: InputMaybe<Scalars['Int']['input']>;
-  flagCount_not?: InputMaybe<Scalars['Int']['input']>;
-  flagCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
   id?: InputMaybe<Scalars['ID']['input']>;
   id_gt?: InputMaybe<Scalars['ID']['input']>;
   id_gte?: InputMaybe<Scalars['ID']['input']>;
@@ -3076,11 +3361,11 @@ export type Stake_Filter = {
 export enum Stake_OrderBy {
   AmountWei = 'amountWei',
   EarningsWei = 'earningsWei',
-  FlagCount = 'flagCount',
   Id = 'id',
   JoinTimestamp = 'joinTimestamp',
   LockedWei = 'lockedWei',
   Operator = 'operator',
+  OperatorCumulativeEarningsWei = 'operator__cumulativeEarningsWei',
   OperatorCumulativeOperatorsCutWei = 'operator__cumulativeOperatorsCutWei',
   OperatorCumulativeProfitsWei = 'operator__cumulativeProfitsWei',
   OperatorDataTokenBalanceWei = 'operator__dataTokenBalanceWei',
@@ -3202,6 +3487,7 @@ export enum StakingEvent_OrderBy {
   Date = 'date',
   Id = 'id',
   Operator = 'operator',
+  OperatorCumulativeEarningsWei = 'operator__cumulativeEarningsWei',
   OperatorCumulativeOperatorsCutWei = 'operator__cumulativeOperatorsCutWei',
   OperatorCumulativeProfitsWei = 'operator__cumulativeProfitsWei',
   OperatorDataTokenBalanceWei = 'operator__dataTokenBalanceWei',
@@ -3457,6 +3743,10 @@ export type Subscription = {
   _meta?: Maybe<_Meta_>;
   delegation?: Maybe<Delegation>;
   delegations: Array<Delegation>;
+  delegator?: Maybe<Delegator>;
+  delegatorDailyBucket?: Maybe<DelegatorDailyBucket>;
+  delegatorDailyBuckets: Array<DelegatorDailyBucket>;
+  delegators: Array<Delegator>;
   flag?: Maybe<Flag>;
   flags: Array<Flag>;
   node?: Maybe<Node>;
@@ -3496,6 +3786,8 @@ export type Subscription = {
   streamPermission?: Maybe<StreamPermission>;
   streamPermissions: Array<StreamPermission>;
   streams: Array<Stream>;
+  vote?: Maybe<Vote>;
+  votes: Array<Vote>;
 };
 
 
@@ -3519,6 +3811,42 @@ export type SubscriptionDelegationsArgs = {
   skip?: InputMaybe<Scalars['Int']['input']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<Delegation_Filter>;
+};
+
+
+export type SubscriptionDelegatorArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionDelegatorDailyBucketArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionDelegatorDailyBucketsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<DelegatorDailyBucket_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<DelegatorDailyBucket_Filter>;
+};
+
+
+export type SubscriptionDelegatorsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Delegator_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Delegator_Filter>;
 };
 
 
@@ -3874,6 +4202,147 @@ export type SubscriptionStreamsArgs = {
   where?: InputMaybe<Stream_Filter>;
 };
 
+
+export type SubscriptionVoteArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionVotesArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Vote_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Vote_Filter>;
+};
+
+export type Vote = {
+  __typename?: 'Vote';
+  flag: Flag;
+  id: Scalars['ID']['output'];
+  timestamp: Scalars['Int']['output'];
+  votedKick: Scalars['Boolean']['output'];
+  voter: Operator;
+  voterWeight: Scalars['BigInt']['output'];
+};
+
+export type Vote_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  and?: InputMaybe<Array<InputMaybe<Vote_Filter>>>;
+  flag?: InputMaybe<Scalars['String']['input']>;
+  flag_?: InputMaybe<Flag_Filter>;
+  flag_contains?: InputMaybe<Scalars['String']['input']>;
+  flag_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  flag_ends_with?: InputMaybe<Scalars['String']['input']>;
+  flag_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  flag_gt?: InputMaybe<Scalars['String']['input']>;
+  flag_gte?: InputMaybe<Scalars['String']['input']>;
+  flag_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  flag_lt?: InputMaybe<Scalars['String']['input']>;
+  flag_lte?: InputMaybe<Scalars['String']['input']>;
+  flag_not?: InputMaybe<Scalars['String']['input']>;
+  flag_not_contains?: InputMaybe<Scalars['String']['input']>;
+  flag_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  flag_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  flag_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  flag_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  flag_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  flag_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  flag_starts_with?: InputMaybe<Scalars['String']['input']>;
+  flag_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  id_gt?: InputMaybe<Scalars['ID']['input']>;
+  id_gte?: InputMaybe<Scalars['ID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_lt?: InputMaybe<Scalars['ID']['input']>;
+  id_lte?: InputMaybe<Scalars['ID']['input']>;
+  id_not?: InputMaybe<Scalars['ID']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  or?: InputMaybe<Array<InputMaybe<Vote_Filter>>>;
+  timestamp?: InputMaybe<Scalars['Int']['input']>;
+  timestamp_gt?: InputMaybe<Scalars['Int']['input']>;
+  timestamp_gte?: InputMaybe<Scalars['Int']['input']>;
+  timestamp_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  timestamp_lt?: InputMaybe<Scalars['Int']['input']>;
+  timestamp_lte?: InputMaybe<Scalars['Int']['input']>;
+  timestamp_not?: InputMaybe<Scalars['Int']['input']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  votedKick?: InputMaybe<Scalars['Boolean']['input']>;
+  votedKick_in?: InputMaybe<Array<Scalars['Boolean']['input']>>;
+  votedKick_not?: InputMaybe<Scalars['Boolean']['input']>;
+  votedKick_not_in?: InputMaybe<Array<Scalars['Boolean']['input']>>;
+  voter?: InputMaybe<Scalars['String']['input']>;
+  voterWeight?: InputMaybe<Scalars['BigInt']['input']>;
+  voterWeight_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  voterWeight_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  voterWeight_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  voterWeight_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  voterWeight_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  voterWeight_not?: InputMaybe<Scalars['BigInt']['input']>;
+  voterWeight_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  voter_?: InputMaybe<Operator_Filter>;
+  voter_contains?: InputMaybe<Scalars['String']['input']>;
+  voter_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  voter_ends_with?: InputMaybe<Scalars['String']['input']>;
+  voter_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  voter_gt?: InputMaybe<Scalars['String']['input']>;
+  voter_gte?: InputMaybe<Scalars['String']['input']>;
+  voter_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  voter_lt?: InputMaybe<Scalars['String']['input']>;
+  voter_lte?: InputMaybe<Scalars['String']['input']>;
+  voter_not?: InputMaybe<Scalars['String']['input']>;
+  voter_not_contains?: InputMaybe<Scalars['String']['input']>;
+  voter_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  voter_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  voter_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  voter_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  voter_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  voter_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  voter_starts_with?: InputMaybe<Scalars['String']['input']>;
+  voter_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+};
+
+export enum Vote_OrderBy {
+  Flag = 'flag',
+  FlagFlaggingTimestamp = 'flag__flaggingTimestamp',
+  FlagId = 'flag__id',
+  FlagLastFlagIndex = 'flag__lastFlagIndex',
+  FlagMetadata = 'flag__metadata',
+  FlagResult = 'flag__result',
+  FlagReviewerCount = 'flag__reviewerCount',
+  FlagTargetStakeAtRiskWei = 'flag__targetStakeAtRiskWei',
+  FlagVotesAgainstKick = 'flag__votesAgainstKick',
+  FlagVotesForKick = 'flag__votesForKick',
+  Id = 'id',
+  Timestamp = 'timestamp',
+  VotedKick = 'votedKick',
+  Voter = 'voter',
+  VoterWeight = 'voterWeight',
+  VoterCumulativeEarningsWei = 'voter__cumulativeEarningsWei',
+  VoterCumulativeOperatorsCutWei = 'voter__cumulativeOperatorsCutWei',
+  VoterCumulativeProfitsWei = 'voter__cumulativeProfitsWei',
+  VoterDataTokenBalanceWei = 'voter__dataTokenBalanceWei',
+  VoterDelegatorCount = 'voter__delegatorCount',
+  VoterExchangeRate = 'voter__exchangeRate',
+  VoterId = 'voter__id',
+  VoterLatestHeartbeatMetadata = 'voter__latestHeartbeatMetadata',
+  VoterLatestHeartbeatTimestamp = 'voter__latestHeartbeatTimestamp',
+  VoterMetadataJsonString = 'voter__metadataJsonString',
+  VoterOperatorTokenTotalSupplyWei = 'voter__operatorTokenTotalSupplyWei',
+  VoterOperatorsCutFraction = 'voter__operatorsCutFraction',
+  VoterOwner = 'voter__owner',
+  VoterSlashingsCount = 'voter__slashingsCount',
+  VoterTotalStakeInSponsorshipsWei = 'voter__totalStakeInSponsorshipsWei',
+  VoterValueUpdateBlockNumber = 'voter__valueUpdateBlockNumber',
+  VoterValueUpdateTimestamp = 'voter__valueUpdateTimestamp',
+  VoterValueWithoutEarnings = 'voter__valueWithoutEarnings'
+}
+
 export type _Block_ = {
   __typename?: '_Block_';
   /** The hash of the block */
@@ -3908,7 +4377,7 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny'
 }
 
-export type OperatorFieldsFragment = { __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegators: Array<{ __typename?: 'Delegation', delegatedDataWei: any, delegator: string, operatorTokenBalanceWei: any }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, delegator: string, id: string }> };
+export type OperatorFieldsFragment = { __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> };
 
 export type GetAllOperatorsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -3919,7 +4388,7 @@ export type GetAllOperatorsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllOperatorsQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegators: Array<{ __typename?: 'Delegation', delegatedDataWei: any, delegator: string, operatorTokenBalanceWei: any }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, delegator: string, id: string }> }> };
+export type GetAllOperatorsQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
 
 export type SearchOperatorsByIdQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -3930,7 +4399,7 @@ export type SearchOperatorsByIdQueryVariables = Exact<{
 }>;
 
 
-export type SearchOperatorsByIdQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegators: Array<{ __typename?: 'Delegation', delegatedDataWei: any, delegator: string, operatorTokenBalanceWei: any }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, delegator: string, id: string }> }> };
+export type SearchOperatorsByIdQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
 
 export type SearchOperatorsByMetadataQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -3941,14 +4410,14 @@ export type SearchOperatorsByMetadataQueryVariables = Exact<{
 }>;
 
 
-export type SearchOperatorsByMetadataQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegators: Array<{ __typename?: 'Delegation', delegatedDataWei: any, delegator: string, operatorTokenBalanceWei: any }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, delegator: string, id: string }> }> };
+export type SearchOperatorsByMetadataQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
 
 export type GetOperatorByIdQueryVariables = Exact<{
   operatorId: Scalars['ID']['input'];
 }>;
 
 
-export type GetOperatorByIdQuery = { __typename?: 'Query', operator?: { __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegators: Array<{ __typename?: 'Delegation', delegatedDataWei: any, delegator: string, operatorTokenBalanceWei: any }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, delegator: string, id: string }> } | null };
+export type GetOperatorByIdQuery = { __typename?: 'Query', operator?: { __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> } | null };
 
 export type GetOperatorsByDelegationQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -3959,7 +4428,7 @@ export type GetOperatorsByDelegationQueryVariables = Exact<{
 }>;
 
 
-export type GetOperatorsByDelegationQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegators: Array<{ __typename?: 'Delegation', delegatedDataWei: any, delegator: string, operatorTokenBalanceWei: any }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, delegator: string, id: string }> }> };
+export type GetOperatorsByDelegationQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
 
 export type GetOperatorsByDelegationAndIdQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -3971,7 +4440,7 @@ export type GetOperatorsByDelegationAndIdQueryVariables = Exact<{
 }>;
 
 
-export type GetOperatorsByDelegationAndIdQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegators: Array<{ __typename?: 'Delegation', delegatedDataWei: any, delegator: string, operatorTokenBalanceWei: any }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, delegator: string, id: string }> }> };
+export type GetOperatorsByDelegationAndIdQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
 
 export type GetOperatorsByDelegationAndMetadataQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -3983,14 +4452,14 @@ export type GetOperatorsByDelegationAndMetadataQueryVariables = Exact<{
 }>;
 
 
-export type GetOperatorsByDelegationAndMetadataQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegators: Array<{ __typename?: 'Delegation', delegatedDataWei: any, delegator: string, operatorTokenBalanceWei: any }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, delegator: string, id: string }> }> };
+export type GetOperatorsByDelegationAndMetadataQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
 
 export type GetOperatorByOwnerAddressQueryVariables = Exact<{
   owner: Scalars['String']['input'];
 }>;
 
 
-export type GetOperatorByOwnerAddressQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegators: Array<{ __typename?: 'Delegation', delegatedDataWei: any, delegator: string, operatorTokenBalanceWei: any }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, delegator: string, id: string }> }> };
+export type GetOperatorByOwnerAddressQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
 
 export type SponsorshipFieldsFragment = { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> };
 
@@ -4165,10 +4634,13 @@ export const OperatorFieldsFragmentDoc = gql`
       ...SponsorshipFields
     }
   }
-  delegators {
-    delegatedDataWei
-    delegator
+  delegations {
+    delegator {
+      id
+    }
+    valueDataWei
     operatorTokenBalanceWei
+    id
   }
   slashingEvents {
     amount
@@ -4183,7 +4655,9 @@ export const OperatorFieldsFragmentDoc = gql`
   queueEntries(first: 1000) {
     amount
     date
-    delegator
+    delegator {
+      id
+    }
     id
   }
   delegatorCount
@@ -4344,7 +4818,7 @@ export const GetOperatorsByDelegationDocument = gql`
   operators(
     first: $first
     skip: $skip
-    where: {delegators_: {delegator: $delegator}}
+    where: {delegations_: {delegator: $delegator}}
     orderBy: $orderBy
     orderDirection: $orderDirection
   ) {
@@ -4358,7 +4832,7 @@ export const GetOperatorsByDelegationAndIdDocument = gql`
   operators(
     first: $first
     skip: $skip
-    where: {delegators_: {delegator: $delegator}, id: $operatorId}
+    where: {delegations_: {delegator: $delegator}, id: $operatorId}
     orderBy: $orderBy
     orderDirection: $orderDirection
   ) {
@@ -4372,7 +4846,7 @@ export const GetOperatorsByDelegationAndMetadataDocument = gql`
   operators(
     first: $first
     skip: $skip
-    where: {delegators_: {delegator: $delegator}, metadataJsonString_contains_nocase: $searchQuery}
+    where: {delegations_: {delegator: $delegator}, metadataJsonString_contains_nocase: $searchQuery}
     orderBy: $orderBy
     orderDirection: $orderDirection
   ) {

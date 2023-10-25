@@ -787,11 +787,11 @@ export function getSpotApy<
  */
 export function getDelegatedAmountForWallet(
     address: string,
-    { delegators, exchangeRate }: ParsedOperator,
+    { delegations, exchangeRate }: ParsedOperator,
 ): BN {
     const addr = address.toLowerCase()
 
-    return delegators
+    return delegations
         .reduce(
             (sum, { delegator, operatorTokenBalanceWei }) =>
                 delegator.toLowerCase() === addr
