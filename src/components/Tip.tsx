@@ -37,6 +37,7 @@ const TipBody = styled.div`
     transition-property: visibility, opacity, transform;
     transition-delay: 350ms, 0s, 0s;
     visibility: hidden;
+    white-space: normal;
 `
 
 const TipContent = styled.div`

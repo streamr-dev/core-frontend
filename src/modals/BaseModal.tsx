@@ -63,6 +63,7 @@ export default function BaseModal({
     onReject,
     onBeforeAbort,
     darkBackdrop,
+    ...props
 }: BaseModalProps) {
     const [dismissed, dismiss] = useReducer(() => true, false)
 
@@ -143,7 +144,7 @@ export default function BaseModal({
     }, [])
 
     return (
-        <Root ref={rootRef} $dismissed={dismissed} $dark={darkBackdrop}>
+        <Root ref={rootRef} $dismissed={dismissed} $dark={darkBackdrop} {...props}>
             <NoScrollStyles />
             <Backdrop onMouseDown={() => void close(RejectionReason.Backdrop)} />
             <OuterWrap>
