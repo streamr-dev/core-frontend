@@ -184,12 +184,12 @@ export default function BecomeOperatorModal({
             }}
         >
             <SectionHeadline>
-                Please choose the percentage for the Operator&apos;s cut{' '}
+                Please choose the percentage for the Owner&apos;s cut{' '}
                 <Help align="center">
                     <p>
-                        The Operator&apos;s cut percentage is the earnings split between
-                        the Operator and its Delegators. This value can be updated as long
-                        as the Operator is not staked on any&nbsp;Sponsorships.
+                        The Owner&apos;s cut percentage is the earnings split between the
+                        Operator and its Delegators. This value can be updated as long as
+                        the Operator is not staked on any&nbsp;Sponsorships.
                     </p>
                 </Help>
             </SectionHeadline>
@@ -197,7 +197,7 @@ export default function BecomeOperatorModal({
                 <WingedLabelWrap>
                     <Label>
                         <LabelInner>
-                            <span>Operator&apos;s cut percentage*</span>
+                            <span>Owner&apos;s cut percentage*</span>
                         </LabelInner>
                     </Label>
                     {cutValueIsTouchedAndInvalid && (
@@ -230,16 +230,16 @@ export default function BecomeOperatorModal({
             </Section>
             {cutEditingDisabled && (
                 <AlertContainer>
-                    <Alert type="notice" title="Operator's cut locked">
+                    <Alert type="notice" title="Owner's cut locked">
                         <span>
-                            The operator&apos;s cut can&apos;t be modified while staked.
-                            To change it, fully unstake from all sponsorships.
+                            The owner&apos;s cut can&apos;t be modified while staked. To
+                            change it, fully unstake from all sponsorships.
                         </span>
                     </Alert>
                 </AlertContainer>
             )}
             <SectionHeadline>
-                Please choose the redundancy factor{' '}
+                Please input your node redundancy factor{' '}
                 <Help align="center">
                     <p>
                         Sets the amount of duplicated work when running a fleet of
@@ -255,7 +255,7 @@ export default function BecomeOperatorModal({
                 <WingedLabelWrap>
                     <Label>
                         <LabelInner>
-                            <span>Redundancy factor*</span>
+                            <span>Node redundancy factor*</span>
                         </LabelInner>
                     </Label>
                     {!redundancyFactorIsValid && (
@@ -280,7 +280,7 @@ export default function BecomeOperatorModal({
                 </FieldWrap>
             </Section>
             <AboutOperator>
-                <SectionHeadline>About operator</SectionHeadline>
+                <SectionHeadline>About Operator</SectionHeadline>
                 <Section>
                     <WingedLabelWrap>
                         <Label>

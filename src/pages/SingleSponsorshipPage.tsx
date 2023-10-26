@@ -208,7 +208,7 @@ export const SingleSponsorshipPage = () => {
                                         elements={sponsorship.stakes}
                                         columns={[
                                             {
-                                                displayName: 'Operator ID',
+                                                displayName: 'Operator',
                                                 key: 'operatorId',
                                                 isSticky: true,
                                                 valueMapper: ({

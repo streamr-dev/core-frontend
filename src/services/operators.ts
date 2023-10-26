@@ -109,7 +109,7 @@ export async function updateOperator(
     if (hasUpdateCutOperation) {
         operations.push({
             id: 'updateCutOperation',
-            label: "Update the operator's cut value",
+            label: "Update the owner's cut value",
         })
     }
 

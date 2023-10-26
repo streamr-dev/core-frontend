@@ -8,6 +8,7 @@ import { Address, Banner, IconWrap } from '~/components/ActionBars/AboutEntity'
 import { truncateStreamName } from '~/shared/utils/text'
 import { ExternalLinkIcon } from '~/icons'
 import routes from '~/routes'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 
 export function AboutSponsorship({ sponsorship }: { sponsorship: ParsedSponsorship }) {
     const { streamId } = sponsorship
@@ -30,9 +31,9 @@ export function AboutSponsorship({ sponsorship }: { sponsorship: ParsedSponsorsh
                 </IconWrap>
                 <div>
                     <p>
-                        Sponsorships pay out tokens to staked operators for doing work
-                        in&nbsp;the network, i.e. relaying data in the associated stream.
-                        Sponsorships can be funded by anyone.
+                        Sponsorships payout <SponsorshipPaymentTokenName /> tokens to
+                        staked Operators that relay data in the sponsored stream. Anyone
+                        can fund or extend a Sponsorship.
                     </p>
                     <p>
                         <a

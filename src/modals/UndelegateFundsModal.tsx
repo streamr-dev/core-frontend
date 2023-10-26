@@ -141,11 +141,11 @@ export default function UndelegateFundsModal({
                         </div>
                     </li>
                     <li>
-                        <Prop>Operator ID</Prop>
+                        <Prop>Operator</Prop>
                         <div>{operatorId}</div>
                     </li>
                     <li>
-                        <Prop>Available balance in operator contract</Prop>
+                        <Prop>Available balance in Operator</Prop>
                         <div>
                             {freeFunds.toString()} {tokenSymbol}
                         </div>

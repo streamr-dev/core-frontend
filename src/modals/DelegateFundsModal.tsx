@@ -170,11 +170,11 @@ export default function DelegateFundsModal({
                         </div>
                     </li>
                     <li>
-                        <Prop>Operator ID</Prop>
+                        <Prop>Operator</Prop>
                         <div>{operator.id}</div>
                     </li>
                     <li>
-                        <Prop>Amount currently delegated to Operator</Prop>
+                        <Prop>Your stake</Prop>
                         <div>
                             {delegatedTotal.toString()} {tokenSymbol}
                         </div>

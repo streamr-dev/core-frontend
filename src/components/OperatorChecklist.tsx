@@ -27,9 +27,9 @@ export function OperatorChecklist({ operatorId }: { operatorId: string | undefin
                 state={funded}
                 tip={
                     <p>
-                        You need to deposit <SponsorshipPaymentTokenName /> tokens into
-                        your operator contract before you can stake on sponsorships or
-                        receive delegations.
+                        The owner must fund the Operator with <SponsorshipPaymentTokenName />&nbsp;
+                        tokens before it can be used for staking on
+                        sponsorships or receiving delegations.
                     </p>
                 }
             >
@@ -40,8 +40,7 @@ export function OperatorChecklist({ operatorId }: { operatorId: string | undefin
                 state={nodesDeclared}
                 tip={
                     <p>
-                        Configure your nodes with private keys and declare the
-                        corresponding addresses to the operator contract.
+                        The owner must pair at least 1 node address with their Operator.
                     </p>
                 }
             >
@@ -53,8 +52,8 @@ export function OperatorChecklist({ operatorId }: { operatorId: string | undefin
                 tip={
                     <>
                         <p>
-                            Your node addresses must be funded with some MATIC for Polygon
-                            transaction fees.
+                            The Operator&apos;s node address(es) must
+                            each have at least 0.1 MATIC tokens.
                         </p>
                         <p>This alert triggers if a balance is less than 0.1 MATIC.</p>
                     </>
@@ -67,9 +66,10 @@ export function OperatorChecklist({ operatorId }: { operatorId: string | undefin
                 state={nodesRunning}
                 tip={
                     <p>
-                        You need to run Streamr nodes with the operator plugin enabled.
-                        The nodes will do the work you sign up for when you stake on
-                        sponsorships.
+                        The Operator&apos;s nodes must run the operator plugin,
+                        the node&apos;s config file must contain a private key
+                        of one of the paired node addresses, and it must
+                        contain the Operator contract address.
                     </p>
                 }
             >
@@ -78,7 +78,17 @@ export function OperatorChecklist({ operatorId }: { operatorId: string | undefin
             <Separator />
             <ChecklistItem
                 state={nodesReachable}
-                tip={<p>The websocket port on your nodes should be reachable.</p>}
+                tip={
+                    <>
+                        <p>
+                            The Operator must ensure that their nodes can be reached
+                            on their node&apos;s configured WebSocket port.
+                        </p>
+                        <p>
+                            The default port is 32200.
+                        </p>
+                    </>
+                }
             >
                 Nodes reachable
             </ChecklistItem>

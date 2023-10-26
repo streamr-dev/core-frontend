@@ -102,9 +102,9 @@ export const OperatorsPage = () => {
                         selection={selectedTab}
                         fullWidthOnMobile={true}
                     >
-                        <Tab id={TabOption.AllOperators}>All operators</Tab>
+                        <Tab id={TabOption.AllOperators}>All Operators</Tab>
                         <Tab id={TabOption.MyDelegations} disabled={!wallet}>
-                            My delegations
+                            My Delegations
                         </Tab>
                     </Tabs>
                 }
@@ -149,9 +149,9 @@ export const OperatorsPage = () => {
                         title={
                             <h2>
                                 {selectedTab === TabOption.AllOperators ? (
-                                    <>All operators</>
+                                    <>All Operators</>
                                 ) : (
-                                    <>My delegations</>
+                                    <>My Delegations</>
                                 )}
                             </h2>
                         }
@@ -203,7 +203,7 @@ function DelegationsTable({
             isLoading={query.isLoading || query.isFetching || query.isFetchingNextPage}
             columns={[
                 {
-                    displayName: 'Operator Name',
+                    displayName: 'Operator',
                     valueMapper: ({ id, metadata: { name, imageUrl } }) => (
                         <OperatorIdCell
                             operatorId={id}
@@ -216,7 +216,7 @@ function DelegationsTable({
                     key: 'operatorId',
                 },
                 {
-                    displayName: 'My share',
+                    displayName: 'My delegation',
                     valueMapper: (element) =>
                         `${abbreviateNumber(
                             fromAtto(element.myShare).toNumber(),
@@ -236,7 +236,7 @@ function DelegationsTable({
                     key: 'totalStake',
                 },
                 {
-                    displayName: "Operator's cut",
+                    displayName: "Owner's cut",
                     valueMapper: (element) => `${element.operatorsCut}%`,
                     align: 'end',
                     isSticky: false,
@@ -287,7 +287,7 @@ function OperatorsTable({
             onOrderChange={onOrderChange}
             columns={[
                 {
-                    displayName: 'Operator Name',
+                    displayName: 'Operator',
                     valueMapper: ({ id, metadata: { name, imageUrl } }) => (
                         <OperatorIdCell
                             operatorId={id}
@@ -300,7 +300,7 @@ function OperatorsTable({
                     key: 'operatorId',
                 },
                 {
-                    displayName: 'Total value',
+                    displayName: 'Total stake',
                     valueMapper: (element) =>
                         `${abbreviateNumber(
                             fromAtto(element.valueWithoutEarnings).toNumber(),
@@ -311,7 +311,7 @@ function OperatorsTable({
                     sortable: true,
                 },
                 {
-                    displayName: 'Deployed',
+                    displayName: 'Deployed stake',
                     valueMapper: (element) =>
                         `${abbreviateNumber(
                             fromAtto(element.totalStakeInSponsorshipsWei).toNumber(),
@@ -322,7 +322,7 @@ function OperatorsTable({
                     sortable: true,
                 },
                 {
-                    displayName: "Operator's cut",
+                    displayName: "Owner's cut",
                     valueMapper: (element) => `${element.operatorsCut}%`,
                     align: 'end',
                     isSticky: false,

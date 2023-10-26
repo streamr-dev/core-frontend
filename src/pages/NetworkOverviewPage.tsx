@@ -143,7 +143,7 @@ function MyOperatorSummary() {
                     <>
                         <Pad>
                             <StatGrid>
-                                <StatCell label="Total value">
+                                <StatCell label="Total stake">
                                     {`${abbreviateNumber(
                                         fromAtto(value).toNumber(),
                                     )} ${tokenSymbol}`}
@@ -358,7 +358,7 @@ function MyDelegations() {
                             elements={delegations}
                             columns={[
                                 {
-                                    displayName: 'Operator ID',
+                                    displayName: 'Operator',
                                     valueMapper: ({
                                         id,
                                         metadata: { imageUrl, name },
@@ -374,7 +374,7 @@ function MyDelegations() {
                                     key: 'operatorId',
                                 },
                                 {
-                                    displayName: 'My share',
+                                    displayName: 'My delegation',
                                     valueMapper: ({ myShare }) =>
                                         `${abbreviateNumber(
                                             fromAtto(myShare).toNumber(),
@@ -394,7 +394,7 @@ function MyDelegations() {
                                     key: 'totalStake',
                                 },
                                 {
-                                    displayName: "Operator's cut",
+                                    displayName: "Owner's cut",
                                     valueMapper: ({ operatorsCut }) => `${operatorsCut}%`,
                                     align: 'end',
                                     isSticky: false,

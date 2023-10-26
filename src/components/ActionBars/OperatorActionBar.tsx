@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo } from 'react'
+import React, { ComponentProps, FunctionComponent, useMemo } from 'react'
 import styled from 'styled-components'
 import { useQuery } from '@tanstack/react-query'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
@@ -158,7 +158,7 @@ export const OperatorActionBar: FunctionComponent<{
                             </SimpleDropdown>
                             <ActionBarWalletDisplay
                                 address={operator.id}
-                                label="Contract"
+                                label="Operator"
                             />
                         </NetworkActionBarInfoButtons>
                     </div>
@@ -187,7 +187,7 @@ export const OperatorActionBar: FunctionComponent<{
                             disabled={!walletAddress}
                             waiting={isDelegatingFunds}
                         >
-                            Delegate
+                            {walletAddress?.toLowerCase() === operator.owner && "Fund" || "Delegate"}
                         </Button>
                         <Button
                             onClick={async () => {
@@ -213,7 +213,7 @@ export const OperatorActionBar: FunctionComponent<{
                             disabled={!canUndelegate}
                             waiting={isUndelegatingFunds}
                         >
-                            Undelegate
+                            {walletAddress?.toLowerCase() === operator.owner && "Withdraw" || "Undelegate"}
                         </Button>
                     </NetworkActionBarCTAs>
                 </SingleElementPageActionBarTopPart>
@@ -222,42 +222,114 @@ export const OperatorActionBar: FunctionComponent<{
                 <Pad>
                     <StatGrid>
                         <StatCell
-                            label="Total value"
+                            label="Total stake"
                             tip={
-                                <>
-                                    {operator.valueWithoutEarnings.isZero() && (
-                                        <Tip
-                                            handle={
-                                                <TipIconWrap $color="#ff5c00">
-                                                    <JiraFailedBuildStatusIcon label="Error" />
-                                                </TipIconWrap>
-                                            }
-                                        >
-                                            <p>
-                                                You need to deposit {tokenSymbol} tokens
-                                                into your operator contract before you can
-                                                stake on sponsorships or receive
-                                                delegations.
-                                            </p>
-                                        </Tip>
-                                    )}
-                                </>
+                                (operator.valueWithoutEarnings.isZero() && (
+                                    <Tip
+                                        handle={
+                                            <TipIconWrap $color="#ff5c00">
+                                                <JiraFailedBuildStatusIcon label="Error" />
+                                            </TipIconWrap>
+                                        }
+                                    >
+                                        <p>
+                                            The owner must fund the Operator with{' '}
+                                            {tokenSymbol} tokens before it can be used for
+                                            staking on sponsorships or receiving
+                                            delegations.
+                                        </p>
+                                    </Tip>
+                                )) || (
+                                    <Tip
+                                        shift="right"
+                                        handle={
+                                            <IconWrap>
+                                                <QuestionMarkIcon />
+                                            </IconWrap>
+                                        }
+                                    >
+                                        <p>
+                                            The total amount of {tokenSymbol} tokens that
+                                            are staked on the Operator, including deployed
+                                            and undeployed tokens.
+                                        </p>
+                                    </Tip>
+                                )
                             }
                         >
-                            {abbreviateNumber(
-                                fromAtto(operator.valueWithoutEarnings).toNumber(),
-                            )}{' '}
-                            {tokenSymbol}
+                            <div>
+                                {abbreviateNumber(
+                                    fromAtto(operator.valueWithoutEarnings).toNumber(),
+                                )}{' '}
+                                {tokenSymbol}
+                            </div>
                         </StatCell>
-                        <StatCell label="Deployed stake">
+                        <StatCell
+                            label="Deployed stake"
+                            tip={
+                                <Tip
+                                    shift="right"
+                                    handle={
+                                        <IconWrap>
+                                            <QuestionMarkIcon />
+                                        </IconWrap>
+                                    }
+                                >
+                                    <p>
+                                        The amount of {tokenSymbol} tokens that the
+                                        Operator has staked on Sponsorships.
+                                    </p>
+                                </Tip>
+                            }
+                        >
                             {`${abbreviateNumber(
                                 fromAtto(operator.totalStakeInSponsorshipsWei).toNumber(),
                             )} ${tokenSymbol}`}
                         </StatCell>
-                        <StatCell label="Owner's delegation">
+                        <StatCell
+                            label="Owner's stake"
+                            tip={
+                                <Tip
+                                    shift="right"
+                                    handle={
+                                        <IconWrap>
+                                            <QuestionMarkIcon />
+                                        </IconWrap>
+                                    }
+                                >
+                                    <p>
+                                        The percentage of stake supplied from the owner of
+                                        the Operator.
+                                    </p>
+                                </Tip>
+                            }
+                        >
                             {ownerDelegationPercentage.toFixed(0)}%
                         </StatCell>
-                        <StatCell label="Redundancy factor">
+                        <StatCell
+                            label="Node redundancy"
+                            tip={
+                                <Tip
+                                    shift="right"
+                                    handle={
+                                        <IconWrap>
+                                            <QuestionMarkIcon />
+                                        </IconWrap>
+                                    }
+                                >
+                                    <p>
+                                        The amount of duplicated work when running a fleet
+                                        of multiple nodes. Doing redundant work protects
+                                        against slashing in case some of your nodes
+                                        experience failures. For example, a redundancy
+                                        factor of 1 means that no duplication of work
+                                        occurs (the feature is off), and setting it to 2
+                                        means that each stream assignment will be worked
+                                        on by 2 nodes in the fleet.
+                                    </p>
+                                </Tip>
+                            }
+                        >
                             {operator.metadata?.redundancyFactor?.toString() || '1'}
                         </StatCell>
                     </StatGrid>
@@ -265,13 +337,70 @@ export const OperatorActionBar: FunctionComponent<{
                 <Separator />
                 <Pad>
                     <StatGrid>
-                        <StatCell label="Operator's cut">
+                        <StatCell
+                            label="Owner's cut"
+                            tip={
+                                <Tip
+                                    shift="right"
+                                    handle={
+                                        <IconWrap>
+                                            <QuestionMarkIcon />
+                                        </IconWrap>
+                                    }
+                                >
+                                    <p>
+                                        The fee that the owner of the Operator takes from
+                                        all earnings. The remaining earnings are
+                                        distributed among all stakeholders in the
+                                        Operator, which includes delegators and the owner,
+                                        in proportion to the size of their respective
+                                        stakes.
+                                    </p>
+                                </Tip>
+                            }
+                        >
                             {operator.operatorsCut}%
                         </StatCell>
-                        <StatCell label="Spot APY">
+                        <StatCell
+                            label="Spot APY"
+                            tip={
+                                <Tip
+                                    shift="right"
+                                    handle={
+                                        <IconWrap>
+                                            <QuestionMarkIcon />
+                                        </IconWrap>
+                                    }
+                                >
+                                    <p>
+                                        The annualized yield that this Operator is earning
+                                        right now, calculated from the present payout
+                                        rates of the Sponsorships the Operator is
+                                        currently staked in.
+                                    </p>
+                                </Tip>
+                            }
+                        >
                             {(getSpotApy(operator) * 100).toFixed(0)}%
                         </StatCell>
-                        <StatCell label="Cumulative earnings">
+                        <StatCell
+                            label="Cumulative earnings"
+                            tip={
+                                <Tip
+                                    shift="right"
+                                    handle={
+                                        <IconWrap>
+                                            <QuestionMarkIcon />
+                                        </IconWrap>
+                                    }
+                                >
+                                    <p>
+                                        The total earnings that this Operator has
+                                        accumulated over its whole lifetime.
+                                    </p>
+                                </Tip>
+                            }
+                        >
                             {`${abbreviateNumber(
                                 fromAtto(
                                     operator.cumulativeProfitsWei.plus(
@@ -280,7 +409,24 @@ export const OperatorActionBar: FunctionComponent<{
                                 ).toNumber(),
                             )} ${tokenSymbol}`}
                         </StatCell>
-                        <StatCell label="Live nodes">
+                        <StatCell
+                            label="Live nodes"
+                            tip={
+                                <Tip
+                                    shift="right"
+                                    handle={
+                                        <IconWrap>
+                                            <QuestionMarkIcon />
+                                        </IconWrap>
+                                    }
+                                >
+                                    <p>
+                                        The number of online nodes detected that are doing
+                                        work for this Operator.
+                                    </p>
+                                </Tip>
+                            }
+                        >
                             <>
                                 {liveNodeCountIsLoading ? (
                                     <Spinner color="blue" />
@@ -307,4 +453,24 @@ export const Pad = styled.div`
     @media ${TABLET} {
         padding: 32px 40px;
     }
+`
+
+function getQuestionMarkIconAttrs(): ComponentProps<typeof SvgIcon> {
+    return { name: 'outlineQuestionMark' }
+}
+
+const QuestionMarkIcon = styled(SvgIcon).attrs(getQuestionMarkIconAttrs)`
+    display: block;
+    height: 16px;
+    width: 16px;
+`
+
+const IconWrap = styled.div<{ $color?: string }>`
+    align-items: center;
+    color: ${({ $color = 'inherit' }) => $color};
+    display: flex;
+    height: 24px;
+    justify-content: center;
+    position: relative;
+    width: 24px;
 `
