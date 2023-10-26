@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { toaster } from 'toasterhea'
 import CopyIcon from '@atlaskit/icon/glyph/copy'
 import { RejectionReason } from '~/modals/BaseModal'
 import FormModal, {
@@ -24,46 +25,45 @@ import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
 import { useConfigValueFromChain } from '~/hooks'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
+import { ParsedOperator } from '~/parsers/OperatorParser'
+import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
+import { stakeOnSponsorship } from '~/services/sponsorships'
+import { isMessagedObject } from '~/utils'
+import { errorToast } from '~/utils/toast'
+import Toast from '~/shared/toasts/Toast'
+import { Layer } from '~/utils/Layer'
 
-interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
-    onSubmit: (amountWei: string) => void
-    onResolve?: (amountWei: string) => void
-    operatorBalance?: string
-    tokenSymbol?: string
-    decimals?: number
-    operatorId: string
-    hasUndelegationQueue: boolean
+interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
-    streamId?: string
+    operator: ParsedOperator
+    sponsorship: ParsedSponsorship
 }
 
-function parseAmount(amount: string | undefined) {
-    return typeof amount === 'undefined' || /^0?$/.test(amount)
-        ? ''
-        : toBN(amount).dividedBy(1e18).toString()
+function parseAmount(amount: string | undefined, decimals: number) {
+    return !amount || amount === '0' ? '' : fromDecimals(amount, decimals).toString()
 }
+
+const limitErrorToaster = toaster(Toast, Layer.Toast)
 
 export default function JoinSponsorshipModal({
-    title = 'Join Sponsorship as Operator',
-    submitLabel = 'Join',
-    onResolve,
-    onSubmit,
-    operatorBalance: operatorBalanceProp = '0',
-    operatorId,
-    hasUndelegationQueue,
+    operator,
+    sponsorship,
     amount: amountProp = '0',
-    streamId: streamIdProp,
-    tokenSymbol = 'DATA',
-    decimals = 18,
     ...props
 }: Props) {
-    const streamId = streamIdProp || 'N/A'
+    const { decimals = 18, symbol: tokenSymbol = 'DATA' } =
+        useSponsorshipTokenInfo() || {}
+
+    const { id: operatorId, dataTokenBalanceWei: operatorBalance } = operator
+
+    const hasUndelegationQueue = operator.queueEntries.length > 0
+
+    const { streamId } = sponsorship
 
     const [busy, setBusy] = useState(false)
 
-    const operatorBalance = toBN(operatorBalanceProp)
-
-    const [rawAmount, setRawAmount] = useState(parseAmount(amountProp))
+    const [rawAmount, setRawAmount] = useState(parseAmount(amountProp, decimals))
 
     const amount = toDecimals(rawAmount || '0', decimals)
 
@@ -75,8 +75,8 @@ export default function JoinSponsorshipModal({
         useOperatorLiveNodes(heartbeats)
 
     useEffect(() => {
-        setRawAmount(parseAmount(amountProp))
-    }, [amountProp])
+        setRawAmount(parseAmount(amountProp, decimals))
+    }, [amountProp, decimals])
 
     const insufficientFunds = finalAmount.isGreaterThan(operatorBalance)
 
@@ -90,7 +90,7 @@ export default function JoinSponsorshipModal({
         finalAmount.isGreaterThan(0) &&
         !insufficientFunds &&
         !liveNodesCountLoading &&
-        liveNodesCount > 0 &&
+        liveNodesCount > -1 &&
         isAboveMinimumStake &&
         !hasUndelegationQueue
 
@@ -99,9 +99,9 @@ export default function JoinSponsorshipModal({
     return (
         <FormModal
             {...props}
-            title={title}
+            title="Join Sponsorship as Operator"
             canSubmit={canSubmit && !busy}
-            submitLabel={submitLabel}
+            submitLabel="Join"
             submitting={busy}
             onBeforeAbort={(reason) =>
                 !busy &&
@@ -118,15 +118,25 @@ export default function JoinSponsorshipModal({
                 setBusy(true)
 
                 try {
-                    await onSubmit(finalAmount.toString())
-                    onResolve?.(finalAmount.toString())
+                    await stakeOnSponsorship(
+                        sponsorship.id,
+                        finalAmount.toString(),
+                        operator.id,
+                    )
                 } catch (e) {
-                    console.warn('Error while becoming an operator', e)
-                    setBusy(false)
+                    if (isMessagedObject(e) && /error_tooManyOperators/.test(e.message)) {
+                        return void errorToast(
+                            {
+                                title: 'Limit reached',
+                                desc: 'All operator slots are taken.',
+                            },
+                            limitErrorToaster,
+                        )
+                    }
+
+                    throw e
                 } finally {
-                    /**
-                     * No need to reset `busy`. `onResolve` makes the whole modal disappear.
-                     */
+                    setBusy(false)
                 }
             }}
         >
@@ -138,9 +148,9 @@ export default function JoinSponsorshipModal({
                 <Label>Sponsorship Stream ID</Label>
                 <FieldWrap $grayedOut>
                     <TextInput defaultValue={streamId} readOnly />
-                    {!!streamIdProp && (
+                    {!!streamId && (
                         <CopyButtonWrapAppendix>
-                            <button type="button" onClick={() => void copy(streamIdProp)}>
+                            <button type="button" onClick={() => void copy(streamId)}>
                                 <CopyIcon label="Copy" size="small" />
                             </button>
                         </CopyButtonWrapAppendix>

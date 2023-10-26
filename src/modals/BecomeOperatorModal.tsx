@@ -170,6 +170,7 @@ export default function BecomeOperatorModal({
                         description,
                         imageToUpload,
                     )
+
                     onResolve?.(
                         cutValueNumeric,
                         name as string,
@@ -177,13 +178,8 @@ export default function BecomeOperatorModal({
                         description,
                         imageToUpload,
                     )
-                } catch (e) {
-                    console.warn('Error while becoming an operator', e)
-                    setBusy(false)
                 } finally {
-                    /**
-                     * No need to reset `busy`. `onResolve` makes the whole modal disappear.
-                     */
+                    setBusy(false)
                 }
             }}
         >

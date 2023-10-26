@@ -55,7 +55,11 @@ export default function FormModal({
                     onSubmit={async (e) => {
                         e.preventDefault()
 
-                        await onSubmit?.()
+                        try {
+                            await onSubmit?.()
+                        } catch (e) {
+                            onReject?.(e)
+                        }
                     }}
                 >
                     <FormModalRoot>

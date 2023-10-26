@@ -1,5 +1,6 @@
 import { produce } from 'immer'
 import { create } from 'zustand'
+import { FlagBusy } from '~/utils/errors'
 
 const Flag = {
     isDelegatingFunds: (operatorId: string, wallet = '') => [
@@ -15,11 +16,10 @@ const Flag = {
         sponsorshipId,
         wallet.toLowerCase(),
     ],
-    isJoiningSponsorshipAsOperator: (
-        sponsorshipId: string,
-        operatorId: string,
-        streamId: string,
-    ) => [sponsorshipId, operatorId, streamId],
+    isJoiningSponsorshipAsOperator: (sponsorshipId: string, operatorId: string) => [
+        sponsorshipId,
+        operatorId,
+    ],
     isEditingSponsorshipFunding: (sponsorshipId: string, operatorId: string) => [
         sponsorshipId,
         operatorId,
@@ -51,7 +51,7 @@ const useFlagStore = create<{
 
         async wrap(key, fn) {
             if (get().flags[key]) {
-                throw new Error(`Already processing ${key}`)
+                throw FlagBusy
             }
 
             set((store) =>

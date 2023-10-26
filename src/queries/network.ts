@@ -199,6 +199,7 @@ gql`
             joinTimestamp
         }
         operatorCount
+        maxOperators
         totalStakedWei
         remainingWei
         projectedInsolvency

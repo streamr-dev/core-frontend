@@ -85,6 +85,8 @@ export function SponsorshipActionBar({
         operator?.id,
     )
 
+    const maxOperatorsReached = sponsorship.operatorCount >= sponsorship.maxOperators
+
     return (
         <SingleElementPageActionBar>
             <SingleElementPageActionBarContainer>
@@ -220,32 +222,18 @@ export function SponsorshipActionBar({
                             </Button>
                         ) : (
                             <Button
-                                disabled={!operator}
+                                disabled={!operator || maxOperatorsReached}
                                 waiting={isJoiningSponsorshipAsOperator}
                                 onClick={async () => {
                                     if (!operator) {
                                         return
                                     }
 
-                                    try {
-                                        await joinSponsorshipAsOperator({
-                                            sponsorship,
-                                            operator,
-                                        })
-
-                                        await waitForGraphSync()
-
-                                        onChange()
-                                    } catch (e) {
-                                        if (isRejectionReason(e)) {
-                                            return
-                                        }
-
-                                        console.warn(
-                                            'Could not join a Sponsorship as an Operator',
-                                            e,
-                                        )
-                                    }
+                                    joinSponsorshipAsOperator({
+                                        sponsorship,
+                                        operator,
+                                        onJoin: onChange,
+                                    })
                                 }}
                             >
                                 Join as operator

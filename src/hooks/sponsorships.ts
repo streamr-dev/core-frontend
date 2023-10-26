@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { useInfiniteQuery, UseInfiniteQueryResult, useQuery } from '@tanstack/react-query'
 import { config } from '@streamr/config'
+import { toaster } from 'toasterhea'
 import { OrderDirection, Sponsorship, Sponsorship_OrderBy } from '~/generated/gql/network'
 import {
     getAllSponsorships,
@@ -17,9 +18,13 @@ import {
     createSponsorship,
     editSponsorshipFunding,
     fundSponsorship,
-    joinSponsorshipAsOperator,
 } from '~/utils/sponsorships'
 import { ParsedOperator } from '~/parsers/OperatorParser'
+import { isRejectionReason } from '~/modals/BaseModal'
+import { FlagBusy } from '~/utils/errors'
+import { waitForGraphSync } from '~/getters/waitForGraphSync'
+import JoinSponsorshipModal from '~/modals/JoinSponsorshipModal'
+import { Layer } from '~/utils/Layer'
 
 function getDefaultQueryParams(pageSize: number) {
     return {
@@ -246,38 +251,58 @@ export function useFundSponsorship() {
 export function useIsJoiningSponsorshipAsOperator(
     sponsorshipId: string | undefined,
     operatorId: string | undefined,
-    streamId: string | undefined,
 ) {
     return useIsFlagged(
-        flagKey(
-            'isJoiningSponsorshipAsOperator',
-            sponsorshipId || '',
-            operatorId || '',
-            streamId || '',
-        ),
+        flagKey('isJoiningSponsorshipAsOperator', sponsorshipId || '', operatorId || ''),
     )
 }
+
+const joinSponsorshipModal = toaster(JoinSponsorshipModal, Layer.Modal)
 
 export function useJoinSponsorshipAsOperator() {
     const withFlag = useFlagger()
 
     return useCallback(
         ({
-            sponsorship: { id: sponsorshipId, streamId },
+            onJoin,
             operator,
+            sponsorship,
         }: {
-            sponsorship: ParsedSponsorship
+            onJoin?: () => void
             operator: ParsedOperator
-        }) =>
-            withFlag(
-                flagKey(
-                    'isJoiningSponsorshipAsOperator',
-                    sponsorshipId,
-                    operator.id,
-                    streamId,
-                ),
-                () => joinSponsorshipAsOperator(sponsorshipId, operator, streamId),
-            ),
+            sponsorship: ParsedSponsorship
+        }) => {
+            void (async () => {
+                try {
+                    try {
+                        await withFlag(
+                            flagKey(
+                                'isJoiningSponsorshipAsOperator',
+                                sponsorship.id,
+                                operator.id,
+                            ),
+                            () => joinSponsorshipModal.pop({ sponsorship, operator }),
+                        )
+                    } catch (e) {
+                        if (e === FlagBusy) {
+                            return
+                        }
+
+                        if (isRejectionReason(e)) {
+                            return
+                        }
+
+                        throw e
+                    }
+
+                    await waitForGraphSync()
+
+                    onJoin?.()
+                } catch (e) {
+                    console.warn('Could not join a Sponsorship as an Operator', e)
+                }
+            })()
+        },
         [withFlag],
     )
 }

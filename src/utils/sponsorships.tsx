@@ -21,7 +21,6 @@ import { confirm } from '~/getters/confirm'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import getCoreConfig from '~/getters/getCoreConfig'
-import JoinSponsorshipModal from '~/modals/JoinSponsorshipModal'
 import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
 import { createSponsorship as createSponsorshipService } from '~/services/sponsorships'
 import { getCustomTokenBalance } from '~/marketplace/utils/web3'
@@ -172,31 +171,6 @@ async function getSponsorshipLeavePenalty(sponsorshipId: string, operatorId: str
     ) as Sponsorship
 
     return toBN(await contract.getLeavePenalty(operatorId))
-}
-
-const joinSponsorshipModal = toaster(JoinSponsorshipModal, Layer.Modal)
-
-/**
- * Takes the user through the process of joining a Sponsorship as an Operator.
- */
-export async function joinSponsorshipAsOperator(
-    sponsorshipId: string,
-    operator: ParsedOperator,
-    streamId: string,
-) {
-    const { symbol: tokenSymbol, decimals } = await getSponsorshipTokenInfo()
-
-    await joinSponsorshipModal.pop({
-        streamId,
-        operatorId: operator.id,
-        hasUndelegationQueue: operator.queueEntries.length > 0,
-        operatorBalance: operator.dataTokenBalanceWei.toString(),
-        tokenSymbol,
-        decimals,
-        async onSubmit(amount) {
-            await stakeOnSponsorship(sponsorshipId, amount, operator.id)
-        },
-    })
 }
 
 const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
