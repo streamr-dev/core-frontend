@@ -23,7 +23,6 @@ import { ParsedOperator } from '~/parsers/OperatorParser'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { FlagBusy } from '~/utils/errors'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
-import { isMessagedObject } from '~/utils'
 import JoinSponsorshipModal from '~/modals/JoinSponsorshipModal'
 import { Layer } from '~/utils/Layer'
 
