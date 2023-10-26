@@ -26,7 +26,7 @@ import { useConfigValueFromChain } from '~/hooks'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
-    onSubmit: (amountWei: string) => void
+    onSubmit: (amountWei: string) => void | Promise<void>
     onResolve?: (amountWei: string) => void
     operatorBalance?: string
     tokenSymbol?: string
@@ -120,13 +120,8 @@ export default function JoinSponsorshipModal({
                 try {
                     await onSubmit(finalAmount.toString())
                     onResolve?.(finalAmount.toString())
-                } catch (e) {
-                    console.warn('Error while becoming an operator', e)
-                    setBusy(false)
                 } finally {
-                    /**
-                     * No need to reset `busy`. `onResolve` makes the whole modal disappear.
-                     */
+                    setBusy(false)
                 }
             }}
         >
