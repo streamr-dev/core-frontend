@@ -288,7 +288,7 @@ export function SponsorshipActionBar({
                                     <p>
                                         The total amount of{' '}
                                         <SponsorshipPaymentTokenName /> tokens that has
-                                        been staked on this Sponsorship by Operators.
+                                        been staked on this Sponsorship by&nbsp;Operators.
                                     </p>
                                 </Tip>
                             }
@@ -321,9 +321,9 @@ export function SponsorshipActionBar({
                         >
                             {(sponsorship.apy * 100).toFixed(0)}%
                         </StatCell>
-                        <StatCell label="Total sponsored">
-                            tip=
-                            {
+                        <StatCell
+                            label="Total sponsored"
+                            tip={
                                 <Tip
                                     shift="right"
                                     handle={
@@ -339,6 +339,7 @@ export function SponsorshipActionBar({
                                     </p>
                                 </Tip>
                             }
+                        >
                             {abbreviateNumber(
                                 sponsorship.cumulativeSponsoring.toNumber(),
                             )}{' '}

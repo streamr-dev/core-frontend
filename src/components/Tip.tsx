@@ -49,12 +49,32 @@ const TipContent = styled.div`
     position: relative;
     width: max-content;
 
-    p {
+    > ul,
+    > p {
         margin: 0;
     }
 
-    p + p {
+    > p + ul,
+    > ul + p,
+    > p + p {
         margin-top: 0.5em;
+    }
+
+    > ul li + li {
+        margin-top: 0.25em;
+    }
+
+    > ul {
+        list-style: none;
+        padding: 0 0 0 12px;
+        position: relative;
+    }
+
+    > ul li::before {
+        content: '•';
+        display: block;
+        position: absolute;
+        left: 0;
     }
 `
 

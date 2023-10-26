@@ -36,9 +36,9 @@ export function AboutOperator({ operator }: { operator: ParsedOperator }) {
                 </IconWrap>
                 <div>
                     <p>
-                        Operators run Streamr nodes that contribute bandwidth to the Streamr Network.
-                        Operators earn {' '}<SponsorshipPaymentTokenName /> tokens
-                        by staking on Sponsorships.
+                        Operators run Streamr nodes that contribute bandwidth to&nbsp;the
+                        Streamr Network. Operators earn <SponsorshipPaymentTokenName />{' '}
+                        tokens by&nbsp;staking on Sponsorships.
                     </p>
                     <p>
                         <a

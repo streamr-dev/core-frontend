@@ -200,14 +200,13 @@ export const SingleOperatorPage = () => {
                         }
                     }}
                     onDelegationChange={() => void refetchQuery(operatorQuery)}
-                    tokenSymbol={tokenSymbol}
                 />
             )}
             <LayoutColumn>
                 {operator == null ? (
                     <>
                         {!(operatorQuery.isLoading || operatorQuery.isFetching) && (
-                            <NoData firstLine={'Operator not found.'} />
+                            <NoData firstLine="Operator not found." />
                         )}
                     </>
                 ) : (
@@ -265,7 +264,9 @@ export const SingleOperatorPage = () => {
                             </NetworkPageSegment>
                             <div>
                                 <SegmentGrid>
-                                    <NetworkPageSegment title={walletAddress?.toLowerCase() === operator.owner && "My stake" || "My delegation"}>
+                                    <NetworkPageSegment
+                                        title={isOwner ? 'My stake' : 'My delegation'}
+                                    >
                                         {walletAddress ? (
                                             <>
                                                 <DelegationCell>
