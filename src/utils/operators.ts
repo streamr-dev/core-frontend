@@ -14,6 +14,8 @@ import {
 } from '~/services/operators'
 import { Layer } from '~/utils/Layer'
 import { BNish, toBN } from '~/utils/bn'
+import networkPreflight from '~/utils/networkPreflight'
+import { defaultChainConfig } from '~/getters/getChainConfig'
 
 const delegateFundsModal = toaster(DelegateFundsModal, Layer.Modal)
 
@@ -27,6 +29,9 @@ export async function delegateFunds({
     operator: ParsedOperator
     wallet: string
 }) {
+    const chainId = defaultChainConfig.id
+    await networkPreflight(chainId)
+
     const paymentTokenSymbol = getCoreConfig().sponsorshipPaymentToken
 
     const balance = (await getBalance(wallet, paymentTokenSymbol)).toString()
@@ -63,6 +68,9 @@ export async function undelegateFunds({
     operator: ParsedOperator
     wallet: string
 }) {
+    const chainId = defaultChainConfig.id
+    await networkPreflight(chainId)
+
     const paymentTokenSymbol = getCoreConfig().sponsorshipPaymentToken
 
     const balance = (await getBalance(wallet, paymentTokenSymbol)).toString()
