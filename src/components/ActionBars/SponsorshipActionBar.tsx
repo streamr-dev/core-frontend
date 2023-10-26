@@ -5,7 +5,7 @@ import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import Button from '~/shared/components/Button'
 import SvgIcon from '~/shared/components/SvgIcon'
 import routes from '~/routes'
-import { DefaultSimpleDropdownMenu, SimpleDropdown } from '~/components/SimpleDropdown'
+import { SimpleDropdown } from '~/components/SimpleDropdown'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
@@ -44,7 +44,8 @@ import {
     ActionBarButtonCaret,
     ActionBarButtonInnerBody,
     ActionBarWalletDisplay,
-} from './ActionBarButton'
+} from '~/components/ActionBars/ActionBarButton'
+import { AboutSponsorship } from '~/components/ActionBars/AboutSponsorship'
 
 export function SponsorshipActionBar({
     sponsorship,
@@ -117,25 +118,7 @@ export function SponsorshipActionBar({
                                 <strong>{active ? 'Active' : 'Inactive'}</strong>
                             </ActionBarButtonBody>
                             <SimpleDropdown
-                                menu={
-                                    <DefaultSimpleDropdownMenu>
-                                        <p>
-                                            Sponsorships pay out tokens to staked
-                                            operators for doing work in&nbsp;the network,
-                                            i.e. relaying data in the associated stream.
-                                            Sponsorships can be funded by anyone.
-                                        </p>
-                                        <p>
-                                            <a
-                                                href="https://docs.streamr.network/streamr-network/network-incentives"
-                                                target="_blank"
-                                                rel="noreferrer noopener"
-                                            >
-                                                Learn more
-                                            </a>
-                                        </p>
-                                    </DefaultSimpleDropdownMenu>
-                                }
+                                menu={<AboutSponsorship sponsorship={sponsorship} />}
                             >
                                 {(toggle, isOpen) => (
                                     <ActionBarButton
@@ -144,7 +127,7 @@ export function SponsorshipActionBar({
                                     >
                                         <ActionBarButtonInnerBody>
                                             <SvgIcon name="page" />
-                                            <strong>About Sponsorships</strong>
+                                            <strong>About Sponsorship</strong>
                                         </ActionBarButtonInnerBody>
                                         <ActionBarButtonCaret $invert={isOpen} />
                                     </ActionBarButton>

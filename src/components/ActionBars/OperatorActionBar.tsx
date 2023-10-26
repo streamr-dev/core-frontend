@@ -38,7 +38,6 @@ import { isRejectionReason } from '~/modals/BaseModal'
 import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { Tip, TipIconWrap } from '~/components/Tip'
-import { AboutOperator } from '~/components/AboutOperator'
 import { getOperatorDelegationAmount } from '~/services/operators'
 import { PencilIcon } from '~/icons'
 import { goBack } from '~/utils'
@@ -47,7 +46,8 @@ import {
     ActionBarButtonCaret,
     ActionBarButtonInnerBody,
     ActionBarWalletDisplay,
-} from './ActionBarButton'
+} from '~/components/ActionBars/ActionBarButton'
+import { AboutOperator } from '~/components/ActionBars/AboutOperator'
 
 export const OperatorActionBar: FunctionComponent<{
     operator: ParsedOperator
@@ -101,6 +101,8 @@ export const OperatorActionBar: FunctionComponent<{
         },
     })
 
+    const { metadata } = operator
+
     return (
         <SingleElementPageActionBar>
             <SingleElementPageActionBarContainer>
@@ -120,15 +122,15 @@ export const OperatorActionBar: FunctionComponent<{
                                 <NetworkActionBarBackButtonIcon name="backArrow" />
                             </NetworkActionBarBackLink>
                             <NetworkActionBarTitle>
-                                {operator.metadata?.imageUrl ? (
+                                {metadata.imageUrl ? (
                                     <HubImageAvatar
-                                        src={operator.metadata.imageUrl}
-                                        alt={operator.metadata.name || operator.id}
+                                        src={metadata.imageUrl}
+                                        alt={metadata.name || operator.id}
                                     />
                                 ) : (
                                     <HubAvatar id={operator.id} />
                                 )}
-                                <span>{operator.metadata?.name || operator.id}</span>
+                                <span>{metadata.name || operator.id}</span>
                             </NetworkActionBarTitle>
                         </NetworkActionBarBackButtonAndTitle>
                         <NetworkActionBarInfoButtons>
