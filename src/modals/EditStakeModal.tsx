@@ -101,9 +101,7 @@ export default function EditStakeModal({
             submitting={busy}
             onBeforeAbort={(reason) =>
                 !busy &&
-                (toBN(rawAmount || '0')
-                    .multipliedBy(Math.pow(10, decimals))
-                    .eq(currentStakeProp || '0') ||
+                (toBN(rawAmount || '0').eq(currentStakeProp || '0') ||
                     reason !== RejectionReason.Backdrop)
             }
             onSubmit={async () => {
