@@ -16,11 +16,10 @@ const Flag = {
         sponsorshipId,
         wallet.toLowerCase(),
     ],
-    isJoiningSponsorshipAsOperator: (
-        sponsorshipId: string,
-        operatorId: string,
-        streamId: string,
-    ) => [sponsorshipId, operatorId, streamId],
+    isJoiningSponsorshipAsOperator: (sponsorshipId: string, operatorId: string) => [
+        sponsorshipId,
+        operatorId,
+    ],
     isEditingSponsorshipFunding: (sponsorshipId: string, operatorId: string) => [
         sponsorshipId,
         operatorId,

@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { useInfiniteQuery, UseInfiniteQueryResult, useQuery } from '@tanstack/react-query'
 import { config } from '@streamr/config'
+import { toaster } from 'toasterhea'
 import { OrderDirection, Sponsorship, Sponsorship_OrderBy } from '~/generated/gql/network'
 import {
     getAllSponsorships,
@@ -17,13 +18,14 @@ import {
     createSponsorship,
     editSponsorshipFunding,
     fundSponsorship,
-    joinSponsorshipAsOperator,
 } from '~/utils/sponsorships'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { FlagBusy } from '~/utils/errors'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { isMessagedObject } from '~/utils'
+import JoinSponsorshipModal from '~/modals/JoinSponsorshipModal'
+import { Layer } from '~/utils/Layer'
 
 function getDefaultQueryParams(pageSize: number) {
     return {
@@ -250,17 +252,13 @@ export function useFundSponsorship() {
 export function useIsJoiningSponsorshipAsOperator(
     sponsorshipId: string | undefined,
     operatorId: string | undefined,
-    streamId: string | undefined,
 ) {
     return useIsFlagged(
-        flagKey(
-            'isJoiningSponsorshipAsOperator',
-            sponsorshipId || '',
-            operatorId || '',
-            streamId || '',
-        ),
+        flagKey('isJoiningSponsorshipAsOperator', sponsorshipId || '', operatorId || ''),
     )
 }
+
+const joinSponsorshipModal = toaster(JoinSponsorshipModal, Layer.Modal)
 
 export function useJoinSponsorshipAsOperator() {
     const withFlag = useFlagger()
@@ -269,7 +267,7 @@ export function useJoinSponsorshipAsOperator() {
         ({
             onJoin,
             operator,
-            sponsorship: { id: sponsorshipId, streamId },
+            sponsorship,
         }: {
             onJoin?: () => void
             operator: ParsedOperator
@@ -281,16 +279,10 @@ export function useJoinSponsorshipAsOperator() {
                         await withFlag(
                             flagKey(
                                 'isJoiningSponsorshipAsOperator',
-                                sponsorshipId,
+                                sponsorship.id,
                                 operator.id,
-                                streamId,
                             ),
-                            () =>
-                                joinSponsorshipAsOperator(
-                                    sponsorshipId,
-                                    operator,
-                                    streamId,
-                                ),
+                            () => joinSponsorshipModal.pop({ sponsorship, operator }),
                         )
                     } catch (e) {
                         if (e === FlagBusy) {
@@ -299,17 +291,6 @@ export function useJoinSponsorshipAsOperator() {
 
                         if (isRejectionReason(e)) {
                             return
-                        }
-
-                        if (
-                            isMessagedObject(e) &&
-                            /error_tooManyOperators/.test(e.message)
-                        ) {
-                            return void errorToast({
-                                title: 'Limit reached',
-                                desc: 'All operator slots are taken.',
-                                okLabel: 'Dismiss',
-                            })
                         }
 
                         throw e
