@@ -37,8 +37,7 @@ import {
 } from '~/hooks/sponsorships'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { COLORS } from '~/shared/utils/styled'
-import { goBack, isMessagedObject } from '~/utils'
-import { errorToast } from '~/utils/toast'
+import { goBack } from '~/utils'
 import {
     ActionBarButton,
     ActionBarButtonBody,
@@ -230,36 +229,11 @@ export function SponsorshipActionBar({
                                         return
                                     }
 
-                                    try {
-                                        await joinSponsorshipAsOperator({
-                                            sponsorship,
-                                            operator,
-                                        })
-
-                                        await waitForGraphSync()
-
-                                        onChange()
-                                    } catch (e) {
-                                        if (isRejectionReason(e)) {
-                                            return
-                                        }
-
-                                        if (
-                                            isMessagedObject(e) &&
-                                            /error_tooManyOperators/.test(e.message)
-                                        ) {
-                                            return void errorToast({
-                                                title: 'Limit reached',
-                                                desc: 'All operator slots are taken.',
-                                                okLabel: 'Dismiss',
-                                            })
-                                        }
-
-                                        console.warn(
-                                            'Could not join a Sponsorship as an Operator',
-                                            e,
-                                        )
-                                    }
+                                    joinSponsorshipAsOperator({
+                                        sponsorship,
+                                        operator,
+                                        onJoin: onChange,
+                                    })
                                 }}
                             >
                                 Join as operator

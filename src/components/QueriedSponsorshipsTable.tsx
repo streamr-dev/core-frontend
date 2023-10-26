@@ -200,25 +200,11 @@ export function QueriedSponsorshipsTable({
                                     return
                                 }
 
-                                try {
-                                    await joinSponsorshipAsOperator({
-                                        sponsorship: element,
-                                        operator,
-                                    })
-
-                                    await waitForGraphSync()
-
-                                    await onSponsorshipJoined?.()
-                                } catch (e) {
-                                    if (isRejectionReason(e)) {
-                                        return
-                                    }
-
-                                    console.warn(
-                                        'Could not join a Sponsorship as an Operator',
-                                        e,
-                                    )
-                                }
+                                joinSponsorshipAsOperator({
+                                    sponsorship: element,
+                                    operator,
+                                    onJoin: onSponsorshipJoined,
+                                })
                             },
                         }
                     },

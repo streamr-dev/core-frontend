@@ -20,6 +20,10 @@ import {
     joinSponsorshipAsOperator,
 } from '~/utils/sponsorships'
 import { ParsedOperator } from '~/parsers/OperatorParser'
+import { isRejectionReason } from '~/modals/BaseModal'
+import { FlagBusy } from '~/utils/errors'
+import { waitForGraphSync } from '~/getters/waitForGraphSync'
+import { isMessagedObject } from '~/utils'
 
 function getDefaultQueryParams(pageSize: number) {
     return {
@@ -263,21 +267,62 @@ export function useJoinSponsorshipAsOperator() {
 
     return useCallback(
         ({
-            sponsorship: { id: sponsorshipId, streamId },
+            onJoin,
             operator,
+            sponsorship: { id: sponsorshipId, streamId },
         }: {
-            sponsorship: ParsedSponsorship
+            onJoin?: () => void
             operator: ParsedOperator
-        }) =>
-            withFlag(
-                flagKey(
-                    'isJoiningSponsorshipAsOperator',
-                    sponsorshipId,
-                    operator.id,
-                    streamId,
-                ),
-                () => joinSponsorshipAsOperator(sponsorshipId, operator, streamId),
-            ),
+            sponsorship: ParsedSponsorship
+        }) => {
+            void (async () => {
+                try {
+                    try {
+                        await withFlag(
+                            flagKey(
+                                'isJoiningSponsorshipAsOperator',
+                                sponsorshipId,
+                                operator.id,
+                                streamId,
+                            ),
+                            () =>
+                                joinSponsorshipAsOperator(
+                                    sponsorshipId,
+                                    operator,
+                                    streamId,
+                                ),
+                        )
+                    } catch (e) {
+                        if (e === FlagBusy) {
+                            return
+                        }
+
+                        if (isRejectionReason(e)) {
+                            return
+                        }
+
+                        if (
+                            isMessagedObject(e) &&
+                            /error_tooManyOperators/.test(e.message)
+                        ) {
+                            return void errorToast({
+                                title: 'Limit reached',
+                                desc: 'All operator slots are taken.',
+                                okLabel: 'Dismiss',
+                            })
+                        }
+
+                        throw e
+                    }
+
+                    await waitForGraphSync()
+
+                    onJoin?.()
+                } catch (e) {
+                    console.warn('Could not join a Sponsorship as an Operator', e)
+                }
+            })()
+        },
         [withFlag],
     )
 }
