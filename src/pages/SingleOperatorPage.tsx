@@ -172,6 +172,7 @@ export const SingleOperatorPage = () => {
                                 description,
                                 imageUrl,
                                 redundancyFactor,
+                                cutEditingDisabled: operator?.stakes.length > 0,
                                 submitLabel: 'Save',
                                 async onSubmit(
                                     newCut,
