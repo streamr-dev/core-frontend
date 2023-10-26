@@ -251,8 +251,8 @@ function MyDelegationsSummary() {
         'currentValue' | 'cumulativeEarnings'
     >('currentValue')
 
-    const chartQuery = useQuery({
-        queryKey: ['operatorChartQuery', wallet, chartPeriod, chartDataSource],
+    const dailyDelegationChartQuery = useQuery({
+        queryKey: ['dailyDelegationChartQuery', wallet, chartPeriod, chartDataSource],
         queryFn: async () => {
             try {
                 if (!wallet) {
@@ -321,10 +321,10 @@ function MyDelegationsSummary() {
                     >
                         <NetworkChart
                             tooltipValuePrefix={chartLabel}
-                            graphData={chartQuery.data || []}
+                            graphData={dailyDelegationChartQuery.data || []}
                             xAxisDisplayFormatter={formatShortDate}
                             yAxisAxisDisplayFormatter={(value) => abbreviateNumber(value)}
-                            isLoading={chartQuery.isLoading}
+                            isLoading={dailyDelegationChartQuery.isLoading}
                             tooltipLabelFormatter={formatLongDate}
                             tooltipValueFormatter={(value) =>
                                 `${abbreviateNumber(value)} ${tokenSymbol}`
