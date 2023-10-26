@@ -37,7 +37,8 @@ import {
 } from '~/hooks/sponsorships'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { COLORS } from '~/shared/utils/styled'
-import { goBack } from '~/utils'
+import { goBack, isMessagedObject } from '~/utils'
+import { errorToast } from '~/utils/toast'
 import {
     ActionBarButton,
     ActionBarButtonBody,
@@ -239,6 +240,17 @@ export function SponsorshipActionBar({
                                     } catch (e) {
                                         if (isRejectionReason(e)) {
                                             return
+                                        }
+
+                                        if (
+                                            isMessagedObject(e) &&
+                                            /error_tooManyOperators/.test(e.message)
+                                        ) {
+                                            return void errorToast({
+                                                title: 'Limit reached',
+                                                desc: 'All operator slots are taken.',
+                                                okLabel: 'Dismiss',
+                                            })
                                         }
 
                                         console.warn(
