@@ -1,23 +1,20 @@
 import React from 'react'
-import styled from 'styled-components'
 import InfoIcon from '@atlaskit/icon/glyph/info'
 import { ParsedOperator } from '~/parsers/OperatorParser'
-import { COLORS } from '~/shared/utils/styled'
+import { DefaultSimpleDropdownMenu } from '~/components/SimpleDropdown'
+import { Address, Banner, IconWrap } from '~/components/ActionBars/AboutEntity'
 import { truncate } from '~/shared/utils/text'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import useCopy from '~/shared/hooks/useCopy'
 import { CopyIcon } from '~/icons'
-import { IconButton } from './IconButton'
-import { DefaultSimpleDropdownMenu } from './SimpleDropdown'
+import { IconButton } from '~/components/IconButton'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 
-export function AboutOperator({
-    operator: {
+export function AboutOperator({ operator }: { operator: ParsedOperator }) {
+    const {
         owner,
         metadata: { description },
-    },
-}: {
-    operator: ParsedOperator
-}) {
+    } = operator
+
     const { copy } = useCopy()
 
     return (
@@ -59,48 +56,3 @@ export function AboutOperator({
         </DefaultSimpleDropdownMenu>
     )
 }
-
-const Address = styled.p`
-    align-items: center;
-    color: ${COLORS.primaryLight};
-    display: grid;
-    gap: 4px;
-    grid-template-columns: max-content auto;
-
-    strong {
-        color: ${COLORS.primary};
-    }
-
-    svg {
-        display: block;
-    }
-`
-
-const Banner = styled.div`
-    background: ${COLORS.secondaryLight};
-    border-radius: 6px;
-    padding: 12px;
-    display: grid;
-    gap: 10px;
-    grid-template-columns: 24px 1fr;
-    margin-top: 20px;
-
-    span[role='img'] {
-        color: ${COLORS.primaryDisabled};
-    }
-
-    svg,
-    span[role='img'] {
-        display: block;
-        width: 20px;
-        height: 20px;
-    }
-`
-
-const IconWrap = styled.div`
-    align-items: center;
-    display: flex;
-    height: 24px;
-    justify-content: center;
-    width: 24px;
-`
