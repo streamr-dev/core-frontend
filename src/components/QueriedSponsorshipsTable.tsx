@@ -189,9 +189,12 @@ export function QueriedSponsorshipsTable({
                             }
                         }
 
+                        const maxOperatorsReached =
+                            element.operatorCount >= element.maxOperators
+
                         return {
                             displayName: 'Join as Operator',
-                            disabled: !operator,
+                            disabled: !operator || maxOperatorsReached,
                             async callback() {
                                 if (!operator) {
                                     return

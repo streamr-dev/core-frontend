@@ -86,6 +86,8 @@ export function SponsorshipActionBar({
         operator?.id,
     )
 
+    const maxOperatorsReached = sponsorship.operatorCount >= sponsorship.maxOperators
+
     return (
         <SingleElementPageActionBar>
             <SingleElementPageActionBarContainer>
@@ -221,7 +223,7 @@ export function SponsorshipActionBar({
                             </Button>
                         ) : (
                             <Button
-                                disabled={!operator}
+                                disabled={!operator || maxOperatorsReached}
                                 waiting={isJoiningSponsorshipAsOperator}
                                 onClick={async () => {
                                     if (!operator) {
