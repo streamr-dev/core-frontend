@@ -68,7 +68,9 @@ export default function EditStakeModal({
 
     const isZeroOrAboveMinimumStake =
         finalAmount.isEqualTo(0) ||
-        (minimumStakeWei ? finalAmount.isGreaterThan(toBN(minimumStakeWei)) : true)
+        (minimumStakeWei
+            ? finalAmount.isGreaterThanOrEqualTo(toBN(minimumStakeWei))
+            : true)
 
     const canSubmit =
         finalAmount.isGreaterThanOrEqualTo(0) &&
