@@ -24,6 +24,7 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import CropImageModal from '~/components/CropImageModal/CropImageModal'
 import { Layer } from '~/utils/Layer'
 import { Alert } from '~/components/Alert'
+import { toBN } from '~/utils/bn'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onResolve?: (
@@ -72,6 +73,17 @@ export default function BecomeOperatorModal({
     const [redundancyFactor, setRedundancyFactor] = useState<string>(
         redundancyFactorProp?.toString() || '2',
     )
+
+    const isEditMode =
+        !!nameProp || !!descriptionProp || !!redundancyFactorProp || !!cutProp
+
+    const valuesChanged =
+        isEditMode &&
+        (!toBN(cutValue || 0).isEqualTo(toBN(cutProp || 0)) ||
+            nameProp !== name ||
+            descriptionProp !== description ||
+            !toBN(redundancyFactorProp || 0).isEqualTo(toBN(redundancyFactor)) ||
+            imageToUpload)
 
     const cutValueNumeric = Number(cutValue || undefined) // so that it will be a NaN if it's empty string
 
@@ -124,10 +136,9 @@ export default function BecomeOperatorModal({
         redundancyFactorProp?.toString() !== redundancyFactor ||
         cutProp?.toString() !== cutValue
 
-    const canSubmitEditForm =
-        !!nameProp || !!descriptionProp || !!redundancyFactorProp || !!cutProp // this means that we are in edit mode
-            ? providedValuesDidChange || (!providedValuesDidChange && !!imageToUpload)
-            : true
+    const canSubmitEditForm = isEditMode // this means that we are in edit mode
+        ? providedValuesDidChange || (!providedValuesDidChange && !!imageToUpload)
+        : true
 
     return (
         <FormModal
@@ -144,7 +155,9 @@ export default function BecomeOperatorModal({
             submitLabel={submitLabel}
             submitting={busy}
             onBeforeAbort={(reason) =>
-                !busy && (cutValue === cutProp || reason !== RejectionReason.Backdrop)
+                !busy &&
+                ((isEditMode ? !valuesChanged : cutValue === cutProp) ||
+                    reason !== RejectionReason.Backdrop)
             }
             onSubmit={async () => {
                 setBusy(true)
