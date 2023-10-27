@@ -169,25 +169,12 @@ export const OperatorActionBar: FunctionComponent<{
                     </div>
                     <NetworkActionBarCTAs>
                         <Button
-                            onClick={async () => {
-                                try {
-                                    if (!walletAddress) {
-                                        return
-                                    }
-
-                                    await delegateFunds({
-                                        operator,
-                                        wallet: walletAddress,
-                                    })
-
-                                    onDelegationChange()
-                                } catch (e) {
-                                    if (isRejectionReason(e)) {
-                                        return
-                                    }
-
-                                    console.warn('Could not delegate funds', e)
-                                }
+                            onClick={() => {
+                                delegateFunds({
+                                    operator,
+                                    wallet: walletAddress,
+                                    onDone: onDelegationChange,
+                                })
                             }}
                             disabled={!walletAddress}
                             waiting={isDelegatingFunds}

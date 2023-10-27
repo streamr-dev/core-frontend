@@ -4,7 +4,6 @@ import Transaction from '~/shared/utils/Transaction'
 import { getDataUnion, getDataUnionClient } from '~/getters/du'
 import networkPreflight from '~/utils/networkPreflight'
 import { Secret } from './types'
-import networkPreflight from '~/utils/networkPreflight'
 
 export function deployDataUnion({
     productId,

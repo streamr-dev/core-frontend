@@ -15,7 +15,7 @@ import { z } from 'zod'
 import { useNavigate } from 'react-router-dom'
 import { randomHex } from 'web3-utils'
 import { getProjectRegistryChainId } from '~/getters'
-import { isProjectOwnedBy } from '~/utils'
+import { isProjectOwnedBy, isTransactionRejection } from '~/utils'
 import getGraphClient from '~/getters/getGraphClient'
 import { ProjectType, QueriedGraphProject } from '~/shared/types'
 import {
@@ -25,7 +25,6 @@ import {
 } from '~/generated/gql/network'
 import { getDataUnion } from '~/getters/du'
 import { ValidationError } from '~/errors'
-import isCodedError from '~/utils/isCodedError'
 import { RejectionReason } from '~/modals/BaseModal'
 import { Layer } from '~/utils/Layer'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
@@ -689,7 +688,7 @@ export function usePersistCurrentProjectDraft() {
                     })
                 }
 
-                if (isCodedError(e) && e.code === 4001) {
+                if (isTransactionRejection(e)) {
                     return
                 }
 

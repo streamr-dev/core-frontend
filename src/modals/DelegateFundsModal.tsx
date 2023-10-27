@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { RejectionReason } from '~/modals/BaseModal'
+import { RejectionReason, isRejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     FieldWrap,
     FormModalProps,
@@ -13,37 +13,49 @@ import FormModal, {
 import Label from '~/shared/components/Ui/Label'
 import { BN, toBN } from '~/utils/bn'
 import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
-import { Alert } from '~/components/Alert'
+import { Alert as PrestyledAlert } from '~/components/Alert'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { getSelfDelegatedAmount, getSelfDelegationFraction } from '~/getters'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { useConfigValueFromChain } from '~/hooks'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
+import { delegateToOperator } from '~/services/operators'
+import { isTransactionRejection } from '~/utils'
 
-interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
-    onResolve?: (amount: string) => void
-    onSubmit: (amount: BN) => Promise<void>
-    balance?: string
-    tokenSymbol: string
-    decimals: number
-    delegatedTotal?: string
+interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
+    balance: BN
+    delegatedTotal: BN
     operator: ParsedOperator
 }
 
 export default function DelegateFundsModal({
-    title = 'Delegate',
-    balance: balanceProp = '0',
-    tokenSymbol,
-    decimals,
-    delegatedTotal: delegatedTotalProp = '0',
-    onResolve,
-    onSubmit,
     amount: amountProp = '',
-    submitLabel = 'Delegate',
+    delegatedTotal: delegatedTotalProp,
     operator,
+    balance,
     ...props
 }: Props) {
     const walletAddress = useWalletAccount()
+
+    const isOwner = walletAddress?.toLowerCase() === operator.owner.toLowerCase()
+
+    const [submitLabel, title, amountLabel, totalLabel, subtitlePartial] = isOwner
+        ? [
+              'Fund',
+              'Fund Operator',
+              'Amount to stake',
+              'Your stake',
+              'you wish to stake on your Operator',
+          ]
+        : [
+              'Delegate',
+              'Delegate to Operator',
+              'Amount to delegate',
+              'Your delegation',
+              'to delegate to the selected Operator',
+          ]
 
     const minimumSelfDelegationFraction = useConfigValueFromChain(
         'minimumSelfDelegationFraction',
@@ -62,31 +74,29 @@ export default function DelegateFundsModal({
 
     const finalValue = toBN(value)
 
+    const { decimals = 18 } = useSponsorshipTokenInfo() || {}
+
+    const delegatedTotal = fromDecimals(delegatedTotalProp, decimals)
+
     const finalValueDecimals = toDecimals(finalValue, decimals)
-
-    const balance = toBN(balanceProp)
-
-    const delegatedTotal = toBN(delegatedTotalProp)
 
     const insufficientFunds = finalValue.isGreaterThan(balance)
 
-    const tooLowCurrentSelfDelegation = useMemo<boolean>(() => {
-        if (operator.owner === walletAddress) {
-            return false
-        }
-        const percentage = getSelfDelegationFraction(operator)
-        return percentage.isLessThan(minimumSelfDelegation)
-    }, [operator, minimumSelfDelegation, walletAddress])
+    const tooLowCurrentSelfDelegation = useMemo(() => {
+        return (
+            !isOwner &&
+            getSelfDelegationFraction(operator).isLessThan(minimumSelfDelegation)
+        )
+    }, [operator, minimumSelfDelegation, isOwner])
 
     const tooLowSelfDelegationWithNewAmount = useMemo(() => {
-        if (operator.owner === walletAddress) {
-            return false
-        }
-        const percentage = getSelfDelegationFraction(operator, {
-            offset: finalValueDecimals,
-        })
-        return percentage.isLessThan(minimumSelfDelegation)
-    }, [operator, minimumSelfDelegation, walletAddress, finalValueDecimals])
+        return (
+            !isOwner &&
+            getSelfDelegationFraction(operator, {
+                offset: finalValueDecimals,
+            }).isLessThan(minimumSelfDelegation)
+        )
+    }, [operator, minimumSelfDelegation, finalValueDecimals, isOwner])
 
     const tooLowOwnerSelfDelegation =
         tooLowCurrentSelfDelegation || tooLowSelfDelegationWithNewAmount
@@ -124,25 +134,31 @@ export default function DelegateFundsModal({
                 setBusy(true)
 
                 try {
-                    await onSubmit(toDecimals(finalValue, decimals))
-
-                    onResolve?.(finalValue.toString())
+                    await delegateToOperator(
+                        operator.id,
+                        toDecimals(finalValue, decimals).toString(),
+                    )
                 } catch (e) {
-                    console.warn('Error while delegating funds', e)
-                    setBusy(false)
+                    if (isRejectionReason(e)) {
+                        return
+                    }
+
+                    if (isTransactionRejection(e)) {
+                        return
+                    }
+
+                    throw e
                 } finally {
-                    /**
-                     * No need to reset `busy`. `onResolve` makes the whole modal disappear.
-                     */
+                    setBusy(false)
                 }
             }}
         >
             <SectionHeadline>
-                Please set the amount of {tokenSymbol} to delegate to the selected
-                Operator
+                Please enter the amount of <SponsorshipPaymentTokenName /> tokens{' '}
+                {subtitlePartial}
             </SectionHeadline>
             <Section>
-                <Label>Amount to delegate</Label>
+                <Label>{amountLabel}</Label>
                 <FieldWrap $invalid={insufficientFunds}>
                     <TextInput
                         name="amount"
@@ -154,7 +170,9 @@ export default function DelegateFundsModal({
                         min={0}
                         value={rawAmount}
                     />
-                    <TextAppendix>{tokenSymbol}</TextAppendix>
+                    <TextAppendix>
+                        <SponsorshipPaymentTokenName />
+                    </TextAppendix>
                 </FieldWrap>
                 <ul>
                     <li>
@@ -166,7 +184,7 @@ export default function DelegateFundsModal({
                             )}
                         </Prop>
                         <div>
-                            {balance.toString()} {tokenSymbol}
+                            {balance.toString()} <SponsorshipPaymentTokenName />
                         </div>
                     </li>
                     <li>
@@ -174,37 +192,39 @@ export default function DelegateFundsModal({
                         <div>{operator.id}</div>
                     </li>
                     <li>
-                        <Prop>Your stake</Prop>
+                        <Prop>{totalLabel}</Prop>
                         <div>
-                            {delegatedTotal.toString()} {tokenSymbol}
+                            {delegatedTotal.toString()} <SponsorshipPaymentTokenName />
                         </div>
                     </li>
                 </ul>
             </Section>
-            {tooLowCurrentSelfDelegation ? (
-                <StyledAlert type="error" title="Unable to delegate">
-                    This operator can not accept any further delegations at the moment,
-                    because the operator’s own share of funds is below the required limit.
-                </StyledAlert>
-            ) : (
-                <></>
-            )}
-            {!tooLowCurrentSelfDelegation && tooLowSelfDelegationWithNewAmount ? (
-                <StyledAlert type="error" title="Amount too high">
-                    This operator can currently only accept{' '}
-                    <strong>
-                        {maxAmount.toString()} {tokenSymbol}
-                    </strong>{' '}
-                    in further delegations, because operators must stay above a certain
-                    proportion of their own funds vs. delegations.
-                </StyledAlert>
-            ) : (
-                <></>
-            )}
+            <>
+                {tooLowCurrentSelfDelegation ? (
+                    <Alert type="error" title="Unable to delegate">
+                        This operator can not accept any further delegations at the
+                        moment, because the operator&apos;s own share of funds is below
+                        the required limit.
+                    </Alert>
+                ) : (
+                    <>
+                        {tooLowSelfDelegationWithNewAmount && (
+                            <Alert type="error" title="Amount too high">
+                                This operator can currently only accept{' '}
+                                <strong>
+                                    {maxAmount.toString()} <SponsorshipPaymentTokenName />
+                                </strong>{' '}
+                                in further delegations, because operators must stay above
+                                a certain proportion of their own funds vs. delegations.
+                            </Alert>
+                        )}
+                    </>
+                )}
+            </>
         </FormModal>
     )
 }
 
-const StyledAlert = styled(Alert)`
+const Alert = styled(PrestyledAlert)`
     margin-top: 10px;
 `

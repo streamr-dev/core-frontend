@@ -13,6 +13,7 @@ import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { ObjectWithMessage } from '~/shared/consts'
 import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
 import { history } from '~/consts'
+import isCodedError from './isCodedError'
 
 /**
  * Gas money checker.
@@ -103,6 +104,13 @@ export async function waitForPurchasePropagation(
 
 export function isMessagedObject(e: unknown): e is z.infer<typeof ObjectWithMessage> {
     return ObjectWithMessage.safeParse(e).success
+}
+
+export function isTransactionRejection(e: unknown) {
+    return (
+        (isCodedError(e) && e.code === 4001) ||
+        (isMessagedObject(e) && /user rejected transaction/i.test(e.message))
+    )
 }
 
 export function isProjectOwnedBy<
