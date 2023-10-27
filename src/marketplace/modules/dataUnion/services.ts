@@ -1,9 +1,8 @@
 import EventEmitter from 'events'
 import { SmartContractTransaction } from '~/shared/types/web3-types'
-import { checkEthereumNetworkIsCorrect } from '~/shared/utils/web3'
-import TransactionError from '~/shared/errors/TransactionError'
 import Transaction from '~/shared/utils/Transaction'
 import { getDataUnion, getDataUnionClient } from '~/getters/du'
+import networkPreflight from '~/utils/networkPreflight'
 import { Secret } from './types'
 
 export function deployDataUnion({
@@ -17,39 +16,35 @@ export function deployDataUnion({
 }): SmartContractTransaction {
     const emitter = new EventEmitter()
 
-    const errorHandler = (error: Error) => {
+    const errorHandler = (error: unknown) => {
         emitter.emit('error', error)
     }
 
     const tx = new Transaction(emitter)
 
-    /**
-     * The following does not go sequentially. Some calls
-     * can be prevented by not using `.all`.
-     */
-    Promise.all([
-        checkEthereumNetworkIsCorrect({
-            network: chainId,
-        }),
-        getDataUnionClient(chainId),
-    ])
-        .then(([_, client]) => {
-            return client.deployDataUnion({
+    void (async () => {
+        try {
+            await networkPreflight(chainId)
+
+            const client = await getDataUnionClient(chainId)
+
+            const dataUnion = await client.deployDataUnion({
                 dataUnionName: productId,
                 adminFee,
             })
-        })
-        .then((dataUnion) => {
-            if (!dataUnion || !dataUnion.getAddress()) {
-                errorHandler(new TransactionError('Transaction failed'))
-            } else {
-                emitter.emit('transactionHash', dataUnion.getAddress())
-                emitter.emit('receipt', {
-                    contractAddress: dataUnion.getAddress(),
-                })
-            }
-        }, errorHandler)
-        .catch(errorHandler)
+
+            const duAddress = dataUnion.getAddress()
+
+            emitter.emit('transactionHash', duAddress)
+
+            emitter.emit('receipt', {
+                contractAddress: duAddress,
+            })
+        } catch (e) {
+            errorHandler(e)
+        }
+    })()
+
     return tx
 }
 
