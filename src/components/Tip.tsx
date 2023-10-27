@@ -139,11 +139,21 @@ export const TipRoot = styled.div<{ $shift?: Shift }>`
         `}
 `
 
-export const TipIconWrap = styled.div<{ $color?: string }>`
+export const TipIconWrap = styled.div<{
+    $color?: string
+    $svgSize?: { width: string; height: string }
+}>`
     color: ${({ $color = 'inherit' }) => $color};
 
     span[role='img'],
     svg {
         display: block;
-    }
+        ${({ $svgSize }) => {
+            if ($svgSize) {
+                return css`
+                    width: ${$svgSize.width};
+                    height: ${$svgSize.height};
+                `
+            }
+        }}
 `

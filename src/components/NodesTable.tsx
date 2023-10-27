@@ -7,6 +7,7 @@ import React, {
 } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
+import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import AddNodeAddressModal from '~/modals/AddNodeAddressModal'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { Layer } from '~/utils/Layer'
@@ -20,6 +21,8 @@ import { defaultChainConfig } from '~/getters/getChainConfig'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { errorToast } from '~/utils/toast'
 import { setOperatorNodeAddresses } from '~/services/operators'
+import { toBN } from '~/utils/bn'
+import { Tip, TipIconWrap } from '~/components/Tip'
 import { isMessagedObject } from '~/utils'
 import { Separator } from './Separator'
 
@@ -71,7 +74,9 @@ export function NodesTable({
                 },
                 {
                     displayName: 'MATIC balance',
-                    valueMapper: (element) => <MaticBalance address={element.address} />,
+                    valueMapper: (element) => (
+                        <MaticBalance address={element.address} minAmount="0.1" />
+                    ),
                     align: 'start',
                     isSticky: false,
                     key: 'balance',
@@ -182,7 +187,7 @@ const NodeAddressesFooter = styled.div`
     gap: 10px;
 `
 
-function MaticBalance({ address }: { address: string }) {
+function MaticBalance({ address, minAmount }: { address: string; minAmount?: string }) {
     const [balance, setBalance] = useState<string>()
 
     useEffect(() => {
@@ -208,7 +213,28 @@ function MaticBalance({ address }: { address: string }) {
         }
     }, [address])
 
-    return balance || <Spinner color="blue" />
+    return balance ? (
+        <>
+            {balance}{' '}
+            {balance && minAmount && toBN(balance).isLessThan(toBN(minAmount)) && (
+                <Tip
+                    handle={
+                        <TipIconWrap
+                            className="ml-1"
+                            $color="#ff5c00"
+                            $svgSize={{ width: '18px', height: '18px' }}
+                        >
+                            <JiraFailedBuildStatusIcon label="Error" />
+                        </TipIconWrap>
+                    }
+                >
+                    Low MATIC
+                </Tip>
+            )}
+        </>
+    ) : (
+        <Spinner color="blue" />
+    )
 }
 
 function PendingIndicator({
