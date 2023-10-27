@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import {
     LineChart,
@@ -153,14 +153,25 @@ const TimeSeriesGraph = ({
 
 const CustomCursor = (props) => {
     const { setSelectedPointValues } = props
+
     if (props.payload) {
         setSelectedPointValues(props.payload[0].payload.x, props.payload[0].payload.y)
     }
+
+    const setSelectedPointValuesRef = useRef(setSelectedPointValues)
+
+    if (setSelectedPointValuesRef.current !== setSelectedPointValues) {
+        setSelectedPointValuesRef.current = setSelectedPointValues
+    }
+
     useEffect(() => {
+        const { current } = setSelectedPointValuesRef
+
         return () => {
-            setSelectedPointValues(null, null)
+            current?.(null, null)
         }
     }, [])
+
     return <></>
 }
 
