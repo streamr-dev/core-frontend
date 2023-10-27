@@ -213,27 +213,27 @@ function MaticBalance({ address, minAmount }: { address: string; minAmount?: str
         }
     }, [address])
 
-    return (
-        (
-            <>
-                {balance}{' '}
-                {balance && minAmount && toBN(balance).isLessThan(toBN(minAmount)) && (
-                    <Tip
-                        handle={
-                            <TipIconWrap
-                                className="ml-1"
-                                $color="#ff5c00"
-                                $svgSize={{ width: '18px', height: '18px' }}
-                            >
-                                <JiraFailedBuildStatusIcon label="Error" />
-                            </TipIconWrap>
-                        }
-                    >
-                        Low MATIC
-                    </Tip>
-                )}
-            </>
-        ) || <Spinner color="blue" />
+    return balance ? (
+        <>
+            {balance}{' '}
+            {balance && minAmount && toBN(balance).isLessThan(toBN(minAmount)) && (
+                <Tip
+                    handle={
+                        <TipIconWrap
+                            className="ml-1"
+                            $color="#ff5c00"
+                            $svgSize={{ width: '18px', height: '18px' }}
+                        >
+                            <JiraFailedBuildStatusIcon label="Error" />
+                        </TipIconWrap>
+                    }
+                >
+                    Low MATIC
+                </Tip>
+            )}
+        </>
+    ) : (
+        <Spinner color="blue" />
     )
 }
 
