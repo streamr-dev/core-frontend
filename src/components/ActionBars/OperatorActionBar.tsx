@@ -338,14 +338,14 @@ export const OperatorActionBar: FunctionComponent<{
                                     </p>
                                     <ul>
                                         <li>
-                                            <strong>a redundancy factor of 1</strong>{' '}
+                                            <strong>A Redundancy Factor of 1</strong>{' '}
                                             means that no duplication of work occurs (the
-                                            feature is off), and
+                                            feature is off),
                                         </li>
                                         <li>
-                                            <strong>setting it to 2</strong> means that
-                                            each stream assignment will be worked on by 2
-                                            nodes in the fleet.
+                                            <strong>A Redundancy Factor of 2</strong>{' '}
+                                            means that each stream assignment will be
+                                            worked on by 2 nodes in the fleet.
                                         </li>
                                     </ul>
                                 </Tip>
