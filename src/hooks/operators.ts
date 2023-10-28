@@ -21,9 +21,7 @@ import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
 import { Delegation, DelegationsStats } from '~/types'
 import { toBN } from '~/utils/bn'
-import { undelegateFunds } from '~/utils/operators'
 import { errorToast } from '~/utils/toast'
-import { useConfigValueFromChain } from '~/hooks'
 import DelegateFundsModal from '~/modals/DelegateFundsModal'
 import { Layer } from '~/utils/Layer'
 import { defaultChainConfig } from '~/getters/getChainConfig'
@@ -33,6 +31,7 @@ import { FlagBusy } from '~/utils/errors'
 import { isRejectionReason } from '~/modals/BaseModal'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
+import UndelegateFundsModal from '~/modals/UndelegateFundsModal'
 
 export function useOperatorForWalletQuery(address = '') {
     const addr = address.toLowerCase()
@@ -376,13 +375,13 @@ export function useDelegateFunds() {
 
     return useCallback(
         ({
+            onDone,
             operator,
             wallet,
-            onDone,
         }: {
+            onDone?: () => void
             operator: ParsedOperator
             wallet: string | undefined
-            onDone?: () => void
         }) => {
             if (!wallet) {
                 return
@@ -397,10 +396,14 @@ export function useDelegateFunds() {
                                 const paymentTokenSymbol =
                                     getCoreConfig().sponsorshipPaymentToken
 
-                                const balance = toBN(
-                                    await getBalance(wallet, paymentTokenSymbol, {
-                                        chainId: defaultChainConfig.id,
-                                    }),
+                                const { id: chainId } = defaultChainConfig
+
+                                const balance = await getBalance(
+                                    wallet,
+                                    paymentTokenSymbol,
+                                    {
+                                        chainId,
+                                    },
                                 )
 
                                 const delegatedTotal = await getOperatorDelegationAmount(
@@ -446,6 +449,8 @@ export function useIsUndelegatingFundsToOperator(
     return useIsFlagged(flagKey('isUndelegatingFunds', operatorId || '', wallet || ''))
 }
 
+const undelegateFundsModal = toaster(UndelegateFundsModal, Layer.Modal)
+
 /**
  * Triggers funds undelegation and raises an associated flag for the
  * duration of the process.
@@ -453,20 +458,72 @@ export function useIsUndelegatingFundsToOperator(
 export function useUndelegateFunds() {
     const withFlag = useFlagger()
 
-    const minimumSelfDelegationFraction = useConfigValueFromChain(
-        'minimumSelfDelegationFraction',
-    )
-
     return useCallback(
-        ({ operator, wallet }: { operator: ParsedOperator; wallet: string }) =>
-            withFlag(flagKey('isUndelegatingFunds', operator.id, wallet), () =>
-                undelegateFunds({
-                    minimumSelfDelegationFraction,
-                    operator,
-                    wallet,
-                }),
-            ),
-        [minimumSelfDelegationFraction, withFlag],
+        ({
+            onDone,
+            operator,
+            wallet,
+        }: {
+            onDone?: () => void
+            operator: ParsedOperator
+            wallet: string | undefined
+        }) => {
+            if (!wallet) {
+                return
+            }
+
+            void (async () => {
+                try {
+                    try {
+                        await withFlag(
+                            flagKey('isUndelegatingFunds', operator.id, wallet),
+                            async () => {
+                                const paymentTokenSymbol =
+                                    getCoreConfig().sponsorshipPaymentToken
+
+                                const { id: chainId } = defaultChainConfig
+
+                                const balance = await getBalance(
+                                    wallet,
+                                    paymentTokenSymbol,
+                                    {
+                                        chainId,
+                                    },
+                                )
+
+                                const delegatedTotal = await getOperatorDelegationAmount(
+                                    operator.id,
+                                    wallet,
+                                )
+
+                                await undelegateFundsModal.pop({
+                                    operator,
+                                    balance,
+                                    delegatedTotal,
+                                })
+
+                                await waitForGraphSync()
+                            },
+                        )
+                    } catch (e) {
+                        if (e === FlagBusy) {
+                            return
+                        }
+
+                        if (isRejectionReason(e)) {
+                            return
+                        }
+
+                        throw e
+                    }
+
+                    onDone?.()
+                } catch (e) {
+                    console.warn('Could not undelegate funds', e)
+                }
+            })()
+        },
+        [withFlag],
     )
 }
 

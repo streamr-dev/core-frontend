@@ -34,7 +34,6 @@ import {
     useIsUndelegatingFundsToOperator,
     useUndelegateFunds,
 } from '~/hooks/operators'
-import { isRejectionReason } from '~/modals/BaseModal'
 import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { Tip, TipIconWrap } from '~/components/Tip'
@@ -182,25 +181,12 @@ export const OperatorActionBar: FunctionComponent<{
                             {delegateLabel}
                         </Button>
                         <Button
-                            onClick={async () => {
-                                try {
-                                    if (!walletAddress) {
-                                        return
-                                    }
-
-                                    await undelegateFunds({
-                                        operator,
-                                        wallet: walletAddress,
-                                    })
-
-                                    onDelegationChange()
-                                } catch (e) {
-                                    if (isRejectionReason(e)) {
-                                        return
-                                    }
-
-                                    console.warn('Could not undelegate funds', e)
-                                }
+                            onClick={() => {
+                                undelegateFunds({
+                                    operator,
+                                    wallet: walletAddress,
+                                    onDone: onDelegationChange,
+                                })
                             }}
                             disabled={!canUndelegate}
                             waiting={isUndelegatingFunds}
