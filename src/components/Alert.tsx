@@ -8,7 +8,7 @@ type AlertType = 'loading' | 'error' | 'success' | 'notice'
 
 export const Alert: FunctionComponent<{
     type: AlertType
-    title: string
+    title: ReactNode
     className?: string
     children?: ReactNode
 }> = ({ type, title, className, children }) => {

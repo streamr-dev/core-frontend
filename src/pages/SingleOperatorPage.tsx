@@ -138,7 +138,7 @@ export const SingleOperatorPage = () => {
     const chartLabel =
         selectedDataSource === 'cumulativeEarnings'
             ? 'Cumulative earnings'
-            : 'Total value'
+            : 'Total stake'
 
     const { nodes: persistedNodes = [] } = operator || {}
 
@@ -200,14 +200,13 @@ export const SingleOperatorPage = () => {
                         }
                     }}
                     onDelegationChange={() => void refetchQuery(operatorQuery)}
-                    tokenSymbol={tokenSymbol}
                 />
             )}
             <LayoutColumn>
                 {operator == null ? (
                     <>
                         {!(operatorQuery.isLoading || operatorQuery.isFetching) && (
-                            <NoData firstLine={'Operator not found.'} />
+                            <NoData firstLine="Operator not found." />
                         )}
                     </>
                 ) : (
@@ -237,7 +236,7 @@ export const SingleOperatorPage = () => {
                                                     setSelectedDataSource(dataSource)
                                                 }}
                                             >
-                                                <Tab id="totalValue">Total value</Tab>
+                                                <Tab id="totalValue">Total stake</Tab>
                                                 <Tab id="cumulativeEarnings">
                                                     Cumulative earnings
                                                 </Tab>
@@ -265,13 +264,15 @@ export const SingleOperatorPage = () => {
                             </NetworkPageSegment>
                             <div>
                                 <SegmentGrid>
-                                    <NetworkPageSegment title="My delegation">
+                                    <NetworkPageSegment
+                                        title={isOwner ? 'My stake' : 'My delegation'}
+                                    >
                                         {walletAddress ? (
                                             <>
                                                 <DelegationCell>
                                                     <Pad>
                                                         <StatCellLabel>
-                                                            Current value
+                                                            Current stake
                                                         </StatCellLabel>
                                                         <StatCellContent>
                                                             {abbreviateNumber(
@@ -287,8 +288,8 @@ export const SingleOperatorPage = () => {
                                                 <DelegationCell>
                                                     <Pad>
                                                         <StatCellLabel>
-                                                            Share of operator&apos;s total
-                                                            value
+                                                            Share of Operator&apos;s total
+                                                            stake
                                                         </StatCellLabel>
                                                         <StatCellContent>
                                                             {myDelegationPercentage.toFixed(

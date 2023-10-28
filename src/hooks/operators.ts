@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { useCallback, useEffect, useState } from 'react'
 import { z } from 'zod'
+import { toaster } from 'toasterhea'
 import { Operator, Operator_OrderBy, OrderDirection } from '~/generated/gql/network'
 import {
     getAllOperators,
@@ -20,9 +21,17 @@ import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
 import { Delegation, DelegationsStats } from '~/types'
 import { toBN } from '~/utils/bn'
-import { delegateFunds, undelegateFunds } from '~/utils/operators'
 import { errorToast } from '~/utils/toast'
-import { useConfigValueFromChain } from '~/hooks'
+import DelegateFundsModal from '~/modals/DelegateFundsModal'
+import { Layer } from '~/utils/Layer'
+import { defaultChainConfig } from '~/getters/getChainConfig'
+import { getBalance } from '~/getters/getBalance'
+import { getOperatorDelegationAmount } from '~/services/operators'
+import { FlagBusy } from '~/utils/errors'
+import { isRejectionReason } from '~/modals/BaseModal'
+import getCoreConfig from '~/getters/getCoreConfig'
+import { waitForGraphSync } from '~/getters/waitForGraphSync'
+import UndelegateFundsModal from '~/modals/UndelegateFundsModal'
 
 export function useOperatorForWalletQuery(address = '') {
     const addr = address.toLowerCase()
@@ -355,6 +364,8 @@ export function useIsDelegatingFundsToOperator(
     return useIsFlagged(flagKey('isDelegatingFunds', operatorId || '', wallet || ''))
 }
 
+const delegateFundsModal = toaster(DelegateFundsModal, Layer.Modal)
+
 /**
  * Triggers funds delegation and raises an associated flag for the
  * duration of the process.
@@ -363,13 +374,70 @@ export function useDelegateFunds() {
     const withFlag = useFlagger()
 
     return useCallback(
-        ({ operator, wallet }: { operator: ParsedOperator; wallet: string }) =>
-            withFlag(flagKey('isDelegatingFunds', operator.id, wallet), () =>
-                delegateFunds({
-                    operator,
-                    wallet,
-                }),
-            ),
+        ({
+            onDone,
+            operator,
+            wallet,
+        }: {
+            onDone?: () => void
+            operator: ParsedOperator
+            wallet: string | undefined
+        }) => {
+            if (!wallet) {
+                return
+            }
+
+            void (async () => {
+                try {
+                    try {
+                        await withFlag(
+                            flagKey('isDelegatingFunds', operator.id, wallet),
+                            async () => {
+                                const paymentTokenSymbol =
+                                    getCoreConfig().sponsorshipPaymentToken
+
+                                const { id: chainId } = defaultChainConfig
+
+                                const balance = await getBalance(
+                                    wallet,
+                                    paymentTokenSymbol,
+                                    {
+                                        chainId,
+                                    },
+                                )
+
+                                const delegatedTotal = await getOperatorDelegationAmount(
+                                    operator.id,
+                                    wallet,
+                                )
+
+                                await delegateFundsModal.pop({
+                                    operator,
+                                    balance,
+                                    delegatedTotal,
+                                })
+
+                                await waitForGraphSync()
+                            },
+                        )
+                    } catch (e) {
+                        if (e === FlagBusy) {
+                            return
+                        }
+
+                        if (isRejectionReason(e)) {
+                            return
+                        }
+
+                        throw e
+                    }
+
+                    onDone?.()
+                } catch (e) {
+                    console.warn('Could not delegate funds', e)
+                }
+            })()
+        },
         [withFlag],
     )
 }
@@ -381,6 +449,8 @@ export function useIsUndelegatingFundsToOperator(
     return useIsFlagged(flagKey('isUndelegatingFunds', operatorId || '', wallet || ''))
 }
 
+const undelegateFundsModal = toaster(UndelegateFundsModal, Layer.Modal)
+
 /**
  * Triggers funds undelegation and raises an associated flag for the
  * duration of the process.
@@ -388,20 +458,72 @@ export function useIsUndelegatingFundsToOperator(
 export function useUndelegateFunds() {
     const withFlag = useFlagger()
 
-    const minimumSelfDelegationFraction = useConfigValueFromChain(
-        'minimumSelfDelegationFraction',
-    )
-
     return useCallback(
-        ({ operator, wallet }: { operator: ParsedOperator; wallet: string }) =>
-            withFlag(flagKey('isUndelegatingFunds', operator.id, wallet), () =>
-                undelegateFunds({
-                    minimumSelfDelegationFraction,
-                    operator,
-                    wallet,
-                }),
-            ),
-        [minimumSelfDelegationFraction, withFlag],
+        ({
+            onDone,
+            operator,
+            wallet,
+        }: {
+            onDone?: () => void
+            operator: ParsedOperator
+            wallet: string | undefined
+        }) => {
+            if (!wallet) {
+                return
+            }
+
+            void (async () => {
+                try {
+                    try {
+                        await withFlag(
+                            flagKey('isUndelegatingFunds', operator.id, wallet),
+                            async () => {
+                                const paymentTokenSymbol =
+                                    getCoreConfig().sponsorshipPaymentToken
+
+                                const { id: chainId } = defaultChainConfig
+
+                                const balance = await getBalance(
+                                    wallet,
+                                    paymentTokenSymbol,
+                                    {
+                                        chainId,
+                                    },
+                                )
+
+                                const delegatedTotal = await getOperatorDelegationAmount(
+                                    operator.id,
+                                    wallet,
+                                )
+
+                                await undelegateFundsModal.pop({
+                                    operator,
+                                    balance,
+                                    delegatedTotal,
+                                })
+
+                                await waitForGraphSync()
+                            },
+                        )
+                    } catch (e) {
+                        if (e === FlagBusy) {
+                            return
+                        }
+
+                        if (isRejectionReason(e)) {
+                            return
+                        }
+
+                        throw e
+                    }
+
+                    onDone?.()
+                } catch (e) {
+                    console.warn('Could not undelegate funds', e)
+                }
+            })()
+        },
+        [withFlag],
     )
 }
 

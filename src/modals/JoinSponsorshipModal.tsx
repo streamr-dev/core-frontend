@@ -183,9 +183,9 @@ export default function JoinSponsorshipModal({
                     <li>
                         <Prop $invalid={insufficientFunds}>
                             {insufficientFunds ? (
-                                <>Not enough balance in Operator contract</>
+                                <>Not enough balance in Operator</>
                             ) : (
-                                <>Available balance in Operator contract</>
+                                <>Available balance in Operator</>
                             )}
                         </Prop>
                         <div>
@@ -194,7 +194,7 @@ export default function JoinSponsorshipModal({
                         </div>
                     </li>
                     <li>
-                        <Prop>Operator ID</Prop>
+                        <Prop>Operator</Prop>
                         <div>{operatorId}</div>
                     </li>
                 </ul>

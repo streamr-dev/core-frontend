@@ -53,16 +53,18 @@ export function isRejectionReason(value: unknown) {
 
 export interface BaseModalProps {
     children?: ReactNode | ((close: (reason?: unknown) => void) => ReactNode)
-    onReject?: (reason?: any) => void
-    onBeforeAbort?: (reason?: any) => boolean | null | void
     darkBackdrop?: boolean
+    onBeforeAbort?: (reason?: any) => boolean | null | void
+    onReject?: (reason?: any) => void
+    onResolve?: (...args: any[]) => unknown
 }
 
 export default function BaseModal({
     children,
-    onReject,
-    onBeforeAbort,
     darkBackdrop,
+    onBeforeAbort,
+    onReject,
+    onResolve: _,
     ...props
 }: BaseModalProps) {
     const [dismissed, dismiss] = useReducer(() => true, false)

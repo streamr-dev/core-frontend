@@ -175,9 +175,9 @@ export default function EditStakeModal({
                     <li>
                         <Prop $invalid={insufficientFunds}>
                             {insufficientFunds ? (
-                                <>Not enough balance in Operator contract</>
+                                <>Not enough balance in Operator</>
                             ) : (
-                                <>Available balance in Operator contract</>
+                                <>Available balance in Operator</>
                             )}
                         </Prop>
                         <div>

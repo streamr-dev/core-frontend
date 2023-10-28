@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react'
+import React, { ComponentProps, useMemo } from 'react'
+import styled from 'styled-components'
 import moment from 'moment'
 import { truncateStreamName } from '~/shared/utils/text'
 import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
@@ -27,6 +28,7 @@ import {
     SingleElementPageActionBarTopPart,
 } from '~/components/ActionBars/NetworkActionBar.styles'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { Tip } from '~/components/Tip'
 import {
     useEditSponsorshipFunding,
     useFundSponsorship,
@@ -76,7 +78,6 @@ export function SponsorshipActionBar({
     const isJoiningSponsorshipAsOperator = useIsJoiningSponsorshipAsOperator(
         sponsorship.id,
         operator?.id,
-        sponsorship.streamId,
     )
 
     const editSponsorshipFunding = useEditSponsorshipFunding()
@@ -230,13 +231,68 @@ export function SponsorshipActionBar({
                 <Separator />
                 <Pad>
                     <StatGrid>
-                        <StatCell label="Payout rate">
+                        <StatCell
+                            label="Payout rate"
+                            tip={
+                                <Tip
+                                    shift="right"
+                                    handle={
+                                        <IconWrap>
+                                            <QuestionMarkIcon />
+                                        </IconWrap>
+                                    }
+                                >
+                                    <p>
+                                        The rate of <SponsorshipPaymentTokenName /> tokens
+                                        that are distributed to Operators that have staked
+                                        on this Sponsorship.
+                                    </p>
+                                </Tip>
+                            }
+                        >
                             {abbreviateNumber(sponsorship.payoutPerDay.toNumber())}{' '}
                             <SponsorshipPaymentTokenName />
                             /day
                         </StatCell>
-                        <StatCell label="Operators">{sponsorship.operatorCount}</StatCell>
-                        <StatCell label="Total staked">
+                        <StatCell
+                            label="Operators"
+                            tip={
+                                <Tip
+                                    shift="right"
+                                    handle={
+                                        <IconWrap>
+                                            <QuestionMarkIcon />
+                                        </IconWrap>
+                                    }
+                                >
+                                    <p>
+                                        The number of Operators that have staked on this
+                                        Sponsorship.
+                                    </p>
+                                </Tip>
+                            }
+                        >
+                            {sponsorship.operatorCount}
+                        </StatCell>
+                        <StatCell
+                            label="Total staked"
+                            tip={
+                                <Tip
+                                    shift="right"
+                                    handle={
+                                        <IconWrap>
+                                            <QuestionMarkIcon />
+                                        </IconWrap>
+                                    }
+                                >
+                                    <p>
+                                        The total amount of{' '}
+                                        <SponsorshipPaymentTokenName /> tokens that has
+                                        been staked on this Sponsorship by&nbsp;Operators.
+                                    </p>
+                                </Tip>
+                            }
+                        >
                             {abbreviateNumber(sponsorship.totalStake.toNumber())}{' '}
                             <SponsorshipPaymentTokenName />
                         </StatCell>
@@ -245,10 +301,45 @@ export function SponsorshipActionBar({
                 <Separator />
                 <Pad>
                     <StatGrid>
-                        <StatCell label="APY">
+                        <StatCell
+                            label="APY"
+                            tip={
+                                <Tip
+                                    shift="right"
+                                    handle={
+                                        <IconWrap>
+                                            <QuestionMarkIcon />
+                                        </IconWrap>
+                                    }
+                                >
+                                    <p>
+                                        The annualized yield that the staked Operators are
+                                        currently earning from this Sponsorship.
+                                    </p>
+                                </Tip>
+                            }
+                        >
                             {(sponsorship.apy * 100).toFixed(0)}%
                         </StatCell>
-                        <StatCell label="Cumulative sponsored">
+                        <StatCell
+                            label="Total sponsored"
+                            tip={
+                                <Tip
+                                    shift="right"
+                                    handle={
+                                        <IconWrap>
+                                            <QuestionMarkIcon />
+                                        </IconWrap>
+                                    }
+                                >
+                                    <p>
+                                        The cumulative amount of{' '}
+                                        <SponsorshipPaymentTokenName /> tokens that
+                                        Sponsors have funded this Sponsorship with.
+                                    </p>
+                                </Tip>
+                            }
+                        >
                             {abbreviateNumber(
                                 sponsorship.cumulativeSponsoring.toNumber(),
                             )}{' '}
@@ -264,3 +355,23 @@ export function SponsorshipActionBar({
         </SingleElementPageActionBar>
     )
 }
+
+function getQuestionMarkIconAttrs(): ComponentProps<typeof SvgIcon> {
+    return { name: 'outlineQuestionMark' }
+}
+
+const QuestionMarkIcon = styled(SvgIcon).attrs(getQuestionMarkIconAttrs)`
+    display: block;
+    height: 16px;
+    width: 16px;
+`
+
+const IconWrap = styled.div<{ $color?: string }>`
+    align-items: center;
+    color: ${({ $color = 'inherit' }) => $color};
+    display: flex;
+    height: 24px;
+    justify-content: center;
+    position: relative;
+    width: 24px;
+`

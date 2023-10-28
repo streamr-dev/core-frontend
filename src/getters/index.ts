@@ -786,7 +786,7 @@ export function getSpotApy<
 }
 
 /**
- * Sums amounts delegated to given operator by given wallet.
+ * Calculates the amount delegated to given operator by given wallet.
  */
 export function getDelegatedAmountForWallet(
     address: string,
@@ -794,15 +794,11 @@ export function getDelegatedAmountForWallet(
 ): BN {
     const addr = address.toLowerCase()
 
-    return delegations
-        .reduce(
-            (sum, { delegator, operatorTokenBalanceWei }) =>
-                delegator.toLowerCase() === addr
-                    ? sum.plus(operatorTokenBalanceWei)
-                    : sum,
-            toBN(0),
-        )
-        .multipliedBy(exchangeRate)
+    return (
+        delegations
+            .find(({ delegator }) => delegator.toLowerCase() === addr)
+            ?.amount.multipliedBy(exchangeRate) || toBN(0)
+    )
 }
 
 /**

@@ -36,11 +36,9 @@ export function AboutOperator({ operator }: { operator: ParsedOperator }) {
                 </IconWrap>
                 <div>
                     <p>
-                        Operators secure and stabilize the Streamr Network by running
-                        nodes and contributing bandwidth. In exchange, they earn{' '}
-                        <SponsorshipPaymentTokenName /> tokens from sponsorships they
-                        stake on. The stake guarantees that the operators do the work,
-                        otherwise they get slashed.
+                        Operators run Streamr nodes that contribute bandwidth to&nbsp;the
+                        Streamr Network. Operators earn <SponsorshipPaymentTokenName />{' '}
+                        tokens by&nbsp;staking on Sponsorships.
                     </p>
                     <p>
                         <a

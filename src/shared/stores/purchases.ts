@@ -16,14 +16,17 @@ import { priceForTimeUnits } from '~/marketplace/utils/price'
 import networkPreflight from '~/utils/networkPreflight'
 import { timeUnits } from '~/shared/utils/timeUnit'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
-import isCodedError from '~/utils/isCodedError'
 import ConfirmPurchaseModal from '~/modals/ConfirmPurchaseModal'
 import { toSeconds } from '~/marketplace/utils/time'
 import AccessingProjectModal from '~/modals/AccessingProjectModal'
 import { getAllowance, getERC20TokenContract, getMarketplaceContract } from '~/getters'
 import { RejectionReason } from '~/modals/BaseModal'
 import FailedPurchaseModal from '~/modals/FailedPurchaseModal'
-import { ensureGasMonies, waitForPurchasePropagation } from '~/utils'
+import {
+    ensureGasMonies,
+    isTransactionRejection,
+    waitForPurchasePropagation,
+} from '~/utils'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import { getParsedProjectById, getProjectSubscriptions } from '~/getters/hub'
 import { TheGraph } from '../types'
@@ -368,7 +371,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                                 throw e
                                             }
 
-                                            if (isCodedError(e) && e.code === 4001) {
+                                            if (isTransactionRejection(e)) {
                                                 /**
                                                  * The user rejected the transaction signature, thus
                                                  * does not wanna continue. Go back to the Access
@@ -533,7 +536,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                             throw e
                                         }
 
-                                        if (isCodedError(e) && e.code === 4001) {
+                                        if (isTransactionRejection(e)) {
                                             /**
                                              * The user rejected the transaction signature, thus
                                              * does not wanna continue. Go back to the Access
