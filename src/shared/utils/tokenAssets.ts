@@ -1,10 +1,9 @@
-import { Address } from '~/shared/types/web3-types'
 import { getConfigForChain } from '~/shared/web3/config'
 
 const BASE_URL = 'https://streamr-public.s3.amazonaws.com/truswallet-assets/blockchains'
 
 export const getTokenLogoUrl = (
-    tokenContractAddress: Address,
+    tokenContractAddress: string,
     chainId: number,
 ): string => {
     const network = (() => {

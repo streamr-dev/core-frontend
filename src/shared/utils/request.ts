@@ -1,13 +1,12 @@
 import axios from 'axios'
 import merge from 'lodash/merge'
-import { RequestMethod } from '~/shared/types/common-types'
 import RequestError from '~/shared/errors/RequestError'
 
 const getData = ({ data }: { data: any }): any => data
 
 export type RequestParams = {
     url: string
-    method?: RequestMethod
+    method?: 'get' | 'post' | 'put' | 'delete'
     data?: any
     options?: Record<string, any>
 }

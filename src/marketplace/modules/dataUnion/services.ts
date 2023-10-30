@@ -1,5 +1,4 @@
 import EventEmitter from 'events'
-import { SmartContractTransaction } from '~/shared/types/web3-types'
 import Transaction from '~/shared/utils/Transaction'
 import { getDataUnion, getDataUnionClient } from '~/getters/du'
 import networkPreflight from '~/utils/networkPreflight'
@@ -13,7 +12,7 @@ export function deployDataUnion({
     productId: string
     adminFee: number
     chainId: number
-}): SmartContractTransaction {
+}): Transaction {
     const emitter = new EventEmitter()
 
     const errorHandler = (error: unknown) => {

@@ -26,7 +26,7 @@ import SalePointTokenSelector from '~/components/SalePointSelector/SalePointToke
 import SalePointOption, {
     DataUnionOption,
 } from '~/components/SalePointSelector/SalePointOption'
-import { Chain } from '~/shared/types/web3-types'
+import { Chain } from '~/types'
 import getCoreConfig from '~/getters/getCoreConfig'
 import BeneficiaryAddressEditor from '~/components/SalePointSelector/BeneficiaryAddressEditor'
 import { SalePointsPayload } from '~/types/projects'

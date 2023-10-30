@@ -1,11 +1,10 @@
 import { providers } from 'ethers'
 import EventEmitter from 'events'
-import { Hash } from '~/shared/types/web3-types'
 import TransactionError from '~/shared/errors/TransactionError'
 export default class Transaction {
     constructor(private emitter: EventEmitter) {}
 
-    onTransactionHash(cb: (arg0: Hash) => void): Transaction {
+    onTransactionHash(cb: (arg0: string) => void): Transaction {
         this.emitter.on('transactionHash', cb)
         return this
     }

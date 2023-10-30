@@ -1,6 +1,6 @@
 import { config as chainConfigs } from '@streamr/config'
 import formatConfigUrl from '~/utils/formatConfigUrl'
-import { Chain } from '~/shared/types/web3-types'
+import { Chain } from '~/types'
 
 export const getConfigForChain = (chainId: number): Chain => {
     const configEntry = Object.entries(chainConfigs).find(

@@ -1,10 +1,9 @@
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
-import { Address } from '~/shared/types/web3-types'
 import { getConfigForChain } from '~/shared/web3/config'
 import { getERC20TokenContract } from '~/getters'
 import { fromDecimals } from './math'
 
-export const getDataAddress = (chainId: number): Address => {
+export const getDataAddress = (chainId: number): string => {
     const { contracts } = getConfigForChain(chainId)
     const dataTokenAddress = contracts.DATA
 
@@ -15,7 +14,7 @@ export const getDataAddress = (chainId: number): Address => {
     return dataTokenAddress
 }
 
-export const getMarketplaceAddress = (chainId: number): Address => {
+export const getMarketplaceAddress = (chainId: number): string => {
     const { contracts } = getConfigForChain(chainId)
     // Use Marketplace or RemoteMarketplace depending on chain. MarketplaceV3 is just a fallback for tests (they run on "dev0" chain)
     const marketplaceAddress =
@@ -32,15 +31,15 @@ export const getMarketplaceAddress = (chainId: number): Address => {
     return marketplaceAddress
 }
 
-export const getNativeTokenBalance = async (userAddress: Address, chainId: number) => {
+export const getNativeTokenBalance = async (userAddress: string, chainId: number) => {
     const provider = getPublicWeb3Provider(chainId)
     const balance = await provider.getBalance(userAddress)
     return balance
 }
 
 export const getCustomTokenBalance = async (
-    contractAddress: Address,
-    userAddress: Address,
+    contractAddress: string,
+    userAddress: string,
     chainId: number,
 ) => {
     const contract = getERC20TokenContract({
