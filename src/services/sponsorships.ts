@@ -202,12 +202,27 @@ export async function getEarningsForSponsorships(
     const provider = getPublicWeb3Provider(chainId)
 
     const contract = new Contract(operatorAddress, operatorABI, provider) as Operator
-    const earnings = await contract.getSponsorshipsAndEarnings()
+    const { addresses, earnings } = await contract.getSponsorshipsAndEarnings()
 
     const result: Record<string, BN> = {}
-    for (let i = 0; i < earnings.addresses.length; i++) {
-        const address = earnings.addresses[i].toLowerCase()
-        result[address] = toBN(earnings.earnings[i])
+
+    for (let i = 0; i < addresses.length; i++) {
+        const address = addresses[i].toLowerCase()
+
+        const value = toBN(earnings[i])
+
+        if (!value.isFinite()) {
+            console.warn(
+                `Invalid earnings for ${address} (expecting finite BN)`,
+                earnings[i],
+            )
+
+            result[address] = toBN(0)
+
+            continue
+        }
+
+        result[address] = value
     }
     return result
 }
