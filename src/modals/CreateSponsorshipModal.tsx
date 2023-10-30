@@ -39,10 +39,12 @@ const defaultFormData: CreateSponsorshipForm = {
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     balance: BN
+    onResolve?: () => void
 }
 
 export default function CreateSponsorshipModal({
     balance: balanceProp,
+    onResolve,
     ...props
 }: Props) {
     const [busy, setBusy] = useState(false)
@@ -137,6 +139,8 @@ export default function CreateSponsorshipModal({
 
                 try {
                     await createSponsorship(formData)
+
+                    onResolve?.()
                 } catch (e) {
                     if (isRejectionReason(e)) {
                         return

@@ -36,6 +36,7 @@ import { Layer } from '~/utils/Layer'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
+    onResolve?: () => void
     operator: ParsedOperator
     sponsorship: ParsedSponsorship
 }
@@ -47,9 +48,10 @@ function parseAmount(amount: string | undefined, decimals: number) {
 const limitErrorToaster = toaster(Toast, Layer.Toast)
 
 export default function JoinSponsorshipModal({
+    amount: amountProp = '0',
+    onResolve,
     operator,
     sponsorship,
-    amount: amountProp = '0',
     ...props
 }: Props) {
     const { decimals = 18, symbol: tokenSymbol = 'DATA' } =
@@ -123,6 +125,8 @@ export default function JoinSponsorshipModal({
                         finalAmount.toString(),
                         operator.id,
                     )
+
+                    onResolve?.()
                 } catch (e) {
                     if (isMessagedObject(e) && /error_tooManyOperators/.test(e.message)) {
                         return void errorToast(

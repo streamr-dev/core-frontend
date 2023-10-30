@@ -27,14 +27,16 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
     balance: BN
     delegatedTotal: BN
+    onResolve?: () => void
     operator: ParsedOperator
 }
 
 export default function DelegateFundsModal({
     amount: amountProp = '',
-    delegatedTotal: delegatedTotalProp,
-    operator,
     balance,
+    delegatedTotal: delegatedTotalProp,
+    onResolve,
+    operator,
     ...props
 }: Props) {
     const walletAddress = useWalletAccount()
@@ -138,6 +140,8 @@ export default function DelegateFundsModal({
                         operator.id,
                         toDecimals(finalValue, decimals).toString(),
                     )
+
+                    onResolve?.()
                 } catch (e) {
                     if (isRejectionReason(e)) {
                         return

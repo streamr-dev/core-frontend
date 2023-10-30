@@ -26,12 +26,14 @@ import { isTransactionRejection } from '~/utils'
 interface Props extends Pick<FormModalProps, 'onReject'> {
     balance: BN
     delegatedTotal: BN
+    onResolve?: () => void
     operator: ParsedOperator
 }
 
 export default function UndelegateFundsModal({
     balance,
     delegatedTotal: delegatedTotalProp,
+    onResolve,
     operator,
     ...props
 }: Props) {
@@ -111,6 +113,8 @@ export default function UndelegateFundsModal({
                             ? toBN(Number.POSITIVE_INFINITY)
                             : prefinalAmount,
                     )
+
+                    onResolve?.()
                 } catch (e) {
                     if (isRejectionReason(e)) {
                         return
