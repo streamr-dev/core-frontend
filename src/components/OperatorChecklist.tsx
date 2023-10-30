@@ -18,7 +18,7 @@ import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentToke
 import { useOperatorReachability } from '~/shared/stores/operatorReachability'
 
 export function OperatorChecklist({ operatorId }: { operatorId: string | undefined }) {
-    const { funded, nodesDeclared, nodesFunded, nodesReachable, nodesRunning } =
+    const { funded, nodesDeclared, nodesFunded, nodesRunning } =
         useOperatorChecklist(operatorId)
 
     return (
@@ -75,23 +75,6 @@ export function OperatorChecklist({ operatorId }: { operatorId: string | undefin
                 }
             >
                 Nodes running
-            </ChecklistItem>
-            <Separator />
-            <ChecklistItem
-                state={nodesReachable}
-                tip={
-                    <>
-                        <p>
-                            The Operator must ensure that their nodes can be reached
-                            on their node&apos;s configured WebSocket port.
-                        </p>
-                        <p>
-                            The default port is 32200.
-                        </p>
-                    </>
-                }
-            >
-                Nodes reachable
             </ChecklistItem>
         </>
     )
