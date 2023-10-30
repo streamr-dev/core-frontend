@@ -6,7 +6,6 @@ import Tabs, { Tab } from '~/shared/components/Tabs'
 import Button from '~/shared/components/Button'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
-import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import NetworkPageSegment, { SegmentGrid } from '~/components/NetworkPageSegment'
 import { QueriedSponsorshipsTable } from '~/components/QueriedSponsorshipsTable'
 import {
@@ -16,7 +15,6 @@ import {
     useSponsorshipsForCreatorQuery,
 } from '~/hooks/sponsorships'
 import { refetchQuery } from '~/utils'
-import { isRejectionReason } from '~/modals/BaseModal'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import routes from '~/routes'
 
@@ -110,24 +108,8 @@ export const SponsorshipsPage = () => {
                 rightSideContent={
                     <Button
                         waiting={isCreatingSponsorship}
-                        onClick={async () => {
-                            if (!wallet) {
-                                return
-                            }
-
-                            try {
-                                await createSponsorship(wallet)
-
-                                await waitForGraphSync()
-
-                                refetchQueries()
-                            } catch (e) {
-                                if (isRejectionReason(e)) {
-                                    return
-                                }
-
-                                console.warn('Could not create a Sponsorship', e)
-                            }
+                        onClick={() => {
+                            createSponsorship(wallet, { onDone: refetchQueries })
                         }}
                         disabled={!wallet}
                     >

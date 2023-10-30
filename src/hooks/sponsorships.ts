@@ -14,17 +14,15 @@ import useTokenInfo from '~/hooks/useTokenInfo'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { Chain } from '~/shared/types/web3-types'
 import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
-import {
-    createSponsorship,
-    editSponsorshipFunding,
-    fundSponsorship,
-} from '~/utils/sponsorships'
+import { editSponsorshipFunding, fundSponsorship } from '~/utils/sponsorships'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { FlagBusy } from '~/utils/errors'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import JoinSponsorshipModal from '~/modals/JoinSponsorshipModal'
 import { Layer } from '~/utils/Layer'
+import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
+import { getBalanceForSponsorship } from '~/utils/sponsorships'
 
 function getDefaultQueryParams(pageSize: number) {
     return {
@@ -211,14 +209,50 @@ export function useIsCreatingSponsorshipForWallet(wallet: string | undefined) {
     return useIsFlagged(flagKey('isCreatingSponsorship', wallet || ''))
 }
 
+const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
+
 export function useCreateSponsorship() {
     const withFlag = useFlagger()
 
     return useCallback(
-        (wallet: string) =>
-            withFlag(flagKey('isCreatingSponsorship', wallet), () =>
-                createSponsorship(wallet),
-            ),
+        (wallet: string | undefined, options: { onDone?: () => void } = {}) => {
+            if (!wallet) {
+                return
+            }
+
+            void (async () => {
+                try {
+                    try {
+                        await withFlag(
+                            flagKey('isCreatingSponsorship', wallet),
+                            async () => {
+                                const balance = await getBalanceForSponsorship(wallet)
+
+                                await createSponsorshipModal.pop({
+                                    balance,
+                                })
+                            },
+                        )
+
+                        await waitForGraphSync()
+
+                        options.onDone?.()
+                    } catch (e) {
+                        if (e === FlagBusy) {
+                            return
+                        }
+
+                        if (isRejectionReason(e)) {
+                            return
+                        }
+
+                        throw e
+                    }
+                } catch (e) {
+                    console.warn('Could not create a Sponsorship', e)
+                }
+            })()
+        },
         [withFlag],
     )
 }
