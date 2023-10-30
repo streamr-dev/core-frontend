@@ -90,7 +90,7 @@ export default function JoinSponsorshipModal({
         finalAmount.isGreaterThan(0) &&
         !insufficientFunds &&
         !liveNodesCountLoading &&
-        liveNodesCount > -1 &&
+        liveNodesCount > 0 &&
         isAboveMinimumStake &&
         !hasUndelegationQueue
 
