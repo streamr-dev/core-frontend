@@ -1,6 +1,11 @@
 import { z } from 'zod'
 import { toBN } from '~/utils/bn'
 
+export const MinNumberOfOperatorsParser = z
+    .number()
+    .gte(1)
+    .refine((value) => Number.isSafeInteger(value))
+
 export const CreateSponsorshipForm = z
     .object({
         streamId: z.string().trim().min(1),
@@ -12,10 +17,7 @@ export const CreateSponsorshipForm = z
             .number()
             .gte(0)
             .refine((value) => Number.isSafeInteger(value)),
-        minNumberOfOperators: z
-            .number()
-            .gte(1)
-            .refine((value) => Number.isSafeInteger(value)),
+        minNumberOfOperators: MinNumberOfOperatorsParser,
         maxNumberOfOperators: z
             .number()
             .gte(0)

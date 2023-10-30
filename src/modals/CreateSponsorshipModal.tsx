@@ -17,7 +17,10 @@ import FormModal, {
 import Label from '~/shared/components/Ui/Label'
 import { toBN } from '~/utils/bn'
 import { StreamSearchDropdown } from '~/components/StreamSearchDropdown'
-import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
+import {
+    CreateSponsorshipForm,
+    MinNumberOfOperatorsParser,
+} from '~/forms/createSponsorshipForm'
 import { useConfigValueFromChain } from '~/hooks'
 
 const defaultFormData: CreateSponsorshipForm = {
@@ -99,11 +102,9 @@ export default function CreateSponsorshipModal({
         typeof formData.maxNumberOfOperators !== 'undefined' &&
         formData.minNumberOfOperators > formData.maxNumberOfOperators
 
-    const tooLowOperatorCount = !!CreateSponsorshipForm.safeParse(
-        formData,
-    )?.error?.issues?.find(
-        (issue) => issue.path[0] === 'minNumberOfOperators' && issue.code === 'too_small',
-    )
+    const tooLowOperatorCount = !MinNumberOfOperatorsParser.safeParse(
+        formData.minNumberOfOperators,
+    ).success
 
     const canSubmit =
         CreateSponsorshipForm.safeParse(formData).success && !insufficientFunds
