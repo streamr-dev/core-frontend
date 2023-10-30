@@ -184,7 +184,7 @@ export function SponsorshipActionBar({
                         </Button>
                         {canEditStake ? (
                             <Button
-                                disabled={!operator || !streamId}
+                                disabled={!operator}
                                 waiting={isEditingSponsorshipFunding}
                                 onClick={async () => {
                                     if (!operator) {
