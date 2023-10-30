@@ -1,7 +1,7 @@
 import React, { ComponentProps, useMemo } from 'react'
 import styled from 'styled-components'
 import moment from 'moment'
-import { truncateStreamName } from '~/shared/utils/text'
+import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import Button from '~/shared/components/Button'
 import SvgIcon from '~/shared/components/SvgIcon'
@@ -89,6 +89,8 @@ export function SponsorshipActionBar({
 
     const maxOperatorsReached = sponsorship.operatorCount >= sponsorship.maxOperators
 
+    const { streamId } = sponsorship
+
     return (
         <SingleElementPageActionBar>
             <SingleElementPageActionBarContainer>
@@ -108,7 +110,11 @@ export function SponsorshipActionBar({
                                 <NetworkActionBarBackButtonIcon name="backArrow" />
                             </NetworkActionBarBackLink>
                             <NetworkActionBarTitle>
-                                {truncateStreamName(sponsorship.streamId, 30)}
+                                {streamId ? (
+                                    truncateStreamName(streamId, 30)
+                                ) : (
+                                    <>Sponsorship {truncate(sponsorship.id)}</>
+                                )}
                             </NetworkActionBarTitle>
                         </NetworkActionBarBackButtonAndTitle>
                         <NetworkActionBarInfoButtons>
@@ -149,6 +155,7 @@ export function SponsorshipActionBar({
                     </div>
                     <NetworkActionBarCTAs>
                         <Button
+                            disabled={!streamId}
                             waiting={isFundingSponsorship}
                             onClick={async () => {
                                 if (!wallet) {
@@ -177,7 +184,7 @@ export function SponsorshipActionBar({
                         </Button>
                         {canEditStake ? (
                             <Button
-                                disabled={!operator}
+                                disabled={!operator || !streamId}
                                 waiting={isEditingSponsorshipFunding}
                                 onClick={async () => {
                                     if (!operator) {
@@ -206,7 +213,7 @@ export function SponsorshipActionBar({
                             </Button>
                         ) : (
                             <Button
-                                disabled={!operator || maxOperatorsReached}
+                                disabled={!operator || maxOperatorsReached || !streamId}
                                 waiting={isJoiningSponsorshipAsOperator}
                                 onClick={async () => {
                                     if (!operator) {

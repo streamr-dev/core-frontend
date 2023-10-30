@@ -81,9 +81,12 @@ export const OperatorParser = z
                         minimumStakingPeriodSeconds: z.coerce.number(),
                         spotAPY: z.string().transform(toBN),
                         projectedInsolvency: z.coerce.number(),
-                        stream: z.object({
-                            id: z.string(),
-                        }),
+                        stream: z.union([
+                            z.object({
+                                id: z.string(),
+                            }),
+                            z.null(),
+                        ]),
                     }),
                 })
                 .transform(
@@ -95,7 +98,7 @@ export const OperatorParser = z
                             minimumStakingPeriodSeconds,
                             projectedInsolvency: projectedInsolvencyAt,
                             spotAPY,
-                            stream: { id: streamId },
+                            stream,
                         },
                         ...rest
                     }) => ({
@@ -106,7 +109,7 @@ export const OperatorParser = z
                         operatorId,
                         projectedInsolvencyAt,
                         spotAPY,
-                        streamId,
+                        streamId: stream?.id,
                     }),
                 ),
         ),

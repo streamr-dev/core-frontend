@@ -24,7 +24,10 @@ export const Banner = styled.div`
     display: grid;
     gap: 10px;
     grid-template-columns: 24px 1fr;
-    margin-top: 20px;
+
+    * + & {
+        margin-top: 20px;
+    }
 
     span[role='img'] {
         color: ${COLORS.primaryDisabled};
