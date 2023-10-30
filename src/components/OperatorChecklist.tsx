@@ -27,9 +27,10 @@ export function OperatorChecklist({ operatorId }: { operatorId: string | undefin
                 state={funded}
                 tip={
                     <p>
-                        The owner must fund the Operator with <SponsorshipPaymentTokenName />&nbsp;
-                        tokens before it can be used for staking on
-                        sponsorships or receiving delegations.
+                        The owner must fund the Operator with{' '}
+                        <SponsorshipPaymentTokenName />
+                        &nbsp; tokens before it can be used for staking on sponsorships or
+                        receiving delegations.
                     </p>
                 }
             >
@@ -52,8 +53,8 @@ export function OperatorChecklist({ operatorId }: { operatorId: string | undefin
                 tip={
                     <>
                         <p>
-                            The Operator&apos;s node address(es) must
-                            each have at least 0.1 MATIC tokens.
+                            The Operator&apos;s node address(es) must each have at least
+                            0.1 MATIC tokens.
                         </p>
                         <p>This alert triggers if a balance is less than 0.1 MATIC.</p>
                     </>
@@ -66,10 +67,10 @@ export function OperatorChecklist({ operatorId }: { operatorId: string | undefin
                 state={nodesRunning}
                 tip={
                     <p>
-                        The Operator&apos;s nodes must run the operator plugin,
-                        the node&apos;s config file must contain a private key
-                        of one of the paired node addresses, and it must
-                        contain the Operator contract address.
+                        The Operator&apos;s nodes must run the operator plugin, the
+                        node&apos;s config file must contain a private key of one of the
+                        paired node addresses, and it must contain the Operator contract
+                        address.
                     </p>
                 }
             >
