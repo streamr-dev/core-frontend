@@ -15,16 +15,18 @@ export function AboutSponsorship({ sponsorship }: { sponsorship: ParsedSponsorsh
 
     return (
         <DefaultSimpleDropdownMenu>
-            <Address>
-                <div>
-                    Sponsored stream: <strong>{truncateStreamName(streamId)}</strong>
-                </div>
-                <div>
-                    <Link to={routes.streams.show({ id: streamId })} target="_blank">
-                        <ExternalLinkIcon />
-                    </Link>
-                </div>
-            </Address>
+            {streamId && (
+                <Address>
+                    <div>
+                        Sponsored stream: <strong>{truncateStreamName(streamId)}</strong>
+                    </div>
+                    <div>
+                        <Link to={routes.streams.show({ id: streamId })} target="_blank">
+                            <ExternalLinkIcon />
+                        </Link>
+                    </div>
+                </Address>
+            )}
             <Banner>
                 <IconWrap>
                     <InfoIcon label="Info" />

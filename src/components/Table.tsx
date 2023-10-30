@@ -40,9 +40,24 @@ const OperatorIdCellRoot = styled.div`
 `
 
 /**
+ * Deleted stream id formatter.
+ */
+function DeletedStreamIdCell() {
+    return (
+        <StreamInfoCell>
+            <em className="stream-id">(deleted stream)</em>
+        </StreamInfoCell>
+    )
+}
+
+/**
  * Stream id and description formatter.
  */
-export function StreamIdCell({ streamId }: { streamId: string }) {
+export function StreamIdCell({ streamId = '' }: { streamId?: string }) {
+    if (!streamId) {
+        return <DeletedStreamIdCell />
+    }
+
     return (
         <StreamInfoCell>
             <span className="stream-id">{truncateStreamName(streamId)}</span>

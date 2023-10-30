@@ -136,7 +136,7 @@ export function QueriedSponsorshipsTable({
                 actions={[
                     {
                         displayName: 'Sponsor',
-                        disabled: !wallet,
+                        disabled: ({ streamId }) => !streamId || !wallet,
                         async callback(element) {
                             if (!wallet) {
                                 return
@@ -194,7 +194,8 @@ export function QueriedSponsorshipsTable({
 
                         return {
                             displayName: 'Join as Operator',
-                            disabled: !operator || maxOperatorsReached,
+                            disabled:
+                                !element.streamId || !operator || maxOperatorsReached,
                             async callback() {
                                 if (!operator) {
                                     return

@@ -18,9 +18,12 @@ export const SponsorshipParser = z
         operatorCount: z.number(),
         projectedInsolvency: z.coerce.number(),
         spotAPY: z.string().transform(fromAtto),
-        stream: z.object({
-            id: z.string(),
-        }),
+        stream: z.union([
+            z.object({
+                id: z.string(),
+            }),
+            z.null(),
+        ]),
         stakes: z.array(
             z
                 .object({
@@ -52,7 +55,7 @@ export const SponsorshipParser = z
             projectedInsolvency: projectedInsolvencyAt,
             spotAPY,
             stakes,
-            stream: { id: streamId },
+            stream,
             totalPayoutWeiPerSec,
             totalStakedWei,
             ...rest
@@ -76,7 +79,7 @@ export const SponsorshipParser = z
                     ...stake,
                     amount: fromDecimals(amountWei, decimals),
                 })),
-                streamId,
+                streamId: stream?.id,
                 totalStake: fromDecimals(totalStakedWei, decimals),
             }
         },
