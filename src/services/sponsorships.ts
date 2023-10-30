@@ -8,18 +8,17 @@ import { BN, BNish, toBN } from '~/utils/bn'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { toastedOperation } from '~/utils/toastedOperation'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
-import { TokenAndBalanceForSponsorship } from '~/types/sponsorship'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import { saveLastBlockNumber } from '~/getters/waitForGraphSync'
+import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
 
 const getSponsorshipChainId = () => {
     return defaultChainConfig.id
 }
 
-export async function createSponsorship(
-    formData: CreateSponsorshipForm,
-    balanceData: TokenAndBalanceForSponsorship,
-): Promise<void> {
+export async function createSponsorship(formData: CreateSponsorshipForm): Promise<void> {
+    const { decimals } = await getSponsorshipTokenInfo()
+
     const minOperatorCount = Number(formData.minNumberOfOperators)
     const maxOperatorCount = formData.maxNumberOfOperators
         ? String(formData.maxNumberOfOperators)
@@ -31,11 +30,11 @@ export async function createSponsorship(
     // tokens per second
     const payoutRate = toBN(formData.payoutRate)
         .dividedBy(86400)
-        .multipliedBy(toBN(10).pow(toBN(balanceData.tokenDecimals)))
+        .multipliedBy(toBN(10).pow(toBN(decimals)))
         .toString()
     // wei
     const initialFunding = toBN(formData.initialAmount)
-        .multipliedBy(toBN(10).pow(toBN(balanceData.tokenDecimals)))
+        .multipliedBy(toBN(10).pow(toBN(decimals)))
         .toString()
     const streamId = formData.streamId
 

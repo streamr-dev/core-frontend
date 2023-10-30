@@ -1,5 +1,5 @@
-import React, { useMemo, useReducer, useState } from 'react'
-import { RejectionReason } from '~/modals/BaseModal'
+import React, { useReducer, useState } from 'react'
+import { RejectionReason, isRejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     ErrorLabel,
     ErrorWrap,
@@ -15,10 +15,18 @@ import FormModal, {
     WingedLabelWrap,
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
-import { toBN } from '~/utils/bn'
+import { BN, toBN } from '~/utils/bn'
 import { StreamSearchDropdown } from '~/components/StreamSearchDropdown'
-import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
+import {
+    CreateSponsorshipForm,
+    MinNumberOfOperatorsParser,
+} from '~/forms/createSponsorshipForm'
 import { useConfigValueFromChain } from '~/hooks'
+import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
+import { toDecimals } from '~/marketplace/utils/math'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { createSponsorship } from '~/services/sponsorships'
+import { isTransactionRejection } from '~/utils'
 
 const defaultFormData: CreateSponsorshipForm = {
     streamId: '',
@@ -29,29 +37,19 @@ const defaultFormData: CreateSponsorshipForm = {
     maxNumberOfOperators: undefined,
 }
 
-interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
-    onResolve?: (formData: CreateSponsorshipForm) => void
-    onSubmit: (formData: CreateSponsorshipForm) => Promise<void>
-    balance: string
-    tokenSymbol: string
-    tokenDecimals: number
+interface Props extends Pick<FormModalProps, 'onReject'> {
+    balance: BN
 }
 
 export default function CreateSponsorshipModal({
-    title = 'Create Sponsorship',
-    submitLabel = 'Create',
-    onResolve,
-    onSubmit,
-    balance: balanceProp = '0',
-    tokenSymbol,
-    tokenDecimals,
+    balance: balanceProp,
     ...props
 }: Props) {
     const [busy, setBusy] = useState(false)
 
-    const decimalMultiplier = useMemo(() => Math.pow(10, tokenDecimals), [tokenDecimals])
+    const { decimals = 18 } = useSponsorshipTokenInfo() || {}
 
-    const balance = toBN(balanceProp).multipliedBy(decimalMultiplier)
+    const balance = toDecimals(balanceProp, decimals)
 
     const [formData, setRawProperties] = useReducer<
         (
@@ -75,8 +73,9 @@ export default function CreateSponsorshipModal({
         maxNumberOfOperators,
     } = formData
 
-    const initialAmountBN = toBN(initialAmount || '0').multipliedBy(decimalMultiplier)
-    const payoutRateBN = toBN(payoutRate || '0').multipliedBy(decimalMultiplier)
+    const initialAmountBN = toDecimals(initialAmount || '0', decimals)
+
+    const payoutRateBN = toDecimals(payoutRate || '0', decimals)
 
     const backdropDismissable =
         streamId === defaultFormData.streamId &&
@@ -99,11 +98,9 @@ export default function CreateSponsorshipModal({
         typeof formData.maxNumberOfOperators !== 'undefined' &&
         formData.minNumberOfOperators > formData.maxNumberOfOperators
 
-    const tooLowOperatorCount = !!CreateSponsorshipForm.safeParse(
-        formData,
-    )?.error?.issues?.find(
-        (issue) => issue.path[0] === 'minNumberOfOperators' && issue.code === 'too_small',
-    )
+    const tooLowOperatorCount = !MinNumberOfOperatorsParser.safeParse(
+        formData.minNumberOfOperators,
+    ).success
 
     const canSubmit =
         CreateSponsorshipForm.safeParse(formData).success && !insufficientFunds
@@ -124,9 +121,9 @@ export default function CreateSponsorshipModal({
     return (
         <FormModal
             {...props}
-            title={title}
+            title="Create Sponsorship"
             canSubmit={canSubmit && !busy}
-            submitLabel={submitLabel}
+            submitLabel="Create"
             submitting={busy}
             onBeforeAbort={(reason) =>
                 !busy && (backdropDismissable || reason !== RejectionReason.Backdrop)
@@ -137,16 +134,21 @@ export default function CreateSponsorshipModal({
                 }
 
                 setBusy(true)
+
                 try {
-                    await onSubmit(formData)
-                    onResolve?.(formData)
+                    await createSponsorship(formData)
                 } catch (e) {
-                    console.warn('Error while creating a Sponsorship', e)
-                    setBusy(false)
+                    if (isRejectionReason(e)) {
+                        return
+                    }
+
+                    if (isTransactionRejection(e)) {
+                        return
+                    }
+
+                    throw e
                 } finally {
-                    /**
-                     * No need to reset `busy`. `onResolve` makes the whole modal disappear.
-                     */
+                    setBusy(false)
                 }
             }}
         >
@@ -191,14 +193,15 @@ export default function CreateSponsorshipModal({
                             min={0}
                             value={initialAmount || ''}
                         />
-                        <TextAppendix>{tokenSymbol}</TextAppendix>
+                        <TextAppendix>
+                            <SponsorshipPaymentTokenName />
+                        </TextAppendix>
                     </FieldWrap>
                     <Hint>
                         <p>
                             Wallet balance:{' '}
                             <strong>
-                                {balance.dividedBy(decimalMultiplier).toString()}{' '}
-                                {tokenSymbol}
+                                {balanceProp.toString()} <SponsorshipPaymentTokenName />
                             </strong>
                         </p>
                     </Hint>
@@ -219,7 +222,10 @@ export default function CreateSponsorshipModal({
                             min={0}
                             value={payoutRate || ''}
                         />
-                        <TextAppendix>{tokenSymbol}/day</TextAppendix>
+                        <TextAppendix>
+                            <SponsorshipPaymentTokenName />
+                            /day
+                        </TextAppendix>
                     </FieldWrap>
                     <Hint>
                         <p>

@@ -21,8 +21,6 @@ import { confirm } from '~/getters/confirm'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import getCoreConfig from '~/getters/getCoreConfig'
-import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
-import { createSponsorship as createSponsorshipService } from '~/services/sponsorships'
 import { getCustomTokenBalance } from '~/marketplace/utils/web3'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 
@@ -173,36 +171,11 @@ async function getSponsorshipLeavePenalty(sponsorshipId: string, operatorId: str
     return toBN(await contract.getLeavePenalty(operatorId))
 }
 
-const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
-
-/**
- * Takes the user through the process of creating a Sponsorship.
- */
-export async function createSponsorship(wallet: string) {
-    const { symbol: tokenSymbol, decimals: tokenDecimals } =
-        await getSponsorshipTokenInfo()
-
-    const balance = (await getBalanceForSponsorship(wallet)).toString()
-
-    await createSponsorshipModal.pop({
-        balance,
-        tokenSymbol,
-        tokenDecimals,
-        async onSubmit(formData) {
-            await createSponsorshipService(formData, {
-                balance,
-                tokenDecimals,
-                tokenSymbol,
-            })
-        },
-    })
-}
-
 /**
  * Fetches wallet's balance of the Sponsorship-native token
  * on the default chain.
  */
-async function getBalanceForSponsorship(wallet: string) {
+export async function getBalanceForSponsorship(wallet: string) {
     return getCustomTokenBalance(
         defaultChainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
         wallet,
