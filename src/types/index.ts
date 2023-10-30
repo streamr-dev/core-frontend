@@ -46,3 +46,20 @@ export type ConfigKey =
     | 'minimumStakeWei'
     | 'minimumSelfDelegationFraction'
     | 'maxQueueSeconds'
+
+export interface Chain {
+    name: string
+    id: number
+    rpcEndpoints: { readonly url: string }[]
+    contracts: {
+        [name: string]: string
+    }
+    entryPoints?: {
+        id: string
+        websocket: {
+            host: string
+            port: number
+            tls: boolean
+        }
+    }[]
+}

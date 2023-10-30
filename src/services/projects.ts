@@ -1,5 +1,4 @@
 import { toaster } from 'toasterhea'
-import { Address } from '~/shared/types/web3-types'
 import { getSigner, getWalletAccount } from '~/shared/stores/wallet'
 import { getProjectRegistryContract } from '~/getters'
 import networkPreflight from '~/utils/networkPreflight'
@@ -68,9 +67,9 @@ export type TheGraphProject = {
 
 export type PaymentDetails = {
     chainId: number
-    beneficiaryAddress: Address
+    beneficiaryAddress: string
     pricePerSecond: BN
-    pricingTokenAddress: Address
+    pricingTokenAddress: string
 }
 
 export type SmartContractProjectMetadata = {

@@ -11,7 +11,6 @@ import { parseEther } from 'ethers/lib/utils'
 import { getConfigForChain } from '~/shared/web3/config'
 import networkPreflight from '~/utils/networkPreflight'
 import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
-import { Address } from '~/shared/types/web3-types'
 import { BNish, toBN } from '~/utils/bn'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import { toastedOperation, toastedOperations } from '~/utils/toastedOperation'
@@ -59,7 +58,7 @@ export async function createOperator(
     const poolTokenName = `StreamrOperator-${walletAddress.slice(-5)}`
     const operatorMetadata = JSON.stringify(metadata)
 
-    const policies: [Address, Address, Address] = [
+    const policies: [string, string, string] = [
         chainConfig.contracts.OperatorDefaultDelegationPolicy,
         chainConfig.contracts.OperatorDefaultExchangeRatePolicy,
         chainConfig.contracts.OperatorDefaultUndelegationPolicy,

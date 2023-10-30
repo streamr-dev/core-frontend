@@ -46,32 +46,6 @@ export const ethereumNetworks = {
     '137': 'Polygon',
 }
 
-export const transactionStates = {
-    STARTED: 'started',
-    // transaction started
-    PENDING: 'pending',
-    // hash received
-    CONFIRMED: 'confirmed',
-    // mined
-    FAILED: 'failed', // error
-}
-export const transactionTypes = {
-    SET_DATA_ALLOWANCE: 'setDataAllowance',
-    RESET_DATA_ALLOWANCE: 'resetDataAllowance',
-    SET_DAI_ALLOWANCE: 'setDaiAllowance',
-    RESET_DAI_ALLOWANCE: 'resetDaiAllowance',
-    SUBSCRIPTION: 'subscription',
-    CREATE_CONTRACT_PRODUCT: 'createContractProduct',
-    UPDATE_CONTRACT_PRODUCT: 'updateContractProduct',
-    REDEPLOY_PRODUCT: 'redeployProduct',
-    UNDEPLOY_PRODUCT: 'undeployProduct',
-    PAYMENT: 'payment',
-    DEPLOY_DATA_UNION: 'deployDataUnion',
-    UPDATE_ADMIN_FEE: 'updateAdminFee',
-    SET_REQUIRES_WHITELIST: 'setRequiresWhitelist',
-    WHITELIST_APPROVE: 'whitelistApprove',
-    WHITELIST_REJECT: 'whitelistReject',
-}
 export const gasLimits = {
     BUY_PRODUCT: 3e5,
     BUY_PRODUCT_WITH_ETH: 5e5,

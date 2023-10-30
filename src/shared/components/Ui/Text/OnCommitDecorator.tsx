@@ -1,7 +1,5 @@
 import { ChangeEvent, ComponentType } from 'react'
 import React, { useCallback, useRef, forwardRef } from 'react'
-import { Ref } from '~/shared/types/common-types'
-import '~/shared/types/common-types'
 
 const sanitise = (value: string): string => (value == null ? '' : value)
 
@@ -35,7 +33,7 @@ const OnCommitDecorator = (WrappedComponent: ComponentType<any>) => {
         }: Props,
         ref: any,
     ) => {
-        const valueRef: Ref<string> = useRef(null)
+        const valueRef = useRef<string | null>(null)
         const onCommit = useCallback(
             (value: string, requireChanged = false) => {
                 if (onCommitProp) {

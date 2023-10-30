@@ -7,7 +7,7 @@ import { fromDecimals } from '~/marketplace/utils/math'
 import { getMostRelevantTimeUnit } from '~/marketplace/utils/price'
 import { getDataAddress } from '~/marketplace/utils/web3'
 import { ProjectType, SalePoint } from '~/shared/types'
-import { Chain } from '~/shared/types/web3-types'
+import { Chain } from '~/types'
 import {
     TimeUnit,
     timeUnitSecondsMultiplierMap,

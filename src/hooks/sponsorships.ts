@@ -12,7 +12,7 @@ import { ParsedSponsorship, SponsorshipParser } from '~/parsers/SponsorshipParse
 import { errorToast } from '~/utils/toast'
 import useTokenInfo from '~/hooks/useTokenInfo'
 import getCoreConfig from '~/getters/getCoreConfig'
-import { Chain } from '~/shared/types/web3-types'
+import { Chain } from '~/types'
 import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
 import { editSponsorshipFunding, fundSponsorship } from '~/utils/sponsorships'
 import { ParsedOperator } from '~/parsers/OperatorParser'
