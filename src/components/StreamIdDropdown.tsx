@@ -19,13 +19,37 @@ import { parseStreamId, truncate } from '~/shared/utils/text'
 interface Props
     extends Omit<
         InputHTMLAttributes<HTMLInputElement>,
-        'onChange' | 'value' | 'defaultValue'
+        'onChange' | 'value' | 'defaultValue' | 'type'
     > {
     onChange?: (value: string) => void
     value?: string
 }
 
-export function StreamIdDropdown({ value = '', onChange }: Props) {
+function withNextButton(el: HTMLElement, fn: (button: HTMLButtonElement | null) => void) {
+    fn(
+        el.parentElement?.nextElementSibling?.querySelector(
+            'button',
+        ) as HTMLButtonElement | null,
+    )
+}
+
+function withPrevButton(el: HTMLElement, fn: (button: HTMLButtonElement | null) => void) {
+    fn(
+        el.parentElement?.previousElementSibling?.querySelector(
+            'button',
+        ) as HTMLButtonElement | null,
+    )
+}
+
+export function StreamIdDropdown({
+    disabled = false,
+    onBlur: onBlurProp,
+    onChange,
+    onFocus: onFocusProp,
+    onKeyDown: onKeyDownProp,
+    value = '',
+    ...props
+}: Props) {
     const wallet = useWalletAccount()
 
     const inputRef = useRef<HTMLInputElement>(null)
@@ -58,6 +82,7 @@ export function StreamIdDropdown({ value = '', onChange }: Props) {
 
     return (
         <SimpleDropdown
+            disabled={disabled}
             menuWrapComponent={StreamDropdownMenuWrap}
             menu={(toggle) => (
                 <SimpleListDropdownMenu>
@@ -101,34 +126,32 @@ export function StreamIdDropdown({ value = '', onChange }: Props) {
                                                         toggle(false)
 
                                                         return
+
                                                     case 'ArrowDown':
-                                                        const nextButton =
-                                                            e.currentTarget.parentElement?.nextElementSibling?.querySelector(
-                                                                'button',
-                                                            )
+                                                        return void withNextButton(
+                                                            e.currentTarget,
+                                                            (button) => {
+                                                                if (button) {
+                                                                    button.focus()
 
-                                                        if (nextButton) {
-                                                            nextButton.focus()
+                                                                    e.preventDefault()
+                                                                }
+                                                            },
+                                                        )
 
-                                                            e.preventDefault()
-                                                        }
-
-                                                        return
                                                     case 'ArrowUp':
                                                         e.preventDefault()
 
-                                                        const prevButton =
-                                                            e.currentTarget.parentElement?.previousElementSibling?.querySelector(
-                                                                'button',
-                                                            )
+                                                        return void withPrevButton(
+                                                            e.currentTarget,
+                                                            (button) => {
+                                                                if (button) {
+                                                                    return void button.focus()
+                                                                }
 
-                                                        if (prevButton) {
-                                                            return void prevButton.focus()
-                                                        }
-
-                                                        inputRef.current?.focus()
-
-                                                        return
+                                                                inputRef.current?.focus()
+                                                            },
+                                                        )
 
                                                     case 'Backspace':
                                                         e.preventDefault()
@@ -136,6 +159,7 @@ export function StreamIdDropdown({ value = '', onChange }: Props) {
                                                         inputRef.current?.focus()
 
                                                         return
+
                                                     default:
                                                 }
                                             }}
@@ -188,33 +212,31 @@ export function StreamIdDropdown({ value = '', onChange }: Props) {
                 return (
                     <FieldWrap>
                         <TextInput
+                            {...props}
+                            disabled={disabled}
                             ref={inputRef}
                             onMouseDown={() => {
                                 toggle((c) => !c)
                             }}
-                            autoFocus
                             value={value}
-                            placeholder="Type to select a stream"
                             onChange={(e) => {
                                 onChange?.(e.target.value)
 
                                 toggle(true)
                             }}
-                            onFocus={() => {
+                            onFocus={(e) => {
+                                onFocusProp?.(e)
+
                                 setInputFocused(true)
                             }}
-                            onBlur={() => {
-                                setInputFocused(false)
+                            onBlur={(e) => {
+                                onBlurProp?.(e)
 
-                                setTimeout(() => {
-                                    if (
-                                        !listRef.current?.contains(document.activeElement)
-                                    ) {
-                                        toggle(false)
-                                    }
-                                })
+                                setInputFocused(false)
                             }}
                             onKeyDown={(e) => {
+                                onKeyDownProp?.(e)
+
                                 switch (e.key) {
                                     case 'Enter':
                                         if (isOpen && streamIds[0]) {

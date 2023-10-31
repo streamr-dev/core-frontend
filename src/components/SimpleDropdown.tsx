@@ -73,7 +73,16 @@ export function SimpleDropdown({
     }, [disabled])
 
     return (
-        <SimpleDropdownRoot ref={rootRef} data-simple-dropdown>
+        <SimpleDropdownRoot
+            ref={rootRef}
+            onBlur={() =>
+                setTimeout(() => {
+                    if (!rootRef.current?.contains(document.activeElement)) {
+                        setIsOpen(false)
+                    }
+                })
+            }
+        >
             {typeof children === 'function' ? children(setIsOpen, isOpen) : children}
             <MenuWrap $visible={isOpen}>
                 {typeof menu === 'function' ? menu(setIsOpen, isOpen) : menu}
