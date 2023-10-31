@@ -202,7 +202,7 @@ export function StreamIdDropdown({
                         </ul>
                     ) : (
                         <Zero>
-                            No matches for <strong>{queryValue}</strong>
+                            0 matches for <strong>{queryValue}</strong>
                         </Zero>
                     )}
                 </SimpleListDropdownMenu>
