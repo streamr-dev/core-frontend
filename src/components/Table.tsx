@@ -74,23 +74,30 @@ export function StreamIdCell({ streamId = '' }: { streamId?: string }) {
 export function FundedUntilCell({
     projectedInsolvencyAt,
 }: {
-    projectedInsolvencyAt: number
+    projectedInsolvencyAt: number | null
 }) {
-    const value = moment(projectedInsolvencyAt * 1000)
+    const value =
+        projectedInsolvencyAt == null ? null : moment(projectedInsolvencyAt * 1000)
 
     return (
         <FundedUntilCellRoot>
-            {value.format('YYYY-MM-DD')}
-            {value.isBefore(Date.now()) && (
-                <Tip
-                    handle={
-                        <TipIconWrap $color="#ff5c00">
-                            <JiraFailedBuildStatusIcon label="Error" />
-                        </TipIconWrap>
-                    }
-                >
-                    Sponsorship expired
-                </Tip>
+            {value == null ? (
+                <>N/A</>
+            ) : (
+                <>
+                    {value.format('YYYY-MM-DD')}
+                    {value.isBefore(Date.now()) && (
+                        <Tip
+                            handle={
+                                <TipIconWrap $color="#ff5c00">
+                                    <JiraFailedBuildStatusIcon label="Error" />
+                                </TipIconWrap>
+                            }
+                        >
+                            Sponsorship expired
+                        </Tip>
+                    )}
+                </>
             )}
         </FundedUntilCellRoot>
     )

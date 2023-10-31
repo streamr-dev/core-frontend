@@ -78,9 +78,12 @@ export const OperatorParser = z
                     sponsorship: z.object({
                         id: z.string(),
                         isRunning: z.boolean(),
+                        remainingWei: z.string().transform(toBN),
                         minimumStakingPeriodSeconds: z.coerce.number(),
                         spotAPY: z.string().transform(toBN),
-                        projectedInsolvency: z.coerce.number(),
+                        projectedInsolvency: z
+                            .union([z.string(), z.null()])
+                            .transform((v) => (v == null ? null : Number(v))),
                         stream: z.union([
                             z.object({
                                 id: z.string(),
@@ -94,7 +97,8 @@ export const OperatorParser = z
                         operator: { id: operatorId },
                         sponsorship: {
                             id: sponsorshipId,
-                            isRunning: isSponsorshipRunning,
+                            isRunning,
+                            remainingWei,
                             minimumStakingPeriodSeconds,
                             projectedInsolvency: projectedInsolvencyAt,
                             spotAPY,
@@ -104,7 +108,7 @@ export const OperatorParser = z
                     }) => ({
                         ...rest,
                         sponsorshipId,
-                        isSponsorshipRunning,
+                        isSponsorshipPaying: isRunning && remainingWei.isGreaterThan(0),
                         minimumStakingPeriodSeconds,
                         operatorId,
                         projectedInsolvencyAt,

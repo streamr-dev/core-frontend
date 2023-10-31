@@ -1,12 +1,18 @@
 import styled from 'styled-components'
 import { COLORS } from '~/shared/utils/styled'
 
-export const Address = styled.p`
+export const Address = styled.div`
     align-items: center;
     color: ${COLORS.primaryLight};
     display: grid;
+    font-size: 14px;
     gap: 4px;
     grid-template-columns: max-content max-content;
+    line-height: 20px;
+
+    p + & {
+        margin-top: 8px;
+    }
 
     strong {
         color: ${COLORS.primary};

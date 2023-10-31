@@ -16,7 +16,10 @@ export const SponsorshipParser = z
             .transform((v) => v ?? Number.POSITIVE_INFINITY),
         minimumStakingPeriodSeconds: z.coerce.number(),
         operatorCount: z.number(),
-        projectedInsolvency: z.coerce.number(),
+        projectedInsolvency: z
+            .union([z.string(), z.null()])
+            .transform((v) => (v == null ? null : Number(v))),
+        remainingWei: z.string().transform(toBN),
         spotAPY: z.string().transform(fromAtto),
         stream: z.union([
             z.object({
@@ -51,9 +54,9 @@ export const SponsorshipParser = z
     .transform(
         async ({
             cumulativeSponsoring: cumulativeSponsoringWei,
-            isRunning: active,
             projectedInsolvency: projectedInsolvencyAt,
             spotAPY,
+            remainingWei,
             stakes,
             stream,
             totalPayoutWeiPerSec,
@@ -66,7 +69,6 @@ export const SponsorshipParser = z
 
             return {
                 ...rest,
-                active,
                 apy: toDecimals(spotAPY, decimals).toNumber(),
                 cumulativeSponsoring: fromDecimals(cumulativeSponsoringWei, decimals),
                 minimumStake: fromDecimals(minimumStakeWei, decimals),
@@ -75,6 +77,7 @@ export const SponsorshipParser = z
                     decimals,
                 ).dp(3, BN.ROUND_HALF_UP),
                 projectedInsolvencyAt,
+                remainingBalance: fromDecimals(remainingWei, decimals),
                 stakes: stakes.map(({ amountWei, ...stake }) => ({
                     ...stake,
                     amount: fromDecimals(amountWei, decimals),
