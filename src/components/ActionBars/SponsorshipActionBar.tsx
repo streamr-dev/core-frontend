@@ -62,7 +62,9 @@ export function SponsorshipActionBar({
 
     const canEditStake = isSponsorshipFundedByOperator(sponsorship, operator)
 
-    const { projectedInsolvencyAt, active } = sponsorship
+    const { projectedInsolvencyAt, isRunning, remainingBalance } = sponsorship
+
+    const isPaying = isRunning && remainingBalance.isGreaterThan(0)
 
     const fundedUntil = useMemo(
         () =>
@@ -123,11 +125,13 @@ export function SponsorshipActionBar({
                         <NetworkActionBarInfoButtons>
                             <ActionBarButtonBody
                                 $background={
-                                    active ? COLORS.activeBackground : COLORS.radioBorder
+                                    isPaying
+                                        ? COLORS.activeBackground
+                                        : COLORS.radioBorder
                                 }
-                                $color={active ? COLORS.active : COLORS.primary}
+                                $color={isPaying ? COLORS.active : COLORS.primary}
                             >
-                                <strong>{active ? 'Active' : 'Inactive'}</strong>
+                                <strong>{isPaying ? 'Paying' : 'Inactive'}</strong>
                             </ActionBarButtonBody>
                             <SimpleDropdown
                                 menu={<AboutSponsorship sponsorship={sponsorship} />}
@@ -266,25 +270,9 @@ export function SponsorshipActionBar({
                             <SponsorshipPaymentTokenName />
                             /day
                         </StatCell>
-                        <StatCell
-                            label="Operators"
-                            tip={
-                                <Tip
-                                    shift="right"
-                                    handle={
-                                        <IconWrap>
-                                            <QuestionMarkIcon />
-                                        </IconWrap>
-                                    }
-                                >
-                                    <p>
-                                        The number of Operators that have staked on this
-                                        Sponsorship.
-                                    </p>
-                                </Tip>
-                            }
-                        >
-                            {sponsorship.operatorCount}
+                        <StatCell label="Remaining balance">
+                            {abbreviateNumber(remainingBalance.toNumber())}{' '}
+                            <SponsorshipPaymentTokenName />
                         </StatCell>
                         <StatCell
                             label="Total staked"
