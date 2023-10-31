@@ -26,7 +26,7 @@ interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
 
 interface UndelegateSponsorship {
     id: string
-    streamId: string
+    streamId: string | undefined
     amount: BN
     minimumStakingPeriodSeconds: number
     joinTimestamp: number
@@ -122,7 +122,11 @@ export default function ForceUndelegateModal({
                             {
                                 displayName: 'Stream ID',
                                 valueMapper: (element) => (
-                                    <>{truncateStreamName(element.streamId)}</>
+                                    <>
+                                        {element.streamId != null
+                                            ? truncateStreamName(element.streamId)
+                                            : '(deleted stream)'}
+                                    </>
                                 ),
                                 align: 'start',
                                 isSticky: true,
