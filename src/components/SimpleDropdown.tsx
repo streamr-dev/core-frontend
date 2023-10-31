@@ -11,12 +11,14 @@ type ChildrenFormatter =
 
 export function SimpleDropdown({
     children,
+    disabled = false,
     menu,
     menuWrapComponent: MenuWrap = SimpleDropdownMenu,
 }: {
-    menuWrapComponent?: typeof SimpleDropdownMenu
     children?: ChildrenFormatter
+    disabled?: boolean
     menu?: ChildrenFormatter
+    menuWrapComponent?: typeof SimpleDropdownMenu
 }) {
     const [isOpen, setIsOpen] = useState(false)
 
@@ -63,6 +65,12 @@ export function SimpleDropdown({
             window.removeEventListener('keydown', onKeyDown)
         }
     }, [isOpen])
+
+    useEffect(() => {
+        if (disabled) {
+            setIsOpen(false)
+        }
+    }, [disabled])
 
     return (
         <SimpleDropdownRoot ref={rootRef} data-simple-dropdown>
