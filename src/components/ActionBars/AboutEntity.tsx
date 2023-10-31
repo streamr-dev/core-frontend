@@ -10,6 +10,10 @@ export const Address = styled.div`
     grid-template-columns: max-content max-content;
     line-height: 20px;
 
+    p + & {
+        margin-top: 8px;
+    }
+
     strong {
         color: ${COLORS.primary};
     }
