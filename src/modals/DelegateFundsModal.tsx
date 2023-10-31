@@ -87,7 +87,7 @@ export default function DelegateFundsModal({
     const tooLowCurrentSelfDelegation = useMemo(() => {
         return (
             !isOwner &&
-            getSelfDelegationFraction(operator).isLessThan(minimumSelfDelegation)
+            getSelfDelegationFraction(operator).isLessThanOrEqualTo(minimumSelfDelegation)
         )
     }, [operator, minimumSelfDelegation, isOwner])
 
@@ -111,8 +111,8 @@ export default function DelegateFundsModal({
         return fromDecimals(
             operatorSelfStake.dividedBy(minimumSelfDelegation).minus(operatorSelfStake),
             decimals,
-        )
-    }, [operator, minimumSelfDelegation, decimals])
+        ).minus(delegatedTotal)
+    }, [operator, minimumSelfDelegation, decimals, delegatedTotal])
 
     const canSubmit =
         finalValue.isFinite() &&
