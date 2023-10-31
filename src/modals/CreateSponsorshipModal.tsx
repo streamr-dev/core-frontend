@@ -1,4 +1,5 @@
 import React, { useReducer, useState } from 'react'
+import { toaster } from 'toasterhea'
 import { RejectionReason, isRejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     ErrorLabel,
@@ -16,7 +17,6 @@ import FormModal, {
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
 import { BN, toBN } from '~/utils/bn'
-import { StreamSearchDropdown } from '~/components/StreamSearchDropdown'
 import {
     CreateSponsorshipForm,
     MinNumberOfOperatorsParser,
@@ -27,6 +27,11 @@ import { toDecimals } from '~/marketplace/utils/math'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { createSponsorship } from '~/services/sponsorships'
 import { isTransactionRejection } from '~/utils'
+import { StreamIdDropdown } from '~/components/StreamIdDropdown'
+import { checkIfStreamExists } from '~/services/streams'
+import { errorToast } from '~/utils/toast'
+import Toast from '~/shared/toasts/Toast'
+import { Layer } from '~/utils/Layer'
 
 const defaultFormData: CreateSponsorshipForm = {
     streamId: '',
@@ -41,6 +46,8 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
     balance: BN
     onResolve?: () => void
 }
+
+const streamNotFoundToaster = toaster(Toast, Layer.Toast)
 
 export default function CreateSponsorshipModal({
     balance: balanceProp,
@@ -138,6 +145,15 @@ export default function CreateSponsorshipModal({
                 setBusy(true)
 
                 try {
+                    if (!(await checkIfStreamExists(formData.streamId))) {
+                        errorToast(
+                            { title: 'Stream does not exist' },
+                            streamNotFoundToaster,
+                        )
+
+                        return
+                    }
+
                     await createSponsorship(formData)
 
                     onResolve?.()
@@ -164,15 +180,16 @@ export default function CreateSponsorshipModal({
                 </SectionHeadline>
                 <Section>
                     <Label>Select a Stream</Label>
-                    <StreamSearchDropdown
-                        onStreamChange={(streamId) => {
+                    <StreamIdDropdown
+                        autoFocus
+                        placeholder="Type to select a stream"
+                        disabled={busy}
+                        onChange={(streamId) => {
                             setRawProperties({
                                 streamId,
                             })
                         }}
-                        streamId={streamId}
-                        disabled={busy}
-                        name="streamId"
+                        value={streamId}
                     />
                 </Section>
             </Group>

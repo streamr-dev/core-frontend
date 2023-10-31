@@ -12,6 +12,24 @@ export const truncate = (path: string): string => {
 
 const MAX_STREAM_NAME_LENGTH = 26
 
+export function parseStreamId(streamId: string): {
+    owner: string
+    pathname: string
+} {
+    try {
+        const [, owner, pathname] = streamId.match(/^(0x[a-f\d]{40})([^\s]+)$/)!
+
+        return {
+            owner,
+            pathname,
+        }
+    } catch (e) {
+        console.warn('Invalid stream id', e)
+    }
+
+    throw new Error('Invalid stream id')
+}
+
 export const truncateStreamName = (
     streamName: string,
     limit = MAX_STREAM_NAME_LENGTH,

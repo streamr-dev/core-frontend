@@ -2,15 +2,23 @@ import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { COLORS } from '~/shared/utils/styled'
 
+type ChildrenFormatter =
+    | ReactNode
+    | ((
+          toggle: (value: boolean | ((prev: boolean) => boolean)) => void,
+          isOpen: boolean,
+      ) => ReactNode)
+
 export function SimpleDropdown({
     children,
+    disabled = false,
     menu,
+    menuWrapComponent: MenuWrap = SimpleDropdownMenu,
 }: {
-    children?: (
-        toggle: (value: boolean | ((prev: boolean) => boolean)) => void,
-        isOpen: boolean,
-    ) => ReactNode
-    menu?: ReactNode
+    children?: ChildrenFormatter
+    disabled?: boolean
+    menu?: ChildrenFormatter
+    menuWrapComponent?: typeof SimpleDropdownMenu
 }) {
     const [isOpen, setIsOpen] = useState(false)
 
@@ -58,10 +66,27 @@ export function SimpleDropdown({
         }
     }, [isOpen])
 
+    useEffect(() => {
+        if (disabled) {
+            setIsOpen(false)
+        }
+    }, [disabled])
+
     return (
-        <SimpleDropdownRoot ref={rootRef}>
-            {children?.(setIsOpen, isOpen)}
-            <SimpleDropdownMenu $visible={isOpen}>{menu}</SimpleDropdownMenu>
+        <SimpleDropdownRoot
+            ref={rootRef}
+            onBlur={() =>
+                setTimeout(() => {
+                    if (!rootRef.current?.contains(document.activeElement)) {
+                        setIsOpen(false)
+                    }
+                })
+            }
+        >
+            {typeof children === 'function' ? children(setIsOpen, isOpen) : children}
+            <MenuWrap $visible={isOpen}>
+                {typeof menu === 'function' ? menu(setIsOpen, isOpen) : menu}
+            </MenuWrap>
         </SimpleDropdownRoot>
     )
 }
@@ -94,7 +119,7 @@ export const SimpleDropdownMenu = styled.div<{ $visible?: boolean }>`
         `}
 `
 
-export const DefaultSimpleDropdownMenu = styled.div`
+export const SimpleListDropdownMenu = styled.div`
     background: #ffffff;
     border-radius: 8px;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.05),
@@ -102,8 +127,6 @@ export const DefaultSimpleDropdownMenu = styled.div`
     color: ${COLORS.primary};
     margin-top: 8px;
     min-height: 16px;
-    padding: 20px 16px;
-    width: 460px;
 
     p {
         font-size: 14px;
@@ -114,4 +137,15 @@ export const DefaultSimpleDropdownMenu = styled.div`
     p + p {
         margin-top: 8px;
     }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+`
+
+export const DefaultSimpleDropdownMenu = styled(SimpleListDropdownMenu)`
+    padding: 20px 16px;
+    width: 460px;
 `
