@@ -16,7 +16,6 @@ import FormModal, {
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
 import { BN, toBN } from '~/utils/bn'
-import { StreamSearchDropdown } from '~/components/StreamSearchDropdown'
 import {
     CreateSponsorshipForm,
     MinNumberOfOperatorsParser,
@@ -27,6 +26,7 @@ import { toDecimals } from '~/marketplace/utils/math'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { createSponsorship } from '~/services/sponsorships'
 import { isTransactionRejection } from '~/utils'
+import { StreamIdDropdown } from '~/components/StreamIdDropdown'
 
 const defaultFormData: CreateSponsorshipForm = {
     streamId: '',
@@ -164,15 +164,15 @@ export default function CreateSponsorshipModal({
                 </SectionHeadline>
                 <Section>
                     <Label>Select a Stream</Label>
-                    <StreamSearchDropdown
-                        onStreamChange={(streamId) => {
+                    <StreamIdDropdown
+                        disabled={busy}
+                        name="streamId"
+                        onChange={(streamId) => {
                             setRawProperties({
                                 streamId,
                             })
                         }}
-                        streamId={streamId}
-                        disabled={busy}
-                        name="streamId"
+                        value={streamId}
                     />
                 </Section>
             </Group>
