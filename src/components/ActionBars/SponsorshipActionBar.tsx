@@ -65,7 +65,10 @@ export function SponsorshipActionBar({
     const { projectedInsolvencyAt, active } = sponsorship
 
     const fundedUntil = useMemo(
-        () => moment(projectedInsolvencyAt * 1000).format('D MMM YYYY'),
+        () =>
+            projectedInsolvencyAt == null
+                ? null
+                : moment(projectedInsolvencyAt * 1000).format('D MMM YYYY'),
         [projectedInsolvencyAt],
     )
 
@@ -142,11 +145,13 @@ export function SponsorshipActionBar({
                                     </ActionBarButton>
                                 )}
                             </SimpleDropdown>
-                            <ActionBarButtonBody>
-                                <div>
-                                    Funded until: <strong>{fundedUntil}</strong>
-                                </div>
-                            </ActionBarButtonBody>
+                            {fundedUntil && (
+                                <ActionBarButtonBody>
+                                    <div>
+                                        Funded until: <strong>{fundedUntil}</strong>
+                                    </div>
+                                </ActionBarButtonBody>
+                            )}
                             <ActionBarWalletDisplay
                                 address={sponsorship.id}
                                 label="Contract"

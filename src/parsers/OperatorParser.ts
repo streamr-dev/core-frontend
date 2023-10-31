@@ -80,7 +80,9 @@ export const OperatorParser = z
                         isRunning: z.boolean(),
                         minimumStakingPeriodSeconds: z.coerce.number(),
                         spotAPY: z.string().transform(toBN),
-                        projectedInsolvency: z.coerce.number(),
+                        projectedInsolvency: z
+                            .union([z.string(), z.null()])
+                            .transform((v) => (v == null ? null : Number(v))),
                         stream: z.union([
                             z.object({
                                 id: z.string(),

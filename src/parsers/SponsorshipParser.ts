@@ -16,7 +16,9 @@ export const SponsorshipParser = z
             .transform((v) => v ?? Number.POSITIVE_INFINITY),
         minimumStakingPeriodSeconds: z.coerce.number(),
         operatorCount: z.number(),
-        projectedInsolvency: z.coerce.number(),
+        projectedInsolvency: z
+            .union([z.string(), z.null()])
+            .transform((v) => (v == null ? null : Number(v))),
         spotAPY: z.string().transform(fromAtto),
         stream: z.union([
             z.object({
