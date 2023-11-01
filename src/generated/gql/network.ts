@@ -532,6 +532,7 @@ export enum Flag_OrderBy {
   SponsorshipOperatorCount = 'sponsorship__operatorCount',
   SponsorshipProjectedInsolvency = 'sponsorship__projectedInsolvency',
   SponsorshipRemainingWei = 'sponsorship__remainingWei',
+  SponsorshipRemainingWeiUpdateTimestamp = 'sponsorship__remainingWeiUpdateTimestamp',
   SponsorshipSpotApy = 'sponsorship__spotAPY',
   SponsorshipTotalPayoutWeiPerSec = 'sponsorship__totalPayoutWeiPerSec',
   SponsorshipTotalStakedWei = 'sponsorship__totalStakedWei',
@@ -2755,6 +2756,7 @@ export enum SlashingEvent_OrderBy {
   SponsorshipOperatorCount = 'sponsorship__operatorCount',
   SponsorshipProjectedInsolvency = 'sponsorship__projectedInsolvency',
   SponsorshipRemainingWei = 'sponsorship__remainingWei',
+  SponsorshipRemainingWeiUpdateTimestamp = 'sponsorship__remainingWeiUpdateTimestamp',
   SponsorshipSpotApy = 'sponsorship__spotAPY',
   SponsorshipTotalPayoutWeiPerSec = 'sponsorship__totalPayoutWeiPerSec',
   SponsorshipTotalStakedWei = 'sponsorship__totalStakedWei'
@@ -2857,6 +2859,7 @@ export enum SponsoringEvent_OrderBy {
   SponsorshipOperatorCount = 'sponsorship__operatorCount',
   SponsorshipProjectedInsolvency = 'sponsorship__projectedInsolvency',
   SponsorshipRemainingWei = 'sponsorship__remainingWei',
+  SponsorshipRemainingWeiUpdateTimestamp = 'sponsorship__remainingWeiUpdateTimestamp',
   SponsorshipSpotApy = 'sponsorship__spotAPY',
   SponsorshipTotalPayoutWeiPerSec = 'sponsorship__totalPayoutWeiPerSec',
   SponsorshipTotalStakedWei = 'sponsorship__totalStakedWei'
@@ -2883,9 +2886,11 @@ export type Sponsorship = {
   /** how many operators are staked right now */
   operatorCount: Scalars['Int']['output'];
   /** when will the contract run out of DATA if more is not added */
-  projectedInsolvency: Scalars['BigInt']['output'];
+  projectedInsolvency?: Maybe<Scalars['BigInt']['output']>;
   /** how much DATA is there still in this contract */
   remainingWei: Scalars['BigInt']['output'];
+  /** timestamp when remainingWei was last updated */
+  remainingWeiUpdateTimestamp?: Maybe<Scalars['BigInt']['output']>;
   slashingEvents: Array<SlashingEvent>;
   sponsoringEvents: Array<SponsoringEvent>;
   /** how much 'ROI' you could make by staking, extrapolated from current payments */
@@ -2951,7 +2956,7 @@ export type SponsorshipDailyBucket = {
   date: Scalars['BigInt']['output'];
   id: Scalars['ID']['output'];
   operatorCount: Scalars['Int']['output'];
-  projectedInsolvency: Scalars['BigInt']['output'];
+  projectedInsolvency?: Maybe<Scalars['BigInt']['output']>;
   remainingWei: Scalars['BigInt']['output'];
   sponsorship: Sponsorship;
   spotAPY: Scalars['BigDecimal']['output'];
@@ -3059,6 +3064,7 @@ export enum SponsorshipDailyBucket_OrderBy {
   SponsorshipOperatorCount = 'sponsorship__operatorCount',
   SponsorshipProjectedInsolvency = 'sponsorship__projectedInsolvency',
   SponsorshipRemainingWei = 'sponsorship__remainingWei',
+  SponsorshipRemainingWeiUpdateTimestamp = 'sponsorship__remainingWeiUpdateTimestamp',
   SponsorshipSpotApy = 'sponsorship__spotAPY',
   SponsorshipTotalPayoutWeiPerSec = 'sponsorship__totalPayoutWeiPerSec',
   SponsorshipTotalStakedWei = 'sponsorship__totalStakedWei',
@@ -3165,6 +3171,14 @@ export type Sponsorship_Filter = {
   projectedInsolvency_not?: InputMaybe<Scalars['BigInt']['input']>;
   projectedInsolvency_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   remainingWei?: InputMaybe<Scalars['BigInt']['input']>;
+  remainingWeiUpdateTimestamp?: InputMaybe<Scalars['BigInt']['input']>;
+  remainingWeiUpdateTimestamp_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  remainingWeiUpdateTimestamp_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  remainingWeiUpdateTimestamp_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  remainingWeiUpdateTimestamp_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  remainingWeiUpdateTimestamp_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  remainingWeiUpdateTimestamp_not?: InputMaybe<Scalars['BigInt']['input']>;
+  remainingWeiUpdateTimestamp_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   remainingWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
   remainingWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
   remainingWei_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
@@ -3235,6 +3249,7 @@ export enum Sponsorship_OrderBy {
   OperatorCount = 'operatorCount',
   ProjectedInsolvency = 'projectedInsolvency',
   RemainingWei = 'remainingWei',
+  RemainingWeiUpdateTimestamp = 'remainingWeiUpdateTimestamp',
   SlashingEvents = 'slashingEvents',
   SponsoringEvents = 'sponsoringEvents',
   SpotApy = 'spotAPY',
@@ -3256,6 +3271,7 @@ export type Stake = {
   id: Scalars['ID']['output'];
   joinTimestamp: Scalars['Int']['output'];
   lockedWei: Scalars['BigInt']['output'];
+  minimumStakeWei: Scalars['BigInt']['output'];
   operator: Operator;
   sponsorship: Sponsorship;
   updateTimestamp: Scalars['Int']['output'];
@@ -3305,6 +3321,14 @@ export type Stake_Filter = {
   lockedWei_lte?: InputMaybe<Scalars['BigInt']['input']>;
   lockedWei_not?: InputMaybe<Scalars['BigInt']['input']>;
   lockedWei_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  minimumStakeWei?: InputMaybe<Scalars['BigInt']['input']>;
+  minimumStakeWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  minimumStakeWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  minimumStakeWei_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  minimumStakeWei_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  minimumStakeWei_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  minimumStakeWei_not?: InputMaybe<Scalars['BigInt']['input']>;
+  minimumStakeWei_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   operator?: InputMaybe<Scalars['String']['input']>;
   operator_?: InputMaybe<Operator_Filter>;
   operator_contains?: InputMaybe<Scalars['String']['input']>;
@@ -3364,6 +3388,7 @@ export enum Stake_OrderBy {
   Id = 'id',
   JoinTimestamp = 'joinTimestamp',
   LockedWei = 'lockedWei',
+  MinimumStakeWei = 'minimumStakeWei',
   Operator = 'operator',
   OperatorCumulativeEarningsWei = 'operator__cumulativeEarningsWei',
   OperatorCumulativeOperatorsCutWei = 'operator__cumulativeOperatorsCutWei',
@@ -3394,6 +3419,7 @@ export enum Stake_OrderBy {
   SponsorshipOperatorCount = 'sponsorship__operatorCount',
   SponsorshipProjectedInsolvency = 'sponsorship__projectedInsolvency',
   SponsorshipRemainingWei = 'sponsorship__remainingWei',
+  SponsorshipRemainingWeiUpdateTimestamp = 'sponsorship__remainingWeiUpdateTimestamp',
   SponsorshipSpotApy = 'sponsorship__spotAPY',
   SponsorshipTotalPayoutWeiPerSec = 'sponsorship__totalPayoutWeiPerSec',
   SponsorshipTotalStakedWei = 'sponsorship__totalStakedWei',
@@ -3516,6 +3542,7 @@ export enum StakingEvent_OrderBy {
   SponsorshipOperatorCount = 'sponsorship__operatorCount',
   SponsorshipProjectedInsolvency = 'sponsorship__projectedInsolvency',
   SponsorshipRemainingWei = 'sponsorship__remainingWei',
+  SponsorshipRemainingWeiUpdateTimestamp = 'sponsorship__remainingWeiUpdateTimestamp',
   SponsorshipSpotApy = 'sponsorship__spotAPY',
   SponsorshipTotalPayoutWeiPerSec = 'sponsorship__totalPayoutWeiPerSec',
   SponsorshipTotalStakedWei = 'sponsorship__totalStakedWei'
@@ -4377,7 +4404,7 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny'
 }
 
-export type OperatorFieldsFragment = { __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> };
+export type OperatorFieldsFragment = { __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency?: any | null, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> };
 
 export type GetAllOperatorsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -4388,7 +4415,7 @@ export type GetAllOperatorsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllOperatorsQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
+export type GetAllOperatorsQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency?: any | null, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
 
 export type SearchOperatorsByIdQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -4399,7 +4426,7 @@ export type SearchOperatorsByIdQueryVariables = Exact<{
 }>;
 
 
-export type SearchOperatorsByIdQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
+export type SearchOperatorsByIdQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency?: any | null, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
 
 export type SearchOperatorsByMetadataQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -4410,14 +4437,14 @@ export type SearchOperatorsByMetadataQueryVariables = Exact<{
 }>;
 
 
-export type SearchOperatorsByMetadataQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
+export type SearchOperatorsByMetadataQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency?: any | null, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
 
 export type GetOperatorByIdQueryVariables = Exact<{
   operatorId: Scalars['ID']['input'];
 }>;
 
 
-export type GetOperatorByIdQuery = { __typename?: 'Query', operator?: { __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> } | null };
+export type GetOperatorByIdQuery = { __typename?: 'Query', operator?: { __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency?: any | null, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> } | null };
 
 export type GetOperatorsByDelegationQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -4428,7 +4455,7 @@ export type GetOperatorsByDelegationQueryVariables = Exact<{
 }>;
 
 
-export type GetOperatorsByDelegationQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
+export type GetOperatorsByDelegationQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency?: any | null, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
 
 export type GetOperatorsByDelegationAndIdQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -4440,7 +4467,7 @@ export type GetOperatorsByDelegationAndIdQueryVariables = Exact<{
 }>;
 
 
-export type GetOperatorsByDelegationAndIdQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
+export type GetOperatorsByDelegationAndIdQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency?: any | null, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
 
 export type GetOperatorsByDelegationAndMetadataQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -4452,16 +4479,16 @@ export type GetOperatorsByDelegationAndMetadataQueryVariables = Exact<{
 }>;
 
 
-export type GetOperatorsByDelegationAndMetadataQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
+export type GetOperatorsByDelegationAndMetadataQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency?: any | null, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
 
 export type GetOperatorByOwnerAddressQueryVariables = Exact<{
   owner: Scalars['String']['input'];
 }>;
 
 
-export type GetOperatorByOwnerAddressQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
+export type GetOperatorByOwnerAddressQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency?: any | null, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
 
-export type SponsorshipFieldsFragment = { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> };
+export type SponsorshipFieldsFragment = { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency?: any | null, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> };
 
 export type GetAllSponsorshipsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -4472,7 +4499,7 @@ export type GetAllSponsorshipsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllSponsorshipsQuery = { __typename?: 'Query', sponsorships: Array<{ __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> }> };
+export type GetAllSponsorshipsQuery = { __typename?: 'Query', sponsorships: Array<{ __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency?: any | null, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> }> };
 
 export type GetSponsorshipsByCreatorQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -4484,14 +4511,14 @@ export type GetSponsorshipsByCreatorQueryVariables = Exact<{
 }>;
 
 
-export type GetSponsorshipsByCreatorQuery = { __typename?: 'Query', sponsorships: Array<{ __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> }> };
+export type GetSponsorshipsByCreatorQuery = { __typename?: 'Query', sponsorships: Array<{ __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency?: any | null, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> }> };
 
 export type GetSponsorshipByIdQueryVariables = Exact<{
   sponsorshipId: Scalars['ID']['input'];
 }>;
 
 
-export type GetSponsorshipByIdQuery = { __typename?: 'Query', sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency: any, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } | null };
+export type GetSponsorshipByIdQuery = { __typename?: 'Query', sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency?: any | null, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } | null };
 
 export type ProjectFieldsFragment = { __typename?: 'Project', id: string, domainIds: Array<any>, score: any, metadata: string, streams: Array<string>, minimumSubscriptionSeconds: any, createdAt?: any | null, updatedAt?: any | null, isDataUnion?: boolean | null, paymentDetails: Array<{ __typename?: 'ProjectPaymentDetails', domainId?: any | null, beneficiary: any, pricingTokenAddress: any, pricePerSecond?: any | null }>, subscriptions: Array<{ __typename?: 'ProjectSubscription', userAddress: any, endTimestamp?: any | null }>, permissions: Array<{ __typename?: 'ProjectPermission', userAddress: any, canBuy?: boolean | null, canDelete?: boolean | null, canEdit?: boolean | null, canGrant?: boolean | null }>, purchases: Array<{ __typename?: 'ProjectPurchase', subscriber: any, subscriptionSeconds: any, price: any, fee: any, purchasedAt?: any | null }> };
 
@@ -4553,7 +4580,7 @@ export type GetPagedStreamsQueryVariables = Exact<{
 
 export type GetPagedStreamsQuery = { __typename?: 'Query', streams: Array<{ __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userAddress: any, subscribeExpiration?: any | null, publishExpiration?: any | null }> | null }> };
 
-export type SponsorshipDailyBucketFieldsFragment = { __typename?: 'SponsorshipDailyBucket', id: string, operatorCount: number, projectedInsolvency: any, spotAPY: any, totalStakedWei: any, remainingWei: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string } };
+export type SponsorshipDailyBucketFieldsFragment = { __typename?: 'SponsorshipDailyBucket', id: string, operatorCount: number, projectedInsolvency?: any | null, spotAPY: any, totalStakedWei: any, remainingWei: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string } };
 
 export type GetSponsorshipDailyBucketsQueryVariables = Exact<{
   where: SponsorshipDailyBucket_Filter;
@@ -4562,7 +4589,7 @@ export type GetSponsorshipDailyBucketsQueryVariables = Exact<{
 }>;
 
 
-export type GetSponsorshipDailyBucketsQuery = { __typename?: 'Query', sponsorshipDailyBuckets: Array<{ __typename?: 'SponsorshipDailyBucket', id: string, operatorCount: number, projectedInsolvency: any, spotAPY: any, totalStakedWei: any, remainingWei: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string } }> };
+export type GetSponsorshipDailyBucketsQuery = { __typename?: 'Query', sponsorshipDailyBuckets: Array<{ __typename?: 'SponsorshipDailyBucket', id: string, operatorCount: number, projectedInsolvency?: any | null, spotAPY: any, totalStakedWei: any, remainingWei: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string } }> };
 
 export type SponsoringEventFieldsFragment = { __typename?: 'SponsoringEvent', id: string, amount: any, date: any, sponsor: string };
 
