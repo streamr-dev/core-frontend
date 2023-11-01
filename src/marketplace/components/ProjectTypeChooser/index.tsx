@@ -1,6 +1,7 @@
-import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
+import React, { FunctionComponent, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import { ProjectType } from '~/shared/types'
 import openDataImage from '~/marketplace/assets/open-data.png'
 import openDataImage2x from '~/marketplace/assets/open-data@2x.png'
@@ -11,9 +12,10 @@ import dataUnionImage2x from '~/marketplace/assets/product_dataunion@2x.png'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS, DESKTOP, REGULAR } from '~/shared/utils/styled'
 import { Radio } from '~/shared/components/Radio'
-import useFetchStreams from '~/shared/hooks/useFetchStreams'
 import Button from '~/shared/components/Button'
 import routes from '~/routes'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import { getPagedStreams } from '~/services/streams'
 
 const Root = styled.div`
     color: #323232;
@@ -165,9 +167,6 @@ export const ProjectTypeChooser: FunctionComponent<{
     className?: string
     onClose: () => void
 }> = ({ className, onClose }) => {
-    const fetchStreams = useFetchStreams()
-    const [streamsCount, setStreamsCount] = useState<number>()
-
     const [selectedProductType, setSelectedProductType] = useState<ProjectType>()
 
     const link = useMemo<string>(() => {
@@ -177,16 +176,7 @@ export const ProjectTypeChooser: FunctionComponent<{
         return routes.projects.new({ type: selectedProductType })
     }, [selectedProductType])
 
-    useEffect(() => {
-        const load = async () => {
-            const response = await fetchStreams(undefined, {
-                batchSize: 1,
-                onlyCurrentUser: true,
-            })
-            setStreamsCount(response[0].length)
-        }
-        load()
-    }, [fetchStreams])
+    const gotAnyStreams = useGotAnyStreams()
 
     return (
         <Root className={className}>
@@ -264,7 +254,7 @@ export const ProjectTypeChooser: FunctionComponent<{
                     </RadioWrap>
                 </Product>
             </ProductChoices>
-            {streamsCount != null && streamsCount < 1 && (
+            {gotAnyStreams === false && (
                 <NoStreamsWarningBox>
                     You have not created any streams yet. Please{' '}
                     <Link onClick={onClose} to={routes.streams.new()}>
@@ -275,7 +265,7 @@ export const ProjectTypeChooser: FunctionComponent<{
                 </NoStreamsWarningBox>
             )}
             <ButtonContainer>
-                {(streamsCount != null && streamsCount < 1) || !link ? (
+                {gotAnyStreams === false || !link ? (
                     <Button disabled={true}>Start building</Button>
                 ) : (
                     <Button tag={Link} to={link} onClick={onClose}>
@@ -285,4 +275,25 @@ export const ProjectTypeChooser: FunctionComponent<{
             </ButtonContainer>
         </Root>
     )
+}
+
+function useGotAnyStreams() {
+    const wallet = useWalletAccount() || ''
+
+    const { data: result = false, isLoading } = useQuery({
+        queryKey: ['useGotAnyStreams', wallet],
+        async queryFn() {
+            if (!wallet) {
+                return false
+            }
+
+            try {
+                return (await getPagedStreams(1, undefined, wallet)).streams.length > 0
+            } catch (e) {}
+
+            return false
+        },
+    })
+
+    return isLoading ? void 0 : result
 }
