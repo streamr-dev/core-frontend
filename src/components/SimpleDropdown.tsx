@@ -72,17 +72,26 @@ export function SimpleDropdown({
         }
     }, [disabled])
 
-    return (
-        <SimpleDropdownRoot
-            ref={rootRef}
-            onBlur={() =>
-                setTimeout(() => {
-                    if (!rootRef.current?.contains(document.activeElement)) {
-                        setIsOpen(false)
-                    }
-                })
+    useEffect(() => {
+        if (!isOpen) {
+            return
+        }
+
+        function onFocus(e: FocusEvent) {
+            if (!rootRef.current?.contains(e.target as Element)) {
+                setIsOpen(false)
             }
-        >
+        }
+
+        document.body.addEventListener('focus', onFocus, true)
+
+        return () => {
+            document.body.removeEventListener('focus', onFocus, true)
+        }
+    }, [isOpen])
+
+    return (
+        <SimpleDropdownRoot ref={rootRef}>
             {typeof children === 'function' ? children(setIsOpen, isOpen) : children}
             <MenuWrap $visible={isOpen}>
                 {typeof menu === 'function' ? menu(setIsOpen, isOpen) : menu}
