@@ -86,7 +86,9 @@ export default function UndelegateFundsModal({
         minimumSelfDelegation != null &&
         isOwner &&
         minimumSelfDelegation.isGreaterThan(0) &&
-        delegatedTotal.minus(toBN(rawAmount)).isLessThan(minimumSelfDelegation)
+        delegatedTotal
+            .minus(toBN(rawAmount))
+            .isLessThan(minimumSelfDelegation.multipliedBy(delegatedTotal))
 
     const canSubmit =
         finalValue.isFinite() &&
