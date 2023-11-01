@@ -71,6 +71,8 @@ export default function UndelegateFundsModal({
 
     const freeFunds = fromDecimals(operator.dataTokenBalanceWei, decimals)
 
+    const hasZeroDeployed = operator.totalStakeInSponsorshipsWei.isZero()
+
     const minimumSelfDelegationFraction = useConfigValueFromChain(
         'minimumSelfDelegationFraction',
     )
@@ -80,14 +82,16 @@ export default function UndelegateFundsModal({
             ? fromDecimals(minimumSelfDelegationFraction, decimals)
             : toBN(0)
 
-    const hasDelegatedTooLittle =
+    const isSelfDelegationTooLow =
         minimumSelfDelegation != null &&
         isOwner &&
         minimumSelfDelegation.isGreaterThan(0) &&
         delegatedTotal.minus(toBN(rawAmount)).isLessThan(minimumSelfDelegation)
 
     const canSubmit =
-        finalValue.isFinite() && finalValue.isGreaterThan(0) && !hasDelegatedTooLittle
+        finalValue.isFinite() &&
+        finalValue.isGreaterThan(0) &&
+        !(isSelfDelegationTooLow && !hasZeroDeployed)
 
     const [busy, setBusy] = useState(false)
 
@@ -199,11 +203,26 @@ export default function UndelegateFundsModal({
                         you will be able to force undelegation.
                     </Alert>
                 )}
-                {hasDelegatedTooLittle && (
+                {isSelfDelegationTooLow && hasZeroDeployed && (
                     <Alert type="error" title="Self delegation too low">
-                        You must have self delegated at least{' '}
-                        {minimumSelfDelegation.toString()} <SponsorshipPaymentTokenName />
-                        .
+                        At least {minimumSelfDelegation.multipliedBy(100).toFixed(0)}% of
+                        the Operator&apos;s total stake must come from you as the owner.
+                        After your withdrawal, your remaining amount will be below this
+                        limit. This will prevent your Operator from staking on
+                        Sponsorships. It will also signal to Delegators that you&apos;re
+                        shutting down, and will most likely cause them to undelegate.
+                    </Alert>
+                )}
+                {isSelfDelegationTooLow && !hasZeroDeployed && (
+                    <Alert type="error" title="Self delegation too low">
+                        At least {minimumSelfDelegation.multipliedBy(100).toFixed(0)}% of
+                        the Operator&apos;s total stake must come from you as the owner.
+                        If you wish to stop being an Operator, you can withdraw any amount
+                        once your Operator is not staked on any Sponsorships. Note that
+                        this prevents your Operator from staking on Sponsorships until the
+                        limit is reached again. It is also a strong signal to Delegators
+                        that you&apos;re shutting down, and will most likely cause them to
+                        undelegate.
                     </Alert>
                 )}
             </Footer>
