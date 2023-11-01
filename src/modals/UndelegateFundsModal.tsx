@@ -77,18 +77,18 @@ export default function UndelegateFundsModal({
         'minimumSelfDelegationFraction',
     )
 
-    const minimumSelfDelegation =
+    const minimumSelfDelegationPercentage =
         minimumSelfDelegationFraction != null
             ? fromDecimals(minimumSelfDelegationFraction, decimals)
             : toBN(0)
 
     const isSelfDelegationTooLow =
-        minimumSelfDelegation != null &&
+        minimumSelfDelegationPercentage != null &&
         isOwner &&
-        minimumSelfDelegation.isGreaterThan(0) &&
+        minimumSelfDelegationPercentage.isGreaterThan(0) &&
         delegatedTotal
             .minus(toBN(rawAmount))
-            .isLessThan(minimumSelfDelegation.multipliedBy(delegatedTotal))
+            .isLessThan(minimumSelfDelegationPercentage.multipliedBy(delegatedTotal))
 
     const canSubmit =
         finalValue.isFinite() &&
@@ -206,8 +206,9 @@ export default function UndelegateFundsModal({
                     </Alert>
                 )}
                 {isSelfDelegationTooLow && hasZeroDeployed && (
-                    <Alert type="error" title="Self delegation too low">
-                        At least {minimumSelfDelegation.multipliedBy(100).toFixed(0)}% of
+                    <Alert type="error" title="Low self-funding">
+                        At least{' '}
+                        {minimumSelfDelegationPercentage.multipliedBy(100).toFixed(0)}% of
                         the Operator&apos;s total stake must come from you as the owner.
                         After your withdrawal, your remaining amount will be below this
                         limit. This will prevent your Operator from staking on
@@ -216,8 +217,9 @@ export default function UndelegateFundsModal({
                     </Alert>
                 )}
                 {isSelfDelegationTooLow && !hasZeroDeployed && (
-                    <Alert type="error" title="Self delegation too low">
-                        At least {minimumSelfDelegation.multipliedBy(100).toFixed(0)}% of
+                    <Alert type="error" title="Low self-funding">
+                        At least{' '}
+                        {minimumSelfDelegationPercentage.multipliedBy(100).toFixed(0)}% of
                         the Operator&apos;s total stake must come from you as the owner.
                         If you wish to stop being an Operator, you can withdraw any amount
                         once your Operator is not staked on any Sponsorships. Note that

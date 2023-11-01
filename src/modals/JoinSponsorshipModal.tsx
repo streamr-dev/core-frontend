@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from 'react'
+import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import CopyIcon from '@atlaskit/icon/glyph/copy'
@@ -33,6 +33,7 @@ import { isMessagedObject } from '~/utils'
 import { errorToast } from '~/utils/toast'
 import Toast from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
+import { getSelfDelegationFraction } from '~/getters'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
@@ -82,6 +83,33 @@ export default function JoinSponsorshipModal({
 
     const insufficientFunds = finalAmount.isGreaterThan(operatorBalance)
 
+    const minimumSelfDelegationFraction = useConfigValueFromChain(
+        'minimumSelfDelegationFraction',
+    )
+
+    const minimumSelfDelegationPercentage =
+        minimumSelfDelegationFraction != null
+            ? fromDecimals(minimumSelfDelegationFraction, decimals)
+            : toBN(0)
+
+    const minimumSelfDelegationAmount = fromDecimals(
+        operator.valueWithoutEarnings,
+        decimals,
+    ).multipliedBy(minimumSelfDelegationPercentage)
+
+    const ownerDelegationPercentage = useMemo(() => {
+        return getSelfDelegationFraction(operator)
+    }, [operator])
+
+    const currentSelfDelegationAmount = fromDecimals(
+        operator.valueWithoutEarnings,
+        decimals,
+    ).multipliedBy(ownerDelegationPercentage)
+
+    const isBelowSelfFundingLimit = ownerDelegationPercentage.isLessThan(
+        minimumSelfDelegationPercentage,
+    )
+
     const minimumStakeWei = useConfigValueFromChain('minimumStakeWei')
 
     const isAboveMinimumStake = minimumStakeWei
@@ -94,7 +122,8 @@ export default function JoinSponsorshipModal({
         !liveNodesCountLoading &&
         liveNodesCount > 0 &&
         isAboveMinimumStake &&
-        !hasUndelegationQueue
+        !hasUndelegationQueue &&
+        !isBelowSelfFundingLimit
 
     const { copy } = useCopy()
 
@@ -203,11 +232,24 @@ export default function JoinSponsorshipModal({
                     </li>
                 </ul>
             </Section>
-            {hasUndelegationQueue ? (
+            {isBelowSelfFundingLimit && (
+                <StyledAlert type="error" title="Low self-funding">
+                    You cannot stake on Sponsorships because your Operator is below the
+                    self-funding requirement of{' '}
+                    {minimumSelfDelegationPercentage.multipliedBy(100).toFixed(0)}%.
+                    Increase your Operator stake by at least{' '}
+                    {minimumSelfDelegationAmount
+                        .minus(currentSelfDelegationAmount)
+                        .toString()}{' '}
+                    {tokenSymbol} to continue.
+                </StyledAlert>
+            )}
+            {hasUndelegationQueue && (
                 <StyledAlert type="error" title="Warning!">
                     Cannot stake on sponsorship while delegators are awaiting undelegation
                 </StyledAlert>
-            ) : (
+            )}
+            {!isBelowSelfFundingLimit && !hasUndelegationQueue && (
                 <LiveNodesCheck
                     liveNodesCountLoading={liveNodesCountLoading}
                     liveNodesCount={liveNodesCount}
@@ -267,6 +309,8 @@ const StyledAlert = styled(Alert)`
 
     a {
         color: ${COLORS.link};
+        display: flex;
+        align-items: center;
     }
 `
 
