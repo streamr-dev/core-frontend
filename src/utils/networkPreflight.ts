@@ -47,6 +47,11 @@ export default async function networkPreflight(expectedChainId: number) {
                     rpcUrls: defaultChainConfig.rpcEndpoints.map(
                         (rpcEndpoint) => rpcEndpoint.url,
                     ),
+                    nativeCurrency: {
+                        name: defaultChainConfig.nativeCurrency?.name ?? 'Unknown',
+                        symbol: defaultChainConfig.nativeCurrency?.symbol ?? 'UNKNOWN',
+                        decimals: defaultChainConfig.nativeCurrency?.decimals ?? 18,
+                    },
                 },
             ],
         })

@@ -1,8 +1,3 @@
-import getMainChainId from '~/getters/getMainChainId'
-import getClientConfig from '~/getters/getClientConfig'
-import getCoreConfig from '~/getters/getCoreConfig'
-import { getConfigForChainByName } from '~/shared/web3/config'
-
 /*
     These are all type
     {
@@ -15,6 +10,7 @@ export const contractCurrencies = {
     USD: 'USD',
     PRODUCT_DEFINED: 'PRODUCT_DEFINED',
 }
+
 export const paymentCurrencies = {
     DATA: 'DATA',
     ETH: 'ETH',
@@ -22,6 +18,7 @@ export const paymentCurrencies = {
     PRODUCT_DEFINED: 'PRODUCT_DEFINED',
     NATIVE: 'NATIVE',
 }
+
 // The order of these must be the same than in the smart contract
 export const projectStates = {
     NOT_DEPLOYED: 'NOT_DEPLOYED',
@@ -30,20 +27,19 @@ export const projectStates = {
     UNDEPLOYING: 'UNDEPLOYING',
     DETACHED: 'DETACHED',
 }
-export const networks = {
-    STREAMS: getConfigForChainByName(getCoreConfig().streamChains[0]).id,
-}
+
 export const ethereumNetworks = {
-    [getMainChainId()]: 'Local mainchain',
-    [getClientConfig().contracts?.streamRegistryChainRPCs?.chainId ?? 0]:
-        'Local streams chain',
-    '1': 'Mainnet',
+    '1': 'Ethereum Mainnet',
     '3': 'Ropsten',
     '4': 'Rinkeby',
     '5': 'Görli',
     '42': 'Kovan',
     '100': 'Gnosis',
     '137': 'Polygon',
+    '8995': 'Dev0',
+    '8997': 'Dev1',
+    '31337': 'Dev2',
+    '80001': 'Polygon Mumbai',
 }
 
 export const gasLimits = {

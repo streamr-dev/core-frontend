@@ -62,4 +62,9 @@ export interface Chain {
             tls: boolean
         }
     }[]
+    nativeCurrency?: {
+        name: string
+        symbol: string
+        decimals: number
+    }
 }
