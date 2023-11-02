@@ -1,5 +1,5 @@
 import { ERC677ABI, ERC677, Operator, operatorABI } from '@streamr/network-contracts'
-import { Contract } from 'ethers'
+import { BigNumber, Contract } from 'ethers'
 import { defaultAbiCoder } from 'ethers/lib/utils'
 import { getConfigForChain } from '~/shared/web3/config'
 import networkPreflight from '~/utils/networkPreflight'
@@ -150,7 +150,18 @@ export async function stakeOnSponsorship(
 
         const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
 
-        const tx = await contract.stake(sponsorshipId, amountWei)
+        const gasLimitEstimate = await contract.estimateGas.stake(
+            sponsorshipId,
+            amountWei,
+        )
+        const increasedGasLimit = BigNumber.from(
+            toBN(gasLimitEstimate).multipliedBy(1.5).precision(1, BN.ROUND_UP).toString(),
+        )
+
+        const tx = await contract.stake(sponsorshipId, amountWei, {
+            gasLimit: increasedGasLimit,
+        })
+
         const receipt = await tx.wait()
         saveLastBlockNumber(receipt.blockNumber)
     })
