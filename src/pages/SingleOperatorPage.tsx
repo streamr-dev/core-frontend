@@ -735,6 +735,16 @@ export const SingleOperatorPage = () => {
 
                                                             return newNodes
                                                         })
+
+                                                        void (async () => {
+                                                            try {
+                                                                await waitForGraphSync()
+
+                                                                refetchQuery(
+                                                                    operatorQuery,
+                                                                )
+                                                            } catch (e) {}
+                                                        })()
                                                     },
                                                     onError() {
                                                         errorToast({

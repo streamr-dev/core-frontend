@@ -254,6 +254,9 @@ export async function setOperatorNodeAddresses(operatorId: string, addresses: st
 
     await toastedOperation('Save node addresses', async () => {
         const tx = await operatorContract.setNodeAddresses(addresses)
-        await tx.wait()
+
+        const { blockNumber } = await tx.wait()
+
+        saveLastBlockNumber(blockNumber)
     })
 }
