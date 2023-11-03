@@ -79,7 +79,7 @@ export const getOperatorStats = async (
                     .toNumber()
                 break
             case 'cumulativeEarnings':
-                yValue = toBN(bucket.profitsWei)
+                yValue = toBN(bucket.cumulativeEarningsWei)
                     .dividedBy(Math.pow(10, Number(tokenInfo?.decimals.toString())))
                     .toNumber()
                 break

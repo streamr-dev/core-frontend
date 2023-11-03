@@ -4602,7 +4602,7 @@ export type GetSponsoringEventsQueryVariables = Exact<{
 
 export type GetSponsoringEventsQuery = { __typename?: 'Query', sponsoringEvents: Array<{ __typename?: 'SponsoringEvent', id: string, amount: any, date: any, sponsor: string }> };
 
-export type OperatorDailyBucketFieldsFragment = { __typename?: 'OperatorDailyBucket', date: any, id: string, dataTokenBalanceWei: any, delegatorCountChange: number, delegatorCountAtStart: number, lossesWei: any, operatorsCutWei: any, valueWithoutEarnings: any, profitsWei: any, totalDelegatedWei: any, totalUndelegatedWei: any, totalStakeInSponsorshipsWei: any };
+export type OperatorDailyBucketFieldsFragment = { __typename?: 'OperatorDailyBucket', date: any, id: string, dataTokenBalanceWei: any, delegatorCountChange: number, delegatorCountAtStart: number, lossesWei: any, operatorsCutWei: any, valueWithoutEarnings: any, profitsWei: any, cumulativeEarningsWei: any, totalDelegatedWei: any, totalUndelegatedWei: any, totalStakeInSponsorshipsWei: any };
 
 export type GetOperatorDailyBucketsQueryVariables = Exact<{
   where: OperatorDailyBucket_Filter;
@@ -4611,7 +4611,7 @@ export type GetOperatorDailyBucketsQueryVariables = Exact<{
 }>;
 
 
-export type GetOperatorDailyBucketsQuery = { __typename?: 'Query', operatorDailyBuckets: Array<{ __typename?: 'OperatorDailyBucket', date: any, id: string, dataTokenBalanceWei: any, delegatorCountChange: number, delegatorCountAtStart: number, lossesWei: any, operatorsCutWei: any, valueWithoutEarnings: any, profitsWei: any, totalDelegatedWei: any, totalUndelegatedWei: any, totalStakeInSponsorshipsWei: any }> };
+export type GetOperatorDailyBucketsQuery = { __typename?: 'Query', operatorDailyBuckets: Array<{ __typename?: 'OperatorDailyBucket', date: any, id: string, dataTokenBalanceWei: any, delegatorCountChange: number, delegatorCountAtStart: number, lossesWei: any, operatorsCutWei: any, valueWithoutEarnings: any, profitsWei: any, cumulativeEarningsWei: any, totalDelegatedWei: any, totalUndelegatedWei: any, totalStakeInSponsorshipsWei: any }> };
 
 export type DelegatorDailyBucketFieldsFragment = { __typename?: 'DelegatorDailyBucket', id: string, totalValueDataWei: any, date: any, cumulativeEarningsWei: any, operatorCount: number };
 
@@ -4798,6 +4798,7 @@ export const OperatorDailyBucketFieldsFragmentDoc = gql`
   operatorsCutWei
   valueWithoutEarnings
   profitsWei
+  cumulativeEarningsWei
   totalDelegatedWei
   totalUndelegatedWei
   totalStakeInSponsorshipsWei

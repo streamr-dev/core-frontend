@@ -425,6 +425,7 @@ gql`
         operatorsCutWei
         valueWithoutEarnings
         profitsWei
+        cumulativeEarningsWei
         totalDelegatedWei
         totalUndelegatedWei
         totalStakeInSponsorshipsWei

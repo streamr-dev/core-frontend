@@ -98,7 +98,7 @@ function MyOperatorSummary() {
                 const toValue: (bucket: OperatorDailyBucket) => BNish =
                     chartId === 'stake'
                         ? ({ valueWithoutEarnings }) => valueWithoutEarnings
-                        : ({ profitsWei }) => profitsWei
+                        : ({ cumulativeEarningsWei }) => cumulativeEarningsWei
 
                 return buckets.map((bucket) => ({
                     x: Number(bucket.date) * 1000,
