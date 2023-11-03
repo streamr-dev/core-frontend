@@ -1,10 +1,4 @@
-import React, {
-    ButtonHTMLAttributes,
-    useCallback,
-    useEffect,
-    useRef,
-    useState,
-} from 'react'
+import React, { ButtonHTMLAttributes, useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
@@ -23,8 +17,8 @@ import { errorToast } from '~/utils/toast'
 import { setOperatorNodeAddresses } from '~/services/operators'
 import { toBN } from '~/utils/bn'
 import { Tip, TipIconWrap } from '~/components/Tip'
-import { isMessagedObject } from '~/utils'
-import { Separator } from './Separator'
+import { isTransactionRejection } from '~/utils'
+import { Separator } from '~/components/Separator'
 
 export interface OperatorNode {
     address: string
@@ -292,42 +286,27 @@ const PendingIndicatorRoot = styled.button`
 type SubmitNodeAddressesCallback = (
     operatorId: string,
     addresses: string[],
-    options?: { onSuccess?: () => void; onError?: (e: unknown) => void },
+    options?: {
+        onSuccess?: (blockNumber: number) => void
+        onError?: (e: unknown) => void
+    },
 ) => Promise<void>
 
 export function useSubmitNodeAddressesCallback(): [SubmitNodeAddressesCallback, boolean] {
     const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const abortControllerRef = useRef<AbortController>()
-
-    useEffect(() => {
-        const { current: abortController } = abortControllerRef
-
-        return () => {
-            abortController?.abort()
-        }
-    }, [])
-
     const cb: SubmitNodeAddressesCallback = useCallback(
         async (operatorId, addresses, { onSuccess, onError } = {}) => {
-            abortControllerRef.current?.abort()
-
-            const abortController = new AbortController()
-
-            abortControllerRef.current = abortController
-
             setIsSubmitting(true)
 
-            const { signal } = abortController
-
             try {
-                await setOperatorNodeAddresses(operatorId, addresses)
-
-                if (!signal.aborted) {
-                    onSuccess?.()
-                }
+                await setOperatorNodeAddresses(operatorId, addresses, {
+                    onBlockNumber(blockNumber) {
+                        onSuccess?.(blockNumber)
+                    },
+                })
             } catch (e) {
-                if (isMessagedObject(e) && /user\srejected/i.test(e.message)) {
+                if (isTransactionRejection(e)) {
                     /**
                      * User rejected the transaction. Let's move on like
                      * nothing happened.
@@ -337,13 +316,9 @@ export function useSubmitNodeAddressesCallback(): [SubmitNodeAddressesCallback, 
 
                 console.warn('Faild to save the new node addresses', e)
 
-                if (!signal.aborted) {
-                    onError?.(e)
-                }
+                onError?.(e)
             } finally {
-                if (!signal.aborted) {
-                    setIsSubmitting(false)
-                }
+                setIsSubmitting(false)
             }
         },
         [],
