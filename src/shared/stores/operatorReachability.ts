@@ -16,7 +16,7 @@ const useOperatorReachabilityStore = create<{
     probes: Record<string, Probe | undefined>
     nodes: Record<string, string | undefined>
     probe: (
-        nodeAddress: string,
+        nodeId: string,
         heartbeat: Heartbeat,
         options?: { timeoutMillis?: number },
     ) => Promise<void>
@@ -41,7 +41,7 @@ const useOperatorReachabilityStore = create<{
 
         probes: {},
 
-        async probe(nodeAddress, heartbeat, { timeoutMillis = 10000 } = {}) {
+        async probe(nodeId, heartbeat, { timeoutMillis = 10000 } = {}) {
             const { host, port, tls = false } = heartbeat.websocket || {}
 
             const url = host && port ? `${tls ? 'wss:' : 'ws:'}//${host}:${port}` : ''
@@ -52,7 +52,7 @@ const useOperatorReachabilityStore = create<{
                      * Heartbeats for a single node can carry different WebSocket URLs
                      * over time, cause c'est la vie.
                      */
-                    draft.nodes[nodeAddress] = url
+                    draft.nodes[nodeId] = url
                 }),
             )
 
@@ -80,21 +80,7 @@ const useOperatorReachabilityStore = create<{
                     sleep(timeoutMillis).then(() => {
                         throw new Error('Timeout')
                     }),
-                    new Promise<boolean>((resolve, reject) => {
-                        if (!url) {
-                            return void resolve(false)
-                        }
-
-                        ws = new WebSocket(url)
-
-                        ws.addEventListener('open', () => {
-                            resolve(true)
-                        })
-
-                        ws.addEventListener('error', (e) => {
-                            reject(e)
-                        })
-                    }),
+                    new Promise<boolean>((resolve) => void resolve(!!url)),
                 ])
             } finally {
                 ws?.close()
@@ -120,17 +106,17 @@ export function useOperatorReachability(
     const { probe, nodes, probes } = useOperatorReachabilityStore()
 
     useEffect(() => {
-        Object.entries(heartbeats).forEach(([nodeAddress, heartbeat]) => {
+        Object.entries(heartbeats).forEach(([nodeId, heartbeat]) => {
             if (!heartbeat) {
                 return
             }
 
             void (async () => {
                 try {
-                    await probe(nodeAddress, heartbeat)
+                    await probe(nodeId, heartbeat)
                 } catch (e) {
                     console.warn(
-                        `Failed to probe WebSocket URL for node "${nodeAddress}"`,
+                        `Failed to probe WebSocket URL for node "${nodeId}"`,
                         heartbeat,
                         e,
                     )
@@ -139,12 +125,12 @@ export function useOperatorReachability(
         })
     }, [heartbeats, probe])
 
-    const nodeAddresses = Object.keys(heartbeats)
+    const nodeIds = Object.keys(heartbeats)
 
     let numOfReachableNodes = 0
 
-    for (const addr of nodeAddresses) {
-        const { reachable = false, pending = false } = probes[nodes[addr] || ''] || {}
+    for (const nodeId of nodeIds) {
+        const { reachable = false, pending = false } = probes[nodes[nodeId] || ''] || {}
 
         if (pending) {
             /**
@@ -163,5 +149,5 @@ export function useOperatorReachability(
         return 'none'
     }
 
-    return nodeAddresses.length === numOfReachableNodes ? 'all' : 'some'
+    return nodeIds.length === numOfReachableNodes ? 'all' : 'some'
 }
