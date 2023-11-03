@@ -25,11 +25,11 @@ export function useInterceptHeartbeats(operatorId: string | undefined) {
                     return
                 }
 
-                const address = msg.parsedContent.peerDescriptor.id.toLowerCase()
+                const { peerDescriptor } = msg.parsedContent
 
                 setHeartbeats((prev) => ({
                     ...prev,
-                    [address]: msg.parsedContent.peerDescriptor,
+                    [peerDescriptor.id]: peerDescriptor,
                 }))
             },
         },
