@@ -82,12 +82,10 @@ export function OperatorChecklist({ operatorId }: { operatorId: string | undefin
                 tip={
                     <>
                         <p>
-                            The Operator must ensure that their nodes can be reached
-                            on their node&apos;s configured WebSocket port.
+                            The Operator must ensure that their nodes can be reached on
+                            their node&apos;s configured WebSocket port.
                         </p>
-                        <p>
-                            The default port is 32200.
-                        </p>
+                        <p>The default port is 32200.</p>
                     </>
                 }
             >
