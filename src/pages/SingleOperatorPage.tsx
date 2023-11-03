@@ -62,6 +62,8 @@ import { useConfigValueFromChain } from '~/hooks'
 import Button from '~/shared/components/Button'
 import { FundedUntilCell, StreamIdCell } from '~/components/Table'
 import { Tip, TipIconWrap } from '~/components/Tip'
+import { useSetBlockDependency } from '~/stores/blockNumber'
+import { onBlockNumber } from '~/utils/blocks'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 const forceUndelegateModal = toaster(ForceUndelegateModal, Layer.Modal)
@@ -147,6 +149,8 @@ export const SingleOperatorPage = () => {
     useEffect(() => void setNodes(persistedNodes), [persistedNodes])
 
     const [saveNodeAddresses, isSavingNodeAddresses] = useSubmitNodeAddressesCallback()
+
+    const setBlockDependency = useSetBlockDependency()
 
     return (
         <Layout>
@@ -719,7 +723,7 @@ export const SingleOperatorPage = () => {
                                                 operatorId,
                                                 addresses,
                                                 {
-                                                    onSuccess() {
+                                                    onSuccess(blockNumber) {
                                                         setNodes((current) => {
                                                             const newNodes: OperatorNode[] =
                                                                 []
@@ -736,15 +740,21 @@ export const SingleOperatorPage = () => {
                                                             return newNodes
                                                         })
 
-                                                        void (async () => {
-                                                            try {
-                                                                await waitForGraphSync()
+                                                        setBlockDependency(blockNumber, [
+                                                            'operatorNodes',
+                                                            operatorId,
+                                                        ])
 
-                                                                refetchQuery(
-                                                                    operatorQuery,
-                                                                )
-                                                            } catch (e) {}
-                                                        })()
+                                                        onBlockNumber(1000, () => {
+                                                            console.log('1000 DONE')
+                                                        })
+
+                                                        onBlockNumber(blockNumber, () => {
+                                                            console.log(
+                                                                'BLOCK ARRIVED',
+                                                                blockNumber,
+                                                            )
+                                                        })
                                                     },
                                                     onError() {
                                                         errorToast({
