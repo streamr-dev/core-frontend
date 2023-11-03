@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react'
 import { Container } from 'toasterhea'
 import styled from 'styled-components'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { NavProvider } from '@streamr/streamr-layout'
 import '~/shared/assets/stylesheets'
 import '@ibm/plex/css/ibm-plex.css'
@@ -29,6 +29,7 @@ import { Layer } from '~/utils/Layer'
 import { FeatureFlag, isFeatureEnabled } from '~/shared/utils/isFeatureEnabled'
 import routes from '~/routes'
 import { HubRouter } from '~/consts'
+import { getQueryClient } from '~/utils'
 import '~/analytics'
 
 const MiscRouter = () => [
@@ -57,9 +58,6 @@ const MiscRouter = () => [
         key="NotFoundPage"
     />,
 ]
-
-// Create client for 'react-query'
-const queryClient = new QueryClient()
 
 const App = () => (
     <Root>
@@ -118,7 +116,7 @@ const ToastContainer = styled(Container)`
 function Root({ children }: { children: ReactNode }) {
     return (
         <HubRouter>
-            <QueryClientProvider client={queryClient}>
+            <QueryClientProvider client={getQueryClient()}>
                 <NavProvider>
                     <StreamrClientProvider>
                         <ModalPortalProvider>
