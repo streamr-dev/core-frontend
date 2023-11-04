@@ -62,7 +62,7 @@ import { useConfigValueFromChain } from '~/hooks'
 import Button from '~/shared/components/Button'
 import { FundedUntilCell, StreamIdCell } from '~/components/Table'
 import { Tip, TipIconWrap } from '~/components/Tip'
-import { useSetBlockDependency } from '~/stores/blockNumber'
+import { useSetBlockDependency } from '~/stores/blockNumberDependencies'
 import { blockObserver } from '~/utils/blocks'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)

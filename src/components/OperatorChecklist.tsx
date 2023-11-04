@@ -16,7 +16,7 @@ import { Tip } from '~/components/Tip'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { useOperatorReachability } from '~/shared/stores/operatorReachability'
-import { useIsWaitingForBlockNumber } from '~/stores/blockNumber'
+import { useIsWaitingForBlockNumber } from '~/stores/blockNumberDependencies'
 
 export function OperatorChecklist({ operatorId }: { operatorId: string | undefined }) {
     const { funded, nodesDeclared, nodesFunded, nodesReachable, nodesRunning } =
