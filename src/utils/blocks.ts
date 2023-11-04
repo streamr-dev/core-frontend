@@ -1,3 +1,4 @@
+import EventEmitter from 'events'
 import {
     GetMetadataDocument,
     GetMetadataQuery,
@@ -6,99 +7,101 @@ import {
 import getGraphClient from '~/getters/getGraphClient'
 import { sleep } from '~/utils'
 
-export const blocks = (() => {
-    let lastKnownBlockNumber = -1
+let lastKnownBlockNumber = -1
 
-    let listeners: Record<number, (() => void)[]> = {}
+const pending: Record<number, true> = {}
 
-    function trigger() {
-        const blockNumbers = Object.keys(listeners).map(Number)
+const emitter = new EventEmitter()
 
-        const lastKnown = lastKnownBlockNumber
+void (async () => {
+    let failureCount = 0
 
-        for (const blockNumber of blockNumbers) {
-            if (blockNumber > lastKnown) {
-                continue
+    let idleCount = 0
+
+    let consecutiveChangeCount = 0
+
+    const client = getGraphClient()
+
+    while (1) {
+        try {
+            const {
+                data: { _meta: meta },
+            } = await client.query<GetMetadataQuery, GetMetadataQueryVariables>({
+                query: GetMetadataDocument,
+                fetchPolicy: 'network-only',
+            })
+
+            const blockNumber = meta?.block.number
+
+            if (blockNumber == null) {
+                throw new Error('Invalid block number')
             }
 
-            const fns = listeners[blockNumber] || []
+            failureCount = 0
 
-            delete listeners[blockNumber]
+            if (blockNumber === lastKnownBlockNumber) {
+                consecutiveChangeCount = 0
 
-            for (const fn of fns) {
-                setTimeout(fn)
-            }
-        }
-    }
+                idleCount = Math.min(25, idleCount + 1)
+            } else {
+                consecutiveChangeCount += 1
 
-    void (async () => {
-        let failureCount = 0
+                lastKnownBlockNumber = blockNumber
 
-        let idleCount = 0
+                emitter.emit('block', blockNumber)
 
-        let consecutiveChangeCount = 0
+                Object.keys(pending).forEach((key) => {
+                    if (Number(key) > blockNumber) {
+                        return
+                    }
 
-        const client = getGraphClient()
+                    delete pending[key]
 
-        while (1) {
-            try {
-                const {
-                    data: { _meta: meta },
-                } = await client.query<GetMetadataQuery, GetMetadataQueryVariables>({
-                    query: GetMetadataDocument,
-                    fetchPolicy: 'network-only',
+                    emitter.emit(`block:${key}`)
                 })
-
-                const blockNumber = meta?.block.number
-
-                if (blockNumber == null) {
-                    throw new Error('Invalid block number')
-                }
-
-                failureCount = 0
-
-                if (blockNumber === lastKnownBlockNumber) {
-                    consecutiveChangeCount = 0
-
-                    idleCount = Math.min(25, idleCount + 1)
-                } else {
-                    consecutiveChangeCount += 1
-
-                    lastKnownBlockNumber = blockNumber
-
-                    trigger()
-                }
-
-                if (consecutiveChangeCount === 3) {
-                    /**
-                     * After 3 different values in a row try a lower
-                     * idleCount. We may not have to wait that long.
-                     */
-                    idleCount = Math.max(0, idleCount - 1)
-
-                    consecutiveChangeCount = 0
-                }
-
-                /**
-                 * We don't reset idleCount. The idea is to limit the
-                 * number of request we make to what's reasonable.
-                 */
-                await sleep(500 + idleCount * 100)
-
-                continue
-            } catch (_) {
-                failureCount = Math.min(40, failureCount + 1)
-
-                await sleep(250 * failureCount)
             }
-        }
-    })()
 
-    return (blockNumber: number, fn: () => void) => {
-        if (blockNumber <= lastKnownBlockNumber) {
-            return void fn()
-        }
+            if (consecutiveChangeCount === 3) {
+                /**
+                 * After 3 different values in a row try a lower
+                 * idleCount. We may not have to wait that long.
+                 */
+                idleCount = Math.max(0, idleCount - 1)
 
-        void (listeners[blockNumber] || (listeners[blockNumber] = [])).push(fn)
+                consecutiveChangeCount = 0
+            }
+
+            /**
+             * We don't reset idleCount. The idea is to limit the
+             * number of request we make to what's reasonable.
+             */
+            await sleep(500 + idleCount * 100)
+
+            continue
+        } catch (_) {
+            failureCount = Math.min(40, failureCount + 1)
+
+            await sleep(250 * failureCount)
+        }
     }
 })()
+
+export const blockObserver = Object.freeze({
+    onAny(fn: (blockNumber: number) => void, { once = false } = {}) {
+        if (once) {
+            emitter.once('block', fn)
+        } else {
+            emitter.on('block', fn)
+        }
+
+        return () => void emitter.off('block', fn)
+    },
+
+    onSpecific(blockNumber: number, fn: () => void) {
+        pending[blockNumber] = true
+
+        emitter.once(`block:${blockNumber}`, fn)
+
+        return () => void emitter.off(`block:${blockNumber}`, fn)
+    },
+})

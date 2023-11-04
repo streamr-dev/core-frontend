@@ -16,7 +16,7 @@ import { Tip } from '~/components/Tip'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { useOperatorReachability } from '~/shared/stores/operatorReachability'
-import { useIsWaitingForBlock } from '~/stores/blockNumber'
+import { useIsWaitingForBlockNumber } from '~/stores/blockNumber'
 
 export function OperatorChecklist({ operatorId }: { operatorId: string | undefined }) {
     const { funded, nodesDeclared, nodesFunded, nodesReachable, nodesRunning } =
@@ -105,7 +105,7 @@ interface OperatorChecklist {
 }
 
 function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist {
-    const stale = useIsWaitingForBlock(['operatorNodes', operatorId])
+    const stale = useIsWaitingForBlockNumber(['operatorNodes', operatorId])
 
     const operatorQuery = useOperatorByIdQuery(operatorId)
 

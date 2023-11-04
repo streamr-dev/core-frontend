@@ -549,6 +549,7 @@ export async function searchOperatorsByMetadata({
 
 export async function getOperatorById(
     operatorId: string,
+    { force = false } = {},
 ): Promise<NonNullable<GetOperatorByIdQuery['operator']> | null> {
     const {
         data: { operator },
@@ -558,6 +559,7 @@ export async function getOperatorById(
             variables: {
                 operatorId,
             },
+            fetchPolicy: force ? 'network-only' : void 0,
         },
     )
 

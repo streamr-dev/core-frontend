@@ -38,8 +38,8 @@ import { StatCellContent, StatCellLabel } from '~/components/StatGrid'
 import { Separator } from '~/components/Separator'
 import { useEditSponsorshipFunding, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { getDelegatedAmountForWallet, getDelegationFractionForWallet } from '~/getters'
-import { useOperatorByIdQuery } from '~/hooks/operators'
-import { refetchQuery } from '~/utils'
+import { operatorByIdQueryKey, useOperatorByIdQuery } from '~/hooks/operators'
+import { getQueryClient, refetchQuery } from '~/utils'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { OperatorChecklist } from '~/components/OperatorChecklist'
 import { collectEarnings, forceUnstakeFromSponsorship } from '~/services/sponsorships'
@@ -63,7 +63,7 @@ import Button from '~/shared/components/Button'
 import { FundedUntilCell, StreamIdCell } from '~/components/Table'
 import { Tip, TipIconWrap } from '~/components/Tip'
 import { useSetBlockDependency } from '~/stores/blockNumber'
-import { onBlockNumber } from '~/utils/blocks'
+import { blockObserver } from '~/utils/blocks'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 const forceUndelegateModal = toaster(ForceUndelegateModal, Layer.Modal)
@@ -745,16 +745,22 @@ export const SingleOperatorPage = () => {
                                                             operatorId,
                                                         ])
 
-                                                        onBlockNumber(1000, () => {
-                                                            console.log('1000 DONE')
-                                                        })
-
-                                                        onBlockNumber(blockNumber, () => {
-                                                            console.log(
-                                                                'BLOCK ARRIVED',
-                                                                blockNumber,
-                                                            )
-                                                        })
+                                                        blockObserver.onSpecific(
+                                                            blockNumber,
+                                                            () => {
+                                                                getQueryClient().invalidateQueries(
+                                                                    {
+                                                                        queryKey:
+                                                                            operatorByIdQueryKey(
+                                                                                operatorId,
+                                                                            ),
+                                                                        exact: true,
+                                                                        refetchType:
+                                                                            'active',
+                                                                    },
+                                                                )
+                                                            },
+                                                        )
                                                     },
                                                     onError() {
                                                         errorToast({

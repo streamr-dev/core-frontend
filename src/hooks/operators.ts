@@ -62,15 +62,19 @@ export function useOperatorForWallet(address = '') {
     return useOperatorForWalletQuery(address).data || null
 }
 
+export function operatorByIdQueryKey(operatorId: string) {
+    return ['useOperatorByIdQuery', operatorId]
+}
+
 export function useOperatorByIdQuery(operatorId = '') {
     return useQuery({
-        queryKey: ['useOperatorByIdQuery', operatorId],
+        queryKey: operatorByIdQueryKey(operatorId),
         async queryFn() {
             if (!operatorId) {
                 return null
             }
 
-            const operator = await getOperatorById(operatorId)
+            const operator = await getOperatorById(operatorId, { force: true })
 
             if (operator) {
                 try {
