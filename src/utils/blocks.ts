@@ -9,15 +9,32 @@ import { sleep } from '~/utils'
 
 let lastKnownBlockNumber = -1
 
+/**
+ * Collection of specific block numbers that we're interested in. See
+ * `onSpecific` for more info.
+ */
 const pending: Record<number, true> = {}
 
 const emitter = new EventEmitter()
 
 void (async () => {
+    /**
+     * Delay between retries is calculated based on the number
+     * of consecutive failures. The larger the number the longer
+     * we wait before we try again.
+     */
     let failureCount = 0
 
+    /**
+     * `idleCount` increases if we the same block number twice in row, and decreases
+     * it's different 3 times in a row. It self-adjust to hit the remote endpoint
+     * reasonably often.
+     */
     let idleCount = 0
 
+    /**
+     * `consecutiveChangeCount` increases if we get the same value twice in a row.
+     */
     let consecutiveChangeCount = 0
 
     const client = getGraphClient()
@@ -71,10 +88,6 @@ void (async () => {
                 consecutiveChangeCount = 0
             }
 
-            /**
-             * We don't reset idleCount. The idea is to limit the
-             * number of request we make to what's reasonable.
-             */
             await sleep(500 + idleCount * 100)
 
             continue
