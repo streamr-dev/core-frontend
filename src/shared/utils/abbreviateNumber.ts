@@ -1,5 +1,9 @@
 const SI_SYMBOL = ['', 'k', 'M', 'G']
 
+/**
+ * @todo Make it operate on big numbers instead of regular numbers. Otherwise
+ * for extra large and extra small values it gives "NaN".
+ */
 export const abbreviateNumber = (number: number, fractionDigits = 2): string => {
     const tier = (Math.log10(Math.abs(number)) / 3) | 0
     if (tier == 0) {

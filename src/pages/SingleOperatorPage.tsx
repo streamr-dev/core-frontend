@@ -932,10 +932,18 @@ function UncollectedEarnings({
 }) {
     const value = useUncollectedEarnings(operatorId, sponsorshipId)
 
+    /**
+     * `abbreviateNumber` operates on regular numbers thus can produce "NaN"
+     * for extra small/large values.
+     */
+    const displayValue =
+        typeof value !== 'undefined'
+            ? abbreviateNumber(fromAtto(value || '0').toNumber())
+            : 0
+
     return typeof value !== 'undefined' ? (
         <>
-            {abbreviateNumber(fromAtto(value || '0').toNumber())}{' '}
-            <SponsorshipPaymentTokenName />
+            {displayValue === 'NaN' ? 0 : displayValue} <SponsorshipPaymentTokenName />
         </>
     ) : (
         <Spinner color="blue" />
