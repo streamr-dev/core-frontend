@@ -38,8 +38,10 @@ import { StatCellContent, StatCellLabel } from '~/components/StatGrid'
 import { Separator } from '~/components/Separator'
 import { useEditSponsorshipFunding, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { getDelegatedAmountForWallet, getDelegationFractionForWallet } from '~/getters'
-import { operatorByIdQueryKey, useOperatorByIdQuery } from '~/hooks/operators'
-import { getQueryClient, refetchQuery } from '~/utils'
+import {
+    invalidateActiveOperatorByIdQueries,
+    useOperatorByIdQuery,
+} from '~/hooks/operators'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { OperatorChecklist } from '~/components/OperatorChecklist'
 import { collectEarnings, forceUnstakeFromSponsorship } from '~/services/sponsorships'
@@ -194,16 +196,22 @@ export const SingleOperatorPage = () => {
                                 },
                             })
 
+                            /**
+                             * @todo If this fails we consider the entire flow a failure (see below). Let's
+                             * use `setBlockDependency` and wait for the block outside of this workflow.
+                             */
                             await waitForGraphSync()
 
-                            refetchQuery(operatorQuery)
+                            invalidateActiveOperatorByIdQueries(operator.id)
                         } catch (e) {
                             if (!isRejectionReason(e)) {
                                 throw e
                             }
                         }
                     }}
-                    onDelegationChange={() => void refetchQuery(operatorQuery)}
+                    onDelegationChange={() => {
+                        invalidateActiveOperatorByIdQueries(operator.id)
+                    }}
                 />
             )}
             <LayoutColumn>
@@ -431,8 +439,16 @@ export const SingleOperatorPage = () => {
                                                     operator,
                                                 })
 
+                                                /**
+                                                 * @todo If this fails we consider the entire flow a failure and console-warn
+                                                 * the "Could not edit (…)" (see below). Let's use `setBlockDependency`
+                                                 * and wait for the block outside of this workflow.
+                                                 */
                                                 await waitForGraphSync()
-                                                refetchQuery(operatorQuery)
+
+                                                invalidateActiveOperatorByIdQueries(
+                                                    operator.id,
+                                                )
                                             } catch (e) {
                                                 if (isRejectionReason(e)) {
                                                     return
@@ -488,13 +504,28 @@ export const SingleOperatorPage = () => {
                                                         ),
                                                     })
 
+                                                    /**
+                                                     * We fetch the uncollected earnings value from contracts
+                                                     * thus we don't have to wait for the Graph to sync up.
+                                                     */
                                                     await fetchUncollectedEarnings(
                                                         operatorId,
                                                     )
 
+                                                    /**
+                                                     * @todo If this fails we consider the entire flow a failure and console-warn
+                                                     * the "Could not collect (…)" (see below). Let's use `setBlockDependency`
+                                                     * and wait for the block outside of this workflow.
+                                                     */
                                                     await waitForGraphSync()
 
-                                                    refetchQuery(operatorQuery)
+                                                    /**
+                                                     * Let's refresh the operator page to incl. now-collected earnings
+                                                     * in the overview section.
+                                                     */
+                                                    invalidateActiveOperatorByIdQueries(
+                                                        operatorId,
+                                                    )
                                                 } catch (e) {
                                                     console.error(
                                                         'Could not collect earnings',
@@ -620,9 +651,19 @@ export const SingleOperatorPage = () => {
                                                                                 operatorId,
                                                                             )
 
+                                                                            /**
+                                                                             * @todo If this fails we consider the entire flow a failure and
+                                                                             * console-warn the "Could not force (…)" (see below). Let's use
+                                                                             * `setBlockDependency` and wait for the block outside
+                                                                             * of this workflow.
+                                                                             *
+                                                                             * Also, below, trigger `invalidateActiveOperatorByIdQueries` via
+                                                                             * the new `blockObserver`.
+                                                                             */
                                                                             await waitForGraphSync()
-                                                                            refetchQuery(
-                                                                                operatorQuery,
+
+                                                                            invalidateActiveOperatorByIdQueries(
+                                                                                operatorId,
                                                                             )
                                                                         },
                                                                     },
@@ -748,16 +789,8 @@ export const SingleOperatorPage = () => {
                                                         blockObserver.onSpecific(
                                                             blockNumber,
                                                             () => {
-                                                                getQueryClient().invalidateQueries(
-                                                                    {
-                                                                        queryKey:
-                                                                            operatorByIdQueryKey(
-                                                                                operatorId,
-                                                                            ),
-                                                                        exact: true,
-                                                                        refetchType:
-                                                                            'active',
-                                                                    },
+                                                                invalidateActiveOperatorByIdQueries(
+                                                                    operatorId,
                                                                 )
                                                             },
                                                         )
