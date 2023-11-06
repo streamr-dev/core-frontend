@@ -80,10 +80,22 @@ export async function createSponsorship(formData: CreateSponsorshipForm): Promis
             signer,
         ) as ERC677
 
+        const gasLimitEstimate = await token.estimateGas.transferAndCall(
+            chainConfig.contracts['SponsorshipFactory'],
+            initialFunding.toString(),
+            data,
+        )
+        const increasedGasLimit = BigNumber.from(
+            toBN(gasLimitEstimate).multipliedBy(1.5).precision(1, BN.ROUND_UP).toString(),
+        )
+
         const sponsorshipDeployTx = await token.transferAndCall(
             chainConfig.contracts['SponsorshipFactory'],
             initialFunding.toString(),
             data,
+            {
+                gasLimit: increasedGasLimit,
+            },
         )
 
         const sponsorshipDeployReceipt = await sponsorshipDeployTx.wait()
