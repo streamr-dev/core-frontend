@@ -230,23 +230,9 @@ export async function getEarningsForSponsorships(
     const result: Record<string, BN> = {}
 
     for (let i = 0; i < addresses.length; i++) {
-        const address = addresses[i].toLowerCase()
-
-        const value = toBN(earnings[i])
-
-        if (!value.isFinite()) {
-            console.warn(
-                `Invalid earnings for ${address} (expecting finite BN)`,
-                earnings[i],
-            )
-
-            result[address] = toBN(0)
-
-            continue
-        }
-
-        result[address] = value
+        result[addresses[i].toLowerCase()] = toBN(earnings[i])
     }
+
     return result
 }
 
