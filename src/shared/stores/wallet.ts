@@ -9,6 +9,7 @@ import { getFirstEnsNameFor } from '~/getters'
 import { getConfigForChain } from '~/shared/web3/config'
 import { connectModal } from '~/modals/ConnectModal'
 import { isRejectionReason } from '~/modals/BaseModal'
+import { Break } from '~/utils/errors'
 
 interface MetaMaskProvider extends MetaMaskInpageProvider {
     providers?: MetaMaskProvider[]
@@ -88,7 +89,11 @@ export async function getSigner() {
                 retry = false
             } catch (f) {
                 if (isRejectionReason(f)) {
-                    throw new Error('User keeps wallet locked')
+                    /**
+                     * The user kept their wallet locked and there's nothing
+                     * we can do. Let's break.
+                     */
+                    throw Break
                 }
 
                 throw f
