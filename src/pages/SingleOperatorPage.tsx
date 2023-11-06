@@ -810,16 +810,18 @@ export const SingleOperatorPage = () => {
                                 />
                             </NetworkPageSegment>
                         )}
-                        <NetworkPageSegment
-                            title={
-                                <TitleWithCount>
-                                    <span>Live nodes</span>
-                                    <Count>{Object.keys(heartbeats).length}</Count>
-                                </TitleWithCount>
-                            }
-                        >
-                            <LiveNodesTable heartbeats={heartbeats} />
-                        </NetworkPageSegment>
+                        {isOwner && (
+                            <NetworkPageSegment
+                                title={
+                                    <TitleWithCount>
+                                        <span>Live nodes</span>
+                                        <Count>{Object.keys(heartbeats).length}</Count>
+                                    </TitleWithCount>
+                                }
+                            >
+                                <LiveNodesTable heartbeats={heartbeats} />
+                            </NetworkPageSegment>
+                        )}
                     </SegmentGrid>
                 )}
             </LayoutColumn>
