@@ -328,12 +328,10 @@ export const SingleOperatorPage = () => {
                         <NetworkPageSegment
                             foot
                             title={
-                                <SponsorshipsTableTitle>
+                                <TitleWithCount>
                                     <span>Sponsorships</span>
-                                    <SponsorshipsCount>
-                                        {operator.stakes.length}
-                                    </SponsorshipsCount>
-                                </SponsorshipsTableTitle>
+                                    <Count>{operator.stakes.length}</Count>
+                                </TitleWithCount>
                             }
                         >
                             <ScrollTable
@@ -864,12 +862,12 @@ const Badge = styled.div`
     margin-left: 12px;
 `
 
-const SponsorshipsTableTitle = styled.h2`
+const TitleWithCount = styled.h2`
     display: flex;
     align-items: center;
 `
 
-const SponsorshipsCount = styled.div`
+const Count = styled.div`
     background-color: ${COLORS.secondary};
     border-radius: 50%;
     margin-left: 10px;
