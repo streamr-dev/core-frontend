@@ -151,3 +151,11 @@ export function useOperatorReachability(
 
     return nodeIds.length === numOfReachableNodes ? 'all' : 'some'
 }
+
+export function useIsNodeIdReachable(nodeId: string) {
+    const { nodes, probes } = useOperatorReachabilityStore()
+
+    const { reachable = false, pending = false } = probes[nodes[nodeId] || ''] || {}
+
+    return pending ? 'pending' : reachable
+}

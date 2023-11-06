@@ -10,6 +10,12 @@ export const truncate = (path: string): string => {
     return shortenedAddress
 }
 
+export function truncateNodeId(nodeId: string) {
+    const hit = nodeId.match(/^([a-f\d]{5})[a-f\d]{22}([a-f\d]{5})$/i)
+
+    return hit ? `${hit[1]}…${hit[2]}` : nodeId
+}
+
 const MAX_STREAM_NAME_LENGTH = 26
 
 export function parseStreamId(streamId: string): {

@@ -66,6 +66,8 @@ import { FundedUntilCell, StreamIdCell } from '~/components/Table'
 import { Tip, TipIconWrap } from '~/components/Tip'
 import { useSetBlockDependency } from '~/stores/blockNumberDependencies'
 import { blockObserver } from '~/utils/blocks'
+import { LiveNodesTable } from '~/components/LiveNodesTable'
+import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 const forceUndelegateModal = toaster(ForceUndelegateModal, Layer.Modal)
@@ -157,6 +159,8 @@ export const SingleOperatorPage = () => {
     const [saveNodeAddresses, isSavingNodeAddresses] = useSubmitNodeAddressesCallback()
 
     const setBlockDependency = useSetBlockDependency()
+
+    const heartbeats = useInterceptHeartbeats(operator?.id)
 
     return (
         <Layout>
@@ -804,6 +808,18 @@ export const SingleOperatorPage = () => {
                                         } catch (e) {}
                                     }}
                                 />
+                            </NetworkPageSegment>
+                        )}
+                        {isOwner && (
+                            <NetworkPageSegment
+                                title={
+                                    <TitleWithCount>
+                                        <span>Live nodes</span>
+                                        <Count>{Object.keys(heartbeats).length}</Count>
+                                    </TitleWithCount>
+                                }
+                            >
+                                <LiveNodesTable heartbeats={heartbeats} />
                             </NetworkPageSegment>
                         )}
                     </SegmentGrid>
