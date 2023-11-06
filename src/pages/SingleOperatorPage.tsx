@@ -198,7 +198,7 @@ export const SingleOperatorPage = () => {
 
                             /**
                              * @todo If this fails we consider the entire flow a failure (see below). Let's
-                             * use `setBlockDependency` and wait for the block outside of this workflow.
+                             * use `blockObserver` and wait for the block outside of this workflow.
                              */
                             await waitForGraphSync()
 
@@ -441,8 +441,8 @@ export const SingleOperatorPage = () => {
 
                                                 /**
                                                  * @todo If this fails we consider the entire flow a failure and console-warn
-                                                 * the "Could not edit (…)" (see below). Let's use `setBlockDependency`
-                                                 * and wait for the block outside of this workflow.
+                                                 * the "Could not edit (…)" (see below). Let's use `blockObserver` and wait
+                                                 * for the block outside of this workflow.
                                                  */
                                                 await waitForGraphSync()
 
@@ -514,8 +514,8 @@ export const SingleOperatorPage = () => {
 
                                                     /**
                                                      * @todo If this fails we consider the entire flow a failure and console-warn
-                                                     * the "Could not collect (…)" (see below). Let's use `setBlockDependency`
-                                                     * and wait for the block outside of this workflow.
+                                                     * the "Could not collect (…)" (see below). Let's use `blockObserver` and
+                                                     * wait for the block outside of this workflow.
                                                      */
                                                     await waitForGraphSync()
 
@@ -654,11 +654,8 @@ export const SingleOperatorPage = () => {
                                                                             /**
                                                                              * @todo If this fails we consider the entire flow a failure and
                                                                              * console-warn the "Could not force (…)" (see below). Let's use
-                                                                             * `setBlockDependency` and wait for the block outside
+                                                                             * `blockObserver` and wait for the block outside
                                                                              * of this workflow.
-                                                                             *
-                                                                             * Also, below, trigger `invalidateActiveOperatorByIdQueries` via
-                                                                             * the new `blockObserver`.
                                                                              */
                                                                             await waitForGraphSync()
 
