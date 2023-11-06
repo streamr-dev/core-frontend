@@ -1,9 +1,7 @@
 import React from 'react'
-import { toaster } from 'toasterhea'
 import styled from 'styled-components'
-import ConnectModal from '~/modals/ConnectModal'
+import { connectModal } from '~/modals/ConnectModal'
 import Button from '~/shared/components/Button'
-import { Layer } from '~/utils/Layer'
 import { COLORS } from '~/shared/utils/styled'
 
 export default function NoWalletOverlay({ resourceName }: { resourceName: string }) {
@@ -18,7 +16,7 @@ export default function NoWalletOverlay({ resourceName }: { resourceName: string
                     type="button"
                     onClick={async () => {
                         try {
-                            await toaster(ConnectModal, Layer.Modal).pop()
+                            await connectModal.pop()
                         } catch (e) {
                             console.warn('Wallet connecting failed', e)
                         }

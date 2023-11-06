@@ -1,11 +1,9 @@
 import React, { FunctionComponent } from 'react'
 import styled from 'styled-components'
-import { toaster } from 'toasterhea'
 import moment from 'moment'
 import { randomHex } from 'web3-utils'
 import { WhiteBox, WhiteBoxPaddingStyles } from '~/shared/components/WhiteBox'
-import ConnectModal from '~/modals/ConnectModal'
-import { Layer } from '~/utils/Layer'
+import { connectModal } from '~/modals/ConnectModal'
 import Button from '~/shared/components/Button'
 import { COLORS, MD, MEDIUM } from '~/shared/utils/styled'
 import { SponsorshipElement } from '~/types/sponsorship'
@@ -103,7 +101,7 @@ export const WalletNotConnectedOverlay: FunctionComponent<{ summaryTitle: string
                     type="button"
                     onClick={async () => {
                         try {
-                            await toaster(ConnectModal, Layer.Modal).pop()
+                            await connectModal.pop()
                         } catch (e) {
                             console.warn('Wallet connecting failed', e)
                         }

@@ -10,7 +10,7 @@ jest.mock('~/shared/stores/wallet', () => ({
     useEns: jest.fn(),
 }))
 
-jest.mock('~//modals/ConnectModal', () => ({
+jest.mock('~/modals/ConnectModal', () => ({
     __esModule: true,
     default: () => <></>,
 }))

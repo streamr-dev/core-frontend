@@ -68,6 +68,8 @@ import { useSetBlockDependency } from '~/stores/blockNumberDependencies'
 import { blockObserver } from '~/utils/blocks'
 import { LiveNodesTable } from '~/components/LiveNodesTable'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
+import { isTransactionRejection } from '~/utils'
+import { Break } from '~/utils/errors'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 const forceUndelegateModal = toaster(ForceUndelegateModal, Layer.Modal)
@@ -533,6 +535,14 @@ export const SingleOperatorPage = () => {
                                                         operatorId,
                                                     )
                                                 } catch (e) {
+                                                    if (e === Break) {
+                                                        return
+                                                    }
+
+                                                    if (isTransactionRejection(e)) {
+                                                        return
+                                                    }
+
                                                     console.error(
                                                         'Could not collect earnings',
                                                         e,
