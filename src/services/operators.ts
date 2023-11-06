@@ -244,7 +244,11 @@ export async function getOperatorDelegationAmount(operatorId: string, address: s
     return toBN(amount)
 }
 
-export async function setOperatorNodeAddresses(operatorId: string, addresses: string[]) {
+export async function setOperatorNodeAddresses(
+    operatorId: string,
+    addresses: string[],
+    options: { onBlockNumber?: (blockNumber: number) => void } = {},
+) {
     const chainId = getOperatorChainId()
 
     await networkPreflight(chainId)
@@ -254,6 +258,11 @@ export async function setOperatorNodeAddresses(operatorId: string, addresses: st
 
     await toastedOperation('Save node addresses', async () => {
         const tx = await operatorContract.setNodeAddresses(addresses)
-        await tx.wait()
+
+        const { blockNumber } = await tx.wait()
+
+        saveLastBlockNumber(blockNumber)
+
+        options.onBlockNumber?.(blockNumber)
     })
 }

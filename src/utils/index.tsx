@@ -1,7 +1,11 @@
 import React from 'react'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
-import { UseInfiniteQueryResult, UseQueryResult } from '@tanstack/react-query'
+import {
+    QueryClient,
+    UseInfiniteQueryResult,
+    UseQueryResult,
+} from '@tanstack/react-query'
 export { isAddress as isEthereumAddress } from 'web3-validator'
 import StreamrClient, { Stream } from 'streamr-client'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
@@ -210,4 +214,17 @@ export function goBack(options: { onBeforeNavigate?: () => void } = {}) {
     options.onBeforeNavigate?.()
 
     history.back()
+}
+
+let queryClient: QueryClient | undefined
+
+/**
+ * Returns the global QueryClient.
+ */
+export function getQueryClient() {
+    if (!queryClient) {
+        queryClient = new QueryClient()
+    }
+
+    return queryClient
 }

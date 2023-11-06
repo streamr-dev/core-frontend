@@ -16,7 +16,7 @@ import {
     searchOperatorsById,
     searchOperatorsByMetadata,
 } from '~/getters'
-import { isEthereumAddress } from '~/utils'
+import { getQueryClient, isEthereumAddress } from '~/utils'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
 import { Delegation, DelegationsStats } from '~/types'
@@ -62,15 +62,19 @@ export function useOperatorForWallet(address = '') {
     return useOperatorForWalletQuery(address).data || null
 }
 
+function operatorByIdQueryKey(operatorId: string) {
+    return ['operatorByIdQueryKey', operatorId]
+}
+
 export function useOperatorByIdQuery(operatorId = '') {
     return useQuery({
-        queryKey: ['useOperatorByIdQuery', operatorId],
+        queryKey: operatorByIdQueryKey(operatorId),
         async queryFn() {
             if (!operatorId) {
                 return null
             }
 
-            const operator = await getOperatorById(operatorId)
+            const operator = await getOperatorById(operatorId, { force: true })
 
             if (operator) {
                 try {
@@ -88,6 +92,14 @@ export function useOperatorByIdQuery(operatorId = '') {
         },
         staleTime: 60 * 1000, // 1 minute
         keepPreviousData: true,
+    })
+}
+
+export function invalidateActiveOperatorByIdQueries(operatorId: string) {
+    getQueryClient().invalidateQueries({
+        queryKey: operatorByIdQueryKey(operatorId),
+        exact: true,
+        refetchType: 'active',
     })
 }
 
