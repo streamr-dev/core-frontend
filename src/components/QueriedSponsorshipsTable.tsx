@@ -92,6 +92,7 @@ export function QueriedSponsorshipsTable({
                         align: 'start',
                         isSticky: false,
                         key: 'payoutPerDay',
+                        sortable: true,
                     },
                     {
                         displayName: 'Operators',
