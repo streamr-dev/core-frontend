@@ -4,9 +4,11 @@ import detectProvider from '@metamask/detect-provider'
 import { create } from 'zustand'
 import { providers } from 'ethers'
 import { MetaMaskInpageProvider } from '@metamask/providers'
-import { isEthereumAddress } from '~/utils'
+import { isEthereumAddress, isMessagedObject } from '~/utils'
 import { getFirstEnsNameFor } from '~/getters'
 import { getConfigForChain } from '~/shared/web3/config'
+import { connectModal } from '~/modals/ConnectModal'
+import { isRejectionReason } from '~/modals/BaseModal'
 
 interface MetaMaskProvider extends MetaMaskInpageProvider {
     providers?: MetaMaskProvider[]
@@ -55,7 +57,44 @@ export async function getWalletWeb3Provider() {
 }
 
 export async function getSigner() {
-    return (await getWalletWeb3Provider()).getSigner()
+    let retry = true
+
+    while (true) {
+        try {
+            const provider = await getWalletWeb3Provider()
+
+            const signer = provider.getSigner()
+
+            await signer.getAddress()
+
+            return signer
+        } catch (e) {
+            if (!retry) {
+                throw e
+            }
+
+            if (!isMessagedObject(e) || !/unknown account #\d+/i.test(e.message)) {
+                throw e
+            }
+
+            try {
+                await connectModal.pop()
+
+                /**
+                 * If after this it still fails to get a proper signer (with
+                 * an address and all) ignore further attempts and just
+                 * throw the error (see above).
+                 */
+                retry = false
+            } catch (f) {
+                if (isRejectionReason(f)) {
+                    throw new Error('User keeps wallet locked')
+                }
+
+                throw f
+            }
+        }
+    }
 }
 
 const promiseMap = new Map<MetaMaskProvider, Promise<string | undefined>>()
