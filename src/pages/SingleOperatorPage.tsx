@@ -722,7 +722,7 @@ export const SingleOperatorPage = () => {
                                 ]}
                             />
                         </NetworkPageSegment>
-                        {walletAddress?.toLowerCase() === operator.owner && (
+                        {isOwner && (
                             <NetworkPageSegment
                                 title={
                                     <NodeAddressHeader>
