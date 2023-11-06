@@ -25,11 +25,14 @@ export function useInterceptHeartbeats(operatorId: string | undefined) {
                     return
                 }
 
-                const { peerDescriptor } = msg.parsedContent
+                const {
+                    parsedContent: { peerDescriptor },
+                    messageId: { timestamp },
+                } = msg
 
                 setHeartbeats((prev) => ({
                     ...prev,
-                    [peerDescriptor.id]: peerDescriptor,
+                    [peerDescriptor.id]: { ...peerDescriptor, timestamp },
                 }))
             },
         },
@@ -39,6 +42,9 @@ export function useInterceptHeartbeats(operatorId: string | undefined) {
 }
 
 const HeartbeatMessage = z.object({
+    messageId: z.object({
+        timestamp: z.number(),
+    }),
     parsedContent: z.object({
         msgType: z.literal('heartbeat'),
         peerDescriptor: z.object({
@@ -63,4 +69,6 @@ function isHeartbeatMessage(arg: unknown): arg is HeartbeatMessage {
     return HeartbeatMessage.safeParse(arg).success
 }
 
-export type Heartbeat = HeartbeatMessage['parsedContent']['peerDescriptor']
+export type Heartbeat = HeartbeatMessage['parsedContent']['peerDescriptor'] & {
+    timestamp: number
+}

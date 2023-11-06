@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import moment from 'moment'
 import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
@@ -38,6 +39,14 @@ export function LiveNodesTable({
                     isSticky: false,
                     key: 'connectivity',
                     valueMapper: ({ id }) => <Connectivity nodeId={id} />,
+                },
+                {
+                    align: 'start',
+                    displayName: 'Last seen',
+                    isSticky: false,
+                    key: 'lastSeen',
+                    valueMapper: ({ timestamp }) =>
+                        moment(timestamp).format('YYYY-MM-DD HH:mm'),
                 },
                 {
                     align: 'start',
