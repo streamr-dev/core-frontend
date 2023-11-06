@@ -70,6 +70,10 @@ import { blockObserver } from '~/utils/blocks'
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 const forceUndelegateModal = toaster(ForceUndelegateModal, Layer.Modal)
 
+const defaultChartData = []
+
+const defaultPersistedNodes = []
+
 export const SingleOperatorPage = () => {
     const operatorId = useParams().id
 
@@ -121,7 +125,7 @@ export const SingleOperatorPage = () => {
         },
     })
 
-    const { data: chartData = [] } = chartQuery
+    const { data: chartData = defaultChartData } = chartQuery
 
     const myDelegationAmount = useMemo(() => {
         if (!walletAddress || !operator) {
@@ -144,7 +148,7 @@ export const SingleOperatorPage = () => {
             ? 'Cumulative earnings'
             : 'Total stake'
 
-    const { nodes: persistedNodes = [] } = operator || {}
+    const { nodes: persistedNodes = defaultPersistedNodes } = operator || {}
 
     const [nodes, setNodes] = useState(persistedNodes)
 
