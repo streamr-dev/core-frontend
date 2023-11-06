@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
-import { toaster } from 'toasterhea'
 import Button from '~/shared/components/Button'
 import NetworkIcon from '~/shared/components/NetworkIcon'
 import { MEDIUM } from '~/shared/utils/styled'
@@ -10,11 +9,10 @@ import useIsMounted from '~/shared/hooks/useIsMounted'
 import { getCustomTokenBalance } from '~/marketplace/utils/web3'
 import { getTokenInfo } from '~/hooks/useTokenInfo'
 import { getUsdRate } from '~/shared/utils/coingecko'
-import { Layer } from '~/utils/Layer'
 import networkPreflight from '~/utils/networkPreflight'
 import { ParsedPaymentDetail } from '~/parsers/ProjectParser'
 import ProjectModal, { Actions } from './ProjectModal'
-import ConnectModal from './ConnectModal'
+import { connectModal } from './ConnectModal'
 import { RejectionReason } from './BaseModal'
 
 const ChainIcon = styled(NetworkIcon)`
@@ -129,7 +127,7 @@ export async function getPurchasePreconditions({
 
     const tokenInfo = await getTokenInfo(tokenAddress, chainId)
 
-    const account = await toaster(ConnectModal, Layer.Modal).pop()
+    const account = await connectModal.pop()
 
     if (!account) {
         throw new Error('No account')

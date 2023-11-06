@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { useDiscardableEffect, defer, Deferral } from 'toasterhea'
+import { useDiscardableEffect, defer, Deferral, toaster } from 'toasterhea'
 import { Link as PrestyledLink } from 'react-router-dom'
 import { Logo, Auth, SignInMethod, LoadingIndicator } from '@streamr/streamr-layout'
 import { MEDIUM, TABLET } from '~/shared/utils/styled'
@@ -10,6 +10,8 @@ import TimeoutError from '~/shared/errors/TimeoutError'
 import { getWalletAccount, useWalletAccount } from '~/shared/stores/wallet'
 import isCodedError from '~/utils/isCodedError'
 import routes from '~/routes'
+import { Layer } from '~/utils/Layer'
+import { RejectionReason } from './BaseModal'
 
 const Root = styled.div`
     background: #f8f8f8;
@@ -119,7 +121,7 @@ export default function ConnectModal({ onReject, onResolve }: Props) {
     useEffect(() => {
         function onKeyDown({ key }: KeyboardEvent) {
             if (key === 'Escape') {
-                onReject?.()
+                onReject?.(RejectionReason.EscapeKey)
             }
         }
 
@@ -278,3 +280,5 @@ export default function ConnectModal({ onReject, onResolve }: Props) {
         </Root>
     )
 }
+
+export const connectModal = toaster(ConnectModal, Layer.Modal)

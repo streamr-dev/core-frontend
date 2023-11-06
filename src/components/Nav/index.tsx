@@ -1,14 +1,12 @@
 import React, { Fragment, FunctionComponent, HTMLAttributes, useState } from 'react'
 import styled from 'styled-components'
-import { toaster } from 'toasterhea'
 import { useLocation, Link, useNavigate } from 'react-router-dom'
 import { Accordion, AccordionItem } from 'reactstrap'
 import { Button, HamburgerButton, Logo, NavOverlay } from '@streamr/streamr-layout'
 import { DESKTOP, TABLET } from '~/shared/utils/styled'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { truncate } from '~/shared/utils/text'
-import ConnectModal from '~/modals/ConnectModal'
-import { Layer } from '~/utils/Layer'
+import { connectModal } from '~/modals/ConnectModal'
 import { useEns, useWalletAccount } from '~/shared/stores/wallet'
 import toast from '~/utils/toast'
 import { FeatureFlag, isFeatureEnabled } from '~/shared/utils/isFeatureEnabled'
@@ -162,7 +160,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                 type="button"
                                 onClick={async () => {
                                     try {
-                                        await toaster(ConnectModal, Layer.Modal).pop()
+                                        await connectModal.pop()
                                     } catch (e) {
                                         console.warn('Wallet connecting failed', e)
                                     }
@@ -351,7 +349,7 @@ const UnstyledMobileNav: FunctionComponent<{ className?: string }> = ({ classNam
                         type="button"
                         onClick={async () => {
                             try {
-                                await toaster(ConnectModal, Layer.Modal).pop()
+                                await connectModal.pop()
                             } catch (e) {
                                 console.warn('Wallet connecting failed', e)
                             }
