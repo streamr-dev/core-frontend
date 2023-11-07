@@ -110,6 +110,8 @@ export default function JoinSponsorshipModal({
         minimumSelfDelegationPercentage,
     )
 
+    const minimumStakingDays = sponsorship.minimumStakingPeriodSeconds / (60 * 60 * 24)
+
     const minimumStakeWei = useConfigValueFromChain('minimumStakeWei')
 
     const isAboveMinimumStake = minimumStakeWei
@@ -213,6 +215,13 @@ export default function JoinSponsorshipModal({
                     <TextAppendix>{tokenSymbol}</TextAppendix>
                 </FieldWrap>
                 <ul>
+                    <li>
+                        <Prop>Minimum stake duration</Prop>
+                        <div>
+                            {minimumStakingDays.toFixed(0)} day
+                            {minimumStakingDays !== 1 && 's'}
+                        </div>
+                    </li>
                     <li>
                         <Prop $invalid={insufficientFunds}>
                             {insufficientFunds ? (
