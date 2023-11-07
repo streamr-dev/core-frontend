@@ -34,12 +34,11 @@ import {
     useIsUndelegatingFundsToOperator,
     useUndelegateFunds,
 } from '~/hooks/operators'
-import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { Tip, TipIconWrap } from '~/components/Tip'
 import { getOperatorDelegationAmount } from '~/services/operators'
 import { PencilIcon } from '~/icons'
-import { goBack } from '~/utils'
+import { abbr, goBack } from '~/utils'
 import {
     ActionBarButton,
     ActionBarButtonCaret,
@@ -239,9 +238,7 @@ export const OperatorActionBar: FunctionComponent<{
                             }
                         >
                             <div>
-                                {abbreviateNumber(
-                                    fromAtto(operator.valueWithoutEarnings).toNumber(),
-                                )}{' '}
+                                {abbr(fromAtto(operator.valueWithoutEarnings))}{' '}
                                 <SponsorshipPaymentTokenName />
                             </div>
                         </StatCell>
@@ -264,9 +261,7 @@ export const OperatorActionBar: FunctionComponent<{
                                 </Tip>
                             }
                         >
-                            {abbreviateNumber(
-                                fromAtto(operator.totalStakeInSponsorshipsWei).toNumber(),
-                            )}{' '}
+                            {abbr(fromAtto(operator.totalStakeInSponsorshipsWei))}{' '}
                             <SponsorshipPaymentTokenName />
                         </StatCell>
                         <StatCell
@@ -397,12 +392,12 @@ export const OperatorActionBar: FunctionComponent<{
                                 </Tip>
                             }
                         >
-                            {abbreviateNumber(
+                            {abbr(
                                 fromAtto(
                                     operator.cumulativeProfitsWei.plus(
                                         operator.cumulativeOperatorsCutWei,
                                     ),
-                                ).toNumber(),
+                                ),
                             )}{' '}
                             <SponsorshipPaymentTokenName />
                         </StatCell>

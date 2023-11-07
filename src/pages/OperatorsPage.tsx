@@ -28,8 +28,7 @@ import {
 } from '~/hooks/operators'
 import { Delegation } from '~/types'
 import { ParsedOperator } from '~/parsers/OperatorParser'
-import { refetchQuery } from '~/utils'
-import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
+import { abbr, refetchQuery } from '~/utils'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import { OperatorIdCell } from '~/components/Table'
@@ -217,20 +216,22 @@ function DelegationsTable({
                 },
                 {
                     displayName: 'My delegation',
-                    valueMapper: (element) =>
-                        `${abbreviateNumber(
-                            fromAtto(element.myShare).toNumber(),
-                        )} ${tokenSymbol}`,
+                    valueMapper: (element) => (
+                        <>
+                            {abbr(fromAtto(element.myShare))} {tokenSymbol}
+                        </>
+                    ),
                     align: 'start',
                     isSticky: false,
                     key: 'myShare',
                 },
                 {
                     displayName: 'Total stake',
-                    valueMapper: (element) =>
-                        `${abbreviateNumber(
-                            fromAtto(element.valueWithoutEarnings).toNumber(),
-                        )} ${tokenSymbol}`,
+                    valueMapper: (element) => (
+                        <>
+                            {abbr(fromAtto(element.valueWithoutEarnings))} {tokenSymbol}
+                        </>
+                    ),
                     align: 'end',
                     isSticky: false,
                     key: 'totalStake',
@@ -301,10 +302,11 @@ function OperatorsTable({
                 },
                 {
                     displayName: 'Total stake',
-                    valueMapper: (element) =>
-                        `${abbreviateNumber(
-                            fromAtto(element.valueWithoutEarnings).toNumber(),
-                        )} ${tokenSymbol}`,
+                    valueMapper: (element) => (
+                        <>
+                            {abbr(fromAtto(element.valueWithoutEarnings))} {tokenSymbol}
+                        </>
+                    ),
                     align: 'start',
                     isSticky: false,
                     key: 'totalValue',
@@ -312,10 +314,12 @@ function OperatorsTable({
                 },
                 {
                     displayName: 'Deployed stake',
-                    valueMapper: (element) =>
-                        `${abbreviateNumber(
-                            fromAtto(element.totalStakeInSponsorshipsWei).toNumber(),
-                        )} ${tokenSymbol}`,
+                    valueMapper: (element) => (
+                        <>
+                            {abbr(fromAtto(element.totalStakeInSponsorshipsWei))}{' '}
+                            {tokenSymbol}
+                        </>
+                    ),
                     align: 'end',
                     isSticky: false,
                     key: 'deployed',

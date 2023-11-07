@@ -15,7 +15,6 @@ import {
     formatLongDate,
     formatShortDate,
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
-import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { errorToast, successToast } from '~/utils/toast'
 import { BNish, toBN } from '~/utils/bn'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
@@ -68,7 +67,7 @@ import { useSetBlockDependency } from '~/stores/blockNumberDependencies'
 import { blockObserver } from '~/utils/blocks'
 import { LiveNodesTable } from '~/components/LiveNodesTable'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
-import { isTransactionRejection } from '~/utils'
+import { abbr, isTransactionRejection } from '~/utils'
 import { Break } from '~/utils/errors'
 
 const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
@@ -299,10 +298,10 @@ export const SingleOperatorPage = () => {
                                                             Current stake
                                                         </StatCellLabel>
                                                         <StatCellContent>
-                                                            {abbreviateNumber(
+                                                            {abbr(
                                                                 fromAtto(
                                                                     myDelegationAmount,
-                                                                ).toNumber(),
+                                                                ),
                                                             )}{' '}
                                                             {tokenSymbol}
                                                         </StatCellContent>
@@ -360,10 +359,12 @@ export const SingleOperatorPage = () => {
                                     },
                                     {
                                         displayName: 'Staked',
-                                        valueMapper: (element) =>
-                                            `${abbreviateNumber(
-                                                fromAtto(element.amountWei).toNumber(),
-                                            )} ${tokenSymbol}`,
+                                        valueMapper: (element) => (
+                                            <>
+                                                {abbr(fromAtto(element.amountWei))}{' '}
+                                                {tokenSymbol}
+                                            </>
+                                        ),
                                         align: 'start',
                                         isSticky: false,
                                         key: 'staked',
@@ -580,10 +581,12 @@ export const SingleOperatorPage = () => {
                                     },
                                     {
                                         displayName: 'Amount',
-                                        valueMapper: (element) =>
-                                            `${abbreviateNumber(
-                                                fromAtto(element.amount).toNumber(),
-                                            )} ${tokenSymbol}`,
+                                        valueMapper: (element) => (
+                                            <>
+                                                {abbr(fromAtto(element.amount))}{' '}
+                                                {tokenSymbol}
+                                            </>
+                                        ),
                                         align: 'end',
                                         isSticky: false,
                                         key: 'amount',
@@ -731,10 +734,12 @@ export const SingleOperatorPage = () => {
                                     },
                                     {
                                         displayName: 'Slashed',
-                                        valueMapper: (element) =>
-                                            `${abbreviateNumber(
-                                                fromAtto(element.amount).toNumber(),
-                                            )} ${tokenSymbol}`,
+                                        valueMapper: (element) => (
+                                            <>
+                                                {abbr(fromAtto(element.amount))}{' '}
+                                                {tokenSymbol}
+                                            </>
+                                        ),
                                         align: 'start',
                                         isSticky: false,
                                         key: 'slashed',
@@ -866,11 +871,11 @@ export const SingleOperatorPage = () => {
 }
 
 function tooltipValueFormatter(value: number, tokenSymbol: string) {
-    return `${abbreviateNumber(value)} ${tokenSymbol}`
+    return `${abbr(value)} ${tokenSymbol}`
 }
 
 function yAxisAxisDisplayFormatter(value: number) {
-    return abbreviateNumber(value)
+    return abbr(value)
 }
 
 function getUndelegationExpirationDate(
@@ -958,18 +963,9 @@ function UncollectedEarnings({
 }) {
     const value = useUncollectedEarnings(operatorId, sponsorshipId)
 
-    /**
-     * `abbreviateNumber` operates on regular numbers thus can produce "NaN"
-     * for extra small/large values.
-     */
-    const displayValue =
-        typeof value !== 'undefined'
-            ? abbreviateNumber(fromAtto(value || '0').toNumber())
-            : 0
-
     return typeof value !== 'undefined' ? (
         <>
-            {displayValue === 'NaN' ? 0 : displayValue} <SponsorshipPaymentTokenName />
+            {abbr(fromAtto(value || 0))} <SponsorshipPaymentTokenName />
         </>
     ) : (
         <Spinner color="blue" />

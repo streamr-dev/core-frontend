@@ -11,10 +11,10 @@ import FormModal, {
 import { Tip, TipIconWrap } from '~/components/Tip'
 import { BN } from '~/utils/bn'
 import { fromAtto } from '~/marketplace/utils/math'
-import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { Alert } from '~/components/Alert'
 import { Radio } from '~/shared/components/Radio'
+import { abbr } from '~/utils'
 
 interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
     onResolve?: (sponsorshipId: string) => void
@@ -136,10 +136,7 @@ export default function ForceUndelegateModal({
                                 displayName: 'Amount',
                                 valueMapper: (element) => (
                                     <WarningCell>
-                                        {abbreviateNumber(
-                                            fromAtto(element.amount).toNumber(),
-                                        )}{' '}
-                                        {tokenSymbol}
+                                        {abbr(fromAtto(element.amount))} {tokenSymbol}
                                         {element.amount.isLessThan(totalAmount) && (
                                             <Tip
                                                 handle={

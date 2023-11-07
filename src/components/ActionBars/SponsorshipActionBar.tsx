@@ -2,7 +2,6 @@ import React, { ComponentProps, useMemo } from 'react'
 import styled from 'styled-components'
 import moment from 'moment'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
-import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import Button from '~/shared/components/Button'
 import SvgIcon from '~/shared/components/SvgIcon'
 import routes from '~/routes'
@@ -39,7 +38,7 @@ import {
 } from '~/hooks/sponsorships'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { COLORS } from '~/shared/utils/styled'
-import { goBack } from '~/utils'
+import { abbr, goBack } from '~/utils'
 import {
     ActionBarButton,
     ActionBarButtonBody,
@@ -270,13 +269,12 @@ export function SponsorshipActionBar({
                                 </Tip>
                             }
                         >
-                            {abbreviateNumber(sponsorship.payoutPerDay.toNumber())}{' '}
+                            {abbr(sponsorship.payoutPerDay)}{' '}
                             <SponsorshipPaymentTokenName />
                             /day
                         </StatCell>
                         <StatCell label="Remaining balance">
-                            {abbreviateNumber(remainingBalance.toNumber())}{' '}
-                            <SponsorshipPaymentTokenName />
+                            {abbr(remainingBalance)} <SponsorshipPaymentTokenName />
                         </StatCell>
                         <StatCell
                             label="Total staked"
@@ -297,8 +295,7 @@ export function SponsorshipActionBar({
                                 </Tip>
                             }
                         >
-                            {abbreviateNumber(sponsorship.totalStake.toNumber())}{' '}
-                            <SponsorshipPaymentTokenName />
+                            {abbr(sponsorship.totalStake)} <SponsorshipPaymentTokenName />
                         </StatCell>
                     </StatGrid>
                 </Pad>
@@ -344,9 +341,7 @@ export function SponsorshipActionBar({
                                 </Tip>
                             }
                         >
-                            {abbreviateNumber(
-                                sponsorship.cumulativeSponsoring.toNumber(),
-                            )}{' '}
+                            {abbr(sponsorship.cumulativeSponsoring)}{' '}
                             <SponsorshipPaymentTokenName />
                         </StatCell>
                         <StatCell
