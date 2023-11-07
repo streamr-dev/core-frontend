@@ -138,8 +138,8 @@ export async function editSponsorshipFunding(
                     description: (
                         <>
                             Your minimum staking period is still ongoing and ends on
-                            {minLeaveDate}. If you unstake now, you will lose
-                            {fromDecimals(leavePenaltyWei, decimals).toString()}
+                            {minLeaveDate}. If you unstake now, you will lose{' '}
+                            {fromDecimals(leavePenaltyWei, decimals).toString()}{' '}
                             {tokenSymbol}
                         </>
                     ),
