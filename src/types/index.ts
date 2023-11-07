@@ -46,6 +46,7 @@ export type ConfigKey =
     | 'minimumStakeWei'
     | 'minimumSelfDelegationFraction'
     | 'maxQueueSeconds'
+    | 'slashingFraction'
 
 export interface Chain {
     name: string

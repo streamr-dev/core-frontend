@@ -88,6 +88,8 @@ export const SingleOperatorPage = () => {
     const walletAddress = useWalletAccount()
 
     const maxUndelegationQueueSeconds = useConfigValueFromChain('maxQueueSeconds')
+    const slashingFraction = useConfigValueFromChain('slashingFraction')
+    const minimumStakeWei = useConfigValueFromChain('minimumStakeWei')
 
     const { fetch: fetchUncollectedEarnings } = useUncollectedEarningsStore()
 
@@ -736,6 +738,30 @@ export const SingleOperatorPage = () => {
                                         align: 'start',
                                         isSticky: false,
                                         key: 'slashed',
+                                    },
+                                    {
+                                        displayName: 'Reason',
+                                        valueMapper: (element) => {
+                                            if (
+                                                slashingFraction == null ||
+                                                minimumStakeWei == null
+                                            ) {
+                                                return ''
+                                            }
+                                            if (
+                                                element.amount.isLessThan(
+                                                    fromAtto(
+                                                        toBN(slashingFraction),
+                                                    ).multipliedBy(toBN(minimumStakeWei)),
+                                                )
+                                            ) {
+                                                return 'False flag'
+                                            }
+                                            return 'Normal slashing'
+                                        },
+                                        align: 'start',
+                                        isSticky: false,
+                                        key: 'reason',
                                     },
                                 ]}
                             />
