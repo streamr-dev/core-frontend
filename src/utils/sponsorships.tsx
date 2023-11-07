@@ -137,7 +137,7 @@ export async function editSponsorshipFunding(
                     title: 'Your stake will be slashed',
                     description: (
                         <>
-                            Your minimum staking period is still ongoing and ends on
+                            Your minimum staking period is still ongoing and ends on{' '}
                             {minLeaveDate}. If you unstake now, you will lose{' '}
                             {fromDecimals(leavePenaltyWei, decimals).toString()}{' '}
                             {tokenSymbol}
