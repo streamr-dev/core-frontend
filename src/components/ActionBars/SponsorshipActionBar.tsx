@@ -49,6 +49,8 @@ import {
 } from '~/components/ActionBars/ActionBarButton'
 import { AboutSponsorship } from '~/components/ActionBars/AboutSponsorship'
 
+const DayInSeconds = 60 * 60 * 24
+
 export function SponsorshipActionBar({
     sponsorship,
     onChange,
@@ -73,6 +75,8 @@ export function SponsorshipActionBar({
                 : moment(projectedInsolvencyAt * 1000).format('D MMM YYYY'),
         [projectedInsolvencyAt],
     )
+
+    const minimumStakingDays = sponsorship.minimumStakingPeriodSeconds / DayInSeconds
 
     const fundSponsorship = useFundSponsorship()
 
@@ -345,9 +349,28 @@ export function SponsorshipActionBar({
                             )}{' '}
                             <SponsorshipPaymentTokenName />
                         </StatCell>
-                        <StatCell label="Minimum stake">
-                            {abbreviateNumber(sponsorship.minimumStake.toNumber())}{' '}
-                            <SponsorshipPaymentTokenName />
+                        <StatCell
+                            label="Minimum stake duration"
+                            tip={
+                                <Tip
+                                    shift="right"
+                                    handle={
+                                        <IconWrap>
+                                            <QuestionMarkIcon />
+                                        </IconWrap>
+                                    }
+                                >
+                                    <p>
+                                        The minimum time that Operators must stay staked
+                                        in this Sponsorship before they are able to fully
+                                        unstake without a penalty. Stake reduction is
+                                        always allowed and only limited by minimum stake.
+                                    </p>
+                                </Tip>
+                            }
+                        >
+                            {minimumStakingDays.toFixed(0)} day
+                            {minimumStakingDays !== 1 && 's'}
                         </StatCell>
                     </StatGrid>
                 </Pad>
