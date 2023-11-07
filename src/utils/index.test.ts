@@ -1,5 +1,5 @@
-import * as utils from '.'
 import { BNish } from './bn'
+import * as utils from '.'
 
 describe('abbr', () => {
     it('abbreviates any big numberish value', () => {
