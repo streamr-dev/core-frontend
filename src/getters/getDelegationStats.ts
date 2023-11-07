@@ -77,13 +77,13 @@ export const getDelegationStats = async (
             case 'currentValue':
                 yValue = fromDecimals(
                     bucket.totalValueDataWei,
-                    tokenInfo?.decimals,
+                    tokenInfo?.decimals || 18,
                 ).toNumber()
                 break
             case 'cumulativeEarnings':
                 yValue = fromDecimals(
                     bucket.cumulativeEarningsWei,
-                    tokenInfo?.decimals,
+                    tokenInfo?.decimals || 18,
                 ).toNumber()
                 break
             default:
