@@ -6,7 +6,6 @@ import {
     ScrollTableOrderDirection,
 } from '~/shared/components/ScrollTable/ScrollTable'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { useOperatorForWallet } from '~/hooks/operators'
@@ -17,10 +16,10 @@ import {
     useEditSponsorshipFunding,
     useFundSponsorship,
     useJoinSponsorshipAsOperator,
-    useSponsorshipTokenInfo,
 } from '~/hooks/sponsorships'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { FundedUntilCell, StreamIdCell } from '~/components/Table'
+import { abbr } from '~/utils'
 
 interface Props {
     noDataFirstLine?: ReactNode
@@ -50,8 +49,6 @@ export function QueriedSponsorshipsTable({
     const wallet = useWalletAccount()
 
     const operator = useOperatorForWallet(wallet)
-
-    const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
     const fundSponsorship = useFundSponsorship()
 
@@ -87,8 +84,7 @@ export function QueriedSponsorshipsTable({
                                 /day
                             </>
                         ),
-                        valueMapper: (element) =>
-                            abbreviateNumber(element.payoutPerDay.toNumber()),
+                        valueMapper: (element) => abbr(element.payoutPerDay),
                         align: 'start',
                         isSticky: false,
                         key: 'payoutPerDay',
@@ -104,10 +100,11 @@ export function QueriedSponsorshipsTable({
                     },
                     {
                         displayName: 'Staked',
-                        valueMapper: (element) =>
-                            `${abbreviateNumber(
-                                element.totalStake.toNumber(),
-                            )} ${tokenSymbol}`,
+                        valueMapper: (element) => (
+                            <>
+                                {abbr(element.totalStake)} <SponsorshipPaymentTokenName />
+                            </>
+                        ),
                         align: 'end',
                         isSticky: false,
                         key: 'staked',

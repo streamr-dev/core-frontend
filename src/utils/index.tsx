@@ -18,6 +18,7 @@ import { ObjectWithMessage } from '~/shared/consts'
 import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
 import { history } from '~/consts'
 import isCodedError from './isCodedError'
+import { BNish, toBN } from './bn'
 
 /**
  * Gas money checker.
@@ -227,4 +228,52 @@ export function getQueryClient() {
     }
 
     return queryClient
+}
+
+const SiSymbol = ['', 'k', 'M', 'G', 'T', 'P']
+
+/**
+ * Abbreviates BigNumberish value.
+ */
+export function abbr(
+    value: BNish,
+    { fractionalLength = 2, stripFractionalZeros = true } = {},
+) {
+    const v = toBN(value)
+
+    if (!v.isFinite()) {
+        console.warn('Invalid value', v.toString())
+
+        throw new Error('Invalid value')
+    }
+
+    const fracLength = Math.max(0, fractionalLength)
+
+    const sign = v.isLessThan(0) ? '-' : ''
+
+    let [integral, fractional = ''] = v.abs().toString().split('.')
+
+    fractional = `${fractional}${[...Array(fracLength)].map(() => '0').join('')}`
+
+    let size = 0
+
+    /**
+     * Rebalance the dot and determine what suffix to use by moving digits from
+     * integral part to fractional part.
+     */
+    while (integral.length > 3 && size < SiSymbol.length - 1) {
+        fractional = `${integral.substring(integral.length - 3)}${fractional}`
+
+        integral = integral.substring(0, integral.length - 3)
+
+        size++
+    }
+
+    let frac = fractional.substring(0, fracLength)
+
+    if (stripFractionalZeros) {
+        frac = frac.replace(/0+$/, '')
+    }
+
+    return `${sign}${integral}${frac && `.${frac}`}${SiSymbol[size]}`
 }

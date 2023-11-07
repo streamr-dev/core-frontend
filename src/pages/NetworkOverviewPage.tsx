@@ -12,7 +12,6 @@ import {
     formatLongDate,
     formatShortDate,
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
-import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import NetworkChartDisplay from '~/components/NetworkChartDisplay'
 import WalletPass from '~/components/WalletPass'
 import { NoData } from '~/shared/components/NoData'
@@ -41,10 +40,11 @@ import Tabs, { Tab } from '~/shared/components/Tabs'
 import { LoadMoreButton } from '~/components/LoadMore'
 import { Separator } from '~/components/Separator'
 import { QueriedSponsorshipsTable } from '~/components/QueriedSponsorshipsTable'
-import { refetchQuery } from '~/utils'
+import { abbr, refetchQuery } from '~/utils'
 import { OperatorIdCell } from '~/components/Table'
 import Button from '~/shared/components/Button'
 import { getDelegationStats } from '~/getters/getDelegationStats'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 
 export function NetworkOverviewPage() {
     return (
@@ -144,9 +144,7 @@ function MyOperatorSummary() {
                         <Pad>
                             <StatGrid>
                                 <StatCell label="Total stake">
-                                    {`${abbreviateNumber(
-                                        fromAtto(value).toNumber(),
-                                    )} ${tokenSymbol}`}
+                                    {abbr(fromAtto(value))} {tokenSymbol}
                                 </StatCell>
                                 <StatCell label="Delegators">{numOfDelegators}</StatCell>
                                 <StatCell label="Sponsorships">
@@ -186,12 +184,10 @@ function MyOperatorSummary() {
                                     tooltipValuePrefix={chartLabel}
                                     graphData={chartData}
                                     xAxisDisplayFormatter={formatShortDate}
-                                    yAxisAxisDisplayFormatter={(value) =>
-                                        abbreviateNumber(value)
-                                    }
+                                    yAxisAxisDisplayFormatter={(value) => abbr(value)}
                                     tooltipLabelFormatter={formatLongDate}
                                     tooltipValueFormatter={(value) =>
-                                        `${abbreviateNumber(value)} ${tokenSymbol}`
+                                        `${abbr(value)} ${tokenSymbol}`
                                     }
                                 />
                             </NetworkChartDisplay>
@@ -281,9 +277,7 @@ function MyDelegationsSummary() {
                 <Pad>
                     <StatGrid>
                         <StatCell label="Current value">
-                            {`${abbreviateNumber(
-                                fromAtto(value).toNumber(),
-                            )} ${tokenSymbol}`}
+                            {abbr(fromAtto(value))} {tokenSymbol}
                         </StatCell>
                         <StatCell label="Operators">{numOfOperators}</StatCell>
                         <StatCell label="APY">
@@ -323,11 +317,11 @@ function MyDelegationsSummary() {
                             tooltipValuePrefix={chartLabel}
                             graphData={dailyDelegationChartQuery.data || []}
                             xAxisDisplayFormatter={formatShortDate}
-                            yAxisAxisDisplayFormatter={(value) => abbreviateNumber(value)}
+                            yAxisAxisDisplayFormatter={(value) => abbr(value)}
                             isLoading={dailyDelegationChartQuery.isLoading}
                             tooltipLabelFormatter={formatLongDate}
                             tooltipValueFormatter={(value) =>
-                                `${abbreviateNumber(value)} ${tokenSymbol}`
+                                `${abbr(value)} ${tokenSymbol}`
                             }
                         />
                     </NetworkChartDisplay>
@@ -339,8 +333,6 @@ function MyDelegationsSummary() {
 
 function MyDelegations() {
     const wallet = useWalletAccount()
-
-    const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
     const query = useDelegationsForWalletQuery({ address: wallet })
 
@@ -375,20 +367,24 @@ function MyDelegations() {
                                 },
                                 {
                                     displayName: 'My delegation',
-                                    valueMapper: ({ myShare }) =>
-                                        `${abbreviateNumber(
-                                            fromAtto(myShare).toNumber(),
-                                        )} ${tokenSymbol}`,
+                                    valueMapper: ({ myShare }) => (
+                                        <>
+                                            {abbr(fromAtto(myShare))}{' '}
+                                            <SponsorshipPaymentTokenName />
+                                        </>
+                                    ),
                                     align: 'start',
                                     isSticky: false,
                                     key: 'myShare',
                                 },
                                 {
                                     displayName: 'Total stake',
-                                    valueMapper: ({ valueWithoutEarnings }) =>
-                                        `${abbreviateNumber(
-                                            fromAtto(valueWithoutEarnings).toNumber(),
-                                        )} ${tokenSymbol}`,
+                                    valueMapper: ({ valueWithoutEarnings }) => (
+                                        <>
+                                            {abbr(fromAtto(valueWithoutEarnings))}{' '}
+                                            <SponsorshipPaymentTokenName />
+                                        </>
+                                    ),
                                     align: 'end',
                                     isSticky: false,
                                     key: 'totalStake',

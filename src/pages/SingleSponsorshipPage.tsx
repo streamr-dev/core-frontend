@@ -12,7 +12,6 @@ import {
     formatLongDate,
     formatShortDate,
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
-import { abbreviateNumber } from '~/shared/utils/abbreviateNumber'
 import { errorToast } from '~/utils/toast'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { SponsorshipActionBar } from '~/components/ActionBars/SponsorshipActionBar'
@@ -27,6 +26,7 @@ import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
 import { useSponsorshipQuery, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { OperatorIdCell } from '~/components/Table'
 import routes from '~/routes'
+import { abbr } from '~/utils'
 
 export const SingleSponsorshipPage = () => {
     const sponsorshipId = useParams().id || ''
@@ -93,7 +93,7 @@ export const SingleSponsorshipPage = () => {
         (value: number) => {
             switch (selectedDataSource) {
                 case 'amountStaked':
-                    return `${abbreviateNumber(value)} ${tokenSymbol}`
+                    return `${abbr(value)} ${tokenSymbol}`
                 case 'numberOfOperators':
                     return value.toString()
                 case 'apy':
@@ -109,7 +109,7 @@ export const SingleSponsorshipPage = () => {
         (value: number) => {
             switch (selectedDataSource) {
                 case 'amountStaked':
-                    return `${abbreviateNumber(value)}`
+                    return abbr(value)
                 case 'numberOfOperators':
                     return value.toString()
                 case 'apy':
@@ -228,9 +228,7 @@ export const SingleSponsorshipPage = () => {
                                                 key: 'staked',
                                                 isSticky: true,
                                                 valueMapper: (stake) =>
-                                                    abbreviateNumber(
-                                                        Number(stake.amount),
-                                                    ).toString(),
+                                                    abbr(stake.amount),
                                                 align: 'end',
                                             },
                                         ]}
@@ -263,10 +261,11 @@ export const SingleSponsorshipPage = () => {
                                         },
                                         {
                                             displayName: 'Amount',
-                                            valueMapper: (element: any) =>
-                                                `${abbreviateNumber(
-                                                    Number(element.amount),
-                                                )} ${tokenSymbol}`,
+                                            valueMapper: (element: any) => (
+                                                <>
+                                                    {abbr(element.amount)} {tokenSymbol}
+                                                </>
+                                            ),
                                             align: 'start',
                                             isSticky: false,
                                             key: 'amount',
