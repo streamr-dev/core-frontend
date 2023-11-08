@@ -69,7 +69,7 @@ const Validator = z.object({
     redundancyFactor: z.coerce.number().min(1, 'Value must be greater or equal to 1'),
 })
 
-export default function OperatorModal({ onResolve, operator, ...props }: Props) {
+function OperatorModal({ onResolve, operator, ...props }: Props) {
     const [title, submitLabel] = operator
         ? ['Edit Operator', 'Save']
         : ['Become an Operator', 'Become an Operator']
