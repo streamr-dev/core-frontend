@@ -32,7 +32,6 @@ import { blockObserver } from '~/utils/blocks'
 import { useWalletAccount } from '~/shared/stores/wallet'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
-    readonlyCut?: boolean
     onResolve?: (owner: string) => void
     operator: ParsedOperator | undefined
 }
@@ -70,12 +69,7 @@ const Validator = z.object({
     redundancyFactor: z.coerce.number().min(1, 'Value must be greater or equal to 1'),
 })
 
-export default function OperatorModal({
-    readonlyCut = false,
-    onResolve,
-    operator,
-    ...props
-}: Props) {
+export default function OperatorModal({ onResolve, operator, ...props }: Props) {
     const [title, submitLabel] = operator
         ? ['Edit Operator', 'Save']
         : ['Become an Operator', 'Become an Operator']
@@ -162,6 +156,8 @@ export default function OperatorModal({
     const canSubmit = !busy && !!finalData && dirty && !!walletAddress
 
     const canBackdropDismiss = !busy && !dirty
+
+    const readonlyCut = !!operator && operator.stakes.length > 0
 
     return (
         <FormModal

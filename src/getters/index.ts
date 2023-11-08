@@ -577,11 +577,31 @@ export async function getOperatorByOwnerAddress(
     >({
         query: GetOperatorByOwnerAddressDocument,
         variables: {
-            owner: address,
+            owner: address.toLowerCase(),
         },
     })
 
     return operators?.length ? operators[0] : null
+}
+
+export async function getParsedOperatorByOwnerAddress(
+    address: string,
+): Promise<ParsedOperator | null> {
+    const operator = await getOperatorByOwnerAddress(address)
+
+    if (operator) {
+        try {
+            return OperatorParser.parse(operator)
+        } catch (e) {
+            if (!(e instanceof z.ZodError)) {
+                throw e
+            }
+
+            console.warn('Failed to parse an operator', operator, e)
+        }
+    }
+
+    return null
 }
 
 export async function getBase64ForFile<T extends File>(file: T): Promise<string> {

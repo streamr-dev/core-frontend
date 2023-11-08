@@ -38,6 +38,7 @@ import { getDelegatedAmountForWallet, getDelegationFractionForWallet } from '~/g
 import {
     invalidateActiveOperatorByIdQueries,
     useOperatorByIdQuery,
+    useTouchOperatorCallback,
 } from '~/hooks/operators'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { OperatorChecklist } from '~/components/OperatorChecklist'
@@ -67,7 +68,6 @@ import { LiveNodesTable } from '~/components/LiveNodesTable'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { abbr, isTransactionRejection } from '~/utils'
 import { Break } from '~/utils/errors'
-import { operatorModal } from '~/modals/OperatorModal'
 
 const forceUndelegateModal = toaster(ForceUndelegateModal, Layer.Modal)
 
@@ -163,6 +163,8 @@ export const SingleOperatorPage = () => {
 
     const heartbeats = useInterceptHeartbeats(operator?.id)
 
+    const touchOperator = useTouchOperatorCallback()
+
     return (
         <Layout>
             <NetworkHelmet title="Operator" />
@@ -172,25 +174,12 @@ export const SingleOperatorPage = () => {
             {!!operator && (
                 <OperatorActionBar
                     operator={operator}
-                    handleEdit={async (currentOperator) => {
-                        try {
-                            await operatorModal.pop({
-                                readonlyCut: currentOperator.stakes.length > 0,
-                                operator: currentOperator,
-                            })
-
-                            /**
-                             * @todo If this fails we consider the entire flow a failure (see below). Let's
-                             * use `blockObserver` and wait for the block outside of this workflow.
-                             */
-                            await waitForGraphSync()
-
-                            invalidateActiveOperatorByIdQueries(operator.id)
-                        } catch (e) {
-                            if (!isRejectionReason(e)) {
-                                throw e
-                            }
-                        }
+                    handleEdit={(currentOperator) => {
+                        touchOperator(currentOperator, {
+                            onDone() {
+                                invalidateActiveOperatorByIdQueries(currentOperator.id)
+                            },
+                        })
                     }}
                     onDelegationChange={() => {
                         invalidateActiveOperatorByIdQueries(operator.id)

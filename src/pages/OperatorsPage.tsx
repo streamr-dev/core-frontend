@@ -11,17 +11,17 @@ import {
 } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
-import { operatorModal } from '~/modals/OperatorModal'
-import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import routes from '~/routes'
 import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
 import NetworkPageSegment, { SegmentGrid } from '~/components/NetworkPageSegment'
 import { LoadMoreButton } from '~/components/LoadMore'
 import { getSpotApy } from '~/getters'
 import {
+    invalidateActiveOperatorByIdQueries,
     useAllOperatorsQuery,
     useDelegationsForWalletQuery,
     useOperatorForWallet,
+    useTouchOperatorCallback,
 } from '~/hooks/operators'
 import { Delegation } from '~/types'
 import { ParsedOperator } from '~/parsers/OperatorParser'
@@ -82,6 +82,8 @@ export const OperatorsPage = () => {
         }
     }, [wallet, navigate])
 
+    const touchOperator = useTouchOperatorCallback()
+
     return (
         <Layout>
             <NetworkHelmet title="Operators" />
@@ -114,20 +116,21 @@ export const OperatorsPage = () => {
                         </Button>
                     ) : (
                         <Button
-                            onClick={async () => {
-                                try {
-                                    await operatorModal.pop({
-                                        operator: undefined,
-                                    })
+                            onClick={() => {
+                                touchOperator(undefined, {
+                                    onOperatorId(operatorId) {
+                                        invalidateActiveOperatorByIdQueries(operatorId)
 
-                                    await waitForGraphSync()
+                                        navigate(
+                                            routes.network.operator({ id: operatorId }),
+                                        )
+                                    },
+                                    onNoOperatorIdError() {
+                                        refetchQuery(allOperatorsQuery)
 
-                                    refetchQuery(allOperatorsQuery)
-
-                                    refetchQuery(myDelegationsQuery)
-                                } catch (e) {
-                                    // Ignore for now.
-                                }
+                                        refetchQuery(myDelegationsQuery)
+                                    },
+                                })
                             }}
                             disabled={!wallet || !!operator}
                         >
