@@ -27,13 +27,17 @@ const getOperatorChainId = () => {
  * @todo Change args to an object.
  */
 export async function createOperator(
-    operatorCut: number,
-    name: string,
-    redundancyFactor: number,
-    description?: string,
-    imageToUpload?: File,
+    params: {
+        cut: number
+        description: string
+        imageToUpload?: File | undefined
+        name: string
+        redundancyFactor: number
+    },
     options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
+    const { cut, name, redundancyFactor, description, imageToUpload } = params
+
     const chainId = getOperatorChainId()
 
     const chainConfig = getConfigForChain(chainId)
@@ -68,7 +72,7 @@ export async function createOperator(
         chainConfig.contracts.OperatorDefaultUndelegationPolicy,
     ]
 
-    const operatorsCutFraction = parseEther(operatorCut.toString()).div(100)
+    const operatorsCutFraction = parseEther(cut.toString()).div(100)
 
     const policiesParams: [number, number, number] = [0, 0, 0]
 

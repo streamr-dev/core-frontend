@@ -28,10 +28,12 @@ import { Alert } from '~/components/Alert'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { sameBN } from '~/utils'
 import { createOperator, updateOperator } from '~/services/operators'
+import { blockObserver } from '~/utils/blocks'
+import { useWalletAccount } from '~/shared/stores/wallet'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     readonlyCut?: boolean
-    onResolve?: () => void
+    onResolve?: (owner: string) => void
     operator: ParsedOperator | undefined
 }
 
@@ -155,7 +157,9 @@ export default function OperatorModal({
         }
     })()
 
-    const canSubmit = !busy && !!finalData && dirty
+    const walletAddress = useWalletAccount()
+
+    const canSubmit = !busy && !!finalData && dirty && !!walletAddress
 
     const canBackdropDismiss = !busy && !dirty
 
@@ -176,22 +180,20 @@ export default function OperatorModal({
 
                 setBusy(true)
 
+                function onBlockNumber(blockNumber: number) {
+                    return new Promise<void>((resolve) => {
+                        blockObserver.onSpecific(blockNumber, resolve)
+                    })
+                }
+
                 try {
                     if (!operator) {
-                        await createOperator(
-                            finalData.cut,
-                            finalData.name,
-                            finalData.redundancyFactor,
-                            finalData.description,
-                            finalData.imageToUpload,
-                        )
+                        await createOperator(finalData, { onBlockNumber })
                     } else {
-                        await updateOperator(operator, finalData)
+                        await updateOperator(operator, finalData, { onBlockNumber })
                     }
 
-                    // Wait for the block.
-
-                    onResolve?.()
+                    onResolve?.(walletAddress)
                 } finally {
                     setBusy(false)
                 }
