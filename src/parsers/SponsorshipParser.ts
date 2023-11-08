@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { getConfigValueFromChain } from '~/getters/getConfigValueFromChain'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
-import { fromAtto, fromDecimals, toDecimals } from '~/marketplace/utils/math'
+import { fromDecimals } from '~/marketplace/utils/math'
 import { BN, toBN } from '~/utils/bn'
 import { OperatorMetadataParser } from './OperatorMetadataParser'
 

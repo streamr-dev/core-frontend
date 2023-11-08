@@ -1,12 +1,10 @@
 import React, { FunctionComponent } from 'react'
 import styled from 'styled-components'
 import moment from 'moment'
-import { randomHex } from 'web3-utils'
 import { WhiteBox, WhiteBoxPaddingStyles } from '~/shared/components/WhiteBox'
 import { connectModal } from '~/modals/ConnectModal'
 import Button from '~/shared/components/Button'
 import { COLORS, MD, MEDIUM } from '~/shared/utils/styled'
-import { SponsorshipElement } from '~/types/sponsorship'
 
 export const SummaryContainer = styled(WhiteBox)`
     margin-bottom: 24px;
@@ -139,26 +137,6 @@ export const growingValuesGenerator = (
                               ((((index + 1) / maxDays) * randomIntFromInterval(7, 10)) /
                                   10),
                       ),
-        }
-    })
-}
-
-// this is kept for now just in case we would need ot generate some sponsorhip data during development
-export const generateSponsorshipElements = (amount: number): SponsorshipElement[] => {
-    return new Array(amount).fill(null).map((_, index) => {
-        return {
-            id: Math.round(Math.random() * 10000).toString(),
-            streamId: randomHex(8) + '/' + Math.random(),
-            streamDescription: 'Something something lorem ipsum',
-            apy: Number((50 * Math.random()).toFixed(2)),
-            payoutPerDay: Math.round(5000 * Math.random()).toString(),
-            fundedUntil: moment()
-                .add(Math.round(index * 10 * Math.random()), 'days')
-                .format('DD-mm-YYYY'),
-            operators: Math.round(100 * Math.random()),
-            totalStake: Math.round(10000000 * Math.random()).toString(),
-            active: Boolean(Math.round(Math.random())),
-            stakes: [],
         }
     })
 }
