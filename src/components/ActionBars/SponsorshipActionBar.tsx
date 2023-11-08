@@ -320,7 +320,7 @@ export function SponsorshipActionBar({
                                 </Tip>
                             }
                         >
-                            {(sponsorship.apy * 100).toFixed(0)}%
+                            {(sponsorship.spotAPY * 100).toFixed(0)}%
                         </StatCell>
                         <StatCell
                             label="Total sponsored"

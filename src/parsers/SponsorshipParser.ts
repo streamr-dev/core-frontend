@@ -20,7 +20,7 @@ export const SponsorshipParser = z
             .union([z.string(), z.null()])
             .transform((v) => (v == null ? null : Number(v))),
         remainingWei: z.string().transform(toBN),
-        spotAPY: z.string().transform(fromAtto),
+        spotAPY: z.coerce.number(),
         stream: z.union([
             z.object({
                 id: z.string(),
@@ -55,7 +55,6 @@ export const SponsorshipParser = z
         async ({
             cumulativeSponsoring: cumulativeSponsoringWei,
             projectedInsolvency: projectedInsolvencyAt,
-            spotAPY,
             remainingWei,
             stakes,
             stream,
@@ -69,7 +68,6 @@ export const SponsorshipParser = z
 
             return {
                 ...rest,
-                apy: toDecimals(spotAPY, decimals).toNumber(),
                 cumulativeSponsoring: fromDecimals(cumulativeSponsoringWei, decimals),
                 minimumStake: fromDecimals(minimumStakeWei, decimals),
                 payoutPerDay: fromDecimals(
