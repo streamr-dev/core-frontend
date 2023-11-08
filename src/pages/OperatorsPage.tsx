@@ -14,7 +14,7 @@ import {
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
 import { createOperator } from '~/services/operators'
-import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
+import BecomeOperatorModal from '~/modals/OperatorModal'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import routes from '~/routes'
 import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
