@@ -277,3 +277,10 @@ export function abbr(
 
     return `${sign}${integral}${frac && `.${frac}`}${SiSymbol[size]}`
 }
+
+/**
+ * Compares 2 BigNumberish values.
+ */
+export function sameBN(a: BNish, b: BNish) {
+    return toBN(a).isEqualTo(toBN(b))
+}

@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { toaster } from 'toasterhea'
 import { UseInfiniteQueryResult } from '@tanstack/react-query'
 import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
-import { Layer } from '~/utils/Layer'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import Button from '~/shared/components/Button'
 import {
@@ -13,8 +11,7 @@ import {
 } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
-import { createOperator } from '~/services/operators'
-import BecomeOperatorModal from '~/modals/OperatorModal'
+import { operatorModal } from '~/modals/OperatorModal'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import routes from '~/routes'
 import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
@@ -32,8 +29,6 @@ import { abbr, refetchQuery } from '~/utils'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import { OperatorIdCell } from '~/components/Table'
-
-const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 
 const PAGE_SIZE = 20
 
@@ -121,8 +116,8 @@ export const OperatorsPage = () => {
                         <Button
                             onClick={async () => {
                                 try {
-                                    await becomeOperatorModal.pop({
-                                        onSubmit: createOperator,
+                                    await operatorModal.pop({
+                                        operator: undefined,
                                     })
 
                                     await waitForGraphSync()

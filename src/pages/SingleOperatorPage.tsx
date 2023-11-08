@@ -21,8 +21,6 @@ import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
 import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
-import { updateOperator } from '~/services/operators'
-import BecomeOperatorModal from '~/modals/OperatorModal'
 import ForceUndelegateModal from '~/modals/ForceUndelegateModal'
 import { Layer } from '~/utils/Layer'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
@@ -69,8 +67,8 @@ import { LiveNodesTable } from '~/components/LiveNodesTable'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { abbr, isTransactionRejection } from '~/utils'
 import { Break } from '~/utils/errors'
+import { operatorModal } from '~/modals/OperatorModal'
 
-const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 const forceUndelegateModal = toaster(ForceUndelegateModal, Layer.Modal)
 
 const defaultChartData = []
@@ -175,36 +173,10 @@ export const SingleOperatorPage = () => {
                 <OperatorActionBar
                     operator={operator}
                     handleEdit={async (currentOperator) => {
-                        const {
-                            operatorsCut: cut,
-                            metadata: { name, description, imageUrl, redundancyFactor },
-                        } = currentOperator
-
                         try {
-                            await becomeOperatorModal.pop({
-                                title: 'Edit operator',
-                                cut,
-                                name,
-                                description,
-                                imageUrl,
-                                redundancyFactor,
-                                cutEditingDisabled: operator?.stakes.length > 0,
-                                submitLabel: 'Save',
-                                async onSubmit(
-                                    newCut,
-                                    newName,
-                                    newRedundancyFactor,
-                                    newDescription,
-                                    newImageToUpload,
-                                ) {
-                                    await updateOperator(operator, {
-                                        cut: newCut,
-                                        description: newDescription || '',
-                                        imageToUpload: newImageToUpload,
-                                        name: newName,
-                                        redundancyFactor: newRedundancyFactor,
-                                    })
-                                },
+                            await operatorModal.pop({
+                                readonlyCut: currentOperator.stakes.length > 0,
+                                operator: currentOperator,
                             })
 
                             /**

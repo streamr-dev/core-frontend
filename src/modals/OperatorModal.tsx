@@ -1,8 +1,9 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { randomHex } from 'web3-utils'
 import { toaster } from 'toasterhea'
 import styled, { css } from 'styled-components'
-import { RejectionReason } from '~/modals/BaseModal'
+import { ZodError, z } from 'zod'
+import { RejectionReason, isRejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     ErrorLabel,
     FieldWrap,
@@ -24,160 +25,173 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import CropImageModal from '~/components/CropImageModal/CropImageModal'
 import { Layer } from '~/utils/Layer'
 import { Alert } from '~/components/Alert'
-import { toBN } from '~/utils/bn'
+import { ParsedOperator } from '~/parsers/OperatorParser'
+import { sameBN } from '~/utils'
+import { createOperator, updateOperator } from '~/services/operators'
 
-interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
-    onResolve?: (
-        cut: number,
-        name: string,
-        redundancyFactor: number,
-        description?: string,
-        imageToUpload?: File,
-    ) => void
-    onSubmit: (
-        cut: number,
-        name: string,
-        redundancyFactor: number,
-        description?: string,
-        imageToUpload?: File,
-    ) => Promise<void>
-    cut?: number
-    name?: string
-    description?: string
-    imageUrl?: string
-    redundancyFactor?: number
-    cutEditingDisabled?: boolean
+interface Props extends Pick<FormModalProps, 'onReject'> {
+    readonlyCut?: boolean
+    onResolve?: () => void
+    operator: ParsedOperator | undefined
 }
 
 const cropModal = toaster(CropImageModal, Layer.Modal)
 
-export default function BecomeOperatorModal({
-    title = 'Become an Operator',
-    submitLabel = 'Become an Operator',
+const DescriptionLengthLimit = 120
+
+interface Form {
+    cut: string
+    description: string
+    imageToUpload: File | undefined
+    name: string
+    redundancyFactor: string
+}
+
+function isFormKey(value: unknown): value is keyof Form {
+    return (
+        value === 'cut' ||
+        value === 'description' ||
+        value === 'imageToUpload' ||
+        value === 'name' ||
+        value === 'redundancyFactor'
+    )
+}
+
+const Validator = z.object({
+    cut: z.coerce
+        .number()
+        .min(0, 'Value must be between 0 and 100')
+        .max(100, 'Value must be between 0 and 100'),
+    description: z.string().max(DescriptionLengthLimit, 'Description is too long'),
+    imageToUpload: z.instanceof(File).optional(),
+    name: z.string().trim().min(1, 'Name is required'),
+    redundancyFactor: z.coerce.number().min(1, 'Value must be greater or equal to 1'),
+})
+
+export default function OperatorModal({
+    readonlyCut = false,
     onResolve,
-    onSubmit,
-    cut: cutProp,
-    name: nameProp,
-    description: descriptionProp,
-    imageUrl: imageUrlProp,
-    redundancyFactor: redundancyFactorProp,
-    cutEditingDisabled,
+    operator,
     ...props
 }: Props) {
+    const [title, submitLabel] = operator
+        ? ['Edit Operator', 'Save']
+        : ['Become an Operator', 'Become an Operator']
+
     const [busy, setBusy] = useState(false)
 
-    const [cutValue, setCutValue] = useState<string | undefined>(cutProp?.toString())
-    const [name, setName] = useState<string | undefined>(nameProp)
-    const [description, setDescription] = useState<string | undefined>(descriptionProp)
-    const [imageToUpload, setImageToUpload] = useState<File>()
-    const [redundancyFactor, setRedundancyFactor] = useState<string>(
-        redundancyFactorProp?.toString() || '2',
+    const currentData: Form = useMemo(
+        () => ({
+            cut: operator?.operatorsCut.toString() || '',
+            description: operator?.metadata.description || '',
+            imageToUpload: undefined,
+            name: operator?.metadata.name || '',
+            redundancyFactor: operator?.metadata.redundancyFactor?.toString() || '2',
+        }),
+        [operator],
     )
 
-    const isEditMode =
-        !!nameProp || !!descriptionProp || !!redundancyFactorProp || !!cutProp
+    const [nextData, updateNextData] = useState<Form>(currentData)
 
-    const valuesChanged =
-        isEditMode &&
-        (!toBN(cutValue || 0).isEqualTo(toBN(cutProp || 0)) ||
-            nameProp !== name ||
-            descriptionProp !== description ||
-            !toBN(redundancyFactorProp || 0).isEqualTo(toBN(redundancyFactor)) ||
-            imageToUpload)
+    useEffect(() => {
+        /**
+         * Handle an update coming from the outside. It won't happen often
+         * but it can happen.
+         */
+        updateNextData(currentData)
+    }, [currentData])
 
-    const cutValueNumeric = Number(cutValue || undefined) // so that it will be a NaN if it's empty string
+    const changelog: Record<keyof Form, boolean> = {
+        imageToUpload: !!nextData.imageToUpload,
+        name: currentData.name !== nextData.name,
+        description: currentData.description !== nextData.description,
+        redundancyFactor: !sameBN(
+            currentData.redundancyFactor || 0,
+            nextData.redundancyFactor || 0,
+        ),
+        cut: !sameBN(currentData.cut || 0, nextData.cut || 0),
+    }
 
-    const cutValueIsValid = useMemo<boolean>(
-        () => !isNaN(cutValueNumeric) && cutValueNumeric >= 0 && cutValueNumeric <= 100,
-        [cutValueNumeric],
-    )
-
-    const cutValueIsTouchedAndInvalid = useMemo<boolean>(
-        () => typeof cutValue !== 'undefined' && !cutValueIsValid,
-        [cutValue, cutValueIsValid],
-    )
-
-    const nameIsValid = useMemo(() => !!name, [name])
-
-    const nameIsTouchedAndInvalid = useMemo(() => name === '', [name])
-
-    const descriptionLengthLimit = 120
-
-    const descriptionTooLong = (description?.length || 0) > 120
-
-    const redundancyFactorNumber = Number(redundancyFactor)
-
-    const redundancyFactorIsValid =
-        !isNaN(redundancyFactorNumber) && redundancyFactorNumber >= 1
+    const dirty = Object.values(changelog).some(Boolean)
 
     const randomAddress = useMemo<string>(() => randomHex(20), [])
 
-    const fileInputRef = useRef<HTMLInputElement>()
+    const fileInputRef = useRef<HTMLInputElement>(null)
 
-    const handleCrop = useCallback(
-        async (image: File) => {
-            try {
-                setImageToUpload(
-                    await cropModal.pop({
-                        imageUrl: URL.createObjectURL(image),
-                        mask: 'round',
-                    }),
-                )
-            } catch (e) {
-                // action cancelled
+    const imageBlob =
+        (nextData.imageToUpload && URL.createObjectURL(nextData.imageToUpload)) ||
+        operator?.metadata.imageUrl
+
+    const [finalData, errors]:
+        | [ReturnType<typeof Validator.parse>, null]
+        | [null, Partial<Record<keyof Form, string>>] = (() => {
+        try {
+            return [Validator.parse(nextData), null]
+        } catch (e) {
+            if (!(e instanceof ZodError)) {
+                throw e
             }
-        },
-        [setImageToUpload],
-    )
 
-    const providedValuesDidChange =
-        nameProp !== name ||
-        descriptionProp !== description ||
-        redundancyFactorProp?.toString() !== redundancyFactor ||
-        cutProp?.toString() !== cutValue
+            const result: Partial<Record<keyof Form, string>> = {}
 
-    const canSubmitEditForm = isEditMode // this means that we are in edit mode
-        ? providedValuesDidChange || (!providedValuesDidChange && !!imageToUpload)
-        : true
+            e.issues.forEach(({ path: [key], message }) => {
+                if (!isFormKey(key)) {
+                    return void console.warn('Unresolved form issue', key, message)
+                }
+
+                if (!changelog[key]) {
+                    /**
+                     * Ignore fields that did not change.
+                     */
+                    return
+                }
+
+                if (!result[key]) {
+                    result[key] = message
+                }
+            })
+
+            return [null, result]
+        }
+    })()
+
+    const canSubmit = !busy && !!finalData && dirty
+
+    const canBackdropDismiss = !busy && !dirty
 
     return (
         <FormModal
             {...props}
             title={title}
-            canSubmit={
-                cutValueIsValid &&
-                nameIsValid &&
-                !descriptionTooLong &&
-                redundancyFactorIsValid &&
-                canSubmitEditForm &&
-                !busy
-            }
+            canSubmit={canSubmit}
             submitLabel={submitLabel}
             submitting={busy}
             onBeforeAbort={(reason) =>
-                !busy &&
-                ((isEditMode ? !valuesChanged : cutValue === cutProp) ||
-                    reason !== RejectionReason.Backdrop)
+                reason !== RejectionReason.Backdrop || canBackdropDismiss
             }
             onSubmit={async () => {
+                if (!canSubmit) {
+                    return
+                }
+
                 setBusy(true)
 
                 try {
-                    await onSubmit(
-                        cutValueNumeric,
-                        name as string,
-                        Number(redundancyFactor),
-                        description,
-                        imageToUpload,
-                    )
+                    if (!operator) {
+                        await createOperator(
+                            finalData.cut,
+                            finalData.name,
+                            finalData.redundancyFactor,
+                            finalData.description,
+                            finalData.imageToUpload,
+                        )
+                    } else {
+                        await updateOperator(operator, finalData)
+                    }
 
-                    onResolve?.(
-                        cutValueNumeric,
-                        name as string,
-                        Number(redundancyFactor),
-                        description,
-                        imageToUpload,
-                    )
+                    // Wait for the block.
+
+                    onResolve?.()
                 } finally {
                     setBusy(false)
                 }
@@ -200,35 +214,30 @@ export default function BecomeOperatorModal({
                             <span>Owner&apos;s cut percentage*</span>
                         </LabelInner>
                     </Label>
-                    {cutValueIsTouchedAndInvalid && (
-                        <ErrorLabel>Value must be between 0 and 100</ErrorLabel>
-                    )}
+                    {errors?.cut && <ErrorLabel>{errors.cut}</ErrorLabel>}
                 </WingedLabelWrap>
-                <FieldWrap
-                    $invalid={cutValueIsTouchedAndInvalid}
-                    $grayedOut={cutEditingDisabled}
-                >
+                <FieldWrap $invalid={!!errors?.cut} $grayedOut={readonlyCut}>
                     <TextInput
                         name="cut"
-                        autoFocus={!cutProp}
-                        onChange={({ target }) =>
-                            void setCutValue(
-                                target.value ? Number(target.value).toString() : '',
-                            )
-                        }
+                        autoFocus={!readonlyCut}
+                        onChange={({ target: { value: cut } }) => {
+                            updateNextData((c) => ({
+                                ...c,
+                                cut,
+                            }))
+                        }}
                         placeholder="0"
                         readOnly={busy}
                         type="number"
                         min={0}
                         max={100}
-                        step="0.01"
-                        value={typeof cutValue !== 'undefined' ? cutValue : ''}
-                        disabled={cutEditingDisabled}
+                        value={nextData.cut}
+                        disabled={readonlyCut}
                     />
                     <TextAppendix>%</TextAppendix>
                 </FieldWrap>
             </Section>
-            {cutEditingDisabled && (
+            {readonlyCut && (
                 <AlertContainer>
                     <Alert type="notice" title="Owner's cut locked">
                         <span>
@@ -258,24 +267,26 @@ export default function BecomeOperatorModal({
                             <span>Node redundancy factor*</span>
                         </LabelInner>
                     </Label>
-                    {!redundancyFactorIsValid && (
-                        <ErrorLabel>Value must be greater or equal to 1</ErrorLabel>
+                    {errors?.redundancyFactor && (
+                        <ErrorLabel>{errors.redundancyFactor}</ErrorLabel>
                     )}
                 </WingedLabelWrap>
-                <FieldWrap $invalid={!redundancyFactorIsValid}>
+                <FieldWrap $invalid={!!errors?.redundancyFactor}>
                     <TextInput
                         name="redundancyFactor"
-                        onChange={({ target }) => void setRedundancyFactor(target.value)}
+                        onChange={({ target: { value: redundancyFactor } }) => {
+                            updateNextData((c) => ({
+                                ...c,
+                                redundancyFactor,
+                            }))
+                        }}
                         placeholder="2"
                         readOnly={busy}
                         type="number"
                         min={1}
                         max={100}
-                        value={
-                            typeof redundancyFactor !== 'undefined'
-                                ? redundancyFactor
-                                : ''
-                        }
+                        step={1}
+                        value={nextData.redundancyFactor}
                     />
                 </FieldWrap>
             </Section>
@@ -288,21 +299,23 @@ export default function BecomeOperatorModal({
                                 <span>Display name*</span>
                             </LabelInner>
                         </Label>
-                        {nameIsTouchedAndInvalid && (
-                            <ErrorLabel>Name is required</ErrorLabel>
-                        )}
+                        {errors?.name && <ErrorLabel>{errors.name}</ErrorLabel>}
                     </WingedLabelWrap>
-                    <FieldWrap $invalid={nameIsTouchedAndInvalid}>
+                    <FieldWrap $invalid={!!errors?.name}>
                         <TextInput
                             name="name"
-                            onChange={({ target }) => setName(target.value)}
+                            onChange={({ target: { value: name } }) => {
+                                updateNextData((c) => ({
+                                    ...c,
+                                    name,
+                                }))
+                            }}
                             readOnly={busy}
                             type="text"
-                            value={name || ''}
-                            placeholder={'Name'}
+                            value={nextData.name}
+                            placeholder="Name"
                         />
                     </FieldWrap>
-
                     <AboutOperatorField>
                         <WingedLabelWrap>
                             <Label>
@@ -310,25 +323,29 @@ export default function BecomeOperatorModal({
                                     <span>Description</span>
                                 </LabelInner>
                             </Label>
-                            {descriptionTooLong && (
+                            {errors?.description && (
                                 <ErrorLabel>Description is too long</ErrorLabel>
                             )}
                         </WingedLabelWrap>
-                        <FieldWrap $invalid={descriptionTooLong}>
+                        <FieldWrap $invalid={!!errors?.description}>
                             <TextareaInput
                                 name="description"
-                                onChange={({ target }) => setDescription(target.value)}
+                                onChange={({ target: { value: description } }) => {
+                                    updateNextData((c) => ({
+                                        ...c,
+                                        description,
+                                    }))
+                                }}
                                 readOnly={busy}
-                                value={description || ''}
-                                placeholder={'Description'}
+                                value={nextData.description}
+                                placeholder="Description"
                                 $minHeight={110}
                             />
-                            <TextareaCounter $invalid={descriptionTooLong}>
-                                {description?.length || 0}/{descriptionLengthLimit}
+                            <TextareaCounter $invalid={!!errors?.description}>
+                                {nextData.description.length}/{DescriptionLengthLimit}
                             </TextareaCounter>
                         </FieldWrap>
                     </AboutOperatorField>
-
                     <AboutOperatorField>
                         <Label>
                             <LabelInner>
@@ -338,17 +355,10 @@ export default function BecomeOperatorModal({
                         <FieldWrap>
                             <AvatarField>
                                 <AvatarDisplayContainer>
-                                    {!imageUrlProp && !imageToUpload && (
+                                    {imageBlob ? (
+                                        <OperatorAvatar src={imageBlob} />
+                                    ) : (
                                         <AvatarPlaceholder username={randomAddress} />
-                                    )}
-                                    {(imageUrlProp || imageToUpload) && (
-                                        <OperatorAvatar
-                                            src={
-                                                imageToUpload
-                                                    ? URL.createObjectURL(imageToUpload)
-                                                    : imageUrlProp
-                                            }
-                                        />
                                     )}
                                 </AvatarDisplayContainer>
                                 <div>
@@ -357,10 +367,33 @@ export default function BecomeOperatorModal({
                                         type="file"
                                         accept=".jpg,.jpeg,.png"
                                         style={{ display: 'none' }}
-                                        onChange={() => {
-                                            if (fileInputRef.current?.files?.length) {
-                                                handleCrop(fileInputRef.current.files[0])
-                                            }
+                                        onChange={(e) => {
+                                            void (async () => {
+                                                if (!e.target.files?.length) {
+                                                    return
+                                                }
+
+                                                try {
+                                                    const imageToUpload =
+                                                        await cropModal.pop({
+                                                            imageUrl: URL.createObjectURL(
+                                                                e.target.files[0],
+                                                            ),
+                                                            mask: 'round',
+                                                        })
+
+                                                    updateNextData((c) => ({
+                                                        ...c,
+                                                        imageToUpload,
+                                                    }))
+                                                } catch (e) {
+                                                    if (isRejectionReason(e)) {
+                                                        return
+                                                    }
+
+                                                    throw e
+                                                }
+                                            })()
                                         }}
                                     />
                                     <Button
@@ -386,6 +419,8 @@ export default function BecomeOperatorModal({
         </FormModal>
     )
 }
+
+export const operatorModal = toaster(OperatorModal, Layer.Modal)
 
 const LabelInner = styled.div`
     align-items: center;

@@ -23,12 +23,16 @@ const getOperatorChainId = () => {
     return defaultChainConfig.id
 }
 
+/**
+ * @todo Change args to an object.
+ */
 export async function createOperator(
     operatorCut: number,
     name: string,
     redundancyFactor: number,
     description?: string,
     imageToUpload?: File,
+    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
     const chainId = getOperatorChainId()
 
@@ -76,8 +80,11 @@ export async function createOperator(
             policies,
             policiesParams,
         )
-        const receipt = await tx.wait()
-        saveLastBlockNumber(receipt.blockNumber)
+        const { blockNumber } = await tx.wait()
+
+        saveLastBlockNumber(blockNumber)
+
+        await options.onBlockNumber?.(blockNumber)
     })
 }
 
@@ -90,6 +97,7 @@ export async function updateOperator(
         imageToUpload?: File
         cut: number
     },
+    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ) {
     const { name, redundancyFactor, description = '', imageToUpload, cut } = mods
 
@@ -128,24 +136,26 @@ export async function updateOperator(
     await toastedOperations(operations, async (next) => {
         const chainId = getOperatorChainId()
 
-        const signer = await getSigner()
-
         if (hasUpdateCutOperation) {
             await networkPreflight(chainId)
 
             const operatorContract = new Contract(
                 operator.id,
                 operatorABI,
-                signer,
+                await getSigner(),
             ) as Operator
 
             const tx = await operatorContract.updateOperatorsCutFraction(
                 parseEther(toBN(cut).toString()).div(100),
             )
 
-            const receipt = await tx.wait()
+            const { blockNumber } = await tx.wait()
 
-            blockNumbers.push(receipt.blockNumber)
+            blockNumbers.push(blockNumber)
+
+            if (!hasUpdateMetadataOperation) {
+                await options.onBlockNumber?.(blockNumber)
+            }
 
             next()
         }
@@ -156,7 +166,7 @@ export async function updateOperator(
             const operatorContract = new Contract(
                 operator.id,
                 operatorABI,
-                signer,
+                await getSigner(),
             ) as Operator
 
             const imageIpfsCid = imageToUpload
@@ -172,9 +182,11 @@ export async function updateOperator(
                 }),
             )
 
-            const receipt = await tx.wait()
+            const { blockNumber } = await tx.wait()
 
-            blockNumbers.push(receipt.blockNumber)
+            await options.onBlockNumber?.(blockNumber)
+
+            blockNumbers.push(blockNumber)
         }
     })
 
