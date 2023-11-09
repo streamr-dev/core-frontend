@@ -283,48 +283,23 @@ export function sameBN(a: BNish, b: BNish) {
 export function saveOperator(
     operator: ParsedOperator | undefined,
     options: {
-        onOperatorId?: (operatorId: string) => void
-        onNoOperatorIdError?: (operatorOwner: string, error: unknown) => void
-        onDone?: (operatorOwner: string) => void
+        onDone?: (operatorId: string) => void
         onError?: (error: unknown) => void
     } = {},
 ) {
     void (async () => {
         try {
-            const owner = await operatorModal.pop({
+            const operatorId = await operatorModal.pop({
                 operator,
             })
 
-            /**
-             * At this point we're up to date with the network (waited for the
-             * transaction block an all) and we can trust that the Graph
-             * knows about the operator and its recent form.
-             */
-
-            try {
-                const id = (await getParsedOperatorByOwnerAddress(owner, { force: true }))
-                    ?.id
-
-                if (!id) {
-                    throw new Error('Empty operator id')
-                }
-
-                invalidateActiveOperatorByIdQueries(id)
-
-                options.onOperatorId?.(id)
-            } catch (e) {
-                if (options.onNoOperatorIdError) {
-                    options.onNoOperatorIdError(owner, e)
-                } else {
-                    console.warn(`Could not load an operator owned by "${owner}"`, e)
-                }
-            }
+            invalidateActiveOperatorByIdQueries(operatorId)
 
             invalidateAllOperatorsQueries()
 
             invalidateDelegationsForWalletQueries()
 
-            options.onDone?.(owner)
+            options.onDone?.(operatorId)
         } catch (e) {
             if (options.onError) {
                 options.onError(e)

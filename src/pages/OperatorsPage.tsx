@@ -114,10 +114,8 @@ export const OperatorsPage = () => {
                         <Button
                             onClick={() => {
                                 saveOperator(undefined, {
-                                    onOperatorId(operatorId) {
-                                        navigate(
-                                            routes.network.operator({ id: operatorId }),
-                                        )
+                                    onDone(id) {
+                                        navigate(routes.network.operator({ id }))
                                     },
                                 })
                             }}

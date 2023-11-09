@@ -30,9 +30,10 @@ import { sameBN } from '~/utils'
 import { createOperator, updateOperator } from '~/services/operators'
 import { blockObserver } from '~/utils/blocks'
 import { useWalletAccount } from '~/shared/stores/wallet'
+import { getParsedOperatorByOwnerAddress } from '~/getters'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
-    onResolve?: (owner: string) => void
+    onResolve?: (operatorId: string) => void
     operator: ParsedOperator | undefined
 }
 
@@ -69,7 +70,7 @@ const Validator = z.object({
     redundancyFactor: z.coerce.number().min(1, 'Value must be greater or equal to 1'),
 })
 
-function OperatorModal({ onResolve, operator, ...props }: Props) {
+function OperatorModal({ onResolve, onReject, operator, ...props }: Props) {
     const [title, submitLabel] = operator
         ? ['Edit Operator', 'Save']
         : ['Become an Operator', 'Become an Operator']
@@ -169,6 +170,7 @@ function OperatorModal({ onResolve, operator, ...props }: Props) {
             onBeforeAbort={(reason) =>
                 reason !== RejectionReason.Backdrop || canBackdropDismiss
             }
+            onReject={onReject}
             onSubmit={async () => {
                 if (!canSubmit) {
                     return
@@ -189,7 +191,17 @@ function OperatorModal({ onResolve, operator, ...props }: Props) {
                         await updateOperator(operator, finalData, { onBlockNumber })
                     }
 
-                    onResolve?.(walletAddress)
+                    const operatorId = (
+                        await getParsedOperatorByOwnerAddress(walletAddress, {
+                            force: true,
+                        })
+                    )?.id
+
+                    if (!operatorId) {
+                        throw new Error('Empty operator id')
+                    }
+
+                    onResolve?.(operatorId)
                 } finally {
                     setBusy(false)
                 }
