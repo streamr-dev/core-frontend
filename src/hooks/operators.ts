@@ -32,7 +32,6 @@ import { isRejectionReason } from '~/modals/BaseModal'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import UndelegateFundsModal from '~/modals/UndelegateFundsModal'
-import { operatorModal } from '~/modals/OperatorModal'
 
 export function useOperatorForWalletQuery(address = '') {
     return useQuery({
@@ -553,72 +552,4 @@ const mapOperatorOrder = (orderBy: string | undefined): Operator_OrderBy => {
         default:
             return Operator_OrderBy.Id
     }
-}
-
-/**
- * Returns a callback that takes the user through the process of creating
- * an operator or updating an existing operator.
- */
-export function useSaveOperatorCallback() {
-    return useCallback(
-        (
-            operator: ParsedOperator | undefined,
-            options: {
-                onOperatorId?: (operatorId: string) => void
-                onNoOperatorIdError?: (operatorOwner: string, error: unknown) => void
-                onDone?: (operatorOwner: string) => void
-                onError?: (error: unknown) => void
-            } = {},
-        ) => {
-            void (async () => {
-                try {
-                    const owner = await operatorModal.pop({
-                        operator,
-                    })
-
-                    /**
-                     * At this point we're up to date with the network (waited for the
-                     * transaction block an all) and we can trust that the Graph
-                     * knows about the operator and its recent form.
-                     */
-
-                    try {
-                        const id = (
-                            await getParsedOperatorByOwnerAddress(owner, { force: true })
-                        )?.id
-
-                        if (!id) {
-                            throw new Error('Empty operator id')
-                        }
-
-                        invalidateActiveOperatorByIdQueries(id)
-
-                        options.onOperatorId?.(id)
-                    } catch (e) {
-                        if (options.onNoOperatorIdError) {
-                            options.onNoOperatorIdError(owner, e)
-                        } else {
-                            console.warn(
-                                `Could not load an operator owned by "${owner}"`,
-                                e,
-                            )
-                        }
-                    }
-
-                    invalidateAllOperatorsQueries()
-
-                    invalidateDelegationsForWalletQueries()
-
-                    options.onDone?.(owner)
-                } catch (e) {
-                    if (options.onError) {
-                        options.onError(e)
-                    } else {
-                        console.warn('Failed to create an operator', e)
-                    }
-                }
-            })()
-        },
-        [],
-    )
 }

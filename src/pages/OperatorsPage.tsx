@@ -20,11 +20,10 @@ import {
     useAllOperatorsQuery,
     useDelegationsForWalletQuery,
     useOperatorForWallet,
-    useSaveOperatorCallback,
 } from '~/hooks/operators'
 import { Delegation } from '~/types'
 import { ParsedOperator } from '~/parsers/OperatorParser'
-import { abbr } from '~/utils'
+import { abbr, saveOperator } from '~/utils'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import { OperatorIdCell } from '~/components/Table'
@@ -80,8 +79,6 @@ export const OperatorsPage = () => {
             navigate(routes.network.operators({ tab: TabOption.AllOperators }))
         }
     }, [wallet, navigate])
-
-    const saveOperator = useSaveOperatorCallback()
 
     return (
         <Layout>

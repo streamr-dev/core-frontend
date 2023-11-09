@@ -38,7 +38,6 @@ import { getDelegatedAmountForWallet, getDelegationFractionForWallet } from '~/g
 import {
     invalidateActiveOperatorByIdQueries,
     useOperatorByIdQuery,
-    useSaveOperatorCallback,
 } from '~/hooks/operators'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { OperatorChecklist } from '~/components/OperatorChecklist'
@@ -66,7 +65,7 @@ import { useSetBlockDependency } from '~/stores/blockNumberDependencies'
 import { blockObserver } from '~/utils/blocks'
 import { LiveNodesTable } from '~/components/LiveNodesTable'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
-import { abbr, isTransactionRejection } from '~/utils'
+import { abbr, isTransactionRejection, saveOperator } from '~/utils'
 import { Break } from '~/utils/errors'
 
 const forceUndelegateModal = toaster(ForceUndelegateModal, Layer.Modal)
@@ -162,8 +161,6 @@ export const SingleOperatorPage = () => {
     const setBlockDependency = useSetBlockDependency()
 
     const heartbeats = useInterceptHeartbeats(operator?.id)
-
-    const saveOperator = useSaveOperatorCallback()
 
     return (
         <Layout>

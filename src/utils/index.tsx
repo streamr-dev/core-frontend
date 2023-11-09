@@ -3,17 +3,24 @@ import { toaster } from 'toasterhea'
 import { z } from 'zod'
 import { QueryClient } from '@tanstack/react-query'
 import StreamrClient, { Stream } from 'streamr-client'
+export { isAddress as isEthereumAddress } from 'web3-validator'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import getNativeTokenName from '~/shared/utils/nativeToken'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
-import { getProjectRegistryContract } from '~/getters'
+import { getParsedOperatorByOwnerAddress, getProjectRegistryContract } from '~/getters'
 import { Layer } from '~/utils/Layer'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
 import { history } from '~/consts'
-import isCodedError from './isCodedError'
-import { BNish, toBN } from './bn'
-export { isAddress as isEthereumAddress } from 'web3-validator'
+import isCodedError from '~/utils/isCodedError'
+import { BNish, toBN } from '~/utils/bn'
+import { ParsedOperator } from '~/parsers/OperatorParser'
+import { operatorModal } from '~/modals/OperatorModal'
+import {
+    invalidateActiveOperatorByIdQueries,
+    invalidateAllOperatorsQueries,
+    invalidateDelegationsForWalletQueries,
+} from '~/hooks/operators'
 
 /**
  * Gas money checker.
@@ -268,4 +275,63 @@ export function abbr(
  */
 export function sameBN(a: BNish, b: BNish) {
     return toBN(a).isEqualTo(toBN(b))
+}
+
+/**
+ * A function that takes the user through the process of creating
+ * an operator or updating an existing operator.
+ */
+export function saveOperator(
+    operator: ParsedOperator | undefined,
+    options: {
+        onOperatorId?: (operatorId: string) => void
+        onNoOperatorIdError?: (operatorOwner: string, error: unknown) => void
+        onDone?: (operatorOwner: string) => void
+        onError?: (error: unknown) => void
+    } = {},
+) {
+    void (async () => {
+        try {
+            const owner = await operatorModal.pop({
+                operator,
+            })
+
+            /**
+             * At this point we're up to date with the network (waited for the
+             * transaction block an all) and we can trust that the Graph
+             * knows about the operator and its recent form.
+             */
+
+            try {
+                const id = (await getParsedOperatorByOwnerAddress(owner, { force: true }))
+                    ?.id
+
+                if (!id) {
+                    throw new Error('Empty operator id')
+                }
+
+                invalidateActiveOperatorByIdQueries(id)
+
+                options.onOperatorId?.(id)
+            } catch (e) {
+                if (options.onNoOperatorIdError) {
+                    options.onNoOperatorIdError(owner, e)
+                } else {
+                    console.warn(`Could not load an operator owned by "${owner}"`, e)
+                }
+            }
+
+            invalidateAllOperatorsQueries()
+
+            invalidateDelegationsForWalletQueries()
+
+            options.onDone?.(owner)
+        } catch (e) {
+            if (options.onError) {
+                options.onError(e)
+            } else {
+                console.warn('Failed to create an operator', e)
+            }
+        }
+    })()
 }
