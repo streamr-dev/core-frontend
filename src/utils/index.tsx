@@ -304,7 +304,7 @@ export function saveOperator(
             if (options.onError) {
                 options.onError(e)
             } else {
-                console.warn('Failed to create an operator', e)
+                console.warn('Failed to save an operator', e)
             }
         }
     })()
