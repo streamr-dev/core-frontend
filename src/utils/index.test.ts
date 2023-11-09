@@ -1,6 +1,14 @@
 import { BNish } from './bn'
 import * as utils from '.'
 
+jest.mock('~/hooks/operators', () => ({
+    __esModule: true,
+}))
+
+jest.mock('~/modals/OperatorModal', () => ({
+    __esModule: true,
+}))
+
 describe('abbr', () => {
     it('abbreviates any big numberish value', () => {
         function abbr(value: BNish) {
