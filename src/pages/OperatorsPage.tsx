@@ -21,7 +21,7 @@ import {
     useAllOperatorsQuery,
     useDelegationsForWalletQuery,
     useOperatorForWallet,
-    useTouchOperatorCallback,
+    useSaveOperatorCallback,
 } from '~/hooks/operators'
 import { Delegation } from '~/types'
 import { ParsedOperator } from '~/parsers/OperatorParser'
@@ -82,7 +82,7 @@ export const OperatorsPage = () => {
         }
     }, [wallet, navigate])
 
-    const touchOperator = useTouchOperatorCallback()
+    const saveOperator = useSaveOperatorCallback()
 
     return (
         <Layout>
@@ -117,7 +117,7 @@ export const OperatorsPage = () => {
                     ) : (
                         <Button
                             onClick={() => {
-                                touchOperator(undefined, {
+                                saveOperator(undefined, {
                                     onOperatorId(operatorId) {
                                         invalidateActiveOperatorByIdQueries(operatorId)
 

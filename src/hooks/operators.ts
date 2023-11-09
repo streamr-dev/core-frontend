@@ -539,7 +539,7 @@ const mapOperatorOrder = (orderBy: string | undefined): Operator_OrderBy => {
  * Returns a callback that takes the user through the process of creating
  * an operator or updating an existing operator.
  */
-export function useTouchOperatorCallback() {
+export function useSaveOperatorCallback() {
     return useCallback(
         (
             operator: ParsedOperator | undefined,

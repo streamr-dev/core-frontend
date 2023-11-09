@@ -38,7 +38,7 @@ import { getDelegatedAmountForWallet, getDelegationFractionForWallet } from '~/g
 import {
     invalidateActiveOperatorByIdQueries,
     useOperatorByIdQuery,
-    useTouchOperatorCallback,
+    useSaveOperatorCallback,
 } from '~/hooks/operators'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { OperatorChecklist } from '~/components/OperatorChecklist'
@@ -163,7 +163,7 @@ export const SingleOperatorPage = () => {
 
     const heartbeats = useInterceptHeartbeats(operator?.id)
 
-    const touchOperator = useTouchOperatorCallback()
+    const saveOperator = useSaveOperatorCallback()
 
     return (
         <Layout>
@@ -175,7 +175,7 @@ export const SingleOperatorPage = () => {
                 <OperatorActionBar
                     operator={operator}
                     handleEdit={(currentOperator) => {
-                        touchOperator(currentOperator, {
+                        saveOperator(currentOperator, {
                             onDone() {
                                 invalidateActiveOperatorByIdQueries(currentOperator.id)
                             },
