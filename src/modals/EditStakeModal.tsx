@@ -155,6 +155,7 @@ export default function EditStakeModal({
                         readOnly={busy}
                         type="number"
                         min={0}
+                        step="any"
                         value={rawAmount}
                     />
                     <TextAppendix>{tokenSymbol}</TextAppendix>

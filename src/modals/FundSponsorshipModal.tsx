@@ -153,6 +153,7 @@ export default function FundSponsorshipModal({
                         readOnly={busy}
                         type="number"
                         min={0}
+                        step="any"
                         value={rawAmount}
                     />
                     <TextAppendix>{tokenSymbol}</TextAppendix>
