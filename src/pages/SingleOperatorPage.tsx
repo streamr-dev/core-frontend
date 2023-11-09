@@ -712,64 +712,68 @@ export const SingleOperatorPage = () => {
                             />
                         </NetworkPageSegment>
                         <NetworkPageSegment foot title="Slashing history">
-                            <ScrollTable
-                                elements={operator.slashingEvents}
-                                columns={[
-                                    {
-                                        displayName: 'Stream ID',
-                                        valueMapper: (element) => element.streamId,
-                                        align: 'start',
-                                        isSticky: true,
-                                        key: 'id',
-                                    },
-                                    {
-                                        displayName: 'Date',
-                                        valueMapper: (element) =>
-                                            moment(element.date * 1000).format(
-                                                'YYYY-MM-DD HH:mm',
-                                            ),
-                                        align: 'start',
-                                        isSticky: false,
-                                        key: 'date',
-                                    },
-                                    {
-                                        displayName: 'Slashed',
-                                        valueMapper: (element) => (
-                                            <>
-                                                {abbr(fromAtto(element.amount))}{' '}
-                                                {tokenSymbol}
-                                            </>
-                                        ),
-                                        align: 'start',
-                                        isSticky: false,
-                                        key: 'slashed',
-                                    },
-                                    {
-                                        displayName: 'Reason',
-                                        valueMapper: (element) => {
-                                            if (
-                                                slashingFraction == null ||
-                                                minimumStakeWei == null
-                                            ) {
-                                                return ''
-                                            }
-                                            if (
-                                                element.amount.isLessThan(
-                                                    fromAtto(
-                                                        toBN(slashingFraction),
-                                                    ).multipliedBy(toBN(minimumStakeWei)),
-                                                )
-                                            ) {
-                                                return 'False flag'
-                                            }
-                                            return 'Normal slashing'
+                            <SlashingHistoryTableContainer>
+                                <ScrollTable
+                                    elements={operator.slashingEvents}
+                                    columns={[
+                                        {
+                                            displayName: 'Stream ID',
+                                            valueMapper: (element) => element.streamId,
+                                            align: 'start',
+                                            isSticky: true,
+                                            key: 'id',
                                         },
-                                        align: 'start',
-                                        isSticky: false,
-                                        key: 'reason',
-                                    },
-                                ]}
-                            />
+                                        {
+                                            displayName: 'Date',
+                                            valueMapper: (element) =>
+                                                moment(element.date * 1000).format(
+                                                    'YYYY-MM-DD HH:mm',
+                                                ),
+                                            align: 'start',
+                                            isSticky: false,
+                                            key: 'date',
+                                        },
+                                        {
+                                            displayName: 'Slashed',
+                                            valueMapper: (element) => (
+                                                <>
+                                                    {abbr(fromAtto(element.amount))}{' '}
+                                                    {tokenSymbol}
+                                                </>
+                                            ),
+                                            align: 'start',
+                                            isSticky: false,
+                                            key: 'slashed',
+                                        },
+                                        {
+                                            displayName: 'Reason',
+                                            valueMapper: (element) => {
+                                                if (
+                                                    slashingFraction == null ||
+                                                    minimumStakeWei == null
+                                                ) {
+                                                    return ''
+                                                }
+                                                if (
+                                                    element.amount.isLessThan(
+                                                        fromAtto(
+                                                            toBN(slashingFraction),
+                                                        ).multipliedBy(
+                                                            toBN(minimumStakeWei),
+                                                        ),
+                                                    )
+                                                ) {
+                                                    return 'False flag'
+                                                }
+                                                return 'Normal slashing'
+                                            },
+                                            align: 'start',
+                                            isSticky: false,
+                                            key: 'reason',
+                                        },
+                                    ]}
+                                />
+                            </SlashingHistoryTableContainer>
                         </NetworkPageSegment>
                         {isOwner && (
                             <NetworkPageSegment
@@ -951,6 +955,14 @@ const WarningCell = styled.div`
     ${TipIconWrap} svg {
         width: 18px;
         height: 18px;
+    }
+`
+
+const SlashingHistoryTableContainer = styled.div`
+    max-height: none;
+
+    @media ${LAPTOP} {
+        max-height: 575px;
     }
 `
 

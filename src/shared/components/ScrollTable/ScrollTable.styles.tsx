@@ -22,6 +22,8 @@ export const ScrollTableCellsWrap = styled.div<{
     grid-template-columns: ${({ stickyColumnCount, nonStickyColumnCount }) =>
         stickyColumnCount + nonStickyColumnCount === 1 ? '1fr' : 'min-content 1fr'};
     position: relative;
+    overflow: auto;
+    max-height: inherit;
 `
 
 export const ScrollTableTitle = styled.div`

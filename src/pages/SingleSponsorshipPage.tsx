@@ -204,38 +204,42 @@ export const SingleSponsorshipPage = () => {
                                     </Pad>
                                 </NetworkPageSegment>
                                 <NetworkPageSegment title="Operators">
-                                    <ScrollTable
-                                        elements={sponsorship.stakes}
-                                        columns={[
-                                            {
-                                                displayName: 'Operator',
-                                                key: 'operatorId',
-                                                isSticky: true,
-                                                valueMapper: ({
-                                                    operatorId,
-                                                    metadata: { imageUrl, name },
-                                                }) => (
-                                                    <OperatorIdCell
-                                                        operatorId={operatorId}
-                                                        imageUrl={imageUrl}
-                                                        operatorName={name}
-                                                    />
-                                                ),
-                                                align: 'start',
-                                            },
-                                            {
-                                                displayName: 'Staked',
-                                                key: 'staked',
-                                                isSticky: true,
-                                                valueMapper: (stake) =>
-                                                    abbr(stake.amount),
-                                                align: 'end',
-                                            },
-                                        ]}
-                                        linkMapper={({ operatorId: id }) =>
-                                            routes.network.operator({ id })
-                                        }
-                                    />
+                                    <OperatorTableContainer>
+                                        <ScrollTable
+                                            elements={sponsorship.stakes.sort((a, b) =>
+                                                b.amount.comparedTo(a.amount),
+                                            )}
+                                            columns={[
+                                                {
+                                                    displayName: 'Operator',
+                                                    key: 'operatorId',
+                                                    isSticky: true,
+                                                    valueMapper: ({
+                                                        operatorId,
+                                                        metadata: { imageUrl, name },
+                                                    }) => (
+                                                        <OperatorIdCell
+                                                            operatorId={operatorId}
+                                                            imageUrl={imageUrl}
+                                                            operatorName={name}
+                                                        />
+                                                    ),
+                                                    align: 'start',
+                                                },
+                                                {
+                                                    displayName: 'Staked',
+                                                    key: 'staked',
+                                                    isSticky: true,
+                                                    valueMapper: (stake) =>
+                                                        abbr(stake.amount),
+                                                    align: 'end',
+                                                },
+                                            ]}
+                                            linkMapper={({ operatorId: id }) =>
+                                                routes.network.operator({ id })
+                                            }
+                                        />
+                                    </OperatorTableContainer>
                                 </NetworkPageSegment>
                             </ChartGrid>
                             <NetworkPageSegment foot title="Funding history">
@@ -294,5 +298,13 @@ const ChartGrid = styled(SegmentGrid)`
 
     @media ${LAPTOP} {
         grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    }
+`
+
+const OperatorTableContainer = styled.div`
+    max-height: none;
+
+    @media ${LAPTOP} {
+        max-height: 570px;
     }
 `
