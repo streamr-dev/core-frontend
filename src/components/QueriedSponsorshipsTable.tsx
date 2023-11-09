@@ -194,7 +194,7 @@ export function QueriedSponsorshipsTable({
                             displayName: 'Join as Operator',
                             disabled:
                                 !element.streamId || !operator || maxOperatorsReached,
-                            async callback() {
+                            callback() {
                                 if (!operator) {
                                     return
                                 }

@@ -74,10 +74,9 @@ import {
 } from '~/generated/gql/network'
 import getCoreConfig from '~/getters/getCoreConfig'
 import getGraphClient from '~/getters/getGraphClient'
-import { Delegation, ChartPeriod } from '~/types'
+import { ChartPeriod } from '~/types'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { BN, toBN } from '~/utils/bn'
-import { isEthereumAddress } from '~/utils'
 
 const DEFAULT_OPERATOR_ORDER_BY = Operator_OrderBy.Id
 const DEFAULT_SPONSORSHIP_ORDER_BY = Sponsorship_OrderBy.Id
@@ -720,82 +719,6 @@ export async function getParsedOperators<
     onBeforeComplete?.(preparsedCount, operators.length)
 
     return operators
-}
-
-/**
- * Queries the Graph for a collection of wallet's delegations.
- * @param address Wallet address.
- * @param searchQuery Filter.
- * @param options.batchSize Number of entries to scout for.
- * @param options.skip Number of entries to skip.
- * @param options.onParseError Callback triggered for *each* parser failure (see `OperatorParser`).
- * @param options.onBeforeComplete Callback triggered just before returning the result. It carries
- * a total number of found operators and the number of successfully parsed operators.
- * @returns Collection of `Delegation` objects.
- * @todo Drop. It's unused.
- */
-async function getDelegationsForWallet(
-    address = '',
-    searchQuery = '',
-    {
-        batchSize,
-        skip,
-        onParseError,
-        onBeforeComplete,
-        force = false,
-    }: {
-        batchSize?: number
-        skip?: number
-        onParseError?: (operator: Operator, error: unknown) => void
-        onBeforeComplete?: (total: number, parsed: number) => void
-        force?: boolean
-    },
-): Promise<Delegation[]> {
-    const search = searchQuery.toLowerCase()
-
-    return getParsedOperators(
-        () => {
-            const params = {
-                first: batchSize,
-                skip,
-                address: address.toLowerCase(),
-                force,
-            }
-
-            if (!search) {
-                /**
-                 * Empty search = look for all operators.
-                 */
-                return getOperatorsByDelegation(params) as Promise<Operator[]>
-            }
-
-            if (isEthereumAddress(search)) {
-                /**
-                 * Look for a delegation for a given operator id.
-                 */
-                return getOperatorsByDelegationAndId({
-                    ...params,
-                    operatorId: search,
-                }) as Promise<Operator[]>
-            }
-
-            return getOperatorsByDelegationAndMetadata({
-                ...params,
-                searchQuery: search,
-            }) as Promise<Operator[]>
-        },
-        {
-            mapper(operator): Delegation {
-                return {
-                    ...operator,
-                    apy: getSpotApy(operator),
-                    myShare: getDelegatedAmountForWallet(address, operator),
-                }
-            },
-            onParseError,
-            onBeforeComplete,
-        },
-    )
 }
 
 /**

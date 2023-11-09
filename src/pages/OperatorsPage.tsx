@@ -17,7 +17,6 @@ import NetworkPageSegment, { SegmentGrid } from '~/components/NetworkPageSegment
 import { LoadMoreButton } from '~/components/LoadMore'
 import { getSpotApy } from '~/getters'
 import {
-    invalidateActiveOperatorByIdQueries,
     useAllOperatorsQuery,
     useDelegationsForWalletQuery,
     useOperatorForWallet,
@@ -25,7 +24,7 @@ import {
 } from '~/hooks/operators'
 import { Delegation } from '~/types'
 import { ParsedOperator } from '~/parsers/OperatorParser'
-import { abbr, refetchQuery } from '~/utils'
+import { abbr } from '~/utils'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import { OperatorIdCell } from '~/components/Table'
