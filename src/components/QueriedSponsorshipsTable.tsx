@@ -22,6 +22,7 @@ import {
 import { isRejectionReason } from '~/modals/BaseModal'
 import { FundedUntilCell, StreamIdCell } from '~/components/Table'
 import { abbr } from '~/utils'
+import { connectModal } from '~/modals/ConnectModal'
 
 interface Props {
     noDataFirstLine?: ReactNode
@@ -136,16 +137,18 @@ export function QueriedSponsorshipsTable({
                 actions={[
                     {
                         displayName: 'Sponsor',
-                        disabled: ({ streamId }) => !streamId || !wallet,
+                        disabled: ({ streamId }) => !streamId,
                         async callback(element) {
-                            if (!wallet) {
-                                return
-                            }
-
                             try {
+                                const sponsor = wallet || (await connectModal.pop())
+
+                                if (!sponsor) {
+                                    return
+                                }
+
                                 await fundSponsorship({
                                     sponsorship: element,
-                                    wallet,
+                                    wallet: sponsor,
                                 })
 
                                 await waitForGraphSync()
