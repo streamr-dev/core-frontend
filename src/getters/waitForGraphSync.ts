@@ -37,6 +37,7 @@ export const waitForGraphSync = async (): Promise<void> => {
                     data: { _meta: meta },
                 } = await client.query<GetMetadataQuery, GetMetadataQueryVariables>({
                     query: GetMetadataDocument,
+                    fetchPolicy: 'network-only',
                 })
 
                 if (meta && meta.block.number >= blockNumber) {

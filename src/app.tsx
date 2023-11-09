@@ -13,7 +13,6 @@ import { Provider as ModalProvider } from '~/shared/contexts/ModalApi'
 import NotFoundPage from '~/pages/NotFoundPage'
 import AnalyticsTracker from '~/shared/components/AnalyticsTracker'
 import GenericErrorPage from '~/pages/GenericErrorPage'
-import ErrorPage from '~/pages/ErrorPage'
 import Analytics from '~/shared/utils/Analytics'
 import StreamListingPage from '~/pages/StreamListingPage'
 import StreamPage from '~/pages/StreamPage'
@@ -34,25 +33,25 @@ import '~/analytics'
 
 const MiscRouter = () => [
     <Route
-        errorElement={<ErrorPage />}
+        errorElement={<GenericErrorPage />}
         path={routes.root()}
         element={<Navigate to={routes.projects.index()} replace />}
         key="RootRedirect"
     />,
     <Route
-        errorElement={<ErrorPage />}
+        errorElement={<GenericErrorPage />}
         path={routes.hub()}
         element={<Navigate to={routes.projects.index()} replace />}
         key="HubRedirect"
     />,
     <Route
-        errorElement={<ErrorPage />}
+        errorElement={<GenericErrorPage />}
         path="/error"
         element={<GenericErrorPage />}
         key="GenericErrorPage"
     />,
     <Route
-        errorElement={<ErrorPage />}
+        errorElement={<GenericErrorPage />}
         path="*"
         element={<NotFoundPage />}
         key="NotFoundPage"
@@ -64,28 +63,28 @@ const App = () => (
         <Analytics />
         <Globals />
         <Routes>
-            <Route path="/hub/projects/*" errorElement={<ErrorPage />}>
+            <Route path="/hub/projects/*" errorElement={<GenericErrorPage />}>
                 <Route index element={<ProjectListingPage />} />
                 <Route path="*" element={<ProjectPage />} />
             </Route>
-            <Route path="/hub/streams/*" errorElement={<ErrorPage />}>
+            <Route path="/hub/streams/*" errorElement={<GenericErrorPage />}>
                 <Route index element={<StreamListingPage />} />
                 <Route path=":id/*" element={<StreamPage />} />
             </Route>
             {isFeatureEnabled(FeatureFlag.PhaseTwo) && (
                 <>
-                    <Route path="/hub/network/*" errorElement={<ErrorPage />}>
+                    <Route path="/hub/network/*" errorElement={<GenericErrorPage />}>
                         <Route
                             index
                             element={
                                 <Navigate to={routes.network.sponsorships()} replace />
                             }
                         />
-                        <Route path="operators/*" errorElement={<ErrorPage />}>
+                        <Route path="operators/*" errorElement={<GenericErrorPage />}>
                             <Route index element={<OperatorsPage />} />
                             <Route path=":id" element={<SingleOperatorPage />} />
                         </Route>
-                        <Route path="sponsorships/*" errorElement={<ErrorPage />}>
+                        <Route path="sponsorships/*" errorElement={<GenericErrorPage />}>
                             <Route index element={<SponsorshipsPage />} />
                             <Route path=":id" element={<SingleSponsorshipPage />} />
                         </Route>

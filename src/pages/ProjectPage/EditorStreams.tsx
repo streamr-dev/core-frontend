@@ -41,6 +41,9 @@ export default function EditorStreams() {
 
     const update = useUpdateProject()
 
+    /**
+     * @todo Refactor to use `useInfiniteQuery`
+     */
     const search = useCallback(
         (phrase: string) => {
             abortControllerRef.current?.abort()

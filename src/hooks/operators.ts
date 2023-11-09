@@ -2,21 +2,22 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { useCallback, useEffect, useState } from 'react'
 import { z } from 'zod'
 import { toaster } from 'toasterhea'
+import { isAddress } from 'web3-validator'
 import { Operator, Operator_OrderBy, OrderDirection } from '~/generated/gql/network'
 import {
     getAllOperators,
     getDelegatedAmountForWallet,
     getOperatorById,
-    getOperatorByOwnerAddress,
     getOperatorsByDelegation,
     getOperatorsByDelegationAndId,
     getOperatorsByDelegationAndMetadata,
+    getParsedOperatorByOwnerAddress,
     getParsedOperators,
     getSpotApy,
     searchOperatorsById,
     searchOperatorsByMetadata,
 } from '~/getters'
-import { getQueryClient, isEthereumAddress } from '~/utils'
+import { getQueryClient } from '~/utils'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
 import { Delegation, DelegationsStats } from '~/types'
@@ -34,27 +35,9 @@ import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import UndelegateFundsModal from '~/modals/UndelegateFundsModal'
 
 export function useOperatorForWalletQuery(address = '') {
-    const addr = address.toLowerCase()
-
     return useQuery({
-        queryKey: ['useOperatorForWalletQuery', addr],
-        async queryFn() {
-            const operator = await getOperatorByOwnerAddress(addr)
-
-            if (operator) {
-                try {
-                    return OperatorParser.parse(operator)
-                } catch (e) {
-                    if (!(e instanceof z.ZodError)) {
-                        throw e
-                    }
-
-                    console.warn('Failed to parse an operator', operator, e)
-                }
-            }
-
-            return null
-        },
+        queryKey: ['useOperatorForWalletQuery', address.toLowerCase()],
+        queryFn: () => getParsedOperatorByOwnerAddress(address, { force: true }),
     })
 }
 
@@ -130,7 +113,9 @@ function toDelegationForWallet(operator: ParsedOperator, wallet: string): Delega
         myShare: getDelegatedAmountForWallet(wallet, operator),
     }
 }
-
+/**
+ * @todo Refactor using `useQuery`.
+ */
 export function useDelegationsStats(address = '') {
     const [stats, setStats] = useState<DelegationsStats | undefined | null>()
 
@@ -213,6 +198,14 @@ export function useDelegationsStats(address = '') {
     return stats
 }
 
+export function invalidateDelegationsForWalletQueries() {
+    getQueryClient().invalidateQueries({
+        exact: false,
+        queryKey: ['useDelegationsForWalletQuery'],
+        refetchType: 'active',
+    })
+}
+
 export function useDelegationsForWalletQuery({
     address: addressProp = '',
     pageSize = 10,
@@ -231,7 +224,7 @@ export function useDelegationsForWalletQuery({
     const searchQuery = searchQueryProp.toLowerCase()
 
     return useInfiniteQuery({
-        queryKey: ['useDelegationsQuery', address, searchQuery, pageSize],
+        queryKey: ['useDelegationsForWalletQuery', address, searchQuery, pageSize],
         async queryFn({ pageParam: skip = 0 }) {
             const elements: Delegation[] = await getParsedOperators(
                 () => {
@@ -241,6 +234,7 @@ export function useDelegationsForWalletQuery({
                         address,
                         orderBy: mapOperatorOrder(orderBy),
                         orderDirection: orderDirection as OrderDirection,
+                        force: true,
                     }
 
                     if (!searchQuery) {
@@ -250,7 +244,7 @@ export function useDelegationsForWalletQuery({
                         return getOperatorsByDelegation(params) as Promise<Operator[]>
                     }
 
-                    if (isEthereumAddress(searchQuery)) {
+                    if (isAddress(searchQuery)) {
                         /**
                          * Look for a delegation for a given operator id.
                          */
@@ -295,6 +289,14 @@ export function useDelegationsForWalletQuery({
     })
 }
 
+export function invalidateAllOperatorsQueries() {
+    getQueryClient().invalidateQueries({
+        exact: false,
+        queryKey: ['useAllOperatorsQuery'],
+        refetchType: 'active',
+    })
+}
+
 export function useAllOperatorsQuery({
     batchSize = 10,
     searchQuery: searchQueryProp = '',
@@ -324,13 +326,14 @@ export function useAllOperatorsQuery({
                         skip,
                         orderBy: mapOperatorOrder(orderBy),
                         orderDirection: orderDirection as OrderDirection,
+                        force: true,
                     }
 
                     if (!searchQuery) {
                         return getAllOperators(params) as Promise<Operator[]>
                     }
 
-                    if (isEthereumAddress(searchQuery)) {
+                    if (isAddress(searchQuery)) {
                         return searchOperatorsById({
                             ...params,
                             operatorId: searchQuery,

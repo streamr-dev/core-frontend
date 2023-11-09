@@ -4,11 +4,7 @@ import { getProjectRegistryContract } from '~/getters'
 import networkPreflight from '~/utils/networkPreflight'
 import { deployDataUnion } from '~/marketplace/modules/dataUnion/services'
 import { BN, toBN } from '~/utils/bn'
-import {
-    getRawGraphProject,
-    getRawGraphProjects,
-    getRawGraphProjectsByText,
-} from '~/getters/hub'
+import { getRawGraphProjects, getRawGraphProjectsByText } from '~/getters/hub'
 import { getProjectRegistryChainId } from '~/getters'
 import { ProjectType, TheGraph } from '~/shared/types'
 import { isMessagedObject } from '~/utils'
@@ -128,16 +124,6 @@ const mapProject = (project: any): TheGraphProject => {
     }
 }
 
-export const getProject = async (id: string): Promise<TheGraphProject | null> => {
-    const project = await getRawGraphProject(id)
-
-    if (project) {
-        return mapProject(project)
-    }
-
-    return null
-}
-
 const prepareProjectResult = (
     results: TheGraphProject[],
     pageSize: number,
@@ -164,6 +150,9 @@ export type ProjectsResult = {
     lastId: string | null
 }
 
+/**
+ * @todo Refactor to use `ProjectParser` and `useInfiniteQuery`.
+ */
 export const getProjects = async (
     owner?: string | undefined,
     first = 20,
@@ -182,6 +171,9 @@ export const getProjects = async (
     return prepareProjectResult(projects as unknown as TheGraphProject[], first)
 }
 
+/**
+ * @todo Refactor to use `ParsedProject` and `useInfiniteQuery`.
+ */
 export const searchProjects = async (
     search: string,
     first = 20,
@@ -220,7 +212,7 @@ async function formatMetadata({
     })
 }
 
-export async function getPublishableProjectProperties(project: Project) {
+export async function getPublishableProjectProperties(project: unknown) {
     const payload = PublishableProjectPayload.parse(project)
 
     const salePoints = Object.values(payload.salePoints)
@@ -256,7 +248,7 @@ export async function getPublishableProjectProperties(project: Project) {
          * beneficiary address input field reflects it, too.
          */
         const beneficiary =
-            beneficiaryAddress || project.type === ProjectType.PaidData ? wallet : ''
+            beneficiaryAddress || payload.type === ProjectType.PaidData ? wallet : ''
 
         const pricePerSecond = await (async () => {
             if (initialPricePerSecond) {

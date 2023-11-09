@@ -2,6 +2,14 @@ import React, { forwardRef } from 'react'
 import { cleanup, screen, render, fireEvent } from '@testing-library/react'
 import { sleep } from '~/utils'
 
+jest.mock('~/hooks/operators', () => ({
+    __esModule: true,
+}))
+
+jest.mock('~/modals/OperatorModal', () => ({
+    __esModule: true,
+}))
+
 const mockGetImage = jest.fn(() => ({
     width: 100,
     height: 100,

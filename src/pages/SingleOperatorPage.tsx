@@ -21,8 +21,6 @@ import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
 import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
-import { updateOperator } from '~/services/operators'
-import BecomeOperatorModal from '~/modals/BecomeOperatorModal'
 import ForceUndelegateModal from '~/modals/ForceUndelegateModal'
 import { Layer } from '~/utils/Layer'
 import { waitForGraphSync } from '~/getters/waitForGraphSync'
@@ -67,10 +65,9 @@ import { useSetBlockDependency } from '~/stores/blockNumberDependencies'
 import { blockObserver } from '~/utils/blocks'
 import { LiveNodesTable } from '~/components/LiveNodesTable'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
-import { abbr, isTransactionRejection } from '~/utils'
+import { abbr, isTransactionRejection, saveOperator } from '~/utils'
 import { Break } from '~/utils/errors'
 
-const becomeOperatorModal = toaster(BecomeOperatorModal, Layer.Modal)
 const forceUndelegateModal = toaster(ForceUndelegateModal, Layer.Modal)
 
 const defaultChartData = []
@@ -121,7 +118,7 @@ export const SingleOperatorPage = () => {
                     operatorId,
                     selectedPeriod,
                     selectedDataSource,
-                    false, // ignore today
+                    { force: true, ignoreToday: false },
                 )
             } catch (e) {
                 errorToast({ title: 'Could not load operator chart data' })
@@ -174,51 +171,8 @@ export const SingleOperatorPage = () => {
             {!!operator && (
                 <OperatorActionBar
                     operator={operator}
-                    handleEdit={async (currentOperator) => {
-                        const {
-                            operatorsCut: cut,
-                            metadata: { name, description, imageUrl, redundancyFactor },
-                        } = currentOperator
-
-                        try {
-                            await becomeOperatorModal.pop({
-                                title: 'Edit operator',
-                                cut,
-                                name,
-                                description,
-                                imageUrl,
-                                redundancyFactor,
-                                cutEditingDisabled: operator?.stakes.length > 0,
-                                submitLabel: 'Save',
-                                async onSubmit(
-                                    newCut,
-                                    newName,
-                                    newRedundancyFactor,
-                                    newDescription,
-                                    newImageToUpload,
-                                ) {
-                                    await updateOperator(operator, {
-                                        cut: newCut,
-                                        description: newDescription || '',
-                                        imageToUpload: newImageToUpload,
-                                        name: newName,
-                                        redundancyFactor: newRedundancyFactor,
-                                    })
-                                },
-                            })
-
-                            /**
-                             * @todo If this fails we consider the entire flow a failure (see below). Let's
-                             * use `blockObserver` and wait for the block outside of this workflow.
-                             */
-                            await waitForGraphSync()
-
-                            invalidateActiveOperatorByIdQueries(operator.id)
-                        } catch (e) {
-                            if (!isRejectionReason(e)) {
-                                throw e
-                            }
-                        }
+                    handleEdit={(currentOperator) => {
+                        saveOperator(currentOperator)
                     }}
                     onDelegationChange={() => {
                         invalidateActiveOperatorByIdQueries(operator.id)

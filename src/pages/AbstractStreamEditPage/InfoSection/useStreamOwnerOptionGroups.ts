@@ -18,7 +18,10 @@ const apolloClient = new ApolloClient({
     cache: new InMemoryCache(),
 })
 
-async function fetchDomains(account: string | undefined): Promise<string[]> {
+async function fetchDomains(
+    account: string | undefined,
+    { force = false } = {},
+): Promise<string[]> {
     if (!account) {
         return []
     }
@@ -32,6 +35,7 @@ async function fetchDomains(account: string | undefined): Promise<string[]> {
             variables: {
                 account: account.toLowerCase(),
             },
+            fetchPolicy: force ? 'network-only' : void 0,
         })
 
         return (data.domains.map(({ name }) => name).filter(Boolean) as string[]).sort()
@@ -57,6 +61,7 @@ export interface OptionGroup {
 }
 
 /**
+ * @todo Refactor using `useQuery` and bake `fetchDomains` into it (it hasn't been used anywhere else).
  * @returns an array of `OptionGroup` items, or `undefined` if entries are being loaded.
  */
 export default function useStreamOwnerOptionGroups(): OptionGroup[] | undefined {

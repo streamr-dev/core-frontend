@@ -4,7 +4,8 @@ import detectProvider from '@metamask/detect-provider'
 import { create } from 'zustand'
 import { providers } from 'ethers'
 import { MetaMaskInpageProvider } from '@metamask/providers'
-import { isEthereumAddress, isMessagedObject } from '~/utils'
+import { isAddress } from 'web3-validator'
+import { isMessagedObject } from '~/utils'
 import { getFirstEnsNameFor } from '~/getters'
 import { getConfigForChain } from '~/shared/web3/config'
 import { connectModal } from '~/modals/ConnectModal'
@@ -186,7 +187,7 @@ const useWalletStore = create<WalletStore>((set, get) => {
     function onAccountsChange(accounts: unknown) {
         const [account = undefined] = isStringArray(accounts) ? accounts : []
 
-        const addr = isEthereumAddress(account || '') ? account : undefined
+        const addr = isAddress(account || '') ? account : undefined
 
         if (lastKnownAccount === addr) {
             return

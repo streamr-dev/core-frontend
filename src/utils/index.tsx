@@ -1,12 +1,7 @@
 import React from 'react'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
-import {
-    QueryClient,
-    UseInfiniteQueryResult,
-    UseQueryResult,
-} from '@tanstack/react-query'
-export { isAddress as isEthereumAddress } from 'web3-validator'
+import { QueryClient } from '@tanstack/react-query'
 import StreamrClient, { Stream } from 'streamr-client'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import getNativeTokenName from '~/shared/utils/nativeToken'
@@ -14,11 +9,17 @@ import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { getProjectRegistryContract } from '~/getters'
 import { Layer } from '~/utils/Layer'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
-import { ObjectWithMessage } from '~/shared/consts'
 import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
 import { history } from '~/consts'
-import isCodedError from './isCodedError'
-import { BNish, toBN } from './bn'
+import isCodedError from '~/utils/isCodedError'
+import { BNish, toBN } from '~/utils/bn'
+import { ParsedOperator } from '~/parsers/OperatorParser'
+import { operatorModal } from '~/modals/OperatorModal'
+import {
+    invalidateActiveOperatorByIdQueries,
+    invalidateAllOperatorsQueries,
+    invalidateDelegationsForWalletQueries,
+} from '~/hooks/operators'
 
 /**
  * Gas money checker.
@@ -107,6 +108,10 @@ export async function waitForPurchasePropagation(
     throw new Error('Finding `Subscribed` event timed out')
 }
 
+const ObjectWithMessage = z.object({
+    message: z.string(),
+})
+
 export function isMessagedObject(e: unknown): e is z.infer<typeof ObjectWithMessage> {
     return ObjectWithMessage.safeParse(e).success
 }
@@ -137,20 +142,6 @@ export function isProjectOwnedBy<
  */
 export async function sleep(millis: number) {
     await new Promise((resolve) => void setTimeout(resolve, millis))
-}
-
-/**
- * Quietly (and in a non-blocking manner) refetches a given query
- * and reports failures to the console.
- */
-export function refetchQuery(query: UseInfiniteQueryResult | UseQueryResult) {
-    setTimeout(async () => {
-        try {
-            await query.refetch()
-        } catch (e) {
-            console.warn('Failed to refetch a query', e)
-        }
-    })
 }
 
 /**
@@ -276,4 +267,45 @@ export function abbr(
     }
 
     return `${sign}${integral}${frac && `.${frac}`}${SiSymbol[size]}`
+}
+
+/**
+ * Compares 2 BigNumberish values.
+ */
+export function sameBN(a: BNish, b: BNish) {
+    return toBN(a).isEqualTo(toBN(b))
+}
+
+/**
+ * A function that takes the user through the process of creating
+ * an operator or updating an existing operator.
+ */
+export function saveOperator(
+    operator: ParsedOperator | undefined,
+    options: {
+        onDone?: (operatorId: string) => void
+        onError?: (error: unknown) => void
+    } = {},
+) {
+    void (async () => {
+        try {
+            const operatorId = await operatorModal.pop({
+                operator,
+            })
+
+            invalidateActiveOperatorByIdQueries(operatorId)
+
+            invalidateAllOperatorsQueries()
+
+            invalidateDelegationsForWalletQueries()
+
+            options.onDone?.(operatorId)
+        } catch (e) {
+            if (options.onError) {
+                options.onError(e)
+            } else {
+                console.warn('Failed to save an operator', e)
+            }
+        }
+    })()
 }

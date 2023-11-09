@@ -95,7 +95,7 @@ const useProjectAbilitiesStore = create<Store>((set) => {
     }
 })
 
-export function useProjectAbility(
+function useProjectAbility(
     chainId: number,
     projectId: string | undefined,
     account: string | undefined,

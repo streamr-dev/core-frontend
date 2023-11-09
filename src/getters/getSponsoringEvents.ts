@@ -12,6 +12,7 @@ export const getSponsoringEvents = async (
     sponsorshipId: string,
     first: number,
     skip = 0,
+    { force = false } = {},
 ): Promise<FundingEvent[]> => {
     const {
         data: { sponsoringEvents },
@@ -25,6 +26,7 @@ export const getSponsoringEvents = async (
             first,
             skip,
         },
+        fetchPolicy: force ? 'network-only' : void 0,
     })
     return sponsoringEvents.map((event) => ({
         id: event.id,

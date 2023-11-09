@@ -161,6 +161,7 @@ const StreamListingPage: React.FC = () => {
                     search.toLowerCase(),
                     mapOrderByToGraph(orderBy),
                     mapOrderDirectionToGraph(orderDirection),
+                    { force: true },
                 )
             }
 
@@ -203,8 +204,9 @@ const StreamListingPage: React.FC = () => {
                 return indexerStats
             }
 
-            const indexerStats = await getStreams(ctx.pageParam.streamIds)
-            return indexerStats
+            return await getStreams(ctx.pageParam.streamIds, {
+                force: true,
+            })
         },
         staleTime: 60 * 1000, // 1 minute
         keepPreviousData: true,

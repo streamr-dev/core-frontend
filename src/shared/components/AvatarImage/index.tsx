@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
+import { isAddress } from 'web3-validator'
 import UnstyledFallbackImage from '~/shared/components/FallbackImage'
-import { isEthereumAddress } from '~/utils'
 import SvgIcon from '~/shared/components/SvgIcon'
 import Initials from './Initials'
 import Identicon from './Identicon'
@@ -13,7 +13,7 @@ const FallbackImage = styled(UnstyledFallbackImage)`
 
 const UnstyledAvatarImage = ({ username, name, src, upload = false, ...props }) => {
     const placeholder = useMemo(() => {
-        if (isEthereumAddress(username)) {
+        if (isAddress(username)) {
             return <Identicon id={username} />
         }
 

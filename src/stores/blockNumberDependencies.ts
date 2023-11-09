@@ -50,15 +50,11 @@ const useBlockNumberDependenciesStore = create<Store>((set) => {
     }
 })
 
-export function useBlockNumber() {
-    return useBlockNumberDependenciesStore().blockNumber
-}
-
 export function useIsWaitingForBlockNumber(key: unknown[] | string): boolean {
-    const blockNumber = useBlockNumber()
-
-    const awaitedBlockNumber =
-        useBlockNumberDependenciesStore().dependencies[getFinalKey(key)]
+    const {
+        blockNumber,
+        dependencies: { [getFinalKey(key)]: awaitedBlockNumber },
+    } = useBlockNumberDependenciesStore()
 
     if (typeof awaitedBlockNumber === 'undefined') {
         return false

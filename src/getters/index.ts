@@ -74,10 +74,9 @@ import {
 } from '~/generated/gql/network'
 import getCoreConfig from '~/getters/getCoreConfig'
 import getGraphClient from '~/getters/getGraphClient'
-import { Delegation, ChartPeriod } from '~/types'
+import { ChartPeriod } from '~/types'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { BN, toBN } from '~/utils/bn'
-import { isEthereumAddress } from '~/utils'
 
 const DEFAULT_OPERATOR_ORDER_BY = Operator_OrderBy.Id
 const DEFAULT_SPONSORSHIP_ORDER_BY = Sponsorship_OrderBy.Id
@@ -273,12 +272,14 @@ export async function getAllSponsorships({
     streamId = '',
     orderBy = DEFAULT_SPONSORSHIP_ORDER_BY,
     orderDirection = DEFAULT_ORDER_DIRECTION,
+    force = false,
 }: {
     first?: number
     skip?: number
     streamId?: string
     orderBy?: Sponsorship_OrderBy
     orderDirection?: OrderDirection
+    force?: boolean
 }): Promise<GetAllSponsorshipsQuery['sponsorships']> {
     const {
         data: { sponsorships },
@@ -294,6 +295,7 @@ export async function getAllSponsorships({
             orderBy,
             orderDirection,
         },
+        fetchPolicy: force ? 'network-only' : void 0,
     })
 
     return sponsorships
@@ -301,6 +303,7 @@ export async function getAllSponsorships({
 
 export async function getSponsorshipById(
     sponsorshipId: string,
+    { force = false } = {},
 ): Promise<NonNullable<GetSponsorshipByIdQuery['sponsorship']> | null> {
     const {
         data: { sponsorship },
@@ -312,6 +315,7 @@ export async function getSponsorshipById(
         variables: {
             sponsorshipId,
         },
+        fetchPolicy: force ? 'network-only' : void 0,
     })
 
     return sponsorship || null
@@ -325,12 +329,14 @@ export async function getSponsorshipsByCreator(
         streamId = '',
         orderBy = DEFAULT_SPONSORSHIP_ORDER_BY,
         orderDirection = DEFAULT_ORDER_DIRECTION,
+        force = false,
     }: {
         first?: number
         skip?: number
         streamId?: string
         orderBy?: Sponsorship_OrderBy
         orderDirection?: OrderDirection
+        force?: boolean
     } = {},
 ): Promise<GetSponsorshipsByCreatorQuery['sponsorships']> {
     const {
@@ -348,6 +354,7 @@ export async function getSponsorshipsByCreator(
             orderBy,
             orderDirection,
         },
+        fetchPolicy: force ? 'network-only' : void 0,
     })
 
     return sponsorships
@@ -358,11 +365,13 @@ export async function getAllOperators({
     skip,
     orderBy = DEFAULT_OPERATOR_ORDER_BY,
     orderDirection = DEFAULT_ORDER_DIRECTION,
+    force = false,
 }: {
     first?: number
     skip?: number
     orderBy?: Operator_OrderBy
     orderDirection?: OrderDirection
+    force?: boolean
 }): Promise<GetAllOperatorsQuery['operators']> {
     const {
         data: { operators },
@@ -375,6 +384,7 @@ export async function getAllOperators({
                 orderBy,
                 orderDirection,
             },
+            fetchPolicy: force ? 'network-only' : void 0,
         },
     )
 
@@ -387,12 +397,14 @@ export async function getOperatorsByDelegation({
     address,
     orderBy = DEFAULT_OPERATOR_ORDER_BY,
     orderDirection = DEFAULT_ORDER_DIRECTION,
+    force = false,
 }: {
     first?: number
     skip?: number
     address: string
     orderBy?: Operator_OrderBy
     orderDirection?: OrderDirection
+    force?: boolean
 }): Promise<GetOperatorsByDelegationQuery['operators']> {
     const {
         data: { operators },
@@ -408,6 +420,7 @@ export async function getOperatorsByDelegation({
             orderBy,
             orderDirection,
         },
+        fetchPolicy: force ? 'network-only' : void 0,
     })
 
     return operators
@@ -420,6 +433,7 @@ export async function getOperatorsByDelegationAndId({
     operatorId,
     orderBy = DEFAULT_OPERATOR_ORDER_BY,
     orderDirection = DEFAULT_ORDER_DIRECTION,
+    force = false,
 }: {
     first?: number
     skip?: number
@@ -427,6 +441,7 @@ export async function getOperatorsByDelegationAndId({
     operatorId: string
     orderBy?: Operator_OrderBy
     orderDirection?: OrderDirection
+    force?: boolean
 }): Promise<GetOperatorsByDelegationAndIdQuery['operators']> {
     const {
         data: { operators },
@@ -443,6 +458,7 @@ export async function getOperatorsByDelegationAndId({
             orderBy,
             orderDirection,
         },
+        fetchPolicy: force ? 'network-only' : void 0,
     })
 
     return operators
@@ -455,6 +471,7 @@ export async function getOperatorsByDelegationAndMetadata({
     searchQuery,
     orderBy = DEFAULT_OPERATOR_ORDER_BY,
     orderDirection = DEFAULT_ORDER_DIRECTION,
+    force = false,
 }: {
     first?: number
     skip?: number
@@ -462,6 +479,7 @@ export async function getOperatorsByDelegationAndMetadata({
     searchQuery: string
     orderBy?: Operator_OrderBy
     orderDirection?: OrderDirection
+    force?: boolean
 }): Promise<GetOperatorsByDelegationAndMetadataQuery['operators']> {
     const {
         data: { operators },
@@ -478,6 +496,7 @@ export async function getOperatorsByDelegationAndMetadata({
             orderBy,
             orderDirection,
         },
+        fetchPolicy: force ? 'network-only' : void 0,
     })
 
     return operators
@@ -489,12 +508,14 @@ export async function searchOperatorsById({
     operatorId,
     orderBy = DEFAULT_OPERATOR_ORDER_BY,
     orderDirection = DEFAULT_ORDER_DIRECTION,
+    force = false,
 }: {
     first?: number
     skip?: number
     operatorId?: string
     orderBy?: Operator_OrderBy
     orderDirection?: OrderDirection
+    force?: boolean
 }): Promise<SearchOperatorsByIdQuery['operators']> {
     const {
         data: { operators },
@@ -510,6 +531,7 @@ export async function searchOperatorsById({
             orderBy,
             orderDirection,
         },
+        fetchPolicy: force ? 'network-only' : void 0,
     })
 
     return operators
@@ -521,12 +543,14 @@ export async function searchOperatorsByMetadata({
     searchQuery,
     orderBy = DEFAULT_OPERATOR_ORDER_BY,
     orderDirection = DEFAULT_ORDER_DIRECTION,
+    force = false,
 }: {
     first?: number
     skip?: number
     searchQuery?: string
     orderBy?: Operator_OrderBy
     orderDirection?: OrderDirection
+    force?: boolean
 }): Promise<SearchOperatorsByMetadataQuery['operators']> {
     const {
         data: { operators },
@@ -542,6 +566,7 @@ export async function searchOperatorsByMetadata({
             orderBy,
             orderDirection,
         },
+        fetchPolicy: force ? 'network-only' : void 0,
     })
 
     return operators
@@ -566,9 +591,10 @@ export async function getOperatorById(
     return operator || null
 }
 
-export async function getOperatorByOwnerAddress(
+export async function getParsedOperatorByOwnerAddress(
     address: string,
-): Promise<NonNullable<GetOperatorByOwnerAddressQuery['operators'][0]> | null> {
+    { force = false }: { force?: boolean } = {},
+): Promise<ParsedOperator | null> {
     const {
         data: { operators },
     } = await getGraphClient().query<
@@ -577,11 +603,26 @@ export async function getOperatorByOwnerAddress(
     >({
         query: GetOperatorByOwnerAddressDocument,
         variables: {
-            owner: address,
+            owner: address.toLowerCase(),
         },
+        fetchPolicy: force ? 'network-only' : void 0,
     })
 
-    return operators?.length ? operators[0] : null
+    const operator = operators?.[0] || null
+
+    if (operator) {
+        try {
+            return OperatorParser.parse(operator)
+        } catch (e) {
+            if (!(e instanceof z.ZodError)) {
+                throw e
+            }
+
+            console.warn('Failed to parse an operator', operator, e)
+        }
+    }
+
+    return null
 }
 
 export async function getBase64ForFile<T extends File>(file: T): Promise<string> {
@@ -601,7 +642,7 @@ export async function getBase64ForFile<T extends File>(file: T): Promise<string>
  * @param streamId Stream ID
  * @returns A string
  */
-export async function getStreamDescription(streamId: string) {
+export async function getStreamDescription(streamId: string, { force = false } = {}) {
     const {
         data: { stream },
     } = await getGraphClient().query<GetStreamByIdQuery, GetStreamByIdQueryVariables>({
@@ -609,6 +650,7 @@ export async function getStreamDescription(streamId: string) {
         variables: {
             streamId,
         },
+        fetchPolicy: force ? 'network-only' : void 0,
     })
 
     return z
@@ -677,78 +719,6 @@ export async function getParsedOperators<
     onBeforeComplete?.(preparsedCount, operators.length)
 
     return operators
-}
-
-/**
- * Queries the Graph for a collection of wallet's delegations.
- * @param address Wallet address.
- * @param searchQuery Filter.
- * @param options.batchSize Number of entries to scout for.
- * @param options.skip Number of entries to skip.
- * @param options.onParseError Callback triggered for *each* parser failure (see `OperatorParser`).
- * @param options.onBeforeComplete Callback triggered just before returning the result. It carries
- * a total number of found operators and the number of successfully parsed operators.
- * @returns Collection of `Delegation` objects.
- */
-export async function getDelegationsForWallet(
-    address = '',
-    searchQuery = '',
-    {
-        batchSize,
-        skip,
-        onParseError,
-        onBeforeComplete,
-    }: {
-        batchSize?: number
-        skip?: number
-        onParseError?: (operator: Operator, error: unknown) => void
-        onBeforeComplete?: (total: number, parsed: number) => void
-    },
-): Promise<Delegation[]> {
-    const search = searchQuery.toLowerCase()
-
-    return getParsedOperators(
-        () => {
-            const params = {
-                first: batchSize,
-                skip,
-                address: address.toLowerCase(),
-            }
-
-            if (!search) {
-                /**
-                 * Empty search = look for all operators.
-                 */
-                return getOperatorsByDelegation(params) as Promise<Operator[]>
-            }
-
-            if (isEthereumAddress(search)) {
-                /**
-                 * Look for a delegation for a given operator id.
-                 */
-                return getOperatorsByDelegationAndId({
-                    ...params,
-                    operatorId: search,
-                }) as Promise<Operator[]>
-            }
-
-            return getOperatorsByDelegationAndMetadata({
-                ...params,
-                searchQuery: search,
-            }) as Promise<Operator[]>
-        },
-        {
-            mapper(operator): Delegation {
-                return {
-                    ...operator,
-                    apy: getSpotApy(operator),
-                    myShare: getDelegatedAmountForWallet(address, operator),
-                }
-            },
-            onParseError,
-            onBeforeComplete,
-        },
-    )
 }
 
 /**
@@ -886,6 +856,7 @@ export async function getOperatorDailyBuckets(
         dateGreaterEqualThan: number
         batchSize?: number
         skip?: number
+        force?: boolean
     },
 ) {
     const {
@@ -893,6 +864,7 @@ export async function getOperatorDailyBuckets(
         dateGreaterEqualThan: date_gte,
         batchSize: first = 999,
         skip,
+        force = false,
     } = options
 
     const { data } = await getGraphClient().query<
@@ -911,6 +883,7 @@ export async function getOperatorDailyBuckets(
                 date_gte,
             },
         },
+        fetchPolicy: force ? 'network-only' : void 0,
     })
 
     return data.operatorDailyBuckets
@@ -932,6 +905,7 @@ export async function getSponsorshipDailyBuckets(
         dateGreaterEqualThan: number
         batchSize?: number
         skip?: number
+        force?: boolean
     },
 ) {
     const {
@@ -939,6 +913,7 @@ export async function getSponsorshipDailyBuckets(
         dateGreaterEqualThan: date_gte,
         batchSize: first = 999,
         skip,
+        force = false,
     } = options
 
     const { data } = await getGraphClient().query<
@@ -957,6 +932,7 @@ export async function getSponsorshipDailyBuckets(
                 date_gte,
             },
         },
+        fetchPolicy: force ? 'network-only' : void 0,
     })
 
     return data.sponsorshipDailyBuckets
@@ -978,6 +954,7 @@ export const getDelegatorDailyBuckets = async (
         dateGreaterEqualThan: number
         batchSize?: number
         skip?: number
+        force?: boolean
     },
 ): Promise<GetDelegatorDailyBucketsQuery['delegatorDailyBuckets']> => {
     const {
@@ -985,6 +962,7 @@ export const getDelegatorDailyBuckets = async (
         dateGreaterEqualThan: date_gte,
         batchSize: first = 999,
         skip,
+        force = false,
     } = options
 
     const { data } = await getGraphClient().query<
@@ -1001,6 +979,7 @@ export const getDelegatorDailyBuckets = async (
                 date_gte,
             },
         },
+        fetchPolicy: force ? 'network-only' : void 0,
     })
 
     return data.delegatorDailyBuckets

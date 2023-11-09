@@ -233,6 +233,7 @@ const useProjectEditorStore = create<ProjectEditorStore>((set, get) => {
                         variables: {
                             id: id.toLowerCase(),
                         },
+                        fetchPolicy: 'network-only',
                     })
 
                     if (!graphProject) {

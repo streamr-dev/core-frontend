@@ -13,6 +13,8 @@ import { LoadMoreButton } from '~/components/LoadMore'
 import routes from '~/routes'
 import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
 import {
+    invalidateAllSponsorshipsQueries,
+    invalidateSponsorshipsForCreatorQueries,
     useEditSponsorshipFunding,
     useFundSponsorship,
     useJoinSponsorshipAsOperator,
@@ -148,6 +150,10 @@ export function QueriedSponsorshipsTable({
 
                                 await waitForGraphSync()
 
+                                invalidateSponsorshipsForCreatorQueries(wallet)
+
+                                invalidateAllSponsorshipsQueries()
+
                                 await onSponsorshipFunded?.()
                             } catch (e) {
                                 if (isRejectionReason(e)) {
@@ -175,6 +181,10 @@ export function QueriedSponsorshipsTable({
 
                                         await waitForGraphSync()
 
+                                        invalidateSponsorshipsForCreatorQueries(wallet)
+
+                                        invalidateAllSponsorshipsQueries()
+
                                         await onStakeEdited?.()
                                     } catch (e) {
                                         if (isRejectionReason(e)) {
@@ -194,7 +204,7 @@ export function QueriedSponsorshipsTable({
                             displayName: 'Join as Operator',
                             disabled:
                                 !element.streamId || !operator || maxOperatorsReached,
-                            async callback() {
+                            callback() {
                                 if (!operator) {
                                     return
                                 }
@@ -202,7 +212,13 @@ export function QueriedSponsorshipsTable({
                                 joinSponsorshipAsOperator({
                                     sponsorship: element,
                                     operator,
-                                    onJoin: onSponsorshipJoined,
+                                    onJoin() {
+                                        invalidateSponsorshipsForCreatorQueries(wallet)
+
+                                        invalidateAllSponsorshipsQueries()
+
+                                        onSponsorshipJoined?.()
+                                    },
                                 })
                             },
                         }

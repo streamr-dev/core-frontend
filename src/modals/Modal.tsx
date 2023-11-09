@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import styled from 'styled-components'
 import { SANS } from '~/shared/utils/styled'
 import BaseModal, { BaseModalProps } from './BaseModal'
 
-export interface ModalProps extends BaseModalProps {
+export interface ModalProps extends Omit<BaseModalProps, 'children'> {
     title?: string
+    children: ReactNode
 }
 
 /**
