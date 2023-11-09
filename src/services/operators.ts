@@ -23,9 +23,6 @@ const getOperatorChainId = () => {
     return defaultChainConfig.id
 }
 
-/**
- * @todo Change args to an object.
- */
 export async function createOperator(
     params: {
         cut: number
