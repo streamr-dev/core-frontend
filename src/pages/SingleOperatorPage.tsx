@@ -119,7 +119,7 @@ export const SingleOperatorPage = () => {
                     operatorId,
                     selectedPeriod,
                     selectedDataSource,
-                    false, // ignore today
+                    { force: true, ignoreToday: false },
                 )
             } catch (e) {
                 errorToast({ title: 'Could not load operator chart data' })

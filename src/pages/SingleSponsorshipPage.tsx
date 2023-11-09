@@ -62,7 +62,7 @@ export const SingleSponsorshipPage = () => {
                     sponsorshipId,
                     selectedPeriod,
                     selectedDataSource,
-                    false, // ignore today
+                    { force: true, ignoreToday: false },
                 )
             } catch (e) {
                 console.warn('Could not load sponsorship chart data', e)

@@ -9,7 +9,7 @@ export const getOperatorStats = async (
     operatorId: string,
     selectedPeriod: ChartPeriod,
     dataSource: string,
-    ignoreToday?: boolean,
+    { force = false, ignoreToday = false } = {},
 ): Promise<{ x: number; y: number }[]> => {
     const tokenInfo = await getSponsorshipTokenInfo()
     const start = ignoreToday ? moment().utc().startOf('day') : moment().utc()
@@ -20,30 +20,35 @@ export const getOperatorStats = async (
             result = await getOperatorDailyBuckets(operatorId, {
                 dateGreaterEqualThan: start.clone().subtract(7, 'days').unix(),
                 dateLowerThan: start.unix(),
+                force,
             })
             break
         case ChartPeriod.OneMonth:
             result = await getOperatorDailyBuckets(operatorId, {
                 dateGreaterEqualThan: start.clone().subtract(30, 'days').unix(),
                 dateLowerThan: start.unix(),
+                force,
             })
             break
         case ChartPeriod.ThreeMonths:
             result = await getOperatorDailyBuckets(operatorId, {
                 dateGreaterEqualThan: start.clone().subtract(90, 'days').unix(),
                 dateLowerThan: start.unix(),
+                force,
             })
             break
         case ChartPeriod.OneYear:
             result = await getOperatorDailyBuckets(operatorId, {
                 dateGreaterEqualThan: start.clone().subtract(365, 'days').unix(),
                 dateLowerThan: start.unix(),
+                force,
             })
             break
         case ChartPeriod.YearToDate:
             result = await getOperatorDailyBuckets(operatorId, {
                 dateGreaterEqualThan: start.clone().startOf('year').unix(),
                 dateLowerThan: start.unix(),
+                force,
             })
             break
         case ChartPeriod.All:
@@ -58,6 +63,7 @@ export const getOperatorStats = async (
                     dateLowerThan: start.unix(),
                     batchSize: maxAmount,
                     skip: maxAmount * i,
+                    force,
                 })
 
                 elements.push(...partialResult)

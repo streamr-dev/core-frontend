@@ -32,9 +32,7 @@ function getApolloClient(): ApolloClient<NormalizedCacheObject> {
     return apolloClient
 }
 
-export async function getRawGraphProject(
-    projectId: string,
-): Promise<NonNullable<GetProjectQuery['project']> | null> {
+export async function getParsedProjectById(projectId: string, { force = false } = {}) {
     const {
         data: { project },
     } = await getApolloClient().query<GetProjectQuery, GetProjectQueryVariables>({
@@ -42,13 +40,8 @@ export async function getRawGraphProject(
         variables: {
             id: projectId,
         },
+        fetchPolicy: force ? 'network-only' : void 0,
     })
-
-    return project || null
-}
-
-export async function getParsedProjectById(projectId: string) {
-    const project = await getRawGraphProject(projectId)
 
     return (project || null) && (await ProjectParser.parseAsync(project))
 }
@@ -59,12 +52,14 @@ export async function getRawGraphProjects({
     skip = 0,
     projectType,
     streamId,
+    force = false,
 }: {
     owner?: string | undefined
     first?: number
     skip?: number
     projectType?: TheGraph.ProjectType
     streamId?: string
+    force?: boolean
 }): Promise<GetProjectsQuery['projects']> {
     const where: Project_Filter = {}
 
@@ -104,6 +99,7 @@ export async function getRawGraphProjects({
             first,
             where,
         },
+        fetchPolicy: force ? 'network-only' : void 0,
     })
 
     return projects
@@ -111,7 +107,11 @@ export async function getRawGraphProjects({
 
 export async function getRawGraphProjectsByText(
     value: string,
-    { first = 20, skip = 0 }: { first?: number; skip?: number },
+    {
+        first = 20,
+        skip = 0,
+        force = false,
+    }: { first?: number; skip?: number; force?: boolean },
 ): Promise<GetProjectsByTextQuery['projectSearch']> {
     const {
         data: { projectSearch: projects = [] },
@@ -125,6 +125,7 @@ export async function getRawGraphProjectsByText(
             skip,
             text: value,
         },
+        fetchPolicy: force ? 'network-only' : void 0,
     })
 
     return projects
@@ -132,6 +133,7 @@ export async function getRawGraphProjectsByText(
 
 export async function getProjectSubscriptions(
     projectId: string,
+    { force = false } = {},
 ): Promise<TheGraph.ProjectSubscription[]> {
     const {
         data: { project },
@@ -143,6 +145,7 @@ export async function getProjectSubscriptions(
         variables: {
             id: projectId,
         },
+        fetchPolicy: force ? 'network-only' : void 0,
     })
 
     return project?.subscriptions || []

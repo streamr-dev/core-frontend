@@ -70,6 +70,7 @@ export function StreamIdDropdown({
                         queryValue,
                         Stream_OrderBy.Id,
                         OrderDirection.Asc,
+                        { force: true },
                     )
                 ).streams.map(({ id }) => id)
             } catch (e) {

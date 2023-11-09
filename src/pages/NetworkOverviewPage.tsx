@@ -91,6 +91,7 @@ function MyOperatorSummary() {
                         end,
                     ).unix(),
                     dateLowerThan: end.unix(),
+                    force: true,
                 })
 
                 const { decimals } = await getSponsorshipTokenInfo()
@@ -255,12 +256,10 @@ function MyDelegationsSummary() {
                     return []
                 }
 
-                return await getDelegationStats(
-                    wallet,
-                    chartPeriod,
-                    chartDataSource,
-                    false, // ignore today
-                )
+                return await getDelegationStats(wallet, chartPeriod, chartDataSource, {
+                    force: true,
+                    ignoreToday: false,
+                })
             } catch (e) {
                 errorToast({ title: 'Could not load my delegations chart data' })
                 return []

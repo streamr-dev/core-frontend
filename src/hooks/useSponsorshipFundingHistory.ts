@@ -21,6 +21,7 @@ export const useSponsorshipFundingHistory = (
                     sponsorshipId,
                     pageSize,
                     ctx.pageParam || 0,
+                    { force: true },
                 )
                 return {
                     skippedElements: ctx.pageParam || 0,

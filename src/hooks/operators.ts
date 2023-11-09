@@ -37,7 +37,7 @@ import { operatorModal } from '~/modals/OperatorModal'
 export function useOperatorForWalletQuery(address = '') {
     return useQuery({
         queryKey: ['useOperatorForWalletQuery', address.toLowerCase()],
-        queryFn: () => getParsedOperatorByOwnerAddress(address),
+        queryFn: () => getParsedOperatorByOwnerAddress(address, { force: true }),
     })
 }
 
@@ -113,7 +113,9 @@ function toDelegationForWallet(operator: ParsedOperator, wallet: string): Delega
         myShare: getDelegatedAmountForWallet(wallet, operator),
     }
 }
-
+/**
+ * @todo Refactor using `useQuery`.
+ */
 export function useDelegationsStats(address = '') {
     const [stats, setStats] = useState<DelegationsStats | undefined | null>()
 
@@ -307,6 +309,7 @@ export function useAllOperatorsQuery({
                         skip,
                         orderBy: mapOperatorOrder(orderBy),
                         orderDirection: orderDirection as OrderDirection,
+                        force: true,
                     }
 
                     if (!searchQuery) {
@@ -563,7 +566,9 @@ export function useSaveOperatorCallback() {
                      */
 
                     try {
-                        const id = (await getParsedOperatorByOwnerAddress(owner))?.id
+                        const id = (
+                            await getParsedOperatorByOwnerAddress(owner, { force: true })
+                        )?.id
 
                         if (!id) {
                             throw new Error('Empty operator id')

@@ -72,7 +72,7 @@ const usePurchaseStore = create<Store>((set, get) => {
             )
 
             try {
-                const entries = await getProjectSubscriptions(projectId)
+                const entries = await getProjectSubscriptions(projectId, { force: true })
 
                 set((current) =>
                     produce(current, (next) => {
@@ -120,7 +120,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                 )
 
                 const { paymentDetails = [], streams = [] } =
-                    (await getParsedProjectById(projectId)) || {}
+                    (await getParsedProjectById(projectId, { force: true })) || {}
 
                 const chainIds = paymentDetails.map(({ domainId }) => domainId)
 

@@ -130,7 +130,10 @@ const prepareStreamResult = (
     }
 }
 
-export const getStreams = async (streamIds: Array<string>): Promise<TheGraphStream[]> => {
+export const getStreams = async (
+    streamIds: Array<string>,
+    { force = false } = {},
+): Promise<TheGraphStream[]> => {
     const {
         data: { streams },
     } = await getGraphClient().query<GetStreamsQuery, GetStreamsQueryVariables>({
@@ -138,6 +141,7 @@ export const getStreams = async (streamIds: Array<string>): Promise<TheGraphStre
         variables: {
             streamIds,
         },
+        fetchPolicy: force ? 'network-only' : void 0,
     })
 
     if (streams && streams.length > 0) {
@@ -154,6 +158,7 @@ export const getPagedStreams = async (
     search?: string,
     orderBy = Stream_OrderBy.Id,
     orderDirection = OrderDirection.Asc,
+    { force = false } = {},
 ): Promise<TheGraphStreamResult> => {
     const orderOperator = orderDirection === OrderDirection.Asc ? 'gt' : 'lt'
 
@@ -179,6 +184,7 @@ export const getPagedStreams = async (
                 orderDirection,
                 where,
             },
+            fetchPolicy: force ? 'network-only' : void 0,
         },
     )
 
@@ -351,6 +357,7 @@ export const getStreamsOwnedBy = async (
     owner?: string,
     search?: string,
     onlyPublic?: boolean,
+    { force = false } = {},
 ): Promise<TheGraphStream[]> => {
     const allOwnedStreams = await getPagedStreams(
         999,
@@ -359,6 +366,7 @@ export const getStreamsOwnedBy = async (
         search,
         Stream_OrderBy.Id,
         OrderDirection.Asc,
+        { force },
     )
 
     let result = allOwnedStreams.streams
@@ -385,6 +393,7 @@ export const checkIfStreamExists = async (
         variables: {
             streamId: potentialStreamId,
         },
+        fetchPolicy: 'network-only',
     })
     return !!stream
 }

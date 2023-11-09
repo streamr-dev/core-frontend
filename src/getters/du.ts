@@ -27,6 +27,7 @@ export async function getDataUnionsOwnedByInChain(
         variables: {
             owner: account.toLowerCase(),
         },
+        fetchPolicy: 'network-only',
     })
 
     return data.dataUnions.map((du) => ({

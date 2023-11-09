@@ -110,6 +110,7 @@ export function useSponsorshipsForCreatorQuery(
                         streamId,
                         orderBy: mapSponsorshipOrder(orderBy),
                         orderDirection: orderDirection as OrderDirection,
+                        force: true,
                     }) as Promise<Sponsorship[]>,
             )
 
@@ -150,6 +151,7 @@ export function useAllSponsorshipsQuery({
                         streamId,
                         orderBy: mapSponsorshipOrder(orderBy),
                         orderDirection: orderDirection as OrderDirection,
+                        force: true,
                     }) as Promise<Sponsorship[]>,
             )
 
@@ -169,9 +171,9 @@ export function useSponsorshipQuery(sponsorshipId: string) {
             let rawSponsorship: Sponsorship | undefined | null
 
             try {
-                rawSponsorship = (await getSponsorshipById(
-                    sponsorshipId,
-                )) as Sponsorship | null
+                rawSponsorship = (await getSponsorshipById(sponsorshipId, {
+                    force: true,
+                })) as Sponsorship | null
             } catch (e) {
                 console.warn('Failed to fetch a Sponsorship', e)
 

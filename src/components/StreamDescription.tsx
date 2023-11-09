@@ -4,6 +4,9 @@ import { getStreamDescription } from '~/getters'
 export function StreamDescription({ streamId }: { streamId: string }) {
     const [desc, setDesc] = useState<string>()
 
+    /**
+     * @todo Refactor using `useQuery`.
+     */
     useEffect(() => {
         let mounted = true
 
@@ -19,7 +22,7 @@ export function StreamDescription({ streamId }: { streamId: string }) {
             } catch (_) {
                 /**
                  * We're only interested in the happy path here. Ok to ignore
-                 * paths that are not that happy.
+                 * paths that are not so happy.
                  */
             }
         })

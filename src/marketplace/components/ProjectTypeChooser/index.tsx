@@ -288,7 +288,19 @@ function useGotAnyStreams() {
             }
 
             try {
-                return (await getPagedStreams(1, undefined, wallet)).streams.length > 0
+                return (
+                    (
+                        await getPagedStreams(
+                            1,
+                            undefined,
+                            wallet,
+                            undefined,
+                            undefined,
+                            undefined,
+                            { force: true },
+                        )
+                    ).streams.length > 0
+                )
             } catch (e) {}
 
             return false
