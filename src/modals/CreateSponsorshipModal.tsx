@@ -212,6 +212,7 @@ export default function CreateSponsorshipModal({
                             readOnly={busy}
                             type="number"
                             min={0}
+                            step="any"
                             value={initialAmount || ''}
                         />
                         <TextAppendix>
@@ -241,6 +242,7 @@ export default function CreateSponsorshipModal({
                             readOnly={busy}
                             type="number"
                             min={0}
+                            step="any"
                             value={payoutRate || ''}
                         />
                         <TextAppendix>
