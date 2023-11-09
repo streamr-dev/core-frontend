@@ -23,6 +23,7 @@ import JoinSponsorshipModal from '~/modals/JoinSponsorshipModal'
 import { Layer } from '~/utils/Layer'
 import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
 import { getBalanceForSponsorship } from '~/utils/sponsorships'
+import { getQueryClient } from '~/utils'
 
 function getDefaultQueryParams(pageSize: number) {
     return {
@@ -69,6 +70,14 @@ async function getSponsorshipsAndParse(getter: () => Promise<Sponsorship[]>) {
     return sponsorships
 }
 
+export function invalidateSponsorshipsForCreatorQueries(address: string | undefined) {
+    getQueryClient().invalidateQueries({
+        exact: false,
+        queryKey: ['useSponsorshipsForCreatorQuery', address?.toLowerCase() || ''],
+        refetchType: 'active',
+    })
+}
+
 export function useSponsorshipsForCreatorQuery(
     address: string | undefined,
     {
@@ -88,8 +97,8 @@ export function useSponsorshipsForCreatorQuery(
     return useInfiniteQuery({
         queryKey: [
             'useSponsorshipsForCreatorQuery',
-            pageSize,
             creator,
+            pageSize,
             streamId,
             orderBy,
             orderDirection,
@@ -120,6 +129,14 @@ export function useSponsorshipsForCreatorQuery(
             }
         },
         ...getDefaultQueryParams(pageSize),
+    })
+}
+
+export function invalidateAllSponsorshipsQueries() {
+    getQueryClient().invalidateQueries({
+        exact: false,
+        queryKey: ['useAllSponsorshipsQuery'],
+        refetchType: 'active',
     })
 }
 
@@ -237,6 +254,10 @@ export function useCreateSponsorship() {
                         )
 
                         await waitForGraphSync()
+
+                        invalidateSponsorshipsForCreatorQueries(wallet)
+
+                        invalidateAllSponsorshipsQueries()
 
                         options.onDone?.()
                     } catch (e) {

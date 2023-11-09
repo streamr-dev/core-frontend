@@ -1,12 +1,7 @@
 import React from 'react'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
-import {
-    QueryClient,
-    UseInfiniteQueryResult,
-    UseQueryResult,
-} from '@tanstack/react-query'
-export { isAddress as isEthereumAddress } from 'web3-validator'
+import { QueryClient } from '@tanstack/react-query'
 import StreamrClient, { Stream } from 'streamr-client'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import getNativeTokenName from '~/shared/utils/nativeToken'
@@ -19,6 +14,7 @@ import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
 import { history } from '~/consts'
 import isCodedError from './isCodedError'
 import { BNish, toBN } from './bn'
+export { isAddress as isEthereumAddress } from 'web3-validator'
 
 /**
  * Gas money checker.
@@ -137,20 +133,6 @@ export function isProjectOwnedBy<
  */
 export async function sleep(millis: number) {
     await new Promise((resolve) => void setTimeout(resolve, millis))
-}
-
-/**
- * Quietly (and in a non-blocking manner) refetches a given query
- * and reports failures to the console.
- */
-export function refetchQuery(query: UseInfiniteQueryResult | UseQueryResult) {
-    setTimeout(async () => {
-        try {
-            await query.refetch()
-        } catch (e) {
-            console.warn('Failed to refetch a query', e)
-        }
-    })
 }
 
 /**

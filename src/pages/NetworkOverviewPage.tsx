@@ -40,7 +40,7 @@ import Tabs, { Tab } from '~/shared/components/Tabs'
 import { LoadMoreButton } from '~/components/LoadMore'
 import { Separator } from '~/components/Separator'
 import { QueriedSponsorshipsTable } from '~/components/QueriedSponsorshipsTable'
-import { abbr, refetchQuery } from '~/utils'
+import { abbr } from '~/utils'
 import { OperatorIdCell } from '~/components/Table'
 import Button from '~/shared/components/Button'
 import { getDelegationStats } from '~/getters/getDelegationStats'
@@ -443,22 +443,13 @@ function MyDelegations() {
 }
 
 function MySponsorships() {
-    const wallet = useWalletAccount()
-
-    const query = useSponsorshipsForCreatorQuery(wallet)
-
-    function refetch() {
-        refetchQuery(query)
-    }
+    const query = useSponsorshipsForCreatorQuery(useWalletAccount())
 
     return (
         <NetworkPageSegment title="My sponsorships" foot>
             <WalletPass resourceName="sponsorships">
                 <QueriedSponsorshipsTable
                     query={query}
-                    onSponsorshipFunded={refetch}
-                    onSponsorshipJoined={refetch}
-                    onStakeEdited={refetch}
                     noDataFirstLine="You don't have any sponsorships yet."
                     noDataSecondLine={
                         <>

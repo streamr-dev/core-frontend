@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import { NetworkHelmet } from '~/components/Helmet'
@@ -14,7 +14,6 @@ import {
     useIsCreatingSponsorshipForWallet,
     useSponsorshipsForCreatorQuery,
 } from '~/hooks/sponsorships'
-import { refetchQuery } from '~/utils'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import routes from '~/routes'
 
@@ -56,15 +55,6 @@ export const SponsorshipsPage = () => {
         orderDirection,
     })
 
-    const tabQueryMap = {
-        [TabOption.AllSponsorships]: allSponsorshipsQuery,
-        [TabOption.MySponsorships]: mySponsorshipsQuery,
-    }
-
-    const tabQueryMapRef = useRef(tabQueryMap)
-
-    tabQueryMapRef.current = tabQueryMap
-
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -72,14 +62,6 @@ export const SponsorshipsPage = () => {
             navigate(routes.network.sponsorships({ tab: TabOption.AllSponsorships }))
         }
     }, [wallet, navigate])
-
-    useEffect(() => {
-        refetchQuery(tabQueryMapRef.current[selectedTab])
-    }, [selectedTab])
-
-    function refetchQueries() {
-        Object.values(tabQueryMap).forEach(refetchQuery)
-    }
 
     const createSponsorship = useCreateSponsorship()
 
@@ -109,7 +91,7 @@ export const SponsorshipsPage = () => {
                     <Button
                         waiting={isCreatingSponsorship}
                         onClick={() => {
-                            createSponsorship(wallet, { onDone: refetchQueries })
+                            createSponsorship(wallet)
                         }}
                         disabled={!wallet}
                     >
@@ -137,9 +119,6 @@ export const SponsorshipsPage = () => {
                                     ? allSponsorshipsQuery
                                     : mySponsorshipsQuery
                             }
-                            onSponsorshipFunded={refetchQueries}
-                            onSponsorshipJoined={refetchQueries}
-                            onStakeEdited={refetchQueries}
                             noDataFirstLine={
                                 selectedTab === TabOption.AllSponsorships
                                     ? 'No sponsorships found.'
