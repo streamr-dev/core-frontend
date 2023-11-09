@@ -295,6 +295,7 @@ module.exports = {
                               'src/queries/*.ts',
                               '**/*.css',
                               '**/*.pcss',
+                              'types/**/*.d.ts',
                           ],
                       }),
                       new WebpackNotifierPlugin(),
