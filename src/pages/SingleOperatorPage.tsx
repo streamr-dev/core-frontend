@@ -175,11 +175,7 @@ export const SingleOperatorPage = () => {
                 <OperatorActionBar
                     operator={operator}
                     handleEdit={(currentOperator) => {
-                        saveOperator(currentOperator, {
-                            onDone() {
-                                invalidateActiveOperatorByIdQueries(currentOperator.id)
-                            },
-                        })
+                        saveOperator(currentOperator)
                     }}
                     onDelegationChange={() => {
                         invalidateActiveOperatorByIdQueries(operator.id)

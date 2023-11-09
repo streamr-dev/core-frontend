@@ -198,6 +198,14 @@ export function useDelegationsStats(address = '') {
     return stats
 }
 
+export function invalidateDelegationsForWalletQueries() {
+    getQueryClient().invalidateQueries({
+        exact: false,
+        queryKey: ['useDelegationsForWalletQuery'],
+        refetchType: 'active',
+    })
+}
+
 export function useDelegationsForWalletQuery({
     address: addressProp = '',
     pageSize = 10,
@@ -216,7 +224,7 @@ export function useDelegationsForWalletQuery({
     const searchQuery = searchQueryProp.toLowerCase()
 
     return useInfiniteQuery({
-        queryKey: ['useDelegationsQuery', address, searchQuery, pageSize],
+        queryKey: ['useDelegationsForWalletQuery', address, searchQuery, pageSize],
         async queryFn({ pageParam: skip = 0 }) {
             const elements: Delegation[] = await getParsedOperators(
                 () => {
@@ -226,6 +234,7 @@ export function useDelegationsForWalletQuery({
                         address,
                         orderBy: mapOperatorOrder(orderBy),
                         orderDirection: orderDirection as OrderDirection,
+                        force: true,
                     }
 
                     if (!searchQuery) {
@@ -277,6 +286,14 @@ export function useDelegationsForWalletQuery({
         },
         staleTime: 60 * 1000, // 1 minute
         keepPreviousData: true,
+    })
+}
+
+export function invalidateAllOperatorsQueries() {
+    getQueryClient().invalidateQueries({
+        exact: false,
+        queryKey: ['useAllOperatorsQuery'],
+        refetchType: 'active',
     })
 }
 
@@ -574,14 +591,23 @@ export function useSaveOperatorCallback() {
                             throw new Error('Empty operator id')
                         }
 
+                        invalidateActiveOperatorByIdQueries(id)
+
                         options.onOperatorId?.(id)
                     } catch (e) {
                         if (options.onNoOperatorIdError) {
                             options.onNoOperatorIdError(owner, e)
                         } else {
-                            console.warn(`Could not load an operator owned by "${owner}"`)
+                            console.warn(
+                                `Could not load an operator owned by "${owner}"`,
+                                e,
+                            )
                         }
                     }
+
+                    invalidateAllOperatorsQueries()
+
+                    invalidateDelegationsForWalletQueries()
 
                     options.onDone?.(owner)
                 } catch (e) {

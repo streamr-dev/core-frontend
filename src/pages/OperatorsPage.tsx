@@ -119,16 +119,9 @@ export const OperatorsPage = () => {
                             onClick={() => {
                                 saveOperator(undefined, {
                                     onOperatorId(operatorId) {
-                                        invalidateActiveOperatorByIdQueries(operatorId)
-
                                         navigate(
                                             routes.network.operator({ id: operatorId }),
                                         )
-                                    },
-                                    onNoOperatorIdError() {
-                                        refetchQuery(allOperatorsQuery)
-
-                                        refetchQuery(myDelegationsQuery)
                                     },
                                 })
                             }}
