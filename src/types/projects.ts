@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { isEthereumAddress } from '~/utils'
+import { isAddress } from 'web3-validator'
 import { ProjectType } from '~/shared/types'
 import { formatChainName } from '~/utils'
 import { toBN } from '~/utils/bn'
@@ -62,11 +62,7 @@ export const SalePointsPayload = z.record(
             })
         })
         .superRefine(({ enabled, beneficiaryAddress }, ctx) => {
-            if (
-                !enabled ||
-                !beneficiaryAddress ||
-                isEthereumAddress(beneficiaryAddress)
-            ) {
+            if (!enabled || !beneficiaryAddress || isAddress(beneficiaryAddress)) {
                 return
             }
 
@@ -93,7 +89,7 @@ export const SalePointsPayload = z.record(
                 })
             }
 
-            if (isEthereumAddress(pricingTokenAddress)) {
+            if (isAddress(pricingTokenAddress)) {
                 return
             }
 

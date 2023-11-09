@@ -2,6 +2,7 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { useCallback, useEffect, useState } from 'react'
 import { z } from 'zod'
 import { toaster } from 'toasterhea'
+import { isAddress } from 'web3-validator'
 import { Operator, Operator_OrderBy, OrderDirection } from '~/generated/gql/network'
 import {
     getAllOperators,
@@ -16,7 +17,7 @@ import {
     searchOperatorsById,
     searchOperatorsByMetadata,
 } from '~/getters'
-import { getQueryClient, isEthereumAddress } from '~/utils'
+import { getQueryClient } from '~/utils'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
 import { Delegation, DelegationsStats } from '~/types'
@@ -243,7 +244,7 @@ export function useDelegationsForWalletQuery({
                         return getOperatorsByDelegation(params) as Promise<Operator[]>
                     }
 
-                    if (isEthereumAddress(searchQuery)) {
+                    if (isAddress(searchQuery)) {
                         /**
                          * Look for a delegation for a given operator id.
                          */
@@ -332,7 +333,7 @@ export function useAllOperatorsQuery({
                         return getAllOperators(params) as Promise<Operator[]>
                     }
 
-                    if (isEthereumAddress(searchQuery)) {
+                    if (isAddress(searchQuery)) {
                         return searchOperatorsById({
                             ...params,
                             operatorId: searchQuery,

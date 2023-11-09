@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { isEthereumAddress } from '~/utils'
+import { isAddress } from 'web3-validator'
 import FormModal, {
     FieldWrap,
     FormModalProps,
@@ -23,7 +23,7 @@ export default function AddNodeAddressModal({
     const [address, setAddress] = useState('')
 
     const isValidAddress = useMemo(
-        () => (address.length > 0 ? isEthereumAddress(address) : true),
+        () => (address.length > 0 ? isAddress(address) : true),
         [address],
     )
 

@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import { isAddress } from 'web3-validator'
 import { COLORS, TABLET } from '~/shared/utils/styled'
 import { Bits, setBits, unsetBits } from '~/shared/stores/streamEditor'
 import PermissionEditor from '~/pages/AbstractStreamEditPage/AccessControlSection/PermissionEditor'
-import { isEthereumAddress } from '~/utils'
 import { address0 } from '~/consts'
 import UnstyledLabel from '~/shared/components/Ui/Label'
 import UnstyledErrors, { MarketplaceTheme } from '~/shared/components/Ui/Errors'
@@ -74,7 +74,7 @@ export default function NewStreamPermissionsModal({
                     return void setError('Address required')
                 }
 
-                if (!isEthereumAddress(address)) {
+                if (!isAddress(address)) {
                     return void setError('Invalid address format')
                 }
 

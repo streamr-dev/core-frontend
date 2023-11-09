@@ -1,12 +1,12 @@
 import React, { ComponentProps, useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
+import { isAddress } from 'web3-validator'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { getDataAddress } from '~/marketplace/utils/web3'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import TextInput from '~/shared/components/Ui/Text/StyledInput'
 import Button from '~/shared/components/Button'
 import SelectField2 from '~/marketplace/components/SelectField2'
-import { isEthereumAddress } from '~/utils'
 import { SalePoint } from '~/shared/types'
 import useTokenInfo, { getCachedTokenInfo, getTokenInfo } from '~/hooks/useTokenInfo'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
@@ -62,7 +62,7 @@ export default function SalePointTokenSelector({
 
     const canFetchTokenInfo =
         !disabled &&
-        isEthereumAddress(customTokenAddress) &&
+        isAddress(customTokenAddress) &&
         !isCustomTokenInfoCached &&
         !isLoadingTokenInfo
 
