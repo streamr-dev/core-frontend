@@ -1,6 +1,4 @@
-import { z } from 'zod'
 import { TimeUnit } from '~/shared/utils/timeUnit'
-import { ProjectPermissions } from '~/shared/consts'
 import { GetProjectQuery } from '~/generated/gql/network'
 
 export enum ProjectType {
@@ -21,8 +19,6 @@ export interface SalePoint {
 }
 
 export type QueriedGraphProject = NonNullable<GetProjectQuery['project']>
-
-export type ProjectPermissions = z.infer<typeof ProjectPermissions>
 
 export namespace TheGraph {
     export interface DataUnion {

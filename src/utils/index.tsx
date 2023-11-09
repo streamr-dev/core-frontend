@@ -9,7 +9,6 @@ import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { getProjectRegistryContract } from '~/getters'
 import { Layer } from '~/utils/Layer'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
-import { ObjectWithMessage } from '~/shared/consts'
 import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
 import { history } from '~/consts'
 import isCodedError from './isCodedError'
@@ -102,6 +101,10 @@ export async function waitForPurchasePropagation(
 
     throw new Error('Finding `Subscribed` event timed out')
 }
+
+const ObjectWithMessage = z.object({
+    message: z.string(),
+})
 
 export function isMessagedObject(e: unknown): e is z.infer<typeof ObjectWithMessage> {
     return ObjectWithMessage.safeParse(e).success
