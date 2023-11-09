@@ -47,6 +47,7 @@ import {
     ActionBarWalletDisplay,
 } from '~/components/ActionBars/ActionBarButton'
 import { AboutSponsorship } from '~/components/ActionBars/AboutSponsorship'
+import { connectModal } from '~/modals/ConnectModal'
 
 const DayInSeconds = 60 * 60 * 24
 
@@ -170,14 +171,16 @@ export function SponsorshipActionBar({
                             disabled={!streamId}
                             waiting={isFundingSponsorship}
                             onClick={async () => {
-                                if (!wallet) {
-                                    return
-                                }
-
                                 try {
+                                    const sponsor = wallet || (await connectModal.pop())
+
+                                    if (!sponsor) {
+                                        return
+                                    }
+
                                     await fundSponsorship({
                                         sponsorship,
-                                        wallet,
+                                        wallet: sponsor,
                                     })
 
                                     await waitForGraphSync()
