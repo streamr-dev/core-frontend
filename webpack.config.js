@@ -293,6 +293,8 @@ module.exports = {
                               'travis_scripts/*.*',
                               'cypress/**/*.*',
                               'src/queries/*.ts',
+                              '**/*.css',
+                              '**/*.pcss',
                           ],
                       }),
                       new WebpackNotifierPlugin(),
