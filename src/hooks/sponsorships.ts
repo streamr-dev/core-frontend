@@ -305,7 +305,7 @@ export function useIsFundingSponsorship(
 export function invalidateSponsorshipDailyBucketsQueries(sponsorshipId: string) {
     return getQueryClient().invalidateQueries({
         exact: false,
-        queryKey: ['sponsorshipChartQuery', sponsorshipId],
+        queryKey: ['useSponsorshipDailyBucketsQuery', sponsorshipId],
         refetchType: 'active',
     })
 }
@@ -320,7 +320,7 @@ export function useSponsorshipDailyBucketsQuery({
     dataSource: 'amountStaked' | 'numberOfOperators' | 'apy'
 }) {
     return useQuery({
-        queryKey: ['sponsorshipChartQuery', sponsorshipId, period, dataSource],
+        queryKey: ['useSponsorshipDailyBucketsQuery', sponsorshipId, period, dataSource],
         queryFn: async () => {
             try {
                 if (!sponsorshipId) {
