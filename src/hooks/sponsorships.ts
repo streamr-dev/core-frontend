@@ -29,6 +29,7 @@ import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
 import { fundSponsorshipModal } from '~/modals/FundSponsorshipModal'
 import { getSponsorshipStats } from '~/getters/getSponsorshipStats'
 import { invalidateSponsorshipFundingHistoryQueries } from '~/hooks/useSponsorshipFundingHistoryQuery'
+import { invalidateActiveOperatorByIdQueries } from './operators'
 
 function getDefaultQueryParams(pageSize: number) {
     return {
@@ -515,4 +516,11 @@ export async function invalidateSponsorshipQueries(
     await invalidateSponsorshipDailyBucketsQueries(sponsorshipId)
 
     await invalidateSponsorshipFundingHistoryQueries(sponsorshipId)
+
+    /**
+     * Invalidate OperatorById queries (all active) used mainly by Operator
+     * pages, too. There's the Sponsorships section there and it's driven
+     * by operator's collection of stakes.
+     */
+    await invalidateActiveOperatorByIdQueries(undefined)
 }
