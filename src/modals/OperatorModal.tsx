@@ -26,7 +26,7 @@ import CropImageModal from '~/components/CropImageModal/CropImageModal'
 import { Layer } from '~/utils/Layer'
 import { Alert } from '~/components/Alert'
 import { ParsedOperator } from '~/parsers/OperatorParser'
-import { sameBN } from '~/utils'
+import { isTransactionRejection, sameBN } from '~/utils'
 import { createOperator, updateOperator } from '~/services/operators'
 import { blockObserver } from '~/utils/blocks'
 import { useWalletAccount } from '~/shared/stores/wallet'
@@ -156,8 +156,6 @@ function OperatorModal({ onResolve, onReject, operator, ...props }: Props) {
 
     const canSubmit = !busy && !!finalData && dirty && !!walletAddress
 
-    const canBackdropDismiss = !busy && !dirty
-
     const readonlyCut = !!operator && operator.stakes.length > 0
 
     return (
@@ -168,7 +166,7 @@ function OperatorModal({ onResolve, onReject, operator, ...props }: Props) {
             submitLabel={submitLabel}
             submitting={busy}
             onBeforeAbort={(reason) =>
-                reason !== RejectionReason.Backdrop || canBackdropDismiss
+                !busy && (reason !== RejectionReason.Backdrop || !dirty)
             }
             onReject={onReject}
             onSubmit={async () => {
@@ -202,6 +200,16 @@ function OperatorModal({ onResolve, onReject, operator, ...props }: Props) {
                     }
 
                     onResolve?.(operatorId)
+                } catch (e) {
+                    if (isRejectionReason(e)) {
+                        return
+                    }
+
+                    if (isTransactionRejection(e)) {
+                        return
+                    }
+
+                    throw e
                 } finally {
                     setBusy(false)
                 }
