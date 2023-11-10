@@ -119,6 +119,7 @@ export async function createSponsorship(formData: CreateSponsorshipForm): Promis
 export async function fundSponsorship(
     sponsorshipId: string,
     amount: BNish,
+    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
     const chainId = getSponsorshipChainId()
 
@@ -143,8 +144,11 @@ export async function fundSponsorship(
             '0x',
         )
 
-        const receipt = await tx.wait()
-        saveLastBlockNumber(receipt.blockNumber)
+        const { blockNumber } = await tx.wait()
+
+        saveLastBlockNumber(blockNumber)
+
+        await options.onBlockNumber?.(blockNumber)
     })
 }
 
