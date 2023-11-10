@@ -499,7 +499,7 @@ export const mapSponsorshipOrder = (columnKey?: string): Sponsorship_OrderBy => 
 /**
  * Invalidates a collection of sponsorship-related queries.
  */
-export async function invalidateSponsorshipQueries(
+export function invalidateSponsorshipQueries(
     invalidator: string | undefined,
     sponsorshipId: string | undefined,
 ) {
@@ -507,20 +507,20 @@ export async function invalidateSponsorshipQueries(
         return
     }
 
-    await invalidateSponsorshipsForCreatorQueries(invalidator)
+    invalidateSponsorshipsForCreatorQueries(invalidator)
 
-    await invalidateAllSponsorshipsQueries()
+    invalidateAllSponsorshipsQueries()
 
-    await invalidateSponsorshipByIdQueries(sponsorshipId)
+    invalidateSponsorshipByIdQueries(sponsorshipId)
 
-    await invalidateSponsorshipDailyBucketsQueries(sponsorshipId)
+    invalidateSponsorshipDailyBucketsQueries(sponsorshipId)
 
-    await invalidateSponsorshipFundingHistoryQueries(sponsorshipId)
+    invalidateSponsorshipFundingHistoryQueries(sponsorshipId)
 
     /**
      * Invalidate OperatorById queries (all active) used mainly by Operator
      * pages, too. There's the Sponsorships section there and it's driven
      * by operator's collection of stakes.
      */
-    await invalidateActiveOperatorByIdQueries(undefined)
+    invalidateActiveOperatorByIdQueries(undefined)
 }
