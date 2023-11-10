@@ -342,6 +342,10 @@ export function useSponsorshipDailyBucketsQuery({
     })
 }
 
+/**
+ * Returns a function that takes the user through the process of funding
+ * a Sponsorship (with the modal and input validation).
+ */
 export function useFundSponsorshipCallback() {
     const withFlag = useFlagger()
 

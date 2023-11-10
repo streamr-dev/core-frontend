@@ -5,13 +5,11 @@ import { Sponsorship, sponsorshipABI } from '@streamr/network-contracts'
 import { config } from '@streamr/config'
 import { Contract } from 'ethers'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
-import FundSponsorshipModal from '~/modals/FundSponsorshipModal'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import { Layer } from '~/utils/Layer'
 import {
     forceUnstakeFromSponsorship,
-    fundSponsorship as fundSponsorshipService,
     reduceStakeOnSponsorship,
     stakeOnSponsorship,
 } from '~/services/sponsorships'
@@ -23,7 +21,6 @@ import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { getCustomTokenBalance } from '~/marketplace/utils/web3'
 import { defaultChainConfig } from '~/getters/getChainConfig'
-import { invalidateSponsorshipsForCreatorQueries } from '~/hooks/sponsorships'
 
 /**
  * Scouts for Operator's funding share.
@@ -48,32 +45,6 @@ export function isSponsorshipFundedByOperator(
 
     const operatorStake = getSponsorshipStakeForOperator(sponsorship.stakes, operator.id)
     return operatorStake != null && operatorStake.amount.isGreaterThan(0)
-}
-
-const fundSponsorshipModal = toaster(FundSponsorshipModal, Layer.Modal)
-
-/**
- * Takes the user through the process of funding a Sponsorship (with
- * the modal and input validation).
- */
-export async function fundSponsorship(
-    sponsorshipId: string,
-    payoutPerDay: string,
-    wallet: string,
-) {
-    const { decimals, symbol: tokenSymbol } = await getSponsorshipTokenInfo()
-
-    const balance = (await getBalanceForSponsorship(wallet)).toString()
-
-    await fundSponsorshipModal.pop({
-        decimals,
-        tokenSymbol,
-        balance,
-        payoutPerDay,
-        async onSubmit(value) {
-            await fundSponsorshipService(sponsorshipId, value)
-        },
-    })
 }
 
 const editStakeModal = toaster(EditStakeModal, Layer.Modal)

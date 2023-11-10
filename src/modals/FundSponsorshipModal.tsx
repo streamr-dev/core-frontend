@@ -31,12 +31,7 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
 
 const DayInSeconds = 60 * 60 * 24
 
-export default function FundSponsorshipModal({
-    balance,
-    onResolve,
-    sponsorship,
-    ...props
-}: Props) {
+function FundSponsorshipModal({ balance, onResolve, sponsorship, ...props }: Props) {
     const { decimals = 18 } = useSponsorshipTokenInfo() || {}
 
     const [rawAmount, setRawAmount] = useState('')

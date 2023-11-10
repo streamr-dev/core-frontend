@@ -29,11 +29,7 @@ import {
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { Tip } from '~/components/Tip'
 import {
-    invalidateAllSponsorshipsQueries,
-    invalidateSponsorshipByIdQueries,
-    invalidateSponsorshipDailyBucketsQueries,
     invalidateSponsorshipQueries,
-    invalidateSponsorshipsForCreatorQueries,
     useEditSponsorshipFunding,
     useFundSponsorshipCallback,
     useIsEditingSponsorshipFunding,
@@ -52,7 +48,6 @@ import {
     ActionBarWalletDisplay,
 } from '~/components/ActionBars/ActionBarButton'
 import { AboutSponsorship } from '~/components/ActionBars/AboutSponsorship'
-import { invalidateSponsorshipFundingHistoryQueries } from '~/hooks/useSponsorshipFundingHistoryQuery'
 
 const DayInSeconds = 60 * 60 * 24
 
