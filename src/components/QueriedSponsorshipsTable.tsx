@@ -16,18 +16,16 @@ import {
     invalidateAllSponsorshipsQueries,
     invalidateSponsorshipsForCreatorQueries,
     useEditSponsorshipFunding,
-    useFundSponsorship,
+    useFundSponsorshipCallback,
     useJoinSponsorshipAsOperator,
 } from '~/hooks/sponsorships'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { FundedUntilCell, StreamIdCell } from '~/components/Table'
 import { abbr } from '~/utils'
-import { connectModal } from '~/modals/ConnectModal'
 
 interface Props {
     noDataFirstLine?: ReactNode
     noDataSecondLine?: ReactNode
-    onSponsorshipFunded?: () => void | Promise<void>
     onSponsorshipJoined?: () => void | Promise<void>
     onStakeEdited?: () => void | Promise<void>
     orderBy?: string
@@ -39,7 +37,6 @@ interface Props {
 export function QueriedSponsorshipsTable({
     noDataFirstLine = 'No data',
     noDataSecondLine,
-    onSponsorshipFunded,
     onSponsorshipJoined,
     onStakeEdited,
     orderBy,
@@ -53,7 +50,7 @@ export function QueriedSponsorshipsTable({
 
     const operator = useOperatorForWallet(wallet)
 
-    const fundSponsorship = useFundSponsorship()
+    const fundSponsorship = useFundSponsorshipCallback()
 
     const joinSponsorshipAsOperator = useJoinSponsorshipAsOperator()
 
@@ -138,33 +135,8 @@ export function QueriedSponsorshipsTable({
                     {
                         displayName: 'Sponsor',
                         disabled: ({ streamId }) => !streamId,
-                        async callback(element) {
-                            try {
-                                const sponsor = wallet || (await connectModal.pop())
-
-                                if (!sponsor) {
-                                    return
-                                }
-
-                                await fundSponsorship({
-                                    sponsorship: element,
-                                    wallet: sponsor,
-                                })
-
-                                await waitForGraphSync()
-
-                                invalidateSponsorshipsForCreatorQueries(wallet)
-
-                                invalidateAllSponsorshipsQueries()
-
-                                await onSponsorshipFunded?.()
-                            } catch (e) {
-                                if (isRejectionReason(e)) {
-                                    return
-                                }
-
-                                console.warn('Could not fund a Sponsorship', e)
-                            }
+                        callback(element) {
+                            fundSponsorship(element)
                         },
                     },
                     (element) => {

@@ -23,6 +23,7 @@ import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { getCustomTokenBalance } from '~/marketplace/utils/web3'
 import { defaultChainConfig } from '~/getters/getChainConfig'
+import { invalidateSponsorshipsForCreatorQueries } from '~/hooks/sponsorships'
 
 /**
  * Scouts for Operator's funding share.

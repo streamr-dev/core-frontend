@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
 import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import { NoData } from '~/shared/components/NoData'
@@ -12,18 +11,20 @@ import {
     formatLongDate,
     formatShortDate,
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
-import { errorToast } from '~/utils/toast'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { SponsorshipActionBar } from '~/components/ActionBars/SponsorshipActionBar'
-import { useSponsorshipFundingHistory } from '~/hooks/useSponsorshipFundingHistory'
-import { getSponsorshipStats } from '~/getters/getSponsorshipStats'
+import { useSponsorshipFundingHistoryQuery } from '~/hooks/useSponsorshipFundingHistoryQuery'
 import { ChartPeriod } from '~/types'
 import NetworkPageSegment, { SegmentGrid, Pad } from '~/components/NetworkPageSegment'
 import NetworkChartDisplay from '~/components/NetworkChartDisplay'
 import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
-import { useSponsorshipQuery, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
+import {
+    useSponsorshipByIdQuery,
+    useSponsorshipDailyBucketsQuery,
+    useSponsorshipTokenInfo,
+} from '~/hooks/sponsorships'
 import { OperatorIdCell } from '~/components/Table'
 import routes from '~/routes'
 import { abbr } from '~/utils'
@@ -31,7 +32,7 @@ import { abbr } from '~/utils'
 export const SingleSponsorshipPage = () => {
     const sponsorshipId = useParams().id || ''
 
-    const sponsorshipQuery = useSponsorshipQuery(sponsorshipId)
+    const sponsorshipQuery = useSponsorshipByIdQuery(sponsorshipId)
 
     const sponsorship = sponsorshipQuery.data || null
 
@@ -45,33 +46,10 @@ export const SingleSponsorshipPage = () => {
         ChartPeriod.SevenDays,
     )
 
-    const chartQuery = useQuery({
-        queryKey: [
-            'sponsorshipChartQuery',
-            sponsorshipId,
-            selectedPeriod,
-            selectedDataSource,
-        ],
-        queryFn: async () => {
-            try {
-                if (!sponsorshipId) {
-                    return []
-                }
-
-                return await getSponsorshipStats(
-                    sponsorshipId,
-                    selectedPeriod,
-                    selectedDataSource,
-                    { force: true, ignoreToday: false },
-                )
-            } catch (e) {
-                console.warn('Could not load sponsorship chart data', e)
-
-                errorToast({ title: 'Could not load sponsorship chart data' })
-            }
-
-            return []
-        },
+    const chartQuery = useSponsorshipDailyBucketsQuery({
+        sponsorshipId,
+        period: selectedPeriod,
+        dataSource: selectedDataSource,
     })
 
     const { data: chartData = [] } = chartQuery
@@ -121,7 +99,7 @@ export const SingleSponsorshipPage = () => {
         [selectedDataSource],
     )
 
-    const fundingEventsQuery = useSponsorshipFundingHistory(sponsorshipId)
+    const fundingEventsQuery = useSponsorshipFundingHistoryQuery(sponsorshipId)
 
     return (
         <Layout>
@@ -129,16 +107,7 @@ export const SingleSponsorshipPage = () => {
             <LoadingIndicator
                 loading={sponsorshipQuery.isLoading || sponsorshipQuery.isFetching}
             />
-            {!!sponsorship && (
-                <SponsorshipActionBar
-                    sponsorship={sponsorship}
-                    onChange={() => {
-                        sponsorshipQuery.refetch()
-                        chartQuery.refetch()
-                        fundingEventsQuery.refetch()
-                    }}
-                />
-            )}
+            {!!sponsorship && <SponsorshipActionBar sponsorship={sponsorship} />}
             <LayoutColumn>
                 {sponsorship == null ? (
                     <>

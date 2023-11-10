@@ -12,9 +12,9 @@ import { ParsedSponsorship, SponsorshipParser } from '~/parsers/SponsorshipParse
 import { errorToast } from '~/utils/toast'
 import useTokenInfo from '~/hooks/useTokenInfo'
 import getCoreConfig from '~/getters/getCoreConfig'
-import { Chain } from '~/types'
+import { Chain, ChartPeriod } from '~/types'
 import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
-import { editSponsorshipFunding, fundSponsorship } from '~/utils/sponsorships'
+import { editSponsorshipFunding } from '~/utils/sponsorships'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { FlagBusy } from '~/utils/errors'
@@ -24,6 +24,11 @@ import { Layer } from '~/utils/Layer'
 import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
 import { getBalanceForSponsorship } from '~/utils/sponsorships'
 import { getQueryClient } from '~/utils'
+import { getSigner } from '~/shared/stores/wallet'
+import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
+import { fundSponsorshipModal } from '~/modals/FundSponsorshipModal'
+import { getSponsorshipStats } from '~/getters/getSponsorshipStats'
+import { invalidateSponsorshipFundingHistoryQueries } from '~/hooks/useSponsorshipFundingHistoryQuery'
 
 function getDefaultQueryParams(pageSize: number) {
     return {
@@ -71,7 +76,7 @@ async function getSponsorshipsAndParse(getter: () => Promise<Sponsorship[]>) {
 }
 
 export function invalidateSponsorshipsForCreatorQueries(address: string | undefined) {
-    getQueryClient().invalidateQueries({
+    return getQueryClient().invalidateQueries({
         exact: false,
         queryKey: ['useSponsorshipsForCreatorQuery', address?.toLowerCase() || ''],
         refetchType: 'active',
@@ -133,7 +138,7 @@ export function useSponsorshipsForCreatorQuery(
 }
 
 export function invalidateAllSponsorshipsQueries() {
-    getQueryClient().invalidateQueries({
+    return getQueryClient().invalidateQueries({
         exact: false,
         queryKey: ['useAllSponsorshipsQuery'],
         refetchType: 'active',
@@ -181,9 +186,17 @@ export function useAllSponsorshipsQuery({
     })
 }
 
-export function useSponsorshipQuery(sponsorshipId: string) {
+export function invalidateSponsorshipByIdQueries(sponsorshipId: string) {
+    return getQueryClient().invalidateQueries({
+        exact: true,
+        queryKey: ['useSponsorshipByIdQuery', sponsorshipId],
+        refetchType: 'active',
+    })
+}
+
+export function useSponsorshipByIdQuery(sponsorshipId: string) {
     return useQuery({
-        queryKey: ['useSponsorshipQuery', sponsorshipId],
+        queryKey: ['useSponsorshipByIdQuery', sponsorshipId],
         async queryFn() {
             let rawSponsorship: Sponsorship | undefined | null
 
@@ -289,18 +302,90 @@ export function useIsFundingSponsorship(
     )
 }
 
-export function useFundSponsorship() {
+export function invalidateSponsorshipDailyBucketsQueries(sponsorshipId: string) {
+    return getQueryClient().invalidateQueries({
+        exact: false,
+        queryKey: ['sponsorshipChartQuery', sponsorshipId],
+        refetchType: 'active',
+    })
+}
+
+export function useSponsorshipDailyBucketsQuery({
+    sponsorshipId,
+    period,
+    dataSource,
+}: {
+    sponsorshipId: string
+    period: ChartPeriod
+    dataSource: 'amountStaked' | 'numberOfOperators' | 'apy'
+}) {
+    return useQuery({
+        queryKey: ['sponsorshipChartQuery', sponsorshipId, period, dataSource],
+        queryFn: async () => {
+            try {
+                if (!sponsorshipId) {
+                    return []
+                }
+
+                return await getSponsorshipStats(sponsorshipId, period, dataSource, {
+                    force: true,
+                    ignoreToday: false,
+                })
+            } catch (e) {
+                console.warn('Could not load sponsorship chart data', e)
+
+                errorToast({ title: 'Could not load sponsorship chart data' })
+            }
+
+            return []
+        },
+    })
+}
+
+export function useFundSponsorshipCallback() {
     const withFlag = useFlagger()
 
     return useCallback(
-        ({ sponsorship, wallet }: { sponsorship: ParsedSponsorship; wallet: string }) =>
-            withFlag(flagKey('isFundingSponsorship', sponsorship.id, wallet), () =>
-                fundSponsorship(
-                    sponsorship.id,
-                    sponsorship.payoutPerDay.toString(),
-                    wallet,
-                ),
-            ),
+        (
+            sponsorship: ParsedSponsorship,
+            options: { onDone?: (wallet: string) => void } = {},
+        ) => {
+            void (async () => {
+                try {
+                    const wallet = await (await getSigner()).getAddress()
+
+                    try {
+                        await withFlag(
+                            flagKey('isFundingSponsorship', sponsorship.id, wallet),
+                            async () => {
+                                await getSponsorshipTokenInfo()
+
+                                await fundSponsorshipModal.pop({
+                                    sponsorship,
+                                    balance: await getBalanceForSponsorship(wallet),
+                                })
+
+                                invalidateSponsorshipQueries(wallet, sponsorship.id)
+                            },
+                        )
+
+                        options.onDone?.(wallet)
+                    } catch (e) {
+                        if (e === FlagBusy) {
+                            return
+                        }
+
+                        if (isRejectionReason(e)) {
+                            return
+                        }
+
+                        throw e
+                    }
+                } catch (e) {
+                    console.warn('Failed to fund a sponsorship', sponsorship.id, e)
+                }
+            })()
+        },
         [withFlag],
     )
 }
@@ -404,4 +489,26 @@ export const mapSponsorshipOrder = (columnKey?: string): Sponsorship_OrderBy => 
         default:
             return Sponsorship_OrderBy.Id
     }
+}
+
+/**
+ * Invalidates a collection of sponsorship-related queries.
+ */
+export async function invalidateSponsorshipQueries(
+    invalidator: string | undefined,
+    sponsorshipId: string | undefined,
+) {
+    if (!invalidator || !sponsorshipId) {
+        return
+    }
+
+    await invalidateSponsorshipsForCreatorQueries(invalidator)
+
+    await invalidateAllSponsorshipsQueries()
+
+    await invalidateSponsorshipByIdQueries(sponsorshipId)
+
+    await invalidateSponsorshipDailyBucketsQueries(sponsorshipId)
+
+    await invalidateSponsorshipFundingHistoryQueries(sponsorshipId)
 }
