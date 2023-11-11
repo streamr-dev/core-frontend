@@ -1,9 +1,11 @@
 import React, { FunctionComponent, ReactNode } from 'react'
 import styled from 'styled-components'
 import InfoIcon from '@atlaskit/icon/glyph/info'
+import { toaster } from 'toasterhea'
 import BaseModal, { BaseModalProps, RejectionReason } from '~/modals/BaseModal'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
+import { Layer } from '~/utils/Layer'
 
 export type ConfirmationModalProps = {
     title: string
@@ -18,7 +20,7 @@ interface Props
     onResolve?: (decision: boolean) => void
 }
 
-export const ConfirmationModal: FunctionComponent<Props> = ({
+const ConfirmationModal: FunctionComponent<Props> = ({
     title,
     description,
     proceedLabel,
@@ -59,6 +61,8 @@ export const ConfirmationModal: FunctionComponent<Props> = ({
         </BaseModal>
     )
 }
+
+export const confirmationModal = toaster(ConfirmationModal, Layer.Modal)
 
 const ModalBody = styled.div`
     display: grid;
