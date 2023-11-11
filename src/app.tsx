@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 import { Container } from 'toasterhea'
 import styled from 'styled-components'
 import { Navigate, Route, Routes } from 'react-router-dom'
@@ -29,6 +29,7 @@ import { FeatureFlag, isFeatureEnabled } from '~/shared/utils/isFeatureEnabled'
 import routes from '~/routes'
 import { HubRouter } from '~/consts'
 import { getQueryClient } from '~/utils'
+import { blockObserver } from '~/utils/blocks'
 import '~/analytics'
 
 const MiscRouter = () => [
@@ -113,6 +114,10 @@ const ToastContainer = styled(Container)`
 `
 
 function Root({ children }: { children: ReactNode }) {
+    useEffect(() => {
+        blockObserver.start()
+    }, [])
+
     return (
         <HubRouter>
             <QueryClientProvider client={getQueryClient()}>
