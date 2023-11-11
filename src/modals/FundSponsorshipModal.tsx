@@ -97,7 +97,12 @@ function FundSponsorshipModal({ balance, onResolve, sponsorship, ...props }: Pro
         )} & ${days} ${pluralizeUnit(days, 'day')}`
     }, [extensionDuration])
 
-    const endDate = new Date(Date.now() + extensionInSeconds * 1000)
+    const startDate =
+        sponsorship.projectedInsolvencyAt == null
+            ? Date.now()
+            : sponsorship.projectedInsolvencyAt * 1000
+
+    const endDate = new Date(startDate + extensionInSeconds * 1000)
 
     const insufficientFunds = finalValue.isGreaterThan(toDecimals(balance, decimals))
 
