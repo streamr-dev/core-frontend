@@ -65,7 +65,7 @@ import { useSetBlockDependency } from '~/stores/blockNumberDependencies'
 import { blockObserver } from '~/utils/blocks'
 import { LiveNodesTable } from '~/components/LiveNodesTable'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
-import { abbr, isTransactionRejection, saveOperator } from '~/utils'
+import { abbr, isTransactionRejection, saveOperator, waitForIndexedBlock } from '~/utils'
 import { Break } from '~/utils/errors'
 
 const forceUndelegateModal = toaster(ForceUndelegateModal, Layer.Modal)
@@ -454,6 +454,22 @@ export const SingleOperatorPage = () => {
                                                     await collectEarnings(
                                                         element.sponsorshipId,
                                                         operatorId,
+                                                        {
+                                                            onBlockNumber:
+                                                                waitForIndexedBlock,
+                                                        },
+                                                    )
+
+                                                    await fetchUncollectedEarnings(
+                                                        operatorId,
+                                                    )
+
+                                                    /**
+                                                     * Let's refresh the operator page to incl. now-collected earnings
+                                                     * in the overview section.
+                                                     */
+                                                    invalidateActiveOperatorByIdQueries(
+                                                        operatorId,
                                                     )
 
                                                     successToast({
@@ -468,29 +484,6 @@ export const SingleOperatorPage = () => {
                                                             </p>
                                                         ),
                                                     })
-
-                                                    /**
-                                                     * We fetch the uncollected earnings value from contracts
-                                                     * thus we don't have to wait for the Graph to sync up.
-                                                     */
-                                                    await fetchUncollectedEarnings(
-                                                        operatorId,
-                                                    )
-
-                                                    /**
-                                                     * @todo If this fails we consider the entire flow a failure and console-warn
-                                                     * the "Could not collect (…)" (see below). Let's use `blockObserver` and
-                                                     * wait for the block outside of this workflow.
-                                                     */
-                                                    await waitForGraphSync()
-
-                                                    /**
-                                                     * Let's refresh the operator page to incl. now-collected earnings
-                                                     * in the overview section.
-                                                     */
-                                                    invalidateActiveOperatorByIdQueries(
-                                                        operatorId,
-                                                    )
                                                 } catch (e) {
                                                     if (e === Break) {
                                                         return
