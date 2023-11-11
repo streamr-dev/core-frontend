@@ -26,9 +26,8 @@ import CropImageModal from '~/components/CropImageModal/CropImageModal'
 import { Layer } from '~/utils/Layer'
 import { Alert } from '~/components/Alert'
 import { ParsedOperator } from '~/parsers/OperatorParser'
-import { isTransactionRejection, sameBN } from '~/utils'
+import { isTransactionRejection, sameBN, waitForIndexedBlock } from '~/utils'
 import { createOperator, updateOperator } from '~/services/operators'
-import { blockObserver } from '~/utils/blocks'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { getParsedOperatorByOwnerAddress } from '~/getters'
 
@@ -176,17 +175,15 @@ function OperatorModal({ onResolve, onReject, operator, ...props }: Props) {
 
                 setBusy(true)
 
-                function onBlockNumber(blockNumber: number) {
-                    return new Promise<void>((resolve) => {
-                        blockObserver.onSpecific(blockNumber, resolve)
-                    })
-                }
-
                 try {
                     if (!operator) {
-                        await createOperator(finalData, { onBlockNumber })
+                        await createOperator(finalData, {
+                            onBlockNumber: waitForIndexedBlock,
+                        })
                     } else {
-                        await updateOperator(operator, finalData, { onBlockNumber })
+                        await updateOperator(operator, finalData, {
+                            onBlockNumber: waitForIndexedBlock,
+                        })
                     }
 
                     const operatorId = (
