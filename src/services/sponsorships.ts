@@ -243,8 +243,10 @@ export async function getEarningsForSponsorships(
 export async function collectEarnings(
     sponsorshipId: string,
     operatorAddress: string,
+    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
     const chainId = getSponsorshipChainId()
+
     await networkPreflight(chainId)
 
     const signer = await getSigner()
@@ -253,7 +255,11 @@ export async function collectEarnings(
 
     await toastedOperation('Collect earnings', async () => {
         const tx = await contract.withdrawEarningsFromSponsorships([sponsorshipId])
-        const receipt = await tx.wait()
-        saveLastBlockNumber(receipt.blockNumber)
+
+        const { blockNumber } = await tx.wait()
+
+        saveLastBlockNumber(blockNumber)
+
+        await options.onBlockNumber?.(blockNumber)
     })
 }

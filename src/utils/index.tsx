@@ -20,6 +20,7 @@ import {
     invalidateAllOperatorsQueries,
     invalidateDelegationsForWalletQueries,
 } from '~/hooks/operators'
+import { blockObserver } from '~/utils/blocks'
 
 /**
  * Gas money checker.
@@ -308,4 +309,14 @@ export function saveOperator(
             }
         }
     })()
+}
+
+/**
+ * Returns a promise that resolves when the Graph indexes all blocks
+ * to a given block height.
+ */
+export function waitForIndexedBlock(blockNumber: number) {
+    return new Promise<void>((resolve) => {
+        blockObserver.onSpecific(blockNumber, resolve)
+    })
 }

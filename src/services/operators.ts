@@ -260,7 +260,7 @@ export async function getOperatorDelegationAmount(operatorId: string, address: s
 export async function setOperatorNodeAddresses(
     operatorId: string,
     addresses: string[],
-    options: { onBlockNumber?: (blockNumber: number) => void } = {},
+    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ) {
     const chainId = getOperatorChainId()
 
@@ -276,6 +276,6 @@ export async function setOperatorNodeAddresses(
 
         saveLastBlockNumber(blockNumber)
 
-        options.onBlockNumber?.(blockNumber)
+        await options.onBlockNumber?.(blockNumber)
     })
 }
