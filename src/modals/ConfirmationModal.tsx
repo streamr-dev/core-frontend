@@ -1,6 +1,7 @@
 import React, { FunctionComponent, ReactNode } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
+import InfoIcon from '@atlaskit/icon/glyph/info'
 import BaseModal, { BaseModalProps, RejectionReason } from '~/modals/BaseModal'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
@@ -31,7 +32,11 @@ const ConfirmationModal: FunctionComponent<Props> = ({
         <BaseModal {...props}>
             {(close) => (
                 <ModalBody>
-                    <Icon name="error" />
+                    <Icon>
+                        <IconWrap $color="#6240AF">
+                            <InfoIcon label="Info" />
+                        </IconWrap>
+                    </Icon>
                     <Title>{title}</Title>
                     <CloseButton
                         type="button"
@@ -68,7 +73,7 @@ const ModalBody = styled.div`
     width: 400px;
 `
 
-const Icon = styled(SvgIcon)`
+const Icon = styled.div`
     grid-row-start: 1;
     grid-row-end: 1;
     grid-column-start: 1;
@@ -133,4 +138,16 @@ const Dot = styled.div`
     height: 3px;
     border-radius: 50%;
     background-color: ${COLORS.primary};
+`
+
+const IconWrap = styled.div<{ $color?: string }>`
+    height: 24px;
+    width: 24px;
+    position: relative;
+    display: flex;
+    items-center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-right: 16px;
+    color: ${({ $color = 'inherit' }) => $color};
 `
