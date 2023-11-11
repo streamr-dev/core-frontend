@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import moment from 'moment'
-import { RejectionReason } from '~/modals/BaseModal'
+import { toaster } from 'toasterhea'
+import { RejectionReason, isRejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     FieldWrap,
     FormModalProps,
@@ -11,47 +12,37 @@ import FormModal, {
     TextInput,
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
-import { toBN } from '~/utils/bn'
+import { BN } from '~/utils/bn'
 import { pluralizeUnit } from '~/utils/pluralizeUnit'
+import { Layer } from '~/utils/Layer'
+import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { toDecimals } from '~/marketplace/utils/math'
+import { fundSponsorship } from '~/services/sponsorships'
+import { isTransactionRejection } from '~/utils'
+import { blockObserver } from '~/utils/blocks'
 
-interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
-    onResolve?: (amount: string) => void
-    onSubmit: (amount: string) => Promise<void>
-    balance: string
-    tokenSymbol: string
-    decimals: number
-    amount?: string
-    payoutPerDay: string
+interface Props extends Pick<FormModalProps, 'onReject'> {
+    balance: BN
+    onResolve?: () => void
+    sponsorship: ParsedSponsorship
 }
 
 const DayInSeconds = 60 * 60 * 24
 
-export default function FundSponsorshipModal({
-    title = 'Fund Sponsorship',
-    balance: balanceProp,
-    tokenSymbol,
-    decimals: decimalsProp,
-    onResolve,
-    onSubmit,
-    amount: amountProp = '',
-    submitLabel = 'Fund',
-    payoutPerDay = '0',
-    ...props
-}: Props) {
-    const [rawAmount, setRawAmount] = useState(amountProp)
-    const decimals = Math.pow(10, decimalsProp)
+function FundSponsorshipModal({ balance, onResolve, sponsorship, ...props }: Props) {
+    const { decimals = 18 } = useSponsorshipTokenInfo() || {}
 
-    const pricePerSecond = toBN(payoutPerDay)
-        .multipliedBy(decimals)
-        .dividedBy(DayInSeconds)
+    const [rawAmount, setRawAmount] = useState('')
 
-    useEffect(() => {
-        setRawAmount(amountProp)
-    }, [amountProp])
+    const pricePerSecond = toDecimals(sponsorship.payoutPerDay, decimals).dividedBy(
+        DayInSeconds,
+    )
 
     const value = rawAmount || '0'
 
-    const finalValue = toBN(value).multipliedBy(decimals)
+    const finalValue = toDecimals(value, decimals)
 
     const extensionInSeconds =
         pricePerSecond.isGreaterThan(0) && finalValue.isGreaterThanOrEqualTo(0)
@@ -59,15 +50,20 @@ export default function FundSponsorshipModal({
             : 0
 
     const extensionDuration = moment.duration(extensionInSeconds, 'seconds')
+
     const extensionText = useMemo<string>(() => {
         if (extensionDuration.asSeconds() === 0) {
             return '0 days'
         }
 
         const years = extensionDuration.get('years')
+
         const months = extensionDuration.get('months')
+
         const days = extensionDuration.get('days')
+
         const hours = extensionDuration.get('hours')
+
         const minutes = extensionDuration.get('minutes')
 
         if (!years && !months && !days && !hours) {
@@ -103,44 +99,56 @@ export default function FundSponsorshipModal({
 
     const endDate = new Date(Date.now() + extensionInSeconds * 1000)
 
-    const insufficientFunds = finalValue.isGreaterThan(
-        toBN(balanceProp).multipliedBy(decimals),
-    )
+    const insufficientFunds = finalValue.isGreaterThan(toDecimals(balance, decimals))
 
     const canSubmit =
         finalValue.isFinite() && finalValue.isGreaterThan(0) && !insufficientFunds
 
     const [busy, setBusy] = useState(false)
 
+    const dirty = rawAmount !== ''
+
     return (
         <FormModal
             {...props}
-            title={title}
+            title="Fund Sponsorship"
             canSubmit={canSubmit && !busy}
             submitting={busy}
-            submitLabel={submitLabel}
+            submitLabel="Fund"
             onBeforeAbort={(reason) =>
-                !busy && (rawAmount === amountProp || reason !== RejectionReason.Backdrop)
+                !busy && (reason !== RejectionReason.Backdrop || !dirty)
             }
             onSubmit={async () => {
                 setBusy(true)
 
                 try {
-                    await onSubmit(finalValue.toString())
+                    await fundSponsorship(sponsorship.id, finalValue, {
+                        onBlockNumber(blockNumber) {
+                            return new Promise<void>((resolve) => {
+                                blockObserver.onSpecific(blockNumber, resolve)
+                            })
+                        },
+                    })
 
-                    onResolve?.(finalValue.toString())
+                    onResolve?.()
                 } catch (e) {
-                    console.warn('Error while funding sponsorship', e)
-                    setBusy(false)
+                    if (isRejectionReason(e)) {
+                        return
+                    }
+
+                    if (isTransactionRejection(e)) {
+                        return
+                    }
+
+                    throw e
                 } finally {
-                    /**
-                     * No need to reset `busy`. `onResolve` makes the whole modal disappear.
-                     */
+                    setBusy(false)
                 }
             }}
         >
             <SectionHeadline>
-                Please set the amount of {tokenSymbol} to spend to extend the Sponsorship
+                Please set the amount of <SponsorshipPaymentTokenName /> to spend to
+                extend the Sponsorship
             </SectionHeadline>
             <Section>
                 <Label>Amount to sponsor</Label>
@@ -156,7 +164,9 @@ export default function FundSponsorshipModal({
                         step="any"
                         value={rawAmount}
                     />
-                    <TextAppendix>{tokenSymbol}</TextAppendix>
+                    <TextAppendix>
+                        <SponsorshipPaymentTokenName />
+                    </TextAppendix>
                 </FieldWrap>
                 <ul>
                     <li>
@@ -168,7 +178,7 @@ export default function FundSponsorshipModal({
                             )}
                         </Prop>
                         <div>
-                            {balanceProp} {tokenSymbol}
+                            {balance.toString()} <SponsorshipPaymentTokenName />
                         </div>
                     </li>
                     <li>
@@ -182,7 +192,9 @@ export default function FundSponsorshipModal({
                     <li>
                         <Prop>Rate</Prop>
                         <div>
-                            {payoutPerDay} {tokenSymbol}/day
+                            {sponsorship.payoutPerDay.toString()}{' '}
+                            <SponsorshipPaymentTokenName />
+                            /day
                         </div>
                     </li>
                 </ul>
@@ -190,3 +202,5 @@ export default function FundSponsorshipModal({
         </FormModal>
     )
 }
+
+export const fundSponsorshipModal = toaster(FundSponsorshipModal, Layer.Modal)

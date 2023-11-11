@@ -29,8 +29,9 @@ import {
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { Tip } from '~/components/Tip'
 import {
+    invalidateSponsorshipQueries,
     useEditSponsorshipFunding,
-    useFundSponsorship,
+    useFundSponsorshipCallback,
     useIsEditingSponsorshipFunding,
     useIsFundingSponsorship,
     useIsJoiningSponsorshipAsOperator,
@@ -52,10 +53,8 @@ const DayInSeconds = 60 * 60 * 24
 
 export function SponsorshipActionBar({
     sponsorship,
-    onChange,
 }: {
     sponsorship: ParsedSponsorship
-    onChange: () => void
 }) {
     const wallet = useWalletAccount()
 
@@ -77,7 +76,7 @@ export function SponsorshipActionBar({
 
     const minimumStakingDays = sponsorship.minimumStakingPeriodSeconds / DayInSeconds
 
-    const fundSponsorship = useFundSponsorship()
+    const fundSponsorship = useFundSponsorshipCallback()
 
     const isFundingSponsorship = useIsFundingSponsorship(sponsorship.id, wallet)
 
@@ -169,27 +168,8 @@ export function SponsorshipActionBar({
                         <Button
                             disabled={!streamId}
                             waiting={isFundingSponsorship}
-                            onClick={async () => {
-                                if (!wallet) {
-                                    return
-                                }
-
-                                try {
-                                    await fundSponsorship({
-                                        sponsorship,
-                                        wallet,
-                                    })
-
-                                    await waitForGraphSync()
-
-                                    onChange()
-                                } catch (e) {
-                                    if (isRejectionReason(e)) {
-                                        return
-                                    }
-
-                                    console.warn('Could not fund a Sponsorship', e)
-                                }
+                            onClick={() => {
+                                fundSponsorship(sponsorship)
                             }}
                         >
                             Sponsor
@@ -211,7 +191,10 @@ export function SponsorshipActionBar({
 
                                         await waitForGraphSync()
 
-                                        onChange()
+                                        invalidateSponsorshipQueries(
+                                            wallet,
+                                            sponsorship.id,
+                                        )
                                     } catch (e) {
                                         if (isRejectionReason(e)) {
                                             return
@@ -235,7 +218,12 @@ export function SponsorshipActionBar({
                                     joinSponsorshipAsOperator({
                                         sponsorship,
                                         operator,
-                                        onJoin: onChange,
+                                        onJoin() {
+                                            invalidateSponsorshipQueries(
+                                                wallet,
+                                                sponsorship.id,
+                                            )
+                                        },
                                     })
                                 }}
                             >

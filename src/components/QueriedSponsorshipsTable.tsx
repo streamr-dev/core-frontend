@@ -16,7 +16,7 @@ import {
     invalidateAllSponsorshipsQueries,
     invalidateSponsorshipsForCreatorQueries,
     useEditSponsorshipFunding,
-    useFundSponsorship,
+    useFundSponsorshipCallback,
     useJoinSponsorshipAsOperator,
 } from '~/hooks/sponsorships'
 import { isRejectionReason } from '~/modals/BaseModal'
@@ -26,7 +26,6 @@ import { abbr } from '~/utils'
 interface Props {
     noDataFirstLine?: ReactNode
     noDataSecondLine?: ReactNode
-    onSponsorshipFunded?: () => void | Promise<void>
     onSponsorshipJoined?: () => void | Promise<void>
     onStakeEdited?: () => void | Promise<void>
     orderBy?: string
@@ -38,7 +37,6 @@ interface Props {
 export function QueriedSponsorshipsTable({
     noDataFirstLine = 'No data',
     noDataSecondLine,
-    onSponsorshipFunded,
     onSponsorshipJoined,
     onStakeEdited,
     orderBy,
@@ -52,7 +50,7 @@ export function QueriedSponsorshipsTable({
 
     const operator = useOperatorForWallet(wallet)
 
-    const fundSponsorship = useFundSponsorship()
+    const fundSponsorship = useFundSponsorshipCallback()
 
     const joinSponsorshipAsOperator = useJoinSponsorshipAsOperator()
 
@@ -136,32 +134,9 @@ export function QueriedSponsorshipsTable({
                 actions={[
                     {
                         displayName: 'Sponsor',
-                        disabled: ({ streamId }) => !streamId || !wallet,
-                        async callback(element) {
-                            if (!wallet) {
-                                return
-                            }
-
-                            try {
-                                await fundSponsorship({
-                                    sponsorship: element,
-                                    wallet,
-                                })
-
-                                await waitForGraphSync()
-
-                                invalidateSponsorshipsForCreatorQueries(wallet)
-
-                                invalidateAllSponsorshipsQueries()
-
-                                await onSponsorshipFunded?.()
-                            } catch (e) {
-                                if (isRejectionReason(e)) {
-                                    return
-                                }
-
-                                console.warn('Could not fund a Sponsorship', e)
-                            }
+                        disabled: ({ streamId }) => !streamId,
+                        callback(element) {
+                            fundSponsorship(element)
                         },
                     },
                     (element) => {

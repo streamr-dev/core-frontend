@@ -45,13 +45,9 @@ export function useOperatorForWallet(address = '') {
     return useOperatorForWalletQuery(address).data || null
 }
 
-function operatorByIdQueryKey(operatorId: string) {
-    return ['operatorByIdQueryKey', operatorId]
-}
-
 export function useOperatorByIdQuery(operatorId = '') {
     return useQuery({
-        queryKey: operatorByIdQueryKey(operatorId),
+        queryKey: ['operatorByIdQueryKey', operatorId],
         async queryFn() {
             if (!operatorId) {
                 return null
@@ -78,10 +74,18 @@ export function useOperatorByIdQuery(operatorId = '') {
     })
 }
 
-export function invalidateActiveOperatorByIdQueries(operatorId: string) {
-    getQueryClient().invalidateQueries({
-        queryKey: operatorByIdQueryKey(operatorId),
-        exact: true,
+export function invalidateActiveOperatorByIdQueries(operatorId: string | undefined) {
+    if (operatorId) {
+        return getQueryClient().invalidateQueries({
+            queryKey: ['operatorByIdQueryKey', operatorId],
+            exact: true,
+            refetchType: 'active',
+        })
+    }
+
+    return getQueryClient().invalidateQueries({
+        queryKey: ['operatorByIdQueryKey'],
+        exact: false,
         refetchType: 'active',
     })
 }
