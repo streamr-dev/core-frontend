@@ -20,7 +20,7 @@ import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { toDecimals } from '~/marketplace/utils/math'
 import { fundSponsorship } from '~/services/sponsorships'
-import { isTransactionRejection } from '~/utils'
+import { isTransactionRejection, waitForIndexedBlock } from '~/utils'
 import { blockObserver } from '~/utils/blocks'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
@@ -128,11 +128,7 @@ function FundSponsorshipModal({ balance, onResolve, sponsorship, ...props }: Pro
 
                 try {
                     await fundSponsorship(sponsorship.id, finalValue, {
-                        onBlockNumber(blockNumber) {
-                            return new Promise<void>((resolve) => {
-                                blockObserver.onSpecific(blockNumber, resolve)
-                            })
-                        },
+                        onBlockNumber: waitForIndexedBlock,
                     })
 
                     onResolve?.()

@@ -436,7 +436,7 @@ export function useDelegateFunds() {
                                     delegatedTotal,
                                 })
 
-                                await waitForGraphSync()
+                                invalidateActiveOperatorByIdQueries(operator.id)
                             },
                         )
                     } catch (e) {
@@ -521,7 +521,7 @@ export function useUndelegateFunds() {
                                     delegatedTotal,
                                 })
 
-                                await waitForGraphSync()
+                                invalidateActiveOperatorByIdQueries(operator.id)
                             },
                         )
                     } catch (e) {

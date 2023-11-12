@@ -21,7 +21,7 @@ import { useConfigValueFromChain } from '~/hooks'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { delegateToOperator } from '~/services/operators'
-import { isTransactionRejection } from '~/utils'
+import { isTransactionRejection, waitForIndexedBlock } from '~/utils'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
@@ -138,7 +138,8 @@ export default function DelegateFundsModal({
                 try {
                     await delegateToOperator(
                         operator.id,
-                        toDecimals(finalValue, decimals).toString(),
+                        toDecimals(finalValue, decimals),
+                        { onBlockNumber: waitForIndexedBlock },
                     )
 
                     onResolve?.()

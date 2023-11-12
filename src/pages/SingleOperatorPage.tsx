@@ -174,9 +174,6 @@ export const SingleOperatorPage = () => {
                     handleEdit={(currentOperator) => {
                         saveOperator(currentOperator)
                     }}
-                    onDelegationChange={() => {
-                        invalidateActiveOperatorByIdQueries(operator.id)
-                    }}
                 />
             )}
             <LayoutColumn>

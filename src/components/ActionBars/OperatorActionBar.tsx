@@ -51,8 +51,7 @@ import { SponsorshipPaymentTokenName } from '../SponsorshipPaymentTokenName'
 export const OperatorActionBar: FunctionComponent<{
     operator: ParsedOperator
     handleEdit: (operator: ParsedOperator) => void
-    onDelegationChange: () => void
-}> = ({ operator, handleEdit, onDelegationChange }) => {
+}> = ({ operator, handleEdit }) => {
     const heartbeats = useInterceptHeartbeats(operator.id)
 
     const { count: liveNodeCount, isLoading: liveNodeCountIsLoading } =
@@ -171,7 +170,6 @@ export const OperatorActionBar: FunctionComponent<{
                                 delegateFunds({
                                     operator,
                                     wallet: walletAddress,
-                                    onDone: onDelegationChange,
                                 })
                             }}
                             disabled={!walletAddress}
@@ -184,7 +182,6 @@ export const OperatorActionBar: FunctionComponent<{
                                 undelegateFunds({
                                     operator,
                                     wallet: walletAddress,
-                                    onDone: onDelegationChange,
                                 })
                             }}
                             disabled={!canUndelegate}

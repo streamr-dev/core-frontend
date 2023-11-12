@@ -201,7 +201,7 @@ export async function updateOperator(
 export async function delegateToOperator(
     operatorId: string,
     amount: BNish,
-    options: { onBlockNumber?: (blockNumber?: number) => void | Promise<void> } = {},
+    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
     const chainId = getOperatorChainId()
 
@@ -231,7 +231,7 @@ export async function delegateToOperator(
 export async function undelegateFromOperator(
     operatorId: string,
     amount: BNish,
-    options: { onBlockNumber?: (blockNumber?: number) => void | Promise<void> } = {},
+    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
     const chainId = getOperatorChainId()
 
