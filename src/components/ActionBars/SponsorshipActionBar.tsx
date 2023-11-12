@@ -210,7 +210,7 @@ export function SponsorshipActionBar({
                             <Button
                                 disabled={!operator || maxOperatorsReached || !streamId}
                                 waiting={isJoiningSponsorshipAsOperator}
-                                onClick={async () => {
+                                onClick={() => {
                                     if (!operator) {
                                         return
                                     }
@@ -218,12 +218,6 @@ export function SponsorshipActionBar({
                                     joinSponsorshipAsOperator({
                                         sponsorship,
                                         operator,
-                                        onJoin() {
-                                            invalidateSponsorshipQueries(
-                                                wallet,
-                                                sponsorship.id,
-                                            )
-                                        },
                                     })
                                 }}
                             >

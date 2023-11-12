@@ -156,10 +156,16 @@ export async function stakeOnSponsorship(
     sponsorshipId: string,
     amountWei: string,
     operatorAddress: string,
-    toastLabel = 'Stake on sponsorship',
+    options: {
+        toastLabel?: string
+        onBlockNumber?: (blockNumber: number) => void | Promise<void>
+    } = {},
 ): Promise<void> {
     const chainId = getSponsorshipChainId()
+
     await networkPreflight(chainId)
+
+    const { toastLabel = 'Stake on sponsorship', onBlockNumber } = options
 
     await toastedOperation(toastLabel, async () => {
         const signer = await getSigner()
@@ -178,8 +184,11 @@ export async function stakeOnSponsorship(
             gasLimit: increasedGasLimit,
         })
 
-        const receipt = await tx.wait()
-        saveLastBlockNumber(receipt.blockNumber)
+        const { blockNumber } = await tx.wait()
+
+        saveLastBlockNumber(blockNumber)
+
+        await onBlockNumber?.(blockNumber)
     })
 }
 

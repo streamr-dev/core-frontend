@@ -29,7 +29,7 @@ import { ParsedOperator } from '~/parsers/OperatorParser'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { stakeOnSponsorship } from '~/services/sponsorships'
-import { isMessagedObject } from '~/utils'
+import { isMessagedObject, waitForIndexedBlock } from '~/utils'
 import { errorToast } from '~/utils/toast'
 import Toast from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
@@ -155,6 +155,7 @@ export default function JoinSponsorshipModal({
                         sponsorship.id,
                         finalAmount.toString(),
                         operator.id,
+                        { onBlockNumber: waitForIndexedBlock },
                     )
 
                     onResolve?.()

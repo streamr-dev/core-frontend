@@ -89,7 +89,7 @@ export async function editSponsorshipFunding(
                     sponsorship.id,
                     difference,
                     operator.id,
-                    'Increase stake on sponsorship',
+                    { toastLabel: 'Increase stake on sponsorship' },
                 ))
             }
 

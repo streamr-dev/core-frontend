@@ -428,7 +428,15 @@ export function useJoinSponsorshipAsOperator() {
                                 sponsorship.id,
                                 operator.id,
                             ),
-                            () => joinSponsorshipModal.pop({ sponsorship, operator }),
+                            async () => {
+                                const wallet = await (await getSigner()).getAddress()
+
+                                await joinSponsorshipModal.pop({ sponsorship, operator })
+
+                                invalidateSponsorshipQueries(wallet, sponsorship.id)
+
+                                onJoin?.()
+                            },
                         )
                     } catch (e) {
                         if (e === FlagBusy) {
@@ -441,10 +449,6 @@ export function useJoinSponsorshipAsOperator() {
 
                         throw e
                     }
-
-                    await waitForGraphSync()
-
-                    onJoin?.()
                 } catch (e) {
                     console.warn('Could not join a Sponsorship as an Operator', e)
                 }

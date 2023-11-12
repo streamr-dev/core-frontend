@@ -26,7 +26,6 @@ import { abbr } from '~/utils'
 interface Props {
     noDataFirstLine?: ReactNode
     noDataSecondLine?: ReactNode
-    onSponsorshipJoined?: () => void | Promise<void>
     onStakeEdited?: () => void | Promise<void>
     orderBy?: string
     orderDirection?: ScrollTableOrderDirection
@@ -37,7 +36,6 @@ interface Props {
 export function QueriedSponsorshipsTable({
     noDataFirstLine = 'No data',
     noDataSecondLine,
-    onSponsorshipJoined,
     onStakeEdited,
     orderBy,
     orderDirection,
@@ -187,13 +185,6 @@ export function QueriedSponsorshipsTable({
                                 joinSponsorshipAsOperator({
                                     sponsorship: element,
                                     operator,
-                                    onJoin() {
-                                        invalidateSponsorshipsForCreatorQueries(wallet)
-
-                                        invalidateAllSponsorshipsQueries()
-
-                                        onSponsorshipJoined?.()
-                                    },
                                 })
                             },
                         }
