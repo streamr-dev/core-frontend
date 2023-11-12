@@ -201,8 +201,10 @@ export async function updateOperator(
 export async function delegateToOperator(
     operatorId: string,
     amount: BNish,
+    options: { onBlockNumber?: (blockNumber?: number) => void | Promise<void> } = {},
 ): Promise<void> {
     const chainId = getOperatorChainId()
+
     const chainConfig = getConfigForChain(chainId)
 
     await networkPreflight(chainId)
@@ -218,14 +220,18 @@ export async function delegateToOperator(
             '0x',
         )
 
-        const receipt = await tx.wait()
-        saveLastBlockNumber(receipt.blockNumber)
+        const { blockNumber } = await tx.wait()
+
+        saveLastBlockNumber(blockNumber)
+
+        await options.onBlockNumber?.(blockNumber)
     })
 }
 
 export async function undelegateFromOperator(
     operatorId: string,
     amount: BNish,
+    options: { onBlockNumber?: (blockNumber?: number) => void | Promise<void> } = {},
 ): Promise<void> {
     const chainId = getOperatorChainId()
 
@@ -238,14 +244,19 @@ export async function undelegateFromOperator(
     // If we are requesting all funds to be undelegated,
     // send 'reallyBigNumber' instead of 'Infinity'
     const amountBn = toBN(amount)
+
     const reallyBigNumber = '110763745230805656649802800132303954225'
+
     const actualAmount = amountBn.isFinite() ? amountBn : toBN(reallyBigNumber)
 
     await toastedOperation('Undelegate from operator', async () => {
         const tx = await operatorContract.undelegate(actualAmount.toString())
 
-        const receipt = await tx.wait()
-        saveLastBlockNumber(receipt.blockNumber)
+        const { blockNumber } = await tx.wait()
+
+        saveLastBlockNumber(blockNumber)
+
+        await options.onBlockNumber?.(blockNumber)
     })
 }
 
