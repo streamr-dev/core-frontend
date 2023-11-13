@@ -640,7 +640,9 @@ export const SingleOperatorPage = () => {
                                     columns={[
                                         {
                                             displayName: 'Stream ID',
-                                            valueMapper: (element) => element.streamId,
+                                            valueMapper: ({ streamId }) => (
+                                                <StreamIdCell streamId={streamId} />
+                                            ),
                                             align: 'start',
                                             isSticky: true,
                                             key: 'id',
@@ -694,6 +696,9 @@ export const SingleOperatorPage = () => {
                                             key: 'reason',
                                         },
                                     ]}
+                                    linkMapper={({ sponsorshipId: id }) =>
+                                        routes.network.sponsorship({ id })
+                                    }
                                 />
                             </SlashingHistoryTableContainer>
                         </NetworkPageSegment>
