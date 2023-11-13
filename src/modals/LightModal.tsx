@@ -1,14 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
-import { SANS } from '~/shared/utils/styled'
-import BaseModal, { BaseModalProps } from './BaseModal'
+import { COLORS, SANS } from '~/shared/utils/styled'
+import SvgIcon from '~/shared/components/SvgIcon'
+import BaseModal, { BaseModalProps, RejectionReason } from './BaseModal'
 
 export interface ModalProps extends BaseModalProps {
     title?: string
 }
 
 /**
- * `BaseModal` with left-aligned title bar.
+ * `BaseModal` with left-aligned title bar and a close button.
  */
 export default function LightModal({
     children,
@@ -17,12 +18,20 @@ export default function LightModal({
 }: ModalProps) {
     return (
         <BaseModal {...props}>
-            <Root>
-                <Head>
-                    <Title>{title}</Title>
-                </Head>
-                {children}
-            </Root>
+            {(close) => (
+                <Root>
+                    <Head>
+                        <Title>{title}</Title>
+                        <CloseButton
+                            type="button"
+                            onClick={() => void close(RejectionReason.CloseButton)}
+                        >
+                            <SvgIcon name="crossMedium" />
+                        </CloseButton>
+                    </Head>
+                    <Content>{children}</Content>
+                </Root>
+            )}
         </BaseModal>
     )
 }
@@ -31,22 +40,53 @@ const Root = styled.div`
     max-width: 560px;
     width: 90vw;
     padding: 40px;
+    display: grid;
+    grid-template-rows: auto auto;
+    gap: 24px;
 `
 
 const Head = styled.div`
-    align-items: left;
     display: flex;
     font-family: ${SANS};
     font-size: 20px;
     font-weight: normal;
-    height: 80px;
     line-height: 32px;
     margin: 0;
     position: relative;
     text-align: left;
     width: 100%;
+    align-items: center;
 `
 
 const Title = styled.div`
     flex-grow: 1;
+    color: ${COLORS.primary};
+`
+
+const Content = styled.div`
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: ${COLORS.primaryLight};
+`
+
+export const CloseButton = styled.button`
+    color: ${COLORS.close};
+    line-height: 14px;
+    cursor: pointer;
+    padding: 0.5rem;
+    margin: 0;
+    background: none;
+    outline: none;
+    border: none;
+
+    &:disabled {
+        opacity: 0.2;
+        cursor: not-allowed;
+    }
+
+    & > svg {
+        width: 14px;
+        height: 14px;
+    }
 `

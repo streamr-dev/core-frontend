@@ -5,6 +5,7 @@ import Footer from '~/components/Footer'
 import useScrollToTop from '~/shared/hooks/useScrollToTop'
 import { MAX_BODY_WIDTH } from '~/shared/utils/styled'
 import Helmet from '~/components/Helmet'
+import { DisclaimerBar } from './DisclaimerBar'
 
 interface LayoutProps {
     children?: ReactNode
@@ -41,6 +42,7 @@ export default function Layout({
             <GlobalStyles />
             <Root $bg={rootBackgroundColor}>
                 <Outer $bg={outerBackgroundColor}>
+                    <DisclaimerBar />
                     {nav}
                     <Inner $bg={innerBackgroundColor}>
                         {columnize ? <LayoutColumn>{children}</LayoutColumn> : children}
