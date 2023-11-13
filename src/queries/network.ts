@@ -212,14 +212,15 @@ gql`
     query getAllSponsorships(
         $first: Int
         $skip: Int
-        $streamContains: String!
+        $searchQuery: String!
+        $id: ID!
         $orderBy: Sponsorship_orderBy
         $orderDirection: OrderDirection
     ) {
         sponsorships(
             first: $first
             skip: $skip
-            where: { stream_contains_nocase: $streamContains }
+            where: { or: [{ stream_contains_nocase: $searchQuery }, { id: $id }] }
             orderBy: $orderBy
             orderDirection: $orderDirection
         ) {
@@ -230,7 +231,8 @@ gql`
     query getSponsorshipsByCreator(
         $first: Int
         $skip: Int
-        $streamContains: String!
+        $searchQuery: String!
+        $id: ID!
         $creator: String!
         $orderBy: Sponsorship_orderBy
         $orderDirection: OrderDirection
@@ -238,7 +240,12 @@ gql`
         sponsorships(
             first: $first
             skip: $skip
-            where: { creator: $creator, stream_contains_nocase: $streamContains }
+            where: {
+                and: [
+                    { creator: $creator }
+                    { or: [{ stream_contains_nocase: $searchQuery }, { id: $id }] }
+                ]
+            }
             orderBy: $orderBy
             orderDirection: $orderDirection
         ) {
