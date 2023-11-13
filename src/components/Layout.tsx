@@ -54,12 +54,12 @@ export default function Layout({
     )
 }
 
-export const LayoutRoot = styled.main<{ $bg?: string }>`
+const LayoutRoot = styled.main<{ $bg?: string }>`
     background-color: ${({ $bg }) => $bg};
     color: #323232;
 `
 
-export const LayoutOuter = styled.div<{ $bg?: string }>`
+const LayoutOuter = styled.div<{ $bg?: string }>`
     background-color: ${({ $bg }) => $bg};
     display: flex;
     flex-direction: column;

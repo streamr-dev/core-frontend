@@ -19,7 +19,7 @@ import { getSpotApy } from '~/getters'
 import {
     useAllOperatorsQuery,
     useDelegationsForWalletQuery,
-    useOperatorForWallet,
+    useOperatorForWalletQuery,
 } from '~/hooks/operators'
 import { Delegation } from '~/types'
 import { ParsedOperator } from '~/parsers/OperatorParser'
@@ -67,7 +67,7 @@ export const OperatorsPage = () => {
 
     const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
-    const operator = useOperatorForWallet(wallet)
+    const { data: operator = null } = useOperatorForWalletQuery(wallet)
 
     const currentQuery =
         selectedTab === TabOption.AllOperators ? allOperatorsQuery : myDelegationsQuery

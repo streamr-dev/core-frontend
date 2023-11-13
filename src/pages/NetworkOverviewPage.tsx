@@ -27,7 +27,7 @@ import { BNish, toBN } from '~/utils/bn'
 import {
     useDelegationsForWalletQuery,
     useDelegationsStats,
-    useOperatorForWallet,
+    useOperatorForWalletQuery,
     useOperatorStatsForWallet,
 } from '~/hooks/operators'
 import { ChartPeriod, XY } from '~/types'
@@ -73,7 +73,7 @@ function MyOperatorSummary() {
 
     const [chartId, setChartId] = useState<'stake' | 'earnings'>('stake')
 
-    const operator = useOperatorForWallet(wallet)
+    const { data: operator = null } = useOperatorForWalletQuery(wallet)
 
     const { data: chartData = [] } = useQuery<XY[]>({
         queryKey: ['operatorSummaryChartQuery', chartId, chartPeriod, operator?.id],

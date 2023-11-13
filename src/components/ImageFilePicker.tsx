@@ -65,7 +65,7 @@ export default function ImageFilePicker({
     )
 }
 
-export const ImageFilePickerRoot = styled.div<{ $isDragActive?: boolean }>`
+const ImageFilePickerRoot = styled.div<{ $isDragActive?: boolean }>`
     cursor: pointer;
     overflow: hidden;
     position: relative;

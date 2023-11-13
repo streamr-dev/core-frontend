@@ -98,9 +98,3 @@ export const NetworkActionBarStatsTitle = styled.p`
     text-transform: uppercase;
     margin-top: 44px;
 `
-
-export const NetworkActionBarCaret = styled(SvgIcon)`
-    color: ${COLORS.primaryDisabled};
-    width: 12px;
-    margin-left: 5px;
-`

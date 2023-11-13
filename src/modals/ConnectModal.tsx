@@ -91,7 +91,7 @@ interface Props {
     onReject?: (reason?: unknown) => void
 }
 
-export default function ConnectModal({ onReject, onResolve }: Props) {
+function ConnectModal({ onReject, onResolve }: Props) {
     const [connectDeferral, setConnectDeferral] = useState<Deferral<string | undefined>>()
 
     const connecting = !!connectDeferral

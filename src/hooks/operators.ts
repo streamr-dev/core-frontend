@@ -31,7 +31,6 @@ import { getOperatorDelegationAmount } from '~/services/operators'
 import { FlagBusy } from '~/utils/errors'
 import { isRejectionReason } from '~/modals/BaseModal'
 import getCoreConfig from '~/getters/getCoreConfig'
-import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import UndelegateFundsModal from '~/modals/UndelegateFundsModal'
 
 export function useOperatorForWalletQuery(address = '') {
@@ -39,10 +38,6 @@ export function useOperatorForWalletQuery(address = '') {
         queryKey: ['useOperatorForWalletQuery', address.toLowerCase()],
         queryFn: () => getParsedOperatorByOwnerAddress(address, { force: true }),
     })
-}
-
-export function useOperatorForWallet(address = '') {
-    return useOperatorForWalletQuery(address).data || null
 }
 
 export function useOperatorByIdQuery(operatorId = '') {
@@ -91,7 +86,7 @@ export function invalidateActiveOperatorByIdQueries(operatorId: string | undefin
 }
 
 export function useOperatorStatsForWallet(address = '') {
-    const operator = useOperatorForWallet(address)
+    const { data: operator = null } = useOperatorForWalletQuery(address)
 
     if (!operator) {
         return operator
