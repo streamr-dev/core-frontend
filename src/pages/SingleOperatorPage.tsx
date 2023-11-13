@@ -34,7 +34,11 @@ import { ChartPeriod } from '~/types'
 import { StatCellContent, StatCellLabel } from '~/components/StatGrid'
 import { Separator } from '~/components/Separator'
 import { useEditSponsorshipFunding, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
-import { getDelegatedAmountForWallet, getDelegationFractionForWallet } from '~/getters'
+import {
+    getDelegatedAmountForWallet,
+    getDelegationFractionForWallet,
+    getParsedSponsorshipById,
+} from '~/getters'
 import {
     invalidateActiveOperatorByIdQueries,
     useOperatorByIdQuery,
@@ -67,6 +71,7 @@ import { LiveNodesTable } from '~/components/LiveNodesTable'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { abbr, isTransactionRejection, saveOperator, waitForIndexedBlock } from '~/utils'
 import { Break } from '~/utils/errors'
+import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 
 const forceUndelegateModal = toaster(ForceUndelegateModal, Layer.Modal)
 
@@ -368,59 +373,32 @@ export const SingleOperatorPage = () => {
                                                 return
                                             }
 
+                                            let sponsorship: ParsedSponsorship | null
+
                                             try {
-                                                // Operator Stake entry is not the same as Sponsorship
-                                                // so we need to do some massaging.
-                                                const sponsorship = {
-                                                    id: element.sponsorshipId,
-                                                    minimumStakingPeriodSeconds:
-                                                        element.minimumStakingPeriodSeconds,
-                                                    stakes: [
-                                                        {
-                                                            amount: fromAtto(
-                                                                element.amountWei,
-                                                            ),
-                                                            operatorId:
-                                                                element.operatorId,
-                                                            joinTimestamp:
-                                                                element.joinTimestamp,
-                                                            metadata: {
-                                                                imageUrl: undefined,
-                                                                imageIpfsCid: undefined,
-                                                                redundancyFactor:
-                                                                    undefined,
-                                                                name: '',
-                                                                description: '',
-                                                            },
-                                                        },
-                                                    ],
+                                                sponsorship =
+                                                    await getParsedSponsorshipById(
+                                                        element.sponsorshipId,
+                                                        { force: true },
+                                                    )
+
+                                                if (!sponsorship) {
+                                                    throw new Error(
+                                                        'Sponsorship not found',
+                                                    )
                                                 }
-
-                                                await editSponsorshipFunding({
-                                                    sponsorship,
-                                                    operator,
-                                                })
-
-                                                /**
-                                                 * @todo If this fails we consider the entire flow a failure and console-warn
-                                                 * the "Could not edit (…)" (see below). Let's use `blockObserver` and wait
-                                                 * for the block outside of this workflow.
-                                                 */
-                                                await waitForGraphSync()
-
-                                                invalidateActiveOperatorByIdQueries(
-                                                    operator.id,
-                                                )
                                             } catch (e) {
-                                                if (isRejectionReason(e)) {
-                                                    return
-                                                }
-
-                                                console.warn(
-                                                    'Could not edit a Sponsorship',
+                                                return void console.warn(
+                                                    'Failed to fetch a sponsorship',
+                                                    element.sponsorshipId,
                                                     e,
                                                 )
                                             }
+
+                                            editSponsorshipFunding({
+                                                sponsorship,
+                                                operator,
+                                            })
                                         },
                                     }),
                                     (element) => ({

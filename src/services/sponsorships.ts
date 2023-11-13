@@ -196,9 +196,12 @@ export async function reduceStakeOnSponsorship(
     sponsorshipId: string,
     targetAmountWei: string,
     operatorAddress: string,
-    toastLabel = 'Reduce stake on sponsorship',
+    options: { toastLabel?: string; onBlockNumber?: (blockNumber: number) => void } = {},
 ): Promise<void> {
+    const { toastLabel = 'Reduce stake on sponsorship', onBlockNumber } = options
+
     const chainId = getSponsorshipChainId()
+
     await networkPreflight(chainId)
 
     await toastedOperation(toastLabel, async () => {
@@ -207,16 +210,22 @@ export async function reduceStakeOnSponsorship(
         const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
 
         const tx = await contract.reduceStakeTo(sponsorshipId, targetAmountWei)
-        const receipt = await tx.wait()
-        saveLastBlockNumber(receipt.blockNumber)
+
+        const { blockNumber } = await tx.wait()
+
+        saveLastBlockNumber(blockNumber)
+
+        onBlockNumber?.(blockNumber)
     })
 }
 
 export async function forceUnstakeFromSponsorship(
     sponsorshipId: string,
     operatorAddress: string,
+    options: { onBlockNumber?: (blockNumber: number) => void } = {},
 ): Promise<void> {
     const chainId = getSponsorshipChainId()
+
     await networkPreflight(chainId)
 
     await toastedOperation('Force unstake from sponsorship', async () => {
@@ -224,10 +233,17 @@ export async function forceUnstakeFromSponsorship(
 
         const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
 
-        // Juuso asked to put a big value in the second parameter - big enough to pay out the whole queue after unstaking
+        /**
+         * @jtakalai asked to put a big value in the second parameter. Value big enough
+         * to pay out the whole queue after unstaking.
+         */
         const tx = await contract.forceUnstake(sponsorshipId, 1000000)
-        const receipt = await tx.wait()
-        saveLastBlockNumber(receipt.blockNumber)
+
+        const { blockNumber } = await tx.wait()
+
+        saveLastBlockNumber(blockNumber)
+
+        options.onBlockNumber?.(blockNumber)
     })
 }
 

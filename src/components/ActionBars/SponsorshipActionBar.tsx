@@ -6,11 +6,10 @@ import Button from '~/shared/components/Button'
 import SvgIcon from '~/shared/components/SvgIcon'
 import routes from '~/routes'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
-import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
 import { Pad } from '~/components/ActionBars/OperatorActionBar'
-import { useOperatorForWallet } from '~/hooks/operators'
+import { useOperatorForWalletQuery } from '~/hooks/operators'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
@@ -29,7 +28,6 @@ import {
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { Tip } from '~/components/Tip'
 import {
-    invalidateSponsorshipQueries,
     useEditSponsorshipFunding,
     useFundSponsorshipCallback,
     useIsEditingSponsorshipFunding,
@@ -37,7 +35,6 @@ import {
     useIsJoiningSponsorshipAsOperator,
     useJoinSponsorshipAsOperator,
 } from '~/hooks/sponsorships'
-import { isRejectionReason } from '~/modals/BaseModal'
 import { COLORS } from '~/shared/utils/styled'
 import { abbr, goBack } from '~/utils'
 import {
@@ -58,7 +55,7 @@ export function SponsorshipActionBar({
 }) {
     const wallet = useWalletAccount()
 
-    const operator = useOperatorForWallet(wallet)
+    const { data: operator = null } = useOperatorForWalletQuery(wallet)
 
     const canEditStake = isSponsorshipFundedByOperator(sponsorship, operator)
 
@@ -183,25 +180,10 @@ export function SponsorshipActionBar({
                                         return
                                     }
 
-                                    try {
-                                        await editSponsorshipFunding({
-                                            sponsorship,
-                                            operator,
-                                        })
-
-                                        await waitForGraphSync()
-
-                                        invalidateSponsorshipQueries(
-                                            wallet,
-                                            sponsorship.id,
-                                        )
-                                    } catch (e) {
-                                        if (isRejectionReason(e)) {
-                                            return
-                                        }
-
-                                        console.warn('Could not edit a Sponsorship', e)
-                                    }
+                                    editSponsorshipFunding({
+                                        sponsorship,
+                                        operator,
+                                    })
                                 }}
                             >
                                 Edit stake

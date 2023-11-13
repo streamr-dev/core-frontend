@@ -71,12 +71,15 @@ import {
     GetDelegatorDailyBucketsQuery,
     GetDelegatorDailyBucketsQueryVariables,
     GetDelegatorDailyBucketsDocument,
+    Sponsorship,
 } from '~/generated/gql/network'
 import getCoreConfig from '~/getters/getCoreConfig'
 import getGraphClient from '~/getters/getGraphClient'
 import { ChartPeriod } from '~/types'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { BN, toBN } from '~/utils/bn'
+import { errorToast } from '~/utils/toast'
+import { SponsorshipParser } from '~/parsers/SponsorshipParser'
 
 const DEFAULT_OPERATOR_ORDER_BY = Operator_OrderBy.Id
 const DEFAULT_SPONSORSHIP_ORDER_BY = Sponsorship_OrderBy.Id
@@ -301,24 +304,44 @@ export async function getAllSponsorships({
     return sponsorships
 }
 
-export async function getSponsorshipById(
+export async function getParsedSponsorshipById(
     sponsorshipId: string,
     { force = false } = {},
-): Promise<NonNullable<GetSponsorshipByIdQuery['sponsorship']> | null> {
-    const {
-        data: { sponsorship },
-    } = await getGraphClient().query<
-        GetSponsorshipByIdQuery,
-        GetSponsorshipByIdQueryVariables
-    >({
-        query: GetSponsorshipByIdDocument,
-        variables: {
-            sponsorshipId,
-        },
-        fetchPolicy: force ? 'network-only' : void 0,
-    })
+) {
+    let rawSponsorship: Sponsorship | undefined | null
 
-    return sponsorship || null
+    try {
+        const { data } = await getGraphClient().query<
+            GetSponsorshipByIdQuery,
+            GetSponsorshipByIdQueryVariables
+        >({
+            query: GetSponsorshipByIdDocument,
+            variables: {
+                sponsorshipId,
+            },
+            fetchPolicy: force ? 'network-only' : void 0,
+        })
+
+        rawSponsorship = (data.sponsorship || null) as Sponsorship | null
+    } catch (e) {
+        console.warn('Failed to fetch a Sponsorship', e)
+
+        errorToast({ title: 'Could not fetch Sponsorship details' })
+    }
+
+    if (!rawSponsorship) {
+        return null
+    }
+
+    try {
+        return SponsorshipParser.parseAsync(rawSponsorship)
+    } catch (e) {
+        console.warn('Failed to parse a Sponsorship', e)
+
+        errorToast({ title: 'Could not parse Sponsorship details' })
+    }
+
+    return null
 }
 
 export async function getSponsorshipsByCreator(

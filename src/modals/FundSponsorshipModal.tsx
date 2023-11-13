@@ -21,7 +21,6 @@ import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentToke
 import { toDecimals } from '~/marketplace/utils/math'
 import { fundSponsorship } from '~/services/sponsorships'
 import { isTransactionRejection, waitForIndexedBlock } from '~/utils'
-import { blockObserver } from '~/utils/blocks'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     balance: BN

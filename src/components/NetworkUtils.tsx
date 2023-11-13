@@ -30,10 +30,6 @@ export const SummaryContainer = styled(WhiteBox)`
         }
     }
 `
-export const NetworkChartWrap = styled.div`
-    ${WhiteBoxPaddingStyles}
-`
-
 export const StreamInfoCell = styled.div`
     display: flex;
     flex-direction: column;

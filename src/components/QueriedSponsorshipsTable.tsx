@@ -7,26 +7,21 @@ import {
 } from '~/shared/components/ScrollTable/ScrollTable'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { waitForGraphSync } from '~/getters/waitForGraphSync'
-import { useOperatorForWallet } from '~/hooks/operators'
+import { useOperatorForWalletQuery } from '~/hooks/operators'
 import { LoadMoreButton } from '~/components/LoadMore'
 import routes from '~/routes'
 import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
 import {
-    invalidateAllSponsorshipsQueries,
-    invalidateSponsorshipsForCreatorQueries,
     useEditSponsorshipFunding,
     useFundSponsorshipCallback,
     useJoinSponsorshipAsOperator,
 } from '~/hooks/sponsorships'
-import { isRejectionReason } from '~/modals/BaseModal'
 import { FundedUntilCell, StreamIdCell } from '~/components/Table'
 import { abbr } from '~/utils'
 
 interface Props {
     noDataFirstLine?: ReactNode
     noDataSecondLine?: ReactNode
-    onStakeEdited?: () => void | Promise<void>
     orderBy?: string
     orderDirection?: ScrollTableOrderDirection
     onOrderChange?: (columnKey: string) => void
@@ -36,7 +31,6 @@ interface Props {
 export function QueriedSponsorshipsTable({
     noDataFirstLine = 'No data',
     noDataSecondLine,
-    onStakeEdited,
     orderBy,
     orderDirection,
     onOrderChange,
@@ -46,7 +40,7 @@ export function QueriedSponsorshipsTable({
 
     const wallet = useWalletAccount()
 
-    const operator = useOperatorForWallet(wallet)
+    const { data: operator = null } = useOperatorForWalletQuery(wallet)
 
     const fundSponsorship = useFundSponsorshipCallback()
 
@@ -141,31 +135,15 @@ export function QueriedSponsorshipsTable({
                         if (isSponsorshipFundedByOperator(element, operator)) {
                             return {
                                 displayName: 'Edit stake',
-                                async callback() {
+                                callback() {
                                     if (!operator) {
                                         return
                                     }
 
-                                    try {
-                                        await editSponsorshipFunding({
-                                            sponsorship: element,
-                                            operator,
-                                        })
-
-                                        await waitForGraphSync()
-
-                                        invalidateSponsorshipsForCreatorQueries(wallet)
-
-                                        invalidateAllSponsorshipsQueries()
-
-                                        await onStakeEdited?.()
-                                    } catch (e) {
-                                        if (isRejectionReason(e)) {
-                                            return
-                                        }
-
-                                        console.warn('Could not edit a Sponsorship', e)
-                                    }
+                                    editSponsorshipFunding({
+                                        sponsorship: element,
+                                        operator,
+                                    })
                                 },
                             }
                         }

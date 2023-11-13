@@ -133,6 +133,10 @@ export default function DelegateFundsModal({
                 !busy && (rawAmount === amountProp || reason !== RejectionReason.Backdrop)
             }
             onSubmit={async () => {
+                if (!canSubmit) {
+                    return
+                }
+
                 setBusy(true)
 
                 try {
