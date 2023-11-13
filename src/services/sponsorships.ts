@@ -1,5 +1,5 @@
 import { ERC677ABI, ERC677, Operator, operatorABI } from '@streamr/network-contracts'
-import { BigNumber, Contract } from 'ethers'
+import { BigNumber, Contract, Event } from 'ethers'
 import { defaultAbiCoder } from 'ethers/lib/utils'
 import { getConfigForChain } from '~/shared/web3/config'
 import networkPreflight from '~/utils/networkPreflight'
@@ -16,7 +16,10 @@ const getSponsorshipChainId = () => {
     return defaultChainConfig.id
 }
 
-export async function createSponsorship(formData: CreateSponsorshipForm): Promise<void> {
+export async function createSponsorship(
+    formData: CreateSponsorshipForm,
+    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
+): Promise<string> {
     const { decimals } = await getSponsorshipTokenInfo()
 
     const minOperatorCount = Number(formData.minNumberOfOperators)
@@ -60,59 +63,75 @@ export async function createSponsorship(formData: CreateSponsorshipForm): Promis
         policyParams.push(maxOperatorCount)
     }
 
-    await toastedOperation('Sponsorship deployment', async () => {
-        const data = defaultAbiCoder.encode(
-            ['uint32', 'string', 'string', 'address[]', 'uint[]'],
-            [
-                minOperatorCount,
-                streamId,
-                JSON.stringify({}), // metadata
-                policies,
-                policyParams,
-            ],
-        )
+    return new Promise<string>((resolve, reject) => {
+        void (async () => {
+            try {
+                await toastedOperation('Sponsorship deployment', async () => {
+                    const data = defaultAbiCoder.encode(
+                        ['uint32', 'string', 'string', 'address[]', 'uint[]'],
+                        [
+                            minOperatorCount,
+                            streamId,
+                            JSON.stringify({}), // metadata
+                            policies,
+                            policyParams,
+                        ],
+                    )
 
-        const signer = await getSigner()
+                    const signer = await getSigner()
 
-        const token = new Contract(
-            chainConfig.contracts[paymentTokenSymbolFromConfig],
-            ERC677ABI,
-            signer,
-        ) as ERC677
+                    const token = new Contract(
+                        chainConfig.contracts[paymentTokenSymbolFromConfig],
+                        ERC677ABI,
+                        signer,
+                    ) as ERC677
 
-        const gasLimitEstimate = await token.estimateGas.transferAndCall(
-            chainConfig.contracts['SponsorshipFactory'],
-            initialFunding.toString(),
-            data,
-        )
-        const increasedGasLimit = BigNumber.from(
-            toBN(gasLimitEstimate).multipliedBy(1.5).precision(1, BN.ROUND_UP).toString(),
-        )
+                    const gasLimitEstimate = await token.estimateGas.transferAndCall(
+                        chainConfig.contracts['SponsorshipFactory'],
+                        initialFunding.toString(),
+                        data,
+                    )
+                    const increasedGasLimit = BigNumber.from(
+                        toBN(gasLimitEstimate)
+                            .multipliedBy(1.5)
+                            .precision(1, BN.ROUND_UP)
+                            .toString(),
+                    )
 
-        const sponsorshipDeployTx = await token.transferAndCall(
-            chainConfig.contracts['SponsorshipFactory'],
-            initialFunding.toString(),
-            data,
-            {
-                gasLimit: increasedGasLimit,
-            },
-        )
+                    const sponsorshipDeployTx = await token.transferAndCall(
+                        chainConfig.contracts['SponsorshipFactory'],
+                        initialFunding.toString(),
+                        data,
+                        {
+                            gasLimit: increasedGasLimit,
+                        },
+                    )
 
-        const sponsorshipDeployReceipt = await sponsorshipDeployTx.wait()
+                    const { events = [], blockNumber } = await sponsorshipDeployTx.wait()
 
-        /**
-         * You may wonder why we are accessing the SECOND transfer event, that's because first
-         * the funds are being transferred to the sponsorship factory and then the factory
-         * transfers them to the sponsorship contract.
-         */
-        const newSponsorshipAddress = sponsorshipDeployReceipt.events?.filter(
-            (e) => e.event === 'Transfer',
-        )[1]?.args?.to
+                    /**
+                     * 2nd transfer is the transfer from the sponsorship factory to the newly
+                     * deployed sponsorship contract.
+                     */
+                    const [, initialFundingTransfer]: (Event | undefined)[] =
+                        events.filter((e) => e.event === 'Transfer') || []
 
-        if (!newSponsorshipAddress) {
-            throw new Error('Sponsorship deployment failed')
-        }
-        saveLastBlockNumber(sponsorshipDeployReceipt.blockNumber)
+                    const sponsorshipId = initialFundingTransfer.args?.to
+
+                    if (typeof sponsorshipId !== 'string') {
+                        throw new Error('Sponsorship deployment failed')
+                    }
+
+                    saveLastBlockNumber(blockNumber)
+
+                    await options.onBlockNumber?.(blockNumber)
+
+                    resolve(sponsorshipId)
+                })
+            } catch (e) {
+                reject(e)
+            }
+        })()
     })
 }
 

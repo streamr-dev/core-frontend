@@ -91,7 +91,11 @@ export const SponsorshipsPage = () => {
                     <Button
                         waiting={isCreatingSponsorship}
                         onClick={() => {
-                            createSponsorship(wallet)
+                            createSponsorship(wallet, {
+                                onDone(id) {
+                                    navigate(routes.network.sponsorship({ id }))
+                                },
+                            })
                         }}
                         disabled={!wallet}
                     >
