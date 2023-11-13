@@ -191,14 +191,14 @@ export function useAllSponsorshipsQuery({
 function invalidateSponsorshipByIdQueries(sponsorshipId: string) {
     return getQueryClient().invalidateQueries({
         exact: true,
-        queryKey: ['useSponsorshipByIdQuery', sponsorshipId],
+        queryKey: ['useSponsorshipByIdQuery', sponsorshipId.toLowerCase()],
         refetchType: 'active',
     })
 }
 
 export function useSponsorshipByIdQuery(sponsorshipId: string) {
     return useQuery({
-        queryKey: ['useSponsorshipByIdQuery', sponsorshipId],
+        queryKey: ['useSponsorshipByIdQuery', sponsorshipId.toLowerCase()],
         queryFn: () => getParsedSponsorshipById(sponsorshipId, { force: true }),
         staleTime: 60 * 1000, // 1 minute
         keepPreviousData: true,
