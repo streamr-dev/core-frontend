@@ -317,7 +317,7 @@ export async function getParsedSponsorshipById(
         >({
             query: GetSponsorshipByIdDocument,
             variables: {
-                sponsorshipId,
+                sponsorshipId: sponsorshipId.toLowerCase(),
             },
             fetchPolicy: force ? 'network-only' : void 0,
         })

@@ -26,7 +26,7 @@ import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { toDecimals } from '~/marketplace/utils/math'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { createSponsorship } from '~/services/sponsorships'
-import { isTransactionRejection } from '~/utils'
+import { isTransactionRejection, waitForIndexedBlock } from '~/utils'
 import { StreamIdDropdown } from '~/components/StreamIdDropdown'
 import { checkIfStreamExists } from '~/services/streams'
 import { errorToast } from '~/utils/toast'
@@ -44,16 +44,12 @@ const defaultFormData: CreateSponsorshipForm = {
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     balance: BN
-    onResolve?: () => void
+    onResolve?: (sponsorshipId: string) => void
 }
 
 const streamNotFoundToaster = toaster(Toast, Layer.Toast)
 
-export default function CreateSponsorshipModal({
-    balance: balanceProp,
-    onResolve,
-    ...props
-}: Props) {
+function CreateSponsorshipModal({ balance: balanceProp, onResolve, ...props }: Props) {
     const [busy, setBusy] = useState(false)
 
     const { decimals = 18 } = useSponsorshipTokenInfo() || {}
@@ -154,9 +150,11 @@ export default function CreateSponsorshipModal({
                         return
                     }
 
-                    await createSponsorship(formData)
+                    const sponsorshipId = await createSponsorship(formData, {
+                        onBlockNumber: waitForIndexedBlock,
+                    })
 
-                    onResolve?.()
+                    onResolve?.(sponsorshipId)
                 } catch (e) {
                     if (isRejectionReason(e)) {
                         return
@@ -351,3 +349,5 @@ export default function CreateSponsorshipModal({
         </FormModal>
     )
 }
+
+export const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)

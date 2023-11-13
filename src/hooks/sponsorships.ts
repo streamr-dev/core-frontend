@@ -18,10 +18,9 @@ import { getSponsorshipLeavePenalty } from '~/utils/sponsorships'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { FlagBusy } from '~/utils/errors'
-import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import JoinSponsorshipModal from '~/modals/JoinSponsorshipModal'
 import { Layer } from '~/utils/Layer'
-import CreateSponsorshipModal from '~/modals/CreateSponsorshipModal'
+import { createSponsorshipModal } from '~/modals/CreateSponsorshipModal'
 import { getBalanceForSponsorship } from '~/utils/sponsorships'
 import { getQueryClient } from '~/utils'
 import { getSigner } from '~/shared/stores/wallet'
@@ -191,14 +190,14 @@ export function useAllSponsorshipsQuery({
 function invalidateSponsorshipByIdQueries(sponsorshipId: string) {
     return getQueryClient().invalidateQueries({
         exact: true,
-        queryKey: ['useSponsorshipByIdQuery', sponsorshipId],
+        queryKey: ['useSponsorshipByIdQuery', sponsorshipId.toLowerCase()],
         refetchType: 'active',
     })
 }
 
 export function useSponsorshipByIdQuery(sponsorshipId: string) {
     return useQuery({
-        queryKey: ['useSponsorshipByIdQuery', sponsorshipId],
+        queryKey: ['useSponsorshipByIdQuery', sponsorshipId.toLowerCase()],
         queryFn: () => getParsedSponsorshipById(sponsorshipId, { force: true }),
         staleTime: 60 * 1000, // 1 minute
         keepPreviousData: true,
@@ -217,13 +216,14 @@ export function useIsCreatingSponsorshipForWallet(wallet: string | undefined) {
     return useIsFlagged(flagKey('isCreatingSponsorship', wallet || ''))
 }
 
-const createSponsorshipModal = toaster(CreateSponsorshipModal, Layer.Modal)
-
 export function useCreateSponsorship() {
     const withFlag = useFlagger()
 
     return useCallback(
-        (wallet: string | undefined, options: { onDone?: () => void } = {}) => {
+        (
+            wallet: string | undefined,
+            options: { onDone?: (sponsorshipId: string) => void } = {},
+        ) => {
             if (!wallet) {
                 return
             }
@@ -236,19 +236,15 @@ export function useCreateSponsorship() {
                             async () => {
                                 const balance = await getBalanceForSponsorship(wallet)
 
-                                await createSponsorshipModal.pop({
+                                const sponsorshipId = await createSponsorshipModal.pop({
                                     balance,
                                 })
+
+                                invalidateSponsorshipQueries(wallet, sponsorshipId)
+
+                                options.onDone?.(sponsorshipId)
                             },
                         )
-
-                        await waitForGraphSync()
-
-                        invalidateSponsorshipsForCreatorQueries(wallet)
-
-                        invalidateAllSponsorshipsQueries()
-
-                        options.onDone?.()
                     } catch (e) {
                         if (e === FlagBusy) {
                             return
