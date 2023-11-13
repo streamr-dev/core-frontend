@@ -694,6 +694,9 @@ export const SingleOperatorPage = () => {
                                             key: 'reason',
                                         },
                                     ]}
+                                    linkMapper={({ sponsorshipId: id }) =>
+                                        routes.network.sponsorship({ id })
+                                    }
                                 />
                             </SlashingHistoryTableContainer>
                         </NetworkPageSegment>

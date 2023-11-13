@@ -56,14 +56,16 @@ export const OperatorParser = z
                     amount: z.string().transform(toBN),
                     date: z.coerce.number(),
                     sponsorship: z.object({
+                        id: z.string(),
                         stream: z.object({
                             id: z.string(),
                         }),
                     }),
                 })
-                .transform(({ sponsorship, ...rest }) => ({
+                .transform(({ sponsorship: { id: sponsorshipId, stream }, ...rest }) => ({
                     ...rest,
-                    streamId: sponsorship.stream.id,
+                    sponsorshipId,
+                    streamId: stream.id,
                 })),
         ),
         stakes: z.array(
