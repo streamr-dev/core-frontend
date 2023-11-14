@@ -4430,21 +4430,11 @@ export type GetAllOperatorsQueryVariables = Exact<{
 
 export type GetAllOperatorsQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency?: any | null, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
 
-export type SearchOperatorsByIdQueryVariables = Exact<{
-  first?: InputMaybe<Scalars['Int']['input']>;
-  skip?: InputMaybe<Scalars['Int']['input']>;
-  operatorId?: InputMaybe<Scalars['ID']['input']>;
-  orderBy?: InputMaybe<Operator_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-}>;
-
-
-export type SearchOperatorsByIdQuery = { __typename?: 'Query', operators: Array<{ __typename?: 'Operator', id: string, delegatorCount: number, valueWithoutEarnings: any, totalStakeInSponsorshipsWei: any, dataTokenBalanceWei: any, operatorTokenTotalSupplyWei: any, exchangeRate: any, metadataJsonString: string, owner: string, nodes: Array<string>, cumulativeProfitsWei: any, cumulativeOperatorsCutWei: any, operatorsCutFraction: any, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string }, sponsorship: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency?: any | null, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } }>, delegations: Array<{ __typename?: 'Delegation', valueDataWei: any, operatorTokenBalanceWei: any, id: string, delegator: { __typename?: 'Delegator', id: string } }>, slashingEvents: Array<{ __typename?: 'SlashingEvent', amount: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string, stream?: { __typename?: 'Stream', id: string } | null } }>, queueEntries: Array<{ __typename?: 'QueueEntry', amount: any, date: any, id: string, delegator: { __typename?: 'Delegator', id: string } }> }> };
-
 export type SearchOperatorsByMetadataQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   skip?: InputMaybe<Scalars['Int']['input']>;
   searchQuery?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
   orderBy?: InputMaybe<Operator_OrderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
 }>;
@@ -4841,26 +4831,12 @@ export const GetAllOperatorsDocument = gql`
 }
     ${OperatorFieldsFragmentDoc}`;
 export type GetAllOperatorsQueryResult = Apollo.QueryResult<GetAllOperatorsQuery, GetAllOperatorsQueryVariables>;
-export const SearchOperatorsByIdDocument = gql`
-    query searchOperatorsById($first: Int, $skip: Int, $operatorId: ID, $orderBy: Operator_orderBy, $orderDirection: OrderDirection) {
-  operators(
-    first: $first
-    skip: $skip
-    where: {id: $operatorId}
-    orderBy: $orderBy
-    orderDirection: $orderDirection
-  ) {
-    ...OperatorFields
-  }
-}
-    ${OperatorFieldsFragmentDoc}`;
-export type SearchOperatorsByIdQueryResult = Apollo.QueryResult<SearchOperatorsByIdQuery, SearchOperatorsByIdQueryVariables>;
 export const SearchOperatorsByMetadataDocument = gql`
-    query searchOperatorsByMetadata($first: Int, $skip: Int, $searchQuery: String, $orderBy: Operator_orderBy, $orderDirection: OrderDirection) {
+    query searchOperatorsByMetadata($first: Int, $skip: Int, $searchQuery: String, $id: ID!, $orderBy: Operator_orderBy, $orderDirection: OrderDirection) {
   operators(
     first: $first
     skip: $skip
-    where: {metadataJsonString_contains_nocase: $searchQuery}
+    where: {or: [{id: $id}, {metadataJsonString_contains_nocase: $searchQuery}, {stakes_: {sponsorship_contains_nocase: $searchQuery}}]}
     orderBy: $orderBy
     orderDirection: $orderDirection
   ) {
@@ -4932,7 +4908,7 @@ export const GetAllSponsorshipsDocument = gql`
   sponsorships(
     first: $first
     skip: $skip
-    where: {or: [{stream_contains_nocase: $searchQuery}, {id: $id}]}
+    where: {or: [{stream_contains_nocase: $searchQuery}, {id: $id}, {stakes_: {operator_contains_nocase: $searchQuery}}]}
     orderBy: $orderBy
     orderDirection: $orderDirection
   ) {
@@ -4946,7 +4922,7 @@ export const GetSponsorshipsByCreatorDocument = gql`
   sponsorships(
     first: $first
     skip: $skip
-    where: {and: [{creator: $creator}, {or: [{stream_contains_nocase: $searchQuery}, {id: $id}]}]}
+    where: {and: [{creator: $creator}, {or: [{stream_contains_nocase: $searchQuery}, {id: $id}, {stakes_: {operator_contains_nocase: $searchQuery}}]}]}
     orderBy: $orderBy
     orderDirection: $orderDirection
   ) {

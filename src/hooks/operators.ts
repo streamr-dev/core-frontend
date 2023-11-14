@@ -14,7 +14,6 @@ import {
     getParsedOperatorByOwnerAddress,
     getParsedOperators,
     getSpotApy,
-    searchOperatorsById,
     searchOperatorsByMetadata,
 } from '~/getters'
 import { getQueryClient } from '~/utils'
@@ -330,13 +329,6 @@ export function useAllOperatorsQuery({
 
                     if (!searchQuery) {
                         return getAllOperators(params) as Promise<Operator[]>
-                    }
-
-                    if (isAddress(searchQuery)) {
-                        return searchOperatorsById({
-                            ...params,
-                            operatorId: searchQuery,
-                        }) as Promise<Operator[]>
                     }
 
                     return searchOperatorsByMetadata({

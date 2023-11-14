@@ -71,35 +71,24 @@ gql`
         }
     }
 
-    query searchOperatorsById(
-        $first: Int
-        $skip: Int
-        $operatorId: ID
-        $orderBy: Operator_orderBy
-        $orderDirection: OrderDirection
-    ) {
-        operators(
-            first: $first
-            skip: $skip
-            where: { id: $operatorId }
-            orderBy: $orderBy
-            orderDirection: $orderDirection
-        ) {
-            ...OperatorFields
-        }
-    }
-
     query searchOperatorsByMetadata(
         $first: Int
         $skip: Int
         $searchQuery: String
+        $id: ID!
         $orderBy: Operator_orderBy
         $orderDirection: OrderDirection
     ) {
         operators(
             first: $first
             skip: $skip
-            where: { metadataJsonString_contains_nocase: $searchQuery }
+            where: {
+                or: [
+                    { id: $id }
+                    { metadataJsonString_contains_nocase: $searchQuery }
+                    { stakes_: { sponsorship_contains_nocase: $searchQuery } }
+                ]
+            }
             orderBy: $orderBy
             orderDirection: $orderDirection
         ) {
@@ -220,7 +209,13 @@ gql`
         sponsorships(
             first: $first
             skip: $skip
-            where: { or: [{ stream_contains_nocase: $searchQuery }, { id: $id }] }
+            where: {
+                or: [
+                    { stream_contains_nocase: $searchQuery }
+                    { id: $id }
+                    { stakes_: { operator_contains_nocase: $searchQuery } }
+                ]
+            }
             orderBy: $orderBy
             orderDirection: $orderDirection
         ) {
@@ -243,7 +238,13 @@ gql`
             where: {
                 and: [
                     { creator: $creator }
-                    { or: [{ stream_contains_nocase: $searchQuery }, { id: $id }] }
+                    {
+                        or: [
+                            { stream_contains_nocase: $searchQuery }
+                            { id: $id }
+                            { stakes_: { operator_contains_nocase: $searchQuery } }
+                        ]
+                    }
                 ]
             }
             orderBy: $orderBy
