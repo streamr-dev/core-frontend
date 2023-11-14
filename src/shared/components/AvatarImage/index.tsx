@@ -51,7 +51,7 @@ export const HubAvatar = styled(Identicon)`
     border-radius: 50%;
     background-color: white;
 `
-export const HubImageAvatar = styled.img`
+export const HubImageAvatar = styled(UnstyledFallbackImage)`
     width: 32px;
     height: 32px;
     border: 1px solid #f3f3f3;

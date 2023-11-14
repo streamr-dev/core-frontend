@@ -127,7 +127,8 @@ export const OperatorActionBar: FunctionComponent<{
                                 {metadata.imageUrl ? (
                                     <HubImageAvatar
                                         src={metadata.imageUrl}
-                                        alt={metadata.name || operator.id}
+                                        alt=""
+                                        placeholder={<HubAvatar id={operator.id} />}
                                     />
                                 ) : (
                                     <HubAvatar id={operator.id} />

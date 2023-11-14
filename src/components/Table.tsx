@@ -23,7 +23,11 @@ export function OperatorIdCell({
     return (
         <OperatorIdCellRoot>
             {imageUrl ? (
-                <HubImageAvatar src={imageUrl} alt={imageUrl || operatorId} />
+                <HubImageAvatar
+                    src={imageUrl}
+                    alt=""
+                    placeholder={<HubAvatar id={operatorId} />}
+                />
             ) : (
                 <HubAvatar id={operatorId} />
             )}
