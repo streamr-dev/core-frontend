@@ -117,6 +117,7 @@ export type Delegation_Filter = {
 
 export enum Delegation_OrderBy {
   Delegator = 'delegator',
+  DelegatorCumulativeEarningsWei = 'delegator__cumulativeEarningsWei',
   DelegatorId = 'delegator__id',
   DelegatorNumberOfDelegations = 'delegator__numberOfDelegations',
   DelegatorTotalValueDataWei = 'delegator__totalValueDataWei',
@@ -146,6 +147,7 @@ export enum Delegation_OrderBy {
 
 export type Delegator = {
   __typename?: 'Delegator';
+  cumulativeEarningsWei: Scalars['BigInt']['output'];
   delegations: Array<Delegation>;
   id: Scalars['ID']['output'];
   numberOfDelegations: Scalars['Int']['output'];
@@ -253,6 +255,7 @@ export enum DelegatorDailyBucket_OrderBy {
   CumulativeEarningsWei = 'cumulativeEarningsWei',
   Date = 'date',
   Delegator = 'delegator',
+  DelegatorCumulativeEarningsWei = 'delegator__cumulativeEarningsWei',
   DelegatorId = 'delegator__id',
   DelegatorNumberOfDelegations = 'delegator__numberOfDelegations',
   DelegatorTotalValueDataWei = 'delegator__totalValueDataWei',
@@ -265,6 +268,14 @@ export type Delegator_Filter = {
   /** Filter for the block changed event. */
   _change_block?: InputMaybe<BlockChangedFilter>;
   and?: InputMaybe<Array<InputMaybe<Delegator_Filter>>>;
+  cumulativeEarningsWei?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  cumulativeEarningsWei_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_not?: InputMaybe<Scalars['BigInt']['input']>;
+  cumulativeEarningsWei_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   delegations_?: InputMaybe<Delegation_Filter>;
   id?: InputMaybe<Scalars['ID']['input']>;
   id_gt?: InputMaybe<Scalars['ID']['input']>;
@@ -295,6 +306,7 @@ export type Delegator_Filter = {
 };
 
 export enum Delegator_OrderBy {
+  CumulativeEarningsWei = 'cumulativeEarningsWei',
   Delegations = 'delegations',
   Id = 'id',
   NumberOfDelegations = 'numberOfDelegations',
@@ -2615,6 +2627,7 @@ export enum QueueEntry_OrderBy {
   Amount = 'amount',
   Date = 'date',
   Delegator = 'delegator',
+  DelegatorCumulativeEarningsWei = 'delegator__cumulativeEarningsWei',
   DelegatorId = 'delegator__id',
   DelegatorNumberOfDelegations = 'delegator__numberOfDelegations',
   DelegatorTotalValueDataWei = 'delegator__totalValueDataWei',
@@ -4493,7 +4506,8 @@ export type SponsorshipFieldsFragment = { __typename?: 'Sponsorship', id: string
 export type GetAllSponsorshipsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   skip?: InputMaybe<Scalars['Int']['input']>;
-  streamContains: Scalars['String']['input'];
+  searchQuery: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
   orderBy?: InputMaybe<Sponsorship_OrderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
 }>;
@@ -4504,7 +4518,8 @@ export type GetAllSponsorshipsQuery = { __typename?: 'Query', sponsorships: Arra
 export type GetSponsorshipsByCreatorQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   skip?: InputMaybe<Scalars['Int']['input']>;
-  streamContains: Scalars['String']['input'];
+  searchQuery: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
   creator: Scalars['String']['input'];
   orderBy?: InputMaybe<Sponsorship_OrderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
@@ -4913,11 +4928,11 @@ export const GetOperatorByOwnerAddressDocument = gql`
     ${OperatorFieldsFragmentDoc}`;
 export type GetOperatorByOwnerAddressQueryResult = Apollo.QueryResult<GetOperatorByOwnerAddressQuery, GetOperatorByOwnerAddressQueryVariables>;
 export const GetAllSponsorshipsDocument = gql`
-    query getAllSponsorships($first: Int, $skip: Int, $streamContains: String!, $orderBy: Sponsorship_orderBy, $orderDirection: OrderDirection) {
+    query getAllSponsorships($first: Int, $skip: Int, $searchQuery: String!, $id: ID!, $orderBy: Sponsorship_orderBy, $orderDirection: OrderDirection) {
   sponsorships(
     first: $first
     skip: $skip
-    where: {stream_contains_nocase: $streamContains}
+    where: {or: [{stream_contains_nocase: $searchQuery}, {id: $id}]}
     orderBy: $orderBy
     orderDirection: $orderDirection
   ) {
@@ -4927,11 +4942,11 @@ export const GetAllSponsorshipsDocument = gql`
     ${SponsorshipFieldsFragmentDoc}`;
 export type GetAllSponsorshipsQueryResult = Apollo.QueryResult<GetAllSponsorshipsQuery, GetAllSponsorshipsQueryVariables>;
 export const GetSponsorshipsByCreatorDocument = gql`
-    query getSponsorshipsByCreator($first: Int, $skip: Int, $streamContains: String!, $creator: String!, $orderBy: Sponsorship_orderBy, $orderDirection: OrderDirection) {
+    query getSponsorshipsByCreator($first: Int, $skip: Int, $searchQuery: String!, $id: ID!, $creator: String!, $orderBy: Sponsorship_orderBy, $orderDirection: OrderDirection) {
   sponsorships(
     first: $first
     skip: $skip
-    where: {creator: $creator, stream_contains_nocase: $streamContains}
+    where: {and: [{creator: $creator}, {or: [{stream_contains_nocase: $searchQuery}, {id: $id}]}]}
     orderBy: $orderBy
     orderDirection: $orderDirection
   ) {

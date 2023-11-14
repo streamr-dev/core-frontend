@@ -88,12 +88,12 @@ export function useSponsorshipsForCreatorQuery(
     address: string | undefined,
     {
         pageSize = 10,
-        streamId,
+        searchQuery,
         orderBy,
         orderDirection,
     }: {
         pageSize?: number
-        streamId?: string
+        searchQuery?: string
         orderBy?: string
         orderDirection?: 'asc' | 'desc'
     } = {},
@@ -105,7 +105,7 @@ export function useSponsorshipsForCreatorQuery(
             'useSponsorshipsForCreatorQuery',
             creator,
             pageSize,
-            streamId,
+            searchQuery,
             orderBy,
             orderDirection,
         ],
@@ -122,7 +122,7 @@ export function useSponsorshipsForCreatorQuery(
                     getSponsorshipsByCreator(creator, {
                         first: pageSize,
                         skip,
-                        streamId,
+                        searchQuery,
                         orderBy: mapSponsorshipOrder(orderBy),
                         orderDirection: orderDirection as OrderDirection,
                         force: true,
@@ -148,12 +148,12 @@ function invalidateAllSponsorshipsQueries() {
 
 export function useAllSponsorshipsQuery({
     pageSize = 10,
-    streamId,
+    searchQuery,
     orderBy,
     orderDirection,
 }: {
     pageSize?: number
-    streamId?: string
+    searchQuery?: string
     orderBy?: string
     orderDirection?: 'asc' | 'desc'
 }) {
@@ -161,7 +161,7 @@ export function useAllSponsorshipsQuery({
         queryKey: [
             'useAllSponsorshipsQuery',
             pageSize,
-            streamId,
+            searchQuery,
             orderBy,
             orderDirection,
         ],
@@ -171,7 +171,7 @@ export function useAllSponsorshipsQuery({
                     getAllSponsorships({
                         first: pageSize,
                         skip,
-                        streamId,
+                        searchQuery,
                         orderBy: mapSponsorshipOrder(orderBy),
                         orderDirection: orderDirection as OrderDirection,
                         force: true,

@@ -272,14 +272,14 @@ export async function getFirstEnsNameFor(address: string): Promise<string> {
 export async function getAllSponsorships({
     first,
     skip,
-    streamId = '',
+    searchQuery = '',
     orderBy = DEFAULT_SPONSORSHIP_ORDER_BY,
     orderDirection = DEFAULT_ORDER_DIRECTION,
     force = false,
 }: {
     first?: number
     skip?: number
-    streamId?: string
+    searchQuery?: string
     orderBy?: Sponsorship_OrderBy
     orderDirection?: OrderDirection
     force?: boolean
@@ -294,7 +294,8 @@ export async function getAllSponsorships({
         variables: {
             first,
             skip,
-            streamContains: streamId,
+            searchQuery,
+            id: searchQuery.toLowerCase(),
             orderBy,
             orderDirection,
         },
@@ -349,14 +350,14 @@ export async function getSponsorshipsByCreator(
     {
         first,
         skip,
-        streamId = '',
+        searchQuery = '',
         orderBy = DEFAULT_SPONSORSHIP_ORDER_BY,
         orderDirection = DEFAULT_ORDER_DIRECTION,
         force = false,
     }: {
         first?: number
         skip?: number
-        streamId?: string
+        searchQuery?: string
         orderBy?: Sponsorship_OrderBy
         orderDirection?: OrderDirection
         force?: boolean
@@ -372,7 +373,8 @@ export async function getSponsorshipsByCreator(
         variables: {
             first,
             skip,
-            streamContains: streamId,
+            searchQuery,
+            id: searchQuery.toLowerCase(),
             creator,
             orderBy,
             orderDirection,

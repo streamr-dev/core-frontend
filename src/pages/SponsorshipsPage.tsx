@@ -43,14 +43,14 @@ export const SponsorshipsPage = () => {
 
     const allSponsorshipsQuery = useAllSponsorshipsQuery({
         pageSize: PAGE_SIZE,
-        streamId: searchQuery,
+        searchQuery,
         orderBy,
         orderDirection,
     })
 
     const mySponsorshipsQuery = useSponsorshipsForCreatorQuery(wallet, {
         pageSize: PAGE_SIZE,
-        streamId: searchQuery,
+        searchQuery,
         orderBy,
         orderDirection,
     })
