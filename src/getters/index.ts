@@ -43,9 +43,6 @@ import {
     GetOperatorByOwnerAddressQuery,
     GetOperatorByOwnerAddressQueryVariables,
     GetOperatorByOwnerAddressDocument,
-    SearchOperatorsByIdQuery,
-    SearchOperatorsByIdQueryVariables,
-    SearchOperatorsByIdDocument,
     SearchOperatorsByMetadataQuery,
     SearchOperatorsByMetadataQueryVariables,
     SearchOperatorsByMetadataDocument,
@@ -527,41 +524,6 @@ export async function getOperatorsByDelegationAndMetadata({
     return operators
 }
 
-export async function searchOperatorsById({
-    first,
-    skip,
-    operatorId,
-    orderBy = DEFAULT_OPERATOR_ORDER_BY,
-    orderDirection = DEFAULT_ORDER_DIRECTION,
-    force = false,
-}: {
-    first?: number
-    skip?: number
-    operatorId?: string
-    orderBy?: Operator_OrderBy
-    orderDirection?: OrderDirection
-    force?: boolean
-}): Promise<SearchOperatorsByIdQuery['operators']> {
-    const {
-        data: { operators },
-    } = await getGraphClient().query<
-        SearchOperatorsByIdQuery,
-        SearchOperatorsByIdQueryVariables
-    >({
-        query: SearchOperatorsByIdDocument,
-        variables: {
-            first,
-            skip,
-            operatorId,
-            orderBy,
-            orderDirection,
-        },
-        fetchPolicy: force ? 'network-only' : void 0,
-    })
-
-    return operators
-}
-
 export async function searchOperatorsByMetadata({
     first,
     skip,
@@ -588,6 +550,7 @@ export async function searchOperatorsByMetadata({
             first,
             skip,
             searchQuery,
+            id: searchQuery?.toLowerCase() || '',
             orderBy,
             orderDirection,
         },
