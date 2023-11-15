@@ -96,7 +96,7 @@ export default function DelegateFundsModal({
             !isOwner &&
             getSelfDelegationFraction(operator, {
                 offset: finalValueDecimals,
-            }).isLessThan(minimumSelfDelegation)
+            }).isLessThanOrEqualTo(minimumSelfDelegation)
         )
     }, [operator, minimumSelfDelegation, finalValueDecimals, isOwner])
 
@@ -220,7 +220,7 @@ export default function DelegateFundsModal({
                     <>
                         {tooLowSelfDelegationWithNewAmount && (
                             <Alert type="error" title="Amount too high">
-                                This operator can currently only accept{' '}
+                                This operator can currently only accept less than{' '}
                                 <strong>
                                     {maxAmount.toString()} <SponsorshipPaymentTokenName />
                                 </strong>{' '}
