@@ -600,6 +600,14 @@ const sources = {
             </g>
         </svg>
     ),
+    lockClosed: (
+        <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="9.5 8 13 16">
+            <path
+                d="M19.75 15H19v-2a3 3 0 0 0-6 0v2h-.75a.751.751 0 0 0-.75.75v5.5a.751.751 0 0 0 .75.75h7.5a.751.751 0 0 0 .75-.75v-5.5a.751.751 0 0 0-.75-.75Zm-3.275 3.875c.014.04.022.082.025.125a.5.5 0 0 1-1 0 .485.485 0 0 1 .025-.125 1 1 0 1 1 .95 0ZM18 15h-4v-2a2 2 0 0 1 4 0v2Z"
+                fill="currentColor"
+            />
+        </svg>
+    ),
     checkBadgeOutline: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <g

@@ -72,6 +72,7 @@ import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { abbr, isTransactionRejection, saveOperator, waitForIndexedBlock } from '~/utils'
 import { Break } from '~/utils/errors'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import SvgIcon from '~/shared/components/SvgIcon'
 
 const forceUndelegateModal = toaster(ForceUndelegateModal, Layer.Modal)
 
@@ -315,12 +316,43 @@ export const SingleOperatorPage = () => {
                                     },
                                     {
                                         displayName: 'Staked',
-                                        valueMapper: (element) => (
-                                            <>
-                                                {abbr(fromAtto(element.amountWei))}{' '}
-                                                {tokenSymbol}
-                                            </>
-                                        ),
+                                        valueMapper: (element) => {
+                                            const minimumStakeReachTime = moment(
+                                                (element.joinTimestamp +
+                                                    element.minimumStakingPeriodSeconds) *
+                                                    1000,
+                                            )
+                                            return (
+                                                <>
+                                                    {abbr(fromAtto(element.amountWei))}{' '}
+                                                    {tokenSymbol}
+                                                    {minimumStakeReachTime.isAfter(
+                                                        Date.now(),
+                                                    ) && (
+                                                        <Tip
+                                                            handle={
+                                                                <TipIconWrap
+                                                                    className="ml-1"
+                                                                    $color="#ADADAD"
+                                                                    $svgSize={{
+                                                                        width: '18px',
+                                                                        height: '18px',
+                                                                    }}
+                                                                >
+                                                                    <SvgIcon name="lockClosed" />
+                                                                </TipIconWrap>
+                                                            }
+                                                        >
+                                                            Minimum stake period:{' '}
+                                                            {minimumStakeReachTime.fromNow(
+                                                                true,
+                                                            )}{' '}
+                                                            left
+                                                        </Tip>
+                                                    )}
+                                                </>
+                                            )
+                                        },
                                         align: 'start',
                                         isSticky: false,
                                         key: 'staked',
