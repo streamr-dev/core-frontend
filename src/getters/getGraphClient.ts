@@ -1,15 +1,13 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
 import getCoreConfig from './getCoreConfig'
+import { getGraphUrl } from '.'
 
 let graphClient: ApolloClient<NormalizedCacheObject> | undefined
-
-const { theGraphUrl, theHubGraphName } = getCoreConfig()
-const networkGraphUrl = `${theGraphUrl}/subgraphs/name/${theHubGraphName}`
 
 export default function getGraphClient() {
     if (!graphClient) {
         graphClient = new ApolloClient({
-            uri: networkGraphUrl,
+            uri: getGraphUrl(),
             cache: new InMemoryCache(),
         })
     }

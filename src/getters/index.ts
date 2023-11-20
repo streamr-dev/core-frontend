@@ -72,6 +72,7 @@ import {
 } from '~/generated/gql/network'
 import getCoreConfig from '~/getters/getCoreConfig'
 import getGraphClient from '~/getters/getGraphClient'
+import { defaultChainConfig } from '~/getters/getChainConfig'
 import { ChartPeriod } from '~/types'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { BN, toBN } from '~/utils/bn'
@@ -83,9 +84,7 @@ const DEFAULT_SPONSORSHIP_ORDER_BY = Sponsorship_OrderBy.Id
 const DEFAULT_ORDER_DIRECTION = OrderDirection.Asc
 
 export function getGraphUrl(): string {
-    const { theGraphUrl, theHubGraphName } = getCoreConfig()
-
-    return `${theGraphUrl}/subgraphs/name/${theHubGraphName}`
+    return defaultChainConfig.theGraphUrl
 }
 
 export function getProjectRegistryContract({

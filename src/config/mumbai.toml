@@ -11,7 +11,6 @@ streamChains = ['mumbai']
 projectsChain = 'mumbai'
 theGraphUrl = "https://api.thegraph.com"
 dataUnionJoinServerUrl = "https://join.dataunions.org/"
-theHubGraphName = "samt1803/network-subgraphs"
 streamIndexerUrl = "https://stream-metrics-staging.streamr.network/api"
 reverseRecordsAddress = "0x3671aE578E63FdF66ad4F3E12CC0c0d71Ac7510C"
 sponsorshipPaymentToken = "DATA"
