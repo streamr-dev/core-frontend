@@ -49,6 +49,17 @@ function start() {
         const client = getGraphClient()
 
         while (1) {
+            if (!Object.keys(pending).length) {
+                /**
+                 * Pending list empty? Wait 2 seconds and retry. We only wanna query
+                 * the Graph if we're interested in something specific.
+                 */
+
+                await sleep(2000)
+
+                continue
+            }
+
             try {
                 const {
                     data: { _meta: meta },
