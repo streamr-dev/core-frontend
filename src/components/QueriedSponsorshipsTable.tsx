@@ -141,7 +141,7 @@ export function QueriedSponsorshipsTable({
                                     }
 
                                     editSponsorshipFunding({
-                                        sponsorship: element,
+                                        sponsorshipOrSponsorshipId: element,
                                         operator,
                                     })
                                 },

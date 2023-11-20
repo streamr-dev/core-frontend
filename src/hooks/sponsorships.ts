@@ -446,16 +446,32 @@ export function useEditSponsorshipFunding() {
     const withFlag = useFlagger()
 
     return useCallback(
-        ({
-            sponsorship,
-            operator,
-        }: {
-            sponsorship: ParsedSponsorship
+        (params: {
+            sponsorshipOrSponsorshipId: string | ParsedSponsorship
             operator: ParsedOperator
         }) => {
+            const { sponsorshipOrSponsorshipId, operator } = params
+
             void (async () => {
                 try {
                     try {
+                        const sponsorship = await (async () => {
+                            if (typeof sponsorshipOrSponsorshipId !== 'string') {
+                                return sponsorshipOrSponsorshipId
+                            }
+
+                            const result = await getParsedSponsorshipById(
+                                sponsorshipOrSponsorshipId,
+                                { force: true },
+                            )
+
+                            if (!result) {
+                                throw new Error('Sponsorship not found')
+                            }
+
+                            return result
+                        })()
+
                         await withFlag(
                             flagKey(
                                 'isEditingSponsorshipFunding',

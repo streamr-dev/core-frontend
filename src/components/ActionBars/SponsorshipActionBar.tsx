@@ -181,7 +181,7 @@ export function SponsorshipActionBar({
                                     }
 
                                     editSponsorshipFunding({
-                                        sponsorship,
+                                        sponsorshipOrSponsorshipId: sponsorship,
                                         operator,
                                     })
                                 }}
