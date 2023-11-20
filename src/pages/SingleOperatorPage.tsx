@@ -668,7 +668,9 @@ export const SingleOperatorPage = () => {
                         <NetworkPageSegment foot title="Slashing history">
                             <SlashingHistoryTableContainer>
                                 <ScrollTable
-                                    elements={operator.slashingEvents}
+                                    elements={operator.slashingEvents.sort(
+                                        (a, b) => b.date - a.date,
+                                    )}
                                     columns={[
                                         {
                                             displayName: 'Stream ID',
