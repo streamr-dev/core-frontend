@@ -80,7 +80,21 @@ const useOperatorReachabilityStore = create<{
                     sleep(timeoutMillis).then(() => {
                         throw new Error('Timeout')
                     }),
-                    new Promise<boolean>((resolve) => void resolve(!!url)),
+                    new Promise<boolean>((resolve, reject) => {
+                        if (!url) {
+                            return void resolve(false)
+                        }
+
+                        ws = new WebSocket(url)
+
+                        ws.addEventListener('open', () => {
+                            resolve(true)
+                        })
+
+                        ws.addEventListener('error', (e) => {
+                            reject(e)
+                        })
+                    }),
                 ])
             } finally {
                 ws?.close()
