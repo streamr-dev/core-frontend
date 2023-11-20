@@ -51,7 +51,7 @@ export type ConfigKey =
 export interface Chain {
     name: string
     id: number
-    theGraphUrl: string
+    theGraphUrl?: string
     rpcEndpoints: { readonly url: string }[]
     contracts: {
         [name: string]: string

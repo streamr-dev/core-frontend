@@ -84,7 +84,15 @@ const DEFAULT_SPONSORSHIP_ORDER_BY = Sponsorship_OrderBy.Id
 const DEFAULT_ORDER_DIRECTION = OrderDirection.Asc
 
 export function getGraphUrl(): string {
-    return defaultChainConfig.theGraphUrl
+    if (defaultChainConfig.theGraphUrl != null) {
+        return defaultChainConfig.theGraphUrl
+    }
+
+    // Fall back to default subgraph name
+    const { theGraphUrl } = getCoreConfig()
+    const url = `${theGraphUrl}/subgraphs/name/streamr-dev/network-subgraphs`
+    console.warn('There is no theGraphUrl in config. Falling back to', url)
+    return url
 }
 
 export function getProjectRegistryContract({
