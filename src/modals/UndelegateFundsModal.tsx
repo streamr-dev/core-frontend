@@ -21,7 +21,7 @@ import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { undelegateFromOperator } from '~/services/operators'
-import { isTransactionRejection } from '~/utils'
+import { isTransactionRejection, waitForIndexedBlock } from '~/utils'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     balance: BN
@@ -118,6 +118,7 @@ export default function UndelegateFundsModal({
                         prefinalAmount.isGreaterThanOrEqualTo(delegatedTotalProp)
                             ? toBN(Number.POSITIVE_INFINITY)
                             : prefinalAmount,
+                        { onBlockNumber: waitForIndexedBlock },
                     )
 
                     onResolve?.()
