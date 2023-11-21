@@ -761,14 +761,13 @@ export function getSpotApy<
  */
 export function getDelegatedAmountForWallet(
     address: string,
-    { delegations, exchangeRate }: ParsedOperator,
+    { delegations }: ParsedOperator,
 ): BN {
     const addr = address.toLowerCase()
 
     return (
-        delegations
-            .find(({ delegator }) => delegator.toLowerCase() === addr)
-            ?.amount.multipliedBy(exchangeRate) || toBN(0)
+        delegations.find(({ delegator }) => delegator.toLowerCase() === addr)?.amount ||
+        toBN(0)
     )
 }
 
@@ -788,9 +787,7 @@ export function getDelegationFractionForWallet(
     operator: ParsedOperator,
     { offset = toBN(0) }: { offset?: BN } = {},
 ) {
-    const total = operator.operatorTokenTotalSupplyWei
-        .multipliedBy(operator.exchangeRate)
-        .plus(offset)
+    const total = operator.valueWithoutEarnings.plus(offset)
 
     if (total.isEqualTo(0)) {
         return toBN(0)

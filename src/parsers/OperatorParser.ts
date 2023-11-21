@@ -26,7 +26,6 @@ export const OperatorParser = z
                     amount,
                 })),
         ),
-        exchangeRate: z.string().transform(toBN),
         id: z.string(),
         metadataJsonString: OperatorMetadataParser,
         nodes: z.array(z.string()).transform((nodes) =>

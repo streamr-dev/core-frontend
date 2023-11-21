@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { toaster } from 'toasterhea'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import moment from 'moment'
@@ -15,15 +14,12 @@ import {
     formatLongDate,
     formatShortDate,
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
-import { errorToast, successToast } from '~/utils/toast'
-import { BNish, toBN } from '~/utils/bn'
+import { errorToast } from '~/utils/toast'
+import { BN, BNish, toBN } from '~/utils/bn'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
 import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
-import ForceUndelegateModal from '~/modals/ForceUndelegateModal'
-import { Layer } from '~/utils/Layer'
-import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { getOperatorStats } from '~/getters/getOperatorStats'
 import NetworkPageSegment, { Pad, SegmentGrid } from '~/components/NetworkPageSegment'
 import NetworkChartDisplay from '~/components/NetworkChartDisplay'
@@ -34,18 +30,14 @@ import { ChartPeriod } from '~/types'
 import { StatCellContent, StatCellLabel } from '~/components/StatGrid'
 import { Separator } from '~/components/Separator'
 import { useEditSponsorshipFunding, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
-import {
-    getDelegatedAmountForWallet,
-    getDelegationFractionForWallet,
-    getParsedSponsorshipById,
-} from '~/getters'
+import { getDelegatedAmountForWallet, getDelegationFractionForWallet } from '~/getters'
 import {
     invalidateActiveOperatorByIdQueries,
+    useCollectEarnings,
+    useForceUndelegate,
     useOperatorByIdQuery,
 } from '~/hooks/operators'
-import { isRejectionReason } from '~/modals/BaseModal'
 import { OperatorChecklist } from '~/components/OperatorChecklist'
-import { collectEarnings, forceUnstakeFromSponsorship } from '~/services/sponsorships'
 import routes from '~/routes'
 import {
     NodesTable,
@@ -57,9 +49,7 @@ import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentToke
 import {
     useCanCollectEarningsCallback,
     useUncollectedEarnings,
-    useUncollectedEarningsStore,
 } from '~/shared/stores/uncollectedEarnings'
-import { confirm } from '~/getters/confirm'
 import { truncate } from '~/shared/utils/text'
 import { useConfigValueFromChain } from '~/hooks'
 import Button from '~/shared/components/Button'
@@ -69,12 +59,8 @@ import { useSetBlockDependency } from '~/stores/blockNumberDependencies'
 import { blockObserver } from '~/utils/blocks'
 import { LiveNodesTable } from '~/components/LiveNodesTable'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
-import { abbr, isTransactionRejection, saveOperator, waitForIndexedBlock } from '~/utils'
-import { Break } from '~/utils/errors'
-import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import { abbr, saveOperator } from '~/utils'
 import SvgIcon from '~/shared/components/SvgIcon'
-
-const forceUndelegateModal = toaster(ForceUndelegateModal, Layer.Modal)
 
 const defaultChartData = []
 
@@ -90,10 +76,10 @@ export const SingleOperatorPage = () => {
     const walletAddress = useWalletAccount()
 
     const maxUndelegationQueueSeconds = useConfigValueFromChain('maxQueueSeconds')
-    const slashingFraction = useConfigValueFromChain('slashingFraction')
-    const minimumStakeWei = useConfigValueFromChain('minimumStakeWei')
 
-    const { fetch: fetchUncollectedEarnings } = useUncollectedEarningsStore()
+    const slashingFraction = useConfigValueFromChain('slashingFraction')
+
+    const minimumStakeWei = useConfigValueFromChain('minimumStakeWei')
 
     const isOwner =
         walletAddress && walletAddress.toLowerCase() === operator?.owner.toLowerCase()
@@ -168,6 +154,10 @@ export const SingleOperatorPage = () => {
 
     const heartbeats = useInterceptHeartbeats(operator?.id)
 
+    const collectEarnings = useCollectEarnings()
+
+    const forceUndelegate = useForceUndelegate()
+
     return (
         <Layout>
             <NetworkHelmet title="Operator" />
@@ -231,9 +221,7 @@ export const SingleOperatorPage = () => {
                                             tooltipValuePrefix={chartLabel}
                                             graphData={chartData}
                                             xAxisDisplayFormatter={formatShortDate}
-                                            yAxisAxisDisplayFormatter={
-                                                yAxisAxisDisplayFormatter
-                                            }
+                                            yAxisAxisDisplayFormatter={abbr}
                                             tooltipLabelFormatter={formatLongDate}
                                             tooltipValueFormatter={(value) =>
                                                 tooltipValueFormatter(value, tokenSymbol)
@@ -405,107 +393,24 @@ export const SingleOperatorPage = () => {
                                                 return
                                             }
 
-                                            let sponsorship: ParsedSponsorship | null
-
-                                            try {
-                                                sponsorship =
-                                                    await getParsedSponsorshipById(
-                                                        element.sponsorshipId,
-                                                        { force: true },
-                                                    )
-
-                                                if (!sponsorship) {
-                                                    throw new Error(
-                                                        'Sponsorship not found',
-                                                    )
-                                                }
-                                            } catch (e) {
-                                                return void console.warn(
-                                                    'Failed to fetch a sponsorship',
-                                                    element.sponsorshipId,
-                                                    e,
-                                                )
-                                            }
-
                                             editSponsorshipFunding({
-                                                sponsorship,
+                                                sponsorshipOrSponsorshipId:
+                                                    element.sponsorshipId,
                                                 operator,
                                             })
                                         },
                                     }),
                                     (element) => ({
                                         displayName: 'Collect earnings',
-                                        async callback() {
-                                            if (operatorId) {
-                                                try {
-                                                    if (
-                                                        !(await confirm({
-                                                            cancelLabel: 'Cancel',
-                                                            proceedLabel: 'Proceed',
-                                                            title: 'Confirm',
-                                                            description: (
-                                                                <>
-                                                                    This action transfers
-                                                                    uncollected earnings
-                                                                    to the Operator
-                                                                    contract (
-                                                                    {truncate(operatorId)}
-                                                                    ).
-                                                                </>
-                                                            ),
-                                                        }))
-                                                    ) {
-                                                        return
-                                                    }
-
-                                                    await collectEarnings(
-                                                        element.sponsorshipId,
-                                                        operatorId,
-                                                        {
-                                                            onBlockNumber:
-                                                                waitForIndexedBlock,
-                                                        },
-                                                    )
-
-                                                    await fetchUncollectedEarnings(
-                                                        operatorId,
-                                                    )
-
-                                                    /**
-                                                     * Let's refresh the operator page to incl. now-collected earnings
-                                                     * in the overview section.
-                                                     */
-                                                    invalidateActiveOperatorByIdQueries(
-                                                        operatorId,
-                                                    )
-
-                                                    successToast({
-                                                        title: 'Earnings collected!',
-                                                        autoCloseAfter: 5,
-                                                        desc: (
-                                                            <p>
-                                                                Earnings have been
-                                                                successfully collected and
-                                                                are now available in the
-                                                                Operator&nbsp;balance.
-                                                            </p>
-                                                        ),
-                                                    })
-                                                } catch (e) {
-                                                    if (e === Break) {
-                                                        return
-                                                    }
-
-                                                    if (isTransactionRejection(e)) {
-                                                        return
-                                                    }
-
-                                                    console.error(
-                                                        'Could not collect earnings',
-                                                        e,
-                                                    )
-                                                }
+                                        callback() {
+                                            if (!operatorId) {
+                                                return
                                             }
+
+                                            collectEarnings({
+                                                operatorId,
+                                                sponsorshipId: element.sponsorshipId,
+                                            })
                                         },
                                         disabled: !canCollect(
                                             operatorId || '',
@@ -523,8 +428,9 @@ export const SingleOperatorPage = () => {
                                         displayName: 'Delegator address',
                                         valueMapper: (element) => (
                                             <>
-                                                {element.delegator}
-                                                {element.delegator === walletAddress && (
+                                                {truncate(element.delegator)}
+                                                {element.delegator ===
+                                                    walletAddress?.toLowerCase() && (
                                                     <Badge>You</Badge>
                                                 )}
                                             </>
@@ -537,7 +443,17 @@ export const SingleOperatorPage = () => {
                                         displayName: 'Amount',
                                         valueMapper: (element) => (
                                             <>
-                                                {abbr(fromAtto(element.amount))}{' '}
+                                                {abbr(
+                                                    fromAtto(
+                                                        BN.min(
+                                                            getDelegatedAmountForWallet(
+                                                                element.delegator,
+                                                                operator,
+                                                            ),
+                                                            element.amount,
+                                                        ),
+                                                    ),
+                                                )}{' '}
                                                 {tokenSymbol}
                                             </>
                                         ),
@@ -590,67 +506,11 @@ export const SingleOperatorPage = () => {
                                                     <Button
                                                         type="button"
                                                         kind="secondary"
-                                                        onClick={async () => {
-                                                            try {
-                                                                await forceUndelegateModal.pop(
-                                                                    {
-                                                                        sponsorships:
-                                                                            operator.stakes.map(
-                                                                                (s) => ({
-                                                                                    id: s.sponsorshipId,
-                                                                                    streamId:
-                                                                                        s.streamId,
-                                                                                    amount: toBN(
-                                                                                        s.amountWei,
-                                                                                    ),
-                                                                                    minimumStakingPeriodSeconds:
-                                                                                        s.minimumStakingPeriodSeconds,
-                                                                                    joinTimestamp:
-                                                                                        s.joinTimestamp,
-                                                                                }),
-                                                                            ),
-                                                                        tokenSymbol,
-                                                                        totalAmount:
-                                                                            element.amount,
-                                                                        onSubmit: async (
-                                                                            sponsorshipId,
-                                                                        ) => {
-                                                                            if (
-                                                                                !operatorId
-                                                                            ) {
-                                                                                return
-                                                                            }
-
-                                                                            await forceUnstakeFromSponsorship(
-                                                                                sponsorshipId,
-                                                                                operatorId,
-                                                                            )
-
-                                                                            /**
-                                                                             * @todo If this fails we consider the entire flow a failure and
-                                                                             * console-warn the "Could not force (…)" (see below). Let's use
-                                                                             * `blockObserver` and wait for the block outside
-                                                                             * of this workflow.
-                                                                             */
-                                                                            await waitForGraphSync()
-
-                                                                            invalidateActiveOperatorByIdQueries(
-                                                                                operatorId,
-                                                                            )
-                                                                        },
-                                                                    },
-                                                                )
-                                                            } catch (e) {
-                                                                if (
-                                                                    isRejectionReason(e)
-                                                                ) {
-                                                                    return
-                                                                }
-                                                                console.error(
-                                                                    'Could not force undelegate',
-                                                                    e,
-                                                                )
-                                                            }
+                                                        onClick={() => {
+                                                            forceUndelegate(
+                                                                operator,
+                                                                element.amount,
+                                                            )
                                                         }}
                                                     >
                                                         Force unstake
@@ -837,10 +697,6 @@ export const SingleOperatorPage = () => {
 
 function tooltipValueFormatter(value: number, tokenSymbol: string) {
     return `${abbr(value)} ${tokenSymbol}`
-}
-
-function yAxisAxisDisplayFormatter(value: number) {
-    return abbr(value)
 }
 
 function getUndelegationExpirationDate(

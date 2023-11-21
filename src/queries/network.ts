@@ -45,7 +45,6 @@ gql`
         totalStakeInSponsorshipsWei
         dataTokenBalanceWei
         operatorTokenTotalSupplyWei
-        exchangeRate
         metadataJsonString
         owner
         nodes
