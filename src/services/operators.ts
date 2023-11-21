@@ -16,7 +16,6 @@ import { defaultChainConfig } from '~/getters/getChainConfig'
 import { toastedOperation, toastedOperations } from '~/utils/toastedOperation'
 import { postImage } from '~/services/images'
 import { Operation } from '~/shared/toasts/TransactionListToast'
-import { saveLastBlockNumber } from '~/getters/waitForGraphSync'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 
 const getOperatorChainId = () => {
@@ -82,8 +81,6 @@ export async function createOperator(
             policiesParams,
         )
         const { blockNumber } = await tx.wait()
-
-        saveLastBlockNumber(blockNumber)
 
         await options.onBlockNumber?.(blockNumber)
     })
@@ -190,12 +187,6 @@ export async function updateOperator(
             blockNumbers.push(blockNumber)
         }
     })
-
-    const blockNumber = blockNumbers.pop()
-
-    if (typeof blockNumber !== 'undefined') {
-        saveLastBlockNumber(blockNumber)
-    }
 }
 
 export async function delegateToOperator(
@@ -221,8 +212,6 @@ export async function delegateToOperator(
         )
 
         const { blockNumber } = await tx.wait()
-
-        saveLastBlockNumber(blockNumber)
 
         await options.onBlockNumber?.(blockNumber)
     })
@@ -254,8 +243,6 @@ export async function undelegateFromOperator(
 
         const { blockNumber } = await tx.wait()
 
-        saveLastBlockNumber(blockNumber)
-
         await options.onBlockNumber?.(blockNumber)
     })
 }
@@ -284,8 +271,6 @@ export async function setOperatorNodeAddresses(
         const tx = await operatorContract.setNodeAddresses(addresses)
 
         const { blockNumber } = await tx.wait()
-
-        saveLastBlockNumber(blockNumber)
 
         await options.onBlockNumber?.(blockNumber)
     })

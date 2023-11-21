@@ -9,7 +9,6 @@ import getCoreConfig from '~/getters/getCoreConfig'
 import { toastedOperation } from '~/utils/toastedOperation'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
 import { defaultChainConfig } from '~/getters/getChainConfig'
-import { saveLastBlockNumber } from '~/getters/waitForGraphSync'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
 
 const getSponsorshipChainId = () => {
@@ -122,8 +121,6 @@ export async function createSponsorship(
                         throw new Error('Sponsorship deployment failed')
                     }
 
-                    saveLastBlockNumber(blockNumber)
-
                     await options.onBlockNumber?.(blockNumber)
 
                     resolve(sponsorshipId)
@@ -165,8 +162,6 @@ export async function fundSponsorship(
 
         const { blockNumber } = await tx.wait()
 
-        saveLastBlockNumber(blockNumber)
-
         await options.onBlockNumber?.(blockNumber)
     })
 }
@@ -205,8 +200,6 @@ export async function stakeOnSponsorship(
 
         const { blockNumber } = await tx.wait()
 
-        saveLastBlockNumber(blockNumber)
-
         await onBlockNumber?.(blockNumber)
     })
 }
@@ -235,8 +228,6 @@ export async function reduceStakeOnSponsorship(
 
         const { blockNumber } = await tx.wait()
 
-        saveLastBlockNumber(blockNumber)
-
         await onBlockNumber?.(blockNumber)
     })
 }
@@ -262,8 +253,6 @@ export async function forceUnstakeFromSponsorship(
         const tx = await contract.forceUnstake(sponsorshipId, 1000000)
 
         const { blockNumber } = await tx.wait()
-
-        saveLastBlockNumber(blockNumber)
 
         await options.onBlockNumber?.(blockNumber)
     })
@@ -304,8 +293,6 @@ export async function collectEarnings(
         const tx = await contract.withdrawEarningsFromSponsorships([sponsorshipId])
 
         const { blockNumber } = await tx.wait()
-
-        saveLastBlockNumber(blockNumber)
 
         await options.onBlockNumber?.(blockNumber)
     })
