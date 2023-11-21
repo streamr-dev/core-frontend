@@ -50,9 +50,9 @@ export function LiveNodesTable({
                 },
                 {
                     align: 'start',
-                    displayName: 'IP',
+                    displayName: 'Host',
                     isSticky: false,
-                    key: 'ip',
+                    key: 'host',
                     valueMapper: ({ websocket }) => websocket?.host || 'N/A',
                 },
                 {
