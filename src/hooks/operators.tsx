@@ -639,6 +639,10 @@ export function useForceUndelegate() {
 
                 invalidateSponsorshipQueries(wallet, sponsorshipId)
             } catch (e) {
+                if (e === Break) {
+                    return
+                }
+
                 if (isRejectionReason(e)) {
                     return
                 }

@@ -14,12 +14,13 @@ import { fromAtto } from '~/marketplace/utils/math'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { Alert } from '~/components/Alert'
 import { Radio } from '~/shared/components/Radio'
-import { abbr, waitForIndexedBlock } from '~/utils'
+import { abbr, isTransactionRejection, waitForIndexedBlock } from '~/utils'
 import { Layer } from '~/utils/Layer'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { StreamIdCell } from '~/components/Table'
 import { forceUnstakeFromSponsorship } from '~/services/sponsorships'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { isRejectionReason } from '~/modals/BaseModal'
 
 type OperatorStake = ParsedOperator['stakes'][0]
 
@@ -98,7 +99,15 @@ function ForceUndelegateModal({ amount, onResolve, operator, ...props }: Props) 
 
                     onResolve?.(selectedSponsorshipId)
                 } catch (e) {
-                    console.warn('Error while force unstaking', e)
+                    if (isRejectionReason(e)) {
+                        return
+                    }
+
+                    if (isTransactionRejection(e)) {
+                        return
+                    }
+
+                    throw e
                 } finally {
                     setBusy(false)
                 }
