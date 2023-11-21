@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import moment from 'moment'
 import styled from 'styled-components'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
-import { truncateStreamName } from '~/shared/utils/text'
+import { toaster } from 'toasterhea'
 import FormModal, {
     FormModalProps,
     FormModalRoot,
@@ -14,94 +14,89 @@ import { fromAtto } from '~/marketplace/utils/math'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { Alert } from '~/components/Alert'
 import { Radio } from '~/shared/components/Radio'
-import { abbr } from '~/utils'
+import { abbr, waitForIndexedBlock } from '~/utils'
+import { Layer } from '~/utils/Layer'
+import { ParsedOperator } from '~/parsers/OperatorParser'
+import { StreamIdCell } from '~/components/Table'
+import { forceUnstakeFromSponsorship } from '~/services/sponsorships'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 
-interface Props extends Omit<FormModalProps, 'canSubmit' | 'onSubmit'> {
-    onResolve?: (sponsorshipId: string) => void
-    onSubmit: (sponsorshipId: string) => Promise<void>
-    tokenSymbol: string
-    sponsorships: UndelegateSponsorship[]
-    totalAmount: BN
-}
+type OperatorStake = ParsedOperator['stakes'][0]
 
-interface UndelegateSponsorship {
-    id: string
-    streamId: string | undefined
+interface Props extends Pick<FormModalProps, 'onReject'> {
     amount: BN
-    minimumStakingPeriodSeconds: number
-    joinTimestamp: number
+    onResolve?: (sponsorshipId: string) => void
+    operator: ParsedOperator
 }
 
-function getOptimalSponsorship(
-    sponsorships: UndelegateSponsorship[],
+function getOptimalStake(
+    stakes: OperatorStake[],
     requestedAmount: BN,
-): UndelegateSponsorship | undefined {
-    return sponsorships.find(
-        (s) =>
-            hasStakedLongEnough(s.joinTimestamp, s.minimumStakingPeriodSeconds) &&
-            s.amount.isGreaterThanOrEqualTo(requestedAmount),
+): OperatorStake | undefined {
+    return (
+        stakes.find(
+            (s) =>
+                isStakedLongEnough(s.joinTimestamp, s.minimumStakingPeriodSeconds) &&
+                s.amountWei.isGreaterThanOrEqualTo(requestedAmount),
+        ) || stakes[0]
     )
 }
 
-function hasStakedLongEnough(joinTimestamp: number, minimumStakingPeriodSeconds: number) {
+function isStakedLongEnough(joinTimestamp: number, minimumStakingPeriodSeconds: number) {
     return (joinTimestamp + minimumStakingPeriodSeconds) * 1000 < Date.now()
 }
 
-export default function ForceUndelegateModal({
-    title = 'Force unstake',
-    onResolve,
-    onSubmit,
-    submitLabel = 'Force unstake',
-    tokenSymbol,
-    sponsorships: unsortedSponsorships,
-    totalAmount,
-    ...props
-}: Props) {
-    const sponsorships = useMemo(
-        () => [...unsortedSponsorships].sort((a, b) => b.amount.comparedTo(a.amount)),
-        [unsortedSponsorships],
+function ForceUndelegateModal({ amount, onResolve, operator, ...props }: Props) {
+    const [busy, setBusy] = useState(false)
+
+    const stakes = useMemo(
+        () => [...operator.stakes].sort((a, b) => b.amountWei.comparedTo(a.amountWei)),
+        [operator],
     )
 
     const [selectedSponsorshipId, setSelectedSponsorshipId] = useState<
         string | undefined
-    >(getOptimalSponsorship(sponsorships, totalAmount)?.id || sponsorships[0]?.id)
-    const [busy, setBusy] = useState(false)
+    >(getOptimalStake(stakes, amount)?.sponsorshipId)
 
-    const willSlash = useMemo(() => {
-        const sponsorship = sponsorships.find((s) => s.id === selectedSponsorshipId)
-        if (sponsorship) {
-            return !hasStakedLongEnough(
-                sponsorship.joinTimestamp,
-                sponsorship.minimumStakingPeriodSeconds,
-            )
-        }
-        return false
-    }, [selectedSponsorshipId, sponsorships])
+    const selectedSponsorship = useMemo(
+        () => stakes.find((s) => s.sponsorshipId === selectedSponsorshipId),
+        [stakes, selectedSponsorshipId],
+    )
 
-    const isPartialPayout = useMemo(() => {
-        const sponsorship = sponsorships.find((s) => s.id === selectedSponsorshipId)
-        if (sponsorship) {
-            return sponsorship.amount.isLessThan(totalAmount)
-        }
-        return false
-    }, [selectedSponsorshipId, sponsorships, totalAmount])
+    const willSlash =
+        !!selectedSponsorship &&
+        !isStakedLongEnough(
+            selectedSponsorship.joinTimestamp,
+            selectedSponsorship.minimumStakingPeriodSeconds,
+        )
 
-    const canSubmit = selectedSponsorshipId != null
+    const isPartialPayout =
+        !!selectedSponsorship && selectedSponsorship.amountWei.isLessThan(amount)
+
+    const canSubmit = !!selectedSponsorshipId
 
     return (
         <ForceUndelegateFormModal
             {...props}
-            title={title}
+            title="Force unstake"
             canSubmit={canSubmit && !busy}
             submitting={busy}
-            submitLabel={submitLabel}
+            submitLabel="Force unstake"
             onSubmit={async () => {
+                if (!canSubmit) {
+                    return
+                }
+
                 setBusy(true)
+
                 try {
-                    if (selectedSponsorshipId != null) {
-                        await onSubmit(selectedSponsorshipId)
-                        onResolve?.(selectedSponsorshipId)
-                    }
+                    await forceUnstakeFromSponsorship(
+                        selectedSponsorshipId,
+                        operator.id,
+                        { onBlockNumber: waitForIndexedBlock },
+                    )
+
+                    onResolve?.(selectedSponsorshipId)
                 } catch (e) {
                     console.warn('Error while force unstaking', e)
                 } finally {
@@ -117,16 +112,12 @@ export default function ForceUndelegateModal({
                 </SectionHeadline>
                 <TableWrap>
                     <ScrollTable
-                        elements={sponsorships}
+                        elements={stakes}
                         columns={[
                             {
                                 displayName: 'Stream ID',
-                                valueMapper: (element) => (
-                                    <>
-                                        {element.streamId != null
-                                            ? truncateStreamName(element.streamId)
-                                            : '(deleted stream)'}
-                                    </>
+                                valueMapper: ({ streamId }) => (
+                                    <StreamIdCell streamId={streamId} />
                                 ),
                                 align: 'start',
                                 isSticky: true,
@@ -136,8 +127,9 @@ export default function ForceUndelegateModal({
                                 displayName: 'Amount',
                                 valueMapper: (element) => (
                                     <WarningCell>
-                                        {abbr(fromAtto(element.amount))} {tokenSymbol}
-                                        {element.amount.isLessThan(totalAmount) && (
+                                        {abbr(fromAtto(element.amountWei))}{' '}
+                                        <SponsorshipPaymentTokenName />
+                                        {element.amountWei.isLessThan(amount) && (
                                             <Tip
                                                 handle={
                                                     <TipIconWrap $color="#ff5c00">
@@ -161,7 +153,7 @@ export default function ForceUndelegateModal({
                                         {moment(element.joinTimestamp * 1000).format(
                                             'YYYY-MM-DD',
                                         )}
-                                        {!hasStakedLongEnough(
+                                        {!isStakedLongEnough(
                                             element.joinTimestamp,
                                             element.minimumStakingPeriodSeconds,
                                         ) && (
@@ -191,14 +183,14 @@ export default function ForceUndelegateModal({
                             },
                             {
                                 displayName: '',
-                                valueMapper: (element) => (
+                                valueMapper: ({ sponsorshipId: id }) => (
                                     <>
                                         <Radio
                                             name="undelegate-sponsorship"
-                                            id={`undelegate-sponsorship-${element.id}`}
+                                            id={`undelegate-sponsorship-${id}`}
                                             label=""
-                                            value={element.id}
-                                            checked={selectedSponsorshipId === element.id}
+                                            value={id}
+                                            checked={selectedSponsorshipId === id}
                                             onChange={(value) => {
                                                 setSelectedSponsorshipId(value)
                                             }}
@@ -229,6 +221,8 @@ export default function ForceUndelegateModal({
         </ForceUndelegateFormModal>
     )
 }
+
+export const forceUndelegateModal = toaster(ForceUndelegateModal, Layer.Modal)
 
 const Root = styled.div`
     display: grid;

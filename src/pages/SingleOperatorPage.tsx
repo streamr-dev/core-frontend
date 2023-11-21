@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { toaster } from 'toasterhea'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import moment from 'moment'
@@ -21,9 +20,6 @@ import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
 import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
-import ForceUndelegateModal from '~/modals/ForceUndelegateModal'
-import { Layer } from '~/utils/Layer'
-import { waitForGraphSync } from '~/getters/waitForGraphSync'
 import { getOperatorStats } from '~/getters/getOperatorStats'
 import NetworkPageSegment, { Pad, SegmentGrid } from '~/components/NetworkPageSegment'
 import NetworkChartDisplay from '~/components/NetworkChartDisplay'
@@ -38,11 +34,10 @@ import { getDelegatedAmountForWallet, getDelegationFractionForWallet } from '~/g
 import {
     invalidateActiveOperatorByIdQueries,
     useCollectEarnings,
+    useForceUndelegate,
     useOperatorByIdQuery,
 } from '~/hooks/operators'
-import { isRejectionReason } from '~/modals/BaseModal'
 import { OperatorChecklist } from '~/components/OperatorChecklist'
-import { forceUnstakeFromSponsorship } from '~/services/sponsorships'
 import routes from '~/routes'
 import {
     NodesTable,
@@ -66,8 +61,6 @@ import { LiveNodesTable } from '~/components/LiveNodesTable'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { abbr, saveOperator } from '~/utils'
 import SvgIcon from '~/shared/components/SvgIcon'
-
-const forceUndelegateModal = toaster(ForceUndelegateModal, Layer.Modal)
 
 const defaultChartData = []
 
@@ -162,6 +155,8 @@ export const SingleOperatorPage = () => {
     const heartbeats = useInterceptHeartbeats(operator?.id)
 
     const collectEarnings = useCollectEarnings()
+
+    const forceUndelegate = useForceUndelegate()
 
     return (
         <Layout>
@@ -501,67 +496,11 @@ export const SingleOperatorPage = () => {
                                                     <Button
                                                         type="button"
                                                         kind="secondary"
-                                                        onClick={async () => {
-                                                            try {
-                                                                await forceUndelegateModal.pop(
-                                                                    {
-                                                                        sponsorships:
-                                                                            operator.stakes.map(
-                                                                                (s) => ({
-                                                                                    id: s.sponsorshipId,
-                                                                                    streamId:
-                                                                                        s.streamId,
-                                                                                    amount: toBN(
-                                                                                        s.amountWei,
-                                                                                    ),
-                                                                                    minimumStakingPeriodSeconds:
-                                                                                        s.minimumStakingPeriodSeconds,
-                                                                                    joinTimestamp:
-                                                                                        s.joinTimestamp,
-                                                                                }),
-                                                                            ),
-                                                                        tokenSymbol,
-                                                                        totalAmount:
-                                                                            element.amount,
-                                                                        onSubmit: async (
-                                                                            sponsorshipId,
-                                                                        ) => {
-                                                                            if (
-                                                                                !operatorId
-                                                                            ) {
-                                                                                return
-                                                                            }
-
-                                                                            await forceUnstakeFromSponsorship(
-                                                                                sponsorshipId,
-                                                                                operatorId,
-                                                                            )
-
-                                                                            /**
-                                                                             * @todo If this fails we consider the entire flow a failure and
-                                                                             * console-warn the "Could not force (…)" (see below). Let's use
-                                                                             * `blockObserver` and wait for the block outside
-                                                                             * of this workflow.
-                                                                             */
-                                                                            await waitForGraphSync()
-
-                                                                            invalidateActiveOperatorByIdQueries(
-                                                                                operatorId,
-                                                                            )
-                                                                        },
-                                                                    },
-                                                                )
-                                                            } catch (e) {
-                                                                if (
-                                                                    isRejectionReason(e)
-                                                                ) {
-                                                                    return
-                                                                }
-                                                                console.error(
-                                                                    'Could not force undelegate',
-                                                                    e,
-                                                                )
-                                                            }
+                                                        onClick={() => {
+                                                            forceUndelegate(
+                                                                operator,
+                                                                element.amount,
+                                                            )
                                                         }}
                                                     >
                                                         Force unstake

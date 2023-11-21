@@ -20,7 +20,7 @@ import { getQueryClient, isTransactionRejection, waitForIndexedBlock } from '~/u
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
 import { Delegation, DelegationsStats } from '~/types'
-import { toBN } from '~/utils/bn'
+import { BN, toBN } from '~/utils/bn'
 import { errorToast, successToast } from '~/utils/toast'
 import DelegateFundsModal from '~/modals/DelegateFundsModal'
 import { Layer } from '~/utils/Layer'
@@ -35,6 +35,10 @@ import { confirm } from '~/getters/confirm'
 import { collectEarnings } from '~/services/sponsorships'
 import { truncate } from '~/shared/utils/text'
 import { useUncollectedEarningsStore } from '~/shared/stores/uncollectedEarnings'
+import { forceUndelegateModal } from '~/modals/ForceUndelegateModal'
+import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
+import { invalidateSponsorshipQueries } from '~/hooks/sponsorships'
+import { getSigner } from '~/shared/stores/wallet'
 
 export function useOperatorForWalletQuery(address = '') {
     return useQuery({
@@ -549,7 +553,10 @@ const mapOperatorOrder = (orderBy: string | undefined): Operator_OrderBy => {
             return Operator_OrderBy.Id
     }
 }
-
+/**
+ * Returns a callback that takes the user through the process of collecting
+ * earnings for given operator/sponsorship pair.
+ */
 export function useCollectEarnings() {
     const { fetch: fetchUncollectedEarnings } = useUncollectedEarningsStore()
 
@@ -612,4 +619,32 @@ export function useCollectEarnings() {
         },
         [fetchUncollectedEarnings],
     )
+}
+
+/**
+ * Returns a callback that takes the user through force-undelegation process.
+ */
+export function useForceUndelegate() {
+    return useCallback((operator: ParsedOperator, amount: BN) => {
+        void (async () => {
+            try {
+                const wallet = await (await getSigner()).getAddress()
+
+                await getSponsorshipTokenInfo()
+
+                const sponsorshipId = await forceUndelegateModal.pop({
+                    operator,
+                    amount,
+                })
+
+                invalidateSponsorshipQueries(wallet, sponsorshipId)
+            } catch (e) {
+                if (isRejectionReason(e)) {
+                    return
+                }
+
+                console.error('Could not force undelegate', e)
+            }
+        })()
+    }, [])
 }

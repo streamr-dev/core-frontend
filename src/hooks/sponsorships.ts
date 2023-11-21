@@ -543,7 +543,7 @@ const mapSponsorshipOrder = (columnKey?: string): Sponsorship_OrderBy => {
 /**
  * Invalidates a collection of sponsorship-related queries.
  */
-function invalidateSponsorshipQueries(
+export function invalidateSponsorshipQueries(
     invalidator: string | undefined,
     sponsorshipId: string | undefined,
 ) {
@@ -562,8 +562,8 @@ function invalidateSponsorshipQueries(
     invalidateSponsorshipFundingHistoryQueries(sponsorshipId)
 
     /**
-     * Invalidate OperatorById queries (all active) used mainly by Operator
-     * pages, too. There's the Sponsorships section there and it's driven
+     * Invalidate OperatorById queries used mainly by Operator pages,
+     * too. There's the Sponsorships section there and it's driven
      * by operator's collection of stakes.
      */
     invalidateActiveOperatorByIdQueries(undefined)

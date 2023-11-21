@@ -215,7 +215,10 @@ export async function reduceStakeOnSponsorship(
     sponsorshipId: string,
     targetAmountWei: string,
     operatorAddress: string,
-    options: { toastLabel?: string; onBlockNumber?: (blockNumber: number) => void } = {},
+    options: {
+        toastLabel?: string
+        onBlockNumber?: (blockNumber: number) => void | Promise<void>
+    } = {},
 ): Promise<void> {
     const { toastLabel = 'Reduce stake on sponsorship', onBlockNumber } = options
 
@@ -234,14 +237,14 @@ export async function reduceStakeOnSponsorship(
 
         saveLastBlockNumber(blockNumber)
 
-        onBlockNumber?.(blockNumber)
+        await onBlockNumber?.(blockNumber)
     })
 }
 
 export async function forceUnstakeFromSponsorship(
     sponsorshipId: string,
     operatorAddress: string,
-    options: { onBlockNumber?: (blockNumber: number) => void } = {},
+    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
     const chainId = getSponsorshipChainId()
 
@@ -262,7 +265,7 @@ export async function forceUnstakeFromSponsorship(
 
         saveLastBlockNumber(blockNumber)
 
-        options.onBlockNumber?.(blockNumber)
+        await options.onBlockNumber?.(blockNumber)
     })
 }
 
