@@ -67,7 +67,9 @@ export const OperatorsPage = () => {
 
     const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
-    const { data: operator = null } = useOperatorForWalletQuery(wallet)
+    const operatorQuery = useOperatorForWalletQuery(wallet)
+
+    const { data: operator = null } = operatorQuery
 
     const currentQuery =
         selectedTab === TabOption.AllOperators ? allOperatorsQuery : myDelegationsQuery
@@ -119,7 +121,7 @@ export const OperatorsPage = () => {
                                     },
                                 })
                             }}
-                            disabled={!wallet || !!operator}
+                            disabled={!wallet || !!operator || operatorQuery.isFetching}
                         >
                             Become an Operator
                         </Button>
