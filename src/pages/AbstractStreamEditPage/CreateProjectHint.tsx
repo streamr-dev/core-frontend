@@ -112,7 +112,7 @@ export default function CreateProjectHint({ streamId }: Props) {
             <Image src={dataUnionImage2x} alt="Create a project" />
             <TextContainer>
                 <Text>Make your stream more discoverable by creating a project.</Text>
-                <CreateButton onClick={() => createProductModal.open()}>
+                <CreateButton type="button" onClick={() => createProductModal.open()}>
                     Create a project
                 </CreateButton>
             </TextContainer>
