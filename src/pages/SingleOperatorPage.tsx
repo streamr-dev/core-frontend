@@ -15,7 +15,7 @@ import {
     formatShortDate,
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
 import { errorToast } from '~/utils/toast'
-import { BNish, toBN } from '~/utils/bn'
+import { BN, BNish, toBN } from '~/utils/bn'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
@@ -443,7 +443,17 @@ export const SingleOperatorPage = () => {
                                         displayName: 'Amount',
                                         valueMapper: (element) => (
                                             <>
-                                                {abbr(fromAtto(element.amount))}{' '}
+                                                {abbr(
+                                                    fromAtto(
+                                                        BN.min(
+                                                            getDelegatedAmountForWallet(
+                                                                element.delegator,
+                                                                operator,
+                                                            ),
+                                                            element.amount,
+                                                        ),
+                                                    ),
+                                                )}{' '}
                                                 {tokenSymbol}
                                             </>
                                         ),
