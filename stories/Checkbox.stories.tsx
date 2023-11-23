@@ -1,7 +1,7 @@
 import { Meta } from '@storybook/react'
 import React from 'react'
 import { action } from '@storybook/addon-actions'
-import Checkbox from '$shared/components/Checkbox'
+import Checkbox from '~/shared/components/Checkbox'
 
 class CheckboxContainer extends React.Component {
     constructor(props) {

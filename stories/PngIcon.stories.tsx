@@ -1,7 +1,7 @@
 import React from 'react'
 import { Col, Row } from 'reactstrap'
 import { Meta } from '@storybook/react'
-import PngIcon from '$shared/components/PngIcon'
+import PngIcon from '~/shared/components/PngIcon'
 import sharedStyles from './shared.pcss'
 
 export const All = () => (

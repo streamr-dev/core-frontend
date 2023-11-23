@@ -1,0 +1,40 @@
+.container {
+    width: 100%;
+    position: relative;
+    padding-bottom: 6px;
+}
+
+.sliderInput {
+    appearance: none;
+    width: 100%; /* Full-width */
+    outline: none; /* Remove outline */
+    transition: opacity 0.2s;
+    height: 3px;
+    border-radius: 2px;
+
+    &::-webkit-slider-thumb {
+        appearance: none;
+        width: 12px;
+        height: 12px;
+        background: #0324ff;
+        cursor: pointer;
+        border-radius: 50%;
+    }
+
+    &::-moz-range-thumb {
+        width: 12px;
+        height: 12px;
+        background: #0324ff;
+        cursor: pointer;
+        border-radius: 50%;
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    &[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}

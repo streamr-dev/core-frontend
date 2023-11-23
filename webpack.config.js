@@ -15,11 +15,13 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { GitRevisionPlugin } = require('git-revision-webpack-plugin')
 const SentryPlugin = require('@sentry/webpack-plugin')
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const createStyledComponentsTransformer =
     require('typescript-plugin-styled-components').default
 const validateEnv = require('./scripts/validateEnv')
 const pkg = require('./package')
+const pkgLock = require('./package-lock')
 
 const dotenv = require('./scripts/dotenv')
 
@@ -44,7 +46,7 @@ module.exports = {
     mode: isProduction() ? 'production' : 'development',
     entry: [
         // forcibly print diagnostics upfront
-        path.resolve(root, 'app', 'src', 'shared', 'utils', 'diagnostics.ts'),
+        path.resolve(root, 'src', 'shared', 'utils', 'diagnostics.ts'),
         // always load setup first
         './setup.ts',
         './index.tsx',
@@ -83,10 +85,7 @@ module.exports = {
             {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
-                include: [
-                    path.resolve(root, 'app', 'src'),
-                    path.resolve(root, 'scripts'),
-                ],
+                include: [path.resolve(root, 'src'), path.resolve(root, 'scripts')],
                 options: {
                     rootMode: 'upward',
                     cacheDirectory: !isProduction(),
@@ -114,7 +113,7 @@ module.exports = {
                         loader: 'css-loader',
                         options: {
                             modules: {
-                                localIdentRegExp: /app\/src\/([^/]+)/i,
+                                localIdentRegExp: /src\/([^/]+)/i,
                                 localIdentName: isProduction()
                                     ? '[local]_[hash:base64:8]'
                                     : '[1]_[name]_[local]',
@@ -138,7 +137,7 @@ module.exports = {
                                 includePaths: [
                                     path.resolve(
                                         __dirname,
-                                        'app/src/shared/assets/stylesheets',
+                                        'src/shared/assets/stylesheets',
                                     ),
                                 ],
                             },
@@ -167,15 +166,14 @@ module.exports = {
         // TODO: Disable logging of typescript errors for now as there's so many of them.
         // new ForkTsCheckerWebpackPlugin({
         //     issue: {
-        //         include: [
-        //             { file: '**/src/**/*' }
-        //         ],
+        //         include: [{ file: '**/src/**/*' }],
         //     },
         // }),
         new HtmlWebpackPlugin({
             template: 'index.html',
             templateParameters: {
                 gaId: process.env.GOOGLE_ANALYTICS_ID,
+                commitHash: process.env.HUB_COMMIT_HASH,
                 version: pkg.version,
             },
         }),
@@ -201,6 +199,13 @@ module.exports = {
             TRAVIS_PULL_REQUEST_SHA: process.env.TRAVIS_PULL_REQUEST_SHA || '',
             STREAMR_DOCKER_DEV_HOST: process.env.STREAMR_DOCKER_DEV_HOST || '',
             GOOGLE_ANALYTICS_ID: process.env.GOOGLE_ANALYTICS_ID || '',
+            NETWORK_GRAPH_SCHEMA_PATH: process.env.NETWORK_GRAPH_SCHEMA_PATH || '',
+            DU_GRAPH_SCHEMA_PATH: process.env.DU_GRAPH_SCHEMA_PATH || '',
+            ENS_GRAPH_SCHEMA_PATH: process.env.ENS_GRAPH_SCHEMA_PATH || '',
+            ENTRYPOINT_WS_HOST: process.env.ENTRYPOINT_WS_HOST || '',
+            HUB_VERSION: pkg.version,
+            STREAMR_CLIENT_VERSION:
+                pkgLock.packages['node_modules/streamr-client'].version,
         }),
         new webpack.EnvironmentPlugin(loadedDotenv),
         ...(analyze
@@ -272,6 +277,25 @@ module.exports = {
                               '**/*.stories.*',
                               // skip sketch files
                               '**/*.sketch',
+                              // other files
+                              'package-lock.json',
+                              'codegen.ts',
+                              'README.md',
+                              'babel.config.js',
+                              'codegen.ts',
+                              'cypress.config.ts',
+                              'healthcheck.ts',
+                              'jest.config.js',
+                              'nginx.conf',
+                              'src/generated/**/*.*',
+                              '*.json',
+                              'scripts/**/*.*',
+                              'travis_scripts/*.*',
+                              'cypress/**/*.*',
+                              'src/queries/*.ts',
+                              '**/*.css',
+                              '**/*.pcss',
+                              'types/**/*.d.ts',
                           ],
                       }),
                       new WebpackNotifierPlugin(),
@@ -349,18 +373,11 @@ module.exports = {
         },
         alias: {
             // Make sure you set up aliases in flow and jest configs.
-            $app: path.resolve(__dirname, 'app/'),
-            $mp: path.resolve(__dirname, 'app/src/marketplace/'),
-            $userpages: path.resolve(__dirname, 'app/src/userpages/'),
-            $shared: path.resolve(__dirname, 'app/src/shared/'),
             $testUtils: path.resolve(__dirname, 'test/test-utils/'),
-            $routes: path.resolve(__dirname, 'app/src/routes/'),
-            $utils: path.resolve(__dirname, 'app/src/utils/'),
-            $ui: path.resolve(__dirname, 'app/src/shared/components/Ui'),
             $config: path.resolve(
                 __dirname,
-                `app/src/config/${
-                    process.env.HUB_CONFIG_ENV || process.env.NODE_ENV
+                `src/config/${
+                    process.env.HUB_CONFIG_ENV || process.env.NODE_ENV || 'production'
                 }.toml`,
             ),
             '~': path.resolve(__dirname, 'src/'),

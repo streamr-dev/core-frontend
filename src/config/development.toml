@@ -1,0 +1,55 @@
+[docker]
+host = "localhost"
+
+[core]
+dataUnionPublishMemberLimit = 0
+platformOriginUrl = ""
+streamrUrl = ""
+uniswapAdaptorContractAddress = "0xE4eA76e830a659282368cA2e7E4d18C4AE52D8B3"
+web3TransactionConfirmationBlocks = 1
+defaultChain = 'dev2'
+marketplaceChains = ['dev2']
+dataunionChains = ['dev2']
+streamChains = ['dev2']
+projectsChain = 'dev2'
+theGraphUrl = ":8800"
+dataUnionJoinServerUrl = "http://localhost:5555"
+streamIndexerUrl = ":4001/api"
+reverseRecordsAddress = "0x3671aE578E63FdF66ad4F3E12CC0c0d71Ac7510C"
+sponsorshipPaymentToken = "DATA"
+
+[[core.dataunionGraphNames]]
+chainId = 31337
+name = "streamr-dev/dataunion"
+
+[[core.blockExplorerUrls]]
+chainId = 31337
+url = "https://no-such-thing-on-streamr-docker-dev.com"
+
+[[core.storageNodes]]
+name = "Local (broker-node-storage-1)"
+address = "0xde1112f631486CfC759A50196853011528bC5FA0"
+
+[core.ipfs]
+projectId = "2KjYUpR265h6R5M5njkSue5RGm7"
+apiSecretKey = "c39492773b28820c8b3654178bf26946"
+ipfsUploadEndpoint = "https://ipfs.infura.io:5001/api/v0/add"
+ipfsGatewayUrl = "https://streamr-hub.infura-ipfs.io/ipfs/"
+
+[client]
+graphUrl = ":8800/subgraphs/name/streamr-dev/network-subgraphs"
+
+[[client.network.trackers]]
+id = "0xb9e7cEBF7b03AE26458E32a059488386b05798e8"
+wsUrl = ":30301"
+httpUrl = ":30301"
+
+[[client.network.trackers]]
+id = "0x0540A3e144cdD81F402e7772C76a5808B71d2d30"
+wsUrl = ":30302"
+httpUrl = ":30302"
+
+[[client.network.trackers]]
+id = "0xf2C195bE194a2C91e93Eacb1d6d55a00552a85E2"
+wsUrl = ":30303"
+httpUrl = ":30303"

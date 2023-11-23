@@ -6,8 +6,9 @@ coverage/
 .ci_scripts/
 .husky/
 
-*.json
+package-lock.json
 *.yaml
+*.toml
 *.md
 
 .eslintignore

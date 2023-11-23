@@ -1,10 +1,10 @@
 import 'core-js/stable'
-import '$utils/setupSnippets'
-import { xs, sm, md, lg } from '$app/../scripts/breakpoints'
+import '~/utils/setupSnippets'
 
 // To import the global styling
-import '$shared/assets/stylesheets'
+import '~/shared/assets/stylesheets'
 import '@ibm/plex/css/ibm-plex.css'
+import { xs, sm, md, lg } from '../scripts/breakpoints'
 
 const viewports = {
     iPhone: {
