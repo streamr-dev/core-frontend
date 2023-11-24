@@ -52,7 +52,7 @@
         "@streamr/streamr-icons": "^0.1.9",
         "@streamr/streamr-layout": "^2.5.3",
         "@tanstack/react-query": "^4.29.5",
-        "axios": "^1.4.0",
+        "axios": "^1.6.0",
         "bignumber.js": "^9.1.1",
         "bootstrap": "^4.6.0",
         "buffer": "^6.0.3",
