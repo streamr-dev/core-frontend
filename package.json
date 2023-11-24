@@ -7,7 +7,7 @@
         "cypress": "cypress run",
         "start": "webpack-dev-server --hot --host 0.0.0.0",
         "start:ci": "node --max_old_space_size=4096 ./node_modules/.bin/webpack-dev-server --host 0.0.0.0",
-        "build": "cross-env HUB_COMMIT_HASH=`git rev-parse --short HEAD` node --max_old_space_size=4096 ./node_modules/.bin/webpack --progress --profile",
+        "build": "node --max_old_space_size=4096 ./node_modules/.bin/webpack --progress --profile",
         "test": "cross-env NODE_ENV=development jest --verbose --useStderr",
         "eslint": "eslint .",
         "eslint-fix": "eslint . --fix",

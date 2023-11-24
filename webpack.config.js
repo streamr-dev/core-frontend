@@ -39,6 +39,8 @@ if (isProduction() && !process.env.STORYBOOK) {
     validateEnv(process.env)
 }
 
+const commitHash = gitRevisionPlugin.commithash() || 'N/A'
+
 // We have to make sure that publicPath ends with a slash. If it
 // doesn't then chunks are not gonna load correctly. #codesplitting
 const publicPath = `${process.env.PLATFORM_PUBLIC_PATH || ''}/`
@@ -173,7 +175,7 @@ module.exports = {
             template: 'index.html',
             templateParameters: {
                 gaId: process.env.GOOGLE_ANALYTICS_ID,
-                commitHash: process.env.HUB_COMMIT_HASH,
+                commitHash,
                 version: pkg.version,
             },
         }),
@@ -206,6 +208,7 @@ module.exports = {
             HUB_VERSION: pkg.version,
             STREAMR_CLIENT_VERSION:
                 pkgLock.packages['node_modules/streamr-client'].version,
+            COMMIT_HASH: commitHash,
         }),
         new webpack.EnvironmentPlugin(loadedDotenv),
         ...(analyze
