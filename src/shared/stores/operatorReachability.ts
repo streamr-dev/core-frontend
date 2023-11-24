@@ -84,12 +84,7 @@ const useOperatorReachabilityStore = create<{
                                 return void resolve(false)
                             }
 
-                            /**
-                             * Adding `?t=…` to convince Brave browser to actualy perform
-                             * the connecting. It tends to block consecutive attempts
-                             * to the same URL.
-                             */
-                            ws = new WebSocket(`${url}?t=${updatedAt}`)
+                            ws = new WebSocket(url)
 
                             ws.addEventListener('open', () => {
                                 resolve(true)
