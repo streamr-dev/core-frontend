@@ -152,7 +152,7 @@
         "@graphql-codegen/cli": "^4.0.1",
         "@graphql-codegen/typescript-operations": "^4.0.1",
         "@graphql-codegen/typescript-react-apollo": "^3.3.7",
-        "@sentry/webpack-plugin": "^1.20.1",
+        "@sentry/webpack-plugin": "^2.10.1",
         "@storybook/addon-actions": "^7.0.12",
         "@storybook/addon-controls": "^7.5.3",
         "@storybook/addon-links": "^7.0.18",
