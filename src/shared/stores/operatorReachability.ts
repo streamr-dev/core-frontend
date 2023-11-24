@@ -70,57 +70,19 @@ const useOperatorReachabilityStore = create<{
 
             let ws: WebSocket | undefined
 
-            const totalAttempts = 2
-
-            let attemptsLeft = totalAttempts
-
             try {
-                while (attemptsLeft) {
-                    attemptsLeft--
-
-                    try {
-                        reachable = await new Promise<boolean>((resolve, reject) => {
-                            if (!url) {
-                                return void resolve(false)
-                            }
-
-                            /**
-                             * Adding `?t=…` to convince Brave browser to actualy perform
-                             * the connecting. It tends to block consecutive attempts
-                             * to the same URL.
-                             */
-                            ws = new WebSocket(`${url}?t=${updatedAt}`)
-
-                            ws.addEventListener('open', () => {
-                                resolve(true)
-                            })
-
-                            ws.addEventListener('error', (e) => {
-                                console.warn(
-                                    `An error occured while checking reachability of "${url}"`,
-                                    e,
-                                )
-                            })
-
-                            ws.addEventListener('close', (e) => {
-                                reject(e)
-                            })
-                        })
-
-                        break
-                    } catch (e) {
-                        if (!attemptsLeft) {
-                            throw e
-                        }
-
-                        console.warn(`Failed to connect to ${url}. Trying again.`)
-                    } finally {
-                        ws?.close()
-
-                        ws = undefined
-                    }
-                }
+                reachable = await new Promise<boolean>((resolve) => {
+                    /**
+                     * Replace the following with a real connectivity
+                     * checking logic.
+                     */
+                    resolve(!!url)
+                })
             } finally {
+                ws?.close()
+
+                ws = undefined
+
                 updateProbe(url, (draft) => {
                     Object.assign(draft, {
                         pending: false,
