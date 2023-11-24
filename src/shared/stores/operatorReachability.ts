@@ -2,7 +2,6 @@ import { produce } from 'immer'
 import { useEffect } from 'react'
 import { create } from 'zustand'
 import { Heartbeat } from '~/hooks/useInterceptHeartbeats'
-import { sleep } from '~/utils'
 
 const TTL = 60 * 1000
 
@@ -15,11 +14,7 @@ interface Probe {
 const useOperatorReachabilityStore = create<{
     probes: Record<string, Probe | undefined>
     nodes: Record<string, string | undefined>
-    probe: (
-        nodeId: string,
-        heartbeat: Heartbeat,
-        options?: { timeoutMillis?: number },
-    ) => Promise<void>
+    probe: (nodeId: string, heartbeat: Heartbeat) => Promise<void>
 }>((set, get) => {
     function updateProbe(url: string, fn: (probe: Probe) => Probe | void) {
         set((store) =>
@@ -41,7 +36,7 @@ const useOperatorReachabilityStore = create<{
 
         probes: {},
 
-        async probe(nodeId, heartbeat, { timeoutMillis = 10000 } = {}) {
+        async probe(nodeId, heartbeat) {
             const { host, port, tls = false } = heartbeat.websocket || {}
 
             const url = host && port ? `${tls ? 'wss:' : 'ws:'}//${host}:${port}` : ''
@@ -75,32 +70,52 @@ const useOperatorReachabilityStore = create<{
 
             let ws: WebSocket | undefined
 
+            const totalAttempts = 2
+
+            let attemptsLeft = totalAttempts
+
             try {
-                reachable = await Promise.race([
-                    sleep(timeoutMillis).then(() => {
-                        throw new Error('Timeout')
-                    }),
-                    new Promise<boolean>((resolve, reject) => {
-                        if (!url) {
-                            return void resolve(false)
+                while (attemptsLeft) {
+                    attemptsLeft--
+
+                    try {
+                        reachable = await new Promise<boolean>((resolve, reject) => {
+                            if (!url) {
+                                return void resolve(false)
+                            }
+
+                            ws = new WebSocket(url)
+
+                            ws.addEventListener('open', () => {
+                                resolve(true)
+                            })
+
+                            ws.addEventListener('error', (e) => {
+                                console.warn(
+                                    `An error occured while checking reachability of "${url}"`,
+                                    e,
+                                )
+                            })
+
+                            ws.addEventListener('close', (e) => {
+                                reject(e)
+                            })
+                        })
+
+                        break
+                    } catch (e) {
+                        if (!attemptsLeft) {
+                            throw e
                         }
 
-                        ws = new WebSocket(url)
+                        console.warn(`Failed to connect to ${url}. Trying again.`)
+                    } finally {
+                        ws?.close()
 
-                        ws.addEventListener('open', () => {
-                            resolve(true)
-                        })
-
-                        ws.addEventListener('error', (e) => {
-                            reject(e)
-                        })
-                    }),
-                ])
+                        ws = undefined
+                    }
+                }
             } finally {
-                ws?.close()
-
-                ws = undefined
-
                 updateProbe(url, (draft) => {
                     Object.assign(draft, {
                         pending: false,
