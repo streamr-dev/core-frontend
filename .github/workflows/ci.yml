@@ -115,7 +115,7 @@ jobs:
         with:
           services-to-start: "mysql cassandra parity-node0 parity-sidechain-node0 broker-node-storage-1 nginx"
       - name: Run Cypress tests
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           browser: chrome
           # Start serving 'dist' folder from previous build step
