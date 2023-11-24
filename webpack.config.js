@@ -39,7 +39,7 @@ if (isProduction() && !process.env.STORYBOOK) {
     validateEnv(process.env)
 }
 
-const commitHash = gitRevisionPlugin.commithash() || 'N/A'
+const commitHash = gitRevisionPlugin.commithash()?.substring(0, 10) || 'N/A'
 
 // We have to make sure that publicPath ends with a slash. If it
 // doesn't then chunks are not gonna load correctly. #codesplitting
