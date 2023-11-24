@@ -71,27 +71,12 @@ const useOperatorReachabilityStore = create<{
             let ws: WebSocket | undefined
 
             try {
-                reachable = await new Promise<boolean>((resolve, reject) => {
-                    if (!url) {
-                        return void resolve(false)
-                    }
-
-                    ws = new WebSocket(url)
-
-                    ws.addEventListener('open', () => {
-                        resolve(true)
-                    })
-
-                    ws.addEventListener('error', (e) => {
-                        console.warn(
-                            `An error occured while checking reachability of "${url}"`,
-                            e,
-                        )
-                    })
-
-                    ws.addEventListener('close', (e) => {
-                        reject(e)
-                    })
+                reachable = await new Promise<boolean>((resolve) => {
+                    /**
+                     * Replace the following with a real connectivity
+                     * checking logic.
+                     */
+                    resolve(!!url)
                 })
             } finally {
                 ws?.close()
