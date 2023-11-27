@@ -245,6 +245,7 @@ export const ScrollTableCore = <T extends object>({
                     <NoData
                         firstLine={noDataFirstLine || 'No data'}
                         secondLine={noDataSecondLine}
+                        compact
                     />
                 </NoDataWrap>
             )}

@@ -208,6 +208,7 @@ function MyOperatorSummary() {
                                         page.
                                     </>
                                 }
+                                compact
                             />
                         </Pad>
                     </>
@@ -435,6 +436,7 @@ function MyDelegations() {
                                 start delegating.
                             </>
                         }
+                        compact
                     />
                 )}
             </WalletPass>

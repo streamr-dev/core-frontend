@@ -8,8 +8,14 @@ type Props = {
     firstLine: ReactNode
     secondLine?: ReactNode
     width?: number //px
+    compact?: boolean
 }
-export const NoData: FunctionComponent<Props> = ({ firstLine, secondLine, width }) => {
+export const NoData: FunctionComponent<Props> = ({
+    firstLine,
+    secondLine,
+    width,
+    compact,
+}) => {
     return (
         <EmptyStateWrap
             image={
@@ -24,6 +30,7 @@ export const NoData: FunctionComponent<Props> = ({ firstLine, secondLine, width 
                     }
                 />
             }
+            compact={compact}
         >
             <EmptyStateParagraph>{firstLine}</EmptyStateParagraph>
             {secondLine && <EmptyStateParagraph>{secondLine}</EmptyStateParagraph>}
@@ -31,8 +38,8 @@ export const NoData: FunctionComponent<Props> = ({ firstLine, secondLine, width 
     )
 }
 
-const EmptyStateWrap = styled(EmptyState)`
-    padding: 150px 0;
+const EmptyStateWrap = styled(EmptyState)<{ compact?: boolean }>`
+    padding: ${({ compact }) => (compact ? '48px' : '150px')} 0;
 `
 
 const EmptyStateParagraph = styled.p`
