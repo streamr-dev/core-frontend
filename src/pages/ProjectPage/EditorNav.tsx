@@ -13,6 +13,8 @@ import {
     useProject,
 } from '~/shared/stores/projectEditor'
 import routes from '~/routes'
+import { FloatingToolbar } from '~/components/FloatingToolbar'
+import { useInViewport } from '~/hooks/useInViewport'
 
 const FlexNavbar = styled(Navbar)`
     display: flex;
@@ -45,8 +47,24 @@ export default function EditorNav() {
 
     const persist = usePersistCurrentProjectDraft()
 
+    const [attach, isSaveButtonVisible] = useInViewport()
+
     return (
         <NavContainer>
+            <FloatingToolbar $active={!isSaveButtonVisible}>
+                <FlexNavbarItem>
+                    <Button tag={Link} to={routes.projects.index()} kind="transparent">
+                        Exit
+                    </Button>
+                    <Button
+                        type="button"
+                        disabled={busy || clean}
+                        onClick={() => void persist()}
+                    >
+                        Publish
+                    </Button>
+                </FlexNavbarItem>
+            </FloatingToolbar>
             <FlexNavbar>
                 <FlexNavbarItem>
                     <LogoLink href={routes.root()}>
@@ -58,7 +76,12 @@ export default function EditorNav() {
                     <Button tag={Link} to={routes.projects.index()} kind="transparent">
                         Exit
                     </Button>
-                    <Button disabled={busy || clean} onClick={() => void persist()}>
+                    <Button
+                        disabled={busy || clean}
+                        onClick={() => void persist()}
+                        innerRef={attach}
+                        type="button"
+                    >
                         Publish
                     </Button>
                 </FlexNavbarItem>
