@@ -1,12 +1,4 @@
-import React, {
-    FormEvent,
-    MutableRefObject,
-    RefCallback,
-    useCallback,
-    useEffect,
-    useRef,
-    useState,
-} from 'react'
+import React, { FormEvent, MutableRefObject, RefCallback, useCallback } from 'react'
 import { StreamPermission } from 'streamr-client'
 import styled, { css } from 'styled-components'
 import { toaster } from 'toasterhea'
@@ -57,6 +49,8 @@ import NotFoundPage, { NotFoundPageContent } from '~/pages/NotFoundPage'
 import { GenericErrorPageContent } from '~/pages/GenericErrorPage'
 import { DraftValidationError } from '~/errors'
 import routes from '~/routes'
+import { useInViewport } from '~/hooks/useInViewport'
+import { FloatingToolbar } from '~/components/FloatingToolbar'
 import InfoSection from './AbstractStreamEditPage/InfoSection'
 import AccessControlSection from './AbstractStreamEditPage/AccessControlSection'
 import HistorySection from './AbstractStreamEditPage/HistorySection'
@@ -181,6 +175,8 @@ function StreamPageSwitch({ tab }: Props) {
     const invalidateAbilities = useInvalidateStreamAbilities()
 
     const [attach, isSaveButtonVisible] = useInViewport()
+
+    const canSubmit = useCanSubmit()
 
     usePreventNavigatingAway({
         isDirty: useCallback(
@@ -320,7 +316,11 @@ function StreamPageSwitch({ tab }: Props) {
                 {tab === 'connect' && <ConnectPage />}
                 {tab === 'live-data' && <LiveDataPage />}
             </Layout>
-            <FloatingToolbar active={!isSaveButtonVisible} />
+            <FloatingToolbar $active={!isSaveButtonVisible}>
+                <Button type="submit" disabled={!canSubmit || isSaveButtonVisible}>
+                    Save
+                </Button>
+            </FloatingToolbar>
         </form>
     )
 }
@@ -533,105 +533,4 @@ function ContainerBox({
             {showProjectCreateHint && <CreateProjectHint streamId={streamId} />}
         </Outer>
     )
-}
-
-function FloatingToolbar({ active = false }) {
-    const canSubmit = useCanSubmit()
-
-    return (
-        <FloatingToolbarRoot $active={active}>
-            <Button type="submit" disabled={!canSubmit || !active}>
-                Save
-            </Button>
-        </FloatingToolbarRoot>
-    )
-}
-
-const FloatingToolbarRoot = styled.div<{ $active?: boolean }>`
-    align-items: center;
-    backdrop-filter: blur(8px);
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.02), 0 0 2px rgba(0, 0, 0, 0.03);
-    display: flex;
-    height: 60px;
-    justify-content: flex-end;
-    left: 0;
-    opacity: 0;
-    padding: 0 40px;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 9999;
-    visiblity: hidden;
-    transform: translateY(-100%);
-    transition: 100ms;
-    transition-delay: 100ms, 0s, 0s;
-    transition-property: visibility, opacity, transform;
-
-    ${({ $active = false }) =>
-        $active &&
-        css`
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-            transition-delay: 0s;
-        `}
-`
-
-const isSSR = typeof IntersectionObserver === 'undefined'
-
-function useInViewport<T extends Element = Element>(): [RefCallback<T>, boolean] {
-    const [target, setTarget] = useState<T | null>(null)
-
-    const targetRef = useRef<T | null>(null)
-
-    const [inViewport, setInViewport] = useState(false)
-
-    const observerRef = useRef<undefined | IntersectionObserver>(
-        isSSR
-            ? undefined
-            : new IntersectionObserver((entries) => {
-                  entries.forEach((entry) => {
-                      if (entry.target === targetRef.current) {
-                          setInViewport(entry.isIntersecting)
-                      }
-                  })
-              }),
-    )
-
-    useEffect(() => {
-        const { current: observer } = observerRef
-
-        targetRef.current = target
-
-        if (target) {
-            observer?.observe(target)
-        } else {
-            setInViewport(false)
-        }
-
-        return () => {
-            if (target) {
-                observer?.unobserve(target)
-            }
-        }
-    }, [target])
-
-    useEffect(() => {
-        const { current: observer } = observerRef
-
-        return () => {
-            observer?.disconnect()
-        }
-    }, [])
-
-    useEffect(() => {
-        if (isSSR) {
-            // Fallback for when `IntersectionObserver` isn't there. We do it in `useEffect` to
-            // cover non-SSR environments that don't give us `IntersectionObserver`.
-            setInViewport(true)
-        }
-    }, [])
-
-    return [setTarget, inViewport]
 }
