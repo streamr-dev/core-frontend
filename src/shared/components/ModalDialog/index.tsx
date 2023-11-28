@@ -21,7 +21,7 @@ const Fullpage = styled.div<{ noScroll: boolean }>`
     width: 100%;
     height: 100%;
     background-color: rgba(239, 239, 239, 0.98);
-    z-index: 1;
+    z-index: 10;
 
     ${({ noScroll }) =>
         !noScroll &&

@@ -14,7 +14,7 @@ export const FloatingToolbar = styled.div<{ $active?: boolean }>`
     position: fixed;
     top: 0;
     width: 100%;
-    z-index: 9999;
+    z-index: 9;
     visiblity: hidden;
     transform: translateY(-100%);
     transition: 100ms;
