@@ -1,4 +1,12 @@
-import React, { FormEvent, useCallback } from 'react'
+import React, {
+    FormEvent,
+    MutableRefObject,
+    RefCallback,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+} from 'react'
 import { StreamPermission } from 'streamr-client'
 import styled, { css } from 'styled-components'
 import { toaster } from 'toasterhea'
@@ -60,7 +68,13 @@ import CreateProjectHint from './AbstractStreamEditPage/CreateProjectHint'
 
 const getCryptoModal = toaster(GetCryptoModal, Layer.Modal)
 
-function EditPage({ isNew = false }: { isNew?: boolean }) {
+function EditPage({
+    isNew = false,
+    saveButtonRef,
+}: {
+    isNew?: boolean
+    saveButtonRef?: MutableRefObject<Element | null> | RefCallback<Element | null>
+}) {
     const { streamId } = useCurrentDraft()
 
     const canEdit = useCurrentStreamAbility(StreamPermission.EDIT)
@@ -71,7 +85,7 @@ function EditPage({ isNew = false }: { isNew?: boolean }) {
 
     const busy = useIsCurrentDraftBusy()
 
-    const clean = useIsCurrentDraftClean()
+    const canSubmit = useCanSubmit()
 
     const disabled = typeof canEdit === 'undefined' || busy
 
@@ -79,9 +93,10 @@ function EditPage({ isNew = false }: { isNew?: boolean }) {
         <>
             <LoadingIndicator loading={disabled} />
             <ContainerBox
-                disabled={disabled || clean}
+                disabled={disabled || !canSubmit}
                 showRelatedProjects={!!streamId}
                 showSaveButton={!isNew}
+                saveButtonRef={saveButtonRef}
                 streamId={streamId}
                 showProjectCreateHint={canGrant}
             >
@@ -164,6 +179,8 @@ function StreamPageSwitch({ tab }: Props) {
     const address = useWalletAccount()
 
     const invalidateAbilities = useInvalidateStreamAbilities()
+
+    const [attach, isSaveButtonVisible] = useInViewport()
 
     usePreventNavigatingAway({
         isDirty: useCallback(
@@ -262,7 +279,7 @@ function StreamPageSwitch({ tab }: Props) {
         return (
             <form onSubmit={defaultFormEventHandler}>
                 <Layout footer={null}>
-                    <Header />
+                    <Header saveButtonRef={attach} />
                     <LoadingIndicator loading />
                 </Layout>
             </form>
@@ -273,7 +290,7 @@ function StreamPageSwitch({ tab }: Props) {
         return (
             <form onSubmit={defaultFormEventHandler}>
                 <Layout footer={null}>
-                    <Header />
+                    <Header saveButtonRef={attach} />
                     <LoadingIndicator />
                     <NotFoundPageContent />
                 </Layout>
@@ -285,7 +302,7 @@ function StreamPageSwitch({ tab }: Props) {
         return (
             <form onSubmit={defaultFormEventHandler}>
                 <Layout footer={null}>
-                    <Header />
+                    <Header saveButtonRef={attach} />
                     <LoadingIndicator />
                     <GenericErrorPageContent />
                 </Layout>
@@ -298,11 +315,12 @@ function StreamPageSwitch({ tab }: Props) {
     return (
         <form onSubmit={editView ? onSubmit : defaultFormEventHandler}>
             <Layout footer={null}>
-                <Header isNew={isNew} />
-                {editView && <EditPage isNew={isNew} />}
+                <Header isNew={isNew} saveButtonRef={attach} />
+                {editView && <EditPage isNew={isNew} saveButtonRef={attach} />}
                 {tab === 'connect' && <ConnectPage />}
                 {tab === 'live-data' && <LiveDataPage />}
             </Layout>
+            <FloatingToolbar active={!isSaveButtonVisible} />
         </form>
     )
 }
@@ -330,12 +348,26 @@ export default function StreamPage() {
     )
 }
 
-function Header({ isNew = false }: { isNew?: boolean }) {
+function useCanSubmit() {
+    const busy = useIsCurrentDraftBusy()
+
+    const clean = useIsCurrentDraftClean()
+
+    return !busy && !clean
+}
+
+function Header({
+    isNew = false,
+    saveButtonRef,
+}: {
+    isNew?: boolean
+    saveButtonRef?: MutableRefObject<Element | null> | RefCallback<Element | null>
+}) {
     const { streamId, transientStreamId } = useCurrentDraft()
 
     const { pathname } = useLocation()
 
-    const busy = useIsCurrentDraftBusy()
+    const canSubmit = useCanSubmit()
 
     const clean = useIsCurrentDraftClean()
 
@@ -391,7 +423,12 @@ function Header({ isNew = false }: { isNew?: boolean }) {
                         </Tabs>
                     ) : isNew ? (
                         <div>
-                            <Button disabled={busy || clean} kind="primary" type="submit">
+                            <Button
+                                disabled={!canSubmit}
+                                kind="primary"
+                                type="submit"
+                                innerRef={saveButtonRef}
+                            >
                                 Save
                             </Button>
                         </div>
@@ -444,11 +481,12 @@ const SaveButton = styled(Button)`
 type ContainerBoxProps = {
     children?: React.ReactNode
     disabled?: boolean
-    streamId?: string
-    showSaveButton?: boolean
     fullWidth?: boolean
-    showRelatedProjects?: boolean
+    saveButtonRef?: MutableRefObject<Element | null> | RefCallback<Element | null>
     showProjectCreateHint?: boolean
+    showRelatedProjects?: boolean
+    showSaveButton?: boolean
+    streamId?: string
 }
 
 const Outer = styled.div`
@@ -474,13 +512,19 @@ function ContainerBox({
     fullWidth = false,
     showRelatedProjects = false,
     showProjectCreateHint = false,
+    saveButtonRef,
 }: ContainerBoxProps) {
     return (
         <Outer>
             <Inner $fullWidth={fullWidth}>
                 <div>{children}</div>
                 {showSaveButton && (
-                    <SaveButton kind="primary" type="submit" disabled={disabled}>
+                    <SaveButton
+                        kind="primary"
+                        type="submit"
+                        disabled={disabled}
+                        innerRef={saveButtonRef}
+                    >
                         Save
                     </SaveButton>
                 )}
@@ -489,4 +533,105 @@ function ContainerBox({
             {showProjectCreateHint && <CreateProjectHint streamId={streamId} />}
         </Outer>
     )
+}
+
+function FloatingToolbar({ active = false }) {
+    const canSubmit = useCanSubmit()
+
+    return (
+        <FloatingToolbarRoot $active={active}>
+            <Button type="submit" disabled={!canSubmit || !active}>
+                Save
+            </Button>
+        </FloatingToolbarRoot>
+    )
+}
+
+const FloatingToolbarRoot = styled.div<{ $active?: boolean }>`
+    align-items: center;
+    backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.02), 0 0 2px rgba(0, 0, 0, 0.03);
+    display: flex;
+    height: 60px;
+    justify-content: flex-end;
+    left: 0;
+    opacity: 0;
+    padding: 0 40px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+    visiblity: hidden;
+    transform: translateY(-100%);
+    transition: 100ms;
+    transition-delay: 100ms, 0s, 0s;
+    transition-property: visibility, opacity, transform;
+
+    ${({ $active = false }) =>
+        $active &&
+        css`
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            transition-delay: 0s;
+        `}
+`
+
+const isSSR = typeof IntersectionObserver === 'undefined'
+
+function useInViewport<T extends Element = Element>(): [RefCallback<T>, boolean] {
+    const [target, setTarget] = useState<T | null>(null)
+
+    const targetRef = useRef<T | null>(null)
+
+    const [inViewport, setInViewport] = useState(false)
+
+    const observerRef = useRef<undefined | IntersectionObserver>(
+        isSSR
+            ? undefined
+            : new IntersectionObserver((entries) => {
+                  entries.forEach((entry) => {
+                      if (entry.target === targetRef.current) {
+                          setInViewport(entry.isIntersecting)
+                      }
+                  })
+              }),
+    )
+
+    useEffect(() => {
+        const { current: observer } = observerRef
+
+        targetRef.current = target
+
+        if (target) {
+            observer?.observe(target)
+        } else {
+            setInViewport(false)
+        }
+
+        return () => {
+            if (target) {
+                observer?.unobserve(target)
+            }
+        }
+    }, [target])
+
+    useEffect(() => {
+        const { current: observer } = observerRef
+
+        return () => {
+            observer?.disconnect()
+        }
+    }, [])
+
+    useEffect(() => {
+        if (isSSR) {
+            // Fallback for when `IntersectionObserver` isn't there. We do it in `useEffect` to
+            // cover non-SSR environments that don't give us `IntersectionObserver`.
+            setInViewport(true)
+        }
+    }, [])
+
+    return [setTarget, inViewport]
 }
