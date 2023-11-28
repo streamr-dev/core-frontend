@@ -57,7 +57,7 @@ export interface Chain {
         [name: string]: string
     }
     entryPoints?: {
-        id: string
+        nodeId: string
         websocket: {
             host: string
             port: number
