@@ -31,14 +31,14 @@ export function LiveNodesTable({
                     displayName: 'Node ID',
                     isSticky: true,
                     key: 'id',
-                    valueMapper: ({ id }) => truncateNodeId(id),
+                    valueMapper: ({ nodeId }) => truncateNodeId(nodeId),
                 },
                 {
                     align: 'start',
                     displayName: 'Connectivity',
                     isSticky: false,
                     key: 'connectivity',
-                    valueMapper: ({ id }) => <Connectivity nodeId={id} />,
+                    valueMapper: ({ nodeId }) => <Connectivity nodeId={nodeId} />,
                 },
                 {
                     align: 'start',
