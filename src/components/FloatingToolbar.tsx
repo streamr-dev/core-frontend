@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components'
+import { DESKTOP } from '~/shared/utils/styled'
 
 export const FloatingToolbar = styled.div<{ $active?: boolean }>`
     align-items: center;
@@ -10,7 +11,7 @@ export const FloatingToolbar = styled.div<{ $active?: boolean }>`
     justify-content: flex-end;
     left: 0;
     opacity: 0;
-    padding: 0 40px;
+    padding: 0 24px;
     position: fixed;
     top: 0;
     width: 100%;
@@ -20,6 +21,10 @@ export const FloatingToolbar = styled.div<{ $active?: boolean }>`
     transition: 100ms;
     transition-delay: 100ms, 0s, 0s;
     transition-property: visibility, opacity, transform;
+
+    @media ${DESKTOP} {
+        padding: 0 40px;
+    }
 
     ${({ $active = false }) =>
         $active &&
