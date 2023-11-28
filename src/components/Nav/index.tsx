@@ -9,7 +9,6 @@ import { truncate } from '~/shared/utils/text'
 import { connectModal } from '~/modals/ConnectModal'
 import { useEns, useWalletAccount } from '~/shared/stores/wallet'
 import toast from '~/utils/toast'
-import { FeatureFlag, isFeatureEnabled } from '~/shared/utils/isFeatureEnabled'
 import Popover from '~/shared/components/Popover'
 import PopoverItem from '~/shared/components/Popover/PopoverItem'
 import routes from '~/routes'
@@ -113,40 +112,28 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                     </NavbarItem>
                     <NavbarItem>
                         <NavbarLinkDesktop highlight={isNetworkTabActive(pathname)}>
-                            {isFeatureEnabled(FeatureFlag.PhaseTwo) ? (
-                                <Popover
-                                    title={<NavLink>Network</NavLink>}
-                                    caret={false}
-                                    menuProps={{ className: 'nav-dropdown' }}
-                                    openOnHover
-                                >
-                                    {extendedNetworkNav.map((networkNavElement) => {
-                                        const { title, subtitle, link } =
-                                            networkNavElement
+                            <Popover
+                                title={<NavLink>Network</NavLink>}
+                                caret={false}
+                                menuProps={{ className: 'nav-dropdown' }}
+                                openOnHover
+                            >
+                                {extendedNetworkNav.map((networkNavElement) => {
+                                    const { title, subtitle, link } = networkNavElement
 
-                                        return (
-                                            <PopoverItem
-                                                key={link}
-                                                onClick={() => void navigate(link)}
-                                            >
-                                                <NetworkNavElement>
-                                                    <p className="title">{title}</p>
-                                                    <p className="subtitle">{subtitle}</p>
-                                                </NetworkNavElement>
-                                            </PopoverItem>
-                                        )
-                                    })}
-                                </Popover>
-                            ) : (
-                                <NavLink
-                                    as={Link}
-                                    to={routes.networkExplorer()}
-                                    rel="noopener noreferrer"
-                                    target="_blank"
-                                >
-                                    Network
-                                </NavLink>
-                            )}
+                                    return (
+                                        <PopoverItem
+                                            key={link}
+                                            onClick={() => void navigate(link)}
+                                        >
+                                            <NetworkNavElement>
+                                                <p className="title">{title}</p>
+                                                <p className="subtitle">{subtitle}</p>
+                                            </NetworkNavElement>
+                                        </PopoverItem>
+                                    )
+                                })}
+                            </Popover>
                         </NavbarLinkDesktop>
                     </NavbarItem>
                 </MenuGrid>
@@ -268,66 +255,53 @@ const UnstyledMobileNav: FunctionComponent<{ className?: string }> = ({ classNam
                     </NavLink>
                 </NavbarLinkMobile>
                 <NavbarLinkMobile highlight={isNetworkTabActive(pathname)}>
-                    {isFeatureEnabled(FeatureFlag.PhaseTwo) ? (
-                        <NavLink as="div">
-                            <Accordion
-                                flush
-                                open={accordionOpen}
-                                // hack for the issues with typing
-                                {...{
-                                    toggle,
-                                }}
-                            >
-                                <AccordionItem>
-                                    <StyledAccordionHeader targetId="1">
-                                        <div className="network-dropdown-button-inner">
-                                            Network
-                                            <SvgIcon
-                                                name="caretDown"
-                                                className={
-                                                    'caret-down ' +
-                                                    (accordionOpen ? 'is-open' : '')
-                                                }
-                                            />
-                                        </div>
-                                    </StyledAccordionHeader>
-                                    <StyledAccordionBody accordionId="1">
-                                        {extendedNetworkNav.map(
-                                            (networkNavElement, index) => {
-                                                const { title, subtitle, link, ...rest } =
-                                                    networkNavElement
-                                                return (
-                                                    <NetworkMobileLink
-                                                        to={link}
-                                                        {...rest}
-                                                        key={index}
-                                                    >
-                                                        <NetworkNavElement>
-                                                            <p className="title">
-                                                                {title}
-                                                            </p>
-                                                            <p className="subtitle">
-                                                                {subtitle}
-                                                            </p>
-                                                        </NetworkNavElement>
-                                                    </NetworkMobileLink>
-                                                )
-                                            },
-                                        )}
-                                    </StyledAccordionBody>
-                                </AccordionItem>
-                            </Accordion>
-                        </NavLink>
-                    ) : (
-                        <NavLink
-                            as={Link}
-                            to={routes.networkExplorer()}
-                            rel="noopener noreferrer"
-                            target="_blank"
+                    <NavLink as="div">
+                        <Accordion
+                            flush
+                            open={accordionOpen}
+                            // hack for the issues with typing
+                            {...{
+                                toggle,
+                            }}
                         >
-                            Network
-                        </NavLink>
-                    )}
+                            <AccordionItem>
+                                <StyledAccordionHeader targetId="1">
+                                    <div className="network-dropdown-button-inner">
+                                        Network
+                                        <SvgIcon
+                                            name="caretDown"
+                                            className={
+                                                'caret-down ' +
+                                                (accordionOpen ? 'is-open' : '')
+                                            }
+                                        />
+                                    </div>
+                                </StyledAccordionHeader>
+                                <StyledAccordionBody accordionId="1">
+                                    {extendedNetworkNav.map(
+                                        (networkNavElement, index) => {
+                                            const { title, subtitle, link, ...rest } =
+                                                networkNavElement
+                                            return (
+                                                <NetworkMobileLink
+                                                    to={link}
+                                                    {...rest}
+                                                    key={index}
+                                                >
+                                                    <NetworkNavElement>
+                                                        <p className="title">{title}</p>
+                                                        <p className="subtitle">
+                                                            {subtitle}
+                                                        </p>
+                                                    </NetworkNavElement>
+                                                </NetworkMobileLink>
+                                            )
+                                        },
+                                    )}
+                                </StyledAccordionBody>
+                            </AccordionItem>
+                        </Accordion>
+                    </NavLink>
                 </NavbarLinkMobile>
             </NavOverlay.Body>
             <NavOverlay.Footer>

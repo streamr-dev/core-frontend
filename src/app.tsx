@@ -25,7 +25,6 @@ import { OperatorsPage } from '~/pages/OperatorsPage'
 import { SingleOperatorPage } from '~/pages/SingleOperatorPage'
 import Globals from '~/shared/components/Globals'
 import { Layer } from '~/utils/Layer'
-import { FeatureFlag, isFeatureEnabled } from '~/shared/utils/isFeatureEnabled'
 import routes from '~/routes'
 import { HubRouter } from '~/consts'
 import { getQueryClient } from '~/utils'
@@ -72,27 +71,21 @@ const App = () => (
                 <Route index element={<StreamListingPage />} />
                 <Route path=":id/*" element={<StreamPage />} />
             </Route>
-            {isFeatureEnabled(FeatureFlag.PhaseTwo) && (
-                <>
-                    <Route path="/hub/network/*" errorElement={<GenericErrorPage />}>
-                        <Route
-                            index
-                            element={
-                                <Navigate to={routes.network.sponsorships()} replace />
-                            }
-                        />
-                        <Route path="operators/*" errorElement={<GenericErrorPage />}>
-                            <Route index element={<OperatorsPage />} />
-                            <Route path=":id" element={<SingleOperatorPage />} />
-                        </Route>
-                        <Route path="sponsorships/*" errorElement={<GenericErrorPage />}>
-                            <Route index element={<SponsorshipsPage />} />
-                            <Route path=":id" element={<SingleSponsorshipPage />} />
-                        </Route>
-                        <Route path="overview" element={<NetworkOverviewPage />} />
-                    </Route>
-                </>
-            )}
+            <Route path="/hub/network/*" errorElement={<GenericErrorPage />}>
+                <Route
+                    index
+                    element={<Navigate to={routes.network.sponsorships()} replace />}
+                />
+                <Route path="operators/*" errorElement={<GenericErrorPage />}>
+                    <Route index element={<OperatorsPage />} />
+                    <Route path=":id" element={<SingleOperatorPage />} />
+                </Route>
+                <Route path="sponsorships/*" errorElement={<GenericErrorPage />}>
+                    <Route index element={<SponsorshipsPage />} />
+                    <Route path=":id" element={<SingleSponsorshipPage />} />
+                </Route>
+                <Route path="overview" element={<NetworkOverviewPage />} />
+            </Route>
             {MiscRouter()}
         </Routes>
         <Container id={Layer.Modal} />
