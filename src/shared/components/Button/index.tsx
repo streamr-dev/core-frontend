@@ -1,4 +1,10 @@
-import { ComponentType, FunctionComponent, ReactNode } from 'react'
+import {
+    ComponentType,
+    FunctionComponent,
+    MutableRefObject,
+    ReactNode,
+    RefCallback,
+} from 'react'
 import React, { HTMLProps } from 'react'
 import styled from 'styled-components'
 import cx from 'classnames'
@@ -34,6 +40,7 @@ type ButtonProps = Omit<
     external?: boolean
     href?: string
     type?: string
+    innerRef?: MutableRefObject<Element | null> | RefCallback<Element | null>
 }
 const darkBgs = new Set(['primary', 'destructive'])
 
@@ -62,10 +69,12 @@ const Button: FunctionComponent<ButtonProps> = ({
     onClick,
     children,
     external: _external,
+    innerRef,
     ...args
 }) => (
     <Tag
         {...args}
+        ref={innerRef}
         className={cx(
             styles.root,
             {

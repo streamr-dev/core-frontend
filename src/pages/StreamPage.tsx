@@ -1,4 +1,4 @@
-import React, { FormEvent, useCallback } from 'react'
+import React, { FormEvent, MutableRefObject, RefCallback, useCallback } from 'react'
 import { StreamPermission } from 'streamr-client'
 import styled, { css } from 'styled-components'
 import { toaster } from 'toasterhea'
@@ -49,6 +49,8 @@ import NotFoundPage, { NotFoundPageContent } from '~/pages/NotFoundPage'
 import { GenericErrorPageContent } from '~/pages/GenericErrorPage'
 import { DraftValidationError } from '~/errors'
 import routes from '~/routes'
+import { useInViewport } from '~/hooks/useInViewport'
+import { FloatingToolbar } from '~/components/FloatingToolbar'
 import InfoSection from './AbstractStreamEditPage/InfoSection'
 import AccessControlSection from './AbstractStreamEditPage/AccessControlSection'
 import HistorySection from './AbstractStreamEditPage/HistorySection'
@@ -60,7 +62,13 @@ import CreateProjectHint from './AbstractStreamEditPage/CreateProjectHint'
 
 const getCryptoModal = toaster(GetCryptoModal, Layer.Modal)
 
-function EditPage({ isNew = false }: { isNew?: boolean }) {
+function EditPage({
+    isNew = false,
+    saveButtonRef,
+}: {
+    isNew?: boolean
+    saveButtonRef?: MutableRefObject<Element | null> | RefCallback<Element | null>
+}) {
     const { streamId } = useCurrentDraft()
 
     const canEdit = useCurrentStreamAbility(StreamPermission.EDIT)
@@ -71,7 +79,7 @@ function EditPage({ isNew = false }: { isNew?: boolean }) {
 
     const busy = useIsCurrentDraftBusy()
 
-    const clean = useIsCurrentDraftClean()
+    const canSubmit = useCanSubmit()
 
     const disabled = typeof canEdit === 'undefined' || busy
 
@@ -79,9 +87,10 @@ function EditPage({ isNew = false }: { isNew?: boolean }) {
         <>
             <LoadingIndicator loading={disabled} />
             <ContainerBox
-                disabled={disabled || clean}
+                disabled={disabled || !canSubmit}
                 showRelatedProjects={!!streamId}
                 showSaveButton={!isNew}
+                saveButtonRef={saveButtonRef}
                 streamId={streamId}
                 showProjectCreateHint={canGrant}
             >
@@ -164,6 +173,10 @@ function StreamPageSwitch({ tab }: Props) {
     const address = useWalletAccount()
 
     const invalidateAbilities = useInvalidateStreamAbilities()
+
+    const [attach, isSaveButtonVisible] = useInViewport()
+
+    const canSubmit = useCanSubmit()
 
     usePreventNavigatingAway({
         isDirty: useCallback(
@@ -262,7 +275,7 @@ function StreamPageSwitch({ tab }: Props) {
         return (
             <form onSubmit={defaultFormEventHandler}>
                 <Layout footer={null}>
-                    <Header />
+                    <Header saveButtonRef={attach} />
                     <LoadingIndicator loading />
                 </Layout>
             </form>
@@ -273,7 +286,7 @@ function StreamPageSwitch({ tab }: Props) {
         return (
             <form onSubmit={defaultFormEventHandler}>
                 <Layout footer={null}>
-                    <Header />
+                    <Header saveButtonRef={attach} />
                     <LoadingIndicator />
                     <NotFoundPageContent />
                 </Layout>
@@ -285,7 +298,7 @@ function StreamPageSwitch({ tab }: Props) {
         return (
             <form onSubmit={defaultFormEventHandler}>
                 <Layout footer={null}>
-                    <Header />
+                    <Header saveButtonRef={attach} />
                     <LoadingIndicator />
                     <GenericErrorPageContent />
                 </Layout>
@@ -298,11 +311,16 @@ function StreamPageSwitch({ tab }: Props) {
     return (
         <form onSubmit={editView ? onSubmit : defaultFormEventHandler}>
             <Layout footer={null}>
-                <Header isNew={isNew} />
-                {editView && <EditPage isNew={isNew} />}
+                <Header isNew={isNew} saveButtonRef={attach} />
+                {editView && <EditPage isNew={isNew} saveButtonRef={attach} />}
                 {tab === 'connect' && <ConnectPage />}
                 {tab === 'live-data' && <LiveDataPage />}
             </Layout>
+            <FloatingToolbar $active={!isSaveButtonVisible}>
+                <Button type="submit" disabled={!canSubmit || isSaveButtonVisible}>
+                    Save
+                </Button>
+            </FloatingToolbar>
         </form>
     )
 }
@@ -330,12 +348,26 @@ export default function StreamPage() {
     )
 }
 
-function Header({ isNew = false }: { isNew?: boolean }) {
+function useCanSubmit() {
+    const busy = useIsCurrentDraftBusy()
+
+    const clean = useIsCurrentDraftClean()
+
+    return !busy && !clean
+}
+
+function Header({
+    isNew = false,
+    saveButtonRef,
+}: {
+    isNew?: boolean
+    saveButtonRef?: MutableRefObject<Element | null> | RefCallback<Element | null>
+}) {
     const { streamId, transientStreamId } = useCurrentDraft()
 
     const { pathname } = useLocation()
 
-    const busy = useIsCurrentDraftBusy()
+    const canSubmit = useCanSubmit()
 
     const clean = useIsCurrentDraftClean()
 
@@ -391,7 +423,12 @@ function Header({ isNew = false }: { isNew?: boolean }) {
                         </Tabs>
                     ) : isNew ? (
                         <div>
-                            <Button disabled={busy || clean} kind="primary" type="submit">
+                            <Button
+                                disabled={!canSubmit}
+                                kind="primary"
+                                type="submit"
+                                innerRef={saveButtonRef}
+                            >
                                 Save
                             </Button>
                         </div>
@@ -444,11 +481,12 @@ const SaveButton = styled(Button)`
 type ContainerBoxProps = {
     children?: React.ReactNode
     disabled?: boolean
-    streamId?: string
-    showSaveButton?: boolean
     fullWidth?: boolean
-    showRelatedProjects?: boolean
+    saveButtonRef?: MutableRefObject<Element | null> | RefCallback<Element | null>
     showProjectCreateHint?: boolean
+    showRelatedProjects?: boolean
+    showSaveButton?: boolean
+    streamId?: string
 }
 
 const Outer = styled.div`
@@ -474,13 +512,19 @@ function ContainerBox({
     fullWidth = false,
     showRelatedProjects = false,
     showProjectCreateHint = false,
+    saveButtonRef,
 }: ContainerBoxProps) {
     return (
         <Outer>
             <Inner $fullWidth={fullWidth}>
                 <div>{children}</div>
                 {showSaveButton && (
-                    <SaveButton kind="primary" type="submit" disabled={disabled}>
+                    <SaveButton
+                        kind="primary"
+                        type="submit"
+                        disabled={disabled}
+                        innerRef={saveButtonRef}
+                    >
                         Save
                     </SaveButton>
                 )}
