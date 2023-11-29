@@ -6,7 +6,7 @@ import { providers } from 'ethers'
 import { MetaMaskInpageProvider } from '@metamask/providers'
 import { isAddress } from 'web3-validator'
 import { isMessagedObject } from '~/utils'
-import { getFirstEnsNameFor } from '~/getters'
+import { getENSDomainsForWallet } from '~/getters'
 import { getConfigForChain } from '~/shared/web3/config'
 import { connectModal } from '~/modals/ConnectModal'
 import { isRejectionReason } from '~/modals/BaseModal'
@@ -200,7 +200,7 @@ const useWalletStore = create<WalletStore>((set, get) => {
 
             setTimeout(async () => {
                 try {
-                    const ensName = await getFirstEnsNameFor(addr)
+                    const [ensName = undefined] = await getENSDomainsForWallet(addr)
 
                     set((current) =>
                         produce(current, (next) => {

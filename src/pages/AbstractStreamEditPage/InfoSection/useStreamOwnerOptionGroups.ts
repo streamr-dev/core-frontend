@@ -1,54 +1,9 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { useEffect, useState } from 'react'
 import { truncate } from '~/shared/utils/text'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { errorToast } from '~/utils/toast'
-import {
-    GetEnsDomainsForAccountQuery,
-    GetEnsDomainsForAccountDocument,
-    GetEnsDomainsForAccountQueryVariables,
-} from '~/generated/gql/ens'
+import { getENSDomainsForWallet } from '~/getters'
 
 export const ADD_ENS_DOMAIN_VALUE = '::ens/add_domain'
-
-const apolloClient = new ApolloClient({
-    uri:
-        process.env.ENS_GRAPH_SCHEMA_PATH ||
-        'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
-    cache: new InMemoryCache(),
-})
-
-async function fetchDomains(
-    account: string | undefined,
-    { force = false } = {},
-): Promise<string[]> {
-    if (!account) {
-        return []
-    }
-
-    try {
-        const { data = { domains: [] } } = await apolloClient.query<
-            GetEnsDomainsForAccountQuery,
-            GetEnsDomainsForAccountQueryVariables
-        >({
-            query: GetEnsDomainsForAccountDocument,
-            variables: {
-                account: account.toLowerCase(),
-            },
-            fetchPolicy: force ? 'network-only' : void 0,
-        })
-
-        return (data.domains.map(({ name }) => name).filter(Boolean) as string[]).sort()
-    } catch (e) {
-        console.warn('Failed to load ENS domains', e)
-
-        errorToast({
-            title: 'Failed to load ENS domains',
-        })
-
-        return []
-    }
-}
 
 interface Option {
     value: string
@@ -79,7 +34,7 @@ export default function useStreamOwnerOptionGroups(): OptionGroup[] | undefined 
                 return void setGroups([])
             }
 
-            const domains = await fetchDomains(account)
+            const domains = await getENSDomainsForWallet(account)
 
             if (!mounted) {
                 return

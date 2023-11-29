@@ -8,12 +8,9 @@ import {
     MarketplaceV4 as MarketplaceContract,
 } from '@streamr/hub-contracts'
 import moment, { Moment } from 'moment'
+import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
 import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
-import reverseRecordsAbi from '~/shared/web3/abis/reverseRecords.json'
-import {
-    Token as TokenContract,
-    ReverseRecords as ReverseRecordsContract,
-} from '~/generated/types'
+import { Token as TokenContract } from '~/generated/types'
 import { getMarketplaceAddress } from '~/marketplace/utils/web3'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
@@ -78,6 +75,11 @@ import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { BN, toBN } from '~/utils/bn'
 import { errorToast } from '~/utils/toast'
 import { SponsorshipParser } from '~/parsers/SponsorshipParser'
+import {
+    GetEnsDomainsForAccountDocument,
+    GetEnsDomainsForAccountQuery,
+    GetEnsDomainsForAccountQueryVariables,
+} from '~/generated/gql/ens'
 
 const DEFAULT_OPERATOR_ORDER_BY = Operator_OrderBy.Id
 const DEFAULT_SPONSORSHIP_ORDER_BY = Sponsorship_OrderBy.Id
@@ -259,18 +261,6 @@ export function getProjectImageUrl({
     }
 
     return `${imageUrl.replace(/^https:\/\/ipfs\.io\/ipfs\//, ipfsGatewayUrl)}`
-}
-
-export async function getFirstEnsNameFor(address: string): Promise<string> {
-    const contract = new Contract(
-        getCoreConfig().reverseRecordsAddress,
-        reverseRecordsAbi,
-        getPublicWeb3Provider(1),
-    ) as ReverseRecordsContract
-
-    const [domain] = await contract.getNames([address])
-
-    return domain
 }
 
 export async function getAllSponsorships({
@@ -975,4 +965,40 @@ export const getDelegatorDailyBuckets = async (
     })
 
     return data.delegatorDailyBuckets
+}
+
+let ensApolloClient: ApolloClient<NormalizedCacheObject> | undefined
+
+/**
+ * Fetches the ENS subgraph for domains associated with the given `wallet` address.
+ */
+export async function getENSDomainsForWallet(
+    wallet: string | undefined,
+    { force = false } = {},
+): Promise<string[]> {
+    if (!wallet) {
+        return []
+    }
+
+    if (!ensApolloClient) {
+        ensApolloClient = new ApolloClient({
+            uri:
+                process.env.ENS_GRAPH_SCHEMA_PATH ||
+                'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
+            cache: new InMemoryCache(),
+        })
+    }
+
+    const { data = { domains: [] } } = await ensApolloClient.query<
+        GetEnsDomainsForAccountQuery,
+        GetEnsDomainsForAccountQueryVariables
+    >({
+        query: GetEnsDomainsForAccountDocument,
+        variables: {
+            account: wallet.toLowerCase(),
+        },
+        fetchPolicy: force ? 'network-only' : void 0,
+    })
+
+    return (data.domains.map(({ name }) => name).filter(Boolean) as string[]).sort()
 }
