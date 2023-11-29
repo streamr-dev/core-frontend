@@ -59,6 +59,7 @@ import DeleteSection from './AbstractStreamEditPage/DeleteSection'
 import PersistanceAlert from './AbstractStreamEditPage/PersistanceAlert'
 import RelatedProjects from './AbstractStreamEditPage/RelatedProjects'
 import CreateProjectHint from './AbstractStreamEditPage/CreateProjectHint'
+import SponsorshipsTable from './AbstractStreamEditPage/SponsorshipsTable'
 
 const getCryptoModal = toaster(GetCryptoModal, Layer.Modal)
 
@@ -529,6 +530,7 @@ function ContainerBox({
                     </SaveButton>
                 )}
             </Inner>
+            {streamId && <SponsorshipsTable streamId={streamId} />}
             {showRelatedProjects && streamId && <RelatedProjects streamId={streamId} />}
             {showProjectCreateHint && <CreateProjectHint streamId={streamId} />}
         </Outer>
