@@ -76,7 +76,9 @@ interface ProjectEditorStore {
 }
 
 function getEmptyDraft(): ProjectDraft {
-    const emptyProject = getEmptyParsedProject()
+    const emptyProject = getEmptyParsedProject({
+        type: ProjectType.OpenData,
+    })
 
     return {
         abandoned: false,
@@ -569,7 +571,12 @@ export function useDraft() {
 export function useProject({ hot = false } = {}) {
     const draft = useDraft()
 
-    return (hot ? draft?.project.hot : draft?.project.cold) || getEmptyParsedProject()
+    return (
+        (hot ? draft?.project.hot : draft?.project.cold) ||
+        getEmptyParsedProject({
+            type: ProjectType.OpenData,
+        })
+    )
 }
 
 export function useIsProjectFetching() {

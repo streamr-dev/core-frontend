@@ -243,7 +243,7 @@ function getEmptySalePoints() {
     return salePoints
 }
 
-export function getEmptyParsedProject(): ParsedProject {
+export function getEmptyParsedProject(options: { type: ProjectType }): ParsedProject {
     return {
         adminFee: '',
         contact: {
@@ -273,6 +273,6 @@ export function getEmptyParsedProject(): ParsedProject {
             termsName: '',
             termsUrl: '',
         },
-        type: ProjectType.OpenData,
+        ...options,
     }
 }
