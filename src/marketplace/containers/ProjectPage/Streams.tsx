@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Stream, StreamID } from 'streamr-client'
+import isEqual from 'lodash/isEqual'
+import sortBy from 'lodash/sortBy'
 import styled from 'styled-components'
 import { useClient } from 'streamr-client-react'
 import { TABLET } from '~/shared/utils/styled'
@@ -37,20 +39,26 @@ export default function Streams({ streams: streamsProp }: Props) {
             return
         }
 
+        // Check if we have already everything loaded
+        if (isEqual(sortBy(streamsProp), sortBy(streams.map((s) => s.id)))) {
+            return
+        }
+
         void (async () => {
-            const streams = await fetchStreamlikesByIds(
+            const loadedStreams = await fetchStreamlikesByIds(
                 streamsProp.slice(0, INITIAL_OFFSET),
                 client,
             )
 
             if (mounted) {
-                setStreams((prev) => [...prev, ...(streams as Stream[])])
+                setStreams((prev) => [...prev, ...(loadedStreams as Stream[])])
             }
         })()
 
         return () => {
             mounted = false
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [streamsProp, client])
 
     useEffect(() => {
