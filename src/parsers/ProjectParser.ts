@@ -97,6 +97,15 @@ export const ProjectParser = z
                 }),
             ),
         paymentDetails: z.array(ParsedPaymentDetail),
+        permissions: z.array(
+            z.object({
+                canBuy: z.boolean().optional().default(false),
+                canDelete: z.boolean().optional().default(false),
+                canEdit: z.boolean().optional().default(false),
+                canGrant: z.boolean().optional().default(false),
+                userAddress: z.string(),
+            }),
+        ),
     })
     .transform(
         async ({
@@ -113,6 +122,7 @@ export const ProjectParser = z
                 termsOfUse,
             },
             paymentDetails,
+            permissions,
         }) => {
             const [payment, secondPayment] = paymentDetails
 
@@ -208,6 +218,7 @@ export const ProjectParser = z
                 name,
                 newImageToUpload: undefined,
                 paymentDetails,
+                permissions,
                 salePoints,
                 streams,
                 termsOfUse,
@@ -263,6 +274,7 @@ export function getEmptyParsedProject(options: { type: ProjectType }): ParsedPro
         name: '',
         newImageToUpload: undefined,
         paymentDetails: [],
+        permissions: [],
         salePoints: getEmptySalePoints(),
         streams: [],
         termsOfUse: {
