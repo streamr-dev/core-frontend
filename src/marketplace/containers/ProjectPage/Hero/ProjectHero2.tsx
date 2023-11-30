@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import truncate from 'lodash/truncate'
 import Editor from 'rich-markdown-editor'
 import light from 'rich-markdown-editor/dist/styles/theme'
 import {
@@ -57,14 +58,14 @@ export default function ProjectHero2({ name, description, imageUrl, contact }: P
                     {contact.url && (
                         <DetailDisplay
                             icon={<DetailIcon name="web" />}
-                            value={contact.url}
+                            value={truncate(contact.url, { length: 30 })}
                             href={contact.url}
                         />
                     )}
                     {contact.email && (
                         <DetailDisplay
                             icon={<DetailIcon name="email" />}
-                            value={contact.email}
+                            value={truncate(contact.email, { length: 30 })}
                             href={`mailto:${contact.email}`}
                         />
                     )}
