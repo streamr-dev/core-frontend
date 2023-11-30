@@ -4,14 +4,19 @@ import {
     ScrollTableOrderDirection,
 } from '~/shared/components/ScrollTable/ScrollTable'
 
-export const useTableOrder = (): {
+type TableOrderParams = {
+    orderBy?: string
+    orderDirection?: ScrollTableOrderDirection
+}
+
+export const useTableOrder = ({ orderBy, orderDirection }: TableOrderParams = {}): {
     orderBy: string | undefined
     orderDirection: ScrollTableOrderDirection | undefined
     handleOrderChange: (columnKey: string) => void
 } => {
     const [order, setOrder] = useState<ReturnType<typeof getNextSortingParameters>>({
-        orderBy: undefined,
-        orderDirection: undefined,
+        orderBy,
+        orderDirection,
     })
     const handleOrderChange = useCallback(
         (columnKey: string) => {

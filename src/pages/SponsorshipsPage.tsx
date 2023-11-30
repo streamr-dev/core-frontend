@@ -16,6 +16,7 @@ import {
 } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import routes from '~/routes'
+import { ScrollTableOrderDirection } from '~/shared/components/ScrollTable/ScrollTable'
 
 const PAGE_SIZE = 20
 
@@ -39,7 +40,10 @@ export const SponsorshipsPage = () => {
 
     const wallet = useWalletAccount()
 
-    const { orderBy, orderDirection, handleOrderChange } = useTableOrder()
+    const { orderBy, orderDirection, handleOrderChange } = useTableOrder({
+        orderBy: 'payoutPerDay',
+        orderDirection: ScrollTableOrderDirection.Desc,
+    })
 
     const allSponsorshipsQuery = useAllSponsorshipsQuery({
         pageSize: PAGE_SIZE,
