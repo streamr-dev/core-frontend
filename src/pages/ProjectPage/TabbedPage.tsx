@@ -85,7 +85,11 @@ function ProjectOverviewPage() {
                 <AccessManifest
                     projectId={id}
                     projectType={type}
-                    salePoints={Object.values(salePoints).filter(Boolean) as SalePoint[]}
+                    salePoints={
+                        Object.values(salePoints).filter(
+                            (salePoint) => salePoint?.enabled,
+                        ) as SalePoint[]
+                    }
                 />
                 <Streams streams={streams} />
                 <Terms terms={termsOfUse} />
@@ -121,7 +125,11 @@ function ProjectConnectPage() {
                         projectId={id}
                         projectName={name}
                         projectType={type}
-                        salePoints={Object.values(salePoints) as SalePoint[]}
+                        salePoints={
+                            Object.values(salePoints).filter(
+                                (salePoint) => salePoint?.enabled,
+                            ) as SalePoint[]
+                        }
                     />
                 )}
             </ProjectPageContainer>
@@ -153,7 +161,11 @@ function ProjectLiveDataPage() {
                     projectId={id}
                     projectName={name}
                     projectType={type}
-                    salePoints={Object.values(salePoints) as SalePoint[]}
+                    salePoints={
+                        Object.values(salePoints).filter(
+                            (salePoint) => salePoint?.enabled,
+                        ) as SalePoint[]
+                    }
                 />
             </ProjectPageContainer>
         </PP>
