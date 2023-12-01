@@ -9,7 +9,7 @@ import {
     ProjectParser,
     getEmptyParsedProject,
 } from '~/parsers/ProjectParser'
-import { createDraftStore, getEmptyDraft } from '~/stores/draftable'
+import { createDraftStore, getEmptyDraft } from '~/utils/draft'
 import { ProjectType } from '~/shared/types'
 import getGraphClient from '~/getters/getGraphClient'
 import {

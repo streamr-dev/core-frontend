@@ -9,7 +9,7 @@ import { isTransactionRejection } from '~/utils'
 import { isRejectionReason } from '~/modals/BaseModal'
 
 interface Entity {
-    id: string | number | undefined
+    id: string | undefined
 }
 
 export interface Draft<E extends Entity> {
