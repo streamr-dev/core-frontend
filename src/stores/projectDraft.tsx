@@ -40,13 +40,10 @@ import { toBN } from '~/utils/bn'
 const {
     DraftContext: ProjectDraftContext,
     useDraft: useProjectDraft,
-    useDraftId: useProjectDraftId,
-    useDraftStore: useProjectDraftStore,
     useEntity: useProject,
     useInitDraft: useInitProjectDraft,
     useIsDraftBusy: useIsProjectDraftBusy,
     useIsDraftClean: useIsProjectDraftClean,
-    useIsFetchingEntity: useIsFetchingProject,
     usePersistCallback,
     useSetDraftErrors: useSetProjectDraftErrors,
     useUpdateEntity: useUpdateProject,
@@ -238,13 +235,10 @@ const {
 export {
     ProjectDraftContext,
     useInitProjectDraft,
-    useIsFetchingProject,
     useIsProjectDraftBusy,
     useIsProjectDraftClean,
     useProject,
     useProjectDraft,
-    useProjectDraftId,
-    useProjectDraftStore,
     useSetProjectDraftErrors,
     useUpdateProject,
 }
