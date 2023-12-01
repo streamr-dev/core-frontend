@@ -105,6 +105,7 @@ export const ProjectHeroDescriptionStyles = css`
 `
 export const ProjectHeroMetadataContainer = styled.div`
     margin-top: ${mobileSpacing};
+    min-width: 0;
 
     @media (${LAPTOP}) {
         margin: ${desktopSpacing} ${desktopSpacing} ${desktopSpacing} 0;

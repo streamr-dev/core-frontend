@@ -142,6 +142,7 @@ export default function DetailDropdown({
 
 const Root = styled.div`
     height: 32px;
+    min-width: 0;
     position: relative;
 `
 
@@ -185,7 +186,6 @@ const Popover = styled.div`
     width: ${PopoverWidth}px;
     position: absolute;
     top: 100%;
-    z-index: 10;
 `
 
 const IconWrap = styled.div`
@@ -216,9 +216,12 @@ const Value = styled.div<{ $unset?: boolean }>`
 `
 
 export const List = styled.ul`
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
     gap: 8px;
+    grid-template-columns: repeat(
+        ${({ children }) => React.Children.toArray(children).filter(Boolean).length},
+        auto
+    );
     justify-content: start;
     list-style: none;
     margin: 0;
