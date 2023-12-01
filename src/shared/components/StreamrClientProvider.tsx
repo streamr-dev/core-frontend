@@ -43,9 +43,5 @@ export default function StreamrClientProvider({ children }) {
         }
     }, [account])
 
-    return (
-        <Provider {...config} cacheKey={account}>
-            {children}
-        </Provider>
-    )
+    return <Provider {...config}>{children}</Provider>
 }
