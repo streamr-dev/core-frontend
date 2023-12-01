@@ -185,7 +185,6 @@ const Popover = styled.div`
     width: ${PopoverWidth}px;
     position: absolute;
     top: 100%;
-    z-index: 10;
 `
 
 const IconWrap = styled.div`
@@ -216,9 +215,12 @@ const Value = styled.div<{ $unset?: boolean }>`
 `
 
 export const List = styled.ul`
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
     gap: 8px;
+    grid-template-columns: repeat(
+        ${({ children }) => React.Children.count(children)},
+        auto
+    );
     justify-content: start;
     list-style: none;
     margin: 0;
