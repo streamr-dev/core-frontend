@@ -15,6 +15,7 @@ import {
 } from '~/shared/utils/timeUnit'
 import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
 import { toBN } from '~/utils/bn'
+import { address0 } from '~/consts'
 
 const ParsedPaymentDetail = z.object({
     beneficiary: z.string(),
@@ -184,7 +185,9 @@ export const ProjectParser = z
                     }
 
                     salePoints[chainName] = {
-                        beneficiaryAddress: beneficiary.toLowerCase(),
+                        beneficiaryAddress: isOpenData
+                            ? address0
+                            : beneficiary.toLowerCase(),
                         chainId,
                         enabled: true,
                         price: pricePerSecondFromDecimals
