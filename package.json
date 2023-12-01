@@ -160,7 +160,7 @@
         "@storybook/addon-viewport": "^7.0.12",
         "@storybook/addons": "^7.0.12",
         "@storybook/builder-webpack5": "^7.0.12",
-        "@storybook/cli": "^7.0.18",
+        "@storybook/cli": "^7.6.2",
         "@storybook/manager-webpack5": "^6.5.16",
         "@storybook/react": "^7.0.12",
         "@storybook/react-webpack5": "^7.0.12",
