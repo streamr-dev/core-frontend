@@ -35,6 +35,7 @@ import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
 import { ValidationError } from '~/errors'
 import routes from '~/routes'
+import { toBN } from '~/utils/bn'
 
 const {
     DraftContext: ProjectDraftContext,
@@ -225,6 +226,13 @@ const {
             }),
         )
     },
+
+    isEqual(cold, hot) {
+        return (
+            !requiresAdminFeeUpdate(hot, cold) &&
+            isEqual({ ...hot, adminFee: '' }, { ...cold, adminFee: '' })
+        )
+    },
 })
 
 export {
@@ -278,7 +286,7 @@ function requiresDataUnionDeployment(project: ParsedProject) {
 function requiresAdminFeeUpdate(hot: ParsedProject, cold: ParsedProject) {
     return (
         hot.type === ProjectType.DataUnion &&
-        (hot.adminFee || '0').trim() !== (cold.adminFee || '0').trim()
+        !toBN(hot.adminFee || '0').isEqualTo(toBN(cold.adminFee || '0'))
     )
 }
 

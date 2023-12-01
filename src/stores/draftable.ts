@@ -60,6 +60,7 @@ export function createDraftStore<E extends Entity = Entity>(options: {
     getEmptyDraft: () => Draft<E>
     fetch: (entityId: string) => Promise<E>
     persist: (draft: Draft<E>) => void | Promise<void>
+    isEqual?: (cold: E, hot: E) => boolean
 }) {
     const useDraftStore = create<DraftStore<E>>((set, get) => {
         function isPersisting(draftId: string) {
@@ -150,7 +151,10 @@ export function createDraftStore<E extends Entity = Entity>(options: {
                 setDraft(draftId, (draft) => {
                     updater(draft.entity.hot)
 
-                    draft.dirty = !isEqual(draft.entity.hot, draft.entity.cold)
+                    draft.dirty = !(options.isEqual || isEqual)(
+                        draft.entity.hot,
+                        draft.entity.cold,
+                    )
                 })
             },
 
