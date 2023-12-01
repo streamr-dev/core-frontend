@@ -95,7 +95,7 @@ export default function ProjectEditorPage() {
                  * selection. We're mimicing radio's behaviour here.
                  */
                 Object.values(draft.salePoints).forEach((salePoint) => {
-                    if (!salePoint?.enabled || salePoint === value) {
+                    if (!salePoint?.enabled || salePoint.chainId === value.chainId) {
                         return
                     }
 
