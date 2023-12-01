@@ -15,7 +15,7 @@ import {
     usePurchaseCallback,
 } from '~/shared/stores/purchases'
 import { errorToast } from '~/utils/toast'
-import { useDoesUserHaveAccess } from '~/shared/stores/projectEditor'
+import { useIsAccessibleByCurrentWallet } from '~/stores/projectDraft'
 import { isAbandonment } from '~/modals/ProjectModal'
 import routes from '~/routes'
 import { toBN } from '~/utils/bn'
@@ -63,7 +63,7 @@ export default function AccessManifest({ projectId, projectType, salePoints }: P
 
     const purchase = usePurchaseCallback()
 
-    const hasAccess = useDoesUserHaveAccess()
+    const hasAccess = useIsAccessibleByCurrentWallet()
 
     const isBeingPurchased = useIsProjectBeingPurchased(projectId)
 

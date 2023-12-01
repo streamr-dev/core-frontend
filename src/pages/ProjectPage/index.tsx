@@ -7,9 +7,15 @@ import {
     useParams,
     useSearchParams,
 } from 'react-router-dom'
-import { ProjectDraftContext, useInitProject } from '~/shared/stores/projectEditor'
+import {
+    ProjectDraftContext,
+    preselectSalePoint,
+    useInitProjectDraft,
+} from '~/stores/projectDraft'
 import NotFoundPage from '~/pages/NotFoundPage'
 import routes from '~/routes'
+import { isProjectType } from '~/utils'
+import { ProjectType } from '~/shared/types'
 import TabbedPage from './TabbedPage'
 import ProjectEditorPage from './ProjectEditorPage'
 
@@ -32,15 +38,36 @@ export default function ProjectPage() {
      * route. In such context there's no `:id` param available through
      * `useParams` hook. We have to parse it manually using `useMatch`.
      */
-    const { id: projectId = 'new' } = useMatch('/hub/projects/:id/*')?.params || {}
+    const { id = 'new' } = useMatch('/hub/projects/:id/*')?.params || {}
 
-    const projectType = useSearchParams()[0].get('type')
+    const projectId = decodeURIComponent(id)
+
+    const type = useSearchParams()[0].get('type')
+
+    const projectType = isProjectType(type) ? type : ProjectType.OpenData
 
     return (
         <ProjectDraftContext.Provider
-            value={useInitProject(
-                projectId === 'new' ? undefined : decodeURIComponent(projectId),
-                projectType,
+            value={useInitProjectDraft(
+                projectId === 'new' ? void 0 : projectId,
+                (projectId, _, draft) => {
+                    if (projectId) {
+                        /**
+                         * Further steps are for new projects only. Skip.
+                         */
+                        return
+                    }
+
+                    const { cold, hot } = draft.entity
+
+                    cold.type = projectType
+
+                    preselectSalePoint(cold)
+
+                    hot.type = projectType
+
+                    preselectSalePoint(hot)
+                },
             )}
         >
             <Routes>

@@ -1,16 +1,19 @@
 import React from 'react'
 import styled from 'styled-components'
+import { getEmptyParsedProject } from '~/parsers/ProjectParser'
 import TextField from '~/shared/components/Ui/Text/StyledInput'
-import { useProject, useUpdateProject } from '~/shared/stores/projectEditor'
+import { useProject, useUpdateProject } from '~/stores/projectDraft'
 import { ProjectType } from '~/shared/types'
 import { COLORS } from '~/shared/utils/styled'
 
 export default function DataUnionFee({ disabled = false }: { disabled?: boolean }) {
     const update = useUpdateProject()
 
-    const project = useProject({ hot: true })
+    const emptyProject = getEmptyParsedProject({ type: ProjectType.OpenData })
 
-    const coldProject = useProject()
+    const project = useProject({ hot: true }) || emptyProject
+
+    const coldProject = useProject() || emptyProject
 
     const isDataUnion = project.type === ProjectType.DataUnion
 
@@ -35,17 +38,7 @@ export default function DataUnionFee({ disabled = false }: { disabled?: boolean 
                                 )
                             }
 
-                            const { value } = e.target
-
-                            if (value || typeof coldProject.adminFee !== 'undefined') {
-                                return void (draft.adminFee = value)
-                            }
-
-                            if ('adminFee' in coldProject) {
-                                return void (draft.adminFee = undefined)
-                            }
-
-                            delete draft.adminFee
+                            draft.adminFee = e.target.value
                         })
                     }}
                 />

@@ -4,7 +4,7 @@ import { z } from 'zod'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS } from '~/shared/utils/styled'
 import EnterIcon from '~/shared/assets/icons/enter.svg'
-import { useSetProjectErrors } from '~/shared/stores/projectEditor'
+import { useSetProjectDraftErrors } from '~/stores/projectDraft'
 
 export default function ProjectProperty({
     disabled = false,
@@ -31,7 +31,7 @@ export default function ProjectProperty({
         setValue(valueProp)
     }, [valueProp])
 
-    const setErrors = useSetProjectErrors()
+    const setErrors = useSetProjectDraftErrors()
 
     return (
         <Root

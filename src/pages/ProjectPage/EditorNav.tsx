@@ -7,11 +7,11 @@ import Logo from '~/shared/components/Logo'
 import Button from '~/shared/components/Button'
 import { REGULAR } from '~/shared/utils/styled'
 import {
-    useIsCurrentProjectDraftClean,
-    useIsProjectBusy,
-    usePersistCurrentProjectDraft,
+    useIsProjectDraftBusy,
+    useIsProjectDraftClean,
+    usePersistProjectCallback,
     useProject,
-} from '~/shared/stores/projectEditor'
+} from '~/stores/projectDraft'
 import routes from '~/routes'
 import { FloatingToolbar } from '~/components/FloatingToolbar'
 import { useInViewport } from '~/hooks/useInViewport'
@@ -39,13 +39,13 @@ const FlexNavbarItem = styled(NavbarItem)`
 `
 
 export default function EditorNav() {
-    const busy = useIsProjectBusy()
+    const busy = useIsProjectDraftBusy()
 
-    const clean = useIsCurrentProjectDraftClean()
+    const clean = useIsProjectDraftClean()
 
-    const { id: projectId } = useProject()
+    const { id: projectId } = useProject() || {}
 
-    const persist = usePersistCurrentProjectDraft()
+    const persist = usePersistProjectCallback()
 
     const [attach, isSaveButtonVisible] = useInViewport()
 

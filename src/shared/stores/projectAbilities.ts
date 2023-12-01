@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { produce } from 'immer'
 import { create } from 'zustand'
 import { getProjectPermissions } from '~/getters'
-import { useProject } from '~/shared/stores/projectEditor'
+import { useProject } from '~/stores/projectDraft'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import { address0 } from '~/consts'
 import { useWalletAccount } from './wallet'
@@ -145,9 +145,10 @@ function useProjectAbility(
 }
 
 export function useCurrentProjectAbility(permission: ProjectPermission) {
-    const { id } = useProject()
-
-    const address = useWalletAccount()
-
-    return useProjectAbility(defaultChainConfig.id, id, address, permission)
+    return useProjectAbility(
+        defaultChainConfig.id,
+        useProject()?.id,
+        useWalletAccount(),
+        permission,
+    )
 }

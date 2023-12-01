@@ -7,7 +7,7 @@ import Text from '~/shared/components/Ui/Text'
 import useCopy from '~/shared/hooks/useCopy'
 import { truncate } from '~/shared/utils/text'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { usePersistCurrentProjectDraft } from '~/shared/stores/projectEditor'
+import { usePersistProjectCallback } from '~/stores/projectDraft'
 
 export default function BeneficiaryAddressEditor({
     disabled = false,
@@ -28,9 +28,9 @@ export default function BeneficiaryAddressEditor({
 
     const valueRef = useRef(value)
 
-    useEffect(() => {
+    if (valueRef.current !== value) {
         valueRef.current = value
-    }, [value])
+    }
 
     const accountAddress = useWalletAccount()
 
@@ -42,7 +42,7 @@ export default function BeneficiaryAddressEditor({
         onChangeProp?.(newValue)
     }
 
-    const persist = usePersistCurrentProjectDraft()
+    const persist = usePersistProjectCallback()
 
     return (
         <Container>

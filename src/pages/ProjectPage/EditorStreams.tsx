@@ -8,20 +8,25 @@ import {
 import SearchBar from '~/shared/components/SearchBar'
 import { StreamSelectTable } from '~/shared/components/StreamSelectTable'
 import {
-    useIsProjectBusy,
+    useIsProjectDraftBusy,
     useProject,
     useUpdateProject,
-} from '~/shared/stores/projectEditor'
+} from '~/stores/projectDraft'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { ProjectType } from '~/shared/types'
 import { address0 } from '~/consts'
 
 const PageSize = 10
 
-export default function EditorStreams() {
-    const { type: projectType, streams: projectStreams } = useProject({ hot: true })
+const EmptyStreams = []
 
-    const busy = useIsProjectBusy()
+export default function EditorStreams() {
+    const {
+        type: projectType = ProjectType.OpenData,
+        streams: projectStreams = EmptyStreams,
+    } = useProject({ hot: true }) || {}
+
+    const busy = useIsProjectDraftBusy()
 
     const [searchValue, setSearchValue] = useState('')
 

@@ -11,7 +11,7 @@ import { SalePoint } from '~/shared/types'
 import useTokenInfo, { getCachedTokenInfo, getTokenInfo } from '~/hooks/useTokenInfo'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
 import { errorToast } from '~/utils/toast'
-import { usePersistCurrentProjectDraft } from '~/shared/stores/projectEditor'
+import { usePersistProjectCallback } from '~/stores/projectDraft'
 
 const TimeUnitOptions = Object.values(timeUnits).map((unit: TimeUnit) => ({
     label: `Per ${unit}`,
@@ -66,7 +66,7 @@ export default function SalePointTokenSelector({
         !isCustomTokenInfoCached &&
         !isLoadingTokenInfo
 
-    const persist = usePersistCurrentProjectDraft()
+    const persist = usePersistProjectCallback()
 
     return (
         <Root>
