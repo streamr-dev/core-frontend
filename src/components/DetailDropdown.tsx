@@ -142,6 +142,7 @@ export default function DetailDropdown({
 
 const Root = styled.div`
     height: 32px;
+    min-width: 0;
     position: relative;
 `
 
@@ -218,7 +219,7 @@ export const List = styled.ul`
     display: grid;
     gap: 8px;
     grid-template-columns: repeat(
-        ${({ children }) => React.Children.count(children)},
+        ${({ children }) => React.Children.toArray(children).filter(Boolean).length},
         auto
     );
     justify-content: start;
