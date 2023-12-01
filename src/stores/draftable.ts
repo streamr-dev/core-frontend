@@ -239,7 +239,7 @@ export function createDraftStore<E extends Entity = Entity>(options: {
                     }
                 } finally {
                     setDraft(draftId, (draft) => {
-                        draft.persisting = true
+                        draft.persisting = false
                     })
 
                     get().teardown(draftId, { onlyAbandoned: true })
