@@ -23,7 +23,7 @@ export function parseStreamId(streamId: string): {
     pathname: string
 } {
     try {
-        const [, owner, pathname] = streamId.match(/^([^/]+)([^\s]+)$/)!
+        const [, owner, pathname] = streamId.match(/^([^/]+)(\/[^\s]+)$/)!
 
         return {
             owner,

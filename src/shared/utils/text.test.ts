@@ -1,4 +1,4 @@
-import { truncate, truncateStreamName } from './text'
+import { truncate, truncateStreamName, parseStreamId as psi } from './text'
 describe('text utils', () => {
     describe('truncate', () => {
         it('does not truncate non-strings', () => {
@@ -104,6 +104,43 @@ describe('text utils', () => {
                     testCase.expectedOutput,
                 )
             })
+        })
+    })
+
+    describe('parseStreamId', () => {
+        it('parses different stream ids correctly', () => {
+            expect(psi('owner/pathname')).toMatchObject({
+                owner: 'owner',
+                pathname: '/pathname',
+            })
+
+            expect(
+                psi('0x0000000000000000000000000000000000000001/stream-id'),
+            ).toMatchObject({
+                owner: '0x0000000000000000000000000000000000000001',
+                pathname: '/stream-id',
+            })
+
+            expect(psi('ens-domain.eth/stream-id')).toMatchObject({
+                owner: 'ens-domain.eth',
+                pathname: '/stream-id',
+            })
+        })
+
+        it('explodes on invalid stream ids', () => {
+            expect(() => psi('')).toThrow(/invalid/i)
+
+            expect(() => psi(' /')).toThrow(/invalid/i)
+
+            expect(() => psi('/ ')).toThrow(/invalid/i)
+
+            expect(() => psi(' / ')).toThrow(/invalid/i)
+
+            expect(() => psi('/')).toThrow(/invalid/i)
+
+            expect(() => psi('/whatever')).toThrow(/invalid/i)
+
+            expect(() => psi('whatever/')).toThrow(/invalid/i)
         })
     })
 })
