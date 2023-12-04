@@ -18,8 +18,7 @@ import { getSponsorshipLeavePenalty } from '~/utils/sponsorships'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { FlagBusy } from '~/utils/errors'
-import JoinSponsorshipModal from '~/modals/JoinSponsorshipModal'
-import { Layer } from '~/utils/Layer'
+import { joinSponsorshipModal } from '~/modals/JoinSponsorshipModal'
 import { createSponsorshipModal } from '~/modals/CreateSponsorshipModal'
 import { getBalanceForSponsorship } from '~/utils/sponsorships'
 import { getQueryClient } from '~/utils'
@@ -374,8 +373,6 @@ export function useIsJoiningSponsorshipAsOperator(
         flagKey('isJoiningSponsorshipAsOperator', sponsorshipId || '', operatorId || ''),
     )
 }
-
-const joinSponsorshipModal = toaster(JoinSponsorshipModal, Layer.Modal)
 
 export function useJoinSponsorshipAsOperator() {
     const withFlag = useFlagger()

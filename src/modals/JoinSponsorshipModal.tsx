@@ -48,7 +48,7 @@ function parseAmount(amount: string | undefined, decimals: number) {
 
 const limitErrorToaster = toaster(Toast, Layer.Toast)
 
-export default function JoinSponsorshipModal({
+function JoinSponsorshipModal({
     amount: amountProp = '0',
     onResolve,
     operator,
@@ -332,3 +332,5 @@ const LinkIcon = styled(SvgIcon)`
 const StyledLabelWrap = styled(WingedLabelWrap)`
     margin-top: 10px;
 `
+
+export const joinSponsorshipModal = toaster(JoinSponsorshipModal, Layer.Modal)
