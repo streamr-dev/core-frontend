@@ -1,17 +1,19 @@
 import React from 'react'
 import styled from 'styled-components'
 import { z } from 'zod'
+import { getEmptyParsedProject } from '~/parsers/ProjectParser'
 import { Tick } from '~/shared/components/Checkbox'
 import Label from '~/shared/components/Ui/Label'
 import Input from '~/shared/components/Ui/Text/StyledInput'
+import { ProjectType } from '~/shared/types'
 import {
-    useDraft,
-    useIsProjectBusy,
-    usePersistCurrentProjectDraft,
+    useIsProjectDraftBusy,
+    usePersistProjectCallback,
     useProject,
-    useSetProjectErrors,
+    useProjectDraft,
+    useSetProjectDraftErrors,
     useUpdateProject,
-} from '~/shared/stores/projectEditor'
+} from '~/stores/projectDraft'
 import { OpenDataPayload } from '~/types/projects'
 
 export default function TermsOfUse() {
@@ -26,15 +28,15 @@ export default function TermsOfUse() {
             termsUrl,
             termsName,
         },
-    } = useProject({ hot: true })
+    } = useProject({ hot: true }) || getEmptyParsedProject({ type: ProjectType.OpenData })
 
-    const { 'termsOfUse.termsUrl': termsUrlError } = useDraft()?.errors || {}
+    const { 'termsOfUse.termsUrl': termsUrlError } = useProjectDraft()?.errors || {}
 
-    const setErrors = useSetProjectErrors()
+    const setErrors = useSetProjectDraftErrors()
 
-    const persist = usePersistCurrentProjectDraft()
+    const persist = usePersistProjectCallback()
 
-    const busy = useIsProjectBusy()
+    const busy = useIsProjectDraftBusy()
 
     return (
         <>

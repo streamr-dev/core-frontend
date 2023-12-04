@@ -248,7 +248,7 @@ export async function getPublishableProjectProperties(project: unknown) {
          * beneficiary address input field reflects it, too.
          */
         const beneficiary =
-            beneficiaryAddress || payload.type === ProjectType.PaidData ? wallet : ''
+            beneficiaryAddress || (payload.type === ProjectType.PaidData ? wallet : '')
 
         const pricePerSecond = await (async () => {
             if (initialPricePerSecond) {

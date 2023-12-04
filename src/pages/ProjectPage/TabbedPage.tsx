@@ -2,10 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import {
-    useDoesUserHaveAccess,
-    useIsProjectBusy,
+    useIsAccessibleByCurrentWallet,
+    useIsProjectDraftBusy,
     useProject,
-} from '~/shared/stores/projectEditor'
+} from '~/stores/projectDraft'
 import {
     ProjectPermission,
     useCurrentProjectAbility,
@@ -51,6 +51,12 @@ const Separator = styled.span`
 `
 
 function ProjectOverviewPage() {
+    const project = useProject()
+
+    if (!project) {
+        return null
+    }
+
     const {
         id,
         name,
@@ -60,8 +66,8 @@ function ProjectOverviewPage() {
         streams,
         type,
         contact,
-        salePoints = {},
-    } = useProject()
+        salePoints,
+    } = project
 
     if (!id) {
         return null
@@ -79,7 +85,11 @@ function ProjectOverviewPage() {
                 <AccessManifest
                     projectId={id}
                     projectType={type}
-                    salePoints={Object.values(salePoints).filter(Boolean) as SalePoint[]}
+                    salePoints={
+                        Object.values(salePoints).filter(
+                            (salePoint) => salePoint?.enabled,
+                        ) as SalePoint[]
+                    }
                 />
                 <Streams streams={streams} />
                 <Terms terms={termsOfUse} />
@@ -89,9 +99,15 @@ function ProjectOverviewPage() {
 }
 
 function ProjectConnectPage() {
-    const hasAccess = useDoesUserHaveAccess()
+    const hasAccess = useIsAccessibleByCurrentWallet()
 
-    const { id, name, type, streams, salePoints = {} } = useProject()
+    const project = useProject()
+
+    if (!project) {
+        return null
+    }
+
+    const { id, name, type, streams, salePoints } = project
 
     if (!id) {
         return null
@@ -109,7 +125,11 @@ function ProjectConnectPage() {
                         projectId={id}
                         projectName={name}
                         projectType={type}
-                        salePoints={Object.values(salePoints) as SalePoint[]}
+                        salePoints={
+                            Object.values(salePoints).filter(
+                                (salePoint) => salePoint?.enabled,
+                            ) as SalePoint[]
+                        }
                     />
                 )}
             </ProjectPageContainer>
@@ -118,9 +138,15 @@ function ProjectConnectPage() {
 }
 
 function ProjectLiveDataPage() {
-    const hasAccess = useDoesUserHaveAccess()
+    const hasAccess = useIsAccessibleByCurrentWallet()
 
-    const { id, name, type, streams, salePoints = {} } = useProject()
+    const project = useProject()
+
+    if (!project) {
+        return null
+    }
+
+    const { id, name, type, streams, salePoints } = project
 
     if (!id) {
         return null
@@ -135,7 +161,11 @@ function ProjectLiveDataPage() {
                     projectId={id}
                     projectName={name}
                     projectType={type}
-                    salePoints={Object.values(salePoints) as SalePoint[]}
+                    salePoints={
+                        Object.values(salePoints).filter(
+                            (salePoint) => salePoint?.enabled,
+                        ) as SalePoint[]
+                    }
                 />
             </ProjectPageContainer>
         </PP>
@@ -147,9 +177,9 @@ interface Props {
 }
 
 export default function TabbedPage({ tab }: Props) {
-    const { id, name, creator } = useProject()
+    const { id = undefined, name = '', creator = '' } = useProject() || {}
 
-    const busy = useIsProjectBusy()
+    const busy = useIsProjectDraftBusy()
 
     const canEdit = useCurrentProjectAbility(ProjectPermission.Edit)
 

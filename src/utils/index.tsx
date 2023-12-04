@@ -21,6 +21,7 @@ import {
     invalidateDelegationsForWalletQueries,
 } from '~/hooks/operators'
 import { blockObserver } from '~/utils/blocks'
+import { ProjectType } from '~/shared/types'
 
 /**
  * Gas money checker.
@@ -319,4 +320,15 @@ export function waitForIndexedBlock(blockNumber: number) {
     return new Promise<void>((resolve) => {
         blockObserver.onSpecific(blockNumber, resolve)
     })
+}
+
+/**
+ *
+ */
+export function isProjectType(arg: unknown): arg is ProjectType {
+    return (
+        arg === ProjectType.DataUnion ||
+        arg === ProjectType.OpenData ||
+        arg === ProjectType.PaidData
+    )
 }

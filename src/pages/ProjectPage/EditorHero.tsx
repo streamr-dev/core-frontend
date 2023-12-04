@@ -2,13 +2,13 @@ import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import {
-    useDraft,
-    useIsProjectBusy,
-    usePersistCurrentProjectDraft,
+    useIsProjectDraftBusy,
+    usePersistProjectCallback,
     useProject,
-    useSetProjectErrors,
+    useProjectDraft,
+    useSetProjectDraftErrors,
     useUpdateProject,
-} from '~/shared/stores/projectEditor'
+} from '~/stores/projectDraft'
 import { COLORS } from '~/shared/utils/styled'
 import RichTextEditor from '~/components/RichTextEditor'
 import DetailDropdown, {
@@ -20,22 +20,28 @@ import { getBase64ForFile } from '~/getters'
 import CropImageModal from '~/components/CropImageModal/CropImageModal'
 import { Layer } from '~/utils/Layer'
 import { OpenDataPayload } from '~/types/projects'
+import { getEmptyParsedProject } from '~/parsers/ProjectParser'
+import { ProjectType } from '~/shared/types'
 import CoverImage, { Wide, Root as CoverImageRoot } from './CoverImage'
 
 const cropModal = toaster(CropImageModal, Layer.Modal)
 
 export default function EditorHero() {
-    const { creator, contact, name, description, imageUrl } = useProject({ hot: true })
+    const { creator, contact, name, description, imageUrl } =
+        useProject({ hot: true }) ||
+        getEmptyParsedProject({
+            type: ProjectType.OpenData,
+        })
 
     const [newImageUrl, setNewImageUrl] = useState<string>()
 
     const update = useUpdateProject()
 
-    const errors = useDraft()?.errors || {}
+    const errors = useProjectDraft()?.errors || {}
 
-    const setErrors = useSetProjectErrors()
+    const setErrors = useSetProjectDraftErrors()
 
-    const busy = useIsProjectBusy()
+    const busy = useIsProjectDraftBusy()
 
     const imageAbortControllerRef = useRef<AbortController>()
 
@@ -47,7 +53,7 @@ export default function EditorHero() {
         }
     }, [])
 
-    const persist = usePersistCurrentProjectDraft()
+    const persist = usePersistProjectCallback()
 
     return (
         <HeroContainer>

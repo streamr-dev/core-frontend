@@ -4,13 +4,12 @@ import { z } from 'zod'
 import { useNavigate } from 'react-router-dom'
 import Layout, { LayoutInner as PrestyledLayoutInner } from '~/components/Layout'
 import {
-    useDraft,
-    useIsProjectBusy,
-    useIsProjectFetching,
+    useIsProjectDraftBusy,
     useProject,
-    useSetProjectErrors,
+    useProjectDraft,
+    useSetProjectDraftErrors,
     useUpdateProject,
-} from '~/shared/stores/projectEditor'
+} from '~/stores/projectDraft'
 import { getProjectTypeTitle } from '~/getters'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import ProjectLinkTabs from '~/pages/ProjectPage/ProjectLinkTabs'
@@ -40,17 +39,21 @@ import EditorHero from './EditorHero'
 import EditorNav from './EditorNav'
 import EditorStreams from './EditorStreams'
 
+const EmptySalePoints = {}
+
+const EmptyErrors = {}
+
 export default function ProjectEditorPage() {
     const {
         id: projectId,
-        type,
-        creator,
-        salePoints: existingSalePoints,
-    } = useProject({ hot: true })
+        type = ProjectType.OpenData,
+        creator = '',
+        salePoints: existingSalePoints = EmptySalePoints,
+    } = useProject({ hot: true }) || {}
 
-    const busy = useIsProjectBusy()
+    const busy = useIsProjectDraftBusy()
 
-    const fetching = useIsProjectFetching()
+    const { fetching = false, errors = EmptyErrors } = useProjectDraft() || {}
 
     const update = useUpdateProject()
 
@@ -92,7 +95,7 @@ export default function ProjectEditorPage() {
                  * selection. We're mimicing radio's behaviour here.
                  */
                 Object.values(draft.salePoints).forEach((salePoint) => {
-                    if (!salePoint?.enabled || salePoint === value) {
+                    if (!salePoint?.enabled || salePoint.chainId === value.chainId) {
                         return
                     }
 
@@ -102,9 +105,7 @@ export default function ProjectEditorPage() {
         })
     }
 
-    const errors = useDraft()?.errors || {}
-
-    const setErrors = useSetProjectErrors()
+    const setErrors = useSetProjectDraftErrors()
 
     const isMounted = useIsMounted()
 
