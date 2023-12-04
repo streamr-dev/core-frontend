@@ -258,6 +258,24 @@ gql`
             ...SponsorshipFields
         }
     }
+
+    query getSponsorshipByStreamId(
+        $first: Int
+        $skip: Int
+        $orderBy: Sponsorship_orderBy
+        $orderDirection: OrderDirection
+        $streamId: String!
+    ) {
+        sponsorships(
+            first: $first
+            skip: $skip
+            where: { stream_contains_nocase: $streamId }
+            orderBy: $orderBy
+            orderDirection: $orderDirection
+        ) {
+            ...SponsorshipFields
+        }
+    }
 `
 
 gql`

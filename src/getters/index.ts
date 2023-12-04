@@ -66,6 +66,9 @@ import {
     GetDelegatorDailyBucketsQueryVariables,
     GetDelegatorDailyBucketsDocument,
     Sponsorship,
+    GetSponsorshipByStreamIdQuery,
+    GetSponsorshipByStreamIdQueryVariables,
+    GetSponsorshipByStreamIdDocument,
 } from '~/generated/gql/network'
 import getCoreConfig from '~/getters/getCoreConfig'
 import getGraphClient from '~/getters/getGraphClient'
@@ -290,6 +293,41 @@ export async function getAllSponsorships({
             skip,
             searchQuery,
             id: searchQuery.toLowerCase(),
+            orderBy,
+            orderDirection,
+        },
+        fetchPolicy: force ? 'network-only' : void 0,
+    })
+
+    return sponsorships
+}
+
+export async function getSponsorshipsByStreamId({
+    first,
+    skip,
+    streamId = '',
+    orderBy = DEFAULT_SPONSORSHIP_ORDER_BY,
+    orderDirection = DEFAULT_ORDER_DIRECTION,
+    force = false,
+}: {
+    first?: number
+    skip?: number
+    streamId: string
+    orderBy?: Sponsorship_OrderBy
+    orderDirection?: OrderDirection
+    force?: boolean
+}): Promise<GetSponsorshipByStreamIdQuery['sponsorships']> {
+    const {
+        data: { sponsorships },
+    } = await getGraphClient().query<
+        GetSponsorshipByStreamIdQuery,
+        GetSponsorshipByStreamIdQueryVariables
+    >({
+        query: GetSponsorshipByStreamIdDocument,
+        variables: {
+            first,
+            skip,
+            streamId,
             orderBy,
             orderDirection,
         },

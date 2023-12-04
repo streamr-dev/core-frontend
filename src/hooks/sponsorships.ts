@@ -7,6 +7,7 @@ import {
     getAllSponsorships,
     getParsedSponsorshipById,
     getSponsorshipsByCreator,
+    getSponsorshipsByStreamId,
 } from '~/getters'
 import { ParsedSponsorship, SponsorshipParser } from '~/parsers/SponsorshipParser'
 import { errorToast } from '~/utils/toast'
@@ -201,6 +202,55 @@ export function useSponsorshipByIdQuery(sponsorshipId: string) {
         queryFn: () => getParsedSponsorshipById(sponsorshipId, { force: true }),
         staleTime: 60 * 1000, // 1 minute
         keepPreviousData: true,
+    })
+}
+
+export function useSponsorshipsByStreamIdQuery({
+    pageSize = 10,
+    streamId,
+    orderBy,
+    orderDirection,
+}: {
+    pageSize?: number
+    streamId: string
+    orderBy?: string
+    orderDirection?: 'asc' | 'desc'
+}) {
+    return useInfiniteQuery({
+        queryKey: [
+            'useSponsorshipsByStreamIdQuery',
+            streamId,
+            pageSize,
+            orderBy,
+            orderDirection,
+        ],
+        async queryFn({ pageParam: skip = 0 }) {
+            const sponsorships = await getSponsorshipsAndParse(
+                () =>
+                    getSponsorshipsByStreamId({
+                        first: pageSize,
+                        skip,
+                        streamId,
+                        orderBy: mapSponsorshipOrder(orderBy),
+                        orderDirection: orderDirection as OrderDirection,
+                        force: true,
+                    }) as Promise<Sponsorship[]>,
+            )
+
+            return {
+                skip,
+                sponsorships,
+            }
+        },
+        ...getDefaultQueryParams(pageSize),
+    })
+}
+
+function invalidateSponsorshipsByStreamIdQueries(streamId: string | undefined) {
+    return getQueryClient().invalidateQueries({
+        exact: false,
+        queryKey: ['useSponsorshipsByStreamIdQuery', streamId || ''],
+        refetchType: 'active',
     })
 }
 
@@ -546,6 +596,7 @@ const mapSponsorshipOrder = (columnKey?: string): Sponsorship_OrderBy => {
 export function invalidateSponsorshipQueries(
     invalidator: string | undefined,
     sponsorshipId: string | undefined,
+    streamId: string | undefined = undefined,
 ) {
     if (!invalidator || !sponsorshipId) {
         return
@@ -560,6 +611,8 @@ export function invalidateSponsorshipQueries(
     invalidateSponsorshipDailyBucketsQueries(sponsorshipId)
 
     invalidateSponsorshipFundingHistoryQueries(sponsorshipId)
+
+    invalidateSponsorshipsByStreamIdQueries(streamId)
 
     /**
      * Invalidate OperatorById queries used mainly by Operator pages,

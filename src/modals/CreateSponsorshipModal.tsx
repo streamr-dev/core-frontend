@@ -44,12 +44,18 @@ const defaultFormData: CreateSponsorshipForm = {
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     balance: BN
+    streamId?: string
     onResolve?: (sponsorshipId: string) => void
 }
 
 const streamNotFoundToaster = toaster(Toast, Layer.Toast)
 
-function CreateSponsorshipModal({ balance: balanceProp, onResolve, ...props }: Props) {
+function CreateSponsorshipModal({
+    balance: balanceProp,
+    streamId: streamIdProp,
+    onResolve,
+    ...props
+}: Props) {
     const [busy, setBusy] = useState(false)
 
     const { decimals = 18 } = useSponsorshipTokenInfo() || {}
@@ -66,7 +72,10 @@ function CreateSponsorshipModal({ balance: balanceProp, onResolve, ...props }: P
             ...state,
             ...change,
         }),
-        defaultFormData,
+        {
+            ...defaultFormData,
+            ...(streamIdProp != null && { streamId: streamIdProp }),
+        },
     )
 
     const {
@@ -179,7 +188,7 @@ function CreateSponsorshipModal({ balance: balanceProp, onResolve, ...props }: P
                 <Section>
                     <Label>Select a Stream</Label>
                     <StreamIdDropdown
-                        autoFocus
+                        autoFocus={streamId.length === 0}
                         placeholder="Type to select a stream"
                         disabled={busy}
                         onChange={(streamId) => {
@@ -201,6 +210,7 @@ function CreateSponsorshipModal({ balance: balanceProp, onResolve, ...props }: P
                     <FieldWrap $invalid={insufficientFunds}>
                         <TextInput
                             name="initialAmount"
+                            autoFocus={streamId.length > 0}
                             onChange={({ target }) =>
                                 void setRawProperties({
                                     initialAmount: target.value,
