@@ -65,7 +65,9 @@ function EditStakeModal({
         }
     }, [stake, onReject])
 
-    const minimumStakeWei = useConfigValueFromChain('minimumStakeWei')
+    const globalMinimumStakeWei = toBN(useConfigValueFromChain('minimumStakeWei') || 0)
+
+    const minimumStakeWei = BN.max(globalMinimumStakeWei, stake?.lockedWei || 0)
 
     const { joinTimestamp = 0, amount: currentAmount = DefaultCurrentAmount } =
         stake || {}
@@ -93,14 +95,11 @@ function EditStakeModal({
         ? difference.isGreaterThan(operatorBalance)
         : false
 
-    const isZeroOrAboveMinimumStake =
-        finalAmount.isEqualTo(0) ||
-        (minimumStakeWei
-            ? finalAmount.isGreaterThanOrEqualTo(toBN(minimumStakeWei))
-            : true)
+    const isValueWithinAcceptedRange =
+        finalAmount.isEqualTo(0) || finalAmount.isGreaterThanOrEqualTo(minimumStakeWei)
 
     const canSubmit =
-        finalAmount.isGreaterThanOrEqualTo(0) &&
+        isValueWithinAcceptedRange &&
         !insufficientFunds &&
         !difference.isEqualTo(0) &&
         (difference.isGreaterThan(0) ? !hasUndelegationQueue : true)
@@ -118,6 +117,12 @@ function EditStakeModal({
     }
 
     const leavePenalty = fromDecimals(leavePenaltyWei, decimals)
+
+    const lockedStake = fromDecimals(stake?.lockedWei || 0, decimals)
+
+    const slashingAmount = finalAmount.isGreaterThan(0)
+        ? toBN(0)
+        : leavePenalty.plus(lockedStake)
 
     const dirty = sameBN(rawAmount || '0', currentAmount)
 
@@ -154,10 +159,7 @@ function EditStakeModal({
                         return void onResolve?.()
                     }
 
-                    const forceUnstake =
-                        finalAmount.isEqualTo(0) && leavePenalty.isGreaterThan(0)
-
-                    if (!forceUnstake) {
+                    if (slashingAmount.isZero()) {
                         await reduceStakeOnSponsorship(
                             sponsorshipId,
                             finalAmount.toString(),
@@ -173,14 +175,32 @@ function EditStakeModal({
                         return void onResolve?.()
                     }
 
+                    const slashingReason =
+                        leavePenalty.isGreaterThan(0) && lockedStake.isGreaterThan(0) ? (
+                            <>
+                                Your minimum staking period is still ongoing and ends on{' '}
+                                {minLeaveDate}, and additionally some of your stake is
+                                locked in the Sponsorship due to open flags.
+                            </>
+                        ) : leavePenalty.isGreaterThan(0) ? (
+                            <>
+                                Your minimum staking period is still ongoing and ends on{' '}
+                                {minLeaveDate}.
+                            </>
+                        ) : (
+                            <>
+                                Some of your stake is locked in the Sponsorship due to
+                                open flags.
+                            </>
+                        )
+
                     if (
                         await confirm({
                             title: 'Your stake will be slashed',
                             description: (
                                 <>
-                                    Your minimum staking period is still ongoing and ends
-                                    on {minLeaveDate}. If you unstake now, you will lose{' '}
-                                    {leavePenalty.toString()}{' '}
+                                    {slashingReason} If you unstake now, you will lose{' '}
+                                    {slashingAmount.toString()}{' '}
                                     <SponsorshipPaymentTokenName />
                                 </>
                             ),
@@ -216,15 +236,15 @@ function EditStakeModal({
             <Section>
                 <WingedLabelWrap>
                     <Label>Amount to stake</Label>
-                    {rawAmount !== '' && !isZeroOrAboveMinimumStake && (
+                    {rawAmount !== '' && !isValueWithinAcceptedRange && (
                         <ErrorLabel>
                             Minimum value is{' '}
-                            {fromDecimals(minimumStakeWei || 0, decimals).toString()}{' '}
+                            {fromDecimals(minimumStakeWei, decimals).toString()}{' '}
                             <SponsorshipPaymentTokenName />
                         </ErrorLabel>
                     )}
                 </WingedLabelWrap>
-                <FieldWrap $invalid={rawAmount !== '' && !isZeroOrAboveMinimumStake}>
+                <FieldWrap $invalid={rawAmount !== '' && !isValueWithinAcceptedRange}>
                     <TextInput
                         autoFocus
                         name="amount"
