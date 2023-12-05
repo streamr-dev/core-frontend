@@ -16,7 +16,7 @@ import {
     useFundSponsorshipCallback,
     useJoinSponsorshipAsOperator,
 } from '~/hooks/sponsorships'
-import { FundedUntilCell, StreamIdCell } from '~/components/Table'
+import { FundedUntilCell, NumberOfOperatorsCell, StreamIdCell } from '~/components/Table'
 import { abbr } from '~/utils'
 
 interface Props {
@@ -84,8 +84,13 @@ export function QueriedSponsorshipsTable({
                     },
                     {
                         displayName: 'Operators',
-                        valueMapper: (element) => element.operatorCount,
-                        align: 'end',
+                        valueMapper: (element) => (
+                            <NumberOfOperatorsCell
+                                sponsorship={element}
+                                currentOperatorId={operator?.id}
+                            />
+                        ),
+                        align: 'start',
                         isSticky: false,
                         key: 'operators',
                         sortable: true,

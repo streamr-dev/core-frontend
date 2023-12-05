@@ -1,12 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
+import CheckIcon from '@atlaskit/icon/glyph/check'
 import moment from 'moment'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { StreamInfoCell } from '~/components/NetworkUtils'
 import { StreamDescription } from '~/components/StreamDescription'
 import { Tip, TipIconWrap } from '~/components/Tip'
+import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import { getSponsorshipStakeForOperator } from '~/utils/sponsorships'
 
 /**
  * Operator name and avatar formatter.
@@ -84,7 +87,7 @@ export function FundedUntilCell({
         projectedInsolvencyAt == null ? null : moment(projectedInsolvencyAt * 1000)
 
     return (
-        <FundedUntilCellRoot>
+        <Iconized>
             {value == null ? (
                 <>N/A</>
             ) : (
@@ -103,11 +106,11 @@ export function FundedUntilCell({
                     )}
                 </>
             )}
-        </FundedUntilCellRoot>
+        </Iconized>
     )
 }
 
-const FundedUntilCellRoot = styled.div`
+const Iconized = styled.div`
     align-items: center;
     display: grid;
     gap: 8px;
@@ -118,3 +121,32 @@ const FundedUntilCellRoot = styled.div`
         height: 18px;
     }
 `
+
+export function NumberOfOperatorsCell({
+    sponsorship,
+    currentOperatorId,
+}: {
+    sponsorship: ParsedSponsorship
+    currentOperatorId: string | undefined
+}) {
+    const joinedByCurrentOperator =
+        !!currentOperatorId &&
+        !!getSponsorshipStakeForOperator(sponsorship.stakes, currentOperatorId)
+
+    return (
+        <Iconized>
+            {sponsorship.operatorCount}
+            {joinedByCurrentOperator && (
+                <Tip
+                    handle={
+                        <TipIconWrap $color="currentColor">
+                            <CheckIcon label="Already joined as Operator." />
+                        </TipIconWrap>
+                    }
+                >
+                    Already joined as Operator.
+                </Tip>
+            )}
+        </Iconized>
+    )
+}
