@@ -173,29 +173,31 @@ export async function stakeOnSponsorship(
     options: {
         toastLabel?: string
         onBlockNumber?: (blockNumber: number) => void | Promise<void>
+        gasLimitMultiplier?: number
     } = {},
 ): Promise<void> {
     const chainId = getSponsorshipChainId()
 
     await networkPreflight(chainId)
 
-    const { toastLabel = 'Stake on sponsorship', onBlockNumber } = options
+    const {
+        toastLabel = 'Stake on sponsorship',
+        onBlockNumber,
+        gasLimitMultiplier = 1.5,
+    } = options
 
     await toastedOperation(toastLabel, async () => {
         const signer = await getSigner()
 
         const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
 
-        const gasLimitEstimate = await contract.estimateGas.stake(
-            sponsorshipId,
-            amountWei,
-        )
-        const increasedGasLimit = BigNumber.from(
-            toBN(gasLimitEstimate).multipliedBy(1.5).precision(1, BN.ROUND_UP).toString(),
-        )
+        const gasLimit = toBN(await contract.estimateGas.stake(sponsorshipId, amountWei))
+            .multipliedBy(gasLimitMultiplier)
+            .precision(1, BN.ROUND_UP)
+            .toString()
 
         const tx = await contract.stake(sponsorshipId, amountWei, {
-            gasLimit: increasedGasLimit,
+            gasLimit,
         })
 
         const { blockNumber } = await tx.wait()
@@ -211,9 +213,14 @@ export async function reduceStakeOnSponsorship(
     options: {
         toastLabel?: string
         onBlockNumber?: (blockNumber: number) => void | Promise<void>
+        gasLimitMultiplier?: number
     } = {},
 ): Promise<void> {
-    const { toastLabel = 'Reduce stake on sponsorship', onBlockNumber } = options
+    const {
+        toastLabel = 'Reduce stake on sponsorship',
+        onBlockNumber,
+        gasLimitMultiplier = 1.5,
+    } = options
 
     const chainId = getSponsorshipChainId()
 
@@ -224,7 +231,16 @@ export async function reduceStakeOnSponsorship(
 
         const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
 
-        const tx = await contract.reduceStakeTo(sponsorshipId, targetAmountWei)
+        const gasLimit = toBN(
+            await contract.estimateGas.reduceStakeTo(sponsorshipId, targetAmountWei),
+        )
+            .multipliedBy(gasLimitMultiplier)
+            .precision(1, BN.ROUND_UP)
+            .toString()
+
+        const tx = await contract.reduceStakeTo(sponsorshipId, targetAmountWei, {
+            gasLimit,
+        })
 
         const { blockNumber } = await tx.wait()
 
@@ -235,8 +251,13 @@ export async function reduceStakeOnSponsorship(
 export async function forceUnstakeFromSponsorship(
     sponsorshipId: string,
     operatorAddress: string,
-    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
+    options: {
+        onBlockNumber?: (blockNumber: number) => void | Promise<void>
+        gasLimitMultiplier?: number
+    } = {},
 ): Promise<void> {
+    const { onBlockNumber, gasLimitMultiplier = 1.5 } = options
+
     const chainId = getSponsorshipChainId()
 
     await networkPreflight(chainId)
@@ -246,15 +267,24 @@ export async function forceUnstakeFromSponsorship(
 
         const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
 
+        const gasLimit = toBN(
+            await contract.estimateGas.forceUnstake(sponsorshipId, 1000000),
+        )
+            .multipliedBy(gasLimitMultiplier)
+            .precision(1, BN.ROUND_UP)
+            .toString()
+
         /**
          * @jtakalai asked to put a big value in the second parameter. Value big enough
          * to pay out the whole queue after unstaking.
          */
-        const tx = await contract.forceUnstake(sponsorshipId, 1000000)
+        const tx = await contract.forceUnstake(sponsorshipId, 1000000, {
+            gasLimit,
+        })
 
         const { blockNumber } = await tx.wait()
 
-        await options.onBlockNumber?.(blockNumber)
+        await onBlockNumber?.(blockNumber)
     })
 }
 
