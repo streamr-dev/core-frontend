@@ -163,7 +163,10 @@ export function SponsorshipActionBar({
                     </div>
                     <NetworkActionBarCTAs>
                         <Button
-                            disabled={!streamId}
+                            // We decided to disable sponsoring for now as users don't know what it does.
+                            // https://streamr-team.slack.com/archives/C9QB9RJ48/p1701774490263629
+                            disabled={!streamId || true}
+                            kind="secondary"
                             waiting={isFundingSponsorship}
                             onClick={() => {
                                 fundSponsorship(sponsorship)
