@@ -6,7 +6,7 @@ import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import { NoData } from '~/shared/components/NoData'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
-import { COLORS, LAPTOP } from '~/shared/utils/styled'
+import { COLORS, LAPTOP, TABLET } from '~/shared/utils/styled'
 import { truncate } from '~/shared/utils/text'
 import {
     formatLongDate,
@@ -29,6 +29,7 @@ import {
 import { OperatorIdCell } from '~/components/Table'
 import routes from '~/routes'
 import { abbr } from '~/utils'
+import { NoDataWrap } from '~/shared/components/ScrollTable/ScrollTable.styles'
 
 export const SingleSponsorshipPage = () => {
     const sponsorshipId = useParams().id || ''
@@ -206,10 +207,22 @@ export const SingleSponsorshipPage = () => {
                                                                 }
                                                             />
                                                         </div>
-                                                        {abbr(stake.amount)}
+                                                        <strong>
+                                                            {abbr(stake.amount)}
+                                                        </strong>
                                                     </Link>
                                                 </OperatorListItem>
                                             ))}
+                                            {!sponsorship.stakes.length && (
+                                                <li>
+                                                    <NoDataWrap>
+                                                        <NoData
+                                                            firstLine="No operators"
+                                                            compact
+                                                        />
+                                                    </NoDataWrap>
+                                                </li>
+                                            )}
                                         </OperatorList>
                                     </OperatorListWrap>
                                 </NetworkPageSegment>
@@ -274,6 +287,7 @@ const ChartGrid = styled(SegmentGrid)`
 `
 
 const OperatorList = styled.ul`
+    font-size: 14px;
     list-style: none;
     line-height: 1.5em;
     margin: 0;
@@ -289,16 +303,21 @@ const OperatorList = styled.ul`
 `
 
 const OperatorListHeader = styled.li`
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 1px 0 ${COLORS.separator};
     display: flex;
-    padding: 24px 40px;
+    padding: 16px 24px;
     position: sticky;
-    font-size: 14px;
     top: 0;
     z-index: 1;
-    box-shadow: 0 1px 0 ${COLORS.separator};
 
     > div:first-child {
         flex-grow: 1;
+    }
+
+    @media ${TABLET} {
+        padding: 24px 40px;
     }
 `
 
@@ -307,7 +326,7 @@ const OperatorListItem = styled.li`
         align-items: center;
         color: inherit !important;
         display: flex;
-        padding: 24px 40px;
+        padding: 16px 24px;
     }
 
     > a:hover {
@@ -318,6 +337,12 @@ const OperatorListItem = styled.li`
         flex-grow: 1;
         margin-right: 12px;
         min-width: 0;
+    }
+
+    @media ${TABLET} {
+        > a {
+            padding: 24px 40px;
+        }
     }
 `
 
