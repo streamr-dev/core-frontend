@@ -5258,7 +5258,7 @@ export const SponsorshipFieldsFragmentDoc = gql`
   metadata
   isRunning
   totalPayoutWeiPerSec
-  stakes {
+  stakes(first: 1000) {
     operator {
       id
       metadataJsonString
@@ -5281,7 +5281,7 @@ export const SponsorshipFieldsFragmentDoc = gql`
 export const OperatorFieldsFragmentDoc = gql`
     fragment OperatorFields on Operator {
   id
-  stakes {
+  stakes(first: 1000) {
     operator {
       id
     }
@@ -5292,7 +5292,7 @@ export const OperatorFieldsFragmentDoc = gql`
       ...SponsorshipFields
     }
   }
-  delegations {
+  delegations(first: 1000) {
     delegator {
       id
     }
@@ -5300,7 +5300,7 @@ export const OperatorFieldsFragmentDoc = gql`
     operatorTokenBalanceWei
     id
   }
-  slashingEvents {
+  slashingEvents(first: 1000) {
     amount
     date
     sponsorship {

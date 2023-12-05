@@ -3,7 +3,7 @@ import { gql } from '@apollo/client'
 gql`
     fragment OperatorFields on Operator {
         id
-        stakes {
+        stakes(first: 1000) {
             operator {
                 id
             }
@@ -14,7 +14,7 @@ gql`
                 ...SponsorshipFields
             }
         }
-        delegations {
+        delegations(first: 1000) {
             delegator {
                 id
             }
@@ -22,7 +22,7 @@ gql`
             operatorTokenBalanceWei
             id
         }
-        slashingEvents {
+        slashingEvents(first: 1000) {
             amount
             date
             sponsorship {
@@ -177,7 +177,7 @@ gql`
         metadata
         isRunning
         totalPayoutWeiPerSec
-        stakes {
+        stakes(first: 1000) {
             operator {
                 id
                 metadataJsonString
