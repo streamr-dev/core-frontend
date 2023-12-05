@@ -1,15 +1,21 @@
 import { gql } from '@apollo/client'
 
 gql`
+    fragment StakeFields on Stake {
+        operator {
+            id
+            metadataJsonString
+        }
+        amountWei
+        earningsWei
+        lockedWei
+        joinTimestamp
+    }
+
     fragment OperatorFields on Operator {
         id
         stakes(first: 1000) {
-            operator {
-                id
-            }
-            amountWei
-            earningsWei
-            joinTimestamp
+            ...StakeFields
             sponsorship {
                 ...SponsorshipFields
             }
@@ -178,13 +184,7 @@ gql`
         isRunning
         totalPayoutWeiPerSec
         stakes(first: 1000) {
-            operator {
-                id
-                metadataJsonString
-            }
-            amountWei
-            earningsWei
-            joinTimestamp
+            ...StakeFields
         }
         operatorCount
         maxOperators
