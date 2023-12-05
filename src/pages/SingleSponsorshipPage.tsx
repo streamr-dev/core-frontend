@@ -1,11 +1,12 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import { NoData } from '~/shared/components/NoData'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
-import { LAPTOP } from '~/shared/utils/styled'
+import { COLORS, LAPTOP } from '~/shared/utils/styled'
 import { truncate } from '~/shared/utils/text'
 import {
     formatLongDate,
@@ -172,43 +173,45 @@ export const SingleSponsorshipPage = () => {
                                         </NetworkChartDisplay>
                                     </Pad>
                                 </NetworkPageSegment>
-                                <NetworkPageSegment title="Operators">
-                                    <OperatorTableContainer>
-                                        <ScrollTable
-                                            elements={sponsorship.stakes.sort((a, b) =>
-                                                b.amount.comparedTo(a.amount),
-                                            )}
-                                            columns={[
-                                                {
-                                                    displayName: 'Operator',
-                                                    key: 'operatorId',
-                                                    isSticky: true,
-                                                    valueMapper: ({
-                                                        operatorId,
-                                                        metadata: { imageUrl, name },
-                                                    }) => (
-                                                        <OperatorIdCell
-                                                            operatorId={operatorId}
-                                                            imageUrl={imageUrl}
-                                                            operatorName={name}
-                                                        />
-                                                    ),
-                                                    align: 'start',
-                                                },
-                                                {
-                                                    displayName: 'Staked',
-                                                    key: 'staked',
-                                                    isSticky: true,
-                                                    valueMapper: (stake) =>
-                                                        abbr(stake.amount),
-                                                    align: 'end',
-                                                },
-                                            ]}
-                                            linkMapper={({ operatorId: id }) =>
-                                                routes.network.operator({ id })
-                                            }
-                                        />
-                                    </OperatorTableContainer>
+                                <NetworkPageSegment title="Operators" foot>
+                                    <OperatorListWrap>
+                                        <OperatorList>
+                                            <OperatorListHeader>
+                                                <div>
+                                                    <strong>Operator</strong>
+                                                </div>
+                                                <div>
+                                                    <strong>Staked</strong>
+                                                </div>
+                                            </OperatorListHeader>
+                                            {sponsorship.stakes.map((stake) => (
+                                                <OperatorListItem key={stake.operatorId}>
+                                                    <Link
+                                                        to={routes.network.operator({
+                                                            id: stake.operatorId,
+                                                        })}
+                                                    >
+                                                        <div>
+                                                            <OperatorIdCell
+                                                                truncate
+                                                                operatorId={
+                                                                    stake.operatorId
+                                                                }
+                                                                imageUrl={
+                                                                    stake.metadata
+                                                                        .imageUrl
+                                                                }
+                                                                operatorName={
+                                                                    stake.metadata.name
+                                                                }
+                                                            />
+                                                        </div>
+                                                        {abbr(stake.amount)}
+                                                    </Link>
+                                                </OperatorListItem>
+                                            ))}
+                                        </OperatorList>
+                                    </OperatorListWrap>
                                 </NetworkPageSegment>
                             </ChartGrid>
                             <NetworkPageSegment foot title="Funding history">
@@ -270,10 +273,55 @@ const ChartGrid = styled(SegmentGrid)`
     }
 `
 
-const OperatorTableContainer = styled.div`
-    max-height: none;
+const OperatorList = styled.ul`
+    list-style: none;
+    line-height: 1.5em;
+    margin: 0;
+    padding: 0;
 
-    @media ${LAPTOP} {
-        max-height: 570px;
+    li {
+        background: #ffffff;
     }
+
+    li + li {
+        border-top: 1px solid ${COLORS.separator};
+    }
+`
+
+const OperatorListHeader = styled.li`
+    display: flex;
+    padding: 24px 40px;
+    position: sticky;
+    font-size: 14px;
+    top: 0;
+    z-index: 1;
+    box-shadow: 0 1px 0 ${COLORS.separator};
+
+    > div:first-child {
+        flex-grow: 1;
+    }
+`
+
+const OperatorListItem = styled.li`
+    > a {
+        align-items: center;
+        color: inherit !important;
+        display: flex;
+        padding: 24px 40px;
+    }
+
+    > a:hover {
+        background-color: ${COLORS.secondaryLight};
+    }
+
+    > a > div:first-child {
+        flex-grow: 1;
+        margin-right: 12px;
+        min-width: 0;
+    }
+`
+
+const OperatorListWrap = styled.div`
+    max-height: 538px;
+    overflow: auto;
 `

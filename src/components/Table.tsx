@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import CheckIcon from '@atlaskit/icon/glyph/check'
 import moment from 'moment'
@@ -18,10 +18,12 @@ export function OperatorIdCell({
     operatorId,
     imageUrl,
     operatorName,
+    truncate: truncateProp = false,
 }: {
     operatorId: string
     imageUrl?: string
     operatorName?: string
+    truncate?: boolean
 }) {
     return (
         <OperatorIdCellRoot>
@@ -34,15 +36,27 @@ export function OperatorIdCell({
             ) : (
                 <HubAvatar id={operatorId} />
             )}
-            <span>{operatorName || truncate(operatorId)}</span>
+            <OperatorName $truncate={truncateProp}>
+                {operatorName || truncate(operatorId)}
+            </OperatorName>
         </OperatorIdCellRoot>
     )
 }
 
+const OperatorName = styled.div<{ $truncate?: boolean }>`
+    ${({ $truncate = false }) =>
+        $truncate &&
+        css`
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        `}
+`
+
 const OperatorIdCellRoot = styled.div`
     align-items: center;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 12px;
 `
 
