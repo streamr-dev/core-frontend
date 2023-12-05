@@ -272,7 +272,7 @@ export function useCreateSponsorship() {
     return useCallback(
         (
             wallet: string | undefined,
-            options: { onDone?: (sponsorshipId: string) => void } = {},
+            options: { onDone?: (sponsorshipId: string) => void; streamId?: string } = {},
         ) => {
             if (!wallet) {
                 return
@@ -286,11 +286,17 @@ export function useCreateSponsorship() {
                             async () => {
                                 const balance = await getBalanceForSponsorship(wallet)
 
-                                const sponsorshipId = await createSponsorshipModal.pop({
-                                    balance,
-                                })
+                                const { sponsorshipId, streamId } =
+                                    await createSponsorshipModal.pop({
+                                        balance,
+                                        streamId: options.streamId,
+                                    })
 
-                                invalidateSponsorshipQueries(wallet, sponsorshipId)
+                                invalidateSponsorshipQueries(
+                                    wallet,
+                                    sponsorshipId,
+                                    streamId,
+                                )
 
                                 options.onDone?.(sponsorshipId)
                             },
