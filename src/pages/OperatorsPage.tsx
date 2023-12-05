@@ -50,7 +50,10 @@ export const OperatorsPage = () => {
 
     const wallet = useWalletAccount()
 
-    const { orderBy, orderDirection, handleOrderChange } = useTableOrder()
+    const { orderBy, orderDirection, handleOrderChange } = useTableOrder({
+        orderBy: 'totalValue',
+        orderDirection: ScrollTableOrderDirection.Desc,
+    })
 
     const allOperatorsQuery = useAllOperatorsQuery({
         batchSize: PAGE_SIZE,
