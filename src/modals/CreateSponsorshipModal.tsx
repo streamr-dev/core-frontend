@@ -33,28 +33,43 @@ import { errorToast } from '~/utils/toast'
 import Toast from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
 
-const defaultFormData: CreateSponsorshipForm = {
-    streamId: '',
-    initialAmount: '',
-    payoutRate: '',
-    minStakeDuration: 14,
-    minNumberOfOperators: 1,
-    maxNumberOfOperators: undefined,
+interface ResolveProps {
+    sponsorshipId: string
+    streamId?: string
 }
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     balance: BN
-    onResolve?: (sponsorshipId: string) => void
+    streamId?: string
+    onResolve?: (props: ResolveProps) => void
 }
 
 const streamNotFoundToaster = toaster(Toast, Layer.Toast)
 
-function CreateSponsorshipModal({ balance: balanceProp, onResolve, ...props }: Props) {
+function getDefaultFormData(streamId = ''): CreateSponsorshipForm {
+    return {
+        streamId: streamId,
+        initialAmount: '',
+        payoutRate: '',
+        minStakeDuration: 14,
+        minNumberOfOperators: 1,
+        maxNumberOfOperators: undefined,
+    }
+}
+
+function CreateSponsorshipModal({
+    balance: balanceProp,
+    streamId: streamIdProp,
+    onResolve,
+    ...props
+}: Props) {
     const [busy, setBusy] = useState(false)
 
     const { decimals = 18 } = useSponsorshipTokenInfo() || {}
 
     const balance = toDecimals(balanceProp, decimals)
+
+    const defaultFormData = getDefaultFormData(streamIdProp)
 
     const [formData, setRawProperties] = useReducer<
         (
@@ -154,7 +169,10 @@ function CreateSponsorshipModal({ balance: balanceProp, onResolve, ...props }: P
                         onBlockNumber: waitForIndexedBlock,
                     })
 
-                    onResolve?.(sponsorshipId)
+                    onResolve?.({
+                        sponsorshipId,
+                        streamId: streamIdProp,
+                    })
                 } catch (e) {
                     if (isRejectionReason(e)) {
                         return
@@ -179,9 +197,10 @@ function CreateSponsorshipModal({ balance: balanceProp, onResolve, ...props }: P
                 <Section>
                     <Label>Select a Stream</Label>
                     <StreamIdDropdown
-                        autoFocus
+                        autoFocus={!streamIdProp}
                         placeholder="Type to select a stream"
                         disabled={busy}
+                        readOnly={!!streamIdProp}
                         onChange={(streamId) => {
                             setRawProperties({
                                 streamId,
@@ -201,6 +220,7 @@ function CreateSponsorshipModal({ balance: balanceProp, onResolve, ...props }: P
                     <FieldWrap $invalid={insufficientFunds}>
                         <TextInput
                             name="initialAmount"
+                            autoFocus={!!streamIdProp}
                             onChange={({ target }) =>
                                 void setRawProperties({
                                     initialAmount: target.value,

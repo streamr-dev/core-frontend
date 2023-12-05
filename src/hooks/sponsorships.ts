@@ -6,6 +6,7 @@ import {
     getAllSponsorships,
     getParsedSponsorshipById,
     getSponsorshipsByCreator,
+    getSponsorshipsByStreamId,
 } from '~/getters'
 import { ParsedSponsorship, SponsorshipParser } from '~/parsers/SponsorshipParser'
 import { errorToast } from '~/utils/toast'
@@ -202,6 +203,55 @@ export function useSponsorshipByIdQuery(sponsorshipId: string) {
     })
 }
 
+export function useSponsorshipsByStreamIdQuery({
+    pageSize = 10,
+    streamId,
+    orderBy,
+    orderDirection,
+}: {
+    pageSize?: number
+    streamId: string
+    orderBy?: string
+    orderDirection?: 'asc' | 'desc'
+}) {
+    return useInfiniteQuery({
+        queryKey: [
+            'useSponsorshipsByStreamIdQuery',
+            streamId,
+            pageSize,
+            orderBy,
+            orderDirection,
+        ],
+        async queryFn({ pageParam: skip = 0 }) {
+            const sponsorships = await getSponsorshipsAndParse(
+                () =>
+                    getSponsorshipsByStreamId({
+                        first: pageSize,
+                        skip,
+                        streamId,
+                        orderBy: mapSponsorshipOrder(orderBy),
+                        orderDirection: orderDirection as OrderDirection,
+                        force: true,
+                    }) as Promise<Sponsorship[]>,
+            )
+
+            return {
+                skip,
+                sponsorships,
+            }
+        },
+        ...getDefaultQueryParams(pageSize),
+    })
+}
+
+function invalidateSponsorshipsByStreamIdQueries(streamId: string | undefined) {
+    return getQueryClient().invalidateQueries({
+        exact: false,
+        queryKey: ['useSponsorshipsByStreamIdQuery', streamId || ''],
+        refetchType: 'active',
+    })
+}
+
 export function useSponsorshipTokenInfo() {
     const { contracts, id: chainId } = config[
         getCoreConfig().defaultChain || 'polygon'
@@ -220,7 +270,7 @@ export function useCreateSponsorship() {
     return useCallback(
         (
             wallet: string | undefined,
-            options: { onDone?: (sponsorshipId: string) => void } = {},
+            options: { onDone?: (sponsorshipId: string) => void; streamId?: string } = {},
         ) => {
             if (!wallet) {
                 return
@@ -234,11 +284,17 @@ export function useCreateSponsorship() {
                             async () => {
                                 const balance = await getBalanceForSponsorship(wallet)
 
-                                const sponsorshipId = await createSponsorshipModal.pop({
-                                    balance,
-                                })
+                                const { sponsorshipId, streamId } =
+                                    await createSponsorshipModal.pop({
+                                        balance,
+                                        streamId: options.streamId,
+                                    })
 
-                                invalidateSponsorshipQueries(wallet, sponsorshipId)
+                                invalidateSponsorshipQueries(
+                                    wallet,
+                                    sponsorshipId,
+                                    streamId,
+                                )
 
                                 options.onDone?.(sponsorshipId)
                             },
@@ -542,6 +598,7 @@ const mapSponsorshipOrder = (columnKey?: string): Sponsorship_OrderBy => {
 export function invalidateSponsorshipQueries(
     invalidator: string | undefined,
     sponsorshipId: string | undefined,
+    streamId: string | undefined = undefined,
 ) {
     if (!invalidator || !sponsorshipId) {
         return
@@ -556,6 +613,8 @@ export function invalidateSponsorshipQueries(
     invalidateSponsorshipDailyBucketsQueries(sponsorshipId)
 
     invalidateSponsorshipFundingHistoryQueries(sponsorshipId)
+
+    invalidateSponsorshipsByStreamIdQueries(streamId)
 
     /**
      * Invalidate OperatorById queries used mainly by Operator pages,

@@ -5139,6 +5139,17 @@ export type GetSponsorshipByIdQueryVariables = Exact<{
 
 export type GetSponsorshipByIdQuery = { __typename?: 'Query', sponsorship?: { __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency?: any | null, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> } | null };
 
+export type GetSponsorshipByStreamIdQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['Int']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Sponsorship_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  streamId: Scalars['String']['input'];
+}>;
+
+
+export type GetSponsorshipByStreamIdQuery = { __typename?: 'Query', sponsorships: Array<{ __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency?: any | null, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> }> };
+
 export type ProjectFieldsFragment = { __typename?: 'Project', id: string, domainIds: Array<any>, score: any, metadata: string, streams: Array<string>, minimumSubscriptionSeconds: any, createdAt?: any | null, updatedAt?: any | null, isDataUnion?: boolean | null, paymentDetails: Array<{ __typename?: 'ProjectPaymentDetails', domainId?: any | null, beneficiary: any, pricingTokenAddress: any, pricePerSecond?: any | null }>, subscriptions: Array<{ __typename?: 'ProjectSubscription', userAddress: any, endTimestamp?: any | null }>, permissions: Array<{ __typename?: 'ProjectPermission', userAddress: any, canBuy?: boolean | null, canDelete?: boolean | null, canEdit?: boolean | null, canGrant?: boolean | null }>, purchases: Array<{ __typename?: 'ProjectPurchase', subscriber: any, subscriptionSeconds: any, price: any, fee: any, purchasedAt?: any | null }> };
 
 export type GetProjectQueryVariables = Exact<{
@@ -5552,6 +5563,20 @@ export const GetSponsorshipByIdDocument = gql`
 }
     ${SponsorshipFieldsFragmentDoc}`;
 export type GetSponsorshipByIdQueryResult = Apollo.QueryResult<GetSponsorshipByIdQuery, GetSponsorshipByIdQueryVariables>;
+export const GetSponsorshipByStreamIdDocument = gql`
+    query getSponsorshipByStreamId($first: Int, $skip: Int, $orderBy: Sponsorship_orderBy, $orderDirection: OrderDirection, $streamId: String!) {
+  sponsorships(
+    first: $first
+    skip: $skip
+    where: {stream_contains_nocase: $streamId}
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    ...SponsorshipFields
+  }
+}
+    ${SponsorshipFieldsFragmentDoc}`;
+export type GetSponsorshipByStreamIdQueryResult = Apollo.QueryResult<GetSponsorshipByStreamIdQuery, GetSponsorshipByStreamIdQueryVariables>;
 export const GetProjectDocument = gql`
     query getProject($id: ID!) {
   project(id: $id) {

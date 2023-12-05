@@ -26,6 +26,7 @@ interface Props {
     orderDirection?: ScrollTableOrderDirection
     onOrderChange?: (columnKey: string) => void
     query: UseInfiniteQueryResult<{ skip: number; sponsorships: ParsedSponsorship[] }>
+    hideStreamId?: boolean
 }
 
 export function QueriedSponsorshipsTable({
@@ -35,6 +36,7 @@ export function QueriedSponsorshipsTable({
     orderDirection,
     onOrderChange,
     query,
+    hideStreamId = false,
 }: Props) {
     const sponsorships = query.data?.pages.map((page) => page.sponsorships).flat() || []
 
@@ -59,16 +61,20 @@ export function QueriedSponsorshipsTable({
                 orderDirection={orderDirection}
                 onOrderChange={onOrderChange}
                 columns={[
-                    {
-                        displayName: 'Stream ID',
-                        valueMapper: ({ streamId }) => (
-                            <StreamIdCell streamId={streamId} />
-                        ),
-                        align: 'start',
-                        isSticky: true,
-                        key: 'streamInfo',
-                        sortable: true,
-                    },
+                    ...(hideStreamId == false
+                        ? [
+                              {
+                                  displayName: 'Stream ID',
+                                  valueMapper: ({ streamId }) => (
+                                      <StreamIdCell streamId={streamId} />
+                                  ),
+                                  align: 'start',
+                                  isSticky: true,
+                                  key: 'streamInfo',
+                                  sortable: true,
+                              },
+                          ]
+                        : ([] as any)),
                     {
                         displayName: (
                             <>
@@ -78,7 +84,7 @@ export function QueriedSponsorshipsTable({
                         ),
                         valueMapper: (element) => abbr(element.payoutPerDay),
                         align: 'start',
-                        isSticky: false,
+                        isSticky: hideStreamId,
                         key: 'payoutPerDay',
                         sortable: true,
                     },
