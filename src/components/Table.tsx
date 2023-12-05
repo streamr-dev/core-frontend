@@ -27,21 +27,28 @@ export function OperatorIdCell({
 }) {
     return (
         <OperatorIdCellRoot>
-            {imageUrl ? (
-                <HubImageAvatar
-                    src={imageUrl}
-                    alt=""
-                    placeholder={<HubAvatar id={operatorId} />}
-                />
-            ) : (
-                <HubAvatar id={operatorId} />
-            )}
+            <OperatorAvatarWrap>
+                {imageUrl ? (
+                    <HubImageAvatar
+                        src={imageUrl}
+                        alt=""
+                        placeholder={<HubAvatar id={operatorId} />}
+                    />
+                ) : (
+                    <HubAvatar id={operatorId} />
+                )}
+            </OperatorAvatarWrap>
             <OperatorName $truncate={truncateProp}>
                 {operatorName || truncate(operatorId)}
             </OperatorName>
         </OperatorIdCellRoot>
     )
 }
+
+const OperatorAvatarWrap = styled.div`
+    height: 32px;
+    width: 32px;
+`
 
 const OperatorName = styled.div<{ $truncate?: boolean }>`
     ${({ $truncate = false }) =>
