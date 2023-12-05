@@ -95,11 +95,11 @@ function EditStakeModal({
         ? difference.isGreaterThan(operatorBalance)
         : false
 
-    const isValueWithinAcceptedRange =
+    const isFinalAmountWithinAcceptedRange =
         finalAmount.isEqualTo(0) || finalAmount.isGreaterThanOrEqualTo(minimumStakeWei)
 
     const canSubmit =
-        isValueWithinAcceptedRange &&
+        isFinalAmountWithinAcceptedRange &&
         !insufficientFunds &&
         !difference.isEqualTo(0) &&
         (difference.isGreaterThan(0) ? !hasUndelegationQueue : true)
@@ -236,7 +236,7 @@ function EditStakeModal({
             <Section>
                 <WingedLabelWrap>
                     <Label>Amount to stake</Label>
-                    {rawAmount !== '' && !isValueWithinAcceptedRange && (
+                    {rawAmount !== '' && !isFinalAmountWithinAcceptedRange && (
                         <ErrorLabel>
                             Minimum value is{' '}
                             {fromDecimals(minimumStakeWei, decimals).toString()}{' '}
@@ -244,7 +244,9 @@ function EditStakeModal({
                         </ErrorLabel>
                     )}
                 </WingedLabelWrap>
-                <FieldWrap $invalid={rawAmount !== '' && !isValueWithinAcceptedRange}>
+                <FieldWrap
+                    $invalid={rawAmount !== '' && !isFinalAmountWithinAcceptedRange}
+                >
                     <TextInput
                         autoFocus
                         name="amount"
