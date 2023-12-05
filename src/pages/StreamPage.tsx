@@ -317,7 +317,7 @@ function StreamPageSwitch({ tab }: Props) {
                 {tab === 'connect' && <ConnectPage />}
                 {tab === 'live-data' && <LiveDataPage />}
             </Layout>
-            <FloatingToolbar $active={!isSaveButtonVisible}>
+            <FloatingToolbar $active={!isSaveButtonVisible && tab === 'overview'}>
                 <Button type="submit" disabled={!canSubmit || isSaveButtonVisible}>
                     Save
                 </Button>
