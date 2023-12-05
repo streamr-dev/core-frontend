@@ -323,7 +323,7 @@ export function waitForIndexedBlock(blockNumber: number) {
 }
 
 /**
- *
+ * Determines if a given argument is a project type.
  */
 export function isProjectType(arg: unknown): arg is ProjectType {
     return (
