@@ -35,6 +35,7 @@ export const SponsorshipParser = z
                         metadataJsonString: OperatorMetadataParser,
                     }),
                     amountWei: z.string(), // wei
+                    lockedWei: z.string().transform(toBN),
                     joinTimestamp: z.coerce.number(),
                 })
                 .transform(
