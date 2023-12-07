@@ -43,6 +43,7 @@ import { useWalletAccount } from '~/shared/stores/wallet'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import getNativeTokenName from '~/shared/utils/nativeToken'
 import getChainId from '~/utils/web3/getChainId'
+import { isRejectionReason } from '~/modals/BaseModal'
 import { isTransactionRejection } from '~/utils'
 import { Layer } from '~/utils/Layer'
 import GetCryptoModal from '~/modals/GetCryptoModal'
@@ -261,6 +262,10 @@ function StreamPageSwitch({ tab }: Props) {
                         // Do nothing.
                     }
                 })
+            }
+
+            if (isRejectionReason(e)) {
+                return
             }
 
             if (isTransactionRejection(e)) {
