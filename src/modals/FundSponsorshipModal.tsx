@@ -1,7 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import styled from 'styled-components'
 import moment from 'moment'
-import { Link } from 'react-router-dom'
 import { toaster } from 'toasterhea'
 import { RejectionReason, isRejectionReason } from '~/modals/BaseModal'
 import FormModal, {
@@ -18,18 +16,12 @@ import { BN } from '~/utils/bn'
 import { pluralizeUnit } from '~/utils/pluralizeUnit'
 import { Layer } from '~/utils/Layer'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
-import {
-    useJoinSponsorshipAsOperator,
-    useSponsorshipTokenInfo,
-} from '~/hooks/sponsorships'
+import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { toDecimals } from '~/marketplace/utils/math'
 import { fundSponsorship } from '~/services/sponsorships'
 import { isTransactionRejection, waitForIndexedBlock } from '~/utils'
-import { Alert } from '~/components/Alert'
-import { COLORS } from '~/shared/utils/styled'
-import { useOperatorForWalletQuery } from '~/hooks/operators'
-import { useWalletAccount } from '~/shared/stores/wallet'
+import { SponsorshipDisclaimer } from '~/components/SponsorshipDisclaimer'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     balance: BN
@@ -43,6 +35,7 @@ function FundSponsorshipModal({ balance, onResolve, sponsorship, ...props }: Pro
     const { decimals = 18 } = useSponsorshipTokenInfo() || {}
 
     const [rawAmount, setRawAmount] = useState('')
+    const [confirmState, setConfirmState] = useState(false)
 
     const pricePerSecond = toDecimals(sponsorship.payoutPerDay, decimals).dividedBy(
         DayInSeconds,
@@ -115,15 +108,14 @@ function FundSponsorshipModal({ balance, onResolve, sponsorship, ...props }: Pro
     const insufficientFunds = finalValue.isGreaterThan(toDecimals(balance, decimals))
 
     const canSubmit =
-        finalValue.isFinite() && finalValue.isGreaterThan(0) && !insufficientFunds
+        finalValue.isFinite() &&
+        finalValue.isGreaterThan(0) &&
+        !insufficientFunds &&
+        confirmState
 
     const [busy, setBusy] = useState(false)
 
     const dirty = rawAmount !== ''
-
-    const joinSponsorshipAsOperator = useJoinSponsorshipAsOperator()
-    const wallet = useWalletAccount()
-    const { data: operator = null } = useOperatorForWalletQuery(wallet)
 
     return (
         <FormModal
@@ -212,39 +204,14 @@ function FundSponsorshipModal({ balance, onResolve, sponsorship, ...props }: Pro
                     </li>
                 </ul>
             </Section>
-            <StyledAlert type="error" title="Warning">
-                To earn, Operators should{' '}
-                <Link
-                    to="#"
-                    onClick={() => {
-                        if (operator == null) {
-                            return
-                        }
-
-                        // Close this modal
-                        onResolve?.()
-
-                        // Open join sponsorship modal
-                        joinSponsorshipAsOperator({
-                            sponsorship,
-                            operator,
-                        })
-                    }}
-                >
-                    join Sponsorships
-                </Link>
-                , rather than fund/sponsor them. This action cannot be undone.
-            </StyledAlert>
+            <SponsorshipDisclaimer
+                sponsorship={sponsorship}
+                onResolve={onResolve}
+                checkboxState={confirmState}
+                onCheckboxStateChange={(value) => setConfirmState(value)}
+            />
         </FormModal>
     )
 }
-
-const StyledAlert = styled(Alert)`
-    margin-top: 16px;
-
-    a {
-        color: ${COLORS.link};
-    }
-`
 
 export const fundSponsorshipModal = toaster(FundSponsorshipModal, Layer.Modal)

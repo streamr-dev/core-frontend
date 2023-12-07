@@ -32,6 +32,7 @@ import { checkIfStreamExists } from '~/services/streams'
 import { errorToast } from '~/utils/toast'
 import Toast from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
+import { SponsorshipDisclaimer } from '~/components/SponsorshipDisclaimer'
 
 interface ResolveProps {
     sponsorshipId: string
@@ -64,6 +65,7 @@ function CreateSponsorshipModal({
     ...props
 }: Props) {
     const [busy, setBusy] = useState(false)
+    const [confirmState, setConfirmState] = useState(false)
 
     const { decimals = 18 } = useSponsorshipTokenInfo() || {}
 
@@ -123,7 +125,9 @@ function CreateSponsorshipModal({
     ).success
 
     const canSubmit =
-        CreateSponsorshipForm.safeParse(formData).success && !insufficientFunds
+        CreateSponsorshipForm.safeParse(formData).success &&
+        !insufficientFunds &&
+        confirmState
 
     const invalidMinStakeDuration =
         !!initialAmount && !!payoutRate && extensionInDays < minStakeDuration
@@ -366,6 +370,10 @@ function CreateSponsorshipModal({
                     </FieldWrap>
                 </Section>
             </Group>
+            <SponsorshipDisclaimer
+                checkboxState={confirmState}
+                onCheckboxStateChange={(value) => setConfirmState(value)}
+            />
         </FormModal>
     )
 }
