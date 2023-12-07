@@ -43,6 +43,7 @@ import { useWalletAccount } from '~/shared/stores/wallet'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import getNativeTokenName from '~/shared/utils/nativeToken'
 import getChainId from '~/utils/web3/getChainId'
+import { isTransactionRejection } from '~/utils'
 import { Layer } from '~/utils/Layer'
 import GetCryptoModal from '~/modals/GetCryptoModal'
 import NotFoundPage, { NotFoundPageContent } from '~/pages/NotFoundPage'
@@ -260,6 +261,10 @@ function StreamPageSwitch({ tab }: Props) {
                         // Do nothing.
                     }
                 })
+            }
+
+            if (isTransactionRejection(e)) {
+                return
             }
 
             throw e
