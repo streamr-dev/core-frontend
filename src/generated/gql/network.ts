@@ -5150,7 +5150,7 @@ export type GetSponsorshipByStreamIdQueryVariables = Exact<{
 }>;
 
 
-export type GetSponsorshipByStreamIdQuery = { __typename?: 'Query', sponsorships: Array<{ __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency?: any | null, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> }> };
+export type GetSponsorshipByStreamIdQuery = { __typename?: 'Query', sponsorships: Array<{ __typename?: 'Sponsorship', id: string, metadata?: string | null, isRunning: boolean, totalPayoutWeiPerSec: any, operatorCount: number, maxOperators?: number | null, totalStakedWei: any, remainingWei: any, projectedInsolvency?: any | null, cumulativeSponsoring: any, minimumStakingPeriodSeconds: any, creator: string, spotAPY: any, stream?: { __typename?: 'Stream', id: string, metadata: string } | null, stakes: Array<{ __typename?: 'Stake', amountWei: any, earningsWei: any, lockedWei: any, joinTimestamp: number, operator: { __typename?: 'Operator', id: string, metadataJsonString: string } }> }> };
 
 export type ProjectFieldsFragment = { __typename?: 'Project', id: string, domainIds: Array<any>, score: any, metadata: string, streams: Array<string>, minimumSubscriptionSeconds: any, createdAt?: any | null, updatedAt?: any | null, isDataUnion?: boolean | null, paymentDetails: Array<{ __typename?: 'ProjectPaymentDetails', domainId?: any | null, beneficiary: any, pricingTokenAddress: any, pricePerSecond?: any | null }>, subscriptions: Array<{ __typename?: 'ProjectSubscription', userAddress: any, endTimestamp?: any | null }>, permissions: Array<{ __typename?: 'ProjectPermission', userAddress: any, canBuy?: boolean | null, canDelete?: boolean | null, canEdit?: boolean | null, canGrant?: boolean | null }>, purchases: Array<{ __typename?: 'ProjectPurchase', subscriber: any, subscriptionSeconds: any, price: any, fee: any, purchasedAt?: any | null }> };
 
@@ -5283,7 +5283,7 @@ export const SponsorshipFieldsFragmentDoc = gql`
   metadata
   isRunning
   totalPayoutWeiPerSec
-  stakes(first: 1000) {
+  stakes(first: 1000, orderBy: amountWei, orderDirection: desc) {
     ...StakeFields
   }
   operatorCount

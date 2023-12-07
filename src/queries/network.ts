@@ -183,7 +183,7 @@ gql`
         metadata
         isRunning
         totalPayoutWeiPerSec
-        stakes(first: 1000) {
+        stakes(first: 1000, orderBy: amountWei, orderDirection: desc) {
             ...StakeFields
         }
         operatorCount
