@@ -23,7 +23,7 @@ export default function useOperatorLiveNodes(
             if (mounted) {
                 setIsLoading(false)
             }
-        }, 15000)
+        }, 30000)
 
         return () => {
             mounted = false
