@@ -4662,7 +4662,7 @@ export type GetEnsDomainsForAccountQuery = { __typename?: 'Query', domains: Arra
 
 export const GetEnsDomainsForAccountDocument = gql`
     query getEnsDomainsForAccount($account: String!) {
-  domains(where: {resolvedAddress: $account}, orderBy: name) {
+  domains(where: {owner_in: [$account]}, orderBy: name) {
     name
   }
 }
