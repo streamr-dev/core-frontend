@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
 import styled, { css } from 'styled-components'
+import { DESKTOP } from '~/shared/utils/styled'
 
 type Shift = 'left' | 'right'
 
@@ -32,7 +33,7 @@ const TipBody = styled.div`
     pointer-events: none;
     position: absolute;
     top: 0;
-    transform: translateY(-100%) translateX(-50%);
+    transform: translateY(-100%) translateX(-100%) translateX(24px);
     transition: 350ms;
     transition-property: visibility, opacity, transform;
     transition-delay: 350ms, 0s, 0s;
@@ -104,9 +105,9 @@ const TipEffects = styled.div`
         width: 16px;
         height: 16px;
         border-radius: 2px;
-        left: 50%;
         top: 100%;
-        transform: translate(-50%, -50%) translateY(-4px) rotate(45deg);
+        left: 100%;
+        transform: translate(-50%, -50%) translateX(-24px) translateY(-4px) rotate(45deg);
     }
 `
 
@@ -118,45 +119,63 @@ export const TipRoot = styled.div<{ $shift?: Shift }>`
         opacity: 1;
         visibility: visible;
         transition-delay: 0s;
-        transform: translateY(-100%) translateY(-8px) translateX(-50%);
+        transform: translateY(-100%) translateX(-100%) translateX(24px) translateY(-8px);
     }
 
-    ${({ $shift }) =>
-        $shift === 'left' &&
-        css`
-            ${TipEffects}::before {
-                left: 100%;
-                transform: translate(-50%, -50%) translateX(-24px) translateY(-4px)
-                    rotate(45deg);
-            }
+    // Default to center only after DESKTOP
+    @media ${DESKTOP} {
+        ${TipEffects}::before {
+            left: 50%;
+            transform: translate(-50%, -50%) translateY(-4px) rotate(45deg);
+        }
 
-            ${TipBody} {
-                transform: translateY(-100%) translateX(-100%) translateX(24px);
-            }
+        :hover ${TipBody} {
+            transform: translateY(-100%) translateY(-8px) translateX(-50%);
+        }
 
-            :hover ${TipBody} {
-                transform: translateY(-100%) translateX(-100%) translateX(24px)
-                    translateY(-8px);
-            }
-        `}
+        ${TipBody} {
+            transform: translateY(-100%) translateX(-50%);
+        }
 
-    ${({ $shift }) =>
-        $shift === 'right' &&
-        css`
-            ${TipEffects}::before {
-                left: 0%;
-                transform: translate(-50%, -50%) translateX(24px) translateY(-4px)
-                    rotate(45deg);
-            }
+        // Allow shifting only after DESKTOP because it will overflow the page
+        // on smaller screens
+        ${({ $shift }) =>
+            $shift === 'left' &&
+            css`
+                ${TipEffects}::before {
+                    left: 100%;
+                    transform: translate(-50%, -50%) translateX(-24px) translateY(-4px)
+                        rotate(45deg);
+                }
 
-            ${TipBody} {
-                transform: translateY(-100%) translateX(-24px);
-            }
+                ${TipBody} {
+                    transform: translateY(-100%) translateX(-100%) translateX(24px);
+                }
 
-            :hover ${TipBody} {
-                transform: translateY(-100%) translateX(-24px) translateY(-8px);
-            }
-        `}
+                :hover ${TipBody} {
+                    transform: translateY(-100%) translateX(-100%) translateX(24px)
+                        translateY(-8px);
+                }
+            `}
+
+        ${({ $shift }) =>
+            $shift === 'right' &&
+            css`
+                ${TipEffects}::before {
+                    left: 0%;
+                    transform: translate(-50%, -50%) translateX(24px) translateY(-4px)
+                        rotate(45deg);
+                }
+
+                ${TipBody} {
+                    transform: translateY(-100%) translateX(-24px);
+                }
+
+                :hover ${TipBody} {
+                    transform: translateY(-100%) translateX(-24px) translateY(-8px);
+                }
+            `}
+    }
 `
 
 export const TipIconWrap = styled.div<{
@@ -176,4 +195,5 @@ export const TipIconWrap = styled.div<{
                 `
             }
         }}
+    }
 `
