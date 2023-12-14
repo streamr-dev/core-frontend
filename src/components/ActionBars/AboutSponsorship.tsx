@@ -17,9 +17,10 @@ export function AboutSponsorship({ sponsorship }: { sponsorship: ParsedSponsorsh
         <DefaultSimpleDropdownMenu>
             {streamId && (
                 <Address>
-                    <div>
-                        Sponsored stream: <strong>{truncateStreamName(streamId)}</strong>
-                    </div>
+                    <div>Sponsored stream:</div>
+                    <StreamName>
+                        <strong>{truncateStreamName(streamId)}</strong>
+                    </StreamName>
                     <div>
                         <Link to={routes.streams.show({ id: streamId })} target="_blank">
                             <ExternalLinkIcon />
@@ -51,6 +52,10 @@ export function AboutSponsorship({ sponsorship }: { sponsorship: ParsedSponsorsh
         </DefaultSimpleDropdownMenu>
     )
 }
+
+const StreamName = styled.div`
+    overflow: hidden;
+`
 
 const Link = styled(PrestyledLink)`
     display: block;

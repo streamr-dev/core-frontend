@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
-import { COLORS } from '~/shared/utils/styled'
+import { COLORS, TABLET } from '~/shared/utils/styled'
 
 type ChildrenFormatter =
     | ReactNode
@@ -109,22 +109,36 @@ export const SimpleDropdownMenu = styled.div<{ $visible?: boolean }>`
     min-width: 16px;
     opacity: 0;
     pointer-events: none;
-    position: absolute;
-    transform: translateY(-8px);
+    position: fixed;
+    left: 50%;
+    transform: translateY(-8px) translateX(-50%);
     transition: 250ms;
     transition-delay: 250ms, 0s, 0s;
     transition-property: visibility, opacity, transform;
     visibility: hidden;
     z-index: 1000;
 
+    @media ${TABLET} {
+        position: absolute;
+        left: auto;
+        transform: translateY(-8px);
+    }
+
     ${({ $visible = false }) =>
         $visible &&
         css`
             opacity: 1;
             pointer-events: auto;
-            transform: translateY(0);
+            left: 50%;
+            transform: translateY(0) translateX(-50%);
             visibility: visible;
             transition-delay: 0s;
+
+            @media ${TABLET} {
+                position: absolute;
+                left: auto;
+                transform: translateY(0);
+            }
         `}
 `
 
@@ -156,5 +170,10 @@ export const SimpleListDropdownMenu = styled.div`
 
 export const DefaultSimpleDropdownMenu = styled(SimpleListDropdownMenu)`
     padding: 20px 16px;
-    width: 460px;
+    max-width: 100vw;
+    width: auto;
+
+    @media ${TABLET} {
+        width: 460px;
+    }
 `

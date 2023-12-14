@@ -7,7 +7,7 @@ export const Address = styled.div`
     display: grid;
     font-size: 14px;
     gap: 4px;
-    grid-template-columns: max-content max-content;
+    grid-template-columns: max-content minmax(150px, max-content) 16px;
     line-height: 20px;
 
     p + & {

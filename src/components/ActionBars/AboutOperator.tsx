@@ -21,8 +21,9 @@ export function AboutOperator({ operator }: { operator: ParsedOperator }) {
         <DefaultSimpleDropdownMenu>
             {(description || null) && <p>{description}</p>}
             <Address>
+                <div>Owner wallet address:</div>
                 <div>
-                    Owner wallet address: <strong>{truncate(owner)}</strong>
+                    <strong>{truncate(owner)}</strong>
                 </div>
                 <div>
                     <IconButton type="button" onClick={() => void copy(owner)}>
