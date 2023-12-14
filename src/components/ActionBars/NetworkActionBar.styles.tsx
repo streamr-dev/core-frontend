@@ -52,6 +52,7 @@ export const NetworkActionBarBackButtonIcon = styled(SvgIcon)`
 export const NetworkActionBarBackButtonAndTitle = styled.div`
     display: flex;
     align-items: center;
+    max-width: 100%;
 `
 
 export const NetworkActionBarTitle = styled.div`
@@ -61,8 +62,12 @@ export const NetworkActionBarTitle = styled.div`
     margin: 0;
     display: flex;
     gap: 10px;
-    justify-content: center;
+    justify-content: left;
     align-items: center;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 `
 
 export const NetworkActionBarInfoButtons = styled.div`
