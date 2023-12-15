@@ -34,10 +34,6 @@ describe('getClientConfig', () => {
         }))
         expect(g()).toMatchObject({
             contracts: expect.objectContaining({
-                mainChainRPCs: {
-                    chainId: defaultChainConfig.id,
-                    rpcs: defaultChainConfig.rpcEndpoints,
-                },
                 streamRegistryChainAddress: defaultChainConfig.contracts.StreamRegistry,
                 streamRegistryChainRPCs: {
                     chainId: defaultChainConfig.id,

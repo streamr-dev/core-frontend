@@ -36,14 +36,6 @@ export default function getClientConfig(mods: any = {}): StreamrClientConfig {
     const contracts: StreamrClientConfig['contracts'] = {}
     ;[
         {
-            condition: !!defaultChainConfig.rpcEndpoints,
-            key: 'mainChainRPCs',
-            value: formatRpc({
-                chainId: defaultChainConfig.id,
-                rpcs: defaultChainConfig.rpcEndpoints,
-            }),
-        },
-        {
             condition: !!defaultChainConfig.contracts.StreamRegistry,
             key: 'streamRegistryChainAddress',
             value: defaultChainConfig.contracts.StreamRegistry,
