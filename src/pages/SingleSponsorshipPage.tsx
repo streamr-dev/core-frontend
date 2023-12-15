@@ -30,6 +30,22 @@ import { OperatorIdCell } from '~/components/Table'
 import routes from '~/routes'
 import { abbr } from '~/utils'
 import { NoDataWrap } from '~/shared/components/ScrollTable/ScrollTable.styles'
+import Spinner from '~/shared/components/Spinner'
+import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+
+const OperatorTableTitle = ({ sponsorship }: { sponsorship: ParsedSponsorship }) => (
+    <OperatorTitleContainer>
+        <h2>Operators</h2>
+        {sponsorship.operatorCount < sponsorship.minOperators ? (
+            <MinOperatorCountNotReached>
+                {sponsorship.operatorCount}/{sponsorship.minOperators}
+                <OperatorSpinner color="green" size="medium" />
+            </MinOperatorCountNotReached>
+        ) : (
+            <OperatorCount>{sponsorship.operatorCount}</OperatorCount>
+        )}
+    </OperatorTitleContainer>
+)
 
 export const SingleSponsorshipPage = () => {
     const sponsorshipId = useParams().id || ''
@@ -174,7 +190,12 @@ export const SingleSponsorshipPage = () => {
                                         </NetworkChartDisplay>
                                     </Pad>
                                 </NetworkPageSegment>
-                                <NetworkPageSegment title="Operators" foot>
+                                <NetworkPageSegment
+                                    title={
+                                        <OperatorTableTitle sponsorship={sponsorship} />
+                                    }
+                                    foot
+                                >
                                     <OperatorListWrap>
                                         <OperatorList>
                                             <OperatorListHeader>
@@ -349,4 +370,35 @@ const OperatorListItem = styled.li`
 const OperatorListWrap = styled.div`
     max-height: 538px;
     overflow: auto;
+`
+
+const OperatorTitleContainer = styled.div`
+    display: grid;
+    grid-template-columns: max-content auto;
+    gap: 8px;
+`
+
+const OperatorCount = styled.div`
+    display: flex;
+    color: #a3a3a3;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 30px;
+    letter-spacing: 0.2px;
+`
+
+const MinOperatorCountNotReached = styled.div`
+    display: flex;
+    color: #525252;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 30px;
+    letter-spacing: 0.14px;
+    justify-self: right;
+`
+
+const OperatorSpinner = styled(Spinner)`
+    margin-left: 8px;
 `

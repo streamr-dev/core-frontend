@@ -187,6 +187,7 @@ gql`
             ...StakeFields
         }
         operatorCount
+        minOperators
         maxOperators
         totalStakedWei
         remainingWei

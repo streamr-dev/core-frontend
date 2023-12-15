@@ -10,6 +10,7 @@ export const SponsorshipParser = z
         cumulativeSponsoring: z.string(), // wei
         id: z.string(),
         isRunning: z.boolean(),
+        minOperators: z.number(),
         maxOperators: z
             .union([z.number(), z.null()])
             .optional()
