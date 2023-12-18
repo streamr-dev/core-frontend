@@ -11,7 +11,6 @@ import StreamrClientProvider from '~/shared/components/StreamrClientProvider'
 import { Provider as ModalPortalProvider } from '~/shared/contexts/ModalPortal'
 import { Provider as ModalProvider } from '~/shared/contexts/ModalApi'
 import NotFoundPage from '~/pages/NotFoundPage'
-import AnalyticsTracker from '~/shared/components/AnalyticsTracker'
 import GenericErrorPage from '~/pages/GenericErrorPage'
 import Analytics from '~/shared/utils/Analytics'
 import StreamListingPage from '~/pages/StreamListingPage'
@@ -90,7 +89,6 @@ const App = () => (
         </Routes>
         <Container id={Layer.Modal} />
         <ToastContainer id={Layer.Toast} />
-        <AnalyticsTracker />
     </Root>
 )
 

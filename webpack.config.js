@@ -174,7 +174,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: 'index.html',
             templateParameters: {
-                gaId: process.env.GOOGLE_ANALYTICS_ID,
+                gtmId: process.env.GTM_ID,
                 commitHash,
                 version: pkg.version,
             },
@@ -200,7 +200,6 @@ module.exports = {
             TRAVIS_COMMIT: process.env.TRAVIS_COMMIT || '',
             TRAVIS_PULL_REQUEST_SHA: process.env.TRAVIS_PULL_REQUEST_SHA || '',
             STREAMR_DOCKER_DEV_HOST: process.env.STREAMR_DOCKER_DEV_HOST || '',
-            GOOGLE_ANALYTICS_ID: process.env.GOOGLE_ANALYTICS_ID || '',
             NETWORK_GRAPH_SCHEMA_PATH: process.env.NETWORK_GRAPH_SCHEMA_PATH || '',
             DU_GRAPH_SCHEMA_PATH: process.env.DU_GRAPH_SCHEMA_PATH || '',
             ENS_GRAPH_SCHEMA_PATH: process.env.ENS_GRAPH_SCHEMA_PATH || '',

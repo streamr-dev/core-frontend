@@ -31,7 +31,7 @@ jobs:
           VERSION: ${{ steps.get_version.outputs.VERSION }}
           PORT: 12345
           PLATFORM_PUBLIC_PATH: https://cdn.streamr.com
-          GOOGLE_ANALYTICS_ID: UA-55331565-5
+          GTM_ID: GTM-W9HTMKM
           SENTRY_ENVIRONMENT: production
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
           SENTRY_ORG: streamr

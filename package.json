@@ -95,7 +95,6 @@
         "react-avatar-editor": "^13.0.0",
         "react-dom": "^18.2.0",
         "react-dropzone": "^14.2.3",
-        "react-ga": "^3.3.1",
         "react-helmet": "^6.1.0",
         "react-identicons": "^1.2.5",
         "react-image": "^4.1.0",

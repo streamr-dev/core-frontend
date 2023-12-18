@@ -47,7 +47,7 @@ Optional config values:
 | SENTRY_DSN           | Identifier for Sentry error reporting service                                                  |
 | SENTRY_ORG           | Identifier for Sentry organisation                                                             |
 | LOGROCKET_SLUG       | Identifier for LogRocket error reporting service (used in staging and public beta environment) |
-| GOOGLE_ANALYTICS_ID  | Identifier for Google Analytics                                                                |
+| GTM_ID               | Google Tag Manager Identifier                                                                  |
 | STORYBOOK_BASE_PATH  | Build path for Storybook stories                                                               |
 | PLATFORM_PUBLIC_PATH | Public path for Webpack config. If not defined, relative paths are used.                       |
 

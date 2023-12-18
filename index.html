@@ -3,10 +3,24 @@
     <head>
         <meta charset="UTF-8" />
         <title>Streamr Hub</title>
-
-        <link href="https://streamr.network/resources/favicon-16x16.png" rel="icon" size="16" type="image/png" />
-        <link href="https://streamr.network/resources/favicon-32x32.png" rel="icon" size="32" type="image/png" />
-        <link href="https://streamr.network/resources/favicon-96x96.png" rel="icon" size="96" type="image/png" />
+        <link
+            href="https://streamr.network/resources/favicon-16x16.png"
+            rel="icon"
+            size="16"
+            type="image/png"
+        />
+        <link
+            href="https://streamr.network/resources/favicon-32x32.png"
+            rel="icon"
+            size="32"
+            type="image/png"
+        />
+        <link
+            href="https://streamr.network/resources/favicon-96x96.png"
+            rel="icon"
+            size="96"
+            type="image/png"
+        />
         <link
             href="https://streamr.network/resources/apple-icon-57x57.png"
             rel="apple-touch-icon"
@@ -67,40 +81,49 @@
             size="192"
             type="image/png"
         />
-
         <meta name="version" content="<%= version %>" />
         <meta name="commit" content="<%= commitHash %>" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="msapplication-TileColor" content="#ffffff" />
-        <meta name="msapplication-TileImage" content="https://streamr.network/resources/ms-icon-144x144.png" />
+        <meta
+            name="msapplication-TileImage"
+            content="https://streamr.network/resources/ms-icon-144x144.png"
+        />
         <script src="https://cdn.polyfill.io/v3/polyfill.min.js"></script>
         <style>
             @-ms-viewport {
                 width: device-width;
             }
         </style>
+        <!-- Google Tag Manager: Data layer -->
+        <script>
+            window.dataLayer = window.dataLayer || []
+        </script>
+        <!-- Google Tag Manager -->
+        <script>
+            ;(function (w, d, s, l, i) {
+                w[l] = w[l] || []
+                w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' })
+                var f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s),
+                    dl = l != 'dataLayer' ? '&l=' + l : ''
+                j.async = true
+                j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl
+                f.parentNode.insertBefore(j, f)
+            })(window, document, 'script', 'dataLayer', '<%= gtmId %>')
+        </script>
     </head>
     <body>
-        <%/* Global site tag (gtag.js) - Google Analytics Is added here so that it can be read without rendering js on
-        the page. We also set 'send_page_view': false so that the initial page load wouldn't send page view, otherwise
-        it would get sent twice */%>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=<%= gaId %>"></script>
-        <script>
-            window.ga =
-                window.ga ||
-                function () {
-                    ;(ga.q = ga.q || []).push(arguments)
-                }
-            ga.l = +new Date()
-            window.dataLayer = window.dataLayer || []
-            function gtag() {
-                dataLayer.push(arguments)
-            }
-            gtag('js', new Date())
-            gtag('config', '<%= gaId %>', {
-                send_page_view: false,
-            })
-        </script>
+        <!-- Google Tag Manager (noscript) -->
+        <noscript>
+            <iframe
+                src="https://www.googletagmanager.com/ns.html?id=GTM-W9HTMKM"
+                height="0"
+                width="0"
+                style="display: none; visibility: hidden"
+            ></iframe>
+        </noscript>
+        <!-- End Google Tag Manager (noscript) -->
         <div id="root"></div>
         <!-- React root -->
         <div id="modal-root"></div>
