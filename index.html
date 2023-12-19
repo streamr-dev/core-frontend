@@ -95,6 +95,7 @@
                 width: device-width;
             }
         </style>
+        <% if (gtmId) { %>
         <!-- Google Tag Manager: Data layer -->
         <script>
             window.dataLayer = window.dataLayer || []
@@ -112,8 +113,10 @@
                 f.parentNode.insertBefore(j, f)
             })(window, document, 'script', 'dataLayer', '<%= gtmId %>')
         </script>
+        <% } %>
     </head>
     <body>
+        <% if (gtmId) { %>
         <!-- Google Tag Manager (noscript) -->
         <noscript>
             <iframe
@@ -124,6 +127,7 @@
             ></iframe>
         </noscript>
         <!-- End Google Tag Manager (noscript) -->
+        <% } %>
         <div id="root"></div>
         <!-- React root -->
         <div id="modal-root"></div>
