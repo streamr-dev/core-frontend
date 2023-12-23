@@ -41,7 +41,7 @@ export const SponsorshipsPage = () => {
     const wallet = useWalletAccount()
 
     const { orderBy, orderDirection, handleOrderChange } = useTableOrder({
-        orderBy: 'payoutPerDay',
+        orderBy: 'staked',
         orderDirection: ScrollTableOrderDirection.Desc,
     })
 
