@@ -121,6 +121,10 @@ export function useMaxUndelegationQueueDays() {
 export function useMediaQuery(query: string): boolean {
     const subscribe = useCallback(
         (cb: () => void) => {
+            if (typeof window.matchMedia !== 'function') {
+                return () => {}
+            }
+
             const matchMedia = window.matchMedia(query)
 
             matchMedia.addEventListener('change', cb)
@@ -132,5 +136,8 @@ export function useMediaQuery(query: string): boolean {
         [query],
     )
 
-    return useSyncExternalStore(subscribe, () => window.matchMedia(query).matches)
+    return useSyncExternalStore(
+        subscribe,
+        () => typeof window.matchMedia === 'function' && window.matchMedia(query).matches,
+    )
 }

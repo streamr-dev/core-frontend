@@ -28,7 +28,7 @@ export function useInterceptHeartbeats(operatorId: string | undefined) {
                 const {
                     parsedContent: { peerDescriptor },
                     messageId: { timestamp },
-                } = msg
+                } = msg as HeartbeatMessage
 
                 setHeartbeats((prev) => ({
                     ...prev,
