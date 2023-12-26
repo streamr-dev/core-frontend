@@ -162,18 +162,6 @@ export function SponsorshipActionBar({
                         </NetworkActionBarInfoButtons>
                     </div>
                     <NetworkActionBarCTAs>
-                        <Button
-                            // We decided to disable sponsoring for now as users don't know what it does.
-                            // https://streamr-team.slack.com/archives/C9QB9RJ48/p1701774490263629
-                            disabled={!streamId || true}
-                            kind="secondary"
-                            waiting={isFundingSponsorship}
-                            onClick={() => {
-                                fundSponsorship(sponsorship)
-                            }}
-                        >
-                            Sponsor
-                        </Button>
                         {canEditStake ? (
                             <Button
                                 disabled={!operator}
@@ -209,6 +197,18 @@ export function SponsorshipActionBar({
                                 Join as operator
                             </Button>
                         )}
+                        <Button
+                            // We decided to disable sponsoring for now as users don't know what it does.
+                            // https://streamr-team.slack.com/archives/C9QB9RJ48/p1701774490263629
+                            disabled={!streamId || true}
+                            kind="secondary"
+                            waiting={isFundingSponsorship}
+                            onClick={() => {
+                                fundSponsorship(sponsorship)
+                            }}
+                        >
+                            Sponsor
+                        </Button>
                     </NetworkActionBarCTAs>
                 </SingleElementPageActionBarTopPart>
                 <NetworkActionBarStatsTitle>
