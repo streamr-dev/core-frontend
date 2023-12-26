@@ -34,23 +34,33 @@ const DropdownToggle = styled.div`
     }
 `
 export const Menu = styled(UnstyledMenu)``
-export const MenuItem = styled(Menu.Item)`
-    &.user-info {
-        padding: 0 16px !important;
+
+export const TextMenuItem = styled(Menu.Item)`
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    padding: 12px 16px !important;
+
+    > span:first-child {
+        display: block;
+        flex-grow: 1;
     }
-    &.disconnect {
-        padding: 0 !important;
-        .disconnect-text {
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+
+    :disabled,
+    &[disabled] {
+        cursor: default;
+        opacity: 0.5;
     }
 `
+
+export const UserInfoMenuItem = styled(Menu.Item)`
+    padding: 0 16px !important;
+`
+
 export const MenuDivider = styled(Menu.Divider)`
     margin: 0;
 `
+
 export const WalletAddress = styled.div`
     margin-left: 13px;
     display: flex;

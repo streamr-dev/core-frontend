@@ -12,6 +12,9 @@ import toast from '~/utils/toast'
 import Popover from '~/shared/components/Popover'
 import PopoverItem from '~/shared/components/Popover/PopoverItem'
 import routes from '~/routes'
+import { useOperatorForWalletQuery } from '~/hooks/operators'
+import { saveOperator } from '~/utils'
+import { useMediaQuery } from '~/hooks'
 import { Avatarless, Name, Username } from './User'
 import {
     Avatar,
@@ -19,7 +22,6 @@ import {
     Menu,
     MenuDivider,
     MenuGrid,
-    MenuItem,
     MenuItemAvatarContainer,
     MOBILE_LG,
     Navbar,
@@ -33,6 +35,8 @@ import {
     SignedInUserMenu,
     StyledAccordionBody,
     StyledAccordionHeader,
+    TextMenuItem,
+    UserInfoMenuItem,
     UserInfoMobile,
     WalletAddress,
 } from './Nav.styles'
@@ -82,6 +86,12 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
     const ensName = useEns(account)
 
     const navigate = useNavigate()
+
+    const operatorQuery = useOperatorForWalletQuery(account)
+
+    const { data: operator = null, isFetching: isOperatorFetching } = operatorQuery
+
+    const isMobile = !useMediaQuery(`only screen and ${TABLET}`)
 
     return (
         <div {...props} data-testid={'desktop-nav'}>
@@ -168,7 +178,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                 toggle={<Avatar username={account} />}
                                 menu={
                                     <Menu>
-                                        <MenuItem className={'user-info'}>
+                                        <UserInfoMenuItem>
                                             <MenuItemAvatarContainer>
                                                 <Avatar username={account} />
                                                 <WalletAddress>
@@ -180,21 +190,59 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                                     <span>{truncate(account)}</span>
                                                 </WalletAddress>
                                             </MenuItemAvatarContainer>
-                                        </MenuItem>
+                                        </UserInfoMenuItem>
+                                        {isMobile && (
+                                            <>
+                                                <MenuDivider />
+                                                {operator ? (
+                                                    <TextMenuItem
+                                                        onClick={() => {
+                                                            navigate(
+                                                                routes.network.operator({
+                                                                    id: operator.id,
+                                                                }),
+                                                            )
+                                                        }}
+                                                    >
+                                                        <span>My Operator</span>
+                                                    </TextMenuItem>
+                                                ) : (
+                                                    <TextMenuItem
+                                                        disabled={isOperatorFetching}
+                                                        onClick={() => {
+                                                            if (isOperatorFetching) {
+                                                                return
+                                                            }
+
+                                                            saveOperator(undefined, {
+                                                                onDone(id) {
+                                                                    navigate(
+                                                                        routes.network.operator(
+                                                                            {
+                                                                                id,
+                                                                            },
+                                                                        ),
+                                                                    )
+                                                                },
+                                                            })
+                                                        }}
+                                                    >
+                                                        <span>Become an Operator</span>
+                                                    </TextMenuItem>
+                                                )}
+                                            </>
+                                        )}
                                         <MenuDivider />
-                                        <MenuItem
-                                            className="disconnect"
+                                        <TextMenuItem
                                             onClick={() => {
                                                 toast({
                                                     title: 'Use the "Lock" button in your wallet.',
                                                 })
                                             }}
                                         >
-                                            <div className={'disconnect-text'}>
-                                                <span>Disconnect</span>
-                                                <SvgIcon name={'disconnect'} />
-                                            </div>
-                                        </MenuItem>
+                                            <span>Disconnect</span>
+                                            <SvgIcon name="disconnect" />
+                                        </TextMenuItem>
                                     </Menu>
                                 }
                             />

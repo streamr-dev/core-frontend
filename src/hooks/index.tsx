@@ -1,5 +1,5 @@
 import { StreamrConfig } from '@streamr/network-contracts'
-import React, { useState } from 'react'
+import React, { useCallback, useState, useSyncExternalStore } from 'react'
 import { useEffect } from 'react'
 import { toaster } from 'toasterhea'
 import { getConfigValueFromChain } from '~/getters/getConfigValueFromChain'
@@ -116,4 +116,21 @@ export function useMaxUndelegationQueueDays() {
             ? maxQueueSeconds.div(60).div(60).div(24)
             : toBN(0)
     return maxQueueDays
+}
+
+export function useMediaQuery(query: string): boolean {
+    const subscribe = useCallback(
+        (cb: () => void) => {
+            const matchMedia = window.matchMedia(query)
+
+            matchMedia.addEventListener('change', cb)
+
+            return () => {
+                matchMedia.removeEventListener('change', cb)
+            }
+        },
+        [query],
+    )
+
+    return useSyncExternalStore(subscribe, () => window.matchMedia(query).matches)
 }
