@@ -11,7 +11,7 @@ import {
 import { OrderDirection, Stream_OrderBy } from '~/generated/gql/network'
 import { FieldWrap, IconWrapAppendix, TextInput } from '~/modals/FormModal'
 import { getPagedStreams } from '~/services/streams'
-import Spinner from '~/shared/components/Spinner'
+import Spinner from '~/components/Spinner'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { COLORS } from '~/shared/utils/styled'
 import { parseStreamId, truncate } from '~/shared/utils/text'
@@ -89,7 +89,7 @@ export function StreamIdDropdown({
                 <SimpleListDropdownMenu>
                     {isLoading ? (
                         <SpinnerWrap>
-                            <Spinner color="blue" size="small" />
+                            <Spinner color="blue" />
                         </SpinnerWrap>
                     ) : streamIds.length ? (
                         <ul ref={listRef}>

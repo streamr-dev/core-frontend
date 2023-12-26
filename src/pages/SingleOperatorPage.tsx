@@ -44,7 +44,7 @@ import {
     OperatorNode,
     useSubmitNodeAddressesCallback,
 } from '~/components/NodesTable'
-import Spinner from '~/shared/components/Spinner'
+import Spinner from '~/components/Spinner'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import {
     useCanCollectEarningsCallback,

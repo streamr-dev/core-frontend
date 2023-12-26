@@ -7,7 +7,7 @@ import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { Heartbeat } from '~/hooks/useInterceptHeartbeats'
 import { truncateNodeId } from '~/shared/utils/text'
 import { useIsNodeIdReachable } from '~/shared/stores/operatorReachability'
-import Spinner from '~/shared/components/Spinner'
+import Spinner from '~/components/Spinner'
 
 export interface OperatorNode {
     address: string

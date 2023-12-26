@@ -18,12 +18,12 @@ SpinnerGreen.story = {
     name: 'green (default)',
 }
 
-export const SpinnerWhite = () => <Spinner strokeColor="white" />
+export const SpinnerWhite = () => <Spinner color="white" />
 SpinnerWhite.story = {
     name: 'white',
 }
 
-export const SpinnerBlue = () => <Spinner strokeColor={COLORS.link} />
+export const SpinnerBlue = () => <Spinner color="blue" />
 SpinnerWhite.story = {
     name: 'blue',
 }

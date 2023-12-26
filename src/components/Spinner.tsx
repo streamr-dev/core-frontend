@@ -2,12 +2,19 @@ import React, { HTMLAttributes, MutableRefObject, RefCallback } from 'react'
 import styled, { css, keyframes } from 'styled-components'
 import { COLORS } from '~/shared/utils/styled'
 
-interface Props extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
+interface Props extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'color'> {
+    color?:
+        | 'white'
+        | 'gray'
+        | 'green'
+        | 'blue'
+        | {
+              stroke: string
+              ring?: string
+          }
     coverage?: number
     fixed?: boolean
-    ringColor?: string
     size?: number | 'medium' | 'large'
-    strokeColor?: string
     strokeWidth?: number
     innerRef?: RefCallback<HTMLDivElement> | MutableRefObject<HTMLDivElement>
 }
@@ -21,9 +28,8 @@ const rotate = keyframes`
 function UnstyledSpinner({
     coverage = 0.6,
     fixed = false,
-    ringColor = COLORS.spinnerBorder,
+    color = 'green',
     size: sizeProp = 16,
-    strokeColor = COLORS.greenSpinner,
     strokeWidth = 2,
     innerRef,
     ...props
@@ -33,6 +39,23 @@ function UnstyledSpinner({
     const r = (size - strokeWidth) / 2
 
     const d = 2 * Math.PI * r
+
+    const [ringColor = COLORS.spinnerBorder, strokeColor] = (() => {
+        switch (color) {
+            case 'green':
+                return [, COLORS.greenSpinner]
+            case 'blue':
+                return [, COLORS.link]
+            case 'white':
+                return [, COLORS.primaryContrast]
+            case 'gray':
+                return [COLORS.primaryContrast, COLORS.spinnerBorder]
+        }
+
+        const { ring, stroke } = color
+
+        return [ring, stroke]
+    })()
 
     return (
         <SpinnerRoot

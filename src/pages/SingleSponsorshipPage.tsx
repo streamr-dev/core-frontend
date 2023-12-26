@@ -30,7 +30,7 @@ import { OperatorIdCell } from '~/components/Table'
 import routes from '~/routes'
 import { abbr } from '~/utils'
 import { NoDataWrap } from '~/shared/components/ScrollTable/ScrollTable.styles'
-import Spinner from '~/shared/components/Spinner'
+import Spinner from '~/components/Spinner'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 
 const OperatorTableTitle = ({ sponsorship }: { sponsorship: ParsedSponsorship }) => (
@@ -39,7 +39,14 @@ const OperatorTableTitle = ({ sponsorship }: { sponsorship: ParsedSponsorship })
         {sponsorship.operatorCount < sponsorship.minOperators ? (
             <MinOperatorCountNotReached>
                 {sponsorship.operatorCount}/{sponsorship.minOperators}
-                <OperatorSpinner color="green" size="medium" />
+                <OperatorSpinner
+                    color="green"
+                    fixed
+                    coverage={Math.max(
+                        0.01,
+                        sponsorship.operatorCount / sponsorship.minOperators,
+                    )}
+                />
             </MinOperatorCountNotReached>
         ) : (
             <OperatorCount>{sponsorship.operatorCount}</OperatorCount>
@@ -389,6 +396,7 @@ const OperatorCount = styled.div`
 `
 
 const MinOperatorCountNotReached = styled.div`
+    align-items: center;
     display: flex;
     color: #525252;
     font-size: 14px;

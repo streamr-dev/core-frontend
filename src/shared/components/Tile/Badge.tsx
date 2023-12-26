@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 import styled, { css } from 'styled-components'
-import UnstyledSpinner from '~/shared/components/Spinner'
+import UnstyledSpinner from '~/components/Spinner'
 import Link from '~/shared/components/Link'
 const SharedTheme = {
     backgroundColor: '#525252',
@@ -121,7 +121,7 @@ const DeployingBadge = (props) => (
     <BadgeContainer {...props}>
         <SingleBadge>
             <span>Deploying</span>
-            <Spinner size="small" color="white" />
+            <Spinner color="white" />
         </SingleBadge>
     </BadgeContainer>
 )
