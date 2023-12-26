@@ -41,6 +41,8 @@ const OperatorTableTitle = ({ sponsorship }: { sponsorship: ParsedSponsorship })
                 {sponsorship.operatorCount}/{sponsorship.minOperators}
                 <OperatorSpinner
                     color="green"
+                    strokeWidth={3}
+                    size={20}
                     fixed
                     coverage={Math.max(
                         0.01,
