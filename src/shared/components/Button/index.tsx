@@ -10,7 +10,7 @@ import styled from 'styled-components'
 import cx from 'classnames'
 import { LinkProps } from 'react-router-dom'
 import { Optional } from 'utility-types'
-import Spinner from '~/shared/components/Spinner'
+import Spinner from '~/components/Spinner'
 import styles from './newButton.pcss'
 export type Size = 'mini' | 'normal' | 'big'
 export type Kind =

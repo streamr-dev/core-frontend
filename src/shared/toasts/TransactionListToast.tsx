@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 import { Toaster } from 'toasterhea'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import SvgIcon from '~/shared/components/SvgIcon'
-import Spinner from '~/shared/components/Spinner'
+import Spinner from '~/components/Spinner'
 import AbstractToast from '~/shared/toasts/AbstractToast'
 
 type State = 'ongoing' | 'complete' | 'error'
@@ -39,9 +39,7 @@ export default function TransactionListToast({ operations = [] }: Props) {
                                 </ActionWrap>
                             )}
                             <IconContainer>
-                                {state === 'ongoing' && (
-                                    <Spinner size="small" color="blue" />
-                                )}
+                                {state === 'ongoing' && <Spinner color="blue" />}
                                 {state === 'complete' && <Icon name="checkmark" />}
                                 {state === 'error' && <Icon name="errorBadge" />}
                             </IconContainer>

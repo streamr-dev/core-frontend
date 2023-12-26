@@ -6,7 +6,7 @@ import {
     usePersistingDraftIdsForStream,
 } from '~/shared/stores/streamEditor'
 import { COLORS } from '~/shared/utils/styled'
-import Spinner from '~/shared/components/Spinner'
+import Spinner from '~/components/Spinner'
 
 export default function PersistanceAlert() {
     const draftId = useDraftId()
@@ -29,7 +29,7 @@ export default function PersistanceAlert() {
                 finish before introducing new changes.
             </Copy>
             <SpinnerWrap>
-                <Spinner size="small" color="blue" />
+                <Spinner color="blue" />
             </SpinnerWrap>
         </Root>
     )

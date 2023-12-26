@@ -2,7 +2,7 @@ import React, { FunctionComponent, ReactNode } from 'react'
 import styled from 'styled-components'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
-import Spinner from '~/shared/components/Spinner'
+import Spinner from '~/components/Spinner'
 
 type AlertType = 'loading' | 'error' | 'success' | 'notice'
 

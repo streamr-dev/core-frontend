@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { Tick } from '~/shared/components/Checkbox'
-import Spinner from '~/shared/components/Spinner'
+import Spinner from '~/components/Spinner'
 import {
     useCurrentDraft,
     useToggleCurrentStorageNode,

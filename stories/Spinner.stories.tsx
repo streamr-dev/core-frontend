@@ -1,8 +1,9 @@
 import React from 'react'
 import { Meta } from '@storybook/react'
-import Spinner from '~/shared/components/Spinner'
+import Spinner from '~/components/Spinner'
+import { COLORS } from '~/shared/utils/styled'
 
-export const SpinnerSmall = () => <Spinner size="small" />
+export const SpinnerSmall = () => <Spinner />
 SpinnerSmall.story = {
     name: 'small',
 }
@@ -12,9 +13,9 @@ SpinnerLarge.story = {
     name: 'large',
 }
 
-export const SpinnerGreen = () => <Spinner color="green" />
+export const SpinnerGreen = () => <Spinner />
 SpinnerGreen.story = {
-    name: 'green',
+    name: 'green (default)',
 }
 
 export const SpinnerWhite = () => <Spinner color="white" />
@@ -25,6 +26,22 @@ SpinnerWhite.story = {
 export const SpinnerBlue = () => <Spinner color="blue" />
 SpinnerWhite.story = {
     name: 'blue',
+}
+
+export function ProgressSpinner25() {
+    return <Spinner fixed coverage={0.25} />
+}
+
+ProgressSpinner25.story = {
+    name: 'fixed with progress (25%)',
+}
+
+export function ProgressSpinner60() {
+    return <Spinner fixed coverage={0.6} />
+}
+
+ProgressSpinner60.story = {
+    name: 'fixed with progress (60%)',
 }
 
 const meta: Meta<typeof SpinnerSmall> = {

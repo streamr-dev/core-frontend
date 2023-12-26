@@ -4,8 +4,8 @@ import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle'
 import InfoIcon from '@atlaskit/icon/glyph/info'
 import ErrorIcon from '@atlaskit/icon/glyph/error'
 import CrossIcon from '@atlaskit/icon/glyph/cross'
+import Spinner from '~/components/Spinner'
 import { MEDIUM } from '../utils/styled'
-import Spinner from '../components/Spinner'
 import AbstractToast from './AbstractToast'
 
 export enum ToastType {

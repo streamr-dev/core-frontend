@@ -10,7 +10,7 @@ import {
     Tooltip,
     ReferenceLine,
 } from 'recharts'
-import Spinner from '~/shared/components/Spinner'
+import Spinner from '~/components/Spinner'
 import { COLORS, MEDIUM, REGULAR, TABLET } from '~/shared/utils/styled'
 import { NoData } from '~/shared/components/NoData'
 

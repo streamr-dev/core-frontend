@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { SM } from '~/shared/utils/styled'
 import SvgIcon from '~/shared/components/SvgIcon'
 import Button from '~/shared/components/Button'
-import Spinner from '~/shared/components/Spinner'
+import Spinner from '~/components/Spinner'
 import Label from '~/shared/components/Ui/Label'
 import Text from '~/shared/components/Ui/Text'
 import Select from '~/shared/components/Ui/Select'
@@ -156,7 +156,7 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
                         {isOwnersLoading ? (
                             <>
                                 <span>Loading domains…</span>
-                                {!disabled && <Spinner size="small" color="blue" />}
+                                {!disabled && <Spinner color="blue" />}
                             </>
                         ) : (
                             <span>{truncate(domain || account || 'No account')}</span>
