@@ -15,6 +15,24 @@ jest.mock('~/modals/ConnectModal', () => ({
     default: () => <></>,
 }))
 
+jest.mock('~/modals/OperatorModal', () => ({
+    __esModule: true,
+}))
+
+jest.mock('~/hooks/operators', () => {
+    const actual = jest.requireActual('~/hooks/operators')
+
+    return {
+        ...actual,
+        useOperatorForWalletQuery() {
+            return {
+                data: null,
+                isFetching: false,
+            }
+        },
+    }
+})
+
 jest.mock('~/routes', () => ({
     __esModule: true,
     default: {
