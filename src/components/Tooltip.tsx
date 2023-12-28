@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, ReactNode, useRef, useState } from 'react'
+import React, { HTMLAttributes, ReactNode, useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { Anchor, useBoundingClientRect } from './Anchor'
 
@@ -9,6 +9,24 @@ interface Props {
 
 export function Tooltip({ children, content }: Props) {
     const [isOpen, toggle] = useState(false)
+
+    useEffect(() => {
+        /**
+         * We don't want to keep displaying the tooltip if the user decides
+         * to scroll away. Let's hide the tooltip. Not doing it may result
+         * in temporarily stranded-looking tooltips.
+         */
+
+        function scrollSpy() {
+            toggle(false)
+        }
+
+        window.addEventListener('scroll', scrollSpy, true)
+
+        return () => {
+            window.removeEventListener('scroll', scrollSpy, true)
+        }
+    }, [])
 
     return (
         <Anchor
@@ -46,7 +64,13 @@ function TooltipComponent({
             return 0
         }
 
-        return Math.min(0, document.documentElement.clientWidth - x - rect.width / 2 - 8)
+        const { clientWidth } = document.documentElement
+
+        if (x > clientWidth / 2) {
+            return Math.min(0, clientWidth - x - rect.width / 2)
+        }
+
+        return -Math.min(0, x - rect.width / 2)
     })
 
     return (
@@ -86,6 +110,8 @@ const TooltipBody = styled.div`
 const TooltipRoot = styled.div<{ $visible?: boolean }>`
     left: 0;
     opacity: 0;
+    max-width: 100vw;
+    padding: 0 8px;
     pointer-events: none;
     position: absolute;
     top: 0;
@@ -93,6 +119,7 @@ const TooltipRoot = styled.div<{ $visible?: boolean }>`
     transition-delay: 350ms, 0s;
     transition-property: visibility, opacity;
     visibility: hidden;
+    width: 256px;
     z-index: 9999;
 
     ${({ $visible = false }) =>
@@ -115,7 +142,7 @@ const TooltipContent = styled.div`
     color: #525252;
     font-size: 12px;
     line-height: 1.5em;
-    max-width: 240px;
+    max-width: 100%;
     padding: 8px 12px;
     position: relative;
     width: max-content;
