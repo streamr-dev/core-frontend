@@ -54,7 +54,7 @@ import { truncate } from '~/shared/utils/text'
 import { useConfigValueFromChain } from '~/hooks'
 import Button from '~/shared/components/Button'
 import { FundedUntilCell, StreamIdCell } from '~/components/Table'
-import { Tip, TipIconWrap } from '~/components/Tip'
+import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { useSetBlockDependency } from '~/stores/blockNumberDependencies'
 import { blockObserver } from '~/utils/blocks'
 import { LiveNodesTable } from '~/components/LiveNodesTable'
@@ -317,9 +317,9 @@ export const SingleOperatorPage = () => {
                                                     {minimumStakeReachTime.isAfter(
                                                         Date.now(),
                                                     ) && (
-                                                        <Tip
-                                                            handle={
-                                                                <TipIconWrap
+                                                        <Tooltip
+                                                            content={
+                                                                <TooltipIconWrap
                                                                     className="ml-1"
                                                                     $color="#ADADAD"
                                                                     $svgSize={{
@@ -328,7 +328,7 @@ export const SingleOperatorPage = () => {
                                                                     }}
                                                                 >
                                                                     <SvgIcon name="lockClosed" />
-                                                                </TipIconWrap>
+                                                                </TooltipIconWrap>
                                                             }
                                                         >
                                                             Minimum stake period:{' '}
@@ -336,7 +336,7 @@ export const SingleOperatorPage = () => {
                                                                 true,
                                                             )}{' '}
                                                             left
-                                                        </Tip>
+                                                        </Tooltip>
                                                     )}
                                                 </>
                                             )
@@ -475,18 +475,19 @@ export const SingleOperatorPage = () => {
                                                     {expirationDate.isBefore(
                                                         Date.now(),
                                                     ) && (
-                                                        <Tip
-                                                            handle={
-                                                                <TipIconWrap $color="#ff5c00">
-                                                                    <JiraFailedBuildStatusIcon label="Error" />
-                                                                </TipIconWrap>
+                                                        <Tooltip
+                                                            content={
+                                                                <p>
+                                                                    Payout time exceeded.
+                                                                    You can force unstake
+                                                                    now.
+                                                                </p>
                                                             }
                                                         >
-                                                            <p>
-                                                                Payout time exceeded. You
-                                                                can force unstake now.
-                                                            </p>
-                                                        </Tip>
+                                                            <TooltipIconWrap $color="#ff5c00">
+                                                                <JiraFailedBuildStatusIcon label="Error" />
+                                                            </TooltipIconWrap>
+                                                        </Tooltip>
                                                     )}
                                                 </WarningCell>
                                             )
@@ -769,7 +770,7 @@ const WarningCell = styled.div`
     gap: 8px;
     grid-template-columns: auto auto;
 
-    ${TipIconWrap} svg {
+    ${TooltipIconWrap} svg {
         width: 18px;
         height: 18px;
     }

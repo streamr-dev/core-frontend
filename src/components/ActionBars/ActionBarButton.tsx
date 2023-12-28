@@ -5,7 +5,7 @@ import useCopy from '~/shared/hooks/useCopy'
 import { COLORS } from '~/shared/utils/styled'
 import { IconButton } from '~/components/IconButton'
 import { CopyIcon, ExternalLinkIcon } from '~/icons'
-import { Tip } from '~/components/Tip'
+import { Tooltip } from '~/components/Tooltip'
 import { getBlockExplorerUrl } from '~/getters/getBlockExplorerUrl'
 import { truncate } from '~/shared/utils/text'
 
@@ -121,28 +121,20 @@ export function ActionBarWalletDisplay({
             <div>
                 {label}: <strong>{truncate(address)}</strong>
             </div>
-            <Tip
-                handle={
-                    <IconButton type="button" onClick={() => void copy(address)}>
-                        <CopyIcon />
-                    </IconButton>
-                }
-            >
-                Copy address
-            </Tip>
-            <Tip
-                handle={
-                    <a
-                        href={`${getBlockExplorerUrl()}/address/${address}`}
-                        target="_blank"
-                        rel="noreferrer"
-                    >
-                        <ExternalLinkIcon />
-                    </a>
-                }
-            >
-                View on explorer
-            </Tip>
+            <Tooltip content="Copy address">
+                <IconButton type="button" onClick={() => void copy(address)}>
+                    <CopyIcon />
+                </IconButton>
+            </Tooltip>
+            <Tooltip content="View on explorer">
+                <a
+                    href={`${getBlockExplorerUrl()}/address/${address}`}
+                    target="_blank"
+                    rel="noreferrer"
+                >
+                    <ExternalLinkIcon />
+                </a>
+            </Tooltip>
         </ActionBarButtonBody>
     )
 }
