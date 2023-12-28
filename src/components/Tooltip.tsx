@@ -12,9 +12,8 @@ export function Tooltip({ children, content }: Props) {
 
     useEffect(() => {
         /**
-         * We don't want to keep displaying the tooltip if the user decides
-         * to scroll away. Let's hide the tooltip. Not doing it may result
-         * in temporarily stranded-looking tooltips.
+         * Let's dismiss tooltips after on scroll to avoid temporarily
+         * stranded-looking ones.
          */
 
         function scrollSpy() {
@@ -109,8 +108,8 @@ const TooltipBody = styled.div`
 
 const TooltipRoot = styled.div<{ $visible?: boolean }>`
     left: 0;
+    max-width: min(256px, 100%);
     opacity: 0;
-    max-width: 100vw;
     padding: 0 8px;
     pointer-events: none;
     position: absolute;
@@ -119,7 +118,6 @@ const TooltipRoot = styled.div<{ $visible?: boolean }>`
     transition-delay: 350ms, 0s;
     transition-property: visibility, opacity;
     visibility: hidden;
-    width: 256px;
     z-index: 9999;
 
     ${({ $visible = false }) =>
@@ -142,10 +140,10 @@ const TooltipContent = styled.div`
     color: #525252;
     font-size: 12px;
     line-height: 1.5em;
-    max-width: 100%;
+    max-width: max-content;
     padding: 8px 12px;
     position: relative;
-    width: max-content;
+    width: 100%;
 
     > ul,
     > p {
