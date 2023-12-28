@@ -27,6 +27,8 @@ import {
 } from '~/components/ActionBars/NetworkActionBar.styles'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { Tip } from '~/components/Tip'
+import { ParsedOperator } from '~/parsers/OperatorParser'
+import { Tooltip } from '~/components/Tooltip'
 import {
     useEditSponsorshipFunding,
     useFundSponsorshipCallback,
@@ -77,21 +79,12 @@ export function SponsorshipActionBar({
 
     const isFundingSponsorship = useIsFundingSponsorship(sponsorship.id, wallet)
 
-    const joinSponsorshipAsOperator = useJoinSponsorshipAsOperator()
-
-    const isJoiningSponsorshipAsOperator = useIsJoiningSponsorshipAsOperator(
-        sponsorship.id,
-        operator?.id,
-    )
-
     const editSponsorshipFunding = useEditSponsorshipFunding()
 
     const isEditingSponsorshipFunding = useIsEditingSponsorshipFunding(
         sponsorship.id,
         operator?.id,
     )
-
-    const maxOperatorsReached = sponsorship.operatorCount >= sponsorship.maxOperators
 
     const { streamId } = sponsorship
 
@@ -180,22 +173,10 @@ export function SponsorshipActionBar({
                                 Edit stake
                             </Button>
                         ) : (
-                            <Button
-                                disabled={!operator || maxOperatorsReached || !streamId}
-                                waiting={isJoiningSponsorshipAsOperator}
-                                onClick={() => {
-                                    if (!operator) {
-                                        return
-                                    }
-
-                                    joinSponsorshipAsOperator({
-                                        sponsorship,
-                                        operator,
-                                    })
-                                }}
-                            >
-                                Join as operator
-                            </Button>
+                            <JoinAsOperatorButton
+                                sponsorship={sponsorship}
+                                operator={operator}
+                            />
                         )}
                         <Button
                             // We decided to disable sponsoring for now as users don't know what it does.
@@ -360,3 +341,60 @@ const IconWrap = styled.div<{ $color?: string }>`
     position: relative;
     width: 24px;
 `
+
+function JoinAsOperatorButton({
+    sponsorship,
+    operator,
+}: {
+    sponsorship: ParsedSponsorship
+    operator: ParsedOperator | null
+}) {
+    const walletLocked = !useWalletAccount()
+
+    const { streamId, operatorCount, maxOperators } = sponsorship
+
+    const isJoiningSponsorshipAsOperator = useIsJoiningSponsorshipAsOperator(
+        sponsorship.id,
+        operator?.id,
+    )
+
+    const joinSponsorshipAsOperator = useJoinSponsorshipAsOperator()
+
+    const maxOperatorsReached = operatorCount >= maxOperators
+
+    const tip = walletLocked ? (
+        'Unlock your wallet first'
+    ) : !operator ? (
+        'You need an Operator to join a Sponsorship'
+    ) : !streamId ? (
+        'Sponsored stream does not exist'
+    ) : maxOperatorsReached ? (
+        <>This Sponsorship does not allow more&nbsp;Operators</>
+    ) : undefined
+
+    if (tip) {
+        return (
+            <Tooltip content={tip}>
+                <Button disabled>Join as operator</Button>
+            </Tooltip>
+        )
+    }
+
+    return (
+        <Button
+            waiting={isJoiningSponsorshipAsOperator}
+            onClick={() => {
+                if (!operator) {
+                    return
+                }
+
+                joinSponsorshipAsOperator({
+                    sponsorship,
+                    operator,
+                })
+            }}
+        >
+            Join as operator
+        </Button>
+    )
+}
