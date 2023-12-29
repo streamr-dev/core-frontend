@@ -95,16 +95,19 @@ export function SimpleDropdown({
 
     const posRef = useRef<HTMLDivElement>(null)
 
-    const x = useBoundingClientRect(posRef, (r) => (r?.x || 0) | 0)
+    const x = useBoundingClientRect(posRef, (r) => r?.x || 0)
 
-    const dx = useBoundingClientRect(menuRef, (rect) => {
-        if (!rect) {
-            return 0
-        }
-
+    const [dx, maxWidth] = useBoundingClientRect(menuRef, (rect) => {
         const { clientWidth } = document.documentElement
 
-        return Math.min(0, clientWidth - x - rect.width) | 0
+        if (!rect) {
+            return [0, clientWidth - 8]
+        }
+
+        return [
+            Math.min(0, clientWidth - x - Math.round(rect.width) - 4),
+            clientWidth - 8,
+        ]
     })
 
     return (
@@ -116,6 +119,7 @@ export function SimpleDropdown({
                 ref={menuRef}
                 style={{
                     transform: `translateX(${dx}px)`,
+                    maxWidth,
                 }}
             >
                 {typeof menu === 'function' ? menu(setIsOpen, isOpen) : menu}
@@ -178,6 +182,6 @@ export const SimpleListDropdownMenu = styled.div`
 
 export const DefaultSimpleDropdownMenu = styled(SimpleListDropdownMenu)`
     padding: 20px 16px;
-    max-width: 100vw;
+    max-width: 100%;
     width: 460px;
 `
