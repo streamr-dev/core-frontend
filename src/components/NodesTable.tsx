@@ -16,7 +16,7 @@ import { fromDecimals } from '~/marketplace/utils/math'
 import { errorToast } from '~/utils/toast'
 import { setOperatorNodeAddresses } from '~/services/operators'
 import { toBN } from '~/utils/bn'
-import { Tip, TipIconWrap } from '~/components/Tip'
+import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { isTransactionRejection } from '~/utils'
 import { Separator } from '~/components/Separator'
 
@@ -211,19 +211,15 @@ function MaticBalance({ address, minAmount }: { address: string; minAmount?: str
         <>
             {balance}{' '}
             {balance && minAmount && toBN(balance).isLessThan(toBN(minAmount)) && (
-                <Tip
-                    handle={
-                        <TipIconWrap
-                            className="ml-1"
-                            $color="#ff5c00"
-                            $svgSize={{ width: '18px', height: '18px' }}
-                        >
-                            <JiraFailedBuildStatusIcon label="Error" />
-                        </TipIconWrap>
-                    }
-                >
-                    Low MATIC
-                </Tip>
+                <Tooltip content="Low MATIC">
+                    <TooltipIconWrap
+                        className="ml-1"
+                        $color="#ff5c00"
+                        $svgSize={{ width: '18px', height: '18px' }}
+                    >
+                        <JiraFailedBuildStatusIcon label="Error" />
+                    </TooltipIconWrap>
+                </Tooltip>
             )}
         </>
     ) : (

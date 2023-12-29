@@ -26,7 +26,8 @@ import {
     SingleElementPageActionBarTopPart,
 } from '~/components/ActionBars/NetworkActionBar.styles'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { Tip } from '~/components/Tip'
+import { ParsedOperator } from '~/parsers/OperatorParser'
+import { Tooltip } from '~/components/Tooltip'
 import {
     useEditSponsorshipFunding,
     useFundSponsorshipCallback,
@@ -77,21 +78,12 @@ export function SponsorshipActionBar({
 
     const isFundingSponsorship = useIsFundingSponsorship(sponsorship.id, wallet)
 
-    const joinSponsorshipAsOperator = useJoinSponsorshipAsOperator()
-
-    const isJoiningSponsorshipAsOperator = useIsJoiningSponsorshipAsOperator(
-        sponsorship.id,
-        operator?.id,
-    )
-
     const editSponsorshipFunding = useEditSponsorshipFunding()
 
     const isEditingSponsorshipFunding = useIsEditingSponsorshipFunding(
         sponsorship.id,
         operator?.id,
     )
-
-    const maxOperatorsReached = sponsorship.operatorCount >= sponsorship.maxOperators
 
     const { streamId } = sponsorship
 
@@ -180,22 +172,10 @@ export function SponsorshipActionBar({
                                 Edit stake
                             </Button>
                         ) : (
-                            <Button
-                                disabled={!operator || maxOperatorsReached || !streamId}
-                                waiting={isJoiningSponsorshipAsOperator}
-                                onClick={() => {
-                                    if (!operator) {
-                                        return
-                                    }
-
-                                    joinSponsorshipAsOperator({
-                                        sponsorship,
-                                        operator,
-                                    })
-                                }}
-                            >
-                                Join as operator
-                            </Button>
+                            <JoinAsOperatorButton
+                                sponsorship={sponsorship}
+                                operator={operator}
+                            />
                         )}
                         <Button
                             // We decided to disable sponsoring for now as users don't know what it does.
@@ -220,20 +200,19 @@ export function SponsorshipActionBar({
                         <StatCell
                             label="Payout rate"
                             tip={
-                                <Tip
-                                    shift="right"
-                                    handle={
-                                        <IconWrap>
-                                            <QuestionMarkIcon />
-                                        </IconWrap>
+                                <Tooltip
+                                    content={
+                                        <p>
+                                            The rate of <SponsorshipPaymentTokenName />{' '}
+                                            tokens that are distributed to Operators that
+                                            have staked on this Sponsorship.
+                                        </p>
                                     }
                                 >
-                                    <p>
-                                        The rate of <SponsorshipPaymentTokenName /> tokens
-                                        that are distributed to Operators that have staked
-                                        on this Sponsorship.
-                                    </p>
-                                </Tip>
+                                    <IconWrap>
+                                        <QuestionMarkIcon />
+                                    </IconWrap>
+                                </Tooltip>
                             }
                         >
                             {abbr(sponsorship.payoutPerDay)}{' '}
@@ -246,20 +225,20 @@ export function SponsorshipActionBar({
                         <StatCell
                             label="Total staked"
                             tip={
-                                <Tip
-                                    shift="right"
-                                    handle={
-                                        <IconWrap>
-                                            <QuestionMarkIcon />
-                                        </IconWrap>
+                                <Tooltip
+                                    content={
+                                        <p>
+                                            The total amount of{' '}
+                                            <SponsorshipPaymentTokenName /> tokens that
+                                            has been staked on this Sponsorship
+                                            by&nbsp;Operators.
+                                        </p>
                                     }
                                 >
-                                    <p>
-                                        The total amount of{' '}
-                                        <SponsorshipPaymentTokenName /> tokens that has
-                                        been staked on this Sponsorship by&nbsp;Operators.
-                                    </p>
-                                </Tip>
+                                    <IconWrap>
+                                        <QuestionMarkIcon />
+                                    </IconWrap>
+                                </Tooltip>
                             }
                         >
                             {abbr(sponsorship.totalStake)} <SponsorshipPaymentTokenName />
@@ -272,19 +251,18 @@ export function SponsorshipActionBar({
                         <StatCell
                             label="APY"
                             tip={
-                                <Tip
-                                    shift="right"
-                                    handle={
-                                        <IconWrap>
-                                            <QuestionMarkIcon />
-                                        </IconWrap>
+                                <Tooltip
+                                    content={
+                                        <p>
+                                            The annualized yield that the staked Operators
+                                            are currently earning from this Sponsorship.
+                                        </p>
                                     }
                                 >
-                                    <p>
-                                        The annualized yield that the staked Operators are
-                                        currently earning from this Sponsorship.
-                                    </p>
-                                </Tip>
+                                    <IconWrap>
+                                        <QuestionMarkIcon />
+                                    </IconWrap>
+                                </Tooltip>
                             }
                         >
                             {(sponsorship.spotAPY * 100).toFixed(0)}%
@@ -292,20 +270,19 @@ export function SponsorshipActionBar({
                         <StatCell
                             label="Total sponsored"
                             tip={
-                                <Tip
-                                    shift="right"
-                                    handle={
-                                        <IconWrap>
-                                            <QuestionMarkIcon />
-                                        </IconWrap>
+                                <Tooltip
+                                    content={
+                                        <p>
+                                            The cumulative amount of{' '}
+                                            <SponsorshipPaymentTokenName /> tokens that
+                                            Sponsors have funded this Sponsorship with.
+                                        </p>
                                     }
                                 >
-                                    <p>
-                                        The cumulative amount of{' '}
-                                        <SponsorshipPaymentTokenName /> tokens that
-                                        Sponsors have funded this Sponsorship with.
-                                    </p>
-                                </Tip>
+                                    <IconWrap>
+                                        <QuestionMarkIcon />
+                                    </IconWrap>
+                                </Tooltip>
                             }
                         >
                             {abbr(sponsorship.cumulativeSponsoring)}{' '}
@@ -314,21 +291,21 @@ export function SponsorshipActionBar({
                         <StatCell
                             label="Minimum stake duration"
                             tip={
-                                <Tip
-                                    shift="right"
-                                    handle={
-                                        <IconWrap>
-                                            <QuestionMarkIcon />
-                                        </IconWrap>
+                                <Tooltip
+                                    content={
+                                        <p>
+                                            The minimum time that Operators must stay
+                                            staked in this Sponsorship before they are
+                                            able to fully unstake without a penalty. Stake
+                                            reduction is always allowed and only limited
+                                            by minimum&nbsp;stake.
+                                        </p>
                                     }
                                 >
-                                    <p>
-                                        The minimum time that Operators must stay staked
-                                        in this Sponsorship before they are able to fully
-                                        unstake without a penalty. Stake reduction is
-                                        always allowed and only limited by minimum stake.
-                                    </p>
-                                </Tip>
+                                    <IconWrap>
+                                        <QuestionMarkIcon />
+                                    </IconWrap>
+                                </Tooltip>
                             }
                         >
                             {minimumStakingDays.toFixed(0)} day
@@ -360,3 +337,60 @@ const IconWrap = styled.div<{ $color?: string }>`
     position: relative;
     width: 24px;
 `
+
+function JoinAsOperatorButton({
+    sponsorship,
+    operator,
+}: {
+    sponsorship: ParsedSponsorship
+    operator: ParsedOperator | null
+}) {
+    const walletLocked = !useWalletAccount()
+
+    const { streamId, operatorCount, maxOperators } = sponsorship
+
+    const isJoiningSponsorshipAsOperator = useIsJoiningSponsorshipAsOperator(
+        sponsorship.id,
+        operator?.id,
+    )
+
+    const joinSponsorshipAsOperator = useJoinSponsorshipAsOperator()
+
+    const maxOperatorsReached = operatorCount >= maxOperators
+
+    const tip = walletLocked ? (
+        'Unlock your wallet first'
+    ) : !operator ? (
+        'You need an Operator to join a Sponsorship'
+    ) : !streamId ? (
+        'Sponsored stream does not exist'
+    ) : maxOperatorsReached ? (
+        <>This Sponsorship does not allow more&nbsp;Operators</>
+    ) : undefined
+
+    if (tip) {
+        return (
+            <Tooltip content={tip}>
+                <Button disabled>Join as operator</Button>
+            </Tooltip>
+        )
+    }
+
+    return (
+        <Button
+            waiting={isJoiningSponsorshipAsOperator}
+            onClick={() => {
+                if (!operator) {
+                    return
+                }
+
+                joinSponsorshipAsOperator({
+                    sponsorship,
+                    operator,
+                })
+            }}
+        >
+            Join as operator
+        </Button>
+    )
+}

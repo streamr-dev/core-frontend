@@ -7,7 +7,7 @@ import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { StreamInfoCell } from '~/components/NetworkUtils'
 import { StreamDescription } from '~/components/StreamDescription'
-import { Tip, TipIconWrap } from '~/components/Tip'
+import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import { getSponsorshipStakeForOperator } from '~/utils/sponsorships'
 
@@ -115,15 +115,11 @@ export function FundedUntilCell({
                 <>
                     {value.format('YYYY-MM-DD')}
                     {value.isBefore(Date.now()) && (
-                        <Tip
-                            handle={
-                                <TipIconWrap $color="#ff5c00">
-                                    <JiraFailedBuildStatusIcon label="Error" />
-                                </TipIconWrap>
-                            }
-                        >
-                            Sponsorship expired
-                        </Tip>
+                        <Tooltip content="Sponsorship expired">
+                            <TooltipIconWrap $color="#ff5c00">
+                                <JiraFailedBuildStatusIcon label="Error" />
+                            </TooltipIconWrap>
+                        </Tooltip>
                     )}
                 </>
             )}
@@ -137,7 +133,7 @@ const Iconized = styled.div`
     gap: 8px;
     grid-template-columns: auto auto;
 
-    ${TipIconWrap} svg {
+    ${TooltipIconWrap} svg {
         width: 18px;
         height: 18px;
     }
@@ -158,15 +154,11 @@ export function NumberOfOperatorsCell({
         <Iconized>
             {sponsorship.operatorCount}
             {joinedByCurrentOperator && (
-                <Tip
-                    handle={
-                        <TipIconWrap $color="currentColor">
-                            <CheckIcon label="Already joined as Operator." />
-                        </TipIconWrap>
-                    }
-                >
-                    Already joined as Operator.
-                </Tip>
+                <Tooltip content="Already joined as Operator.">
+                    <TooltipIconWrap $color="currentColor">
+                        <CheckIcon label="Already joined as Operator." />
+                    </TooltipIconWrap>
+                </Tooltip>
             )}
         </Iconized>
     )

@@ -12,7 +12,7 @@ import Spinner from '~/components/Spinner'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { Separator } from '~/components/Separator'
 import { TABLET } from '~/shared/utils/styled'
-import { Tip } from '~/components/Tip'
+import { Tooltip } from '~/components/Tooltip'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { useOperatorReachability } from '~/shared/stores/operatorReachability'
@@ -251,16 +251,11 @@ function ChecklistItem({
             <div>{children}</div>
             {tip ? (
                 <div>
-                    <Tip
-                        shift="left"
-                        handle={
-                            <IconWrap>
-                                <QuestionMarkIcon />
-                            </IconWrap>
-                        }
-                    >
-                        {tip}
-                    </Tip>
+                    <Tooltip content={tip}>
+                        <IconWrap>
+                            <QuestionMarkIcon />
+                        </IconWrap>
+                    </Tooltip>
                 </div>
             ) : (
                 <></>

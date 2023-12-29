@@ -94,6 +94,11 @@
             @-ms-viewport {
                 width: device-width;
             }
+            
+            #hub-anchors {
+                max-width: 100vw;
+                overflow: hidden;
+            }
         </style>
         <% if (gtmId) { %>
         <!-- Google Tag Manager: Data layer -->
@@ -132,5 +137,6 @@
         <!-- React root -->
         <div id="modal-root"></div>
         <!-- Modal root -->
+        <div id="hub-anchors"></div>
     </body>
 </html>

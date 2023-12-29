@@ -7,7 +7,7 @@ export const Address = styled.div`
     display: grid;
     font-size: 14px;
     gap: 4px;
-    grid-template-columns: max-content max-content;
+    grid-template-columns: 1fr;
     line-height: 20px;
 
     p + & {
@@ -21,6 +21,19 @@ export const Address = styled.div`
     svg {
         display: block;
     }
+
+    @media (min-width: 400px) {
+        grid-template-columns: max-content max-content;
+    }
+`
+
+export const AddressLabel = styled.div``
+
+export const AddressContent = styled.div`
+    align-items: center;
+    display: grid;
+    gap: 4px;
+    grid-template-columns: max-content max-content;
 `
 
 export const Banner = styled.div`

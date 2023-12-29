@@ -4,7 +4,13 @@ import styled from 'styled-components'
 import { Link as PrestyledLink } from 'react-router-dom'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import { DefaultSimpleDropdownMenu } from '~/components/SimpleDropdown'
-import { Address, Banner, IconWrap } from '~/components/ActionBars/AboutEntity'
+import {
+    Address,
+    AddressContent,
+    AddressLabel,
+    Banner,
+    IconWrap,
+} from '~/components/ActionBars/AboutEntity'
 import { truncateStreamName } from '~/shared/utils/text'
 import { ExternalLinkIcon } from '~/icons'
 import routes from '~/routes'
@@ -17,14 +23,18 @@ export function AboutSponsorship({ sponsorship }: { sponsorship: ParsedSponsorsh
         <DefaultSimpleDropdownMenu>
             {streamId && (
                 <Address>
-                    <div>
-                        Sponsored stream: <strong>{truncateStreamName(streamId)}</strong>
-                    </div>
-                    <div>
-                        <Link to={routes.streams.show({ id: streamId })} target="_blank">
-                            <ExternalLinkIcon />
-                        </Link>
-                    </div>
+                    <AddressLabel>Sponsored stream:</AddressLabel>
+                    <AddressContent>
+                        <strong>{truncateStreamName(streamId)}</strong>
+                        <div>
+                            <Link
+                                to={routes.streams.show({ id: streamId })}
+                                target="_blank"
+                            >
+                                <ExternalLinkIcon />
+                            </Link>
+                        </div>
+                    </AddressContent>
                 </Address>
             )}
             <Banner>

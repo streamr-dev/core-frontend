@@ -63,6 +63,7 @@ export const NetworkActionBarTitle = styled.div`
     gap: 10px;
     justify-content: center;
     align-items: center;
+    word-break: break-word;
 `
 
 export const NetworkActionBarInfoButtons = styled.div`

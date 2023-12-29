@@ -2,7 +2,13 @@ import React from 'react'
 import InfoIcon from '@atlaskit/icon/glyph/info'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { DefaultSimpleDropdownMenu } from '~/components/SimpleDropdown'
-import { Address, Banner, IconWrap } from '~/components/ActionBars/AboutEntity'
+import {
+    Address,
+    AddressContent,
+    AddressLabel,
+    Banner,
+    IconWrap,
+} from '~/components/ActionBars/AboutEntity'
 import { truncate } from '~/shared/utils/text'
 import useCopy from '~/shared/hooks/useCopy'
 import { CopyIcon } from '~/icons'
@@ -21,14 +27,15 @@ export function AboutOperator({ operator }: { operator: ParsedOperator }) {
         <DefaultSimpleDropdownMenu>
             {(description || null) && <p>{description}</p>}
             <Address>
-                <div>
-                    Owner wallet address: <strong>{truncate(owner)}</strong>
-                </div>
-                <div>
-                    <IconButton type="button" onClick={() => void copy(owner)}>
-                        <CopyIcon />
-                    </IconButton>
-                </div>
+                <AddressLabel>Owner wallet address:</AddressLabel>
+                <AddressContent>
+                    <strong>{truncate(owner)}</strong>
+                    <div>
+                        <IconButton type="button" onClick={() => void copy(owner)}>
+                            <CopyIcon />
+                        </IconButton>
+                    </div>
+                </AddressContent>
             </Address>
             <Banner>
                 <IconWrap>

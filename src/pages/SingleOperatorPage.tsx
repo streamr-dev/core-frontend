@@ -9,7 +9,6 @@ import Layout, { LayoutColumn } from '~/components/Layout'
 import { NoData } from '~/shared/components/NoData'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { COLORS, LAPTOP, MEDIUM, TABLET } from '~/shared/utils/styled'
-import Help from '~/components/Help'
 import {
     formatLongDate,
     formatShortDate,
@@ -54,7 +53,7 @@ import { truncate } from '~/shared/utils/text'
 import { useConfigValueFromChain } from '~/hooks'
 import Button from '~/shared/components/Button'
 import { FundedUntilCell, StreamIdCell } from '~/components/Table'
-import { Tip, TipIconWrap } from '~/components/Tip'
+import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { useSetBlockDependency } from '~/stores/blockNumberDependencies'
 import { blockObserver } from '~/utils/blocks'
 import { LiveNodesTable } from '~/components/LiveNodesTable'
@@ -317,9 +316,9 @@ export const SingleOperatorPage = () => {
                                                     {minimumStakeReachTime.isAfter(
                                                         Date.now(),
                                                     ) && (
-                                                        <Tip
-                                                            handle={
-                                                                <TipIconWrap
+                                                        <Tooltip
+                                                            content={
+                                                                <TooltipIconWrap
                                                                     className="ml-1"
                                                                     $color="#ADADAD"
                                                                     $svgSize={{
@@ -328,7 +327,7 @@ export const SingleOperatorPage = () => {
                                                                     }}
                                                                 >
                                                                     <SvgIcon name="lockClosed" />
-                                                                </TipIconWrap>
+                                                                </TooltipIconWrap>
                                                             }
                                                         >
                                                             Minimum stake period:{' '}
@@ -336,7 +335,7 @@ export const SingleOperatorPage = () => {
                                                                 true,
                                                             )}{' '}
                                                             left
-                                                        </Tip>
+                                                        </Tooltip>
                                                     )}
                                                 </>
                                             )
@@ -475,18 +474,19 @@ export const SingleOperatorPage = () => {
                                                     {expirationDate.isBefore(
                                                         Date.now(),
                                                     ) && (
-                                                        <Tip
-                                                            handle={
-                                                                <TipIconWrap $color="#ff5c00">
-                                                                    <JiraFailedBuildStatusIcon label="Error" />
-                                                                </TipIconWrap>
+                                                        <Tooltip
+                                                            content={
+                                                                <p>
+                                                                    Payout time exceeded.
+                                                                    You can force unstake
+                                                                    now.
+                                                                </p>
                                                             }
                                                         >
-                                                            <p>
-                                                                Payout time exceeded. You
-                                                                can force unstake now.
-                                                            </p>
-                                                        </Tip>
+                                                            <TooltipIconWrap $color="#ff5c00">
+                                                                <JiraFailedBuildStatusIcon label="Error" />
+                                                            </TooltipIconWrap>
+                                                        </Tooltip>
                                                     )}
                                                 </WarningCell>
                                             )
@@ -600,22 +600,36 @@ export const SingleOperatorPage = () => {
                             <NetworkPageSegment
                                 title={
                                     <NodeAddressHeader>
-                                        <span>Operator&apos;s node addresses</span>
-                                        <Help align="center">
-                                            <p>
-                                                Your nodes need wallets for smart contract
-                                                interactions. Generate Ethereum wallets
-                                                using your tool of choice, add the private
-                                                key to your node&apos;s config file, and
-                                                add the corresponding address here. You
-                                                can run multiple nodes with the same
-                                                address/private key.
-                                                <br />
-                                                <br />
-                                                Each node address should be supplied with
-                                                some MATIC on Polygon chain for gas.
-                                            </p>
-                                        </Help>
+                                        <span>Operator&apos;s node addresses</span>{' '}
+                                        <div>
+                                            <Tooltip
+                                                content={
+                                                    <>
+                                                        <p>
+                                                            Your nodes need wallets for
+                                                            smart contract interactions.
+                                                            Generate Ethereum wallets
+                                                            using your tool of choice, add
+                                                            the private key to your
+                                                            node&apos;s config file, and
+                                                            add the corresponding address
+                                                            here. You can run multiple
+                                                            nodes with the same
+                                                            address/private&nbsp;key.
+                                                        </p>
+                                                        <p>
+                                                            Each node address should be
+                                                            supplied with some MATIC on
+                                                            Polygon chain for&nbsp;gas.
+                                                        </p>
+                                                    </>
+                                                }
+                                            >
+                                                <IconWrap>
+                                                    <QuestionMarkIcon />
+                                                </IconWrap>
+                                            </Tooltip>
+                                        </div>
                                     </NodeAddressHeader>
                                 }
                             >
@@ -769,7 +783,7 @@ const WarningCell = styled.div`
     gap: 8px;
     grid-template-columns: auto auto;
 
-    ${TipIconWrap} svg {
+    ${TooltipIconWrap} svg {
         width: 18px;
         height: 18px;
     }
@@ -800,3 +814,26 @@ function UncollectedEarnings({
         <Spinner color="blue" />
     )
 }
+
+/**
+ * @todo It's dupped accross the app. Find a way to reuse this wrapper.
+ */
+const IconWrap = styled.div<{ $color?: string }>`
+    align-items: center;
+    color: ${({ $color = 'inherit' }) => $color};
+    display: flex;
+    height: 24px;
+    justify-content: center;
+    position: relative;
+    width: 24px;
+`
+
+function getQuestionMarkIconAttrs(): ComponentProps<typeof SvgIcon> {
+    return { name: 'outlineQuestionMark' }
+}
+
+const QuestionMarkIcon = styled(SvgIcon).attrs(getQuestionMarkIconAttrs)`
+    display: block;
+    height: 16px;
+    width: 16px;
+`

@@ -8,7 +8,7 @@ import FormModal, {
     FormModalRoot,
     SectionHeadline,
 } from '~/modals/FormModal'
-import { Tip, TipIconWrap } from '~/components/Tip'
+import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { BN } from '~/utils/bn'
 import { fromAtto } from '~/marketplace/utils/math'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
@@ -139,15 +139,11 @@ function ForceUndelegateModal({ amount, onResolve, operator, ...props }: Props) 
                                         {abbr(fromAtto(element.amountWei))}{' '}
                                         <SponsorshipPaymentTokenName />
                                         {element.amountWei.isLessThan(amount) && (
-                                            <Tip
-                                                handle={
-                                                    <TipIconWrap $color="#ff5c00">
-                                                        <JiraFailedBuildStatusIcon label="Error" />
-                                                    </TipIconWrap>
-                                                }
-                                            >
-                                                <p>Partial payout</p>
-                                            </Tip>
+                                            <Tooltip content={<p>Partial payout</p>}>
+                                                <TooltipIconWrap $color="#ff5c00">
+                                                    <JiraFailedBuildStatusIcon label="Error" />
+                                                </TooltipIconWrap>
+                                            </Tooltip>
                                         )}
                                     </WarningCell>
                                 ),
@@ -166,23 +162,23 @@ function ForceUndelegateModal({ amount, onResolve, operator, ...props }: Props) 
                                             element.joinTimestamp,
                                             element.minimumStakingPeriodSeconds,
                                         ) && (
-                                            <Tip
-                                                handle={
-                                                    <TipIconWrap $color="#ff5c00">
-                                                        <JiraFailedBuildStatusIcon label="Error" />
-                                                    </TipIconWrap>
+                                            <Tooltip
+                                                content={
+                                                    <p>
+                                                        Minimum stake period of{' '}
+                                                        {element.minimumStakingPeriodSeconds /
+                                                            60 /
+                                                            60 /
+                                                            24}{' '}
+                                                        days not reached. Operator will be
+                                                        slashed.
+                                                    </p>
                                                 }
                                             >
-                                                <p>
-                                                    Minimum stake period of{' '}
-                                                    {element.minimumStakingPeriodSeconds /
-                                                        60 /
-                                                        60 /
-                                                        24}{' '}
-                                                    days not reached. Operator will be
-                                                    slashed.
-                                                </p>
-                                            </Tip>
+                                                <TooltipIconWrap $color="#ff5c00">
+                                                    <JiraFailedBuildStatusIcon label="Error" />
+                                                </TooltipIconWrap>
+                                            </Tooltip>
                                         )}
                                     </WarningCell>
                                 ),
@@ -256,7 +252,7 @@ const WarningCell = styled.div`
     gap: 8px;
     grid-template-columns: auto auto;
 
-    ${TipIconWrap} svg {
+    ${TooltipIconWrap} svg {
         width: 18px;
         height: 18px;
     }

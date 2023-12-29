@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { COLORS } from '~/shared/utils/styled'
+import { useBoundingClientRect } from './Anchor'
 
 type ChildrenFormatter =
     | ReactNode
@@ -90,10 +91,37 @@ export function SimpleDropdown({
         }
     }, [isOpen])
 
+    const menuRef = useRef<HTMLDivElement>(null)
+
+    const posRef = useRef<HTMLDivElement>(null)
+
+    const x = useBoundingClientRect(posRef, (r) => r?.x || 0)
+
+    const [dx, maxWidth] = useBoundingClientRect(menuRef, (rect) => {
+        const { clientWidth } = document.documentElement
+
+        if (!rect) {
+            return [0, clientWidth - 8]
+        }
+
+        return [
+            Math.min(0, clientWidth - x - Math.round(rect.width) - 4),
+            clientWidth - 8,
+        ]
+    })
+
     return (
         <SimpleDropdownRoot ref={rootRef}>
             {typeof children === 'function' ? children(setIsOpen, isOpen) : children}
-            <MenuWrap $visible={isOpen}>
+            <div ref={posRef} />
+            <MenuWrap
+                $visible={isOpen}
+                ref={menuRef}
+                style={{
+                    transform: `translateX(${dx}px)`,
+                    maxWidth,
+                }}
+            >
                 {typeof menu === 'function' ? menu(setIsOpen, isOpen) : menu}
             </MenuWrap>
         </SimpleDropdownRoot>
@@ -110,10 +138,9 @@ export const SimpleDropdownMenu = styled.div<{ $visible?: boolean }>`
     opacity: 0;
     pointer-events: none;
     position: absolute;
-    transform: translateY(-8px);
     transition: 250ms;
-    transition-delay: 250ms, 0s, 0s;
-    transition-property: visibility, opacity, transform;
+    transition-delay: 250ms, 0s;
+    transition-property: visibility, opacity;
     visibility: hidden;
     z-index: 1000;
 
@@ -122,7 +149,6 @@ export const SimpleDropdownMenu = styled.div<{ $visible?: boolean }>`
         css`
             opacity: 1;
             pointer-events: auto;
-            transform: translateY(0);
             visibility: visible;
             transition-delay: 0s;
         `}
@@ -156,5 +182,6 @@ export const SimpleListDropdownMenu = styled.div`
 
 export const DefaultSimpleDropdownMenu = styled(SimpleListDropdownMenu)`
     padding: 20px 16px;
+    max-width: 100%;
     width: 460px;
 `
