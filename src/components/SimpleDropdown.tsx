@@ -178,6 +178,6 @@ export const SimpleListDropdownMenu = styled.div`
 
 export const DefaultSimpleDropdownMenu = styled(SimpleListDropdownMenu)`
     padding: 20px 16px;
-    max-width: calc(100vw - 32px);
+    max-width: 100vw;
     width: 460px;
 `
