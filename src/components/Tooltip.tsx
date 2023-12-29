@@ -12,7 +12,7 @@ export function Tooltip({ children, content }: Props) {
 
     useEffect(() => {
         /**
-         * Let's dismiss tooltips after on scroll to avoid temporarily
+         * Let's dismiss tooltips on scroll to avoid temporarily
          * stranded-looking ones.
          */
 
