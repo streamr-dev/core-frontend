@@ -72,28 +72,76 @@ function TooltipComponent({
         return -Math.min(0, x - rect.width / 2)
     })
 
+    const [mounted, setMounted] = useState(visible)
+
+    const [animated, setAnimated] = useState(visible)
+
+    useEffect(() => {
+        let mounted = true
+
+        if (!visible) {
+            return
+        }
+
+        setMounted(true)
+
+        setTimeout(() => {
+            if (mounted) {
+                setAnimated(true)
+            }
+        })
+
+        return () => {
+            mounted = false
+        }
+    }, [visible])
+
     return (
-        <TooltipRoot
-            {...props}
-            $visible={visible}
-            ref={ref}
-            style={{
-                transform: `translate(${x | 0}px, ${
-                    y | 0
-                }px) translate(-50%, -100%) translateY(-10px) translateX(${dx | 0}px)`,
-            }}
-        >
-            <TooltipBody>
-                <Indicator
-                    style={{
-                        transform: `translate(-50%, -50%) translateY(-2px)  translateX(${
-                            -dx | 0
-                        }px) rotate(45deg)`,
-                    }}
-                />
-                <TooltipContent>{children}</TooltipContent>
-            </TooltipBody>
-        </TooltipRoot>
+        mounted && (
+            <TooltipRoot
+                {...props}
+                onTransitionEnd={({ propertyName, target }) => {
+                    /**
+                     * In this block we remove the tooltip from DOM if its element
+                     * becomes invisible.
+                     */
+
+                    if (propertyName !== 'visibility') {
+                        return
+                    }
+
+                    if (!(target instanceof HTMLDivElement)) {
+                        return
+                    }
+
+                    if (window.getComputedStyle(target).visibility === 'hidden') {
+                        setAnimated(false)
+
+                        setMounted(false)
+                    }
+                }}
+                $visible={animated && visible}
+                ref={ref}
+                style={{
+                    transform: `translate(${x | 0}px, ${
+                        y | 0
+                    }px) translate(-50%, -100%) translateY(-10px) translateX(${
+                        dx | 0
+                    }px)`,
+                }}
+            >
+                <TooltipBody>
+                    <Indicator
+                        style={{
+                            transform: `translate(-50%, -50%) translateY(-2px)  translateX(${
+                                -dx | 0
+                            }px) rotate(45deg)`,
+                        }}
+                    />
+                    <TooltipContent>{children}</TooltipContent>
+                </TooltipBody>
+            </TooltipRoot>
+        )
     )
 }
 
