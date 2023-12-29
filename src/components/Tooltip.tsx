@@ -68,10 +68,10 @@ function TooltipComponent({
         const { clientWidth } = document.documentElement
 
         if (x > clientWidth / 2) {
-            return Math.min(0, clientWidth - x - rect.width / 2)
+            return Math.min(0, clientWidth - x - rect.width / 2) | 0
         }
 
-        return -Math.min(0, x - rect.width / 2)
+        return -Math.min(0, x - rect.width / 2) | 0
     })
 
     return (
