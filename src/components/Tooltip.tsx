@@ -31,7 +31,9 @@ export function Tooltip({ children, content }: Props) {
         <Anchor
             onMouseEnter={() => void toggle(true)}
             onMouseLeave={() => void toggle(false)}
-            translate={(r) => (r ? [r.x + r.width / 2, r.y + window.scrollY] : [0, 0])}
+            translate={(r) =>
+                r ? [(r.x + r.width / 2) | 0, (r.y + window.scrollY) | 0] : [0, 0]
+            }
             component={TooltipComponent}
             componentProps={{
                 children: content,
