@@ -232,6 +232,15 @@ const Indicator = styled.div`
     border-radius: 2px;
     left: 50%;
     top: 100%;
+
+    ::before {
+        background: transparent;
+        content: '';
+        height: 12px;
+        position: absolute;
+        transform: rotate(-45deg) translateY(12px);
+        width: 12px;
+    }
 `
 
 export const TooltipIconWrap = styled.div<{
