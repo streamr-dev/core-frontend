@@ -131,7 +131,7 @@ const Iconized = styled.div`
     align-items: center;
     display: grid;
     gap: 8px;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto 18px;
 
     ${TooltipIconWrap} svg {
         width: 18px;
