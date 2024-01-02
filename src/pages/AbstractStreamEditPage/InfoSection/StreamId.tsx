@@ -16,13 +16,12 @@ import {
     useSetCurrentDraftTransientStreamId,
 } from '~/shared/stores/streamEditor'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import Help from '~/components/Help'
 import { DraftValidationError } from '~/errors'
+import { Hint } from '~/components/Hint'
 import useStreamOwnerOptionGroups, {
     ADD_ENS_DOMAIN_VALUE,
     OptionGroup,
 } from './useStreamOwnerOptionGroups'
-import { Hint } from '~/components/Hint'
 
 export const ENS_DOMAINS_URL = 'https://ens.domains'
 

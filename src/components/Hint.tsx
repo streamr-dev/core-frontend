@@ -3,6 +3,9 @@ import styled from 'styled-components'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { Tooltip } from '~/components/Tooltip'
 
+/**
+ * Question mark icon with a tooltip.
+ */
 export function Hint({ children }: { children: ReactNode }) {
     return (
         <Tooltip content={children}>
