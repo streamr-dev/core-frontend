@@ -1,5 +1,4 @@
-import React, { ComponentProps, useMemo } from 'react'
-import styled from 'styled-components'
+import React, { useMemo } from 'react'
 import moment from 'moment'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
 import Button from '~/shared/components/Button'
@@ -46,6 +45,7 @@ import {
     ActionBarWalletDisplay,
 } from '~/components/ActionBars/ActionBarButton'
 import { AboutSponsorship } from '~/components/ActionBars/AboutSponsorship'
+import { Hint } from '~/components/Hint'
 
 const DayInSeconds = 60 * 60 * 24
 
@@ -200,19 +200,13 @@ export function SponsorshipActionBar({
                         <StatCell
                             label="Payout rate"
                             tip={
-                                <Tooltip
-                                    content={
-                                        <p>
-                                            The rate of <SponsorshipPaymentTokenName />{' '}
-                                            tokens that are distributed to Operators that
-                                            have staked on this Sponsorship.
-                                        </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
+                                <Hint>
+                                    <p>
+                                        The rate of <SponsorshipPaymentTokenName /> tokens
+                                        that are distributed to Operators that have staked
+                                        on this Sponsorship.
+                                    </p>
+                                </Hint>
                             }
                         >
                             {abbr(sponsorship.payoutPerDay)}{' '}
@@ -225,20 +219,13 @@ export function SponsorshipActionBar({
                         <StatCell
                             label="Total staked"
                             tip={
-                                <Tooltip
-                                    content={
-                                        <p>
-                                            The total amount of{' '}
-                                            <SponsorshipPaymentTokenName /> tokens that
-                                            has been staked on this Sponsorship
-                                            by&nbsp;Operators.
-                                        </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
+                                <Hint>
+                                    <p>
+                                        The total amount of{' '}
+                                        <SponsorshipPaymentTokenName /> tokens that has
+                                        been staked on this Sponsorship by&nbsp;Operators.
+                                    </p>
+                                </Hint>
                             }
                         >
                             {abbr(sponsorship.totalStake)} <SponsorshipPaymentTokenName />
@@ -251,18 +238,12 @@ export function SponsorshipActionBar({
                         <StatCell
                             label="APY"
                             tip={
-                                <Tooltip
-                                    content={
-                                        <p>
-                                            The annualized yield that the staked Operators
-                                            are currently earning from this Sponsorship.
-                                        </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
+                                <Hint>
+                                    <p>
+                                        The annualized yield that the staked Operators are
+                                        currently earning from this Sponsorship.
+                                    </p>
+                                </Hint>
                             }
                         >
                             {(sponsorship.spotAPY * 100).toFixed(0)}%
@@ -270,19 +251,13 @@ export function SponsorshipActionBar({
                         <StatCell
                             label="Total sponsored"
                             tip={
-                                <Tooltip
-                                    content={
-                                        <p>
-                                            The cumulative amount of{' '}
-                                            <SponsorshipPaymentTokenName /> tokens that
-                                            Sponsors have funded this Sponsorship with.
-                                        </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
+                                <Hint>
+                                    <p>
+                                        The cumulative amount of{' '}
+                                        <SponsorshipPaymentTokenName /> tokens that
+                                        Sponsors have funded this Sponsorship with.
+                                    </p>
+                                </Hint>
                             }
                         >
                             {abbr(sponsorship.cumulativeSponsoring)}{' '}
@@ -291,21 +266,15 @@ export function SponsorshipActionBar({
                         <StatCell
                             label="Minimum stake duration"
                             tip={
-                                <Tooltip
-                                    content={
-                                        <p>
-                                            The minimum time that Operators must stay
-                                            staked in this Sponsorship before they are
-                                            able to fully unstake without a penalty. Stake
-                                            reduction is always allowed and only limited
-                                            by minimum&nbsp;stake.
-                                        </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
+                                <Hint>
+                                    <p>
+                                        The minimum time that Operators must stay staked
+                                        in this Sponsorship before they are able to fully
+                                        unstake without a penalty. Stake reduction is
+                                        always allowed and only limited by
+                                        minimum&nbsp;stake.
+                                    </p>
+                                </Hint>
                             }
                         >
                             {minimumStakingDays.toFixed(0)} day
@@ -317,26 +286,6 @@ export function SponsorshipActionBar({
         </SingleElementPageActionBar>
     )
 }
-
-function getQuestionMarkIconAttrs(): ComponentProps<typeof SvgIcon> {
-    return { name: 'outlineQuestionMark' }
-}
-
-const QuestionMarkIcon = styled(SvgIcon).attrs(getQuestionMarkIconAttrs)`
-    display: block;
-    height: 16px;
-    width: 16px;
-`
-
-const IconWrap = styled.div<{ $color?: string }>`
-    align-items: center;
-    color: ${({ $color = 'inherit' }) => $color};
-    display: flex;
-    height: 24px;
-    justify-content: center;
-    position: relative;
-    width: 24px;
-`
 
 function JoinAsOperatorButton({
     sponsorship,

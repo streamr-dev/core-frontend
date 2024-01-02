@@ -1,4 +1,4 @@
-import React, { ComponentProps, FunctionComponent, useMemo } from 'react'
+import React, { FunctionComponent, useMemo } from 'react'
 import styled from 'styled-components'
 import { useQuery } from '@tanstack/react-query'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
@@ -46,6 +46,7 @@ import {
     ActionBarWalletDisplay,
 } from '~/components/ActionBars/ActionBarButton'
 import { AboutOperator } from '~/components/ActionBars/AboutOperator'
+import { Hint } from '~/components/Hint'
 import { SponsorshipPaymentTokenName } from '../SponsorshipPaymentTokenName'
 
 export const OperatorActionBar: FunctionComponent<{
@@ -216,21 +217,14 @@ export const OperatorActionBar: FunctionComponent<{
                                             </TooltipIconWrap>
                                         </Tooltip>
                                     ) : (
-                                        <Tooltip
-                                            content={
-                                                <p>
-                                                    The total amount of{' '}
-                                                    <SponsorshipPaymentTokenName /> tokens
-                                                    that are staked on the Operator,
-                                                    including deployed and undeployed
-                                                    tokens.
-                                                </p>
-                                            }
-                                        >
-                                            <IconWrap>
-                                                <QuestionMarkIcon />
-                                            </IconWrap>
-                                        </Tooltip>
+                                        <Hint>
+                                            <p>
+                                                The total amount of{' '}
+                                                <SponsorshipPaymentTokenName /> tokens
+                                                that are staked on the Operator, including
+                                                deployed and undeployed tokens.
+                                            </p>
+                                        </Hint>
                                     )}
                                 </>
                             }
@@ -243,19 +237,13 @@ export const OperatorActionBar: FunctionComponent<{
                         <StatCell
                             label="Deployed stake"
                             tip={
-                                <Tooltip
-                                    content={
-                                        <p>
-                                            The amount of <SponsorshipPaymentTokenName />{' '}
-                                            tokens that the Operator has staked on
-                                            Sponsorships.
-                                        </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
+                                <Hint>
+                                    <p>
+                                        The amount of <SponsorshipPaymentTokenName />{' '}
+                                        tokens that the Operator has staked on
+                                        Sponsorships.
+                                    </p>
+                                </Hint>
                             }
                         >
                             {abbr(fromAtto(operator.totalStakeInSponsorshipsWei))}{' '}
@@ -264,18 +252,12 @@ export const OperatorActionBar: FunctionComponent<{
                         <StatCell
                             label="Owner's stake"
                             tip={
-                                <Tooltip
-                                    content={
-                                        <p>
-                                            The percentage of stake supplied from the
-                                            owner of the Operator.
-                                        </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
+                                <Hint>
+                                    <p>
+                                        The percentage of stake supplied from the owner of
+                                        the Operator.
+                                    </p>
+                                </Hint>
                             }
                         >
                             {ownerDelegationPercentage.toFixed(0)}%
@@ -283,41 +265,29 @@ export const OperatorActionBar: FunctionComponent<{
                         <StatCell
                             label="Node redundancy"
                             tip={
-                                <Tooltip
-                                    content={
-                                        <>
-                                            <p>
-                                                The amount of duplicated work when running
-                                                a fleet of multiple nodes.
-                                            </p>
-                                            <p>
-                                                Doing redundant work protects against
-                                                slashing in case some of your nodes
-                                                experience failures. For example,
-                                            </p>
-                                            <ul>
-                                                <li>
-                                                    <strong>
-                                                        A Redundancy Factor of 1
-                                                    </strong>{' '}
-                                                    means that no duplication of work
-                                                    occurs (the feature is off),
-                                                </li>
-                                                <li>
-                                                    <strong>
-                                                        A Redundancy Factor of 2
-                                                    </strong>{' '}
-                                                    means that each stream assignment will
-                                                    be worked on by 2 nodes in the fleet.
-                                                </li>
-                                            </ul>
-                                        </>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
+                                <Hint>
+                                    <p>
+                                        The amount of duplicated work when running a fleet
+                                        of multiple nodes.
+                                    </p>
+                                    <p>
+                                        Doing redundant work protects against slashing in
+                                        case some of your nodes experience failures. For
+                                        example,
+                                    </p>
+                                    <ul>
+                                        <li>
+                                            <strong>A Redundancy Factor of 1</strong>{' '}
+                                            means that no duplication of work occurs (the
+                                            feature is off),
+                                        </li>
+                                        <li>
+                                            <strong>A Redundancy Factor of 2</strong>{' '}
+                                            means that each stream assignment will be
+                                            worked on by 2 nodes in the fleet.
+                                        </li>
+                                    </ul>
+                                </Hint>
                             }
                         >
                             {operator.metadata?.redundancyFactor?.toString() || '1'}
@@ -330,27 +300,18 @@ export const OperatorActionBar: FunctionComponent<{
                         <StatCell
                             label="Owner's cut"
                             tip={
-                                <Tooltip
-                                    content={
-                                        <>
-                                            <p>
-                                                The fee that the owner of the Operator
-                                                takes from all earnings.
-                                            </p>
-                                            <p>
-                                                The remaining earnings are distributed
-                                                among all stakeholders in the Operator,
-                                                which includes delegators and the owner,
-                                                in proportion to the size of their
-                                                respective stakes.
-                                            </p>
-                                        </>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
+                                <Hint>
+                                    <p>
+                                        The fee that the owner of the Operator takes from
+                                        all earnings.
+                                    </p>
+                                    <p>
+                                        The remaining earnings are distributed among all
+                                        stakeholders in the Operator, which includes
+                                        delegators and the owner, in proportion to the
+                                        size of their respective stakes.
+                                    </p>
+                                </Hint>
                             }
                         >
                             {operator.operatorsCut}%
@@ -358,21 +319,14 @@ export const OperatorActionBar: FunctionComponent<{
                         <StatCell
                             label="Spot APY"
                             tip={
-                                <Tooltip
-                                    content={
-                                        <p>
-                                            The annualized yield that this Operator is
-                                            earning right now, calculated from
-                                            the&nbsp;present payout rates of the
-                                            Sponsorships the Operator is
-                                            currently&nbsp;staked in.
-                                        </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
+                                <Hint>
+                                    <p>
+                                        The annualized yield that this Operator is earning
+                                        right now, calculated from the&nbsp;present payout
+                                        rates of the Sponsorships the Operator is
+                                        currently&nbsp;staked in.
+                                    </p>
+                                </Hint>
                             }
                         >
                             {(getSpotApy(operator) * 100).toFixed(0)}%
@@ -380,18 +334,12 @@ export const OperatorActionBar: FunctionComponent<{
                         <StatCell
                             label="Cumulative earnings"
                             tip={
-                                <Tooltip
-                                    content={
-                                        <p>
-                                            The total earnings that this Operator has
-                                            accumulated over its whole&nbsp;lifetime.
-                                        </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
+                                <Hint>
+                                    <p>
+                                        The total earnings that this Operator has
+                                        accumulated over its whole&nbsp;lifetime.
+                                    </p>
+                                </Hint>
                             }
                         >
                             {abbr(
@@ -406,27 +354,19 @@ export const OperatorActionBar: FunctionComponent<{
                         <StatCell
                             label="Live nodes"
                             tip={
-                                <Tooltip
-                                    content={
-                                        <p>
-                                            The number of online nodes detected that are
-                                            doing work for this Operator.
-                                        </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
+                                <Hint>
+                                    <p>
+                                        The number of online nodes detected that are doing
+                                        work for this Operator.
+                                    </p>
+                                </Hint>
                             }
                         >
-                            <>
-                                {liveNodeCountIsLoading ? (
-                                    <Spinner color="blue" />
-                                ) : (
-                                    liveNodeCount.toString()
-                                )}
-                            </>
+                            {liveNodeCountIsLoading ? (
+                                <Spinner color="blue" />
+                            ) : (
+                                liveNodeCount.toString()
+                            )}
                         </StatCell>
                     </StatGrid>
                 </Pad>
@@ -446,24 +386,4 @@ export const Pad = styled.div`
     @media ${TABLET} {
         padding: 32px 40px;
     }
-`
-
-function getQuestionMarkIconAttrs(): ComponentProps<typeof SvgIcon> {
-    return { name: 'outlineQuestionMark' }
-}
-
-const QuestionMarkIcon = styled(SvgIcon).attrs(getQuestionMarkIconAttrs)`
-    display: block;
-    height: 16px;
-    width: 16px;
-`
-
-const IconWrap = styled.div<{ $color?: string }>`
-    align-items: center;
-    color: ${({ $color = 'inherit' }) => $color};
-    display: flex;
-    height: 24px;
-    justify-content: center;
-    position: relative;
-    width: 24px;
 `

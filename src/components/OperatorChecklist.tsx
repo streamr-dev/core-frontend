@@ -1,4 +1,4 @@
-import React, { ComponentProps, ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
@@ -9,14 +9,13 @@ import { toAtto } from '~/marketplace/utils/math'
 import { getNativeTokenBalance } from '~/marketplace/utils/web3'
 import { toBN } from '~/utils/bn'
 import Spinner from '~/components/Spinner'
-import SvgIcon from '~/shared/components/SvgIcon'
 import { Separator } from '~/components/Separator'
 import { TABLET } from '~/shared/utils/styled'
-import { Tooltip } from '~/components/Tooltip'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { useOperatorReachability } from '~/shared/stores/operatorReachability'
 import { useIsWaitingForBlockNumber } from '~/stores/blockNumberDependencies'
+import { Hint, IconWrap } from '~/components/Hint'
 
 export function OperatorChecklist({ operatorId }: { operatorId: string | undefined }) {
     const { funded, nodesDeclared, nodesFunded, nodesReachable, nodesRunning } =
@@ -251,11 +250,7 @@ function ChecklistItem({
             <div>{children}</div>
             {tip ? (
                 <div>
-                    <Tooltip content={tip}>
-                        <IconWrap>
-                            <QuestionMarkIcon />
-                        </IconWrap>
-                    </Tooltip>
+                    <Hint>{tip}</Hint>
                 </div>
             ) : (
                 <></>
@@ -274,24 +269,4 @@ const ChecklistItemRoot = styled.div`
     @media ${TABLET} {
         padding: 16px 40px;
     }
-`
-
-function getQuestionMarkIconAttrs(): ComponentProps<typeof SvgIcon> {
-    return { name: 'outlineQuestionMark' }
-}
-
-const QuestionMarkIcon = styled(SvgIcon).attrs(getQuestionMarkIconAttrs)`
-    display: block;
-    height: 16px;
-    width: 16px;
-`
-
-const IconWrap = styled.div<{ $color?: string }>`
-    align-items: center;
-    color: ${({ $color = 'inherit' }) => $color};
-    display: flex;
-    height: 24px;
-    justify-content: center;
-    position: relative;
-    width: 24px;
 `
