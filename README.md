@@ -56,7 +56,7 @@ Use `.travis.yml` to set the production values.
 ### Backend
 
 To run the app locally, you must install and start the development environment running on Docker.
-Follow the instructions [https://github.com/streamr-dev/streamr-docker-dev](here) to start the full stack except the frontend:
+Follow the instructions [here](https://github.com/streamr-dev/streamr-docker-dev) to start the full stack except the frontend:
 
 `streamr-docker-dev start --except platform`
 
