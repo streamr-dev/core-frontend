@@ -230,7 +230,7 @@ const SiSymbol = ['', 'k', 'M', 'G', 'T', 'P']
  */
 export function abbr(
     value: BNish,
-    { fractionalLength = 2, stripFractionalZeros = true } = {},
+    { fractionalLength = 3, stripFractionalZeros = true } = {},
 ) {
     const v = toBN(value)
 
