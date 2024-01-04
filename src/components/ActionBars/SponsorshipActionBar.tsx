@@ -1,5 +1,4 @@
-import React, { ComponentProps, useMemo } from 'react'
-import styled from 'styled-components'
+import React, { useMemo } from 'react'
 import moment from 'moment'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
 import Button from '~/shared/components/Button'
@@ -8,23 +7,10 @@ import routes from '~/routes'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
-import { Pad } from '~/components/ActionBars/OperatorActionBar'
 import { useOperatorForWalletQuery } from '~/hooks/operators'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
-import {
-    NetworkActionBarBackButtonAndTitle,
-    NetworkActionBarBackButtonIcon,
-    NetworkActionBarBackLink,
-    NetworkActionBarCTAs,
-    NetworkActionBarInfoButtons,
-    NetworkActionBarStatsTitle,
-    NetworkActionBarTitle,
-    SingleElementPageActionBar,
-    SingleElementPageActionBarContainer,
-    SingleElementPageActionBarTopPart,
-} from '~/components/ActionBars/NetworkActionBar.styles'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { Tooltip } from '~/components/Tooltip'
@@ -37,7 +23,7 @@ import {
     useJoinSponsorshipAsOperator,
 } from '~/hooks/sponsorships'
 import { COLORS } from '~/shared/utils/styled'
-import { abbr, goBack } from '~/utils'
+import { abbr } from '~/utils'
 import {
     ActionBarButton,
     ActionBarButtonBody,
@@ -46,6 +32,8 @@ import {
     ActionBarWalletDisplay,
 } from '~/components/ActionBars/ActionBarButton'
 import { AboutSponsorship } from '~/components/ActionBars/AboutSponsorship'
+import { Hint } from '~/components/Hint'
+import { AbstractActionBar, Pad } from './AbstractActionBar'
 
 const DayInSeconds = 60 * 60 * 24
 
@@ -88,211 +76,165 @@ export function SponsorshipActionBar({
     const { streamId } = sponsorship
 
     return (
-        <SingleElementPageActionBar>
-            <SingleElementPageActionBarContainer>
-                <SingleElementPageActionBarTopPart>
-                    <div>
-                        <NetworkActionBarBackButtonAndTitle>
-                            <NetworkActionBarBackLink
-                                to={routes.network.sponsorships()}
-                                onClick={(e) => {
-                                    goBack({
-                                        onBeforeNavigate() {
-                                            e.preventDefault()
-                                        },
-                                    })
-                                }}
+        <AbstractActionBar
+            fallbackBackButtonUrl={routes.network.sponsorships()}
+            title={
+                streamId ? (
+                    truncateStreamName(streamId, 30)
+                ) : (
+                    <>Sponsorship {truncate(sponsorship.id)}</>
+                )
+            }
+            buttons={
+                <>
+                    <ActionBarButtonBody
+                        $background={
+                            isPaying ? COLORS.activeBackground : COLORS.radioBorder
+                        }
+                        $color={isPaying ? COLORS.active : COLORS.primary}
+                    >
+                        <strong>{isPaying ? 'Paying' : 'Inactive'}</strong>
+                    </ActionBarButtonBody>
+                    <SimpleDropdown menu={<AboutSponsorship sponsorship={sponsorship} />}>
+                        {(toggle, isOpen) => (
+                            <ActionBarButton
+                                active={isOpen}
+                                onClick={() => void toggle((c) => !c)}
                             >
-                                <NetworkActionBarBackButtonIcon name="backArrow" />
-                            </NetworkActionBarBackLink>
-                            <NetworkActionBarTitle>
-                                {streamId ? (
-                                    truncateStreamName(streamId, 30)
-                                ) : (
-                                    <>Sponsorship {truncate(sponsorship.id)}</>
-                                )}
-                            </NetworkActionBarTitle>
-                        </NetworkActionBarBackButtonAndTitle>
-                        <NetworkActionBarInfoButtons>
-                            <ActionBarButtonBody
-                                $background={
-                                    isPaying
-                                        ? COLORS.activeBackground
-                                        : COLORS.radioBorder
-                                }
-                                $color={isPaying ? COLORS.active : COLORS.primary}
-                            >
-                                <strong>{isPaying ? 'Paying' : 'Inactive'}</strong>
-                            </ActionBarButtonBody>
-                            <SimpleDropdown
-                                menu={<AboutSponsorship sponsorship={sponsorship} />}
-                            >
-                                {(toggle, isOpen) => (
-                                    <ActionBarButton
-                                        active={isOpen}
-                                        onClick={() => void toggle((c) => !c)}
-                                    >
-                                        <ActionBarButtonInnerBody>
-                                            <SvgIcon name="page" />
-                                            <strong>About Sponsorship</strong>
-                                        </ActionBarButtonInnerBody>
-                                        <ActionBarButtonCaret $invert={isOpen} />
-                                    </ActionBarButton>
-                                )}
-                            </SimpleDropdown>
-                            {fundedUntil && (
-                                <ActionBarButtonBody>
-                                    <div>
-                                        Funded until: <strong>{fundedUntil}</strong>
-                                    </div>
-                                </ActionBarButtonBody>
-                            )}
-                            <ActionBarWalletDisplay
-                                address={sponsorship.id}
-                                label="Contract"
-                            />
-                        </NetworkActionBarInfoButtons>
-                    </div>
-                    <NetworkActionBarCTAs>
-                        {canEditStake ? (
-                            <Button
-                                disabled={!operator}
-                                waiting={isEditingSponsorshipFunding}
-                                onClick={async () => {
-                                    if (!operator) {
-                                        return
-                                    }
-
-                                    editSponsorshipFunding({
-                                        sponsorshipOrSponsorshipId: sponsorship,
-                                        operator,
-                                    })
-                                }}
-                            >
-                                Edit stake
-                            </Button>
-                        ) : (
-                            <JoinAsOperatorButton
-                                sponsorship={sponsorship}
-                                operator={operator}
-                            />
+                                <ActionBarButtonInnerBody>
+                                    <SvgIcon name="page" />
+                                    <strong>About Sponsorship</strong>
+                                </ActionBarButtonInnerBody>
+                                <ActionBarButtonCaret $invert={isOpen} />
+                            </ActionBarButton>
                         )}
+                    </SimpleDropdown>
+                    {fundedUntil && (
+                        <ActionBarButtonBody>
+                            <div>
+                                Funded until: <strong>{fundedUntil}</strong>
+                            </div>
+                        </ActionBarButtonBody>
+                    )}
+                    <ActionBarWalletDisplay address={sponsorship.id} label="Contract" />
+                </>
+            }
+            ctas={
+                <>
+                    {canEditStake ? (
                         <Button
-                            // We decided to disable sponsoring for now as users don't know what it does.
-                            // https://streamr-team.slack.com/archives/C9QB9RJ48/p1701774490263629
-                            disabled={!streamId || true}
-                            kind="secondary"
-                            waiting={isFundingSponsorship}
-                            onClick={() => {
-                                fundSponsorship(sponsorship)
+                            disabled={!operator}
+                            waiting={isEditingSponsorshipFunding}
+                            onClick={async () => {
+                                if (!operator) {
+                                    return
+                                }
+
+                                editSponsorshipFunding({
+                                    sponsorshipOrSponsorshipId: sponsorship,
+                                    operator,
+                                })
                             }}
                         >
-                            Sponsor
+                            Edit stake
                         </Button>
-                    </NetworkActionBarCTAs>
-                </SingleElementPageActionBarTopPart>
-                <NetworkActionBarStatsTitle>
-                    Sponsorship summary
-                </NetworkActionBarStatsTitle>
-                <Separator />
-                <Pad>
-                    <StatGrid>
-                        <StatCell
-                            label="Payout rate"
-                            tip={
-                                <Tooltip
-                                    content={
+                    ) : (
+                        <JoinAsOperatorButton
+                            sponsorship={sponsorship}
+                            operator={operator}
+                        />
+                    )}
+                    <Button
+                        // We decided to disable sponsoring for now as users don't know what it does.
+                        // https://streamr-team.slack.com/archives/C9QB9RJ48/p1701774490263629
+                        disabled={!streamId || true}
+                        kind="secondary"
+                        waiting={isFundingSponsorship}
+                        onClick={() => {
+                            fundSponsorship(sponsorship)
+                        }}
+                    >
+                        Sponsor
+                    </Button>
+                </>
+            }
+            summaryTitle="Sponsorship summary"
+            summary={
+                <>
+                    <Pad>
+                        <StatGrid>
+                            <StatCell
+                                label="Payout rate"
+                                tip={
+                                    <Hint>
                                         <p>
                                             The rate of <SponsorshipPaymentTokenName />{' '}
                                             tokens that are distributed to Operators that
                                             have staked on this Sponsorship.
                                         </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
-                            }
-                        >
-                            {abbr(sponsorship.payoutPerDay)}{' '}
-                            <SponsorshipPaymentTokenName />
-                            /day
-                        </StatCell>
-                        <StatCell label="Remaining balance">
-                            {abbr(remainingBalance)} <SponsorshipPaymentTokenName />
-                        </StatCell>
-                        <StatCell
-                            label="Total staked"
-                            tip={
-                                <Tooltip
-                                    content={
+                                    </Hint>
+                                }
+                            >
+                                {abbr(sponsorship.payoutPerDay)}{' '}
+                                <SponsorshipPaymentTokenName />
+                                /day
+                            </StatCell>
+                            <StatCell label="Remaining balance">
+                                {abbr(remainingBalance)} <SponsorshipPaymentTokenName />
+                            </StatCell>
+                            <StatCell
+                                label="Total staked"
+                                tip={
+                                    <Hint>
                                         <p>
                                             The total amount of{' '}
                                             <SponsorshipPaymentTokenName /> tokens that
                                             has been staked on this Sponsorship
                                             by&nbsp;Operators.
                                         </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
-                            }
-                        >
-                            {abbr(sponsorship.totalStake)} <SponsorshipPaymentTokenName />
-                        </StatCell>
-                    </StatGrid>
-                </Pad>
-                <Separator />
-                <Pad>
-                    <StatGrid>
-                        <StatCell
-                            label="APY"
-                            tip={
-                                <Tooltip
-                                    content={
+                                    </Hint>
+                                }
+                            >
+                                {abbr(sponsorship.totalStake)}{' '}
+                                <SponsorshipPaymentTokenName />
+                            </StatCell>
+                        </StatGrid>
+                    </Pad>
+                    <Separator />
+                    <Pad>
+                        <StatGrid>
+                            <StatCell
+                                label="APY"
+                                tip={
+                                    <Hint>
                                         <p>
                                             The annualized yield that the staked Operators
                                             are currently earning from this Sponsorship.
                                         </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
-                            }
-                        >
-                            {(sponsorship.spotAPY * 100).toFixed(0)}%
-                        </StatCell>
-                        <StatCell
-                            label="Total sponsored"
-                            tip={
-                                <Tooltip
-                                    content={
+                                    </Hint>
+                                }
+                            >
+                                {(sponsorship.spotAPY * 100).toFixed(0)}%
+                            </StatCell>
+                            <StatCell
+                                label="Total sponsored"
+                                tip={
+                                    <Hint>
                                         <p>
                                             The cumulative amount of{' '}
                                             <SponsorshipPaymentTokenName /> tokens that
                                             Sponsors have funded this Sponsorship with.
                                         </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
-                            }
-                        >
-                            {abbr(sponsorship.cumulativeSponsoring)}{' '}
-                            <SponsorshipPaymentTokenName />
-                        </StatCell>
-                        <StatCell
-                            label="Minimum stake duration"
-                            tip={
-                                <Tooltip
-                                    content={
+                                    </Hint>
+                                }
+                            >
+                                {abbr(sponsorship.cumulativeSponsoring)}{' '}
+                                <SponsorshipPaymentTokenName />
+                            </StatCell>
+                            <StatCell
+                                label="Minimum stake duration"
+                                tip={
+                                    <Hint>
                                         <p>
                                             The minimum time that Operators must stay
                                             staked in this Sponsorship before they are
@@ -300,43 +242,19 @@ export function SponsorshipActionBar({
                                             reduction is always allowed and only limited
                                             by minimum&nbsp;stake.
                                         </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
-                            }
-                        >
-                            {minimumStakingDays.toFixed(0)} day
-                            {minimumStakingDays !== 1 && 's'}
-                        </StatCell>
-                    </StatGrid>
-                </Pad>
-            </SingleElementPageActionBarContainer>
-        </SingleElementPageActionBar>
+                                    </Hint>
+                                }
+                            >
+                                {minimumStakingDays.toFixed(0)} day
+                                {minimumStakingDays !== 1 && 's'}
+                            </StatCell>
+                        </StatGrid>
+                    </Pad>
+                </>
+            }
+        />
     )
 }
-
-function getQuestionMarkIconAttrs(): ComponentProps<typeof SvgIcon> {
-    return { name: 'outlineQuestionMark' }
-}
-
-const QuestionMarkIcon = styled(SvgIcon).attrs(getQuestionMarkIconAttrs)`
-    display: block;
-    height: 16px;
-    width: 16px;
-`
-
-const IconWrap = styled.div<{ $color?: string }>`
-    align-items: center;
-    color: ${({ $color = 'inherit' }) => $color};
-    display: flex;
-    height: 24px;
-    justify-content: center;
-    position: relative;
-    width: 24px;
-`
 
 function JoinAsOperatorButton({
     sponsorship,

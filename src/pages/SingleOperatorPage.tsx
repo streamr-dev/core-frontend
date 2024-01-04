@@ -60,6 +60,7 @@ import { LiveNodesTable } from '~/components/LiveNodesTable'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { abbr, saveOperator } from '~/utils'
 import SvgIcon from '~/shared/components/SvgIcon'
+import { Hint } from '~/components/Hint'
 
 const defaultChartData = []
 
@@ -602,33 +603,23 @@ export const SingleOperatorPage = () => {
                                     <NodeAddressHeader>
                                         <span>Operator&apos;s node addresses</span>{' '}
                                         <div>
-                                            <Tooltip
-                                                content={
-                                                    <>
-                                                        <p>
-                                                            Your nodes need wallets for
-                                                            smart contract interactions.
-                                                            Generate Ethereum wallets
-                                                            using your tool of choice, add
-                                                            the private key to your
-                                                            node&apos;s config file, and
-                                                            add the corresponding address
-                                                            here. You can run multiple
-                                                            nodes with the same
-                                                            address/private&nbsp;key.
-                                                        </p>
-                                                        <p>
-                                                            Each node address should be
-                                                            supplied with some MATIC on
-                                                            Polygon chain for&nbsp;gas.
-                                                        </p>
-                                                    </>
-                                                }
-                                            >
-                                                <IconWrap>
-                                                    <QuestionMarkIcon />
-                                                </IconWrap>
-                                            </Tooltip>
+                                            <Hint>
+                                                <p>
+                                                    Your nodes need wallets for smart
+                                                    contract interactions. Generate
+                                                    Ethereum wallets using your tool of
+                                                    choice, add the private key to your
+                                                    node&apos;s config file, and add the
+                                                    corresponding address here. You can
+                                                    run multiple nodes with the same
+                                                    address/private&nbsp;key.
+                                                </p>
+                                                <p>
+                                                    Each node address should be supplied
+                                                    with some MATIC on Polygon chain
+                                                    for&nbsp;gas.
+                                                </p>
+                                            </Hint>
                                         </div>
                                     </NodeAddressHeader>
                                 }
@@ -814,26 +805,3 @@ function UncollectedEarnings({
         <Spinner color="blue" />
     )
 }
-
-/**
- * @todo It's dupped accross the app. Find a way to reuse this wrapper.
- */
-const IconWrap = styled.div<{ $color?: string }>`
-    align-items: center;
-    color: ${({ $color = 'inherit' }) => $color};
-    display: flex;
-    height: 24px;
-    justify-content: center;
-    position: relative;
-    width: 24px;
-`
-
-function getQuestionMarkIconAttrs(): ComponentProps<typeof SvgIcon> {
-    return { name: 'outlineQuestionMark' }
-}
-
-const QuestionMarkIcon = styled(SvgIcon).attrs(getQuestionMarkIconAttrs)`
-    display: block;
-    height: 16px;
-    width: 16px;
-`

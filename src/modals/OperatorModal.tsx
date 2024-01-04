@@ -17,9 +17,8 @@ import FormModal, {
     WingedLabelWrap,
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
-import Help from '~/components/Help'
 import AvatarImage from '~/shared/components/AvatarImage'
-import { COLORS } from '~/shared/utils/styled'
+import { COLORS, TABLET } from '~/shared/utils/styled'
 import Button from '~/shared/components/Button'
 import SvgIcon from '~/shared/components/SvgIcon'
 import CropImageModal from '~/components/CropImageModal/CropImageModal'
@@ -30,6 +29,7 @@ import { isTransactionRejection, sameBN, waitForIndexedBlock } from '~/utils'
 import { createOperator, updateOperator } from '~/services/operators'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { getParsedOperatorByOwnerAddress } from '~/getters'
+import { Hint } from '~/components/Hint'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     onResolve?: (operatorId: string) => void
@@ -214,13 +214,13 @@ function OperatorModal({ onResolve, onReject, operator, ...props }: Props) {
         >
             <SectionHeadline>
                 Please choose the percentage for the Owner&apos;s cut{' '}
-                <Help align="center">
+                <Hint>
                     <p>
                         The Owner&apos;s cut percentage is the earnings split between the
                         Operator and its Delegators. This value can be updated as long as
                         the Operator is not staked on any&nbsp;Sponsorships.
                     </p>
-                </Help>
+                </Hint>
             </SectionHeadline>
             <Section>
                 <WingedLabelWrap>
@@ -264,7 +264,7 @@ function OperatorModal({ onResolve, onReject, operator, ...props }: Props) {
             )}
             <SectionHeadline>
                 Please input your node redundancy factor{' '}
-                <Help align="center">
+                <Hint>
                     <p>
                         Sets the amount of duplicated work when running a fleet of
                         multiple nodes. Doing redundant work protects against slashing in
@@ -273,7 +273,7 @@ function OperatorModal({ onResolve, onReject, operator, ...props }: Props) {
                         off), and setting it to 2 means that each stream assignment will
                         be worked on by 2 nodes in your fleet.
                     </p>
-                </Help>
+                </Hint>
             </SectionHeadline>
             <Section>
                 <WingedLabelWrap>
@@ -451,12 +451,29 @@ const AboutOperatorField = styled.div`
 `
 
 const AvatarField = styled.div`
-    display: flex;
     padding: 20px;
+    width: 100%;
+
+    button {
+        width: 100%;
+    }
+
+    @media ${TABLET} {
+        display: flex;
+
+        button {
+            width: auto;
+        }
+    }
 `
 
 const AvatarDisplayContainer = styled.div`
-    margin-right: 30px;
+    margin: 0 auto 16px;
+    width: max-content;
+
+    @media ${TABLET} {
+        margin: 0 32px 0 0;
+    }
 `
 
 const AvatarImageStyles = css`
@@ -475,9 +492,12 @@ const OperatorAvatar = styled.img`
 `
 
 const AvatarRequirements = styled.ul`
-    padding: 0;
-    margin: 10px 0 0;
+    color: #555;
+    font-size: 12px;
     list-style-position: inside;
+    margin: 10px 0 0;
+    padding: 0;
+    text-align: center;
 `
 
 const ButtonIcon = styled(SvgIcon)`

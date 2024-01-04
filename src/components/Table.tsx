@@ -3,13 +3,13 @@ import styled, { css } from 'styled-components'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import CheckIcon from '@atlaskit/icon/glyph/check'
 import moment from 'moment'
-import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { StreamInfoCell } from '~/components/NetworkUtils'
 import { StreamDescription } from '~/components/StreamDescription'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import { getSponsorshipStakeForOperator } from '~/utils/sponsorships'
+import { OperatorAvatar } from './avatars'
 
 /**
  * Operator name and avatar formatter.
@@ -28,15 +28,7 @@ export function OperatorIdCell({
     return (
         <OperatorIdCellRoot>
             <OperatorAvatarWrap>
-                {imageUrl ? (
-                    <HubImageAvatar
-                        src={imageUrl}
-                        alt=""
-                        placeholder={<HubAvatar id={operatorId} />}
-                    />
-                ) : (
-                    <HubAvatar id={operatorId} />
-                )}
+                <OperatorAvatar operatorId={operatorId} imageUrl={imageUrl} />
             </OperatorAvatarWrap>
             <OperatorName $truncate={truncateProp}>
                 {operatorName || truncate(operatorId)}

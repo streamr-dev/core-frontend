@@ -1,5 +1,4 @@
-import React, { ComponentProps, FunctionComponent, useMemo } from 'react'
-import styled from 'styled-components'
+import React, { FunctionComponent, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import Button from '~/shared/components/Button'
@@ -8,24 +7,10 @@ import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import routes from '~/routes'
 import { fromAtto } from '~/marketplace/utils/math'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import Spinner from '~/components/Spinner'
 import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
-import { TABLET } from '~/shared/utils/styled'
-import {
-    NetworkActionBarBackButtonAndTitle,
-    NetworkActionBarBackButtonIcon,
-    NetworkActionBarBackLink,
-    NetworkActionBarCTAs,
-    NetworkActionBarInfoButtons,
-    NetworkActionBarStatsTitle,
-    NetworkActionBarTitle,
-    SingleElementPageActionBar,
-    SingleElementPageActionBarContainer,
-    SingleElementPageActionBarTopPart,
-} from '~/components/ActionBars/NetworkActionBar.styles'
 import { getSelfDelegationFraction, getSpotApy } from '~/getters'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import {
@@ -38,7 +23,7 @@ import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { getOperatorDelegationAmount } from '~/services/operators'
 import { PencilIcon } from '~/icons'
-import { abbr, goBack } from '~/utils'
+import { abbr } from '~/utils'
 import {
     ActionBarButton,
     ActionBarButtonCaret,
@@ -46,7 +31,10 @@ import {
     ActionBarWalletDisplay,
 } from '~/components/ActionBars/ActionBarButton'
 import { AboutOperator } from '~/components/ActionBars/AboutOperator'
+import { Hint } from '~/components/Hint'
 import { SponsorshipPaymentTokenName } from '../SponsorshipPaymentTokenName'
+import { OperatorAvatar } from '../avatars'
+import { AbstractActionBar, Pad } from './AbstractActionBar'
 
 export const OperatorActionBar: FunctionComponent<{
     operator: ParsedOperator
@@ -106,118 +94,98 @@ export const OperatorActionBar: FunctionComponent<{
             : ['Delegate', 'Undelegate']
 
     return (
-        <SingleElementPageActionBar>
-            <SingleElementPageActionBarContainer>
-                <SingleElementPageActionBarTopPart>
-                    <div>
-                        <NetworkActionBarBackButtonAndTitle>
-                            <NetworkActionBarBackLink
-                                to={routes.network.operators()}
-                                onClick={(e) => {
-                                    goBack({
-                                        onBeforeNavigate() {
-                                            e.preventDefault()
-                                        },
-                                    })
-                                }}
+        <AbstractActionBar
+            fallbackBackButtonUrl={routes.network.operators()}
+            title={
+                <>
+                    <OperatorAvatar
+                        imageUrl={metadata.imageUrl}
+                        operatorId={operator.id}
+                    />
+                    <span>{metadata.name || operator.id}</span>
+                </>
+            }
+            buttons={
+                <>
+                    {canEdit && (
+                        <ActionBarButton onClick={() => void handleEdit(operator)}>
+                            <strong>Edit Operator</strong>
+                            <PencilIcon />
+                        </ActionBarButton>
+                    )}
+                    <SimpleDropdown menu={<AboutOperator operator={operator} />}>
+                        {(toggle, isOpen) => (
+                            <ActionBarButton
+                                active={isOpen}
+                                onClick={() => void toggle((c) => !c)}
                             >
-                                <NetworkActionBarBackButtonIcon name="backArrow" />
-                            </NetworkActionBarBackLink>
-                            <NetworkActionBarTitle>
-                                {metadata.imageUrl ? (
-                                    <HubImageAvatar
-                                        src={metadata.imageUrl}
-                                        alt=""
-                                        placeholder={<HubAvatar id={operator.id} />}
-                                    />
-                                ) : (
-                                    <HubAvatar id={operator.id} />
-                                )}
-                                <span>{metadata.name || operator.id}</span>
-                            </NetworkActionBarTitle>
-                        </NetworkActionBarBackButtonAndTitle>
-                        <NetworkActionBarInfoButtons>
-                            {canEdit && (
-                                <ActionBarButton
-                                    onClick={() => void handleEdit(operator)}
-                                >
-                                    <strong>Edit Operator</strong>
-                                    <PencilIcon />
-                                </ActionBarButton>
-                            )}
-                            <SimpleDropdown menu={<AboutOperator operator={operator} />}>
-                                {(toggle, isOpen) => (
-                                    <ActionBarButton
-                                        active={isOpen}
-                                        onClick={() => void toggle((c) => !c)}
-                                    >
-                                        <ActionBarButtonInnerBody>
-                                            <SvgIcon name="page" />
-                                            <strong>About Operator</strong>
-                                        </ActionBarButtonInnerBody>
-                                        <ActionBarButtonCaret $invert={isOpen} />
-                                    </ActionBarButton>
-                                )}
-                            </SimpleDropdown>
-                            <ActionBarWalletDisplay
-                                address={operator.id}
-                                label="Operator"
-                            />
-                        </NetworkActionBarInfoButtons>
-                    </div>
-                    <NetworkActionBarCTAs>
-                        <Button
-                            onClick={() => {
-                                delegateFunds({
-                                    operator,
-                                    wallet: walletAddress,
-                                })
-                            }}
-                            disabled={!walletAddress}
-                            waiting={isDelegatingFunds}
-                        >
-                            {delegateLabel}
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                undelegateFunds({
-                                    operator,
-                                    wallet: walletAddress,
-                                })
-                            }}
-                            disabled={!canUndelegate}
-                            waiting={isUndelegatingFunds}
-                        >
-                            {undelegateLabel}
-                        </Button>
-                    </NetworkActionBarCTAs>
-                </SingleElementPageActionBarTopPart>
-                <NetworkActionBarStatsTitle>Operator summary</NetworkActionBarStatsTitle>
-                <Separator />
-                <Pad>
-                    <StatGrid>
-                        <StatCell
-                            label="Total stake"
-                            tip={
-                                <>
-                                    {operator.valueWithoutEarnings.isZero() ? (
-                                        <Tooltip
-                                            content={
-                                                <p>
-                                                    The owner must fund the Operator with{' '}
-                                                    <SponsorshipPaymentTokenName /> tokens
-                                                    before it can be used for staking on
-                                                    sponsorships or receiving delegations.
-                                                </p>
-                                            }
-                                        >
-                                            <TooltipIconWrap $color="#ff5c00">
-                                                <JiraFailedBuildStatusIcon label="Error" />
-                                            </TooltipIconWrap>
-                                        </Tooltip>
-                                    ) : (
-                                        <Tooltip
-                                            content={
+                                <ActionBarButtonInnerBody>
+                                    <SvgIcon name="page" />
+                                    <strong>About Operator</strong>
+                                </ActionBarButtonInnerBody>
+                                <ActionBarButtonCaret $invert={isOpen} />
+                            </ActionBarButton>
+                        )}
+                    </SimpleDropdown>
+                    <ActionBarWalletDisplay address={operator.id} label="Operator" />
+                </>
+            }
+            ctas={
+                <>
+                    <Button
+                        onClick={() => {
+                            delegateFunds({
+                                operator,
+                                wallet: walletAddress,
+                            })
+                        }}
+                        disabled={!walletAddress}
+                        waiting={isDelegatingFunds}
+                    >
+                        {delegateLabel}
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            undelegateFunds({
+                                operator,
+                                wallet: walletAddress,
+                            })
+                        }}
+                        disabled={!canUndelegate}
+                        waiting={isUndelegatingFunds}
+                    >
+                        {undelegateLabel}
+                    </Button>
+                </>
+            }
+            summaryTitle="Operator summary"
+            summary={
+                <>
+                    <Pad>
+                        <StatGrid>
+                            <StatCell
+                                label="Total stake"
+                                tip={
+                                    <>
+                                        {operator.valueWithoutEarnings.isZero() ? (
+                                            <Tooltip
+                                                content={
+                                                    <p>
+                                                        The owner must fund the Operator
+                                                        with{' '}
+                                                        <SponsorshipPaymentTokenName />{' '}
+                                                        tokens before it can be used for
+                                                        staking on sponsorships or
+                                                        receiving delegations.
+                                                    </p>
+                                                }
+                                            >
+                                                <TooltipIconWrap $color="#ff5c00">
+                                                    <JiraFailedBuildStatusIcon label="Error" />
+                                                </TooltipIconWrap>
+                                            </Tooltip>
+                                        ) : (
+                                            <Hint>
                                                 <p>
                                                     The total amount of{' '}
                                                     <SponsorshipPaymentTokenName /> tokens
@@ -225,141 +193,103 @@ export const OperatorActionBar: FunctionComponent<{
                                                     including deployed and undeployed
                                                     tokens.
                                                 </p>
-                                            }
-                                        >
-                                            <IconWrap>
-                                                <QuestionMarkIcon />
-                                            </IconWrap>
-                                        </Tooltip>
-                                    )}
-                                </>
-                            }
-                        >
-                            <div>
-                                {abbr(fromAtto(operator.valueWithoutEarnings))}{' '}
-                                <SponsorshipPaymentTokenName />
-                            </div>
-                        </StatCell>
-                        <StatCell
-                            label="Deployed stake"
-                            tip={
-                                <Tooltip
-                                    content={
+                                            </Hint>
+                                        )}
+                                    </>
+                                }
+                            >
+                                <div>
+                                    {abbr(fromAtto(operator.valueWithoutEarnings))}{' '}
+                                    <SponsorshipPaymentTokenName />
+                                </div>
+                            </StatCell>
+                            <StatCell
+                                label="Deployed stake"
+                                tip={
+                                    <Hint>
                                         <p>
                                             The amount of <SponsorshipPaymentTokenName />{' '}
                                             tokens that the Operator has staked on
                                             Sponsorships.
                                         </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
-                            }
-                        >
-                            {abbr(fromAtto(operator.totalStakeInSponsorshipsWei))}{' '}
-                            <SponsorshipPaymentTokenName />
-                        </StatCell>
-                        <StatCell
-                            label="Owner's stake"
-                            tip={
-                                <Tooltip
-                                    content={
+                                    </Hint>
+                                }
+                            >
+                                {abbr(fromAtto(operator.totalStakeInSponsorshipsWei))}{' '}
+                                <SponsorshipPaymentTokenName />
+                            </StatCell>
+                            <StatCell
+                                label="Owner's stake"
+                                tip={
+                                    <Hint>
                                         <p>
                                             The percentage of stake supplied from the
                                             owner of the Operator.
                                         </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
-                            }
-                        >
-                            {ownerDelegationPercentage.toFixed(0)}%
-                        </StatCell>
-                        <StatCell
-                            label="Node redundancy"
-                            tip={
-                                <Tooltip
-                                    content={
-                                        <>
-                                            <p>
-                                                The amount of duplicated work when running
-                                                a fleet of multiple nodes.
-                                            </p>
-                                            <p>
-                                                Doing redundant work protects against
-                                                slashing in case some of your nodes
-                                                experience failures. For example,
-                                            </p>
-                                            <ul>
-                                                <li>
-                                                    <strong>
-                                                        A Redundancy Factor of 1
-                                                    </strong>{' '}
-                                                    means that no duplication of work
-                                                    occurs (the feature is off),
-                                                </li>
-                                                <li>
-                                                    <strong>
-                                                        A Redundancy Factor of 2
-                                                    </strong>{' '}
-                                                    means that each stream assignment will
-                                                    be worked on by 2 nodes in the fleet.
-                                                </li>
-                                            </ul>
-                                        </>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
-                            }
-                        >
-                            {operator.metadata?.redundancyFactor?.toString() || '1'}
-                        </StatCell>
-                    </StatGrid>
-                </Pad>
-                <Separator />
-                <Pad>
-                    <StatGrid>
-                        <StatCell
-                            label="Owner's cut"
-                            tip={
-                                <Tooltip
-                                    content={
-                                        <>
-                                            <p>
-                                                The fee that the owner of the Operator
-                                                takes from all earnings.
-                                            </p>
-                                            <p>
-                                                The remaining earnings are distributed
-                                                among all stakeholders in the Operator,
-                                                which includes delegators and the owner,
-                                                in proportion to the size of their
-                                                respective stakes.
-                                            </p>
-                                        </>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
-                            }
-                        >
-                            {operator.operatorsCut}%
-                        </StatCell>
-                        <StatCell
-                            label="Spot APY"
-                            tip={
-                                <Tooltip
-                                    content={
+                                    </Hint>
+                                }
+                            >
+                                {ownerDelegationPercentage.toFixed(0)}%
+                            </StatCell>
+                            <StatCell
+                                label="Node redundancy"
+                                tip={
+                                    <Hint>
+                                        <p>
+                                            The amount of duplicated work when running a
+                                            fleet of multiple nodes.
+                                        </p>
+                                        <p>
+                                            Doing redundant work protects against slashing
+                                            in case some of your nodes experience
+                                            failures. For example,
+                                        </p>
+                                        <ul>
+                                            <li>
+                                                <strong>A Redundancy Factor of 1</strong>{' '}
+                                                means that no duplication of work occurs
+                                                (the feature is off),
+                                            </li>
+                                            <li>
+                                                <strong>A Redundancy Factor of 2</strong>{' '}
+                                                means that each stream assignment will be
+                                                worked on by 2 nodes in the fleet.
+                                            </li>
+                                        </ul>
+                                    </Hint>
+                                }
+                            >
+                                {operator.metadata?.redundancyFactor?.toString() || '1'}
+                            </StatCell>
+                        </StatGrid>
+                    </Pad>
+                    <Separator />
+                    <Pad>
+                        <StatGrid>
+                            <StatCell
+                                label="Owner's cut"
+                                tip={
+                                    <Hint>
+                                        <p>
+                                            The fee that the owner of the Operator takes
+                                            from all earnings.
+                                        </p>
+                                        <p>
+                                            The remaining earnings are distributed among
+                                            all stakeholders in the Operator, which
+                                            includes delegators and the owner, in
+                                            proportion to the size of their respective
+                                            stakes.
+                                        </p>
+                                    </Hint>
+                                }
+                            >
+                                {operator.operatorsCut}%
+                            </StatCell>
+                            <StatCell
+                                label="Spot APY"
+                                tip={
+                                    <Hint>
                                         <p>
                                             The annualized yield that this Operator is
                                             earning right now, calculated from
@@ -367,103 +297,52 @@ export const OperatorActionBar: FunctionComponent<{
                                             Sponsorships the Operator is
                                             currently&nbsp;staked in.
                                         </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
-                            }
-                        >
-                            {(getSpotApy(operator) * 100).toFixed(0)}%
-                        </StatCell>
-                        <StatCell
-                            label="Cumulative earnings"
-                            tip={
-                                <Tooltip
-                                    content={
+                                    </Hint>
+                                }
+                            >
+                                {(getSpotApy(operator) * 100).toFixed(0)}%
+                            </StatCell>
+                            <StatCell
+                                label="Cumulative earnings"
+                                tip={
+                                    <Hint>
                                         <p>
                                             The total earnings that this Operator has
                                             accumulated over its whole&nbsp;lifetime.
                                         </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
-                            }
-                        >
-                            {abbr(
-                                fromAtto(
-                                    operator.cumulativeProfitsWei.plus(
-                                        operator.cumulativeOperatorsCutWei,
+                                    </Hint>
+                                }
+                            >
+                                {abbr(
+                                    fromAtto(
+                                        operator.cumulativeProfitsWei.plus(
+                                            operator.cumulativeOperatorsCutWei,
+                                        ),
                                     ),
-                                ),
-                            )}{' '}
-                            <SponsorshipPaymentTokenName />
-                        </StatCell>
-                        <StatCell
-                            label="Live nodes"
-                            tip={
-                                <Tooltip
-                                    content={
+                                )}{' '}
+                                <SponsorshipPaymentTokenName />
+                            </StatCell>
+                            <StatCell
+                                label="Live nodes"
+                                tip={
+                                    <Hint>
                                         <p>
                                             The number of online nodes detected that are
                                             doing work for this Operator.
                                         </p>
-                                    }
-                                >
-                                    <IconWrap>
-                                        <QuestionMarkIcon />
-                                    </IconWrap>
-                                </Tooltip>
-                            }
-                        >
-                            <>
+                                    </Hint>
+                                }
+                            >
                                 {liveNodeCountIsLoading ? (
                                     <Spinner color="blue" />
                                 ) : (
                                     liveNodeCount.toString()
                                 )}
-                            </>
-                        </StatCell>
-                    </StatGrid>
-                </Pad>
-            </SingleElementPageActionBarContainer>
-        </SingleElementPageActionBar>
+                            </StatCell>
+                        </StatGrid>
+                    </Pad>
+                </>
+            }
+        />
     )
 }
-
-export const Pad = styled.div`
-    padding: 20px 0;
-
-    ${TooltipIconWrap} svg {
-        height: 18px;
-        width: 18px;
-    }
-
-    @media ${TABLET} {
-        padding: 32px 40px;
-    }
-`
-
-function getQuestionMarkIconAttrs(): ComponentProps<typeof SvgIcon> {
-    return { name: 'outlineQuestionMark' }
-}
-
-const QuestionMarkIcon = styled(SvgIcon).attrs(getQuestionMarkIconAttrs)`
-    display: block;
-    height: 16px;
-    width: 16px;
-`
-
-const IconWrap = styled.div<{ $color?: string }>`
-    align-items: center;
-    color: ${({ $color = 'inherit' }) => $color};
-    display: flex;
-    height: 24px;
-    justify-content: center;
-    position: relative;
-    width: 24px;
-`

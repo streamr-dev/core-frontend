@@ -16,8 +16,8 @@ import {
     useSetCurrentDraftTransientStreamId,
 } from '~/shared/stores/streamEditor'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import Help from '~/components/Help'
 import { DraftValidationError } from '~/errors'
+import { Hint } from '~/components/Hint'
 import useStreamOwnerOptionGroups, {
     ADD_ENS_DOMAIN_VALUE,
     OptionGroup,
@@ -195,17 +195,17 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
                 <Label>
                     <LabelInner>
                         <span>Path name</span>
-                        <Help align="right">
+                        <Hint>
                             <p>Stream paths can be single or multi-level.</p>
                             <p>Single</p>
                             <pre>streamr.eth/coffeemachine</pre>
                             <p>Multi</p>
-                            <pre>oxd93...52874/oracles/price</pre>
+                            <pre>streamr.eth/oracles/price</pre>
                             <p>
                                 For more information, see the{' '}
                                 <a href="https://docs.streamr.network/">docs</a>.
                             </p>
-                        </Help>
+                        </Hint>
                     </LabelInner>
                 </Label>
                 <PathnameField>
