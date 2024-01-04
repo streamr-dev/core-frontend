@@ -12,7 +12,7 @@ import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
 import { history } from '~/consts'
 import isCodedError from '~/utils/isCodedError'
-import { BNish, toBN } from '~/utils/bn'
+import { BN, BNish, toBN } from '~/utils/bn'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { operatorModal } from '~/modals/OperatorModal'
 import {
@@ -225,13 +225,22 @@ export function getQueryClient() {
 
 const SiSymbol = ['', 'k', 'M', 'G', 'T', 'P']
 
+function defaultFractionLength(integral: string): number {
+    return integral.length < 7 ? 2 : 3
+}
+
+interface AbbrOptions {
+    stripFractionalZeros?: boolean
+    fractionalLength?: number | ((integral: string) => number)
+}
+
 /**
  * Abbreviates BigNumberish value.
  */
-export function abbr(
-    value: BNish,
-    { fractionalLength = 3, stripFractionalZeros = true } = {},
-) {
+export function abbr(value: BNish, options: AbbrOptions = {}) {
+    const { fractionalLength = defaultFractionLength, stripFractionalZeros = true } =
+        options
+
     const v = toBN(value)
 
     if (!v.isFinite()) {
@@ -240,11 +249,16 @@ export function abbr(
         throw new Error('Invalid value')
     }
 
-    const fracLength = Math.max(0, fractionalLength)
-
     const sign = v.isLessThan(0) ? '-' : ''
 
     let [integral, fractional = ''] = v.abs().toString().split('.')
+
+    const fracLength = Math.max(
+        0,
+        typeof fractionalLength === 'function'
+            ? fractionalLength(integral)
+            : fractionalLength,
+    )
 
     fractional = `${fractional}${[...Array(fracLength)].map(() => '0').join('')}`
 
