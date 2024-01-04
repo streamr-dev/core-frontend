@@ -7,7 +7,6 @@ import routes from '~/routes'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
-import { Pad } from '~/components/ActionBars/OperatorActionBar'
 import { useOperatorForWalletQuery } from '~/hooks/operators'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
@@ -34,7 +33,7 @@ import {
 } from '~/components/ActionBars/ActionBarButton'
 import { AboutSponsorship } from '~/components/ActionBars/AboutSponsorship'
 import { Hint } from '~/components/Hint'
-import { AbstractActionBar } from './AbstractActionBar'
+import { AbstractActionBar, Pad } from './AbstractActionBar'
 
 const DayInSeconds = 60 * 60 * 24
 

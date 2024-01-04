@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useMemo } from 'react'
-import styled from 'styled-components'
 import { useQuery } from '@tanstack/react-query'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import Button from '~/shared/components/Button'
@@ -12,7 +11,6 @@ import { SimpleDropdown } from '~/components/SimpleDropdown'
 import Spinner from '~/components/Spinner'
 import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
-import { TABLET } from '~/shared/utils/styled'
 import { getSelfDelegationFraction, getSpotApy } from '~/getters'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import {
@@ -36,7 +34,7 @@ import { AboutOperator } from '~/components/ActionBars/AboutOperator'
 import { Hint } from '~/components/Hint'
 import { SponsorshipPaymentTokenName } from '../SponsorshipPaymentTokenName'
 import { OperatorAvatar } from '../avatars'
-import { AbstractActionBar } from './AbstractActionBar'
+import { AbstractActionBar, Pad } from './AbstractActionBar'
 
 export const OperatorActionBar: FunctionComponent<{
     operator: ParsedOperator
@@ -348,16 +346,3 @@ export const OperatorActionBar: FunctionComponent<{
         />
     )
 }
-
-export const Pad = styled.div`
-    padding: 20px 0;
-
-    ${TooltipIconWrap} svg {
-        height: 18px;
-        width: 18px;
-    }
-
-    @media ${TABLET} {
-        padding: 32px 40px;
-    }
-`
