@@ -12,7 +12,7 @@ import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
 import { history } from '~/consts'
 import isCodedError from '~/utils/isCodedError'
-import { BN, BNish, toBN } from '~/utils/bn'
+import { BNish, toBN } from '~/utils/bn'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { operatorModal } from '~/modals/OperatorModal'
 import {
