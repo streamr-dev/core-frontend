@@ -60,6 +60,12 @@ describe('abbr', () => {
         expect(abbr('1234567891011121314.1516')).toEqual('1234.567P')
     })
 
+    it('shows more fractional digits for values larger than a million', () => {
+        expect(utils.abbr('1234567')).toEqual('1.234M')
+
+        expect(utils.abbr('123456.7')).toEqual('123.45k')
+    })
+
     it('does not strip fractional zeros if told not to', () => {
         expect(utils.abbr('1000', { stripFractionalZeros: false })).toEqual('1.00k')
 
@@ -77,7 +83,7 @@ describe('abbr', () => {
 
         expect(utils.abbr('-1234')).toEqual('-1.23k')
 
-        expect(utils.abbr('-1234567891011121314.1516')).toEqual('-1234.56P')
+        expect(utils.abbr('-1234567891011121314.1516')).toEqual('-1234.567P')
     })
 
     it('handles weird values', () => {
