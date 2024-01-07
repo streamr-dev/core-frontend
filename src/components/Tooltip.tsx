@@ -5,9 +5,10 @@ import { Anchor, useBoundingClientRect } from './Anchor'
 interface Props {
     children: ReactNode
     content: ReactNode
+    inlineWrap?: boolean
 }
 
-export function Tooltip({ children, content }: Props) {
+export function Tooltip({ children, content, inlineWrap = false }: Props) {
     const [isOpen, toggle] = useState(false)
 
     useEffect(() => {
@@ -29,14 +30,15 @@ export function Tooltip({ children, content }: Props) {
 
     return (
         <Anchor
-            onMouseEnter={() => void toggle(true)}
-            onMouseLeave={() => void toggle(false)}
-            translate={(r) => (r ? [r.x + r.width / 2, r.y + window.scrollY] : [0, 0])}
             component={TooltipComponent}
             componentProps={{
                 children: content,
                 visible: isOpen,
             }}
+            inline={inlineWrap}
+            onMouseEnter={() => void toggle(true)}
+            onMouseLeave={() => void toggle(false)}
+            translate={(r) => (r ? [r.x + r.width / 2, r.y + window.scrollY] : [0, 0])}
         >
             {children}
         </Anchor>
