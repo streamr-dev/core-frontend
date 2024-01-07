@@ -266,6 +266,7 @@ export const WingedLabelWrap = styled.div`
 
     ${Label} {
         flex-grow: 1;
+        min-width: 0;
     }
 
     ${Label} + ${Label} {
@@ -291,6 +292,7 @@ export const TextInput = styled.input`
     padding: 0 18px;
     flex-grow: 1;
     outline: 0;
+    min-width: 48px;
 
     ::-webkit-outer-spin-button,
     ::-webkit-inner-spin-button {

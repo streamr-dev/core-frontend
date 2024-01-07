@@ -1,5 +1,5 @@
 import React, { HTMLProps } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import * as Colors from '~/shared/components/Ui/StateColors'
 import { MEDIUM } from '~/shared/utils/styled'
 
@@ -16,7 +16,7 @@ function UnstyledLabel({ children, keepSpace = false, ...props }: Props) {
     )
 }
 
-const Label = styled(UnstyledLabel)<{ state?: string }>`
+const Label = styled(UnstyledLabel)<{ state?: string; $wrap?: boolean }>`
     color: ${({ state }) =>
         (Colors as { [key: string]: string })[state] || Colors.DEFAULT};
     display: block;
@@ -26,6 +26,11 @@ const Label = styled(UnstyledLabel)<{ state?: string }>`
     margin: 0 0 8px;
     transition: 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
     transition-property: color, transform;
-    white-space: nowrap;
+
+    ${({ $wrap = false }) =>
+        !$wrap &&
+        css`
+            white-space: nowrap;
+        `}
 `
 export default Label

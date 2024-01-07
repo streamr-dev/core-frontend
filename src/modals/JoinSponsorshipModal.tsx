@@ -9,6 +9,8 @@ import FormModal, {
     FieldWrap,
     FormModalProps,
     Prop,
+    PropList,
+    PropValue,
     Section,
     SectionHeadline,
     TextAppendix,
@@ -23,7 +25,7 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS } from '~/shared/utils/styled'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
-import { useConfigValueFromChain } from '~/hooks'
+import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
@@ -34,6 +36,8 @@ import { errorToast } from '~/utils/toast'
 import Toast from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
 import { getSelfDelegationFraction } from '~/getters'
+import { Abbr } from '~/components/Abbr'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
@@ -129,6 +133,8 @@ function JoinSponsorshipModal({
 
     const { copy } = useCopy()
 
+    const limitedSpace = useMediaQuery('screen and (max-width: 460px)')
+
     return (
         <FormModal
             {...props}
@@ -181,7 +187,7 @@ function JoinSponsorshipModal({
                 Sponsorship
             </SectionHeadline>
             <Section>
-                <Label>Sponsorship Stream ID</Label>
+                <Label $wrap>Sponsorship Stream ID</Label>
                 <FieldWrap $grayedOut>
                     <TextInput defaultValue={streamId} readOnly />
                     {!!streamId && (
@@ -193,7 +199,7 @@ function JoinSponsorshipModal({
                     )}
                 </FieldWrap>
                 <StyledLabelWrap>
-                    <Label>Amount to stake</Label>
+                    <Label $wrap>Amount to stake</Label>
                     {rawAmount !== '' && !isAboveMinimumStake && (
                         <ErrorLabel>
                             Minimum value is{' '}
@@ -216,13 +222,13 @@ function JoinSponsorshipModal({
                     />
                     <TextAppendix>{tokenSymbol}</TextAppendix>
                 </FieldWrap>
-                <ul>
+                <PropList>
                     <li>
                         <Prop>Minimum stake duration</Prop>
-                        <div>
+                        <PropValue>
                             {minimumStakingDays.toFixed(0)} day
                             {minimumStakingDays !== 1 && 's'}
-                        </div>
+                        </PropValue>
                     </li>
                     <li>
                         <Prop $invalid={insufficientFunds}>
@@ -232,16 +238,22 @@ function JoinSponsorshipModal({
                                 <>Available balance in Operator</>
                             )}
                         </Prop>
-                        <div>
-                            {fromDecimals(operatorBalance, decimals).toString()}{' '}
-                            {tokenSymbol}
-                        </div>
+                        <PropValue>
+                            {limitedSpace ? (
+                                <Abbr>{fromDecimals(operatorBalance, decimals)}</Abbr>
+                            ) : (
+                                <>
+                                    {fromDecimals(operatorBalance, decimals).toString()}{' '}
+                                    <SponsorshipPaymentTokenName />
+                                </>
+                            )}
+                        </PropValue>
                     </li>
                     <li>
                         <Prop>Operator</Prop>
-                        <div>{operatorId}</div>
+                        <PropValue>{operatorId}</PropValue>
                     </li>
-                </ul>
+                </PropList>
             </Section>
             {isBelowSelfFundingLimit && (
                 <StyledAlert type="error" title="Low self-funding">
