@@ -290,8 +290,7 @@ function EditStakeModal({
                                 <Abbr>{diff}</Abbr>
                             ) : (
                                 <>
-                                    {fromDecimals(difference, decimals).toString()}{' '}
-                                    <SponsorshipPaymentTokenName />
+                                    {diff.toString()} <SponsorshipPaymentTokenName />
                                 </>
                             )}
                         </PropValue>
