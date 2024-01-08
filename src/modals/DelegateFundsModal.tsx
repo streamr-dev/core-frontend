@@ -5,6 +5,8 @@ import FormModal, {
     FieldWrap,
     FormModalProps,
     Prop,
+    PropList,
+    PropValue,
     Section,
     SectionHeadline,
     TextAppendix,
@@ -17,11 +19,12 @@ import { Alert as PrestyledAlert } from '~/components/Alert'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { getSelfDelegatedAmount, getSelfDelegationFraction } from '~/getters'
 import { ParsedOperator } from '~/parsers/OperatorParser'
-import { useConfigValueFromChain } from '~/hooks'
+import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { delegateToOperator } from '~/services/operators'
 import { isTransactionRejection, waitForIndexedBlock } from '~/utils'
+import { Abbr } from '~/components/Abbr'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
@@ -122,6 +125,8 @@ export default function DelegateFundsModal({
 
     const [busy, setBusy] = useState(false)
 
+    const limitedSpace = useMediaQuery('screen and (max-width: 460px)')
+
     return (
         <FormModal
             {...props}
@@ -184,7 +189,7 @@ export default function DelegateFundsModal({
                         <SponsorshipPaymentTokenName />
                     </TextAppendix>
                 </FieldWrap>
-                <ul>
+                <PropList>
                     <li>
                         <Prop $invalid={insufficientFunds}>
                             {insufficientFunds ? (
@@ -193,21 +198,34 @@ export default function DelegateFundsModal({
                                 <>Your wallet balance</>
                             )}
                         </Prop>
-                        <div>
-                            {balance.toString()} <SponsorshipPaymentTokenName />
-                        </div>
+                        <PropValue>
+                            {limitedSpace ? (
+                                <Abbr>{balance}</Abbr>
+                            ) : (
+                                <>
+                                    {balance.toString()} <SponsorshipPaymentTokenName />
+                                </>
+                            )}
+                        </PropValue>
                     </li>
                     <li>
                         <Prop>Operator</Prop>
-                        <div>{operator.id}</div>
+                        <PropValue>{operator.id}</PropValue>
                     </li>
                     <li>
                         <Prop>{totalLabel}</Prop>
-                        <div>
-                            {delegatedTotal.toString()} <SponsorshipPaymentTokenName />
-                        </div>
+                        <PropValue>
+                            {limitedSpace ? (
+                                <Abbr>{delegatedTotal}</Abbr>
+                            ) : (
+                                <>
+                                    {delegatedTotal.toString()}{' '}
+                                    <SponsorshipPaymentTokenName />
+                                </>
+                            )}
+                        </PropValue>
                     </li>
-                </ul>
+                </PropList>
             </Section>
             <>
                 {tooLowCurrentSelfDelegation ? (

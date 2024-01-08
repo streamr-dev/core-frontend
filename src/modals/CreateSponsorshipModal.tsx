@@ -21,7 +21,7 @@ import {
     CreateSponsorshipForm,
     MinNumberOfOperatorsParser,
 } from '~/forms/createSponsorshipForm'
-import { useConfigValueFromChain } from '~/hooks'
+import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { toDecimals } from '~/marketplace/utils/math'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
@@ -33,6 +33,7 @@ import { errorToast } from '~/utils/toast'
 import Toast from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
 import { SponsorshipDisclaimer } from '~/components/SponsorshipDisclaimer'
+import { Abbr } from '~/components/Abbr'
 
 interface ResolveProps {
     sponsorshipId: string
@@ -142,6 +143,8 @@ function CreateSponsorshipModal({
     const tooLongMinStakeDuration =
         !!maxPenaltyPeriod && minStakeDuration > maxPenaltyPeriod
 
+    const limitedSpace = useMediaQuery('screen and (max-width: 460px)')
+
     return (
         <FormModal
             {...props}
@@ -199,7 +202,7 @@ function CreateSponsorshipModal({
                     stream
                 </SectionHeadline>
                 <Section>
-                    <Label>Select a Stream</Label>
+                    <Label $wrap>Select a Stream</Label>
                     <StreamIdDropdown
                         autoFocus={!streamIdProp}
                         placeholder="Type to select a stream"
@@ -218,7 +221,7 @@ function CreateSponsorshipModal({
                 <GroupHeadline>Set Sponsorship parameters</GroupHeadline>
                 <Section>
                     <WingedLabelWrap>
-                        <Label>Initial amount to fund</Label>
+                        <Label $wrap>Initial amount to fund</Label>
                         {insufficientFunds && <ErrorLabel>Insufficient funds</ErrorLabel>}
                     </WingedLabelWrap>
                     <FieldWrap $invalid={insufficientFunds}>
@@ -245,13 +248,20 @@ function CreateSponsorshipModal({
                         <p>
                             Wallet balance:{' '}
                             <strong>
-                                {balanceProp.toString()} <SponsorshipPaymentTokenName />
+                                {limitedSpace ? (
+                                    <Abbr>{balanceProp}</Abbr>
+                                ) : (
+                                    <>
+                                        {balanceProp.toString()}{' '}
+                                        <SponsorshipPaymentTokenName />
+                                    </>
+                                )}
                             </strong>
                         </p>
                     </Hint>
                 </Section>
                 <Section>
-                    <Label>Payout rate*</Label>
+                    <Label $wrap>Payout rate*</Label>
                     <FieldWrap>
                         <TextInput
                             name="payoutRate"
@@ -281,7 +291,7 @@ function CreateSponsorshipModal({
                 </Section>
                 <Section>
                     <WingedLabelWrap>
-                        <Label>Minimum time operators must stay staked</Label>
+                        <Label $wrap>Minimum time operators must stay staked</Label>
                         <ErrorWrap>
                             {invalidMinStakeDuration && (
                                 <ErrorLabel>
@@ -318,7 +328,7 @@ function CreateSponsorshipModal({
                     </FieldWrap>
                 </Section>
                 <Section>
-                    <Label>Minimum number of operators to start payout</Label>
+                    <Label $wrap>Minimum number of operators to start payout</Label>
                     <FieldWrap
                         $invalid={invalidOperatorNumberRange || tooLowOperatorCount}
                     >
@@ -341,11 +351,13 @@ function CreateSponsorshipModal({
                                     : ''
                             }
                         />
-                        <TextAppendix>Operators</TextAppendix>
+                        <TextAppendix>
+                            <span>Operators</span>
+                        </TextAppendix>
                     </FieldWrap>
                 </Section>
                 <Section>
-                    <Label>Maximum number of operators</Label>
+                    <Label $wrap>Maximum number of operators</Label>
                     <FieldWrap $invalid={invalidOperatorNumberRange}>
                         <TextInput
                             name="maxNumberOfOperators"

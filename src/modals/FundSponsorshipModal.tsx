@@ -6,6 +6,8 @@ import FormModal, {
     FieldWrap,
     FormModalProps,
     Prop,
+    PropList,
+    PropValue,
     Section,
     SectionHeadline,
     TextAppendix,
@@ -22,6 +24,8 @@ import { toDecimals } from '~/marketplace/utils/math'
 import { fundSponsorship } from '~/services/sponsorships'
 import { isTransactionRejection, waitForIndexedBlock } from '~/utils'
 import { SponsorshipDisclaimer } from '~/components/SponsorshipDisclaimer'
+import { useMediaQuery } from '~/hooks'
+import { Abbr } from '~/components/Abbr'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     balance: BN
@@ -117,6 +121,8 @@ function FundSponsorshipModal({ balance, onResolve, sponsorship, ...props }: Pro
 
     const dirty = rawAmount !== ''
 
+    const limitedSpace = useMediaQuery('screen and (max-width: 460px)')
+
     return (
         <FormModal
             {...props}
@@ -156,7 +162,7 @@ function FundSponsorshipModal({ balance, onResolve, sponsorship, ...props }: Pro
                 extend the Sponsorship
             </SectionHeadline>
             <Section>
-                <Label>Amount to sponsor</Label>
+                <Label $wrap>Amount to sponsor</Label>
                 <FieldWrap $invalid={insufficientFunds}>
                     <TextInput
                         name="amount"
@@ -173,7 +179,7 @@ function FundSponsorshipModal({ balance, onResolve, sponsorship, ...props }: Pro
                         <SponsorshipPaymentTokenName />
                     </TextAppendix>
                 </FieldWrap>
-                <ul>
+                <PropList>
                     <li>
                         <Prop $invalid={insufficientFunds}>
                             {insufficientFunds ? (
@@ -182,27 +188,43 @@ function FundSponsorshipModal({ balance, onResolve, sponsorship, ...props }: Pro
                                 <>Your wallet balance</>
                             )}
                         </Prop>
-                        <div>
-                            {balance.toString()} <SponsorshipPaymentTokenName />
-                        </div>
+                        <PropValue>
+                            {limitedSpace ? (
+                                <Abbr>{balance}</Abbr>
+                            ) : (
+                                <>
+                                    {balance.toString()} <SponsorshipPaymentTokenName />
+                                </>
+                            )}
+                        </PropValue>
                     </li>
                     <li>
                         <Prop>Sponsorship extended by</Prop>
-                        <div>{extensionText}</div>
+                        <PropValue>{extensionText}</PropValue>
                     </li>
                     <li>
                         <Prop>New end date</Prop>
-                        <div>{moment(endDate).format('YYYY-MM-DD')}</div>
+                        <PropValue>
+                            {moment(endDate).format(
+                                limitedSpace ? 'YY-MM-DD' : 'YYYY-MM-DD',
+                            )}
+                        </PropValue>
                     </li>
                     <li>
                         <Prop>Rate</Prop>
-                        <div>
-                            {sponsorship.payoutPerDay.toString()}{' '}
-                            <SponsorshipPaymentTokenName />
-                            /day
-                        </div>
+                        <PropValue>
+                            {limitedSpace ? (
+                                <Abbr suffix="/day">{sponsorship.payoutPerDay}</Abbr>
+                            ) : (
+                                <>
+                                    {sponsorship.payoutPerDay.toString()}{' '}
+                                    <SponsorshipPaymentTokenName />
+                                    /day
+                                </>
+                            )}
+                        </PropValue>
                     </li>
-                </ul>
+                </PropList>
             </Section>
             <SponsorshipDisclaimer
                 sponsorship={sponsorship}

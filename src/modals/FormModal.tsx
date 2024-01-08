@@ -175,44 +175,52 @@ export const Section = styled.div`
         line-height: 20px;
     }
 
-    > ul {
-        background: ${COLORS.secondaryLight};
-        font-size: 14px;
-        list-style: none;
-        margin: 16px 0 0;
-        padding: 16px;
-        border-radius: 8px;
-        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.02);
-
-        li {
-            display: flex;
-            align-items: center;
-        }
-
-        li + li {
-            margin-top: 16px;
-        }
-    }
-
     & + & {
         margin-top: 16px;
     }
 `
 
 export const Prop = styled.em<{ $invalid?: boolean }>`
-    opacity: 0.7;
     color: ${COLORS.primaryLight};
-    flex-grow: 1;
     display: block;
-    font-style: normal;
+    flex-grow: 1;
     font-size: 12px;
+    font-style: normal;
     font-weight: ${MEDIUM};
+    opacity: 0.7;
 
     ${({ $invalid = false }) =>
         $invalid &&
         css`
             color: ${COLORS.error};
         `}
+`
+
+export const PropValue = styled.div`
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+`
+
+export const PropList = styled.ul`
+    background: ${COLORS.secondaryLight};
+    font-size: 14px;
+    list-style: none;
+    margin: 16px 0 0;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.02);
+
+    li {
+        align-items: center;
+        display: flex;
+        gap: 8px;
+    }
+
+    li + li {
+        margin-top: 16px;
+    }
 `
 
 export const GroupHeadline = styled.h2`
@@ -236,6 +244,7 @@ export const WingedLabelWrap = styled.div`
 
     ${Label} {
         flex-grow: 1;
+        min-width: 0;
     }
 
     ${Label} + ${Label} {
@@ -261,6 +270,7 @@ export const TextInput = styled.input`
     padding: 0 18px;
     flex-grow: 1;
     outline: 0;
+    min-width: 48px;
 
     ::-webkit-outer-spin-button,
     ::-webkit-inner-spin-button {

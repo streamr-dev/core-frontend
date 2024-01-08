@@ -6,6 +6,8 @@ import FormModal, {
     FieldWrap,
     FormModalProps,
     Prop,
+    PropList,
+    PropValue,
     Section,
     SectionHeadline,
     TextAppendix,
@@ -15,13 +17,18 @@ import Label from '~/shared/components/Ui/Label'
 import { COLORS } from '~/shared/utils/styled'
 import { BN, toBN } from '~/utils/bn'
 import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
-import { useConfigValueFromChain, useMaxUndelegationQueueDays } from '~/hooks'
+import {
+    useConfigValueFromChain,
+    useMaxUndelegationQueueDays,
+    useMediaQuery,
+} from '~/hooks'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { undelegateFromOperator } from '~/services/operators'
 import { isTransactionRejection, waitForIndexedBlock } from '~/utils'
+import { Abbr } from '~/components/Abbr'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     balance: BN
@@ -97,6 +104,8 @@ export default function UndelegateFundsModal({
 
     const [busy, setBusy] = useState(false)
 
+    const limitedSpace = useMediaQuery('screen and (max-width: 460px)')
+
     return (
         <FormModal
             {...props}
@@ -142,7 +151,7 @@ export default function UndelegateFundsModal({
                 {subtitlePartial}
             </SectionHeadline>
             <Section>
-                <Label>{amountLabel}</Label>
+                <Label $wrap>{amountLabel}</Label>
                 <FieldWrap $top={true}>
                     <TextInput
                         name="amount"
@@ -161,31 +170,50 @@ export default function UndelegateFundsModal({
                 </FieldWrap>
                 <FieldWrap $bottom={true} $padded={true}>
                     <Prop>
-                        {totalLabel}: {delegatedTotal.toString()}{' '}
-                        <SponsorshipPaymentTokenName />
+                        {totalLabel}:{' '}
+                        {limitedSpace ? (
+                            <Abbr>{delegatedTotal}</Abbr>
+                        ) : (
+                            <>
+                                {delegatedTotal.toString()}{' '}
+                                <SponsorshipPaymentTokenName />
+                            </>
+                        )}
                     </Prop>
                     <LinkButton onClick={() => setRawAmount(delegatedTotal.toString())}>
                         Max
                     </LinkButton>
                 </FieldWrap>
-                <ul>
+                <PropList>
                     <li>
                         <Prop>Your wallet balance</Prop>
-                        <div>
-                            {balance.toString()} <SponsorshipPaymentTokenName />
-                        </div>
+                        <PropValue>
+                            {limitedSpace ? (
+                                <Abbr>{balance}</Abbr>
+                            ) : (
+                                <>
+                                    {balance.toString()} <SponsorshipPaymentTokenName />
+                                </>
+                            )}
+                        </PropValue>
                     </li>
                     <li>
                         <Prop>Operator</Prop>
-                        <div>{operator.id}</div>
+                        <PropValue>{operator.id}</PropValue>
                     </li>
                     <li>
                         <Prop>Available balance in Operator</Prop>
-                        <div>
-                            {freeFunds.toString()} <SponsorshipPaymentTokenName />
-                        </div>
+                        <PropValue>
+                            {limitedSpace ? (
+                                <Abbr>{freeFunds}</Abbr>
+                            ) : (
+                                <>
+                                    {freeFunds.toString()} <SponsorshipPaymentTokenName />
+                                </>
+                            )}
+                        </PropValue>
                     </li>
-                </ul>
+                </PropList>
             </Section>
             <Footer>
                 {toBN(rawAmount).isGreaterThan(0) &&

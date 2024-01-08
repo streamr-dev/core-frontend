@@ -8,6 +8,8 @@ import FormModal, {
     FieldWrap,
     FormModalProps,
     Prop,
+    PropList,
+    PropValue,
     Section,
     SectionHeadline,
     TextAppendix,
@@ -18,7 +20,7 @@ import Label from '~/shared/components/Ui/Label'
 import { BN, toBN } from '~/utils/bn'
 import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
 import { Alert } from '~/components/Alert'
-import { useConfigValueFromChain } from '~/hooks'
+import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
@@ -32,6 +34,7 @@ import {
 } from '~/services/sponsorships'
 import { confirm } from '~/getters/confirm'
 import { Layer } from '~/utils/Layer'
+import { Abbr } from '~/components/Abbr'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     leavePenaltyWei: BN
@@ -125,6 +128,10 @@ function EditStakeModal({
         : leavePenalty.plus(lockedStake)
 
     const dirty = sameBN(rawAmount || '0', currentAmount)
+
+    const limitedSpace = useMediaQuery('screen and (max-width: 460px)')
+
+    const diff = fromDecimals(difference, decimals)
 
     return (
         <FormModal
@@ -235,7 +242,7 @@ function EditStakeModal({
             </SectionHeadline>
             <Section>
                 <WingedLabelWrap>
-                    <Label>Amount to stake</Label>
+                    <Label $wrap>Amount to stake</Label>
                     {rawAmount !== '' && !isFinalAmountWithinAcceptedRange && (
                         <ErrorLabel>
                             Minimum value is{' '}
@@ -262,19 +269,31 @@ function EditStakeModal({
                         <SponsorshipPaymentTokenName />
                     </TextAppendix>
                 </FieldWrap>
-                <ul>
+                <PropList>
                     <li>
                         <Prop>Current stake</Prop>
-                        <div>
-                            {currentAmount.toString()} <SponsorshipPaymentTokenName />
-                        </div>
+                        <PropValue>
+                            {limitedSpace ? (
+                                <Abbr>{currentAmount}</Abbr>
+                            ) : (
+                                <>
+                                    {currentAmount.toString()}{' '}
+                                    <SponsorshipPaymentTokenName />
+                                </>
+                            )}
+                        </PropValue>
                     </li>
                     <li>
                         <Prop>Stake change</Prop>
-                        <div>
-                            {fromDecimals(difference, decimals).toString()}{' '}
-                            <SponsorshipPaymentTokenName />
-                        </div>
+                        <PropValue>
+                            {limitedSpace ? (
+                                <Abbr>{diff}</Abbr>
+                            ) : (
+                                <>
+                                    {diff.toString()} <SponsorshipPaymentTokenName />
+                                </>
+                            )}
+                        </PropValue>
                     </li>
                     <li>
                         <Prop $invalid={insufficientFunds}>
@@ -284,12 +303,18 @@ function EditStakeModal({
                                 <>Available balance in Operator</>
                             )}
                         </Prop>
-                        <div>
-                            {fromDecimals(operatorBalance, decimals).toString()}{' '}
-                            <SponsorshipPaymentTokenName />
-                        </div>
+                        <PropValue>
+                            {limitedSpace ? (
+                                <Abbr>{fromDecimals(operatorBalance, decimals)}</Abbr>
+                            ) : (
+                                <>
+                                    {fromDecimals(operatorBalance, decimals).toString()}{' '}
+                                    <SponsorshipPaymentTokenName />
+                                </>
+                            )}
+                        </PropValue>
                     </li>
-                </ul>
+                </PropList>
             </Section>
             {finalAmount.isEqualTo(0) && leavePenalty.isGreaterThan(0) && (
                 <StyledAlert type="error" title="Your stake will be slashed">
