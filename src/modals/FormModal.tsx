@@ -1,7 +1,7 @@
 import React, { ComponentProps, ReactNode } from 'react'
 import styled, { css } from 'styled-components'
 import { COLORS, MEDIUM, REGULAR, SANS, TABLET } from '~/shared/utils/styled'
-import Buttons, { ButtonActions } from '~/shared/components/Buttons'
+import { Buttons, ButtonActions } from '~/shared/components/Buttons'
 import SvgIcon from '~/shared/components/SvgIcon'
 import Label from '~/shared/components/Ui/Label'
 import BaseModal, { BaseModalProps, Footer, RejectionReason } from './BaseModal'

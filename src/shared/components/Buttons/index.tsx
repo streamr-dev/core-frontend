@@ -63,4 +63,3 @@ export const Buttons = ({ actions, className }: Props) => (
 Buttons.defaultProps = {
     actions: {},
 }
-export default Buttons
