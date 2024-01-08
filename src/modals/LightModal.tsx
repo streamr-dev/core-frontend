@@ -29,7 +29,9 @@ export default function LightModal({
                             <SvgIcon name="crossMedium" />
                         </CloseButton>
                     </Head>
-                    <Content>{children}</Content>
+                    <Content>
+                        {typeof children === 'function' ? children(close) : children}
+                    </Content>
                 </Root>
             )}
         </BaseModal>

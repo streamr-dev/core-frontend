@@ -329,15 +329,17 @@ export const TextareaCounter = styled.span<{ $invalid?: boolean }>`
         `}
 `
 
-export const Appendix = styled.div`
+const Appendix = styled.div`
     align-items: center;
     display: flex;
     flex-shrink: 0;
     height: 100%;
 `
+
 export const TextAppendix = styled(Appendix)`
     padding: 0 18px;
 `
+
 export const FieldWrap = styled.div<{
     $invalid?: boolean
     $grayedOut?: boolean

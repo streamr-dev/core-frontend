@@ -2,12 +2,10 @@ import React from 'react'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
-import LightModal, { ModalProps } from '~/modals/LightModal'
+import LightModal from '~/modals/LightModal'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { DESKTOP, TABLET } from '~/shared/utils/styled'
 import { Layer } from '~/utils/Layer'
-
-const DisclaimerModal = (props: ModalProps) => <LightModal {...props} />
 
 export const DisclaimerBar = () => {
     const { pathname } = useLocation()
@@ -26,7 +24,7 @@ export const DisclaimerBar = () => {
                 <a
                     onClick={async () => {
                         try {
-                            await toaster(DisclaimerModal, Layer.Modal).pop({
+                            await toaster(LightModal, Layer.Modal).pop({
                                 title: 'Disclaimer',
                                 children: (
                                     <p>
