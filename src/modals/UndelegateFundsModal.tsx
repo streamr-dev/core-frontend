@@ -164,7 +164,11 @@ export default function UndelegateFundsModal({
                         step="any"
                         value={rawAmount}
                     />
-                    <MaxButton onClick={() => setRawAmount(delegatedTotal.toString())} />
+                    <MaxButton
+                        onClick={() => {
+                            setRawAmount(delegatedTotal.toString())
+                        }}
+                    />
                     <TextAppendix>
                         <SponsorshipPaymentTokenName />
                     </TextAppendix>
