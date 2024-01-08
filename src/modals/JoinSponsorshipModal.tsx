@@ -8,6 +8,7 @@ import FormModal, {
     ErrorLabel,
     FieldWrap,
     FormModalProps,
+    MaxButton,
     Prop,
     PropList,
     PropValue,
@@ -135,6 +136,8 @@ function JoinSponsorshipModal({
 
     const limitedSpace = useMediaQuery('screen and (max-width: 460px)')
 
+    const availableBalance = fromDecimals(operatorBalance, decimals)
+
     return (
         <FormModal
             {...props}
@@ -220,6 +223,11 @@ function JoinSponsorshipModal({
                         step="any"
                         value={rawAmount}
                     />
+                    <MaxButton
+                        onClick={() => {
+                            setRawAmount(availableBalance.toString())
+                        }}
+                    />
                     <TextAppendix>{tokenSymbol}</TextAppendix>
                 </FieldWrap>
                 <PropList>
@@ -240,10 +248,10 @@ function JoinSponsorshipModal({
                         </Prop>
                         <PropValue>
                             {limitedSpace ? (
-                                <Abbr>{fromDecimals(operatorBalance, decimals)}</Abbr>
+                                <Abbr>{availableBalance}</Abbr>
                             ) : (
                                 <>
-                                    {fromDecimals(operatorBalance, decimals).toString()}{' '}
+                                    {availableBalance.toString()}{' '}
                                     <SponsorshipPaymentTokenName />
                                 </>
                             )}

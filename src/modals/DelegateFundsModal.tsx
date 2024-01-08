@@ -4,6 +4,7 @@ import { RejectionReason, isRejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     FieldWrap,
     FormModalProps,
+    MaxButton,
     Prop,
     PropList,
     PropValue,
@@ -184,6 +185,11 @@ export default function DelegateFundsModal({
                         min={0}
                         step="any"
                         value={rawAmount}
+                    />
+                    <MaxButton
+                        onClick={() => {
+                            setRawAmount(balance.toString())
+                        }}
                     />
                     <TextAppendix>
                         <SponsorshipPaymentTokenName />

@@ -5,6 +5,7 @@ import { RejectionReason, isRejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     FieldWrap,
     FormModalProps,
+    MaxButton,
     Prop,
     PropList,
     PropValue,
@@ -14,7 +15,6 @@ import FormModal, {
     TextInput,
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
-import { COLORS } from '~/shared/utils/styled'
 import { BN, toBN } from '~/utils/bn'
 import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
 import {
@@ -164,6 +164,7 @@ export default function UndelegateFundsModal({
                         step="any"
                         value={rawAmount}
                     />
+                    <MaxButton onClick={() => setRawAmount(delegatedTotal.toString())} />
                     <TextAppendix>
                         <SponsorshipPaymentTokenName />
                     </TextAppendix>
@@ -180,9 +181,6 @@ export default function UndelegateFundsModal({
                             </>
                         )}
                     </Prop>
-                    <LinkButton onClick={() => setRawAmount(delegatedTotal.toString())}>
-                        Max
-                    </LinkButton>
                 </FieldWrap>
                 <PropList>
                     <li>
@@ -263,11 +261,6 @@ export default function UndelegateFundsModal({
         </FormModal>
     )
 }
-
-const LinkButton = styled.a`
-    cursor: pointer;
-    color: ${COLORS.link};
-`
 
 const Footer = styled.div`
     display: grid;
