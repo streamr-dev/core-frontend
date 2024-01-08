@@ -224,11 +224,7 @@ function OperatorModal({ onResolve, onReject, operator, ...props }: Props) {
             </SectionHeadline>
             <Section>
                 <WingedLabelWrap>
-                    <Label>
-                        <LabelInner>
-                            <span>Owner&apos;s cut percentage*</span>
-                        </LabelInner>
-                    </Label>
+                    <Label $wrap>Owner&apos;s cut percentage*</Label>
                     {errors?.cut && <ErrorLabel>{errors.cut}</ErrorLabel>}
                 </WingedLabelWrap>
                 <FieldWrap $invalid={!!errors?.cut} $grayedOut={readonlyCut}>
@@ -277,11 +273,7 @@ function OperatorModal({ onResolve, onReject, operator, ...props }: Props) {
             </SectionHeadline>
             <Section>
                 <WingedLabelWrap>
-                    <Label>
-                        <LabelInner>
-                            <span>Node redundancy factor*</span>
-                        </LabelInner>
-                    </Label>
+                    <Label $wrap>Node redundancy factor*</Label>
                     {errors?.redundancyFactor && (
                         <ErrorLabel>{errors.redundancyFactor}</ErrorLabel>
                     )}
@@ -309,11 +301,7 @@ function OperatorModal({ onResolve, onReject, operator, ...props }: Props) {
                 <SectionHeadline>About Operator</SectionHeadline>
                 <Section>
                     <WingedLabelWrap>
-                        <Label>
-                            <LabelInner>
-                                <span>Display name*</span>
-                            </LabelInner>
-                        </Label>
+                        <Label $wrap>Display name*</Label>
                         {errors?.name && <ErrorLabel>{errors.name}</ErrorLabel>}
                     </WingedLabelWrap>
                     <FieldWrap $invalid={!!errors?.name}>
@@ -333,11 +321,7 @@ function OperatorModal({ onResolve, onReject, operator, ...props }: Props) {
                     </FieldWrap>
                     <AboutOperatorField>
                         <WingedLabelWrap>
-                            <Label>
-                                <LabelInner>
-                                    <span>Description</span>
-                                </LabelInner>
-                            </Label>
+                            <Label $wrap>Description</Label>
                             {errors?.description && (
                                 <ErrorLabel>Description is too long</ErrorLabel>
                             )}
@@ -362,11 +346,7 @@ function OperatorModal({ onResolve, onReject, operator, ...props }: Props) {
                         </FieldWrap>
                     </AboutOperatorField>
                     <AboutOperatorField>
-                        <Label>
-                            <LabelInner>
-                                <span>Operator Avatar</span>
-                            </LabelInner>
-                        </Label>
+                        <Label $wrap>Operator Avatar</Label>
                         <FieldWrap>
                             <AvatarField>
                                 <AvatarDisplayContainer>
@@ -436,11 +416,6 @@ function OperatorModal({ onResolve, onReject, operator, ...props }: Props) {
 }
 
 export const operatorModal = toaster(OperatorModal, Layer.Modal)
-
-const LabelInner = styled.div`
-    align-items: center;
-    display: flex;
-`
 
 const AboutOperator = styled.div`
     margin-top: 40px;

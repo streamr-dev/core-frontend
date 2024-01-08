@@ -21,7 +21,7 @@ import {
     CreateSponsorshipForm,
     MinNumberOfOperatorsParser,
 } from '~/forms/createSponsorshipForm'
-import { useConfigValueFromChain } from '~/hooks'
+import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { toDecimals } from '~/marketplace/utils/math'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
@@ -33,6 +33,7 @@ import { errorToast } from '~/utils/toast'
 import Toast from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
 import { SponsorshipDisclaimer } from '~/components/SponsorshipDisclaimer'
+import { Abbr } from '~/components/Abbr'
 
 interface ResolveProps {
     sponsorshipId: string
@@ -142,6 +143,8 @@ function CreateSponsorshipModal({
     const tooLongMinStakeDuration =
         !!maxPenaltyPeriod && minStakeDuration > maxPenaltyPeriod
 
+    const limitedSpace = useMediaQuery('screen and (max-width: 460px)')
+
     return (
         <FormModal
             {...props}
@@ -245,7 +248,14 @@ function CreateSponsorshipModal({
                         <p>
                             Wallet balance:{' '}
                             <strong>
-                                {balanceProp.toString()} <SponsorshipPaymentTokenName />
+                                {limitedSpace ? (
+                                    <Abbr>{balanceProp}</Abbr>
+                                ) : (
+                                    <>
+                                        {balanceProp.toString()}{' '}
+                                        <SponsorshipPaymentTokenName />
+                                    </>
+                                )}
                             </strong>
                         </p>
                     </Hint>
