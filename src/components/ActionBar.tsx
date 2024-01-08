@@ -3,12 +3,13 @@ import styled from 'styled-components'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import SearchBar from '~/shared/components/SearchBar'
 import SelectField2 from '~/marketplace/components/SelectField2'
-import MobileFilter from '~/shared/components/MobileFilter'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { TheGraph } from '~/shared/types'
 import { ProjectFilter } from '~/types'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import routes from '~/routes'
+import Button from '~/shared/components/Button'
+import Faders from '~/assets/Faders.svg'
 import {
     ActionBarContainer,
     CreateProjectButton,
@@ -19,7 +20,8 @@ import {
     MobileFilterWrap,
     SearchBarWrap,
     SelectFieldWrap,
-} from './ActionBar.styles'
+} from '~/components/ActionBar.styles'
+import { projectTypeFilterModal } from '~/modals/ProjectTypeFilter'
 
 enum TabOption {
     Any = 'all',
@@ -122,24 +124,26 @@ const UnstyledActionBar = ({
                         </SelectFieldWrap>
                     </DropdownFilters>
                     <MobileFilterWrap>
-                        <MobileFilter
-                            filters={[
-                                {
-                                    label: 'Project type',
-                                    value: 'type',
-                                    options: productTypeOptions,
-                                },
-                            ]}
-                            onChange={({ type }) => {
-                                onFilterChange?.({
-                                    ...filter,
-                                    type: type as typeof filter.type,
-                                })
+                        <MobileFilterTrigger
+                            onClick={async () => {
+                                try {
+                                    const type = await projectTypeFilterModal.pop({
+                                        value: filter.type,
+                                    })
+
+                                    onFilterChange?.({
+                                        ...filter,
+                                        type,
+                                    })
+                                } catch (e) {}
                             }}
-                            selectedFilters={{ type: filter.type || '' }}
+                            kind="secondary"
                         >
-                            <MobileFilterText>Filter</MobileFilterText>
-                        </MobileFilter>
+                            <MobileFilterText>
+                                Filter{filter.type != null && '*'}
+                            </MobileFilterText>
+                            <img src={Faders} />
+                        </MobileFilterTrigger>
                     </MobileFilterWrap>
                 </FiltersWrap>
                 <CreateProjectButton
@@ -157,3 +161,7 @@ const UnstyledActionBar = ({
 const ActionBar = styled(UnstyledActionBar)``
 
 export default ActionBar
+
+const MobileFilterTrigger = styled(Button)`
+    padding: 0 10px !important;
+`

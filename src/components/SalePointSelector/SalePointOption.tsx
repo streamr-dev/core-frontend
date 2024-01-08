@@ -66,7 +66,7 @@ export default function SalePointOption({
     )
 }
 
-const RadioCircle = styled.div<{ $checked?: boolean; $disabled?: boolean }>`
+export const RadioCircle = styled.div<{ $checked?: boolean; $disabled?: boolean }>`
     border-radius: 50%;
     border: 2px solid ${COLORS.radioBorder};
     height: 15px;

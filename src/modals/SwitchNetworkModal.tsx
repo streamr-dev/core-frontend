@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import Buttons from '~/shared/components/Buttons'
+import { Buttons } from '~/shared/components/Buttons'
 import PngIcon from '~/shared/components/PngIcon'
 import { ethereumNetworks } from '~/shared/utils/constants'
 import Modal, { ModalProps } from './Modal'
