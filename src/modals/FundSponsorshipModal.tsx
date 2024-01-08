@@ -5,6 +5,7 @@ import { RejectionReason, isRejectionReason } from '~/modals/BaseModal'
 import FormModal, {
     FieldWrap,
     FormModalProps,
+    MaxButton,
     Prop,
     PropList,
     PropValue,
@@ -174,6 +175,11 @@ function FundSponsorshipModal({ balance, onResolve, sponsorship, ...props }: Pro
                         min={0}
                         step="any"
                         value={rawAmount}
+                    />
+                    <MaxButton
+                        onClick={() => {
+                            setRawAmount(balance.toString())
+                        }}
                     />
                     <TextAppendix>
                         <SponsorshipPaymentTokenName />

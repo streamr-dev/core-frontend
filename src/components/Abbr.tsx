@@ -19,7 +19,7 @@ export function Abbr({ children, suffix }: { children: BNish; suffix?: string })
     if (abbreviated === stringified) {
         return (
             <>
-                {stringified} {unit}
+                {stringified}&nbsp;{unit}
             </>
         )
     }
@@ -29,11 +29,11 @@ export function Abbr({ children, suffix }: { children: BNish; suffix?: string })
             inlineWrap
             content={
                 <>
-                    {stringified} {unit}
+                    {stringified}&nbsp;{unit}
                 </>
             }
         >
-            {abbreviated} {unit}
+            {abbreviated}&nbsp;{unit}
         </Tooltip>
     )
 }

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { ComponentProps, ReactNode } from 'react'
 import styled, { css } from 'styled-components'
 import { COLORS, MEDIUM, REGULAR, SANS, TABLET } from '~/shared/utils/styled'
 import Buttons, { ButtonActions } from '~/shared/components/Buttons'
@@ -422,4 +422,28 @@ export const CopyButtonWrapAppendix = styled(Appendix)`
 export const IconWrapAppendix = styled(Appendix)`
     color: ${COLORS.primaryDisabled};
     padding-right: 10px;
+`
+
+function getMaxButtonAttrs(): ComponentProps<'button'> {
+    return {
+        type: 'button',
+        children: 'MAX',
+    }
+}
+
+export const MaxButton = styled.button.attrs(getMaxButtonAttrs)`
+    appearance: none;
+    background: #f8f8f8;
+    border: 0;
+    border-radius: 4px;
+    color: #0324ff;
+    flex: 0;
+    font-size: 12px;
+    font-weight: ${MEDIUM};
+    line-height: normal;
+    padding: 2px 4px;
+
+    & + * {
+        margin-left: 12px;
+    }
 `

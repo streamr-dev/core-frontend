@@ -7,6 +7,7 @@ import FormModal, {
     ErrorLabel,
     FieldWrap,
     FormModalProps,
+    MaxButton,
     Prop,
     PropList,
     PropValue,
@@ -132,6 +133,8 @@ function EditStakeModal({
     const limitedSpace = useMediaQuery('screen and (max-width: 460px)')
 
     const diff = fromDecimals(difference, decimals)
+
+    const availableBalance = fromDecimals(operatorBalance, decimals)
 
     return (
         <FormModal
@@ -265,6 +268,11 @@ function EditStakeModal({
                         step="any"
                         value={rawAmount}
                     />
+                    <MaxButton
+                        onClick={() => {
+                            setRawAmount(availableBalance.plus(currentAmount).toString())
+                        }}
+                    />
                     <TextAppendix>
                         <SponsorshipPaymentTokenName />
                     </TextAppendix>
@@ -305,10 +313,10 @@ function EditStakeModal({
                         </Prop>
                         <PropValue>
                             {limitedSpace ? (
-                                <Abbr>{fromDecimals(operatorBalance, decimals)}</Abbr>
+                                <Abbr>{availableBalance}</Abbr>
                             ) : (
                                 <>
-                                    {fromDecimals(operatorBalance, decimals).toString()}{' '}
+                                    {availableBalance.toString()}{' '}
                                     <SponsorshipPaymentTokenName />
                                 </>
                             )}

@@ -1,7 +1,6 @@
 import React from 'react'
 import { Meta } from '@storybook/react'
 import Spinner from '~/components/Spinner'
-import { COLORS } from '~/shared/utils/styled'
 
 export const SpinnerSmall = () => <Spinner />
 SpinnerSmall.story = {
