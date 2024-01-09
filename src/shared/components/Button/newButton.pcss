@@ -21,13 +21,18 @@
     -webkit-font-smoothing: subpixel-antialiased;
 
     &,
-    &:--idle,
-    &:--enter {
+    &:active,
+    &:visited,
+    &:hover,
+    &:focus,
+    &.active {
         text-decoration: none;
         outline: none;
     }
 
-    &:not([disabled]):--enter {
+    &:hover:not([disabled]),
+    &:focus:not([disabled]),
+    &.active:not([disabled]) {
         transition-duration: 5ms;
         transform: scale(1.05) translate3d(0, 0, 0);
     }
@@ -61,11 +66,14 @@
 
     &,
     &:link,
-    &:not([disabled]):--idle {
+    &:active:not([disabled]),
+    &:visited:not([disabled]) {
         color: rgba(255, 255, 255, 1);
     }
 
-    &:not([disabled]):--enter {
+    &:hover:not([disabled]),
+    &:focus:not([disabled]),
+    &.active:not([disabled]) {
         background-color: #0d009a;
         border-color: #0d009a;
     }
@@ -85,7 +93,9 @@
         border-color: #0324ff;
     }
 
-    &.outline:--enter {
+    &.outline:hover,
+    &.outline:focus,
+    &.outline.active {
         color: #0d009a;
         border-color: #0d009a;
     }
@@ -107,11 +117,14 @@
 
     &,
     &:link,
-    &:not([disabled]):--idle {
+    &:active:not([disabled]),
+    &:visited:not([disabled]) {
         color: rgba(255, 255, 255, 1);
     }
 
-    &:not([disabled]):--enter {
+    &:hover:not([disabled]),
+    &:focus:not([disabled]),
+    &.active:not([disabled]) {
         background-color: #525252;
         border-color: #525252;
     }
@@ -132,11 +145,14 @@
 
     &,
     &:link,
-    &:not([disabled]):--idle {
+    &:active:not([disabled]),
+    &:visited:not([disabled]) {
         color: rgba(82, 82, 82, 1);
     }
 
-    &:not([disabled]):--enter {
+    &:hover:not([disabled]),
+    &:focus:not([disabled]),
+    &.active:not([disabled]) {
         background-color: transparent;
         border-color: transparent;
     }
@@ -157,11 +173,14 @@
 
     &,
     &:link,
-    &:not([disabled]):--idle {
+    &:active:not([disabled]),
+    &:visited:not([disabled]) {
         color: rgba(82, 82, 82, 1);
     }
 
-    &:not([disabled]):--enter {
+    &:hover:not([disabled]),
+    &:focus:not([disabled]),
+    &.active:not([disabled]) {
         color: inherit;
         background-color: #e7e7e7;
         border-color: #e7e7e7;
@@ -179,7 +198,9 @@
     &.outline {
         border-color: #525252;
 
-        &:not([disabled]):--enter {
+        &:hover:not([disabled]),
+        &:focus:not([disabled]),
+        &.active:not([disabled]) {
             border-color: #323232;
         }
 
@@ -199,11 +220,14 @@
 
     &,
     &:link,
-    &:not([disabled]):--idle {
+    &:active:not([disabled]),
+    &:visited:not([disabled]) {
         color: rgba(255, 255, 255, 1);
     }
 
-    &:not([disabled]):--enter {
+    &:hover:not([disabled]),
+    &:focus:not([disabled]),
+    &.active:not([disabled]) {
         background-color: #ea112c;
         border-color: #ea112c;
     }
@@ -220,7 +244,8 @@
     &.outline {
         &,
         &:link,
-        &:not([disabled]):--idle {
+        &:active:not([disabled]),
+        &:visited:not([disabled]) {
             color: #ff0f2d;
         }
     }
@@ -234,11 +259,14 @@
 
     &,
     &:link,
-    &:not([disabled]):--idle {
+    &:active:not([disabled]),
+    &:visited:not([disabled]) {
         color: rgba(82, 82, 82, 1);
     }
 
-    &:not([disabled]):--enter {
+    &:hover:not([disabled]),
+    &:focus:not([disabled]),
+    &.active:not([disabled]) {
         color: #323232;
         transform: scale(1) translate3d(0, 0, 0);
     }
@@ -257,7 +285,9 @@
         background-color: transparent;
         border-color: transparent;
 
-        &:not([disabled]):--enter {
+        &:hover:not([disabled]),
+        &:focus:not([disabled]),
+        &.active:not([disabled]) {
             color: #0d009a;
         }
 
@@ -286,11 +316,14 @@
 
     &,
     &:link,
-    &:not([disabled]):--idle {
+    &:active:not([disabled]),
+    &:visited:not([disabled]) {
         color: rgba(50, 50, 50, 1);
     }
 
-    &:not([disabled]):--enter {
+    &:hover:not([disabled]),
+    &:focus:not([disabled]),
+    &.active:not([disabled]) {
         color: inherit;
         background-color: rgba(255, 255, 255, 1);
         border-color: rgba(255, 255, 255, 1);
@@ -310,7 +343,9 @@
         background-color: rgba(239, 239, 239, 0.9);
         border-color: rgba(239, 239, 239, 0.9);
 
-        &:not([disabled]):--enter {
+        &:hover:not([disabled]),
+        &:focus:not([disabled]),
+        &.active:not([disabled]) {
             background-color: #e7e7e7;
             border-color: #e7e7e7;
         }
