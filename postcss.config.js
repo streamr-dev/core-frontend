@@ -9,12 +9,10 @@ const calc = require('postcss-calc')
 const precss = require('precss')
 const postcssColorFunction = require('postcss-color-function')
 const cssMqpacker = require('css-mqpacker')
-const ums = require('./scripts/postcss/ums')
 const { xs, sm, md, lg, xl } = require('./scripts/breakpoints')
 
 module.exports = {
     plugins: [
-        ums,
         postcssImport,
         precss({
             features: {

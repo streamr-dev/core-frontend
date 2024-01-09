@@ -2,7 +2,6 @@
   --fontSize: 1rem;
   --mono: 'IBM Plex Mono', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', Courier, monospace;
   --sans: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
-  --um: 16px; /* Wishful thinking: Future 1rem? — Mariusz */
 
   /* Colors */
   --white: #FFFFFF;
