@@ -115,7 +115,15 @@ export function QueriedSponsorshipsTable({
                     },
                     {
                         displayName: 'APY',
-                        valueMapper: ({ spotAPY }) => `${(spotAPY * 100).toFixed(0)}%`,
+                        valueMapper: (element) => {
+                            const { isRunning, remainingBalance, spotAPY } = element
+
+                            if (!isRunning || remainingBalance.isLessThanOrEqualTo(0)) {
+                                return 'N/A'
+                            }
+
+                            return `${(spotAPY * 100).toFixed(0)}%`
+                        },
                         align: 'end',
                         isSticky: false,
                         key: 'apy',
@@ -126,6 +134,8 @@ export function QueriedSponsorshipsTable({
                         valueMapper: (element) => (
                             <FundedUntilCell
                                 projectedInsolvencyAt={element.projectedInsolvencyAt}
+                                isRunning={element.isRunning}
+                                remainingBalance={element.remainingBalance}
                             />
                         ),
                         align: 'start',
