@@ -70,7 +70,7 @@ export const SingleSponsorshipPage = () => {
     >('amountStaked')
 
     const [selectedPeriod, setSelectedPeriod] = useState<ChartPeriod>(
-        ChartPeriod.SevenDays,
+        ChartPeriod.ThreeMonths,
     )
 
     const chartQuery = useSponsorshipDailyBucketsQuery({
