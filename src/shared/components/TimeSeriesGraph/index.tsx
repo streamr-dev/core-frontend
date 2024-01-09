@@ -107,6 +107,7 @@ const TimeSeriesGraph = ({
                             interval="preserveStartEnd"
                         />
                         <YAxis
+                            domain={['dataMin', 'dataMax']}
                             dataKey="y"
                             orientation="right"
                             tickMargin={10}
