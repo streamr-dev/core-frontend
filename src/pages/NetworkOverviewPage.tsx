@@ -69,7 +69,7 @@ function MyOperatorSummary() {
 
     const { value = toBN(0), numOfDelegators = 0, numOfSponsorships = 0 } = stats || {}
 
-    const [chartPeriod, setChartPeriod] = useState<ChartPeriod>(ChartPeriod.SevenDays)
+    const [chartPeriod, setChartPeriod] = useState<ChartPeriod>(ChartPeriod.ThreeMonths)
 
     const [chartId, setChartId] = useState<'stake' | 'earnings'>('stake')
 
@@ -244,7 +244,7 @@ function MyDelegationsSummary() {
 
     const apy = minApy === maxApy ? [minApy] : [minApy, maxApy]
 
-    const [chartPeriod, setChartPeriod] = useState<ChartPeriod>(ChartPeriod.SevenDays)
+    const [chartPeriod, setChartPeriod] = useState<ChartPeriod>(ChartPeriod.ThreeMonths)
     const [chartDataSource, setChartDataSource] = useState<
         'currentValue' | 'cumulativeEarnings'
     >('currentValue')

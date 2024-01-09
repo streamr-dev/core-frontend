@@ -95,7 +95,7 @@ export const SingleOperatorPage = () => {
     >('totalValue')
 
     const [selectedPeriod, setSelectedPeriod] = useState<ChartPeriod>(
-        ChartPeriod.SevenDays,
+        ChartPeriod.ThreeMonths,
     )
 
     const chartQuery = useQuery({
