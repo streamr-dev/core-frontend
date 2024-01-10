@@ -9,6 +9,7 @@ import { StreamDescription } from '~/components/StreamDescription'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import { getSponsorshipStakeForOperator } from '~/utils/sponsorships'
+import { BN } from '~/utils/bn'
 import { OperatorAvatar } from './avatars'
 
 /**
@@ -93,27 +94,26 @@ export function StreamIdCell({ streamId = '' }: { streamId?: string }) {
  */
 export function FundedUntilCell({
     projectedInsolvencyAt,
+    isRunning,
+    remainingBalance,
 }: {
     projectedInsolvencyAt: number | null
+    isRunning: boolean
+    remainingBalance: BN
 }) {
     const value =
         projectedInsolvencyAt == null ? null : moment(projectedInsolvencyAt * 1000)
+    const isPaying = isRunning && remainingBalance.isGreaterThan(0)
 
     return (
         <Iconized>
-            {value == null ? (
-                <>N/A</>
-            ) : (
-                <>
-                    {value.format('YYYY-MM-DD')}
-                    {value.isBefore(Date.now()) && (
-                        <Tooltip content="Sponsorship expired">
-                            <TooltipIconWrap $color="#ff5c00">
-                                <JiraFailedBuildStatusIcon label="Error" />
-                            </TooltipIconWrap>
-                        </Tooltip>
-                    )}
-                </>
+            {value == null ? <>N/A</> : <>{value.format('YYYY-MM-DD')}</>}
+            {!isPaying && (
+                <Tooltip content="Sponsorship expired">
+                    <TooltipIconWrap $color="#ff5c00">
+                        <JiraFailedBuildStatusIcon label="Error" />
+                    </TooltipIconWrap>
+                </Tooltip>
             )}
         </Iconized>
     )
