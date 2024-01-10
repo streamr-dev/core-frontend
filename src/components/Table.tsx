@@ -103,11 +103,12 @@ export function FundedUntilCell({
 }) {
     const value =
         projectedInsolvencyAt == null ? null : moment(projectedInsolvencyAt * 1000)
+    const isPaying = isRunning && remainingBalance.isGreaterThan(0)
 
     return (
         <Iconized>
             {value == null ? <>N/A</> : <>{value.format('YYYY-MM-DD')}</>}
-            {remainingBalance.isLessThanOrEqualTo(0) && !isRunning && (
+            {!isPaying && (
                 <Tooltip content="Sponsorship expired">
                     <TooltipIconWrap $color="#ff5c00">
                         <JiraFailedBuildStatusIcon label="Error" />
