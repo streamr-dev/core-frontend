@@ -94,16 +94,13 @@ export function StreamIdCell({ streamId = '' }: { streamId?: string }) {
  */
 export function FundedUntilCell({
     projectedInsolvencyAt,
-    isRunning,
-    remainingBalance,
+    isPaying,
 }: {
     projectedInsolvencyAt: number | null
-    isRunning: boolean
-    remainingBalance: BN
+    isPaying: boolean
 }) {
     const value =
         projectedInsolvencyAt == null ? null : moment(projectedInsolvencyAt * 1000)
-    const isPaying = isRunning && remainingBalance.isGreaterThan(0)
 
     return (
         <Iconized>

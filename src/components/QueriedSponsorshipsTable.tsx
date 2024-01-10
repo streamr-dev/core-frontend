@@ -134,8 +134,10 @@ export function QueriedSponsorshipsTable({
                         valueMapper: (element) => (
                             <FundedUntilCell
                                 projectedInsolvencyAt={element.projectedInsolvencyAt}
-                                isRunning={element.isRunning}
-                                remainingBalance={element.remainingBalance}
+                                isPaying={
+                                    element.isRunning &&
+                                    element.remainingBalance.isGreaterThan(0)
+                                }
                             />
                         ),
                         align: 'start',
