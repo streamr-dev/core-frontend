@@ -12,6 +12,7 @@ interface Earnings {
 interface Store {
     earnings: Record<string, undefined | Earnings>
     fetch: (operatorId: string) => Promise<void>
+    tick: () => void
 }
 
 export const useUncollectedEarningsStore = create<Store>((set, get) => {
@@ -54,6 +55,28 @@ export const useUncollectedEarningsStore = create<Store>((set, get) => {
                 })
             }
         },
+
+        async tick() {
+            set((store) =>
+                produce(store, ({ earnings }) => {
+                    const operatorIds = Object.keys(earnings)
+                    operatorIds.forEach((operatorId) => {
+                        const draft = earnings[operatorId]
+                        if (draft != null) {
+                            earnings[operatorId] = produce(draft, (draft) => {
+                                const sponsorshipIds = Object.keys(draft.values)
+                                sponsorshipIds.forEach((sponsorshipId) => {
+                                    // check that sponsorship is paying
+                                    draft.values[sponsorshipId] = draft.values[
+                                        sponsorshipId
+                                    ]?.plus(10 ** 18)
+                                })
+                            })
+                        }
+                    })
+                }),
+            )
+        },
     }
 })
 
@@ -61,7 +84,7 @@ export function useUncollectedEarnings(
     operatorId: string | undefined,
     sponsorshipId: string,
 ) {
-    const { earnings, fetch } = useUncollectedEarningsStore()
+    const { earnings, fetch, tick } = useUncollectedEarningsStore()
 
     useEffect(() => {
         void (async () => {
@@ -76,6 +99,11 @@ export function useUncollectedEarnings(
             }
         })()
     }, [operatorId, fetch])
+
+    useEffect(() => {
+        const timeoutId = setInterval(tick, 1000)
+        return () => clearInterval(timeoutId)
+    })
 
     if (!operatorId) {
         return null
