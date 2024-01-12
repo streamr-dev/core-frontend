@@ -1,7 +1,6 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { Img } from 'react-image'
-import { ago } from '~/shared/utils/time'
 import Logo from '~/shared/components/Logo'
 import Skeleton from '~/shared/components/Skeleton'
 import Rect from '~/shared/components/Rect'
@@ -13,7 +12,7 @@ import { getProjectImageUrl } from '~/getters'
 import routes from '~/routes'
 import Summary from './Summary'
 import Menu from './Menu'
-import { DataUnionBadge, DeployingBadge } from './Badge'
+import { DataUnionBadge } from './Badge'
 
 const Image = styled(Img)`
     img& {
@@ -59,7 +58,7 @@ const UnstyledThumbnail = ({ src, skeletonize, alt, ...props }: ThumbnailProps) 
         />
     ))
 
-export const TileThumbnail = styled(UnstyledThumbnail)<ThumbnailProps>`
+const TileThumbnail = styled(UnstyledThumbnail)<ThumbnailProps>`
     height: 100%;
     left: 0;
     position: absolute;
@@ -145,7 +144,7 @@ const UnstyledTileImageContainer = ({
     )
 }
 
-export const TileImageContainer = styled(
+const TileImageContainer = styled(
     UnstyledTileImageContainer,
 )<UnstyledTileImageContainerProps>`
     border-radius: 16px;
@@ -193,68 +192,6 @@ const ImageTile = ({
             <TileThumbnail alt={alt || ''} src={src || ''} />
             {!!showDataUnionBadge && <DataUnionBadge top left />}
         </TileImageContainer>
-    </Tile>
-)
-
-export const touchedAgo = ({ updated, created }: any): string => `
-    ${updated === created ? 'Created' : 'Updated'} ${ago(new Date(updated))}
-`
-
-type ProductTileProps = {
-    actions?: any
-    deployed?: boolean
-    published?: boolean
-    numMembers?: number
-    product: any
-    showDataUnionBadge?: boolean
-    showDeployingBadge?: boolean
-}
-
-const ProductTile = ({
-    actions,
-    deployed: _deployed,
-    published: _published,
-    numMembers,
-    product,
-    showDataUnionBadge,
-    showDeployingBadge,
-    ...props
-}: ProductTileProps) => (
-    <Tile {...props}>
-        {!!actions && <Menu>{actions}</Menu>}
-        <TileImageContainer>
-            <Link
-                to={
-                    product.id &&
-                    routes.projects.edit({
-                        id: product.id,
-                    })
-                }
-            >
-                <TileImageContainer autoSize>
-                    <TileThumbnail src={getProjectImageUrl(product.metadata) || ''} />
-                </TileImageContainer>
-            </Link>
-            {!!showDataUnionBadge && (
-                <DataUnionBadge
-                    top
-                    left
-                    memberCount={numMembers}
-                    linkTo={routes.projects.index()}
-                />
-            )}
-            {!!showDeployingBadge && <DeployingBadge bottom right />}
-        </TileImageContainer>
-        <Link
-            to={
-                product.id &&
-                routes.projects.edit({
-                    id: product.id,
-                })
-            }
-        >
-            <Summary name={product.name} description={touchedAgo(product)} />
-        </Link>
     </Tile>
 )
 
@@ -320,5 +257,4 @@ const MarketplaceProductTile = ({
     </Tile>
 )
 
-export { ImageTile, MarketplaceProductTile, ProductTile }
-export default Tile
+export { ImageTile, MarketplaceProductTile }
