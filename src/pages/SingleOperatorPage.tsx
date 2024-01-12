@@ -800,7 +800,8 @@ function UncollectedEarnings({
 
     return typeof value !== 'undefined' ? (
         <>
-            {abbr(fromAtto(value || 0))} <SponsorshipPaymentTokenName />
+            {abbr(fromAtto(value?.uncollectedEarnings || 0))}{' '}
+            <SponsorshipPaymentTokenName />
         </>
     ) : (
         <Spinner color="blue" />

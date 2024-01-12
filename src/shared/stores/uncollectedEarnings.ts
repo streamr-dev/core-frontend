@@ -1,12 +1,13 @@
 import { produce } from 'immer'
 import { useCallback, useEffect } from 'react'
 import { create } from 'zustand'
-import { getEarningsForSponsorships } from '~/services/sponsorships'
-import { BN, toBN } from '~/utils/bn'
+import { SponsorshipEarnings, getEarningsForSponsorships } from '~/services/sponsorships'
+import { toBN } from '~/utils/bn'
 
 interface Earnings {
     fetching: boolean
-    values: Record<string, BN | undefined>
+    values: Record<string, SponsorshipEarnings>
+    lastUpdatedTimestamp: number | undefined
 }
 
 interface Store {
@@ -22,6 +23,7 @@ export const useUncollectedEarningsStore = create<Store>((set, get) => {
                 const draft = earnings[operatorId] || {
                     values: {},
                     fetching: false,
+                    lastUpdatedTimestamp: undefined,
                 }
 
                 earnings[operatorId] = produce(draft, fn)
@@ -48,6 +50,7 @@ export const useUncollectedEarningsStore = create<Store>((set, get) => {
 
                 updateEarnings(operatorId, (draft) => {
                     draft.values = values
+                    draft.lastUpdatedTimestamp = performance.now()
                 })
             } finally {
                 updateEarnings(operatorId, (draft) => {
@@ -59,21 +62,42 @@ export const useUncollectedEarningsStore = create<Store>((set, get) => {
         async tick() {
             set((store) =>
                 produce(store, ({ earnings }) => {
-                    const operatorIds = Object.keys(earnings)
-                    operatorIds.forEach((operatorId) => {
-                        const draft = earnings[operatorId]
+                    const now = performance.now()
+
+                    for (const [_, draft] of Object.entries(earnings)) {
                         if (draft != null) {
-                            earnings[operatorId] = produce(draft, (draft) => {
-                                const sponsorshipIds = Object.keys(draft.values)
-                                sponsorshipIds.forEach((sponsorshipId) => {
-                                    // check that sponsorship is paying
-                                    draft.values[sponsorshipId] = draft.values[
-                                        sponsorshipId
-                                    ]?.plus(10 ** 18)
-                                })
-                            })
+                            for (const [sponsorshipId, _] of Object.entries(
+                                draft.values,
+                            )) {
+                                const sponsorship = draft.values[sponsorshipId]
+                                const timeDiffSec =
+                                    (now - (draft.lastUpdatedTimestamp ?? now)) / 1000
+                                const ratePerSec = sponsorship?.rateOfChangePerSec
+
+                                if (
+                                    ratePerSec != null &&
+                                    sponsorship.uncollectedEarnings != null &&
+                                    sponsorship.rateOfChangePerSec != null
+                                ) {
+                                    draft.values[sponsorshipId].uncollectedEarnings =
+                                        sponsorship.uncollectedEarnings.plus(
+                                            sponsorship.rateOfChangePerSec.multipliedBy(
+                                                timeDiffSec,
+                                            ),
+                                        )
+                                    console.log(
+                                        'Earnings added',
+                                        draft.values[
+                                            sponsorshipId
+                                        ].uncollectedEarnings.toString(),
+                                        timeDiffSec,
+                                    )
+                                }
+
+                                draft.lastUpdatedTimestamp = now
+                            }
                         }
-                    })
+                    }
                 }),
             )
         },
@@ -125,9 +149,9 @@ export function useCanCollectEarningsCallback() {
                 return false
             }
 
-            return (earnings[operatorId]?.values[sponsorshipId] || toBN(0)).isGreaterThan(
-                0,
-            )
+            return (
+                earnings[operatorId]?.values[sponsorshipId].uncollectedEarnings || toBN(0)
+            ).isGreaterThan(0)
         },
         [earnings],
     )
