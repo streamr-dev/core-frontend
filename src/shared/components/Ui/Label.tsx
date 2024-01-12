@@ -3,17 +3,8 @@ import styled, { css } from 'styled-components'
 import * as Colors from '~/shared/components/Ui/StateColors'
 import { MEDIUM } from '~/shared/utils/styled'
 
-interface Props extends HTMLProps<HTMLLabelElement> {
-    keepSpace?: boolean
-}
-
-function UnstyledLabel({ children, keepSpace = false, ...props }: Props) {
-    return (
-        <label {...props}>
-            {children}
-            {keepSpace ? <>&zwnj;</> : null}
-        </label>
-    )
+function UnstyledLabel({ children, ...props }: HTMLProps<HTMLLabelElement>) {
+    return <label {...props}>{children}</label>
 }
 
 const Label = styled(UnstyledLabel)<{ state?: string; $wrap?: boolean }>`
@@ -34,4 +25,5 @@ const Label = styled(UnstyledLabel)<{ state?: string; $wrap?: boolean }>`
             white-space: nowrap;
         `}
 `
+
 export default Label
