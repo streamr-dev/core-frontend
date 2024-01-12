@@ -18,7 +18,8 @@ function UnstyledLabel({ children, keepSpace = false, ...props }: Props) {
 
 const Label = styled(UnstyledLabel)<{ state?: string; $wrap?: boolean }>`
     color: ${({ state }) =>
-        (Colors as { [key: string]: string })[state] || Colors.DEFAULT};
+        (state ? (Colors as { [key: string]: string })[state] : undefined) ||
+        Colors.DEFAULT};
     display: block;
     font-size: 12px;
     font-weight: ${MEDIUM};
