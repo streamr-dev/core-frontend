@@ -46,7 +46,6 @@ const ImageUpload: FunctionComponent<Props> = ({
                 setUploading(true)
 
                 if (setImageToUpload) {
-                    // $FlowFixMe property `preview` is missing in  `File`.
                     setImageToUpload(
                         Object.assign(image, {
                             preview: imagePreview,

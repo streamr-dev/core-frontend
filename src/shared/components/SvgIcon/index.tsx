@@ -1,7 +1,6 @@
 import React, { ComponentType } from 'react'
 import { $Keys } from 'utility-types'
 import styled from 'styled-components'
-import { ImageUploadIcon } from './ImageUploadIcon'
 import { CheckmarkIcon } from './CheckmarkIcon'
 import * as MapIcons from './MapIcons'
 import * as SocialIcons from './SocialIcons'
@@ -317,7 +316,6 @@ const sources = {
             />
         </svg>
     ),
-    imageUpload: <ImageUploadIcon />,
     checkmark: <CheckmarkIcon />,
     checkmarkOutline: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 112 113" fill="none">
