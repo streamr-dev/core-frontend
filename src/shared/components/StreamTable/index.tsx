@@ -35,9 +35,7 @@ export enum ListOrderDirection {
     Desc,
 }
 
-const Container = styled.div`
-    padding-bottom: 80px;
-`
+const Container = styled.div``
 
 const Row = styled.div`
     align-items: center;
