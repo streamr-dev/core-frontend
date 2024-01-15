@@ -43,6 +43,7 @@ function withPrevButton(el: HTMLElement, fn: (button: HTMLButtonElement | null) 
 
 export function StreamIdDropdown({
     disabled = false,
+    readOnly,
     onBlur: onBlurProp,
     onChange,
     onFocus: onFocusProp,
@@ -215,8 +216,13 @@ export function StreamIdDropdown({
                         <TextInput
                             {...props}
                             disabled={disabled}
+                            readOnly={readOnly}
                             ref={inputRef}
                             onMouseDown={() => {
+                                if (readOnly) {
+                                    return
+                                }
+
                                 toggle((c) => !c)
                             }}
                             value={value}
@@ -236,6 +242,10 @@ export function StreamIdDropdown({
                                 setInputFocused(false)
                             }}
                             onKeyDown={(e) => {
+                                if (readOnly) {
+                                    return
+                                }
+
                                 onKeyDownProp?.(e)
 
                                 switch (e.key) {
