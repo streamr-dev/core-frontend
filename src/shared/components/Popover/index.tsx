@@ -1,4 +1,4 @@
-import { ComponentProps, ReactElement, ReactNode } from 'react'
+import { ReactElement, ReactNode } from 'react'
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import { Dropdown as RsDropdown, DropdownToggle, DropdownMenu } from 'reactstrap'
