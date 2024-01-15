@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from 'react'
+import { ComponentProps, ReactElement, ReactNode } from 'react'
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import { Dropdown as RsDropdown, DropdownToggle, DropdownMenu } from 'reactstrap'
@@ -6,7 +6,7 @@ import { DropdownMenuProps } from 'reactstrap/lib/DropdownMenu'
 import { DropdownToggleProps } from 'reactstrap/lib/DropdownToggle'
 import cx from 'classnames'
 import SvgIcon from '~/shared/components/SvgIcon'
-import Meatball from '~/shared/components/Meatball'
+import { Meatball } from '~/components/Meatball'
 import { COLORS } from '~/shared/utils/styled'
 
 type Props = {
@@ -225,14 +225,20 @@ const Popover = ({
             case 'whiteMeatball':
             case 'verticalMeatball':
             case 'grayMeatball': {
-                const meatballProps = {
-                    alt: typeof titleString === 'string' ? titleString : '',
-                    gray: type === 'grayMeatball',
-                    white: type === 'whiteMeatball',
-                    vertical: type === 'verticalMeatball',
-                    disabled,
-                }
-                return <Meatball {...meatballProps} />
+                return (
+                    <Meatball
+                        alt={titleString || ''}
+                        disabled={disabled}
+                        layout={type === 'verticalMeatball' ? 'vertical' : undefined}
+                        color={
+                            type === 'grayMeatball'
+                                ? 'gray'
+                                : type === 'whiteMeatball'
+                                ? 'white'
+                                : undefined
+                        }
+                    />
+                )
             }
 
             default:
