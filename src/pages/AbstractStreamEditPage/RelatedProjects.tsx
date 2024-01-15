@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { MarketplaceProductTile } from '~/marketplace/components/Projects'
+import { MarketplaceProductTile } from '~/shared/components/Tile'
 import { TABLET, PHONE } from '~/shared/utils/styled'
 import { TheGraphProject, getProjects } from '~/services/projects'
 

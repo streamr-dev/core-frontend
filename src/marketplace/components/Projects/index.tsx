@@ -1,44 +1,31 @@
-import React, { HTMLAttributes } from 'react'
-import styled from 'styled-components'
-import classnames from 'classnames'
-import { MarketplaceProductTile as UnstyledMarketplaceProductTile } from '~/shared/components/Tile'
-import {
-    REGULAR,
-    DESKTOP,
-    COLORS,
-    TABLET,
-    MAX_BODY_WIDTH,
-    LAPTOP,
-} from '~/shared/utils/styled'
-import Button from '~/shared/components/Button'
+import React from 'react'
+import styled, { css } from 'styled-components'
+import { MarketplaceProductTile } from '~/shared/components/Tile'
+import { DESKTOP, COLORS, TABLET, MAX_BODY_WIDTH, LAPTOP } from '~/shared/utils/styled'
 import { TheGraphProject } from '~/services/projects'
-import { ErrorInUi } from '~/shared/types/common-types'
-import ProductPageSpinner from '../ProductPageSpinner'
-import styles from './projects.pcss'
+import { LoadMoreButton } from '~/components/LoadMore'
+import {
+    DottedLoadingIndicator,
+    DottedLoadingIndicatorRoot,
+} from '~/components/DottedLoadingIndicator'
 import NoProductsView from './NoProductsView'
-
-export type ProjectTilePropType = 'projects' | 'relatedProjects'
 
 export type OwnProps = {
     projects: TheGraphProject[]
     currentUserAddress?: string
-    type: ProjectTilePropType
     error?: any
     isFetching?: boolean
     loadProducts?: () => void
     hasMoreSearchResults?: boolean
-    header?: string
     noOwnProjects?: boolean
 }
 
-export const MarketplaceProductTile = styled(UnstyledMarketplaceProductTile)`
-    margin-top: 16px;
-`
-export const MarketplaceProjectRow = styled.div`
+const MarketplaceProjectRow = styled.div<{ $fetching?: boolean }>`
     display: grid;
     grid-gap: 36px;
-    margin: 0;
     grid-template-columns: 1fr;
+    margin: 0;
+    min-height: 100px;
 
     @media ${TABLET} {
         grid-template-columns: 1fr 1fr;
@@ -47,15 +34,18 @@ export const MarketplaceProjectRow = styled.div`
     @media ${LAPTOP} {
         grid-template-columns: 1fr 1fr 1fr 1fr;
     }
-`
-export const MarketplaceProjectCol = styled.div`
-    padding: 0;
+
+    ${({ $fetching = false }) =>
+        $fetching &&
+        css`
+            opacity: 0.5;
+        `}
 `
 
 const listProjects = (
     projects: TheGraphProject[],
-    currentUserAddress: string,
-    isFetching: boolean | null | undefined,
+    currentUserAddress: string | undefined,
+    isFetching: boolean | undefined,
 ) => {
     const isEditable = (projectId: string) => {
         if (!currentUserAddress) {
@@ -76,19 +66,14 @@ const listProjects = (
         return false
     }
     return (
-        <MarketplaceProjectRow
-            className={classnames(styles.productsRow, {
-                [styles.fetching]: isFetching,
-            })}
-        >
+        <MarketplaceProjectRow $fetching={isFetching}>
             {projects.map((project) => (
-                <MarketplaceProjectCol key={project.id}>
-                    <MarketplaceProductTile
-                        product={project}
-                        showDataUnionBadge={!!project.isDataUnion}
-                        showEditButton={isEditable(project.id)}
-                    />
-                </MarketplaceProjectCol>
+                <MarketplaceProductTile
+                    key={project.id}
+                    product={project}
+                    showDataUnionBadge={!!project.isDataUnion}
+                    showEditButton={isEditable(project.id)}
+                />
             ))}
         </MarketplaceProjectRow>
     )
@@ -104,67 +89,42 @@ export const ProjectsContainer = styled.div`
         padding: 72px 0 7em 0;
     }
 `
-export const ProjectsHeader = styled.h3`
-    font-size: 34px;
-    line-height: 34px;
-    font-weight: ${REGULAR};
-    margin-bottom: 16px;
 
-    @media ${TABLET} {
-        margin-bottom: 40px;
-    }
-`
-
-export const LoadMoreButton = styled(Button)`
-    display: block !important;
-    margin: 130px auto 80px;
-`
-
-const UnstyledProjects = ({
+export function Projects({
     projects,
-    /**
-     * @todo We don't seem to use `type` no more, eh? Hard to tell.
-     */
-    type: _type,
     error,
     isFetching,
     loadProducts,
     hasMoreSearchResults,
-    header,
     currentUserAddress,
     noOwnProjects = false,
     ...props
-}: OwnProps) => (
-    <div {...props}>
-        {header && <ProjectsHeader>{header}</ProjectsHeader>}
-        <Error source={error} />
-        {isFetching || projects.length > 0 ? (
-            listProjects(projects, currentUserAddress, isFetching)
-        ) : (
-            <NoProductsView noOwnProjects={noOwnProjects} />
-        )}
-        {loadProducts && !isFetching && hasMoreSearchResults && (
-            <LoadMoreButton onClick={loadProducts} kind={'primary2'}>
-                Load more
-            </LoadMoreButton>
-        )}
-        {isFetching && <ProductPageSpinner className={styles.spinner} />}
-    </div>
-)
-
-const ProjectsComponent = styled(UnstyledProjects)<OwnProps>``
-
-export default ProjectsComponent
-
-interface ErrorProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
-    source?: ErrorInUi | null | undefined
+}: OwnProps) {
+    return (
+        <Root {...props}>
+            {error ? <Error>{error.message}</Error> : null}
+            {isFetching || projects.length > 0 ? (
+                listProjects(projects, currentUserAddress, isFetching)
+            ) : (
+                <NoProductsView noOwnProjects={noOwnProjects} />
+            )}
+            {loadProducts && !isFetching && hasMoreSearchResults && (
+                <LoadMoreButton onClick={loadProducts} kind="primary2">
+                    Load more
+                </LoadMoreButton>
+            )}
+            {isFetching && <DottedLoadingIndicator />}
+        </Root>
+    )
 }
 
-function UnstyledError({ source, ...props }: ErrorProps) {
-    return source ? <div {...props}>{source.message}</div> : null
-}
+const Root = styled.div`
+    ${DottedLoadingIndicatorRoot} {
+        margin-top: 1.5rem;
+    }
+`
 
-const Error = styled(UnstyledError)`
+const Error = styled.div`
     background: rgba(255, 25, 0, 0.4);
     border-radius: 2px;
     font-size: 0.9em;

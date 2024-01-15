@@ -1,19 +1,20 @@
 import React from 'react'
 import { Col, Row } from 'reactstrap'
 import { Meta } from '@storybook/react'
-import PngIcon from '~/shared/components/PngIcon'
-import sharedStyles from './shared.pcss'
+import PrestyledPngIcon from '~/shared/components/PngIcon'
+import styled from 'styled-components'
+import { IconInner, IconWrapper } from './SvgIcon.stories'
 
 export const All = () => (
     <Row>
         {PngIcon.names.map((name) => (
             <Col xs="4" key={name}>
-                <div key={name} className={sharedStyles.iconWrapper}>
-                    <div className={sharedStyles.iconInner}>
-                        <PngIcon name={name} className={sharedStyles.pngIcon} />
-                    </div>
+                <IconWrapper>
+                    <IconInner>
+                        <PngIcon name={name} />
+                    </IconInner>
                     <span>{name}</span>
-                </div>
+                </IconWrapper>
             </Col>
         ))}
     </Row>
@@ -42,3 +43,9 @@ const meta: Meta<typeof All> = {
     ],
 }
 export default meta
+
+const PngIcon = styled(PrestyledPngIcon)`
+    display: block;
+    max-height: 3em;
+    max-width: 3em;
+`

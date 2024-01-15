@@ -11,7 +11,7 @@ import { ProjectFilter } from '~/types'
 import { MaxSearchPhraseLength } from '~/consts'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import CreateProjectModal from '~/marketplace/containers/CreateProjectModal'
-import ProjectsComponent, { ProjectsContainer } from '~/marketplace/components/Projects'
+import { Projects, ProjectsContainer } from '~/marketplace/components/Projects'
 
 const DefaultFilter: ProjectFilter = {
     search: '',
@@ -73,13 +73,12 @@ export default function ProjectListingPage() {
             />
             <CreateProjectModal />
             <ProjectsContainer>
-                <ProjectsComponent
+                <Projects
                     projects={query.data?.pages.flatMap((d) => d.projects) ?? []}
                     currentUserAddress={account}
                     error={query.error}
-                    type="projects"
                     isFetching={query.status === 'loading'}
-                    loadProducts={() => query.fetchNextPage()}
+                    loadProducts={() => void query.fetchNextPage()}
                     hasMoreSearchResults={query.hasNextPage}
                     noOwnProjects={noOwnProjects}
                 />
