@@ -64,11 +64,9 @@ export const useUncollectedEarningsStore = create<Store>((set, get) => {
                 produce(store, ({ earnings }) => {
                     const now = performance.now()
 
-                    for (const [_, draft] of Object.entries(earnings)) {
+                    for (const draft of Object.values(earnings)) {
                         if (draft != null) {
-                            for (const [sponsorshipId, _] of Object.entries(
-                                draft.values,
-                            )) {
+                            for (const sponsorshipId of Object.keys(draft.values)) {
                                 const sponsorship = draft.values[sponsorshipId]
                                 const timeDiffSec =
                                     (now - (draft.lastUpdatedTimestamp ?? now)) / 1000
@@ -76,14 +74,11 @@ export const useUncollectedEarningsStore = create<Store>((set, get) => {
 
                                 if (
                                     ratePerSec != null &&
-                                    sponsorship.uncollectedEarnings != null &&
-                                    sponsorship.rateOfChangePerSec != null
+                                    sponsorship.uncollectedEarnings != null
                                 ) {
                                     draft.values[sponsorshipId].uncollectedEarnings =
                                         sponsorship.uncollectedEarnings.plus(
-                                            sponsorship.rateOfChangePerSec.multipliedBy(
-                                                timeDiffSec,
-                                            ),
+                                            ratePerSec.multipliedBy(timeDiffSec),
                                         )
                                     console.log(
                                         'Earnings added',

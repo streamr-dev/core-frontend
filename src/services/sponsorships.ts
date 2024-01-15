@@ -18,6 +18,7 @@ import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
 import { getParsedSponsorshipById } from '~/getters'
+import { toDecimals } from '~/marketplace/utils/math'
 
 const getSponsorshipChainId = () => {
     return defaultChainConfig.id
@@ -323,23 +324,29 @@ export async function getEarningsForSponsorships(
         const myStake = toBN(await sponsorship.stakedWei(operatorAddress))
         const totalStake = toBN(await sponsorship.totalStakedWei())
 
-        let totalPayoutPerSec: BN | undefined =
-            (await getParsedSponsorshipById(sponsorshipId))?.payoutPerDay.dividedBy(
-                24 * 60 * 60,
-            ) ?? BN(0)
-        console.log('totalPayoutPerSec', totalPayoutPerSec.toString())
+        const graphSponsorship = await getParsedSponsorshipById(sponsorshipId)
+
+        let totalPayoutPerSec: BN | undefined = toDecimals(
+            graphSponsorship?.payoutPerDay.dividedBy(24 * 60 * 60) ?? BN(0),
+            18,
+        )
 
         const isSponsorshipPaying =
-            ((await sponsorship.isRunning()) &&
-                (await sponsorship.remainingWei()).gt(0)) ||
+            (graphSponsorship?.isRunning &&
+                graphSponsorship.remainingBalance.isGreaterThan(0)) ||
             true
         if (!isSponsorshipPaying) {
             totalPayoutPerSec = undefined
         }
 
-        const myEarningsChangePerSec = totalPayoutPerSec
-            ? myStake.dividedBy(totalStake).multipliedBy(totalPayoutPerSec)
-            : undefined
+        const myEarningsChangePerSec =
+            totalPayoutPerSec != null &&
+            myStake.isGreaterThan(0) &&
+            totalStake.isGreaterThan(0)
+                ? myStake.dividedBy(totalStake).multipliedBy(totalPayoutPerSec)
+                : undefined
+
+        console.log('myEarningsChangePerSec', myEarningsChangePerSec?.toString())
 
         result[sponsorshipId] = {
             uncollectedEarnings: toBN(earnings[i]),
