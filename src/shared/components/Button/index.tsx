@@ -12,16 +12,7 @@ import { LinkProps } from 'react-router-dom'
 import { Optional } from 'utility-types'
 import Spinner from '~/components/Spinner'
 import styles from './newButton.pcss'
-export type Size = 'mini' | 'normal' | 'big'
-export type Kind =
-    | 'primary'
-    | 'secondary'
-    | 'destructive'
-    | 'link'
-    | 'special'
-    | 'primary2'
-    | 'transparent'
-export type Variant = 'dark' | 'light'
+
 // TODO - try to make it more generic without passing LinkProps directly
 type ButtonProps = Omit<
     HTMLProps<HTMLButtonElement | HTMLAnchorElement> & Optional<LinkProps>,
@@ -29,9 +20,16 @@ type ButtonProps = Omit<
 > & {
     className?: string
     tag?: string | ComponentType<any>
-    size?: Size
-    kind?: Kind
-    variant?: Variant
+    size?: 'mini' | 'normal' | 'big'
+    kind?:
+        | 'primary'
+        | 'secondary'
+        | 'destructive'
+        | 'link'
+        | 'special'
+        | 'primary2'
+        | 'transparent'
+    variant?: 'dark' | 'light'
     outline?: boolean
     disabled?: boolean
     waiting?: boolean

@@ -91,7 +91,8 @@ export const MobileFilterText = styled.span`
 
 export const CreateProjectButton = styled(Button)`
     display: none !important;
-    @media (${TABLET}) {
+
+    @media ${TABLET} {
         display: inherit !important;
     }
 `

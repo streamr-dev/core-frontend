@@ -1,7 +1,6 @@
-import React from 'react'
+import React, { ComponentProps } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { Kind } from '~/shared/components/Button'
 import Button from '~/shared/components/Button'
 
 interface ButtonAction {
@@ -9,7 +8,7 @@ interface ButtonAction {
     onClick?: () => void | Promise<void>
     linkTo?: string
     href?: string
-    kind?: Kind
+    kind?: ComponentProps<typeof Button>['kind']
     disabled?: boolean
     visible?: boolean
     outline?: boolean
