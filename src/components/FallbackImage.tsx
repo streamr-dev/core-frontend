@@ -1,7 +1,7 @@
 import React from 'react'
 import { Img as ReactImg } from 'react-image'
-import Logo from '~/shared/components/Logo'
 import styled from 'styled-components'
+import Logo from '~/shared/components/Logo'
 
 type PlaceholderProps = {
     alt: string

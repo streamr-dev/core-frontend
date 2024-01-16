@@ -24,7 +24,6 @@ module.exports = {
                 path.resolve(__dirname, 'src/shared/assets/stylesheets/variables.css'),
                 {
                     customMedia: {
-                        '--xs': `(max-width: ${xs.max}px)`,
                         '--sm-up': `(min-width: ${sm.min}px)`,
                         '--sm-down': `(max-width: ${sm.max}px)`,
                         '--md-up': `(min-width: ${md.min}px)`,

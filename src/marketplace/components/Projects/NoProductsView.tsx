@@ -1,5 +1,5 @@
 import React from 'react'
-import EmptyState from '~/shared/components/EmptyState'
+import { EmptyState } from '~/components/EmptyState'
 import emptyStateIcon from '~/shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '~/shared/assets/images/empty_state_icon@2x.png'
 
