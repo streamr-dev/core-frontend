@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import PngIcon from '~/shared/components/PngIcon'
 import Button from '~/shared/components/Button'
 import Link from '~/shared/components/Link'
-import { Buttons } from '~/shared/components/Buttons'
+import { Buttons } from '~/components/Buttons'
 import Modal from './Modal'
 import { Footer } from './BaseModal'
 
