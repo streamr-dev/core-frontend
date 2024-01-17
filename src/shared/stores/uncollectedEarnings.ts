@@ -65,32 +65,27 @@ export const useUncollectedEarningsStore = create<Store>((set, get) => {
                     const now = performance.now()
 
                     for (const draft of Object.values(earnings)) {
-                        if (draft != null) {
-                            for (const sponsorshipId of Object.keys(draft.values)) {
-                                const sponsorship = draft.values[sponsorshipId]
-                                const timeDiffSec =
-                                    (now - (draft.lastUpdatedTimestamp ?? now)) / 1000
-                                const ratePerSec = sponsorship?.rateOfChangePerSec
+                        if (draft == null) {
+                            continue
+                        }
 
-                                if (
-                                    ratePerSec != null &&
-                                    sponsorship.uncollectedEarnings != null
-                                ) {
-                                    draft.values[sponsorshipId].uncollectedEarnings =
-                                        sponsorship.uncollectedEarnings.plus(
-                                            ratePerSec.multipliedBy(timeDiffSec),
-                                        )
-                                    console.log(
-                                        'Earnings added',
-                                        draft.values[
-                                            sponsorshipId
-                                        ].uncollectedEarnings.toString(),
-                                        timeDiffSec,
+                        for (const sponsorshipId of Object.keys(draft.values)) {
+                            const sponsorship = draft.values[sponsorshipId]
+                            const timeDiffSec =
+                                (now - (draft.lastUpdatedTimestamp ?? now)) / 1000
+                            const ratePerSec = sponsorship?.rateOfChangePerSec
+
+                            if (
+                                ratePerSec != null &&
+                                sponsorship.uncollectedEarnings != null
+                            ) {
+                                draft.values[sponsorshipId].uncollectedEarnings =
+                                    sponsorship.uncollectedEarnings.plus(
+                                        ratePerSec.multipliedBy(timeDiffSec),
                                     )
-                                }
-
-                                draft.lastUpdatedTimestamp = now
                             }
+
+                            draft.lastUpdatedTimestamp = now
                         }
                     }
                 }),

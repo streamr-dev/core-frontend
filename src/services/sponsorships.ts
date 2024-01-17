@@ -332,9 +332,8 @@ export async function getEarningsForSponsorships(
         )
 
         const isSponsorshipPaying =
-            (graphSponsorship?.isRunning &&
-                graphSponsorship.remainingBalance.isGreaterThan(0)) ||
-            true
+            graphSponsorship?.isRunning &&
+            graphSponsorship.remainingBalance.isGreaterThan(0)
         if (!isSponsorshipPaying) {
             totalPayoutPerSec = undefined
         }
@@ -345,8 +344,6 @@ export async function getEarningsForSponsorships(
             totalStake.isGreaterThan(0)
                 ? myStake.dividedBy(totalStake).multipliedBy(totalPayoutPerSec)
                 : undefined
-
-        console.log('myEarningsChangePerSec', myEarningsChangePerSec?.toString())
 
         result[sponsorshipId] = {
             uncollectedEarnings: toBN(earnings[i]),
