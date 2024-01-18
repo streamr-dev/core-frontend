@@ -7,7 +7,7 @@ import React, {
 } from 'react'
 import styled from 'styled-components'
 import { useDebouncedCallback } from 'use-debounce'
-import { COLORS, SM, MD } from '~/shared/utils/styled'
+import { COLORS, MD, PHONE } from '~/shared/utils/styled'
 import searchIcon from './SearchIcon.svg'
 import closeIcon from './CloseIcon.svg'
 
@@ -119,7 +119,7 @@ const SearchInput = styled.input`
         color: ${COLORS.primary};
     }
 
-    @media (min-width: ${SM}px) {
+    @media ${PHONE} {
         line-height: 50px;
         height: 50px;
     }
@@ -145,7 +145,7 @@ const SearchIcon = styled.img`
         left: 0;
     }
 
-    @media (min-width: ${SM}px) {
+    @media ${PHONE} {
         top: 17px;
     }
 
@@ -179,7 +179,7 @@ const ClearButton = styled.button`
         background-color: ${COLORS.secondaryHover};
     }
 
-    @media (min-width: ${SM}px) {
+    @media ${PHONE} {
         width: 50px;
         height: 50px;
     }

@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
-import { SM } from '~/shared/utils/styled'
+import { PHONE } from '~/shared/utils/styled'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { Button } from '~/components/Button'
 import Spinner from '~/components/Spinner'
@@ -250,7 +250,7 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
 const Domain = styled.div`
     flex-grow: 1;
 
-    @media (min-width: ${SM}px) {
+    @media ${PHONE} {
         max-width: 222px;
     }
 `

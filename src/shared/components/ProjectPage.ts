@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import Segment from '~/shared/components/Segment'
-import { SM, MD, LG, XL, COLORS, MAX_BODY_WIDTH } from '~/shared/utils/styled'
+import { MD, LG, XL, COLORS, MAX_BODY_WIDTH, PHONE } from '~/shared/utils/styled'
 
 export const ProjectPageContainer = styled.div`
     max-width: ${MAX_BODY_WIDTH}px;
@@ -32,7 +32,7 @@ const ProjectPage = styled.div`
         margin-top: 24px;
     }
 
-    @media (min-width: ${SM}px) {
+    @media ${PHONE} {
         ${Segment} {
             margin-top: 32px;
         }
