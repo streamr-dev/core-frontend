@@ -9,7 +9,6 @@ const calc = require('postcss-calc')
 const precss = require('precss')
 const postcssColorFunction = require('postcss-color-function')
 const cssMqpacker = require('css-mqpacker')
-const { xs, sm, md, lg, xl } = require('./scripts/breakpoints')
 
 module.exports = {
     plugins: [
@@ -23,17 +22,7 @@ module.exports = {
             importFrom: [
                 path.resolve(__dirname, 'src/shared/assets/stylesheets/variables.css'),
                 {
-                    customMedia: {
-                        '--sm-up': `(min-width: ${sm.min}px)`,
-                        '--sm-down': `(max-width: ${sm.max}px)`,
-                        '--md-up': `(min-width: ${md.min}px)`,
-                        '--md-down': `(max-width: ${md.max}px)`,
-                        '--lg-up': `(min-width: ${lg.min}px)`,
-                        '--lg-down': `(max-width: ${lg.max}px)`,
-                        '--xl': `(min-width: ${xl.min}px)`,
-                        '--retina':
-                            '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)',
-                    },
+                    customMedia: {},
                 },
             ],
         }),

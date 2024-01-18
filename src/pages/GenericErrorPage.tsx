@@ -63,19 +63,19 @@ const Root = styled.div`
         max-width: 180px;
     }
 
-    @media (--sm-up) {
+    @media (min-width: 376px) {
         img {
             max-width: 200px;
         }
     }
 
-    @media (--md-up) {
+    @media (min-width: 745px) {
         img {
             max-width: 40%;
         }
     }
 
-    @media (--lg-up) {
+    @media (min-width: 1441px) {
         img {
             max-width: 50%;
         }
