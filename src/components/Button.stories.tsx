@@ -2,9 +2,9 @@ import React, { Fragment } from 'react'
 import { action } from '@storybook/addon-actions'
 import { Meta } from '@storybook/react'
 import styled, { css } from 'styled-components'
-import Button from './index'
+import { Button } from './Button'
 
-const Container = styled.div`
+const Container = styled.div<{ gray?: boolean; header?: boolean }>`
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-gap: 0 32px;
@@ -15,14 +15,14 @@ const Container = styled.div`
         margin-top: 32px;
     }
 
-    ${({ gray }) =>
+    ${({ gray = false }) =>
         !!gray &&
         css`
             background-color: #eeeeee;
             padding: 32px;
         `}
 
-    ${({ header }) =>
+    ${({ header = false }) =>
         !!header &&
         css`
             border-bottom: 1px solid #cdcdcd;
@@ -523,46 +523,6 @@ export const All = () => (
                 </Button>
             </div>
         </Container>
-        <Container>
-            <div>
-                <Button kind="special" variant="dark" onClick={action('Clicked')}>
-                    Special (dark)
-                </Button>
-            </div>
-            <div>
-                <Button
-                    kind="special"
-                    variant="dark"
-                    onClick={action('Clicked')}
-                    disabled
-                >
-                    Special (dark)
-                </Button>
-            </div>
-            <div>
-                <Button
-                    tag="a"
-                    href="/"
-                    kind="special"
-                    variant="dark"
-                    onClick={action('Clicked')}
-                >
-                    Special (dark)
-                </Button>
-            </div>
-            <div>
-                <Button
-                    tag="a"
-                    href="/"
-                    kind="special"
-                    variant="dark"
-                    onClick={action('Clicked')}
-                    disabled
-                >
-                    Special (dark)
-                </Button>
-            </div>
-        </Container>
         <Container gray>
             <div>
                 <Button kind="special" variant="light" onClick={action('Clicked')}>
@@ -681,7 +641,7 @@ All.story = {
 }
 
 const meta: Meta<typeof All> = {
-    title: 'Shared/Button',
+    title: 'Shared/Button2',
     component: All,
     decorators: [
         (Story) => {

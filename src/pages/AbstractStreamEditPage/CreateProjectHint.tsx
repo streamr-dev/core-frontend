@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { DESKTOP, TABLET, LAPTOP } from '~/shared/utils/styled'
 import dataUnionImage2x from '~/marketplace/assets/product_dataunion@2x.png'
 import { TheGraphProject, getProjects } from '~/services/projects'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import useModal from '~/shared/hooks/useModal'
 import CreateProjectModal from '~/marketplace/containers/CreateProjectModal'
 

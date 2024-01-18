@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import moment from 'moment'
 import { WhiteBox, WhiteBoxPaddingStyles } from '~/shared/components/WhiteBox'
 import { connectModal } from '~/modals/ConnectModal'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import { COLORS, MD, MEDIUM } from '~/shared/utils/styled'
 
 export const SummaryContainer = styled(WhiteBox)`

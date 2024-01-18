@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 
 export const LoadMoreButton = styled(Button)`
     display: block;

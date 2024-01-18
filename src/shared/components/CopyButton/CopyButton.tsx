@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useCallback } from 'react'
 import styled from 'styled-components'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import useCopy from '~/shared/hooks/useCopy'
 import SvgIcon from '~/shared/components/SvgIcon'
 

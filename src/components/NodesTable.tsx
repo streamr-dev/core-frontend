@@ -5,7 +5,7 @@ import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-st
 import AddNodeAddressModal from '~/modals/AddNodeAddressModal'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { Layer } from '~/utils/Layer'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import Spinner from '~/components/Spinner'
 import { COLORS } from '~/shared/utils/styled'
 import SvgIcon from '~/shared/components/SvgIcon'

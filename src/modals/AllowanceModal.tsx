@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { COLORS } from '~/shared/utils/styled'
 import SvgIcon from '~/shared/components/SvgIcon'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import routes from '~/routes'
 import ProjectModal, { Actions } from './ProjectModal'
 

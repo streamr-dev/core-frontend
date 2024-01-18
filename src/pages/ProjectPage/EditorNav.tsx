@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { NavContainer } from '~/components/Nav'
 import { LogoLink, Navbar, NavbarItem } from '~/components/Nav/Nav.styles'
 import Logo from '~/shared/components/Logo'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import { REGULAR } from '~/shared/utils/styled'
 import {
     useIsProjectDraftBusy,

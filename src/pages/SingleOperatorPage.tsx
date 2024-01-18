@@ -51,7 +51,7 @@ import {
 } from '~/shared/stores/uncollectedEarnings'
 import { truncate } from '~/shared/utils/text'
 import { useConfigValueFromChain } from '~/hooks'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import { FundedUntilCell, StreamIdCell } from '~/components/Table'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { useSetBlockDependency } from '~/stores/blockNumberDependencies'

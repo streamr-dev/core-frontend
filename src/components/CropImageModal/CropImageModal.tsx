@@ -11,7 +11,7 @@ import {
     FormModalRoot,
     FormModalTitle,
 } from '~/modals/FormModal'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import { COLORS } from '~/shared/utils/styled'
 import MaskSvg from '~/shared/assets/images/mask.svg'
 

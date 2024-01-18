@@ -19,7 +19,7 @@ import FormModal, {
 import Label from '~/shared/components/Ui/Label'
 import AvatarImage from '~/shared/components/AvatarImage'
 import { COLORS, TABLET } from '~/shared/utils/styled'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import SvgIcon from '~/shared/components/SvgIcon'
 import CropImageModal from '~/components/CropImageModal/CropImageModal'
 import { Layer } from '~/utils/Layer'

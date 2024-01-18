@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import Text from '~/shared/components/Ui/Text'
 import SelectField2 from '~/marketplace/components/SelectField2'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'

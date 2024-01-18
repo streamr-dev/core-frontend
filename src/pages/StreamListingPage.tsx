@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { COLORS, DESKTOP, TABLET } from '~/shared/utils/styled'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import Layout from '~/components/Layout'
 import SearchBar from '~/shared/components/SearchBar'
 import {

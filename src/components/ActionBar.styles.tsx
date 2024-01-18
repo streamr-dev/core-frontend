@@ -7,7 +7,7 @@ import {
     TABLET,
     MAX_BODY_WIDTH,
 } from '~/shared/utils/styled'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 
 export const SearchBarWrap = styled.div`
     display: flex;

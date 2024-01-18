@@ -1,7 +1,7 @@
 import React, { ComponentProps } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 
 interface ButtonAction {
     title: string

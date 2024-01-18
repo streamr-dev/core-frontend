@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import PngIcon from '~/shared/components/PngIcon'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import Link from '~/shared/components/Link'
 import { Buttons } from '~/components/Buttons'
 import Modal from './Modal'

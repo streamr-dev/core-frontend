@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { connectModal } from '~/modals/ConnectModal'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import { COLORS } from '~/shared/utils/styled'
 
 export default function NoWalletOverlay({ resourceName }: { resourceName: string }) {
