@@ -296,7 +296,6 @@ module.exports = {
                               'cypress/**/*.*',
                               'src/queries/*.ts',
                               '**/*.css',
-                              '**/*.pcss',
                               'types/**/*.d.ts',
                           ],
                       }),
