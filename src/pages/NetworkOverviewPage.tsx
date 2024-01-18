@@ -129,7 +129,7 @@ function MyOperatorSummary() {
                         {operator && (
                             <Button
                                 kind="secondary"
-                                tag={Link}
+                                as={Link}
                                 to={routes.network.operator({ id: operator.id })}
                             >
                                 View Operator

@@ -106,7 +106,7 @@ export default function AccessManifest({ projectId, projectType, salePoints }: P
                     </p>
                 )}
                 {hasAccess === true && (
-                    <Button tag={Link} to={routes.projects.connect({ id: projectId })}>
+                    <Button as={Link} to={routes.projects.connect({ id: projectId })}>
                         Connect
                     </Button>
                 )}

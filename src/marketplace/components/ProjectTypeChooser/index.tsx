@@ -268,7 +268,7 @@ export const ProjectTypeChooser: FunctionComponent<{
                 {gotAnyStreams === false || !link ? (
                     <Button disabled={true}>Start building</Button>
                 ) : (
-                    <Button tag={Link} to={link} onClick={onClose}>
+                    <Button as={Link} to={link} onClick={onClose}>
                         Start building
                     </Button>
                 )}

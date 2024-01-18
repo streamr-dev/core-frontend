@@ -50,10 +50,8 @@ export function Buttons({ actions = DefaultActions, className }: Props) {
 
                         return (
                             <Tag
-                                key={key} // eslint-disable-next-line no-nested-ternary
-                                tag={
-                                    linkTo != null ? Link : href != null ? 'a' : 'button'
-                                }
+                                key={key}
+                                as={linkTo != null ? Link : href != null ? 'a' : 'button'}
                                 to={linkTo}
                                 href={href}
                                 onClick={onClick}

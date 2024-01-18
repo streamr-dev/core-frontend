@@ -52,7 +52,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="primary"
                     size="mini"
@@ -63,7 +63,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="primary"
                     size="mini"
@@ -87,7 +87,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="primary"
                     size="normal"
@@ -98,7 +98,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="primary"
                     size="normal"
@@ -122,7 +122,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="primary"
                     size="big"
@@ -133,7 +133,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="primary"
                     size="big"
@@ -163,7 +163,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="primary"
                     size="normal"
@@ -175,7 +175,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="primary"
                     size="normal"
@@ -205,7 +205,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="primary2"
                     size="normal"
@@ -216,7 +216,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="primary2"
                     size="normal"
@@ -245,7 +245,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="transparent"
                     size="normal"
@@ -256,7 +256,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="transparent"
                     size="normal"
@@ -280,7 +280,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="secondary"
                     size="mini"
@@ -291,7 +291,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="secondary"
                     size="mini"
@@ -320,7 +320,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="secondary"
                     size="normal"
@@ -331,7 +331,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="secondary"
                     size="normal"
@@ -355,7 +355,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="secondary"
                     size="big"
@@ -366,7 +366,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="secondary"
                     size="big"
@@ -401,7 +401,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="secondary"
                     size="normal"
@@ -413,7 +413,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="secondary"
                     size="normal"
@@ -437,13 +437,13 @@ export const All = () => (
                 </Button>
             </div>
             <div>
-                <Button tag="a" href="/" kind="destructive" onClick={action('Clicked')}>
+                <Button as="a" href="/" kind="destructive" onClick={action('Clicked')}>
                     Destructive
                 </Button>
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="destructive"
                     onClick={action('Clicked')}
@@ -466,7 +466,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="link"
                     variant="dark"
@@ -477,7 +477,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="link"
                     variant="dark"
@@ -501,7 +501,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="link"
                     variant="light"
@@ -512,7 +512,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="link"
                     variant="light"
@@ -541,7 +541,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="special"
                     variant="light"
@@ -552,7 +552,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="special"
                     variant="light"
@@ -576,7 +576,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="primary"
                     waiting
@@ -587,7 +587,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="primary"
                     waiting
@@ -611,7 +611,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="secondary"
                     waiting
@@ -622,7 +622,7 @@ export const All = () => (
             </div>
             <div>
                 <Button
-                    tag="a"
+                    as="a"
                     href="/"
                     kind="secondary"
                     waiting

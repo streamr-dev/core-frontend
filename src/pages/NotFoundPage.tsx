@@ -31,17 +31,13 @@ export function NotFoundPageContent() {
                     }
                     link={
                         <React.Fragment>
-                            <Button kind="special" tag={Link} to={routes.streams.index()}>
+                            <Button kind="special" as={Link} to={routes.streams.index()}>
                                 Go to streams
                             </Button>
-                            <Button
-                                kind="special"
-                                tag={Link}
-                                to={routes.projects.index()}
-                            >
+                            <Button kind="special" as={Link} to={routes.projects.index()}>
                                 Go to projects
                             </Button>
-                            <Button kind="special" tag={Link} to={routes.root()}>
+                            <Button kind="special" as={Link} to={routes.root()}>
                                 Go to public site
                             </Button>
                         </React.Fragment>

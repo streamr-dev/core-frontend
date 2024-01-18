@@ -82,7 +82,7 @@ export default function Description({ project }: { project: ParsedProject }) {
                     )}
                 </p>
                 {project.type === ProjectType.OpenData && (
-                    <Button tag={Link} to={routes.projects.connect({ id: project.id })}>
+                    <Button as={Link} to={routes.projects.connect({ id: project.id })}>
                         Connect
                     </Button>
                 )}

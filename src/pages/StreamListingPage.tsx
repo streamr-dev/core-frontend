@@ -253,7 +253,7 @@ const StreamListingPage: React.FC = () => {
                             </Tab>
                         </Tabs>
                     </FiltersWrap>
-                    <Button tag={Link} to={routes.streams.new()}>
+                    <Button as={Link} to={routes.streams.new()}>
                         Create stream
                     </Button>
                 </FiltersBar>

@@ -200,7 +200,7 @@ export default function TabbedPage({ tab }: Props) {
                         </ProjectTitle>
                         {canEdit && (
                             <EditButton
-                                tag={Link}
+                                as={Link}
                                 to={routes.projects.edit({ id })}
                                 kind="secondary"
                                 size="mini"

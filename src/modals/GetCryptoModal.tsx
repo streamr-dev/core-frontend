@@ -25,7 +25,7 @@ export default function GetCryptoModal({ tokenName, onReject }: Props) {
             <Exchanges>
                 <Button
                     kind="secondary"
-                    tag={Link}
+                    as={Link}
                     href="https://ramp.network/"
                     target="_blank"
                 >
@@ -33,7 +33,7 @@ export default function GetCryptoModal({ tokenName, onReject }: Props) {
                 </Button>
                 <Button
                     kind="secondary"
-                    tag={Link}
+                    as={Link}
                     href="https://coinbase.com"
                     target="_blank"
                 >
@@ -41,7 +41,7 @@ export default function GetCryptoModal({ tokenName, onReject }: Props) {
                 </Button>
                 <Button
                     kind="secondary"
-                    tag={Link}
+                    as={Link}
                     href="https://binance.com"
                     target="_blank"
                 >

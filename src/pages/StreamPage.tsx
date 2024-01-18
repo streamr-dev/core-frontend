@@ -438,7 +438,7 @@ function Header({
                                 disabled={!canSubmit}
                                 kind="primary"
                                 type="submit"
-                                innerRef={saveButtonRef}
+                                ref={saveButtonRef}
                             >
                                 Save
                             </Button>
@@ -534,7 +534,7 @@ function ContainerBox({
                         kind="primary"
                         type="submit"
                         disabled={disabled}
-                        innerRef={saveButtonRef}
+                        ref={saveButtonRef}
                     >
                         Save
                     </SaveButton>

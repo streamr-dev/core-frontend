@@ -108,7 +108,7 @@ export const OperatorsPage = () => {
                 rightSideContent={
                     operator ? (
                         <Button
-                            tag={Link}
+                            as={Link}
                             to={routes.network.operator({
                                 id: operator.id,
                             })}

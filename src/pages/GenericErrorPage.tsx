@@ -32,7 +32,7 @@ export function GenericErrorPageContent() {
                     link={
                         <Button
                             kind="special"
-                            tag={Link}
+                            as={Link}
                             to={routes.projects.index()}
                             className="d-none d-md-flex"
                         >
