@@ -9,7 +9,6 @@ import { StreamDescription } from '~/components/StreamDescription'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import { getSponsorshipStakeForOperator } from '~/utils/sponsorships'
-import { BN } from '~/utils/bn'
 import { OperatorAvatar } from './avatars'
 
 /**
