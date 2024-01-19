@@ -1,30 +1,31 @@
 import React from 'react'
-import { Col, Row } from 'reactstrap'
 import { Meta } from '@storybook/react'
 import SvgIcon, { SvgIconNames } from '~/shared/components/SvgIcon'
 import styled from 'styled-components'
 
 export const All = () => (
-    <Row>
-        {SvgIconNames.map((name) => (
-            <Col xs="4" key={name}>
+    <>
+        <Root>
+            {SvgIconNames.map((name) => (
+                <div key={name}>
+                    <IconWrapper>
+                        <IconInner>
+                            <SvgIcon name={name} />
+                        </IconInner>
+                        <span>{name}</span>
+                    </IconWrapper>
+                </div>
+            ))}
+            <div>
                 <IconWrapper>
                     <IconInner>
-                        <SvgIcon name={name} />
+                        <SvgIcon name="checkmark" size="large" />
                     </IconInner>
-                    <span>{name}</span>
+                    <span>checkmark size=large</span>
                 </IconWrapper>
-            </Col>
-        ))}
-        <Col xs="4">
-            <IconWrapper>
-                <IconInner>
-                    <SvgIcon name="checkmark" size="large" />
-                </IconInner>
-                <span>checkmark size=large</span>
-            </IconWrapper>
-        </Col>
-    </Row>
+            </div>
+        </Root>
+    </>
 )
 
 All.story = {
@@ -68,4 +69,10 @@ export const IconInner = styled.div`
     padding: 0.5em;
     min-height: 1em;
     min-width: 1em;
+`
+
+const Root = styled.div`
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
 `

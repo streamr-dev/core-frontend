@@ -30,8 +30,8 @@ module.exports = {
     ],
     moduleNameMapper: {
         '\\.svg$': '<rootDir>/test/test-utils/fileMock.ts',
-        '\\.(pcss|scss|css|po|md)$': 'identity-obj-proxy',
-        '\\.(png)$': '<rootDir>/scripts/emptyObject',
+        '\\.(css|md)$': 'identity-obj-proxy',
+        '\\.png$': '<rootDir>/scripts/emptyObject',
         '\\$config$': '<rootDir>/test/test-utils/testConfig.ts',
         '\\~/(.*)$': '<rootDir>/src/$1',
         '\\$testUtils/(.*)$': '<rootDir>/test/test-utils/$1',

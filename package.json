@@ -29,7 +29,7 @@
         "*.{js,ts,tsx}": [
             "eslint"
         ],
-        "*.{pcss,scss,css}": [
+        "*.css": [
             "stylelint"
         ]
     },
@@ -48,13 +48,11 @@
         "@streamr/config": "^5.1.0",
         "@streamr/hub-contracts": "^1.0.2",
         "@streamr/network-contracts": "^7.0.5",
-        "@streamr/po-loader": "^1.0.0",
         "@streamr/streamr-icons": "^0.1.9",
         "@streamr/streamr-layout": "^2.5.3",
         "@tanstack/react-query": "^4.29.5",
         "axios": "^1.6.0",
         "bignumber.js": "^9.1.1",
-        "bootstrap": "^4.6.0",
         "buffer": "^6.0.3",
         "classnames": "^2.3.2",
         "clean-css": "^5.3.2",
@@ -85,7 +83,6 @@
         "postcss": "^8.4.31",
         "postcss-color-function": "^4.1.0",
         "postcss-import": "^15.1.0",
-        "postcss-loader": "^7.3.0",
         "precss": "^4.0.0",
         "prop-types": "^15.8.1",
         "prosemirror-model": "^1.19.0",
@@ -107,13 +104,11 @@
         "react-select": "^5.7.3",
         "react-syntax-highlighter": "^15.5.0",
         "react-tooltip": "^5.14.0",
-        "reactstrap": "^9.1.9",
         "recharts": "^2.7.2",
         "reselect": "^4.1.8",
         "resize-observer-polyfill": "^1.5.1",
         "rich-markdown-editor": "^11.21.3",
         "sass": "1.62.1",
-        "sass-loader": "^13.3.2",
         "storybook": "^7.6.6",
         "storybook-react-router": "^1.0.8",
         "stream-browserify": "^3.0.0",
