@@ -21,14 +21,21 @@ export function useInterceptHeartbeats(operatorId: string | undefined) {
                 console.warn('Failed to count live nodes', e)
             },
             onMessage(msg) {
-                if (!isHeartbeatMessage(msg)) {
+                const parsedContent = msg.getParsedContent()
+
+                const message = {
+                    parsedContent,
+                    messageId: msg.messageId,
+                }
+
+                if (!isHeartbeatMessage(message)) {
                     return
                 }
 
                 const {
                     parsedContent: { peerDescriptor },
                     messageId: { timestamp },
-                } = msg as HeartbeatMessage
+                } = message as HeartbeatMessage
 
                 setHeartbeats((prev) => ({
                     ...prev,

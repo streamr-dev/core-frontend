@@ -51,9 +51,9 @@ export default function useStreamData(
                 }
 
                 const dataPoint = {
-                    data: msg.parsedContent,
+                    data: msg.getParsedContent(),
                     metadata: {
-                        messageId: msg.getMessageID(),
+                        messageId: msg.messageId,
                         timestamp: msg.getTimestamp(),
                     },
                 }
