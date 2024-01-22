@@ -1,5 +1,11 @@
 import React, { FunctionComponent, ReactNode, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { DropdownMenuItem } from '~/components/DropdownMenuItem'
+import { LoadMoreButton } from '~/components/LoadMore'
+import { Meatball } from '~/components/Meatball'
+import { ActionsToggle } from '~/components/SalePointSelector/BeneficiaryAddressEditor'
+import { SimpleDropdown, SimpleListDropdownMenu } from '~/components/SimpleDropdown'
+import { NoData } from '~/shared/components/NoData'
 import {
     FloatingLoadingIndicator,
     NoDataWrap,
@@ -10,9 +16,6 @@ import {
     ScrollTableHeaderCell,
     ScrollTableNonStickyColumnsWrap,
 } from '~/shared/components/ScrollTable/ScrollTable.styles'
-import { Popover, PopoverItem } from '~/components/Popover'
-import { NoData } from '~/shared/components/NoData'
-import { LoadMoreButton } from '~/components/LoadMore'
 
 export enum ScrollTableOrderDirection {
     Asc = 'asc',
@@ -196,44 +199,69 @@ export const ScrollTableCore = <T extends object>({
                                 onMouseEnter={() => setHoveredRowIndex(id)}
                                 onMouseLeave={() => setHoveredRowIndex(null)}
                             >
-                                <Popover
-                                    title={'actions'}
-                                    type={'verticalMeatball'}
-                                    caret={false}
-                                >
-                                    {actions.map((action, actionIndex) => {
-                                        const { displayName, callback, disabled } =
-                                            typeof action === 'function'
-                                                ? action(element)
-                                                : {
-                                                      displayName:
-                                                          typeof action.displayName ===
-                                                          'function'
-                                                              ? action.displayName(
-                                                                    element,
-                                                                )
-                                                              : action.displayName,
-                                                      callback() {
-                                                          action.callback(element)
-                                                      },
-                                                      disabled:
-                                                          typeof action.disabled ===
-                                                          'function'
-                                                              ? action.disabled(element)
-                                                              : action.disabled,
-                                                  }
+                                <SimpleDropdown
+                                    detached
+                                    menu={(toggle) => (
+                                        <SimpleListDropdownMenu>
+                                            <ul>
+                                                {actions.map((action, actionIndex) => {
+                                                    const {
+                                                        displayName,
+                                                        callback,
+                                                        disabled,
+                                                    } =
+                                                        typeof action === 'function'
+                                                            ? action(element)
+                                                            : {
+                                                                  displayName:
+                                                                      typeof action.displayName ===
+                                                                      'function'
+                                                                          ? action.displayName(
+                                                                                element,
+                                                                            )
+                                                                          : action.displayName,
+                                                                  callback() {
+                                                                      action.callback(
+                                                                          element,
+                                                                      )
+                                                                  },
+                                                                  disabled:
+                                                                      typeof action.disabled ===
+                                                                      'function'
+                                                                          ? action.disabled(
+                                                                                element,
+                                                                            )
+                                                                          : action.disabled,
+                                                              }
 
-                                        return (
-                                            <PopoverItem
-                                                key={actionIndex}
-                                                onClick={() => void callback()}
-                                                disabled={disabled}
-                                            >
-                                                {displayName}
-                                            </PopoverItem>
-                                        )
-                                    })}
-                                </Popover>
+                                                    return (
+                                                        <DropdownMenuItem
+                                                            key={actionIndex}
+                                                            type="button"
+                                                            disabled={disabled}
+                                                            onClick={() => {
+                                                                callback()
+
+                                                                toggle(false)
+                                                            }}
+                                                        >
+                                                            {displayName}
+                                                        </DropdownMenuItem>
+                                                    )
+                                                })}
+                                            </ul>
+                                        </SimpleListDropdownMenu>
+                                    )}
+                                >
+                                    {(toggle) => (
+                                        <ActionsToggle
+                                            type="button"
+                                            onClick={() => void toggle((x) => !x)}
+                                        >
+                                            <Meatball alt="" layout="vertical" />
+                                        </ActionsToggle>
+                                    )}
+                                </SimpleDropdown>
                             </ScrollTableCell>
                         ))}
                     </ScrollTableColumn>

@@ -151,7 +151,7 @@ const Actions = styled.div`
     transform: translateY(-50%);
 `
 
-const ActionsToggle = styled.button`
+export const ActionsToggle = styled.button`
     appearance: none;
     background: none;
     border: 0;

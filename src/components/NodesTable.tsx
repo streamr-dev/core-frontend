@@ -208,8 +208,8 @@ function MaticBalance({ address, minAmount }: { address: string; minAmount?: str
     }, [address])
 
     return balance ? (
-        <>
-            {balance}{' '}
+        <MaticBalanceRoot>
+            <div>{balance}</div>
             {balance && minAmount && toBN(balance).isLessThan(toBN(minAmount)) && (
                 <Tooltip content="Low MATIC">
                     <TooltipIconWrap
@@ -221,11 +221,21 @@ function MaticBalance({ address, minAmount }: { address: string; minAmount?: str
                     </TooltipIconWrap>
                 </Tooltip>
             )}
-        </>
+        </MaticBalanceRoot>
     ) : (
         <Spinner color="blue" />
     )
 }
+
+const MaticBalanceRoot = styled.div`
+    align-items: center;
+    display: flex;
+    gap: 8px;
+
+    > * {
+        flex-shrink: 0;
+    }
+`
 
 function PendingIndicator({
     children,
