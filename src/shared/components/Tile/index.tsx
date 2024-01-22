@@ -11,7 +11,6 @@ import { TheGraphProject } from '~/services/projects'
 import { getProjectImageUrl } from '~/getters'
 import routes from '~/routes'
 import Summary from './Summary'
-import Menu from './Menu'
 import { DataUnionBadge } from './Badge'
 
 const Image = styled(Img)`
@@ -73,22 +72,6 @@ type TileProps = {
 const Tile = styled.div<TileProps>`
     position: relative;
 
-    ${Menu} {
-        opacity: 0;
-        pointer-events: none;
-        transition-property: visibility, opacity;
-        transition: 200ms;
-        visibility: hidden;
-    }
-
-    ${Menu}.show,
-    :hover ${Menu},
-    :focus ${Menu} {
-        opacity: 1;
-        pointer-events: auto;
-        visibility: visible;
-    }
-
     ${({ suppressHover }) =>
         !suppressHover &&
         css`
@@ -97,8 +80,7 @@ const Tile = styled.div<TileProps>`
                 transition: 240ms ease-out filter;
             }
 
-            ${Menu}.show + a ${TileThumbnail},
-        :hover ${TileThumbnail} {
+            :hover ${TileThumbnail} {
                 filter: brightness(70%);
                 transition-duration: 40ms;
             }
