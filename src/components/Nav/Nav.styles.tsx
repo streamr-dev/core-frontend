@@ -1,5 +1,4 @@
 import React, { FunctionComponent } from 'react'
-import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { Menu as UnstyledMenu, NavDropdown } from '@streamr/streamr-layout'
 import SvgIcon from '~/shared/components/SvgIcon'
@@ -192,33 +191,18 @@ export const NavbarLinkDesktop = styled(UnstyledNavbarLink)<{ highlight?: boolea
             }
         `}
 `
-export const NetworkNavElement = styled.div`
-  display: flex;
-  flex-direction: column;
-  text-transform: none;
-  line-height: 24px;
 
-  .title {
-    font-size: 16px;
-    font-weight: ${MEDIUM};
-    color: ${COLORS.black};
-    margin: 0;
-    letter-spacing: initial;
-  }
-
-  .subtitle {
-    font-size: 16px;
-    font-weight ${REGULAR};
-    color: ${COLORS.primaryLight};
-    margin: 0;
-    max-width: 350px;
-    white-space: pre-line;
-    letter-spacing: initial;
-  }
-`
-export const NavbarLinkMobile = styled(UnstyledNavbarLink)<{ highlight?: boolean }>`
+export const NavbarLinkMobile = styled(UnstyledNavbarLink)<{
+    highlight?: boolean
+    $bottomBorder?: boolean
+}>`
     position: relative;
-    border-bottom: 1px solid #efefef;
+
+    ${({ $bottomBorder = true }) =>
+        $bottomBorder &&
+        css`
+            border-bottom: 1px solid #efefef;
+        `}
 
     ${NavLink} {
         font-size: 18px;
@@ -331,9 +315,4 @@ export const UserInfoMobile = styled.div`
             margin: 3px 0;
         }
     }
-`
-
-export const NetworkMobileLink = styled(Link)`
-    margin-bottom: 40px;
-    display: block;
 `

@@ -1,4 +1,4 @@
-import React, { FunctionComponent, HTMLAttributes, useState } from 'react'
+import React, { FunctionComponent, HTMLAttributes } from 'react'
 import styled from 'styled-components'
 import { useLocation, Link, useNavigate } from 'react-router-dom'
 import { Button, HamburgerButton, Logo, NavOverlay } from '@streamr/streamr-layout'
@@ -27,15 +27,14 @@ import {
     NavbarLinkDesktop,
     NavbarLinkMobile,
     NavLink,
-    NetworkMobileLink,
-    NetworkNavElement,
     SignedInUserMenu,
     TextMenuItem,
     UserInfoMenuItem,
     UserInfoMobile,
     WalletAddress,
 } from './Nav.styles'
-import { Dropdown, NetworkNavItems, isNetworkTabActive } from './Dropdown'
+import { Dropdown } from './NetworkDropdown'
+import { NetworkAccordion } from './NetworkAccordion'
 
 const UnstyledDesktopNav: FunctionComponent = (props) => {
     const { pathname } = useLocation()
@@ -80,9 +79,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                         </NavbarLinkDesktop>
                     </NavbarItem>
                     <NavbarItem>
-                        <NavbarLinkDesktop highlight={isNetworkTabActive(pathname)}>
-                            <Dropdown />
-                        </NavbarLinkDesktop>
+                        <Dropdown />
                     </NavbarItem>
                 </MenuGrid>
                 {!account && (
@@ -194,15 +191,6 @@ const UnstyledMobileNav: FunctionComponent<{ className?: string }> = ({ classNam
 
     const { pathname } = useLocation()
 
-    const [accordionOpen, setAccordionOpen] = useState<string>('')
-    const toggle = (id) => {
-        if (accordionOpen === id) {
-            setAccordionOpen('')
-        } else {
-            setAccordionOpen(id)
-        }
-    }
-
     return (
         <NavOverlay className={className}>
             <NavOverlay.Head>
@@ -236,51 +224,7 @@ const UnstyledMobileNav: FunctionComponent<{ className?: string }> = ({ classNam
                         Streams
                     </NavLink>
                 </NavbarLinkMobile>
-                <NavbarLinkMobile highlight={isNetworkTabActive(pathname)}>
-                    <NavLink as="div">
-                        <Accordion
-                            flush
-                            open={accordionOpen}
-                            // hack for the issues with typing
-                            {...{
-                                toggle,
-                            }}
-                        >
-                            <AccordionItem>
-                                <StyledAccordionHeader targetId="1">
-                                    <div>
-                                        Network
-                                        <SvgIcon
-                                            name="caretDown"
-                                            className={
-                                                'caret-down ' +
-                                                (accordionOpen ? 'is-open' : '')
-                                            }
-                                        />
-                                    </div>
-                                </StyledAccordionHeader>
-                                <StyledAccordionBody accordionId="1">
-                                    {NetworkNavItems.map((networkNavElement, index) => {
-                                        const { title, subtitle, link, ...rest } =
-                                            networkNavElement
-                                        return (
-                                            <NetworkMobileLink
-                                                to={link}
-                                                {...rest}
-                                                key={index}
-                                            >
-                                                <NetworkNavElement>
-                                                    <p className="title">{title}</p>
-                                                    <p className="subtitle">{subtitle}</p>
-                                                </NetworkNavElement>
-                                            </NetworkMobileLink>
-                                        )
-                                    })}
-                                </StyledAccordionBody>
-                            </AccordionItem>
-                        </Accordion>
-                    </NavLink>
-                </NavbarLinkMobile>
+                <NetworkAccordion />
             </NavOverlay.Body>
             <NavOverlay.Footer>
                 {!!account ? (
@@ -481,19 +425,3 @@ Object.assign(N, {
 })
 
 export default N
-
-function Accordion(_: any) {
-    return <></>
-}
-
-function AccordionItem(_: any) {
-    return <></>
-}
-
-function StyledAccordionHeader(_: any) {
-    return <></>
-}
-
-function StyledAccordionBody(_: any) {
-    return <></>
-}
