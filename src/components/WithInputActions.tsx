@@ -1,6 +1,6 @@
 import React, { useState, ReactNode, HTMLAttributes } from 'react'
 import styled, { css } from 'styled-components'
-import Popover from '~/shared/components/Popover'
+import { Popover } from '~/components/Popover'
 
 const Container = styled.div``
 

@@ -1,23 +1,22 @@
 import React from 'react'
-import { Col, Row } from 'reactstrap'
 import { Meta } from '@storybook/react'
-import PrestyledPngIcon from '~/shared/components/PngIcon'
 import styled from 'styled-components'
-import { IconInner, IconWrapper } from './SvgIcon.stories'
+import PrestyledPngIcon from '~/shared/components/PngIcon'
+import { IconInner, IconListRoot, IconWrapper } from './SvgIcon.stories'
 
 export const All = () => (
-    <Row>
+    <IconListRoot>
         {PngIcon.names.map((name) => (
-            <Col xs="4" key={name}>
+            <div key={name}>
                 <IconWrapper>
                     <IconInner>
                         <PngIcon name={name} />
                     </IconInner>
                     <span>{name}</span>
                 </IconWrapper>
-            </Col>
+            </div>
         ))}
-    </Row>
+    </IconListRoot>
 )
 
 All.story = {

@@ -2,7 +2,6 @@ import React, { FunctionComponent } from 'react'
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { Menu as UnstyledMenu, NavDropdown } from '@streamr/streamr-layout'
-import { AccordionBody, AccordionHeader } from 'reactstrap'
 import SvgIcon from '~/shared/components/SvgIcon'
 import AvatarImage from '~/shared/components/AvatarImage'
 import { COLORS, DESKTOP, MEDIUM, REGULAR, TABLET } from '~/shared/utils/styled'
@@ -185,7 +184,6 @@ export const NavbarLinkDesktop = styled(UnstyledNavbarLink)<{ highlight?: boolea
         highlight &&
         css`
             &:after {
-                left: 50%;
                 width: 20px;
             }
 
@@ -335,40 +333,6 @@ export const UserInfoMobile = styled.div`
     }
 `
 
-export const StyledAccordionBody = styled(AccordionBody)`
-    white-space: normal;
-`
-
-export const StyledAccordionHeader = styled(AccordionHeader)`
-    margin: 0;
-    button {
-        font-size: 18px;
-        line-height: 100px;
-        color: #323232;
-        text-transform: uppercase;
-        border: none;
-        background-color: transparent;
-        font-weight: ${MEDIUM};
-        padding: 0;
-        display: block;
-        width: 100%;
-
-        .network-dropdown-button-inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-
-            .caret-down {
-                width: 20px;
-                transition: transform 250ms ease-in-out;
-                &.is-open {
-                    transform: rotate(180deg);
-                }
-            }
-        }
-    }
-`
 export const NetworkMobileLink = styled(Link)`
     margin-bottom: 40px;
     display: block;

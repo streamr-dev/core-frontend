@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 import styled from 'styled-components'
-import Popover from '~/shared/components/Popover'
+import { Popover } from '~/components/Popover'
 
 type Props = {
     children: ReactNode

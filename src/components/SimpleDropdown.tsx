@@ -15,11 +15,13 @@ export function SimpleDropdown({
     disabled = false,
     menu,
     menuWrapComponent: MenuWrap = SimpleDropdownMenu,
+    onToggle,
 }: {
     children?: ChildrenFormatter
     disabled?: boolean
     menu?: ChildrenFormatter
     menuWrapComponent?: typeof SimpleDropdownMenu
+    onToggle?: (value: boolean) => void
 }) {
     const [isOpen, setIsOpen] = useState(false)
 
@@ -44,6 +46,16 @@ export function SimpleDropdown({
             document.removeEventListener('mousedown', onMouseDown)
         }
     }, [])
+
+    const onToggleRef = useRef(onToggle)
+
+    if (onToggleRef.current !== onToggle) {
+        onToggleRef.current = onToggle
+    }
+
+    useEffect(() => {
+        onToggleRef.current?.(isOpen)
+    }, [isOpen])
 
     useEffect(() => {
         if (!isOpen) {

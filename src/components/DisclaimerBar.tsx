@@ -22,7 +22,12 @@ export const DisclaimerBar = () => {
                 Streamr risk disclaimer: The sponsorship, staking & delegation smart
                 contracts are unproven technology, participate at your own risk.{' '}
                 <a
-                    onClick={async () => {
+                    href="https://docs.streamr.network/streamr-testnets/testnets"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={async (e) => {
+                        e.preventDefault()
+
                         try {
                             await toaster(LightModal, Layer.Modal).pop({
                                 title: 'Disclaimer',
@@ -95,7 +100,7 @@ const Root = styled.div`
     }
 
     & a {
+        color: inherit !important;
         text-decoration: underline !important;
-        cursor: pointer;
     }
 `

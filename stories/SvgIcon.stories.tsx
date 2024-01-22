@@ -5,7 +5,7 @@ import styled from 'styled-components'
 
 export const All = () => (
     <>
-        <Root>
+        <IconListRoot>
             {SvgIconNames.map((name) => (
                 <div key={name}>
                     <IconWrapper>
@@ -24,7 +24,7 @@ export const All = () => (
                     <span>checkmark size=large</span>
                 </IconWrapper>
             </div>
-        </Root>
+        </IconListRoot>
     </>
 )
 
@@ -71,7 +71,7 @@ export const IconInner = styled.div`
     min-width: 1em;
 `
 
-const Root = styled.div`
+export const IconListRoot = styled.div`
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 32px;

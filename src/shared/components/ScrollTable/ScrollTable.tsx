@@ -10,8 +10,7 @@ import {
     ScrollTableHeaderCell,
     ScrollTableNonStickyColumnsWrap,
 } from '~/shared/components/ScrollTable/ScrollTable.styles'
-import Popover from '~/shared/components/Popover'
-import PopoverItem from '~/shared/components/Popover/PopoverItem'
+import { Popover, PopoverItem } from '~/components/Popover'
 import { NoData } from '~/shared/components/NoData'
 import { LoadMoreButton } from '~/components/LoadMore'
 

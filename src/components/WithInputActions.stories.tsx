@@ -1,7 +1,7 @@
 import React from 'react'
 import { Meta } from '@storybook/react'
 import Text from '~/shared/components/Ui/Text'
-import PopoverItem from '~/shared/components/Popover/PopoverItem'
+import { PopoverItem } from '~/components/Popover'
 import WithInputActions from './WithInputActions'
 
 export const Basic = () => (
