@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { COLORS, MAX_CONTENT_WIDTH } from '~/shared/utils/styled'
-import PrestyledWithInputActions from '~/components/WithInputActions'
-import { PopoverItem } from '~/components/Popover'
 import Text from '~/shared/components/Ui/Text'
 import useCopy from '~/shared/hooks/useCopy'
 import { truncate } from '~/shared/utils/text'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { usePersistProjectCallback } from '~/stores/projectDraft'
+import { Meatball } from '../Meatball'
+import { SimpleDropdown, SimpleListDropdownMenu } from '../SimpleDropdown'
+import { DropdownMenuItem } from '../DropdownMenuItem'
 
 export default function BeneficiaryAddressEditor({
     disabled = false,
@@ -46,73 +47,89 @@ export default function BeneficiaryAddressEditor({
 
     return (
         <Container>
-            <WithInputActions
+            <Text
+                value={value}
+                onCommit={onChange}
+                placeholder={
+                    accountAddress
+                        ? accountAddress
+                        : 'i.e. 0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1'
+                }
                 disabled={disabled}
-                actions={[
-                    <PopoverItem
-                        key="useCurrent"
-                        onClick={() => {
-                            if (!accountAddress) {
-                                return
-                            }
-
-                            onChange(accountAddress)
-                        }}
-                        disabled={!accountAddress}
-                    >
-                        <AddressItem>
-                            <div>Fill wallet address</div>
-                            <div>
-                                {accountAddress
-                                    ? truncate(accountAddress)
-                                    : 'Wallet locked'}
-                            </div>
-                        </AddressItem>
-                    </PopoverItem>,
-                    <PopoverItem
-                        key="copy"
-                        disabled={!value}
-                        onClick={() => void copy(value)}
-                    >
-                        Copy
-                    </PopoverItem>,
-                ]}
-            >
-                <Text
-                    value={value}
-                    onCommit={onChange}
-                    placeholder={
-                        accountAddress
-                            ? accountAddress
-                            : 'i.e. 0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1'
+                invalid={invalid}
+                selectAllOnFocus
+                onKeyDown={({ key }) => {
+                    if (key === 'Enter') {
+                        persist()
                     }
-                    disabled={disabled}
-                    invalid={invalid}
-                    selectAllOnFocus
-                    onKeyDown={({ key }) => {
-                        if (key === 'Enter') {
-                            persist()
-                        }
-                    }}
-                />
-            </WithInputActions>
+                }}
+            />
+            <Actions>
+                <SimpleDropdown
+                    detached
+                    menu={(toggle) => (
+                        <SimpleListDropdownMenu>
+                            <ul>
+                                <DropdownMenuItem
+                                    tabIndex={-1}
+                                    type="button"
+                                    disabled={!accountAddress}
+                                    onClick={() => {
+                                        toggle(false)
+
+                                        if (!accountAddress) {
+                                            return
+                                        }
+
+                                        onChange(accountAddress)
+                                    }}
+                                >
+                                    <AddressItem>
+                                        <div>Fill wallet address</div>
+                                        <div>
+                                            {accountAddress
+                                                ? truncate(accountAddress)
+                                                : 'Wallet locked'}
+                                        </div>
+                                    </AddressItem>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    tabIndex={-1}
+                                    type="button"
+                                    disabled={!value}
+                                    onClick={() => {
+                                        copy(value)
+
+                                        toggle(false)
+                                    }}
+                                >
+                                    Copy
+                                </DropdownMenuItem>
+                            </ul>
+                        </SimpleListDropdownMenu>
+                    )}
+                >
+                    {(toggle) => (
+                        <ActionsToggle
+                            type="button"
+                            onClick={() => void toggle((x) => !x)}
+                            disabled={disabled}
+                        >
+                            <Meatball alt="" color="gray" disabled={disabled} />
+                        </ActionsToggle>
+                    )}
+                </SimpleDropdown>
+            </Actions>
         </Container>
     )
 }
 
-const WithInputActions = styled(PrestyledWithInputActions)`
-    margin: 0;
-
-    input:disabled {
-        background-color: white;
-        opacity: 1;
-    }
-`
-
 const Container = styled.div`
     background-color: ${COLORS.inputBackground};
-    padding: 12px 24px;
     max-width: ${MAX_CONTENT_WIDTH};
+    padding: 12px 24px;
+    position: relative;
+    line-height: normal;
 `
 
 const AddressItem = styled.div`
@@ -123,6 +140,22 @@ const AddressItem = styled.div`
     div + div {
         color: #adadad;
         font-size: 10px;
-        margin-top: -14px;
     }
+`
+
+const Actions = styled.div`
+    position: absolute;
+    padding: 0 32px;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+`
+
+const ActionsToggle = styled.button`
+    appearance: none;
+    background: none;
+    border: 0;
+    display: block;
+    outline: 0;
+    padding: 0;
 `
