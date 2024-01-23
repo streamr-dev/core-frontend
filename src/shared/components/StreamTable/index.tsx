@@ -332,38 +332,44 @@ const StreamTable: React.FC<Props> = ({
             <Table>
                 <TableHeader>
                     <GridCell onClick={() => handleHeaderClick(ListOrderBy.Id)}>
-                        Stream ID
-                        {orderBy === ListOrderBy.Id && (
-                            <OrderDirectionIcon
-                                name="caretDown"
-                                direction={orderDirection ?? ListOrderDirection.Asc}
-                            />
-                        )}
+                        <Wings>
+                            Stream ID
+                            {orderBy === ListOrderBy.Id && (
+                                <OrderDirectionIcon
+                                    name="caretDown"
+                                    direction={orderDirection ?? ListOrderDirection.Asc}
+                                />
+                            )}
+                        </Wings>
                     </GridCell>
                     <GridCell onlyTablet>Description</GridCell>
                     <GridCell
                         onlyDesktop
                         onClick={() => handleHeaderClick(ListOrderBy.PeerCount)}
                     >
-                        Live peers
-                        {orderBy === ListOrderBy.PeerCount && (
-                            <OrderDirectionIcon
-                                name="caretDown"
-                                direction={orderDirection ?? ListOrderDirection.Asc}
-                            />
-                        )}
+                        <Wings>
+                            Live peers
+                            {orderBy === ListOrderBy.PeerCount && (
+                                <OrderDirectionIcon
+                                    name="caretDown"
+                                    direction={orderDirection ?? ListOrderDirection.Asc}
+                                />
+                            )}
+                        </Wings>
                     </GridCell>
                     <GridCell
                         onlyDesktop
                         onClick={() => handleHeaderClick(ListOrderBy.MessagesPerSecond)}
                     >
-                        Msg/s
-                        {orderBy === ListOrderBy.MessagesPerSecond && (
-                            <OrderDirectionIcon
-                                name="caretDown"
-                                direction={orderDirection ?? ListOrderDirection.Asc}
-                            />
-                        )}
+                        <Wings>
+                            Msg/s
+                            {orderBy === ListOrderBy.MessagesPerSecond && (
+                                <OrderDirectionIcon
+                                    name="caretDown"
+                                    direction={orderDirection ?? ListOrderDirection.Asc}
+                                />
+                            )}
+                        </Wings>
                     </GridCell>
                     <GridCell onlyDesktop>Access</GridCell>
                     <GridCell onlyDesktop>Publishers</GridCell>
@@ -518,3 +524,8 @@ export const StreamTableLight: FunctionComponent<{
         </Container>
     )
 }
+
+const Wings = styled.div`
+    align-items: center;
+    display: flex;
+`
