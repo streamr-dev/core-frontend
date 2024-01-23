@@ -104,7 +104,6 @@
         "reselect": "^4.1.8",
         "resize-observer-polyfill": "^1.5.1",
         "rich-markdown-editor": "^11.21.3",
-        "sass": "1.62.1",
         "storybook": "^7.6.6",
         "storybook-react-router": "^1.0.8",
         "stream-browserify": "^3.0.0",
