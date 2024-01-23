@@ -2,10 +2,10 @@ import React, { ComponentProps, useReducer } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import routes from '~/routes'
+import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS, MEDIUM, REGULAR } from '~/shared/utils/styled'
 import { NavLink, NavbarLinkMobile } from './Nav.styles'
 import { NetworkNavItems, isNetworkTabActive } from './NetworkDropdown'
-import SvgIcon from '~/shared/components/SvgIcon'
 
 export function NetworkAccordion() {
     const { pathname } = useLocation()
@@ -99,7 +99,6 @@ function getCaretDownIconAttrs(): ComponentProps<typeof SvgIcon> {
 const CaretDownIcon = styled(SvgIcon).attrs(getCaretDownIconAttrs)<{
     $flipped?: boolean
 }>`
-    display: block;
     transform: rotate(0deg) translateY(-2%);
     transition: 300ms transform;
     width: 18px;

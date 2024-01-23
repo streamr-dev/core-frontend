@@ -10,18 +10,14 @@ import {
     IconWrap,
 } from '~/components/ActionBars/AboutEntity'
 import { truncate } from '~/shared/utils/text'
-import useCopy from '~/shared/hooks/useCopy'
-import { CopyIcon } from '~/icons'
-import { IconButton } from '~/components/IconButton'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { CopyButton } from '~/components/CopyButton'
 
 export function AboutOperator({ operator }: { operator: ParsedOperator }) {
     const {
         owner,
         metadata: { description },
     } = operator
-
-    const { copy } = useCopy()
 
     return (
         <DefaultSimpleDropdownMenu>
@@ -31,9 +27,7 @@ export function AboutOperator({ operator }: { operator: ParsedOperator }) {
                 <AddressContent>
                     <strong>{truncate(owner)}</strong>
                     <div>
-                        <IconButton type="button" onClick={() => void copy(owner)}>
-                            <CopyIcon />
-                        </IconButton>
+                        <CopyButton value={owner} />
                     </div>
                 </AddressContent>
             </Address>
