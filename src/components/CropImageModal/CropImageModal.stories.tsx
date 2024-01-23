@@ -7,7 +7,7 @@ import CropImageModal from './CropImageModal'
 
 const cropModal = toaster(CropImageModal, Layer.Modal)
 
-const Story = ({ mask }) => {
+const Story = () => {
     const inputRef = useRef<HTMLInputElement>(null)
 
     return (
@@ -46,7 +46,7 @@ const Story = ({ mask }) => {
     )
 }
 export const Default = () => {
-    return <Story mask={'none'} />
+    return <Story />
 }
 
 const meta: Meta<typeof Default> = {
