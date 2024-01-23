@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import moment from 'moment'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import SvgIcon from '~/shared/components/SvgIcon'
 import routes from '~/routes'
 import { SimpleDropdown } from '~/components/SimpleDropdown'

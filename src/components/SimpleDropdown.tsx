@@ -1,4 +1,5 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import styled, { css } from 'styled-components'
 import { COLORS } from '~/shared/utils/styled'
 import { useBoundingClientRect } from './Anchor'
@@ -12,18 +13,24 @@ type ChildrenFormatter =
 
 export function SimpleDropdown({
     children,
+    detached = false,
     disabled = false,
     menu,
     menuWrapComponent: MenuWrap = SimpleDropdownMenu,
+    onToggle,
 }: {
     children?: ChildrenFormatter
+    detached?: boolean
     disabled?: boolean
     menu?: ChildrenFormatter
     menuWrapComponent?: typeof SimpleDropdownMenu
+    onToggle?: (value: boolean) => void
 }) {
     const [isOpen, setIsOpen] = useState(false)
 
     const rootRef = useRef<HTMLDivElement>(null)
+
+    const menuRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         function onMouseDown({ target }: MouseEvent) {
@@ -31,7 +38,7 @@ export function SimpleDropdown({
                 return
             }
 
-            if (rootRef.current?.contains(target)) {
+            if (rootRef.current?.contains(target) || menuRef.current?.contains(target)) {
                 return
             }
 
@@ -44,6 +51,16 @@ export function SimpleDropdown({
             document.removeEventListener('mousedown', onMouseDown)
         }
     }, [])
+
+    const onToggleRef = useRef(onToggle)
+
+    if (onToggleRef.current !== onToggle) {
+        onToggleRef.current = onToggle
+    }
+
+    useEffect(() => {
+        onToggleRef.current?.(isOpen)
+    }, [isOpen])
 
     useEffect(() => {
         if (!isOpen) {
@@ -79,7 +96,10 @@ export function SimpleDropdown({
         }
 
         function onFocus(e: FocusEvent) {
-            if (!rootRef.current?.contains(e.target as Element)) {
+            if (
+                !rootRef.current?.contains(e.target as Element) &&
+                !menuRef.current?.contains(e.target as Element)
+            ) {
                 setIsOpen(false)
             }
         }
@@ -91,11 +111,12 @@ export function SimpleDropdown({
         }
     }, [isOpen])
 
-    const menuRef = useRef<HTMLDivElement>(null)
-
     const posRef = useRef<HTMLDivElement>(null)
 
-    const x = useBoundingClientRect(posRef, (r) => r?.x || 0)
+    const [x, y] = useBoundingClientRect(posRef, (r) => [
+        r?.x || 0,
+        (r?.y || 0) + window.scrollY,
+    ])
 
     const [dx, maxWidth] = useBoundingClientRect(menuRef, (rect) => {
         const { clientWidth } = document.documentElement
@@ -114,16 +135,34 @@ export function SimpleDropdown({
         <SimpleDropdownRoot ref={rootRef}>
             {typeof children === 'function' ? children(setIsOpen, isOpen) : children}
             <div ref={posRef} />
-            <MenuWrap
-                $visible={isOpen}
-                ref={menuRef}
-                style={{
-                    transform: `translateX(${dx}px)`,
-                    maxWidth,
-                }}
-            >
-                {typeof menu === 'function' ? menu(setIsOpen, isOpen) : menu}
-            </MenuWrap>
+            {detached ? (
+                createPortal(
+                    <MenuWrap
+                        $visible={isOpen}
+                        ref={menuRef}
+                        style={{
+                            transform: `translateX(${dx}px)`,
+                            maxWidth,
+                            top: `${y}px`,
+                            left: `${x}px`,
+                        }}
+                    >
+                        {typeof menu === 'function' ? menu(setIsOpen, isOpen) : menu}
+                    </MenuWrap>,
+                    document.getElementById('hub-anchors')!,
+                )
+            ) : (
+                <MenuWrap
+                    $visible={isOpen}
+                    ref={menuRef}
+                    style={{
+                        transform: `translateX(${dx}px)`,
+                        maxWidth,
+                    }}
+                >
+                    {typeof menu === 'function' ? menu(setIsOpen, isOpen) : menu}
+                </MenuWrap>
+            )}
         </SimpleDropdownRoot>
     )
 }
@@ -162,6 +201,7 @@ export const SimpleListDropdownMenu = styled.div`
     color: ${COLORS.primary};
     margin-top: 8px;
     min-height: 16px;
+    padding: 8px 0;
 
     p {
         font-size: 14px;

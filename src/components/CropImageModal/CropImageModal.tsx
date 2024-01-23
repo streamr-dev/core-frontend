@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import AvatarEditor, { CroppedRect } from 'react-avatar-editor'
-import Slider from '~/shared/components/Slider'
+import { Slider } from '~/components/Slider'
 import BaseModal, { BaseModalProps, Footer, RejectionReason } from '~/modals/BaseModal'
 import SvgIcon from '~/shared/components/SvgIcon'
 import {
@@ -11,7 +11,7 @@ import {
     FormModalRoot,
     FormModalTitle,
 } from '~/modals/FormModal'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import { COLORS } from '~/shared/utils/styled'
 import MaskSvg from '~/shared/assets/images/mask.svg'
 

@@ -8,7 +8,7 @@ import { formatDateTime } from '~/marketplace/utils/time'
 import useCopy from '~/shared/hooks/useCopy'
 import { COLORS, MAX_BODY_WIDTH, MEDIUM, TABLET } from '~/shared/utils/styled'
 import SelectField2 from '~/marketplace/components/SelectField2'
-import { CopyButton } from '~/shared/components/CopyButton/CopyButton'
+import { CopyButton } from '~/components/CopyButton'
 import { truncateStreamName } from '~/shared/utils/text'
 import Layout from './Layout'
 import Cell from './Cell'
@@ -163,8 +163,9 @@ const StreamSelectorContainer = styled.div`
 `
 
 const StreamSelector = styled.div`
-    display: flex;
     align-items: center;
+    display: flex;
+    gap: 8px;
 `
 
 const DesktopStreamSelector = styled.div`
@@ -185,8 +186,9 @@ const MobileStreamSelector = styled.div`
         margin-bottom: 8px;
     }
     .selector {
-        display: flex;
         align-items: center;
+        display: flex;
+        gap: 8px;
         margin-bottom: 5px;
     }
 `
@@ -273,7 +275,7 @@ const UnstyledFeed = ({
                             selectedStream={streamId}
                             onChange={onStreamChange}
                         />
-                        <CopyButton valueToCopy={'aaa'} className={'white'} />
+                        <CopyButton value={streamId} />
                     </div>
                 </MobileStreamSelector>
             )}
@@ -297,7 +299,7 @@ const UnstyledFeed = ({
                                                 isClearable={false}
                                                 value={streamId}
                                             />
-                                            <CopyButton valueToCopy={streamId} />
+                                            <CopyButton value={streamId} />
                                         </StreamSelector>
                                     </StreamSelectorContainer>
                                 </DesktopStreamSelector>

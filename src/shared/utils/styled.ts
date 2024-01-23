@@ -1,4 +1,4 @@
-export const SM = 375
+const SM = 375
 export const MD = 744
 const MDLG = 1100
 export const LG = 1440

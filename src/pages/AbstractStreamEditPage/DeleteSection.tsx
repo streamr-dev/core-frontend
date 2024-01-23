@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import getTransactionalClient from '~/getters/getTransactionalClient'
 import { useCurrentDraft } from '~/shared/stores/streamEditor'
 import routes from '~/routes'

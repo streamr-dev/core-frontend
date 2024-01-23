@@ -10,6 +10,11 @@ jest.mock('~/shared/stores/wallet', () => ({
     useEns: jest.fn(),
 }))
 
+jest.mock('~/utils', () => ({
+    __esModule: true,
+    saveOperator: jest.fn(),
+}))
+
 jest.mock('~/modals/ConnectModal', () => ({
     __esModule: true,
     default: () => <></>,
@@ -20,13 +25,10 @@ jest.mock('~/modals/OperatorModal', () => ({
 }))
 
 jest.mock('~/hooks/operators', () => {
-    const actual = jest.requireActual('~/hooks/operators')
-
     return {
-        ...actual,
+        __esModule: true,
         useOperatorForWalletQuery() {
             return {
-                data: null,
                 isFetching: false,
             }
         },

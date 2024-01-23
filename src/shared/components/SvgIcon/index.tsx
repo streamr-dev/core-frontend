@@ -1,11 +1,13 @@
-import { ComponentType } from 'react'
-import React from 'react'
+import React, { ComponentType } from 'react'
 import { $Keys } from 'utility-types'
-import UploadIcon from './ImageUploadIcon'
-import CheckmarkIcon from './CheckmarkIcon'
+import styled from 'styled-components'
+import { CheckmarkIcon } from './CheckmarkIcon'
 import * as MapIcons from './MapIcons'
 import * as SocialIcons from './SocialIcons'
-import styles from './svgIcon.pcss'
+
+const DefaultPath = styled.path`
+    stroke: #323232;
+`
 
 /* eslint-disable max-len */
 const sources = {
@@ -141,11 +143,7 @@ const sources = {
     ),
     cross: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15">
-            <path
-                d="M1 1l13.2 13.2m0-13.2L1 14.2"
-                fill="none"
-                className={styles.default}
-            />
+            <DefaultPath d="M1 1l13.2 13.2m0-13.2L1 14.2" fill="none" />
         </svg>
     ),
     crossMedium: (
@@ -199,23 +197,21 @@ const sources = {
     ),
     play: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-            <path
+            <DefaultPath
                 d="M12 22l10-6-10-6z"
                 strokeLinejoin="round"
                 fill="none"
                 fillRule="evenodd"
-                className={styles.default}
             />
         </svg>
     ),
     pause: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-            <path
+            <DefaultPath
                 d="M11 10h3v12h-3zm7 0h3v12h-3z"
                 strokeLinejoin="round"
                 fill="none"
                 fillRule="evenodd"
-                className={styles.default}
             />
         </svg>
     ),
@@ -320,7 +316,6 @@ const sources = {
             />
         </svg>
     ),
-    imageUpload: <UploadIcon />,
     checkmark: <CheckmarkIcon />,
     checkmarkOutline: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 112 113" fill="none">

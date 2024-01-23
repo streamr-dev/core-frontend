@@ -76,6 +76,17 @@ export const LayoutInner = styled.div<{ $bg?: string }>`
 `
 
 const GlobalStyles = createGlobalStyle`
+    body {
+        font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+        font-size: 16px;
+        line-height: 2em;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    input {
+        font-family: inherit;
+    }
+
     body a {
         text-decoration: none;
     }
@@ -91,6 +102,28 @@ const GlobalStyles = createGlobalStyle`
     .react-loading-skeleton {
         animation: none !important;
         background: #adadad none;
+    }
+
+    a {
+        color: #0324FF;
+        font-weight: inherit;
+    }
+
+    a:link,
+    a:active,
+    a:focus,
+    a:hover,
+    a:visited {
+        text-decoration: none;
+    }
+
+    a:focus,
+    a:hover {
+        color: #0D009A;
+    }
+
+    a:active {
+        color: #13013D;
     }
 `
 

@@ -7,7 +7,7 @@ import {
     useSponsorshipsByStreamIdQuery,
 } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import { NoData } from '~/shared/components/NoData'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { COLORS } from '~/shared/utils/styled'

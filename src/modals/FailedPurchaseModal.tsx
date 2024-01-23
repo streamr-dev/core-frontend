@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import PngIcon from '~/shared/components/PngIcon'
-import { Buttons } from '~/shared/components/Buttons'
+import { Buttons } from '~/components/Buttons'
 import Modal from './Modal'
 import { Footer, RejectionReason } from './BaseModal'
 

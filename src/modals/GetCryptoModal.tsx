@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 import PngIcon from '~/shared/components/PngIcon'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import Link from '~/shared/components/Link'
-import { Buttons } from '~/shared/components/Buttons'
+import { Buttons } from '~/components/Buttons'
 import Modal from './Modal'
 import { Footer } from './BaseModal'
 
@@ -25,7 +25,7 @@ export default function GetCryptoModal({ tokenName, onReject }: Props) {
             <Exchanges>
                 <Button
                     kind="secondary"
-                    tag={Link}
+                    as={Link}
                     href="https://ramp.network/"
                     target="_blank"
                 >
@@ -33,7 +33,7 @@ export default function GetCryptoModal({ tokenName, onReject }: Props) {
                 </Button>
                 <Button
                     kind="secondary"
-                    tag={Link}
+                    as={Link}
                     href="https://coinbase.com"
                     target="_blank"
                 >
@@ -41,7 +41,7 @@ export default function GetCryptoModal({ tokenName, onReject }: Props) {
                 </Button>
                 <Button
                     kind="secondary"
-                    tag={Link}
+                    as={Link}
                     href="https://binance.com"
                     target="_blank"
                 >

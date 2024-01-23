@@ -1,8 +1,8 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
-import { SM } from '~/shared/utils/styled'
+import { PHONE } from '~/shared/utils/styled'
 import SvgIcon from '~/shared/components/SvgIcon'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import Spinner from '~/components/Spinner'
 import Label from '~/shared/components/Ui/Label'
 import Text from '~/shared/components/Ui/Text'
@@ -37,7 +37,7 @@ export function ReadonlyStreamId({ streamId }: { streamId: string }) {
                 </PathnameField>
             </Pathname>
             <div>
-                <Label keepSpace />
+                <Label>&zwnj;</Label>
                 <Button
                     kind="secondary"
                     onClick={() =>
@@ -150,7 +150,9 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
     return (
         <StreamId>
             <Domain>
-                <Label>Domain</Label>
+                <Label>
+                    <LabelInner>Domain</LabelInner>
+                </Label>
                 {disabled || isOwnersLoading || !account ? (
                     <DisabledDomain>
                         {isOwnersLoading ? (
@@ -188,7 +190,9 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
                 )}
             </Domain>
             <div>
-                <Label keepSpace />
+                <Label>
+                    <LabelInner />
+                </Label>
                 <Separator />
             </div>
             <Pathname>
@@ -246,7 +250,7 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
 const Domain = styled.div`
     flex-grow: 1;
 
-    @media (min-width: ${SM}px) {
+    @media ${PHONE} {
         max-width: 222px;
     }
 `
@@ -327,6 +331,7 @@ const StreamId = styled.div`
 const LabelInner = styled.div`
     align-items: center;
     display: flex;
+    min-height: 24px;
 
     span {
         flex-grow: 1;

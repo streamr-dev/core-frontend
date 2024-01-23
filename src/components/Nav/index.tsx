@@ -1,7 +1,6 @@
-import React, { Fragment, FunctionComponent, HTMLAttributes, useState } from 'react'
+import React, { FunctionComponent, HTMLAttributes } from 'react'
 import styled from 'styled-components'
 import { useLocation, Link, useNavigate } from 'react-router-dom'
-import { Accordion, AccordionItem } from 'reactstrap'
 import { Button, HamburgerButton, Logo, NavOverlay } from '@streamr/streamr-layout'
 import { DESKTOP, TABLET } from '~/shared/utils/styled'
 import SvgIcon from '~/shared/components/SvgIcon'
@@ -9,8 +8,6 @@ import { truncate } from '~/shared/utils/text'
 import { connectModal } from '~/modals/ConnectModal'
 import { useEns, useWalletAccount } from '~/shared/stores/wallet'
 import toast from '~/utils/toast'
-import Popover from '~/shared/components/Popover'
-import PopoverItem from '~/shared/components/Popover/PopoverItem'
 import routes from '~/routes'
 import { useOperatorForWalletQuery } from '~/hooks/operators'
 import { saveOperator } from '~/utils'
@@ -30,53 +27,14 @@ import {
     NavbarLinkDesktop,
     NavbarLinkMobile,
     NavLink,
-    NetworkMobileLink,
-    NetworkNavElement,
     SignedInUserMenu,
-    StyledAccordionBody,
-    StyledAccordionHeader,
     TextMenuItem,
     UserInfoMenuItem,
     UserInfoMobile,
     WalletAddress,
 } from './Nav.styles'
-
-const extendedNetworkNav: {
-    title: string
-    subtitle: string
-    link: string
-    rel?: string
-    target?: string
-}[] = [
-    {
-        title: 'Overview',
-        subtitle: 'Your activity on one glance',
-        link: routes.network.overview(),
-    },
-    {
-        title: 'Sponsorships',
-        subtitle: 'Explore, create and join Sponsorships',
-        link: routes.network.sponsorships(),
-    },
-    {
-        title: 'Operators',
-        subtitle: 'Explore Operators and delegate',
-        link: routes.network.operators(),
-    },
-]
-
-const networkLinks = [
-    routes.network.overview(),
-    routes.network.sponsorships(),
-    routes.network.sponsorship(),
-    routes.network.operators(),
-]
-const isNetworkTabActive = (path: string): boolean => {
-    return networkLinks.reduce((previousValue, currentValue) => {
-        const isNetworkLink = path.startsWith(currentValue)
-        return previousValue || isNetworkLink
-    }, false)
-}
+import { Dropdown } from './NetworkDropdown'
+import { NetworkAccordion } from './NetworkAccordion'
 
 const UnstyledDesktopNav: FunctionComponent = (props) => {
     const { pathname } = useLocation()
@@ -121,133 +79,106 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                         </NavbarLinkDesktop>
                     </NavbarItem>
                     <NavbarItem>
-                        <NavbarLinkDesktop highlight={isNetworkTabActive(pathname)}>
-                            <Popover
-                                title={<NavLink>Network</NavLink>}
-                                caret={false}
-                                menuProps={{ className: 'nav-dropdown' }}
-                                openOnHover
-                            >
-                                {extendedNetworkNav.map((networkNavElement) => {
-                                    const { title, subtitle, link } = networkNavElement
-
-                                    return (
-                                        <PopoverItem
-                                            key={link}
-                                            onClick={() => void navigate(link)}
-                                        >
-                                            <NetworkNavElement>
-                                                <p className="title">{title}</p>
-                                                <p className="subtitle">{subtitle}</p>
-                                            </NetworkNavElement>
-                                        </PopoverItem>
-                                    )
-                                })}
-                            </Popover>
-                        </NavbarLinkDesktop>
+                        <Dropdown />
                     </NavbarItem>
                 </MenuGrid>
                 {!account && (
-                    <Fragment>
-                        <NavbarItemAccount>
-                            <Button
-                                kind="primary"
-                                size="mini"
-                                outline
-                                type="button"
-                                onClick={async () => {
-                                    try {
-                                        await connectModal.pop()
-                                    } catch (e) {
-                                        console.warn('Wallet connecting failed', e)
-                                    }
-                                }}
-                            >
-                                Connect
-                            </Button>
-                        </NavbarItemAccount>
-                    </Fragment>
+                    <NavbarItemAccount>
+                        <Button
+                            kind="primary"
+                            size="mini"
+                            outline
+                            type="button"
+                            onClick={async () => {
+                                try {
+                                    await connectModal.pop()
+                                } catch (e) {
+                                    console.warn('Wallet connecting failed', e)
+                                }
+                            }}
+                        >
+                            Connect
+                        </Button>
+                    </NavbarItemAccount>
                 )}
                 {!!account && (
-                    <Fragment>
-                        <NavbarItemAccount>
-                            <SignedInUserMenu
-                                edge
-                                alignMenu="right"
-                                nodeco
-                                toggle={<Avatar username={account} />}
-                                menu={
-                                    <Menu>
-                                        <UserInfoMenuItem>
-                                            <MenuItemAvatarContainer>
-                                                <Avatar username={account} />
-                                                <WalletAddress>
-                                                    {!!ensName && (
-                                                        <span className={'ens-name'}>
-                                                            {truncate(ensName)}
-                                                        </span>
-                                                    )}
-                                                    <span>{truncate(account)}</span>
-                                                </WalletAddress>
-                                            </MenuItemAvatarContainer>
-                                        </UserInfoMenuItem>
-                                        {isMobile && (
-                                            <>
-                                                <MenuDivider />
-                                                {operator ? (
-                                                    <TextMenuItem
-                                                        onClick={() => {
-                                                            navigate(
-                                                                routes.network.operator({
-                                                                    id: operator.id,
-                                                                }),
-                                                            )
-                                                        }}
-                                                    >
-                                                        <span>My Operator</span>
-                                                    </TextMenuItem>
-                                                ) : (
-                                                    <TextMenuItem
-                                                        disabled={isOperatorFetching}
-                                                        onClick={() => {
-                                                            if (isOperatorFetching) {
-                                                                return
-                                                            }
-
-                                                            saveOperator(undefined, {
-                                                                onDone(id) {
-                                                                    navigate(
-                                                                        routes.network.operator(
-                                                                            {
-                                                                                id,
-                                                                            },
-                                                                        ),
-                                                                    )
-                                                                },
-                                                            })
-                                                        }}
-                                                    >
-                                                        <span>Become an Operator</span>
-                                                    </TextMenuItem>
+                    <NavbarItemAccount>
+                        <SignedInUserMenu
+                            edge
+                            alignMenu="right"
+                            nodeco
+                            toggle={<Avatar username={account} />}
+                            menu={
+                                <Menu>
+                                    <UserInfoMenuItem>
+                                        <MenuItemAvatarContainer>
+                                            <Avatar username={account} />
+                                            <WalletAddress>
+                                                {!!ensName && (
+                                                    <span className={'ens-name'}>
+                                                        {truncate(ensName)}
+                                                    </span>
                                                 )}
-                                            </>
-                                        )}
-                                        <MenuDivider />
-                                        <TextMenuItem
-                                            onClick={() => {
-                                                toast({
-                                                    title: 'Use the "Lock" button in your wallet.',
-                                                })
-                                            }}
-                                        >
-                                            <span>Disconnect</span>
-                                            <SvgIcon name="disconnect" />
-                                        </TextMenuItem>
-                                    </Menu>
-                                }
-                            />
-                        </NavbarItemAccount>
-                    </Fragment>
+                                                <span>{truncate(account)}</span>
+                                            </WalletAddress>
+                                        </MenuItemAvatarContainer>
+                                    </UserInfoMenuItem>
+                                    {isMobile && (
+                                        <>
+                                            <MenuDivider />
+                                            {operator ? (
+                                                <TextMenuItem
+                                                    onClick={() => {
+                                                        navigate(
+                                                            routes.network.operator({
+                                                                id: operator.id,
+                                                            }),
+                                                        )
+                                                    }}
+                                                >
+                                                    <span>My Operator</span>
+                                                </TextMenuItem>
+                                            ) : (
+                                                <TextMenuItem
+                                                    disabled={isOperatorFetching}
+                                                    onClick={() => {
+                                                        if (isOperatorFetching) {
+                                                            return
+                                                        }
+
+                                                        saveOperator(undefined, {
+                                                            onDone(id) {
+                                                                navigate(
+                                                                    routes.network.operator(
+                                                                        {
+                                                                            id,
+                                                                        },
+                                                                    ),
+                                                                )
+                                                            },
+                                                        })
+                                                    }}
+                                                >
+                                                    <span>Become an Operator</span>
+                                                </TextMenuItem>
+                                            )}
+                                        </>
+                                    )}
+                                    <MenuDivider />
+                                    <TextMenuItem
+                                        onClick={() => {
+                                            toast({
+                                                title: 'Use the "Lock" button in your wallet.',
+                                            })
+                                        }}
+                                    >
+                                        <span>Disconnect</span>
+                                        <SvgIcon name="disconnect" />
+                                    </TextMenuItem>
+                                </Menu>
+                            }
+                        />
+                    </NavbarItemAccount>
                 )}
                 <HamburgerButton idle />
             </Navbar>
@@ -259,15 +190,6 @@ const UnstyledMobileNav: FunctionComponent<{ className?: string }> = ({ classNam
     const account = useWalletAccount()
 
     const { pathname } = useLocation()
-
-    const [accordionOpen, setAccordionOpen] = useState<string>('')
-    const toggle = (id) => {
-        if (accordionOpen === id) {
-            setAccordionOpen('')
-        } else {
-            setAccordionOpen(id)
-        }
-    }
 
     return (
         <NavOverlay className={className}>
@@ -302,55 +224,7 @@ const UnstyledMobileNav: FunctionComponent<{ className?: string }> = ({ classNam
                         Streams
                     </NavLink>
                 </NavbarLinkMobile>
-                <NavbarLinkMobile highlight={isNetworkTabActive(pathname)}>
-                    <NavLink as="div">
-                        <Accordion
-                            flush
-                            open={accordionOpen}
-                            // hack for the issues with typing
-                            {...{
-                                toggle,
-                            }}
-                        >
-                            <AccordionItem>
-                                <StyledAccordionHeader targetId="1">
-                                    <div className="network-dropdown-button-inner">
-                                        Network
-                                        <SvgIcon
-                                            name="caretDown"
-                                            className={
-                                                'caret-down ' +
-                                                (accordionOpen ? 'is-open' : '')
-                                            }
-                                        />
-                                    </div>
-                                </StyledAccordionHeader>
-                                <StyledAccordionBody accordionId="1">
-                                    {extendedNetworkNav.map(
-                                        (networkNavElement, index) => {
-                                            const { title, subtitle, link, ...rest } =
-                                                networkNavElement
-                                            return (
-                                                <NetworkMobileLink
-                                                    to={link}
-                                                    {...rest}
-                                                    key={index}
-                                                >
-                                                    <NetworkNavElement>
-                                                        <p className="title">{title}</p>
-                                                        <p className="subtitle">
-                                                            {subtitle}
-                                                        </p>
-                                                    </NetworkNavElement>
-                                                </NetworkMobileLink>
-                                            )
-                                        },
-                                    )}
-                                </StyledAccordionBody>
-                            </AccordionItem>
-                        </Accordion>
-                    </NavLink>
-                </NavbarLinkMobile>
+                <NetworkAccordion />
             </NavOverlay.Body>
             <NavOverlay.Footer>
                 {!!account ? (

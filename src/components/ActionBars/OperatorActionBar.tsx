@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import SvgIcon from '~/shared/components/SvgIcon'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import routes from '~/routes'

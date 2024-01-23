@@ -1,10 +1,7 @@
 import React, { ReactNode } from 'react'
 import styled, { css } from 'styled-components'
-import UnstyledSpinner from '~/components/Spinner'
 import Link from '~/shared/components/Link'
-const SharedTheme = {
-    backgroundColor: '#525252',
-}
+
 const SingleBadge = styled.div`
     display: flex;
     align-items: center;
@@ -110,22 +107,6 @@ const BadgeContainer = styled.div<BadgeContainerProps>`
     }
 `
 
-const Spinner = styled(UnstyledSpinner)`
-    height: 10px;
-    min-height: 0 !important;
-    min-width: 0 !important;
-    width: 10px;
-`
-
-const DeployingBadge = (props) => (
-    <BadgeContainer {...props}>
-        <SingleBadge>
-            <span>Deploying</span>
-            <Spinner color="white" />
-        </SingleBadge>
-    </BadgeContainer>
-)
-
 type DataUnionBadgeProps = {
     memberCount?: number
     linkTo?: string
@@ -151,14 +132,6 @@ const DataUnionBadge = ({
     </BadgeContainer>
 )
 
-const SharedBadge = (props) => (
-    <BadgeContainer {...props}>
-        <SingleBadge theme={SharedTheme}>
-            <span>Shared</span>
-        </SingleBadge>
-    </BadgeContainer>
-)
-
 const BadgeLink = ({ ...props }) => <Link {...props} />
 
-export { DataUnionBadge, DeployingBadge, SharedBadge, SharedTheme, BadgeLink }
+export { DataUnionBadge }

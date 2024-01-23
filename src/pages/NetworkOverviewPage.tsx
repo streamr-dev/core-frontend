@@ -42,7 +42,7 @@ import { Separator } from '~/components/Separator'
 import { QueriedSponsorshipsTable } from '~/components/QueriedSponsorshipsTable'
 import { abbr } from '~/utils'
 import { OperatorIdCell } from '~/components/Table'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import { getDelegationStats } from '~/getters/getDelegationStats'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 
@@ -129,7 +129,7 @@ function MyOperatorSummary() {
                         {operator && (
                             <Button
                                 kind="secondary"
-                                tag={Link}
+                                as={Link}
                                 to={routes.network.operator({ id: operator.id })}
                             >
                                 View Operator

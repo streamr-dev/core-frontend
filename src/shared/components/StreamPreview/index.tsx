@@ -8,7 +8,7 @@ import Errors from '~/shared/components/Ui/Errors'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { StreamId } from '~/shared/types/stream-types'
 import useStreamData from '~/shared/hooks/useStreamData'
-import EmptyState from '~/shared/components/EmptyState'
+import { EmptyState } from '~/components/EmptyState'
 import emptyStateIcon from '~/shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '~/shared/assets/images/empty_state_icon@2x.png'
 

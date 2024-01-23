@@ -1,13 +1,12 @@
 import React, { ButtonHTMLAttributes, ComponentProps } from 'react'
 import styled, { css } from 'styled-components'
 import SvgIcon from '~/shared/components/SvgIcon'
-import useCopy from '~/shared/hooks/useCopy'
 import { COLORS } from '~/shared/utils/styled'
-import { IconButton } from '~/components/IconButton'
-import { CopyIcon, ExternalLinkIcon } from '~/icons'
+import { ExternalLinkIcon } from '~/icons'
 import { Tooltip } from '~/components/Tooltip'
 import { getBlockExplorerUrl } from '~/getters/getBlockExplorerUrl'
 import { truncate } from '~/shared/utils/text'
+import { CopyButton } from '~/components/CopyButton'
 
 export const ActionBarButtonBody = styled.div<{ $background?: string; $color?: string }>`
     align-items: center;
@@ -114,17 +113,13 @@ export function ActionBarWalletDisplay({
     address: string
     label?: string
 }) {
-    const { copy } = useCopy()
-
     return (
         <ActionBarButtonBody>
             <div>
                 {label}: <strong>{truncate(address)}</strong>
             </div>
             <Tooltip content="Copy address">
-                <IconButton type="button" onClick={() => void copy(address)}>
-                    <CopyIcon />
-                </IconButton>
+                <CopyButton value={address} />
             </Tooltip>
             <Tooltip content="View on explorer">
                 <a

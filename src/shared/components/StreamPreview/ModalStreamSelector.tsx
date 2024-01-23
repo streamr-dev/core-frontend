@@ -4,7 +4,7 @@ import useModal, { ModalApi } from '~/shared/hooks/useModal'
 import ModalPortal from '~/shared/components/ModalPortal'
 import ModalDialog from '~/shared/components/ModalDialog'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import { truncateStreamName } from '~/shared/utils/text'
 import SvgIcon from '../SvgIcon'
 

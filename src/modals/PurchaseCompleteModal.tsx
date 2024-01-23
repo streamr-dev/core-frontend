@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { LIGHT } from '~/shared/utils/styled'
 import ProjectModal from './ProjectModal'

@@ -1,8 +1,6 @@
 :root {
-  --fontSize: 1rem;
   --mono: 'IBM Plex Mono', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', Courier, monospace;
   --sans: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
-  --um: 16px; /* Wishful thinking: Future 1rem? — Mariusz */
 
   /* Colors */
   --white: #FFFFFF;
@@ -43,15 +41,8 @@
   --purpleDark4: #4A3086;
 
   /* Font weights */
-  --light: 300;
   --regular: 400;
   --medium: 500;
   --semiBold: 600;
   --bold: 700;
-
-  /* shared vars */
-  --nav-shadow: 0 10px 10px rgba(0, 0, 0, 0.02);
 }
-
-@custom-selector :--enter :hover, :focus, :global(.active);
-@custom-selector :--idle :active, :visited;

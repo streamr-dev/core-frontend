@@ -5,7 +5,7 @@ import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-st
 import AddNodeAddressModal from '~/modals/AddNodeAddressModal'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { Layer } from '~/utils/Layer'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import Spinner from '~/components/Spinner'
 import { COLORS } from '~/shared/utils/styled'
 import SvgIcon from '~/shared/components/SvgIcon'
@@ -208,8 +208,8 @@ function MaticBalance({ address, minAmount }: { address: string; minAmount?: str
     }, [address])
 
     return balance ? (
-        <>
-            {balance}{' '}
+        <MaticBalanceRoot>
+            <div>{balance}</div>
             {balance && minAmount && toBN(balance).isLessThan(toBN(minAmount)) && (
                 <Tooltip content="Low MATIC">
                     <TooltipIconWrap
@@ -221,11 +221,21 @@ function MaticBalance({ address, minAmount }: { address: string; minAmount?: str
                     </TooltipIconWrap>
                 </Tooltip>
             )}
-        </>
+        </MaticBalanceRoot>
     ) : (
         <Spinner color="blue" />
     )
 }
+
+const MaticBalanceRoot = styled.div`
+    align-items: center;
+    display: flex;
+    gap: 8px;
+
+    > * {
+        flex-shrink: 0;
+    }
+`
 
 function PendingIndicator({
     children,

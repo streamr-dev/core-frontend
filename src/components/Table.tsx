@@ -1,13 +1,13 @@
+import CheckIcon from '@atlaskit/icon/glyph/check'
+import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
+import moment from 'moment'
 import React from 'react'
 import styled, { css } from 'styled-components'
-import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
-import CheckIcon from '@atlaskit/icon/glyph/check'
-import moment from 'moment'
-import { truncate, truncateStreamName } from '~/shared/utils/text'
-import { StreamInfoCell } from '~/components/NetworkUtils'
 import { StreamDescription } from '~/components/StreamDescription'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import { COLORS, MEDIUM } from '~/shared/utils/styled'
+import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { getSponsorshipStakeForOperator } from '~/utils/sponsorships'
 import { OperatorAvatar } from './avatars'
 
@@ -65,7 +65,7 @@ const OperatorIdCellRoot = styled.div`
 function DeletedStreamIdCell() {
     return (
         <StreamInfoCell>
-            <em className="stream-id">(deleted stream)</em>
+            <StreamIdWrap as="em">(deleted stream)</StreamIdWrap>
         </StreamInfoCell>
     )
 }
@@ -80,10 +80,10 @@ export function StreamIdCell({ streamId = '' }: { streamId?: string }) {
 
     return (
         <StreamInfoCell>
-            <span className="stream-id">{truncateStreamName(streamId)}</span>
-            <span className="stream-description">
+            <StreamIdWrap>{truncateStreamName(streamId)}</StreamIdWrap>
+            <StreamDescriptionWrap>
                 <StreamDescription streamId={streamId} />
-            </span>
+            </StreamDescriptionWrap>
         </StreamInfoCell>
     )
 }
@@ -151,3 +151,26 @@ export function NumberOfOperatorsCell({
         </Iconized>
     )
 }
+
+const StreamInfoCell = styled.div`
+    display: flex;
+    flex-direction: column;
+    line-height: 26px;
+`
+
+const StreamIdWrap = styled.span`
+    font-weight: ${MEDIUM};
+    color: ${COLORS.primary};
+`
+
+const StreamDescriptionWrap = styled.span`
+    font-size: 14px;
+    max-width: 208px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    :empty {
+        display: none;
+    }
+`

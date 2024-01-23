@@ -8,7 +8,7 @@ import { TheGraph } from '~/shared/types'
 import { ProjectFilter } from '~/types'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import routes from '~/routes'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import Faders from '~/assets/Faders.svg'
 import {
     ActionBarContainer,

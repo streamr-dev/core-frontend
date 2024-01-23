@@ -4,7 +4,7 @@ import { UseInfiniteQueryResult } from '@tanstack/react-query'
 import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import Tabs, { Tab } from '~/shared/components/Tabs'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import {
     ScrollTableCore,
     ScrollTableOrderDirection,
@@ -108,7 +108,7 @@ export const OperatorsPage = () => {
                 rightSideContent={
                     operator ? (
                         <Button
-                            tag={Link}
+                            as={Link}
                             to={routes.network.operator({
                                 id: operator.id,
                             })}

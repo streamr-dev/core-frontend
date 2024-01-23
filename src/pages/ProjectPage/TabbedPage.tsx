@@ -13,7 +13,7 @@ import {
 import Layout from '~/components/Layout'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import SvgIcon from '~/shared/components/SvgIcon'
 import PP, { ProjectPageContainer } from '~/shared/components/ProjectPage'
 import { WhiteBox } from '~/shared/components/WhiteBox'
@@ -200,7 +200,7 @@ export default function TabbedPage({ tab }: Props) {
                         </ProjectTitle>
                         {canEdit && (
                             <EditButton
-                                tag={Link}
+                                as={Link}
                                 to={routes.projects.edit({ id })}
                                 kind="secondary"
                                 size="mini"

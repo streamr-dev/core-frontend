@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import NetworkIcon from '~/shared/components/NetworkIcon'
 import { MEDIUM } from '~/shared/utils/styled'
 import { getConfigForChain } from '~/shared/web3/config'

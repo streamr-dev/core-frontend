@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { NavContainer } from '~/components/Nav'
 import { LogoLink, Navbar, NavbarItem } from '~/components/Nav/Nav.styles'
 import Logo from '~/shared/components/Logo'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import { REGULAR } from '~/shared/utils/styled'
 import {
     useIsProjectDraftBusy,
@@ -53,7 +53,7 @@ export default function EditorNav() {
         <NavContainer>
             <FloatingToolbar $active={!isSaveButtonVisible}>
                 <FlexNavbarItem>
-                    <Button tag={Link} to={routes.projects.index()} kind="transparent">
+                    <Button as={Link} to={routes.projects.index()} kind="transparent">
                         Exit
                     </Button>
                     <Button
@@ -73,13 +73,13 @@ export default function EditorNav() {
                     <h1>{projectId ? <>Edit a project</> : <>Create a project</>}</h1>
                 </FlexNavbarItem>
                 <FlexNavbarItem>
-                    <Button tag={Link} to={routes.projects.index()} kind="transparent">
+                    <Button as={Link} to={routes.projects.index()} kind="transparent">
                         Exit
                     </Button>
                     <Button
                         disabled={busy || clean}
                         onClick={() => void persist()}
-                        innerRef={attach}
+                        ref={attach}
                         type="button"
                     >
                         Publish

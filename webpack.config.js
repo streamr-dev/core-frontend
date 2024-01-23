@@ -108,7 +108,7 @@ module.exports = {
                 type: 'asset/resource',
             },
             {
-                test: /\.pcss$/,
+                test: /\.css$/,
                 use: [
                     !isProduction() ? 'style-loader' : MiniCssExtractPlugin.loader,
                     {
@@ -123,36 +123,7 @@ module.exports = {
                             importLoaders: 1,
                         },
                     },
-                    'postcss-loader',
                 ],
-            },
-            {
-                test: /\.(sa|sc|c)ss$/,
-                use: [
-                    !isProduction() ? 'style-loader' : MiniCssExtractPlugin.loader,
-                    'css-loader',
-                    'postcss-loader',
-                    {
-                        loader: 'sass-loader',
-                        options: {
-                            sassOptions: {
-                                includePaths: [
-                                    path.resolve(
-                                        __dirname,
-                                        'src/shared/assets/stylesheets',
-                                    ),
-                                ],
-                            },
-                        },
-                    },
-                ],
-            },
-            {
-                test: /\.po$/,
-                loader: '@streamr/po-loader',
-                options: {
-                    keyseparator: '.',
-                },
             },
             {
                 test: /\.toml$/,
@@ -296,7 +267,6 @@ module.exports = {
                               'cypress/**/*.*',
                               'src/queries/*.ts',
                               '**/*.css',
-                              '**/*.pcss',
                               'types/**/*.d.ts',
                           ],
                       }),

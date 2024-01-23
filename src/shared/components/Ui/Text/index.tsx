@@ -1,5 +1,4 @@
 import React, {
-    ComponentType,
     forwardRef,
     ForwardRefRenderFunction,
     FunctionComponent,
@@ -34,11 +33,13 @@ const Text: FunctionComponent<TextInputProps> = (
         <StyledInput {...props} as={Tag} ref={ref} />
     )
 
-const EnhancedText = compose<ComponentType<TextInputProps>>(
+const EnhancedText = compose(
     FlushHistoryDecorator,
     OnCommitDecorator,
     SelectAllOnFocusDecorator,
     RevertOnEscapeDecorator,
 )(forwardRef(Text as ForwardRefRenderFunction<Text>))
+
 EnhancedText.displayName = 'Text'
+
 export default EnhancedText

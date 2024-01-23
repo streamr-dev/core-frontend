@@ -1,11 +1,11 @@
 import styled from 'styled-components'
-import { SM, LG } from '~/shared/utils/styled'
+import { PHONE, DESKTOP } from '~/shared/utils/styled'
 const Grid = styled.div`
     > * + * {
         margin-top: 24px;
     }
 
-    @media (min-width: ${SM}px) {
+    @media ${PHONE} {
         display: grid;
         grid-column-gap: 24px;
         grid-row-gap: 24px;
@@ -16,7 +16,7 @@ const Grid = styled.div`
         }
     }
 
-    @media (min-width: ${LG}px) {
+    @media ${DESKTOP} {
         grid-column-gap: 16px;
         grid-row-gap: 16px;
         grid-template-columns: 1fr 1fr 1fr 1fr;

@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { REGULAR, TABLET } from '~/shared/utils/styled'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import { ProjectType, SalePoint } from '~/shared/types'
 import FormattedPaymentRate from '~/components/FormattedPaymentRate'
 import { formatChainName } from '~/utils'
@@ -106,7 +106,7 @@ export default function AccessManifest({ projectId, projectType, salePoints }: P
                     </p>
                 )}
                 {hasAccess === true && (
-                    <Button tag={Link} to={routes.projects.connect({ id: projectId })}>
+                    <Button as={Link} to={routes.projects.connect({ id: projectId })}>
                         Connect
                     </Button>
                 )}

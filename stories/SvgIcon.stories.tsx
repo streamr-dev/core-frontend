@@ -1,34 +1,31 @@
 import React from 'react'
-import { Col, Row } from 'reactstrap'
 import { Meta } from '@storybook/react'
 import SvgIcon, { SvgIconNames } from '~/shared/components/SvgIcon'
-import sharedStyles from './shared.pcss'
+import styled from 'styled-components'
 
 export const All = () => (
-    <Row>
-        {SvgIconNames.map((name) => (
-            <Col xs="4" key={name}>
-                <div key={name} className={sharedStyles.iconWrapper}>
-                    <div className={sharedStyles.iconInner}>
-                        <SvgIcon name={name} className={sharedStyles.svgIcon} />
-                    </div>
-                    <span>{name}</span>
+    <>
+        <IconListRoot>
+            {SvgIconNames.map((name) => (
+                <div key={name}>
+                    <IconWrapper>
+                        <IconInner>
+                            <SvgIcon name={name} />
+                        </IconInner>
+                        <span>{name}</span>
+                    </IconWrapper>
                 </div>
-            </Col>
-        ))}
-        <Col xs="4">
-            <div className={sharedStyles.iconWrapper}>
-                <div className={sharedStyles.iconInner}>
-                    <SvgIcon
-                        name="checkmark"
-                        size="large"
-                        className={sharedStyles.svgIcon}
-                    />
-                </div>
-                <span>checkmark size=large</span>
+            ))}
+            <div>
+                <IconWrapper>
+                    <IconInner>
+                        <SvgIcon name="checkmark" size="large" />
+                    </IconInner>
+                    <span>checkmark size=large</span>
+                </IconWrapper>
             </div>
-        </Col>
-    </Row>
+        </IconListRoot>
+    </>
 )
 
 All.story = {
@@ -54,3 +51,28 @@ const meta: Meta<typeof All> = {
     ],
 }
 export default meta
+
+export const IconWrapper = styled.div`
+    align-items: center;
+    color: #323232;
+    display: flex;
+    font-family: 'IBM Plex Mono', sans-serif;
+    font-size: 16px;
+    line-height: 1em;
+`
+
+export const IconInner = styled.div`
+    border-radius: 2px;
+    box-sizing: content-box;
+    border: 1px solid #aaaaaa;
+    margin-right: 1em;
+    padding: 0.5em;
+    min-height: 1em;
+    min-width: 1em;
+`
+
+export const IconListRoot = styled.div`
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+`

@@ -1,5 +1,5 @@
 import styled, { css, createGlobalStyle } from 'styled-components'
-import { SM, MD, XL } from '~/shared/utils/styled'
+import { MD, XL, PHONE } from '~/shared/utils/styled'
 
 type Props = {
     inspectorWidth: number
@@ -13,7 +13,7 @@ const Layout = createGlobalStyle<Props>`
         --LiveDataTimestampColumnMaxWidth: 224px;
     }
 
-    @media (min-width: ${SM}px) {
+    @media ${PHONE} {
         :root {
             --LiveDataInspectorMinWidth: 375px;
             --LiveDataMinLhsWidth: 248px;
@@ -45,7 +45,7 @@ const Layout = createGlobalStyle<Props>`
             --LiveDataInspectorWidth: 100vw;
         }
 
-        @media (min-width: ${SM}px) {
+        @media ${PHONE} {
             :root {
                 --LiveDataInspectorWidth: ${inspectorWidth || 375}px;
             }

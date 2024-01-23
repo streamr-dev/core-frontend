@@ -12,7 +12,7 @@ import dataUnionImage2x from '~/marketplace/assets/product_dataunion@2x.png'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS, DESKTOP, REGULAR } from '~/shared/utils/styled'
 import { Radio } from '~/shared/components/Radio'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import routes from '~/routes'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { getPagedStreams } from '~/services/streams'
@@ -268,7 +268,7 @@ export const ProjectTypeChooser: FunctionComponent<{
                 {gotAnyStreams === false || !link ? (
                     <Button disabled={true}>Start building</Button>
                 ) : (
-                    <Button tag={Link} to={link} onClick={onClose}>
+                    <Button as={Link} to={link} onClick={onClose}>
                         Start building
                     </Button>
                 )}

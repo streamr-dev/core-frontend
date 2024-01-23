@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import PrestyledButton from '~/shared/components/Button'
-import { SM, LG } from '~/shared/utils/styled'
+import { Button as PrestyledButton } from '~/components/Button'
+import { LG, PHONE } from '~/shared/utils/styled'
 import Selector from './Selector'
 import Layout from './Layout'
 
@@ -12,7 +12,7 @@ const Button = styled(PrestyledButton)`
         min-width: 80px;
     }
 
-    @media (min-width: ${SM}px) {
+    @media ${PHONE} {
         && {
             min-width: 125px;
         }
@@ -86,7 +86,7 @@ const UnstyledToolbar = ({
                     {typeof onSettingsButtonClick === 'function' && (
                         <SettingsButton
                             kind="secondary"
-                            type={'button'}
+                            type="button"
                             onClick={() => onSettingsButtonClick(streamId)}
                         >
                             Stream Settings

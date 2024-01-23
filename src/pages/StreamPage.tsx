@@ -32,9 +32,9 @@ import Layout from '~/components/Layout'
 import Helmet from '~/components/Helmet'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import { truncateStreamName } from '~/shared/utils/text'
-import { CopyButton } from '~/shared/components/CopyButton/CopyButton'
+import { CopyButton } from '~/components/CopyButton'
 import Tabs, { Tab } from '~/shared/components/Tabs'
-import Button from '~/shared/components/Button'
+import { Button } from '~/components/Button'
 import usePreventNavigatingAway from '~/shared/hooks/usePreventNavigatingAway'
 import { DESKTOP, TABLET } from '~/shared/utils/styled'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
@@ -394,7 +394,7 @@ function Header({
                                 ? truncateStreamName(streamId, 50)
                                 : transientStreamId || 'New stream'}
                         </span>
-                        {streamId ? <CopyButton valueToCopy={streamId} /> : ''}
+                        {streamId ? <CopyButton value={streamId} /> : ''}
                     </TitleContainer>
                 }
                 rightComponent={
@@ -438,7 +438,7 @@ function Header({
                                 disabled={!canSubmit}
                                 kind="primary"
                                 type="submit"
-                                innerRef={saveButtonRef}
+                                ref={saveButtonRef}
                             >
                                 Save
                             </Button>
@@ -451,8 +451,9 @@ function Header({
 }
 
 const TitleContainer = styled.div`
-    display: flex;
     align-items: center;
+    display: flex;
+    gap: 8px;
 `
 
 const Asterisk = styled.span`
@@ -534,7 +535,7 @@ function ContainerBox({
                         kind="primary"
                         type="submit"
                         disabled={disabled}
-                        innerRef={saveButtonRef}
+                        ref={saveButtonRef}
                     >
                         Save
                     </SaveButton>
