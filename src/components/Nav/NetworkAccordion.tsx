@@ -1,10 +1,11 @@
-import React, { useReducer } from 'react'
+import React, { ComponentProps, useReducer } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import routes from '~/routes'
 import { COLORS, MEDIUM, REGULAR } from '~/shared/utils/styled'
 import { NavLink, NavbarLinkMobile } from './Nav.styles'
 import { NetworkNavItems, isNetworkTabActive } from './NetworkDropdown'
+import SvgIcon from '~/shared/components/SvgIcon'
 
 export function NetworkAccordion() {
     const { pathname } = useLocation()
@@ -28,7 +29,12 @@ export function NetworkAccordion() {
                         toggle()
                     }}
                 >
-                    Network
+                    <Wings>
+                        <div>Network</div>
+                        <div>
+                            <CaretDownIcon $flipped={isOpen} />
+                        </div>
+                    </Wings>
                 </NavLink>
             </NavbarLinkMobile>
             {isOpen && (
@@ -82,4 +88,34 @@ const NetworkMobileLink = styled(Link)`
 
 const Menu = styled.div`
     margin-top: -20px;
+`
+
+function getCaretDownIconAttrs(): ComponentProps<typeof SvgIcon> {
+    return {
+        name: 'caretDown',
+    }
+}
+
+const CaretDownIcon = styled(SvgIcon).attrs(getCaretDownIconAttrs)<{
+    $flipped?: boolean
+}>`
+    display: block;
+    transform: rotate(0deg) translateY(-2%);
+    transition: 300ms transform;
+    width: 18px;
+
+    ${({ $flipped = false }) =>
+        $flipped &&
+        css`
+            transform: rotate(-180deg) translateY(-2%);
+        `}
+`
+
+const Wings = styled.div`
+    display: flex;
+    align-items: center;
+
+    > div:first-child {
+        flex-grow: 1;
+    }
 `
