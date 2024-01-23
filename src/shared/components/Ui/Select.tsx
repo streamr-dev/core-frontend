@@ -1,7 +1,6 @@
 import React, { FunctionComponent, ReactElement, ReactNode } from 'react'
 import styled from 'styled-components'
 import ReactSelect, { components } from 'react-select'
-import cx from 'classnames'
 import SvgIcon, { SvgIconProps } from '~/shared/components/SvgIcon'
 export type Option = {
     value: any
@@ -103,7 +102,7 @@ const Control: FunctionComponent<{
     return (
         <components.Control
             {...(props as any)}
-            className={cx(className, controlClassName)}
+            className={`${className || ''} ${controlClassName || ''}`.trim()}
         >
             {children}
         </components.Control>
