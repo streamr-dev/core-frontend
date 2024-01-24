@@ -33,6 +33,8 @@ import { useWalletAccount } from '~/shared/stores/wallet'
 import { OrderDirection, Stream_OrderBy } from '~/generated/gql/network'
 import { address0 } from '~/consts'
 import routes from '~/routes'
+import { useCurrentChainId } from '~/shared/stores/chain'
+import { getCurrentChainId } from '~/getters/getCurrentChain'
 
 enum TabOption {
     All = 'all',
@@ -92,6 +94,11 @@ const mapOrderDirectionToGraph = (orderDirection: ListOrderDirection): OrderDire
 }
 
 const shouldUseIndexer = (orderBy: ListOrderBy) => {
+    const currentChainId = getCurrentChainId()
+    if (currentChainId != 137) {
+        return false
+    }
+
     return orderBy === ListOrderBy.MessagesPerSecond || orderBy === ListOrderBy.PeerCount
 }
 
@@ -129,6 +136,8 @@ const StreamListingPage: React.FC = () => {
 
     const account = useWalletAccount()
 
+    const currentChainId = useCurrentChainId()
+
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -138,7 +147,15 @@ const StreamListingPage: React.FC = () => {
     }, [account, navigate])
 
     const streamsQuery = useInfiniteQuery({
-        queryKey: ['streams', search, streamsSelection, account, orderBy, orderDirection],
+        queryKey: [
+            'streams',
+            currentChainId,
+            search,
+            streamsSelection,
+            account,
+            orderBy,
+            orderDirection,
+        ],
         queryFn: async (ctx) => {
             const owner =
                 streamsSelection === TabOption.Your ? account || address0 : undefined
@@ -193,7 +210,7 @@ const StreamListingPage: React.FC = () => {
     })
 
     const statsQuery = useInfiniteQuery({
-        queryKey: ['streamStats'],
+        queryKey: ['streamStats', currentChainId],
         queryFn: async (ctx) => {
             if (ctx.pageParam == null) {
                 return

@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 import { useInfiniteQuery, UseInfiniteQueryResult, useQuery } from '@tanstack/react-query'
-import { config } from '@streamr/config'
 import { OrderDirection, Sponsorship, Sponsorship_OrderBy } from '~/generated/gql/network'
 import {
     getAllSponsorships,
@@ -12,7 +11,7 @@ import { ParsedSponsorship, SponsorshipParser } from '~/parsers/SponsorshipParse
 import { errorToast } from '~/utils/toast'
 import useTokenInfo from '~/hooks/useTokenInfo'
 import getCoreConfig from '~/getters/getCoreConfig'
-import { Chain, ChartPeriod } from '~/types'
+import { ChartPeriod } from '~/types'
 import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
 import { getSponsorshipLeavePenalty } from '~/utils/sponsorships'
 import { ParsedOperator } from '~/parsers/OperatorParser'
@@ -29,6 +28,8 @@ import { getSponsorshipStats } from '~/getters/getSponsorshipStats'
 import { invalidateSponsorshipFundingHistoryQueries } from '~/hooks/useSponsorshipFundingHistoryQuery'
 import { invalidateActiveOperatorByIdQueries } from '~/hooks/operators'
 import { editStakeModal } from '~/modals/EditStakeModal'
+import { useCurrentChainId } from '~/shared/stores/chain'
+import { getCurrentChain, getCurrentChainId } from '~/getters/getCurrentChain'
 
 function getDefaultQueryParams(pageSize: number) {
     return {
@@ -76,9 +77,14 @@ async function getSponsorshipsAndParse(getter: () => Promise<Sponsorship[]>) {
 }
 
 function invalidateSponsorshipsForCreatorQueries(address: string | undefined) {
+    const currentChainId = getCurrentChainId()
     return getQueryClient().invalidateQueries({
         exact: false,
-        queryKey: ['useSponsorshipsForCreatorQuery', address?.toLowerCase() || ''],
+        queryKey: [
+            'useSponsorshipsForCreatorQuery',
+            currentChainId,
+            address?.toLowerCase() || '',
+        ],
         refetchType: 'active',
     })
 }
@@ -97,11 +103,13 @@ export function useSponsorshipsForCreatorQuery(
         orderDirection?: 'asc' | 'desc'
     } = {},
 ): UseInfiniteQueryResult<{ skip: number; sponsorships: ParsedSponsorship[] }> {
+    const currentChainId = useCurrentChainId()
     const creator = address?.toLowerCase() || ''
 
     return useInfiniteQuery({
         queryKey: [
             'useSponsorshipsForCreatorQuery',
+            currentChainId,
             creator,
             pageSize,
             searchQuery,
@@ -138,9 +146,10 @@ export function useSponsorshipsForCreatorQuery(
 }
 
 function invalidateAllSponsorshipsQueries() {
+    const currentChainId = getCurrentChainId()
     return getQueryClient().invalidateQueries({
         exact: false,
-        queryKey: ['useAllSponsorshipsQuery'],
+        queryKey: ['useAllSponsorshipsQuery', currentChainId],
         refetchType: 'active',
     })
 }
@@ -156,9 +165,11 @@ export function useAllSponsorshipsQuery({
     orderBy?: string
     orderDirection?: 'asc' | 'desc'
 }) {
+    const currentChainId = useCurrentChainId()
     return useInfiniteQuery({
         queryKey: [
             'useAllSponsorshipsQuery',
+            currentChainId,
             pageSize,
             searchQuery,
             orderBy,
@@ -187,16 +198,26 @@ export function useAllSponsorshipsQuery({
 }
 
 function invalidateSponsorshipByIdQueries(sponsorshipId: string) {
+    const currentChainId = getCurrentChainId()
     return getQueryClient().invalidateQueries({
         exact: true,
-        queryKey: ['useSponsorshipByIdQuery', sponsorshipId.toLowerCase()],
+        queryKey: [
+            'useSponsorshipByIdQuery',
+            currentChainId,
+            sponsorshipId.toLowerCase(),
+        ],
         refetchType: 'active',
     })
 }
 
 export function useSponsorshipByIdQuery(sponsorshipId: string) {
+    const currentChainId = useCurrentChainId()
     return useQuery({
-        queryKey: ['useSponsorshipByIdQuery', sponsorshipId.toLowerCase()],
+        queryKey: [
+            'useSponsorshipByIdQuery',
+            currentChainId,
+            sponsorshipId.toLowerCase(),
+        ],
         queryFn: () => getParsedSponsorshipById(sponsorshipId, { force: true }),
         staleTime: 60 * 1000, // 1 minute
         keepPreviousData: true,
@@ -214,9 +235,11 @@ export function useSponsorshipsByStreamIdQuery({
     orderBy?: string
     orderDirection?: 'asc' | 'desc'
 }) {
+    const currentChainId = useCurrentChainId()
     return useInfiniteQuery({
         queryKey: [
             'useSponsorshipsByStreamIdQuery',
+            currentChainId,
             streamId,
             pageSize,
             orderBy,
@@ -245,17 +268,16 @@ export function useSponsorshipsByStreamIdQuery({
 }
 
 function invalidateSponsorshipsByStreamIdQueries(streamId: string | undefined) {
+    const currentChainId = getCurrentChainId()
     return getQueryClient().invalidateQueries({
         exact: false,
-        queryKey: ['useSponsorshipsByStreamIdQuery', streamId || ''],
+        queryKey: ['useSponsorshipsByStreamIdQuery', currentChainId, streamId || ''],
         refetchType: 'active',
     })
 }
 
 export function useSponsorshipTokenInfo() {
-    const { contracts, id: chainId } = config[
-        getCoreConfig().defaultChain || 'polygon'
-    ] as Chain
+    const { contracts, id: chainId } = getCurrentChain()
 
     return useTokenInfo(contracts[getCoreConfig().sponsorshipPaymentToken], chainId)
 }
@@ -329,9 +351,10 @@ export function useIsFundingSponsorship(
 }
 
 function invalidateSponsorshipDailyBucketsQueries(sponsorshipId: string) {
+    const currentChainId = getCurrentChainId()
     return getQueryClient().invalidateQueries({
         exact: false,
-        queryKey: ['useSponsorshipDailyBucketsQuery', sponsorshipId],
+        queryKey: ['useSponsorshipDailyBucketsQuery', currentChainId, sponsorshipId],
         refetchType: 'active',
     })
 }
@@ -345,8 +368,15 @@ export function useSponsorshipDailyBucketsQuery({
     period: ChartPeriod
     dataSource: 'amountStaked' | 'numberOfOperators' | 'apy'
 }) {
+    const currentChainId = useCurrentChainId()
     return useQuery({
-        queryKey: ['useSponsorshipDailyBucketsQuery', sponsorshipId, period, dataSource],
+        queryKey: [
+            'useSponsorshipDailyBucketsQuery',
+            currentChainId,
+            sponsorshipId,
+            period,
+            dataSource,
+        ],
         queryFn: async () => {
             try {
                 if (!sponsorshipId) {

@@ -11,7 +11,9 @@ export const getConfigForChain = (chainId: number): Chain => {
         throw new Error(`Could not find config for chainId ${chainId}`)
     }
 
-    const config: Chain = configEntry[1]
+    // Get a copy of config that is writable
+    const config: Chain = { ...configEntry[1] }
+
     // Fix local rpc urls
     config.rpcEndpoints = config.rpcEndpoints.map((rpc) => {
         let { url } = rpc
@@ -28,6 +30,7 @@ export const getConfigForChain = (chainId: number): Chain => {
             url,
         }
     })
+
     return config
 }
 export const getConfigForChainByName = (chainName: string): Chain => {

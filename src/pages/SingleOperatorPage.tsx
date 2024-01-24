@@ -61,6 +61,7 @@ import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { abbr, saveOperator } from '~/utils'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { Hint } from '~/components/Hint'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 const defaultChartData = []
 
@@ -94,12 +95,20 @@ export const SingleOperatorPage = () => {
         'totalValue' | 'cumulativeEarnings'
     >('cumulativeEarnings')
 
+    const currentChainId = useCurrentChainId()
+
     const [selectedPeriod, setSelectedPeriod] = useState<ChartPeriod>(
         ChartPeriod.ThreeMonths,
     )
 
     const chartQuery = useQuery({
-        queryKey: ['operatorChartQuery', operatorId, selectedPeriod, selectedDataSource],
+        queryKey: [
+            'operatorChartQuery',
+            currentChainId,
+            operatorId,
+            selectedPeriod,
+            selectedDataSource,
+        ],
         queryFn: async () => {
             try {
                 if (!operatorId) {

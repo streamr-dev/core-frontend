@@ -45,6 +45,7 @@ import { OperatorIdCell } from '~/components/Table'
 import { Button } from '~/components/Button'
 import { getDelegationStats } from '~/getters/getDelegationStats'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 export function NetworkOverviewPage() {
     return (
@@ -75,8 +76,16 @@ function MyOperatorSummary() {
 
     const { data: operator = null } = useOperatorForWalletQuery(wallet)
 
+    const currentChainId = useCurrentChainId()
+
     const { data: chartData = [] } = useQuery<XY[]>({
-        queryKey: ['operatorSummaryChartQuery', chartId, chartPeriod, operator?.id],
+        queryKey: [
+            'operatorSummaryChartQuery',
+            currentChainId,
+            chartId,
+            chartPeriod,
+            operator?.id,
+        ],
         async queryFn() {
             if (!operator) {
                 return []
@@ -235,6 +244,7 @@ const MyOperatorSummaryTitle = styled.div`
 
 function MyDelegationsSummary() {
     const wallet = useWalletAccount()
+    const currentChainId = useCurrentChainId()
 
     const stats = useDelegationsStats(wallet)
 
@@ -250,7 +260,13 @@ function MyDelegationsSummary() {
     >('cumulativeEarnings')
 
     const dailyDelegationChartQuery = useQuery({
-        queryKey: ['dailyDelegationChartQuery', wallet, chartPeriod, chartDataSource],
+        queryKey: [
+            'dailyDelegationChartQuery',
+            currentChainId,
+            wallet,
+            chartPeriod,
+            chartDataSource,
+        ],
         queryFn: async () => {
             try {
                 if (!wallet) {

@@ -12,6 +12,7 @@ import routes from '~/routes'
 import { useOperatorForWalletQuery } from '~/hooks/operators'
 import { saveOperator } from '~/utils'
 import { useMediaQuery } from '~/hooks'
+import { ChainSelector } from '~/components/ChainSelector'
 import { Avatarless, Name, Username } from './User'
 import {
     Avatar,
@@ -82,6 +83,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                         <Dropdown />
                     </NavbarItem>
                 </MenuGrid>
+                <ChainSelector />
                 {!account && (
                     <NavbarItemAccount>
                         <Button

@@ -32,6 +32,7 @@ import {
 } from '~/components/ActionBars/ActionBarButton'
 import { AboutOperator } from '~/components/ActionBars/AboutOperator'
 import { Hint } from '~/components/Hint'
+import { useCurrentChainId } from '~/shared/stores/chain'
 import { SponsorshipPaymentTokenName } from '../SponsorshipPaymentTokenName'
 import { OperatorAvatar } from '../avatars'
 import { AbstractActionBar, Pad } from './AbstractActionBar'
@@ -63,9 +64,10 @@ export const OperatorActionBar: FunctionComponent<{
     )
 
     const undelegateFunds = useUndelegateFunds()
+    const currentChainId = useCurrentChainId()
 
     const { data: canUndelegate = false } = useQuery({
-        queryKey: [operator.id, walletAddress?.toLowerCase()],
+        queryKey: [currentChainId, operator.id, walletAddress?.toLowerCase()],
         async queryFn() {
             try {
                 if (!operator.id || !walletAddress) {

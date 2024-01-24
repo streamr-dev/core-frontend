@@ -1,15 +1,22 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
 import getCoreConfig from './getCoreConfig'
+import { getCurrentChainId } from './getCurrentChain'
 import { getGraphUrl } from '.'
 
-let graphClient: ApolloClient<NormalizedCacheObject> | undefined
+const graphClients: Partial<Record<number, ApolloClient<NormalizedCacheObject>>> = {}
 
 export default function getGraphClient() {
-    if (!graphClient) {
-        graphClient = new ApolloClient({
+    const chainId = getCurrentChainId()
+
+    const graphClient =
+        graphClients[chainId] ||
+        new ApolloClient({
             uri: getGraphUrl(),
             cache: new InMemoryCache(),
         })
+
+    if (!graphClients[chainId]) {
+        graphClients[chainId] = graphClient
     }
 
     return graphClient

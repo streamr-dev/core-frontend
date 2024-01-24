@@ -39,17 +39,21 @@ import { forceUndelegateModal } from '~/modals/ForceUndelegateModal'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
 import { invalidateSponsorshipQueries } from '~/hooks/sponsorships'
 import { getSigner } from '~/shared/stores/wallet'
+import { useCurrentChainId } from '~/shared/stores/chain'
+import { getCurrentChainId } from '~/getters/getCurrentChain'
 
 export function useOperatorForWalletQuery(address = '') {
+    const currentChainId = useCurrentChainId()
     return useQuery({
-        queryKey: ['useOperatorForWalletQuery', address.toLowerCase()],
+        queryKey: ['useOperatorForWalletQuery', currentChainId, address.toLowerCase()],
         queryFn: () => getParsedOperatorByOwnerAddress(address, { force: true }),
     })
 }
 
 export function useOperatorByIdQuery(operatorId = '') {
+    const currentChainId = useCurrentChainId()
     return useQuery({
-        queryKey: ['operatorByIdQueryKey', operatorId],
+        queryKey: ['operatorByIdQueryKey', currentChainId, operatorId],
         async queryFn() {
             if (!operatorId) {
                 return null
@@ -77,16 +81,18 @@ export function useOperatorByIdQuery(operatorId = '') {
 }
 
 export function invalidateActiveOperatorByIdQueries(operatorId: string | undefined) {
+    const currentChainId = getCurrentChainId()
+
     if (operatorId) {
         return getQueryClient().invalidateQueries({
-            queryKey: ['operatorByIdQueryKey', operatorId],
+            queryKey: ['operatorByIdQueryKey', currentChainId, operatorId],
             exact: true,
             refetchType: 'active',
         })
     }
 
     return getQueryClient().invalidateQueries({
-        queryKey: ['operatorByIdQueryKey'],
+        queryKey: ['operatorByIdQueryKey', currentChainId],
         exact: false,
         refetchType: 'active',
     })
@@ -205,9 +211,10 @@ export function useDelegationsStats(address = '') {
 }
 
 export function invalidateDelegationsForWalletQueries() {
+    const currentChainId = getCurrentChainId()
     getQueryClient().invalidateQueries({
         exact: false,
-        queryKey: ['useDelegationsForWalletQuery'],
+        queryKey: ['useDelegationsForWalletQuery', currentChainId],
         refetchType: 'active',
     })
 }
@@ -225,12 +232,20 @@ export function useDelegationsForWalletQuery({
     orderBy?: string
     orderDirection?: 'asc' | 'desc'
 }) {
+    const currentChainId = useCurrentChainId()
+
     const address = addressProp.toLowerCase()
 
     const searchQuery = searchQueryProp.toLowerCase()
 
     return useInfiniteQuery({
-        queryKey: ['useDelegationsForWalletQuery', address, searchQuery, pageSize],
+        queryKey: [
+            'useDelegationsForWalletQuery',
+            currentChainId,
+            address,
+            searchQuery,
+            pageSize,
+        ],
         async queryFn({ pageParam: skip = 0 }) {
             const elements: Delegation[] = await getParsedOperators(
                 () => {
@@ -296,9 +311,10 @@ export function useDelegationsForWalletQuery({
 }
 
 export function invalidateAllOperatorsQueries() {
+    const currentChainId = getCurrentChainId()
     getQueryClient().invalidateQueries({
         exact: false,
-        queryKey: ['useAllOperatorsQuery'],
+        queryKey: ['useAllOperatorsQuery', currentChainId],
         refetchType: 'active',
     })
 }
@@ -315,10 +331,12 @@ export function useAllOperatorsQuery({
     orderDirection?: 'asc' | 'desc'
 }) {
     const searchQuery = searchQueryProp.toLowerCase()
+    const currentChainId = useCurrentChainId()
 
     return useInfiniteQuery({
         queryKey: [
             'useAllOperatorsQuery',
+            currentChainId,
             searchQuery,
             batchSize,
             orderBy,

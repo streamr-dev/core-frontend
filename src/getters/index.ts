@@ -72,7 +72,6 @@ import {
 } from '~/generated/gql/network'
 import getCoreConfig from '~/getters/getCoreConfig'
 import getGraphClient from '~/getters/getGraphClient'
-import { defaultChainConfig } from '~/getters/getChainConfig'
 import { ChartPeriod } from '~/types'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { BN, toBN } from '~/utils/bn'
@@ -83,14 +82,17 @@ import {
     GetEnsDomainsForAccountQuery,
     GetEnsDomainsForAccountQueryVariables,
 } from '~/generated/gql/ens'
+import { getCurrentChain } from '~/getters/getCurrentChain'
 
 const DEFAULT_OPERATOR_ORDER_BY = Operator_OrderBy.Id
 const DEFAULT_SPONSORSHIP_ORDER_BY = Sponsorship_OrderBy.Id
 const DEFAULT_ORDER_DIRECTION = OrderDirection.Asc
 
 export function getGraphUrl(): string {
-    if (defaultChainConfig.theGraphUrl != null) {
-        return defaultChainConfig.theGraphUrl
+    const currentChain = getCurrentChain()
+
+    if (currentChain.theGraphUrl != null) {
+        return currentChain.theGraphUrl
     }
 
     // Fall back to default subgraph name

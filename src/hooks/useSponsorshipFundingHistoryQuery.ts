@@ -1,5 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { getSponsoringEvents } from '~/getters/getSponsoringEvents'
+import { useCurrentChainId } from '~/shared/stores/chain'
 import { getQueryClient } from '~/utils'
 import { errorToast } from '~/utils/toast'
 
@@ -19,8 +20,14 @@ export const useSponsorshipFundingHistoryQuery = (
     sponsorshipId?: string,
     pageSize = FUNDING_HISTORY_PAGE_SIZE,
 ) => {
+    const currentChainId = useCurrentChainId()
     return useInfiniteQuery({
-        queryKey: ['useSponsorshipFundingHistoryQuery', sponsorshipId || '', pageSize],
+        queryKey: [
+            'useSponsorshipFundingHistoryQuery',
+            currentChainId,
+            sponsorshipId || '',
+            pageSize,
+        ],
         queryFn: async (ctx) => {
             try {
                 if (!sponsorshipId) {
