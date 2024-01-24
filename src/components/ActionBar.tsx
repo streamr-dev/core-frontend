@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import SearchBar from '~/shared/components/SearchBar'
+import SearchBar, { SearchBarWrap } from '~/shared/components/SearchBar'
 import SelectField2 from '~/marketplace/components/SelectField2'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { TheGraph } from '~/shared/types'
@@ -18,7 +18,6 @@ import {
     FiltersWrap,
     MobileFilterText,
     MobileFilterWrap,
-    SearchBarWrap,
     SelectFieldWrap,
 } from '~/components/ActionBar.styles'
 import { projectTypeFilterModal } from '~/modals/ProjectTypeFilter'

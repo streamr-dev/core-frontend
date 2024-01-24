@@ -1,53 +1,27 @@
 import styled from 'styled-components'
-import {
-    COLORS,
-    DESKTOP,
-    MD,
-    MEDIUM,
-    TABLET,
-    MAX_BODY_WIDTH,
-} from '~/shared/utils/styled'
+import { COLORS, DESKTOP, MEDIUM, TABLET, MAX_BODY_WIDTH } from '~/shared/utils/styled'
 import { Button } from '~/components/Button'
-
-export const SearchBarWrap = styled.div`
-    display: flex;
-    justify-content: center;
-    padding: 30px 0 50px;
-    > * {
-        max-width: 770px;
-        margin: 0 24px;
-        @media (${TABLET}) {
-            margin: 0 72px;
-        }
-        @media (${DESKTOP}) {
-            margin: 0;
-        }
-    }
-
-    @media (min-width: ${MD}px) {
-        padding: 40px 0 80px;
-    }
-`
 
 export const FiltersBar = styled.div`
     display: flex;
     justify-content: space-between;
-    padding: 0 30px 30px;
-    max-width: ${MAX_BODY_WIDTH}px;
     margin: 0 auto;
+    max-width: ${MAX_BODY_WIDTH}px;
+    padding: 0 30px 30px;
 
-    @media (${DESKTOP}) {
+    @media ${DESKTOP} {
         padding: 0 0 30px;
     }
 `
 
 export const FiltersWrap = styled.div`
+    align-items: center;
     display: flex;
     width: 100%;
-    align-items: center;
-    @media (${TABLET}) {
-        width: auto;
+
+    @media ${TABLET} {
         align-items: unset;
+        width: auto;
     }
 `
 

@@ -72,3 +72,55 @@ export const SegmentGrid = styled.div`
         margin-top: 0;
     }
 `
+
+interface TitleBarProps {
+    children: ReactNode
+    label?: ReactNode
+    aux?: ReactNode
+}
+
+export function TitleBar({ children, label, aux = <></> }: TitleBarProps) {
+    return (
+        <TitleBarRoot>
+            <Lhs>
+                <h2>{children}</h2>
+                {label != null && <TitleBarLabel>{label}</TitleBarLabel>}
+            </Lhs>
+            {<Rhs>{aux}</Rhs>}
+        </TitleBarRoot>
+    )
+}
+
+const TitleBarRoot = styled.div`
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    height: 30px;
+`
+
+const Lhs = styled.div`
+    align-items: center;
+    display: flex;
+    flex-grow: 1;
+    gap: 8px;
+`
+
+const TitleBarLabel = styled.div`
+    color: #a3a3a3;
+    display: flex;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    line-height: 30px;
+`
+
+const Rhs = styled.div`
+    align-items: center;
+    display: flex;
+    gap: 8px;
+
+    :empty {
+        display: none;
+    }
+`

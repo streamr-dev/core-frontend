@@ -5,7 +5,7 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { COLORS, DESKTOP, TABLET } from '~/shared/utils/styled'
 import { Button } from '~/components/Button'
 import Layout from '~/components/Layout'
-import SearchBar from '~/shared/components/SearchBar'
+import SearchBar, { SearchBarWrap } from '~/shared/components/SearchBar'
 import {
     IndexerOrderBy,
     IndexerOrderDirection,
@@ -20,7 +20,6 @@ import {
     ActionBarContainer,
     FiltersBar,
     FiltersWrap,
-    SearchBarWrap,
 } from '~/components/ActionBar.styles'
 import { PageWrap } from '~/shared/components/PageWrap'
 import StreamTable, {
@@ -246,9 +245,7 @@ const StreamListingPage: React.FC = () => {
                 <SearchBarWrap>
                     <SearchBar
                         value={search}
-                        onChange={(value) => {
-                            setSearch(value)
-                        }}
+                        onChange={(value) => void setSearch(value)}
                     />
                 </SearchBarWrap>
                 <FiltersBar>

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import NetworkPageSegment from '~/components/NetworkPageSegment'
+import NetworkPageSegment, { TitleBar } from '~/components/NetworkPageSegment'
 import { QueriedSponsorshipsTable } from '~/components/QueriedSponsorshipsTable'
 import {
     useCreateSponsorship,
@@ -10,7 +10,6 @@ import { useTableOrder } from '~/hooks/useTableOrder'
 import { Button } from '~/components/Button'
 import { NoData } from '~/shared/components/NoData'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { COLORS } from '~/shared/utils/styled'
 import { useCurrentChainId } from '~/shared/stores/chain'
 
 type Props = {
@@ -41,24 +40,23 @@ export default function SponsorshipsTable({ streamId }: Props) {
         <Root>
             <NetworkPageSegment
                 title={
-                    <TitleBar>
-                        <TitleWithCount>
-                            <span>Sponsorships</span>
-                            {sponsorships.length > 0 && (
-                                <Count>{sponsorships.length}</Count>
-                            )}
-                        </TitleWithCount>
-                        {sponsorships.length > 0 && (
-                            <CreateButton
-                                type="button"
-                                onClick={() => {
-                                    createSponsorship(chainId, wallet, { streamId })
-                                }}
-                                disabled={streamId == null || wallet == null}
-                            >
-                                Create
-                            </CreateButton>
-                        )}
+                    <TitleBar
+                        label={sponsorships.length || undefined}
+                        aux={
+                            sponsorships.length && (
+                                <CreateButton
+                                    type="button"
+                                    onClick={() =>
+                                        createSponsorship(chainId, wallet, { streamId })
+                                    }
+                                    disabled={streamId == null || wallet == null}
+                                >
+                                    Create
+                                </CreateButton>
+                            )
+                        }
+                    >
+                        Sponsorships
                     </TitleBar>
                 }
             >
@@ -118,23 +116,4 @@ const NoDataContainer = styled.div`
 const CreateButton = styled(Button)`
     width: fit-content;
     justify-self: center;
-`
-
-const TitleBar = styled.div`
-    display: grid;
-    grid-template-columns: 1fr auto;
-`
-
-const TitleWithCount = styled.h2`
-    display: flex;
-    align-items: center;
-`
-
-const Count = styled.div`
-    background-color: ${COLORS.secondary};
-    border-radius: 50%;
-    margin-left: 10px;
-    width: 30px;
-    font-size: 14px;
-    text-align: center;
 `
