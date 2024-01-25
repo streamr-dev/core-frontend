@@ -70,3 +70,5 @@ export interface Chain {
         decimals: number
     }
 }
+
+export type OrderDirection = 'asc' | 'desc'

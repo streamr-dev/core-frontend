@@ -1,38 +1,80 @@
 import { useCallback, useState } from 'react'
-import {
-    getNextSortingParameters,
-    ScrollTableOrderDirection,
-} from '~/shared/components/ScrollTable/ScrollTable'
+import { OrderDirection } from '~/types'
 
-type TableOrderParams = {
-    orderBy?: string
-    orderDirection?: ScrollTableOrderDirection
-}
+export function useTableOrder<T extends string = string>({
+    orderBy,
+    orderDirection,
+}: GetNextSortingParametersResult<T> = {}): GetNextSortingParametersResult<T> & {
+    setOrder: (orderBy: T, orderDirection?: OrderDirection) => void
+} {
+    const [order, setOrder] = useState<GetNextSortingParametersResult<T>>(
+        orderBy && orderDirection
+            ? {
+                  orderBy,
+                  orderDirection,
+              }
+            : { orderBy: undefined, orderDirection: undefined },
+    )
 
-export const useTableOrder = ({ orderBy, orderDirection }: TableOrderParams = {}): {
-    orderBy: string | undefined
-    orderDirection: ScrollTableOrderDirection | undefined
-    handleOrderChange: (columnKey: string) => void
-} => {
-    const [order, setOrder] = useState<ReturnType<typeof getNextSortingParameters>>({
-        orderBy,
-        orderDirection,
-    })
-    const handleOrderChange = useCallback(
-        (columnKey: string) => {
+    const handleOrderChange = useCallback((column: T, direction?: OrderDirection) => {
+        if (!direction) {
             setOrder((currentOrder) => {
-                return getNextSortingParameters(
+                return getNextSortingParameters<T>(
                     currentOrder.orderBy,
-                    columnKey,
+                    column,
                     currentOrder.orderDirection,
                 )
             })
-        },
-        [setOrder],
-    )
+
+            return
+        }
+
+        setOrder({
+            orderBy: column,
+            orderDirection: direction,
+        })
+    }, [])
 
     return {
         ...order,
-        handleOrderChange,
+        setOrder: handleOrderChange,
+    }
+}
+
+type GetNextSortingParametersResult<T extends string = string> =
+    | {
+          orderBy: T
+          orderDirection: OrderDirection
+      }
+    | { orderBy?: undefined; orderDirection?: undefined }
+
+function getNextSortingParameters<T extends string = string>(
+    currentOrderBy: T | undefined,
+    newOrderBy: T,
+    currentOrderDirection: OrderDirection | undefined,
+): GetNextSortingParametersResult<T> {
+    if (currentOrderBy !== newOrderBy) {
+        return {
+            orderBy: newOrderBy,
+            orderDirection: 'asc',
+        }
+    }
+
+    const newDirection = !currentOrderDirection
+        ? 'asc'
+        : currentOrderDirection === 'asc'
+        ? 'desc'
+        : undefined
+
+    if (newDirection == null) {
+        return {
+            orderBy: undefined,
+            orderDirection: undefined,
+        }
+    }
+
+    return {
+        orderBy: newOrderBy,
+        orderDirection: newDirection,
     }
 }

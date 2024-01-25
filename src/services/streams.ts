@@ -12,13 +12,14 @@ import {
     GetStreamsDocument,
     GetStreamsQuery,
     GetStreamsQueryVariables,
-    OrderDirection,
+    OrderDirection as GraphOrderDirection,
     Stream,
     Stream_Filter,
     Stream_OrderBy,
     StreamPermission,
 } from '~/generated/gql/network'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
+import { OrderDirection } from '~/types'
 
 export type TheGraphStreamPermission = {
     userAddress: string
@@ -159,10 +160,13 @@ export const getPagedStreams = async (
     owner?: string,
     search?: string,
     orderBy = Stream_OrderBy.Id,
-    orderDirection = OrderDirection.Asc,
+    orderDirection: OrderDirection = 'asc',
     { force = false } = {},
 ): Promise<TheGraphStreamResult> => {
-    const orderOperator = orderDirection === OrderDirection.Asc ? 'gt' : 'lt'
+    const orderOperator = orderDirection === 'asc' ? 'gt' : 'lt'
+
+    const graphOrderDirection =
+        orderDirection === 'asc' ? GraphOrderDirection.Asc : GraphOrderDirection.Desc
 
     let where: Stream_Filter = {
         permissions_: {
@@ -185,7 +189,7 @@ export const getPagedStreams = async (
         variables: {
             first: first + 1,
             orderBy,
-            orderDirection,
+            orderDirection: graphOrderDirection,
             where,
         },
         fetchPolicy: force ? 'network-only' : void 0,
@@ -374,7 +378,7 @@ export const getStreamsOwnedBy = async (
         owner,
         search,
         Stream_OrderBy.Id,
-        OrderDirection.Asc,
+        'asc',
         { force },
     )
 

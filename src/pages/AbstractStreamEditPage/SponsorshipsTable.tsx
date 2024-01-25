@@ -19,7 +19,7 @@ type Props = {
 const PAGE_SIZE = 5
 
 export default function SponsorshipsTable({ streamId }: Props) {
-    const { orderBy, orderDirection, handleOrderChange } = useTableOrder()
+    const { orderBy, orderDirection, setOrder } = useTableOrder()
 
     const wallet = useWalletAccount()
 
@@ -65,7 +65,7 @@ export default function SponsorshipsTable({ streamId }: Props) {
                         query={query}
                         orderBy={orderBy}
                         orderDirection={orderDirection}
-                        onOrderChange={handleOrderChange}
+                        onOrderChange={setOrder}
                         hideStreamId
                     />
                 ) : (
