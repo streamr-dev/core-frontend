@@ -689,22 +689,7 @@ export async function getStreamDescription(
         fetchPolicy: force ? 'network-only' : void 0,
     })
 
-    return z
-        .object({
-            metadata: z
-                .string()
-                .transform((v) => JSON.parse(v))
-                .pipe(
-                    z.object({
-                        description: z
-                            .string()
-                            .optional()
-                            .transform((v) => v || ''),
-                    }),
-                ),
-        })
-        .transform(({ metadata: { description } }) => description)
-        .parse(stream)
+    return stream ? getDescription(stream) : ''
 }
 
 interface GetParsedOperatorsOptions<Mapper> {
@@ -1073,4 +1058,26 @@ const blockExplorerUrls = Object.freeze({
  */
 export function getBlockExplorerUrl(chainId: number): string | undefined {
     return blockExplorerUrls[chainId] || undefined
+}
+
+/**
+ * Extracts description from a metadata-having Stream-alike
+ */
+export function getDescription(streamalike: { metadata: string }) {
+    try {
+        return z
+            .string()
+            .transform((v) => JSON.parse(v))
+            .pipe(
+                z.object({
+                    description: z
+                        .string()
+                        .optional()
+                        .transform((v) => v || ''),
+                }),
+            )
+            .parse(streamalike.metadata).description
+    } catch (e) {
+        return ''
+    }
 }

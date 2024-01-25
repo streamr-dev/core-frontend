@@ -37,9 +37,9 @@ type ScrollTableProps<Element> = {
 export type ScrollTableColumnDef<T> = {
     key: string
     displayName: ReactNode
-    isSticky: boolean
+    isSticky?: boolean
     valueMapper: (element: T) => ReactNode
-    align: 'start' | 'end'
+    align?: 'start' | 'end'
     sortable?: boolean
 }
 
