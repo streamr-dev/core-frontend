@@ -1,21 +1,22 @@
 import React from 'react'
 import styled from 'styled-components'
-import { SimpleDropdown } from '~/components/SimpleDropdown'
+import { SimpleDropdown, SimpleListDropdownMenu } from '~/components/SimpleDropdown'
 import NetworkIcon from '~/shared/components/NetworkIcon'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { useAvailableChains, useChainStore, useCurrentChain } from '~/shared/stores/chain'
 import { Chain } from '~/types'
-import { TABLET } from '~/shared/utils/styled'
+import { COLORS, TABLET } from '~/shared/utils/styled'
+import { DropdownMenuItem } from '~/components/DropdownMenuItem'
 
 type MenuItemProps = {
     chain: Chain
-    onClick: () => void
     isSelected: boolean
 }
 
-const MenuItem = ({ chain, onClick, isSelected }: MenuItemProps) => (
+const MenuItem = ({ chain, isSelected }: MenuItemProps) => (
     <MenuItemContainer>
-        <NetworkIcon chainId={chain.id} /> <a onClick={onClick}>{chain.name}</a>{' '}
+        <NetworkIcon chainId={chain.id} />
+        <div>{chain.name}</div>
         {isSelected ? <SvgIcon name="tick" /> : <div />}
     </MenuItemContainer>
 )
@@ -31,17 +32,20 @@ const Menu = ({ chains, selectedChain, toggle }: MenuProps) => {
 
     return (
         <MenuContainer>
-            {chains.map((c) => (
-                <MenuItem
-                    key={c.id}
-                    chain={c}
-                    onClick={() => {
-                        setSelectedChain(c.id)
-                        toggle(false)
-                    }}
-                    isSelected={c.id === selectedChain.id}
-                />
-            ))}
+            <ul>
+                {chains.map((c) => (
+                    <DropdownMenuItem
+                        key={c.id}
+                        type="button"
+                        onClick={() => {
+                            setSelectedChain(c.id)
+                            toggle(false)
+                        }}
+                    >
+                        <MenuItem chain={c} isSelected={c.id === selectedChain.id} />
+                    </DropdownMenuItem>
+                ))}
+            </ul>
         </MenuContainer>
     )
 }
@@ -63,11 +67,9 @@ export const ChainSelector = () => {
             >
                 {(toggle, isOpen) => (
                     <Toggle $isOpen={isOpen} onClick={() => toggle((v) => !v)}>
-                        <MenuItemContainer>
-                            <NetworkIcon chainId={selectedChain.id} />{' '}
-                            {selectedChain.name}
-                            <Caret name="caretUp" $isOpen={isOpen} />
-                        </MenuItemContainer>
+                        <NetworkIcon chainId={selectedChain.id} />
+                        <div>{selectedChain.name}</div>
+                        <Caret name="caretUp" $isOpen={isOpen} />
                     </Toggle>
                 )}
             </SimpleDropdown>
@@ -75,48 +77,72 @@ export const ChainSelector = () => {
     )
 }
 
-const MenuContainer = styled.div`
-    border-radius: 8px;
-    background: #fff;
-    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.1);
-    padding: 16px 24px;
+const MenuContainer = styled(SimpleListDropdownMenu)`
+    color: ${COLORS.primaryLight};
+    font-size: 16px;
+    font-weight: 500;
 `
 
 const MenuItemContainer = styled.div`
     display: grid;
-    grid-template-columns: 24px 0 auto;
+    grid-template-columns: 24px auto auto;
     gap: 8px;
     align-items: center;
     line-height: 24px;
     cursor: pointer;
     white-space: nowrap;
 
-    > svg {
-        height: 24px;
-        width: 24px;
-    }
-
-    @media ${TABLET} {
-        grid-template-columns: 24px auto auto;
+    svg {
+        color: ${COLORS.primaryLight};
+        height: 12px;
+        width: 12px;
     }
 `
 
 const Toggle = styled.div<{ $isOpen: boolean }>`
+    display: grid;
+    grid-template-columns: 24px auto auto;
+    line-height: 24px;
+    align-items: center;
     border: 1px solid #f3f3f3;
     border-radius: 8px;
     background: ${({ $isOpen }) => ($isOpen ? '#f3f3f3' : '#fff')};
     cursor: pointer;
-    gap: 8px;
-    height: 40px;
-    padding: 8px 12px;
+    gap: 0px;
+    height: 32px;
+    padding: 4px 8px;
     align-items: center;
     margin-left: 16px;
     margin-right: 0;
     width: fit-content;
+    color: ${COLORS.primary};
+    font-size: 14px;
+    font-weight: 500;
+
+    img {
+        width: 20px;
+        height: 20px;
+    }
+
+    div:nth-child(2) {
+        display: none;
+    }
 
     @media ${TABLET} {
+        height: 40px;
         margin-left: 0px;
         margin-right: 24px;
+        padding: 8px 12px;
+        gap: 8px;
+
+        img {
+            width: 24px;
+            height: 24px;
+        }
+
+        div:nth-child(2) {
+            display: initial;
+        }
     }
 `
 
