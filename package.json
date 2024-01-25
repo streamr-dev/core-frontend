@@ -1,6 +1,6 @@
 {
     "name": "core-frontend",
-    "version": "4.2.24",
+    "version": "4.2.25",
     "description": "Streamr Hub",
     "main": "src/index.jsx",
     "scripts": {
@@ -106,7 +106,7 @@
         "storybook": "^7.6.6",
         "storybook-react-router": "^1.0.8",
         "stream-browserify": "^3.0.0",
-        "streamr-client": "^100.0.0-testnet-three.1",
+        "streamr-client": "^100.0.0-testnet-three.2",
         "streamr-client-protocol": "^13.0.0",
         "streamr-client-react": "^3.1.0-internal.4",
         "stringify-object": "^5.0.0",
