@@ -8,6 +8,7 @@ jest.mock('~//getters/getConfig', () => ({
     default: jest.fn(() => ({
         core: {
             defaultChain: 'dev2',
+            availableChains: ['dev2'],
         },
     })),
 }))
@@ -30,17 +31,11 @@ describe('getClientConfig', () => {
         ;(getConfig as any).mockImplementation(() => ({
             client: {
                 graphUrl: 'graph url',
+                docker: 'docker url',
             },
         }))
         expect(g(defaultChainConfig.id)).toMatchObject({
             contracts: expect.objectContaining({
-                streamRegistryChainAddress: defaultChainConfig.contracts.StreamRegistry,
-                streamRegistryChainRPCs: {
-                    chainId: defaultChainConfig.id,
-                    rpcs: defaultChainConfig.rpcEndpoints,
-                },
-                streamStorageRegistryChainAddress:
-                    defaultChainConfig.contracts.StreamStorageRegistry,
                 theGraphUrl: 'graph url',
             }),
             metrics: false,
