@@ -10,9 +10,6 @@ import {
     GetStreamByIdDocument,
     GetStreamByIdQuery,
     GetStreamByIdQueryVariables,
-    GetStreamsDocument,
-    GetStreamsQuery,
-    GetStreamsQueryVariables,
     OrderDirection as GraphOrderDirection,
     Stream,
     Stream_Filter,
@@ -20,10 +17,6 @@ import {
     StreamPermission,
 } from '~/generated/gql/network'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
-import {
-    OrderBy as IndexerOrderBy,
-    OrderDirection as IndexerOrderDirection,
-} from '~/generated/gql/indexer'
 import { OrderDirection } from '~/types'
 
 export type TheGraphStreamPermission = {
@@ -136,28 +129,6 @@ const prepareStreamResult = (
     }
 }
 
-export const getStreams = async (
-    chainId: number,
-    streamIds: Array<string>,
-    { force = false } = {},
-): Promise<TheGraphStream[]> => {
-    const {
-        data: { streams },
-    } = await getGraphClient(chainId).query<GetStreamsQuery, GetStreamsQueryVariables>({
-        query: GetStreamsDocument,
-        variables: {
-            streamIds,
-        },
-        fetchPolicy: force ? 'network-only' : void 0,
-    })
-
-    if (streams && streams.length > 0) {
-        return streams.map((s) => mapStream(s))
-    }
-
-    return []
-}
-
 export const getPagedStreams = async (
     chainId: number,
     first: number,
@@ -226,76 +197,6 @@ export type IndexerResult = {
     hasNextPage: boolean
 }
 
-export const getPagedStreamsFromIndexer = async (
-    chainId: number,
-    first: number,
-    cursor?: string,
-    owner?: string,
-    search?: string,
-    orderBy?: IndexerOrderBy,
-    orderDirection?: IndexerOrderDirection,
-): Promise<IndexerResult> => {
-    const { streamIndexerUrl } = getChainConfigExtension(chainId)
-
-    const ownerFilter = owner != null ? `owner: "${owner}"` : null
-    const searchFilter =
-        search != null && search.length > 0 ? `searchTerm: "${search}"` : null
-    const cursorFilter = cursor != null ? `cursor: "${cursor}"` : null
-    const allFilters = [ownerFilter, searchFilter, cursorFilter]
-        .filter((filter) => !!filter)
-        .join(',')
-
-    const result = await post({
-        url: streamIndexerUrl,
-        data: {
-            query: `
-                {
-                    streams(
-                        pageSize: ${first},
-                        orderBy: ${
-                            orderBy?.toString() ??
-                            IndexerOrderBy.MessagesPerSecond.toString()
-                        },
-                        orderDirection: ${
-                            orderDirection?.toString() ??
-                            IndexerOrderDirection.Desc.toString()
-                        },
-                        ${allFilters},
-                    ) {
-                        items {
-                          id
-                          description
-                          peerCount
-                          messagesPerSecond
-                          subscriberCount
-                          publisherCount
-                        }
-                        cursor
-                    }
-                }
-            `,
-        },
-        options: {
-            timeout: 2000, // apply timeout so we fall back to using The Graph faster
-        },
-    })
-
-    const resultObj = result.data.streams
-    if (resultObj) {
-        return {
-            streams: resultObj.items,
-            cursor: resultObj.cursor,
-            hasNextPage: resultObj.cursor != null,
-        }
-    }
-
-    return {
-        streams: [],
-        cursor: null,
-        hasNextPage: false,
-    }
-}
-
 /**
  * @deprecated
  */
@@ -330,36 +231,6 @@ export const getStreamsFromIndexer = async (
     })
 
     return result.data.streams.items
-}
-
-export type GlobalStreamStats = {
-    streamCount: number
-    messagesPerSecond: number
-}
-
-/**
- * @deprecated
- */
-export const getGlobalStatsFromIndexer = async (
-    chainId: number,
-): Promise<GlobalStreamStats> => {
-    const { streamIndexerUrl } = getChainConfigExtension(chainId)
-
-    const result = await post({
-        url: streamIndexerUrl,
-        data: {
-            query: `
-                {
-                    summary {
-                        streamCount
-                        messagesPerSecond
-                    }
-                }
-            `,
-        },
-    })
-
-    return result.data.summary
 }
 
 export const getStreamsOwnedBy = async (

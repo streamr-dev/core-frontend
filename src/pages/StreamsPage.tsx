@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import styled from 'styled-components'
 import {
     ActionBarContainer,
     FiltersBar,
@@ -8,26 +8,25 @@ import {
 } from '~/components/ActionBar.styles'
 import { Button } from '~/components/Button'
 import Layout, { LayoutColumn } from '~/components/Layout'
-import { LoadMoreButton } from '~/components/LoadMore'
 import NetworkPageSegment, {
     SegmentGrid,
     TitleBar,
 } from '~/components/NetworkPageSegment'
-import { StreamIdCell } from '~/components/Table'
+import { QueriedStreamsTable } from '~/components/QueriedStreamsTable'
 import {
     StreamsOrderBy,
     StreamsTabOption,
-    isIndexerColumn,
     isStreamsTabOption,
+    useGlobalStreamStatsQuery,
     useStreamsQuery,
     useStreamsStatsQuery,
 } from '~/hooks/streams'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import routes from '~/routes'
-import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import SearchBar, { SearchBarWrap } from '~/shared/components/SearchBar'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { useWalletAccount } from '~/shared/stores/wallet'
+import { COLORS } from '~/shared/utils/styled'
 
 export function StreamsPage() {
     const [search, setSearch] = useState('')
@@ -76,27 +75,15 @@ export function StreamsPage() {
         tab,
     })
 
-    const indexerQueryErrored = streamsQuery.isError && isIndexerColumn(orderBy)
+    const globalStats = useGlobalStreamStatsQuery().data
 
-    useEffect(
-        function fallbackToGraphOnIndexerError() {
-            if (!indexerQueryErrored) {
-                return
-            }
+    const globalStreamCount =
+        tab === StreamsTabOption.All && globalStats ? globalStats.streamCount : undefined
 
-            setOrder('id', 'asc')
-        },
-        [indexerQueryErrored, setOrder],
-    )
-
-    const streams = streamsQuery.data?.pages.flatMap((d) => d.streams) || []
-
-    const streamStats = Object.fromEntries(
-        (streamsStatsQuery.data?.pages || [])
-            .filter((p) => p)
-            .flatMap((p) => p!.streams)
-            .map((s) => [s!.id, s]),
-    )
+    const globalMps =
+        tab === StreamsTabOption.All && globalStats
+            ? globalStats.messagesPerSecond
+            : undefined
 
     return (
         <Layout pageTitle="Streams">
@@ -140,91 +127,45 @@ export function StreamsPage() {
                 <SegmentGrid>
                     <NetworkPageSegment
                         foot
-                        title={<TitleBar label="0">All Streams</TitleBar>}
+                        title={
+                            <TitleBar
+                                label={globalStreamCount}
+                                aux={
+                                    globalMps != null && (
+                                        <MessagesPerSecondDisplay>
+                                            Total msg/s{' '}
+                                            <strong>{Math.floor(globalMps)}</strong>
+                                        </MessagesPerSecondDisplay>
+                                    )
+                                }
+                            >
+                                {tab === StreamsTabOption.Your
+                                    ? 'Your Streams'
+                                    : 'All Streams'}
+                            </TitleBar>
+                        }
                     >
-                        <ScrollTableCore
-                            elements={streams}
+                        <QueriedStreamsTable
+                            onOrderChange={setOrder}
                             orderBy={orderBy}
                             orderDirection={orderDirection}
-                            onOrderChange={(orderBy) => {
-                                setOrder(orderBy as StreamsOrderBy)
-                            }}
-                            isLoading={
-                                streamsQuery.isLoading ||
-                                streamsQuery.isFetching ||
-                                streamsQuery.isFetchingNextPage
-                            }
-                            columns={[
-                                {
-                                    key: 'id',
-                                    displayName: 'Stream ID',
-                                    isSticky: true,
-                                    sortable: true,
-                                    valueMapper: ({ id, description }) => (
-                                        <StreamIdCell
-                                            streamId={id}
-                                            description={description || ''}
-                                        />
-                                    ),
-                                },
-                                {
-                                    key: 'peerCount',
-                                    displayName: 'Live peers',
-                                    sortable: true,
-                                    valueMapper: ({
-                                        id,
-                                        peerCount = streamStats[id]?.peerCount,
-                                    }) => peerCount ?? '-',
-                                },
-                                {
-                                    key: 'mps',
-                                    displayName: 'Msg/s',
-                                    sortable: true,
-                                    valueMapper: ({
-                                        id,
-                                        messagesPerSecond: mps = streamStats[id]
-                                            ?.messagesPerSecond,
-                                    }) => mps ?? '-',
-                                },
-                                {
-                                    key: 'access',
-                                    displayName: 'Access',
-                                    valueMapper: ({ subscriberCount }) =>
-                                        subscriberCount == null ? 'Public' : 'Private',
-                                },
-                                {
-                                    key: 'publishers',
-                                    displayName: 'Publishers',
-                                    valueMapper: ({ publisherCount = '∞' }) =>
-                                        publisherCount,
-                                },
-                                {
-                                    key: 'subscribers',
-                                    displayName: 'Subscribers',
-                                    valueMapper: ({ subscriberCount = '∞' }) =>
-                                        subscriberCount,
-                                },
-                            ]}
-                            linkMapper={(element) =>
-                                routes.streams.show({ id: element.id })
-                            }
+                            query={streamsQuery}
+                            statsQuery={streamsStatsQuery}
                         />
-                        {streamsQuery.hasNextPage && (
-                            <LoadMoreButton
-                                disabled={
-                                    streamsQuery.isLoading || streamsQuery.isFetching
-                                }
-                                onClick={() => {
-                                    streamsQuery.fetchNextPage()
-                                }}
-                                kind="primary2"
-                            >
-                                Load more
-                            </LoadMoreButton>
-                        )}
                     </NetworkPageSegment>
                 </SegmentGrid>
             </LayoutColumn>
         </Layout>
     )
 }
+
+const MessagesPerSecondDisplay = styled.div`
+    align-items: center;
+    background: ${COLORS.secondary};
+    border-radius: 16px;
+    display: flex;
+    font-size: 14px;
+    gap: 4px;
+    height: 32px;
+    padding: 0 12px;
+`

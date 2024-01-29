@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import { DESKTOP, TABLET } from '~/shared/utils/styled'
 
-export const WhiteBoxPaddingStyles = css`
+const WhiteBoxPaddingStyles = css`
     padding: 24px;
     @media (${TABLET}) {
         padding: 40px;

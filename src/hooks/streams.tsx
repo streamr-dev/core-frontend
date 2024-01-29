@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { address0 } from '~/consts'
 import {
     Stream_Filter,
@@ -18,6 +18,9 @@ import {
     GetStreamsQueryVariables as GetIndexerStreamsQueryVariables,
     OrderDirection as IndexerOrderDirection,
     OrderBy as IndexerOrderBy,
+    GetGlobalStreamsStatsQuery,
+    GetGlobalStreamsStatsQueryVariables,
+    GetGlobalStreamsStatsDocument,
 } from '~/generated/gql/indexer'
 import { getDescription } from '~/getters'
 import { useCurrentChainId } from '~/shared/stores/chain'
@@ -44,8 +47,9 @@ export interface UseStreamsQueryOptions {
     orderBy: StreamsOrderBy
     orderDirection: OrderDirection
     pageSize?: number
-    search: string
-    tab: StreamsTabOption
+    search?: string
+    streamIds?: string[]
+    tab?: StreamsTabOption
 }
 
 interface GetStreamsOptions {
@@ -59,7 +63,7 @@ interface GetStreamsOptions {
     streamIds?: string[]
 }
 
-interface GetStreamsResult {
+export interface GetStreamsResult {
     hasNextPage: boolean
     nextPageParam: string | null
     streams: {
@@ -227,7 +231,15 @@ async function getStreamsFromGraph(
 }
 
 export function useStreamsQuery(options: UseStreamsQueryOptions) {
-    const { onBatch, orderBy, orderDirection, pageSize = 10, search, tab } = options
+    const {
+        onBatch,
+        orderBy,
+        orderDirection,
+        pageSize = 10,
+        search,
+        tab,
+        streamIds,
+    } = options
 
     const account = useWalletAccount()
 
@@ -237,12 +249,13 @@ export function useStreamsQuery(options: UseStreamsQueryOptions) {
         queryKey: [
             'useStreamsQuery',
             chainId,
-            search,
-            tab,
             account,
             orderBy,
             orderDirection,
             pageSize,
+            search,
+            tab,
+            ...(streamIds || []),
         ],
         queryFn: async ({ pageParam }) => {
             const owner = tab === StreamsTabOption.Your ? account || address0 : undefined
@@ -252,13 +265,14 @@ export function useStreamsQuery(options: UseStreamsQueryOptions) {
                 : getStreamsFromGraph
 
             const { streams, nextPageParam, hasNextPage } = await getter(chainId, {
-                pageSize,
-                pageParam,
-                owner: owner?.toLowerCase(),
-                search: search.toLowerCase() || undefined,
+                force: true,
                 orderBy,
                 orderDirection,
-                force: true,
+                owner: owner?.toLowerCase(),
+                pageParam,
+                pageSize,
+                search: search?.toLowerCase() || undefined,
+                streamIds,
             })
 
             onBatch?.({
@@ -323,8 +337,8 @@ function getStatsFromPermissions(
     permissions.forEach((perm) => {
         if (perm.userAddress === address0) {
             /**
-             * If stream has public permissions (zero address), return null for counts which
-             * means that anyone can publish and/or subscribe.
+             * If stream has public permissions (zero address), return `undefined`
+             * for counts. It means anyone can publish and subscribe.
              */
 
             if (perm.subscribeExpiration >= Math.round(Date.now() / 1000)) {
@@ -355,4 +369,31 @@ function getStatsFromPermissions(
         subscriberCount,
         publisherCount,
     }
+}
+
+export function useGlobalStreamStatsQuery() {
+    const chainId = useCurrentChainId()
+
+    return useQuery({
+        queryKey: ['useGlobalStreamStatsQuery', chainId],
+        queryFn: async () => {
+            try {
+                const result = await getIndexerClient(chainId).query<
+                    GetGlobalStreamsStatsQuery,
+                    GetGlobalStreamsStatsQueryVariables
+                >({
+                    query: GetGlobalStreamsStatsDocument,
+                })
+
+                const { messagesPerSecond, streamCount } = result.data.summary
+
+                return {
+                    messagesPerSecond,
+                    streamCount,
+                }
+            } catch (e) {
+                console.warn('Fetching global streams stats failed', e)
+            }
+        },
+    })
 }

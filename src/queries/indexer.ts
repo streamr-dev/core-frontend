@@ -30,4 +30,11 @@ gql`
             cursor
         }
     }
+
+    query getGlobalStreamsStats {
+        summary {
+            streamCount
+            messagesPerSecond
+        }
+    }
 `

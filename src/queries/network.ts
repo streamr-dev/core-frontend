@@ -371,12 +371,6 @@ gql`
         }
     }
 
-    query getStreams($streamIds: [ID!]!) {
-        streams(where: { id_in: $streamIds }) {
-            ...StreamFields
-        }
-    }
-
     query getPagedStreams(
         $first: Int
         $orderBy: Stream_orderBy

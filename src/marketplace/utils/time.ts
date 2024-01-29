@@ -1,4 +1,4 @@
-import moment, { Moment, unitOfTime } from 'moment'
+import moment, { unitOfTime } from 'moment'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
 
 const momentDurationFormatsByTimeUnit: Record<TimeUnit, unitOfTime.DurationConstructor> =
@@ -48,10 +48,3 @@ export const formatDateTime = (
 export function getAbbreviation(timeUnit: TimeUnit) {
     return abbrMapping[timeUnit] || ''
 }
-
-/**
- * Returns true if the given time is in the future.
- * @param time Time to check
- */
-export const isActive = (time: string | number | Date | Moment): boolean =>
-    moment().isBefore(time)

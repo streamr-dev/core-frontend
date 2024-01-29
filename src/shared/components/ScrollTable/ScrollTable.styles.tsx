@@ -4,15 +4,8 @@ import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import SvgIcon from '~/shared/components/SvgIcon'
 
 const horizontalPaddingMobile = '24px'
-const verticalPaddingMobile = '20px'
 const horizontalPaddingDesktop = '40px'
-const verticalPaddingDesktop = '32px'
 const actionPadding = '16px'
-
-export const ScrollTableContainer = styled.div`
-    background-color: ${COLORS.primaryContrast};
-    border-radius: 16px;
-`
 
 export const ScrollTableCellsWrap = styled.div<{
     stickyColumnCount: number
@@ -24,17 +17,6 @@ export const ScrollTableCellsWrap = styled.div<{
     position: relative;
     overflow: auto;
     max-height: inherit;
-`
-
-export const ScrollTableTitle = styled.div`
-    font-size: 20px;
-    font-weight: ${MEDIUM};
-    margin: 0;
-    padding: ${verticalPaddingMobile} ${horizontalPaddingMobile}
-        ${horizontalPaddingMobile};
-    @media (${TABLET}) {
-        padding: ${verticalPaddingDesktop} ${horizontalPaddingDesktop};
-    }
 `
 
 export const ScrollTableColumn = styled.div<{ $actionColumn?: boolean }>`

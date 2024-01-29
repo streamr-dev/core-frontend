@@ -34,14 +34,4 @@ describe('time utils', () => {
             expect(all.getAbbreviation('asdf')).toBe('')
         })
     })
-    describe('isActive', () => {
-        it('returns correct status', () => {
-            expect(all.isActive(Date.now())).toBe(false)
-            expect(all.isActive(moment())).toBe(false)
-            expect(all.isActive(0)).toBe(false)
-            expect(all.isActive(1)).toBe(false)
-            expect(all.isActive('1970-01-01 00:00:00')).toBe(false)
-            expect(all.isActive('2050-01-01 00:00:00')).toBe(true) // in the year 2050 someone will curse me
-        })
-    })
 })

@@ -82,6 +82,11 @@ export type GetStreamsQueryVariables = Exact<{
 
 export type GetStreamsQuery = { __typename?: 'Query', streams: { __typename?: 'Streams', cursor?: string | null, items: Array<{ __typename?: 'Stream', id: string, description?: string | null, peerCount: number, messagesPerSecond: number, subscriberCount?: number | null, publisherCount?: number | null }> } };
 
+export type GetGlobalStreamsStatsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetGlobalStreamsStatsQuery = { __typename?: 'Query', summary: { __typename?: 'Summary', streamCount: number, messagesPerSecond: number } };
+
 
 export const GetStreamsDocument = gql`
     query getStreams($streamIds: [String!], $first: Int, $orderBy: OrderBy, $orderDirection: OrderDirection, $search: String, $owner: String, $cursor: String) {
@@ -107,3 +112,12 @@ export const GetStreamsDocument = gql`
 }
     `;
 export type GetStreamsQueryResult = Apollo.QueryResult<GetStreamsQuery, GetStreamsQueryVariables>;
+export const GetGlobalStreamsStatsDocument = gql`
+    query getGlobalStreamsStats {
+  summary {
+    streamCount
+    messagesPerSecond
+  }
+}
+    `;
+export type GetGlobalStreamsStatsQueryResult = Apollo.QueryResult<GetGlobalStreamsStatsQuery, GetGlobalStreamsStatsQueryVariables>;
