@@ -21,7 +21,7 @@ describe('getClientConfig', () => {
         }))
         const mods = {}
 
-        expect(g()).toMatchObject({
+        expect(g(defaultChainConfig.id)).toMatchObject({
             ...mods,
             metrics: false,
         })
@@ -32,7 +32,7 @@ describe('getClientConfig', () => {
                 graphUrl: 'graph url',
             },
         }))
-        expect(g()).toMatchObject({
+        expect(g(defaultChainConfig.id)).toMatchObject({
             contracts: expect.objectContaining({
                 streamRegistryChainAddress: defaultChainConfig.contracts.StreamRegistry,
                 streamRegistryChainRPCs: {

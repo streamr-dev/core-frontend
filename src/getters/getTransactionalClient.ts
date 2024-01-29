@@ -2,8 +2,8 @@ import { StreamrClient, ExternalProvider } from 'streamr-client'
 import { getWalletProvider } from '~/shared/stores/wallet'
 import getChainId from '~/utils/web3/getChainId'
 import networkPreflight from '~/utils/networkPreflight'
-import { defaultChainConfig } from '~/getters/getChainConfig'
 import getClientConfig from './getClientConfig'
+import { getCurrentChain } from './getCurrentChain'
 
 let streamrClient: StreamrClient | undefined
 
@@ -18,13 +18,14 @@ export default async function getTransactionalClient({
     passiveNetworkCheck = false,
 }: { passiveNetworkCheck?: boolean } = {}) {
     const currentProvider = (await getWalletProvider()) as any
+    const chainConfig = getCurrentChain()
 
     if (
         streamrClient &&
         currentProvider === provider &&
         (passiveNetworkCheck
-            ? (await getChainId()) === defaultChainConfig.id
-            : (await networkPreflight(defaultChainConfig.id)) === false)
+            ? (await getChainId()) === chainConfig.id
+            : (await networkPreflight(chainConfig.id)) === false)
     ) {
         return streamrClient
     }
@@ -32,7 +33,7 @@ export default async function getTransactionalClient({
     provider = currentProvider
 
     streamrClient = new (await require('streamr-client')).StreamrClient(
-        getClientConfig({
+        getClientConfig(chainConfig.id, {
             auth: {
                 ethereum: currentProvider,
             },

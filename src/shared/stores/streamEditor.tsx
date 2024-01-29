@@ -58,6 +58,7 @@ interface Actions {
     updateMetadata: (draftId: string, update: (chunk: StreamMetadata) => void) => void
     teardown: (draftId: string, options?: { onlyAbandoned?: boolean }) => void
     abandon: (draftId: string) => void
+    reset: () => void
 }
 
 interface StorageNodeManifest {
@@ -817,6 +818,15 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                 }),
             )
         },
+
+        reset() {
+            set((store) =>
+                produce(store, (current) => ({
+                    ...current,
+                    ...initialState,
+                })),
+            )
+        },
     }
 })
 
@@ -857,6 +867,13 @@ export function useInitStreamDraft(streamId: string | undefined) {
     useEffect(() => () => void abandon(draftId), [draftId, abandon])
 
     return draftId
+}
+
+export function useResetDraftStore() {
+    const { reset } = useStreamEditorStore(({ reset }) => ({
+        reset,
+    }))
+    return reset
 }
 
 export const StreamDraftContext = createContext<string | undefined>(undefined)

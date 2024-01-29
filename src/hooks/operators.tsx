@@ -24,7 +24,6 @@ import { BN, toBN } from '~/utils/bn'
 import { errorToast, successToast } from '~/utils/toast'
 import DelegateFundsModal from '~/modals/DelegateFundsModal'
 import { Layer } from '~/utils/Layer'
-import { defaultChainConfig } from '~/getters/getChainConfig'
 import { getBalance } from '~/getters/getBalance'
 import { getOperatorDelegationAmount } from '~/services/operators'
 import { Break, FlagBusy } from '~/utils/errors'
@@ -404,6 +403,7 @@ const delegateFundsModal = toaster(DelegateFundsModal, Layer.Modal)
  */
 export function useDelegateFunds() {
     const withFlag = useFlagger()
+    const chainId = useCurrentChainId()
 
     return useCallback(
         ({
@@ -427,8 +427,6 @@ export function useDelegateFunds() {
                             async () => {
                                 const paymentTokenSymbol =
                                     getCoreConfig().sponsorshipPaymentToken
-
-                                const { id: chainId } = defaultChainConfig
 
                                 const balance = await getBalance(
                                     wallet,
@@ -489,6 +487,7 @@ const undelegateFundsModal = toaster(UndelegateFundsModal, Layer.Modal)
  */
 export function useUndelegateFunds() {
     const withFlag = useFlagger()
+    const chainId = useCurrentChainId()
 
     return useCallback(
         ({
@@ -512,8 +511,6 @@ export function useUndelegateFunds() {
                             async () => {
                                 const paymentTokenSymbol =
                                     getCoreConfig().sponsorshipPaymentToken
-
-                                const { id: chainId } = defaultChainConfig
 
                                 const balance = await getBalance(
                                     wallet,

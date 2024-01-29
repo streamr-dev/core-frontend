@@ -7,7 +7,7 @@ import { toBN } from '~/utils/bn'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { getCustomTokenBalance } from '~/marketplace/utils/web3'
-import { defaultChainConfig } from '~/getters/getChainConfig'
+import { getCurrentChain } from '~/getters/getCurrentChain'
 
 /**
  * Scouts for Operator's funding share.
@@ -57,9 +57,10 @@ export async function getSponsorshipLeavePenalty(
  * on the default chain.
  */
 export async function getBalanceForSponsorship(wallet: string) {
+    const chainConfig = getCurrentChain()
     return getCustomTokenBalance(
-        defaultChainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
+        chainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
         wallet,
-        defaultChainConfig.id,
+        chainConfig.id,
     )
 }

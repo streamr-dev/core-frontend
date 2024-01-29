@@ -1,4 +1,10 @@
-import React, { FormEvent, MutableRefObject, RefCallback, useCallback } from 'react'
+import React, {
+    FormEvent,
+    MutableRefObject,
+    RefCallback,
+    useCallback,
+    useEffect,
+} from 'react'
 import { StreamPermission } from 'streamr-client'
 import styled, { css } from 'styled-components'
 import { toaster } from 'toasterhea'
@@ -24,6 +30,7 @@ import {
     useIsCurrentDraftBusy,
     useIsCurrentDraftClean,
     usePersistCurrentDraft,
+    useResetDraftStore,
     useSetCurrentDraftError,
 } from '~/shared/stores/streamEditor'
 import useDecodedStreamId from '~/shared/hooks/useDecodedStreamId'
@@ -53,6 +60,7 @@ import { DraftValidationError } from '~/errors'
 import routes from '~/routes'
 import { useInViewport } from '~/hooks/useInViewport'
 import { FloatingToolbar } from '~/components/FloatingToolbar'
+import { useCurrentChainId } from '~/shared/stores/chain'
 import InfoSection from './AbstractStreamEditPage/InfoSection'
 import AccessControlSection from './AbstractStreamEditPage/AccessControlSection'
 import HistorySection from './AbstractStreamEditPage/HistorySection'
@@ -340,6 +348,14 @@ export default function StreamPage() {
     const streamId = useDecodedStreamId()
 
     const draftId = useInitStreamDraft(streamId === 'new' ? undefined : streamId)
+
+    const chainId = useCurrentChainId()
+
+    const resetDraftStore = useResetDraftStore()
+
+    useEffect(() => {
+        resetDraftStore()
+    }, [chainId, resetDraftStore])
 
     return (
         <StreamDraftContext.Provider value={draftId}>

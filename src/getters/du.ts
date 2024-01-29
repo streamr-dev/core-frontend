@@ -65,7 +65,7 @@ export async function getDataUnionClient(chainId: number): Promise<DataUnionClie
 
     const isInCorrectChainAndUnlocked = isProviderInCorrectChain
 
-    const clientConfig = getClientConfig({
+    const clientConfig = getClientConfig(chainId, {
         auth: {
             // If MetaMask is in right chain, use it to enable signing
             ethereum: isInCorrectChainAndUnlocked ? provider : undefined,

@@ -3,11 +3,22 @@ import { StreamrClientConfig } from 'streamr-client'
 import Provider from 'streamr-client-react'
 import getClientConfig from '~/getters/getClientConfig'
 import { getWalletProvider, useWalletAccount } from '../stores/wallet'
+import { useCurrentChainId } from '../stores/chain'
 
 export default function StreamrClientProvider({ children }) {
     const account = useWalletAccount()
 
-    const [config, setConfig] = useState<StreamrClientConfig>(getClientConfig())
+    const chainId = useCurrentChainId()
+
+    const [config, setConfig] = useState<StreamrClientConfig>(getClientConfig(chainId))
+
+    useEffect(() => {
+        const newConfig = getClientConfig(chainId)
+        setConfig((current) => ({
+            ...current,
+            ...newConfig,
+        }))
+    }, [chainId])
 
     useEffect(() => {
         let mounted = true

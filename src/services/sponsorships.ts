@@ -15,15 +15,11 @@ import { BN, BNish, toBN } from '~/utils/bn'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { toastedOperation } from '~/utils/toastedOperation'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
-import { defaultChainConfig } from '~/getters/getChainConfig'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
 import { getParsedSponsorshipById } from '~/getters'
 import { toDecimals } from '~/marketplace/utils/math'
 import { useUncollectedEarningsStore } from '~/shared/stores/uncollectedEarnings'
-
-const getSponsorshipChainId = () => {
-    return defaultChainConfig.id
-}
+import { getCurrentChainId } from '~/getters/getCurrentChain'
 
 export async function createSponsorship(
     formData: CreateSponsorshipForm,
@@ -50,7 +46,7 @@ export async function createSponsorship(
         .toString()
     const streamId = formData.streamId
 
-    const chainId = getSponsorshipChainId()
+    const chainId = getCurrentChainId()
 
     const chainConfig = getConfigForChain(chainId)
 
@@ -147,7 +143,7 @@ export async function fundSponsorship(
     amount: BNish,
     options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
-    const chainId = getSponsorshipChainId()
+    const chainId = getCurrentChainId()
 
     const chainConfig = getConfigForChain(chainId)
 
@@ -186,7 +182,7 @@ export async function stakeOnSponsorship(
         gasLimitMultiplier?: number
     } = {},
 ): Promise<void> {
-    const chainId = getSponsorshipChainId()
+    const chainId = getCurrentChainId()
 
     await networkPreflight(chainId)
 
@@ -237,7 +233,7 @@ export async function reduceStakeOnSponsorship(
         gasLimitMultiplier = 1.5,
     } = options
 
-    const chainId = getSponsorshipChainId()
+    const chainId = getCurrentChainId()
 
     await networkPreflight(chainId)
 
@@ -278,7 +274,7 @@ export async function forceUnstakeFromSponsorship(
 ): Promise<void> {
     const { onBlockNumber, gasLimitMultiplier = 1.5 } = options
 
-    const chainId = getSponsorshipChainId()
+    const chainId = getCurrentChainId()
 
     await networkPreflight(chainId)
 
@@ -320,8 +316,8 @@ export interface SponsorshipEarnings {
 
 export async function getEarningsForSponsorships(
     operatorAddress: string,
-): Promise<Record<string, SponsorshipEarnings>> {
-    const chainId = getSponsorshipChainId()
+): Promise<Record<string, BN>> {
+    const chainId = getCurrentChainId()
     const provider = getPublicWeb3Provider(chainId)
 
     const contract = new Contract(operatorAddress, operatorABI, provider) as Operator
@@ -375,7 +371,7 @@ export async function collectEarnings(
     operatorAddress: string,
     options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
-    const chainId = getSponsorshipChainId()
+    const chainId = getCurrentChainId()
 
     await networkPreflight(chainId)
 
