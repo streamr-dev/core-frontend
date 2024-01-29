@@ -2,7 +2,6 @@ import React, { ReactNode, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
-import { defaultChainConfig } from '~/getters/getChainConfig'
 import { useOperatorByIdQuery } from '~/hooks/operators'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import { toAtto } from '~/marketplace/utils/math'
@@ -16,6 +15,7 @@ import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentToke
 import { useOperatorReachability } from '~/shared/stores/operatorReachability'
 import { useIsWaitingForBlockNumber } from '~/stores/blockNumberDependencies'
 import { Hint, IconWrap } from '~/components/Hint'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 export function OperatorChecklist({ operatorId }: { operatorId: string | undefined }) {
     const { funded, nodesDeclared, nodesFunded, nodesReachability, nodesRunning } =
@@ -139,6 +139,8 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
     const nodesReachability =
         isLoadingLiveNodes || reachability === 'probing' ? undefined : reachability
 
+    const currentChainId = useCurrentChainId()
+
     useEffect(() => {
         setNodesFunded(undefined)
 
@@ -164,7 +166,7 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
             try {
                 for (const { address: nodeAddress } of operator.nodes) {
                     const balance = toBN(
-                        await getNativeTokenBalance(nodeAddress, defaultChainConfig.id),
+                        await getNativeTokenBalance(nodeAddress, currentChainId),
                     )
 
                     if (!mounted) {
@@ -193,7 +195,7 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
         return () => {
             mounted = false
         }
-    }, [operator])
+    }, [operator, currentChainId])
 
     if (isLoading || isFetching) {
         /**

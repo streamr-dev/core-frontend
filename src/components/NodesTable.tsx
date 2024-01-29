@@ -11,7 +11,6 @@ import { COLORS } from '~/shared/utils/styled'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { isRejectionReason } from '~/modals/BaseModal'
 import { getNativeTokenBalance } from '~/marketplace/utils/web3'
-import { defaultChainConfig } from '~/getters/getChainConfig'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { errorToast } from '~/utils/toast'
 import { setOperatorNodeAddresses } from '~/services/operators'
@@ -19,6 +18,7 @@ import { toBN } from '~/utils/bn'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { isTransactionRejection } from '~/utils'
 import { Separator } from '~/components/Separator'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 export interface OperatorNode {
     address: string
@@ -183,16 +183,14 @@ const NodeAddressesFooter = styled.div`
 
 function MaticBalance({ address, minAmount }: { address: string; minAmount?: string }) {
     const [balance, setBalance] = useState<string>()
+    const currentChainId = useCurrentChainId()
 
     useEffect(() => {
         let mounted = true
 
         void (async () => {
             try {
-                const newBalance = await getNativeTokenBalance(
-                    address,
-                    defaultChainConfig.id,
-                )
+                const newBalance = await getNativeTokenBalance(address, currentChainId)
 
                 if (mounted) {
                     setBalance(fromDecimals(newBalance, 18).toFixed(2))
@@ -205,7 +203,7 @@ function MaticBalance({ address, minAmount }: { address: string; minAmount?: str
         return () => {
             mounted = false
         }
-    }, [address])
+    }, [address, currentChainId])
 
     return balance ? (
         <MaticBalanceRoot>

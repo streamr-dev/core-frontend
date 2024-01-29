@@ -67,7 +67,12 @@ export const OperatorActionBar: FunctionComponent<{
     const currentChainId = useCurrentChainId()
 
     const { data: canUndelegate = false } = useQuery({
-        queryKey: [currentChainId, operator.id, walletAddress?.toLowerCase()],
+        queryKey: [
+            'operatorActionBar',
+            currentChainId,
+            operator.id,
+            walletAddress?.toLowerCase(),
+        ],
         async queryFn() {
             try {
                 if (!operator.id || !walletAddress) {

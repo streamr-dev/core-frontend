@@ -1,8 +1,8 @@
-import getMainChainId from '~/getters/getMainChainId'
 import getCoreConfig from './getCoreConfig'
+import { defaultChainConfig } from './getChainConfig'
 
 export function getBlockExplorerUrl(chainId?: number): string {
-    const actualChainId = chainId ?? getMainChainId()
+    const actualChainId = chainId ?? defaultChainConfig.id
     const map: { chainId: unknown; url: unknown }[] = getCoreConfig().blockExplorerUrls
     const item = map.find((i) => i.chainId === actualChainId)
 

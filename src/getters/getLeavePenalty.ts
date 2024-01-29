@@ -2,7 +2,7 @@ import { Contract } from 'ethers'
 import { Sponsorship, sponsorshipABI } from '@streamr/network-contracts'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { BNish } from '~/utils/bn'
-import { defaultChainConfig } from '~/getters/getChainConfig'
+import { getCurrentChainId } from './getCurrentChain'
 
 export const getLeavePenalty = async (
     operatorAddress: string,
@@ -11,7 +11,7 @@ export const getLeavePenalty = async (
     const contract = new Contract(
         sponsorshipAddress,
         sponsorshipABI,
-        getPublicWeb3Provider(defaultChainConfig.id),
+        getPublicWeb3Provider(getCurrentChainId()),
     ) as Sponsorship
 
     return await contract.getLeavePenalty(operatorAddress)
