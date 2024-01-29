@@ -1,4 +1,3 @@
-import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
 import {
     GetProjectDocument,
     GetProjectQuery,
@@ -17,25 +16,12 @@ import {
 import { TheGraph } from '~/shared/types'
 import { address0 } from '~/consts'
 import { ProjectParser } from '~/parsers/ProjectParser'
-import { getGraphUrl } from '.'
-
-let apolloClient: undefined | ApolloClient<NormalizedCacheObject>
-
-function getApolloClient(): ApolloClient<NormalizedCacheObject> {
-    if (!apolloClient) {
-        apolloClient = new ApolloClient({
-            uri: getGraphUrl(),
-            cache: new InMemoryCache(),
-        })
-    }
-
-    return apolloClient
-}
+import getGraphClient from '~/getters/getGraphClient'
 
 export async function getParsedProjectById(projectId: string, { force = false } = {}) {
     const {
         data: { project },
-    } = await getApolloClient().query<GetProjectQuery, GetProjectQueryVariables>({
+    } = await getGraphClient().query<GetProjectQuery, GetProjectQueryVariables>({
         query: GetProjectDocument,
         variables: {
             id: projectId,
@@ -92,7 +78,7 @@ export async function getRawGraphProjects({
 
     const {
         data: { projects = [] },
-    } = await getApolloClient().query<GetProjectsQuery, GetProjectsQueryVariables>({
+    } = await getGraphClient().query<GetProjectsQuery, GetProjectsQueryVariables>({
         query: GetProjectsDocument,
         variables: {
             skip,
@@ -115,7 +101,7 @@ export async function getRawGraphProjectsByText(
 ): Promise<GetProjectsByTextQuery['projectSearch']> {
     const {
         data: { projectSearch: projects = [] },
-    } = await getApolloClient().query<
+    } = await getGraphClient().query<
         GetProjectsByTextQuery,
         GetProjectsByTextQueryVariables
     >({
@@ -137,7 +123,7 @@ export async function getProjectSubscriptions(
 ): Promise<TheGraph.ProjectSubscription[]> {
     const {
         data: { project },
-    } = await getApolloClient().query<
+    } = await getGraphClient().query<
         GetProjectSubscriptionsQuery,
         GetProjectSubscriptionsQueryVariables
     >({
