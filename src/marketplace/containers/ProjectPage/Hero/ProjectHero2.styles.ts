@@ -14,15 +14,14 @@ export const ProjectHeroContainer = styled.div<{ overflowVisible?: boolean }>`
     padding: ${mobileSpacing};
     border-radius: 16px;
     overflow: hidden;
-    margin-bottom: 24px;
 
     ${(props) => (props.overflowVisible ? 'overflow: visible;' : '')}
 
-    @media(${TABLET}) {
+    @media ${TABLET} {
         padding: ${tabletSpacing};
     }
 
-    @media (${LAPTOP}) {
+    @media ${LAPTOP} {
         grid-template-columns: auto 1fr;
         grid-template-rows: auto 1fr auto;
         padding: 0;

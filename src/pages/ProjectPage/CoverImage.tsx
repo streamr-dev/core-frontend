@@ -116,6 +116,10 @@ const Dropzone = styled.div`
 const Placeholder = styled.div`
     transform: translateY(3%);
 
+    > img {
+        margin: 0 auto;
+    }
+
     p {
         line-height: 1.75em;
         margin: 2em 0 0;

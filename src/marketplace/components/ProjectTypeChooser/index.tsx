@@ -105,6 +105,7 @@ const ProductImage = styled.div`
     }
 
     > img {
+        margin: 0 auto;
         height: 50px;
         width: auto;
         @media (${DESKTOP}) {
