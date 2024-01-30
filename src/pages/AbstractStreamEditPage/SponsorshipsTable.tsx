@@ -43,7 +43,7 @@ export default function SponsorshipsTable({ streamId }: Props) {
                     <TitleBar
                         label={sponsorships.length || undefined}
                         aux={
-                            sponsorships.length && (
+                            sponsorships.length > 0 && (
                                 <CreateButton
                                     type="button"
                                     onClick={() =>
