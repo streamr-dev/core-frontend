@@ -1,5 +1,4 @@
 import { Sponsorship, sponsorshipABI } from '@streamr/network-contracts'
-import { config } from '@streamr/config'
 import { Contract } from 'ethers'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
@@ -7,7 +6,7 @@ import { toBN } from '~/utils/bn'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { getCustomTokenBalance } from '~/marketplace/utils/web3'
-import { getCurrentChain } from '~/getters/getCurrentChain'
+import { getCurrentChain, getCurrentChainId } from '~/getters/getCurrentChain'
 
 /**
  * Scouts for Operator's funding share.
@@ -41,7 +40,7 @@ export async function getSponsorshipLeavePenalty(
     sponsorshipId: string,
     operatorId: string,
 ) {
-    const { id: chainId } = config[getCoreConfig().defaultChain || 'polygon']
+    const chainId = getCurrentChainId()
 
     const contract = new Contract(
         sponsorshipId,
