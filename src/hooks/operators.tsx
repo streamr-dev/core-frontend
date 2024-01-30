@@ -468,7 +468,7 @@ export function useDelegateFunds() {
                 }
             })()
         },
-        [withFlag],
+        [withFlag, chainId],
     )
 }
 
@@ -552,7 +552,7 @@ export function useUndelegateFunds() {
                 }
             })()
         },
-        [withFlag],
+        [withFlag, chainId],
     )
 }
 
