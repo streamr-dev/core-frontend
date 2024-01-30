@@ -5,6 +5,7 @@ import xDaiIcon from './assets/xdai.svg'
 import polygonIcon from './assets/polygon.svg'
 import bscIcon from './assets/bsc.svg'
 import unknownIcon from './assets/unknown.svg'
+
 const icons: { [key: string]: any } = {
     '1': ethereumIcon,
     '100': xDaiIcon,
@@ -40,4 +41,5 @@ const NetworkIcon = styled(UnstyledNetworkIcon)<NetworkIconProps>`
         align-items: center;
     }
 `
+
 export default NetworkIcon

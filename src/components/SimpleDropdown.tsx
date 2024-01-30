@@ -18,6 +18,7 @@ export function SimpleDropdown({
     menu,
     menuWrapComponent: MenuWrap = SimpleDropdownMenu,
     onToggle,
+    ...props
 }: {
     children?: ChildrenFormatter
     detached?: boolean
@@ -132,7 +133,7 @@ export function SimpleDropdown({
     })
 
     return (
-        <SimpleDropdownRoot ref={rootRef}>
+        <SimpleDropdownRoot ref={rootRef} {...props}>
             {typeof children === 'function' ? children(setIsOpen, isOpen) : children}
             <div ref={posRef} />
             {detached ? (

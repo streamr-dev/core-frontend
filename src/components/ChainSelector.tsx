@@ -5,7 +5,7 @@ import NetworkIcon from '~/shared/components/NetworkIcon'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { useAvailableChains, useChainStore, useCurrentChain } from '~/shared/stores/chain'
 import { Chain } from '~/types'
-import { COLORS, TABLET } from '~/shared/utils/styled'
+import { COLORS, LAPTOP } from '~/shared/utils/styled'
 import { DropdownMenuItem } from '~/components/DropdownMenuItem'
 
 type MenuItemProps = {
@@ -50,7 +50,7 @@ const Menu = ({ chains, selectedChain, toggle }: MenuProps) => {
     )
 }
 
-export const ChainSelector = () => {
+export const ChainSelector = (props) => {
     const availableChains = useAvailableChains()
     const selectedChain = useCurrentChain()
 
@@ -64,6 +64,7 @@ export const ChainSelector = () => {
                         toggle={toggle}
                     />
                 )}
+                {...props}
             >
                 {(toggle, isOpen) => (
                     <Toggle $isOpen={isOpen} onClick={() => toggle((v) => !v)}>
@@ -94,8 +95,8 @@ const MenuItemContainer = styled.div`
 
     svg {
         color: ${COLORS.primaryLight};
-        height: 12px;
-        width: 12px;
+        height: 13px;
+        width: 13px;
     }
 `
 
@@ -113,7 +114,7 @@ const Toggle = styled.div<{ $isOpen: boolean }>`
     padding: 4px 8px;
     align-items: center;
     margin-left: 16px;
-    margin-right: 0;
+    margin-right: 16px;
     width: fit-content;
     color: ${COLORS.primary};
     font-size: 14px;
@@ -128,7 +129,7 @@ const Toggle = styled.div<{ $isOpen: boolean }>`
         display: none;
     }
 
-    @media ${TABLET} {
+    @media ${LAPTOP} {
         height: 40px;
         margin-left: 0px;
         margin-right: 24px;

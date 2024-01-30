@@ -12,7 +12,7 @@ import routes from '~/routes'
 import { useOperatorForWalletQuery } from '~/hooks/operators'
 import { saveOperator } from '~/utils'
 import { useMediaQuery } from '~/hooks'
-import { ChainSelector } from '~/components/ChainSelector'
+import { ChainSelector as UnstyledChainSelector } from '~/components/ChainSelector'
 import { Avatarless, Name, Username } from './User'
 import {
     Avatar,
@@ -60,7 +60,9 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                         <Logo data-testid={'logo'} />
                     </LogoLink>
                 </NavbarItem>
+                <ChainSelector data-mobile-only />
                 <MenuGrid data-desktop-only>
+                    <div />
                     <NavbarItem>
                         <NavbarLinkDesktop
                             highlight={pathname.startsWith(routes.projects.index())}
@@ -82,8 +84,8 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                     <NavbarItem>
                         <Dropdown />
                     </NavbarItem>
+                    <ChainSelector />
                 </MenuGrid>
-                <ChainSelector />
                 {!account && (
                     <NavbarItemAccount>
                         <Button
@@ -404,6 +406,30 @@ export const NavContainer = styled.div`
         }
 
         > [data-mobile-only='true'] {
+            display: none;
+        }
+    }
+`
+
+const ChainSelector = styled(UnstyledChainSelector)`
+    justify-self: right;
+
+    &[data-desktop-only='true'] {
+        display: none;
+    }
+
+    &[data-mobile-only='true'] {
+        display: block;
+        justify-self: left;
+    }
+
+    @media (${TABLET}) {
+        &[data-desktop-only='true'] {
+            display: block;
+            justify-self: right;
+        }
+
+        &[data-mobile-only='true'] {
             display: none;
         }
     }
