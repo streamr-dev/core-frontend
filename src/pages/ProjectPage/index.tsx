@@ -3,11 +3,9 @@ import React, { useMemo } from 'react'
 import { Link, Navigate, Outlet, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { Button } from '~/components/Button'
-import Layout from '~/components/Layout'
+import Layout, { LayoutColumn } from '~/components/Layout'
 import { getParsedProjectById } from '~/getters/hub'
-import Terms from '~/marketplace/components/ProductPage/Terms'
 import ProjectHero from '~/marketplace/containers/ProjectPage/Hero/ProjectHero2'
-import Streams from '~/marketplace/containers/ProjectPage/Streams'
 import NotFoundPage from '~/pages/NotFoundPage'
 import { getEmptyParsedProject } from '~/parsers/ProjectParser'
 import routes from '~/routes'
@@ -17,7 +15,6 @@ import PP, { ProjectPageContainer } from '~/shared/components/ProjectPage'
 import { StreamConnect } from '~/shared/components/StreamConnect'
 import { StreamPreview } from '~/shared/components/StreamPreview'
 import SvgIcon from '~/shared/components/SvgIcon'
-import { WhiteBox } from '~/shared/components/WhiteBox'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import {
     ProjectPermission,
@@ -33,10 +30,17 @@ import {
     useProject,
 } from '~/stores/projectDraft'
 import { isProjectType } from '~/utils'
-import AccessManifest from './AccessManifest'
+import { AccessManifest } from './AccessManifest'
 import GetAccess from './GetAccess'
 import ProjectEditorPage from './ProjectEditorPage'
 import ProjectLinkTabs from './ProjectLinkTabs'
+import { useTableOrder } from '~/hooks/useTableOrder'
+import { StreamsOrderBy, useStreamsQuery, useStreamsStatsQuery } from '~/hooks/streams'
+import { QueriedStreamsTable } from '~/components/QueriedStreamsTable'
+import NetworkPageSegment, { Pad, SegmentGrid } from '~/components/NetworkPageSegment'
+import Segment from '~/shared/components/Segment'
+import ColoredBox from '~/components/ColoredBox'
+import { TermsOfUse } from '~/components/TermsOfUse'
 
 export function NewProjectPage() {
     const type = useSearchParams()[0].get('type')
@@ -122,28 +126,45 @@ export function ProjectOverviewPage() {
         return null
     }
 
+    const [firstSalePoint = undefined, ...otherSalePoints] = Object.values(
+        salePoints,
+    ).filter((salePoint) => salePoint?.enabled) as SalePoint[]
+
     return (
-        <PP>
-            <ProjectPageContainer>
-                <ProjectHero
-                    contact={contact}
-                    description={description}
-                    imageUrl={imageUrl || undefined}
-                    name={name}
-                />
-                <AccessManifest
-                    projectId={id}
-                    projectType={type}
-                    salePoints={
-                        Object.values(salePoints).filter(
-                            (salePoint) => salePoint?.enabled,
-                        ) as SalePoint[]
-                    }
-                />
-                <Streams streams={streams} />
-                <Terms terms={termsOfUse} />
-            </ProjectPageContainer>
-        </PP>
+        <LayoutColumn>
+            <SegmentGrid>
+                <Segment>
+                    <ProjectHero
+                        contact={contact}
+                        description={description}
+                        imageUrl={imageUrl || undefined}
+                        name={name}
+                    />
+                </Segment>
+                {firstSalePoint && (
+                    <Segment>
+                        <ColoredBox>
+                            <Pad>
+                                <AccessManifest
+                                    projectId={id}
+                                    projectType={type}
+                                    firstSalePoint={firstSalePoint}
+                                    otherSalePoints={otherSalePoints}
+                                />
+                            </Pad>
+                        </ColoredBox>
+                    </Segment>
+                )}
+                <NetworkPageSegment title="Streams">
+                    <StreamTable streamIds={streams} />
+                </NetworkPageSegment>
+                <NetworkPageSegment title="Terms and conditions">
+                    <Pad>
+                        <TermsOfUse {...termsOfUse} />
+                    </Pad>
+                </NetworkPageSegment>
+            </SegmentGrid>
+        </LayoutColumn>
     )
 }
 
@@ -163,26 +184,30 @@ export function ProjectConnectPage() {
     }
 
     return (
-        <PP>
-            <ProjectPageContainer>
-                {hasAccess ? (
-                    <WhiteBox className={'with-padding'}>
-                        <StreamConnect streams={streams} />
-                    </WhiteBox>
-                ) : (
-                    <GetAccess
-                        projectId={id}
-                        projectName={name}
-                        projectType={type}
-                        salePoints={
-                            Object.values(salePoints).filter(
-                                (salePoint) => salePoint?.enabled,
-                            ) as SalePoint[]
-                        }
-                    />
-                )}
-            </ProjectPageContainer>
-        </PP>
+        <LayoutColumn>
+            <SegmentGrid>
+                <Segment>
+                    {hasAccess ? (
+                        <ColoredBox>
+                            <Pad>
+                                <StreamConnect streams={streams} />
+                            </Pad>
+                        </ColoredBox>
+                    ) : (
+                        <GetAccess
+                            projectId={id}
+                            projectName={name}
+                            projectType={type}
+                            salePoints={
+                                Object.values(salePoints).filter(
+                                    (salePoint) => salePoint?.enabled,
+                                ) as SalePoint[]
+                            }
+                        />
+                    )}
+                </Segment>
+            </SegmentGrid>
+        </LayoutColumn>
     )
 }
 
@@ -204,20 +229,22 @@ export function ProjectLiveDataPage() {
     return hasAccess ? (
         <StreamPreview streamsList={streams} />
     ) : (
-        <PP>
-            <ProjectPageContainer>
-                <GetAccess
-                    projectId={id}
-                    projectName={name}
-                    projectType={type}
-                    salePoints={
-                        Object.values(salePoints).filter(
-                            (salePoint) => salePoint?.enabled,
-                        ) as SalePoint[]
-                    }
-                />
-            </ProjectPageContainer>
-        </PP>
+        <LayoutColumn>
+            <SegmentGrid>
+                <Segment>
+                    <GetAccess
+                        projectId={id}
+                        projectName={name}
+                        projectType={type}
+                        salePoints={
+                            Object.values(salePoints).filter(
+                                (salePoint) => salePoint?.enabled,
+                            ) as SalePoint[]
+                        }
+                    />
+                </Segment>
+            </SegmentGrid>
+        </LayoutColumn>
     )
 }
 
@@ -272,6 +299,40 @@ export function ProjectIndexRedirect() {
                 id: encodeURIComponent(id),
             })}
             replace
+        />
+    )
+}
+
+function StreamTable({ streamIds }: { streamIds: string[] }) {
+    const {
+        orderBy = 'mps',
+        orderDirection = 'desc',
+        setOrder,
+    } = useTableOrder<StreamsOrderBy>()
+
+    const streamsStatsQuery = useStreamsStatsQuery()
+
+    const streamsQuery = useStreamsQuery({
+        onBatch({ streamIds, source }) {
+            streamsStatsQuery.fetchNextPage({
+                pageParam: {
+                    streamIds,
+                    useIndexer: source !== 'indexer',
+                },
+            })
+        },
+        orderBy,
+        orderDirection,
+        streamIds,
+    })
+
+    return (
+        <QueriedStreamsTable
+            onOrderChange={setOrder}
+            orderBy={orderBy}
+            orderDirection={orderDirection}
+            query={streamsQuery}
+            statsQuery={streamsStatsQuery}
         />
     )
 }
