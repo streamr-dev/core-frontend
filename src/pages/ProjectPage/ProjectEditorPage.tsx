@@ -4,7 +4,10 @@ import styled, { css } from 'styled-components'
 import { z } from 'zod'
 import { Button } from '~/components/Button'
 import ColoredBox from '~/components/ColoredBox'
-import Layout, { LayoutInner as PrestyledLayoutInner } from '~/components/Layout'
+import Layout, {
+    LayoutColumn,
+    LayoutInner as PrestyledLayoutInner,
+} from '~/components/Layout'
 import BeneficiaryAddressEditor from '~/components/SalePointSelector/BeneficiaryAddressEditor'
 import SalePointOption, {
     DataUnionOption,
@@ -18,7 +21,6 @@ import routes from '~/routes'
 import { deleteProject } from '~/services/projects'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
-import { ProjectPageContainer } from '~/shared/components/ProjectPage'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { ProjectType, SalePoint } from '~/shared/types'
@@ -135,7 +137,7 @@ export default function ProjectEditorPage() {
                 rightComponent={<ProjectLinkTabs />}
             />
             <LoadingIndicator loading={busy} />
-            <ProjectPageContainer>
+            <LayoutColumn>
                 {!fetching && (
                     <>
                         <Segment>
@@ -452,7 +454,7 @@ export default function ProjectEditorPage() {
                         )}
                     </>
                 )}
-            </ProjectPageContainer>
+            </LayoutColumn>
         </Layout>
     )
 }
