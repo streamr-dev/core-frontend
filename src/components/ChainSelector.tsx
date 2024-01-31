@@ -1,20 +1,20 @@
 import React from 'react'
 import styled from 'styled-components'
 import { SimpleDropdown, SimpleListDropdownMenu } from '~/components/SimpleDropdown'
-import NetworkIcon from '~/shared/components/NetworkIcon'
+import UnstyledNetworkIcon from '~/shared/components/NetworkIcon'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { useAvailableChains, useChainStore, useCurrentChain } from '~/shared/stores/chain'
 import { Chain } from '~/types'
 import { COLORS, LAPTOP } from '~/shared/utils/styled'
-import { DropdownMenuItem } from '~/components/DropdownMenuItem'
 
 type MenuItemProps = {
     chain: Chain
     isSelected: boolean
+    onClick: () => void
 }
 
-const MenuItem = ({ chain, isSelected }: MenuItemProps) => (
-    <MenuItemContainer>
+const MenuItem = ({ chain, isSelected, onClick }: MenuItemProps) => (
+    <MenuItemContainer onClick={onClick}>
         <NetworkIcon chainId={chain.id} />
         <div>{chain.name}</div>
         {isSelected ? <SvgIcon name="tick" /> : <div />}
@@ -32,25 +32,28 @@ const Menu = ({ chains, selectedChain, toggle }: MenuProps) => {
 
     return (
         <MenuContainer>
-            <ul>
+            <ChainGrid>
                 {chains.map((c) => (
-                    <DropdownMenuItem
+                    <MenuItem
                         key={c.id}
-                        type="button"
+                        chain={c}
+                        isSelected={c.id === selectedChain.id}
                         onClick={() => {
                             setSelectedChain(c.id)
                             toggle(false)
                         }}
-                    >
-                        <MenuItem chain={c} isSelected={c.id === selectedChain.id} />
-                    </DropdownMenuItem>
+                    />
                 ))}
-            </ul>
+            </ChainGrid>
         </MenuContainer>
     )
 }
 
-export const ChainSelector = (props) => {
+interface Props {
+    menuAlignment: 'left' | 'right'
+}
+
+export const ChainSelector = ({ menuAlignment = 'left', ...props }: Props) => {
     const availableChains = useAvailableChains()
     const selectedChain = useCurrentChain()
 
@@ -64,6 +67,7 @@ export const ChainSelector = (props) => {
                         toggle={toggle}
                     />
                 )}
+                align={menuAlignment}
                 {...props}
             >
                 {(toggle, isOpen) => (
@@ -80,24 +84,62 @@ export const ChainSelector = (props) => {
 
 const MenuContainer = styled(SimpleListDropdownMenu)`
     color: ${COLORS.primaryLight};
-    font-size: 16px;
-    font-weight: 500;
+    max-width: 100%;
+`
+
+const ChainGrid = styled.div`
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-auto-rows: 52px;
+    gap: 0px 8px;
 `
 
 const MenuItemContainer = styled.div`
     display: grid;
-    grid-template-columns: 24px auto auto;
-    gap: 8px;
+    grid-template-columns: subgrid;
+    grid-column: span 3;
+    appearance: none;
+    background: none;
+    border: 0;
+    border-bottom: 1px solid ${COLORS.secondary};
+
+    :last-child {
+        border-bottom: none;
+    }
+
+    transition: 250ms background-color;
     align-items: center;
-    line-height: 24px;
+    padding: 8px 24px;
     cursor: pointer;
+
+    font-size: 16px;
+    line-height: 26px;
+    font-weight: 500;
+    text-align: left;
     white-space: nowrap;
+    color: ${COLORS.primaryLight};
+
+    :focus,
+    :hover {
+        background: ${COLORS.secondary};
+        transition-duration: 50ms;
+    }
+
+    &[disabled] {
+        background: none;
+    }
 
     svg {
         color: ${COLORS.primaryLight};
         height: 13px;
         width: 13px;
     }
+`
+
+const NetworkIcon = styled(UnstyledNetworkIcon)`
+    display: flex;
+    width: 24px;
+    height: 24px;
 `
 
 const Toggle = styled.div<{ $isOpen: boolean }>`
@@ -107,14 +149,12 @@ const Toggle = styled.div<{ $isOpen: boolean }>`
     align-items: center;
     border: 1px solid #f3f3f3;
     border-radius: 8px;
-    background: ${({ $isOpen }) => ($isOpen ? '#f3f3f3' : '#fff')};
+    background: ${({ $isOpen }) => ($isOpen ? COLORS.dialogBorder : '#fff')};
     cursor: pointer;
     gap: 0px;
     height: 32px;
     padding: 4px 8px;
     align-items: center;
-    margin-left: 16px;
-    margin-right: 16px;
     width: fit-content;
     color: ${COLORS.primary};
     font-size: 14px;
@@ -129,10 +169,14 @@ const Toggle = styled.div<{ $isOpen: boolean }>`
         display: none;
     }
 
+    :focus,
+    :hover {
+        background: ${COLORS.dialogBorder};
+        transition-duration: 50ms;
+    }
+
     @media ${LAPTOP} {
         height: 40px;
-        margin-left: 0px;
-        margin-right: 24px;
         padding: 8px 12px;
         gap: 8px;
 

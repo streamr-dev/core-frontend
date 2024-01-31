@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 import { Menu as UnstyledMenu, NavDropdown } from '@streamr/streamr-layout'
 import SvgIcon from '~/shared/components/SvgIcon'
 import AvatarImage from '~/shared/components/AvatarImage'
-import { COLORS, DESKTOP, MEDIUM, REGULAR, TABLET } from '~/shared/utils/styled'
+import { COLORS, DESKTOP, MEDIUM, REGULAR } from '~/shared/utils/styled'
 import { Avatarless, Name, Username } from './User'
 
 export const MOBILE_LG = 576
@@ -111,6 +111,7 @@ export const Navbar = styled.div`
     display: grid;
     grid-template-columns: auto 1fr auto auto;
     align-items: center;
+    gap: 16px;
 `
 export const MenuGrid = styled.div`
     display: grid;
@@ -237,12 +238,7 @@ export const NavbarLinkMobile = styled(UnstyledNavbarLink)<{
         `}
 `
 export const NavbarItemAccount = styled.div`
-    margin-left: auto;
-    margin-right: 15px;
-
-    @media (${TABLET}) {
-        margin-right: 0;
-    }
+    margin: 0;
 `
 const UnstyledLogoLink: FunctionComponent<{ children?: any; href: string }> = ({
     children,

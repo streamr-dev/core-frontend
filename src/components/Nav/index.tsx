@@ -60,7 +60,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                         <Logo data-testid={'logo'} />
                     </LogoLink>
                 </NavbarItem>
-                <ChainSelector data-mobile-only />
+                <ChainSelector data-mobile-only menuAlignment="left" />
                 <MenuGrid data-desktop-only>
                     <div />
                     <NavbarItem>
@@ -84,7 +84,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                     <NavbarItem>
                         <Dropdown />
                     </NavbarItem>
-                    <ChainSelector />
+                    <ChainSelector menuAlignment="right" />
                 </MenuGrid>
                 {!account && (
                     <NavbarItemAccount>

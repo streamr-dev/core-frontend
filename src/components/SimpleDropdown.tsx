@@ -18,6 +18,7 @@ export function SimpleDropdown({
     menu,
     menuWrapComponent: MenuWrap = SimpleDropdownMenu,
     onToggle,
+    align = 'left',
     ...props
 }: {
     children?: ChildrenFormatter
@@ -26,6 +27,7 @@ export function SimpleDropdown({
     menu?: ChildrenFormatter
     menuWrapComponent?: typeof SimpleDropdownMenu
     onToggle?: (value: boolean) => void
+    align: 'left' | 'right'
 }) {
     const [isOpen, setIsOpen] = useState(false)
 
@@ -121,15 +123,18 @@ export function SimpleDropdown({
 
     const [dx, maxWidth] = useBoundingClientRect(menuRef, (rect) => {
         const { clientWidth } = document.documentElement
+        const maxWidth = clientWidth - 8
 
         if (!rect) {
-            return [0, clientWidth - 8]
+            return [0, maxWidth]
         }
 
-        return [
-            Math.min(0, clientWidth - x - Math.round(rect.width) - 4),
-            clientWidth - 8,
-        ]
+        if (align === 'left') {
+            return [Math.min(0, clientWidth - x - Math.round(rect.width) - 4), maxWidth]
+        }
+
+        const myWidth = rootRef.current?.clientWidth ?? 0
+        return [-Math.round(rect.width) + myWidth - 4, maxWidth]
     })
 
     return (
