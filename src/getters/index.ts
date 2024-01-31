@@ -124,10 +124,6 @@ export function getProjectRegistryContract({
     ) as ProjectRegistryContract
 }
 
-export function getProjectRegistryChainId(): number {
-    return getConfigForChainByName(getCoreConfig().projectsChain).id
-}
-
 export function getERC20TokenContract({
     tokenAddress,
     provider,

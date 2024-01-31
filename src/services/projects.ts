@@ -5,7 +5,6 @@ import networkPreflight from '~/utils/networkPreflight'
 import { deployDataUnion } from '~/marketplace/modules/dataUnion/services'
 import { BN, toBN } from '~/utils/bn'
 import { getRawGraphProjects, getRawGraphProjectsByText } from '~/getters/hub'
-import { getProjectRegistryChainId } from '~/getters'
 import { ProjectType, TheGraph } from '~/shared/types'
 import { isMessagedObject } from '~/utils'
 import { errorToast } from '~/utils/toast'
@@ -16,6 +15,7 @@ import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
 import { pricePerSecondFromTimeUnit } from '~/marketplace/utils/price'
 import { postImage } from './images'
+import { getCurrentChainId } from '~/getters/getCurrentChain'
 
 /**
  * @todo Let's shake off the unnecessary types.
@@ -342,7 +342,7 @@ export async function createProject(
         streams: string[]
     },
 ) {
-    const chainId = getProjectRegistryChainId()
+    const chainId = getCurrentChainId()
 
     await networkPreflight(chainId)
 
@@ -384,7 +384,7 @@ export async function updateProject(
         streams: string[]
     },
 ) {
-    const chainId = getProjectRegistryChainId()
+    const chainId = getCurrentChainId()
 
     await networkPreflight(chainId)
 
@@ -403,7 +403,7 @@ export async function updateProject(
 }
 
 export async function deleteProject(projectId: string) {
-    const chainId = getProjectRegistryChainId()
+    const chainId = getCurrentChainId()
 
     await networkPreflight(chainId)
 

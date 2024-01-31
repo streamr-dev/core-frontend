@@ -26,7 +26,6 @@ import {
     updateProject,
 } from '~/services/projects'
 import { getDataUnion } from '~/getters/du'
-import { getProjectRegistryChainId } from '~/getters'
 import networkPreflight from '~/utils/networkPreflight'
 import { useHasActiveProjectSubscription } from '~/shared/stores/purchases'
 import { useWalletAccount } from '~/shared/stores/wallet'
@@ -36,6 +35,7 @@ import { Layer } from '~/utils/Layer'
 import { ValidationError } from '~/errors'
 import routes from '~/routes'
 import { toBN } from '~/utils/bn'
+import { getCurrentChainId } from '~/getters/getCurrentChain'
 
 const {
     DraftContext: ProjectDraftContext,
@@ -169,7 +169,7 @@ const {
                     throw new Error('Unexpected beneficiary')
                 }
 
-                const chainId = getProjectRegistryChainId()
+                const chainId = getCurrentChainId()
 
                 await networkPreflight(chainId)
 
