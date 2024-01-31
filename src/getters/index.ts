@@ -9,7 +9,7 @@ import {
 } from '@streamr/hub-contracts'
 import moment, { Moment } from 'moment'
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
-import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
+import { getConfigForChain } from '~/shared/web3/config'
 import { Token as TokenContract } from '~/generated/types'
 import { getMarketplaceAddress } from '~/marketplace/utils/web3'
 import Toast, { ToastType } from '~/shared/toasts/Toast'

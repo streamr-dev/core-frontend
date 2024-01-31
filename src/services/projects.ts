@@ -5,6 +5,7 @@ import networkPreflight from '~/utils/networkPreflight'
 import { deployDataUnion } from '~/marketplace/modules/dataUnion/services'
 import { BN, toBN } from '~/utils/bn'
 import { getRawGraphProjects, getRawGraphProjectsByText } from '~/getters/hub'
+import { getCurrentChainId } from '~/getters/getCurrentChain'
 import { ProjectType, TheGraph } from '~/shared/types'
 import { isMessagedObject } from '~/utils'
 import { errorToast } from '~/utils/toast'
@@ -15,7 +16,6 @@ import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
 import { pricePerSecondFromTimeUnit } from '~/marketplace/utils/price'
 import { postImage } from './images'
-import { getCurrentChainId } from '~/getters/getCurrentChain'
 
 /**
  * @todo Let's shake off the unnecessary types.
