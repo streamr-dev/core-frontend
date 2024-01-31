@@ -1,4 +1,5 @@
-import moment, { unitOfTime } from 'moment'
+import { unitOfTime } from 'moment'
+import moment from 'moment-timezone'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
 
 const momentDurationFormatsByTimeUnit: Record<TimeUnit, unitOfTime.DurationConstructor> =
@@ -38,8 +39,10 @@ export function toSeconds(quantity: number, timeUnit: TimeUnit) {
 export const formatDateTime = (
     timestamp: number | null | undefined,
     timezone: string | null | undefined,
-): string =>
-    timestamp && (moment as any).tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')
+): string | undefined =>
+    timestamp && timezone
+        ? moment.tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')
+        : undefined
 
 /**
  * Returns short form for given time unit.
