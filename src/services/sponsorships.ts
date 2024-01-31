@@ -1,4 +1,11 @@
-import { ERC677ABI, ERC677, Operator, operatorABI } from '@streamr/network-contracts'
+import {
+    ERC677ABI,
+    ERC677,
+    Operator,
+    operatorABI,
+    Sponsorship,
+    sponsorshipABI,
+} from '@streamr/network-contracts'
 import { BigNumber, Contract, Event } from 'ethers'
 import { defaultAbiCoder } from 'ethers/lib/utils'
 import { getConfigForChain } from '~/shared/web3/config'
@@ -10,6 +17,8 @@ import { toastedOperation } from '~/utils/toastedOperation'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
 import { defaultChainConfig } from '~/getters/getChainConfig'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
+import { getParsedSponsorshipById } from '~/getters'
+import { toDecimals } from '~/marketplace/utils/math'
 
 const getSponsorshipChainId = () => {
     return defaultChainConfig.id
@@ -288,19 +297,58 @@ export async function forceUnstakeFromSponsorship(
     })
 }
 
+export interface SponsorshipEarnings {
+    uncollectedEarnings: BN
+    rateOfChangePerSec: BN | undefined
+}
+
 export async function getEarningsForSponsorships(
     operatorAddress: string,
-): Promise<Record<string, BN>> {
+): Promise<Record<string, SponsorshipEarnings>> {
     const chainId = getSponsorshipChainId()
     const provider = getPublicWeb3Provider(chainId)
 
     const contract = new Contract(operatorAddress, operatorABI, provider) as Operator
     const { addresses, earnings } = await contract.getSponsorshipsAndEarnings()
 
-    const result: Record<string, BN> = {}
+    const result: Record<string, SponsorshipEarnings> = {}
 
     for (let i = 0; i < addresses.length; i++) {
-        result[addresses[i].toLowerCase()] = toBN(earnings[i])
+        const sponsorshipId = addresses[i].toLowerCase()
+
+        const sponsorship = new Contract(
+            sponsorshipId,
+            sponsorshipABI,
+            provider,
+        ) as Sponsorship
+        const myStake = toBN(await sponsorship.stakedWei(operatorAddress))
+        const totalStake = toBN(await sponsorship.totalStakedWei())
+
+        const graphSponsorship = await getParsedSponsorshipById(sponsorshipId)
+
+        let totalPayoutPerSec: BN | undefined = toDecimals(
+            graphSponsorship?.payoutPerDay.dividedBy(24 * 60 * 60) ?? BN(0),
+            18,
+        )
+
+        const isSponsorshipPaying =
+            graphSponsorship?.isRunning &&
+            graphSponsorship.remainingBalance.isGreaterThan(0)
+        if (!isSponsorshipPaying) {
+            totalPayoutPerSec = undefined
+        }
+
+        const myEarningsChangePerSec =
+            totalPayoutPerSec != null &&
+            myStake.isGreaterThan(0) &&
+            totalStake.isGreaterThan(0)
+                ? myStake.dividedBy(totalStake).multipliedBy(totalPayoutPerSec)
+                : undefined
+
+        result[sponsorshipId] = {
+            uncollectedEarnings: toBN(earnings[i]),
+            rateOfChangePerSec: myEarningsChangePerSec,
+        }
     }
 
     return result
