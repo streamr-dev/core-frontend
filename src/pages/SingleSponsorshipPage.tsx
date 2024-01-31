@@ -108,10 +108,9 @@ export const SingleSponsorshipPage = () => {
 
     const fundingEventsQuery = useSponsorshipFundingHistoryQuery(sponsorshipId)
 
-    const { operatorCount = 0, maxOperators = Number.MAX_SAFE_INTEGER } =
-        sponsorship || {}
+    const { operatorCount = 0, minOperators } = sponsorship || {}
 
-    const joinable = operatorCount < maxOperators
+    const operational = minOperators == null || operatorCount < minOperators
 
     return (
         <Layout>
@@ -188,10 +187,10 @@ export const SingleSponsorshipPage = () => {
                                     title={
                                         <TitleBar
                                             aux={
-                                                joinable ? (
+                                                operational ? undefined : (
                                                     <MinOperatorCountNotReached>
                                                         {sponsorship.operatorCount}/
-                                                        {sponsorship.maxOperators}
+                                                        {sponsorship.minOperators}
                                                         <OperatorSpinner
                                                             color="green"
                                                             strokeWidth={3}
@@ -200,16 +199,16 @@ export const SingleSponsorshipPage = () => {
                                                             coverage={Math.max(
                                                                 0.01,
                                                                 sponsorship.operatorCount /
-                                                                    sponsorship.maxOperators,
+                                                                    sponsorship.minOperators,
                                                             )}
                                                         />
                                                     </MinOperatorCountNotReached>
-                                                ) : undefined
+                                                )
                                             }
                                             label={
-                                                joinable
-                                                    ? undefined
-                                                    : sponsorship.operatorCount
+                                                operational
+                                                    ? sponsorship.operatorCount
+                                                    : undefined
                                             }
                                         >
                                             Operators
