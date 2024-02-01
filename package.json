@@ -100,7 +100,7 @@
         "react-syntax-highlighter": "^15.5.0",
         "react-tooltip": "^5.14.0",
         "recharts": "^2.7.2",
-        "reselect": "^4.1.8",
+        "reselect": "^5.1.0",
         "resize-observer-polyfill": "^1.5.1",
         "rich-markdown-editor": "^11.21.3",
         "storybook": "^7.6.6",
