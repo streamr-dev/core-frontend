@@ -98,7 +98,6 @@
         "react-scrollspy": "^3.4.0",
         "react-select": "^5.7.3",
         "react-syntax-highlighter": "^15.5.0",
-        "react-tooltip": "^5.14.0",
         "recharts": "^2.7.2",
         "resize-observer-polyfill": "^1.5.1",
         "rich-markdown-editor": "^11.21.3",
