@@ -58,27 +58,25 @@ export const ChainSelector = ({ menuAlignment = 'left', ...props }: Props) => {
     const selectedChain = useCurrentChain()
 
     return (
-        <>
-            <SimpleDropdown
-                menu={(toggle) => (
-                    <Menu
-                        chains={availableChains}
-                        selectedChain={selectedChain}
-                        toggle={toggle}
-                    />
-                )}
-                align={menuAlignment}
-                {...props}
-            >
-                {(toggle, isOpen) => (
-                    <Toggle $isOpen={isOpen} onClick={() => toggle((v) => !v)}>
-                        <NetworkIcon chainId={selectedChain.id} />
-                        <div>{selectedChain.name}</div>
-                        <Caret name="caretUp" $isOpen={isOpen} />
-                    </Toggle>
-                )}
-            </SimpleDropdown>
-        </>
+        <SimpleDropdown
+            {...props}
+            menu={(toggle) => (
+                <Menu
+                    chains={availableChains}
+                    selectedChain={selectedChain}
+                    toggle={toggle}
+                />
+            )}
+            align={menuAlignment}
+        >
+            {(toggle, isOpen) => (
+                <Toggle $isOpen={isOpen} onClick={() => toggle((v) => !v)}>
+                    <NetworkIcon chainId={selectedChain.id} />
+                    <div>{selectedChain.name}</div>
+                    <Caret name="caretUp" $isOpen={isOpen} />
+                </Toggle>
+            )}
+        </SimpleDropdown>
     )
 }
 
