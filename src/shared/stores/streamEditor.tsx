@@ -870,10 +870,7 @@ export function useInitStreamDraft(streamId: string | undefined) {
 }
 
 export function useResetDraftStore() {
-    const { reset } = useStreamEditorStore(({ reset }) => ({
-        reset,
-    }))
-    return reset
+    return useStreamEditorStore().reset
 }
 
 export const StreamDraftContext = createContext<string | undefined>(undefined)

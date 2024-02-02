@@ -15,14 +15,13 @@ const SELECTED_CHAIN_LOCALSTORAGE_KEY = 'selectedChain.id'
 const getSelectedChain = () => {
     const storageValue = localStorage.getItem(SELECTED_CHAIN_LOCALSTORAGE_KEY)
     if (storageValue != null) {
-        let chainId = 0
         try {
-            chainId = Number(storageValue)
-            return chainId
+            return Number(storageValue)
         } catch (e) {
             console.warn('Could not parse selected chain id', e)
         }
     }
+
     return defaultChainConfig.id
 }
 
@@ -56,7 +55,7 @@ export function useCurrentChain() {
 }
 
 export function useCurrentChainId() {
-    return useChainStore((state) => state.selectedChain.id)
+    return useCurrentChain().id
 }
 
 export function useAvailableChains() {
