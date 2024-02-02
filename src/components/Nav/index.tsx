@@ -414,21 +414,12 @@ export const NavContainer = styled.div`
 const ChainSelector = styled(UnstyledChainSelector)`
     justify-self: right;
 
-    &[data-desktop-only='true'] {
-        display: none;
-    }
-
     &[data-mobile-only='true'] {
         display: block;
         justify-self: left;
     }
 
     @media (${TABLET}) {
-        &[data-desktop-only='true'] {
-            display: block;
-            justify-self: right;
-        }
-
         &[data-mobile-only='true'] {
             display: none;
         }
