@@ -94,7 +94,7 @@ const useOperatorReachabilityStore = create<{
     }
 })
 
-type Reachability = 'probing' | 'none' | 'all' | 'some'
+export type Reachability = 'probing' | [number, number]
 
 export function useOperatorReachability(
     heartbeats: Record<string, Heartbeat | undefined>,
@@ -141,11 +141,7 @@ export function useOperatorReachability(
         }
     }
 
-    if (!numOfReachableNodes) {
-        return 'none'
-    }
-
-    return nodeIds.length === numOfReachableNodes ? 'all' : 'some'
+    return [numOfReachableNodes, nodeIds.length]
 }
 
 export function useIsNodeIdReachable(nodeId: string) {
