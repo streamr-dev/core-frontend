@@ -7,7 +7,6 @@ import { Tooltip } from '~/components/Tooltip'
 import { getBlockExplorerUrl } from '~/getters/getBlockExplorerUrl'
 import { truncate } from '~/shared/utils/text'
 import { CopyButton } from '~/components/CopyButton'
-import { defaultChainConfig } from '~/getters/getChainConfig'
 import { useCurrentChainId } from '~/shared/stores/chain'
 
 export const ActionBarButtonBody = styled.div<{ $background?: string; $color?: string }>`
