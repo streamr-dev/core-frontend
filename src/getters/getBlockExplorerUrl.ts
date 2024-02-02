@@ -1,15 +1,12 @@
 import getCoreConfig from './getCoreConfig'
-import { defaultChainConfig } from './getChainConfig'
 
-export function getBlockExplorerUrl(chainId?: number): string {
-    const actualChainId = chainId ?? defaultChainConfig.id
+export function getBlockExplorerUrl(chainId: number): string {
     const map: { chainId: unknown; url: unknown }[] = getCoreConfig().blockExplorerUrls
-    const item = map.find((i) => i.chainId === actualChainId)
+
+    const item = map.find((i) => i.chainId === chainId)
 
     if (typeof item?.url !== 'string') {
-        throw new Error(
-            `No blockExplorerUrl defined in config for chain ${actualChainId}!`,
-        )
+        throw new Error(`No blockExplorerUrl defined in config for chain ${chainId}!`)
     }
 
     return item.url

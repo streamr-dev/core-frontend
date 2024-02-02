@@ -7,6 +7,8 @@ import { Tooltip } from '~/components/Tooltip'
 import { getBlockExplorerUrl } from '~/getters/getBlockExplorerUrl'
 import { truncate } from '~/shared/utils/text'
 import { CopyButton } from '~/components/CopyButton'
+import { defaultChainConfig } from '~/getters/getChainConfig'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 export const ActionBarButtonBody = styled.div<{ $background?: string; $color?: string }>`
     align-items: center;
@@ -15,7 +17,7 @@ export const ActionBarButtonBody = styled.div<{ $background?: string; $color?: s
     font-size: 14px;
     gap: 12px;
     grid-template-columns: repeat(
-        ${({ children }) => React.Children.count(children)},
+        ${({ children }) => React.Children.toArray(children).filter(Boolean).length},
         max-content
     );
     height: 40px;
@@ -113,6 +115,16 @@ export function ActionBarWalletDisplay({
     address: string
     label?: string
 }) {
+    let blockExplorerUrl: string | undefined
+
+    const chainId = useCurrentChainId()
+
+    try {
+        blockExplorerUrl = getBlockExplorerUrl(chainId)
+    } catch (e) {
+        console.warn('getBlockExplorerUrl failed', e)
+    }
+
     return (
         <ActionBarButtonBody>
             <div>
@@ -121,15 +133,17 @@ export function ActionBarWalletDisplay({
             <Tooltip content="Copy address">
                 <CopyButton value={address} />
             </Tooltip>
-            <Tooltip content="View on explorer">
-                <a
-                    href={`${getBlockExplorerUrl()}/address/${address}`}
-                    target="_blank"
-                    rel="noreferrer"
-                >
-                    <ExternalLinkIcon />
-                </a>
-            </Tooltip>
+            {blockExplorerUrl && (
+                <Tooltip content="View on explorer">
+                    <a
+                        href={`${blockExplorerUrl}/address/${address}`}
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        <ExternalLinkIcon />
+                    </a>
+                </Tooltip>
+            )}
         </ActionBarButtonBody>
     )
 }
