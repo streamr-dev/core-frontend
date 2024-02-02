@@ -18,8 +18,18 @@ import { useIsWaitingForBlockNumber } from '~/stores/blockNumberDependencies'
 import { Hint, IconWrap } from '~/components/Hint'
 
 export function OperatorChecklist({ operatorId }: { operatorId: string | undefined }) {
-    const { funded, nodesDeclared, nodesFunded, nodesReachable, nodesRunning } =
+    const { funded, nodesDeclared, nodesFunded, nodesReachability, nodesRunning } =
         useOperatorChecklist(operatorId)
+
+    const [reachable = 0, total = 0] = nodesReachability || []
+
+    const nodesReachable = !nodesReachability
+        ? undefined
+        : reachable <= total / 2
+        ? false
+        : reachable === total
+        ? true
+        : 'caution'
 
     return (
         <>
@@ -90,6 +100,12 @@ export function OperatorChecklist({ operatorId }: { operatorId: string | undefin
                 }
             >
                 Nodes reachable
+                {nodesReachable != null && (
+                    <>
+                        {' '}
+                        ({reachable} out of {total})
+                    </>
+                )}
             </ChecklistItem>
         </>
     )
@@ -99,7 +115,7 @@ interface OperatorChecklist {
     funded?: boolean | undefined
     nodesDeclared?: boolean | undefined
     nodesFunded?: boolean | undefined
-    nodesReachable?: boolean | undefined
+    nodesReachability?: [number, number] | undefined
     nodesRunning?: boolean | undefined
 }
 
@@ -120,8 +136,8 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
 
     const reachability = useOperatorReachability(heartbeats)
 
-    const nodesReachable =
-        isLoadingLiveNodes || reachability === 'probing' ? void 0 : reachability === 'all'
+    const nodesReachability =
+        isLoadingLiveNodes || reachability === 'probing' ? undefined : reachability
 
     useEffect(() => {
         setNodesFunded(undefined)
@@ -195,7 +211,7 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
             funded: false,
             nodesDeclared: false,
             nodesFunded: false,
-            nodesReachable: false,
+            nodesReachability: [0, 0],
             nodesRunning: false,
         }
     }
@@ -214,34 +230,48 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
         funded,
         nodesDeclared,
         nodesFunded,
-        nodesReachable,
+        nodesReachability,
         nodesRunning,
     }
 }
 
 function ChecklistItem({
     children,
-    state,
+    state: stateProp,
     tip = '',
 }: {
     children: ReactNode
-    state?: boolean
+    state: 'tbd' | 'success' | 'failure' | 'caution' | boolean | undefined
     tip?: ReactNode
 }) {
+    const state =
+        typeof stateProp === 'string'
+            ? stateProp
+            : typeof stateProp === 'undefined'
+            ? 'tbd'
+            : stateProp
+            ? 'success'
+            : 'failure'
+
     return (
         <ChecklistItemRoot>
             <div>
-                {state === false && (
+                {state === 'failure' && (
                     <IconWrap $color="#FF5C00">
                         <JiraFailedBuildStatusIcon label="Error" size="medium" />
                     </IconWrap>
                 )}
-                {typeof state === 'undefined' && (
+                {state === 'caution' && (
+                    <IconWrap $color="#FFB800">
+                        <JiraFailedBuildStatusIcon label="Error" size="medium" />
+                    </IconWrap>
+                )}
+                {state === 'tbd' && (
                     <IconWrap>
                         <Spinner color="blue" />
                     </IconWrap>
                 )}
-                {state === true && (
+                {state === 'success' && (
                     <IconWrap $color="#0EAC1B">
                         <CheckCircleIcon label="Ok" size="medium" />
                     </IconWrap>
