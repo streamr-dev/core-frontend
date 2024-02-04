@@ -3,6 +3,7 @@ import React, { useCallback, useState, useSyncExternalStore } from 'react'
 import { useEffect } from 'react'
 import { toaster } from 'toasterhea'
 import { getConfigValueFromChain } from '~/getters/getConfigValueFromChain'
+import { useCurrentChainId } from '~/shared/stores/chain'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { ConfigKey } from '~/types'
 import { Layer } from '~/utils/Layer'
@@ -82,12 +83,14 @@ export function useConfigValueFromChain<
 >(key: T): U | undefined {
     const [value, setValue] = useState<U>()
 
+    const chainId = useCurrentChainId()
+
     useEffect(() => {
         let mounted = true
 
         void (async () => {
             try {
-                const newValue = await getConfigValueFromChain(key)
+                const newValue = await getConfigValueFromChain(chainId, key)
 
                 if (!mounted) {
                     return

@@ -42,6 +42,7 @@ interface ResolveProps {
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     balance: BN
+    chainId: number
     streamId?: string
     onResolve?: (props: ResolveProps) => void
 }
@@ -61,11 +62,13 @@ function getDefaultFormData(streamId = ''): CreateSponsorshipForm {
 
 function CreateSponsorshipModal({
     balance: balanceProp,
+    chainId,
     streamId: streamIdProp,
     onResolve,
     ...props
 }: Props) {
     const [busy, setBusy] = useState(false)
+
     const [confirmState, setConfirmState] = useState(false)
 
     const { decimals = 18 } = useSponsorshipTokenInfo() || {}
@@ -172,7 +175,7 @@ function CreateSponsorshipModal({
                         return
                     }
 
-                    const sponsorshipId = await createSponsorship(formData, {
+                    const sponsorshipId = await createSponsorship(chainId, formData, {
                         onBlockNumber: waitForIndexedBlock,
                     })
 

@@ -7,11 +7,12 @@ import { errorToast } from '~/utils/toast'
 const FUNDING_HISTORY_PAGE_SIZE = 10
 
 export function invalidateSponsorshipFundingHistoryQueries(
+    chainId: number,
     sponsorshipId: string | undefined,
 ) {
     return getQueryClient().invalidateQueries({
         exact: false,
-        queryKey: ['useSponsorshipFundingHistoryQuery', sponsorshipId || ''],
+        queryKey: ['useSponsorshipFundingHistoryQuery', chainId, sponsorshipId || ''],
         refetchType: 'active',
     })
 }

@@ -288,6 +288,7 @@ const PendingIndicatorRoot = styled.button`
 `
 
 type SubmitNodeAddressesCallback = (
+    chainId: number,
     operatorId: string,
     addresses: string[],
     options?: {
@@ -300,11 +301,11 @@ export function useSubmitNodeAddressesCallback(): [SubmitNodeAddressesCallback, 
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     const cb: SubmitNodeAddressesCallback = useCallback(
-        async (operatorId, addresses, { onSuccess, onError } = {}) => {
+        async (chainId, operatorId, addresses, { onSuccess, onError } = {}) => {
             setIsSubmitting(true)
 
             try {
-                await setOperatorNodeAddresses(operatorId, addresses, {
+                await setOperatorNodeAddresses(chainId, operatorId, addresses, {
                     onBlockNumber(blockNumber) {
                         onSuccess?.(blockNumber)
                     },

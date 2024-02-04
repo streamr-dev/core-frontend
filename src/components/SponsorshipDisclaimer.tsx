@@ -6,6 +6,7 @@ import { useOperatorForWalletQuery } from '~/hooks/operators'
 import { useJoinSponsorshipAsOperator } from '~/hooks/sponsorships'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import Checkbox from '~/shared/components/Checkbox'
+import { useCurrentChainId } from '~/shared/stores/chain'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { COLORS } from '~/shared/utils/styled'
 
@@ -22,8 +23,12 @@ export function SponsorshipDisclaimer({
     checkboxState,
     onCheckboxStateChange,
 }: Props) {
+    const chainId = useCurrentChainId()
+
     const joinSponsorshipAsOperator = useJoinSponsorshipAsOperator()
+
     const wallet = useWalletAccount()
+
     const { data: operator = null } = useOperatorForWalletQuery(wallet)
 
     return (
@@ -45,6 +50,7 @@ export function SponsorshipDisclaimer({
 
                             // Open join sponsorship modal
                             joinSponsorshipAsOperator({
+                                chainId,
                                 sponsorship,
                                 operator,
                             })

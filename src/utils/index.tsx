@@ -22,6 +22,7 @@ import {
 } from '~/hooks/operators'
 import { blockObserver } from '~/utils/blocks'
 import { ProjectType } from '~/shared/types'
+import { getCurrentChainId } from '~/getters/getCurrentChain'
 
 /**
  * Gas money checker.
@@ -297,6 +298,7 @@ export function sameBN(a: BNish, b: BNish) {
  * an operator or updating an existing operator.
  */
 export function saveOperator(
+    chainId: number,
     operator: ParsedOperator | undefined,
     options: {
         onDone?: (operatorId: string) => void
@@ -305,16 +307,22 @@ export function saveOperator(
 ) {
     void (async () => {
         try {
+            /**
+             * @todo #passchainid
+             */
             const operatorId = await operatorModal.pop({
                 operator,
             })
 
-            invalidateActiveOperatorByIdQueries(operatorId)
+            invalidateActiveOperatorByIdQueries(chainId, operatorId)
 
-            invalidateAllOperatorsQueries()
+            invalidateAllOperatorsQueries(chainId)
 
-            invalidateDelegationsForWalletQueries()
+            invalidateDelegationsForWalletQueries(chainId)
 
+            /**
+             * @todo Don't we have to push the chain id too? #passchainid
+             */
             options.onDone?.(operatorId)
         } catch (e) {
             if (options.onError) {

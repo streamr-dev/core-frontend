@@ -33,7 +33,7 @@ import {
 import { ChartPeriod, XY } from '~/types'
 import { errorToast } from '~/utils/toast'
 import { getOperatorDailyBuckets, getTimestampForChartPeriod } from '~/getters'
-import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
+import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { OperatorDailyBucket } from '~/generated/gql/network'
 import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
 import Tabs, { Tab } from '~/shared/components/Tabs'
@@ -45,7 +45,7 @@ import { OperatorIdCell } from '~/components/Table'
 import { Button } from '~/components/Button'
 import { getDelegationStats } from '~/getters/getDelegationStats'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChain, useCurrentChainId } from '~/shared/stores/chain'
 
 export function NetworkOverviewPage() {
     return (
@@ -103,7 +103,7 @@ function MyOperatorSummary() {
                     force: true,
                 })
 
-                const { decimals } = await getSponsorshipTokenInfo()
+                const { decimals } = await getSponsorshipTokenInfo(currentChainId)
 
                 const toValue: (bucket: OperatorDailyBucket) => BNish =
                     chartId === 'stake'
@@ -273,10 +273,16 @@ function MyDelegationsSummary() {
                     return []
                 }
 
-                return await getDelegationStats(wallet, chartPeriod, chartDataSource, {
-                    force: true,
-                    ignoreToday: false,
-                })
+                return await getDelegationStats(
+                    currentChainId,
+                    wallet,
+                    chartPeriod,
+                    chartDataSource,
+                    {
+                        force: true,
+                        ignoreToday: false,
+                    },
+                )
             } catch (e) {
                 errorToast({ title: 'Could not load my delegations chart data' })
                 return []

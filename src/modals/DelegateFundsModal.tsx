@@ -30,6 +30,7 @@ import { Abbr } from '~/components/Abbr'
 interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
     balance: BN
+    chainId: number
     delegatedTotal: BN
     onResolve?: () => void
     operator: ParsedOperator
@@ -38,6 +39,7 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
 export default function DelegateFundsModal({
     amount: amountProp = '',
     balance,
+    chainId,
     delegatedTotal: delegatedTotalProp,
     onResolve,
     operator,
@@ -147,6 +149,7 @@ export default function DelegateFundsModal({
 
                 try {
                     await delegateToOperator(
+                        chainId,
                         operator.id,
                         toDecimals(finalValue, decimals),
                         { onBlockNumber: waitForIndexedBlock },

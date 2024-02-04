@@ -15,17 +15,18 @@ import { BN, BNish, toBN } from '~/utils/bn'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { toastedOperation } from '~/utils/toastedOperation'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
-import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
+import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { getParsedSponsorshipById } from '~/getters'
 import { toDecimals } from '~/marketplace/utils/math'
 import { useUncollectedEarningsStore } from '~/shared/stores/uncollectedEarnings'
 import { getCurrentChainId } from '~/getters/getCurrentChain'
 
 export async function createSponsorship(
+    chainId: number,
     formData: CreateSponsorshipForm,
     options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<string> {
-    const { decimals } = await getSponsorshipTokenInfo()
+    const { decimals } = await getSponsorshipTokenInfo(chainId)
 
     const minOperatorCount = Number(formData.minNumberOfOperators)
     const maxOperatorCount = formData.maxNumberOfOperators
@@ -45,8 +46,6 @@ export async function createSponsorship(
         .multipliedBy(toBN(10).pow(toBN(decimals)))
         .toString()
     const streamId = formData.streamId
-
-    const chainId = getCurrentChainId()
 
     const chainConfig = getConfigForChain(chainId)
 
@@ -367,12 +366,11 @@ export async function getEarningsForSponsorships(
 }
 
 export async function collectEarnings(
+    chainId: number,
     sponsorshipId: string,
     operatorAddress: string,
     options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
-    const chainId = getCurrentChainId()
-
     await networkPreflight(chainId)
 
     const signer = await getSigner()

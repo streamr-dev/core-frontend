@@ -2,16 +2,18 @@ import moment from 'moment'
 import { ChartPeriod } from '~/types'
 import { GetOperatorDailyBucketsQuery } from '~/generated/gql/network'
 import { toBN } from '~/utils/bn'
-import getSponsorshipTokenInfo from './getSponsorshipTokenInfo'
+import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { getOperatorDailyBuckets } from '.'
 
 export const getOperatorStats = async (
+    chainId: number,
     operatorId: string,
     selectedPeriod: ChartPeriod,
     dataSource: string,
     { force = false, ignoreToday = false } = {},
 ): Promise<{ x: number; y: number }[]> => {
-    const tokenInfo = await getSponsorshipTokenInfo()
+    const tokenInfo = await getSponsorshipTokenInfo(chainId)
+
     const start = ignoreToday ? moment().utc().startOf('day') : moment().utc()
 
     let result: GetOperatorDailyBucketsQuery['operatorDailyBuckets']

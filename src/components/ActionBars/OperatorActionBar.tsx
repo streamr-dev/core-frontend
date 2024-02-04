@@ -64,6 +64,7 @@ export const OperatorActionBar: FunctionComponent<{
     )
 
     const undelegateFunds = useUndelegateFunds()
+
     const currentChainId = useCurrentChainId()
 
     const { data: canUndelegate = false } = useQuery({
@@ -80,7 +81,11 @@ export const OperatorActionBar: FunctionComponent<{
                 }
 
                 return (
-                    await getOperatorDelegationAmount(operator.id, walletAddress)
+                    await getOperatorDelegationAmount(
+                        currentChainId,
+                        operator.id,
+                        walletAddress,
+                    )
                 ).isGreaterThan(0)
             } catch (e) {
                 console.warn(
@@ -142,6 +147,7 @@ export const OperatorActionBar: FunctionComponent<{
                     <Button
                         onClick={() => {
                             delegateFunds({
+                                chainId: currentChainId,
                                 operator,
                                 wallet: walletAddress,
                             })
@@ -154,6 +160,7 @@ export const OperatorActionBar: FunctionComponent<{
                     <Button
                         onClick={() => {
                             undelegateFunds({
+                                chainId: currentChainId,
                                 operator,
                                 wallet: walletAddress,
                             })

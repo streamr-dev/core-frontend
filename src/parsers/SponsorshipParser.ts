@@ -1,9 +1,10 @@
 import { z } from 'zod'
 import { getConfigValueFromChain } from '~/getters/getConfigValueFromChain'
-import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
+import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { BN, toBN } from '~/utils/bn'
 import { OperatorMetadataParser } from './OperatorMetadataParser'
+import { getCurrentChain, getCurrentChainId } from '~/getters/getCurrentChain'
 
 export const SponsorshipParser = z
     .object({
@@ -64,9 +65,17 @@ export const SponsorshipParser = z
             totalStakedWei,
             ...rest
         }) => {
-            const { decimals } = await getSponsorshipTokenInfo()
+            /**
+             * @todo Get chain id from the outside. #passchainid
+             */
+            const chainId = getCurrentChainId()
 
-            const minimumStakeWei = await getConfigValueFromChain('minimumStakeWei')
+            const { decimals } = await getSponsorshipTokenInfo(chainId)
+
+            const minimumStakeWei = await getConfigValueFromChain(
+                chainId,
+                'minimumStakeWei',
+            )
 
             return {
                 ...rest,

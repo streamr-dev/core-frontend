@@ -7,6 +7,8 @@ import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { getCustomTokenBalance } from '~/marketplace/utils/web3'
 import { getCurrentChain, getCurrentChainId } from '~/getters/getCurrentChain'
+import { Chain } from '~/types'
+import { getConfigForChain } from '~/shared/web3/config'
 
 /**
  * Scouts for Operator's funding share.
@@ -37,11 +39,10 @@ export function isSponsorshipFundedByOperator(
  * Gets the current Sponsorship leave penalty for a given Operator.
  */
 export async function getSponsorshipLeavePenalty(
+    chainId: number,
     sponsorshipId: string,
     operatorId: string,
 ) {
-    const chainId = getCurrentChainId()
-
     const contract = new Contract(
         sponsorshipId,
         sponsorshipABI,
@@ -55,11 +56,12 @@ export async function getSponsorshipLeavePenalty(
  * Fetches wallet's balance of the Sponsorship-native token
  * on the default chain.
  */
-export async function getBalanceForSponsorship(wallet: string) {
-    const chainConfig = getCurrentChain()
+export async function getBalanceForSponsorship(chainId: number, wallet: string) {
+    const chain = getConfigForChain(chainId)
+
     return getCustomTokenBalance(
-        chainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
+        chain.contracts[getCoreConfig().sponsorshipPaymentToken],
         wallet,
-        chainConfig.id,
+        chain.id,
     )
 }

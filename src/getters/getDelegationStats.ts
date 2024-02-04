@@ -1,18 +1,20 @@
 import moment from 'moment/moment'
 import { ChartPeriod } from '~/types'
-import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
+import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { GetDelegatorDailyBucketsQuery } from '~/generated/gql/network'
 import { getDelegatorDailyBuckets } from '~/getters/index'
 import { toBN } from '~/utils/bn'
 import { fromDecimals } from '~/marketplace/utils/math'
 
 export const getDelegationStats = async (
+    chainId: number,
     delegatorId: string,
     selectedPeriod: ChartPeriod,
     dataSource: string,
     { force = false, ignoreToday = false } = {},
 ): Promise<{ x: number; y: number }[]> => {
-    const tokenInfo = await getSponsorshipTokenInfo()
+    const tokenInfo = await getSponsorshipTokenInfo(chainId)
+
     const start = ignoreToday ? moment().utc().startOf('day') : moment().utc()
     let result: GetDelegatorDailyBucketsQuery['delegatorDailyBuckets']
     switch (selectedPeriod) {

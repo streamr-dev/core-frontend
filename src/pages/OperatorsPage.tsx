@@ -27,6 +27,7 @@ import { abbr, saveOperator } from '~/utils'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import { OperatorIdCell } from '~/components/Table'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 const PAGE_SIZE = 20
 
@@ -67,6 +68,8 @@ export const OperatorsPage = () => {
         pageSize: PAGE_SIZE,
         searchQuery,
     })
+
+    const chainId = useCurrentChainId()
 
     const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
@@ -118,7 +121,7 @@ export const OperatorsPage = () => {
                     ) : (
                         <Button
                             onClick={() => {
-                                saveOperator(undefined, {
+                                saveOperator(chainId, undefined, {
                                     onDone(id) {
                                         navigate(routes.network.operator({ id }))
                                     },

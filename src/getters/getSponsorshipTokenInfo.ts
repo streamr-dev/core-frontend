@@ -1,11 +1,10 @@
 import { TokenInfo, getTokenInfo } from '~/hooks/useTokenInfo'
 import getCoreConfig from '~/getters/getCoreConfig'
-import { getCurrentChain } from './getCurrentChain'
+import { getConfigForChain } from '~/shared/web3/config'
 
-export default async function getSponsorshipTokenInfo(): Promise<TokenInfo> {
-    const chainConfig = getCurrentChain()
+export async function getSponsorshipTokenInfo(chainId: number): Promise<TokenInfo> {
     return getTokenInfo(
-        chainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
-        chainConfig.id,
+        getConfigForChain(chainId).contracts[getCoreConfig().sponsorshipPaymentToken],
+        chainId,
     )
 }

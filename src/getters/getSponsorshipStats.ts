@@ -3,15 +3,17 @@ import { ChartPeriod } from '~/types'
 import { GetSponsorshipDailyBucketsQuery } from '~/generated/gql/network'
 import { toBN } from '~/utils/bn'
 import { getSponsorshipDailyBuckets } from '~/getters'
-import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
+import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 
 export const getSponsorshipStats = async (
+    chainId: number,
     sponsorshipId: string,
     selectedPeriod: ChartPeriod,
     dataSource: string,
     { force = false, ignoreToday = false } = {},
 ): Promise<{ x: number; y: number }[]> => {
-    const tokenInfo = await getSponsorshipTokenInfo()
+    const tokenInfo = await getSponsorshipTokenInfo(chainId)
+
     const start = ignoreToday ? moment().utc().startOf('day') : moment().utc()
 
     let result: GetSponsorshipDailyBucketsQuery['sponsorshipDailyBuckets']

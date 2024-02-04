@@ -16,9 +16,9 @@ import { toastedOperation, toastedOperations } from '~/utils/toastedOperation'
 import { postImage } from '~/services/images'
 import { Operation } from '~/shared/toasts/TransactionListToast'
 import { ParsedOperator } from '~/parsers/OperatorParser'
-import { getCurrentChainId } from '~/getters/getCurrentChain'
 
 export async function createOperator(
+    chainId: number,
     params: {
         cut: number
         description: string
@@ -29,8 +29,6 @@ export async function createOperator(
     options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
     const { cut, name, redundancyFactor, description, imageToUpload } = params
-
-    const chainId = getCurrentChainId()
 
     const chainConfig = getConfigForChain(chainId)
 
@@ -83,6 +81,7 @@ export async function createOperator(
 }
 
 export async function updateOperator(
+    chainId: number,
     operator: ParsedOperator,
     mods: {
         name: string
@@ -128,8 +127,6 @@ export async function updateOperator(
     const blockNumbers: number[] = []
 
     await toastedOperations(operations, async (next) => {
-        const chainId = getCurrentChainId()
-
         if (hasUpdateCutOperation) {
             await networkPreflight(chainId)
 
@@ -186,12 +183,11 @@ export async function updateOperator(
 }
 
 export async function delegateToOperator(
+    chainId: number,
     operatorId: string,
     amount: BNish,
     options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
-    const chainId = getCurrentChainId()
-
     const chainConfig = getConfigForChain(chainId)
 
     await networkPreflight(chainId)
@@ -214,12 +210,11 @@ export async function delegateToOperator(
 }
 
 export async function undelegateFromOperator(
+    chainId: number,
     operatorId: string,
     amount: BNish,
     options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
-    const chainId = getCurrentChainId()
-
     await networkPreflight(chainId)
 
     const signer = await getSigner()
@@ -243,21 +238,26 @@ export async function undelegateFromOperator(
     })
 }
 
-export async function getOperatorDelegationAmount(operatorId: string, address: string) {
-    const chainId = getCurrentChainId()
+export async function getOperatorDelegationAmount(
+    chainId: number,
+    operatorId: string,
+    address: string,
+) {
     const provider = getPublicWeb3Provider(chainId)
+
     const operatorContract = new Contract(operatorId, operatorABI, provider) as Operator
+
     const amount = await operatorContract.balanceOf(address)
+
     return toBN(amount)
 }
 
 export async function setOperatorNodeAddresses(
+    chainId: number,
     operatorId: string,
     addresses: string[],
     options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ) {
-    const chainId = getCurrentChainId()
-
     await networkPreflight(chainId)
 
     const signer = await getSigner()

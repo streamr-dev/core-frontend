@@ -62,6 +62,7 @@ import { abbr, saveOperator } from '~/utils'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { Hint } from '~/components/Hint'
 import { useCurrentChainId } from '~/shared/stores/chain'
+import { getCurrentChainId } from '~/getters/getCurrentChain'
 
 const defaultChartData = []
 
@@ -116,6 +117,7 @@ export const SingleOperatorPage = () => {
                 }
 
                 return await getOperatorStats(
+                    currentChainId,
                     operatorId,
                     selectedPeriod,
                     selectedDataSource,
@@ -177,7 +179,7 @@ export const SingleOperatorPage = () => {
                 <OperatorActionBar
                     operator={operator}
                     handleEdit={(currentOperator) => {
-                        saveOperator(currentOperator)
+                        saveOperator(currentChainId, currentOperator)
                     }}
                 />
             )}
@@ -406,6 +408,7 @@ export const SingleOperatorPage = () => {
                                             }
 
                                             editSponsorshipFunding({
+                                                chainId: currentChainId,
                                                 sponsorshipOrSponsorshipId:
                                                     element.sponsorshipId,
                                                 operator,
@@ -420,6 +423,7 @@ export const SingleOperatorPage = () => {
                                             }
 
                                             collectEarnings({
+                                                chainId: currentChainId,
                                                 operatorId,
                                                 sponsorshipId: element.sponsorshipId,
                                             })
@@ -521,6 +525,7 @@ export const SingleOperatorPage = () => {
                                                         kind="secondary"
                                                         onClick={() => {
                                                             forceUndelegate(
+                                                                currentChainId,
                                                                 operator,
                                                                 element.amount,
                                                             )
@@ -645,8 +650,15 @@ export const SingleOperatorPage = () => {
                                             return
                                         }
 
+                                        const chainId = getCurrentChainId()
+
+                                        /**
+                                         * @todo Block dependencies also have to be chain-specific. #passchainid
+                                         */
+
                                         try {
                                             await saveNodeAddresses(
+                                                chainId,
                                                 operatorId,
                                                 addresses,
                                                 {
@@ -676,6 +688,7 @@ export const SingleOperatorPage = () => {
                                                             blockNumber,
                                                             () => {
                                                                 invalidateActiveOperatorByIdQueries(
+                                                                    chainId,
                                                                     operatorId,
                                                                 )
                                                             },

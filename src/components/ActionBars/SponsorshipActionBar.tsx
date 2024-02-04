@@ -34,6 +34,7 @@ import {
 import { AboutSponsorship } from '~/components/ActionBars/AboutSponsorship'
 import { Hint } from '~/components/Hint'
 import { AbstractActionBar, Pad } from './AbstractActionBar'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 const DayInSeconds = 60 * 60 * 24
 
@@ -74,6 +75,8 @@ export function SponsorshipActionBar({
     )
 
     const { streamId } = sponsorship
+
+    const chainId = useCurrentChainId()
 
     return (
         <AbstractActionBar
@@ -131,6 +134,7 @@ export function SponsorshipActionBar({
                                 }
 
                                 editSponsorshipFunding({
+                                    chainId,
                                     sponsorshipOrSponsorshipId: sponsorship,
                                     operator,
                                 })
@@ -151,7 +155,7 @@ export function SponsorshipActionBar({
                         kind="secondary"
                         waiting={isFundingSponsorship}
                         onClick={() => {
-                            fundSponsorship(sponsorship)
+                            fundSponsorship(chainId, sponsorship)
                         }}
                     >
                         Sponsor
@@ -272,6 +276,8 @@ function JoinAsOperatorButton({
         operator?.id,
     )
 
+    const chainId = useCurrentChainId()
+
     const joinSponsorshipAsOperator = useJoinSponsorshipAsOperator()
 
     const maxOperatorsReached = operatorCount >= maxOperators
@@ -303,6 +309,7 @@ function JoinAsOperatorButton({
                 }
 
                 joinSponsorshipAsOperator({
+                    chainId,
                     sponsorship,
                     operator,
                 })

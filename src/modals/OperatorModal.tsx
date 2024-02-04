@@ -32,6 +32,7 @@ import { getParsedOperatorByOwnerAddress } from '~/getters'
 import { Hint } from '~/components/Hint'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
+    chainId: number
     onResolve?: (operatorId: string) => void
     operator: ParsedOperator | undefined
 }
@@ -69,7 +70,7 @@ const Validator = z.object({
     redundancyFactor: z.coerce.number().min(1, 'Value must be greater or equal to 1'),
 })
 
-function OperatorModal({ onResolve, onReject, operator, ...props }: Props) {
+function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Props) {
     const [title, submitLabel] = operator
         ? ['Edit Operator', 'Save']
         : ['Become an Operator', 'Become an Operator']
@@ -177,11 +178,11 @@ function OperatorModal({ onResolve, onReject, operator, ...props }: Props) {
 
                 try {
                     if (!operator) {
-                        await createOperator(finalData, {
+                        await createOperator(chainId, finalData, {
                             onBlockNumber: waitForIndexedBlock,
                         })
                     } else {
-                        await updateOperator(operator, finalData, {
+                        await updateOperator(chainId, operator, finalData, {
                             onBlockNumber: waitForIndexedBlock,
                         })
                     }

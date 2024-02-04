@@ -4,15 +4,18 @@ import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { ConfigKey } from '~/types'
 import { getCurrentChain } from '~/getters/getCurrentChain'
 
-const cache: Partial<Record<ConfigKey, { updatedAt: number; value: unknown }>> = {}
+const cache: Record<
+    number,
+    Partial<Record<ConfigKey, { updatedAt: number; value: unknown }>> | undefined
+> = {}
 
 const TTL = 60 * 60 * 1000 // 1h
 
 export async function getConfigValueFromChain<
     T extends ConfigKey,
     U extends Awaited<ReturnType<StreamrConfig[T]>>,
->(key: T): Promise<U> {
-    const { updatedAt = 0, value } = cache[key] || {}
+>(chainId: number, key: T): Promise<U> {
+    const { updatedAt = 0, value } = cache[chainId]?.[key] || {}
 
     if (value && updatedAt + TTL > Date.now()) {
         return value as U
@@ -30,10 +33,14 @@ export async function getConfigValueFromChain<
 
     const result = (await contract[key]()) as U
 
-    cache[key] = {
+    const obj = cache[chainId] || {}
+
+    obj[key] = {
         updatedAt: Date.now(),
         value: result,
     }
+
+    cache[chainId] = obj
 
     return result
 }

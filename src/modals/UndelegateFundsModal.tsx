@@ -32,6 +32,7 @@ import { Abbr } from '~/components/Abbr'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     balance: BN
+    chainId: number
     delegatedTotal: BN
     onResolve?: () => void
     operator: ParsedOperator
@@ -39,6 +40,7 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
 
 export default function UndelegateFundsModal({
     balance,
+    chainId,
     delegatedTotal: delegatedTotalProp,
     onResolve,
     operator,
@@ -123,6 +125,7 @@ export default function UndelegateFundsModal({
 
                 try {
                     await undelegateFromOperator(
+                        chainId,
                         operator.id,
                         prefinalAmount.isGreaterThanOrEqualTo(delegatedTotalProp)
                             ? toBN(Number.POSITIVE_INFINITY)

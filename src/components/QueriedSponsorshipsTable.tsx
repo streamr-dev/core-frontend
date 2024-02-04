@@ -18,6 +18,7 @@ import {
 } from '~/hooks/sponsorships'
 import { FundedUntilCell, NumberOfOperatorsCell, StreamIdCell } from '~/components/Table'
 import { abbr } from '~/utils'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 interface Props {
     noDataFirstLine?: ReactNode
@@ -43,6 +44,8 @@ export function QueriedSponsorshipsTable({
     const wallet = useWalletAccount()
 
     const { data: operator = null } = useOperatorForWalletQuery(wallet)
+
+    const chainId = useCurrentChainId()
 
     const fundSponsorship = useFundSponsorshipCallback()
 
@@ -151,7 +154,7 @@ export function QueriedSponsorshipsTable({
                         displayName: 'Sponsor',
                         disabled: ({ streamId }) => !streamId,
                         callback(element) {
-                            fundSponsorship(element)
+                            fundSponsorship(chainId, element)
                         },
                     },
                     (element) => {
@@ -164,6 +167,7 @@ export function QueriedSponsorshipsTable({
                                     }
 
                                     editSponsorshipFunding({
+                                        chainId,
                                         sponsorshipOrSponsorshipId: element,
                                         operator,
                                     })
@@ -184,6 +188,7 @@ export function QueriedSponsorshipsTable({
                                 }
 
                                 joinSponsorshipAsOperator({
+                                    chainId,
                                     sponsorship: element,
                                     operator,
                                 })

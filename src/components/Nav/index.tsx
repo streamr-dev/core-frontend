@@ -13,6 +13,7 @@ import { useOperatorForWalletQuery } from '~/hooks/operators'
 import { saveOperator } from '~/utils'
 import { useMediaQuery } from '~/hooks'
 import { ChainSelector as UnstyledChainSelector } from '~/components/ChainSelector'
+import { getCurrentChainId } from '~/getters/getCurrentChain'
 import { Avatarless, Name, Username } from './User'
 import {
     Avatar,
@@ -150,17 +151,21 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                                             return
                                                         }
 
-                                                        saveOperator(undefined, {
-                                                            onDone(id) {
-                                                                navigate(
-                                                                    routes.network.operator(
-                                                                        {
-                                                                            id,
-                                                                        },
-                                                                    ),
-                                                                )
+                                                        saveOperator(
+                                                            getCurrentChainId(),
+                                                            undefined,
+                                                            {
+                                                                onDone(id) {
+                                                                    navigate(
+                                                                        routes.network.operator(
+                                                                            {
+                                                                                id,
+                                                                            },
+                                                                        ),
+                                                                    )
+                                                                },
                                                             },
-                                                        })
+                                                        )
                                                     }}
                                                 >
                                                     <span>Become an Operator</span>
