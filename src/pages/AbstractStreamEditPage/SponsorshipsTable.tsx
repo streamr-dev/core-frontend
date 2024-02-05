@@ -67,6 +67,20 @@ export default function SponsorshipsTable({ streamId }: Props) {
                     <NoDataContainer>
                         <NoData
                             firstLine="This stream does not have any Sponsorships yet."
+                            secondLine={
+                                <span>
+                                    <a
+                                        href="https://docs.streamr.network/streamr-network/incentives/stream-sponsorships"
+                                        rel="noopener noreferrer"
+                                        target="_blank"
+                                    >
+                                        Stream Sponsorships
+                                    </a>{' '}
+                                    incentivize node operators to relay the
+                                    <br /> stream&apos;s data, which enhances its
+                                    connectability and robustness.
+                                </span>
+                            }
                             compact
                         />
                         <CreateButton
