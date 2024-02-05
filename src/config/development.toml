@@ -20,10 +20,6 @@ sponsorshipPaymentToken = "DATA"
 chainId = 31337
 name = "streamr-dev/dataunion"
 
-[[core.blockExplorerUrls]]
-chainId = 31337
-url = "https://no-such-thing-on-streamr-docker-dev.com"
-
 [[core.storageNodes]]
 name = "Local (broker-node-storage-1)"
 address = "0xde1112f631486CfC759A50196853011528bC5FA0"

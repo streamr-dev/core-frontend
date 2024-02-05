@@ -4,7 +4,7 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS } from '~/shared/utils/styled'
 import { ExternalLinkIcon } from '~/icons'
 import { Tooltip } from '~/components/Tooltip'
-import { getBlockExplorerUrl } from '~/getters/getBlockExplorerUrl'
+import { getBlockExplorerUrl } from '~/getters'
 import { truncate } from '~/shared/utils/text'
 import { CopyButton } from '~/components/CopyButton'
 import { useCurrentChainId } from '~/shared/stores/chain'
@@ -114,15 +114,9 @@ export function ActionBarWalletDisplay({
     address: string
     label?: string
 }) {
-    let blockExplorerUrl: string | undefined
-
     const chainId = useCurrentChainId()
 
-    try {
-        blockExplorerUrl = getBlockExplorerUrl(chainId)
-    } catch (e) {
-        console.warn('getBlockExplorerUrl failed', e)
-    }
+    const blockExplorerUrl = getBlockExplorerUrl(chainId)
 
     return (
         <ActionBarButtonBody>
