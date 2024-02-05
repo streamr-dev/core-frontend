@@ -3,7 +3,7 @@ import { getWalletProvider } from '~/shared/stores/wallet'
 import getChainId from '~/utils/web3/getChainId'
 import networkPreflight from '~/utils/networkPreflight'
 import getClientConfig from './getClientConfig'
-import { getCurrentChain } from './getCurrentChain'
+import { getCurrentChainId } from './getCurrentChain'
 
 let streamrClient: StreamrClient | undefined
 
@@ -14,18 +14,18 @@ let provider: ExternalProvider | undefined
  * if the provider is on the incorrect network. Default: `false`.
  * @returns A StreamrClient instance.
  */
-export default async function getTransactionalClient({
-    passiveNetworkCheck = false,
-}: { passiveNetworkCheck?: boolean } = {}) {
+export default async function getTransactionalClient(
+    chainId: number,
+    { passiveNetworkCheck = false }: { passiveNetworkCheck?: boolean } = {},
+) {
     const currentProvider = (await getWalletProvider()) as any
-    const chainConfig = getCurrentChain()
 
     if (
         streamrClient &&
         currentProvider === provider &&
         (passiveNetworkCheck
-            ? (await getChainId()) === chainConfig.id
-            : (await networkPreflight(chainConfig.id)) === false)
+            ? (await getChainId()) === chainId
+            : (await networkPreflight(chainId)) === false)
     ) {
         return streamrClient
     }
@@ -33,7 +33,7 @@ export default async function getTransactionalClient({
     provider = currentProvider
 
     streamrClient = new (await require('streamr-client')).StreamrClient(
-        getClientConfig(chainConfig.id, {
+        getClientConfig(chainId, {
             auth: {
                 ethereum: currentProvider,
             },
@@ -50,7 +50,7 @@ export default async function getTransactionalClient({
 // Load the client library proactively so that we don't have to wait later.
 setTimeout(async () => {
     try {
-        await getTransactionalClient({ passiveNetworkCheck: true })
+        await getTransactionalClient(getCurrentChainId(), { passiveNetworkCheck: true })
     } catch (_) {
         // Do nothing.
     }

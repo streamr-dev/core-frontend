@@ -36,6 +36,7 @@ interface Actions {
         streamrClient: StreamrClient,
     ) => void
     persist: (
+        chainId: number,
         draftId: string,
         {
             onCreate,
@@ -376,7 +377,11 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
             })
         },
 
-        async persist(draftId: string, { onCreate, onPermissionsChange }) {
+        async persist(
+            chainId: number,
+            draftId: string,
+            { onCreate, onPermissionsChange },
+        ) {
             if (isPersisting(draftId)) {
                 return
             }
@@ -483,7 +488,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     }
 
                     if (transientStreamId) {
-                        client = await getTransactionalClient({
+                        client = await getTransactionalClient(chainId, {
                             passiveNetworkCheck: true,
                         })
 
@@ -522,7 +527,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                          * dictate if it's a new stream or an existing stream (optionally updated).
                          */
 
-                        client = await getTransactionalClient()
+                        client = await getTransactionalClient(chainId)
 
                         if (transientStreamId) {
                             await checkBalance()
@@ -589,7 +594,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                     }
 
                     if (shouldUpdatePermissions) {
-                        client = await getTransactionalClient()
+                        client = await getTransactionalClient(chainId)
 
                         await checkBalance()
 
@@ -636,7 +641,7 @@ export const useStreamEditorStore = create<Actions & State>((set, get) => {
                             refresh()
                         }
 
-                        client = await getTransactionalClient()
+                        client = await getTransactionalClient(chainId)
 
                         await checkBalance()
 
@@ -973,9 +978,7 @@ export function useSetCurrentDraftTransientStreamId() {
 export function useToggleCurrentStorageNode() {
     const draftId = useDraftId()
 
-    const toggleStorageNode = useStreamEditorStore(
-        ({ toggleStorageNode }) => toggleStorageNode,
-    )
+    const { toggleStorageNode } = useStreamEditorStore()
 
     return useCallback(
         (address: string, fn: (enabled: boolean) => boolean) => {
@@ -992,24 +995,27 @@ export function useToggleCurrentStorageNode() {
 export function usePersistCurrentDraft() {
     const draftId = useDraftId()
 
-    const persist = useStreamEditorStore(({ persist }) => persist)
+    const { persist } = useStreamEditorStore()
 
     return useCallback(
-        ({
-            onCreate,
-            onPermissionsChange,
-        }: {
-            onCreate?: (streamId: string) => void
-            onPermissionsChange?: (
-                streamId: string,
-                assignments: PermissionAssignment[],
-            ) => void
-        }) => {
+        (
+            chainId: number,
+            {
+                onCreate,
+                onPermissionsChange,
+            }: {
+                onCreate?: (streamId: string) => void
+                onPermissionsChange?: (
+                    streamId: string,
+                    assignments: PermissionAssignment[],
+                ) => void
+            },
+        ) => {
             if (!draftId) {
                 throw new Error('No draft id')
             }
 
-            return persist(draftId, { onCreate, onPermissionsChange })
+            return persist(chainId, draftId, { onCreate, onPermissionsChange })
         },
         [draftId, persist],
     )

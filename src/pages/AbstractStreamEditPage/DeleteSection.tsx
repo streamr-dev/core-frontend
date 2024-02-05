@@ -6,6 +6,7 @@ import getTransactionalClient from '~/getters/getTransactionalClient'
 import { useCurrentDraft } from '~/shared/stores/streamEditor'
 import routes from '~/routes'
 import Section from './Section'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 const Description = styled.p`
     margin-bottom: 3rem;
@@ -15,6 +16,8 @@ export default function DeleteSection() {
     const navigate = useNavigate()
 
     const { streamId } = useCurrentDraft()
+
+    const chainId = useCurrentChainId()
 
     return (
         <Section title="Delete stream">
@@ -30,7 +33,7 @@ export default function DeleteSection() {
                         return
                     }
 
-                    const client = await getTransactionalClient()
+                    const client = await getTransactionalClient(chainId)
 
                     await client.deleteStream(streamId)
 

@@ -70,6 +70,7 @@ import PersistanceAlert from './AbstractStreamEditPage/PersistanceAlert'
 import RelatedProjects from './AbstractStreamEditPage/RelatedProjects'
 import CreateProjectHint from './AbstractStreamEditPage/CreateProjectHint'
 import SponsorshipsTable from './AbstractStreamEditPage/SponsorshipsTable'
+import { getCurrentChainId } from '~/getters/getCurrentChain'
 
 const getCryptoModal = toaster(GetCryptoModal, Layer.Modal)
 
@@ -214,11 +215,13 @@ function StreamPageSwitch({ tab }: Props) {
         ),
     })
 
+    const chainId = useCurrentChainId()
+
     async function onSubmit(e: FormEvent) {
         defaultFormEventHandler(e)
 
         try {
-            await persist({
+            await persist(chainId, {
                 onCreate(streamId) {
                     if (!isMounted()) {
                         /**
