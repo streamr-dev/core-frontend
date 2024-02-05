@@ -1,13 +1,16 @@
 import React, { FunctionComponent, useState } from 'react'
 import styled from 'styled-components'
 import { CodeSnippet, Tabs } from '@streamr/streamr-layout'
-import { COLORS, MEDIUM } from '~/shared/utils/styled'
+import { StreamPermission } from 'streamr-client'
+import { COLORS, DESKTOP, TABLET } from '~/shared/utils/styled'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { Button } from '~/components/Button'
 import SelectField2 from '~/marketplace/components/SelectField2'
 import { StreamId } from '~/shared/types/stream-types'
 import { truncateStreamName } from '~/shared/utils/text'
 import useCopy from '~/shared/hooks/useCopy'
+import { useStreamAbility } from '~/shared/stores/streamAbilities'
+import { address0 } from '~/consts'
 
 function stripIndent(code: string): string {
     let minIndent = Number.POSITIVE_INFINITY
@@ -25,29 +28,36 @@ function stripIndent(code: string): string {
 }
 
 const Snippet = {
-    lightNodeHeader() {
-        return `
-            // Run a Streamr node right inside your JS app
-            const StreamrClient = require('streamr-client')
-            const streamr = new StreamrClient({
+    createClient(hasPermission: boolean) {
+        if (hasPermission) {
+            return `const streamr = new StreamrClient()`
+        }
+
+        return `const streamr = new StreamrClient({
                 auth: {
                     privateKey: 'ethereum-private-key' 
                 }
-            })
+            })`
+    },
+    lightNodeHeader(hasPermission: boolean) {
+        return `
+            // Run a Streamr node right inside your JS app
+            const StreamrClient = require('streamr-client')
+            ${this.createClient(hasPermission)}
         `
     },
-    lightNodeSubscribe(streamId: string) {
+    lightNodeSubscribe(streamId: string, hasPermission: boolean) {
         return `
-            ${this.lightNodeHeader()}
+            ${this.lightNodeHeader(hasPermission)}
             // Subscribe to a stream of messages
             streamr.subscribe('${streamId}', (msg) => {
                 // Handle incoming messages
             })
         `
     },
-    lightNodePublish(streamId: string) {
+    lightNodePublish(streamId: string, hasPermission: boolean) {
         return `
-            ${this.lightNodeHeader()}
+            ${this.lightNodeHeader(hasPermission)}
             // Publish messages to a stream
             streamr.publish('${streamId}', {
                 hello: 'world',
@@ -139,10 +149,21 @@ export const StreamConnect: FunctionComponent<{ streams: StreamId[] }> = ({
         'websocket',
     )
 
+    const hasPublicPubPermission = useStreamAbility(
+        streamId,
+        address0,
+        StreamPermission.PUBLISH,
+    )
+    const hasPublicSubPermission = useStreamAbility(
+        streamId,
+        address0,
+        StreamPermission.SUBSCRIBE,
+    )
+
     const lightNodeSnippet = stripIndent(
         action === 'publish'
-            ? Snippet.lightNodePublish(streamId)
-            : Snippet.lightNodeSubscribe(streamId),
+            ? Snippet.lightNodePublish(streamId, !!hasPublicPubPermission)
+            : Snippet.lightNodeSubscribe(streamId, !!hasPublicSubPermission),
     )
 
     const websocketSnippet = stripIndent(
@@ -175,32 +196,13 @@ export const StreamConnect: FunctionComponent<{ streams: StreamId[] }> = ({
     })()
 
     return (
-        <div className={'row'}>
-            <div className={'col-lg-7'}>
+        <Grid>
+            <div>
                 <StreamConnectHeader>Connect</StreamConnectHeader>
                 <StreamConnectText>
-                    Applications publish and subscribe to streams via Streamr nodes. In
-                    other words, nodes are the access points to the Streamr Network. To
-                    connect your application to streams, you interface it with a Streamr
-                    node.
+                    Here are the code snippets to connect to this stream with the Streamr
+                    SDK or through a separately running Streamr node:
                 </StreamConnectText>
-                <StreamConnectSubHeader>
-                    There are two strategies for interfacing applications with Streamr
-                    nodes:
-                </StreamConnectSubHeader>
-                <StreamConnectList>
-                    <li>
-                        <strong>Light node: </strong>
-                        the node is imported to your application as a library and runs
-                        locally as part of your application
-                    </li>
-                    <li>
-                        <strong>Broker node: </strong>
-                        the node runs separately, and your application connects to it
-                        remotely using one of the supported protocols
-                    </li>
-                </StreamConnectList>
-
                 <SnippetSelectorContainer>
                     <SelectContainer>
                         <SelectField2
@@ -211,8 +213,10 @@ export const StreamConnect: FunctionComponent<{ streams: StreamId[] }> = ({
                             ]}
                             value={action}
                             isClearable={false}
-                            onChange={(action: 'subscribe' | 'publish') => {
-                                setAction(action)
+                            onChange={(action: string) => {
+                                if (action === 'subscribe' || action === 'publish') {
+                                    setAction(action)
+                                }
                             }}
                             noShrink={true}
                             fullWidth
@@ -239,13 +243,18 @@ export const StreamConnect: FunctionComponent<{ streams: StreamId[] }> = ({
                         <SelectField2
                             placeholder={''}
                             options={[
-                                { label: 'Light node', value: 'lightNode' },
-                                { label: 'Broker node', value: 'brokerNode' },
+                                { label: 'Streamr SDK', value: 'lightNode' },
+                                { label: 'Streamr node', value: 'brokerNode' },
                             ]}
                             value={nodeType}
                             isClearable={false}
-                            onChange={(nodeType: 'lightNode' | 'brokerNode') => {
-                                setNodeType(nodeType)
+                            onChange={(nodeType: string) => {
+                                if (
+                                    nodeType === 'lightNode' ||
+                                    nodeType === 'brokerNode'
+                                ) {
+                                    setNodeType(nodeType)
+                                }
                             }}
                             noShrink={true}
                             fullWidth
@@ -304,36 +313,65 @@ export const StreamConnect: FunctionComponent<{ streams: StreamId[] }> = ({
                     </BrokerNodeSnippetContainer>
                 )}
             </div>
-            <RightColumn className={'col-lg-4 offset-lg-1'}>
-                {/*
-                <StreamConnectLink href={'/'}>
-                    <span>Pattern of data integration</span>
-                    <SvgIcon name={'linkOut'} />
-                </StreamConnectLink>
-            */}
+            <RightColumn>
                 <StreamConnectLink
-                    href={'https://www.npmjs.com/package/@streamr/cli-tools'}
+                    href={'https://docs.streamr.network/guides/nodejs'}
                     target={'_blank'}
                     rel={'noreferrer noopener'}
                 >
-                    <span>Streamr command line tool</span>
+                    <span>Pub/Sub in NodeJS</span>
                     <SvgIcon name={'linkOut'} />
                 </StreamConnectLink>
                 <StreamConnectLink
-                    href={'https://www.npmjs.com/package/streamr-client'}
+                    href={'https://docs.streamr.network/guides/web-app-frameworks'}
                     target={'_blank'}
                     rel={'noreferrer noopener'}
                 >
-                    <span>Streamr JavaScript Client quickstart</span>
+                    <span>Use Streamr in your web app</span>
+                    <SvgIcon name={'linkOut'} />
+                </StreamConnectLink>
+                <StreamConnectLink
+                    href={'https://docs.streamr.network/usage/cli-tool'}
+                    target={'_blank'}
+                    rel={'noreferrer noopener'}
+                >
+                    <span>The Streamr CLI tool</span>
+                    <SvgIcon name={'linkOut'} />
+                </StreamConnectLink>
+                <StreamConnectLink
+                    href={
+                        'https://docs.streamr.network/usage/connect-apps-and-iot/streamr-node-interface'
+                    }
+                    target={'_blank'}
+                    rel={'noreferrer noopener'}
+                >
+                    <span>Interfacing with a Streamr node</span>
                     <SvgIcon name={'linkOut'} />
                 </StreamConnectLink>
             </RightColumn>
-        </div>
+        </Grid>
     )
 }
 
+const Grid = styled.div`
+    display: grid;
+    grid-template-columns: initial;
+    grid-auto-flow: row;
+    gap: 32px;
+
+    @media ${DESKTOP} {
+        grid-template-columns: 65% auto;
+        grid-auto-flow: column;
+        gap: 88px;
+    }
+`
+
 const RightColumn = styled.div`
-    padding-top: 88px;
+    padding-top: 0px;
+
+    @media ${DESKTOP} {
+        padding-top: 88px;
+    }
 `
 
 const StreamConnectHeader = styled.p`
@@ -348,17 +386,14 @@ const StreamConnectText = styled.p`
     color: ${COLORS.primary};
 `
 
-const StreamConnectSubHeader = styled.p`
-    font-size: 20px;
-    color: ${COLORS.primary};
-    font-weight: ${MEDIUM};
-    margin-bottom: 24px;
-`
-
 const StreamConnectLightNodeSnippetContainer = styled.div`
     border: 1px solid ${COLORS.separator};
     background-color: white;
     margin-top: 30px;
+    max-width: calc(100vw - 100px);
+    @media ${TABLET} {
+        max-width: calc(100vw - 160px);
+    }
 `
 const StreamConnectSnippetCopyContainer = styled.div`
     border: 1px solid ${COLORS.separator};
@@ -370,14 +405,6 @@ const StreamConnectSnippetCopyContainer = styled.div`
     justify-content: flex-end;
 `
 
-const StreamConnectList = styled.ul`
-    padding: 0;
-    list-style-position: inside;
-    margin-bottom: 36px;
-    li {
-        font-size: 16px;
-    }
-`
 const StreamConnectLink = styled.a`
     font-size: 16px;
     display: flex;
@@ -396,22 +423,31 @@ const StreamConnectLink = styled.a`
 `
 
 const SnippetSelectorContainer = styled.div`
-    height: 40px;
     display: flex;
     flex-wrap: nowrap;
     margin-top: 20px;
-    align-items: center;
+    align-items: left;
+    flex-direction: column;
 
-    > * {
-        margin-right: 10px;
-        &:last-child {
-            margin-right: 0;
+    @media ${TABLET} {
+        flex-direction: row;
+        align-items: center;
+
+        > * {
+            margin-right: 10px;
+            &:last-child {
+                margin-right: 0;
+            }
         }
     }
 `
 
 const BrokerNodeSnippetContainer = styled.div`
     margin-top: 30px;
+    max-width: calc(100vw - 100px);
+    @media ${TABLET} {
+        max-width: calc(100vw - 160px);
+    }
 `
 
 const SelectContainer = styled.div`

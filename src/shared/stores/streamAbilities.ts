@@ -155,7 +155,7 @@ const useStreamAbilitiesStore = create<Store>((set, get) => {
     }
 })
 
-function useStreamAbility(
+export function useStreamAbility(
     streamId: string | undefined,
     account: string | undefined,
     permission: StreamPermission,
