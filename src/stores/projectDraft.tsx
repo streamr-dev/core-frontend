@@ -36,6 +36,7 @@ import { ValidationError } from '~/errors'
 import routes from '~/routes'
 import { toBN } from '~/utils/bn'
 import { getCurrentChainId } from '~/getters/getCurrentChain'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 const {
     DraftContext: ProjectDraftContext,
@@ -48,7 +49,7 @@ const {
     useSetDraftErrors: useSetProjectDraftErrors,
     useUpdateEntity: useUpdateProject,
 } = createDraftStore<ParsedProject>({
-    async persist({ entity: { cold, hot: project } }) {
+    async persist(chainId, { entity: { cold, hot: project } }) {
         const operations: Operation[] = []
 
         if (project.id) {
@@ -114,7 +115,7 @@ const {
                 }
 
                 if (shouldUpdateMatadata) {
-                    await updateProject(projectId, {
+                    await updateProject(chainId, projectId, {
                         domainIds,
                         metadata,
                         paymentDetails,
@@ -174,9 +175,9 @@ const {
                 await networkPreflight(chainId)
 
                 const dataUnionId = await deployDataUnionContract(
+                    domainId,
                     projectId,
                     adminFee,
-                    domainId,
                 )
 
                 /**
@@ -188,7 +189,7 @@ const {
                 next()
             }
 
-            await createProject(projectId, {
+            await createProject(chainId, projectId, {
                 domainIds,
                 isPublicPurchasable: project.type !== ProjectType.OpenData,
                 metadata,
@@ -327,8 +328,10 @@ export function usePersistProjectCallback() {
 
     const navigate = useNavigate()
 
+    const chainId = useCurrentChainId()
+
     return useCallback(() => {
-        persist({
+        persist(chainId, {
             onDone(mounted) {
                 if (!mounted) {
                     return
@@ -363,5 +366,5 @@ export function usePersistProjectCallback() {
                 console.warn('Failed to publish', e)
             },
         })
-    }, [persist, navigate])
+    }, [persist, navigate, chainId])
 }

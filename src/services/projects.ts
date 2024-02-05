@@ -5,7 +5,6 @@ import networkPreflight from '~/utils/networkPreflight'
 import { deployDataUnion } from '~/marketplace/modules/dataUnion/services'
 import { BN, toBN } from '~/utils/bn'
 import { getRawGraphProjects, getRawGraphProjectsByText } from '~/getters/hub'
-import { getCurrentChainId } from '~/getters/getCurrentChain'
 import { ProjectType, TheGraph } from '~/shared/types'
 import { isMessagedObject } from '~/utils'
 import { errorToast } from '~/utils/toast'
@@ -321,6 +320,7 @@ export async function getPublishableProjectProperties(project: unknown) {
 }
 
 export async function createProject(
+    chainId: number,
     projectId: string,
     {
         domainIds,
@@ -342,8 +342,6 @@ export async function createProject(
         streams: string[]
     },
 ) {
-    const chainId = getCurrentChainId()
-
     await networkPreflight(chainId)
 
     const provider = await getSigner()
@@ -365,6 +363,7 @@ export async function createProject(
 }
 
 export async function updateProject(
+    chainId: number,
     projectId: string,
     {
         domainIds,
@@ -384,8 +383,6 @@ export async function updateProject(
         streams: string[]
     },
 ) {
-    const chainId = getCurrentChainId()
-
     await networkPreflight(chainId)
 
     const provider = await getSigner()
@@ -402,9 +399,7 @@ export async function updateProject(
     await tx.wait()
 }
 
-export async function deleteProject(projectId: string) {
-    const chainId = getCurrentChainId()
-
+export async function deleteProject(chainId: number, projectId: string) {
     await networkPreflight(chainId)
 
     const provider = await getSigner()
@@ -429,9 +424,9 @@ export async function deleteProject(projectId: string) {
 }
 
 export async function deployDataUnionContract(
+    chainId: number,
     projectId: string,
     adminFee: number,
-    chainId: number,
 ) {
     await networkPreflight(chainId)
 

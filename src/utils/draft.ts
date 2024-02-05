@@ -53,13 +53,13 @@ interface DraftStore<E extends Entity> {
     update: (draftId: string, updater: (entity: E) => void) => void
     teardown: (draftId: string, options?: { onlyAbandoned?: boolean }) => void
     abandon: (draftId: string) => void
-    persist: (draftId: string) => Promise<void>
+    persist: (chainId: number, draftId: string) => Promise<void>
 }
 
 export function createDraftStore<E extends Entity = Entity>(options: {
     getEmptyDraft: () => Draft<E>
     fetch: (entityId: string) => Promise<E>
-    persist: (draft: Draft<E>) => void | Promise<void>
+    persist: (chainId: number, draft: Draft<E>) => void | Promise<void>
     isEqual?: (cold: E, hot: E) => boolean
 }) {
     const useDraftStore = create<DraftStore<E>>((set, get) => {
@@ -190,7 +190,7 @@ export function createDraftStore<E extends Entity = Entity>(options: {
                 }
             },
 
-            async persist(draftId) {
+            async persist(chainId, draftId) {
                 if (isPersisting(draftId)) {
                     return
                 }
@@ -217,7 +217,7 @@ export function createDraftStore<E extends Entity = Entity>(options: {
                     }
 
                     try {
-                        await options.persist?.(draft)
+                        await options.persist?.(chainId, draft)
                     } catch (e) {
                         if (e instanceof z.ZodError) {
                             const errors: Draft<E>['errors'] = {}
@@ -363,6 +363,7 @@ export function createDraftStore<E extends Entity = Entity>(options: {
 
         return useCallback(
             (
+                chainId: number,
                 params: {
                     onDone?: (mounted: boolean) => void
                     onError?: (e: unknown) => void
@@ -374,7 +375,7 @@ export function createDraftStore<E extends Entity = Entity>(options: {
 
                 void (async () => {
                     try {
-                        await persist(draftId)
+                        await persist(chainId, draftId)
 
                         const { aborted = false } =
                             abortControllerRef.current?.signal || {}
