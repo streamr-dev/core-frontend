@@ -3,8 +3,8 @@ import { getConfigValueFromChain } from '~/getters/getConfigValueFromChain'
 import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { BN, toBN } from '~/utils/bn'
+import { getCurrentChainId } from '~/getters/getCurrentChain'
 import { OperatorMetadataParser } from './OperatorMetadataParser'
-import { getCurrentChain, getCurrentChainId } from '~/getters/getCurrentChain'
 
 export const SponsorshipParser = z
     .object({

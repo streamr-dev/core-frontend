@@ -1,6 +1,6 @@
 import { config as chainConfigs } from '@streamr/config'
-import formatConfigUrl from '~/utils/formatConfigUrl'
 import { produce } from 'immer'
+import formatConfigUrl from '~/utils/formatConfigUrl'
 import { Chain } from '~/types'
 
 export const getConfigForChain = (chainId: number): Chain => {

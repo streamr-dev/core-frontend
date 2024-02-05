@@ -6,8 +6,6 @@ import { toBN } from '~/utils/bn'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { getCustomTokenBalance } from '~/marketplace/utils/web3'
-import { getCurrentChain, getCurrentChainId } from '~/getters/getCurrentChain'
-import { Chain } from '~/types'
 import { getConfigForChain } from '~/shared/web3/config'
 
 /**

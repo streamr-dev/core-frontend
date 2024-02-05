@@ -39,7 +39,6 @@ import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { invalidateSponsorshipQueries } from '~/hooks/sponsorships'
 import { getSigner } from '~/shared/stores/wallet'
 import { useCurrentChainId } from '~/shared/stores/chain'
-import { getCurrentChain, getCurrentChainId } from '~/getters/getCurrentChain'
 
 export function useOperatorForWalletQuery(address = '') {
     const currentChainId = useCurrentChainId()

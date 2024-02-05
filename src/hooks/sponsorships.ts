@@ -29,7 +29,6 @@ import { invalidateSponsorshipFundingHistoryQueries } from '~/hooks/useSponsorsh
 import { invalidateActiveOperatorByIdQueries } from '~/hooks/operators'
 import { editStakeModal } from '~/modals/EditStakeModal'
 import { useCurrentChain, useCurrentChainId } from '~/shared/stores/chain'
-import { getCurrentChain, getCurrentChainId } from '~/getters/getCurrentChain'
 
 function getDefaultQueryParams(pageSize: number) {
     return {

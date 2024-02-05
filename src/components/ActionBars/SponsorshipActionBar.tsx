@@ -33,8 +33,8 @@ import {
 } from '~/components/ActionBars/ActionBarButton'
 import { AboutSponsorship } from '~/components/ActionBars/AboutSponsorship'
 import { Hint } from '~/components/Hint'
-import { AbstractActionBar, Pad } from './AbstractActionBar'
 import { useCurrentChainId } from '~/shared/stores/chain'
+import { AbstractActionBar, Pad } from './AbstractActionBar'
 
 const DayInSeconds = 60 * 60 * 24
 

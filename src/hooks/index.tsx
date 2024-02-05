@@ -107,7 +107,7 @@ export function useConfigValueFromChain<
         return () => {
             mounted = false
         }
-    }, [key])
+    }, [key, chainId])
 
     return value
 }

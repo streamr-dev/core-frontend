@@ -45,7 +45,7 @@ import { OperatorIdCell } from '~/components/Table'
 import { Button } from '~/components/Button'
 import { getDelegationStats } from '~/getters/getDelegationStats'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { useCurrentChain, useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 export function NetworkOverviewPage() {
     return (
