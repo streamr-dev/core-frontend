@@ -20,7 +20,7 @@ import {
     invalidateAllOperatorsQueries,
     invalidateDelegationsForWalletQueries,
 } from '~/hooks/operators'
-import { onBlock } from '~/utils/blocks'
+import { onIndexedBlock } from '~/utils/blocks'
 import { ProjectType } from '~/shared/types'
 
 /**
@@ -334,7 +334,7 @@ export function saveOperator(
  */
 export function waitForIndexedBlock(chainId: number, blockNumber: number) {
     return new Promise<void>((resolve) => {
-        onBlock(chainId, blockNumber, resolve)
+        onIndexedBlock(chainId, blockNumber, resolve)
     })
 }
 

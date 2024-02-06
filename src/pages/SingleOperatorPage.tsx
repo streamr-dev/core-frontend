@@ -55,7 +55,7 @@ import { Button } from '~/components/Button'
 import { FundedUntilCell, StreamIdCell } from '~/components/Table'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { useSetBlockDependency } from '~/stores/blockNumberDependencies'
-import { onBlock } from '~/utils/blocks'
+import { onIndexedBlock } from '~/utils/blocks'
 import { LiveNodesTable } from '~/components/LiveNodesTable'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { abbr, saveOperator } from '~/utils'
@@ -681,7 +681,7 @@ export const SingleOperatorPage = () => {
                                                             ['operatorNodes', operatorId],
                                                         )
 
-                                                        onBlock(
+                                                        onIndexedBlock(
                                                             chainId,
                                                             blockNumber,
                                                             () => {

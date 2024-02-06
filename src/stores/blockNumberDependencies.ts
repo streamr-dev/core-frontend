@@ -1,7 +1,7 @@
 import { produce } from 'immer'
 import { create } from 'zustand'
 import { useCurrentChainId } from '~/shared/stores/chain'
-import { onBlock } from '~/utils/blocks'
+import { onIndexedBlock } from '~/utils/blocks'
 
 interface Store {
     dependencies: Record<string, number | undefined>
@@ -25,7 +25,7 @@ const useBlockNumberDependenciesStore = create<Store>((set) => {
                 }),
             )
 
-            onBlock(chainId, blockNumber, () => {
+            onIndexedBlock(chainId, blockNumber, () => {
                 set((store) =>
                     produce(store, (draft) => {
                         if (draft.dependencies[finalKey] !== blockNumber) {

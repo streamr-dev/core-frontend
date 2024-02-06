@@ -7,9 +7,7 @@ import {
 import { getGraphClient } from '~/getters/getGraphClient'
 import { sleep } from '~/utils'
 
-interface BlockObserver {
-    onBlock(blockNumber: number, fn: () => void): () => void
-}
+type BlockObserver = (blockNumber: number, fn: () => void) => () => void
 
 const blockObservers: Record<number, BlockObserver | undefined> = {}
 
@@ -133,16 +131,14 @@ function getBlockObserver(chainId: number): BlockObserver {
         })()
     }
 
-    blockObserver = {
-        onBlock(blockNumber, fn) {
-            pending[blockNumber] = true
+    blockObserver = (blockNumber, fn) => {
+        pending[blockNumber] = true
 
-            emitter.once(`block:${blockNumber}`, fn)
+        emitter.once(`block:${blockNumber}`, fn)
 
-            start()
+        start()
 
-            return () => void emitter.off(`block:${blockNumber}`, fn)
-        },
+        return () => void emitter.off(`block:${blockNumber}`, fn)
     }
 
     blockObservers[chainId] = blockObserver
@@ -150,6 +146,6 @@ function getBlockObserver(chainId: number): BlockObserver {
     return blockObserver
 }
 
-export function onBlock(chainId: number, blockNumber: number, fn: () => void) {
-    getBlockObserver(chainId).onBlock(blockNumber, fn)
+export function onIndexedBlock(chainId: number, blockNumber: number, fn: () => void) {
+    getBlockObserver(chainId)(blockNumber, fn)
 }
