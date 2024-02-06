@@ -30,16 +30,24 @@ import { Abbr } from '~/components/Abbr'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     balance: BN
+    chainId: number
     onResolve?: () => void
     sponsorship: ParsedSponsorship
 }
 
 const DayInSeconds = 60 * 60 * 24
 
-function FundSponsorshipModal({ balance, onResolve, sponsorship, ...props }: Props) {
+function FundSponsorshipModal({
+    balance,
+    chainId,
+    onResolve,
+    sponsorship,
+    ...props
+}: Props) {
     const { decimals = 18 } = useSponsorshipTokenInfo() || {}
 
     const [rawAmount, setRawAmount] = useState('')
+
     const [confirmState, setConfirmState] = useState(false)
 
     const pricePerSecond = toDecimals(sponsorship.payoutPerDay, decimals).dividedBy(
@@ -138,7 +146,7 @@ function FundSponsorshipModal({ balance, onResolve, sponsorship, ...props }: Pro
                 setBusy(true)
 
                 try {
-                    await fundSponsorship(sponsorship.id, finalValue, {
+                    await fundSponsorship(chainId, sponsorship.id, finalValue, {
                         onBlockNumber: waitForIndexedBlock,
                     })
 

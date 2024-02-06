@@ -70,7 +70,6 @@ import PersistanceAlert from './AbstractStreamEditPage/PersistanceAlert'
 import RelatedProjects from './AbstractStreamEditPage/RelatedProjects'
 import CreateProjectHint from './AbstractStreamEditPage/CreateProjectHint'
 import SponsorshipsTable from './AbstractStreamEditPage/SponsorshipsTable'
-import { getCurrentChainId } from '~/getters/getCurrentChain'
 
 const getCryptoModal = toaster(GetCryptoModal, Layer.Modal)
 

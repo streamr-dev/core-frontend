@@ -76,7 +76,7 @@ import { ChartPeriod } from '~/types'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { BN, toBN } from '~/utils/bn'
 import { errorToast } from '~/utils/toast'
-import { SponsorshipParser } from '~/parsers/SponsorshipParser'
+import { parseSponsorship } from '~/parsers/SponsorshipParser'
 import {
     GetEnsDomainsForAccountDocument,
     GetEnsDomainsForAccountQuery,
@@ -336,6 +336,7 @@ export async function getSponsorshipsByStreamId({
 }
 
 export async function getParsedSponsorshipById(
+    chainId: number,
     sponsorshipId: string,
     { force = false } = {},
 ) {
@@ -365,7 +366,9 @@ export async function getParsedSponsorshipById(
     }
 
     try {
-        return SponsorshipParser.parseAsync(rawSponsorship)
+        return parseSponsorship(rawSponsorship, {
+            chainId,
+        })
     } catch (e) {
         console.warn('Failed to parse a Sponsorship', e)
 

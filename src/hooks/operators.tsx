@@ -609,11 +609,7 @@ export function useCollectEarnings() {
                         onBlockNumber: waitForIndexedBlock,
                     })
 
-                    /**
-                     * @todo Explicitly tell which chain we're fetching earnings on. #passchainid
-                     */
-
-                    await fetchUncollectedEarnings(operatorId)
+                    await fetchUncollectedEarnings(chainId, operatorId)
 
                     /**
                      * Let's refresh the operator page to incl. now-collected earnings
@@ -659,11 +655,8 @@ export function useForceUndelegate() {
 
                 await getSponsorshipTokenInfo(chainId)
 
-                /**
-                 * @todo Pass chain id to force undeleg modal. #passchainid
-                 */
-
                 const sponsorshipId = await forceUndelegateModal.pop({
+                    chainId,
                     operator,
                     amount,
                 })

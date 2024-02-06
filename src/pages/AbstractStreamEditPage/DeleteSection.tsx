@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom'
 import { Button } from '~/components/Button'
 import getTransactionalClient from '~/getters/getTransactionalClient'
 import { useCurrentDraft } from '~/shared/stores/streamEditor'
+import { useCurrentChainId } from '~/shared/stores/chain'
 import routes from '~/routes'
 import Section from './Section'
-import { useCurrentChainId } from '~/shared/stores/chain'
 
 const Description = styled.p`
     margin-bottom: 3rem;

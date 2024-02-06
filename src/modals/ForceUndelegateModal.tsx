@@ -26,6 +26,7 @@ type OperatorStake = ParsedOperator['stakes'][0]
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     amount: BN
+    chainId: number
     onResolve?: (sponsorshipId: string) => void
     operator: ParsedOperator
 }
@@ -47,7 +48,7 @@ function isStakedLongEnough(joinTimestamp: number, minimumStakingPeriodSeconds: 
     return (joinTimestamp + minimumStakingPeriodSeconds) * 1000 < Date.now()
 }
 
-function ForceUndelegateModal({ amount, onResolve, operator, ...props }: Props) {
+function ForceUndelegateModal({ amount, onResolve, operator, chainId, ...props }: Props) {
     const [busy, setBusy] = useState(false)
 
     const stakes = useMemo(
@@ -92,6 +93,7 @@ function ForceUndelegateModal({ amount, onResolve, operator, ...props }: Props) 
 
                 try {
                     await forceUnstakeFromSponsorship(
+                        chainId,
                         selectedSponsorshipId,
                         operator.id,
                         { onBlockNumber: waitForIndexedBlock },

@@ -42,6 +42,7 @@ import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentToke
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
+    chainId: number
     onResolve?: () => void
     operator: ParsedOperator
     sponsorship: ParsedSponsorship
@@ -55,6 +56,7 @@ const limitErrorToaster = toaster(Toast, Layer.Toast)
 
 function JoinSponsorshipModal({
     amount: amountProp = '0',
+    chainId,
     onResolve,
     operator,
     sponsorship,
@@ -161,6 +163,7 @@ function JoinSponsorshipModal({
 
                 try {
                     await stakeOnSponsorship(
+                        chainId,
                         sponsorship.id,
                         finalAmount.toString(),
                         operator.id,

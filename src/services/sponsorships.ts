@@ -19,7 +19,6 @@ import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { getParsedSponsorshipById } from '~/getters'
 import { toDecimals } from '~/marketplace/utils/math'
 import { useUncollectedEarningsStore } from '~/shared/stores/uncollectedEarnings'
-import { getCurrentChainId } from '~/getters/getCurrentChain'
 
 export async function createSponsorship(
     chainId: number,
@@ -138,12 +137,11 @@ export async function createSponsorship(
 }
 
 export async function fundSponsorship(
+    chainId: number,
     sponsorshipId: string,
     amount: BNish,
     options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
-    const chainId = getCurrentChainId()
-
     const chainConfig = getConfigForChain(chainId)
 
     const paymentTokenSymbolFromConfig = getCoreConfig().sponsorshipPaymentToken
@@ -172,6 +170,7 @@ export async function fundSponsorship(
 }
 
 export async function stakeOnSponsorship(
+    chainId: number,
     sponsorshipId: string,
     amountWei: string,
     operatorAddress: string,
@@ -181,8 +180,6 @@ export async function stakeOnSponsorship(
         gasLimitMultiplier?: number
     } = {},
 ): Promise<void> {
-    const chainId = getCurrentChainId()
-
     await networkPreflight(chainId)
 
     const {
@@ -212,11 +209,12 @@ export async function stakeOnSponsorship(
         // Update uncollected earnings because the rate of change
         // will change along with stake amount
         const { fetch: updateEarnings } = useUncollectedEarningsStore.getState()
-        await updateEarnings(operatorAddress)
+        await updateEarnings(chainId, operatorAddress)
     })
 }
 
 export async function reduceStakeOnSponsorship(
+    chainId: number,
     sponsorshipId: string,
     targetAmountWei: string,
     operatorAddress: string,
@@ -231,8 +229,6 @@ export async function reduceStakeOnSponsorship(
         onBlockNumber,
         gasLimitMultiplier = 1.5,
     } = options
-
-    const chainId = getCurrentChainId()
 
     await networkPreflight(chainId)
 
@@ -259,11 +255,12 @@ export async function reduceStakeOnSponsorship(
         // Update uncollected earnings because the rate of change
         // will change along with stake amount
         const { fetch: updateEarnings } = useUncollectedEarningsStore.getState()
-        await updateEarnings(operatorAddress)
+        await updateEarnings(chainId, operatorAddress)
     })
 }
 
 export async function forceUnstakeFromSponsorship(
+    chainId: number,
     sponsorshipId: string,
     operatorAddress: string,
     options: {
@@ -272,8 +269,6 @@ export async function forceUnstakeFromSponsorship(
     } = {},
 ): Promise<void> {
     const { onBlockNumber, gasLimitMultiplier = 1.5 } = options
-
-    const chainId = getCurrentChainId()
 
     await networkPreflight(chainId)
 
@@ -304,7 +299,7 @@ export async function forceUnstakeFromSponsorship(
         // Update uncollected earnings because the rate of change
         // will change along with stake amount
         const { fetch: updateEarnings } = useUncollectedEarningsStore.getState()
-        await updateEarnings(operatorAddress)
+        await updateEarnings(chainId, operatorAddress)
     })
 }
 
@@ -314,12 +309,13 @@ export interface SponsorshipEarnings {
 }
 
 export async function getEarningsForSponsorships(
+    chainId: number,
     operatorAddress: string,
-): Promise<Record<string, BN>> {
-    const chainId = getCurrentChainId()
+): Promise<Record<string, SponsorshipEarnings>> {
     const provider = getPublicWeb3Provider(chainId)
 
     const contract = new Contract(operatorAddress, operatorABI, provider) as Operator
+
     const { addresses, earnings } = await contract.getSponsorshipsAndEarnings()
 
     const result: Record<string, SponsorshipEarnings> = {}
@@ -332,10 +328,12 @@ export async function getEarningsForSponsorships(
             sponsorshipABI,
             provider,
         ) as Sponsorship
+
         const myStake = toBN(await sponsorship.stakedWei(operatorAddress))
+
         const totalStake = toBN(await sponsorship.totalStakedWei())
 
-        const graphSponsorship = await getParsedSponsorshipById(sponsorshipId)
+        const graphSponsorship = await getParsedSponsorshipById(chainId, sponsorshipId)
 
         let totalPayoutPerSec: BN | undefined = toDecimals(
             graphSponsorship?.payoutPerDay.dividedBy(24 * 60 * 60) ?? BN(0),

@@ -7,7 +7,7 @@ import {
     getSponsorshipsByCreator,
     getSponsorshipsByStreamId,
 } from '~/getters'
-import { ParsedSponsorship, SponsorshipParser } from '~/parsers/SponsorshipParser'
+import { ParsedSponsorship, parseSponsorship } from '~/parsers/SponsorshipParser'
 import { errorToast } from '~/utils/toast'
 import useTokenInfo from '~/hooks/useTokenInfo'
 import getCoreConfig from '~/getters/getCoreConfig'
@@ -40,7 +40,10 @@ function getDefaultQueryParams(pageSize: number) {
     }
 }
 
-async function getSponsorshipsAndParse(getter: () => Promise<Sponsorship[]>) {
+async function getSponsorshipsAndParse(
+    chainId: number,
+    getter: () => Promise<Sponsorship[]>,
+) {
     const sponsorships: ParsedSponsorship[] = []
 
     let preparsedCount = 0
@@ -52,7 +55,11 @@ async function getSponsorshipsAndParse(getter: () => Promise<Sponsorship[]>) {
 
         for (let i = 0; i < rawSponsorships.length; i++) {
             try {
-                sponsorships.push(await SponsorshipParser.parseAsync(rawSponsorships[i]))
+                sponsorships.push(
+                    await parseSponsorship(rawSponsorships[i], {
+                        chainId,
+                    }),
+                )
             } catch (e) {
                 console.warn('Failed to parse a sponsorship', e)
             }
@@ -105,6 +112,7 @@ export function useSponsorshipsForCreatorQuery(
     } = {},
 ): UseInfiniteQueryResult<{ skip: number; sponsorships: ParsedSponsorship[] }> {
     const currentChainId = useCurrentChainId()
+
     const creator = address?.toLowerCase() || ''
 
     return useInfiniteQuery({
@@ -126,6 +134,7 @@ export function useSponsorshipsForCreatorQuery(
             }
 
             const sponsorships = await getSponsorshipsAndParse(
+                currentChainId,
                 () =>
                     getSponsorshipsByCreator(creator, {
                         first: pageSize,
@@ -166,6 +175,7 @@ export function useAllSponsorshipsQuery({
     orderDirection?: 'asc' | 'desc'
 }) {
     const currentChainId = useCurrentChainId()
+
     return useInfiniteQuery({
         queryKey: [
             'useAllSponsorshipsQuery',
@@ -177,6 +187,7 @@ export function useAllSponsorshipsQuery({
         ],
         async queryFn({ pageParam: skip = 0 }) {
             const sponsorships = await getSponsorshipsAndParse(
+                currentChainId,
                 () =>
                     getAllSponsorships({
                         first: pageSize,
@@ -207,13 +218,15 @@ function invalidateSponsorshipByIdQueries(chainId: number, sponsorshipId: string
 
 export function useSponsorshipByIdQuery(sponsorshipId: string) {
     const currentChainId = useCurrentChainId()
+
     return useQuery({
         queryKey: [
             'useSponsorshipByIdQuery',
             currentChainId,
             sponsorshipId.toLowerCase(),
         ],
-        queryFn: () => getParsedSponsorshipById(sponsorshipId, { force: true }),
+        queryFn: () =>
+            getParsedSponsorshipById(currentChainId, sponsorshipId, { force: true }),
         staleTime: 60 * 1000, // 1 minute
         keepPreviousData: true,
     })
@@ -231,6 +244,7 @@ export function useSponsorshipsByStreamIdQuery({
     orderDirection?: 'asc' | 'desc'
 }) {
     const currentChainId = useCurrentChainId()
+
     return useInfiniteQuery({
         queryKey: [
             'useSponsorshipsByStreamIdQuery',
@@ -242,6 +256,7 @@ export function useSponsorshipsByStreamIdQuery({
         ],
         async queryFn({ pageParam: skip = 0 }) {
             const sponsorships = await getSponsorshipsAndParse(
+                currentChainId,
                 () =>
                     getSponsorshipsByStreamId({
                         first: pageSize,
@@ -433,11 +448,8 @@ export function useFundSponsorshipCallback() {
                             async () => {
                                 await getSponsorshipTokenInfo(chainId)
 
-                                /**
-                                 * @todo Pass chain id to fund sponsorship modal. #passchainid
-                                 */
-
                                 await fundSponsorshipModal.pop({
+                                    chainId,
                                     sponsorship,
                                     balance: await getBalanceForSponsorship(
                                         chainId,
@@ -510,11 +522,11 @@ export function useJoinSponsorshipAsOperator() {
                             async () => {
                                 const wallet = await (await getSigner()).getAddress()
 
-                                /**
-                                 * @todo Pass chain id to join sponsorship modal. #passchainid
-                                 */
-
-                                await joinSponsorshipModal.pop({ sponsorship, operator })
+                                await joinSponsorshipModal.pop({
+                                    chainId,
+                                    sponsorship,
+                                    operator,
+                                })
 
                                 invalidateSponsorshipQueries(
                                     chainId,
@@ -578,6 +590,7 @@ export function useEditSponsorshipFunding() {
                             }
 
                             const result = await getParsedSponsorshipById(
+                                chainId,
                                 sponsorshipOrSponsorshipId,
                                 { force: true },
                             )
@@ -611,11 +624,8 @@ export function useEditSponsorshipFunding() {
                                     operator.id,
                                 )
 
-                                /**
-                                 * @todo Pass chain id to edit stake modal. #passchainid
-                                 */
-
                                 await editStakeModal.pop({
+                                    chainId,
                                     operator,
                                     sponsorship,
                                     leavePenaltyWei,
