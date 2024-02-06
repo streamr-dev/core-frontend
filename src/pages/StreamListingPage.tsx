@@ -93,9 +93,8 @@ const mapOrderDirectionToGraph = (orderDirection: ListOrderDirection): OrderDire
     return OrderDirection.Asc
 }
 
-const shouldUseIndexer = (orderBy: ListOrderBy) => {
-    const currentChainId = getCurrentChainId()
-    if (currentChainId != 137) {
+const shouldUseIndexer = (chainId: number, orderBy: ListOrderBy) => {
+    if (chainId != 137) {
         return false
     }
 
@@ -161,7 +160,7 @@ const StreamListingPage: React.FC = () => {
                 streamsSelection === TabOption.Your ? account || address0 : undefined
 
             let result: TheGraphStreamResult | IndexerResult
-            if (shouldUseIndexer(orderBy)) {
+            if (shouldUseIndexer(currentChainId, orderBy)) {
                 result = await getPagedStreamsFromIndexer(
                     PAGE_SIZE,
                     ctx.pageParam,
@@ -187,7 +186,7 @@ const StreamListingPage: React.FC = () => {
             statsQuery.fetchNextPage({
                 pageParam: {
                     streamIds: result.streams.map((s) => s.id),
-                    useIndexer: !shouldUseIndexer(orderBy),
+                    useIndexer: !shouldUseIndexer(currentChainId, orderBy),
                 },
             })
 
@@ -232,11 +231,11 @@ const StreamListingPage: React.FC = () => {
 
     // If indexer errors fall back to using The Graph
     useEffect(() => {
-        if (streamsQuery.isError && shouldUseIndexer(orderBy)) {
+        if (streamsQuery.isError && shouldUseIndexer(currentChainId, orderBy)) {
             setOrderBy(ListOrderBy.Id)
             setOrderDirection(ListOrderDirection.Asc)
         }
-    }, [streamsQuery.isError, orderBy])
+    }, [streamsQuery.isError, orderBy, currentChainId])
 
     return (
         <Layout pageTitle="Streams">

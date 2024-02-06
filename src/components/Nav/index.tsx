@@ -13,7 +13,7 @@ import { useOperatorForWalletQuery } from '~/hooks/operators'
 import { saveOperator } from '~/utils'
 import { useMediaQuery } from '~/hooks'
 import { ChainSelector as UnstyledChainSelector } from '~/components/ChainSelector'
-import { getCurrentChainId } from '~/getters/getCurrentChain'
+import { useCurrentChainId } from '~/shared/stores/chain'
 import { Avatarless, Name, Username } from './User'
 import {
     Avatar,
@@ -52,6 +52,8 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
     const { data: operator = null, isFetching: isOperatorFetching } = operatorQuery
 
     const isMobile = !useMediaQuery(`only screen and ${TABLET}`)
+
+    const chainId = useCurrentChainId()
 
     return (
         <div {...props} data-testid={'desktop-nav'}>
@@ -151,21 +153,17 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                                             return
                                                         }
 
-                                                        saveOperator(
-                                                            getCurrentChainId(),
-                                                            undefined,
-                                                            {
-                                                                onDone(id) {
-                                                                    navigate(
-                                                                        routes.network.operator(
-                                                                            {
-                                                                                id,
-                                                                            },
-                                                                        ),
-                                                                    )
-                                                                },
+                                                        saveOperator(chainId, undefined, {
+                                                            onDone(id) {
+                                                                navigate(
+                                                                    routes.network.operator(
+                                                                        {
+                                                                            id,
+                                                                        },
+                                                                    ),
+                                                                )
                                                             },
-                                                        )
+                                                        })
                                                     }}
                                                 >
                                                     <span>Become an Operator</span>

@@ -62,7 +62,6 @@ import { abbr, saveOperator } from '~/utils'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { Hint } from '~/components/Hint'
 import { useCurrentChainId } from '~/shared/stores/chain'
-import { getCurrentChainId } from '~/getters/getCurrentChain'
 
 const defaultChartData = []
 
@@ -650,7 +649,7 @@ export const SingleOperatorPage = () => {
                                             return
                                         }
 
-                                        const chainId = getCurrentChainId()
+                                        const chainId = currentChainId
 
                                         try {
                                             await saveNodeAddresses(
