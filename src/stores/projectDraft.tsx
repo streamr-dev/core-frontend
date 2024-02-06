@@ -11,7 +11,7 @@ import {
 } from '~/parsers/ProjectParser'
 import { createDraftStore, getEmptyDraft } from '~/utils/draft'
 import { ProjectType } from '~/shared/types'
-import getGraphClient from '~/getters/getGraphClient'
+import { getGraphClient } from '~/getters/getGraphClient'
 import {
     GetProjectDocument,
     GetProjectQuery,

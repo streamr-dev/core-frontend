@@ -71,7 +71,7 @@ import {
     GetSponsorshipByStreamIdDocument,
 } from '~/generated/gql/network'
 import getCoreConfig from '~/getters/getCoreConfig'
-import getGraphClient from '~/getters/getGraphClient'
+import { getGraphClient } from '~/getters/getGraphClient'
 import { ChartPeriod } from '~/types'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { BN, toBN } from '~/utils/bn'

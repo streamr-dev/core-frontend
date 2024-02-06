@@ -16,7 +16,7 @@ import {
 import { TheGraph } from '~/shared/types'
 import { address0 } from '~/consts'
 import { ProjectParser } from '~/parsers/ProjectParser'
-import getGraphClient from '~/getters/getGraphClient'
+import { getGraphClient } from '~/getters/getGraphClient'
 
 export async function getParsedProjectById(projectId: string, { force = false } = {}) {
     const {

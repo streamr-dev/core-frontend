@@ -2,7 +2,7 @@ import _ from 'lodash'
 import getCoreConfig from '~/getters/getCoreConfig'
 import { address0 } from '~/consts'
 import { post } from '~/shared/utils/api'
-import getGraphClient from '~/getters/getGraphClient'
+import { getGraphClient } from '~/getters/getGraphClient'
 import {
     GetPagedStreamsDocument,
     GetPagedStreamsQuery,

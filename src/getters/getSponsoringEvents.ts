@@ -1,5 +1,5 @@
 import { format } from 'date-fns'
-import getGraphClient from '~/getters/getGraphClient'
+import { getGraphClient } from '~/getters/getGraphClient'
 import { toBN } from '~/utils/bn'
 import {
     GetSponsoringEventsDocument,

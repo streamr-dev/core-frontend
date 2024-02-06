@@ -4,7 +4,7 @@ import {
     GetMetadataQuery,
     GetMetadataQueryVariables,
 } from '~/generated/gql/network'
-import getGraphClient from '~/getters/getGraphClient'
+import { getGraphClient } from '~/getters/getGraphClient'
 import { sleep } from '~/utils'
 
 let lastKnownBlockNumber = -1

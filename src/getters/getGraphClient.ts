@@ -5,7 +5,7 @@ import { getGraphUrl } from '.'
 
 const graphClients: Partial<Record<number, ApolloClient<NormalizedCacheObject>>> = {}
 
-export default function getGraphClient() {
+export function getGraphClient() {
     const chainId = getCurrentChainId()
 
     const graphClient =
