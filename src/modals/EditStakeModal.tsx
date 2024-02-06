@@ -165,7 +165,9 @@ function EditStakeModal({
                             operatorId,
                             {
                                 toastLabel: 'Increase stake on sponsorship',
-                                onBlockNumber: waitForIndexedBlock,
+                                onBlockNumber: (blockNumber) => {
+                                    waitForIndexedBlock(chainId, blockNumber)
+                                },
                             },
                         )
 
@@ -179,7 +181,9 @@ function EditStakeModal({
                             finalAmount.toString(),
                             operatorId,
                             {
-                                onBlockNumber: waitForIndexedBlock,
+                                onBlockNumber: (blockNumber) => {
+                                    waitForIndexedBlock(chainId, blockNumber)
+                                },
                                 toastLabel: finalAmount.isZero()
                                     ? 'Unstake from sponsorship'
                                     : 'Reduce stake on sponsorship',
@@ -228,7 +232,9 @@ function EditStakeModal({
                             sponsorshipId,
                             operatorId,
                             {
-                                onBlockNumber: waitForIndexedBlock,
+                                onBlockNumber: (blockNumber) => {
+                                    waitForIndexedBlock(chainId, blockNumber)
+                                },
                             },
                         )
 

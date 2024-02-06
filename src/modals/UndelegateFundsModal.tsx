@@ -130,7 +130,11 @@ export default function UndelegateFundsModal({
                         prefinalAmount.isGreaterThanOrEqualTo(delegatedTotalProp)
                             ? toBN(Number.POSITIVE_INFINITY)
                             : prefinalAmount,
-                        { onBlockNumber: waitForIndexedBlock },
+                        {
+                            onBlockNumber: (blockNumber) => {
+                                waitForIndexedBlock(chainId, blockNumber)
+                            },
+                        },
                     )
 
                     onResolve?.()

@@ -20,7 +20,7 @@ import {
     invalidateAllOperatorsQueries,
     invalidateDelegationsForWalletQueries,
 } from '~/hooks/operators'
-import { blockObserver } from '~/utils/blocks'
+import { onBlock } from '~/utils/blocks'
 import { ProjectType } from '~/shared/types'
 
 /**
@@ -332,9 +332,9 @@ export function saveOperator(
  * Returns a promise that resolves when the Graph indexes all blocks
  * to a given block height.
  */
-export function waitForIndexedBlock(blockNumber: number) {
+export function waitForIndexedBlock(chainId: number, blockNumber: number) {
     return new Promise<void>((resolve) => {
-        blockObserver.onSpecific(blockNumber, resolve)
+        onBlock(chainId, blockNumber, resolve)
     })
 }
 

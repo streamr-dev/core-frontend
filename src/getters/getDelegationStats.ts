@@ -19,35 +19,35 @@ export const getDelegationStats = async (
     let result: GetDelegatorDailyBucketsQuery['delegatorDailyBuckets']
     switch (selectedPeriod) {
         case ChartPeriod.SevenDays:
-            result = await getDelegatorDailyBuckets(delegatorId, {
+            result = await getDelegatorDailyBuckets(chainId, delegatorId, {
                 dateGreaterEqualThan: start.clone().subtract(7, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.OneMonth:
-            result = await getDelegatorDailyBuckets(delegatorId, {
+            result = await getDelegatorDailyBuckets(chainId, delegatorId, {
                 dateGreaterEqualThan: start.clone().subtract(30, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.ThreeMonths:
-            result = await getDelegatorDailyBuckets(delegatorId, {
+            result = await getDelegatorDailyBuckets(chainId, delegatorId, {
                 dateGreaterEqualThan: start.clone().subtract(90, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.OneYear:
-            result = await getDelegatorDailyBuckets(delegatorId, {
+            result = await getDelegatorDailyBuckets(chainId, delegatorId, {
                 dateGreaterEqualThan: start.clone().subtract(365, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.YearToDate:
-            result = await getDelegatorDailyBuckets(delegatorId, {
+            result = await getDelegatorDailyBuckets(chainId, delegatorId, {
                 dateGreaterEqualThan: start.clone().startOf('year').unix(),
                 dateLowerThan: start.unix(),
                 force,
@@ -60,13 +60,17 @@ export const getDelegationStats = async (
             const elements: GetDelegatorDailyBucketsQuery['delegatorDailyBuckets'] = []
             // yeah - I'm guessing we will not have a history longer than 5 thousand days :)
             for (let i = 0; i < maxIterations; i++) {
-                const partialResult = await getDelegatorDailyBuckets(delegatorId, {
-                    dateGreaterEqualThan: endDate.unix(),
-                    dateLowerThan: start.unix(),
-                    batchSize: maxAmount,
-                    skip: maxAmount * i,
-                    force,
-                })
+                const partialResult = await getDelegatorDailyBuckets(
+                    chainId,
+                    delegatorId,
+                    {
+                        dateGreaterEqualThan: endDate.unix(),
+                        dateLowerThan: start.unix(),
+                        batchSize: maxAmount,
+                        skip: maxAmount * i,
+                        force,
+                    },
+                )
 
                 elements.push(...partialResult)
                 if (partialResult.length < maxAmount) {

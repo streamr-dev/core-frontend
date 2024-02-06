@@ -136,7 +136,7 @@ export function useSponsorshipsForCreatorQuery(
             const sponsorships = await getSponsorshipsAndParse(
                 currentChainId,
                 () =>
-                    getSponsorshipsByCreator(creator, {
+                    getSponsorshipsByCreator(currentChainId, creator, {
                         first: pageSize,
                         skip,
                         searchQuery,
@@ -190,6 +190,7 @@ export function useAllSponsorshipsQuery({
                 currentChainId,
                 () =>
                     getAllSponsorships({
+                        chainId: currentChainId,
                         first: pageSize,
                         skip,
                         searchQuery,
@@ -259,6 +260,7 @@ export function useSponsorshipsByStreamIdQuery({
                 currentChainId,
                 () =>
                     getSponsorshipsByStreamId({
+                        chainId: currentChainId,
                         first: pageSize,
                         skip,
                         streamId,

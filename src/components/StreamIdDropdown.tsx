@@ -51,6 +51,7 @@ export function StreamIdDropdown({
             try {
                 return (
                     await getPagedStreams(
+                        currentChainId,
                         20,
                         pageParam,
                         undefined,

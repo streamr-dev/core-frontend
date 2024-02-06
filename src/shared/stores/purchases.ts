@@ -29,6 +29,7 @@ import {
 } from '~/utils'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import { getParsedProjectById, getProjectSubscriptions } from '~/getters/hub'
+import { getCurrentChainId } from '~/getters/getCurrentChain'
 import { TheGraph } from '../types'
 import { getSigner } from './wallet'
 
@@ -72,7 +73,14 @@ const usePurchaseStore = create<Store>((set, get) => {
             )
 
             try {
-                const entries = await getProjectSubscriptions(projectId, { force: true })
+                /**
+                 * @todo Pass chain id to fetchSubscriptions. #passchainid
+                 */
+                const chainId = getCurrentChainId()
+
+                const entries = await getProjectSubscriptions(chainId, projectId, {
+                    force: true,
+                })
 
                 set((current) =>
                     produce(current, (next) => {
@@ -119,8 +127,15 @@ const usePurchaseStore = create<Store>((set, get) => {
                     }),
                 )
 
+                /**
+                 * @todo Pass chain id to `purchase`. #passchainid
+                 */
+                const currentChainId = getCurrentChainId()
+
                 const { paymentDetails = [], streams = [] } =
-                    (await getParsedProjectById(projectId, { force: true })) || {}
+                    (await getParsedProjectById(currentChainId, projectId, {
+                        force: true,
+                    })) || {}
 
                 const chainIds = paymentDetails.map(({ domainId }) => domainId)
 

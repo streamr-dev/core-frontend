@@ -294,6 +294,7 @@ function useGotAnyStreams() {
                 return (
                     (
                         await getPagedStreams(
+                            currentChainId,
                             1,
                             undefined,
                             wallet,

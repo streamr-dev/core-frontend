@@ -200,9 +200,17 @@ const {
     },
 
     async fetch(projectId) {
+        /**
+         * @todo Pass chain id to fetch. #passchainid
+         */
+        const chainId = getCurrentChainId()
+
         const {
             data: { project: graphProject },
-        } = await getGraphClient().query<GetProjectQuery, GetProjectQueryVariables>({
+        } = await getGraphClient(chainId).query<
+            GetProjectQuery,
+            GetProjectQueryVariables
+        >({
             query: GetProjectDocument,
             variables: {
                 id: projectId.toLowerCase(),

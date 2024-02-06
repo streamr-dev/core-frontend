@@ -153,6 +153,7 @@ export type ProjectsResult = {
  * @todo Refactor to use `ProjectParser` and `useInfiniteQuery`.
  */
 export const getProjects = async (
+    chainId: number,
     owner?: string | undefined,
     first = 20,
     skip = 0,
@@ -160,6 +161,7 @@ export const getProjects = async (
     streamId?: string, // used to search projects which contain this stream
 ): Promise<ProjectsResult> => {
     const projects = await getRawGraphProjects({
+        chainId,
         owner,
         first: first + 1,
         skip,
@@ -174,11 +176,12 @@ export const getProjects = async (
  * @todo Refactor to use `ParsedProject` and `useInfiniteQuery`.
  */
 export const searchProjects = async (
+    chainId: number,
     search: string,
     first = 20,
     skip = 0,
 ): Promise<ProjectsResult> => {
-    const projects = await getRawGraphProjectsByText(search, {
+    const projects = await getRawGraphProjectsByText(chainId, search, {
         first: first + 1,
         skip,
     })

@@ -1,17 +1,14 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
-import getCoreConfig from './getCoreConfig'
-import { getCurrentChainId } from './getCurrentChain'
-import { getGraphUrl } from '.'
+import { getConfigForChain } from '~/shared/web3/config'
+import getCoreConfig from '~/getters/getCoreConfig'
 
 const graphClients: Partial<Record<number, ApolloClient<NormalizedCacheObject>>> = {}
 
-export function getGraphClient() {
-    const chainId = getCurrentChainId()
-
+export function getGraphClient(chainId: number) {
     const graphClient =
         graphClients[chainId] ||
         new ApolloClient({
-            uri: getGraphUrl(),
+            uri: getGraphUrl(chainId),
             cache: new InMemoryCache(),
         })
 
@@ -20,6 +17,23 @@ export function getGraphClient() {
     }
 
     return graphClient
+}
+
+function getGraphUrl(chainId: number): string {
+    const chain = getConfigForChain(chainId)
+
+    if (chain.theGraphUrl != null) {
+        return chain.theGraphUrl
+    }
+
+    // Fall back to default subgraph name
+    const url = `${
+        getCoreConfig().theGraphUrl
+    }/subgraphs/name/streamr-dev/network-subgraphs`
+
+    console.warn('There is no theGraphUrl in config. Falling back to', url)
+
+    return url
 }
 
 const dataUnionGraphClients: Partial<

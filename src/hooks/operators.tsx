@@ -45,7 +45,8 @@ export function useOperatorForWalletQuery(address = '') {
 
     return useQuery({
         queryKey: ['useOperatorForWalletQuery', currentChainId, address.toLowerCase()],
-        queryFn: () => getParsedOperatorByOwnerAddress(address, { force: true }),
+        queryFn: () =>
+            getParsedOperatorByOwnerAddress(currentChainId, address, { force: true }),
     })
 }
 
@@ -59,7 +60,9 @@ export function useOperatorByIdQuery(operatorId = '') {
                 return null
             }
 
-            const operator = await getOperatorById(operatorId, { force: true })
+            const operator = await getOperatorById(currentChainId, operatorId, {
+                force: true,
+            })
 
             if (operator) {
                 try {
@@ -135,7 +138,13 @@ export function useDelegationsStats(address = '') {
 
     const addr = address.toLowerCase()
 
+    const chainId = useCurrentChainId()
+
     useEffect(() => {
+        /**
+         * @todo Refactor using useQuery. #refactor
+         */
+
         let mounted = true
 
         if (!addr) {
@@ -150,6 +159,7 @@ export function useDelegationsStats(address = '') {
             const operators = await getParsedOperators(
                 () =>
                     getOperatorsByDelegation({
+                        chainId,
                         first: 1000,
                         address: addr,
                     }) as Promise<Operator[]>,
@@ -207,7 +217,7 @@ export function useDelegationsStats(address = '') {
         return () => {
             mounted = false
         }
-    }, [addr])
+    }, [addr, chainId])
 
     return stats
 }
@@ -251,6 +261,7 @@ export function useDelegationsForWalletQuery({
             const elements: Delegation[] = await getParsedOperators(
                 () => {
                     const params = {
+                        chainId: currentChainId,
                         first: pageSize,
                         skip,
                         address,
@@ -346,6 +357,7 @@ export function useAllOperatorsQuery({
             const elements = await getParsedOperators(
                 () => {
                     const params = {
+                        chainId: currentChainId,
                         first: batchSize,
                         skip,
                         orderBy: mapOperatorOrder(orderBy),
@@ -606,7 +618,9 @@ export function useCollectEarnings() {
                     }
 
                     await collectEarnings(chainId, sponsorshipId, operatorId, {
-                        onBlockNumber: waitForIndexedBlock,
+                        onBlockNumber: (blockNumber) => {
+                            waitForIndexedBlock(chainId, blockNumber)
+                        },
                     })
 
                     await fetchUncollectedEarnings(chainId, operatorId)

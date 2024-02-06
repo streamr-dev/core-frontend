@@ -166,7 +166,7 @@ function CreateSponsorshipModal({
                 setBusy(true)
 
                 try {
-                    if (!(await checkIfStreamExists(formData.streamId))) {
+                    if (!(await checkIfStreamExists(chainId, formData.streamId))) {
                         errorToast(
                             { title: 'Stream does not exist' },
                             streamNotFoundToaster,
@@ -176,7 +176,9 @@ function CreateSponsorshipModal({
                     }
 
                     const sponsorshipId = await createSponsorship(chainId, formData, {
-                        onBlockNumber: waitForIndexedBlock,
+                        onBlockNumber: (blockNumber) => {
+                            waitForIndexedBlock(chainId, blockNumber)
+                        },
                     })
 
                     onResolve?.({

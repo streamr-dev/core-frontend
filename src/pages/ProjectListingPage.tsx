@@ -50,10 +50,10 @@ export default function ProjectListingPage() {
             const { search, type } = filter
 
             if (search) {
-                return searchProjects(search, PageSize, page)
+                return searchProjects(currentChainId, search, PageSize, page)
             }
 
-            return getProjects(owner, PageSize, page, type)
+            return getProjects(currentChainId, owner, PageSize, page, type)
         },
         getNextPageParam(lastPage, pages) {
             return lastPage.hasNextPage ? pages.flatMap((p) => p.projects).length : null

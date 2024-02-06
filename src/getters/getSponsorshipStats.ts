@@ -19,35 +19,35 @@ export const getSponsorshipStats = async (
     let result: GetSponsorshipDailyBucketsQuery['sponsorshipDailyBuckets']
     switch (selectedPeriod) {
         case ChartPeriod.SevenDays:
-            result = await getSponsorshipDailyBuckets(sponsorshipId, {
+            result = await getSponsorshipDailyBuckets(chainId, sponsorshipId, {
                 dateGreaterEqualThan: start.clone().subtract(7, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.OneMonth:
-            result = await getSponsorshipDailyBuckets(sponsorshipId, {
+            result = await getSponsorshipDailyBuckets(chainId, sponsorshipId, {
                 dateGreaterEqualThan: start.clone().subtract(30, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.ThreeMonths:
-            result = await getSponsorshipDailyBuckets(sponsorshipId, {
+            result = await getSponsorshipDailyBuckets(chainId, sponsorshipId, {
                 dateGreaterEqualThan: start.clone().subtract(90, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.OneYear:
-            result = await getSponsorshipDailyBuckets(sponsorshipId, {
+            result = await getSponsorshipDailyBuckets(chainId, sponsorshipId, {
                 dateGreaterEqualThan: start.clone().subtract(365, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.YearToDate:
-            result = await getSponsorshipDailyBuckets(sponsorshipId, {
+            result = await getSponsorshipDailyBuckets(chainId, sponsorshipId, {
                 dateGreaterEqualThan: start.clone().startOf('year').unix(),
                 dateLowerThan: start.unix(),
                 force,
@@ -61,13 +61,17 @@ export const getSponsorshipStats = async (
                 []
             // yeah - I'm guessing we will not have a history longer than 5 thousand days :)
             for (let i = 0; i < maxIterations; i++) {
-                const partialResult = await getSponsorshipDailyBuckets(sponsorshipId, {
-                    dateLowerThan: start.unix(),
-                    dateGreaterEqualThan: endDate.unix(),
-                    batchSize: maxAmount,
-                    skip: maxAmount * i,
-                    force,
-                })
+                const partialResult = await getSponsorshipDailyBuckets(
+                    chainId,
+                    sponsorshipId,
+                    {
+                        dateLowerThan: start.unix(),
+                        dateGreaterEqualThan: endDate.unix(),
+                        batchSize: maxAmount,
+                        skip: maxAmount * i,
+                        force,
+                    },
+                )
 
                 elements.push(...partialResult)
                 if (partialResult.length < maxAmount) {

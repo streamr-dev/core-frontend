@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { getStreamDescription } from '~/getters'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 export function StreamDescription({ streamId }: { streamId: string }) {
     const [desc, setDesc] = useState<string>()
+
+    const chainId = useCurrentChainId()
 
     /**
      * @todo Refactor using `useQuery`.
@@ -14,7 +17,7 @@ export function StreamDescription({ streamId }: { streamId: string }) {
 
         setTimeout(async () => {
             try {
-                const description = await getStreamDescription(streamId)
+                const description = await getStreamDescription(chainId, streamId)
 
                 if (mounted) {
                     setDesc(description)
@@ -30,7 +33,7 @@ export function StreamDescription({ streamId }: { streamId: string }) {
         return () => {
             mounted = false
         }
-    }, [streamId])
+    }, [streamId, chainId])
 
     return <>{desc}</>
 }

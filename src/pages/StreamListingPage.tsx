@@ -172,6 +172,7 @@ const StreamListingPage: React.FC = () => {
                 )
             } else {
                 result = await getPagedStreams(
+                    currentChainId,
                     PAGE_SIZE,
                     ctx.pageParam,
                     owner,
@@ -221,7 +222,7 @@ const StreamListingPage: React.FC = () => {
                 return indexerStats
             }
 
-            return await getStreams(ctx.pageParam.streamIds, {
+            return await getStreams(currentChainId, ctx.pageParam.streamIds, {
                 force: true,
             })
         },

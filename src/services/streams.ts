@@ -131,12 +131,13 @@ const prepareStreamResult = (
 }
 
 export const getStreams = async (
+    chainId: number,
     streamIds: Array<string>,
     { force = false } = {},
 ): Promise<TheGraphStream[]> => {
     const {
         data: { streams },
-    } = await getGraphClient().query<GetStreamsQuery, GetStreamsQueryVariables>({
+    } = await getGraphClient(chainId).query<GetStreamsQuery, GetStreamsQueryVariables>({
         query: GetStreamsDocument,
         variables: {
             streamIds,
@@ -152,6 +153,7 @@ export const getStreams = async (
 }
 
 export const getPagedStreams = async (
+    chainId: number,
     first: number,
     lastId?: string,
     owner?: string,
@@ -175,18 +177,19 @@ export const getPagedStreams = async (
 
     const {
         data: { streams },
-    } = await getGraphClient().query<GetPagedStreamsQuery, GetPagedStreamsQueryVariables>(
-        {
-            query: GetPagedStreamsDocument,
-            variables: {
-                first: first + 1,
-                orderBy,
-                orderDirection,
-                where,
-            },
-            fetchPolicy: force ? 'network-only' : void 0,
+    } = await getGraphClient(chainId).query<
+        GetPagedStreamsQuery,
+        GetPagedStreamsQueryVariables
+    >({
+        query: GetPagedStreamsDocument,
+        variables: {
+            first: first + 1,
+            orderBy,
+            orderDirection,
+            where,
         },
-    )
+        fetchPolicy: force ? 'network-only' : void 0,
+    })
 
     if (streams && streams.length > 0) {
         return prepareStreamResult(streams, first)
@@ -354,12 +357,14 @@ export const getGlobalStatsFromIndexer = async (): Promise<GlobalStreamStats> =>
 }
 
 export const getStreamsOwnedBy = async (
+    chainId: number,
     owner?: string,
     search?: string,
     onlyPublic?: boolean,
     { force = false } = {},
 ): Promise<TheGraphStream[]> => {
     const allOwnedStreams = await getPagedStreams(
+        chainId,
         999,
         undefined,
         owner,
@@ -384,11 +389,15 @@ export const getStreamsOwnedBy = async (
 }
 
 export const checkIfStreamExists = async (
+    chainId: number,
     potentialStreamId: string,
 ): Promise<boolean> => {
     const {
         data: { stream },
-    } = await getGraphClient().query<GetStreamByIdQuery, GetStreamByIdQueryVariables>({
+    } = await getGraphClient(chainId).query<
+        GetStreamByIdQuery,
+        GetStreamByIdQueryVariables
+    >({
         query: GetStreamByIdDocument,
         variables: {
             streamId: potentialStreamId,

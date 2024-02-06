@@ -22,6 +22,7 @@ export const useSponsorshipFundingHistoryQuery = (
     pageSize = FUNDING_HISTORY_PAGE_SIZE,
 ) => {
     const currentChainId = useCurrentChainId()
+
     return useInfiniteQuery({
         queryKey: [
             'useSponsorshipFundingHistoryQuery',
@@ -38,6 +39,7 @@ export const useSponsorshipFundingHistoryQuery = (
                     }
                 }
                 const events = await getSponsoringEvents(
+                    currentChainId,
                     sponsorshipId,
                     pageSize,
                     ctx.pageParam || 0,

@@ -19,35 +19,35 @@ export const getOperatorStats = async (
     let result: GetOperatorDailyBucketsQuery['operatorDailyBuckets']
     switch (selectedPeriod) {
         case ChartPeriod.SevenDays:
-            result = await getOperatorDailyBuckets(operatorId, {
+            result = await getOperatorDailyBuckets(chainId, operatorId, {
                 dateGreaterEqualThan: start.clone().subtract(7, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.OneMonth:
-            result = await getOperatorDailyBuckets(operatorId, {
+            result = await getOperatorDailyBuckets(chainId, operatorId, {
                 dateGreaterEqualThan: start.clone().subtract(30, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.ThreeMonths:
-            result = await getOperatorDailyBuckets(operatorId, {
+            result = await getOperatorDailyBuckets(chainId, operatorId, {
                 dateGreaterEqualThan: start.clone().subtract(90, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.OneYear:
-            result = await getOperatorDailyBuckets(operatorId, {
+            result = await getOperatorDailyBuckets(chainId, operatorId, {
                 dateGreaterEqualThan: start.clone().subtract(365, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.YearToDate:
-            result = await getOperatorDailyBuckets(operatorId, {
+            result = await getOperatorDailyBuckets(chainId, operatorId, {
                 dateGreaterEqualThan: start.clone().startOf('year').unix(),
                 dateLowerThan: start.unix(),
                 force,
@@ -60,7 +60,7 @@ export const getOperatorStats = async (
             const elements: GetOperatorDailyBucketsQuery['operatorDailyBuckets'] = []
             // yeah - I'm guessing we will not have a history longer than 5 thousand days :)
             for (let i = 0; i < maxIterations; i++) {
-                const partialResult = await getOperatorDailyBuckets(operatorId, {
+                const partialResult = await getOperatorDailyBuckets(chainId, operatorId, {
                     dateGreaterEqualThan: endDate.unix(),
                     dateLowerThan: start.unix(),
                     batchSize: maxAmount,

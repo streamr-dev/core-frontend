@@ -55,7 +55,7 @@ import { Button } from '~/components/Button'
 import { FundedUntilCell, StreamIdCell } from '~/components/Table'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { useSetBlockDependency } from '~/stores/blockNumberDependencies'
-import { blockObserver } from '~/utils/blocks'
+import { onBlock } from '~/utils/blocks'
 import { LiveNodesTable } from '~/components/LiveNodesTable'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { abbr, saveOperator } from '~/utils'
@@ -652,10 +652,6 @@ export const SingleOperatorPage = () => {
 
                                         const chainId = getCurrentChainId()
 
-                                        /**
-                                         * @todo Block dependencies also have to be chain-specific. #passchainid
-                                         */
-
                                         try {
                                             await saveNodeAddresses(
                                                 chainId,
@@ -679,12 +675,14 @@ export const SingleOperatorPage = () => {
                                                             return newNodes
                                                         })
 
-                                                        setBlockDependency(blockNumber, [
-                                                            'operatorNodes',
-                                                            operatorId,
-                                                        ])
+                                                        setBlockDependency(
+                                                            chainId,
+                                                            blockNumber,
+                                                            ['operatorNodes', operatorId],
+                                                        )
 
-                                                        blockObserver.onSpecific(
+                                                        onBlock(
+                                                            chainId,
                                                             blockNumber,
                                                             () => {
                                                                 invalidateActiveOperatorByIdQueries(

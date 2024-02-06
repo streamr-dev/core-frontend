@@ -18,10 +18,14 @@ import { address0 } from '~/consts'
 import { ProjectParser } from '~/parsers/ProjectParser'
 import { getGraphClient } from '~/getters/getGraphClient'
 
-export async function getParsedProjectById(projectId: string, { force = false } = {}) {
+export async function getParsedProjectById(
+    chainId: number,
+    projectId: string,
+    { force = false } = {},
+) {
     const {
         data: { project },
-    } = await getGraphClient().query<GetProjectQuery, GetProjectQueryVariables>({
+    } = await getGraphClient(chainId).query<GetProjectQuery, GetProjectQueryVariables>({
         query: GetProjectDocument,
         variables: {
             id: projectId,
@@ -33,6 +37,7 @@ export async function getParsedProjectById(projectId: string, { force = false } 
 }
 
 export async function getRawGraphProjects({
+    chainId,
     owner,
     first = 20,
     skip = 0,
@@ -40,6 +45,7 @@ export async function getRawGraphProjects({
     streamId,
     force = false,
 }: {
+    chainId: number
     owner?: string | undefined
     first?: number
     skip?: number
@@ -78,7 +84,7 @@ export async function getRawGraphProjects({
 
     const {
         data: { projects = [] },
-    } = await getGraphClient().query<GetProjectsQuery, GetProjectsQueryVariables>({
+    } = await getGraphClient(chainId).query<GetProjectsQuery, GetProjectsQueryVariables>({
         query: GetProjectsDocument,
         variables: {
             skip,
@@ -92,6 +98,7 @@ export async function getRawGraphProjects({
 }
 
 export async function getRawGraphProjectsByText(
+    chainId: number,
     value: string,
     {
         first = 20,
@@ -101,7 +108,7 @@ export async function getRawGraphProjectsByText(
 ): Promise<GetProjectsByTextQuery['projectSearch']> {
     const {
         data: { projectSearch: projects = [] },
-    } = await getGraphClient().query<
+    } = await getGraphClient(chainId).query<
         GetProjectsByTextQuery,
         GetProjectsByTextQueryVariables
     >({
@@ -118,12 +125,13 @@ export async function getRawGraphProjectsByText(
 }
 
 export async function getProjectSubscriptions(
+    chainId: number,
     projectId: string,
     { force = false } = {},
 ): Promise<TheGraph.ProjectSubscription[]> {
     const {
         data: { project },
-    } = await getGraphClient().query<
+    } = await getGraphClient(chainId).query<
         GetProjectSubscriptionsQuery,
         GetProjectSubscriptionsQueryVariables
     >({

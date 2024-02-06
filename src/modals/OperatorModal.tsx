@@ -179,16 +179,20 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                 try {
                     if (!operator) {
                         await createOperator(chainId, finalData, {
-                            onBlockNumber: waitForIndexedBlock,
+                            onBlockNumber: (blockNumber) => {
+                                waitForIndexedBlock(chainId, blockNumber)
+                            },
                         })
                     } else {
                         await updateOperator(chainId, operator, finalData, {
-                            onBlockNumber: waitForIndexedBlock,
+                            onBlockNumber: (blockNumber) => {
+                                waitForIndexedBlock(chainId, blockNumber)
+                            },
                         })
                     }
 
                     const operatorId = (
-                        await getParsedOperatorByOwnerAddress(walletAddress, {
+                        await getParsedOperatorByOwnerAddress(chainId, walletAddress, {
                             force: true,
                         })
                     )?.id

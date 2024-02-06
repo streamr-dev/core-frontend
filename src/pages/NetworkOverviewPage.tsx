@@ -94,14 +94,18 @@ function MyOperatorSummary() {
             try {
                 const end = moment().utc().subtract(1, 'day').endOf('day')
 
-                const buckets = await getOperatorDailyBuckets(operator.id, {
-                    dateGreaterEqualThan: getTimestampForChartPeriod(
-                        chartPeriod,
-                        end,
-                    ).unix(),
-                    dateLowerThan: end.unix(),
-                    force: true,
-                })
+                const buckets = await getOperatorDailyBuckets(
+                    currentChainId,
+                    operator.id,
+                    {
+                        dateGreaterEqualThan: getTimestampForChartPeriod(
+                            chartPeriod,
+                            end,
+                        ).unix(),
+                        dateLowerThan: end.unix(),
+                        force: true,
+                    },
+                )
 
                 const { decimals } = await getSponsorshipTokenInfo(currentChainId)
 

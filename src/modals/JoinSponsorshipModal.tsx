@@ -167,7 +167,11 @@ function JoinSponsorshipModal({
                         sponsorship.id,
                         finalAmount.toString(),
                         operator.id,
-                        { onBlockNumber: waitForIndexedBlock },
+                        {
+                            onBlockNumber: (blockNumber) => {
+                                waitForIndexedBlock(chainId, blockNumber)
+                            },
+                        },
                     )
 
                     onResolve?.()
