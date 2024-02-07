@@ -84,9 +84,9 @@ export const useUncollectedEarningsStore = create<Store>((set, get) => {
                                         ratePerSec.multipliedBy(timeDiffSec),
                                     )
                             }
-
-                            draft.lastUpdatedTimestamp = now
                         }
+
+                        draft.lastUpdatedTimestamp = now
                     }
                 }),
             )
