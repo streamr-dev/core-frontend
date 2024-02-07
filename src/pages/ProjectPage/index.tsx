@@ -1,17 +1,13 @@
 import React from 'react'
 import {
     Navigate,
+    Outlet,
     Route,
     Routes,
-    useMatch,
     useParams,
     useSearchParams,
 } from 'react-router-dom'
-import {
-    ProjectDraftContext,
-    preselectSalePoint,
-    useInitProjectDraft,
-} from '~/stores/projectDraft'
+import { ProjectDraftContext, useInitProjectDraft } from '~/stores/projectDraft'
 import NotFoundPage from '~/pages/NotFoundPage'
 import routes from '~/routes'
 import { isProjectType } from '~/utils'
@@ -33,54 +29,47 @@ function ProjectRedirect() {
 }
 
 export default function ProjectPage() {
-    /**
-     * This component is meant to be attached to `/hub/projects/*` wildcard
-     * route. In such context there's no `:id` param available through
-     * `useParams` hook. We have to parse it manually using `useMatch`.
-     */
-    const { id = 'new' } = useMatch('/hub/projects/:id/*')?.params || {}
+    return (
+        <Routes>
+            <Route path="/new" element={<NewProjectPage />} />
+            <Route path="/:id" element={<ExistingProjectPageWrap />}>
+                <Route index element={<ProjectRedirect />} />
+                <Route path="edit" element={<ProjectEditorPage />} />
+                <Route path="overview" element={<TabbedPage tab="overview" />} />
+                <Route path="connect" element={<TabbedPage tab="connect" />} />
+                <Route path="live-data" element={<TabbedPage tab="live-data" />} />
+                <Route path="*" element={<NotFoundPage />} />
+            </Route>
+        </Routes>
+    )
+}
 
-    const projectId = decodeURIComponent(id)
+function useInitNewProjectDraft(_: ProjectType) {
+    return ''
+}
 
+function NewProjectPage() {
     const type = useSearchParams()[0].get('type')
 
     const projectType = isProjectType(type) ? type : ProjectType.OpenData
 
+    const draftId = useInitNewProjectDraft(projectType)
+
     return (
-        <ProjectDraftContext.Provider
-            value={useInitProjectDraft(
-                projectId === 'new' ? void 0 : projectId,
-                (projectId, _, draft) => {
-                    if (projectId) {
-                        /**
-                         * Further steps are for new projects only. Skip.
-                         */
-                        return
-                    }
+        <ProjectDraftContext.Provider value={draftId}>
+            <ProjectEditorPage />
+        </ProjectDraftContext.Provider>
+    )
+}
 
-                    const { cold, hot } = draft.entity
+function ExistingProjectPageWrap() {
+    const { id: projectId } = useParams<{ id: string }>()
 
-                    cold.type = projectType
+    const draftId = useInitProjectDraft(projectId)
 
-                    preselectSalePoint(cold)
-
-                    hot.type = projectType
-
-                    preselectSalePoint(hot)
-                },
-            )}
-        >
-            <Routes>
-                <Route path="/new" element={<ProjectEditorPage />} />
-                <Route path="/:id/*">
-                    <Route index element={<ProjectRedirect />} />
-                    <Route path="edit" element={<ProjectEditorPage />} />
-                    <Route path="overview" element={<TabbedPage tab="overview" />} />
-                    <Route path="connect" element={<TabbedPage tab="connect" />} />
-                    <Route path="live-data" element={<TabbedPage tab="live-data" />} />
-                    <Route path="*" element={<NotFoundPage />} />
-                </Route>
-            </Routes>
+    return (
+        <ProjectDraftContext.Provider value={draftId}>
+            <Outlet />
         </ProjectDraftContext.Provider>
     )
 }

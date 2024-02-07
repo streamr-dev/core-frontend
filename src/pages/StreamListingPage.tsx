@@ -34,7 +34,6 @@ import { OrderDirection, Stream_OrderBy } from '~/generated/gql/network'
 import { address0 } from '~/consts'
 import routes from '~/routes'
 import { useCurrentChainId } from '~/shared/stores/chain'
-import { getCurrentChainId } from '~/getters/getCurrentChain'
 
 enum TabOption {
     All = 'all',
