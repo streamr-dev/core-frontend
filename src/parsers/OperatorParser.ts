@@ -112,6 +112,7 @@ const OperatorParser = z.object({
                     ...rest,
                     sponsorshipId,
                     isSponsorshipPaying: isRunning && remainingWei.isGreaterThan(0),
+                    remainingWei,
                     minimumStakingPeriodSeconds,
                     operatorId,
                     projectedInsolvencyAt,

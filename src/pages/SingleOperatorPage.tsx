@@ -377,7 +377,7 @@ export const SingleOperatorPage = () => {
                                                 projectedInsolvencyAt={
                                                     element.projectedInsolvencyAt
                                                 }
-                                                isPaying={element.isSponsorshipPaying}
+                                                remainingBalance={element.remainingWei}
                                             />
                                         ),
                                         align: 'start',
