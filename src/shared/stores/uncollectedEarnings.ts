@@ -77,7 +77,7 @@ export const useUncollectedEarningsStore = create<Store>((set, get) => {
 
                             if (
                                 ratePerSec != null &&
-                                sponsorship.uncollectedEarnings != null
+                                sponsorship?.uncollectedEarnings != null
                             ) {
                                 draft.values[sponsorshipId].uncollectedEarnings =
                                     sponsorship.uncollectedEarnings.plus(
