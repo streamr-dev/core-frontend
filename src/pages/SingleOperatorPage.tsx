@@ -319,23 +319,25 @@ export const SingleOperatorPage = () => {
                                                     ) && (
                                                         <Tooltip
                                                             content={
-                                                                <TooltipIconWrap
-                                                                    className="ml-1"
-                                                                    $color="#ADADAD"
-                                                                    $svgSize={{
-                                                                        width: '18px',
-                                                                        height: '18px',
-                                                                    }}
-                                                                >
-                                                                    <SvgIcon name="lockClosed" />
-                                                                </TooltipIconWrap>
+                                                                <>
+                                                                    Minimum stake period:{' '}
+                                                                    {minimumStakeReachTime.fromNow(
+                                                                        true,
+                                                                    )}{' '}
+                                                                    left
+                                                                </>
                                                             }
                                                         >
-                                                            Minimum stake period:{' '}
-                                                            {minimumStakeReachTime.fromNow(
-                                                                true,
-                                                            )}{' '}
-                                                            left
+                                                            <TooltipIconWrap
+                                                                className="ml-1"
+                                                                $color="#ADADAD"
+                                                                $svgSize={{
+                                                                    width: '18px',
+                                                                    height: '18px',
+                                                                }}
+                                                            >
+                                                                <SvgIcon name="lockClosed" />
+                                                            </TooltipIconWrap>
                                                         </Tooltip>
                                                     )}
                                                 </>
