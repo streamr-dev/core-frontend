@@ -4,19 +4,9 @@ import { useNavigate } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import uniqueId from 'lodash/uniqueId'
 import { randomHex } from 'web3-utils'
-import {
-    ParsedProject,
-    ProjectParser,
-    getEmptyParsedProject,
-} from '~/parsers/ProjectParser'
+import { ParsedProject, getEmptyParsedProject } from '~/parsers/ProjectParser'
 import { createDraftStore, getEmptyDraft } from '~/utils/draft'
 import { ProjectType } from '~/shared/types'
-import { getGraphClient } from '~/getters/getGraphClient'
-import {
-    GetProjectDocument,
-    GetProjectQuery,
-    GetProjectQueryVariables,
-} from '~/generated/gql/network'
 import { Operation } from '~/shared/toasts/TransactionListToast'
 import { toastedOperations } from '~/utils/toastedOperation'
 import {
@@ -35,8 +25,6 @@ import { Layer } from '~/utils/Layer'
 import { ValidationError } from '~/errors'
 import routes from '~/routes'
 import { toBN } from '~/utils/bn'
-import { getCurrentChainId } from '~/getters/getCurrentChain'
-import { useCurrentChainId } from '~/shared/stores/chain'
 
 const {
     DraftContext: ProjectDraftContext,
@@ -49,18 +37,23 @@ const {
     useSetDraftErrors: useSetProjectDraftErrors,
     useUpdateEntity: useUpdateProject,
 } = createDraftStore<ParsedProject>({
-    async persist(chainId, { entity: { cold, hot: project } }) {
+    async persist({ entity }) {
         const operations: Operation[] = []
+
+        if (!entity) {
+            return
+        }
+
+        const { cold, hot: project } = entity
+
+        const { chainId } = cold
 
         if (project.id) {
             const projectId = project.id
 
             const shouldUpdateAdminFee = requiresAdminFeeUpdate(project, cold)
 
-            const shouldUpdateMatadata = !isEqual(
-                { ...project, adminFee: '' },
-                { ...cold, adminFee: '' },
-            )
+            const shouldUpdateMatadata = !eq(cold, project)
 
             if (shouldUpdateAdminFee) {
                 operations.push({
@@ -170,8 +163,6 @@ const {
                     throw new Error('Unexpected beneficiary')
                 }
 
-                const chainId = getCurrentChainId()
-
                 await networkPreflight(chainId)
 
                 const dataUnionId = await deployDataUnionContract(
@@ -199,32 +190,6 @@ const {
         })
     },
 
-    async fetch(projectId) {
-        /**
-         * @todo Pass chain id to fetch. #passchainid
-         */
-        const chainId = getCurrentChainId()
-
-        const {
-            data: { project: graphProject },
-        } = await getGraphClient(chainId).query<
-            GetProjectQuery,
-            GetProjectQueryVariables
-        >({
-            query: GetProjectDocument,
-            variables: {
-                id: projectId.toLowerCase(),
-            },
-            fetchPolicy: 'network-only',
-        })
-
-        if (!graphProject) {
-            throw new Error('Not found or invalid')
-        }
-
-        return ProjectParser.parseAsync(graphProject)
-    },
-
     getEmptyDraft() {
         return getEmptyDraft(
             getEmptyParsedProject({
@@ -233,13 +198,16 @@ const {
         )
     },
 
-    isEqual(cold, hot) {
-        return (
-            !requiresAdminFeeUpdate(hot, cold) &&
-            isEqual({ ...hot, adminFee: '' }, { ...cold, adminFee: '' })
-        )
-    },
+    isEqual: eq,
 })
+
+function eq(cold: ParsedProject, hot: ParsedProject) {
+    /**
+     * Admin fee is not metadata. We have to skip it in the
+     * below payload comparison.
+     */
+    return isEqual({ ...hot, adminFee: '' }, { ...cold, adminFee: '' })
+}
 
 export {
     ProjectDraftContext,
@@ -304,7 +272,7 @@ export function useIsAccessibleByCurrentWallet() {
 
     const fetching = !!draft?.fetching
 
-    const project = draft?.entity.cold
+    const project = draft?.entity?.cold
 
     const hasActiveProjectSubscription = useHasActiveProjectSubscription(
         project?.id,
@@ -336,10 +304,8 @@ export function usePersistProjectCallback() {
 
     const navigate = useNavigate()
 
-    const chainId = useCurrentChainId()
-
     return useCallback(() => {
-        persist(chainId, {
+        persist({
             onDone(mounted) {
                 if (!mounted) {
                     return
@@ -374,5 +340,5 @@ export function usePersistProjectCallback() {
                 console.warn('Failed to publish', e)
             },
         })
-    }, [persist, navigate, chainId])
+    }, [persist, navigate])
 }

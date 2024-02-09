@@ -2,7 +2,7 @@ import { Contract } from 'ethers'
 import { StreamrConfig, streamrConfigABI } from '@streamr/network-contracts'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { ConfigKey } from '~/types'
-import { getCurrentChain } from '~/getters/getCurrentChain'
+import { getConfigForChain } from '~/shared/web3/config'
 
 const cache: Record<
     number,
@@ -21,12 +21,12 @@ export async function getConfigValueFromChain<
         return value as U
     }
 
-    const currentChain = getCurrentChain()
+    const chain = getConfigForChain(chainId)
 
-    const provider = getPublicWeb3Provider(currentChain.id)
+    const provider = getPublicWeb3Provider(chainId)
 
     const contract = new Contract(
-        currentChain.contracts.StreamrConfig,
+        chain.contracts.StreamrConfig,
         streamrConfigABI,
         provider,
     ) as StreamrConfig

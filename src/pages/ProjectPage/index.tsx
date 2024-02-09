@@ -1,4 +1,5 @@
-import React from 'react'
+import { useQuery } from '@tanstack/react-query'
+import React, { useMemo } from 'react'
 import {
     Navigate,
     Outlet,
@@ -7,15 +8,22 @@ import {
     useParams,
     useSearchParams,
 } from 'react-router-dom'
-import { ProjectDraftContext, useInitProjectDraft } from '~/stores/projectDraft'
+import { getProjectByIdQuery } from '~/hooks/projects'
 import NotFoundPage from '~/pages/NotFoundPage'
+import { getEmptyParsedProject } from '~/parsers/ProjectParser'
 import routes from '~/routes'
-import { isProjectType } from '~/utils'
+import { useCurrentChainId } from '~/shared/stores/chain'
 import { ProjectType } from '~/shared/types'
-import TabbedPage from './TabbedPage'
+import {
+    ProjectDraftContext,
+    preselectSalePoint,
+    useInitProjectDraft,
+} from '~/stores/projectDraft'
+import { isProjectType } from '~/utils'
 import ProjectEditorPage from './ProjectEditorPage'
+import TabbedPage from './TabbedPage'
 
-function ProjectRedirect() {
+function ProjectIndexRedirect() {
     const { id = '' } = useParams<{ id: string }>()
 
     return (
@@ -33,7 +41,7 @@ export default function ProjectPage() {
         <Routes>
             <Route path="/new" element={<NewProjectPage />} />
             <Route path="/:id" element={<ExistingProjectPageWrap />}>
-                <Route index element={<ProjectRedirect />} />
+                <Route index element={<ProjectIndexRedirect />} />
                 <Route path="edit" element={<ProjectEditorPage />} />
                 <Route path="overview" element={<TabbedPage tab="overview" />} />
                 <Route path="connect" element={<TabbedPage tab="connect" />} />
@@ -44,16 +52,22 @@ export default function ProjectPage() {
     )
 }
 
-function useInitNewProjectDraft(_: ProjectType) {
-    return ''
-}
-
 function NewProjectPage() {
     const type = useSearchParams()[0].get('type')
 
     const projectType = isProjectType(type) ? type : ProjectType.OpenData
 
-    const draftId = useInitNewProjectDraft(projectType)
+    const project = useMemo(() => {
+        const project = getEmptyParsedProject({
+            type: projectType,
+        })
+
+        preselectSalePoint(project)
+
+        return project
+    }, [projectType])
+
+    const draftId = useInitProjectDraft(project)
 
     return (
         <ProjectDraftContext.Provider value={draftId}>
@@ -65,11 +79,25 @@ function NewProjectPage() {
 function ExistingProjectPageWrap() {
     const { id: projectId } = useParams<{ id: string }>()
 
-    const draftId = useInitProjectDraft(projectId)
+    const chainId = useCurrentChainId()
+
+    const query = useQuery({
+        queryKey: ['ExistingProjectPageWrap.query', chainId, projectId?.toLowerCase()],
+        queryFn: () =>
+            projectId ? getProjectByIdQuery(chainId, projectId) : Promise.resolve(null),
+        staleTime: Infinity,
+        cacheTime: 0,
+    })
+
+    const { data: project = null } = query
+
+    const isLoading = !project && (query.isLoading || query.isFetching)
+
+    const draftId = useInitProjectDraft(isLoading ? undefined : project)
 
     return (
         <ProjectDraftContext.Provider value={draftId}>
-            <Outlet />
+            {query.isError ? <NotFoundPage /> : <Outlet />}
         </ProjectDraftContext.Provider>
     )
 }

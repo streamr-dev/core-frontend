@@ -16,6 +16,7 @@ import {
 import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
 import { toBN } from '~/utils/bn'
 import { address0 } from '~/consts'
+import { getCurrentChainId } from '~/getters/getCurrentChain'
 
 const ParsedPaymentDetail = z.object({
     beneficiary: z.string(),
@@ -29,86 +30,93 @@ const ParsedPaymentDetail = z.object({
 
 export type ParsedPaymentDetail = z.infer<typeof ParsedPaymentDetail>
 
-export const ProjectParser = z
-    .object({
-        id: z.union([z.string(), z.undefined()]),
-        isDataUnion: z.boolean().optional().default(false),
-        streams: z.array(z.string()).transform((streams) => streams.sort()),
-        metadata: z
-            .string()
-            .transform((metadata) => JSON.parse(metadata))
-            .pipe(
-                z.object({
-                    name: z
-                        .string()
-                        .optional()
-                        .transform((v) => v || ''),
-                    description: z
-                        .string()
-                        .optional()
-                        .transform((v) => v || ''),
-                    creator: z
-                        .string()
-                        .optional()
-                        .transform((v) => v || ''),
-                    imageIpfsCid: z
-                        .string()
-                        .optional()
-                        .transform((v) => v || undefined),
-                    imageUrl: z
-                        .string()
-                        .optional()
-                        .transform((v) => v || undefined),
-                    termsOfUse: z
-                        .object({
-                            commercialUse: z.boolean().optional().default(false),
-                            redistribution: z.boolean().optional().default(false),
-                            reselling: z.boolean().optional().default(false),
-                            storage: z.boolean().optional().default(false),
-                            termsName: z.string().optional().default(''),
-                            termsUrl: z.string().optional().default(''),
-                        })
-                        .optional()
-                        .default({
-                            commercialUse: false,
-                            redistribution: false,
-                            reselling: false,
-                            storage: false,
-                            termsName: '',
-                            termsUrl: '',
-                        }),
-                    contactDetails: z
-                        .object({
-                            url: z.string().optional().default(''),
-                            email: z.string().optional().default(''),
-                            twitter: z.string().optional().default(''),
-                            telegram: z.string().optional().default(''),
-                            reddit: z.string().optional().default(''),
-                            linkedIn: z.string().optional().default(''),
-                        })
-                        .optional()
-                        .default({
-                            url: '',
-                            email: '',
-                            twitter: '',
-                            telegram: '',
-                            reddit: '',
-                            linkedIn: '',
-                        }),
-                }),
-            ),
-        paymentDetails: z.array(ParsedPaymentDetail),
-        permissions: z.array(
+const ProjectParser = z.object({
+    id: z.union([z.string(), z.undefined()]),
+    isDataUnion: z.boolean().optional().default(false),
+    streams: z.array(z.string()).transform((streams) => streams.sort()),
+    metadata: z
+        .string()
+        .transform((metadata) => JSON.parse(metadata))
+        .pipe(
             z.object({
-                canBuy: z.boolean().optional().default(false),
-                canDelete: z.boolean().optional().default(false),
-                canEdit: z.boolean().optional().default(false),
-                canGrant: z.boolean().optional().default(false),
-                userAddress: z.string(),
+                name: z
+                    .string()
+                    .optional()
+                    .transform((v) => v || ''),
+                description: z
+                    .string()
+                    .optional()
+                    .transform((v) => v || ''),
+                creator: z
+                    .string()
+                    .optional()
+                    .transform((v) => v || ''),
+                imageIpfsCid: z
+                    .string()
+                    .optional()
+                    .transform((v) => v || undefined),
+                imageUrl: z
+                    .string()
+                    .optional()
+                    .transform((v) => v || undefined),
+                termsOfUse: z
+                    .object({
+                        commercialUse: z.boolean().optional().default(false),
+                        redistribution: z.boolean().optional().default(false),
+                        reselling: z.boolean().optional().default(false),
+                        storage: z.boolean().optional().default(false),
+                        termsName: z.string().optional().default(''),
+                        termsUrl: z.string().optional().default(''),
+                    })
+                    .optional()
+                    .default({
+                        commercialUse: false,
+                        redistribution: false,
+                        reselling: false,
+                        storage: false,
+                        termsName: '',
+                        termsUrl: '',
+                    }),
+                contactDetails: z
+                    .object({
+                        url: z.string().optional().default(''),
+                        email: z.string().optional().default(''),
+                        twitter: z.string().optional().default(''),
+                        telegram: z.string().optional().default(''),
+                        reddit: z.string().optional().default(''),
+                        linkedIn: z.string().optional().default(''),
+                    })
+                    .optional()
+                    .default({
+                        url: '',
+                        email: '',
+                        twitter: '',
+                        telegram: '',
+                        reddit: '',
+                        linkedIn: '',
+                    }),
             }),
         ),
-    })
-    .transform(
+    paymentDetails: z.array(ParsedPaymentDetail),
+    permissions: z.array(
+        z.object({
+            canBuy: z.boolean().optional().default(false),
+            canDelete: z.boolean().optional().default(false),
+            canEdit: z.boolean().optional().default(false),
+            canGrant: z.boolean().optional().default(false),
+            userAddress: z.string(),
+        }),
+    ),
+})
+
+interface ParseProjectOptions {
+    chainId: number
+}
+
+export function parseProject(value: unknown, options: ParseProjectOptions) {
+    const { chainId } = options
+
+    return ProjectParser.transform(
         async ({
             id,
             isDataUnion,
@@ -211,6 +219,7 @@ export const ProjectParser = z
                     typeof adminFee === 'undefined'
                         ? ''
                         : toBN(adminFee).multipliedBy(100).toString(),
+                chainId,
                 contact,
                 creator,
                 description,
@@ -232,9 +241,10 @@ export const ProjectParser = z
                     : ProjectType.PaidData,
             }
         },
-    )
+    ).parseAsync(value)
+}
 
-export type ParsedProject = z.infer<typeof ProjectParser>
+export type ParsedProject = Awaited<ReturnType<typeof parseProject>>
 
 function getEmptySalePoints() {
     const chains: Chain[] = getCoreConfig().marketplaceChains.map(getConfigForChainByName)
@@ -257,8 +267,17 @@ function getEmptySalePoints() {
     return salePoints
 }
 
-export function getEmptyParsedProject(options: { type: ProjectType }): ParsedProject {
+interface GetEmptyParsedProjectOptions {
+    type: ProjectType
+    chainId?: number
+}
+
+export function getEmptyParsedProject({
+    chainId,
+    ...options
+}: GetEmptyParsedProjectOptions): ParsedProject {
     return {
+        chainId: chainId ?? getCurrentChainId(),
         adminFee: '',
         contact: {
             url: '',

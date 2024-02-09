@@ -3,7 +3,7 @@ import SwitchNetworkModal from '~/modals/SwitchNetworkModal'
 import getChainId from '~/utils/web3/getChainId'
 import { Layer } from '~/utils/Layer'
 import { getWalletProvider } from '~/shared/stores/wallet'
-import { getCurrentChain } from '~/getters/getCurrentChain'
+import { getConfigForChain } from '~/shared/web3/config'
 
 /**
  *
@@ -12,7 +12,6 @@ import { getCurrentChain } from '~/getters/getCurrentChain'
  */
 export default async function networkPreflight(expectedChainId: number) {
     const provider = await getWalletProvider()
-    const chainConfig = getCurrentChain()
 
     try {
         const currentChainId = await getChainId()
@@ -38,6 +37,8 @@ export default async function networkPreflight(expectedChainId: number) {
         if (e?.code !== 4902) {
             throw e
         }
+
+        const chainConfig = getConfigForChain(expectedChainId)
 
         await provider.request({
             method: 'wallet_addEthereumChain',

@@ -15,7 +15,7 @@ import {
 } from '~/generated/gql/network'
 import { TheGraph } from '~/shared/types'
 import { address0 } from '~/consts'
-import { ProjectParser } from '~/parsers/ProjectParser'
+import { parseProject } from '~/parsers/ProjectParser'
 import { getGraphClient } from '~/getters/getGraphClient'
 
 export async function getParsedProjectById(
@@ -33,7 +33,7 @@ export async function getParsedProjectById(
         fetchPolicy: force ? 'network-only' : void 0,
     })
 
-    return (project || null) && (await ProjectParser.parseAsync(project))
+    return (project || null) && (await parseProject(project, { chainId }))
 }
 
 export async function getRawGraphProjects({
