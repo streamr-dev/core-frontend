@@ -8,7 +8,7 @@ import {
     useParams,
     useSearchParams,
 } from 'react-router-dom'
-import { getProjectByIdQuery } from '~/hooks/projects'
+import { getParsedProjectById } from '~/getters/hub'
 import NotFoundPage from '~/pages/NotFoundPage'
 import { getEmptyParsedProject } from '~/parsers/ProjectParser'
 import routes from '~/routes'
@@ -84,7 +84,7 @@ function ExistingProjectPageWrap() {
     const query = useQuery({
         queryKey: ['ExistingProjectPageWrap.query', chainId, projectId?.toLowerCase()],
         queryFn: () =>
-            projectId ? getProjectByIdQuery(chainId, projectId) : Promise.resolve(null),
+            projectId ? getParsedProjectById(chainId, projectId) : Promise.resolve(null),
         staleTime: Infinity,
         cacheTime: 0,
     })

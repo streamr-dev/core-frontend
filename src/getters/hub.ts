@@ -27,7 +27,7 @@ export async function getParsedProjectById(
     } = await getGraphClient(chainId).query<GetProjectQuery, GetProjectQueryVariables>({
         query: GetProjectDocument,
         variables: {
-            id: projectId,
+            id: projectId.toLowerCase(),
         },
         fetchPolicy: force ? 'network-only' : void 0,
     })
