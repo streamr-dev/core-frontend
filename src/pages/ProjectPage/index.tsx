@@ -21,7 +21,12 @@ import {
 } from '~/stores/projectDraft'
 import { isProjectType } from '~/utils'
 import ProjectEditorPage from './ProjectEditorPage'
-import TabbedPage from './TabbedPage'
+import {
+    ProjectConnectPage,
+    ProjectLiveDataPage,
+    ProjectOverviewPage,
+    ProjectTabbedPage,
+} from './ProjectTabbedPage'
 
 function ProjectIndexRedirect() {
     const { id = '' } = useParams<{ id: string }>()
@@ -43,9 +48,11 @@ export default function ProjectPage() {
             <Route path="/:id" element={<ExistingProjectPageWrap />}>
                 <Route index element={<ProjectIndexRedirect />} />
                 <Route path="edit" element={<ProjectEditorPage />} />
-                <Route path="overview" element={<TabbedPage tab="overview" />} />
-                <Route path="connect" element={<TabbedPage tab="connect" />} />
-                <Route path="live-data" element={<TabbedPage tab="live-data" />} />
+                <Route element={<ProjectTabbedPage />}>
+                    <Route path="overview" element={<ProjectOverviewPage />} />
+                    <Route path="connect" element={<ProjectConnectPage />} />
+                    <Route path="live-data" element={<ProjectLiveDataPage />} />
+                </Route>
                 <Route path="*" element={<NotFoundPage />} />
             </Route>
         </Routes>

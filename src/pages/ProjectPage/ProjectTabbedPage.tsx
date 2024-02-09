@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import { Link, Outlet } from 'react-router-dom'
 import {
     useIsAccessibleByCurrentWallet,
     useIsProjectDraftBusy,
@@ -28,29 +28,7 @@ import ProjectLinkTabs from './ProjectLinkTabs'
 import AccessManifest from './AccessManifest'
 import GetAccess from './GetAccess'
 
-const PageTitleContainer = styled.div`
-    align-items: center;
-    display: flex;
-`
-
-const EditButton = styled(Button)`
-    border-radius: 100%;
-    height: 32px;
-    margin-left: 10px;
-    width: 32px;
-`
-
-const ProjectTitle = styled.span`
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-`
-
-const Separator = styled.span`
-    white-space: pre-wrap;
-`
-
-function ProjectOverviewPage() {
+export function ProjectOverviewPage() {
     const project = useProject()
 
     if (!project) {
@@ -98,7 +76,7 @@ function ProjectOverviewPage() {
     )
 }
 
-function ProjectConnectPage() {
+export function ProjectConnectPage() {
     const hasAccess = useIsAccessibleByCurrentWallet()
 
     const project = useProject()
@@ -137,7 +115,7 @@ function ProjectConnectPage() {
     )
 }
 
-function ProjectLiveDataPage() {
+export function ProjectLiveDataPage() {
     const hasAccess = useIsAccessibleByCurrentWallet()
 
     const project = useProject()
@@ -172,11 +150,7 @@ function ProjectLiveDataPage() {
     )
 }
 
-interface Props {
-    tab: 'overview' | 'connect' | 'live-data'
-}
-
-export default function TabbedPage({ tab }: Props) {
+export function ProjectTabbedPage() {
     const { id = undefined, name = '', creator = '' } = useProject() || {}
 
     const busy = useIsProjectDraftBusy()
@@ -213,9 +187,29 @@ export default function TabbedPage({ tab }: Props) {
                 rightComponent={<ProjectLinkTabs projectId={id} />}
             />
             <LoadingIndicator loading={busy} />
-            {tab === 'overview' && <ProjectOverviewPage />}
-            {tab === 'connect' && <ProjectConnectPage />}
-            {tab === 'live-data' && <ProjectLiveDataPage />}
+            <Outlet />
         </Layout>
     )
 }
+
+const PageTitleContainer = styled.div`
+    align-items: center;
+    display: flex;
+`
+
+const EditButton = styled(Button)`
+    border-radius: 100%;
+    height: 32px;
+    margin-left: 10px;
+    width: 32px;
+`
+
+const ProjectTitle = styled.span`
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+`
+
+const Separator = styled.span`
+    white-space: pre-wrap;
+`
