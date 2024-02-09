@@ -15,7 +15,15 @@ import GenericErrorPage from '~/pages/GenericErrorPage'
 import Analytics from '~/shared/utils/Analytics'
 import StreamListingPage from '~/pages/StreamListingPage'
 import StreamPage from '~/pages/StreamPage'
-import ProjectPage from '~/pages/ProjectPage'
+import {
+    ExistingProjectPageWrap,
+    NewProjectPage,
+    ProjectConnectPage,
+    ProjectIndexRedirect,
+    ProjectLiveDataPage,
+    ProjectOverviewPage,
+    ProjectTabbedPage,
+} from '~/pages/ProjectPage'
 import ProjectListingPage from '~/pages/ProjectListingPage'
 import { NetworkOverviewPage } from '~/pages/NetworkOverviewPage'
 import { SponsorshipsPage } from '~/pages/SponsorshipsPage'
@@ -28,6 +36,7 @@ import routes from '~/routes'
 import { HubRouter } from '~/consts'
 import { getQueryClient } from '~/utils'
 import '~/analytics'
+import ProjectEditorPage from './pages/ProjectPage/ProjectEditorPage'
 
 const MiscRouter = () => [
     <Route
@@ -61,9 +70,19 @@ const App = () => (
         <Analytics />
         <Globals />
         <Routes>
-            <Route path="/hub/projects/*" errorElement={<GenericErrorPage />}>
+            <Route path="/hub/projects" errorElement={<GenericErrorPage />}>
                 <Route index element={<ProjectListingPage />} />
-                <Route path="*" element={<ProjectPage />} />
+                <Route path="new" element={<NewProjectPage />} />
+                <Route path=":id" element={<ExistingProjectPageWrap />}>
+                    <Route index element={<ProjectIndexRedirect />} />
+                    <Route path="edit" element={<ProjectEditorPage />} />
+                    <Route element={<ProjectTabbedPage />}>
+                        <Route path="overview" element={<ProjectOverviewPage />} />
+                        <Route path="connect" element={<ProjectConnectPage />} />
+                        <Route path="live-data" element={<ProjectLiveDataPage />} />
+                    </Route>
+                </Route>
+                <Route path="*" element={<NotFoundPage />} />
             </Route>
             <Route path="/hub/streams/*" errorElement={<GenericErrorPage />}>
                 <Route index element={<StreamListingPage />} />
