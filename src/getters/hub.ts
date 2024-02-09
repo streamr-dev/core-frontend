@@ -14,7 +14,6 @@ import {
     Project_Filter,
 } from '~/generated/gql/network'
 import { TheGraph } from '~/shared/types'
-import { address0 } from '~/consts'
 import { parseProject } from '~/parsers/ProjectParser'
 import { getGraphClient } from '~/getters/getGraphClient'
 
@@ -57,13 +56,13 @@ export async function getRawGraphProjects({
 
     if (projectType === TheGraph.ProjectType.Open) {
         where.paymentDetails_ = {
-            beneficiary: address0,
+            pricePerSecond: 0,
         }
     }
 
     if (projectType === TheGraph.ProjectType.Paid) {
         where.paymentDetails_ = {
-            beneficiary_not: address0,
+            pricePerSecond_gt: 0,
         }
     }
 
