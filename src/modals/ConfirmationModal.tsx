@@ -12,6 +12,7 @@ export type ConfirmationModalProps = {
     description: ReactNode
     proceedLabel: string
     cancelLabel: string
+    isDangerous?: boolean
 }
 
 interface Props
@@ -25,6 +26,7 @@ const ConfirmationModal: FunctionComponent<Props> = ({
     description,
     proceedLabel,
     cancelLabel,
+    isDangerous = false,
     onResolve,
     ...props
 }) => {
@@ -33,11 +35,11 @@ const ConfirmationModal: FunctionComponent<Props> = ({
             {(close) => (
                 <ModalBody>
                     <Icon>
-                        <IconWrap $color="#6240AF">
+                        <IconWrap $color={isDangerous ? '#ff0f2d' : '#6240AF'}>
                             <InfoIcon label="Info" />
                         </IconWrap>
                     </Icon>
-                    <Title>{title}</Title>
+                    <Title $isDangerous={isDangerous}>{title}</Title>
                     <CloseButton
                         type="button"
                         onClick={() => void close(RejectionReason.CloseButton)}
@@ -46,7 +48,10 @@ const ConfirmationModal: FunctionComponent<Props> = ({
                     </CloseButton>
                     <Description>{description}</Description>
                     <DecisionButtons>
-                        <DecisionButton onClick={() => void onResolve?.(true)}>
+                        <DecisionButton
+                            onClick={() => void onResolve?.(true)}
+                            $isDangerous={isDangerous}
+                        >
                             {proceedLabel}
                         </DecisionButton>
                         <Dot />
@@ -97,7 +102,7 @@ const CloseButton = styled.button`
     }
 `
 
-const Title = styled.p`
+const Title = styled.p<{ $isDangerous?: boolean }>`
     grid-row-start: 1;
     grid-row-end: 1;
     grid-column-start: 2;
@@ -105,6 +110,7 @@ const Title = styled.p`
     font-weight: ${MEDIUM};
     margin: 0;
     font-size: 16px;
+    color: ${({ $isDangerous }) => ($isDangerous ? '#ff0f2d' : 'inherit')};
 `
 
 const Description = styled.p`
@@ -127,9 +133,9 @@ const DecisionButtons = styled.div`
     gap: 8px;
 `
 
-const DecisionButton = styled.p`
+const DecisionButton = styled.p<{ $isDangerous?: boolean }>`
     margin: 0;
-    color: ${COLORS.link};
+    color: ${({ $isDangerous }) => ($isDangerous ? '#ff0f2d' : COLORS.link)};
     cursor: pointer;
 `
 

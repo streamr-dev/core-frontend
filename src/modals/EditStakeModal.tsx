@@ -216,6 +216,7 @@ function EditStakeModal({
                             ),
                             proceedLabel: 'Proceed anyway',
                             cancelLabel: 'Cancel',
+                            isDangerous: true,
                         })
                     ) {
                         await forceUnstakeFromSponsorship(sponsorshipId, operatorId, {
