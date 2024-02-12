@@ -1,12 +1,12 @@
 import React from 'react'
-import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
 import { Button } from '~/components/Button'
 import getTransactionalClient from '~/getters/getTransactionalClient'
-import { useCurrentChainId } from '~/shared/stores/chain'
 import routes from '~/routes'
-import Section from './Section'
+import { useCurrentChainId } from '~/shared/stores/chain'
 import { StreamDraft } from '~/stores/streamDraft'
+import Section from './Section'
 
 const Description = styled.p`
     margin-bottom: 3rem;
