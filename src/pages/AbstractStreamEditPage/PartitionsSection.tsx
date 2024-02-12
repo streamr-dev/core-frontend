@@ -1,12 +1,67 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
+import { z } from 'zod'
 import { Advanced } from '~/shared/components/StatusLabel'
-import { useCurrentStreamAbility } from '~/shared/stores/streamAbilities'
 import Label from '~/shared/components/Ui/Label'
-import Numeric from '~/shared/components/Ui/Numeric'
-import { useCurrentDraft, useUpdateCurrentMetadata } from '~/shared/stores/streamEditor'
+import TextInput from '~/shared/components/Ui/Text/StyledInput'
+import { useCurrentStreamAbility2 } from '~/shared/stores/streamAbilities'
+import { StreamDraft, getEmptyStreamEntity } from '~/stores/streamDraft'
 import Section from './Section'
+
+export function PartitionsSection({ disabled: disabledProp = false }) {
+    const { id: streamId, metadata } =
+        StreamDraft.useEntity({ hot: true }) || getEmptyStreamEntity()
+
+    const canEdit = useCurrentStreamAbility2(streamId, StreamPermission.EDIT)
+
+    const disabled = disabledProp || !canEdit
+
+    const { partitions } = metadata
+
+    const update = StreamDraft.useUpdateEntity()
+
+    return (
+        <Section title="Stream partitions" status={<Advanced />}>
+            <Desc>
+                Partitioning enables high-volume streams to scale beyond what a typical
+                node can handle. If you&apos;re not sure if your stream needs partitions,
+                leave it set to 1.
+            </Desc>
+            <Partitions>
+                <Label>Partitions</Label>
+                <TextInput
+                    type="number"
+                    min={PartitionRange.Min}
+                    max={PartitionRange.Max}
+                    step={1}
+                    value={partitions}
+                    onChange={(e) => {
+                        update((hot) => {
+                            hot.metadata.partitions = e.target.value
+                        })
+                    }}
+                    onBlur={() => {
+                        update((hot, cold) => {
+                            const valid = z.coerce
+                                .number()
+                                .min(PartitionRange.Min)
+                                .max(PartitionRange.Max)
+                                .safeParse(partitions).success
+
+                            if (valid) {
+                                return
+                            }
+
+                            hot.metadata.partitions = cold.metadata.partitions
+                        })
+                    }}
+                    disabled={disabled}
+                />
+            </Partitions>
+        </Section>
+    )
+}
 
 const PartitionRange = {
     Min: 1,
@@ -21,68 +76,3 @@ const Desc = styled.p`
     margin-bottom: 3.125rem;
     max-width: 660px;
 `
-
-export default function PartitionsSection({ disabled: disabledProp = false }) {
-    const canEdit = useCurrentStreamAbility(StreamPermission.EDIT)
-
-    const disabled = disabledProp || !canEdit
-
-    const {
-        metadata: { partitions },
-    } = useCurrentDraft()
-
-    const [value, setValue] = useState(`${partitions}`)
-
-    const updateMetadata = useUpdateCurrentMetadata()
-
-    return (
-        <Section title="Stream partitions" status={<Advanced />}>
-            <Desc>
-                Partitioning enables high-volume streams to scale beyond what a typical
-                node can handle. If you&apos;re not sure if your stream needs partitions,
-                leave it set to 1.
-            </Desc>
-            <Partitions>
-                <Label>Partitions</Label>
-                <Numeric
-                    min={PartitionRange.Min}
-                    max={PartitionRange.Max}
-                    value={value}
-                    onChange={({ target }) => {
-                        // @TODO Replace "as any" with a real type.
-                        const val: string = (target as any).value
-
-                        setValue(val)
-
-                        let sanitizedValue = partitions
-
-                        try {
-                            const n = Number.parseInt(val, 10)
-
-                            if (Number.isNaN(n)) {
-                                throw new Error('Not a number')
-                            }
-
-                            sanitizedValue = Math.max(
-                                PartitionRange.Min,
-                                Math.min(PartitionRange.Max, n),
-                            )
-                        } catch (e) {
-                            // Do nothing.
-                        }
-
-                        updateMetadata((metadata) => {
-                            metadata.partitions = sanitizedValue
-                        })
-                    }}
-                    onBlur={() => {
-                        // Bring back the recently sanitized
-                        setValue(`${partitions}`)
-                    }}
-                    disabled={disabled}
-                    name="partitions"
-                />
-            </Partitions>
-        </Section>
-    )
-}

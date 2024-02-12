@@ -17,7 +17,7 @@ interface Props {
     disabled?: boolean
 }
 
-export default function HistorySection({ disabled: disabledProp = false }: Props) {
+export function HistorySection({ disabled: disabledProp = false }: Props) {
     const {
         id: streamId,
         storage,
@@ -42,20 +42,26 @@ export default function HistorySection({ disabled: disabledProp = false }: Props
                 stream&apos;s historical data before auto-deletion.
             </Desc>
             <StorageNodeList disabled={disabled} />
-            <Label htmlFor="storageAmount">Store historical data for</Label>
+            <Label htmlFor="storageAmount">Store historical data for (days)</Label>
             {/* @todo Bring back days/weeks/months selector. #chainid */}
-            <TextInput
-                disabled={disabled || noStorageEnabled}
-                type="number"
-                step={1}
-                min={1}
-                value={storageDays}
-                onChange={(e) => {
-                    update((hot) => {
-                        hot.metadata.storageDays = e.target.value
-                    })
-                }}
-            />
+            <TextFieldWrap>
+                <TextInput
+                    disabled={disabled || noStorageEnabled}
+                    type="number"
+                    step={1}
+                    min={1}
+                    value={storageDays}
+                    onChange={(e) => {
+                        update((hot) => {
+                            hot.metadata.storageDays = e.target.value
+                        })
+                    }}
+                />
+            </TextFieldWrap>
         </Section>
     )
 }
+
+const TextFieldWrap = styled.div`
+    width: 11rem;
+`

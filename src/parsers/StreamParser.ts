@@ -79,7 +79,7 @@ export function matchBits(bitsA: number, bitsB: number) {
 function parseStreamMetadata(metadata: unknown) {
     return z
         .object({
-            partitions: z.number().optional().default(1),
+            partitions: z.coerce.string().optional().default('1'),
             description: z.string().optional().default(''),
             storageDays: z.coerce.string().optional().default(''),
             inactivityThresholdHours: z.coerce.string().optional().default(''),

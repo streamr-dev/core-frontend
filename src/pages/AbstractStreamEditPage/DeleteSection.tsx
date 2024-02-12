@@ -3,10 +3,10 @@ import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '~/components/Button'
 import getTransactionalClient from '~/getters/getTransactionalClient'
-import { useCurrentDraft } from '~/shared/stores/streamEditor'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import routes from '~/routes'
 import Section from './Section'
+import { StreamDraft } from '~/stores/streamDraft'
 
 const Description = styled.p`
     margin-bottom: 3rem;
@@ -15,7 +15,7 @@ const Description = styled.p`
 export default function DeleteSection() {
     const navigate = useNavigate()
 
-    const { streamId } = useCurrentDraft()
+    const { id: streamId } = StreamDraft.useEntity() || {}
 
     const chainId = useCurrentChainId()
 

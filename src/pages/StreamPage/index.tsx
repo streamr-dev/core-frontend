@@ -65,9 +65,9 @@ import getChainId from '~/utils/web3/getChainId'
 import { AccessControlSection } from '../AbstractStreamEditPage/AccessControlSection'
 import CreateProjectHint from '../AbstractStreamEditPage/CreateProjectHint'
 import DeleteSection from '../AbstractStreamEditPage/DeleteSection'
-import HistorySection from '../AbstractStreamEditPage/HistorySection'
+import { HistorySection } from '../AbstractStreamEditPage/HistorySection'
 import { InfoSection } from '../AbstractStreamEditPage/InfoSection'
-import PartitionsSection from '../AbstractStreamEditPage/PartitionsSection'
+import { PartitionsSection } from '../AbstractStreamEditPage/PartitionsSection'
 import RelatedProjects from '../AbstractStreamEditPage/RelatedProjects'
 import SponsorshipsTable from '../AbstractStreamEditPage/SponsorshipsTable'
 
@@ -112,8 +112,8 @@ export function StreamEditPage({
                 <InfoSection disabled={disabled} />
                 <AccessControlSection disabled={disabled} />
                 <HistorySection disabled={disabled} />
-                {/* <PartitionsSection disabled={disabled} /> */}
-                {/* {canDelete && <DeleteSection />} */}
+                <PartitionsSection disabled={disabled} />
+                {canDelete && <DeleteSection />}
             </ContainerBox>
         </>
     )
@@ -455,13 +455,17 @@ function Header({
 }: {
     saveButtonRef?: MutableRefObject<Element | null> | RefCallback<Element | null>
 }) {
-    const { id: streamId = undefined } = StreamDraft.useEntity() || {}
+    const {
+        id: streamId,
+        domain = '',
+        pathname = '',
+    } = StreamDraft.useEntity({ hot: true }) || {}
 
     const isNew = !streamId
 
-    const { transientStreamId } = useCurrentDraft()
+    const transientStreamId = domain && pathname ? `${domain}/${pathname}` : undefined
 
-    const { pathname } = useLocation()
+    const location = useLocation()
 
     const canSubmit = useCanSubmit()
 
@@ -484,7 +488,7 @@ function Header({
                 }
                 rightComponent={
                     streamId ? (
-                        <Tabs selection={pathname}>
+                        <Tabs selection={location.pathname}>
                             <Tab
                                 id="overview"
                                 tag={Link}
