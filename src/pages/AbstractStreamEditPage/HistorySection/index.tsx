@@ -3,7 +3,7 @@ import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
 import Label from '~/shared/components/Ui/Label'
 import TextInput from '~/shared/components/Ui/Text/StyledInput'
-import { useCurrentStreamAbility2 } from '~/shared/stores/streamAbilities'
+import { useCurrentStreamAbility } from '~/shared/stores/streamAbilities'
 import { StreamDraft, getEmptyStreamEntity } from '~/stores/streamDraft'
 import Section from '../Section'
 import StorageNodeList from './StorageNodeList'
@@ -26,7 +26,7 @@ export function HistorySection({ disabled: disabledProp = false }: Props) {
 
     const { storageDays } = metadata
 
-    const canEdit = useCurrentStreamAbility2(streamId, StreamPermission.EDIT)
+    const canEdit = useCurrentStreamAbility(streamId, StreamPermission.EDIT)
 
     const disabled = disabledProp || !canEdit
 

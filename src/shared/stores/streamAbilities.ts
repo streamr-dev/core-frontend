@@ -189,7 +189,7 @@ export function useStreamAbility(
     return value
 }
 
-export function useCurrentStreamAbility2(
+export function useCurrentStreamAbility(
     streamId: string | undefined,
     permission: StreamPermission,
 ) {

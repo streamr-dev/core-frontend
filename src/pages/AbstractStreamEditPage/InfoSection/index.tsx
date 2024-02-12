@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import Surround from '~/shared/components/Surround'
 import Label from '~/shared/components/Ui/Label'
 import Text from '~/shared/components/Ui/Text'
-import { useCurrentStreamAbility2 } from '~/shared/stores/streamAbilities'
+import { useCurrentStreamAbility } from '~/shared/stores/streamAbilities'
 import { StreamDraft, getEmptyStreamEntity } from '~/stores/streamDraft'
 import Section from '../Section'
 import { ENS_DOMAINS_URL, EditableStreamId, ReadonlyStreamId } from './StreamId'
@@ -15,7 +15,7 @@ export function InfoSection({ disabled: disabledProp = false }) {
 
     const { description } = metadata
 
-    const canEdit = useCurrentStreamAbility2(streamId, StreamPermission.EDIT)
+    const canEdit = useCurrentStreamAbility(streamId, StreamPermission.EDIT)
 
     const disabled = disabledProp || !canEdit
 

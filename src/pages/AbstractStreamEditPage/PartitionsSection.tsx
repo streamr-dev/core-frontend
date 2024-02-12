@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { Advanced } from '~/shared/components/StatusLabel'
 import Label from '~/shared/components/Ui/Label'
 import TextInput from '~/shared/components/Ui/Text/StyledInput'
-import { useCurrentStreamAbility2 } from '~/shared/stores/streamAbilities'
+import { useCurrentStreamAbility } from '~/shared/stores/streamAbilities'
 import { StreamDraft, getEmptyStreamEntity } from '~/stores/streamDraft'
 import Section from './Section'
 
@@ -13,7 +13,7 @@ export function PartitionsSection({ disabled: disabledProp = false }) {
     const { id: streamId, metadata } =
         StreamDraft.useEntity({ hot: true }) || getEmptyStreamEntity()
 
-    const canEdit = useCurrentStreamAbility2(streamId, StreamPermission.EDIT)
+    const canEdit = useCurrentStreamAbility(streamId, StreamPermission.EDIT)
 
     const disabled = disabledProp || !canEdit
 

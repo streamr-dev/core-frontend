@@ -25,7 +25,7 @@ import { StreamConnect } from '~/shared/components/StreamConnect'
 import { StreamPreview } from '~/shared/components/StreamPreview'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
-import { useCurrentStreamAbility2 } from '~/shared/stores/streamAbilities'
+import { useCurrentStreamAbility } from '~/shared/stores/streamAbilities'
 import { DESKTOP, TABLET } from '~/shared/utils/styled'
 import { truncateStreamName } from '~/shared/utils/text'
 import {
@@ -56,11 +56,11 @@ export function StreamEditPage({
 
     const isNew = !streamId
 
-    const canEdit = useCurrentStreamAbility2(streamId, StreamPermission.EDIT)
+    const canEdit = useCurrentStreamAbility(streamId, StreamPermission.EDIT)
 
-    const canDelete = useCurrentStreamAbility2(streamId, StreamPermission.DELETE)
+    const canDelete = useCurrentStreamAbility(streamId, StreamPermission.DELETE)
 
-    const canGrant = useCurrentStreamAbility2(streamId, StreamPermission.GRANT)
+    const canGrant = useCurrentStreamAbility(streamId, StreamPermission.GRANT)
 
     const busy = StreamDraft.useIsDraftBusy()
 
@@ -96,7 +96,7 @@ export function StreamLiveDataPage() {
 
     const { id: streamId = undefined } = StreamDraft.useEntity() || {}
 
-    const canSubscribe = useCurrentStreamAbility2(streamId, StreamPermission.SUBSCRIBE)
+    const canSubscribe = useCurrentStreamAbility(streamId, StreamPermission.SUBSCRIBE)
 
     const isLoading = fetching || canSubscribe == null
 
@@ -115,7 +115,7 @@ export function StreamConnectPage() {
 
     const { id: streamId = undefined } = StreamDraft.useEntity() || {}
 
-    const canEdit = useCurrentStreamAbility2(streamId, StreamPermission.EDIT)
+    const canEdit = useCurrentStreamAbility(streamId, StreamPermission.EDIT)
 
     const isLoading = fetching || canEdit == null
 
