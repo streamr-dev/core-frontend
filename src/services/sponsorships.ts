@@ -19,6 +19,7 @@ import { defaultChainConfig } from '~/getters/getChainConfig'
 import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
 import { getParsedSponsorshipById } from '~/getters'
 import { toDecimals } from '~/marketplace/utils/math'
+import { useUncollectedEarningsStore } from '~/shared/stores/uncollectedEarnings'
 
 const getSponsorshipChainId = () => {
     return defaultChainConfig.id
@@ -212,6 +213,11 @@ export async function stakeOnSponsorship(
         const { blockNumber } = await tx.wait()
 
         await onBlockNumber?.(blockNumber)
+
+        // Update uncollected earnings because the rate of change
+        // will change along with stake amount
+        const { fetch: updateEarnings } = useUncollectedEarningsStore.getState()
+        await updateEarnings(operatorAddress)
     })
 }
 
@@ -254,6 +260,11 @@ export async function reduceStakeOnSponsorship(
         const { blockNumber } = await tx.wait()
 
         await onBlockNumber?.(blockNumber)
+
+        // Update uncollected earnings because the rate of change
+        // will change along with stake amount
+        const { fetch: updateEarnings } = useUncollectedEarningsStore.getState()
+        await updateEarnings(operatorAddress)
     })
 }
 
@@ -294,6 +305,11 @@ export async function forceUnstakeFromSponsorship(
         const { blockNumber } = await tx.wait()
 
         await onBlockNumber?.(blockNumber)
+
+        // Update uncollected earnings because the rate of change
+        // will change along with stake amount
+        const { fetch: updateEarnings } = useUncollectedEarningsStore.getState()
+        await updateEarnings(operatorAddress)
     })
 }
 
