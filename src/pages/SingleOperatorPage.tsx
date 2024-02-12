@@ -92,7 +92,7 @@ export const SingleOperatorPage = () => {
 
     const [selectedDataSource, setSelectedDataSource] = useState<
         'totalValue' | 'cumulativeEarnings'
-    >('totalValue')
+    >('cumulativeEarnings')
 
     const [selectedPeriod, setSelectedPeriod] = useState<ChartPeriod>(
         ChartPeriod.ThreeMonths,
@@ -206,10 +206,10 @@ export const SingleOperatorPage = () => {
                                                     setSelectedDataSource(dataSource)
                                                 }}
                                             >
-                                                <Tab id="totalValue">Total stake</Tab>
                                                 <Tab id="cumulativeEarnings">
                                                     Cumulative earnings
                                                 </Tab>
+                                                <Tab id="totalValue">Total stake</Tab>
                                             </Tabs>
                                         }
                                     >

@@ -71,7 +71,7 @@ function MyOperatorSummary() {
 
     const [chartPeriod, setChartPeriod] = useState<ChartPeriod>(ChartPeriod.ThreeMonths)
 
-    const [chartId, setChartId] = useState<'stake' | 'earnings'>('stake')
+    const [chartId, setChartId] = useState<'stake' | 'earnings'>('earnings')
 
     const { data: operator = null } = useOperatorForWalletQuery(wallet)
 
@@ -176,8 +176,8 @@ function MyOperatorSummary() {
                                             setChartId(newChartId)
                                         }}
                                     >
-                                        <Tab id="stake">Total stake</Tab>
                                         <Tab id="earnings">Cumulative earnings</Tab>
+                                        <Tab id="stake">Total stake</Tab>
                                     </Tabs>
                                 }
                             >
@@ -247,7 +247,7 @@ function MyDelegationsSummary() {
     const [chartPeriod, setChartPeriod] = useState<ChartPeriod>(ChartPeriod.ThreeMonths)
     const [chartDataSource, setChartDataSource] = useState<
         'currentValue' | 'cumulativeEarnings'
-    >('currentValue')
+    >('cumulativeEarnings')
 
     const dailyDelegationChartQuery = useQuery({
         queryKey: ['dailyDelegationChartQuery', wallet, chartPeriod, chartDataSource],
@@ -308,8 +308,8 @@ function MyDelegationsSummary() {
                                     setChartDataSource(newChartId)
                                 }}
                             >
-                                <Tab id="currentValue">Current value</Tab>
                                 <Tab id="cumulativeEarnings">Cumulative earnings</Tab>
+                                <Tab id="currentValue">Current value</Tab>
                             </Tabs>
                         }
                     >
