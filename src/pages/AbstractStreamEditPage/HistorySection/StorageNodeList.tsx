@@ -11,7 +11,7 @@ type Props = {
 
 function UnstyledStorageNodeList({ className, disabled = false }: Props) {
     const {
-        current: { storageNodes: storageNodes },
+        current: { storageNodes },
     } = useRef(getCoreConfig())
 
     return (

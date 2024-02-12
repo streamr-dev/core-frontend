@@ -1,23 +1,19 @@
-import React, { useMemo, useState, useEffect, useRef } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import styled from 'styled-components'
-import { PHONE } from '~/shared/utils/styled'
-import SvgIcon from '~/shared/components/SvgIcon'
+import { z } from 'zod'
 import { Button } from '~/components/Button'
-import Spinner from '~/components/Spinner'
-import Label from '~/shared/components/Ui/Label'
-import Text from '~/shared/components/Ui/Text'
-import Select from '~/shared/components/Ui/Select'
-import Errors, { MarketplaceTheme } from '~/shared/components/Ui/Errors'
-import useCopy from '~/shared/hooks/useCopy'
-import { truncate } from '~/shared/utils/text'
-import {
-    useCurrentDraftError,
-    useSetCurrentDraftError,
-    useSetCurrentDraftTransientStreamId,
-} from '~/shared/stores/streamEditor'
-import { useWalletAccount } from '~/shared/stores/wallet'
-import { DraftValidationError } from '~/errors'
 import { Hint } from '~/components/Hint'
+import Spinner from '~/components/Spinner'
+import SvgIcon from '~/shared/components/SvgIcon'
+import Errors, { MarketplaceTheme } from '~/shared/components/Ui/Errors'
+import Label from '~/shared/components/Ui/Label'
+import Select from '~/shared/components/Ui/Select'
+import Text from '~/shared/components/Ui/Text'
+import useCopy from '~/shared/hooks/useCopy'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import { PHONE } from '~/shared/utils/styled'
+import { truncate } from '~/shared/utils/text'
+import { StreamDraft } from '~/stores/streamDraft'
 import useStreamOwnerOptionGroups, {
     ADD_ENS_DOMAIN_VALUE,
     OptionGroup,
@@ -61,11 +57,64 @@ interface EditableStreamIdProps {
 export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
     const ownerGroups = useStreamOwnerOptionGroups()
 
-    const validationError = useCurrentDraftError('streamId')
+    const { errors = {} } = StreamDraft.useDraft() || {}
 
-    const setTransientStreamId = useSetCurrentDraftTransientStreamId()
+    const { pathname: validationError } = errors
 
-    const setValidationError = useSetCurrentDraftError()
+    const update = StreamDraft.useUpdateEntity()
+
+    const validate = StreamDraft.useValidateEntity((entity) => {
+        z.object({
+            pathname: z.string().superRefine((value, ctx) => {
+                if (!value) {
+                    return
+                }
+
+                if (/^\//.test(value)) {
+                    ctx.addIssue({
+                        message: 'cannot start with a slash',
+                        fatal: true,
+                        code: z.ZodIssueCode.custom,
+                    })
+
+                    return z.NEVER
+                }
+
+                if (/\/{2,}/.test(value)) {
+                    ctx.addIssue({
+                        message: 'cannot contain consecutive "/" characters',
+                        fatal: true,
+                        code: z.ZodIssueCode.custom,
+                    })
+
+                    return z.NEVER
+                }
+
+                if (/[^\w]$/.test(value)) {
+                    ctx.addIssue({
+                        message: 'must end with an alpha-numeric character',
+                        fatal: true,
+                        code: z.ZodIssueCode.custom,
+                    })
+
+                    return z.NEVER
+                }
+
+                if (/[^\w.\-/_]/.test(value)) {
+                    ctx.addIssue({
+                        message:
+                            'may only contain alpha-numeric characters, underscores, and dashes',
+                        fatal: true,
+                        code: z.ZodIssueCode.custom,
+                    })
+
+                    return z.NEVER
+                }
+            }),
+        }).parse(entity)
+    })
+
+    const { domain = '', pathname = '' } = StreamDraft.useEntity({ hot: true }) || {}
 
     const owners = useMemo(() => {
         const result: OptionGroup['options'] = []
@@ -83,69 +132,28 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
 
     const account = useWalletAccount()
 
-    const [domain, setDomain] = useState<string>()
+    useEffect(
+        function setCurrentAccountAsDomain() {
+            /**
+             * We may wanna skip this step of delay it while we're doing
+             * something to the stream, e.g. transacting or block-awaiting.
+             */
 
-    const [pathname, setPathname] = useState('')
+            /**
+             * We set the domain for both hot and cold copies of the entity here
+             * (see backport: true) so *just* changing the account does not cause
+             * the state to be dirty. All we care about is, after all, the pathname.
+             */
 
-    const pathnameRef = useRef(pathname)
-
-    useEffect(() => {
-        pathnameRef.current = pathname
-    }, [pathname])
-
-    const commitRef = useRef(function commit(
-        newDomain: string | undefined,
-        newPathname: string,
-    ) {
-        setTransientStreamId('')
-
-        setValidationError('streamId', '')
-
-        if (!newDomain || newPathname === '') {
-            return
-        }
-
-        try {
-            if (/^\//.test(newPathname)) {
-                throw new DraftValidationError('streamId', 'cannot start with a slash')
-            }
-
-            if (/\/{2,}/.test(newPathname)) {
-                throw new DraftValidationError(
-                    'streamId',
-                    'cannot contain consecutive "/" characters',
-                )
-            }
-
-            if (/[^\w]$/.test(newPathname)) {
-                throw new DraftValidationError(
-                    'streamId',
-                    'must end with an alpha-numeric character',
-                )
-            }
-
-            if (/[^\w.\-/_]/.test(newPathname)) {
-                throw new DraftValidationError(
-                    'streamId',
-                    'may only contain alpha-numeric characters, underscores, and dashes',
-                )
-            }
-
-            setTransientStreamId(`${newDomain}/${newPathname}`)
-        } catch (e) {
-            if (e instanceof DraftValidationError) {
-                return void setValidationError(e.key, e.message)
-            }
-
-            throw e
-        }
-    })
-
-    useEffect(() => {
-        setDomain(undefined)
-
-        commitRef.current(account, pathnameRef.current)
-    }, [account])
+            update(
+                (draft) => {
+                    draft.domain = account || ''
+                },
+                { backport: true },
+            )
+        },
+        [update, account],
+    )
 
     return (
         <StreamId>
@@ -180,9 +188,20 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
                                 return
                             }
 
-                            setDomain(value)
+                            /**
+                             * We set the domain for both hot and cold copies of the entity here
+                             * (see backport: true) so *just* changing the account does not cause
+                             * the state to be dirty. All we care about is, after all, the pathname.
+                             */
 
-                            commitRef.current(value || account, pathname)
+                            update(
+                                (draft) => {
+                                    draft.domain = value
+                                },
+                                {
+                                    backport: true,
+                                },
+                            )
                         }}
                         disabled={disabled}
                         name="domain"
@@ -217,9 +236,11 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
                         disabled={disabled}
                         invalid={!!validationError}
                         onChange={({ target }) => {
-                            setPathname(target.value)
+                            update((draft) => {
+                                draft.pathname = target.value
+                            })
 
-                            commitRef.current(domain || account, target.value)
+                            validate()
                         }}
                         placeholder="Enter a unique stream path name"
                         value={pathname}
@@ -228,9 +249,11 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
                         <ClearButton
                             type="button"
                             onClick={() => {
-                                setPathname('')
+                                update((draft) => {
+                                    draft.pathname = ''
+                                })
 
-                                commitRef.current(domain || account, '')
+                                validate()
                             }}
                         >
                             <SvgIcon name="clear" />
@@ -254,12 +277,15 @@ const Domain = styled.div`
         max-width: 222px;
     }
 `
+
 const SeparatorAttrs = {
     children: '/',
 }
+
 const Separator = styled.div.attrs(SeparatorAttrs)`
     line-height: 40px;
 `
+
 const Pathname = styled.div`
     flex-grow: 1;
 
@@ -267,9 +293,11 @@ const Pathname = styled.div`
         flex-grow: 1;
     }
 `
+
 const PathnameField = styled.div`
     position: relative;
 `
+
 const DisabledDomain = styled.div`
     align-items: center;
     background-color: #efefef;
@@ -289,6 +317,7 @@ const DisabledDomain = styled.div`
         white-space: nowrap;
     }
 `
+
 const ClearButton = styled.button`
     width: 40px;
     height: 40px;
@@ -320,6 +349,7 @@ const ClearButton = styled.button`
         stroke: #525252;
     }
 `
+
 const StreamId = styled.div`
     display: flex;
 

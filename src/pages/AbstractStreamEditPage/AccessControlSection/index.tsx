@@ -1,18 +1,15 @@
 import React from 'react'
 import { StreamPermission } from 'streamr-client'
-import { useCurrentStreamAbility } from '~/shared/stores/streamAbilities'
+import { useCurrentStreamAbility2 } from '~/shared/stores/streamAbilities'
+import { StreamDraft } from '~/stores/streamDraft'
 import Section from '../Section'
-import StreamTypeSelector from './StreamTypeSelector'
-import PermissionList from './PermissionList'
+import { PermissionList } from './PermissionList'
+import { StreamTypeSelector } from './StreamTypeSelector'
 
-export type Props = {
-    disabled: boolean
-}
+export function AccessControlSection({ disabled: disabledProp = false }) {
+    const { id: streamId } = StreamDraft.useEntity() || {}
 
-const AccessControlSection: React.FunctionComponent<Props> = ({
-    disabled: disabledProp,
-}) => {
-    const canGrant = useCurrentStreamAbility(StreamPermission.GRANT)
+    const canGrant = useCurrentStreamAbility2(streamId, StreamPermission.GRANT)
 
     const disabled = disabledProp || !canGrant
 
@@ -28,5 +25,3 @@ const AccessControlSection: React.FunctionComponent<Props> = ({
         </Section>
     )
 }
-
-export default AccessControlSection

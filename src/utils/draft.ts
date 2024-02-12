@@ -52,13 +52,14 @@ interface DraftStore<E extends Entity> {
     setErrors: (draftId: string, update: (errors: Draft<E>['errors']) => void) => void
     update: (
         draftId: string,
-        updater: (entity: E) => void,
+        updater: (hot: E, cold: E) => void,
         options?: UpdateOptions,
     ) => void
     teardown: (draftId: string, options?: { onlyAbandoned?: boolean }) => void
     abandon: (draftId: string) => void
     persist: (draftId: string) => Promise<void>
     assign: (draftId: string, entity: E | undefined | null) => void
+    validate: (draftId: string, validator: (entity: E) => void) => void
 }
 
 interface CreateDraftStoreOptions<E extends Entity = Entity> {
@@ -139,14 +140,14 @@ export function createDraftStore<E extends Entity = Entity>(
                         return
                     }
 
-                    updater(draft.entity.hot)
+                    updater(draft.entity.hot, draft.entity.cold)
 
                     if (backport) {
                         /**
                          * Make both copies undergo the same procedure.
                          */
 
-                        updater(draft.entity.cold)
+                        draft.entity.cold = draft.entity.hot
                     }
 
                     draft.dirty = !(options.isEqual || isEqual)(
@@ -247,6 +248,38 @@ export function createDraftStore<E extends Entity = Entity>(
                     get().teardown(draftId, { onlyAbandoned: true })
                 }
             },
+
+            validate(draftId, validator) {
+                const entity = get().drafts[draftId]?.entity?.hot
+
+                setDraft(draftId, (copy) => {
+                    copy.errors = {}
+                })
+
+                if (!entity) {
+                    return
+                }
+
+                try {
+                    validator(entity)
+                } catch (e) {
+                    if (e instanceof z.ZodError) {
+                        const errors: Draft<E>['errors'] = {}
+
+                        e.issues.forEach(({ path, message }) => {
+                            errors[path.join('.')] = message
+                        })
+
+                        setDraft(draftId, (copy) => {
+                            copy.errors = errors
+                        })
+
+                        return
+                    }
+
+                    console.warn('Failed to validate draft', e)
+                }
+            },
         }
     })
 
@@ -316,7 +349,7 @@ export function createDraftStore<E extends Entity = Entity>(
         const { update } = useDraftStore()
 
         return useCallback(
-            (updater: (entity: E) => void, options?: UpdateOptions) => {
+            (updater: (hot: E, cold: E) => void, options?: UpdateOptions) => {
                 if (!draftId) {
                     return
                 }
@@ -325,6 +358,26 @@ export function createDraftStore<E extends Entity = Entity>(
             },
             [draftId, update],
         )
+    }
+
+    function useValidateEntity(validator: (entity: E) => void) {
+        const draftId = useDraftId()
+
+        const { validate } = useDraftStore()
+
+        const validatorRef = useRef(validator)
+
+        if (validatorRef.current !== validator) {
+            validatorRef.current = validator
+        }
+
+        return useCallback(() => {
+            if (!draftId) {
+                return
+            }
+
+            return validate(draftId, validatorRef.current)
+        }, [draftId, validate])
     }
 
     function useIsFetchingEntity() {
@@ -424,6 +477,7 @@ export function createDraftStore<E extends Entity = Entity>(
         usePersistCallback,
         useSetDraftErrors,
         useUpdateEntity,
+        useValidateEntity,
     }
 }
 

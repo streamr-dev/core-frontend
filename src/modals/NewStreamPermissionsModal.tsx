@@ -66,20 +66,22 @@ export default function NewStreamPermissionsModal({
                 )
             }}
             onSubmit={() => {
-                if (address.toLowerCase() === address0) {
+                const account = address.toLowerCase()
+
+                if (account === address0) {
                     return void setError('Invalid address')
                 }
 
-                if (address.length === 0) {
+                if (account.length === 0) {
                     return void setError('Address required')
                 }
 
-                if (!isAddress(address)) {
+                if (!isAddress(account)) {
                     return void setError('Invalid address format')
                 }
 
                 const result = {
-                    account: address,
+                    account,
                     bits: permissionBits,
                 }
 
@@ -106,7 +108,7 @@ export default function NewStreamPermissionsModal({
                         setAddress(value)
                         setError('')
                     }}
-                    placeholder="0x..."
+                    placeholder="0x…"
                 />
                 {!!error && (
                     <Errors theme={MarketplaceTheme} overlap>

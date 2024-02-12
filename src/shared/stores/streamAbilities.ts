@@ -206,6 +206,23 @@ export function useCurrentStreamAbility(permission: StreamPermission) {
     return hasPermission
 }
 
+export function useCurrentStreamAbility2(
+    streamId: string | undefined,
+    permission: StreamPermission,
+) {
+    const account = useWalletAccount()
+
+    const hasPermission = useStreamAbility(streamId, account, permission)
+
+    if (!streamId) {
+        return (
+            permission === StreamPermission.EDIT || permission === StreamPermission.GRANT
+        )
+    }
+
+    return hasPermission
+}
+
 export function useInvalidateStreamAbilities() {
     return useStreamAbilitiesStore(({ invalidate }) => invalidate)
 }

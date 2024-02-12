@@ -1,102 +1,106 @@
 import React, {
     FormEvent,
     MutableRefObject,
+    ReactNode,
     RefCallback,
     useCallback,
-    useEffect,
+    useMemo,
 } from 'react'
+import {
+    Link,
+    Navigate,
+    Outlet,
+    useLocation,
+    useNavigate,
+    useParams,
+} from 'react-router-dom'
 import { StreamPermission } from 'streamr-client'
 import styled, { css } from 'styled-components'
 import { toaster } from 'toasterhea'
-import {
-    Link,
-    Route,
-    Routes,
-    useNavigate,
-    useLocation,
-    useParams,
-    Navigate,
-} from 'react-router-dom'
-import { StreamPreview } from '~/shared/components/StreamPreview'
+import { Button } from '~/components/Button'
+import { CopyButton } from '~/components/CopyButton'
+import { FloatingToolbar } from '~/components/FloatingToolbar'
+import Helmet from '~/components/Helmet'
+import Layout from '~/components/Layout'
+import { DraftValidationError } from '~/errors'
+import { useInViewport } from '~/hooks/useInViewport'
+import { isRejectionReason } from '~/modals/BaseModal'
+import GetCryptoModal from '~/modals/GetCryptoModal'
+import { GenericErrorPageContent } from '~/pages/GenericErrorPage'
+import { NotFoundPageContent } from '~/pages/NotFoundPage'
+import routes from '~/routes'
+import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
+import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { StreamConnect } from '~/shared/components/StreamConnect'
+import { StreamPreview } from '~/shared/components/StreamPreview'
+import Tabs, { Tab } from '~/shared/components/Tabs'
+import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
+import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
+import useIsMounted from '~/shared/hooks/useIsMounted'
+import usePreventNavigatingAway from '~/shared/hooks/usePreventNavigatingAway'
+import { useCurrentChainId } from '~/shared/stores/chain'
 import {
-    useCurrentStreamAbility,
+    useCurrentStreamAbility2,
     useInvalidateStreamAbilities,
 } from '~/shared/stores/streamAbilities'
 import {
-    StreamDraftContext,
     useCurrentDraft,
-    useInitStreamDraft,
     useIsCurrentDraftBusy,
     useIsCurrentDraftClean,
     usePersistCurrentDraft,
-    useResetDraftStore,
     useSetCurrentDraftError,
 } from '~/shared/stores/streamEditor'
-import useDecodedStreamId from '~/shared/hooks/useDecodedStreamId'
-import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
-import Layout from '~/components/Layout'
-import Helmet from '~/components/Helmet'
-import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
-import { truncateStreamName } from '~/shared/utils/text'
-import { CopyButton } from '~/components/CopyButton'
-import Tabs, { Tab } from '~/shared/components/Tabs'
-import { Button } from '~/components/Button'
-import usePreventNavigatingAway from '~/shared/hooks/usePreventNavigatingAway'
-import { DESKTOP, TABLET } from '~/shared/utils/styled'
-import LoadingIndicator from '~/shared/components/LoadingIndicator'
-import useIsMounted from '~/shared/hooks/useIsMounted'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import getNativeTokenName from '~/shared/utils/nativeToken'
-import getChainId from '~/utils/web3/getChainId'
-import { isRejectionReason } from '~/modals/BaseModal'
+import { DESKTOP, TABLET } from '~/shared/utils/styled'
+import { truncateStreamName } from '~/shared/utils/text'
+import {
+    StreamDraft,
+    getEmptyStreamEntity,
+    useStreamEntityQuery,
+} from '~/stores/streamDraft'
 import { isTransactionRejection } from '~/utils'
 import { Layer } from '~/utils/Layer'
-import GetCryptoModal from '~/modals/GetCryptoModal'
-import NotFoundPage, { NotFoundPageContent } from '~/pages/NotFoundPage'
-import { GenericErrorPageContent } from '~/pages/GenericErrorPage'
-import { DraftValidationError } from '~/errors'
-import routes from '~/routes'
-import { useInViewport } from '~/hooks/useInViewport'
-import { FloatingToolbar } from '~/components/FloatingToolbar'
-import { useCurrentChainId } from '~/shared/stores/chain'
-import InfoSection from './AbstractStreamEditPage/InfoSection'
-import AccessControlSection from './AbstractStreamEditPage/AccessControlSection'
-import HistorySection from './AbstractStreamEditPage/HistorySection'
-import PartitionsSection from './AbstractStreamEditPage/PartitionsSection'
-import DeleteSection from './AbstractStreamEditPage/DeleteSection'
-import PersistanceAlert from './AbstractStreamEditPage/PersistanceAlert'
-import RelatedProjects from './AbstractStreamEditPage/RelatedProjects'
-import CreateProjectHint from './AbstractStreamEditPage/CreateProjectHint'
-import SponsorshipsTable from './AbstractStreamEditPage/SponsorshipsTable'
+import getChainId from '~/utils/web3/getChainId'
+import { AccessControlSection } from '../AbstractStreamEditPage/AccessControlSection'
+import CreateProjectHint from '../AbstractStreamEditPage/CreateProjectHint'
+import DeleteSection from '../AbstractStreamEditPage/DeleteSection'
+import HistorySection from '../AbstractStreamEditPage/HistorySection'
+import { InfoSection } from '../AbstractStreamEditPage/InfoSection'
+import PartitionsSection from '../AbstractStreamEditPage/PartitionsSection'
+import RelatedProjects from '../AbstractStreamEditPage/RelatedProjects'
+import SponsorshipsTable from '../AbstractStreamEditPage/SponsorshipsTable'
 
 const getCryptoModal = toaster(GetCryptoModal, Layer.Modal)
 
-function EditPage({
-    isNew = false,
+export function StreamEditPage({
     saveButtonRef,
 }: {
-    isNew?: boolean
     saveButtonRef?: MutableRefObject<Element | null> | RefCallback<Element | null>
 }) {
-    const { streamId } = useCurrentDraft()
+    const { fetching = false } = StreamDraft.useDraft() || {}
 
-    const canEdit = useCurrentStreamAbility(StreamPermission.EDIT)
+    const { id: streamId } = StreamDraft.useEntity() || {}
 
-    const canDelete = useCurrentStreamAbility(StreamPermission.DELETE)
+    const isNew = !streamId
 
-    const canGrant = useCurrentStreamAbility(StreamPermission.GRANT)
+    const canEdit = useCurrentStreamAbility2(streamId, StreamPermission.EDIT)
 
-    const busy = useIsCurrentDraftBusy()
+    const canDelete = useCurrentStreamAbility2(streamId, StreamPermission.DELETE)
+
+    const canGrant = useCurrentStreamAbility2(streamId, StreamPermission.GRANT)
+
+    const busy = StreamDraft.useIsDraftBusy()
 
     const canSubmit = useCanSubmit()
 
     const disabled = typeof canEdit === 'undefined' || busy
 
+    const isLoading = typeof canEdit === 'undefined' || busy || fetching
+
     return (
         <>
-            <LoadingIndicator loading={disabled} />
+            <LoadingIndicator loading={isLoading} />
             <ContainerBox
                 disabled={disabled || !canSubmit}
                 showRelatedProjects={!!streamId}
@@ -105,48 +109,57 @@ function EditPage({
                 streamId={streamId}
                 showProjectCreateHint={canGrant}
             >
-                <PersistanceAlert />
                 <InfoSection disabled={disabled} />
                 <AccessControlSection disabled={disabled} />
                 <HistorySection disabled={disabled} />
-                <PartitionsSection disabled={disabled} />
-                {canDelete && <DeleteSection />}
+                {/* <PartitionsSection disabled={disabled} /> */}
+                {/* {canDelete && <DeleteSection />} */}
             </ContainerBox>
         </>
     )
 }
 
-function LiveDataPage() {
-    const canSubscribe = useCurrentStreamAbility(StreamPermission.SUBSCRIBE)
+export function StreamLiveDataPage() {
+    const { fetching = false } = StreamDraft.useDraft() || {}
 
-    const loading = typeof canSubscribe === 'undefined'
+    const { id: streamId = undefined } = StreamDraft.useEntity() || {}
 
-    const streamId = useDecodedStreamId()
+    const canSubscribe = useCurrentStreamAbility2(streamId, StreamPermission.SUBSCRIBE)
+
+    const isLoading = fetching || canSubscribe == null
 
     return (
         <>
-            <LoadingIndicator loading={loading} />
-            <StreamPreview streamsList={[streamId]} previewDisabled={!canSubscribe} />
+            <LoadingIndicator loading={isLoading} />
+            {streamId != null && (
+                <StreamPreview streamsList={[streamId]} previewDisabled={!canSubscribe} />
+            )}
         </>
     )
 }
 
-function ConnectPage() {
-    const streamId = useDecodedStreamId()
+export function StreamConnectPage() {
+    const { fetching = false } = StreamDraft.useDraft() || {}
 
-    const loading = useCurrentStreamAbility(StreamPermission.EDIT) == null
+    const { id: streamId = undefined } = StreamDraft.useEntity() || {}
+
+    const canEdit = useCurrentStreamAbility2(streamId, StreamPermission.EDIT)
+
+    const isLoading = fetching || canEdit == null
 
     return (
         <>
-            <LoadingIndicator loading={loading} />
-            <ContainerBox fullWidth showRelatedProjects streamId={streamId}>
-                <StreamConnect streams={[streamId]} />
-            </ContainerBox>
+            <LoadingIndicator loading={isLoading} />
+            {streamId != null && (
+                <ContainerBox fullWidth showRelatedProjects streamId={streamId}>
+                    <StreamConnect streams={[streamId]} />
+                </ContainerBox>
+            )}
         </>
     )
 }
 
-function StreamRedirect() {
+export function StreamIndexRedirect() {
     const { id } = useParams<{ id: string }>()
 
     return <Navigate to={routes.streams.overview({ id })} replace />
@@ -333,9 +346,9 @@ function StreamPageSwitch({ tab }: Props) {
         <form onSubmit={editView ? onSubmit : defaultFormEventHandler}>
             <Layout footer={null}>
                 <Header isNew={isNew} saveButtonRef={attach} />
-                {editView && <EditPage isNew={isNew} saveButtonRef={attach} />}
-                {tab === 'connect' && <ConnectPage />}
-                {tab === 'live-data' && <LiveDataPage />}
+                {editView && <StreamEditPage isNew={isNew} saveButtonRef={attach} />}
+                {tab === 'connect' && <StreamConnectPage />}
+                {tab === 'live-data' && <StreamLiveDataPage />}
             </Layout>
             <FloatingToolbar $active={!isSaveButtonVisible && editView}>
                 <Button type="submit" disabled={!canSubmit || isSaveButtonVisible}>
@@ -346,53 +359,107 @@ function StreamPageSwitch({ tab }: Props) {
     )
 }
 
-export default function StreamPage() {
-    const streamId = useDecodedStreamId()
+export function NewStreamPage() {
+    const stream = useMemo(() => getEmptyStreamEntity(), [])
 
-    const draftId = useInitStreamDraft(streamId === 'new' ? undefined : streamId)
-
-    const chainId = useCurrentChainId()
-
-    const resetDraftStore = useResetDraftStore()
-
-    useEffect(() => {
-        resetDraftStore()
-    }, [chainId, resetDraftStore])
+    const draftId = StreamDraft.useInitDraft(stream)
 
     return (
-        <StreamDraftContext.Provider value={draftId}>
-            <Routes>
-                <Route
-                    index
-                    element={
-                        streamId === 'new' ? <StreamPageSwitch /> : <StreamRedirect />
-                    }
-                />
-                <Route path="overview" element={<StreamPageSwitch tab="overview" />} />
-                <Route path="connect" element={<StreamPageSwitch tab="connect" />} />
-                <Route path="live-data" element={<StreamPageSwitch tab="live-data" />} />
-                <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-        </StreamDraftContext.Provider>
+        <StreamDraft.DraftContext.Provider value={draftId}>
+            <StreamEntityForm stickySubmit>
+                {(attach) => <StreamEditPage saveButtonRef={attach} />}
+            </StreamEntityForm>
+        </StreamDraft.DraftContext.Provider>
+    )
+}
+
+interface StreamTabbedPageProps {
+    children?: ReactNode | ((attach: RefCallback<Element>) => ReactNode)
+    stickySubmit?: boolean
+}
+
+export function StreamTabbedPage(props: StreamTabbedPageProps) {
+    const { stickySubmit = false, children = <Outlet /> } = props
+
+    const query = useStreamEntityQuery()
+
+    const { data: stream = null } = query
+
+    const isLoading = !stream && (query.isLoading || query.isFetching)
+
+    const draftId = StreamDraft.useInitDraft(isLoading ? undefined : stream)
+
+    return (
+        <StreamDraft.DraftContext.Provider value={draftId}>
+            <StreamEntityForm stickySubmit={stickySubmit}>
+                {isLoading ? (
+                    <LoadingIndicator loading />
+                ) : query.error instanceof StreamNotFoundError ? (
+                    <>
+                        <LoadingIndicator />
+                        <NotFoundPageContent />
+                    </>
+                ) : query.error ? (
+                    <>
+                        <LoadingIndicator />
+                        <GenericErrorPageContent />
+                    </>
+                ) : (
+                    children
+                )}
+            </StreamEntityForm>
+        </StreamDraft.DraftContext.Provider>
+    )
+}
+
+export function StreamOverviewPage() {}
+
+interface StreamEntityFormProps {
+    onSubmit?: () => void
+    children?: ReactNode | ((attach: RefCallback<Element>) => ReactNode)
+    stickySubmit?: boolean
+}
+
+function StreamEntityForm(props: StreamEntityFormProps) {
+    const { onSubmit = defaultFormEventHandler, children, stickySubmit = false } = props
+
+    const [attach, isSaveButtonVisible] = useInViewport()
+
+    const canSubmit = useCanSubmit()
+
+    return (
+        <form onSubmit={onSubmit}>
+            <Layout footer={null}>
+                <Header saveButtonRef={attach} />
+                {typeof children === 'function' ? children(attach) : children}
+            </Layout>
+            <FloatingToolbar $active={!isSaveButtonVisible && stickySubmit}>
+                <Button type="submit" disabled={!canSubmit || isSaveButtonVisible}>
+                    Save
+                </Button>
+            </FloatingToolbar>
+        </form>
     )
 }
 
 function useCanSubmit() {
-    const busy = useIsCurrentDraftBusy()
+    const busy = StreamDraft.useIsDraftBusy()
 
-    const clean = useIsCurrentDraftClean()
+    const clean = StreamDraft.useIsDraftClean()
 
     return !busy && !clean
 }
 
 function Header({
-    isNew = false,
     saveButtonRef,
 }: {
-    isNew?: boolean
     saveButtonRef?: MutableRefObject<Element | null> | RefCallback<Element | null>
 }) {
-    const { streamId, transientStreamId } = useCurrentDraft()
+    const { id: streamId = undefined } = StreamDraft.useEntity() || {}
+
+    const isNew = !streamId
+
+    const { transientStreamId } = useCurrentDraft()
 
     const { pathname } = useLocation()
 
