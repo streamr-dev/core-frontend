@@ -199,6 +199,8 @@ const {
     },
 
     isEqual: eq,
+
+    prefix: 'ProjectDraft-',
 })
 
 function eq(cold: ParsedProject, hot: ParsedProject) {

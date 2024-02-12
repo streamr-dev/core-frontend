@@ -63,8 +63,9 @@ interface DraftStore<E extends Entity> {
 
 interface CreateDraftStoreOptions<E extends Entity = Entity> {
     getEmptyDraft: () => Draft<E>
-    persist: (draft: Draft<E>) => void | Promise<void>
     isEqual?: (cold: E, hot: E) => boolean
+    persist: (draft: Draft<E>) => void | Promise<void>
+    prefix?: string
 }
 
 export function createDraftStore<E extends Entity = Entity>(
@@ -257,7 +258,7 @@ export function createDraftStore<E extends Entity = Entity>(
         const recycledDraftId = entityId ? idMap[entityId] : undefined
 
         const draftId = useId(
-            () => recycledDraftId || DefaultIdGenerator(),
+            () => recycledDraftId || DefaultIdGenerator(options.prefix),
             [entityId, recycledDraftId],
         )
 
@@ -426,8 +427,8 @@ export function createDraftStore<E extends Entity = Entity>(
     }
 }
 
-function DefaultIdGenerator() {
-    return uniqueId('EntityDraft-')
+function DefaultIdGenerator(prefix = 'EntityDraft-') {
+    return uniqueId(prefix)
 }
 
 function useId(generator: () => string, deps: unknown[]) {
