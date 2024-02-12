@@ -6,7 +6,6 @@ import { create } from 'zustand'
 import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
 import { isMessagedObject } from '~/utils'
 import { address0 } from '~/consts'
-import { useCurrentDraft } from './streamEditor'
 import { useWalletAccount } from './wallet'
 
 type PermissionManifest = Partial<
@@ -188,22 +187,6 @@ export function useStreamAbility(
     }, [cache, fetchPermission, streamId, account, permission, client])
 
     return value
-}
-
-export function useCurrentStreamAbility(permission: StreamPermission) {
-    const { streamId } = useCurrentDraft()
-
-    const account = useWalletAccount()
-
-    const hasPermission = useStreamAbility(streamId, account, permission)
-
-    if (!streamId) {
-        return (
-            permission === StreamPermission.EDIT || permission === StreamPermission.GRANT
-        )
-    }
-
-    return hasPermission
 }
 
 export function useCurrentStreamAbility2(

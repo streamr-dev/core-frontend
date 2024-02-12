@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { isAddress } from 'web3-validator'
-import { COLORS, TABLET } from '~/shared/utils/styled'
-import { Bits, setBits, unsetBits } from '~/shared/stores/streamEditor'
-import PermissionEditor from '~/pages/AbstractStreamEditPage/AccessControlSection/PermissionEditor'
 import { address0 } from '~/consts'
-import UnstyledLabel from '~/shared/components/Ui/Label'
+import PermissionEditor from '~/pages/AbstractStreamEditPage/AccessControlSection/PermissionEditor'
+import { Bits, setBits, unsetBits } from '~/parsers/StreamParser'
 import UnstyledErrors, { MarketplaceTheme } from '~/shared/components/Ui/Errors'
+import UnstyledLabel from '~/shared/components/Ui/Label'
 import Text from '~/shared/components/Ui/Text'
+import { COLORS, TABLET } from '~/shared/utils/styled'
 import { isMessagedObject } from '~/utils'
-import FormModal, { FormModalProps } from './FormModal'
 import { RejectionReason } from './BaseModal'
+import FormModal, { FormModalProps } from './FormModal'
 
 const Separator = styled.div`
     border-bottom: 1px solid ${COLORS.separator};

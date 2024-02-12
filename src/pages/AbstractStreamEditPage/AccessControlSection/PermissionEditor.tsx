@@ -1,7 +1,7 @@
 import React from 'react'
-import styled from 'styled-components'
 import { StreamPermission } from 'streamr-client'
-import { Bits, matchBits } from '~/shared/stores/streamEditor'
+import styled from 'styled-components'
+import { Bits, matchBits } from '~/parsers/StreamParser'
 import { MEDIUM, TABLET } from '~/shared/utils/styled'
 import Checkbox from './Checkbox'
 

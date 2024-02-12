@@ -3,17 +3,9 @@ import React, {
     MutableRefObject,
     ReactNode,
     RefCallback,
-    useCallback,
     useMemo,
 } from 'react'
-import {
-    Link,
-    Navigate,
-    Outlet,
-    useLocation,
-    useNavigate,
-    useParams,
-} from 'react-router-dom'
+import { Link, Navigate, Outlet, useLocation, useParams } from 'react-router-dom'
 import { StreamPermission } from 'streamr-client'
 import styled, { css } from 'styled-components'
 import { toaster } from 'toasterhea'
@@ -22,9 +14,7 @@ import { CopyButton } from '~/components/CopyButton'
 import { FloatingToolbar } from '~/components/FloatingToolbar'
 import Helmet from '~/components/Helmet'
 import Layout from '~/components/Layout'
-import { DraftValidationError } from '~/errors'
 import { useInViewport } from '~/hooks/useInViewport'
-import { isRejectionReason } from '~/modals/BaseModal'
 import GetCryptoModal from '~/modals/GetCryptoModal'
 import { GenericErrorPageContent } from '~/pages/GenericErrorPage'
 import { NotFoundPageContent } from '~/pages/NotFoundPage'
@@ -34,24 +24,8 @@ import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { StreamConnect } from '~/shared/components/StreamConnect'
 import { StreamPreview } from '~/shared/components/StreamPreview'
 import Tabs, { Tab } from '~/shared/components/Tabs'
-import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
-import useIsMounted from '~/shared/hooks/useIsMounted'
-import usePreventNavigatingAway from '~/shared/hooks/usePreventNavigatingAway'
-import { useCurrentChainId } from '~/shared/stores/chain'
-import {
-    useCurrentStreamAbility2,
-    useInvalidateStreamAbilities,
-} from '~/shared/stores/streamAbilities'
-import {
-    useCurrentDraft,
-    useIsCurrentDraftBusy,
-    useIsCurrentDraftClean,
-    usePersistCurrentDraft,
-    useSetCurrentDraftError,
-} from '~/shared/stores/streamEditor'
-import { useWalletAccount } from '~/shared/stores/wallet'
-import getNativeTokenName from '~/shared/utils/nativeToken'
+import { useCurrentStreamAbility2 } from '~/shared/stores/streamAbilities'
 import { DESKTOP, TABLET } from '~/shared/utils/styled'
 import { truncateStreamName } from '~/shared/utils/text'
 import {
@@ -59,9 +33,7 @@ import {
     getEmptyStreamEntity,
     useStreamEntityQuery,
 } from '~/stores/streamDraft'
-import { isTransactionRejection } from '~/utils'
 import { Layer } from '~/utils/Layer'
-import getChainId from '~/utils/web3/getChainId'
 import { AccessControlSection } from '../AbstractStreamEditPage/AccessControlSection'
 import CreateProjectHint from '../AbstractStreamEditPage/CreateProjectHint'
 import DeleteSection from '../AbstractStreamEditPage/DeleteSection'
@@ -169,195 +141,104 @@ function defaultFormEventHandler(e: FormEvent) {
     e.preventDefault()
 }
 
-interface Props {
-    tab?: 'overview' | 'connect' | 'live-data'
-}
+// function StreamPageSwitch({ tab }: Props) {
+//     usePreventNavigatingAway({
+//         isDirty: useCallback(
+//             (dest?: string) => {
+//                 if (streamId) {
+//                     switch (dest) {
+//                         case routes.streams.overview({ id: streamId }):
+//                         case routes.streams.connect({ id: streamId }):
+//                         case routes.streams.liveData({ id: streamId }):
+//                             return false
+//                     }
+//                 }
 
-function StreamPageSwitch({ tab }: Props) {
-    const { id } = useParams<{
-        id: string
-    }>()
+//                 /**
+//                  * Undefined `dest` means it's a full URL change that's happening outside of the
+//                  * router, or it's a refresh. We block such things here only if the state is dirty.
+//                  *
+//                  * Internal route changes are allowed w/o questions as long as modifications to the
+//                  * current draft are being persisted (see `busy`).
+//                  */
+//                 return !clean && (typeof dest === 'undefined' || !busy)
+//             },
+//             [clean, busy, streamId],
+//         ),
+//     })
 
-    const isNew = id === 'new'
+//     async function onSubmit(e: FormEvent) {
+//         defaultFormEventHandler(e)
 
-    const { streamId, loadError } = useCurrentDraft()
+//         try {
+//             await persist(chainId, {
+//                 onCreate(streamId) {
+//                     if (!isMounted()) {
+//                         /**
+//                          * Avoid redirecting to the new stream's edit page after the stream
+//                          * page has been unmounted.
+//                          */
+//                         return
+//                     }
 
-    const busy = useIsCurrentDraftBusy()
+//                     navigate(
+//                         routes.streams.overview({
+//                             id: streamId,
+//                         }),
+//                     )
+//                 },
+//                 onPermissionsChange(streamId, assignments) {
+//                     if (!address) {
+//                         return
+//                     }
 
-    const clean = useIsCurrentDraftClean()
+//                     if (
+//                         !assignments.some((assignment) => {
+//                             return (
+//                                 'user' in assignment &&
+//                                 assignment.user.toLowerCase() === address.toLowerCase()
+//                             )
+//                         })
+//                     ) {
+//                         return
+//                     }
 
-    const persist = usePersistCurrentDraft()
+//                     invalidateAbilities(streamId, address)
+//                 },
+//             })
+//         } catch (e) {
+//             if (e instanceof DraftValidationError) {
+//                 return void setValidationError(e.key, e.message)
+//             }
 
-    const setValidationError = useSetCurrentDraftError()
+//             if (e instanceof InsufficientFundsError) {
+//                 return void setTimeout(async () => {
+//                     try {
+//                         const chainId = await getChainId()
 
-    const navigate = useNavigate()
+//                         await getCryptoModal.pop({
+//                             tokenName: getNativeTokenName(chainId),
+//                         })
+//                     } catch (_) {
+//                         // Do nothing.
+//                     }
+//                 })
+//             }
 
-    const isMounted = useIsMounted()
+//             if (isRejectionReason(e)) {
+//                 return
+//             }
 
-    const address = useWalletAccount()
+//             if (isTransactionRejection(e)) {
+//                 return
+//             }
 
-    const invalidateAbilities = useInvalidateStreamAbilities()
+//             throw e
+//         }
+//     }
 
-    const [attach, isSaveButtonVisible] = useInViewport()
-
-    const canSubmit = useCanSubmit()
-
-    usePreventNavigatingAway({
-        isDirty: useCallback(
-            (dest?: string) => {
-                if (streamId) {
-                    switch (dest) {
-                        case routes.streams.overview({ id: streamId }):
-                        case routes.streams.connect({ id: streamId }):
-                        case routes.streams.liveData({ id: streamId }):
-                            return false
-                    }
-                }
-
-                /**
-                 * Undefined `dest` means it's a full URL change that's happening outside of the
-                 * router, or it's a refresh. We block such things here only if the state is dirty.
-                 *
-                 * Internal route changes are allowed w/o questions as long as modifications to the
-                 * current draft are being persisted (see `busy`).
-                 */
-                return !clean && (typeof dest === 'undefined' || !busy)
-            },
-            [clean, busy, streamId],
-        ),
-    })
-
-    const chainId = useCurrentChainId()
-
-    async function onSubmit(e: FormEvent) {
-        defaultFormEventHandler(e)
-
-        try {
-            await persist(chainId, {
-                onCreate(streamId) {
-                    if (!isMounted()) {
-                        /**
-                         * Avoid redirecting to the new stream's edit page after the stream
-                         * page has been unmounted.
-                         */
-                        return
-                    }
-
-                    navigate(
-                        routes.streams.overview({
-                            id: streamId,
-                        }),
-                    )
-                },
-                onPermissionsChange(streamId, assignments) {
-                    if (!address) {
-                        return
-                    }
-
-                    if (
-                        !assignments.some((assignment) => {
-                            return (
-                                'user' in assignment &&
-                                assignment.user.toLowerCase() === address.toLowerCase()
-                            )
-                        })
-                    ) {
-                        return
-                    }
-
-                    invalidateAbilities(streamId, address)
-                },
-            })
-        } catch (e) {
-            if (e instanceof DraftValidationError) {
-                return void setValidationError(e.key, e.message)
-            }
-
-            if (e instanceof InsufficientFundsError) {
-                return void setTimeout(async () => {
-                    try {
-                        const chainId = await getChainId()
-
-                        await getCryptoModal.pop({
-                            tokenName: getNativeTokenName(chainId),
-                        })
-                    } catch (_) {
-                        // Do nothing.
-                    }
-                })
-            }
-
-            if (isRejectionReason(e)) {
-                return
-            }
-
-            if (isTransactionRejection(e)) {
-                return
-            }
-
-            throw e
-        }
-    }
-
-    if (typeof loadError === 'undefined') {
-        /**
-         * We don't know if the stream loaded or not. `loadError` means
-         * - still determining if `undefined`,
-         * - all good if `null`,
-         * - something broke down if anything other than the above 2.
-         */
-        return (
-            <form onSubmit={defaultFormEventHandler}>
-                <Layout footer={null}>
-                    <Header saveButtonRef={attach} />
-                    <LoadingIndicator loading />
-                </Layout>
-            </form>
-        )
-    }
-
-    if (loadError instanceof StreamNotFoundError) {
-        return (
-            <form onSubmit={defaultFormEventHandler}>
-                <Layout footer={null}>
-                    <Header saveButtonRef={attach} />
-                    <LoadingIndicator />
-                    <NotFoundPageContent />
-                </Layout>
-            </form>
-        )
-    }
-
-    if (loadError) {
-        return (
-            <form onSubmit={defaultFormEventHandler}>
-                <Layout footer={null}>
-                    <Header saveButtonRef={attach} />
-                    <LoadingIndicator />
-                    <GenericErrorPageContent />
-                </Layout>
-            </form>
-        )
-    }
-
-    const editView = tab === 'overview' || isNew
-
-    return (
-        <form onSubmit={editView ? onSubmit : defaultFormEventHandler}>
-            <Layout footer={null}>
-                <Header isNew={isNew} saveButtonRef={attach} />
-                {editView && <StreamEditPage isNew={isNew} saveButtonRef={attach} />}
-                {tab === 'connect' && <StreamConnectPage />}
-                {tab === 'live-data' && <StreamLiveDataPage />}
-            </Layout>
-            <FloatingToolbar $active={!isSaveButtonVisible && editView}>
-                <Button type="submit" disabled={!canSubmit || isSaveButtonVisible}>
-                    Save
-                </Button>
-            </FloatingToolbar>
-        </form>
-    )
-}
+//     return null
+// }
 
 export function NewStreamPage() {
     const stream = useMemo(() => getEmptyStreamEntity(), [])
@@ -469,7 +350,7 @@ function Header({
 
     const canSubmit = useCanSubmit()
 
-    const clean = useIsCurrentDraftClean()
+    const clean = StreamDraft.useIsDraftClean()
 
     return (
         <>

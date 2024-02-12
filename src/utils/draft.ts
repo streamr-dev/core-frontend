@@ -447,6 +447,10 @@ export function createDraftStore<E extends Entity = Entity>(
         )
     }
 
+    function useIsAnyDraftBeingPersisted() {
+        return Object.values(useDraftStore().drafts).some((d) => d?.persisting)
+    }
+
     function useSetDraftErrors() {
         const draftId = useDraftId()
 
@@ -471,6 +475,7 @@ export function createDraftStore<E extends Entity = Entity>(
         useDraftStore,
         useEntity,
         useInitDraft,
+        useIsAnyDraftBeingPersisted,
         useIsDraftBusy,
         useIsDraftClean,
         useIsFetchingEntity,
