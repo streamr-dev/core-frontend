@@ -381,6 +381,10 @@ module.exports = {
                 __dirname,
                 'node_modules/prosemirror-model',
             ),
+            'streamr-client': path.resolve(
+                __dirname,
+                'node_modules/streamr-client/streamr-client.web.min.js',
+            ),
         },
     },
 }
