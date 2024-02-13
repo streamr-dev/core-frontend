@@ -140,7 +140,8 @@ export function useCanCollectEarningsCallback() {
             }
 
             return (
-                earnings[operatorId]?.values[sponsorshipId].uncollectedEarnings || toBN(0)
+                earnings[operatorId]?.values[sponsorshipId]?.uncollectedEarnings ||
+                toBN(0)
             ).isGreaterThan(0)
         },
         [earnings],
