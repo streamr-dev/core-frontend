@@ -36,7 +36,7 @@ export function getEmptyStreamEntity(
         metadata: {
             description: '',
             inactivityThresholdHours: '',
-            partitions: 1,
+            partitions: '1',
             storageDays: '',
         },
     }
