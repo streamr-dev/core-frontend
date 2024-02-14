@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { truncate } from '~/shared/utils/text'
-import { useWalletAccount } from '~/shared/stores/wallet'
-import { getENSDomainsForWallet } from '~/getters'
 import { isAddress } from 'web3-validator'
+import { getENSDomainsForWallet } from '~/getters'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import { truncate } from '~/shared/utils/text'
 
 export const ADD_ENS_DOMAIN_VALUE = '::ens/add_domain'
 

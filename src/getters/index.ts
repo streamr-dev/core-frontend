@@ -1072,3 +1072,19 @@ const blockExplorerUrls = Object.freeze({
 export function getBlockExplorerUrl(chainId: number): string | undefined {
     return blockExplorerUrls[chainId] || undefined
 }
+
+/**
+ * Returns StreamrClient class.
+ */
+export async function getStreamrClient() {
+    return (await import('streamr-client')).default
+}
+
+// Load the client library proactively so that we don't have to wait later.
+void (async () => {
+    try {
+        await getStreamrClient()
+    } catch (_) {
+        // Do nothing.
+    }
+})

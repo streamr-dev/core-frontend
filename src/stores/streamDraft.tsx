@@ -279,9 +279,7 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
                 }
 
                 if (transientStreamId) {
-                    client = await getTransactionalClient(chainId, {
-                        passiveNetworkCheck: true,
-                    })
+                    client = await getTransactionalClient(chainId)
 
                     try {
                         if (await client.getStream(transientStreamId)) {
