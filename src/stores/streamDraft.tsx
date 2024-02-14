@@ -29,6 +29,7 @@ import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
 import { isMessagedObject, isTransactionRejection } from '~/utils'
 import { Layer } from '~/utils/Layer'
 import { createDraftStore, getEmptyDraft } from '~/utils/draft'
+import { errorToast } from '~/utils/toast'
 import { toastedOperations } from '~/utils/toastedOperation'
 import getChainId from '~/utils/web3/getChainId'
 
@@ -517,6 +518,18 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
                             // Do nothing.
                         }
                     })()
+
+                    return
+                }
+
+                if (
+                    isMessagedObject(e) &&
+                    /not in namespace of authenticated user/.test(e.message)
+                ) {
+                    errorToast({
+                        title: 'Error',
+                        desc: 'Use your domain.',
+                    })
 
                     return
                 }
