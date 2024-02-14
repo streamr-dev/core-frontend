@@ -1,12 +1,12 @@
 import { produce } from 'immer'
-import { create } from 'zustand'
 import isEqual from 'lodash/isEqual'
 import uniqueId from 'lodash/uniqueId'
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef } from 'react'
 import { z } from 'zod'
+import { create } from 'zustand'
 import { ValidationError } from '~/errors'
-import { isTransactionRejection } from '~/utils'
 import { isRejectionReason } from '~/modals/BaseModal'
+import { isTransactionRejection } from '~/utils'
 
 interface Entity {
     chainId: number
@@ -41,31 +41,34 @@ export function getEmptyDraft<E extends Entity>(entity: E | undefined): Draft<E>
     }
 }
 
-interface UpdateOptions {
-    backport?: boolean
-}
-
 interface DraftStore<E extends Entity> {
     idMap: Record<string, string>
     drafts: Record<string, Draft<E> | undefined>
     init: (draftId: string) => void
     setErrors: (draftId: string, update: (errors: Draft<E>['errors']) => void) => void
-    update: (
-        draftId: string,
-        updater: (hot: E, cold: E) => void,
-        options?: UpdateOptions,
-    ) => void
+    update: (draftId: string, updater: (hot: E, cold: E) => void) => void
     teardown: (draftId: string, options?: { onlyAbandoned?: boolean }) => void
     abandon: (draftId: string) => void
-    persist: (draftId: string) => Promise<void>
+    persist: (
+        draftId: string,
+        fn?: (
+            draft: Draft<E>,
+            options: {
+                abortSignal?: AbortSignal
+                bind: (id: string) => void
+                update: (updater: (hot: E, cold: E) => void) => void
+            },
+        ) => Promise<void>,
+        abortSignal?: AbortSignal,
+    ) => Promise<void>
     assign: (draftId: string, entity: E | undefined | null) => void
-    validate: (draftId: string, validator: (entity: E) => void) => void
+    validate: (draftId: string, validator: (entity: E) => void) => Draft<E>['errors']
 }
 
 interface CreateDraftStoreOptions<E extends Entity = Entity> {
     getEmptyDraft: () => Draft<E>
-    isEqual?: (cold: E, hot: E) => boolean
-    persist: (draft: Draft<E>) => void | Promise<void>
+    isEqual?: (hot: E, cold: E) => boolean
+    persist?: (draft: Draft<E>) => void | Promise<void>
     prefix?: string
 }
 
@@ -95,6 +98,21 @@ export function createDraftStore<E extends Entity = Entity>(
                         ),
                     })
                 })
+            })
+        }
+
+        const update: DraftStore<E>['update'] = (draftId, updater) => {
+            setDraft(draftId, (draft) => {
+                if (!draft.entity) {
+                    return
+                }
+
+                updater(draft.entity.hot, draft.entity.cold)
+
+                draft.dirty = !(options.isEqual || isEqual)(
+                    draft.entity.hot,
+                    draft.entity.cold,
+                )
             })
         }
 
@@ -134,28 +152,7 @@ export function createDraftStore<E extends Entity = Entity>(
                 })
             },
 
-            update(draftId, updater, { backport = false } = {}) {
-                setDraft(draftId, (draft) => {
-                    if (!draft.entity) {
-                        return
-                    }
-
-                    updater(draft.entity.hot, draft.entity.cold)
-
-                    if (backport) {
-                        /**
-                         * Make both copies undergo the same procedure.
-                         */
-
-                        draft.entity.cold = draft.entity.hot
-                    }
-
-                    draft.dirty = !(options.isEqual || isEqual)(
-                        draft.entity.hot,
-                        draft.entity.cold,
-                    )
-                })
-            },
+            update,
 
             teardown(draftId, { onlyAbandoned = false } = {}) {
                 set((store) =>
@@ -189,7 +186,7 @@ export function createDraftStore<E extends Entity = Entity>(
                 }
             },
 
-            async persist(draftId) {
+            async persist(draftId, fn, abortSignal) {
                 if (isPersisting(draftId)) {
                     return
                 }
@@ -216,6 +213,20 @@ export function createDraftStore<E extends Entity = Entity>(
                     }
 
                     try {
+                        await fn?.(draft, {
+                            abortSignal,
+                            bind: (id) => {
+                                set((store) =>
+                                    produce(store, (d) => {
+                                        d.idMap[id] = draftId
+                                    }),
+                                )
+                            },
+                            update: (updater) => {
+                                update(draftId, updater)
+                            },
+                        })
+
                         await options.persist?.(draft)
                     } catch (e) {
                         if (e instanceof z.ZodError) {
@@ -252,33 +263,23 @@ export function createDraftStore<E extends Entity = Entity>(
             validate(draftId, validator) {
                 const entity = get().drafts[draftId]?.entity?.hot
 
-                setDraft(draftId, (copy) => {
-                    copy.errors = {}
-                })
-
-                if (!entity) {
-                    return
-                }
+                const errors: Draft<E>['errors'] = {}
 
                 try {
-                    validator(entity)
+                    if (entity) {
+                        validator(entity)
+                    }
                 } catch (e) {
                     if (e instanceof z.ZodError) {
-                        const errors: Draft<E>['errors'] = {}
-
                         e.issues.forEach(({ path, message }) => {
                             errors[path.join('.')] = message
                         })
-
-                        setDraft(draftId, (copy) => {
-                            copy.errors = errors
-                        })
-
-                        return
+                    } else {
+                        console.warn('Failed to validate draft', e)
                     }
-
-                    console.warn('Failed to validate draft', e)
                 }
+
+                return errors
             },
         }
     })
@@ -349,12 +350,12 @@ export function createDraftStore<E extends Entity = Entity>(
         const { update } = useDraftStore()
 
         return useCallback(
-            (updater: (hot: E, cold: E) => void, options?: UpdateOptions) => {
+            (updater: (hot: E, cold: E) => void) => {
                 if (!draftId) {
                     return
                 }
 
-                return update(draftId, updater, options)
+                return update(draftId, updater)
             },
             [draftId, update],
         )
@@ -373,7 +374,7 @@ export function createDraftStore<E extends Entity = Entity>(
 
         return useCallback(() => {
             if (!draftId) {
-                return
+                return {}
             }
 
             return validate(draftId, validatorRef.current)
@@ -388,6 +389,47 @@ export function createDraftStore<E extends Entity = Entity>(
         const { fetching = false, persisting = false } = useDraft() || {}
 
         return fetching || persisting
+    }
+
+    function usePersist(
+        fn?: (
+            draft: Draft<E>,
+            options: {
+                abortSignal?: AbortSignal
+                bind: (id: string) => void
+                update: (updater: (hot: E, cold: E) => void) => void
+            },
+        ) => Promise<void>,
+    ) {
+        const { persist } = useDraftStore()
+
+        const draftId = useDraftId()
+
+        const abortControllerRef = useRef<AbortController>()
+
+        useEffect(() => {
+            const abortController = new AbortController()
+
+            abortControllerRef.current = abortController
+
+            return () => {
+                abortController.abort()
+            }
+        }, [])
+
+        const fnRef = useRef(fn)
+
+        if (fnRef.current !== fn) {
+            fnRef.current = fn
+        }
+
+        return useCallback(async () => {
+            if (!draftId) {
+                return
+            }
+
+            return persist(draftId, fnRef.current, abortControllerRef.current?.signal)
+        }, [persist, draftId])
     }
 
     function usePersistCallback() {
@@ -478,6 +520,7 @@ export function createDraftStore<E extends Entity = Entity>(
         useIsAnyDraftBeingPersisted,
         useIsDraftBusy,
         useIsDraftClean,
+        usePersist,
         useIsFetchingEntity,
         usePersistCallback,
         useSetDraftErrors,

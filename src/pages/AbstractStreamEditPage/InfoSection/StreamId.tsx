@@ -1,9 +1,10 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { z } from 'zod'
 import { Button } from '~/components/Button'
 import { Hint } from '~/components/Hint'
 import Spinner from '~/components/Spinner'
+import { PathnameSchema } from '~/parsers/StreamParser'
 import SvgIcon from '~/shared/components/SvgIcon'
 import Errors, { MarketplaceTheme } from '~/shared/components/Ui/Errors'
 import Label from '~/shared/components/Ui/Label'
@@ -57,60 +58,15 @@ interface EditableStreamIdProps {
 export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
     const ownerGroups = useStreamOwnerOptionGroups()
 
-    const { errors = {} } = StreamDraft.useDraft() || {}
-
-    const { pathname: validationError } = errors
-
     const update = StreamDraft.useUpdateEntity()
+
+    const [{ pathname: validationError }, setErrors] = useState<
+        Record<string, string | undefined>
+    >({})
 
     const validate = StreamDraft.useValidateEntity((entity) => {
         z.object({
-            pathname: z.string().superRefine((value, ctx) => {
-                if (!value) {
-                    return
-                }
-
-                if (/^\//.test(value)) {
-                    ctx.addIssue({
-                        message: 'cannot start with a slash',
-                        fatal: true,
-                        code: z.ZodIssueCode.custom,
-                    })
-
-                    return z.NEVER
-                }
-
-                if (/\/{2,}/.test(value)) {
-                    ctx.addIssue({
-                        message: 'cannot contain consecutive "/" characters',
-                        fatal: true,
-                        code: z.ZodIssueCode.custom,
-                    })
-
-                    return z.NEVER
-                }
-
-                if (/[^\w]$/.test(value)) {
-                    ctx.addIssue({
-                        message: 'must end with an alpha-numeric character',
-                        fatal: true,
-                        code: z.ZodIssueCode.custom,
-                    })
-
-                    return z.NEVER
-                }
-
-                if (/[^\w.\-/_]/.test(value)) {
-                    ctx.addIssue({
-                        message:
-                            'may only contain alpha-numeric characters, underscores, and dashes',
-                        fatal: true,
-                        code: z.ZodIssueCode.custom,
-                    })
-
-                    return z.NEVER
-                }
-            }),
+            pathname: PathnameSchema,
         }).parse(entity)
     })
 
@@ -132,6 +88,8 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
 
     const account = useWalletAccount()
 
+    const { persisting = false } = StreamDraft.useDraft() || {}
+
     useEffect(
         function setCurrentAccountAsDomain() {
             /**
@@ -140,17 +98,16 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
              */
 
             /**
-             * We set the domain for both hot and cold copies of the entity here
-             * (see backport: true) so *just* changing the account does not cause
-             * the state to be dirty. All we care about is, after all, the pathname.
+             * We set the domain for both hot and cold copies of the entity
+             * here so that *just* changing the account does not cause the state
+             * to be dirty. All we care about is, after all, the pathname.
              */
 
-            update(
-                (draft) => {
-                    draft.domain = account || ''
-                },
-                { backport: true },
-            )
+            update((hot, cold) => {
+                hot.domain = account || ''
+
+                cold.domain = hot.domain
+            })
         },
         [update, account],
     )
@@ -189,19 +146,16 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
                             }
 
                             /**
-                             * We set the domain for both hot and cold copies of the entity here
-                             * (see backport: true) so *just* changing the account does not cause
-                             * the state to be dirty. All we care about is, after all, the pathname.
+                             * We set the domain for both hot and cold copies of the entity
+                             * here so that *just* changing the account does not cause the state
+                             * to be dirty. All we care about is, after all, the pathname.
                              */
 
-                            update(
-                                (draft) => {
-                                    draft.domain = value
-                                },
-                                {
-                                    backport: true,
-                                },
-                            )
+                            update((hot, cold) => {
+                                hot.domain = value
+
+                                cold.domain = value
+                            })
                         }}
                         disabled={disabled}
                         name="domain"
@@ -240,7 +194,7 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
                                 draft.pathname = target.value
                             })
 
-                            validate()
+                            setErrors(validate())
                         }}
                         placeholder="Enter a unique stream path name"
                         value={pathname}
@@ -253,7 +207,7 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
                                     draft.pathname = ''
                                 })
 
-                                validate()
+                                setErrors(validate())
                             }}
                         >
                             <SvgIcon name="clear" />

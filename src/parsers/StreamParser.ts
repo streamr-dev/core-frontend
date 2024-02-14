@@ -46,7 +46,7 @@ export function parseStream(value: unknown, options: ParseStreamOptions) {
             ...rest,
             domain: owner,
             id,
-            metadata: parseStreamMetadata(metadata),
+            metadata: parseStreamMetadata(metadata || { partitions: 1 }),
             pathname: pathname.replace(/^\//, ''),
             permissions,
             storage,
@@ -76,13 +76,67 @@ export function matchBits(bitsA: number, bitsB: number) {
     return (bitsA & bitsB) === bitsA
 }
 
-function parseStreamMetadata(metadata: unknown) {
-    return z
-        .object({
-            partitions: z.coerce.string().optional().default('1'),
-            description: z.string().optional().default(''),
-            storageDays: z.coerce.string().optional().default(''),
-            inactivityThresholdHours: z.coerce.string().optional().default(''),
-        })
-        .parse(metadata)
+function parseStreamMetadata(metadata: StreamMetadata) {
+    return {
+        /**
+         * Apart from parsing the predefined fields we also rewrite
+         * any custom fields that the metadata can carry (it's arbitrary).
+         */
+        ...metadata,
+        ...z
+            .object({
+                partitions: z.coerce.string().optional().default('1'),
+                description: z.string().optional().default(''),
+                storageDays: z.coerce.string().optional().default(''),
+                inactivityThresholdHours: z.coerce.string().optional().default(''),
+            })
+            .parse(metadata),
+    }
 }
+
+export const PathnameSchema = z.string().superRefine((value, ctx) => {
+    if (!value) {
+        return
+    }
+
+    if (/^\//.test(value)) {
+        ctx.addIssue({
+            message: 'Pathname cannot start with a slash',
+            fatal: true,
+            code: z.ZodIssueCode.custom,
+        })
+
+        return z.NEVER
+    }
+
+    if (/\/{2,}/.test(value)) {
+        ctx.addIssue({
+            message: 'Pathname cannot contain consecutive "/" characters',
+            fatal: true,
+            code: z.ZodIssueCode.custom,
+        })
+
+        return z.NEVER
+    }
+
+    if (/[^\w]$/.test(value)) {
+        ctx.addIssue({
+            message: 'Pathname must end with an alpha-numeric character',
+            fatal: true,
+            code: z.ZodIssueCode.custom,
+        })
+
+        return z.NEVER
+    }
+
+    if (/[^\w.\-/_]/.test(value)) {
+        ctx.addIssue({
+            message:
+                'Pathname may only contain alpha-numeric characters, underscores, and dashes',
+            fatal: true,
+            code: z.ZodIssueCode.custom,
+        })
+
+        return z.NEVER
+    }
+})
