@@ -1,17 +1,41 @@
 import { fireEvent, render, waitFor } from '@testing-library/react'
-import React, { useMemo } from 'react'
+import React, { ReactNode, useMemo } from 'react'
 import { defer } from 'toasterhea'
 import { createDraftStore, getEmptyDraft } from './draft'
 
 describe('createDraftStore', () => {
     describe('useInitDraft', () => {
-        it('restores/reinits existing draft if the entity id has not changed between rerenders', () => {
-            interface E {
-                id: string | undefined
-                chainId: number
-            }
+        interface E {
+            id: string | undefined
+            chainId: number
+        }
 
-            const TestDraft = createDraftStore<E>({
+        let TestDraft: undefined | ReturnType<typeof createDraftStore<E>>
+
+        interface TestComponentProps {
+            id?: string | undefined
+            onDraftId?(draftId: string): void
+            children?: ReactNode
+        }
+
+        function TestComponent({ id, onDraftId, children }: TestComponentProps) {
+            const Draft = TestDraft!
+
+            const entity = useMemo(() => ({ id, chainId: 1 }), [id])
+
+            const draftId = Draft.useInitDraft(entity)
+
+            onDraftId?.(draftId)
+
+            return (
+                <Draft.DraftContext.Provider value={draftId}>
+                    {children}
+                </Draft.DraftContext.Provider>
+            )
+        }
+
+        beforeEach(() => {
+            TestDraft = createDraftStore<E>({
                 getEmptyDraft: () =>
                     getEmptyDraft({
                         id: undefined,
@@ -20,73 +44,67 @@ describe('createDraftStore', () => {
 
                 prefix: 'TestDraft-',
             })
+        })
 
-            let draftId: string | undefined
+        it('restores/reinits existing draft if the entity id has not changed between rerenders', () => {
+            let draftId0: string | undefined
 
-            function T({ id }: { id?: string | undefined }) {
-                const entity = useMemo(() => ({ id, chainId: 1 }), [id])
+            const { rerender } = render(
+                <TestComponent
+                    id={undefined}
+                    onDraftId={(draftId) => {
+                        draftId0 = draftId
+                    }}
+                />,
+            )
 
-                draftId = TestDraft.useInitDraft(entity)
+            expect(draftId0).toMatch(/^TestDraft-\d+$/)
 
-                return null
-            }
+            let previousDraftId = draftId0
 
-            const { rerender } = render(<T id={undefined} />)
+            rerender(
+                <TestComponent
+                    id={undefined}
+                    onDraftId={(draftId) => {
+                        draftId0 = draftId
+                    }}
+                />,
+            )
 
-            expect(draftId).toMatch(/^TestDraft-\d+$/)
+            expect(draftId0).toEqual(previousDraftId)
 
-            let previousDraftId = draftId
+            rerender(
+                <TestComponent
+                    id="ID"
+                    onDraftId={(draftId) => {
+                        draftId0 = draftId
+                    }}
+                />,
+            )
 
-            rerender(<T id={undefined} />)
+            expect(draftId0).not.toEqual(previousDraftId)
 
-            expect(draftId).toEqual(previousDraftId)
+            expect(draftId0).toMatch(/^TestDraft-\d+$/)
 
-            rerender(<T id="ID" />)
+            previousDraftId = draftId0
 
-            expect(draftId).not.toEqual(previousDraftId)
+            rerender(
+                <TestComponent
+                    id="ID"
+                    onDraftId={(draftId) => {
+                        draftId0 = draftId
+                    }}
+                />,
+            )
 
-            expect(draftId).toMatch(/^TestDraft-\d+$/)
-
-            previousDraftId = draftId
-
-            rerender(<T id="ID" />)
-
-            expect(draftId).toEqual(previousDraftId)
+            expect(draftId0).toEqual(previousDraftId)
         })
 
         it('drops abandoned drafts', () => {
-            interface E {
-                id: string | undefined
-                chainId: number
-            }
-
-            const TestDraft = createDraftStore<E>({
-                getEmptyDraft: () =>
-                    getEmptyDraft({
-                        id: undefined,
-                        chainId: 1,
-                    }),
-
-                prefix: 'TestDraft-',
-            })
-
-            interface Props {
-                id: string
-                onDraftId(draftId: string): void
-            }
-
-            function T({ id, onDraftId }: Props) {
-                const entity = useMemo(() => ({ id, chainId: 1 }), [id])
-
-                onDraftId(TestDraft.useInitDraft(entity))
-
-                return null
-            }
-
             let draftId0: string | undefined
 
             const { rerender, unmount } = render(
-                <T
+                <TestComponent
                     id="ID"
                     onDraftId={(draftId) => {
                         draftId0 = draftId
@@ -96,12 +114,12 @@ describe('createDraftStore', () => {
 
             expect(draftId0).toMatch(/^TestDraft-/)
 
-            expect(Object.keys(TestDraft.useStore.getState().drafts)).toEqual([draftId0])
+            expect(Object.keys(TestDraft!.useStore.getState().drafts)).toEqual([draftId0])
 
             let draftId1: string | undefined
 
             rerender(
-                <T
+                <TestComponent
                     id="DIFFERENT_ID"
                     onDraftId={(draftId) => {
                         draftId1 = draftId
@@ -113,11 +131,11 @@ describe('createDraftStore', () => {
 
             expect(draftId0).not.toEqual(draftId1)
 
-            expect(Object.keys(TestDraft.useStore.getState().drafts)).toEqual([draftId1])
+            expect(Object.keys(TestDraft!.useStore.getState().drafts)).toEqual([draftId1])
 
             unmount()
 
-            expect(Object.keys(TestDraft.useStore.getState().drafts)).toEqual([])
+            expect(Object.keys(TestDraft!.useStore.getState().drafts)).toEqual([])
         })
 
         it('does not immediately drops abandoned drafts that are being persisted', async () => {
@@ -219,47 +237,13 @@ describe('createDraftStore', () => {
         })
 
         it('is able to un-abandon abandoned drafts they are being persisted', async () => {
-            interface E {
-                id: string | undefined
-                chainId: number
-            }
-
-            const TestDraft = createDraftStore<E>({
-                getEmptyDraft: () =>
-                    getEmptyDraft({
-                        id: undefined,
-                        chainId: 1,
-                    }),
-
-                prefix: 'TestDraft-',
-            })
-
-            interface Props {
-                id: string
-                onDraftId(draftId: string): void
-            }
-
-            function T({ id, onDraftId }: Props) {
-                const entity = useMemo(() => ({ id, chainId: 1 }), [id])
-
-                const draftId = TestDraft.useInitDraft(entity)
-
-                onDraftId(draftId)
-
-                return (
-                    <TestDraft.DraftContext.Provider value={draftId}>
-                        <Persistance />
-                    </TestDraft.DraftContext.Provider>
-                )
-            }
-
             const waiter = defer()
 
             function Persistance() {
                 return (
                     <button
                         type="button"
-                        onClick={TestDraft.usePersist(async (draft, { bind }) => {
+                        onClick={TestDraft!.usePersist(async (draft, { bind }) => {
                             await waiter.promise
                         })}
                     >
@@ -271,12 +255,14 @@ describe('createDraftStore', () => {
             let draftId0: string | undefined
 
             const { unmount: unmount0, getByText } = render(
-                <T
+                <TestComponent
                     id="ID"
                     onDraftId={(draftId) => {
                         draftId0 = draftId
                     }}
-                />,
+                >
+                    <Persistance />
+                </TestComponent>,
             )
 
             expect(draftId0).toMatch(/^TestDraft-/)
@@ -284,7 +270,7 @@ describe('createDraftStore', () => {
             fireEvent.click(getByText(/submit/i))
 
             await waitFor(
-                () => !!TestDraft.useStore.getState().drafts[draftId0!]?.persisting,
+                () => !!TestDraft!.useStore.getState().drafts[draftId0!]?.persisting,
             )
 
             /**
@@ -298,7 +284,7 @@ describe('createDraftStore', () => {
              */
 
             await waitFor(
-                () => !!TestDraft.useStore.getState().drafts[draftId0!]?.abandoned,
+                () => !!TestDraft!.useStore.getState().drafts[draftId0!]?.abandoned,
             )
 
             /**
@@ -306,17 +292,19 @@ describe('createDraftStore', () => {
              * the draft in memory because it's being persisted.
              */
 
-            expect(Object.keys(TestDraft.useStore.getState().drafts)).toEqual([draftId0])
+            expect(Object.keys(TestDraft!.useStore.getState().drafts)).toEqual([draftId0])
 
             let draftId1: string | undefined
 
             const { unmount: unmount1 } = render(
-                <T
+                <TestComponent
                     id="ID"
                     onDraftId={(draftId) => {
                         draftId1 = draftId
                     }}
-                />,
+                >
+                    <Persistance />
+                </TestComponent>,
             )
 
             /**
@@ -330,7 +318,7 @@ describe('createDraftStore', () => {
              */
 
             await waitFor(
-                () => !TestDraft.useStore.getState().drafts[draftId0!]?.abandoned,
+                () => !TestDraft!.useStore.getState().drafts[draftId0!]?.abandoned,
             )
 
             setTimeout(() => {
@@ -340,7 +328,7 @@ describe('createDraftStore', () => {
             await waiter.promise
 
             await waitFor(
-                () => !TestDraft.useStore.getState().drafts[draftId0!]?.persisting,
+                () => !TestDraft!.useStore.getState().drafts[draftId0!]?.persisting,
             )
 
             /**
@@ -348,11 +336,11 @@ describe('createDraftStore', () => {
              * it's still in the store.
              */
 
-            expect(Object.keys(TestDraft.useStore.getState().drafts)).toEqual([draftId0])
+            expect(Object.keys(TestDraft!.useStore.getState().drafts)).toEqual([draftId0])
 
             unmount1()
 
-            expect(Object.keys(TestDraft.useStore.getState().drafts)).toEqual([])
+            expect(Object.keys(TestDraft!.useStore.getState().drafts)).toEqual([])
         })
     })
 
