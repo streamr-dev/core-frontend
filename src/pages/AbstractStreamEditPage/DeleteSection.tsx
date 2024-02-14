@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { Button } from '~/components/Button'
 import getTransactionalClient from '~/getters/getTransactionalClient'
+import { isRejectionReason } from '~/modals/BaseModal'
 import routes from '~/routes'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { StreamDraft } from '~/stores/streamDraft'
+import { isTransactionRejection } from '~/utils'
 import Section from './Section'
 
 const Description = styled.p`
@@ -33,15 +35,28 @@ export default function DeleteSection() {
                         return
                     }
 
-                    const client = await getTransactionalClient(chainId)
+                    try {
+                        const client = await getTransactionalClient(chainId)
 
-                    await client.deleteStream(streamId)
+                        await client.deleteStream(streamId)
 
-                    /**
-                     * @FIXME: If the user navigates away before the above transaciton is
-                     * done the app is gonna navigate to streams/index.
-                     */
-                    navigate(routes.streams.index())
+                        /**
+                         * @FIXME: If the user navigates away before the above transaciton is
+                         * done the app is gonna navigate to streams/index.
+                         */
+
+                        navigate(routes.streams.index())
+                    } catch (e) {
+                        if (isRejectionReason(e)) {
+                            return
+                        }
+
+                        if (isTransactionRejection(e)) {
+                            return
+                        }
+
+                        throw e
+                    }
                 }}
             >
                 Delete
