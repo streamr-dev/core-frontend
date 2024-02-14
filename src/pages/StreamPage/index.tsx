@@ -53,6 +53,7 @@ import { InfoSection } from '../AbstractStreamEditPage/InfoSection'
 import { PartitionsSection } from '../AbstractStreamEditPage/PartitionsSection'
 import RelatedProjects from '../AbstractStreamEditPage/RelatedProjects'
 import SponsorshipsTable from '../AbstractStreamEditPage/SponsorshipsTable'
+import Spinner from '~/components/Spinner'
 
 export function StreamEditPage({
     saveButtonRef,
@@ -154,14 +155,16 @@ export function NewStreamPage() {
     return (
         <StreamDraft.DraftContext.Provider value={draftId}>
             <StreamEntityForm stickySubmit>
-                {(attach) => <StreamEditPage saveButtonRef={attach} />}
+                {(attach, ready) =>
+                    ready ? <StreamEditPage saveButtonRef={attach} /> : null
+                }
             </StreamEntityForm>
         </StreamDraft.DraftContext.Provider>
     )
 }
 
 interface StreamTabbedPageProps {
-    children?: ReactNode | ((attach: RefCallback<Element>) => ReactNode)
+    children?: ReactNode | ((attach: RefCallback<Element>, ready: boolean) => ReactNode)
     stickySubmit?: boolean
 }
 
@@ -199,10 +202,8 @@ export function StreamTabbedPage(props: StreamTabbedPageProps) {
     )
 }
 
-export function StreamOverviewPage() {}
-
 interface StreamEntityFormProps {
-    children?: ReactNode | ((attach: RefCallback<Element>) => ReactNode)
+    children?: ReactNode | ((attach: RefCallback<Element>, ready: boolean) => ReactNode)
     stickySubmit?: boolean
 }
 
@@ -272,13 +273,9 @@ function StreamEntityForm(props: StreamEntityFormProps) {
         >
             <Layout footer={null}>
                 <Header saveButtonRef={attach} />
-                {ready
-                    ? typeof children === 'function'
-                        ? children(attach)
-                        : children
-                    : null}
+                {typeof children === 'function' ? children(attach, ready) : children}
             </Layout>
-            <FloatingToolbar $active={!isSaveButtonVisible && stickySubmit}>
+            <FloatingToolbar $active={!isSaveButtonVisible && stickySubmit && ready}>
                 <Button type="submit" disabled={!canSubmit || isSaveButtonVisible}>
                     Save
                 </Button>
@@ -333,11 +330,9 @@ function Header({
 }: {
     saveButtonRef?: MutableRefObject<Element | null> | RefCallback<Element | null>
 }) {
-    const {
-        id: streamId,
-        domain = '',
-        pathname = '',
-    } = StreamDraft.useEntity({ hot: true }) || {}
+    const entity = StreamDraft.useEntity({ hot: true })
+
+    const { id: streamId, domain = '', pathname = '' } = entity || {}
 
     const isNew = !streamId
 
@@ -349,17 +344,29 @@ function Header({
 
     const clean = StreamDraft.useIsDraftClean()
 
+    const ready = !!entity
+
     return (
         <>
-            <Helmet title={streamId ? `Stream ${streamId}` : 'New stream'} />
+            <Helmet
+                title={
+                    ready ? (streamId ? `Stream ${streamId}` : 'New stream') : undefined
+                }
+            />
             <DetailsPageHeader
                 backButtonLink={routes.streams.index()}
                 pageTitle={
                     <TitleContainer>
                         <span title={streamId}>
-                            {streamId
-                                ? truncateStreamName(streamId, 50)
-                                : transientStreamId || 'New stream'}
+                            {ready ? (
+                                streamId ? (
+                                    truncateStreamName(streamId, 50)
+                                ) : (
+                                    transientStreamId || 'New stream'
+                                )
+                            ) : (
+                                <>&zwnj;</>
+                            )}
                         </span>
                         {streamId ? <CopyButton value={streamId} /> : ''}
                     </TitleContainer>
@@ -399,7 +406,7 @@ function Header({
                                 Live data
                             </Tab>
                         </Tabs>
-                    ) : isNew ? (
+                    ) : isNew && ready ? (
                         <div>
                             <Button
                                 disabled={!canSubmit}

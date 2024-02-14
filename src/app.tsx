@@ -73,9 +73,11 @@ const App = () => (
                             path="overview"
                             element={
                                 <StreamTabbedPage stickySubmit>
-                                    {(attach) => (
-                                        <StreamEditPage saveButtonRef={attach} />
-                                    )}
+                                    {(attach, ready) =>
+                                        ready ? (
+                                            <StreamEditPage saveButtonRef={attach} />
+                                        ) : null
+                                    }
                                 </StreamTabbedPage>
                             }
                         />
