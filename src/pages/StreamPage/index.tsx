@@ -1,5 +1,4 @@
 import React, {
-    FormEvent,
     MutableRefObject,
     ReactNode,
     RefCallback,
@@ -53,7 +52,6 @@ import { InfoSection } from '../AbstractStreamEditPage/InfoSection'
 import { PartitionsSection } from '../AbstractStreamEditPage/PartitionsSection'
 import RelatedProjects from '../AbstractStreamEditPage/RelatedProjects'
 import SponsorshipsTable from '../AbstractStreamEditPage/SponsorshipsTable'
-import Spinner from '~/components/Spinner'
 
 export function StreamEditPage({
     saveButtonRef,
