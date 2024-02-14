@@ -56,7 +56,9 @@ interface EditableStreamIdProps {
 }
 
 export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
-    const ownerGroups = useStreamOwnerOptionGroups()
+    const { domain = '', pathname = '' } = StreamDraft.useEntity({ hot: true }) || {}
+
+    const ownerGroups = useStreamOwnerOptionGroups(domain)
 
     const update = StreamDraft.useUpdateEntity()
 
@@ -69,8 +71,6 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
             pathname: PathnameSchema,
         }).parse(entity)
     })
-
-    const { domain = '', pathname = '' } = StreamDraft.useEntity({ hot: true }) || {}
 
     const owners = useMemo(() => {
         const result: OptionGroup['options'] = []
@@ -88,8 +88,6 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
 
     const account = useWalletAccount()
 
-    const { persisting = false } = StreamDraft.useDraft() || {}
-
     useEffect(
         function setCurrentAccountAsDomain() {
             /**
@@ -104,7 +102,9 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
              */
 
             update((hot, cold) => {
-                hot.domain = account || ''
+                if (!hot.domain) {
+                    hot.domain = account || ''
+                }
 
                 cold.domain = hot.domain
             })

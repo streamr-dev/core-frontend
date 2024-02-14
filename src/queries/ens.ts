@@ -5,5 +5,8 @@ gql`
         domains(where: { owner_in: [$account] }, orderBy: name) {
             name
         }
+        wrappedDomains(where: { owner_in: [$account] }, orderBy: name) {
+            name
+        }
     }
 `

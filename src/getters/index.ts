@@ -1043,7 +1043,7 @@ export async function getENSDomainsForWallet(
         })
     }
 
-    const { data = { domains: [] } } = await ensApolloClient.query<
+    const { data = { domains: [], wrappedDomains: [] } } = await ensApolloClient.query<
         GetEnsDomainsForAccountQuery,
         GetEnsDomainsForAccountQueryVariables
     >({
@@ -1054,7 +1054,10 @@ export async function getENSDomainsForWallet(
         fetchPolicy: force ? 'network-only' : void 0,
     })
 
-    return (data.domains.map(({ name }) => name).filter(Boolean) as string[]).sort()
+    return [...data.domains, ...data.wrappedDomains]
+        .map(({ name }) => (!!name && /\.eth$/.test(name) ? name : null))
+        .sort()
+        .filter(Boolean) as string[]
 }
 
 const blockExplorerUrls = Object.freeze({
