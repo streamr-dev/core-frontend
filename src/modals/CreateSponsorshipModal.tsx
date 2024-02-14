@@ -1,6 +1,10 @@
 import React, { useReducer, useState } from 'react'
 import { toaster } from 'toasterhea'
-import { RejectionReason, isRejectionReason } from '~/modals/BaseModal'
+import {
+    RejectionReason,
+    isRejectionReason,
+    isTransactionRejection,
+} from '~/utils/exceptions'
 import FormModal, {
     ErrorLabel,
     ErrorWrap,
@@ -26,7 +30,7 @@ import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { toDecimals } from '~/marketplace/utils/math'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { createSponsorship } from '~/services/sponsorships'
-import { isTransactionRejection, waitForIndexedBlock } from '~/utils'
+import { waitForIndexedBlock } from '~/utils'
 import { StreamIdDropdown } from '~/components/StreamIdDropdown'
 import { checkIfStreamExists } from '~/services/streams'
 import { errorToast } from '~/utils/toast'

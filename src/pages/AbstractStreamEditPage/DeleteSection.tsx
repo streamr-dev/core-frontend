@@ -3,11 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { Button } from '~/components/Button'
 import getTransactionalClient from '~/getters/getTransactionalClient'
-import { isRejectionReason } from '~/modals/BaseModal'
+import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
 import routes from '~/routes'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { StreamDraft } from '~/stores/streamDraft'
-import { isTransactionRejection } from '~/utils'
 import Section from './Section'
 
 const Description = styled.p`

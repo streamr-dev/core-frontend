@@ -2,7 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { COLORS, SANS } from '~/shared/utils/styled'
 import SvgIcon from '~/shared/components/SvgIcon'
-import BaseModal, { BaseModalProps, RejectionReason } from './BaseModal'
+import { RejectionReason } from '~/utils/exceptions'
+import BaseModal, { BaseModalProps } from './BaseModal'
 
 export interface ModalProps extends BaseModalProps {
     title?: string

@@ -2,10 +2,11 @@ import React, { FunctionComponent, ReactNode } from 'react'
 import styled from 'styled-components'
 import InfoIcon from '@atlaskit/icon/glyph/info'
 import { toaster } from 'toasterhea'
-import BaseModal, { BaseModalProps, RejectionReason } from '~/modals/BaseModal'
+import BaseModal, { BaseModalProps } from '~/modals/BaseModal'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import { Layer } from '~/utils/Layer'
+import { RejectionReason } from '~/utils/exceptions'
 
 export type ConfirmationModalProps = {
     title: string

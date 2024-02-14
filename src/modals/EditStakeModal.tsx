@@ -2,7 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import moment from 'moment'
-import { RejectionReason, isRejectionReason } from '~/modals/BaseModal'
+import {
+    RejectionReason,
+    isRejectionReason,
+    isTransactionRejection,
+} from '~/utils/exceptions'
 import FormModal, {
     ErrorLabel,
     FieldWrap,
@@ -25,7 +29,7 @@ import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { isTransactionRejection, sameBN, waitForIndexedBlock } from '~/utils'
+import { sameBN, waitForIndexedBlock } from '~/utils'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import { getSponsorshipStakeForOperator } from '~/utils/sponsorships'
 import {

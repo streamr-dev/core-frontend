@@ -5,8 +5,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef } fr
 import { z } from 'zod'
 import { create } from 'zustand'
 import { ValidationError } from '~/errors'
-import { isRejectionReason } from '~/modals/BaseModal'
-import { isTransactionRejection } from '~/utils'
+import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
 
 interface Entity {
     chainId: number
@@ -322,6 +321,8 @@ export function createDraftStore<E extends Entity = Entity>(
         return draftId
     }
 
+    const useStore = useDraftStore
+
     const DraftContext = createContext<string | undefined>(undefined)
 
     function useDraftId() {
@@ -520,10 +521,11 @@ export function createDraftStore<E extends Entity = Entity>(
         useIsAnyDraftBeingPersisted,
         useIsDraftBusy,
         useIsDraftClean,
-        usePersist,
         useIsFetchingEntity,
+        usePersist,
         usePersistCallback,
         useSetDraftErrors,
+        useStore,
         useUpdateEntity,
         useValidateEntity,
     }

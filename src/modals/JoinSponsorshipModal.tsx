@@ -2,7 +2,7 @@ import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import CopyIcon from '@atlaskit/icon/glyph/copy'
-import { RejectionReason } from '~/modals/BaseModal'
+import { RejectionReason, isMessagedObject } from '~/utils/exceptions'
 import FormModal, {
     CopyButtonWrapAppendix,
     ErrorLabel,
@@ -32,7 +32,7 @@ import { ParsedOperator } from '~/parsers/OperatorParser'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { stakeOnSponsorship } from '~/services/sponsorships'
-import { isMessagedObject, waitForIndexedBlock } from '~/utils'
+import { waitForIndexedBlock } from '~/utils'
 import { errorToast } from '~/utils/toast'
 import Toast from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'

@@ -8,10 +8,9 @@ import { Button } from '~/components/Button'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import TimeoutError from '~/shared/errors/TimeoutError'
 import { getWalletAccount, useWalletAccount } from '~/shared/stores/wallet'
-import isCodedError from '~/utils/isCodedError'
+import { isCodedError, RejectionReason } from '~/utils/exceptions'
 import routes from '~/routes'
 import { Layer } from '~/utils/Layer'
-import { RejectionReason } from './BaseModal'
 
 const Root = styled.div`
     background: #f8f8f8;

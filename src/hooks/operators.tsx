@@ -16,7 +16,7 @@ import {
     getSpotApy,
     searchOperatorsByMetadata,
 } from '~/getters'
-import { getQueryClient, isTransactionRejection, waitForIndexedBlock } from '~/utils'
+import { getQueryClient, waitForIndexedBlock } from '~/utils'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
 import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
 import { Delegation, DelegationsStats } from '~/types'
@@ -27,7 +27,7 @@ import { Layer } from '~/utils/Layer'
 import { getBalance } from '~/getters/getBalance'
 import { getOperatorDelegationAmount } from '~/services/operators'
 import { Break, FlagBusy } from '~/utils/errors'
-import { isRejectionReason } from '~/modals/BaseModal'
+import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
 import getCoreConfig from '~/getters/getCoreConfig'
 import UndelegateFundsModal from '~/modals/UndelegateFundsModal'
 import { confirm } from '~/getters/confirm'

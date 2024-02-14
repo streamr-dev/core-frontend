@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Reason, useDiscardableEffect } from 'toasterhea'
 import { COLORS } from '~/shared/utils/styled'
 import SvgIcon from '~/shared/components/SvgIcon'
-import { RejectionReason } from './BaseModal'
+import { RejectionReason } from '~/utils/exceptions'
 
 export function isAbandonment(e: unknown) {
     return (

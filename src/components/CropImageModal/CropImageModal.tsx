@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import AvatarEditor, { CroppedRect } from 'react-avatar-editor'
 import { Slider } from '~/components/Slider'
-import BaseModal, { BaseModalProps, Footer, RejectionReason } from '~/modals/BaseModal'
+import BaseModal, { BaseModalProps, Footer } from '~/modals/BaseModal'
 import SvgIcon from '~/shared/components/SvgIcon'
 import {
     FormModalCloseButton,
@@ -14,6 +14,7 @@ import {
 import { Button } from '~/components/Button'
 import { COLORS } from '~/shared/utils/styled'
 import MaskSvg from '~/shared/assets/images/mask.svg'
+import { RejectionReason } from '~/utils/exceptions'
 
 type MaskOption = 'none' | 'round'
 

@@ -20,13 +20,9 @@ import ConfirmPurchaseModal from '~/modals/ConfirmPurchaseModal'
 import { toSeconds } from '~/marketplace/utils/time'
 import AccessingProjectModal from '~/modals/AccessingProjectModal'
 import { getAllowance, getERC20TokenContract, getMarketplaceContract } from '~/getters'
-import { RejectionReason } from '~/modals/BaseModal'
+import { RejectionReason, isTransactionRejection } from '~/utils/exceptions'
 import FailedPurchaseModal from '~/modals/FailedPurchaseModal'
-import {
-    ensureGasMonies,
-    isTransactionRejection,
-    waitForPurchasePropagation,
-} from '~/utils'
+import { ensureGasMonies, waitForPurchasePropagation } from '~/utils'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import { getParsedProjectById, getProjectSubscriptions } from '~/getters/hub'
 import { getCurrentChainId } from '~/getters/getCurrentChain'

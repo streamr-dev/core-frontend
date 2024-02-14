@@ -14,13 +14,13 @@ import { fromAtto } from '~/marketplace/utils/math'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { Alert } from '~/components/Alert'
 import { Radio } from '~/shared/components/Radio'
-import { abbr, isTransactionRejection, waitForIndexedBlock } from '~/utils'
+import { abbr, waitForIndexedBlock } from '~/utils'
 import { Layer } from '~/utils/Layer'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { StreamIdCell } from '~/components/Table'
 import { forceUnstakeFromSponsorship } from '~/services/sponsorships'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { isRejectionReason } from '~/modals/BaseModal'
+import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
 
 type OperatorStake = ParsedOperator['stakes'][0]
 

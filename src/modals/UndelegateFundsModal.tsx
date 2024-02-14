@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Alert } from '~/components/Alert'
-import { RejectionReason, isRejectionReason } from '~/modals/BaseModal'
+import {
+    RejectionReason,
+    isRejectionReason,
+    isTransactionRejection,
+} from '~/utils/exceptions'
 import FormModal, {
     FieldWrap,
     FormModalProps,
@@ -27,7 +31,7 @@ import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { undelegateFromOperator } from '~/services/operators'
-import { isTransactionRejection, waitForIndexedBlock } from '~/utils'
+import { waitForIndexedBlock } from '~/utils'
 import { Abbr } from '~/components/Abbr'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {

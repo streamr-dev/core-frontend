@@ -8,8 +8,7 @@ import UnstyledErrors, { MarketplaceTheme } from '~/shared/components/Ui/Errors'
 import UnstyledLabel from '~/shared/components/Ui/Label'
 import Text from '~/shared/components/Ui/Text'
 import { COLORS, TABLET } from '~/shared/utils/styled'
-import { isMessagedObject } from '~/utils'
-import { RejectionReason } from './BaseModal'
+import { RejectionReason, isMessagedObject } from '~/utils/exceptions'
 import FormModal, { FormModalProps } from './FormModal'
 
 const Separator = styled.div`

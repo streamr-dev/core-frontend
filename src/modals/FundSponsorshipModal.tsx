@@ -1,7 +1,11 @@
 import React, { useMemo, useState } from 'react'
 import moment from 'moment'
 import { toaster } from 'toasterhea'
-import { RejectionReason, isRejectionReason } from '~/modals/BaseModal'
+import {
+    RejectionReason,
+    isRejectionReason,
+    isTransactionRejection,
+} from '~/utils/exceptions'
 import FormModal, {
     FieldWrap,
     FormModalProps,
@@ -23,7 +27,7 @@ import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { toDecimals } from '~/marketplace/utils/math'
 import { fundSponsorship } from '~/services/sponsorships'
-import { isTransactionRejection, waitForIndexedBlock } from '~/utils'
+import { waitForIndexedBlock } from '~/utils'
 import { SponsorshipDisclaimer } from '~/components/SponsorshipDisclaimer'
 import { useMediaQuery } from '~/hooks'
 import { Abbr } from '~/components/Abbr'

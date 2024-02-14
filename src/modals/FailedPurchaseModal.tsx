@@ -2,8 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import PngIcon from '~/shared/components/PngIcon'
 import { Buttons } from '~/components/Buttons'
+import { RejectionReason } from '~/utils/exceptions'
 import Modal from './Modal'
-import { Footer, RejectionReason } from './BaseModal'
+import { Footer } from './BaseModal'
 
 const Content = styled.div`
     padding: 64px 0;

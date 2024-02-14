@@ -16,7 +16,11 @@ import { DraftValidationError } from '~/errors'
 import getClientConfig from '~/getters/getClientConfig'
 import { getCurrentChainId } from '~/getters/getCurrentChain'
 import getTransactionalClient from '~/getters/getTransactionalClient'
-import { isRejectionReason } from '~/modals/BaseModal'
+import {
+    isMessagedObject,
+    isRejectionReason,
+    isTransactionRejection,
+} from '~/utils/exceptions'
 import GetCryptoModal from '~/modals/GetCryptoModal'
 import { Bits, ParsedStream, matchBits, parseStream } from '~/parsers/StreamParser'
 import routes from '~/routes'
@@ -26,7 +30,6 @@ import { useCurrentChainId } from '~/shared/stores/chain'
 import { Operation } from '~/shared/toasts/TransactionListToast'
 import getNativeTokenName from '~/shared/utils/nativeToken'
 import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
-import { isMessagedObject, isTransactionRejection } from '~/utils'
 import { Layer } from '~/utils/Layer'
 import { createDraftStore, getEmptyDraft } from '~/utils/draft'
 import { errorToast } from '~/utils/toast'

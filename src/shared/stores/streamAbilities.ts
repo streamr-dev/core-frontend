@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { produce } from 'immer'
 import { create } from 'zustand'
 import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
-import { isMessagedObject } from '~/utils'
+import { isMessagedObject } from '~/utils/exceptions'
 import { address0 } from '~/consts'
 import { useWalletAccount } from './wallet'
 

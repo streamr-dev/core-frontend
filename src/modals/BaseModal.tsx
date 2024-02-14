@@ -3,6 +3,7 @@ import styled, { createGlobalStyle, css, keyframes } from 'styled-components'
 import { useDiscardableEffect } from 'toasterhea'
 import gsap from 'gsap'
 import { TABLET } from '~/shared/utils/styled'
+import { RejectionReason } from '~/utils/exceptions'
 
 const bringIn = keyframes`
     from {
@@ -32,24 +33,6 @@ const fadeAway = keyframes`
         opacity: 0;
     }
 `
-
-export const RejectionReason = {
-    CloseButton: Symbol('close button'),
-    Backdrop: Symbol('backdrop'),
-    EscapeKey: Symbol('escape key'),
-    CancelButton: Symbol('cancel'),
-    BackButton: Symbol('back button'),
-}
-
-export function isRejectionReason(value: unknown) {
-    return (
-        value === RejectionReason.CloseButton ||
-        value === RejectionReason.Backdrop ||
-        value === RejectionReason.EscapeKey ||
-        value === RejectionReason.CancelButton ||
-        value === RejectionReason.BackButton
-    )
-}
 
 export interface BaseModalProps {
     children?: ReactNode | ((close: (reason?: unknown) => void) => ReactNode)
