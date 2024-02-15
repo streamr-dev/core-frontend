@@ -12,6 +12,9 @@ describe('createDraftStore', () => {
     let TestDraft: undefined | ReturnType<typeof createDraftStore<E>>
 
     beforeEach(() => {
+        /**
+         * Let's work with a simple testing draft.
+         */
         TestDraft = createDraftStore<E>({
             getEmptyDraft: () =>
                 getEmptyDraft({
@@ -71,6 +74,10 @@ describe('createDraftStore', () => {
                 />,
             )
 
+            /**
+             * The rerendering of the hook we performed above uses the
+             * same entity id thus `draftId` does not change.
+             */
             expect(draftId0).toEqual(previousDraftId)
 
             rerender(
@@ -82,6 +89,9 @@ describe('createDraftStore', () => {
                 />,
             )
 
+            /**
+             * Different entity id = different draft id.
+             */
             expect(draftId0).not.toEqual(previousDraftId)
 
             expect(draftId0).toMatch(/^TestDraft-\d+$/)
@@ -114,6 +124,9 @@ describe('createDraftStore', () => {
 
             expect(draftId0).toMatch(/^TestDraft-/)
 
+            /**
+             * Check if a draft for the above id exists. It should.
+             */
             expect(Object.keys(TestDraft!.useStore.getState().drafts)).toEqual([draftId0])
 
             let draftId1: string | undefined
@@ -131,10 +144,18 @@ describe('createDraftStore', () => {
 
             expect(draftId0).not.toEqual(draftId1)
 
+            /**
+             * First draft got dropped out because we rerendered the component
+             * using a different entity. New draft exists.
+             */
             expect(Object.keys(TestDraft!.useStore.getState().drafts)).toEqual([draftId1])
 
             unmount()
 
+            /**
+             * Finally we unmount the component and the latter draft gets
+             * dropped out as well.
+             */
             expect(Object.keys(TestDraft!.useStore.getState().drafts)).toEqual([])
         })
 
@@ -145,7 +166,12 @@ describe('createDraftStore', () => {
                 return (
                     <button
                         type="button"
-                        onClick={TestDraft!.usePersist(async (draft, { bind }) => {
+                        onClick={TestDraft!.usePersist(async () => {
+                            /**
+                             * The following keeps the persisting process alive as long
+                             * as the `waiter.promise` waits for settlement. We later
+                             * settle it with `waiter.resolve()` from the outside.
+                             */
                             await waiter.promise
                         })}
                     >
@@ -212,6 +238,11 @@ describe('createDraftStore', () => {
                     <button
                         type="button"
                         onClick={TestDraft!.usePersist(async () => {
+                            /**
+                             * The following keeps the persisting process alive as long
+                             * as the `waiter.promise` waits for settlement. We later
+                             * settle it with `waiter.resolve()` from the outside.
+                             */
                             await waiter.promise
                         })}
                     >
@@ -244,13 +275,11 @@ describe('createDraftStore', () => {
             /**
              * Unmount while draft is being persisted.
              */
-
             unmount0()
 
             /**
              * Unmount = abandon.
              */
-
             await waitFor(
                 () => !!TestDraft!.useStore.getState().drafts[draftId0!]?.abandoned,
             )
@@ -259,7 +288,6 @@ describe('createDraftStore', () => {
              * Even though the draft is now detached (useInitDraft got unmounted) we keep
              * the draft in memory because it's being persisted.
              */
-
             expect(Object.keys(TestDraft!.useStore.getState().drafts)).toEqual([draftId0])
 
             let draftId1: string | undefined
@@ -278,13 +306,11 @@ describe('createDraftStore', () => {
             /**
              * Good sign. We're back on track.
              */
-
             expect(draftId1).toEqual(draftId0)
 
             /**
              * Re-mount = de-abandon.
              */
-
             await waitFor(
                 () => !TestDraft!.useStore.getState().drafts[draftId0!]?.abandoned,
             )
@@ -303,7 +329,6 @@ describe('createDraftStore', () => {
              * We're no longer persisting the draft but it's got de-abandoned thus
              * it's still in the store.
              */
-
             expect(Object.keys(TestDraft!.useStore.getState().drafts)).toEqual([draftId0])
 
             unmount1()
@@ -457,7 +482,12 @@ describe('createDraftStore', () => {
                 return (
                     <button
                         type="button"
-                        onClick={TestDraft!.usePersist(async (draft, { bind }) => {
+                        onClick={TestDraft!.usePersist(async () => {
+                            /**
+                             * The following keeps the persisting process alive as long
+                             * as the `waiter.promise` waits for settlement. We later
+                             * settle it with `waiter.resolve()` from the outside.
+                             */
                             await waiter.promise
                         })}
                     >
@@ -498,7 +528,7 @@ describe('createDraftStore', () => {
             const waiter = defer()
 
             function Persistance() {
-                const persist = TestDraft!.usePersist(async (draft, { bind }) => {
+                const persist = TestDraft!.usePersist(async () => {
                     await waiter.promise
                 })
 
@@ -549,6 +579,156 @@ describe('createDraftStore', () => {
                     ),
             )
         })
+
+        it('passes `bind` callback so you can bind the entity id and the draft', async () => {
+            const waiter = defer()
+
+            const entityId = 'ID'
+
+            function Persistance() {
+                return (
+                    <button
+                        type="button"
+                        onClick={TestDraft!.usePersist(async (_, { bind }) => {
+                            bind(entityId)
+
+                            /**
+                             * The following keeps the persisting process alive as long
+                             * as the `waiter.promise` waits for settlement. We later
+                             * settle it with `waiter.resolve()` from the outside.
+                             */
+                            await waiter.promise
+                        })}
+                    >
+                        Submit
+                    </button>
+                )
+            }
+
+            let draftId: string | undefined
+
+            /**
+             * Render TestComponent using undefined-having entity.
+             */
+            const { getByText } = render(
+                <TestComponent
+                    entity={{ id: undefined, chainId: 1 }}
+                    onDraftId={(id) => {
+                        draftId = id
+                    }}
+                >
+                    <Persistance />
+                </TestComponent>,
+            )
+
+            expect(draftId).toMatch(/^TestDraft-\d+$/)
+
+            expect(entityId in TestDraft!.useStore.getState().idMap).toBe(false)
+
+            fireEvent.click(getByText(/submit/i))
+
+            await waitFor(() =>
+                Object.values(TestDraft!.useStore.getState().drafts).some(
+                    (d) => d?.persisting,
+                ),
+            )
+
+            setTimeout(() => {
+                waiter.resolve()
+            })
+
+            /**
+             * The above click on the Submit button triggered the persisting which
+             * in turn binded the draft with `entityId`.
+             */
+            expect(TestDraft!.useStore.getState().idMap[entityId]).toBe(draftId)
+
+            await waiter.promise
+
+            await waitFor(
+                () =>
+                    !Object.values(TestDraft!.useStore.getState().drafts).some(
+                        (d) => d?.persisting,
+                    ),
+            )
+        })
+
+        it('passes `update` callback so you can alter hot and cold copies of the entity from within the persist callback', async () => {
+            const waiter = defer()
+
+            function Persistance() {
+                return (
+                    <button
+                        type="button"
+                        onClick={TestDraft!.usePersist(async (_, { update }) => {
+                            update((hot, cold) => {
+                                hot.chainId = 1337
+
+                                cold.chainId = 1337
+                            })
+
+                            /**
+                             * The following keeps the persisting process alive as long
+                             * as the `waiter.promise` waits for settlement. We later
+                             * settle it with `waiter.resolve()` from the outside.
+                             */
+                            await waiter.promise
+                        })}
+                    >
+                        Submit
+                    </button>
+                )
+            }
+
+            let draftId: string | undefined
+
+            const { getByText } = render(
+                <TestComponent
+                    entity={{ id: undefined, chainId: 1 }}
+                    onDraftId={(id) => {
+                        draftId = id
+                    }}
+                >
+                    <Persistance />
+                </TestComponent>,
+            )
+
+            expect(draftId).toMatch(/^TestDraft-\d+$/)
+
+            let { hot, cold } = TestDraft!.useStore.getState().drafts[draftId!]!.entity!
+
+            expect(hot.chainId).toEqual(1)
+
+            expect(cold.chainId).toEqual(1)
+
+            fireEvent.click(getByText(/submit/i))
+
+            await waitFor(() =>
+                Object.values(TestDraft!.useStore.getState().drafts).some(
+                    (d) => d?.persisting,
+                ),
+            )
+
+            setTimeout(() => {
+                waiter.resolve()
+            })
+
+            void ({ hot, cold } =
+                TestDraft!.useStore.getState().drafts[draftId!]!.entity!)
+
+            expect(hot.chainId).toEqual(1337)
+
+            expect(cold.chainId).toEqual(1337)
+
+            await waiter.promise
+
+            await waitFor(
+                () =>
+                    !Object.values(TestDraft!.useStore.getState().drafts).some(
+                        (d) => d?.persisting,
+                    ),
+            )
+        })
     })
 
     describe('useIsAnyDraftBeingPersisted', () => {
@@ -563,7 +743,7 @@ describe('createDraftStore', () => {
                 return (
                     <button
                         type="button"
-                        onClick={TestDraft!.usePersist(async (draft, { bind }) => {
+                        onClick={TestDraft!.usePersist(async () => {
                             await waiter.promise
                         })}
                     >
@@ -571,6 +751,11 @@ describe('createDraftStore', () => {
                     </button>
                 )
             }
+
+            /**
+             * Start with mounting 2 different instances of TestComponent. Each with
+             * a different entity.
+             */
 
             const { getByText } = render(
                 <TestComponent entity={{ id: 'ID', chainId: 1 }}>
@@ -584,12 +769,18 @@ describe('createDraftStore', () => {
 
             fireEvent.click(getByText(/submit/i))
 
+            /**
+             * Check if any draft is being persisted. 1 is.
+             */
             await waitFor(() =>
                 Object.values(TestDraft!.useStore.getState().drafts).some(
                     (d) => d?.persisting,
                 ),
             )
 
+            /**
+             * Confirm that the hook reflects the reality.
+             */
             expect(isAnyDraftBeingPersisted).toBe(true)
 
             setTimeout(() => {
@@ -598,6 +789,9 @@ describe('createDraftStore', () => {
 
             await waiter.promise
 
+            /**
+             * Check if any draft is being persisted.
+             */
             await waitFor(
                 () =>
                     !Object.values(TestDraft!.useStore.getState().drafts).some(
@@ -605,6 +799,9 @@ describe('createDraftStore', () => {
                     ),
             )
 
+            /**
+             * Confirm that the hook reflects the reality.
+             */
             expect(isAnyDraftBeingPersisted).toBe(false)
         })
     })
