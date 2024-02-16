@@ -13,10 +13,8 @@ import { toaster } from 'toasterhea'
 import { z } from 'zod'
 import { address0 } from '~/consts'
 import { DraftValidationError, ValidationError } from '~/errors'
-import { getStreamrClient } from '~/getters'
-import getClientConfig from '~/getters/getClientConfig'
 import { getCurrentChainId } from '~/getters/getCurrentChain'
-import getTransactionalClient from '~/getters/getTransactionalClient'
+import { getStreamrClientInstance } from '~/getters/getStreamrClient'
 import GetCryptoModal from '~/modals/GetCryptoModal'
 import { Bits, ParsedStream, matchBits, parseStream } from '~/parsers/StreamParser'
 import routes from '~/routes'
@@ -81,9 +79,7 @@ export function useStreamEntityQuery() {
             }
 
             try {
-                const StreamrClient = await getStreamrClient()
-
-                const client = new StreamrClient(getClientConfig(chainId))
+                const client = await getStreamrClientInstance(chainId)
 
                 const stream = await client.getStream(streamId)
 
@@ -287,7 +283,9 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
                 }
 
                 if (transientStreamId) {
-                    client = await getTransactionalClient(chainId)
+                    client = await getStreamrClientInstance(chainId, {
+                        transactional: true,
+                    })
 
                     try {
                         if (await client.getStream(transientStreamId)) {
@@ -324,7 +322,9 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
                      * dictate if it's a new stream or an existing stream (optionally updated).
                      */
 
-                    client = await getTransactionalClient(chainId)
+                    client = await getStreamrClientInstance(chainId, {
+                        transactional: true,
+                    })
 
                     const {
                         description,
@@ -464,7 +464,9 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
                 }
 
                 if (shouldUpdatePermissions) {
-                    client = await getTransactionalClient(chainId)
+                    client = await getStreamrClientInstance(chainId, {
+                        transactional: true,
+                    })
 
                     await checkBalance()
 
@@ -501,7 +503,9 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
                         refresh()
                     }
 
-                    client = await getTransactionalClient(chainId)
+                    client = await getStreamrClientInstance(chainId, {
+                        transactional: true,
+                    })
 
                     await checkBalance()
 

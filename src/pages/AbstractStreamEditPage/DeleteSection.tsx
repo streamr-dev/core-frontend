@@ -2,7 +2,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { Button } from '~/components/Button'
-import getTransactionalClient from '~/getters/getTransactionalClient'
+import { getStreamrClientInstance } from '~/getters/getStreamrClient'
 import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
 import routes from '~/routes'
 import { useCurrentChainId } from '~/shared/stores/chain'
@@ -35,7 +35,9 @@ export default function DeleteSection() {
                     }
 
                     try {
-                        const client = await getTransactionalClient(chainId)
+                        const client = await getStreamrClientInstance(chainId, {
+                            transactional: true,
+                        })
 
                         await client.deleteStream(streamId)
 
