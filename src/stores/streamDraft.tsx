@@ -12,15 +12,11 @@ import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
 import { address0 } from '~/consts'
-import { DraftValidationError } from '~/errors'
+import { DraftValidationError, ValidationError } from '~/errors'
+import { getStreamrClient } from '~/getters'
 import getClientConfig from '~/getters/getClientConfig'
 import { getCurrentChainId } from '~/getters/getCurrentChain'
 import getTransactionalClient from '~/getters/getTransactionalClient'
-import {
-    isMessagedObject,
-    isRejectionReason,
-    isTransactionRejection,
-} from '~/utils/exceptions'
 import GetCryptoModal from '~/modals/GetCryptoModal'
 import { Bits, ParsedStream, matchBits, parseStream } from '~/parsers/StreamParser'
 import routes from '~/routes'
@@ -32,7 +28,12 @@ import getNativeTokenName from '~/shared/utils/nativeToken'
 import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
 import { Layer } from '~/utils/Layer'
 import { createDraftStore, getEmptyDraft } from '~/utils/draft'
-import { errorToast } from '~/utils/toast'
+import {
+    isMessagedObject,
+    isRejectionReason,
+    isTransactionRejection,
+} from '~/utils/exceptions'
+import { validationErrorToast } from '~/utils/toast'
 import { toastedOperations } from '~/utils/toastedOperation'
 import getChainId from '~/utils/web3/getChainId'
 
@@ -80,7 +81,7 @@ export function useStreamEntityQuery() {
             }
 
             try {
-                const StreamrClient = (await import('streamr-client')).default
+                const StreamrClient = await getStreamrClient()
 
                 const client = new StreamrClient(getClientConfig(chainId))
 
@@ -148,12 +149,6 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
             const { hot, cold } = entity
 
             const { id: streamId, domain, pathname, chainId } = hot
-
-            const transientStreamId = streamId
-                ? undefined
-                : domain && pathname
-                ? `${domain}/${pathname}`
-                : undefined
 
             let client: StreamrClient | undefined
 
@@ -261,8 +256,18 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
             }
 
             await toastedOperations(operations, async (next, refresh) => {
-                if (!transientStreamId && !streamId) {
-                    throw new DraftValidationError('streamId', 'is required')
+                let transientStreamId: string | undefined
+
+                if (!streamId) {
+                    if (!domain) {
+                        throw new DraftValidationError('domain', 'Domain is required')
+                    }
+
+                    if (!pathname) {
+                        throw new DraftValidationError('pathname', 'Pathname is required')
+                    }
+
+                    transientStreamId = `${domain}/${pathname}`
                 }
 
                 if (streamId) {
@@ -287,8 +292,8 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
                     try {
                         if (await client.getStream(transientStreamId)) {
                             throw new DraftValidationError(
-                                'streamId',
-                                'already exists, please try a different one',
+                                'id',
+                                'Your stream id already exists. Please try a different one.',
                             )
                         }
                     } catch (e) {
@@ -302,7 +307,7 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
                         ) {
                             throw new DraftValidationError(
                                 'streamId',
-                                'failed to verify uniqueness',
+                                'Failed to verify the uniqueness of your stream id.',
                             )
                         }
 
@@ -379,14 +384,28 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
                     if (transientStreamId) {
                         await checkBalance()
 
-                        return client.createStream({
-                            ...finalMetadata,
-                            id: transientStreamId,
-                        })
+                        try {
+                            return await client.createStream({
+                                ...finalMetadata,
+                                id: transientStreamId,
+                            })
+                        } catch (e) {
+                            if (
+                                isMessagedObject(e) &&
+                                /not in namespace of authenticated user/.test(e.message)
+                            ) {
+                                throw new DraftValidationError(
+                                    'domain',
+                                    'Domain belongs to someone else',
+                                )
+                            }
+
+                            throw e
+                        }
                     }
 
                     if (!streamId) {
-                        throw new DraftValidationError('streamId', 'is invalid')
+                        throw new DraftValidationError('streamId', 'Stream id is invalid')
                     }
 
                     if (metadataChanged) {
@@ -523,14 +542,8 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
                     return
                 }
 
-                if (
-                    isMessagedObject(e) &&
-                    /not in namespace of authenticated user/.test(e.message)
-                ) {
-                    errorToast({
-                        title: 'Error',
-                        desc: 'Use your domain.',
-                    })
+                if (e instanceof ValidationError) {
+                    validationErrorToast({ title: 'Failed to save', error: e })
 
                     return
                 }
