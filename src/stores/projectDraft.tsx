@@ -1,30 +1,28 @@
-import React, { useCallback } from 'react'
-import { toaster } from 'toasterhea'
-import { useNavigate } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import uniqueId from 'lodash/uniqueId'
+import { useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { randomHex } from 'web3-utils'
+import { ValidationError } from '~/errors'
+import { getDataUnion } from '~/getters/du'
 import { ParsedProject, getEmptyParsedProject } from '~/parsers/ProjectParser'
-import { createDraftStore, getEmptyDraft } from '~/utils/draft'
-import { ProjectType } from '~/shared/types'
-import { Operation } from '~/shared/toasts/TransactionListToast'
-import { toastedOperations } from '~/utils/toastedOperation'
+import routes from '~/routes'
 import {
     createProject,
     deployDataUnionContract,
     getPublishableProjectProperties,
     updateProject,
 } from '~/services/projects'
-import { getDataUnion } from '~/getters/du'
-import networkPreflight from '~/utils/networkPreflight'
 import { useHasActiveProjectSubscription } from '~/shared/stores/purchases'
 import { useWalletAccount } from '~/shared/stores/wallet'
+import { Operation } from '~/shared/toasts/TransactionListToast'
+import { ProjectType } from '~/shared/types'
 import { isProjectOwnedBy } from '~/utils'
-import Toast, { ToastType } from '~/shared/toasts/Toast'
-import { Layer } from '~/utils/Layer'
-import { ValidationError } from '~/errors'
-import routes from '~/routes'
 import { toBN } from '~/utils/bn'
+import { createDraftStore, getEmptyDraft } from '~/utils/draft'
+import networkPreflight from '~/utils/networkPreflight'
+import { validationErrorToast } from '~/utils/toast'
+import { toastedOperations } from '~/utils/toastedOperation'
 
 const {
     DraftContext: ProjectDraftContext,
@@ -299,8 +297,6 @@ export function useIsAccessibleByCurrentWallet() {
     )
 }
 
-const persistErrorToast = toaster(Toast, Layer.Toast)
-
 export function usePersistProjectCallback() {
     const persist = usePersistCallback()
 
@@ -318,25 +314,7 @@ export function usePersistProjectCallback() {
 
             onError(e) {
                 if (e instanceof ValidationError) {
-                    const ve: ValidationError = e
-
-                    void (async () => {
-                        try {
-                            await persistErrorToast.pop({
-                                type: ToastType.Warning,
-                                title: 'Failed to publish',
-                                desc: (
-                                    <ul>
-                                        {ve.messages.map((message, index) => (
-                                            <li key={index}>{message}</li>
-                                        ))}
-                                    </ul>
-                                ),
-                            })
-                        } catch (e) {
-                            // Ignore.
-                        }
-                    })()
+                    validationErrorToast({ title: 'Failed to publish', error: e })
                 }
 
                 console.warn('Failed to publish', e)

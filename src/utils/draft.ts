@@ -4,7 +4,7 @@ import uniqueId from 'lodash/uniqueId'
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef } from 'react'
 import { z } from 'zod'
 import { create } from 'zustand'
-import { ValidationError } from '~/errors'
+import { DraftValidationError, ValidationError } from '~/errors'
 import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
 
 interface Entity {
@@ -205,13 +205,13 @@ export function createDraftStore<E extends Entity = Entity>(
                         }),
                     )
 
-                    const draft = get().drafts[draftId]
-
-                    if (!draft) {
-                        throw new Error(`Draft ${draftId} does not exist`)
-                    }
-
                     try {
+                        const draft = get().drafts[draftId]
+
+                        if (!draft) {
+                            throw new Error(`Draft ${draftId} does not exist`)
+                        }
+
                         await fn?.(draft, {
                             abortSignal,
                             bind: (id) => {
@@ -239,13 +239,13 @@ export function createDraftStore<E extends Entity = Entity>(
                                 copy.errors = errors
                             })
 
-                            /**
-                             * @TODO: ValidationError seems to be a redundant abstraction we can get rid
-                             * of and use ZodError directly.
-                             */
                             throw new ValidationError(
                                 e.issues.map(({ message }) => message),
                             )
+                        }
+
+                        if (e instanceof DraftValidationError) {
+                            throw new ValidationError([e.message])
                         }
 
                         throw e
