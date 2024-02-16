@@ -1,8 +1,8 @@
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
-import { getWalletWeb3Provider } from '../stores/wallet'
+import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 
-export default async function requirePositiveBalance(address: string) {
-    const provider = await getWalletWeb3Provider()
+export async function requirePositiveBalance(chainId: number, address: string) {
+    const provider = getPublicWeb3Provider(chainId)
 
     const balance = await provider.getBalance(address)
 

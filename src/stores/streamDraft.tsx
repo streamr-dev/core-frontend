@@ -23,7 +23,7 @@ import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { Operation } from '~/shared/toasts/TransactionListToast'
 import getNativeTokenName from '~/shared/utils/nativeToken'
-import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
+import { requirePositiveBalance } from '~/shared/utils/requirePositiveBalance'
 import { Layer } from '~/utils/Layer'
 import { createDraftStore, getEmptyDraft } from '~/utils/draft'
 import {
@@ -240,15 +240,8 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
                 return
             }
 
-            async function checkBalance() {
-                const address = await client?.getAddress()
-
-                if (address) {
-                    /**
-                     * @todo Not chain specific?
-                     */
-                    await requirePositiveBalance(address)
-                }
+            async function checkBalance(c: StreamrClient) {
+                await requirePositiveBalance(chainId, await c.getAddress())
             }
 
             await toastedOperations(operations, async (next, refresh) => {
@@ -322,10 +315,6 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
                      * dictate if it's a new stream or an existing stream (optionally updated).
                      */
 
-                    client = await getStreamrClientInstance(chainId, {
-                        transactional: true,
-                    })
-
                     const {
                         description,
                         inactivityThresholdHours,
@@ -382,7 +371,11 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
                     }
 
                     if (transientStreamId) {
-                        await checkBalance()
+                        client = await getStreamrClientInstance(chainId, {
+                            transactional: true,
+                        })
+
+                        await checkBalance(client)
 
                         try {
                             return await client.createStream({
@@ -409,13 +402,19 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
                     }
 
                     if (metadataChanged) {
-                        await checkBalance()
+                        client = await getStreamrClientInstance(chainId, {
+                            transactional: true,
+                        })
+
+                        await checkBalance(client)
 
                         return client.updateStream({
                             ...finalMetadata,
                             id: streamId,
                         })
                     }
+
+                    client = await getStreamrClientInstance(chainId)
 
                     return client.getStream(streamId)
                 })()
@@ -468,7 +467,7 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
                         transactional: true,
                     })
 
-                    await checkBalance()
+                    await checkBalance(client)
 
                     await client.setPermissions({
                         streamId: currentStreamId,
@@ -507,7 +506,7 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
                         transactional: true,
                     })
 
-                    await checkBalance()
+                    await checkBalance(client)
 
                     if (enabled) {
                         await client.addStreamToStorageNode(stream.id, address)

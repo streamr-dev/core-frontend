@@ -9,7 +9,7 @@ import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { getProjectRegistryContract } from '~/getters'
 import { Layer } from '~/utils/Layer'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
-import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
+import { requirePositiveBalance } from '~/shared/utils/requirePositiveBalance'
 import { history } from '~/consts'
 import { BNish, toBN } from '~/utils/bn'
 import { ParsedOperator } from '~/parsers/OperatorParser'
@@ -37,7 +37,7 @@ export async function ensureGasMonies(
 ) {
     while (true) {
         try {
-            await requirePositiveBalance(account)
+            await requirePositiveBalance(chainId, account)
 
             break
         } catch (e) {

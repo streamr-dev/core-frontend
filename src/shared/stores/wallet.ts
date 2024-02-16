@@ -161,6 +161,9 @@ export async function getWalletAccount({
     return promise
 }
 
+/**
+ * @todo Move to getters/index.
+ */
 export function getPublicWeb3Provider(chainId: number) {
     const config = getConfigForChain(chainId)
 
