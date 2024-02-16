@@ -33,6 +33,7 @@ import { deleteProject } from '~/services/projects'
 import { toastedOperation } from '~/utils/toastedOperation'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import routes from '~/routes'
+import { useCurrentChainId } from '~/shared/stores/chain'
 import DataUnionFee from './DataUnionFee'
 import DataUnionPayment from './DataUnionPayment'
 import EditorHero from './EditorHero'
@@ -110,6 +111,8 @@ export default function ProjectEditorPage() {
     const isMounted = useIsMounted()
 
     const navigate = useNavigate()
+
+    const chainId = useCurrentChainId()
 
     return (
         <Layout
@@ -422,7 +425,8 @@ export default function ProjectEditorPage() {
                                             try {
                                                 await toastedOperation(
                                                     'Delete project',
-                                                    () => deleteProject(projectId),
+                                                    () =>
+                                                        deleteProject(chainId, projectId),
                                                 )
 
                                                 if (!isMounted()) {
