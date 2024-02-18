@@ -1,5 +1,4 @@
 [core]
-dataUnionPublishMemberLimit = 1
 platformOriginUrl = "https://streamr.network"
 streamrUrl = "https://streamr.network"
 uniswapAdaptorContractAddress = "0xBe99DB4Ea1964ea9A9E80de41517901Da6ef9307"
