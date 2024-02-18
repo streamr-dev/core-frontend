@@ -1,22 +1,22 @@
 import { z } from 'zod'
+import { address0 } from '~/consts'
 import { getProjectImageUrl } from '~/getters'
 import { getDataUnionAdminFeeForSalePoint } from '~/getters/du'
-import getCoreConfig from '~/getters/getCoreConfig'
+import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
+import { getCurrentChainId } from '~/getters/getCurrentChain'
 import { getTokenInfo } from '~/hooks/useTokenInfo'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { getMostRelevantTimeUnit } from '~/marketplace/utils/price'
 import { getDataAddress } from '~/marketplace/utils/web3'
 import { ProjectType, SalePoint } from '~/shared/types'
-import { Chain } from '~/types'
 import {
     TimeUnit,
     timeUnitSecondsMultiplierMap,
     timeUnits,
 } from '~/shared/utils/timeUnit'
 import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
+import { Chain } from '~/types'
 import { toBN } from '~/utils/bn'
-import { address0 } from '~/consts'
-import { getCurrentChainId } from '~/getters/getCurrentChain'
 
 const ParsedPaymentDetail = z.object({
     beneficiary: z.string(),
@@ -147,20 +147,20 @@ export function parseProject(value: unknown, options: ParseProjectOptions) {
                 }
             }
 
-            const chains: Chain[] = getCoreConfig().marketplaceChains.map(
-                getConfigForChainByName,
-            )
+            const chains: Chain[] = getChainConfigExtension(
+                chainId,
+            ).marketplaceChains.map(getConfigForChainByName)
 
             const salePoints: Record<string, SalePoint | undefined> = {}
 
-            chains.map(({ id: chainId, name: chainName }) => {
+            chains.map(({ id, name: chainName }) => {
                 salePoints[chainName] = {
                     beneficiaryAddress: '',
-                    chainId,
+                    chainId: id,
                     enabled: false,
                     price: '',
                     pricePerSecond: '',
-                    pricingTokenAddress: getDataAddress(chainId).toLowerCase(),
+                    pricingTokenAddress: getDataAddress(id).toLowerCase(),
                     readOnly: false,
                     timeUnit: timeUnits.day,
                 }
@@ -246,19 +246,21 @@ export function parseProject(value: unknown, options: ParseProjectOptions) {
 
 export type ParsedProject = Awaited<ReturnType<typeof parseProject>>
 
-function getEmptySalePoints() {
-    const chains: Chain[] = getCoreConfig().marketplaceChains.map(getConfigForChainByName)
+function getEmptySalePoints(chainId: number) {
+    const chains: Chain[] = getChainConfigExtension(chainId).marketplaceChains.map(
+        getConfigForChainByName,
+    )
 
     const salePoints: Record<string, SalePoint | undefined> = {}
 
-    chains.map(({ id: chainId, name: chainName }) => {
+    chains.map(({ id, name: chainName }) => {
         salePoints[chainName] = {
             beneficiaryAddress: '',
-            chainId,
+            chainId: id,
             enabled: false,
             price: '',
             pricePerSecond: '',
-            pricingTokenAddress: getDataAddress(chainId).toLowerCase(),
+            pricingTokenAddress: getDataAddress(id).toLowerCase(),
             readOnly: false,
             timeUnit: timeUnits.day,
         }
@@ -273,11 +275,13 @@ interface GetEmptyParsedProjectOptions {
 }
 
 export function getEmptyParsedProject({
-    chainId,
+    chainId: chainIdProp,
     ...options
 }: GetEmptyParsedProjectOptions): ParsedProject {
+    const chainId = chainIdProp ?? getCurrentChainId()
+
     return {
-        chainId: chainId ?? getCurrentChainId(),
+        chainId,
         adminFee: '',
         contact: {
             url: '',
@@ -297,7 +301,7 @@ export function getEmptyParsedProject({
         newImageToUpload: undefined,
         paymentDetails: [],
         permissions: [],
-        salePoints: getEmptySalePoints(),
+        salePoints: getEmptySalePoints(chainId),
         streams: [],
         termsOfUse: {
             commercialUse: false,

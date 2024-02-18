@@ -26,6 +26,7 @@ const ChainConfigExtension = z.object({
             ipfsUploadEndpoint: 'https://ipfs.infura.io:5001/api/v0/add',
             projectId: '2KjYUpR265h6R5M5njkSue5RGm7',
         }),
+    marketplaceChains: z.array(z.string()),
     networkSubgraphUrl: z
         .string()
         .optional()
