@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import config from '~/config.toml'
+import config from '~/config/chains.toml'
 import { getConfigForChain } from '~/shared/web3/config'
 
 const ChainConfigExtension = z.object({
