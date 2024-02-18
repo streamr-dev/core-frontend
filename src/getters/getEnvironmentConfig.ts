@@ -48,7 +48,9 @@ const { NODE_ENV: actualEnvironment = 'development' } = process.env as {
 }
 
 export function getEnvironmentConfig() {
-    const env = actualEnvironment === 'test' ? 'development' : actualEnvironment
+    const env =
+        process.env.HUB_CONFIG_ENV ||
+        (actualEnvironment === 'test' ? 'development' : actualEnvironment)
 
     const environmentConfig = parsedConfig[env]
 
