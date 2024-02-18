@@ -15,11 +15,23 @@ const EnvironmentConfig = z
             defaultChain && !availableChains.includes(defaultChain),
         'Default chain is not listed in the collection of available chains',
     )
-    .transform(({ availableChains, defaultChain, ...rest }) => ({
-        ...rest,
-        availableChains: availableChains.map((chainName) => chains[chainName] as Chain),
-        defaultChain: defaultChain || availableChains[0],
-    }))
+    .transform(
+        ({ availableChains: chainNames, defaultChain: defaultChainName, ...rest }) => {
+            const availableChains = chainNames.map(
+                (chainName) => chains[chainName] as Chain,
+            )
+
+            const defaultChain = defaultChainName
+                ? availableChains.find(({ name }) => name === defaultChainName)!
+                : availableChains[0]
+
+            return {
+                ...rest,
+                availableChains,
+                defaultChain,
+            }
+        },
+    )
 
 type EnvironmentConfig = z.infer<typeof EnvironmentConfig>
 

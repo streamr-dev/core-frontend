@@ -1,6 +1,5 @@
 import { produce } from 'immer'
 import { create } from 'zustand'
-import { defaultChainConfig } from '~/getters/getChainConfig'
 import { Chain } from '~/types'
 import { getEnvironmentConfig } from '~/getters/getEnvironmentConfig'
 import { getConfigForChain } from '../web3/config'
@@ -22,7 +21,7 @@ const getSelectedChain = () => {
         }
     }
 
-    return defaultChainConfig.id
+    return getEnvironmentConfig().defaultChain.id
 }
 
 const storeSelectedChain = (chainName: string) => {
