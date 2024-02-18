@@ -239,6 +239,9 @@ export const getPagedStreamsFromIndexer = async (
     orderBy?: IndexerOrderBy,
     orderDirection?: IndexerOrderDirection,
 ): Promise<IndexerResult> => {
+    /**
+     * @fixme #noindexerurlincoreconfig
+     */
     const { streamIndexerUrl } = getCoreConfig()
 
     const ownerFilter = owner != null ? `owner: "${owner}"` : null
@@ -302,6 +305,9 @@ export const getPagedStreamsFromIndexer = async (
 export const getStreamsFromIndexer = async (
     streamIds: Array<string>,
 ): Promise<Array<IndexerStream>> => {
+    /**
+     * @fixme #noindexerurlincoreconfig
+     */
     const { streamIndexerUrl } = getCoreConfig()
 
     if (streamIds == null || streamIds.length === 0) {
@@ -337,6 +343,9 @@ export type GlobalStreamStats = {
 }
 
 export const getGlobalStatsFromIndexer = async (): Promise<GlobalStreamStats> => {
+    /**
+     * @fixme #noindexerurlincoreconfig
+     */
     const { streamIndexerUrl } = getCoreConfig()
 
     const result = await post({

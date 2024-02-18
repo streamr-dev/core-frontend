@@ -4,8 +4,6 @@ web3TransactionConfirmationBlocks = 1
 availableChains = ['mumbai']
 defaultChain = 'mumbai'
 marketplaceChains = ['mumbai']
-theGraphUrl = "https://api.thegraph.com"
-streamIndexerUrl = "https://stream-metrics-staging.streamr.network/api"
 
 [[core.dataunionGraphNames]]
 chainId = 80001

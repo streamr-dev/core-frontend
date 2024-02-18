@@ -2,10 +2,7 @@
 uniswapAdaptorContractAddress = "0xBe99DB4Ea1964ea9A9E80de41517901Da6ef9307"
 web3TransactionConfirmationBlocks = 1
 availableChains = ['polygon', 'mumbai']
-defaultChain = 'polygon'
 marketplaceChains = ['gnosis', 'polygon']
-theGraphUrl = "https://api.thegraph.com"
-streamIndexerUrl = "https://stream-metrics.streamr.network/api"
 
 [[core.dataunionGraphNames]]
 chainId = 100

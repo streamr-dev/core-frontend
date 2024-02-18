@@ -1,6 +1,7 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
 import { getConfigForChain } from '~/shared/web3/config'
 import getCoreConfig from '~/getters/getCoreConfig'
+import { getChainConfigExtension } from './getChainConfigExtension'
 
 const graphClients: Partial<Record<number, ApolloClient<NormalizedCacheObject>>> = {}
 
@@ -27,9 +28,7 @@ function getGraphUrl(chainId: number): string {
     }
 
     // Fall back to default subgraph name
-    const url = `${
-        getCoreConfig().theGraphUrl
-    }/subgraphs/name/streamr-dev/network-subgraphs`
+    const { networkSubgraphUrl: url } = getChainConfigExtension(chainId)
 
     console.warn('There is no theGraphUrl in config. Falling back to', url)
 
@@ -49,10 +48,14 @@ export function getDataUnionGraphClient(chainId: number) {
         throw new Error(`No dataunionGraphNames defined in config for chain ${chainId}!`)
     }
 
+    const { networkSubgraphUrl } = getChainConfigExtension(chainId)
+
+    const { origin } = new URL(networkSubgraphUrl)
+
     const client =
         dataUnionGraphClients[chainId] ||
         new ApolloClient({
-            uri: `${getCoreConfig().theGraphUrl}/subgraphs/name/${item.name}`,
+            uri: `${origin}/subgraphs/name/${item.name}`,
             cache: new InMemoryCache(),
         })
 

@@ -64,8 +64,8 @@ export default function getClientConfig(
         }
     })
 
-    if (client?.graphUrl) {
-        contracts.theGraphUrl = formatConfigUrl(client.graphUrl)
+    if (client?.networkSubgraphUrl) {
+        contracts.theGraphUrl = client.networkSubgraphUrl
     }
 
     if (Object.keys(contracts).length > 0) {
@@ -83,11 +83,16 @@ interface Rpc {
     rpcs: { readonly url: string }[]
 }
 
-function formatRpc(rpc: Rpc): ChainConnectionInfo {
+function formatRpc({ chainId, rpcs, ...rest }: Rpc): ChainConnectionInfo {
+    const { dockerHost } = getChainConfigExtension(chainId)
+
     return {
-        ...rpc,
-        rpcs: rpc.rpcs.map(({ url }) => ({
-            url: formatConfigUrl(url),
+        ...rest,
+        chainId,
+        rpcs: rpcs.map(({ url }) => ({
+            url: formatConfigUrl(url, {
+                dockerHost,
+            }),
         })),
     }
 }

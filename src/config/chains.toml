@@ -1,11 +1,17 @@
-# Dev2 (docker)
+[dev2]
+dockerHost = "localhost"
+networkSubgraphUrl = ":8800/subgraphs/name/streamr-dev/network-subgraphs"
+streamIndexerUrl = ":4001/api"
 
 [dev2.client]
 dataUnionJoinServerUrl = ":5555"
-graphUrl = ":8800/subgraphs/name/streamr-dev/network-subgraphs"
+networkSubgraphUrl = ":8800/subgraphs/name/streamr-dev/network-subgraphs"
 
-# Mumbai
+
+[mumbai]
+networkSubgraphUrl = "https://api.thegraph.com/subgraphs/name/samt1803/network-subgraphs"
+streamIndexerUrl = "https://stream-metrics-staging.streamr.network/api"
 
 [mumbai.client]
 dataUnionJoinServerUrl = "https://join.dataunions.org/"
-graphUrl = "https://api.thegraph.com/subgraphs/name/samt1803/network-subgraphs"
+networkSubgraphUrl = "https://api.thegraph.com/subgraphs/name/samt1803/network-subgraphs"

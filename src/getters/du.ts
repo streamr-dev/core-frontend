@@ -11,9 +11,7 @@ import {
 import getClientConfig from '~/getters/getClientConfig'
 import { toBN } from '~/utils/bn'
 import { getDataUnionGraphClient } from '~/getters/getGraphClient'
-import getCoreConfig from './getCoreConfig'
-import { getChainConfigExtension } from './getChainConfigExtension'
-import formatConfigUrl from '~/utils/formatConfigUrl'
+import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 
 export async function getDataUnionsOwnedByInChain(
     account: string,
@@ -43,7 +41,7 @@ export async function getDataUnionClient(chainId: number): Promise<DataUnionClie
 
     const config = getConfigForChain(chainId)
 
-    const { dataUnionJoinServerUrl } = getChainConfigExtension(chainId)
+    const { dataUnionJoinServerUrl: joinServerUrl } = getChainConfigExtension(chainId)
 
     const providerUrl = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))?.url
 
@@ -88,9 +86,9 @@ export async function getDataUnionClient(chainId: number): Promise<DataUnionClie
         dataUnion: {
             factoryAddress,
         },
-        ...(dataUnionJoinServerUrl
+        ...(joinServerUrl
             ? {
-                  joinServerUrl: formatConfigUrl(dataUnionJoinServerUrl),
+                  joinServerUrl,
               }
             : {}),
     })

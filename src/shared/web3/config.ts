@@ -2,6 +2,7 @@ import { config as chainConfigs } from '@streamr/config'
 import { produce } from 'immer'
 import formatConfigUrl from '~/utils/formatConfigUrl'
 import { Chain } from '~/types'
+import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 
 export const getConfigForChain = (chainId: number): Chain => {
     const configEntry: Chain | undefined = Object.entries(chainConfigs).find(
@@ -11,6 +12,8 @@ export const getConfigForChain = (chainId: number): Chain => {
     if (!configEntry) {
         throw new Error(`Could not find config for chainId ${chainId}`)
     }
+
+    const { dockerHost } = getChainConfigExtension(chainId)
 
     // Fix local rpc urls
     const config: Chain = produce(configEntry, (draft) => {
@@ -22,7 +25,9 @@ export const getConfigForChain = (chainId: number): Chain => {
             if (url.includes('10.200.10.1')) {
                 // Leave only port
                 url = url.replace('http://10.200.10.1', '')
-                url = formatConfigUrl(url)
+                url = formatConfigUrl(url, {
+                    dockerHost,
+                })
             }
 
             return {
