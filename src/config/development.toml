@@ -6,7 +6,3 @@ uniswapAdaptorContractAddress = "0xE4eA76e830a659282368cA2e7E4d18C4AE52D8B3"
 web3TransactionConfirmationBlocks = 1
 availableChains = ['dev2', 'polygon', 'mumbai']
 defaultChain = 'dev2'
-
-[[core.dataunionGraphNames]]
-chainId = 31337
-name = "streamr-dev/dataunion"

@@ -2,11 +2,3 @@
 uniswapAdaptorContractAddress = "0xBe99DB4Ea1964ea9A9E80de41517901Da6ef9307"
 web3TransactionConfirmationBlocks = 1
 availableChains = ['polygon', 'mumbai']
-
-[[core.dataunionGraphNames]]
-chainId = 100
-name = "dataunions/data-unions-gnosis"
-
-[[core.dataunionGraphNames]]
-chainId = 137
-name = "dataunions/data-unions-polygon"

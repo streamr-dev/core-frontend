@@ -11,6 +11,12 @@ const ChainConfigExtension = z.object({
             networkSubgraphUrl: z.string().optional(),
         })
         .optional(),
+    dataunionGraphNames: z.array(
+        z.object({
+            chainId: z.number(),
+            name: z.string(),
+        }),
+    ),
     dataUnionJoinServerUrl: z.string().optional(),
     dockerHost: z.string().optional(),
     ipfs: z

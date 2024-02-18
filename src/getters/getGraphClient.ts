@@ -40,9 +40,9 @@ const dataUnionGraphClients: Partial<
 > = {}
 
 export function getDataUnionGraphClient(chainId: number) {
-    const map: { chainId: unknown; name: unknown }[] = getCoreConfig().dataunionGraphNames
+    const { dataunionGraphNames } = getChainConfigExtension(chainId)
 
-    const item = map.find((i) => i.chainId === chainId)
+    const item = dataunionGraphNames.find((i) => i.chainId === chainId)
 
     if (typeof item?.name !== 'string') {
         throw new Error(`No dataunionGraphNames defined in config for chain ${chainId}!`)
