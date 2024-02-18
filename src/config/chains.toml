@@ -1,0 +1,9 @@
+# Dev2 (docker)
+
+[dev2.client]
+graphUrl = ":8800/subgraphs/name/streamr-dev/network-subgraphs"
+
+# Mumbai
+
+[mumbai.client]
+graphUrl = "https://api.thegraph.com/subgraphs/name/samt1803/network-subgraphs"

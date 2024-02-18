@@ -29,6 +29,7 @@ import { invalidateSponsorshipFundingHistoryQueries } from '~/hooks/useSponsorsh
 import { invalidateActiveOperatorByIdQueries } from '~/hooks/operators'
 import { editStakeModal } from '~/modals/EditStakeModal'
 import { useCurrentChain, useCurrentChainId } from '~/shared/stores/chain'
+import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 
 function getDefaultQueryParams(pageSize: number) {
     return {
@@ -293,7 +294,9 @@ function invalidateSponsorshipsByStreamIdQueries(
 export function useSponsorshipTokenInfo() {
     const { contracts, id: chainId } = useCurrentChain()
 
-    return useTokenInfo(contracts[getCoreConfig().sponsorshipPaymentToken], chainId)
+    const { sponsorshipPaymentToken } = getChainConfigExtension(chainId)
+
+    return useTokenInfo(contracts[sponsorshipPaymentToken], chainId)
 }
 
 export function useIsCreatingSponsorshipForWallet(wallet: string | undefined) {

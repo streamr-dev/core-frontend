@@ -39,6 +39,7 @@ import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { invalidateSponsorshipQueries } from '~/hooks/sponsorships'
 import { getSigner } from '~/shared/stores/wallet'
 import { useCurrentChainId } from '~/shared/stores/chain'
+import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 
 export function useOperatorForWalletQuery(address = '') {
     const currentChainId = useCurrentChainId()
@@ -439,8 +440,8 @@ export function useDelegateFunds() {
                         await withFlag(
                             flagKey('isDelegatingFunds', operator.id, wallet),
                             async () => {
-                                const paymentTokenSymbol =
-                                    getCoreConfig().sponsorshipPaymentToken
+                                const { sponsorshipPaymentToken: paymentTokenSymbol } =
+                                    getChainConfigExtension(chainId)
 
                                 const balance = await getBalance(
                                     wallet,
@@ -526,8 +527,8 @@ export function useUndelegateFunds() {
                         await withFlag(
                             flagKey('isUndelegatingFunds', operator.id, wallet),
                             async () => {
-                                const paymentTokenSymbol =
-                                    getCoreConfig().sponsorshipPaymentToken
+                                const { sponsorshipPaymentToken: paymentTokenSymbol } =
+                                    getChainConfigExtension(chainId)
 
                                 const balance = await getBalance(
                                     wallet,

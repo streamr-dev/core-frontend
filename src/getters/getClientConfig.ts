@@ -1,18 +1,18 @@
-import { StreamrClientConfig } from 'streamr-client'
+import { ChainConnectionInfo, StreamrClientConfig } from 'streamr-client'
 import formatConfigUrl from '~/utils/formatConfigUrl'
-import formatRpc from '~/utils/formatRpc'
-import getConfig from '~/getters/getConfig'
 import { getConfigForChain } from '~/shared/web3/config'
+import { getChainConfigExtension } from './getChainConfigExtension'
 
 export default function getClientConfig(
     chainId: number,
     mods: any = {},
 ): StreamrClientConfig {
     const chainConfig = getConfigForChain(chainId)
-    const { client } = getConfig()
     const config: StreamrClientConfig = {
         metrics: false,
     }
+
+    const { client } = getChainConfigExtension(chainId)
 
     // Set network entrypoints if provided
     if (chainConfig.entryPoints && chainConfig.entryPoints.length > 0) {
@@ -38,6 +38,7 @@ export default function getClientConfig(
     }
 
     const contracts: StreamrClientConfig['contracts'] = {}
+
     ;[
         {
             condition: !!chainConfig.contracts.StreamRegistry,
@@ -57,21 +58,36 @@ export default function getClientConfig(
             key: 'streamStorageRegistryChainAddress',
             value: chainConfig.contracts.StreamStorageRegistry,
         },
-        {
-            condition: !!client?.graphUrl,
-            key: 'theGraphUrl',
-            value: formatConfigUrl(client?.graphUrl),
-        },
     ].forEach((configCase) => {
         if (configCase.condition) {
             contracts[configCase.key] = configCase.value
         }
     })
+
+    if (client?.graphUrl) {
+        contracts.theGraphUrl = formatConfigUrl(client.graphUrl)
+    }
+
     if (Object.keys(contracts).length > 0) {
         config.contracts = contracts
     }
+
     return {
         ...config,
         ...mods,
+    }
+}
+
+interface Rpc {
+    chainId: number
+    rpcs: { readonly url: string }[]
+}
+
+function formatRpc(rpc: Rpc): ChainConnectionInfo {
+    return {
+        ...rpc,
+        rpcs: rpc.rpcs.map(({ url }) => ({
+            url: formatConfigUrl(url),
+        })),
     }
 }

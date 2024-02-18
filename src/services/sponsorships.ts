@@ -12,7 +12,7 @@ import { getConfigForChain } from '~/shared/web3/config'
 import networkPreflight from '~/utils/networkPreflight'
 import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
 import { BN, BNish, toBN } from '~/utils/bn'
-import getCoreConfig from '~/getters/getCoreConfig'
+import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 import { toastedOperation } from '~/utils/toastedOperation'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
 import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
@@ -48,7 +48,8 @@ export async function createSponsorship(
 
     const chainConfig = getConfigForChain(chainId)
 
-    const paymentTokenSymbolFromConfig = getCoreConfig().sponsorshipPaymentToken as string
+    const { sponsorshipPaymentToken: paymentTokenSymbolFromConfig } =
+        getChainConfigExtension(chainId)
 
     await networkPreflight(chainId)
 
@@ -144,7 +145,8 @@ export async function fundSponsorship(
 ): Promise<void> {
     const chainConfig = getConfigForChain(chainId)
 
-    const paymentTokenSymbolFromConfig = getCoreConfig().sponsorshipPaymentToken
+    const { sponsorshipPaymentToken: paymentTokenSymbolFromConfig } =
+        getChainConfigExtension(chainId)
 
     await networkPreflight(chainId)
 

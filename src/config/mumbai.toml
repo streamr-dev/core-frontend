@@ -10,8 +10,6 @@ marketplaceChains = ['mumbai']
 theGraphUrl = "https://api.thegraph.com"
 dataUnionJoinServerUrl = "https://join.dataunions.org/"
 streamIndexerUrl = "https://stream-metrics-staging.streamr.network/api"
-reverseRecordsAddress = "0x3671aE578E63FdF66ad4F3E12CC0c0d71Ac7510C"
-sponsorshipPaymentToken = "DATA"
 
 [[core.dataunionGraphNames]]
 chainId = 80001
@@ -26,6 +24,3 @@ projectId = "2KjYUpR265h6R5M5njkSue5RGm7"
 apiSecretKey = "c39492773b28820c8b3654178bf26946"
 ipfsUploadEndpoint = "https://ipfs.infura.io:5001/api/v0/add"
 ipfsGatewayUrl = "https://streamr-hub.infura-ipfs.io/ipfs/"
-
-[client]
-graphUrl = "https://api.thegraph.com/subgraphs/name/samt1803/network-subgraphs"
