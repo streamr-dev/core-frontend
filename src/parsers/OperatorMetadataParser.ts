@@ -1,10 +1,11 @@
 import { z } from 'zod'
-import getCoreConfig from '~/getters/getCoreConfig'
+import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 
-export const OperatorMetadataParser = z
+export const OperatorMetadataPreparser = z
     .string()
     .optional()
-    .transform((value = '{}') => {
+    .default('{}')
+    .transform((value) => {
         try {
             return JSON.parse(value)
         } catch (e) {
@@ -14,29 +15,41 @@ export const OperatorMetadataParser = z
         return {}
     })
     .pipe(
-        z
-            .object({
-                name: z
-                    .string()
-                    .optional()
-                    .transform((v) => v || ''),
-                description: z
-                    .string()
-                    .optional()
-                    .transform((v) => v || ''),
-                imageIpfsCid: z.string().optional(),
-                redundancyFactor: z.coerce.number().optional(),
-            })
-            .transform(({ imageIpfsCid, redundancyFactor, ...metadata }) => {
-                const imageUrl = imageIpfsCid
-                    ? `${getCoreConfig().ipfs.ipfsGatewayUrl}${imageIpfsCid}`
-                    : undefined
-
-                return {
-                    ...metadata,
-                    imageUrl,
-                    imageIpfsCid,
-                    redundancyFactor,
-                }
-            }),
+        z.object({
+            name: z
+                .string()
+                .optional()
+                .transform((v) => v || ''),
+            description: z
+                .string()
+                .optional()
+                .transform((v) => v || ''),
+            imageIpfsCid: z.string().optional(),
+            redundancyFactor: z.coerce.number().optional(),
+        }),
     )
+
+type OperatorMetadataPreparser = z.infer<typeof OperatorMetadataPreparser>
+
+interface ParseOperatorMetadataOptions {
+    chainId: number
+}
+
+export function parseOperatorMetadata(
+    value: OperatorMetadataPreparser,
+    options: ParseOperatorMetadataOptions,
+) {
+    const { chainId } = options
+
+    const { imageIpfsCid, ...metadata } = value
+
+    const { ipfsGatewayUrl } = getChainConfigExtension(chainId).ipfs
+
+    const imageUrl = imageIpfsCid ? `${ipfsGatewayUrl}${imageIpfsCid}` : undefined
+
+    return {
+        ...metadata,
+        imageUrl,
+        imageIpfsCid,
+    }
+}

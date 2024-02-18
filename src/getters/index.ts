@@ -72,7 +72,7 @@ import {
 } from '~/generated/gql/network'
 import { getGraphClient } from '~/getters/getGraphClient'
 import { ChartPeriod } from '~/types'
-import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
+import { ParsedOperator, parseOperator } from '~/parsers/OperatorParser'
 import { BN, toBN } from '~/utils/bn'
 import { errorToast } from '~/utils/toast'
 import { parseSponsorship } from '~/parsers/SponsorshipParser'
@@ -641,7 +641,7 @@ export async function getParsedOperatorByOwnerAddress(
 
     if (operator) {
         try {
-            return OperatorParser.parse(operator)
+            return parseOperator(operator, { chainId })
         } catch (e) {
             if (!(e instanceof z.ZodError)) {
                 throw e
@@ -707,6 +707,13 @@ export async function getStreamDescription(
         .parse(stream)
 }
 
+interface GetParsedOperatorsOptions<Mapper> {
+    chainId: number
+    mapper?: Mapper
+    onParseError?: (operator: Operator, error: unknown) => void
+    onBeforeComplete?: (total: number, parsed: number) => void
+}
+
 /**
  * Gets a collection of parsed Operators.
  * @param getter Callback that "gets" raw Operator objects.
@@ -722,16 +729,10 @@ export async function getParsedOperators<
     ) => ParsedOperator,
 >(
     getter: () => Operator[] | Promise<Operator[]>,
-    {
-        mapper,
-        onParseError,
-        onBeforeComplete,
-    }: {
-        mapper?: Mapper
-        onParseError?: (operator: Operator, error: unknown) => void
-        onBeforeComplete?: (total: number, parsed: number) => void
-    } = {},
+    options: GetParsedOperatorsOptions<Mapper>,
 ): Promise<ReturnType<Mapper>[]> {
+    const { chainId, mapper, onParseError, onBeforeComplete } = options
+
     const rawOperators = await getter()
 
     const operators: ReturnType<Mapper>[] = []
@@ -742,7 +743,7 @@ export async function getParsedOperators<
         const rawOperator = rawOperators[i]
 
         try {
-            const operator = OperatorParser.parse(rawOperator)
+            const operator = parseOperator(rawOperator, { chainId })
 
             operators.push(mapper ? mapper(operator) : operator)
         } catch (e) {

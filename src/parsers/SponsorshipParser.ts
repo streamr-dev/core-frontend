@@ -3,7 +3,10 @@ import { getConfigValueFromChain } from '~/getters/getConfigValueFromChain'
 import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { BN, toBN } from '~/utils/bn'
-import { OperatorMetadataParser } from './OperatorMetadataParser'
+import {
+    OperatorMetadataPreparser,
+    parseOperatorMetadata,
+} from './OperatorMetadataParser'
 
 const SponsorshipParser = z.object({
     cumulativeSponsoring: z.string(), // wei
@@ -32,7 +35,7 @@ const SponsorshipParser = z.object({
             .object({
                 operator: z.object({
                     id: z.string(),
-                    metadataJsonString: OperatorMetadataParser,
+                    metadataJsonString: OperatorMetadataPreparser,
                 }),
                 amountWei: z.string(), // wei
                 lockedWei: z.string().transform(toBN),
@@ -88,9 +91,10 @@ export function parseSponsorship(value: unknown, options: ParseSponsorshipOption
                 ).dp(3, BN.ROUND_HALF_UP),
                 projectedInsolvencyAt,
                 remainingBalance: fromDecimals(remainingWei, decimals),
-                stakes: stakes.map(({ amountWei, ...stake }) => ({
+                stakes: stakes.map(({ amountWei, metadata, ...stake }) => ({
                     ...stake,
                     amount: fromDecimals(amountWei, decimals),
+                    metadata: parseOperatorMetadata(metadata, { chainId }),
                 })),
                 streamId: stream?.id,
                 totalStake: fromDecimals(totalStakedWei, decimals),

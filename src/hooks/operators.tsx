@@ -17,7 +17,7 @@ import {
     searchOperatorsByMetadata,
 } from '~/getters'
 import { getQueryClient, waitForIndexedBlock } from '~/utils'
-import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
+import { ParsedOperator, parseOperator } from '~/parsers/OperatorParser'
 import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
 import { Delegation, DelegationsStats } from '~/types'
 import { BN, toBN } from '~/utils/bn'
@@ -66,7 +66,7 @@ export function useOperatorByIdQuery(operatorId = '') {
 
             if (operator) {
                 try {
-                    return OperatorParser.parse(operator)
+                    return parseOperator(operator, { chainId: currentChainId })
                 } catch (e) {
                     if (!(e instanceof z.ZodError)) {
                         throw e
@@ -164,6 +164,7 @@ export function useDelegationsStats(address = '') {
                         address: addr,
                     }) as Promise<Operator[]>,
                 {
+                    chainId,
                     mapper(operator) {
                         return toDelegationForWallet(operator, addr)
                     },
@@ -293,6 +294,7 @@ export function useDelegationsForWalletQuery({
                     }) as Promise<Operator[]>
                 },
                 {
+                    chainId: currentChainId,
                     mapper(operator) {
                         return toDelegationForWallet(operator, address)
                     },
@@ -375,6 +377,7 @@ export function useAllOperatorsQuery({
                     }) as Promise<Operator[]>
                 },
                 {
+                    chainId: currentChainId,
                     onBeforeComplete(total, parsed) {
                         if (total !== parsed) {
                             errorToast({
