@@ -7,7 +7,6 @@
         "noImplicitAny": false,
         "paths": {
             "$testUtils/*": ["test/test-utils/*"],
-            "$config": ["test/test-utils/testConfig.ts"],
             "~/*": ["src/*"]
         }
     },

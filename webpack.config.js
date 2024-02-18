@@ -346,11 +346,6 @@ module.exports = {
         alias: {
             // Make sure you set up aliases in flow and jest configs.
             $testUtils: path.resolve(__dirname, 'test/test-utils/'),
-            $config: path.resolve(
-                __dirname,
-                `src/config/${process.env.HUB_CONFIG_ENV || process.env.NODE_ENV || 'production'
-                }.toml`,
-            ),
             '~': path.resolve(__dirname, 'src/'),
             // When duplicate bundles point to different places.
             '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),

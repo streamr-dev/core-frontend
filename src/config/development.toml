@@ -1,6 +1,0 @@
-[docker]
-host = "localhost"
-
-[core]
-uniswapAdaptorContractAddress = "0xE4eA76e830a659282368cA2e7E4d18C4AE52D8B3"
-web3TransactionConfirmationBlocks = 1

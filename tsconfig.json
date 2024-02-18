@@ -3,7 +3,6 @@
     "compilerOptions": {
         "paths": {
             "$testUtils/*": ["test/test-utils/*"],
-            "$config": ["src/config/*.toml"],
             "~/*": ["src/*"]
         }
     },

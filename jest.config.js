@@ -32,7 +32,6 @@ module.exports = {
         '\\.svg$': '<rootDir>/test/test-utils/fileMock.ts',
         '\\.(css|md)$': 'identity-obj-proxy',
         '\\.png$': '<rootDir>/scripts/emptyObject',
-        '\\$config$': '<rootDir>/test/test-utils/testConfig.ts',
         '\\~/(.*)$': '<rootDir>/src/$1',
         '\\$testUtils/(.*)$': '<rootDir>/test/test-utils/$1',
     },
