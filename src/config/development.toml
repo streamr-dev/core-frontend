@@ -10,7 +10,6 @@ availableChains = ['dev2', 'polygon', 'mumbai']
 defaultChain = 'dev2'
 marketplaceChains = ['dev2']
 theGraphUrl = ":8800"
-dataUnionJoinServerUrl = "http://localhost:5555"
 streamIndexerUrl = ":4001/api"
 
 [[core.dataunionGraphNames]]

@@ -3,12 +3,13 @@ import config from '~/config/chains.toml'
 import { getConfigForChain } from '~/shared/web3/config'
 
 const ChainConfigExtension = z.object({
-    sponsorshipPaymentToken: z.string().optional().default('DATA'),
     client: z
         .object({
             graphUrl: z.string().optional(),
         })
         .optional(),
+    dataUnionJoinServerUrl: z.string().optional(),
+    sponsorshipPaymentToken: z.string().optional().default('DATA'),
 })
 
 type ChainConfigExtension = z.infer<typeof ChainConfigExtension>
