@@ -1,12 +1,12 @@
-import getCoreConfig from '~/getters/getCoreConfig'
+import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 import { post } from '~/shared/utils/api'
 
-export async function postImage(image: File): Promise<string> {
+export async function postImage(chainId: number, image: File): Promise<string> {
     const {
         projectId: username,
         apiSecretKey: password,
         ipfsUploadEndpoint: url,
-    } = getCoreConfig().ipfs
+    } = getChainConfigExtension(chainId).ipfs
 
     const data = new FormData()
 

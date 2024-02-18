@@ -14,6 +14,7 @@ import { getTokenInfo } from '~/hooks/useTokenInfo'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
 import { pricePerSecondFromTimeUnit } from '~/marketplace/utils/price'
+import { ParsedProject } from '~/parsers/ProjectParser'
 import { postImage } from './images'
 
 /**
@@ -189,18 +190,21 @@ export const searchProjects = async (
     return prepareProjectResult(projects as unknown as TheGraphProject[], first)
 }
 
-async function formatMetadata({
-    contact: contactDetails,
-    creator,
-    description,
-    imageIpfsCid: existingImageIpfsCid,
-    newImageToUpload,
-    name,
-    termsOfUse,
-    type,
-}: PublishableProjectPayload) {
+async function formatMetadata(
+    chainId: number,
+    {
+        contact: contactDetails,
+        creator,
+        description,
+        imageIpfsCid: existingImageIpfsCid,
+        newImageToUpload,
+        name,
+        termsOfUse,
+        type,
+    }: PublishableProjectPayload,
+) {
     const imageIpfsCid = newImageToUpload
-        ? await postImage(newImageToUpload)
+        ? await postImage(chainId, newImageToUpload)
         : existingImageIpfsCid
 
     return JSON.stringify({
@@ -214,7 +218,9 @@ async function formatMetadata({
     })
 }
 
-export async function getPublishableProjectProperties(project: unknown) {
+export async function getPublishableProjectProperties(project: ParsedProject) {
+    const { chainId } = project
+
     const payload = PublishableProjectPayload.parse(project)
 
     const salePoints = Object.values(payload.salePoints)
@@ -308,7 +314,7 @@ export async function getPublishableProjectProperties(project: unknown) {
         })
     }
 
-    const metadata = await formatMetadata(payload)
+    const metadata = await formatMetadata(chainId, payload)
 
     return {
         adminFee:
