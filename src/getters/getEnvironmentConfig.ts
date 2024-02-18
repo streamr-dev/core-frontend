@@ -12,7 +12,7 @@ const EnvironmentConfig = z
     })
     .refine(
         ({ defaultChain, availableChains }) =>
-            defaultChain && !availableChains.includes(defaultChain),
+            !defaultChain || availableChains.includes(defaultChain),
         'Default chain is not listed in the collection of available chains',
     )
     .transform(
