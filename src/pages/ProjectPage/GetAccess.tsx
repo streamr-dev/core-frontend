@@ -16,6 +16,7 @@ import {
 import { errorToast } from '~/utils/toast'
 import { isAbandonment } from '~/modals/ProjectModal'
 import { toBN } from '~/utils/bn'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 const GetAccessContainer = styled.div`
     display: flex;
@@ -64,6 +65,8 @@ export default function GetAccess({
 
     const purchase = usePurchaseCallback()
 
+    const projectChainId = useCurrentChainId()
+
     const isBeingPurchased = useIsProjectBeingPurchased(projectId)
 
     if (!firstSalePoint) {
@@ -101,7 +104,7 @@ export default function GetAccess({
                     waiting={isBeingPurchased}
                     onClick={async () => {
                         try {
-                            await purchase(projectId)
+                            await purchase(projectChainId, projectId)
                         } catch (e) {
                             if (isAbandonment(e)) {
                                 return

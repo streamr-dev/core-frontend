@@ -31,7 +31,7 @@ import { getSigner } from './wallet'
 
 interface Store {
     inProgress: Record<string, true | undefined>
-    purchase: (projectId: string) => Promise<void>
+    purchase: (chainId: number, projectId: string) => Promise<void>
     fetchingSubscriptions: Record<string, true | undefined>
     subscriptions: Record<
         string,
@@ -111,7 +111,7 @@ const usePurchaseStore = create<Store>((set, get) => {
             )
         },
 
-        async purchase(projectId) {
+        async purchase(projectChainId, projectId) {
             if (isInProgress(projectId)) {
                 return
             }
@@ -123,22 +123,17 @@ const usePurchaseStore = create<Store>((set, get) => {
                     }),
                 )
 
-                /**
-                 * @todo Pass chain id to `purchase`. #passchainid
-                 */
-                const currentChainId = getCurrentChainId()
-
                 const { paymentDetails = [], streams = [] } =
-                    (await getParsedProjectById(currentChainId, projectId, {
+                    (await getParsedProjectById(projectChainId, projectId, {
                         force: true,
                     })) || {}
 
                 const chainIds = paymentDetails.map(({ domainId }) => domainId)
 
-                let chainId: number | undefined = chainIds[0]
+                let preselectedChainId: number | undefined = chainIds[0]
 
                 const skipChainSelector =
-                    typeof chainId !== 'undefined' && chainIds.length === 1
+                    typeof preselectedChainId !== 'undefined' && chainIds.length === 1
 
                 let chainSelectorResult: ChainSelectorResult | undefined
 
@@ -157,7 +152,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                     if (skipChainSelector) {
                         if (!chainSelectorResult) {
                             chainSelectorResult = await getPurchasePreconditions({
-                                chainId,
+                                chainId: preselectedChainId,
                                 paymentDetails,
                             })
                         }
@@ -171,7 +166,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                             chainIds,
                             paymentDetails,
                             projectId,
-                            selectedChainId: chainId,
+                            selectedChainId: preselectedChainId,
                         })
                     }
 
@@ -184,9 +179,9 @@ const usePurchaseStore = create<Store>((set, get) => {
                      * we show the Chain Selector modal (if we loop back to it within
                      * this purchase).
                      */
-                    chainId = chainSelectorResult.chainId
+                    preselectedChainId = chainSelectorResult.chainId
 
-                    const selectedChainId = chainId
+                    const selectedChainId = preselectedChainId
 
                     const {
                         account,
