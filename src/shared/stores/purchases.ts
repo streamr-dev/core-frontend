@@ -28,6 +28,7 @@ import { getParsedProjectById, getProjectSubscriptions } from '~/getters/hub'
 import { getCurrentChainId } from '~/getters/getCurrentChain'
 import { TheGraph } from '../types'
 import { getSigner } from './wallet'
+import { useCurrentChainId } from './chain'
 
 interface Store {
     inProgress: Record<string, true | undefined>
@@ -41,7 +42,7 @@ interface Store {
           }
         | undefined
     >
-    fetchSubscriptions: (projectId: string) => Promise<void>
+    fetchSubscriptions: (chainId: number, projectId: string) => Promise<void>
     invalidateSubscription: (projectId: string) => void
 }
 
@@ -57,7 +58,7 @@ const usePurchaseStore = create<Store>((set, get) => {
 
         fetchingSubscriptions: {},
 
-        async fetchSubscriptions(projectId) {
+        async fetchSubscriptions(chainId, projectId) {
             if (!!get().fetchingSubscriptions[projectId]) {
                 return
             }
@@ -69,11 +70,6 @@ const usePurchaseStore = create<Store>((set, get) => {
             )
 
             try {
-                /**
-                 * @todo Pass chain id to fetchSubscriptions. #passchainid
-                 */
-                const chainId = getCurrentChainId()
-
                 const entries = await getProjectSubscriptions(chainId, projectId, {
                     force: true,
                 })
@@ -667,15 +663,17 @@ export function useHasActiveProjectSubscription(
     projectId: string | undefined,
     account: string | undefined,
 ) {
+    const chainId = useCurrentChainId()
+
     const { subscriptions, fetchSubscriptions } = usePurchaseStore()
 
     const { cache } = (projectId && subscriptions[projectId]) || {}
 
     useEffect(() => {
         if (projectId) {
-            fetchSubscriptions(projectId)
+            fetchSubscriptions(chainId, projectId)
         }
-    }, [cache, fetchSubscriptions, projectId])
+    }, [cache, fetchSubscriptions, chainId, projectId])
 
     if (!projectId || !account) {
         return false
