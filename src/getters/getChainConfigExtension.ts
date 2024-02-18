@@ -1,7 +1,7 @@
 import { produce } from 'immer'
 import { z } from 'zod'
 import config from '~/config/chains.toml'
-import { getConfigForChain } from '~/shared/web3/config'
+import { getRawChainConfig } from '~/shared/web3/config'
 import formatConfigUrl from '~/utils/formatConfigUrl'
 
 const ChainConfigExtension = z.object({
@@ -77,7 +77,7 @@ const parsedConfig = z
     .parse(config)
 
 export function getChainConfigExtension(chainId: number) {
-    const { name: chainName } = getConfigForChain(chainId)
+    const { name: chainName } = getRawChainConfig(chainId)
 
     const chainConfigExtension = parsedConfig[chainName]
 

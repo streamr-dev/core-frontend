@@ -4,19 +4,25 @@ import formatConfigUrl from '~/utils/formatConfigUrl'
 import { Chain } from '~/types'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 
-export const getConfigForChain = (chainId: number): Chain => {
-    const configEntry: Chain | undefined = Object.entries(chainConfigs).find(
+export function getRawChainConfig(chainId: number): Chain {
+    const chain = Object.entries(chainConfigs).find(
         (c) => c[1].id.toString() === chainId.toString(),
     )?.[1]
 
-    if (!configEntry) {
+    if (!chain) {
         throw new Error(`Could not find config for chainId ${chainId}`)
     }
+
+    return chain
+}
+
+export const getConfigForChain = (chainId: number): Chain => {
+    const chain = getRawChainConfig(chainId)
 
     const { dockerHost } = getChainConfigExtension(chainId)
 
     // Fix local rpc urls
-    const config: Chain = produce(configEntry, (draft) => {
+    const config: Chain = produce(chain, (draft) => {
         draft.rpcEndpoints = draft.rpcEndpoints.map((rpc) => {
             let { url } = rpc
 

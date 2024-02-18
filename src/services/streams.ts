@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import getCoreConfig from '~/getters/getCoreConfig'
 import { address0 } from '~/consts'
 import { post } from '~/shared/utils/api'
 import { getGraphClient } from '~/getters/getGraphClient'
@@ -19,6 +18,7 @@ import {
     Stream_OrderBy,
     StreamPermission,
 } from '~/generated/gql/network'
+import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 
 export type TheGraphStreamPermission = {
     userAddress: string
@@ -232,6 +232,7 @@ export type IndexerResult = {
 }
 
 export const getPagedStreamsFromIndexer = async (
+    chainId: number,
     first: number,
     cursor?: string,
     owner?: string,
@@ -239,10 +240,7 @@ export const getPagedStreamsFromIndexer = async (
     orderBy?: IndexerOrderBy,
     orderDirection?: IndexerOrderDirection,
 ): Promise<IndexerResult> => {
-    /**
-     * @fixme #noindexerurlincoreconfig
-     */
-    const { streamIndexerUrl } = getCoreConfig()
+    const { streamIndexerUrl } = getChainConfigExtension(chainId)
 
     const ownerFilter = owner != null ? `owner: "${owner}"` : null
     const searchFilter =
@@ -303,12 +301,10 @@ export const getPagedStreamsFromIndexer = async (
 }
 
 export const getStreamsFromIndexer = async (
+    chainId: number,
     streamIds: Array<string>,
 ): Promise<Array<IndexerStream>> => {
-    /**
-     * @fixme #noindexerurlincoreconfig
-     */
-    const { streamIndexerUrl } = getCoreConfig()
+    const { streamIndexerUrl } = getChainConfigExtension(chainId)
 
     if (streamIds == null || streamIds.length === 0) {
         return []
@@ -342,11 +338,10 @@ export type GlobalStreamStats = {
     messagesPerSecond: number
 }
 
-export const getGlobalStatsFromIndexer = async (): Promise<GlobalStreamStats> => {
-    /**
-     * @fixme #noindexerurlincoreconfig
-     */
-    const { streamIndexerUrl } = getCoreConfig()
+export const getGlobalStatsFromIndexer = async (
+    chainId: number,
+): Promise<GlobalStreamStats> => {
+    const { streamIndexerUrl } = getChainConfigExtension(chainId)
 
     const result = await post({
         url: streamIndexerUrl,

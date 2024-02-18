@@ -133,7 +133,7 @@ export default function EditorStreams() {
 
         setTimeout(async () => {
             try {
-                const stats = await getStreamsFromIndexer(streamIds)
+                const stats = await getStreamsFromIndexer(chainId, streamIds)
 
                 if (!mounted || !stats.length) {
                     return
@@ -151,7 +151,7 @@ export default function EditorStreams() {
         return () => {
             mounted = false
         }
-    }, [page, foundStreams])
+    }, [page, foundStreams, chainId])
 
     return (
         <>

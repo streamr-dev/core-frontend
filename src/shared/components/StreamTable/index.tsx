@@ -20,6 +20,7 @@ import {
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { truncateStreamName } from '~/shared/utils/text'
 import routes from '~/routes'
+import { useCurrentChainId } from '~/shared/stores/chain'
 import SvgIcon from '../SvgIcon'
 
 const ROW_HEIGHT = 88
@@ -295,10 +296,12 @@ const StreamTable: React.FC<Props> = ({
         [onSortChange, orderDirection, orderBy],
     )
 
+    const chainId = useCurrentChainId()
+
     useEffect(() => {
         const loadStats = async () => {
             try {
-                const result = await getGlobalStatsFromIndexer()
+                const result = await getGlobalStatsFromIndexer(chainId)
 
                 if (isMounted()) {
                     setGlobalStats(result)
@@ -311,7 +314,7 @@ const StreamTable: React.FC<Props> = ({
         if (showGlobalStats) {
             loadStats()
         }
-    }, [isMounted, showGlobalStats])
+    }, [isMounted, showGlobalStats, chainId])
 
     return (
         <Container>

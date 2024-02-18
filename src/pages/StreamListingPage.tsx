@@ -161,6 +161,7 @@ const StreamListingPage: React.FC = () => {
             let result: TheGraphStreamResult | IndexerResult
             if (shouldUseIndexer(currentChainId, orderBy)) {
                 result = await getPagedStreamsFromIndexer(
+                    currentChainId,
                     PAGE_SIZE,
                     ctx.pageParam,
                     owner,
@@ -216,7 +217,10 @@ const StreamListingPage: React.FC = () => {
             }
 
             if (ctx.pageParam.useIndexer) {
-                const indexerStats = await getStreamsFromIndexer(ctx.pageParam.streamIds)
+                const indexerStats = await getStreamsFromIndexer(
+                    currentChainId,
+                    ctx.pageParam.streamIds,
+                )
                 return indexerStats
             }
 
