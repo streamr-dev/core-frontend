@@ -2,7 +2,7 @@ import { produce } from 'immer'
 import { isAddress } from 'web3-validator'
 import { z } from 'zod'
 import config from '~/config/chains.toml'
-import { getRawChainConfig } from '~/shared/web3/config'
+import { getSymbolicChainName } from '~/shared/web3/config'
 import formatConfigUrl from '~/utils/formatConfigUrl'
 
 const ChainConfigExtension = z.object({
@@ -111,7 +111,7 @@ const parsedConfig = z
     .parse(config)
 
 export function getChainConfigExtension(chainId: number) {
-    const { name: chainName } = getRawChainConfig(chainId)
+    const chainName = getSymbolicChainName(chainId)
 
     const chainConfigExtension = parsedConfig[chainName]
 

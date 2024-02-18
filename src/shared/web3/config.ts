@@ -4,20 +4,24 @@ import formatConfigUrl from '~/utils/formatConfigUrl'
 import { Chain } from '~/types'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 
-export function getRawChainConfig(chainId: number): Chain {
-    const chain = Object.entries(chainConfigs).find(
+function getChainEntry(chainId: number) {
+    const entry = Object.entries(chainConfigs).find(
         (c) => c[1].id.toString() === chainId.toString(),
-    )?.[1]
+    )
 
-    if (!chain) {
+    if (!entry) {
         throw new Error(`Could not find config for chainId ${chainId}`)
     }
 
-    return chain
+    return entry
+}
+
+export function getSymbolicChainName(chainId: number) {
+    return getChainEntry(chainId)[0]
 }
 
 export const getConfigForChain = (chainId: number): Chain => {
-    const chain = getRawChainConfig(chainId)
+    const chain = getChainEntry(chainId)[1]
 
     const { dockerHost } = getChainConfigExtension(chainId)
 
