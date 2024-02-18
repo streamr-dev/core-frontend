@@ -10,7 +10,3 @@ defaultChain = 'dev2'
 [[core.dataunionGraphNames]]
 chainId = 31337
 name = "streamr-dev/dataunion"
-
-[[core.storageNodes]]
-name = "Local (broker-node-storage-1)"
-address = "0xde1112f631486CfC759A50196853011528bC5FA0"

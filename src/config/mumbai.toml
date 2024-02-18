@@ -7,7 +7,3 @@ defaultChain = 'mumbai'
 [[core.dataunionGraphNames]]
 chainId = 80001
 name = "samt1803/dataunion-subgraphs"
-
-[[core.storageNodes]]
-name = "Streamr Germany"
-address = "0x31546eEA76F2B2b3C5cC06B1c93601dc35c9D916"

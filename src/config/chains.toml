@@ -8,6 +8,9 @@ streamIndexerUrl = ":4001/api"
 dataUnionJoinServerUrl = ":5555"
 networkSubgraphUrl = ":8800/subgraphs/name/streamr-dev/network-subgraphs"
 
+[[dev2.storageNodes]]
+name = "Local (broker-node-storage-1)"
+address = "0xde1112f631486CfC759A50196853011528bC5FA0"
 
 [mumbai]
 marketplaceChains = ['mumbai']
@@ -18,5 +21,13 @@ streamIndexerUrl = "https://stream-metrics-staging.streamr.network/api"
 dataUnionJoinServerUrl = "https://join.dataunions.org/"
 networkSubgraphUrl = "https://api.thegraph.com/subgraphs/name/samt1803/network-subgraphs"
 
+[[mumbai.storageNodes]]
+name = "Streamr Germany"
+address = "0x31546eEA76F2B2b3C5cC06B1c93601dc35c9D916"
+
 [polygon]
 marketplaceChains = ['gnosis', 'polygon']
+
+[[polygon.storageNodes]]
+name = "Streamr Germany"
+address = "0x31546eEA76F2B2b3C5cC06B1c93601dc35c9D916"

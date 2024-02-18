@@ -10,7 +10,3 @@ name = "dataunions/data-unions-gnosis"
 [[core.dataunionGraphNames]]
 chainId = 137
 name = "dataunions/data-unions-polygon"
-
-[[core.storageNodes]]
-name = "Streamr Germany"
-address = "0x31546eEA76F2B2b3C5cC06B1c93601dc35c9D916"

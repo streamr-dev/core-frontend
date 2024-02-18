@@ -1,7 +1,8 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import styled from 'styled-components'
+import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 import Label from '~/shared/components/Ui/Label'
-import getCoreConfig from '~/getters/getCoreConfig'
+import { useCurrentChainId } from '~/shared/stores/chain'
 import StorageNodeItem from './StorageNodeItem'
 
 type Props = {
@@ -10,9 +11,9 @@ type Props = {
 }
 
 function UnstyledStorageNodeList({ className, disabled = false }: Props) {
-    const {
-        current: { storageNodes },
-    } = useRef(getCoreConfig())
+    const chainId = useCurrentChainId()
+
+    const storageNodes = getChainConfigExtension(chainId).storageNodes
 
     return (
         <div className={className}>

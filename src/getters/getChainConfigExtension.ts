@@ -1,4 +1,5 @@
 import { produce } from 'immer'
+import { isAddress } from 'web3-validator'
 import { z } from 'zod'
 import config from '~/config/chains.toml'
 import { getRawChainConfig } from '~/shared/web3/config'
@@ -32,6 +33,12 @@ const ChainConfigExtension = z.object({
         .optional()
         .default('https://api.thegraph.com/subgraphs/name/streamr-dev/network-subgraphs'),
     sponsorshipPaymentToken: z.string().optional().default('DATA'),
+    storageNodes: z.array(
+        z.object({
+            name: z.string(),
+            address: z.string().refine(isAddress, 'Invalid storage node address'),
+        }),
+    ),
     streamIndexerUrl: z
         .string()
         .optional()
