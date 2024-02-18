@@ -84,15 +84,11 @@ export const buildRoutes = (paths: Paths, getVariables: () => Variables): Routes
         }
     }, {})
 const routes = buildRoutes(definitions as any, () => {
-    const {
-        streamrUrl: streamr,
-        platformOriginUrl: platform,
-        landingPageUrl: landingPage,
-    } = getCoreConfig()
+    const { streamrUrl: streamr, platformOriginUrl: platform } = getCoreConfig()
     const api = `${streamr}/api/v2`
     return {
         api,
-        landingPage,
+        landingPage: 'https://streamr.network',
         platform,
         streamr,
     }

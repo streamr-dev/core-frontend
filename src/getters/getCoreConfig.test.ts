@@ -9,7 +9,6 @@ describe('getCoreConfig', () => {
     it('when empty, returns defaults', () => {
         ;(getConfig as any).mockImplementation(() => ({}))
         expect(g()).toMatchObject({
-            landingPageUrl: 'https://streamr.network',
             platformOriginUrl: undefined,
             streamrUrl: undefined,
         })
@@ -29,13 +28,11 @@ describe('getCoreConfig', () => {
         it('formats selected URLs', () => {
             ;(getConfig as any).mockImplementation(() => ({
                 core: {
-                    landingPageUrl: '/lp',
                     platformOriginUrl: '/pf',
                     streamrUrl: '/sr',
                 },
             }))
             expect(g()).toMatchObject({
-                landingPageUrl: 'http://host/lp',
                 platformOriginUrl: 'http://host/pf',
                 streamrUrl: 'http://host/sr',
             })
