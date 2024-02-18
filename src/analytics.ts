@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/browser'
 import { RewriteFrames } from '@sentry/integrations'
 import LogRocket from 'logrocket'
-import getCoreConfig from '~/getters/getCoreConfig'
+import { getEnvironmentConfig } from './getters/getEnvironmentConfig'
 
 type ErrorServiceId = string
 type ErrorService = {
@@ -65,7 +65,7 @@ export class Analytics {
     }
 }
 const analytics = new Analytics()
-const { streamrUrl, platformOriginUrl } = getCoreConfig()
+const { streamrUrl, platformOriginUrl } = getEnvironmentConfig()
 
 if (process.env.SENTRY_DSN) {
     analytics.register({
@@ -80,7 +80,7 @@ if (process.env.SENTRY_DSN) {
                 integrations: [new RewriteFrames()],
                 allowUrls: [
                     window.location.origin,
-                    process.env.PLATFORM_PUBLIC_PATH,
+                    process.env.PLATFORM_PUBLIC_PATH || '',
                     platformOriginUrl,
                     streamrUrl,
                 ].filter(Boolean),
@@ -120,11 +120,13 @@ if (process.env.SENTRY_DSN) {
 // empty the request body for these paths
 const urlBlackList = ['/api/v2/login/password']
 
-if (process.env.LOGROCKET_SLUG) {
+const { LOGROCKET_SLUG = '' } = process.env
+
+if (LOGROCKET_SLUG) {
     analytics.register({
         id: 'LogRocket',
         init: () => {
-            LogRocket.init(process.env.LOGROCKET_SLUG, {
+            LogRocket.init(LOGROCKET_SLUG, {
                 network: {
                     requestSanitizer: (request: any) => {
                         const requestUrl = request.url.toLowerCase()

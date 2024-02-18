@@ -1,8 +1,9 @@
 import qs from 'query-string'
 import pick from 'lodash/pick'
 import { parse, compile, Key } from 'path-to-regexp'
-import getCoreConfig from '~/getters/getCoreConfig'
+import { getEnvironmentConfig } from '~/getters/getEnvironmentConfig'
 import definitions from './definitions.json'
+
 type Routes = Record<string, any>
 type Paths = Record<string, any>
 type Variables = Record<string, string>
@@ -84,10 +85,10 @@ export const buildRoutes = (paths: Paths, getVariables: () => Variables): Routes
         }
     }, {})
 const routes = buildRoutes(definitions as any, () => {
-    const { streamrUrl: streamr, platformOriginUrl: platform } = getCoreConfig()
-    const api = `${streamr}/api/v2`
+    const { streamrUrl: streamr, platformOriginUrl: platform } = getEnvironmentConfig()
+
     return {
-        api,
+        api: `${streamr}/api/v2`,
         landingPage: 'https://streamr.network',
         platform,
         streamr,

@@ -1,0 +1,7 @@
+[development]
+platformOriginUrl = ""
+streamrUrl = ""
+
+[mumbai]
+platformOriginUrl = "https://staging.streamr.network"
+streamrUrl = "https://staging.streamr.network"
