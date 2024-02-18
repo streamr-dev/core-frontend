@@ -11,12 +11,15 @@ const ChainConfigExtension = z.object({
             networkSubgraphUrl: z.string().optional(),
         })
         .optional(),
-    dataunionGraphNames: z.array(
-        z.object({
-            chainId: z.number(),
-            name: z.string(),
-        }),
-    ),
+    dataunionGraphNames: z
+        .array(
+            z.object({
+                chainId: z.number(),
+                name: z.string(),
+            }),
+        )
+        .optional()
+        .default([]),
     dataUnionJoinServerUrl: z.string().optional(),
     dockerHost: z.string().optional(),
     ipfs: z
@@ -33,18 +36,21 @@ const ChainConfigExtension = z.object({
             ipfsUploadEndpoint: 'https://ipfs.infura.io:5001/api/v0/add',
             projectId: '2KjYUpR265h6R5M5njkSue5RGm7',
         }),
-    marketplaceChains: z.array(z.string()),
+    marketplaceChains: z.array(z.string()).optional().default([]),
     networkSubgraphUrl: z
         .string()
         .optional()
         .default('https://api.thegraph.com/subgraphs/name/streamr-dev/network-subgraphs'),
     sponsorshipPaymentToken: z.string().optional().default('DATA'),
-    storageNodes: z.array(
-        z.object({
-            name: z.string(),
-            address: z.string().refine(isAddress, 'Invalid storage node address'),
-        }),
-    ),
+    storageNodes: z
+        .array(
+            z.object({
+                name: z.string(),
+                address: z.string().refine(isAddress, 'Invalid storage node address'),
+            }),
+        )
+        .optional()
+        .default([]),
     streamIndexerUrl: z
         .string()
         .optional()

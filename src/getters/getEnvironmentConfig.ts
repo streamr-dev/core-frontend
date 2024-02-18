@@ -1,14 +1,31 @@
+import { config as chains } from '@streamr/config'
 import { z } from 'zod'
 import config from '~/config/environments.toml'
+import { Chain } from '~/types'
 
-const EnvironmentConfig = z.object({
-    platformOriginUrl: z.string().optional().default('https://streamr.network'),
-    streamrUrl: z.string().optional().default('https://streamr.network'),
-})
+const EnvironmentConfig = z
+    .object({
+        availableChains: z.array(z.string()).min(1),
+        defaultChain: z.string().optional(),
+        platformOriginUrl: z.string().optional().default('https://streamr.network'),
+        streamrUrl: z.string().optional().default('https://streamr.network'),
+    })
+    .refine(
+        ({ defaultChain, availableChains }) =>
+            defaultChain && !availableChains.includes(defaultChain),
+        'Default chain is not listed in the collection of available chains',
+    )
+    .transform(({ availableChains, defaultChain, ...rest }) => ({
+        ...rest,
+        availableChains: availableChains.map((chainName) => chains[chainName] as Chain),
+        defaultChain: defaultChain || availableChains[0],
+    }))
 
 type EnvironmentConfig = z.infer<typeof EnvironmentConfig>
 
-const fallbackEnvironmentConfig: EnvironmentConfig = EnvironmentConfig.parse({})
+const fallbackEnvironmentConfig: EnvironmentConfig = EnvironmentConfig.parse({
+    availableChains: ['polygon'],
+})
 
 const parsedConfig = z
     .record(z.string(), z.union([EnvironmentConfig, z.undefined()]))

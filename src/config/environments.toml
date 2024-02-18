@@ -1,7 +1,12 @@
 [development]
+availableChains = ['dev2', 'polygon', 'mumbai']
 platformOriginUrl = ""
 streamrUrl = ""
 
 [mumbai]
+availableChains = ['mumbai']
 platformOriginUrl = "https://staging.streamr.network"
 streamrUrl = "https://staging.streamr.network"
+
+[production]
+availableChains = ['polygon', 'mumbai']

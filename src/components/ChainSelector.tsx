@@ -3,9 +3,10 @@ import styled from 'styled-components'
 import { SimpleDropdown, SimpleListDropdownMenu } from '~/components/SimpleDropdown'
 import UnstyledNetworkIcon from '~/shared/components/NetworkIcon'
 import SvgIcon from '~/shared/components/SvgIcon'
-import { useAvailableChains, useChainStore, useCurrentChain } from '~/shared/stores/chain'
+import { useChainStore, useCurrentChain } from '~/shared/stores/chain'
 import { Chain } from '~/types'
 import { COLORS, LAPTOP } from '~/shared/utils/styled'
+import { getEnvironmentConfig } from '~/getters/getEnvironmentConfig'
 
 type MenuItemProps = {
     chain: Chain
@@ -54,7 +55,8 @@ interface Props {
 }
 
 export const ChainSelector = ({ menuAlignment = 'left', ...props }: Props) => {
-    const availableChains = useAvailableChains()
+    const availableChains = getEnvironmentConfig().availableChains
+
     const selectedChain = useCurrentChain()
 
     return (

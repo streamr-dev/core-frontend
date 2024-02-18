@@ -5,10 +5,10 @@ import Surround from '~/shared/components/Surround'
 import Label from '~/shared/components/Ui/Label'
 import Select from '~/shared/components/Ui/Select'
 import Text from '~/shared/components/Ui/Text'
-import { useAvailableChains } from '~/shared/stores/chain'
 import { useCurrentStreamAbility } from '~/shared/stores/streamAbilities'
 import { PHONE } from '~/shared/utils/styled'
 import { StreamDraft, getEmptyStreamEntity } from '~/stores/streamDraft'
+import { getEnvironmentConfig } from '~/getters/getEnvironmentConfig'
 import Section from '../Section'
 import { ENS_DOMAINS_URL, EditableStreamId, ReadonlyStreamId } from './StreamId'
 
@@ -27,10 +27,12 @@ export function InfoSection({ disabled: disabledProp = false }) {
 
     const update = StreamDraft.useUpdateEntity()
 
-    const chainOptions = useAvailableChains().map(({ id: value, name: label }) => ({
-        value,
-        label,
-    }))
+    const chainOptions = getEnvironmentConfig().availableChains.map(
+        ({ id: value, name: label }) => ({
+            value,
+            label,
+        }),
+    )
 
     return (
         <Section title="Details">
