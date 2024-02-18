@@ -70,7 +70,6 @@ import {
     GetSponsorshipByStreamIdQueryVariables,
     GetSponsorshipByStreamIdDocument,
 } from '~/generated/gql/network'
-import getCoreConfig from '~/getters/getCoreConfig'
 import { getGraphClient } from '~/getters/getGraphClient'
 import { ChartPeriod } from '~/types'
 import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
@@ -82,6 +81,7 @@ import {
     GetEnsDomainsForAccountQuery,
     GetEnsDomainsForAccountQueryVariables,
 } from '~/generated/gql/ens'
+import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 
 const DEFAULT_OPERATOR_ORDER_BY = Operator_OrderBy.Id
 const DEFAULT_SPONSORSHIP_ORDER_BY = Sponsorship_OrderBy.Id
@@ -227,16 +227,17 @@ export function getProjectTypeTitle(projectType: ProjectType): string {
     }
 }
 
-export function getProjectImageUrl({
-    imageUrl,
-    imageIpfsCid,
-}: {
-    imageUrl?: string
-    imageIpfsCid?: string
-}): string | undefined {
-    const {
-        ipfs: { ipfsGatewayUrl },
-    } = getCoreConfig()
+export function getProjectImageUrl(
+    chainId: number,
+    {
+        imageUrl,
+        imageIpfsCid,
+    }: {
+        imageUrl?: string
+        imageIpfsCid?: string
+    },
+): string | undefined {
+    const { ipfsGatewayUrl } = getChainConfigExtension(chainId).ipfs
 
     if (imageIpfsCid) {
         return `${ipfsGatewayUrl}${imageIpfsCid}`

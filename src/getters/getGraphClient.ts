@@ -1,6 +1,5 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
 import { getConfigForChain } from '~/shared/web3/config'
-import getCoreConfig from '~/getters/getCoreConfig'
 import { getChainConfigExtension } from './getChainConfigExtension'
 
 const graphClients: Partial<Record<number, ApolloClient<NormalizedCacheObject>>> = {}
