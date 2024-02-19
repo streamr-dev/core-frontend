@@ -11,6 +11,16 @@ type ChildrenFormatter =
           isOpen: boolean,
       ) => ReactNode)
 
+interface SimpleDropdownProps {
+    align?: 'left' | 'right'
+    children?: ChildrenFormatter
+    detached?: boolean
+    disabled?: boolean
+    menu?: ChildrenFormatter
+    menuWrapComponent?: typeof SimpleDropdownMenu
+    onToggle?: (value: boolean) => void
+}
+
 export function SimpleDropdown({
     children,
     detached = false,
@@ -20,15 +30,7 @@ export function SimpleDropdown({
     onToggle,
     align = 'left',
     ...props
-}: {
-    children?: ChildrenFormatter
-    detached?: boolean
-    disabled?: boolean
-    menu?: ChildrenFormatter
-    menuWrapComponent?: typeof SimpleDropdownMenu
-    onToggle?: (value: boolean) => void
-    align: 'left' | 'right'
-}) {
+}: SimpleDropdownProps) {
     const [isOpen, setIsOpen] = useState(false)
 
     const rootRef = useRef<HTMLDivElement>(null)
