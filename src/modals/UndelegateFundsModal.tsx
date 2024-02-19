@@ -135,9 +135,8 @@ export default function UndelegateFundsModal({
                             ? toBN(Number.POSITIVE_INFINITY)
                             : prefinalAmount,
                         {
-                            onBlockNumber: (blockNumber) => {
-                                waitForIndexedBlock(chainId, blockNumber)
-                            },
+                            onBlockNumber: (blockNumber) =>
+                                waitForIndexedBlock(chainId, blockNumber),
                         },
                     )
 

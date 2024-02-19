@@ -183,15 +183,13 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                 try {
                     if (!operator) {
                         await createOperator(chainId, finalData, {
-                            onBlockNumber: (blockNumber) => {
-                                waitForIndexedBlock(chainId, blockNumber)
-                            },
+                            onBlockNumber: (blockNumber) =>
+                                waitForIndexedBlock(chainId, blockNumber),
                         })
                     } else {
                         await updateOperator(chainId, operator, finalData, {
-                            onBlockNumber: (blockNumber) => {
-                                waitForIndexedBlock(chainId, blockNumber)
-                            },
+                            onBlockNumber: (blockNumber) =>
+                                waitForIndexedBlock(chainId, blockNumber),
                         })
                     }
 

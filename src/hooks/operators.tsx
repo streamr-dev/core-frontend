@@ -621,9 +621,8 @@ export function useCollectEarnings() {
                     }
 
                     await collectEarnings(chainId, sponsorshipId, operatorId, {
-                        onBlockNumber: (blockNumber) => {
-                            waitForIndexedBlock(chainId, blockNumber)
-                        },
+                        onBlockNumber: (blockNumber) =>
+                            waitForIndexedBlock(chainId, blockNumber),
                     })
 
                     await fetchUncollectedEarnings(chainId, operatorId)

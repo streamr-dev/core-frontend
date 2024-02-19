@@ -157,9 +157,8 @@ export default function DelegateFundsModal({
                         operator.id,
                         toDecimals(finalValue, decimals),
                         {
-                            onBlockNumber: (blockNumber) => {
-                                waitForIndexedBlock(chainId, blockNumber)
-                            },
+                            onBlockNumber: (blockNumber) =>
+                                waitForIndexedBlock(chainId, blockNumber),
                         },
                     )
 

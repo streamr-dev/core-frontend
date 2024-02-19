@@ -180,9 +180,8 @@ function CreateSponsorshipModal({
                     }
 
                     const sponsorshipId = await createSponsorship(chainId, formData, {
-                        onBlockNumber: (blockNumber) => {
-                            waitForIndexedBlock(chainId, blockNumber)
-                        },
+                        onBlockNumber: (blockNumber) =>
+                            waitForIndexedBlock(chainId, blockNumber),
                     })
 
                     onResolve?.({
