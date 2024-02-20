@@ -43,7 +43,7 @@ const parsedConfig = z
     .record(z.string(), z.union([EnvironmentConfig, z.undefined()]))
     .parse(config)
 
-const { NODE_ENV: actualEnvironment = 'development' } = process.env as {
+const { NODE_ENV: actualEnvironment = 'production' } = process.env as {
     NODE_ENV: string | undefined
 }
 
