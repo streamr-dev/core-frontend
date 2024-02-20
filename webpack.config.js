@@ -260,6 +260,7 @@ module.exports = {
                               'cypress.config.ts',
                               'healthcheck.ts',
                               'jest.config.js',
+                              'webpack.config.*',
                               'nginx.conf',
                               'src/generated/**/*.*',
                               '*.json',
