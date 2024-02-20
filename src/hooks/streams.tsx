@@ -24,6 +24,7 @@ import {
 } from '~/generated/gql/indexer'
 import { getDescription } from '~/getters'
 import { useCurrentChainId } from '~/shared/stores/chain'
+import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 
 export enum StreamsTabOption {
     All = 'all',
@@ -92,12 +93,19 @@ async function getStreamsFromIndexer(
         streamIds,
     } = options
 
+    const client = getIndexerClient(chainId)
+
+    if (!client) {
+        return {
+            hasNextPage: false,
+            nextPageParam: null,
+            streams: [],
+        }
+    }
+
     const {
         data: { streams: result },
-    } = await getIndexerClient(chainId).query<
-        GetIndexerStreamsQuery,
-        GetIndexerStreamsQueryVariables
-    >({
+    } = await client.query<GetIndexerStreamsQuery, GetIndexerStreamsQueryVariables>({
         fetchPolicy: force ? 'network-only' : undefined,
         query: GetIndexerStreamsDocument,
         variables: {
@@ -260,7 +268,7 @@ export function useStreamsQuery(options: UseStreamsQueryOptions) {
         queryFn: async ({ pageParam }) => {
             const owner = tab === StreamsTabOption.Your ? account || address0 : undefined
 
-            const getter = isIndexerColumn(orderBy)
+            const getter = isIndexerColumn(chainId, orderBy)
                 ? getStreamsFromIndexer
                 : getStreamsFromGraph
 
@@ -277,7 +285,7 @@ export function useStreamsQuery(options: UseStreamsQueryOptions) {
 
             onBatch?.({
                 streamIds: streams.map((s) => s.id),
-                source: isIndexerColumn(orderBy) ? 'indexer' : 'graph',
+                source: isIndexerColumn(chainId, orderBy) ? 'indexer' : 'graph',
             })
 
             return {
@@ -293,7 +301,11 @@ export function useStreamsQuery(options: UseStreamsQueryOptions) {
     })
 }
 
-export function isIndexerColumn(orderBy: StreamsOrderBy) {
+export function isIndexerColumn(chainId: number, orderBy: StreamsOrderBy) {
+    if (!getChainConfigExtension(chainId).streamIndexerUrl) {
+        return false
+    }
+
     return orderBy === 'mps' || orderBy === 'peerCount'
 }
 
@@ -377,8 +389,14 @@ export function useGlobalStreamStatsQuery() {
     return useQuery({
         queryKey: ['useGlobalStreamStatsQuery', chainId],
         queryFn: async () => {
+            const client = getIndexerClient(chainId)
+
+            if (!client) {
+                return
+            }
+
             try {
-                const result = await getIndexerClient(chainId).query<
+                const result = await client.query<
                     GetGlobalStreamsStatsQuery,
                     GetGlobalStreamsStatsQueryVariables
                 >({

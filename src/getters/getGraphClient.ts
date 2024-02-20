@@ -69,10 +69,16 @@ const indexerGraphClients: Partial<Record<number, ApolloClient<NormalizedCacheOb
     {}
 
 export function getIndexerClient(chainId: number) {
+    const uri = getChainConfigExtension(chainId).streamIndexerUrl
+
+    if (!uri) {
+        return null
+    }
+
     const client =
         indexerGraphClients[chainId] ||
         new ApolloClient({
-            uri: getChainConfigExtension(chainId).streamIndexerUrl,
+            uri,
             cache: new InMemoryCache(),
         })
 

@@ -51,10 +51,7 @@ const ChainConfigExtension = z.object({
         )
         .optional()
         .default([]),
-    streamIndexerUrl: z
-        .string()
-        .optional()
-        .default('https://stream-metrics.streamr.network/api'),
+    streamIndexerUrl: z.string().optional(),
 })
 
 type ChainConfigExtension = z.infer<typeof ChainConfigExtension>

@@ -206,7 +206,7 @@ export const getStreamsFromIndexer = async (
 ): Promise<Array<IndexerStream>> => {
     const { streamIndexerUrl } = getChainConfigExtension(chainId)
 
-    if (streamIds == null || streamIds.length === 0) {
+    if (!streamIndexerUrl || streamIds == null || streamIds.length === 0) {
         return []
     }
 

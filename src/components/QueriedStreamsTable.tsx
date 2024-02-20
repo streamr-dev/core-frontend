@@ -6,6 +6,7 @@ import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { OrderDirection } from '~/types'
 import { LoadMoreButton } from '~/components/LoadMore'
 import { StreamIdCell } from '~/components/Table'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 interface Props {
     noDataFirstLine?: ReactNode
@@ -35,7 +36,9 @@ export function QueriedStreamsTable({
             .map((s) => [s!.id, s]),
     )
 
-    const indexerQueryErrored = query.isError && isIndexerColumn(orderBy)
+    const chainId = useCurrentChainId()
+
+    const indexerQueryErrored = query.isError && isIndexerColumn(chainId, orderBy)
 
     const onOrderChangeRef = useRef(onOrderChange)
 
