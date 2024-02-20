@@ -4,7 +4,7 @@ platformOriginUrl = ""
 streamrUrl = ""
 
 [mumbai]
-availableChains = ['mumbai']
+availableChains = ['mumbai', 'polygon']
 platformOriginUrl = "https://staging.streamr.network"
 streamrUrl = "https://staging.streamr.network"
 
