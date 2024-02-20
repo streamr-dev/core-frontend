@@ -8,6 +8,7 @@ import Layout, {
     LayoutColumn,
     LayoutInner as PrestyledLayoutInner,
 } from '~/components/Layout'
+import { SegmentGrid } from '~/components/NetworkPageSegment'
 import BeneficiaryAddressEditor from '~/components/SalePointSelector/BeneficiaryAddressEditor'
 import SalePointOption, {
     DataUnionOption,
@@ -139,7 +140,7 @@ export default function ProjectEditorPage() {
             <LoadingIndicator loading={busy} />
             <LayoutColumn>
                 {!fetching && (
-                    <>
+                    <SegmentGrid>
                         <Segment>
                             <EditorHero />
                         </Segment>
@@ -452,7 +453,7 @@ export default function ProjectEditorPage() {
                                 </ColoredBox>
                             </Segment>
                         )}
-                    </>
+                    </SegmentGrid>
                 )}
             </LayoutColumn>
         </Layout>
@@ -460,10 +461,6 @@ export default function ProjectEditorPage() {
 }
 
 const Segment = styled.div`
-    & + & {
-        margin-top: 24px;
-    }
-
     h2 {
         font-size: 34px;
         font-weight: 400;
