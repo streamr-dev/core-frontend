@@ -25,7 +25,9 @@ type Props = {
     title?: string
     mask?: MaskOption
 } & Omit<BaseModalProps, 'children'>
-export const MAX_WIDTH = 1024
+
+const MAX_WIDTH = 1024
+
 // only width is considered because images returned from the cropper will always be squared
 export const getCroppedAndResizedBlob = async (
     imageUrl: string,

@@ -27,7 +27,7 @@ export const ProjectHeroContainer = styled.div<{ overflowVisible?: boolean }>`
         padding: 0;
     }
 `
-export const ProjectHeroImageStyles = css`
+const ProjectHeroImageStyles = css`
     grid-column-start: 1;
     grid-column-end: 2;
     grid-row-start: 2;
@@ -57,7 +57,7 @@ export const ProjectHeroImage = styled(ImageTile)`
     }
 `
 
-export const ProjectHeroTitleStyles = css`
+const ProjectHeroTitleStyles = css`
     grid-column-start: 1;
     grid-column-end: 2;
     grid-row-start: 1;

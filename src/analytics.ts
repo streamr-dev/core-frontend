@@ -11,7 +11,10 @@ type ErrorService = {
     getMiddleware?: (...args: Array<any>) => any
     reportWarning?: (...args: Array<any>) => any
 }
-// TODO add typing
+
+/**
+ * @todo Missing types.
+ */
 export class Analytics {
     services: { [key: string]: any } = {}
     register({ id, init, reportError, getMiddleware }: ErrorService): void {
@@ -153,5 +156,3 @@ if (LOGROCKET_SLUG) {
         },
     })
 }
-
-export default analytics

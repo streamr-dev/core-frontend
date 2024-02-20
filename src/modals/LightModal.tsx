@@ -73,7 +73,7 @@ const Content = styled.div`
     color: ${COLORS.primaryLight};
 `
 
-export const CloseButton = styled.button`
+const CloseButton = styled.button`
     color: ${COLORS.close};
     line-height: 14px;
     cursor: pointer;
