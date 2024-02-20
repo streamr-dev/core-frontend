@@ -92,6 +92,7 @@ type UnstyledTileImageContainerProps = {
     children?: any
     height?: string
     autoSize?: any
+    className?: string
 }
 
 const EditButton = styled(Link)`
@@ -216,7 +217,6 @@ function MarketplaceProductTile({
                     <DataUnionBadge
                         top
                         left
-                        memberCount={product.members}
                         linkTo={routes.projects.overview(
                             {
                                 id: product.id,

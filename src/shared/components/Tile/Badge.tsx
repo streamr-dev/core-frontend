@@ -107,7 +107,7 @@ const BadgeContainer = styled.div<BadgeContainerProps>`
     }
 `
 
-type DataUnionBadgeProps = {
+interface DataUnionBadgeProps extends Omit<BadgeContainerProps, 'children'> {
     memberCount?: number
     linkTo?: string
     linkHref?: string

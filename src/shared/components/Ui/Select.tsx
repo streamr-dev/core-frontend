@@ -1,23 +1,32 @@
 import React, { FunctionComponent, ReactElement, ReactNode } from 'react'
 import styled from 'styled-components'
-import ReactSelect, { components } from 'react-select'
+import ReactSelect, { SingleValue, components } from 'react-select'
 import SvgIcon, { SvgIconProps } from '~/shared/components/SvgIcon'
-export type Option = {
+import { StateManagerProps } from 'react-select/dist/declarations/src/useStateManager'
+
+type Option = {
     value: any
     label: string
     icon?: ReactElement
 }
-export type Props = {
-    placeholder?: string
-    options: Array<Option>
-    value: any
-    name?: string
-    onChange?: (...args: Array<any>) => any
-    required?: boolean
+
+interface Props
+    extends Omit<
+        StateManagerProps<Option, false>,
+        | 'className'
+        | 'className'
+        | 'components'
+        | 'isClearable'
+        | 'isDisabled'
+        | 'isDisabled'
+        | 'isMulti'
+        | 'isSearchable'
+    > {
     clearable?: boolean
     disabled?: boolean
     controlClassName?: string
 }
+
 // TODO add typing
 const customStyles: any = {
     control: (provided: any, state: any) => ({
@@ -136,7 +145,7 @@ const OptionIconWrapper = styled.div`
 
 const IconOption: FunctionComponent<{
     isSelected: boolean
-    data: { icon: ReactNode; label: string }
+    data: Option
 }> = (props) => (
     <components.Option {...(props as any)}>
         {props.isSelected && <Tick />}

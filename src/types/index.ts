@@ -1,3 +1,4 @@
+import { MessageID } from 'streamr-client'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { TheGraph } from '~/shared/types'
 import { BN } from '~/utils/bn'
@@ -72,3 +73,11 @@ export interface Chain {
 }
 
 export type OrderDirection = 'asc' | 'desc'
+
+export interface DataPoint {
+    data: unknown
+    metadata: {
+        messageId: MessageID
+        timestamp: number
+    }
+}

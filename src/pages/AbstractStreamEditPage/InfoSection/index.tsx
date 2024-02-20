@@ -66,7 +66,13 @@ export function InfoSection({ disabled: disabledProp = false }) {
                         <Select
                             disabled={disabled}
                             name="chain"
-                            onChange={({ value }) => {
+                            onChange={(option) => {
+                                if (!option) {
+                                    return
+                                }
+
+                                const { value } = option
+
                                 update((hot, cold) => {
                                     hot.chainId = value
 

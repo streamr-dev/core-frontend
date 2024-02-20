@@ -1,11 +1,4 @@
-import React, {
-    useState,
-    useCallback,
-    useMemo,
-    useEffect,
-    Context,
-    ReactNode,
-} from 'react'
+import React, { useState, useCallback, useMemo, useEffect, ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 type ContextProps = {
@@ -13,10 +6,10 @@ type ContextProps = {
     openModal: (modalId: string, values?: any) => Promise<any>
     closeModal: (modalId: string, values?: any) => any
 }
-const ModalContext: Context<ContextProps> = React.createContext({
+const ModalContext = React.createContext<ContextProps>({
     closeModal: () => {},
     modals: {},
-    openModal: () => new Promise(() => {}),
+    openModal: async () => {},
 })
 
 function useModalContext(path: string): ContextProps {

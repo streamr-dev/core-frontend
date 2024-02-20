@@ -14,6 +14,7 @@ import Layout from './Layout'
 import Cell from './Cell'
 import Toolbar from './Toolbar'
 import { ModalStreamSelector } from './ModalStreamSelector'
+import { DataPoint } from '~/types'
 
 const formatValue = (data) =>
     typeof data === 'object'
@@ -207,7 +208,7 @@ type Props = {
     streamData: any
     streamLoaded: boolean
     onPartitionChange: (partition: number) => void
-    onSettingsButtonClick: (streamId: string) => void
+    onSettingsButtonClick?: (streamId: string) => void
     onStreamChange: (streamId: string) => void
     partition: number
     partitions: Array<any>
@@ -229,7 +230,7 @@ const UnstyledFeed = ({
     streamId,
     streamIds = [streamId],
 }: Props) => {
-    const [datapoint, setDatapoint] = useState()
+    const [datapoint, setDatapoint] = useState<DataPoint>()
     useEffect(() => {
         setDatapoint(undefined)
     }, [streamId])

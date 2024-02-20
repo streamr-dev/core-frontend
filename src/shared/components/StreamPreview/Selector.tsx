@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { HTMLAttributes, ReactNode } from 'react'
 import styled from 'styled-components'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
@@ -23,16 +23,27 @@ const Title = styled.div`
     font-weight: ${MEDIUM};
 `
 
-const UnstyledSelector = ({ active, onChange, options = [], title, ...props }) => {
+type CustomDivProps = Omit<HTMLAttributes<HTMLDivElement>, 'onChange' | 'title'>
+
+interface UnstyledSelectorProps<T> extends CustomDivProps {
+    active: T
+    options?: T[]
+    onChange?(newValue: T): void
+    title?: ReactNode
+}
+
+function UnstyledSelector<T>({
+    active,
+    onChange,
+    options = [],
+    title,
+    ...props
+}: UnstyledSelectorProps<T>) {
     const current = options.indexOf(active)
+
     const prevOption = options[Math.max(0, current - 1)]
-    const prev = useCallback(() => {
-        onChange(prevOption)
-    }, [onChange, prevOption])
+
     const nextOption = options[Math.min(current + 1, options.length)]
-    const next = useCallback(() => {
-        onChange(nextOption)
-    }, [onChange, nextOption])
 
     if (options.length <= 1) {
         return null
@@ -41,13 +52,29 @@ const UnstyledSelector = ({ active, onChange, options = [], title, ...props }) =
     return (
         <div {...props}>
             <Title>{title}</Title>
-            <Button disabled={current <= 0} onClick={prev} type="button">
+            <Button
+                disabled={current <= 0}
+                onClick={() => {
+                    if (prevOption) {
+                        onChange?.(prevOption)
+                    }
+                }}
+                type="button"
+            >
                 <SvgIcon name="back" />
             </Button>
             <div>
                 <strong>{current + 1}</strong> of <strong>{options.length}</strong>
             </div>
-            <Button disabled={current >= options.length - 1} onClick={next} type="button">
+            <Button
+                disabled={current >= options.length - 1}
+                onClick={() => {
+                    if (nextOption) {
+                        onChange?.(nextOption)
+                    }
+                }}
+                type="button"
+            >
                 <SvgIcon name="forward" />
             </Button>
         </div>

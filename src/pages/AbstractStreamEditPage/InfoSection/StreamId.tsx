@@ -135,7 +135,9 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
                         value={owners.find(
                             ({ value }) => value.toLowerCase() === (domain || account),
                         )}
-                        onChange={({ value }) => {
+                        onChange={(option) => {
+                            const { value = '' } = option || {}
+
                             if (value === ADD_ENS_DOMAIN_VALUE) {
                                 window.open(
                                     ENS_DOMAINS_URL,

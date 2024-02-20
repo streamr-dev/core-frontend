@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useSubscribe } from 'streamr-client-react'
 import { MessageID } from 'streamr-client'
 import useIsMounted from '~/shared/hooks/useIsMounted'
+import { DataPoint } from '~/types'
 
 type Params = {
     partition?: number
@@ -10,7 +11,7 @@ type Params = {
     tail?: number
 }
 
-function getEmptyData() {
+function getEmptyData(): DataPoint[] {
     return []
 }
 
