@@ -1,4 +1,3 @@
-import moment from 'moment-timezone'
 import * as all from '~/marketplace/utils/time'
 
 describe('time utils', () => {

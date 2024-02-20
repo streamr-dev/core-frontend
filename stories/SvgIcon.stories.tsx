@@ -1,7 +1,7 @@
-import React from 'react'
 import { Meta } from '@storybook/react'
-import SvgIcon, { SvgIconNames } from '~/shared/components/SvgIcon'
+import React from 'react'
 import styled from 'styled-components'
+import SvgIcon, { SvgIconNames } from '~/shared/components/SvgIcon'
 
 export const All = () => (
     <>
