@@ -64,3 +64,18 @@ export function getDataUnionGraphClient(chainId: number) {
 
     return client
 }
+
+let indexerClient: ApolloClient<NormalizedCacheObject> | undefined
+
+export function getIndexerClient(chainId: number) {
+    if (!indexerClient) {
+        const { streamIndexerUrl: uri } = getChainConfigExtension(chainId)
+
+        indexerClient = new ApolloClient({
+            uri,
+            cache: new InMemoryCache(),
+        })
+    }
+
+    return indexerClient
+}

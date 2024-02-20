@@ -1,4 +1,5 @@
-import _ from 'lodash'
+import omitBy from 'lodash/omitBy'
+import isEmpty from 'lodash/isEmpty'
 import { address0 } from '~/consts'
 import { post } from '~/shared/utils/api'
 import { getGraphClient } from '~/getters/getGraphClient'
@@ -19,6 +20,10 @@ import {
     StreamPermission,
 } from '~/generated/gql/network'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
+import {
+    OrderBy as IndexerOrderBy,
+    OrderDirection as IndexerOrderDirection,
+} from '~/generated/gql/indexer'
 import { OrderDirection } from '~/types'
 
 export type TheGraphStreamPermission = {
@@ -176,8 +181,8 @@ export const getPagedStreams = async (
         [`id_${orderOperator}`]: lastId,
     }
 
-    where.permissions_ = _.omitBy(where.permissions_, _.isEmpty)
-    where = _.omitBy(where, _.isEmpty)
+    where.permissions_ = omitBy(where.permissions_, isEmpty)
+    where = omitBy(where, isEmpty)
 
     const {
         data: { streams },
@@ -204,20 +209,6 @@ export const getPagedStreams = async (
         hasNextPage: false,
         lastId: null,
     }
-}
-
-export enum IndexerOrderBy {
-    Id = 'ID',
-    Description = 'DESCRIPTION',
-    PeerCount = 'PEER_COUNT',
-    MsgPerSecond = 'MESSAGES_PER_SECOND',
-    SubscriberCount = 'SUBSCRIBER_COUNT',
-    PublisherCount = 'PUBLISHER_COUNT',
-}
-
-export enum IndexerOrderDirection {
-    Asc = 'ASC',
-    Desc = 'DESC',
 }
 
 export type IndexerStream = {
@@ -262,7 +253,8 @@ export const getPagedStreamsFromIndexer = async (
                     streams(
                         pageSize: ${first},
                         orderBy: ${
-                            orderBy?.toString() ?? IndexerOrderBy.MsgPerSecond.toString()
+                            orderBy?.toString() ??
+                            IndexerOrderBy.MessagesPerSecond.toString()
                         },
                         orderDirection: ${
                             orderDirection?.toString() ??
@@ -304,6 +296,9 @@ export const getPagedStreamsFromIndexer = async (
     }
 }
 
+/**
+ * @deprecated
+ */
 export const getStreamsFromIndexer = async (
     chainId: number,
     streamIds: Array<string>,
@@ -342,6 +337,9 @@ export type GlobalStreamStats = {
     messagesPerSecond: number
 }
 
+/**
+ * @deprecated
+ */
 export const getGlobalStatsFromIndexer = async (
     chainId: number,
 ): Promise<GlobalStreamStats> => {

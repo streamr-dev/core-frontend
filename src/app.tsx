@@ -24,7 +24,7 @@ import {
 import { SingleOperatorPage } from '~/pages/SingleOperatorPage'
 import { SingleSponsorshipPage } from '~/pages/SingleSponsorshipPage'
 import { SponsorshipsPage } from '~/pages/SponsorshipsPage'
-import StreamListingPage from '~/pages/StreamListingPage'
+import { StreamsPage } from '~/pages/StreamsPage'
 import {
     NewStreamPage,
     StreamConnectPage,
@@ -65,7 +65,7 @@ const App = () => (
                     </Route>
                 </Route>
                 <Route path="/hub/streams">
-                    <Route index element={<StreamListingPage />} />
+                    <Route index element={<StreamsPage />} />
                     <Route path="new" element={<NewStreamPage />} />
                     <Route path=":id">
                         <Route index element={<StreamIndexRedirect />} />
