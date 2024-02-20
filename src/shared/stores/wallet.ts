@@ -5,11 +5,10 @@ import { create } from 'zustand'
 import { providers } from 'ethers'
 import { MetaMaskInpageProvider } from '@metamask/providers'
 import { isAddress } from 'web3-validator'
-import { isMessagedObject } from '~/utils'
 import { getENSDomainsForWallet } from '~/getters'
 import { getConfigForChain } from '~/shared/web3/config'
 import { connectModal } from '~/modals/ConnectModal'
-import { isRejectionReason } from '~/modals/BaseModal'
+import { isRejectionReason, isMessagedObject } from '~/utils/exceptions'
 import { Break } from '~/utils/errors'
 
 interface MetaMaskProvider extends MetaMaskInpageProvider {
@@ -162,6 +161,9 @@ export async function getWalletAccount({
     return promise
 }
 
+/**
+ * @todo Move to getters/index.
+ */
 export function getPublicWeb3Provider(chainId: number) {
     const config = getConfigForChain(chainId)
 

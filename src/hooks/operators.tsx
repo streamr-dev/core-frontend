@@ -16,50 +16,57 @@ import {
     getSpotApy,
     searchOperatorsByMetadata,
 } from '~/getters'
-import { getQueryClient, isTransactionRejection, waitForIndexedBlock } from '~/utils'
-import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
+import { getQueryClient, waitForIndexedBlock } from '~/utils'
+import { ParsedOperator, parseOperator } from '~/parsers/OperatorParser'
 import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
 import { Delegation, DelegationsStats } from '~/types'
 import { BN, toBN } from '~/utils/bn'
 import { errorToast, successToast } from '~/utils/toast'
 import DelegateFundsModal from '~/modals/DelegateFundsModal'
 import { Layer } from '~/utils/Layer'
-import { defaultChainConfig } from '~/getters/getChainConfig'
 import { getBalance } from '~/getters/getBalance'
 import { getOperatorDelegationAmount } from '~/services/operators'
 import { Break, FlagBusy } from '~/utils/errors'
-import { isRejectionReason } from '~/modals/BaseModal'
-import getCoreConfig from '~/getters/getCoreConfig'
+import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
 import UndelegateFundsModal from '~/modals/UndelegateFundsModal'
 import { confirm } from '~/getters/confirm'
 import { collectEarnings } from '~/services/sponsorships'
 import { truncate } from '~/shared/utils/text'
 import { useUncollectedEarningsStore } from '~/shared/stores/uncollectedEarnings'
 import { forceUndelegateModal } from '~/modals/ForceUndelegateModal'
-import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
+import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { invalidateSponsorshipQueries } from '~/hooks/sponsorships'
 import { getSigner } from '~/shared/stores/wallet'
+import { useCurrentChainId } from '~/shared/stores/chain'
+import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 
 export function useOperatorForWalletQuery(address = '') {
+    const currentChainId = useCurrentChainId()
+
     return useQuery({
-        queryKey: ['useOperatorForWalletQuery', address.toLowerCase()],
-        queryFn: () => getParsedOperatorByOwnerAddress(address, { force: true }),
+        queryKey: ['useOperatorForWalletQuery', currentChainId, address.toLowerCase()],
+        queryFn: () =>
+            getParsedOperatorByOwnerAddress(currentChainId, address, { force: true }),
     })
 }
 
 export function useOperatorByIdQuery(operatorId = '') {
+    const currentChainId = useCurrentChainId()
+
     return useQuery({
-        queryKey: ['operatorByIdQueryKey', operatorId],
+        queryKey: ['operatorByIdQueryKey', currentChainId, operatorId],
         async queryFn() {
             if (!operatorId) {
                 return null
             }
 
-            const operator = await getOperatorById(operatorId, { force: true })
+            const operator = await getOperatorById(currentChainId, operatorId, {
+                force: true,
+            })
 
             if (operator) {
                 try {
-                    return OperatorParser.parse(operator)
+                    return parseOperator(operator, { chainId: currentChainId })
                 } catch (e) {
                     if (!(e instanceof z.ZodError)) {
                         throw e
@@ -76,17 +83,20 @@ export function useOperatorByIdQuery(operatorId = '') {
     })
 }
 
-export function invalidateActiveOperatorByIdQueries(operatorId: string | undefined) {
+export function invalidateActiveOperatorByIdQueries(
+    chainId: number,
+    operatorId: string | undefined,
+) {
     if (operatorId) {
         return getQueryClient().invalidateQueries({
-            queryKey: ['operatorByIdQueryKey', operatorId],
+            queryKey: ['operatorByIdQueryKey', chainId, operatorId],
             exact: true,
             refetchType: 'active',
         })
     }
 
     return getQueryClient().invalidateQueries({
-        queryKey: ['operatorByIdQueryKey'],
+        queryKey: ['operatorByIdQueryKey', chainId],
         exact: false,
         refetchType: 'active',
     })
@@ -119,6 +129,7 @@ function toDelegationForWallet(operator: ParsedOperator, wallet: string): Delega
         myShare: getDelegatedAmountForWallet(wallet, operator),
     }
 }
+
 /**
  * @todo Refactor using `useQuery`.
  */
@@ -127,7 +138,13 @@ export function useDelegationsStats(address = '') {
 
     const addr = address.toLowerCase()
 
+    const chainId = useCurrentChainId()
+
     useEffect(() => {
+        /**
+         * @todo Refactor using useQuery. #refactor
+         */
+
         let mounted = true
 
         if (!addr) {
@@ -142,10 +159,12 @@ export function useDelegationsStats(address = '') {
             const operators = await getParsedOperators(
                 () =>
                     getOperatorsByDelegation({
+                        chainId,
                         first: 1000,
                         address: addr,
                     }) as Promise<Operator[]>,
                 {
+                    chainId,
                     mapper(operator) {
                         return toDelegationForWallet(operator, addr)
                     },
@@ -199,15 +218,15 @@ export function useDelegationsStats(address = '') {
         return () => {
             mounted = false
         }
-    }, [addr])
+    }, [addr, chainId])
 
     return stats
 }
 
-export function invalidateDelegationsForWalletQueries() {
+export function invalidateDelegationsForWalletQueries(chainId: number) {
     getQueryClient().invalidateQueries({
         exact: false,
-        queryKey: ['useDelegationsForWalletQuery'],
+        queryKey: ['useDelegationsForWalletQuery', chainId],
         refetchType: 'active',
     })
 }
@@ -225,16 +244,25 @@ export function useDelegationsForWalletQuery({
     orderBy?: string
     orderDirection?: 'asc' | 'desc'
 }) {
+    const currentChainId = useCurrentChainId()
+
     const address = addressProp.toLowerCase()
 
     const searchQuery = searchQueryProp.toLowerCase()
 
     return useInfiniteQuery({
-        queryKey: ['useDelegationsForWalletQuery', address, searchQuery, pageSize],
+        queryKey: [
+            'useDelegationsForWalletQuery',
+            currentChainId,
+            address,
+            searchQuery,
+            pageSize,
+        ],
         async queryFn({ pageParam: skip = 0 }) {
             const elements: Delegation[] = await getParsedOperators(
                 () => {
                     const params = {
+                        chainId: currentChainId,
                         first: pageSize,
                         skip,
                         address,
@@ -266,6 +294,7 @@ export function useDelegationsForWalletQuery({
                     }) as Promise<Operator[]>
                 },
                 {
+                    chainId: currentChainId,
                     mapper(operator) {
                         return toDelegationForWallet(operator, address)
                     },
@@ -295,10 +324,10 @@ export function useDelegationsForWalletQuery({
     })
 }
 
-export function invalidateAllOperatorsQueries() {
+export function invalidateAllOperatorsQueries(chainId: number) {
     getQueryClient().invalidateQueries({
         exact: false,
-        queryKey: ['useAllOperatorsQuery'],
+        queryKey: ['useAllOperatorsQuery', chainId],
         refetchType: 'active',
     })
 }
@@ -315,10 +344,12 @@ export function useAllOperatorsQuery({
     orderDirection?: 'asc' | 'desc'
 }) {
     const searchQuery = searchQueryProp.toLowerCase()
+    const currentChainId = useCurrentChainId()
 
     return useInfiniteQuery({
         queryKey: [
             'useAllOperatorsQuery',
+            currentChainId,
             searchQuery,
             batchSize,
             orderBy,
@@ -328,6 +359,7 @@ export function useAllOperatorsQuery({
             const elements = await getParsedOperators(
                 () => {
                     const params = {
+                        chainId: currentChainId,
                         first: batchSize,
                         skip,
                         orderBy: mapOperatorOrder(orderBy),
@@ -345,6 +377,7 @@ export function useAllOperatorsQuery({
                     }) as Promise<Operator[]>
                 },
                 {
+                    chainId: currentChainId,
                     onBeforeComplete(total, parsed) {
                         if (total !== parsed) {
                             errorToast({
@@ -389,10 +422,12 @@ export function useDelegateFunds() {
 
     return useCallback(
         ({
+            chainId,
             onDone,
             operator,
             wallet,
         }: {
+            chainId: number
             onDone?: () => void
             operator: ParsedOperator
             wallet: string | undefined
@@ -407,10 +442,8 @@ export function useDelegateFunds() {
                         await withFlag(
                             flagKey('isDelegatingFunds', operator.id, wallet),
                             async () => {
-                                const paymentTokenSymbol =
-                                    getCoreConfig().sponsorshipPaymentToken
-
-                                const { id: chainId } = defaultChainConfig
+                                const { sponsorshipPaymentToken: paymentTokenSymbol } =
+                                    getChainConfigExtension(chainId)
 
                                 const balance = await getBalance(
                                     wallet,
@@ -421,6 +454,7 @@ export function useDelegateFunds() {
                                 )
 
                                 const delegatedTotal = await getOperatorDelegationAmount(
+                                    chainId,
                                     operator.id,
                                     wallet,
                                 )
@@ -429,9 +463,10 @@ export function useDelegateFunds() {
                                     operator,
                                     balance,
                                     delegatedTotal,
+                                    chainId,
                                 })
 
-                                invalidateActiveOperatorByIdQueries(operator.id)
+                                invalidateActiveOperatorByIdQueries(chainId, operator.id)
                             },
                         )
                     } catch (e) {
@@ -474,10 +509,12 @@ export function useUndelegateFunds() {
 
     return useCallback(
         ({
+            chainId,
             onDone,
             operator,
             wallet,
         }: {
+            chainId: number
             onDone?: () => void
             operator: ParsedOperator
             wallet: string | undefined
@@ -492,10 +529,8 @@ export function useUndelegateFunds() {
                         await withFlag(
                             flagKey('isUndelegatingFunds', operator.id, wallet),
                             async () => {
-                                const paymentTokenSymbol =
-                                    getCoreConfig().sponsorshipPaymentToken
-
-                                const { id: chainId } = defaultChainConfig
+                                const { sponsorshipPaymentToken: paymentTokenSymbol } =
+                                    getChainConfigExtension(chainId)
 
                                 const balance = await getBalance(
                                     wallet,
@@ -506,17 +541,19 @@ export function useUndelegateFunds() {
                                 )
 
                                 const delegatedTotal = await getOperatorDelegationAmount(
+                                    chainId,
                                     operator.id,
                                     wallet,
                                 )
 
                                 await undelegateFundsModal.pop({
+                                    chainId,
                                     operator,
                                     balance,
                                     delegatedTotal,
                                 })
 
-                                invalidateActiveOperatorByIdQueries(operator.id)
+                                invalidateActiveOperatorByIdQueries(chainId, operator.id)
                             },
                         )
                     } catch (e) {
@@ -553,6 +590,7 @@ const mapOperatorOrder = (orderBy: string | undefined): Operator_OrderBy => {
             return Operator_OrderBy.Id
     }
 }
+
 /**
  * Returns a callback that takes the user through the process of collecting
  * earnings for given operator/sponsorship pair.
@@ -561,8 +599,8 @@ export function useCollectEarnings() {
     const { fetch: fetchUncollectedEarnings } = useUncollectedEarningsStore()
 
     return useCallback(
-        (params: { sponsorshipId: string; operatorId: string }) => {
-            const { sponsorshipId, operatorId } = params
+        (params: { chainId: number; sponsorshipId: string; operatorId: string }) => {
+            const { chainId, sponsorshipId, operatorId } = params
 
             void (async () => {
                 try {
@@ -582,17 +620,18 @@ export function useCollectEarnings() {
                         return
                     }
 
-                    await collectEarnings(sponsorshipId, operatorId, {
-                        onBlockNumber: waitForIndexedBlock,
+                    await collectEarnings(chainId, sponsorshipId, operatorId, {
+                        onBlockNumber: (blockNumber) =>
+                            waitForIndexedBlock(chainId, blockNumber),
                     })
 
-                    await fetchUncollectedEarnings(operatorId)
+                    await fetchUncollectedEarnings(chainId, operatorId)
 
                     /**
                      * Let's refresh the operator page to incl. now-collected earnings
                      * in the overview section.
                      */
-                    invalidateActiveOperatorByIdQueries(operatorId)
+                    invalidateActiveOperatorByIdQueries(chainId, operatorId)
 
                     successToast({
                         title: 'Earnings collected!',
@@ -625,19 +664,20 @@ export function useCollectEarnings() {
  * Returns a callback that takes the user through force-undelegation process.
  */
 export function useForceUndelegate() {
-    return useCallback((operator: ParsedOperator, amount: BN) => {
+    return useCallback((chainId: number, operator: ParsedOperator, amount: BN) => {
         void (async () => {
             try {
                 const wallet = await (await getSigner()).getAddress()
 
-                await getSponsorshipTokenInfo()
+                await getSponsorshipTokenInfo(chainId)
 
                 const sponsorshipId = await forceUndelegateModal.pop({
+                    chainId,
                     operator,
                     amount,
                 })
 
-                invalidateSponsorshipQueries(wallet, sponsorshipId)
+                invalidateSponsorshipQueries(chainId, wallet, sponsorshipId)
             } catch (e) {
                 if (e === Break) {
                     return

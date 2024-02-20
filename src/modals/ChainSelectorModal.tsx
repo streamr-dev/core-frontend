@@ -11,9 +11,9 @@ import { getTokenInfo } from '~/hooks/useTokenInfo'
 import { getUsdRate } from '~/shared/utils/coingecko'
 import networkPreflight from '~/utils/networkPreflight'
 import { ParsedPaymentDetail } from '~/parsers/ProjectParser'
+import { RejectionReason } from '~/utils/exceptions'
 import ProjectModal, { Actions } from './ProjectModal'
 import { connectModal } from './ConnectModal'
-import { RejectionReason } from './BaseModal'
 
 const ChainIcon = styled(NetworkIcon)`
     width: 40px;

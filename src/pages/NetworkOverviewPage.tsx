@@ -33,7 +33,7 @@ import {
 import { ChartPeriod, XY } from '~/types'
 import { errorToast } from '~/utils/toast'
 import { getOperatorDailyBuckets, getTimestampForChartPeriod } from '~/getters'
-import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
+import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { OperatorDailyBucket } from '~/generated/gql/network'
 import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
 import Tabs, { Tab } from '~/shared/components/Tabs'
@@ -45,6 +45,7 @@ import { OperatorIdCell } from '~/components/Table'
 import { Button } from '~/components/Button'
 import { getDelegationStats } from '~/getters/getDelegationStats'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 export function NetworkOverviewPage() {
     return (
@@ -75,8 +76,16 @@ function MyOperatorSummary() {
 
     const { data: operator = null } = useOperatorForWalletQuery(wallet)
 
+    const currentChainId = useCurrentChainId()
+
     const { data: chartData = [] } = useQuery<XY[]>({
-        queryKey: ['operatorSummaryChartQuery', chartId, chartPeriod, operator?.id],
+        queryKey: [
+            'operatorSummaryChartQuery',
+            currentChainId,
+            chartId,
+            chartPeriod,
+            operator?.id,
+        ],
         async queryFn() {
             if (!operator) {
                 return []
@@ -85,16 +94,20 @@ function MyOperatorSummary() {
             try {
                 const end = moment().utc().subtract(1, 'day').endOf('day')
 
-                const buckets = await getOperatorDailyBuckets(operator.id, {
-                    dateGreaterEqualThan: getTimestampForChartPeriod(
-                        chartPeriod,
-                        end,
-                    ).unix(),
-                    dateLowerThan: end.unix(),
-                    force: true,
-                })
+                const buckets = await getOperatorDailyBuckets(
+                    currentChainId,
+                    operator.id,
+                    {
+                        dateGreaterEqualThan: getTimestampForChartPeriod(
+                            chartPeriod,
+                            end,
+                        ).unix(),
+                        dateLowerThan: end.unix(),
+                        force: true,
+                    },
+                )
 
-                const { decimals } = await getSponsorshipTokenInfo()
+                const { decimals } = await getSponsorshipTokenInfo(currentChainId)
 
                 const toValue: (bucket: OperatorDailyBucket) => BNish =
                     chartId === 'stake'
@@ -235,6 +248,7 @@ const MyOperatorSummaryTitle = styled.div`
 
 function MyDelegationsSummary() {
     const wallet = useWalletAccount()
+    const currentChainId = useCurrentChainId()
 
     const stats = useDelegationsStats(wallet)
 
@@ -250,17 +264,29 @@ function MyDelegationsSummary() {
     >('cumulativeEarnings')
 
     const dailyDelegationChartQuery = useQuery({
-        queryKey: ['dailyDelegationChartQuery', wallet, chartPeriod, chartDataSource],
+        queryKey: [
+            'dailyDelegationChartQuery',
+            currentChainId,
+            wallet,
+            chartPeriod,
+            chartDataSource,
+        ],
         queryFn: async () => {
             try {
                 if (!wallet) {
                     return []
                 }
 
-                return await getDelegationStats(wallet, chartPeriod, chartDataSource, {
-                    force: true,
-                    ignoreToday: false,
-                })
+                return await getDelegationStats(
+                    currentChainId,
+                    wallet,
+                    chartPeriod,
+                    chartDataSource,
+                    {
+                        force: true,
+                        ignoreToday: false,
+                    },
+                )
             } catch (e) {
                 errorToast({ title: 'Could not load my delegations chart data' })
                 return []

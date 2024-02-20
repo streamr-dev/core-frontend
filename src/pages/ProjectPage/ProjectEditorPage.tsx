@@ -1,8 +1,28 @@
 import React, { useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { z } from 'zod'
-import { useNavigate } from 'react-router-dom'
+import { Button } from '~/components/Button'
+import ColoredBox from '~/components/ColoredBox'
 import Layout, { LayoutInner as PrestyledLayoutInner } from '~/components/Layout'
+import BeneficiaryAddressEditor from '~/components/SalePointSelector/BeneficiaryAddressEditor'
+import SalePointOption, {
+    DataUnionOption,
+} from '~/components/SalePointSelector/SalePointOption'
+import SalePointTokenSelector from '~/components/SalePointSelector/SalePointTokenSelector'
+import { getProjectTypeTitle } from '~/getters'
+import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
+import ProjectLinkTabs from '~/pages/ProjectPage/ProjectLinkTabs'
+import TermsOfUse from '~/pages/ProjectPage/TermsOfUse'
+import routes from '~/routes'
+import { deleteProject } from '~/services/projects'
+import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
+import LoadingIndicator from '~/shared/components/LoadingIndicator'
+import { ProjectPageContainer } from '~/shared/components/ProjectPage'
+import useIsMounted from '~/shared/hooks/useIsMounted'
+import { useCurrentChainId } from '~/shared/stores/chain'
+import { ProjectType, SalePoint } from '~/shared/types'
+import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
 import {
     useIsProjectDraftBusy,
     useProject,
@@ -10,29 +30,10 @@ import {
     useSetProjectDraftErrors,
     useUpdateProject,
 } from '~/stores/projectDraft'
-import { getProjectTypeTitle } from '~/getters'
-import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
-import ProjectLinkTabs from '~/pages/ProjectPage/ProjectLinkTabs'
-import LoadingIndicator from '~/shared/components/LoadingIndicator'
-import { ProjectType, SalePoint } from '~/shared/types'
-import { ProjectPageContainer } from '~/shared/components/ProjectPage'
-import ColoredBox from '~/components/ColoredBox'
-import TermsOfUse from '~/pages/ProjectPage/TermsOfUse'
-import { Button } from '~/components/Button'
-import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
-import { formatChainName } from '~/utils'
-import SalePointTokenSelector from '~/components/SalePointSelector/SalePointTokenSelector'
-import SalePointOption, {
-    DataUnionOption,
-} from '~/components/SalePointSelector/SalePointOption'
 import { Chain } from '~/types'
-import getCoreConfig from '~/getters/getCoreConfig'
-import BeneficiaryAddressEditor from '~/components/SalePointSelector/BeneficiaryAddressEditor'
 import { SalePointsPayload } from '~/types/projects'
-import { deleteProject } from '~/services/projects'
+import { formatChainName } from '~/utils'
 import { toastedOperation } from '~/utils/toastedOperation'
-import useIsMounted from '~/shared/hooks/useIsMounted'
-import routes from '~/routes'
 import DataUnionFee from './DataUnionFee'
 import DataUnionPayment from './DataUnionPayment'
 import EditorHero from './EditorHero'
@@ -57,9 +58,14 @@ export default function ProjectEditorPage() {
 
     const update = useUpdateProject()
 
+    const chainId = useCurrentChainId()
+
     const availableChains = useMemo<Chain[]>(
-        () => getCoreConfig().marketplaceChains.map(getConfigForChainByName),
-        [],
+        () =>
+            getChainConfigExtension(chainId).marketplaceChains.map(
+                getConfigForChainByName,
+            ),
+        [chainId],
     )
 
     const salePoints = availableChains
@@ -422,7 +428,8 @@ export default function ProjectEditorPage() {
                                             try {
                                                 await toastedOperation(
                                                     'Delete project',
-                                                    () => deleteProject(projectId),
+                                                    () =>
+                                                        deleteProject(chainId, projectId),
                                                 )
 
                                                 if (!isMounted()) {

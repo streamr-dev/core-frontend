@@ -1,20 +1,24 @@
-import { StreamrClientConfig } from 'streamr-client'
+import { ChainConnectionInfo, StreamrClientConfig } from 'streamr-client'
 import formatConfigUrl from '~/utils/formatConfigUrl'
-import formatRpc from '~/utils/formatRpc'
-import getConfig from '~/getters/getConfig'
-import { defaultChainConfig } from '~/getters/getChainConfig'
+import { getConfigForChain } from '~/shared/web3/config'
+import { getChainConfigExtension } from './getChainConfigExtension'
 
-export default function getClientConfig(mods: any = {}): StreamrClientConfig {
-    const { client } = getConfig()
+export default function getClientConfig(
+    chainId: number,
+    mods: any = {},
+): StreamrClientConfig {
+    const chainConfig = getConfigForChain(chainId)
     const config: StreamrClientConfig = {
         metrics: false,
     }
 
+    const { client } = getChainConfigExtension(chainId)
+
     // Set network entrypoints if provided
-    if (defaultChainConfig.entryPoints && defaultChainConfig.entryPoints.length > 0) {
+    if (chainConfig.entryPoints && chainConfig.entryPoints.length > 0) {
         config.network = {
             controlLayer: {
-                entryPoints: defaultChainConfig.entryPoints,
+                entryPoints: chainConfig.entryPoints,
             },
         }
     }
@@ -34,40 +38,61 @@ export default function getClientConfig(mods: any = {}): StreamrClientConfig {
     }
 
     const contracts: StreamrClientConfig['contracts'] = {}
+
     ;[
         {
-            condition: !!defaultChainConfig.contracts.StreamRegistry,
+            condition: !!chainConfig.contracts.StreamRegistry,
             key: 'streamRegistryChainAddress',
-            value: defaultChainConfig.contracts.StreamRegistry,
+            value: chainConfig.contracts.StreamRegistry,
         },
         {
-            condition: !!defaultChainConfig.rpcEndpoints,
+            condition: !!chainConfig.rpcEndpoints,
             key: 'streamRegistryChainRPCs',
             value: formatRpc({
-                chainId: defaultChainConfig.id,
-                rpcs: defaultChainConfig.rpcEndpoints,
+                chainId: chainConfig.id,
+                rpcs: chainConfig.rpcEndpoints,
             }),
         },
         {
-            condition: !!defaultChainConfig.contracts.StreamStorageRegistry,
+            condition: !!chainConfig.contracts.StreamStorageRegistry,
             key: 'streamStorageRegistryChainAddress',
-            value: defaultChainConfig.contracts.StreamStorageRegistry,
-        },
-        {
-            condition: !!client?.graphUrl,
-            key: 'theGraphUrl',
-            value: formatConfigUrl(client?.graphUrl),
+            value: chainConfig.contracts.StreamStorageRegistry,
         },
     ].forEach((configCase) => {
         if (configCase.condition) {
             contracts[configCase.key] = configCase.value
         }
     })
+
+    if (client?.networkSubgraphUrl) {
+        contracts.theGraphUrl = client.networkSubgraphUrl
+    }
+
     if (Object.keys(contracts).length > 0) {
         config.contracts = contracts
     }
+
     return {
         ...config,
         ...mods,
+    }
+}
+
+interface Rpc {
+    chainId: number
+    rpcs: { readonly url: string }[]
+}
+
+function formatRpc({ chainId, rpcs, ...rest }: Rpc): ChainConnectionInfo {
+    const { dockerHost } = getChainConfigExtension(chainId)
+
+    return {
+        ...rest,
+        chainId,
+        rpcs: rpcs.map(({ url }) => ({
+            url: formatConfigUrl(url, {
+                dockerHost,
+            }),
+        })),
     }
 }

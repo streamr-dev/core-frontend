@@ -1,4 +1,3 @@
-import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
 import {
     GetProjectDocument,
     GetProjectQuery,
@@ -15,38 +14,29 @@ import {
     Project_Filter,
 } from '~/generated/gql/network'
 import { TheGraph } from '~/shared/types'
-import { address0 } from '~/consts'
-import { ProjectParser } from '~/parsers/ProjectParser'
-import { getGraphUrl } from '.'
+import { parseProject } from '~/parsers/ProjectParser'
+import { getGraphClient } from '~/getters/getGraphClient'
 
-let apolloClient: undefined | ApolloClient<NormalizedCacheObject>
-
-function getApolloClient(): ApolloClient<NormalizedCacheObject> {
-    if (!apolloClient) {
-        apolloClient = new ApolloClient({
-            uri: getGraphUrl(),
-            cache: new InMemoryCache(),
-        })
-    }
-
-    return apolloClient
-}
-
-export async function getParsedProjectById(projectId: string, { force = false } = {}) {
+export async function getParsedProjectById(
+    chainId: number,
+    projectId: string,
+    { force = false } = {},
+) {
     const {
         data: { project },
-    } = await getApolloClient().query<GetProjectQuery, GetProjectQueryVariables>({
+    } = await getGraphClient(chainId).query<GetProjectQuery, GetProjectQueryVariables>({
         query: GetProjectDocument,
         variables: {
-            id: projectId,
+            id: projectId.toLowerCase(),
         },
         fetchPolicy: force ? 'network-only' : void 0,
     })
 
-    return (project || null) && (await ProjectParser.parseAsync(project))
+    return (project || null) && (await parseProject(project, { chainId }))
 }
 
 export async function getRawGraphProjects({
+    chainId,
     owner,
     first = 20,
     skip = 0,
@@ -54,6 +44,7 @@ export async function getRawGraphProjects({
     streamId,
     force = false,
 }: {
+    chainId: number
     owner?: string | undefined
     first?: number
     skip?: number
@@ -65,13 +56,13 @@ export async function getRawGraphProjects({
 
     if (projectType === TheGraph.ProjectType.Open) {
         where.paymentDetails_ = {
-            beneficiary: address0,
+            pricePerSecond: 0,
         }
     }
 
     if (projectType === TheGraph.ProjectType.Paid) {
         where.paymentDetails_ = {
-            beneficiary_not: address0,
+            pricePerSecond_gt: 0,
         }
     }
 
@@ -92,7 +83,7 @@ export async function getRawGraphProjects({
 
     const {
         data: { projects = [] },
-    } = await getApolloClient().query<GetProjectsQuery, GetProjectsQueryVariables>({
+    } = await getGraphClient(chainId).query<GetProjectsQuery, GetProjectsQueryVariables>({
         query: GetProjectsDocument,
         variables: {
             skip,
@@ -106,6 +97,7 @@ export async function getRawGraphProjects({
 }
 
 export async function getRawGraphProjectsByText(
+    chainId: number,
     value: string,
     {
         first = 20,
@@ -115,7 +107,7 @@ export async function getRawGraphProjectsByText(
 ): Promise<GetProjectsByTextQuery['projectSearch']> {
     const {
         data: { projectSearch: projects = [] },
-    } = await getApolloClient().query<
+    } = await getGraphClient(chainId).query<
         GetProjectsByTextQuery,
         GetProjectsByTextQueryVariables
     >({
@@ -132,12 +124,13 @@ export async function getRawGraphProjectsByText(
 }
 
 export async function getProjectSubscriptions(
+    chainId: number,
     projectId: string,
     { force = false } = {},
 ): Promise<TheGraph.ProjectSubscription[]> {
     const {
         data: { project },
-    } = await getApolloClient().query<
+    } = await getGraphClient(chainId).query<
         GetProjectSubscriptionsQuery,
         GetProjectSubscriptionsQueryVariables
     >({

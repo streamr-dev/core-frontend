@@ -1,34 +1,39 @@
 import { produce } from 'immer'
-import { create } from 'zustand'
 import isEqual from 'lodash/isEqual'
 import uniqueId from 'lodash/uniqueId'
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef } from 'react'
 import { z } from 'zod'
-import { ValidationError } from '~/errors'
-import { isTransactionRejection } from '~/utils'
-import { isRejectionReason } from '~/modals/BaseModal'
+import { create } from 'zustand'
+import { DraftValidationError, ValidationError } from '~/errors'
+import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
 
 interface Entity {
+    chainId: number
     id: string | undefined
 }
 
 export interface Draft<E extends Entity> {
     abandoned: boolean
     dirty: boolean
-    entity: {
-        cold: E
-        hot: E
-    }
+    entity:
+        | {
+              cold: E
+              hot: E
+          }
+        | undefined
     errors: Record<string, string | undefined>
     fetching: boolean
     persisting: boolean
 }
 
-export function getEmptyDraft<E extends Entity>(entity: E): Draft<E> {
+export function getEmptyDraft<E extends Entity>(entity: E | undefined): Draft<E> {
     return {
         abandoned: false,
         dirty: false,
-        entity: { cold: entity, hot: entity },
+        entity: entity && {
+            cold: entity,
+            hot: entity,
+        },
         errors: {},
         fetching: false,
         persisting: false,
@@ -38,30 +43,37 @@ export function getEmptyDraft<E extends Entity>(entity: E): Draft<E> {
 interface DraftStore<E extends Entity> {
     idMap: Record<string, string>
     drafts: Record<string, Draft<E> | undefined>
-    init: (
-        draftId: string,
-        entityId: string | undefined,
-        params?: {
-            onInit?: (
-                entityId: string | undefined,
-                recycled: boolean,
-                draft: Draft<E>,
-            ) => void
-        },
-    ) => void
+    init: (draftId: string) => void
     setErrors: (draftId: string, update: (errors: Draft<E>['errors']) => void) => void
-    update: (draftId: string, updater: (entity: E) => void) => void
+    update: (draftId: string, updater: (hot: E, cold: E) => void) => void
     teardown: (draftId: string, options?: { onlyAbandoned?: boolean }) => void
     abandon: (draftId: string) => void
-    persist: (draftId: string) => Promise<void>
+    persist: (
+        draftId: string,
+        fn?: (
+            draft: Draft<E>,
+            options: {
+                abortSignal?: AbortSignal
+                bind: (id: string) => void
+                update: (updater: (hot: E, cold: E) => void) => void
+            },
+        ) => Promise<void>,
+        abortSignal?: AbortSignal,
+    ) => Promise<void>
+    assign: (draftId: string, entity: E | undefined | null) => void
+    validate: (draftId: string, validator: (entity: E) => void) => Draft<E>['errors']
 }
 
-export function createDraftStore<E extends Entity = Entity>(options: {
+interface CreateDraftStoreOptions<E extends Entity = Entity> {
     getEmptyDraft: () => Draft<E>
-    fetch: (entityId: string) => Promise<E>
-    persist: (draft: Draft<E>) => void | Promise<void>
-    isEqual?: (cold: E, hot: E) => boolean
-}) {
+    isEqual?: (hot: E, cold: E) => boolean
+    persist?: (draft: Draft<E>) => void | Promise<void>
+    prefix?: string
+}
+
+export function createDraftStore<E extends Entity = Entity>(
+    options: CreateDraftStoreOptions<E>,
+) {
     const useDraftStore = create<DraftStore<E>>((set, get) => {
         function isPersisting(draftId: string) {
             return get().drafts[draftId]?.persisting === true
@@ -88,57 +100,49 @@ export function createDraftStore<E extends Entity = Entity>(options: {
             })
         }
 
+        const update: DraftStore<E>['update'] = (draftId, updater) => {
+            setDraft(draftId, (draft) => {
+                if (!draft.entity) {
+                    return
+                }
+
+                updater(draft.entity.hot, draft.entity.cold)
+
+                draft.dirty = !(options.isEqual || isEqual)(
+                    draft.entity.hot,
+                    draft.entity.cold,
+                )
+            })
+        }
+
         return {
             idMap: {},
 
             drafts: {},
 
-            init(draftId, entityId, params = {}) {
-                const recycled = !!get().drafts[draftId]
-
+            init(draftId) {
+                /**
+                 * Retrieve or create a draft associated with the given draft id.
+                 */
                 setDraft(
                     draftId,
                     (draft) => {
-                        const { cold, hot } = draft.entity
-
-                        cold.id = entityId
-
-                        hot.id = entityId
-
                         draft.abandoned = false
 
-                        params.onInit?.(entityId, recycled, draft)
+                        draft.fetching = true
                     },
                     {
                         force: true,
                     },
                 )
+            },
 
-                if (!entityId || recycled) {
-                    return
-                }
+            assign(draftId, entity) {
+                setDraft(draftId, (draft) => {
+                    draft.entity = entity ? { cold: entity, hot: entity } : undefined
 
-                void (async () => {
-                    try {
-                        setDraft(draftId, (draft) => {
-                            draft.fetching = true
-                        })
-
-                        const entity = await options.fetch(entityId)
-
-                        setDraft(draftId, (draft) => {
-                            draft.entity.hot = entity
-
-                            draft.entity.cold = entity
-
-                            draft.dirty = false
-                        })
-                    } finally {
-                        setDraft(draftId, (draft) => {
-                            draft.fetching = false
-                        })
-                    }
-                })()
+                    draft.fetching = typeof entity === 'undefined'
+                })
             },
 
             setErrors(draftId, update) {
@@ -147,16 +151,7 @@ export function createDraftStore<E extends Entity = Entity>(options: {
                 })
             },
 
-            update(draftId, updater) {
-                setDraft(draftId, (draft) => {
-                    updater(draft.entity.hot)
-
-                    draft.dirty = !(options.isEqual || isEqual)(
-                        draft.entity.hot,
-                        draft.entity.cold,
-                    )
-                })
-            },
+            update,
 
             teardown(draftId, { onlyAbandoned = false } = {}) {
                 set((store) =>
@@ -167,7 +162,7 @@ export function createDraftStore<E extends Entity = Entity>(options: {
                             return
                         }
 
-                        const { id } = draft.entity.cold
+                        const { id } = draft.entity?.cold || {}
 
                         if (!onlyAbandoned || draft.abandoned) {
                             if (id) {
@@ -190,7 +185,7 @@ export function createDraftStore<E extends Entity = Entity>(options: {
                 }
             },
 
-            async persist(draftId) {
+            async persist(draftId, fn, abortSignal) {
                 if (isPersisting(draftId)) {
                     return
                 }
@@ -202,7 +197,7 @@ export function createDraftStore<E extends Entity = Entity>(options: {
 
                     set((store) =>
                         produce(store, ({ drafts, idMap }) => {
-                            const { id } = drafts[draftId]?.entity.cold || {}
+                            const { id } = drafts[draftId]?.entity?.cold || {}
 
                             if (id) {
                                 idMap[id] = draftId
@@ -210,13 +205,27 @@ export function createDraftStore<E extends Entity = Entity>(options: {
                         }),
                     )
 
-                    const draft = get().drafts[draftId]
-
-                    if (!draft) {
-                        throw new Error(`Draft ${draftId} does not exist`)
-                    }
-
                     try {
+                        const draft = get().drafts[draftId]
+
+                        if (!draft) {
+                            throw new Error(`Draft ${draftId} does not exist`)
+                        }
+
+                        await fn?.(draft, {
+                            abortSignal,
+                            bind: (id) => {
+                                set((store) =>
+                                    produce(store, (d) => {
+                                        d.idMap[id] = draftId
+                                    }),
+                                )
+                            },
+                            update: (updater) => {
+                                update(draftId, updater)
+                            },
+                        })
+
                         await options.persist?.(draft)
                     } catch (e) {
                         if (e instanceof z.ZodError) {
@@ -230,13 +239,13 @@ export function createDraftStore<E extends Entity = Entity>(options: {
                                 copy.errors = errors
                             })
 
-                            /**
-                             * @TODO: ValidationError seems to be a redundant abstraction we can get rid
-                             * of and use ZodError directly.
-                             */
                             throw new ValidationError(
                                 e.issues.map(({ message }) => message),
                             )
+                        }
+
+                        if (e instanceof DraftValidationError) {
+                            throw new ValidationError([e.message])
                         }
 
                         throw e
@@ -249,47 +258,70 @@ export function createDraftStore<E extends Entity = Entity>(options: {
                     get().teardown(draftId, { onlyAbandoned: true })
                 }
             },
+
+            validate(draftId, validator) {
+                const entity = get().drafts[draftId]?.entity?.hot
+
+                const errors: Draft<E>['errors'] = {}
+
+                try {
+                    if (entity) {
+                        validator(entity)
+                    }
+                } catch (e) {
+                    if (e instanceof z.ZodError) {
+                        e.issues.forEach(({ path, message }) => {
+                            errors[path.join('.')] = message
+                        })
+                    } else {
+                        console.warn('Failed to validate draft', e)
+                    }
+                }
+
+                return errors
+            },
         }
     })
 
-    function useInitDraft(
-        entityId: string | undefined,
-        onInit?: (
-            entityId: string | undefined,
-            recycled: boolean,
-            draft: Draft<E>,
-        ) => void,
-    ) {
-        const { idMap, init, abandon } = useDraftStore()
+    function useInitDraft(entity: E | undefined | null): string {
+        const { idMap, init, abandon, assign } = useDraftStore()
+
+        const { id: entityId } = entity || {}
 
         const recycledDraftId = entityId ? idMap[entityId] : undefined
 
-        const draftId = useMemo(() => {
-            /**
-             * This hook depends on project id just as much as it does on the current recycled draft it.
-             * Using it like below satisfies `react-hooks/exhaustive-deps` eslint rule.
-             */
-            entityId
+        const draftId = useId(
+            () => recycledDraftId || DefaultIdGenerator(options.prefix),
+            [entityId, recycledDraftId],
+        )
 
-            return recycledDraftId || uniqueId('EntityDraft-')
-        }, [entityId, recycledDraftId])
+        useEffect(
+            function initDraft() {
+                init(draftId)
+            },
+            [init, draftId],
+        )
 
-        const onInitRef = useRef(onInit)
+        useEffect(
+            function abandonDraft() {
+                return () => {
+                    abandon(draftId)
+                }
+            },
+            [abandon, draftId],
+        )
 
-        if (onInitRef.current !== onInit) {
-            onInitRef.current = onInit
-        }
-
-        useEffect(() => {
-            init(draftId, entityId, {
-                onInit: onInitRef.current,
-            })
-        }, [draftId, init, abandon, entityId])
-
-        useEffect(() => () => void abandon(draftId), [draftId, abandon])
+        useEffect(
+            function assignEntity() {
+                assign(draftId, entity)
+            },
+            [assign, draftId, entity],
+        )
 
         return draftId
     }
+
+    const useStore = useDraftStore
 
     const DraftContext = createContext<string | undefined>(undefined)
 
@@ -306,7 +338,7 @@ export function createDraftStore<E extends Entity = Entity>(options: {
     }
 
     function useEntity({ hot = false } = {}) {
-        return useDraft()?.entity[hot ? 'hot' : 'cold']
+        return useDraft()?.entity?.[hot ? 'hot' : 'cold']
     }
 
     function useIsDraftClean() {
@@ -319,7 +351,7 @@ export function createDraftStore<E extends Entity = Entity>(options: {
         const { update } = useDraftStore()
 
         return useCallback(
-            (updater: (entity: E) => void) => {
+            (updater: (hot: E, cold: E) => void) => {
                 if (!draftId) {
                     return
                 }
@@ -330,6 +362,26 @@ export function createDraftStore<E extends Entity = Entity>(options: {
         )
     }
 
+    function useValidateEntity(validator: (entity: E) => void) {
+        const draftId = useDraftId()
+
+        const { validate } = useDraftStore()
+
+        const validatorRef = useRef(validator)
+
+        if (validatorRef.current !== validator) {
+            validatorRef.current = validator
+        }
+
+        return useCallback(() => {
+            if (!draftId) {
+                return {}
+            }
+
+            return validate(draftId, validatorRef.current)
+        }, [draftId, validate])
+    }
+
     function useIsFetchingEntity() {
         return !!useDraft()?.fetching
     }
@@ -338,6 +390,47 @@ export function createDraftStore<E extends Entity = Entity>(options: {
         const { fetching = false, persisting = false } = useDraft() || {}
 
         return fetching || persisting
+    }
+
+    function usePersist(
+        fn?: (
+            draft: Draft<E>,
+            options: {
+                abortSignal?: AbortSignal
+                bind: (id: string) => void
+                update: (updater: (hot: E, cold: E) => void) => void
+            },
+        ) => Promise<void>,
+    ) {
+        const { persist } = useDraftStore()
+
+        const draftId = useDraftId()
+
+        const abortControllerRef = useRef<AbortController>()
+
+        useEffect(() => {
+            const abortController = new AbortController()
+
+            abortControllerRef.current = abortController
+
+            return () => {
+                abortController.abort()
+            }
+        }, [])
+
+        const fnRef = useRef(fn)
+
+        if (fnRef.current !== fn) {
+            fnRef.current = fn
+        }
+
+        return useCallback(async () => {
+            if (!draftId) {
+                return
+            }
+
+            return persist(draftId, fnRef.current, abortControllerRef.current?.signal)
+        }, [persist, draftId])
     }
 
     function usePersistCallback() {
@@ -397,6 +490,10 @@ export function createDraftStore<E extends Entity = Entity>(options: {
         )
     }
 
+    function useIsAnyDraftBeingPersisted() {
+        return Object.values(useDraftStore().drafts).some((d) => d?.persisting)
+    }
+
     function useSetDraftErrors() {
         const draftId = useDraftId()
 
@@ -421,11 +518,30 @@ export function createDraftStore<E extends Entity = Entity>(options: {
         useDraftStore,
         useEntity,
         useInitDraft,
+        useIsAnyDraftBeingPersisted,
         useIsDraftBusy,
         useIsDraftClean,
         useIsFetchingEntity,
+        usePersist,
         usePersistCallback,
         useSetDraftErrors,
+        useStore,
         useUpdateEntity,
+        useValidateEntity,
     }
+}
+
+function DefaultIdGenerator(prefix = 'EntityDraft-') {
+    return uniqueId(prefix)
+}
+
+function useId(generator: () => string, deps: unknown[]) {
+    const generatorRef = useRef(generator)
+
+    if (generatorRef.current !== generator) {
+        generatorRef.current = generator
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return useMemo(() => generatorRef.current(), deps)
 }

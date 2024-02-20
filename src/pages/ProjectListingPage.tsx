@@ -12,6 +12,7 @@ import { MaxSearchPhraseLength } from '~/consts'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import CreateProjectModal from '~/marketplace/containers/CreateProjectModal'
 import { Projects, ProjectsContainer } from '~/marketplace/components/Projects'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 const DefaultFilter: ProjectFilter = {
     search: '',
@@ -41,16 +42,18 @@ export default function ProjectListingPage() {
 
     const { api: createProductModal } = useModal('marketplace.createProduct')
 
+    const currentChainId = useCurrentChainId()
+
     const query = useInfiniteQuery({
-        queryKey: ['projects', owner, filter.search, filter.type],
+        queryKey: ['projects', currentChainId, owner, filter.search, filter.type],
         queryFn({ pageParam: page }) {
             const { search, type } = filter
 
             if (search) {
-                return searchProjects(search, PageSize, page)
+                return searchProjects(currentChainId, search, PageSize, page)
             }
 
-            return getProjects(owner, PageSize, page, type)
+            return getProjects(currentChainId, owner, PageSize, page, type)
         },
         getNextPageParam(lastPage, pages) {
             return lastPage.hasNextPage ? pages.flatMap((p) => p.projects).length : null

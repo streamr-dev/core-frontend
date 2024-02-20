@@ -6,6 +6,7 @@ import { TheGraphProject, getProjects } from '~/services/projects'
 import { Button } from '~/components/Button'
 import useModal from '~/shared/hooks/useModal'
 import CreateProjectModal from '~/marketplace/containers/CreateProjectModal'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 const Container = styled.div`
     padding: 76px 32px;
@@ -82,11 +83,24 @@ export default function CreateProjectHint({ streamId }: Props) {
     const [projects, setProjects] = useState<TheGraphProject[]>([])
     const { api: createProductModal } = useModal('marketplace.createProduct')
 
+    const chainId = useCurrentChainId()
+
     useEffect(() => {
+        /**
+         * @todo Refactor using useQuery. #refactor
+         */
+
         let mounted = true
 
         const loadProjects = async () => {
-            const result = await getProjects(undefined, 4, 0, undefined, streamId)
+            const result = await getProjects(
+                chainId,
+                undefined,
+                4,
+                0,
+                undefined,
+                streamId,
+            )
 
             if (mounted) {
                 setProjects(result.projects)
@@ -100,7 +114,7 @@ export default function CreateProjectHint({ streamId }: Props) {
         return () => {
             mounted = false
         }
-    }, [streamId])
+    }, [streamId, chainId])
 
     // If the stream already has a project, show nothing
     if (projects.length > 0) {

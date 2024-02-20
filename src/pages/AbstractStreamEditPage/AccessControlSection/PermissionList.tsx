@@ -2,53 +2,26 @@ import React from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import { Button } from '~/components/Button'
-import {
-    useCurrentDraft,
-    useDraftId,
-    useStreamEditorStore,
-} from '~/shared/stores/streamEditor'
 import { address0 } from '~/consts'
 import NewStreamPermissionsModal from '~/modals/NewStreamPermissionsModal'
 import { isAbandonment } from '~/modals/ProjectModal'
+import { StreamDraft } from '~/stores/streamDraft'
 import { Layer } from '~/utils/Layer'
-import PermissionItem from './PermissionItem'
+import { PermissionItem } from './PermissionItem'
 
-const Container = styled.div`
-    background: #f1f1f1;
-    border-radius: 4px;
-    display: grid;
-    grid-template-rows: auto;
-    grid-gap: 1em;
-    padding: 1.5em;
-    margin-top: 16px;
-`
-
-const Footer = styled.div`
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    gap: 8px;
-    align-items: center;
-`
-
-type Props = {
-    disabled?: boolean
-}
-
-const PermissionList: React.FunctionComponent<Props> = ({ disabled }) => {
-    const { permissions } = useCurrentDraft()
+export function PermissionList({ disabled = false }) {
+    const { permissions = {} } = StreamDraft.useEntity({ hot: true }) || {}
 
     const permissionList = Object.entries(permissions)
 
-    const count = permissionList.length - (permissions[address0] ? 1 : 0)
+    const count = permissionList.length - (address0 in permissions ? 1 : 0)
 
-    const { setPermissions } = useStreamEditorStore()
-
-    const draftId = useDraftId()
+    const update = StreamDraft.useUpdateEntity()
 
     return (
         <Container>
             {permissionList.map(
-                ([key, { bits = null } = {}]) =>
+                ([key, bits]) =>
                     key !== address0 && (
                         <PermissionItem
                             key={key}
@@ -74,15 +47,7 @@ const PermissionList: React.FunctionComponent<Props> = ({ disabled }) => {
                                 Layer.Modal,
                             ).pop({
                                 onBeforeSubmit(payload) {
-                                    const { bits = null, persistedBits = null } =
-                                        permissions?.[payload.account.toLowerCase()] || {}
-
-                                    const currentBits =
-                                        persistedBits === null && bits === null
-                                            ? null
-                                            : bits || 0
-
-                                    if (currentBits !== null) {
+                                    if (permissions[payload.account] != null) {
                                         throw new Error(
                                             'Permissions for this address already exist',
                                         )
@@ -90,9 +55,13 @@ const PermissionList: React.FunctionComponent<Props> = ({ disabled }) => {
                                 },
                             })
 
-                            if (draftId) {
-                                setPermissions(draftId, account, bits)
-                            }
+                            update((hot, cold) => {
+                                if (cold.permissions[account] == null) {
+                                    cold.permissions[account] = 0
+                                }
+
+                                hot.permissions[account] = bits
+                            })
                         } catch (e) {
                             if (isAbandonment(e)) {
                                 return
@@ -109,4 +78,19 @@ const PermissionList: React.FunctionComponent<Props> = ({ disabled }) => {
     )
 }
 
-export default PermissionList
+const Container = styled.div`
+    background: #f1f1f1;
+    border-radius: 4px;
+    display: grid;
+    grid-template-rows: auto;
+    grid-gap: 1em;
+    padding: 1.5em;
+    margin-top: 16px;
+`
+
+const Footer = styled.div`
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 8px;
+    align-items: center;
+`

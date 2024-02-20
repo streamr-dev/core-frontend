@@ -9,9 +9,8 @@ import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { getProjectRegistryContract } from '~/getters'
 import { Layer } from '~/utils/Layer'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
-import requirePositiveBalance from '~/shared/utils/requirePositiveBalance'
+import { requirePositiveBalance } from '~/shared/utils/requirePositiveBalance'
 import { history } from '~/consts'
-import isCodedError from '~/utils/isCodedError'
 import { BNish, toBN } from '~/utils/bn'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { operatorModal } from '~/modals/OperatorModal'
@@ -20,7 +19,7 @@ import {
     invalidateAllOperatorsQueries,
     invalidateDelegationsForWalletQueries,
 } from '~/hooks/operators'
-import { blockObserver } from '~/utils/blocks'
+import { onIndexedBlock } from '~/utils/blocks'
 import { ProjectType } from '~/shared/types'
 
 /**
@@ -38,7 +37,7 @@ export async function ensureGasMonies(
 ) {
     while (true) {
         try {
-            await requirePositiveBalance(account)
+            await requirePositiveBalance(chainId, account)
 
             break
         } catch (e) {
@@ -108,21 +107,6 @@ export async function waitForPurchasePropagation(
     }
 
     throw new Error('Finding `Subscribed` event timed out')
-}
-
-const ObjectWithMessage = z.object({
-    message: z.string(),
-})
-
-export function isMessagedObject(e: unknown): e is z.infer<typeof ObjectWithMessage> {
-    return ObjectWithMessage.safeParse(e).success
-}
-
-export function isTransactionRejection(e: unknown) {
-    return (
-        (isCodedError(e) && e.code === 4001) ||
-        (isMessagedObject(e) && /user rejected transaction/i.test(e.message))
-    )
 }
 
 export function isProjectOwnedBy<
@@ -297,6 +281,7 @@ export function sameBN(a: BNish, b: BNish) {
  * an operator or updating an existing operator.
  */
 export function saveOperator(
+    chainId: number,
     operator: ParsedOperator | undefined,
     options: {
         onDone?: (operatorId: string) => void
@@ -306,14 +291,15 @@ export function saveOperator(
     void (async () => {
         try {
             const operatorId = await operatorModal.pop({
+                chainId,
                 operator,
             })
 
-            invalidateActiveOperatorByIdQueries(operatorId)
+            invalidateActiveOperatorByIdQueries(chainId, operatorId)
 
-            invalidateAllOperatorsQueries()
+            invalidateAllOperatorsQueries(chainId)
 
-            invalidateDelegationsForWalletQueries()
+            invalidateDelegationsForWalletQueries(chainId)
 
             options.onDone?.(operatorId)
         } catch (e) {
@@ -330,9 +316,9 @@ export function saveOperator(
  * Returns a promise that resolves when the Graph indexes all blocks
  * to a given block height.
  */
-export function waitForIndexedBlock(blockNumber: number) {
+export function waitForIndexedBlock(chainId: number, blockNumber: number) {
     return new Promise<void>((resolve) => {
-        blockObserver.onSpecific(blockNumber, resolve)
+        onIndexedBlock(chainId, blockNumber, resolve)
     })
 }
 

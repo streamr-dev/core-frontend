@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { truncate } from '~/shared/utils/text'
-import { useWalletAccount } from '~/shared/stores/wallet'
+import { isAddress } from 'web3-validator'
 import { getENSDomainsForWallet } from '~/getters'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import { truncate } from '~/shared/utils/text'
 
 export const ADD_ENS_DOMAIN_VALUE = '::ens/add_domain'
 
@@ -19,7 +20,9 @@ export interface OptionGroup {
  * @todo Refactor using `useQuery` and bake `fetchDomains` into it (it hasn't been used anywhere else).
  * @returns an array of `OptionGroup` items, or `undefined` if entries are being loaded.
  */
-export default function useStreamOwnerOptionGroups(): OptionGroup[] | undefined {
+export default function useStreamOwnerOptionGroups(
+    domain: string,
+): OptionGroup[] | undefined {
     const [groups, setGroups] = useState<OptionGroup[]>()
 
     const account = useWalletAccount()
@@ -40,7 +43,13 @@ export default function useStreamOwnerOptionGroups(): OptionGroup[] | undefined 
                 return
             }
 
+            const ensDomainGiven = /\.eth$/.test(domain)
+
             const ensOptions: Option[] = []
+
+            if (ensDomainGiven && domains.indexOf(domain) === -1) {
+                domains.push(domain)
+            }
 
             domains.forEach((value) => {
                 ensOptions.push({
@@ -54,6 +63,20 @@ export default function useStreamOwnerOptionGroups(): OptionGroup[] | undefined 
                 label: 'Add new domain',
             })
 
+            const addrOptions: Option[] = [
+                {
+                    value: account,
+                    label: truncate(account),
+                },
+            ]
+
+            if (isAddress(domain) && domain.toLowerCase() !== account.toLowerCase()) {
+                addrOptions.push({
+                    value: domain,
+                    label: truncate(domain),
+                })
+            }
+
             setGroups([
                 {
                     label: 'ENS domains',
@@ -61,12 +84,7 @@ export default function useStreamOwnerOptionGroups(): OptionGroup[] | undefined 
                 },
                 {
                     label: 'Eth Account',
-                    options: [
-                        {
-                            value: account,
-                            label: truncate(account),
-                        },
-                    ],
+                    options: addrOptions,
                 },
             ])
         }
@@ -76,7 +94,7 @@ export default function useStreamOwnerOptionGroups(): OptionGroup[] | undefined 
         return () => {
             mounted = false
         }
-    }, [account])
+    }, [account, domain])
 
     return groups
 }

@@ -5,9 +5,8 @@ import networkPreflight from '~/utils/networkPreflight'
 import { deployDataUnion } from '~/marketplace/modules/dataUnion/services'
 import { BN, toBN } from '~/utils/bn'
 import { getRawGraphProjects, getRawGraphProjectsByText } from '~/getters/hub'
-import { getProjectRegistryChainId } from '~/getters'
 import { ProjectType, TheGraph } from '~/shared/types'
-import { isMessagedObject } from '~/utils'
+import { isMessagedObject } from '~/utils/exceptions'
 import { errorToast } from '~/utils/toast'
 import { truncate } from '~/shared/utils/text'
 import { PublishableProjectPayload } from '~/types/projects'
@@ -15,6 +14,7 @@ import { getTokenInfo } from '~/hooks/useTokenInfo'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
 import { pricePerSecondFromTimeUnit } from '~/marketplace/utils/price'
+import { ParsedProject } from '~/parsers/ProjectParser'
 import { postImage } from './images'
 
 /**
@@ -154,6 +154,7 @@ export type ProjectsResult = {
  * @todo Refactor to use `ProjectParser` and `useInfiniteQuery`.
  */
 export const getProjects = async (
+    chainId: number,
     owner?: string | undefined,
     first = 20,
     skip = 0,
@@ -161,6 +162,7 @@ export const getProjects = async (
     streamId?: string, // used to search projects which contain this stream
 ): Promise<ProjectsResult> => {
     const projects = await getRawGraphProjects({
+        chainId,
         owner,
         first: first + 1,
         skip,
@@ -175,11 +177,12 @@ export const getProjects = async (
  * @todo Refactor to use `ParsedProject` and `useInfiniteQuery`.
  */
 export const searchProjects = async (
+    chainId: number,
     search: string,
     first = 20,
     skip = 0,
 ): Promise<ProjectsResult> => {
-    const projects = await getRawGraphProjectsByText(search, {
+    const projects = await getRawGraphProjectsByText(chainId, search, {
         first: first + 1,
         skip,
     })
@@ -187,18 +190,21 @@ export const searchProjects = async (
     return prepareProjectResult(projects as unknown as TheGraphProject[], first)
 }
 
-async function formatMetadata({
-    contact: contactDetails,
-    creator,
-    description,
-    imageIpfsCid: existingImageIpfsCid,
-    newImageToUpload,
-    name,
-    termsOfUse,
-    type,
-}: PublishableProjectPayload) {
+async function formatMetadata(
+    chainId: number,
+    {
+        contact: contactDetails,
+        creator,
+        description,
+        imageIpfsCid: existingImageIpfsCid,
+        newImageToUpload,
+        name,
+        termsOfUse,
+        type,
+    }: PublishableProjectPayload,
+) {
     const imageIpfsCid = newImageToUpload
-        ? await postImage(newImageToUpload)
+        ? await postImage(chainId, newImageToUpload)
         : existingImageIpfsCid
 
     return JSON.stringify({
@@ -212,7 +218,9 @@ async function formatMetadata({
     })
 }
 
-export async function getPublishableProjectProperties(project: unknown) {
+export async function getPublishableProjectProperties(project: ParsedProject) {
+    const { chainId } = project
+
     const payload = PublishableProjectPayload.parse(project)
 
     const salePoints = Object.values(payload.salePoints)
@@ -306,7 +314,7 @@ export async function getPublishableProjectProperties(project: unknown) {
         })
     }
 
-    const metadata = await formatMetadata(payload)
+    const metadata = await formatMetadata(chainId, payload)
 
     return {
         adminFee:
@@ -321,6 +329,7 @@ export async function getPublishableProjectProperties(project: unknown) {
 }
 
 export async function createProject(
+    chainId: number,
     projectId: string,
     {
         domainIds,
@@ -342,8 +351,6 @@ export async function createProject(
         streams: string[]
     },
 ) {
-    const chainId = getProjectRegistryChainId()
-
     await networkPreflight(chainId)
 
     const provider = await getSigner()
@@ -365,6 +372,7 @@ export async function createProject(
 }
 
 export async function updateProject(
+    chainId: number,
     projectId: string,
     {
         domainIds,
@@ -384,8 +392,6 @@ export async function updateProject(
         streams: string[]
     },
 ) {
-    const chainId = getProjectRegistryChainId()
-
     await networkPreflight(chainId)
 
     const provider = await getSigner()
@@ -402,9 +408,7 @@ export async function updateProject(
     await tx.wait()
 }
 
-export async function deleteProject(projectId: string) {
-    const chainId = getProjectRegistryChainId()
-
+export async function deleteProject(chainId: number, projectId: string) {
     await networkPreflight(chainId)
 
     const provider = await getSigner()
@@ -429,9 +433,9 @@ export async function deleteProject(projectId: string) {
 }
 
 export async function deployDataUnionContract(
+    chainId: number,
     projectId: string,
     adminFee: number,
-    chainId: number,
 ) {
     await networkPreflight(chainId)
 

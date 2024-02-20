@@ -4,9 +4,8 @@ import { useEffect } from 'react'
 import { produce } from 'immer'
 import { create } from 'zustand'
 import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
-import { isMessagedObject } from '~/utils'
+import { isMessagedObject } from '~/utils/exceptions'
 import { address0 } from '~/consts'
-import { useCurrentDraft } from './streamEditor'
 import { useWalletAccount } from './wallet'
 
 type PermissionManifest = Partial<
@@ -190,9 +189,10 @@ export function useStreamAbility(
     return value
 }
 
-export function useCurrentStreamAbility(permission: StreamPermission) {
-    const { streamId } = useCurrentDraft()
-
+export function useCurrentStreamAbility(
+    streamId: string | undefined,
+    permission: StreamPermission,
+) {
     const account = useWalletAccount()
 
     const hasPermission = useStreamAbility(streamId, account, permission)

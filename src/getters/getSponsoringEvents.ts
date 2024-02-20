@@ -1,5 +1,5 @@
 import { format } from 'date-fns'
-import getGraphClient from '~/getters/getGraphClient'
+import { getGraphClient } from '~/getters/getGraphClient'
 import { toBN } from '~/utils/bn'
 import {
     GetSponsoringEventsDocument,
@@ -9,6 +9,7 @@ import {
 import { FundingEvent } from '~/types/fundingEvent'
 
 export const getSponsoringEvents = async (
+    chainId: number,
     sponsorshipId: string,
     first: number,
     skip = 0,
@@ -16,7 +17,7 @@ export const getSponsoringEvents = async (
 ): Promise<FundingEvent[]> => {
     const {
         data: { sponsoringEvents },
-    } = await getGraphClient().query<
+    } = await getGraphClient(chainId).query<
         GetSponsoringEventsQuery,
         GetSponsoringEventsQueryVariables
     >({
@@ -28,6 +29,7 @@ export const getSponsoringEvents = async (
         },
         fetchPolicy: force ? 'network-only' : void 0,
     })
+
     return sponsoringEvents.map((event) => ({
         id: event.id,
         amount: toBN(event.amount).dividedBy(1e18).toString(), // TODO fetch sponsorship token info here nad use it's decimals value

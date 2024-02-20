@@ -19,6 +19,7 @@ import { useIsAccessibleByCurrentWallet } from '~/stores/projectDraft'
 import { isAbandonment } from '~/modals/ProjectModal'
 import routes from '~/routes'
 import { toBN } from '~/utils/bn'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 const DescriptionContainer = styled.div`
     display: flex;
@@ -62,6 +63,8 @@ export default function AccessManifest({ projectId, projectType, salePoints }: P
     const count = otherSalePoints.length
 
     const purchase = usePurchaseCallback()
+
+    const projectChainId = useCurrentChainId()
 
     const hasAccess = useIsAccessibleByCurrentWallet()
 
@@ -116,7 +119,7 @@ export default function AccessManifest({ projectId, projectType, salePoints }: P
                         waiting={isBeingPurchased}
                         onClick={async () => {
                             try {
-                                await purchase(projectId)
+                                await purchase(projectChainId, projectId)
                             } catch (e) {
                                 if (isAbandonment(e)) {
                                     return

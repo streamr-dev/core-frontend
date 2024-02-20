@@ -2,10 +2,7 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import { Tick } from '~/shared/components/Checkbox'
 import Spinner from '~/components/Spinner'
-import {
-    useCurrentDraft,
-    useToggleCurrentStorageNode,
-} from '~/shared/stores/streamEditor'
+import { StreamDraft } from '~/stores/streamDraft'
 
 type Props = {
     address: string
@@ -20,16 +17,34 @@ function UnstyledStorageNodeItem({
     disabled = false,
     children,
 }: Props) {
-    const active = !!useCurrentDraft().storageNodes[address.toLowerCase()]?.enabled
+    const active = !!StreamDraft.useEntity({ hot: true })?.storage[address]
 
-    const busy = useCurrentDraft().fetchingStorageNodes
+    const busy = false
 
-    const toggleStorageNode = useToggleCurrentStorageNode()
+    const update = StreamDraft.useUpdateEntity()
 
     return (
         <Root
             className={className}
-            onClick={() => void toggleStorageNode(address, (current) => !current)}
+            onClick={() => {
+                update((hot, cold) => {
+                    if (cold.storage[address] == null) {
+                        cold.storage[address] = false
+                    }
+
+                    const enabled = !hot.storage[address]
+
+                    hot.storage[address] = enabled
+
+                    if (!enabled && !Object.values(hot.storage).some(Boolean)) {
+                        /**
+                         * If there are no other enabled storage nodes
+                         * revert the storage days.
+                         */
+                        hot.metadata.storageDays = cold.metadata.storageDays
+                    }
+                })
+            }}
             type="button"
             $active={active}
             disabled={disabled}

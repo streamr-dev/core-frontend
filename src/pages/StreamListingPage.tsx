@@ -33,6 +33,7 @@ import { useWalletAccount } from '~/shared/stores/wallet'
 import { OrderDirection, Stream_OrderBy } from '~/generated/gql/network'
 import { address0 } from '~/consts'
 import routes from '~/routes'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 enum TabOption {
     All = 'all',
@@ -91,7 +92,11 @@ const mapOrderDirectionToGraph = (orderDirection: ListOrderDirection): OrderDire
     return OrderDirection.Asc
 }
 
-const shouldUseIndexer = (orderBy: ListOrderBy) => {
+const shouldUseIndexer = (chainId: number, orderBy: ListOrderBy) => {
+    if (chainId != 137) {
+        return false
+    }
+
     return orderBy === ListOrderBy.MessagesPerSecond || orderBy === ListOrderBy.PeerCount
 }
 
@@ -129,6 +134,8 @@ const StreamListingPage: React.FC = () => {
 
     const account = useWalletAccount()
 
+    const currentChainId = useCurrentChainId()
+
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -138,14 +145,23 @@ const StreamListingPage: React.FC = () => {
     }, [account, navigate])
 
     const streamsQuery = useInfiniteQuery({
-        queryKey: ['streams', search, streamsSelection, account, orderBy, orderDirection],
+        queryKey: [
+            'streams',
+            currentChainId,
+            search,
+            streamsSelection,
+            account,
+            orderBy,
+            orderDirection,
+        ],
         queryFn: async (ctx) => {
             const owner =
                 streamsSelection === TabOption.Your ? account || address0 : undefined
 
             let result: TheGraphStreamResult | IndexerResult
-            if (shouldUseIndexer(orderBy)) {
+            if (shouldUseIndexer(currentChainId, orderBy)) {
                 result = await getPagedStreamsFromIndexer(
+                    currentChainId,
                     PAGE_SIZE,
                     ctx.pageParam,
                     owner,
@@ -155,6 +171,7 @@ const StreamListingPage: React.FC = () => {
                 )
             } else {
                 result = await getPagedStreams(
+                    currentChainId,
                     PAGE_SIZE,
                     ctx.pageParam,
                     owner,
@@ -169,7 +186,7 @@ const StreamListingPage: React.FC = () => {
             statsQuery.fetchNextPage({
                 pageParam: {
                     streamIds: result.streams.map((s) => s.id),
-                    useIndexer: !shouldUseIndexer(orderBy),
+                    useIndexer: !shouldUseIndexer(currentChainId, orderBy),
                 },
             })
 
@@ -193,18 +210,21 @@ const StreamListingPage: React.FC = () => {
     })
 
     const statsQuery = useInfiniteQuery({
-        queryKey: ['streamStats'],
+        queryKey: ['streamStats', currentChainId],
         queryFn: async (ctx) => {
             if (ctx.pageParam == null) {
                 return
             }
 
             if (ctx.pageParam.useIndexer) {
-                const indexerStats = await getStreamsFromIndexer(ctx.pageParam.streamIds)
+                const indexerStats = await getStreamsFromIndexer(
+                    currentChainId,
+                    ctx.pageParam.streamIds,
+                )
                 return indexerStats
             }
 
-            return await getStreams(ctx.pageParam.streamIds, {
+            return await getStreams(currentChainId, ctx.pageParam.streamIds, {
                 force: true,
             })
         },
@@ -214,11 +234,11 @@ const StreamListingPage: React.FC = () => {
 
     // If indexer errors fall back to using The Graph
     useEffect(() => {
-        if (streamsQuery.isError && shouldUseIndexer(orderBy)) {
+        if (streamsQuery.isError && shouldUseIndexer(currentChainId, orderBy)) {
             setOrderBy(ListOrderBy.Id)
             setOrderDirection(ListOrderDirection.Asc)
         }
-    }, [streamsQuery.isError, orderBy])
+    }, [streamsQuery.isError, orderBy, currentChainId])
 
     return (
         <Layout pageTitle="Streams">

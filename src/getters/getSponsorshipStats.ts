@@ -3,49 +3,51 @@ import { ChartPeriod } from '~/types'
 import { GetSponsorshipDailyBucketsQuery } from '~/generated/gql/network'
 import { toBN } from '~/utils/bn'
 import { getSponsorshipDailyBuckets } from '~/getters'
-import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
+import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 
 export const getSponsorshipStats = async (
+    chainId: number,
     sponsorshipId: string,
     selectedPeriod: ChartPeriod,
     dataSource: string,
     { force = false, ignoreToday = false } = {},
 ): Promise<{ x: number; y: number }[]> => {
-    const tokenInfo = await getSponsorshipTokenInfo()
+    const tokenInfo = await getSponsorshipTokenInfo(chainId)
+
     const start = ignoreToday ? moment().utc().startOf('day') : moment().utc()
 
     let result: GetSponsorshipDailyBucketsQuery['sponsorshipDailyBuckets']
     switch (selectedPeriod) {
         case ChartPeriod.SevenDays:
-            result = await getSponsorshipDailyBuckets(sponsorshipId, {
+            result = await getSponsorshipDailyBuckets(chainId, sponsorshipId, {
                 dateGreaterEqualThan: start.clone().subtract(7, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.OneMonth:
-            result = await getSponsorshipDailyBuckets(sponsorshipId, {
+            result = await getSponsorshipDailyBuckets(chainId, sponsorshipId, {
                 dateGreaterEqualThan: start.clone().subtract(30, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.ThreeMonths:
-            result = await getSponsorshipDailyBuckets(sponsorshipId, {
+            result = await getSponsorshipDailyBuckets(chainId, sponsorshipId, {
                 dateGreaterEqualThan: start.clone().subtract(90, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.OneYear:
-            result = await getSponsorshipDailyBuckets(sponsorshipId, {
+            result = await getSponsorshipDailyBuckets(chainId, sponsorshipId, {
                 dateGreaterEqualThan: start.clone().subtract(365, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.YearToDate:
-            result = await getSponsorshipDailyBuckets(sponsorshipId, {
+            result = await getSponsorshipDailyBuckets(chainId, sponsorshipId, {
                 dateGreaterEqualThan: start.clone().startOf('year').unix(),
                 dateLowerThan: start.unix(),
                 force,
@@ -59,13 +61,17 @@ export const getSponsorshipStats = async (
                 []
             // yeah - I'm guessing we will not have a history longer than 5 thousand days :)
             for (let i = 0; i < maxIterations; i++) {
-                const partialResult = await getSponsorshipDailyBuckets(sponsorshipId, {
-                    dateLowerThan: start.unix(),
-                    dateGreaterEqualThan: endDate.unix(),
-                    batchSize: maxAmount,
-                    skip: maxAmount * i,
-                    force,
-                })
+                const partialResult = await getSponsorshipDailyBuckets(
+                    chainId,
+                    sponsorshipId,
+                    {
+                        dateLowerThan: start.unix(),
+                        dateGreaterEqualThan: endDate.unix(),
+                        batchSize: maxAmount,
+                        skip: maxAmount * i,
+                        force,
+                    },
+                )
 
                 elements.push(...partialResult)
                 if (partialResult.length < maxAmount) {

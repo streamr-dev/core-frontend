@@ -55,12 +55,13 @@ import { Button } from '~/components/Button'
 import { FundedUntilCell, StreamIdCell } from '~/components/Table'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { useSetBlockDependency } from '~/stores/blockNumberDependencies'
-import { blockObserver } from '~/utils/blocks'
+import { onIndexedBlock } from '~/utils/blocks'
 import { LiveNodesTable } from '~/components/LiveNodesTable'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { abbr, saveOperator } from '~/utils'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { Hint } from '~/components/Hint'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 const defaultChartData = []
 
@@ -94,12 +95,20 @@ export const SingleOperatorPage = () => {
         'totalValue' | 'cumulativeEarnings'
     >('cumulativeEarnings')
 
+    const currentChainId = useCurrentChainId()
+
     const [selectedPeriod, setSelectedPeriod] = useState<ChartPeriod>(
         ChartPeriod.ThreeMonths,
     )
 
     const chartQuery = useQuery({
-        queryKey: ['operatorChartQuery', operatorId, selectedPeriod, selectedDataSource],
+        queryKey: [
+            'operatorChartQuery',
+            currentChainId,
+            operatorId,
+            selectedPeriod,
+            selectedDataSource,
+        ],
         queryFn: async () => {
             try {
                 if (!operatorId) {
@@ -107,6 +116,7 @@ export const SingleOperatorPage = () => {
                 }
 
                 return await getOperatorStats(
+                    currentChainId,
                     operatorId,
                     selectedPeriod,
                     selectedDataSource,
@@ -168,7 +178,7 @@ export const SingleOperatorPage = () => {
                 <OperatorActionBar
                     operator={operator}
                     handleEdit={(currentOperator) => {
-                        saveOperator(currentOperator)
+                        saveOperator(currentChainId, currentOperator)
                     }}
                 />
             )}
@@ -397,6 +407,7 @@ export const SingleOperatorPage = () => {
                                             }
 
                                             editSponsorshipFunding({
+                                                chainId: currentChainId,
                                                 sponsorshipOrSponsorshipId:
                                                     element.sponsorshipId,
                                                 operator,
@@ -411,6 +422,7 @@ export const SingleOperatorPage = () => {
                                             }
 
                                             collectEarnings({
+                                                chainId: currentChainId,
                                                 operatorId,
                                                 sponsorshipId: element.sponsorshipId,
                                             })
@@ -512,6 +524,7 @@ export const SingleOperatorPage = () => {
                                                         kind="secondary"
                                                         onClick={() => {
                                                             forceUndelegate(
+                                                                currentChainId,
                                                                 operator,
                                                                 element.amount,
                                                             )
@@ -636,8 +649,11 @@ export const SingleOperatorPage = () => {
                                             return
                                         }
 
+                                        const chainId = currentChainId
+
                                         try {
                                             await saveNodeAddresses(
+                                                chainId,
                                                 operatorId,
                                                 addresses,
                                                 {
@@ -658,15 +674,18 @@ export const SingleOperatorPage = () => {
                                                             return newNodes
                                                         })
 
-                                                        setBlockDependency(blockNumber, [
-                                                            'operatorNodes',
-                                                            operatorId,
-                                                        ])
+                                                        setBlockDependency(
+                                                            chainId,
+                                                            blockNumber,
+                                                            ['operatorNodes', operatorId],
+                                                        )
 
-                                                        blockObserver.onSpecific(
+                                                        onIndexedBlock(
+                                                            chainId,
                                                             blockNumber,
                                                             () => {
                                                                 invalidateActiveOperatorByIdQueries(
+                                                                    chainId,
                                                                     operatorId,
                                                                 )
                                                             },

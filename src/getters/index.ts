@@ -9,7 +9,7 @@ import {
 } from '@streamr/hub-contracts'
 import moment, { Moment } from 'moment'
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
-import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
+import { getConfigForChain } from '~/shared/web3/config'
 import { Token as TokenContract } from '~/generated/types'
 import { getMarketplaceAddress } from '~/marketplace/utils/web3'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
@@ -70,35 +70,22 @@ import {
     GetSponsorshipByStreamIdQueryVariables,
     GetSponsorshipByStreamIdDocument,
 } from '~/generated/gql/network'
-import getCoreConfig from '~/getters/getCoreConfig'
-import getGraphClient from '~/getters/getGraphClient'
-import { defaultChainConfig } from '~/getters/getChainConfig'
+import { getGraphClient } from '~/getters/getGraphClient'
 import { ChartPeriod } from '~/types'
-import { OperatorParser, ParsedOperator } from '~/parsers/OperatorParser'
+import { ParsedOperator, parseOperator } from '~/parsers/OperatorParser'
 import { BN, toBN } from '~/utils/bn'
 import { errorToast } from '~/utils/toast'
-import { SponsorshipParser } from '~/parsers/SponsorshipParser'
+import { parseSponsorship } from '~/parsers/SponsorshipParser'
 import {
     GetEnsDomainsForAccountDocument,
     GetEnsDomainsForAccountQuery,
     GetEnsDomainsForAccountQueryVariables,
 } from '~/generated/gql/ens'
+import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 
 const DEFAULT_OPERATOR_ORDER_BY = Operator_OrderBy.Id
 const DEFAULT_SPONSORSHIP_ORDER_BY = Sponsorship_OrderBy.Id
 const DEFAULT_ORDER_DIRECTION = OrderDirection.Asc
-
-export function getGraphUrl(): string {
-    if (defaultChainConfig.theGraphUrl != null) {
-        return defaultChainConfig.theGraphUrl
-    }
-
-    // Fall back to default subgraph name
-    const { theGraphUrl } = getCoreConfig()
-    const url = `${theGraphUrl}/subgraphs/name/streamr-dev/network-subgraphs`
-    console.warn('There is no theGraphUrl in config. Falling back to', url)
-    return url
-}
 
 export function getProjectRegistryContract({
     chainId,
@@ -120,10 +107,6 @@ export function getProjectRegistryContract({
         projectRegistryAbi,
         provider,
     ) as ProjectRegistryContract
-}
-
-export function getProjectRegistryChainId(): number {
-    return getConfigForChainByName(getCoreConfig().projectsChain).id
 }
 
 export function getERC20TokenContract({
@@ -244,16 +227,17 @@ export function getProjectTypeTitle(projectType: ProjectType): string {
     }
 }
 
-export function getProjectImageUrl({
-    imageUrl,
-    imageIpfsCid,
-}: {
-    imageUrl?: string
-    imageIpfsCid?: string
-}): string | undefined {
-    const {
-        ipfs: { ipfsGatewayUrl },
-    } = getCoreConfig()
+export function getProjectImageUrl(
+    chainId: number,
+    {
+        imageUrl,
+        imageIpfsCid,
+    }: {
+        imageUrl?: string
+        imageIpfsCid?: string
+    },
+): string | undefined {
+    const { ipfsGatewayUrl } = getChainConfigExtension(chainId).ipfs
 
     if (imageIpfsCid) {
         return `${ipfsGatewayUrl}${imageIpfsCid}`
@@ -267,6 +251,7 @@ export function getProjectImageUrl({
 }
 
 export async function getAllSponsorships({
+    chainId,
     first,
     skip,
     searchQuery = '',
@@ -274,6 +259,7 @@ export async function getAllSponsorships({
     orderDirection = DEFAULT_ORDER_DIRECTION,
     force = false,
 }: {
+    chainId: number
     first?: number
     skip?: number
     searchQuery?: string
@@ -283,7 +269,7 @@ export async function getAllSponsorships({
 }): Promise<GetAllSponsorshipsQuery['sponsorships']> {
     const {
         data: { sponsorships },
-    } = await getGraphClient().query<
+    } = await getGraphClient(chainId).query<
         GetAllSponsorshipsQuery,
         GetAllSponsorshipsQueryVariables
     >({
@@ -303,6 +289,7 @@ export async function getAllSponsorships({
 }
 
 export async function getSponsorshipsByStreamId({
+    chainId,
     first,
     skip,
     streamId = '',
@@ -310,6 +297,7 @@ export async function getSponsorshipsByStreamId({
     orderDirection = DEFAULT_ORDER_DIRECTION,
     force = false,
 }: {
+    chainId: number
     first?: number
     skip?: number
     streamId: string
@@ -319,7 +307,7 @@ export async function getSponsorshipsByStreamId({
 }): Promise<GetSponsorshipByStreamIdQuery['sponsorships']> {
     const {
         data: { sponsorships },
-    } = await getGraphClient().query<
+    } = await getGraphClient(chainId).query<
         GetSponsorshipByStreamIdQuery,
         GetSponsorshipByStreamIdQueryVariables
     >({
@@ -338,13 +326,14 @@ export async function getSponsorshipsByStreamId({
 }
 
 export async function getParsedSponsorshipById(
+    chainId: number,
     sponsorshipId: string,
     { force = false } = {},
 ) {
     let rawSponsorship: Sponsorship | undefined | null
 
     try {
-        const { data } = await getGraphClient().query<
+        const { data } = await getGraphClient(chainId).query<
             GetSponsorshipByIdQuery,
             GetSponsorshipByIdQueryVariables
         >({
@@ -367,7 +356,9 @@ export async function getParsedSponsorshipById(
     }
 
     try {
-        return SponsorshipParser.parseAsync(rawSponsorship)
+        return parseSponsorship(rawSponsorship, {
+            chainId,
+        })
     } catch (e) {
         console.warn('Failed to parse a Sponsorship', e)
 
@@ -378,6 +369,7 @@ export async function getParsedSponsorshipById(
 }
 
 export async function getSponsorshipsByCreator(
+    chainId: number,
     creator: string,
     {
         first,
@@ -397,7 +389,7 @@ export async function getSponsorshipsByCreator(
 ): Promise<GetSponsorshipsByCreatorQuery['sponsorships']> {
     const {
         data: { sponsorships },
-    } = await getGraphClient().query<
+    } = await getGraphClient(chainId).query<
         GetSponsorshipsByCreatorQuery,
         GetSponsorshipsByCreatorQueryVariables
     >({
@@ -418,12 +410,14 @@ export async function getSponsorshipsByCreator(
 }
 
 export async function getAllOperators({
+    chainId,
     first,
     skip,
     orderBy = DEFAULT_OPERATOR_ORDER_BY,
     orderDirection = DEFAULT_ORDER_DIRECTION,
     force = false,
 }: {
+    chainId: number
     first?: number
     skip?: number
     orderBy?: Operator_OrderBy
@@ -432,23 +426,25 @@ export async function getAllOperators({
 }): Promise<GetAllOperatorsQuery['operators']> {
     const {
         data: { operators },
-    } = await getGraphClient().query<GetAllOperatorsQuery, GetAllOperatorsQueryVariables>(
-        {
-            query: GetAllOperatorsDocument,
-            variables: {
-                first,
-                skip,
-                orderBy,
-                orderDirection,
-            },
-            fetchPolicy: force ? 'network-only' : void 0,
+    } = await getGraphClient(chainId).query<
+        GetAllOperatorsQuery,
+        GetAllOperatorsQueryVariables
+    >({
+        query: GetAllOperatorsDocument,
+        variables: {
+            first,
+            skip,
+            orderBy,
+            orderDirection,
         },
-    )
+        fetchPolicy: force ? 'network-only' : void 0,
+    })
 
     return operators
 }
 
 export async function getOperatorsByDelegation({
+    chainId,
     first,
     skip,
     address,
@@ -456,6 +452,7 @@ export async function getOperatorsByDelegation({
     orderDirection = DEFAULT_ORDER_DIRECTION,
     force = false,
 }: {
+    chainId: number
     first?: number
     skip?: number
     address: string
@@ -465,7 +462,7 @@ export async function getOperatorsByDelegation({
 }): Promise<GetOperatorsByDelegationQuery['operators']> {
     const {
         data: { operators },
-    } = await getGraphClient().query<
+    } = await getGraphClient(chainId).query<
         GetOperatorsByDelegationQuery,
         GetOperatorsByDelegationQueryVariables
     >({
@@ -484,6 +481,7 @@ export async function getOperatorsByDelegation({
 }
 
 export async function getOperatorsByDelegationAndId({
+    chainId,
     first,
     skip,
     address,
@@ -492,6 +490,7 @@ export async function getOperatorsByDelegationAndId({
     orderDirection = DEFAULT_ORDER_DIRECTION,
     force = false,
 }: {
+    chainId: number
     first?: number
     skip?: number
     address: string
@@ -502,7 +501,7 @@ export async function getOperatorsByDelegationAndId({
 }): Promise<GetOperatorsByDelegationAndIdQuery['operators']> {
     const {
         data: { operators },
-    } = await getGraphClient().query<
+    } = await getGraphClient(chainId).query<
         GetOperatorsByDelegationAndIdQuery,
         GetOperatorsByDelegationAndIdQueryVariables
     >({
@@ -522,6 +521,7 @@ export async function getOperatorsByDelegationAndId({
 }
 
 export async function getOperatorsByDelegationAndMetadata({
+    chainId,
     first,
     skip,
     address,
@@ -530,6 +530,7 @@ export async function getOperatorsByDelegationAndMetadata({
     orderDirection = DEFAULT_ORDER_DIRECTION,
     force = false,
 }: {
+    chainId: number
     first?: number
     skip?: number
     address: string
@@ -540,7 +541,7 @@ export async function getOperatorsByDelegationAndMetadata({
 }): Promise<GetOperatorsByDelegationAndMetadataQuery['operators']> {
     const {
         data: { operators },
-    } = await getGraphClient().query<
+    } = await getGraphClient(chainId).query<
         GetOperatorsByDelegationAndMetadataQuery,
         GetOperatorsByDelegationAndMetadataQueryVariables
     >({
@@ -560,6 +561,7 @@ export async function getOperatorsByDelegationAndMetadata({
 }
 
 export async function searchOperatorsByMetadata({
+    chainId,
     first,
     skip,
     searchQuery,
@@ -567,6 +569,7 @@ export async function searchOperatorsByMetadata({
     orderDirection = DEFAULT_ORDER_DIRECTION,
     force = false,
 }: {
+    chainId: number
     first?: number
     skip?: number
     searchQuery?: string
@@ -576,7 +579,7 @@ export async function searchOperatorsByMetadata({
 }): Promise<SearchOperatorsByMetadataQuery['operators']> {
     const {
         data: { operators },
-    } = await getGraphClient().query<
+    } = await getGraphClient(chainId).query<
         SearchOperatorsByMetadataQuery,
         SearchOperatorsByMetadataQueryVariables
     >({
@@ -596,31 +599,34 @@ export async function searchOperatorsByMetadata({
 }
 
 export async function getOperatorById(
+    chainId: number,
     operatorId: string,
     { force = false } = {},
 ): Promise<NonNullable<GetOperatorByIdQuery['operator']> | null> {
     const {
         data: { operator },
-    } = await getGraphClient().query<GetOperatorByIdQuery, GetOperatorByIdQueryVariables>(
-        {
-            query: GetOperatorByIdDocument,
-            variables: {
-                operatorId,
-            },
-            fetchPolicy: force ? 'network-only' : void 0,
+    } = await getGraphClient(chainId).query<
+        GetOperatorByIdQuery,
+        GetOperatorByIdQueryVariables
+    >({
+        query: GetOperatorByIdDocument,
+        variables: {
+            operatorId,
         },
-    )
+        fetchPolicy: force ? 'network-only' : void 0,
+    })
 
     return operator || null
 }
 
 export async function getParsedOperatorByOwnerAddress(
+    chainId: number,
     address: string,
     { force = false }: { force?: boolean } = {},
 ): Promise<ParsedOperator | null> {
     const {
         data: { operators },
-    } = await getGraphClient().query<
+    } = await getGraphClient(chainId).query<
         GetOperatorByOwnerAddressQuery,
         GetOperatorByOwnerAddressQueryVariables
     >({
@@ -635,7 +641,7 @@ export async function getParsedOperatorByOwnerAddress(
 
     if (operator) {
         try {
-            return OperatorParser.parse(operator)
+            return parseOperator(operator, { chainId })
         } catch (e) {
             if (!(e instanceof z.ZodError)) {
                 throw e
@@ -665,10 +671,17 @@ export async function getBase64ForFile<T extends File>(file: T): Promise<string>
  * @param streamId Stream ID
  * @returns A string
  */
-export async function getStreamDescription(streamId: string, { force = false } = {}) {
+export async function getStreamDescription(
+    chainId: number,
+    streamId: string,
+    { force = false } = {},
+) {
     const {
         data: { stream },
-    } = await getGraphClient().query<GetStreamByIdQuery, GetStreamByIdQueryVariables>({
+    } = await getGraphClient(chainId).query<
+        GetStreamByIdQuery,
+        GetStreamByIdQueryVariables
+    >({
         query: GetStreamByIdDocument,
         variables: {
             streamId,
@@ -694,6 +707,13 @@ export async function getStreamDescription(streamId: string, { force = false } =
         .parse(stream)
 }
 
+interface GetParsedOperatorsOptions<Mapper> {
+    chainId: number
+    mapper?: Mapper
+    onParseError?: (operator: Operator, error: unknown) => void
+    onBeforeComplete?: (total: number, parsed: number) => void
+}
+
 /**
  * Gets a collection of parsed Operators.
  * @param getter Callback that "gets" raw Operator objects.
@@ -709,16 +729,10 @@ export async function getParsedOperators<
     ) => ParsedOperator,
 >(
     getter: () => Operator[] | Promise<Operator[]>,
-    {
-        mapper,
-        onParseError,
-        onBeforeComplete,
-    }: {
-        mapper?: Mapper
-        onParseError?: (operator: Operator, error: unknown) => void
-        onBeforeComplete?: (total: number, parsed: number) => void
-    } = {},
+    options: GetParsedOperatorsOptions<Mapper>,
 ): Promise<ReturnType<Mapper>[]> {
+    const { chainId, mapper, onParseError, onBeforeComplete } = options
+
     const rawOperators = await getter()
 
     const operators: ReturnType<Mapper>[] = []
@@ -729,7 +743,7 @@ export async function getParsedOperators<
         const rawOperator = rawOperators[i]
 
         try {
-            const operator = OperatorParser.parse(rawOperator)
+            const operator = parseOperator(rawOperator, { chainId })
 
             operators.push(mapper ? mapper(operator) : operator)
         } catch (e) {
@@ -870,6 +884,7 @@ export function getTimestampForChartPeriod(period: ChartPeriod, end: Moment): Mo
  * @returns Operator buckets
  */
 export async function getOperatorDailyBuckets(
+    chainId: number,
     operatorId: string,
     options: {
         dateLowerThan: number
@@ -887,7 +902,7 @@ export async function getOperatorDailyBuckets(
         force = false,
     } = options
 
-    const { data } = await getGraphClient().query<
+    const { data } = await getGraphClient(chainId).query<
         GetOperatorDailyBucketsQuery,
         GetOperatorDailyBucketsQueryVariables
     >({
@@ -911,6 +926,7 @@ export async function getOperatorDailyBuckets(
 
 /**
  * Fetches a collection of daily Sponsorship buckets.
+ * @param chainId Chain ID
  * @param sponsorshipId Sponsorship ID
  * @param options.dateLowerThan End unix timestamp
  * @param options.dateGreaterEqualThan Start unix timestamp
@@ -919,6 +935,7 @@ export async function getOperatorDailyBuckets(
  * @returns Sponsorship buckets
  */
 export async function getSponsorshipDailyBuckets(
+    chainId: number,
     sponsorshipId: string,
     options: {
         dateLowerThan: number
@@ -936,7 +953,7 @@ export async function getSponsorshipDailyBuckets(
         force = false,
     } = options
 
-    const { data } = await getGraphClient().query<
+    const { data } = await getGraphClient(chainId).query<
         GetSponsorshipDailyBucketsQuery,
         GetSponsorshipDailyBucketsQueryVariables
     >({
@@ -968,6 +985,7 @@ export async function getSponsorshipDailyBuckets(
  * @returns Delegator buckets
  */
 export const getDelegatorDailyBuckets = async (
+    chainId: number,
     delegatorId: string,
     options: {
         dateLowerThan: number
@@ -985,7 +1003,7 @@ export const getDelegatorDailyBuckets = async (
         force = false,
     } = options
 
-    const { data } = await getGraphClient().query<
+    const { data } = await getGraphClient(chainId).query<
         GetDelegatorDailyBucketsQuery,
         GetDelegatorDailyBucketsQueryVariables
     >({
@@ -1027,7 +1045,7 @@ export async function getENSDomainsForWallet(
         })
     }
 
-    const { data = { domains: [] } } = await ensApolloClient.query<
+    const { data = { domains: [], wrappedDomains: [] } } = await ensApolloClient.query<
         GetEnsDomainsForAccountQuery,
         GetEnsDomainsForAccountQueryVariables
     >({
@@ -1038,5 +1056,21 @@ export async function getENSDomainsForWallet(
         fetchPolicy: force ? 'network-only' : void 0,
     })
 
-    return (data.domains.map(({ name }) => name).filter(Boolean) as string[]).sort()
+    return [...data.domains, ...data.wrappedDomains]
+        .map(({ name }) => (!!name && /\.eth$/.test(name) ? name : null))
+        .sort()
+        .filter(Boolean) as string[]
+}
+
+const blockExplorerUrls = Object.freeze({
+    100: 'https:/gnosisscan.io',
+    137: 'https://polygonscan.com',
+    80001: 'https://mumbai.polygonscan.com',
+})
+
+/**
+ * Returns a block explorer URL for a given chain id.
+ */
+export function getBlockExplorerUrl(chainId: number): string | undefined {
+    return blockExplorerUrls[chainId] || undefined
 }

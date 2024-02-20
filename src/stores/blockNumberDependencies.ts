@@ -1,29 +1,23 @@
 import { produce } from 'immer'
 import { create } from 'zustand'
-import { blockObserver } from '~/utils/blocks'
+import { useCurrentChainId } from '~/shared/stores/chain'
+import { onIndexedBlock } from '~/utils/blocks'
 
 interface Store {
-    blockNumber: number | undefined
     dependencies: Record<string, number | undefined>
-    setDependency: (blockNumber: number, key: unknown[] | string) => void
+    setDependency: (chainId: number, blockNumber: number, key: unknown[]) => void
 }
 
-function getFinalKey(key: unknown[] | string) {
-    return typeof key === 'string' ? key : JSON.stringify(key)
+function getFinalKey(chainId: number, key: unknown[]) {
+    return JSON.stringify([chainId, ...key])
 }
 
 const useBlockNumberDependenciesStore = create<Store>((set) => {
-    blockObserver.onAny((blockNumber) => {
-        set({ blockNumber })
-    })
-
     return {
-        blockNumber: undefined,
-
         dependencies: {},
 
-        setDependency(blockNumber, key) {
-            const finalKey = getFinalKey(key)
+        setDependency(chainId, blockNumber, key) {
+            const finalKey = getFinalKey(chainId, key)
 
             set((store) =>
                 produce(store, (draft) => {
@@ -31,7 +25,7 @@ const useBlockNumberDependenciesStore = create<Store>((set) => {
                 }),
             )
 
-            blockObserver.onSpecific(blockNumber, () => {
+            onIndexedBlock(chainId, blockNumber, () => {
                 set((store) =>
                     produce(store, (draft) => {
                         if (draft.dependencies[finalKey] !== blockNumber) {
@@ -50,17 +44,14 @@ const useBlockNumberDependenciesStore = create<Store>((set) => {
     }
 })
 
-export function useIsWaitingForBlockNumber(key: unknown[] | string): boolean {
+export function useIsWaitingForBlockNumber(key: unknown[]): boolean {
+    const chainId = useCurrentChainId()
+
     const {
-        blockNumber,
-        dependencies: { [getFinalKey(key)]: awaitedBlockNumber },
+        dependencies: { [getFinalKey(chainId, key)]: awaitedBlockNumber },
     } = useBlockNumberDependenciesStore()
 
-    if (typeof awaitedBlockNumber === 'undefined') {
-        return false
-    }
-
-    return typeof blockNumber === 'undefined' || blockNumber < awaitedBlockNumber
+    return awaitedBlockNumber != null
 }
 
 export function useSetBlockDependency() {

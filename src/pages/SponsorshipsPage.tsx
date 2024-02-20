@@ -17,6 +17,7 @@ import {
 import { useTableOrder } from '~/hooks/useTableOrder'
 import routes from '~/routes'
 import { ScrollTableOrderDirection } from '~/shared/components/ScrollTable/ScrollTable'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 const PAGE_SIZE = 20
 
@@ -71,6 +72,8 @@ export const SponsorshipsPage = () => {
 
     const isCreatingSponsorship = useIsCreatingSponsorshipForWallet(wallet)
 
+    const chainId = useCurrentChainId()
+
     return (
         <Layout>
             <NetworkHelmet title="Sponsorships" />
@@ -95,7 +98,7 @@ export const SponsorshipsPage = () => {
                     <Button
                         waiting={isCreatingSponsorship}
                         onClick={() => {
-                            createSponsorship(wallet, {
+                            createSponsorship(chainId, wallet, {
                                 onDone(id) {
                                     navigate(routes.network.sponsorship({ id }))
                                 },

@@ -1,6 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { RejectionReason, isRejectionReason } from '~/modals/BaseModal'
+import {
+    RejectionReason,
+    isRejectionReason,
+    isTransactionRejection,
+} from '~/utils/exceptions'
 import FormModal, {
     FieldWrap,
     FormModalProps,
@@ -24,12 +28,13 @@ import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { delegateToOperator } from '~/services/operators'
-import { isTransactionRejection, waitForIndexedBlock } from '~/utils'
+import { waitForIndexedBlock } from '~/utils'
 import { Abbr } from '~/components/Abbr'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
     balance: BN
+    chainId: number
     delegatedTotal: BN
     onResolve?: () => void
     operator: ParsedOperator
@@ -38,6 +43,7 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
 export default function DelegateFundsModal({
     amount: amountProp = '',
     balance,
+    chainId,
     delegatedTotal: delegatedTotalProp,
     onResolve,
     operator,
@@ -147,9 +153,13 @@ export default function DelegateFundsModal({
 
                 try {
                     await delegateToOperator(
+                        chainId,
                         operator.id,
                         toDecimals(finalValue, decimals),
-                        { onBlockNumber: waitForIndexedBlock },
+                        {
+                            onBlockNumber: (blockNumber) =>
+                                waitForIndexedBlock(chainId, blockNumber),
+                        },
                     )
 
                     onResolve?.()

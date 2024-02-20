@@ -1,21 +1,22 @@
 import { z } from 'zod'
+import { address0 } from '~/consts'
 import { getProjectImageUrl } from '~/getters'
 import { getDataUnionAdminFeeForSalePoint } from '~/getters/du'
-import getCoreConfig from '~/getters/getCoreConfig'
+import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
+import { getCurrentChainId } from '~/getters/getCurrentChain'
 import { getTokenInfo } from '~/hooks/useTokenInfo'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { getMostRelevantTimeUnit } from '~/marketplace/utils/price'
 import { getDataAddress } from '~/marketplace/utils/web3'
 import { ProjectType, SalePoint } from '~/shared/types'
-import { Chain } from '~/types'
 import {
     TimeUnit,
     timeUnitSecondsMultiplierMap,
     timeUnits,
 } from '~/shared/utils/timeUnit'
 import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
+import { Chain } from '~/types'
 import { toBN } from '~/utils/bn'
-import { address0 } from '~/consts'
 
 const ParsedPaymentDetail = z.object({
     beneficiary: z.string(),
@@ -29,86 +30,93 @@ const ParsedPaymentDetail = z.object({
 
 export type ParsedPaymentDetail = z.infer<typeof ParsedPaymentDetail>
 
-export const ProjectParser = z
-    .object({
-        id: z.union([z.string(), z.undefined()]),
-        isDataUnion: z.boolean().optional().default(false),
-        streams: z.array(z.string()).transform((streams) => streams.sort()),
-        metadata: z
-            .string()
-            .transform((metadata) => JSON.parse(metadata))
-            .pipe(
-                z.object({
-                    name: z
-                        .string()
-                        .optional()
-                        .transform((v) => v || ''),
-                    description: z
-                        .string()
-                        .optional()
-                        .transform((v) => v || ''),
-                    creator: z
-                        .string()
-                        .optional()
-                        .transform((v) => v || ''),
-                    imageIpfsCid: z
-                        .string()
-                        .optional()
-                        .transform((v) => v || undefined),
-                    imageUrl: z
-                        .string()
-                        .optional()
-                        .transform((v) => v || undefined),
-                    termsOfUse: z
-                        .object({
-                            commercialUse: z.boolean().optional().default(false),
-                            redistribution: z.boolean().optional().default(false),
-                            reselling: z.boolean().optional().default(false),
-                            storage: z.boolean().optional().default(false),
-                            termsName: z.string().optional().default(''),
-                            termsUrl: z.string().optional().default(''),
-                        })
-                        .optional()
-                        .default({
-                            commercialUse: false,
-                            redistribution: false,
-                            reselling: false,
-                            storage: false,
-                            termsName: '',
-                            termsUrl: '',
-                        }),
-                    contactDetails: z
-                        .object({
-                            url: z.string().optional().default(''),
-                            email: z.string().optional().default(''),
-                            twitter: z.string().optional().default(''),
-                            telegram: z.string().optional().default(''),
-                            reddit: z.string().optional().default(''),
-                            linkedIn: z.string().optional().default(''),
-                        })
-                        .optional()
-                        .default({
-                            url: '',
-                            email: '',
-                            twitter: '',
-                            telegram: '',
-                            reddit: '',
-                            linkedIn: '',
-                        }),
-                }),
-            ),
-        paymentDetails: z.array(ParsedPaymentDetail),
-        permissions: z.array(
+const ProjectParser = z.object({
+    id: z.union([z.string(), z.undefined()]),
+    isDataUnion: z.boolean().optional().default(false),
+    streams: z.array(z.string()).transform((streams) => streams.sort()),
+    metadata: z
+        .string()
+        .transform((metadata) => JSON.parse(metadata))
+        .pipe(
             z.object({
-                canBuy: z.boolean().optional().default(false),
-                canDelete: z.boolean().optional().default(false),
-                canEdit: z.boolean().optional().default(false),
-                canGrant: z.boolean().optional().default(false),
-                userAddress: z.string(),
+                name: z
+                    .string()
+                    .optional()
+                    .transform((v) => v || ''),
+                description: z
+                    .string()
+                    .optional()
+                    .transform((v) => v || ''),
+                creator: z
+                    .string()
+                    .optional()
+                    .transform((v) => v || ''),
+                imageIpfsCid: z
+                    .string()
+                    .optional()
+                    .transform((v) => v || undefined),
+                imageUrl: z
+                    .string()
+                    .optional()
+                    .transform((v) => v || undefined),
+                termsOfUse: z
+                    .object({
+                        commercialUse: z.boolean().optional().default(false),
+                        redistribution: z.boolean().optional().default(false),
+                        reselling: z.boolean().optional().default(false),
+                        storage: z.boolean().optional().default(false),
+                        termsName: z.string().optional().default(''),
+                        termsUrl: z.string().optional().default(''),
+                    })
+                    .optional()
+                    .default({
+                        commercialUse: false,
+                        redistribution: false,
+                        reselling: false,
+                        storage: false,
+                        termsName: '',
+                        termsUrl: '',
+                    }),
+                contactDetails: z
+                    .object({
+                        url: z.string().optional().default(''),
+                        email: z.string().optional().default(''),
+                        twitter: z.string().optional().default(''),
+                        telegram: z.string().optional().default(''),
+                        reddit: z.string().optional().default(''),
+                        linkedIn: z.string().optional().default(''),
+                    })
+                    .optional()
+                    .default({
+                        url: '',
+                        email: '',
+                        twitter: '',
+                        telegram: '',
+                        reddit: '',
+                        linkedIn: '',
+                    }),
             }),
         ),
-    })
-    .transform(
+    paymentDetails: z.array(ParsedPaymentDetail),
+    permissions: z.array(
+        z.object({
+            canBuy: z.boolean().optional().default(false),
+            canDelete: z.boolean().optional().default(false),
+            canEdit: z.boolean().optional().default(false),
+            canGrant: z.boolean().optional().default(false),
+            userAddress: z.string(),
+        }),
+    ),
+})
+
+interface ParseProjectOptions {
+    chainId: number
+}
+
+export function parseProject(value: unknown, options: ParseProjectOptions) {
+    const { chainId } = options
+
+    return ProjectParser.transform(
         async ({
             id,
             isDataUnion,
@@ -139,20 +147,20 @@ export const ProjectParser = z
                 }
             }
 
-            const chains: Chain[] = getCoreConfig().marketplaceChains.map(
-                getConfigForChainByName,
-            )
+            const chains: Chain[] = getChainConfigExtension(
+                chainId,
+            ).marketplaceChains.map(getConfigForChainByName)
 
             const salePoints: Record<string, SalePoint | undefined> = {}
 
-            chains.map(({ id: chainId, name: chainName }) => {
+            chains.map(({ id, name: chainName }) => {
                 salePoints[chainName] = {
                     beneficiaryAddress: '',
-                    chainId,
+                    chainId: id,
                     enabled: false,
                     price: '',
                     pricePerSecond: '',
-                    pricingTokenAddress: getDataAddress(chainId).toLowerCase(),
+                    pricingTokenAddress: getDataAddress(id).toLowerCase(),
                     readOnly: false,
                     timeUnit: timeUnits.day,
                 }
@@ -211,12 +219,13 @@ export const ProjectParser = z
                     typeof adminFee === 'undefined'
                         ? ''
                         : toBN(adminFee).multipliedBy(100).toString(),
+                chainId,
                 contact,
                 creator,
                 description,
                 id,
                 imageIpfsCid,
-                imageUrl: getProjectImageUrl({ imageUrl, imageIpfsCid }),
+                imageUrl: getProjectImageUrl(chainId, { imageUrl, imageIpfsCid }),
                 isDataUnion,
                 name,
                 newImageToUpload: undefined,
@@ -232,23 +241,26 @@ export const ProjectParser = z
                     : ProjectType.PaidData,
             }
         },
+    ).parseAsync(value)
+}
+
+export type ParsedProject = Awaited<ReturnType<typeof parseProject>>
+
+function getEmptySalePoints(chainId: number) {
+    const chains: Chain[] = getChainConfigExtension(chainId).marketplaceChains.map(
+        getConfigForChainByName,
     )
-
-export type ParsedProject = z.infer<typeof ProjectParser>
-
-function getEmptySalePoints() {
-    const chains: Chain[] = getCoreConfig().marketplaceChains.map(getConfigForChainByName)
 
     const salePoints: Record<string, SalePoint | undefined> = {}
 
-    chains.map(({ id: chainId, name: chainName }) => {
+    chains.map(({ id, name: chainName }) => {
         salePoints[chainName] = {
             beneficiaryAddress: '',
-            chainId,
+            chainId: id,
             enabled: false,
             price: '',
             pricePerSecond: '',
-            pricingTokenAddress: getDataAddress(chainId).toLowerCase(),
+            pricingTokenAddress: getDataAddress(id).toLowerCase(),
             readOnly: false,
             timeUnit: timeUnits.day,
         }
@@ -257,8 +269,19 @@ function getEmptySalePoints() {
     return salePoints
 }
 
-export function getEmptyParsedProject(options: { type: ProjectType }): ParsedProject {
+interface GetEmptyParsedProjectOptions {
+    type: ProjectType
+    chainId?: number
+}
+
+export function getEmptyParsedProject({
+    chainId: chainIdProp,
+    ...options
+}: GetEmptyParsedProjectOptions): ParsedProject {
+    const chainId = chainIdProp ?? getCurrentChainId()
+
     return {
+        chainId,
         adminFee: '',
         contact: {
             url: '',
@@ -278,7 +301,7 @@ export function getEmptyParsedProject(options: { type: ProjectType }): ParsedPro
         newImageToUpload: undefined,
         paymentDetails: [],
         permissions: [],
-        salePoints: getEmptySalePoints(),
+        salePoints: getEmptySalePoints(chainId),
         streams: [],
         termsOfUse: {
             commercialUse: false,

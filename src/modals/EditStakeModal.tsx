@@ -2,7 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import moment from 'moment'
-import { RejectionReason, isRejectionReason } from '~/modals/BaseModal'
+import {
+    RejectionReason,
+    isRejectionReason,
+    isTransactionRejection,
+} from '~/utils/exceptions'
 import FormModal, {
     ErrorLabel,
     FieldWrap,
@@ -25,7 +29,7 @@ import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { isTransactionRejection, sameBN, waitForIndexedBlock } from '~/utils'
+import { sameBN, waitForIndexedBlock } from '~/utils'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import { getSponsorshipStakeForOperator } from '~/utils/sponsorships'
 import {
@@ -38,6 +42,7 @@ import { Layer } from '~/utils/Layer'
 import { Abbr } from '~/components/Abbr'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
+    chainId: number
     leavePenaltyWei: BN
     onResolve?: () => void
     operator: ParsedOperator
@@ -47,6 +52,7 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
 const DefaultCurrentAmount = toBN(0)
 
 function EditStakeModal({
+    chainId,
     leavePenaltyWei,
     onResolve,
     onReject,
@@ -157,12 +163,14 @@ function EditStakeModal({
                 try {
                     if (difference.isGreaterThanOrEqualTo(0)) {
                         await stakeOnSponsorship(
+                            chainId,
                             sponsorshipId,
                             difference.toString(),
                             operatorId,
                             {
                                 toastLabel: 'Increase stake on sponsorship',
-                                onBlockNumber: waitForIndexedBlock,
+                                onBlockNumber: (blockNumber) =>
+                                    waitForIndexedBlock(chainId, blockNumber),
                             },
                         )
 
@@ -171,11 +179,13 @@ function EditStakeModal({
 
                     if (slashingAmount.isZero()) {
                         await reduceStakeOnSponsorship(
+                            chainId,
                             sponsorshipId,
                             finalAmount.toString(),
                             operatorId,
                             {
-                                onBlockNumber: waitForIndexedBlock,
+                                onBlockNumber: (blockNumber) =>
+                                    waitForIndexedBlock(chainId, blockNumber),
                                 toastLabel: finalAmount.isZero()
                                     ? 'Unstake from sponsorship'
                                     : 'Reduce stake on sponsorship',
@@ -219,9 +229,15 @@ function EditStakeModal({
                             isDangerous: true,
                         })
                     ) {
-                        await forceUnstakeFromSponsorship(sponsorshipId, operatorId, {
-                            onBlockNumber: waitForIndexedBlock,
-                        })
+                        await forceUnstakeFromSponsorship(
+                            chainId,
+                            sponsorshipId,
+                            operatorId,
+                            {
+                                onBlockNumber: (blockNumber) =>
+                                    waitForIndexedBlock(chainId, blockNumber),
+                            },
+                        )
 
                         onResolve?.()
                     }

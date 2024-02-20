@@ -11,6 +11,7 @@ import { Button } from '~/components/Button'
 import { NoData } from '~/shared/components/NoData'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { COLORS } from '~/shared/utils/styled'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 type Props = {
     streamId: string
@@ -20,8 +21,12 @@ const PAGE_SIZE = 5
 
 export default function SponsorshipsTable({ streamId }: Props) {
     const { orderBy, orderDirection, handleOrderChange } = useTableOrder()
+
     const wallet = useWalletAccount()
+
     const createSponsorship = useCreateSponsorship()
+
+    const chainId = useCurrentChainId()
 
     const query = useSponsorshipsByStreamIdQuery({
         pageSize: PAGE_SIZE,
@@ -46,7 +51,9 @@ export default function SponsorshipsTable({ streamId }: Props) {
                         {sponsorships.length > 0 && (
                             <CreateButton
                                 type="button"
-                                onClick={() => createSponsorship(wallet, { streamId })}
+                                onClick={() => {
+                                    createSponsorship(chainId, wallet, { streamId })
+                                }}
                                 disabled={streamId == null || wallet == null}
                             >
                                 Create
@@ -85,7 +92,9 @@ export default function SponsorshipsTable({ streamId }: Props) {
                         />
                         <CreateButton
                             type="button"
-                            onClick={() => createSponsorship(wallet, { streamId })}
+                            onClick={() => {
+                                createSponsorship(chainId, wallet, { streamId })
+                            }}
                             disabled={streamId == null || wallet == null}
                         >
                             Create Sponsorship

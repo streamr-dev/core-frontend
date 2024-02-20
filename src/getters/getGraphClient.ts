@@ -1,18 +1,37 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
-import getCoreConfig from './getCoreConfig'
-import { getGraphUrl } from '.'
+import { getConfigForChain } from '~/shared/web3/config'
+import { getChainConfigExtension } from './getChainConfigExtension'
 
-let graphClient: ApolloClient<NormalizedCacheObject> | undefined
+const graphClients: Partial<Record<number, ApolloClient<NormalizedCacheObject>>> = {}
 
-export default function getGraphClient() {
-    if (!graphClient) {
-        graphClient = new ApolloClient({
-            uri: getGraphUrl(),
+export function getGraphClient(chainId: number) {
+    const graphClient =
+        graphClients[chainId] ||
+        new ApolloClient({
+            uri: getGraphUrl(chainId),
             cache: new InMemoryCache(),
         })
+
+    if (!graphClients[chainId]) {
+        graphClients[chainId] = graphClient
     }
 
     return graphClient
+}
+
+function getGraphUrl(chainId: number): string {
+    const chain = getConfigForChain(chainId)
+
+    if (chain.theGraphUrl != null) {
+        return chain.theGraphUrl
+    }
+
+    // Fall back to default subgraph name
+    const { networkSubgraphUrl: url } = getChainConfigExtension(chainId)
+
+    console.warn('There is no theGraphUrl in config. Falling back to', url)
+
+    return url
 }
 
 const dataUnionGraphClients: Partial<
@@ -20,18 +39,22 @@ const dataUnionGraphClients: Partial<
 > = {}
 
 export function getDataUnionGraphClient(chainId: number) {
-    const map: { chainId: unknown; name: unknown }[] = getCoreConfig().dataunionGraphNames
+    const { dataunionGraphNames } = getChainConfigExtension(chainId)
 
-    const item = map.find((i) => i.chainId === chainId)
+    const item = dataunionGraphNames.find((i) => i.chainId === chainId)
 
     if (typeof item?.name !== 'string') {
         throw new Error(`No dataunionGraphNames defined in config for chain ${chainId}!`)
     }
 
+    const { networkSubgraphUrl } = getChainConfigExtension(chainId)
+
+    const { origin } = new URL(networkSubgraphUrl)
+
     const client =
         dataUnionGraphClients[chainId] ||
         new ApolloClient({
-            uri: `${getCoreConfig().theGraphUrl}/subgraphs/name/${item.name}`,
+            uri: `${origin}/subgraphs/name/${item.name}`,
             cache: new InMemoryCache(),
         })
 

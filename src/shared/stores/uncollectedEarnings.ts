@@ -3,6 +3,7 @@ import { useCallback, useEffect } from 'react'
 import { create } from 'zustand'
 import { SponsorshipEarnings, getEarningsForSponsorships } from '~/services/sponsorships'
 import { toBN } from '~/utils/bn'
+import { useCurrentChainId } from './chain'
 
 interface Earnings {
     fetching: boolean
@@ -12,7 +13,7 @@ interface Earnings {
 
 interface Store {
     earnings: Record<string, undefined | Earnings>
-    fetch: (operatorId: string) => Promise<void>
+    fetch: (chainId: number, operatorId: string) => Promise<void>
     tick: () => void
 }
 
@@ -34,7 +35,7 @@ export const useUncollectedEarningsStore = create<Store>((set, get) => {
     return {
         earnings: {},
 
-        async fetch(operatorId) {
+        async fetch(chainId, operatorId) {
             const { fetching = false } = get().earnings[operatorId] || {}
 
             if (fetching) {
@@ -46,7 +47,7 @@ export const useUncollectedEarningsStore = create<Store>((set, get) => {
             })
 
             try {
-                const values = await getEarningsForSponsorships(operatorId)
+                const values = await getEarningsForSponsorships(chainId, operatorId)
 
                 updateEarnings(operatorId, (draft) => {
                     draft.values = values
@@ -100,23 +101,32 @@ export function useUncollectedEarnings(
 ) {
     const { earnings, fetch, tick } = useUncollectedEarningsStore()
 
+    const chainId = useCurrentChainId()
+
     useEffect(() => {
+        /**
+         * @todo Let's use `useQuery` instead.
+         */
+
         void (async () => {
             if (!operatorId) {
                 return
             }
 
             try {
-                await fetch(operatorId)
+                await fetch(chainId, operatorId)
             } catch (e) {
                 console.error(`Could not update earnings for "${operatorId}"`, e)
             }
         })()
-    }, [operatorId, fetch])
+    }, [operatorId, fetch, chainId])
 
     useEffect(() => {
         const timeoutId = setInterval(tick, 1000)
-        return () => clearInterval(timeoutId)
+
+        return () => {
+            clearInterval(timeoutId)
+        }
     })
 
     if (!operatorId) {

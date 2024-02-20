@@ -8,6 +8,7 @@ import { TABLET } from '~/shared/utils/styled'
 import StreamTable, { StreamTableLight } from '~/shared/components/StreamTable'
 import { getStreamsFromIndexer, IndexerStream } from '~/services/streams'
 import { fetchStreamlikesByIds } from '~/utils'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 const PAGE_SIZE = 5
 const INITIAL_OFFSET = 2 * PAGE_SIZE
@@ -61,10 +62,15 @@ export default function Streams({ streams: streamsProp }: Props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [streamsProp, client])
 
+    const chainId = useCurrentChainId()
+
     useEffect(() => {
         const getStreamStats = async () => {
             try {
-                const stats = await getStreamsFromIndexer(streams.map((s) => s.id))
+                const stats = await getStreamsFromIndexer(
+                    chainId,
+                    streams.map((s) => s.id),
+                )
 
                 if (stats && stats.length > 0) {
                     setStreamStats((prev) => ({
@@ -77,7 +83,7 @@ export default function Streams({ streams: streamsProp }: Props) {
             }
         }
         getStreamStats()
-    }, [streams])
+    }, [streams, chainId])
 
     return (
         <>

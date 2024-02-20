@@ -1,41 +1,38 @@
 import React from 'react'
 import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
-import Text from '~/shared/components/Ui/Text'
-import Label from '~/shared/components/Ui/Label'
 import Surround from '~/shared/components/Surround'
+import Label from '~/shared/components/Ui/Label'
+import Select from '~/shared/components/Ui/Select'
+import Text from '~/shared/components/Ui/Text'
 import { useCurrentStreamAbility } from '~/shared/stores/streamAbilities'
-import { useCurrentDraft, useUpdateCurrentMetadata } from '~/shared/stores/streamEditor'
+import { PHONE } from '~/shared/utils/styled'
+import { StreamDraft, getEmptyStreamEntity } from '~/stores/streamDraft'
+import { getEnvironmentConfig } from '~/getters/getEnvironmentConfig'
 import Section from '../Section'
-import { ENS_DOMAINS_URL, ReadonlyStreamId, EditableStreamId } from './StreamId'
+import { ENS_DOMAINS_URL, EditableStreamId, ReadonlyStreamId } from './StreamId'
 
-const Row = styled.div`
-    & + & {
-        margin-top: 2rem;
-    }
+export function InfoSection({ disabled: disabledProp = false }) {
+    const {
+        id: streamId,
+        metadata,
+        chainId,
+    } = StreamDraft.useEntity({ hot: true }) || getEmptyStreamEntity()
 
-    input[disabled] {
-        background-color: #efefef;
-        color: #525252;
-        opacity: 1;
-    }
-`
+    const { description } = metadata
 
-const Description = styled.p`
-    margin-bottom: 3rem;
-`
-
-export default function InfoSection({ disabled: disabledProp = false }) {
-    const canEdit = useCurrentStreamAbility(StreamPermission.EDIT)
+    const canEdit = useCurrentStreamAbility(streamId, StreamPermission.EDIT)
 
     const disabled = disabledProp || !canEdit
 
-    const {
-        streamId,
-        metadata: { description = '' },
-    } = useCurrentDraft()
+    const update = StreamDraft.useUpdateEntity()
 
-    const updateMetadata = useUpdateCurrentMetadata()
+    const chainOptions = getEnvironmentConfig().availableChains.map(
+        ({ id: value, name: label }) => ({
+            value,
+            label,
+        }),
+    )
 
     return (
         <Section title="Details">
@@ -62,6 +59,26 @@ export default function InfoSection({ disabled: disabledProp = false }) {
                     <EditableStreamId disabled={disabled} />
                 )}
             </Row>
+            {!streamId && (
+                <Row>
+                    <Label htmlFor="chain">Chain</Label>
+                    <ChainSelectWrap>
+                        <Select
+                            disabled={disabled}
+                            name="chain"
+                            onChange={({ value }) => {
+                                update((hot, cold) => {
+                                    hot.chainId = value
+
+                                    cold.chainId = value
+                                })
+                            }}
+                            options={chainOptions}
+                            value={chainOptions.find(({ value }) => value === chainId)}
+                        />
+                    </ChainSelectWrap>
+                </Row>
+            )}
             <Row>
                 <Label htmlFor="streamDescription">Description</Label>
                 <Text
@@ -70,11 +87,11 @@ export default function InfoSection({ disabled: disabledProp = false }) {
                     name="description"
                     placeholder="Add a brief description"
                     value={description}
-                    onChange={({ target }) =>
-                        void updateMetadata((metadata) => {
-                            metadata.description = target.value || ''
+                    onChange={({ target }) => {
+                        update((draft) => {
+                            draft.metadata.description = target.value
                         })
-                    }
+                    }}
                     disabled={disabled}
                     autoComplete="off"
                 />
@@ -82,3 +99,25 @@ export default function InfoSection({ disabled: disabledProp = false }) {
         </Section>
     )
 }
+
+const Row = styled.div`
+    & + & {
+        margin-top: 2rem;
+    }
+
+    input[disabled] {
+        background-color: #efefef;
+        color: #525252;
+        opacity: 1;
+    }
+`
+
+const Description = styled.p`
+    margin-bottom: 3rem;
+`
+
+const ChainSelectWrap = styled.div`
+    @media ${PHONE} {
+        max-width: 222px;
+    }
+`

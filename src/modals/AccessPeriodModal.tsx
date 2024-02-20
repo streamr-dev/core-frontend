@@ -15,8 +15,8 @@ import { address0 } from '~/consts'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { getAllowance } from '~/getters'
 import { toBN } from '~/utils/bn'
+import { RejectionReason } from '~/utils/exceptions'
 import ProjectModal, { Actions } from './ProjectModal'
-import { RejectionReason } from './BaseModal'
 
 const options = [timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month].map(
     (unit: TimeUnit) => ({

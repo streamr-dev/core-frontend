@@ -10,6 +10,7 @@ import { COLORS } from '~/shared/utils/styled'
 import { TheGraphProject } from '~/services/projects'
 import { getProjectImageUrl } from '~/getters'
 import routes from '~/routes'
+import { useCurrentChainId } from '~/shared/stores/chain'
 import Summary from './Summary'
 import { DataUnionBadge } from './Badge'
 
@@ -183,60 +184,67 @@ type MarketplaceProductTileProps = {
     showEditButton: boolean
 }
 
-const MarketplaceProductTile = ({
+function MarketplaceProductTile({
     product,
     showDataUnionBadge,
     showEditButton,
     ...props
-}: MarketplaceProductTileProps) => (
-    <Tile {...props}>
-        <TileImageContainer>
+}: MarketplaceProductTileProps) {
+    const chainId = useCurrentChainId()
+
+    return (
+        <Tile {...props}>
+            <TileImageContainer>
+                <Link
+                    to={routes.projects.overview({
+                        id: product.id,
+                    })}
+                >
+                    <TileImageContainer autoSize>
+                        <TileThumbnail
+                            src={
+                                getProjectImageUrl(chainId, {
+                                    ...product.metadata,
+                                    imageIpfsCid:
+                                        product.metadata.imageIpfsCid || undefined,
+                                }) || ''
+                            }
+                        />
+                    </TileImageContainer>
+                </Link>
+                {!!showDataUnionBadge && (
+                    <DataUnionBadge
+                        top
+                        left
+                        memberCount={product.members}
+                        linkTo={routes.projects.overview(
+                            {
+                                id: product.id,
+                            },
+                            'stats',
+                        )}
+                    />
+                )}
+                {showEditButton && (
+                    <EditButton to={routes.projects.edit({ id: product.id })}>
+                        <SvgIcon name={'pencilFull'} />
+                    </EditButton>
+                )}
+            </TileImageContainer>
             <Link
                 to={routes.projects.overview({
                     id: product.id,
                 })}
             >
-                <TileImageContainer autoSize>
-                    <TileThumbnail
-                        src={
-                            getProjectImageUrl({
-                                ...product.metadata,
-                                imageIpfsCid: product.metadata.imageIpfsCid || undefined,
-                            }) || ''
-                        }
-                    />
-                </TileImageContainer>
-            </Link>
-            {!!showDataUnionBadge && (
-                <DataUnionBadge
-                    top
-                    left
-                    memberCount={product.members}
-                    linkTo={routes.projects.overview(
-                        {
-                            id: product.id,
-                        },
-                        'stats',
-                    )}
+                <Summary
+                    name={
+                        (product.metadata && product.metadata.name) || 'Untitled project'
+                    }
+                    description={(product.metadata && product.metadata.creator) || ''}
                 />
-            )}
-            {showEditButton && (
-                <EditButton to={routes.projects.edit({ id: product.id })}>
-                    <SvgIcon name={'pencilFull'} />
-                </EditButton>
-            )}
-        </TileImageContainer>
-        <Link
-            to={routes.projects.overview({
-                id: product.id,
-            })}
-        >
-            <Summary
-                name={(product.metadata && product.metadata.name) || 'Untitled project'}
-                description={(product.metadata && product.metadata.creator) || ''}
-            />
-        </Link>
-    </Tile>
-)
+            </Link>
+        </Tile>
+    )
+}
 
 export { ImageTile, MarketplaceProductTile }

@@ -1,6 +1,10 @@
 import React, { useReducer, useState } from 'react'
 import { toaster } from 'toasterhea'
-import { RejectionReason, isRejectionReason } from '~/modals/BaseModal'
+import {
+    RejectionReason,
+    isRejectionReason,
+    isTransactionRejection,
+} from '~/utils/exceptions'
 import FormModal, {
     ErrorLabel,
     ErrorWrap,
@@ -26,7 +30,7 @@ import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { toDecimals } from '~/marketplace/utils/math'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { createSponsorship } from '~/services/sponsorships'
-import { isTransactionRejection, waitForIndexedBlock } from '~/utils'
+import { waitForIndexedBlock } from '~/utils'
 import { StreamIdDropdown } from '~/components/StreamIdDropdown'
 import { checkIfStreamExists } from '~/services/streams'
 import { errorToast } from '~/utils/toast'
@@ -42,6 +46,7 @@ interface ResolveProps {
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     balance: BN
+    chainId: number
     streamId?: string
     onResolve?: (props: ResolveProps) => void
 }
@@ -61,11 +66,13 @@ function getDefaultFormData(streamId = ''): CreateSponsorshipForm {
 
 function CreateSponsorshipModal({
     balance: balanceProp,
+    chainId,
     streamId: streamIdProp,
     onResolve,
     ...props
 }: Props) {
     const [busy, setBusy] = useState(false)
+
     const [confirmState, setConfirmState] = useState(false)
 
     const { decimals = 18 } = useSponsorshipTokenInfo() || {}
@@ -163,7 +170,7 @@ function CreateSponsorshipModal({
                 setBusy(true)
 
                 try {
-                    if (!(await checkIfStreamExists(formData.streamId))) {
+                    if (!(await checkIfStreamExists(chainId, formData.streamId))) {
                         errorToast(
                             { title: 'Stream does not exist' },
                             streamNotFoundToaster,
@@ -172,8 +179,9 @@ function CreateSponsorshipModal({
                         return
                     }
 
-                    const sponsorshipId = await createSponsorship(formData, {
-                        onBlockNumber: waitForIndexedBlock,
+                    const sponsorshipId = await createSponsorship(chainId, formData, {
+                        onBlockNumber: (blockNumber) =>
+                            waitForIndexedBlock(chainId, blockNumber),
                     })
 
                     onResolve?.({

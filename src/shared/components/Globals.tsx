@@ -1,13 +1,13 @@
 import { useCallback } from 'react'
-import { useIsPersistingAnyStreamDraft } from '~/shared/stores/streamEditor'
-import { useIsAnyPurchaseInProgress } from '~/shared/stores/purchases'
+import { useInfoToastEffect } from '~/hooks'
 import usePreventNavigatingAway, {
     useBlockHistoryEffect,
 } from '~/shared/hooks/usePreventNavigatingAway'
-import { useInfoToastEffect } from '~/hooks'
+import { useIsAnyPurchaseInProgress } from '~/shared/stores/purchases'
+import { StreamDraft } from '~/stores/streamDraft'
 
 export default function Globals() {
-    const isPersistingAnyStreamDraft = useIsPersistingAnyStreamDraft()
+    const isAnyDraftBeingPersisted = StreamDraft.useIsAnyDraftBeingPersisted()
 
     const isAnyPurchaseInProgress = useIsAnyPurchaseInProgress()
 
@@ -18,9 +18,9 @@ export default function Globals() {
                     return false
                 }
 
-                return isPersistingAnyStreamDraft || isAnyPurchaseInProgress
+                return isAnyDraftBeingPersisted || isAnyPurchaseInProgress
             },
-            [isPersistingAnyStreamDraft, isAnyPurchaseInProgress],
+            [isAnyDraftBeingPersisted, isAnyPurchaseInProgress],
         ),
     })
 

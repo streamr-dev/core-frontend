@@ -4657,12 +4657,15 @@ export type GetEnsDomainsForAccountQueryVariables = Exact<{
 }>;
 
 
-export type GetEnsDomainsForAccountQuery = { __typename?: 'Query', domains: Array<{ __typename?: 'Domain', name?: string | null }> };
+export type GetEnsDomainsForAccountQuery = { __typename?: 'Query', domains: Array<{ __typename?: 'Domain', name?: string | null }>, wrappedDomains: Array<{ __typename?: 'WrappedDomain', name?: string | null }> };
 
 
 export const GetEnsDomainsForAccountDocument = gql`
     query getEnsDomainsForAccount($account: String!) {
   domains(where: {owner_in: [$account]}, orderBy: name) {
+    name
+  }
+  wrappedDomains(where: {owner_in: [$account]}, orderBy: name) {
     name
   }
 }

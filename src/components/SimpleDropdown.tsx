@@ -11,6 +11,16 @@ type ChildrenFormatter =
           isOpen: boolean,
       ) => ReactNode)
 
+interface SimpleDropdownProps {
+    align?: 'left' | 'right'
+    children?: ChildrenFormatter
+    detached?: boolean
+    disabled?: boolean
+    menu?: ChildrenFormatter
+    menuWrapComponent?: typeof SimpleDropdownMenu
+    onToggle?: (value: boolean) => void
+}
+
 export function SimpleDropdown({
     children,
     detached = false,
@@ -18,14 +28,9 @@ export function SimpleDropdown({
     menu,
     menuWrapComponent: MenuWrap = SimpleDropdownMenu,
     onToggle,
-}: {
-    children?: ChildrenFormatter
-    detached?: boolean
-    disabled?: boolean
-    menu?: ChildrenFormatter
-    menuWrapComponent?: typeof SimpleDropdownMenu
-    onToggle?: (value: boolean) => void
-}) {
+    align = 'left',
+    ...props
+}: SimpleDropdownProps) {
     const [isOpen, setIsOpen] = useState(false)
 
     const rootRef = useRef<HTMLDivElement>(null)
@@ -120,19 +125,22 @@ export function SimpleDropdown({
 
     const [dx, maxWidth] = useBoundingClientRect(menuRef, (rect) => {
         const { clientWidth } = document.documentElement
+        const maxWidth = clientWidth - 8
 
         if (!rect) {
-            return [0, clientWidth - 8]
+            return [0, maxWidth]
         }
 
-        return [
-            Math.min(0, clientWidth - x - Math.round(rect.width) - 4),
-            clientWidth - 8,
-        ]
+        if (align === 'left') {
+            return [Math.min(0, clientWidth - x - Math.round(rect.width) - 4), maxWidth]
+        }
+
+        const myWidth = rootRef.current?.clientWidth ?? 0
+        return [-Math.round(rect.width) + myWidth - 4, maxWidth]
     })
 
     return (
-        <SimpleDropdownRoot ref={rootRef}>
+        <SimpleDropdownRoot ref={rootRef} {...props}>
             {typeof children === 'function' ? children(setIsOpen, isOpen) : children}
             <div ref={posRef} />
             {detached ? (

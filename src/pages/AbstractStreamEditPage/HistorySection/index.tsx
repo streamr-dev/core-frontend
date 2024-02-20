@@ -2,9 +2,9 @@ import React from 'react'
 import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
 import Label from '~/shared/components/Ui/Label'
-import UnitizedQuantity from '~/shared/components/UnitizedQuantity'
+import TextInput from '~/shared/components/Ui/Text/StyledInput'
 import { useCurrentStreamAbility } from '~/shared/stores/streamAbilities'
-import { useCurrentDraft, useUpdateCurrentMetadata } from '~/shared/stores/streamEditor'
+import { StreamDraft, getEmptyStreamEntity } from '~/stores/streamDraft'
 import Section from '../Section'
 import StorageNodeList from './StorageNodeList'
 
@@ -17,19 +17,22 @@ interface Props {
     disabled?: boolean
 }
 
-export default function HistorySection({ disabled: disabledProp = false }: Props) {
-    const canEdit = useCurrentStreamAbility(StreamPermission.EDIT)
+export function HistorySection({ disabled: disabledProp = false }: Props) {
+    const {
+        id: streamId,
+        storage,
+        metadata,
+    } = StreamDraft.useEntity({ hot: true }) || getEmptyStreamEntity()
+
+    const { storageDays } = metadata
+
+    const canEdit = useCurrentStreamAbility(streamId, StreamPermission.EDIT)
 
     const disabled = disabledProp || !canEdit
 
-    const {
-        storageNodes,
-        metadata: { storageDays },
-    } = useCurrentDraft()
+    const noStorageEnabled = !Object.values(storage).some(Boolean)
 
-    const updateMetadata = useUpdateCurrentMetadata()
-
-    const noStorageEnabled = !Object.values(storageNodes).some((item) => item?.enabled)
+    const update = StreamDraft.useUpdateEntity()
 
     return (
         <Section title="Data storage">
@@ -39,21 +42,26 @@ export default function HistorySection({ disabled: disabledProp = false }: Props
                 stream&apos;s historical data before auto-deletion.
             </Desc>
             <StorageNodeList disabled={disabled} />
-            <Label htmlFor="storageAmount">Store historical data for</Label>
-            <UnitizedQuantity
-                units={{
-                    day: 1,
-                    month: 30,
-                    week: 7,
-                }}
-                disabled={disabled || noStorageEnabled}
-                onChange={(value: number) =>
-                    void updateMetadata((metadata) => {
-                        metadata.storageDays = value
-                    })
-                }
-                quantity={storageDays}
-            />
+            <Label htmlFor="storageAmount">Store historical data for (days)</Label>
+            {/* @todo Bring back days/weeks/months selector. #chainid */}
+            <TextFieldWrap>
+                <TextInput
+                    disabled={disabled || noStorageEnabled}
+                    type="number"
+                    step={1}
+                    min={1}
+                    value={storageDays}
+                    onChange={(e) => {
+                        update((hot) => {
+                            hot.metadata.storageDays = e.target.value
+                        })
+                    }}
+                />
+            </TextFieldWrap>
         </Section>
     )
 }
+
+const TextFieldWrap = styled.div`
+    width: 11rem;
+`

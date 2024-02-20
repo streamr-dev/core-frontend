@@ -3,9 +3,9 @@ import { produce } from 'immer'
 import { create } from 'zustand'
 import { getProjectPermissions } from '~/getters'
 import { useProject } from '~/stores/projectDraft'
-import { defaultChainConfig } from '~/getters/getChainConfig'
 import { address0 } from '~/consts'
 import { useWalletAccount } from './wallet'
+import { useCurrentChainId } from './chain'
 
 export enum ProjectPermission {
     Buy,
@@ -145,10 +145,6 @@ function useProjectAbility(
 }
 
 export function useCurrentProjectAbility(permission: ProjectPermission) {
-    return useProjectAbility(
-        defaultChainConfig.id,
-        useProject()?.id,
-        useWalletAccount(),
-        permission,
-    )
+    const chainId = useCurrentChainId()
+    return useProjectAbility(chainId, useProject()?.id, useWalletAccount(), permission)
 }

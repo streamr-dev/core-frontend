@@ -14,6 +14,7 @@ import { getPagedStreams } from '~/services/streams'
 import Spinner from '~/components/Spinner'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { parseStreamId, truncate } from '~/shared/utils/text'
+import { useCurrentChainId } from '~/shared/stores/chain'
 import { DropdownMenuItem } from './DropdownMenuItem'
 
 interface Props
@@ -36,6 +37,7 @@ export function StreamIdDropdown({
     ...props
 }: Props) {
     const wallet = useWalletAccount()
+    const currentChainId = useCurrentChainId()
 
     const inputRef = useRef<HTMLInputElement>(null)
 
@@ -44,11 +46,12 @@ export function StreamIdDropdown({
     const [queryValue] = useDebounce(value, 250)
 
     const { data: streamIds = [], isLoading } = useQuery({
-        queryKey: ['StreamIdDropdown.streamIds', queryValue],
+        queryKey: ['StreamIdDropdown.streamIds', currentChainId, queryValue],
         async queryFn({ pageParam }) {
             try {
                 return (
                     await getPagedStreams(
+                        currentChainId,
                         20,
                         pageParam,
                         undefined,

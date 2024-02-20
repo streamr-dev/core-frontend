@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 import { useInfiniteQuery, UseInfiniteQueryResult, useQuery } from '@tanstack/react-query'
-import { config } from '@streamr/config'
 import { OrderDirection, Sponsorship, Sponsorship_OrderBy } from '~/generated/gql/network'
 import {
     getAllSponsorships,
@@ -8,27 +7,28 @@ import {
     getSponsorshipsByCreator,
     getSponsorshipsByStreamId,
 } from '~/getters'
-import { ParsedSponsorship, SponsorshipParser } from '~/parsers/SponsorshipParser'
+import { ParsedSponsorship, parseSponsorship } from '~/parsers/SponsorshipParser'
 import { errorToast } from '~/utils/toast'
 import useTokenInfo from '~/hooks/useTokenInfo'
-import getCoreConfig from '~/getters/getCoreConfig'
-import { Chain, ChartPeriod } from '~/types'
+import { ChartPeriod } from '~/types'
 import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
 import { getSponsorshipLeavePenalty } from '~/utils/sponsorships'
 import { ParsedOperator } from '~/parsers/OperatorParser'
-import { isRejectionReason } from '~/modals/BaseModal'
+import { isRejectionReason } from '~/utils/exceptions'
 import { FlagBusy } from '~/utils/errors'
 import { joinSponsorshipModal } from '~/modals/JoinSponsorshipModal'
 import { createSponsorshipModal } from '~/modals/CreateSponsorshipModal'
 import { getBalanceForSponsorship } from '~/utils/sponsorships'
 import { getQueryClient } from '~/utils'
 import { getSigner } from '~/shared/stores/wallet'
-import getSponsorshipTokenInfo from '~/getters/getSponsorshipTokenInfo'
+import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { fundSponsorshipModal } from '~/modals/FundSponsorshipModal'
 import { getSponsorshipStats } from '~/getters/getSponsorshipStats'
 import { invalidateSponsorshipFundingHistoryQueries } from '~/hooks/useSponsorshipFundingHistoryQuery'
 import { invalidateActiveOperatorByIdQueries } from '~/hooks/operators'
 import { editStakeModal } from '~/modals/EditStakeModal'
+import { useCurrentChain, useCurrentChainId } from '~/shared/stores/chain'
+import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 
 function getDefaultQueryParams(pageSize: number) {
     return {
@@ -40,7 +40,10 @@ function getDefaultQueryParams(pageSize: number) {
     }
 }
 
-async function getSponsorshipsAndParse(getter: () => Promise<Sponsorship[]>) {
+async function getSponsorshipsAndParse(
+    chainId: number,
+    getter: () => Promise<Sponsorship[]>,
+) {
     const sponsorships: ParsedSponsorship[] = []
 
     let preparsedCount = 0
@@ -52,7 +55,11 @@ async function getSponsorshipsAndParse(getter: () => Promise<Sponsorship[]>) {
 
         for (let i = 0; i < rawSponsorships.length; i++) {
             try {
-                sponsorships.push(await SponsorshipParser.parseAsync(rawSponsorships[i]))
+                sponsorships.push(
+                    await parseSponsorship(rawSponsorships[i], {
+                        chainId,
+                    }),
+                )
             } catch (e) {
                 console.warn('Failed to parse a sponsorship', e)
             }
@@ -75,10 +82,17 @@ async function getSponsorshipsAndParse(getter: () => Promise<Sponsorship[]>) {
     return sponsorships
 }
 
-function invalidateSponsorshipsForCreatorQueries(address: string | undefined) {
+function invalidateSponsorshipsForCreatorQueries(
+    chainId: number,
+    address: string | undefined,
+) {
     return getQueryClient().invalidateQueries({
         exact: false,
-        queryKey: ['useSponsorshipsForCreatorQuery', address?.toLowerCase() || ''],
+        queryKey: [
+            'useSponsorshipsForCreatorQuery',
+            chainId,
+            address?.toLowerCase() || '',
+        ],
         refetchType: 'active',
     })
 }
@@ -97,11 +111,14 @@ export function useSponsorshipsForCreatorQuery(
         orderDirection?: 'asc' | 'desc'
     } = {},
 ): UseInfiniteQueryResult<{ skip: number; sponsorships: ParsedSponsorship[] }> {
+    const currentChainId = useCurrentChainId()
+
     const creator = address?.toLowerCase() || ''
 
     return useInfiniteQuery({
         queryKey: [
             'useSponsorshipsForCreatorQuery',
+            currentChainId,
             creator,
             pageSize,
             searchQuery,
@@ -117,8 +134,9 @@ export function useSponsorshipsForCreatorQuery(
             }
 
             const sponsorships = await getSponsorshipsAndParse(
+                currentChainId,
                 () =>
-                    getSponsorshipsByCreator(creator, {
+                    getSponsorshipsByCreator(currentChainId, creator, {
                         first: pageSize,
                         skip,
                         searchQuery,
@@ -137,10 +155,10 @@ export function useSponsorshipsForCreatorQuery(
     })
 }
 
-function invalidateAllSponsorshipsQueries() {
+function invalidateAllSponsorshipsQueries(chainId: number) {
     return getQueryClient().invalidateQueries({
         exact: false,
-        queryKey: ['useAllSponsorshipsQuery'],
+        queryKey: ['useAllSponsorshipsQuery', chainId],
         refetchType: 'active',
     })
 }
@@ -156,9 +174,12 @@ export function useAllSponsorshipsQuery({
     orderBy?: string
     orderDirection?: 'asc' | 'desc'
 }) {
+    const currentChainId = useCurrentChainId()
+
     return useInfiniteQuery({
         queryKey: [
             'useAllSponsorshipsQuery',
+            currentChainId,
             pageSize,
             searchQuery,
             orderBy,
@@ -166,8 +187,10 @@ export function useAllSponsorshipsQuery({
         ],
         async queryFn({ pageParam: skip = 0 }) {
             const sponsorships = await getSponsorshipsAndParse(
+                currentChainId,
                 () =>
                     getAllSponsorships({
+                        chainId: currentChainId,
                         first: pageSize,
                         skip,
                         searchQuery,
@@ -186,18 +209,25 @@ export function useAllSponsorshipsQuery({
     })
 }
 
-function invalidateSponsorshipByIdQueries(sponsorshipId: string) {
+function invalidateSponsorshipByIdQueries(chainId: number, sponsorshipId: string) {
     return getQueryClient().invalidateQueries({
         exact: true,
-        queryKey: ['useSponsorshipByIdQuery', sponsorshipId.toLowerCase()],
+        queryKey: ['useSponsorshipByIdQuery', chainId, sponsorshipId.toLowerCase()],
         refetchType: 'active',
     })
 }
 
 export function useSponsorshipByIdQuery(sponsorshipId: string) {
+    const currentChainId = useCurrentChainId()
+
     return useQuery({
-        queryKey: ['useSponsorshipByIdQuery', sponsorshipId.toLowerCase()],
-        queryFn: () => getParsedSponsorshipById(sponsorshipId, { force: true }),
+        queryKey: [
+            'useSponsorshipByIdQuery',
+            currentChainId,
+            sponsorshipId.toLowerCase(),
+        ],
+        queryFn: () =>
+            getParsedSponsorshipById(currentChainId, sponsorshipId, { force: true }),
         staleTime: 60 * 1000, // 1 minute
         keepPreviousData: true,
     })
@@ -214,9 +244,12 @@ export function useSponsorshipsByStreamIdQuery({
     orderBy?: string
     orderDirection?: 'asc' | 'desc'
 }) {
+    const currentChainId = useCurrentChainId()
+
     return useInfiniteQuery({
         queryKey: [
             'useSponsorshipsByStreamIdQuery',
+            currentChainId,
             streamId,
             pageSize,
             orderBy,
@@ -224,8 +257,10 @@ export function useSponsorshipsByStreamIdQuery({
         ],
         async queryFn({ pageParam: skip = 0 }) {
             const sponsorships = await getSponsorshipsAndParse(
+                currentChainId,
                 () =>
                     getSponsorshipsByStreamId({
+                        chainId: currentChainId,
                         first: pageSize,
                         skip,
                         streamId,
@@ -244,20 +279,23 @@ export function useSponsorshipsByStreamIdQuery({
     })
 }
 
-function invalidateSponsorshipsByStreamIdQueries(streamId: string | undefined) {
+function invalidateSponsorshipsByStreamIdQueries(
+    chainId: number,
+    streamId: string | undefined,
+) {
     return getQueryClient().invalidateQueries({
         exact: false,
-        queryKey: ['useSponsorshipsByStreamIdQuery', streamId || ''],
+        queryKey: ['useSponsorshipsByStreamIdQuery', chainId, streamId || ''],
         refetchType: 'active',
     })
 }
 
 export function useSponsorshipTokenInfo() {
-    const { contracts, id: chainId } = config[
-        getCoreConfig().defaultChain || 'polygon'
-    ] as Chain
+    const { contracts, id: chainId } = useCurrentChain()
 
-    return useTokenInfo(contracts[getCoreConfig().sponsorshipPaymentToken], chainId)
+    const { sponsorshipPaymentToken } = getChainConfigExtension(chainId)
+
+    return useTokenInfo(contracts[sponsorshipPaymentToken], chainId)
 }
 
 export function useIsCreatingSponsorshipForWallet(wallet: string | undefined) {
@@ -269,6 +307,7 @@ export function useCreateSponsorship() {
 
     return useCallback(
         (
+            chainId: number,
             wallet: string | undefined,
             options: { onDone?: (sponsorshipId: string) => void; streamId?: string } = {},
         ) => {
@@ -282,15 +321,20 @@ export function useCreateSponsorship() {
                         await withFlag(
                             flagKey('isCreatingSponsorship', wallet),
                             async () => {
-                                const balance = await getBalanceForSponsorship(wallet)
+                                const balance = await getBalanceForSponsorship(
+                                    chainId,
+                                    wallet,
+                                )
 
                                 const { sponsorshipId, streamId } =
                                     await createSponsorshipModal.pop({
+                                        chainId,
                                         balance,
                                         streamId: options.streamId,
                                     })
 
                                 invalidateSponsorshipQueries(
+                                    chainId,
                                     wallet,
                                     sponsorshipId,
                                     streamId,
@@ -328,10 +372,13 @@ export function useIsFundingSponsorship(
     )
 }
 
-function invalidateSponsorshipDailyBucketsQueries(sponsorshipId: string) {
+function invalidateSponsorshipDailyBucketsQueries(
+    chainId: number,
+    sponsorshipId: string,
+) {
     return getQueryClient().invalidateQueries({
         exact: false,
-        queryKey: ['useSponsorshipDailyBucketsQuery', sponsorshipId],
+        queryKey: ['useSponsorshipDailyBucketsQuery', chainId, sponsorshipId],
         refetchType: 'active',
     })
 }
@@ -345,18 +392,32 @@ export function useSponsorshipDailyBucketsQuery({
     period: ChartPeriod
     dataSource: 'amountStaked' | 'numberOfOperators' | 'apy'
 }) {
+    const currentChainId = useCurrentChainId()
+
     return useQuery({
-        queryKey: ['useSponsorshipDailyBucketsQuery', sponsorshipId, period, dataSource],
+        queryKey: [
+            'useSponsorshipDailyBucketsQuery',
+            currentChainId,
+            sponsorshipId,
+            period,
+            dataSource,
+        ],
         queryFn: async () => {
             try {
                 if (!sponsorshipId) {
                     return []
                 }
 
-                return await getSponsorshipStats(sponsorshipId, period, dataSource, {
-                    force: true,
-                    ignoreToday: false,
-                })
+                return await getSponsorshipStats(
+                    currentChainId,
+                    sponsorshipId,
+                    period,
+                    dataSource,
+                    {
+                        force: true,
+                        ignoreToday: false,
+                    },
+                )
             } catch (e) {
                 console.warn('Could not load sponsorship chart data', e)
 
@@ -377,6 +438,7 @@ export function useFundSponsorshipCallback() {
 
     return useCallback(
         (
+            chainId: number,
             sponsorship: ParsedSponsorship,
             options: { onDone?: (wallet: string) => void } = {},
         ) => {
@@ -388,14 +450,22 @@ export function useFundSponsorshipCallback() {
                         await withFlag(
                             flagKey('isFundingSponsorship', sponsorship.id, wallet),
                             async () => {
-                                await getSponsorshipTokenInfo()
+                                await getSponsorshipTokenInfo(chainId)
 
                                 await fundSponsorshipModal.pop({
+                                    chainId,
                                     sponsorship,
-                                    balance: await getBalanceForSponsorship(wallet),
+                                    balance: await getBalanceForSponsorship(
+                                        chainId,
+                                        wallet,
+                                    ),
                                 })
 
-                                invalidateSponsorshipQueries(wallet, sponsorship.id)
+                                invalidateSponsorshipQueries(
+                                    chainId,
+                                    wallet,
+                                    sponsorship.id,
+                                )
                             },
                         )
 
@@ -434,10 +504,12 @@ export function useJoinSponsorshipAsOperator() {
 
     return useCallback(
         ({
+            chainId,
             onJoin,
             operator,
             sponsorship,
         }: {
+            chainId: number
             onJoin?: () => void
             operator: ParsedOperator
             sponsorship: ParsedSponsorship
@@ -454,9 +526,17 @@ export function useJoinSponsorshipAsOperator() {
                             async () => {
                                 const wallet = await (await getSigner()).getAddress()
 
-                                await joinSponsorshipModal.pop({ sponsorship, operator })
+                                await joinSponsorshipModal.pop({
+                                    chainId,
+                                    sponsorship,
+                                    operator,
+                                })
 
-                                invalidateSponsorshipQueries(wallet, sponsorship.id)
+                                invalidateSponsorshipQueries(
+                                    chainId,
+                                    wallet,
+                                    sponsorship.id,
+                                )
 
                                 onJoin?.()
                             },
@@ -499,10 +579,11 @@ export function useEditSponsorshipFunding() {
 
     return useCallback(
         (params: {
+            chainId: number
             sponsorshipOrSponsorshipId: string | ParsedSponsorship
             operator: ParsedOperator
         }) => {
-            const { sponsorshipOrSponsorshipId, operator } = params
+            const { chainId, sponsorshipOrSponsorshipId, operator } = params
 
             void (async () => {
                 try {
@@ -513,6 +594,7 @@ export function useEditSponsorshipFunding() {
                             }
 
                             const result = await getParsedSponsorshipById(
+                                chainId,
                                 sponsorshipOrSponsorshipId,
                                 { force: true },
                             )
@@ -538,20 +620,26 @@ export function useEditSponsorshipFunding() {
                                  * the following call will do nothing. Otherwise, it'll fetch
                                  * and cache it. Speed things up later on.
                                  */
-                                await getSponsorshipTokenInfo()
+                                await getSponsorshipTokenInfo(chainId)
 
                                 const leavePenaltyWei = await getSponsorshipLeavePenalty(
+                                    chainId,
                                     sponsorship.id,
                                     operator.id,
                                 )
 
                                 await editStakeModal.pop({
+                                    chainId,
                                     operator,
                                     sponsorship,
                                     leavePenaltyWei,
                                 })
 
-                                invalidateSponsorshipQueries(wallet, sponsorship.id)
+                                invalidateSponsorshipQueries(
+                                    chainId,
+                                    wallet,
+                                    sponsorship.id,
+                                )
                             },
                         )
                     } catch (e) {
@@ -596,6 +684,7 @@ const mapSponsorshipOrder = (columnKey?: string): Sponsorship_OrderBy => {
  * Invalidates a collection of sponsorship-related queries.
  */
 export function invalidateSponsorshipQueries(
+    chainId: number,
     invalidator: string | undefined,
     sponsorshipId: string | undefined,
     streamId: string | undefined = undefined,
@@ -604,22 +693,22 @@ export function invalidateSponsorshipQueries(
         return
     }
 
-    invalidateSponsorshipsForCreatorQueries(invalidator)
+    invalidateSponsorshipsForCreatorQueries(chainId, invalidator)
 
-    invalidateAllSponsorshipsQueries()
+    invalidateAllSponsorshipsQueries(chainId)
 
-    invalidateSponsorshipByIdQueries(sponsorshipId)
+    invalidateSponsorshipByIdQueries(chainId, sponsorshipId)
 
-    invalidateSponsorshipDailyBucketsQueries(sponsorshipId)
+    invalidateSponsorshipDailyBucketsQueries(chainId, sponsorshipId)
 
-    invalidateSponsorshipFundingHistoryQueries(sponsorshipId)
+    invalidateSponsorshipFundingHistoryQueries(chainId, sponsorshipId)
 
-    invalidateSponsorshipsByStreamIdQueries(streamId)
+    invalidateSponsorshipsByStreamIdQueries(chainId, streamId)
 
     /**
      * Invalidate OperatorById queries used mainly by Operator pages,
      * too. There's the Sponsorships section there and it's driven
      * by operator's collection of stakes.
      */
-    invalidateActiveOperatorByIdQueries(undefined)
+    invalidateActiveOperatorByIdQueries(chainId, undefined)
 }

@@ -20,21 +20,18 @@ import ConfirmPurchaseModal from '~/modals/ConfirmPurchaseModal'
 import { toSeconds } from '~/marketplace/utils/time'
 import AccessingProjectModal from '~/modals/AccessingProjectModal'
 import { getAllowance, getERC20TokenContract, getMarketplaceContract } from '~/getters'
-import { RejectionReason } from '~/modals/BaseModal'
+import { RejectionReason, isTransactionRejection } from '~/utils/exceptions'
 import FailedPurchaseModal from '~/modals/FailedPurchaseModal'
-import {
-    ensureGasMonies,
-    isTransactionRejection,
-    waitForPurchasePropagation,
-} from '~/utils'
+import { ensureGasMonies, waitForPurchasePropagation } from '~/utils'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import { getParsedProjectById, getProjectSubscriptions } from '~/getters/hub'
 import { TheGraph } from '../types'
 import { getSigner } from './wallet'
+import { useCurrentChainId } from './chain'
 
 interface Store {
     inProgress: Record<string, true | undefined>
-    purchase: (projectId: string) => Promise<void>
+    purchase: (chainId: number, projectId: string) => Promise<void>
     fetchingSubscriptions: Record<string, true | undefined>
     subscriptions: Record<
         string,
@@ -44,7 +41,7 @@ interface Store {
           }
         | undefined
     >
-    fetchSubscriptions: (projectId: string) => Promise<void>
+    fetchSubscriptions: (chainId: number, projectId: string) => Promise<void>
     invalidateSubscription: (projectId: string) => void
 }
 
@@ -60,7 +57,7 @@ const usePurchaseStore = create<Store>((set, get) => {
 
         fetchingSubscriptions: {},
 
-        async fetchSubscriptions(projectId) {
+        async fetchSubscriptions(chainId, projectId) {
             if (!!get().fetchingSubscriptions[projectId]) {
                 return
             }
@@ -72,7 +69,9 @@ const usePurchaseStore = create<Store>((set, get) => {
             )
 
             try {
-                const entries = await getProjectSubscriptions(projectId, { force: true })
+                const entries = await getProjectSubscriptions(chainId, projectId, {
+                    force: true,
+                })
 
                 set((current) =>
                     produce(current, (next) => {
@@ -107,7 +106,7 @@ const usePurchaseStore = create<Store>((set, get) => {
             )
         },
 
-        async purchase(projectId) {
+        async purchase(projectChainId, projectId) {
             if (isInProgress(projectId)) {
                 return
             }
@@ -120,14 +119,16 @@ const usePurchaseStore = create<Store>((set, get) => {
                 )
 
                 const { paymentDetails = [], streams = [] } =
-                    (await getParsedProjectById(projectId, { force: true })) || {}
+                    (await getParsedProjectById(projectChainId, projectId, {
+                        force: true,
+                    })) || {}
 
                 const chainIds = paymentDetails.map(({ domainId }) => domainId)
 
-                let chainId: number | undefined = chainIds[0]
+                let preselectedChainId: number | undefined = chainIds[0]
 
                 const skipChainSelector =
-                    typeof chainId !== 'undefined' && chainIds.length === 1
+                    typeof preselectedChainId !== 'undefined' && chainIds.length === 1
 
                 let chainSelectorResult: ChainSelectorResult | undefined
 
@@ -146,7 +147,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                     if (skipChainSelector) {
                         if (!chainSelectorResult) {
                             chainSelectorResult = await getPurchasePreconditions({
-                                chainId,
+                                chainId: preselectedChainId,
                                 paymentDetails,
                             })
                         }
@@ -160,7 +161,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                             chainIds,
                             paymentDetails,
                             projectId,
-                            selectedChainId: chainId,
+                            selectedChainId: preselectedChainId,
                         })
                     }
 
@@ -173,9 +174,9 @@ const usePurchaseStore = create<Store>((set, get) => {
                      * we show the Chain Selector modal (if we loop back to it within
                      * this purchase).
                      */
-                    chainId = chainSelectorResult.chainId
+                    preselectedChainId = chainSelectorResult.chainId
 
-                    const selectedChainId = chainId
+                    const selectedChainId = preselectedChainId
 
                     const {
                         account,
@@ -661,15 +662,17 @@ export function useHasActiveProjectSubscription(
     projectId: string | undefined,
     account: string | undefined,
 ) {
+    const chainId = useCurrentChainId()
+
     const { subscriptions, fetchSubscriptions } = usePurchaseStore()
 
     const { cache } = (projectId && subscriptions[projectId]) || {}
 
     useEffect(() => {
         if (projectId) {
-            fetchSubscriptions(projectId)
+            fetchSubscriptions(chainId, projectId)
         }
-    }, [cache, fetchSubscriptions, projectId])
+    }, [cache, fetchSubscriptions, chainId, projectId])
 
     if (!projectId || !account) {
         return false

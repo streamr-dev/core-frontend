@@ -16,6 +16,7 @@ import { Button } from '~/components/Button'
 import routes from '~/routes'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { getPagedStreams } from '~/services/streams'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 const Root = styled.div`
     color: #323232;
@@ -280,9 +281,10 @@ export const ProjectTypeChooser: FunctionComponent<{
 
 function useGotAnyStreams() {
     const wallet = useWalletAccount() || ''
+    const currentChainId = useCurrentChainId()
 
     const { data: result = false, isLoading } = useQuery({
-        queryKey: ['useGotAnyStreams', wallet],
+        queryKey: ['useGotAnyStreams', currentChainId, wallet],
         async queryFn() {
             if (!wallet) {
                 return false
@@ -292,6 +294,7 @@ function useGotAnyStreams() {
                 return (
                     (
                         await getPagedStreams(
+                            currentChainId,
                             1,
                             undefined,
                             wallet,

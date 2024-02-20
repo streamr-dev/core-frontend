@@ -1,4 +1,4 @@
-export class DraftValidationError<T extends string> extends Error {
+export class DraftValidationError<T extends string = string> extends Error {
     name = 'DraftValidationError'
 
     constructor(readonly key: T, readonly message: string) {

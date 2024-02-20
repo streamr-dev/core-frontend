@@ -1,16 +1,15 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { isAddress } from 'web3-validator'
-import { COLORS, TABLET } from '~/shared/utils/styled'
-import { Bits, setBits, unsetBits } from '~/shared/stores/streamEditor'
-import PermissionEditor from '~/pages/AbstractStreamEditPage/AccessControlSection/PermissionEditor'
 import { address0 } from '~/consts'
-import UnstyledLabel from '~/shared/components/Ui/Label'
+import PermissionEditor from '~/pages/AbstractStreamEditPage/AccessControlSection/PermissionEditor'
+import { Bits, setBits, unsetBits } from '~/parsers/StreamParser'
 import UnstyledErrors, { MarketplaceTheme } from '~/shared/components/Ui/Errors'
+import UnstyledLabel from '~/shared/components/Ui/Label'
 import Text from '~/shared/components/Ui/Text'
-import { isMessagedObject } from '~/utils'
+import { COLORS, TABLET } from '~/shared/utils/styled'
+import { RejectionReason, isMessagedObject } from '~/utils/exceptions'
 import FormModal, { FormModalProps } from './FormModal'
-import { RejectionReason } from './BaseModal'
 
 const Separator = styled.div`
     border-bottom: 1px solid ${COLORS.separator};
@@ -66,20 +65,22 @@ export default function NewStreamPermissionsModal({
                 )
             }}
             onSubmit={() => {
-                if (address.toLowerCase() === address0) {
+                const account = address.toLowerCase()
+
+                if (account === address0) {
                     return void setError('Invalid address')
                 }
 
-                if (address.length === 0) {
+                if (account.length === 0) {
                     return void setError('Address required')
                 }
 
-                if (!isAddress(address)) {
+                if (!isAddress(account)) {
                     return void setError('Invalid address format')
                 }
 
                 const result = {
-                    account: address,
+                    account,
                     bits: permissionBits,
                 }
 
@@ -106,7 +107,7 @@ export default function NewStreamPermissionsModal({
                         setAddress(value)
                         setError('')
                     }}
-                    placeholder="0x..."
+                    placeholder="0x…"
                 />
                 {!!error && (
                     <Errors theme={MarketplaceTheme} overlap>

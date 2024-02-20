@@ -2,7 +2,7 @@ import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import CopyIcon from '@atlaskit/icon/glyph/copy'
-import { RejectionReason } from '~/modals/BaseModal'
+import { RejectionReason, isMessagedObject } from '~/utils/exceptions'
 import FormModal, {
     CopyButtonWrapAppendix,
     ErrorLabel,
@@ -32,7 +32,7 @@ import { ParsedOperator } from '~/parsers/OperatorParser'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { stakeOnSponsorship } from '~/services/sponsorships'
-import { isMessagedObject, waitForIndexedBlock } from '~/utils'
+import { waitForIndexedBlock } from '~/utils'
 import { errorToast } from '~/utils/toast'
 import Toast from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
@@ -42,6 +42,7 @@ import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentToke
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
+    chainId: number
     onResolve?: () => void
     operator: ParsedOperator
     sponsorship: ParsedSponsorship
@@ -55,6 +56,7 @@ const limitErrorToaster = toaster(Toast, Layer.Toast)
 
 function JoinSponsorshipModal({
     amount: amountProp = '0',
+    chainId,
     onResolve,
     operator,
     sponsorship,
@@ -161,10 +163,14 @@ function JoinSponsorshipModal({
 
                 try {
                     await stakeOnSponsorship(
+                        chainId,
                         sponsorship.id,
                         finalAmount.toString(),
                         operator.id,
-                        { onBlockNumber: waitForIndexedBlock },
+                        {
+                            onBlockNumber: (blockNumber) =>
+                                waitForIndexedBlock(chainId, blockNumber),
+                        },
                     )
 
                     onResolve?.()

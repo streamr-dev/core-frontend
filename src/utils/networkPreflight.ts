@@ -3,7 +3,7 @@ import SwitchNetworkModal from '~/modals/SwitchNetworkModal'
 import getChainId from '~/utils/web3/getChainId'
 import { Layer } from '~/utils/Layer'
 import { getWalletProvider } from '~/shared/stores/wallet'
-import { defaultChainConfig } from '~/getters/getChainConfig'
+import { getConfigForChain } from '~/shared/web3/config'
 
 /**
  *
@@ -38,19 +38,21 @@ export default async function networkPreflight(expectedChainId: number) {
             throw e
         }
 
+        const chainConfig = getConfigForChain(expectedChainId)
+
         await provider.request({
             method: 'wallet_addEthereumChain',
             params: [
                 {
-                    chainId: `0x${defaultChainConfig.id.toString(16)}`,
-                    chainName: defaultChainConfig.name,
-                    rpcUrls: defaultChainConfig.rpcEndpoints.map(
+                    chainId: `0x${chainConfig.id.toString(16)}`,
+                    chainName: chainConfig.name,
+                    rpcUrls: chainConfig.rpcEndpoints.map(
                         (rpcEndpoint) => rpcEndpoint.url,
                     ),
                     nativeCurrency: {
-                        name: defaultChainConfig.nativeCurrency?.name ?? 'Unknown',
-                        symbol: defaultChainConfig.nativeCurrency?.symbol ?? 'UNKNOWN',
-                        decimals: defaultChainConfig.nativeCurrency?.decimals ?? 18,
+                        name: chainConfig.nativeCurrency?.name ?? 'Unknown',
+                        symbol: chainConfig.nativeCurrency?.symbol ?? 'UNKNOWN',
+                        decimals: chainConfig.nativeCurrency?.decimals ?? 18,
                     },
                 },
             ],

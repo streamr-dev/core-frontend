@@ -1,7 +1,11 @@
 import React, { useMemo, useState } from 'react'
 import moment from 'moment'
 import { toaster } from 'toasterhea'
-import { RejectionReason, isRejectionReason } from '~/modals/BaseModal'
+import {
+    RejectionReason,
+    isRejectionReason,
+    isTransactionRejection,
+} from '~/utils/exceptions'
 import FormModal, {
     FieldWrap,
     FormModalProps,
@@ -23,23 +27,31 @@ import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { toDecimals } from '~/marketplace/utils/math'
 import { fundSponsorship } from '~/services/sponsorships'
-import { isTransactionRejection, waitForIndexedBlock } from '~/utils'
+import { waitForIndexedBlock } from '~/utils'
 import { SponsorshipDisclaimer } from '~/components/SponsorshipDisclaimer'
 import { useMediaQuery } from '~/hooks'
 import { Abbr } from '~/components/Abbr'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     balance: BN
+    chainId: number
     onResolve?: () => void
     sponsorship: ParsedSponsorship
 }
 
 const DayInSeconds = 60 * 60 * 24
 
-function FundSponsorshipModal({ balance, onResolve, sponsorship, ...props }: Props) {
+function FundSponsorshipModal({
+    balance,
+    chainId,
+    onResolve,
+    sponsorship,
+    ...props
+}: Props) {
     const { decimals = 18 } = useSponsorshipTokenInfo() || {}
 
     const [rawAmount, setRawAmount] = useState('')
+
     const [confirmState, setConfirmState] = useState(false)
 
     const pricePerSecond = toDecimals(sponsorship.payoutPerDay, decimals).dividedBy(
@@ -138,8 +150,9 @@ function FundSponsorshipModal({ balance, onResolve, sponsorship, ...props }: Pro
                 setBusy(true)
 
                 try {
-                    await fundSponsorship(sponsorship.id, finalValue, {
-                        onBlockNumber: waitForIndexedBlock,
+                    await fundSponsorship(chainId, sponsorship.id, finalValue, {
+                        onBlockNumber: (blockNumber) =>
+                            waitForIndexedBlock(chainId, blockNumber),
                     })
 
                     onResolve?.()

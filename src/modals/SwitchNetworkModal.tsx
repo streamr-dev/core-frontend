@@ -3,8 +3,9 @@ import styled from 'styled-components'
 import { Buttons } from '~/components/Buttons'
 import PngIcon from '~/shared/components/PngIcon'
 import { ethereumNetworks } from '~/shared/utils/constants'
+import { RejectionReason } from '~/utils/exceptions'
 import Modal, { ModalProps } from './Modal'
-import { Footer, RejectionReason } from './BaseModal'
+import { Footer } from './BaseModal'
 
 interface Props extends Pick<ModalProps, 'onReject' | 'darkBackdrop'> {
     expectedNetwork: number | string

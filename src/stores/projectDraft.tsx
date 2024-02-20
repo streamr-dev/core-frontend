@@ -1,41 +1,28 @@
-import React, { useCallback } from 'react'
-import { toaster } from 'toasterhea'
-import { useNavigate } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import uniqueId from 'lodash/uniqueId'
+import { useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { randomHex } from 'web3-utils'
-import {
-    ParsedProject,
-    ProjectParser,
-    getEmptyParsedProject,
-} from '~/parsers/ProjectParser'
-import { createDraftStore, getEmptyDraft } from '~/utils/draft'
-import { ProjectType } from '~/shared/types'
-import getGraphClient from '~/getters/getGraphClient'
-import {
-    GetProjectDocument,
-    GetProjectQuery,
-    GetProjectQueryVariables,
-} from '~/generated/gql/network'
-import { Operation } from '~/shared/toasts/TransactionListToast'
-import { toastedOperations } from '~/utils/toastedOperation'
+import { ValidationError } from '~/errors'
+import { getDataUnion } from '~/getters/du'
+import { ParsedProject, getEmptyParsedProject } from '~/parsers/ProjectParser'
+import routes from '~/routes'
 import {
     createProject,
     deployDataUnionContract,
     getPublishableProjectProperties,
     updateProject,
 } from '~/services/projects'
-import { getDataUnion } from '~/getters/du'
-import { getProjectRegistryChainId } from '~/getters'
-import networkPreflight from '~/utils/networkPreflight'
 import { useHasActiveProjectSubscription } from '~/shared/stores/purchases'
 import { useWalletAccount } from '~/shared/stores/wallet'
+import { Operation } from '~/shared/toasts/TransactionListToast'
+import { ProjectType } from '~/shared/types'
 import { isProjectOwnedBy } from '~/utils'
-import Toast, { ToastType } from '~/shared/toasts/Toast'
-import { Layer } from '~/utils/Layer'
-import { ValidationError } from '~/errors'
-import routes from '~/routes'
 import { toBN } from '~/utils/bn'
+import { createDraftStore, getEmptyDraft } from '~/utils/draft'
+import networkPreflight from '~/utils/networkPreflight'
+import { validationErrorToast } from '~/utils/toast'
+import { toastedOperations } from '~/utils/toastedOperation'
 
 const {
     DraftContext: ProjectDraftContext,
@@ -48,18 +35,23 @@ const {
     useSetDraftErrors: useSetProjectDraftErrors,
     useUpdateEntity: useUpdateProject,
 } = createDraftStore<ParsedProject>({
-    async persist({ entity: { cold, hot: project } }) {
+    async persist({ entity }) {
         const operations: Operation[] = []
+
+        if (!entity) {
+            return
+        }
+
+        const { cold, hot: project } = entity
+
+        const { chainId } = cold
 
         if (project.id) {
             const projectId = project.id
 
             const shouldUpdateAdminFee = requiresAdminFeeUpdate(project, cold)
 
-            const shouldUpdateMatadata = !isEqual(
-                { ...project, adminFee: '' },
-                { ...cold, adminFee: '' },
-            )
+            const shouldUpdateMatadata = !eq(cold, project)
 
             if (shouldUpdateAdminFee) {
                 operations.push({
@@ -114,7 +106,7 @@ const {
                 }
 
                 if (shouldUpdateMatadata) {
-                    await updateProject(projectId, {
+                    await updateProject(chainId, projectId, {
                         domainIds,
                         metadata,
                         paymentDetails,
@@ -169,14 +161,12 @@ const {
                     throw new Error('Unexpected beneficiary')
                 }
 
-                const chainId = getProjectRegistryChainId()
-
                 await networkPreflight(chainId)
 
                 const dataUnionId = await deployDataUnionContract(
+                    domainId,
                     projectId,
                     adminFee,
-                    domainId,
                 )
 
                 /**
@@ -188,7 +178,7 @@ const {
                 next()
             }
 
-            await createProject(projectId, {
+            await createProject(chainId, projectId, {
                 domainIds,
                 isPublicPurchasable: project.type !== ProjectType.OpenData,
                 metadata,
@@ -196,24 +186,6 @@ const {
                 streams,
             })
         })
-    },
-
-    async fetch(projectId) {
-        const {
-            data: { project: graphProject },
-        } = await getGraphClient().query<GetProjectQuery, GetProjectQueryVariables>({
-            query: GetProjectDocument,
-            variables: {
-                id: projectId.toLowerCase(),
-            },
-            fetchPolicy: 'network-only',
-        })
-
-        if (!graphProject) {
-            throw new Error('Not found or invalid')
-        }
-
-        return ProjectParser.parseAsync(graphProject)
     },
 
     getEmptyDraft() {
@@ -224,13 +196,18 @@ const {
         )
     },
 
-    isEqual(cold, hot) {
-        return (
-            !requiresAdminFeeUpdate(hot, cold) &&
-            isEqual({ ...hot, adminFee: '' }, { ...cold, adminFee: '' })
-        )
-    },
+    isEqual: eq,
+
+    prefix: 'ProjectDraft-',
 })
+
+function eq(cold: ParsedProject, hot: ParsedProject) {
+    /**
+     * Admin fee is not metadata. We have to skip it in the
+     * below payload comparison.
+     */
+    return isEqual({ ...hot, adminFee: '' }, { ...cold, adminFee: '' })
+}
 
 export {
     ProjectDraftContext,
@@ -295,7 +272,7 @@ export function useIsAccessibleByCurrentWallet() {
 
     const fetching = !!draft?.fetching
 
-    const project = draft?.entity.cold
+    const project = draft?.entity?.cold
 
     const hasActiveProjectSubscription = useHasActiveProjectSubscription(
         project?.id,
@@ -320,8 +297,6 @@ export function useIsAccessibleByCurrentWallet() {
     )
 }
 
-const persistErrorToast = toaster(Toast, Layer.Toast)
-
 export function usePersistProjectCallback() {
     const persist = usePersistCallback()
 
@@ -339,25 +314,7 @@ export function usePersistProjectCallback() {
 
             onError(e) {
                 if (e instanceof ValidationError) {
-                    const ve: ValidationError = e
-
-                    void (async () => {
-                        try {
-                            await persistErrorToast.pop({
-                                type: ToastType.Warning,
-                                title: 'Failed to publish',
-                                desc: (
-                                    <ul>
-                                        {ve.messages.map((message, index) => (
-                                            <li key={index}>{message}</li>
-                                        ))}
-                                    </ul>
-                                ),
-                            })
-                        } catch (e) {
-                            // Ignore.
-                        }
-                    })()
+                    validationErrorToast({ title: 'Failed to publish', error: e })
                 }
 
                 console.warn('Failed to publish', e)

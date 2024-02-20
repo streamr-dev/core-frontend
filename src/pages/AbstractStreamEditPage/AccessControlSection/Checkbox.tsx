@@ -1,6 +1,6 @@
-import React from 'react'
+import uniqueId from 'lodash/uniqueId'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
-
 import SharedCheckbox from '~/shared/components/Checkbox'
 import { COLORS } from '~/shared/utils/styled'
 
@@ -36,7 +36,11 @@ const Checkbox: React.FC<Props> = ({
     onChange,
     disabled,
 }) => {
-    const uniqueKey = `${operationName}-${address}`
+    const uniqueKey = useMemo(
+        () => uniqueId(`${operationName}-${address}-`),
+        [operationName, address],
+    )
+
     return (
         <Label htmlFor={uniqueKey} disabled={disabled}>
             {operationName}

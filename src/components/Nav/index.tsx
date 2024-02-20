@@ -12,6 +12,8 @@ import routes from '~/routes'
 import { useOperatorForWalletQuery } from '~/hooks/operators'
 import { saveOperator } from '~/utils'
 import { useMediaQuery } from '~/hooks'
+import { ChainSelector as UnstyledChainSelector } from '~/components/ChainSelector'
+import { useCurrentChainId } from '~/shared/stores/chain'
 import { Avatarless, Name, Username } from './User'
 import {
     Avatar,
@@ -51,6 +53,8 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
 
     const isMobile = !useMediaQuery(`only screen and ${TABLET}`)
 
+    const chainId = useCurrentChainId()
+
     return (
         <div {...props} data-testid={'desktop-nav'}>
             <Navbar>
@@ -59,7 +63,9 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                         <Logo data-testid={'logo'} />
                     </LogoLink>
                 </NavbarItem>
+                <ChainSelector data-mobile-only menuAlignment="left" />
                 <MenuGrid data-desktop-only>
+                    <div />
                     <NavbarItem>
                         <NavbarLinkDesktop
                             highlight={pathname.startsWith(routes.projects.index())}
@@ -81,6 +87,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                     <NavbarItem>
                         <Dropdown />
                     </NavbarItem>
+                    <ChainSelector menuAlignment="right" />
                 </MenuGrid>
                 {!account && (
                     <NavbarItemAccount>
@@ -146,7 +153,7 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                                             return
                                                         }
 
-                                                        saveOperator(undefined, {
+                                                        saveOperator(chainId, undefined, {
                                                             onDone(id) {
                                                                 navigate(
                                                                     routes.network.operator(
@@ -402,6 +409,21 @@ export const NavContainer = styled.div`
         }
 
         > [data-mobile-only='true'] {
+            display: none;
+        }
+    }
+`
+
+const ChainSelector = styled(UnstyledChainSelector)`
+    justify-self: right;
+
+    &[data-mobile-only='true'] {
+        display: block;
+        justify-self: left;
+    }
+
+    @media (${TABLET}) {
+        &[data-mobile-only='true'] {
             display: none;
         }
     }

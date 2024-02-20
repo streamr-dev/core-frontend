@@ -15,6 +15,7 @@ import {
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { ProjectType } from '~/shared/types'
 import { address0 } from '~/consts'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 const PageSize = 10
 
@@ -46,6 +47,8 @@ export default function EditorStreams() {
 
     const update = useUpdateProject()
 
+    const chainId = useCurrentChainId()
+
     /**
      * @todo Refactor to use `useInfiniteQuery`
      */
@@ -60,6 +63,7 @@ export default function EditorStreams() {
             setTimeout(async () => {
                 try {
                     const foundStreams = await getStreamsOwnedBy(
+                        chainId,
                         account,
                         phrase,
                         projectType === ProjectType.OpenData,
@@ -86,7 +90,7 @@ export default function EditorStreams() {
                 abortController.abort()
             }
         },
-        [account, projectType],
+        [account, projectType, chainId],
     )
 
     /**
@@ -129,7 +133,7 @@ export default function EditorStreams() {
 
         setTimeout(async () => {
             try {
-                const stats = await getStreamsFromIndexer(streamIds)
+                const stats = await getStreamsFromIndexer(chainId, streamIds)
 
                 if (!mounted || !stats.length) {
                     return
@@ -147,7 +151,7 @@ export default function EditorStreams() {
         return () => {
             mounted = false
         }
-    }, [page, foundStreams])
+    }, [page, foundStreams, chainId])
 
     return (
         <>

@@ -35,26 +35,6 @@ jest.mock('~/hooks/operators', () => {
     }
 })
 
-jest.mock('~/routes', () => ({
-    __esModule: true,
-    default: {
-        root: jest.fn(),
-        projects: {
-            index: jest.fn(),
-        },
-        streams: {
-            index: jest.fn(),
-        },
-        network: {
-            overview: jest.fn(),
-            operators: jest.fn(),
-            sponsorships: jest.fn(),
-            sponsorship: jest.fn(),
-        },
-        networkExplorer: jest.fn(),
-    },
-}))
-
 function mountNav(): RenderResult {
     return render(
         <MemoryRouter>

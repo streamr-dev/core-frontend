@@ -2,7 +2,7 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "noImplicitAny": false,
-    "module": "es6",
+    "module": "ES2020",
     "target": "es2017",
     "jsx": "react",
     "strict": true,

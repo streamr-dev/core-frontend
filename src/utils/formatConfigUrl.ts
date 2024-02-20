@@ -1,7 +1,15 @@
-import getConfig from '~/getters/getConfig'
-export default function formatConfigUrl(url: string, { protocol = 'http' } = {}): string {
-    const { docker } = getConfig()
-    const dockerHost = process.env.STREAMR_DOCKER_DEV_HOST || docker?.host
+interface FormatConfigUrlOptions {
+    protocol?: string
+    dockerHost?: string
+}
+
+export default function formatConfigUrl(
+    url: string,
+    options: FormatConfigUrlOptions = {},
+): string {
+    const { protocol = 'http' } = options
+
+    const dockerHost = process.env.STREAMR_DOCKER_DEV_HOST || options.dockerHost
 
     // Config contains references to local docker environment (10.200.10.1).
     // Make sure we are compatible with other docker hosts as well.

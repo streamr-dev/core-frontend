@@ -12,17 +12,13 @@ import { getConfigForChain } from '~/shared/web3/config'
 import networkPreflight from '~/utils/networkPreflight'
 import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
 import { BNish, toBN } from '~/utils/bn'
-import { defaultChainConfig } from '~/getters/getChainConfig'
 import { toastedOperation, toastedOperations } from '~/utils/toastedOperation'
 import { postImage } from '~/services/images'
 import { Operation } from '~/shared/toasts/TransactionListToast'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 
-const getOperatorChainId = () => {
-    return defaultChainConfig.id
-}
-
 export async function createOperator(
+    chainId: number,
     params: {
         cut: number
         description: string
@@ -34,8 +30,6 @@ export async function createOperator(
 ): Promise<void> {
     const { cut, name, redundancyFactor, description, imageToUpload } = params
 
-    const chainId = getOperatorChainId()
-
     const chainConfig = getConfigForChain(chainId)
 
     await networkPreflight(chainId)
@@ -44,7 +38,9 @@ export async function createOperator(
 
     const walletAddress = await signer.getAddress()
 
-    const imageIpfsCid = imageToUpload ? await postImage(imageToUpload) : undefined
+    const imageIpfsCid = imageToUpload
+        ? await postImage(chainId, imageToUpload)
+        : undefined
 
     const factory = new Contract(
         chainConfig.contracts['OperatorFactory'],
@@ -87,6 +83,7 @@ export async function createOperator(
 }
 
 export async function updateOperator(
+    chainId: number,
     operator: ParsedOperator,
     mods: {
         name: string
@@ -132,8 +129,6 @@ export async function updateOperator(
     const blockNumbers: number[] = []
 
     await toastedOperations(operations, async (next) => {
-        const chainId = getOperatorChainId()
-
         if (hasUpdateCutOperation) {
             await networkPreflight(chainId)
 
@@ -168,7 +163,7 @@ export async function updateOperator(
             ) as Operator
 
             const imageIpfsCid = imageToUpload
-                ? await postImage(imageToUpload)
+                ? await postImage(chainId, imageToUpload)
                 : operator.metadata.imageIpfsCid
 
             const tx = await operatorContract.updateMetadata(
@@ -190,12 +185,11 @@ export async function updateOperator(
 }
 
 export async function delegateToOperator(
+    chainId: number,
     operatorId: string,
     amount: BNish,
     options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
-    const chainId = getOperatorChainId()
-
     const chainConfig = getConfigForChain(chainId)
 
     await networkPreflight(chainId)
@@ -218,12 +212,11 @@ export async function delegateToOperator(
 }
 
 export async function undelegateFromOperator(
+    chainId: number,
     operatorId: string,
     amount: BNish,
     options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
-    const chainId = getOperatorChainId()
-
     await networkPreflight(chainId)
 
     const signer = await getSigner()
@@ -247,21 +240,26 @@ export async function undelegateFromOperator(
     })
 }
 
-export async function getOperatorDelegationAmount(operatorId: string, address: string) {
-    const chainId = getOperatorChainId()
+export async function getOperatorDelegationAmount(
+    chainId: number,
+    operatorId: string,
+    address: string,
+) {
     const provider = getPublicWeb3Provider(chainId)
+
     const operatorContract = new Contract(operatorId, operatorABI, provider) as Operator
+
     const amount = await operatorContract.balanceOf(address)
+
     return toBN(amount)
 }
 
 export async function setOperatorNodeAddresses(
+    chainId: number,
     operatorId: string,
     addresses: string[],
     options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ) {
-    const chainId = getOperatorChainId()
-
     await networkPreflight(chainId)
 
     const signer = await getSigner()

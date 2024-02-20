@@ -2,50 +2,52 @@ import moment from 'moment'
 import { ChartPeriod } from '~/types'
 import { GetOperatorDailyBucketsQuery } from '~/generated/gql/network'
 import { toBN } from '~/utils/bn'
-import getSponsorshipTokenInfo from './getSponsorshipTokenInfo'
+import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { getOperatorDailyBuckets } from '.'
 
 export const getOperatorStats = async (
+    chainId: number,
     operatorId: string,
     selectedPeriod: ChartPeriod,
     dataSource: string,
     { force = false, ignoreToday = false } = {},
 ): Promise<{ x: number; y: number }[]> => {
-    const tokenInfo = await getSponsorshipTokenInfo()
+    const tokenInfo = await getSponsorshipTokenInfo(chainId)
+
     const start = ignoreToday ? moment().utc().startOf('day') : moment().utc()
 
     let result: GetOperatorDailyBucketsQuery['operatorDailyBuckets']
     switch (selectedPeriod) {
         case ChartPeriod.SevenDays:
-            result = await getOperatorDailyBuckets(operatorId, {
+            result = await getOperatorDailyBuckets(chainId, operatorId, {
                 dateGreaterEqualThan: start.clone().subtract(7, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.OneMonth:
-            result = await getOperatorDailyBuckets(operatorId, {
+            result = await getOperatorDailyBuckets(chainId, operatorId, {
                 dateGreaterEqualThan: start.clone().subtract(30, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.ThreeMonths:
-            result = await getOperatorDailyBuckets(operatorId, {
+            result = await getOperatorDailyBuckets(chainId, operatorId, {
                 dateGreaterEqualThan: start.clone().subtract(90, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.OneYear:
-            result = await getOperatorDailyBuckets(operatorId, {
+            result = await getOperatorDailyBuckets(chainId, operatorId, {
                 dateGreaterEqualThan: start.clone().subtract(365, 'days').unix(),
                 dateLowerThan: start.unix(),
                 force,
             })
             break
         case ChartPeriod.YearToDate:
-            result = await getOperatorDailyBuckets(operatorId, {
+            result = await getOperatorDailyBuckets(chainId, operatorId, {
                 dateGreaterEqualThan: start.clone().startOf('year').unix(),
                 dateLowerThan: start.unix(),
                 force,
@@ -58,7 +60,7 @@ export const getOperatorStats = async (
             const elements: GetOperatorDailyBucketsQuery['operatorDailyBuckets'] = []
             // yeah - I'm guessing we will not have a history longer than 5 thousand days :)
             for (let i = 0; i < maxIterations; i++) {
-                const partialResult = await getOperatorDailyBuckets(operatorId, {
+                const partialResult = await getOperatorDailyBuckets(chainId, operatorId, {
                     dateGreaterEqualThan: endDate.unix(),
                     dateLowerThan: start.unix(),
                     batchSize: maxAmount,

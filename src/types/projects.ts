@@ -3,10 +3,10 @@ import { isAddress } from 'web3-validator'
 import { ProjectType } from '~/shared/types'
 import { formatChainName } from '~/utils'
 import { toBN } from '~/utils/bn'
-import { defaultChainConfig } from '~/getters/getChainConfig'
 import { getDataAddress } from '~/marketplace/utils/web3'
 import { address0 } from '~/consts'
 import { timeUnits } from '~/shared/utils/timeUnit'
+import { getCurrentChain } from '~/getters/getCurrentChain'
 
 function getFormattedChainNameFromContext({ path: [, chainName] }: z.RefinementCtx) {
     if (typeof chainName !== 'string' || !chainName) {
@@ -193,7 +193,7 @@ export const OpenDataPayload = z.object({
             .transform((v) => v || undefined),
     }),
     salePoints: SalePointsPayload.transform(() => {
-        const { name: chainName, id: chainId } = defaultChainConfig
+        const { name: chainName, id: chainId } = getCurrentChain()
 
         return {
             [chainName]: {

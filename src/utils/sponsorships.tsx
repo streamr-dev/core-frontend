@@ -1,13 +1,12 @@
 import { Sponsorship, sponsorshipABI } from '@streamr/network-contracts'
-import { config } from '@streamr/config'
 import { Contract } from 'ethers'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import { toBN } from '~/utils/bn'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
-import getCoreConfig from '~/getters/getCoreConfig'
 import { getCustomTokenBalance } from '~/marketplace/utils/web3'
-import { defaultChainConfig } from '~/getters/getChainConfig'
+import { getConfigForChain } from '~/shared/web3/config'
+import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 
 /**
  * Scouts for Operator's funding share.
@@ -38,11 +37,10 @@ export function isSponsorshipFundedByOperator(
  * Gets the current Sponsorship leave penalty for a given Operator.
  */
 export async function getSponsorshipLeavePenalty(
+    chainId: number,
     sponsorshipId: string,
     operatorId: string,
 ) {
-    const { id: chainId } = config[getCoreConfig().defaultChain || 'polygon']
-
     const contract = new Contract(
         sponsorshipId,
         sponsorshipABI,
@@ -56,10 +54,14 @@ export async function getSponsorshipLeavePenalty(
  * Fetches wallet's balance of the Sponsorship-native token
  * on the default chain.
  */
-export async function getBalanceForSponsorship(wallet: string) {
+export async function getBalanceForSponsorship(chainId: number, wallet: string) {
+    const chain = getConfigForChain(chainId)
+
+    const { sponsorshipPaymentToken } = getChainConfigExtension(chainId)
+
     return getCustomTokenBalance(
-        defaultChainConfig.contracts[getCoreConfig().sponsorshipPaymentToken],
+        chain.contracts[sponsorshipPaymentToken],
         wallet,
-        defaultChainConfig.id,
+        chain.id,
     )
 }

@@ -1,10 +1,12 @@
 import React from 'react'
-import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
 import { Button } from '~/components/Button'
-import getTransactionalClient from '~/getters/getTransactionalClient'
-import { useCurrentDraft } from '~/shared/stores/streamEditor'
+import { getStreamrClientInstance } from '~/getters/getStreamrClient'
+import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
 import routes from '~/routes'
+import { useCurrentChainId } from '~/shared/stores/chain'
+import { StreamDraft } from '~/stores/streamDraft'
 import Section from './Section'
 
 const Description = styled.p`
@@ -14,7 +16,9 @@ const Description = styled.p`
 export default function DeleteSection() {
     const navigate = useNavigate()
 
-    const { streamId } = useCurrentDraft()
+    const { id: streamId } = StreamDraft.useEntity() || {}
+
+    const chainId = useCurrentChainId()
 
     return (
         <Section title="Delete stream">
@@ -30,15 +34,30 @@ export default function DeleteSection() {
                         return
                     }
 
-                    const client = await getTransactionalClient()
+                    try {
+                        const client = await getStreamrClientInstance(chainId, {
+                            transactional: true,
+                        })
 
-                    await client.deleteStream(streamId)
+                        await client.deleteStream(streamId)
 
-                    /**
-                     * @FIXME: If the user navigates away before the above transaciton is
-                     * done the app is gonna navigate to streams/index.
-                     */
-                    navigate(routes.streams.index())
+                        /**
+                         * @FIXME: If the user navigates away before the above transaciton is
+                         * done the app is gonna navigate to streams/index.
+                         */
+
+                        navigate(routes.streams.index())
+                    } catch (e) {
+                        if (isRejectionReason(e)) {
+                            return
+                        }
+
+                        if (isTransactionRejection(e)) {
+                            return
+                        }
+
+                        throw e
+                    }
                 }}
             >
                 Delete

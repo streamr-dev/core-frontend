@@ -3,7 +3,11 @@ import { randomHex } from 'web3-utils'
 import { toaster } from 'toasterhea'
 import styled, { css } from 'styled-components'
 import { ZodError, z } from 'zod'
-import { RejectionReason, isRejectionReason } from '~/modals/BaseModal'
+import {
+    RejectionReason,
+    isRejectionReason,
+    isTransactionRejection,
+} from '~/utils/exceptions'
 import FormModal, {
     ErrorLabel,
     FieldWrap,
@@ -25,13 +29,14 @@ import CropImageModal from '~/components/CropImageModal/CropImageModal'
 import { Layer } from '~/utils/Layer'
 import { Alert } from '~/components/Alert'
 import { ParsedOperator } from '~/parsers/OperatorParser'
-import { isTransactionRejection, sameBN, waitForIndexedBlock } from '~/utils'
+import { sameBN, waitForIndexedBlock } from '~/utils'
 import { createOperator, updateOperator } from '~/services/operators'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { getParsedOperatorByOwnerAddress } from '~/getters'
 import { Hint } from '~/components/Hint'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
+    chainId: number
     onResolve?: (operatorId: string) => void
     operator: ParsedOperator | undefined
 }
@@ -69,7 +74,7 @@ const Validator = z.object({
     redundancyFactor: z.coerce.number().min(1, 'Value must be greater or equal to 1'),
 })
 
-function OperatorModal({ onResolve, onReject, operator, ...props }: Props) {
+function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Props) {
     const [title, submitLabel] = operator
         ? ['Edit Operator', 'Save']
         : ['Become an Operator', 'Become an Operator']
@@ -177,17 +182,19 @@ function OperatorModal({ onResolve, onReject, operator, ...props }: Props) {
 
                 try {
                     if (!operator) {
-                        await createOperator(finalData, {
-                            onBlockNumber: waitForIndexedBlock,
+                        await createOperator(chainId, finalData, {
+                            onBlockNumber: (blockNumber) =>
+                                waitForIndexedBlock(chainId, blockNumber),
                         })
                     } else {
-                        await updateOperator(operator, finalData, {
-                            onBlockNumber: waitForIndexedBlock,
+                        await updateOperator(chainId, operator, finalData, {
+                            onBlockNumber: (blockNumber) =>
+                                waitForIndexedBlock(chainId, blockNumber),
                         })
                     }
 
                     const operatorId = (
-                        await getParsedOperatorByOwnerAddress(walletAddress, {
+                        await getParsedOperatorByOwnerAddress(chainId, walletAddress, {
                             force: true,
                         })
                     )?.id

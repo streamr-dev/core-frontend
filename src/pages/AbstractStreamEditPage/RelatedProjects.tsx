@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { MarketplaceProductTile } from '~/shared/components/Tile'
 import { TABLET, PHONE } from '~/shared/utils/styled'
 import { TheGraphProject, getProjects } from '~/services/projects'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 const Container = styled.div`
     margin-top: 80px;
@@ -37,11 +38,24 @@ type Props = {
 export default function RelatedProjects({ streamId }: Props) {
     const [projects, setProjects] = useState<TheGraphProject[]>([])
 
+    const chainId = useCurrentChainId()
+
     useEffect(() => {
+        /**
+         * @todo Refactor using useQuery. #refactor
+         */
+
         let mounted = true
 
         const loadProjects = async () => {
-            const result = await getProjects(undefined, 4, 0, undefined, streamId)
+            const result = await getProjects(
+                chainId,
+                undefined,
+                4,
+                0,
+                undefined,
+                streamId,
+            )
 
             if (mounted) {
                 setProjects(result.projects)
@@ -53,7 +67,7 @@ export default function RelatedProjects({ streamId }: Props) {
         return () => {
             mounted = false
         }
-    }, [streamId])
+    }, [streamId, chainId])
 
     if (projects.length === 0) {
         return null
