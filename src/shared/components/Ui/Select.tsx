@@ -1,8 +1,8 @@
 import React, { FunctionComponent, ReactElement, ReactNode } from 'react'
-import styled from 'styled-components'
 import ReactSelect, { SingleValue, components } from 'react-select'
-import SvgIcon, { SvgIconProps } from '~/shared/components/SvgIcon'
 import { StateManagerProps } from 'react-select/dist/declarations/src/useStateManager'
+import styled from 'styled-components'
+import SvgIcon, { SvgIconProps } from '~/shared/components/SvgIcon'
 
 type Option = {
     value: any

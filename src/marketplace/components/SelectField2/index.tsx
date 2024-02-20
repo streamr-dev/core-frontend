@@ -1,30 +1,29 @@
 import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import ReactSelect, {
     ClearIndicatorProps,
-    components,
     DropdownIndicatorProps,
+    components,
 } from 'react-select'
-
+import { z } from 'zod'
 import {
     StyledCaretIcon,
+    StyledCloseIcon,
     StyledDropdownIndicator,
     StyledOption,
+    StyledWhiteDropdownOption,
+    getClearIndicatorStyles,
     getControlStyles,
     getMenuListStyles,
     getMenuStyles,
     getOptionStyles,
     getPlaceholderStyles,
     getSingleValueStyles,
-    getClearIndicatorStyles,
-    StyledCloseIcon,
     getWhiteControlStyles,
-    getWhitePlaceholderStyles,
-    getWhiteMenuStyles,
     getWhiteMenuListStyles,
+    getWhiteMenuStyles,
     getWhiteOptionStyles,
-    StyledWhiteDropdownOption,
+    getWhitePlaceholderStyles,
 } from './selectField2.styles'
-import { z } from 'zod'
 
 type Option = { label: string; value: string }
 
