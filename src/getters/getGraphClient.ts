@@ -65,17 +65,20 @@ export function getDataUnionGraphClient(chainId: number) {
     return client
 }
 
-let indexerClient: ApolloClient<NormalizedCacheObject> | undefined
+const indexerGraphClients: Partial<Record<number, ApolloClient<NormalizedCacheObject>>> =
+    {}
 
 export function getIndexerClient(chainId: number) {
-    if (!indexerClient) {
-        const { streamIndexerUrl: uri } = getChainConfigExtension(chainId)
-
-        indexerClient = new ApolloClient({
-            uri,
+    const client =
+        indexerGraphClients[chainId] ||
+        new ApolloClient({
+            uri: getChainConfigExtension(chainId).streamIndexerUrl,
             cache: new InMemoryCache(),
         })
+
+    if (!indexerGraphClients[chainId]) {
+        indexerGraphClients[chainId] = client
     }
 
-    return indexerClient
+    return client
 }
