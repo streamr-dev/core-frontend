@@ -20,18 +20,11 @@ export function getGraphClient(chainId: number) {
 }
 
 function getGraphUrl(chainId: number): string {
-    const chain = getConfigForChain(chainId)
+    const { theGraphUrl: url } = getConfigForChain(chainId)
 
-    if (chain.theGraphUrl != null) {
-        return chain.theGraphUrl
-    }
+    const { networkSubgraphUrl: fallbackUrl } = getChainConfigExtension(chainId)
 
-    // Fall back to default subgraph name
-    const { networkSubgraphUrl: url } = getChainConfigExtension(chainId)
-
-    console.warn('There is no theGraphUrl in config. Falling back to', url)
-
-    return url
+    return url || fallbackUrl
 }
 
 const dataUnionGraphClients: Partial<
