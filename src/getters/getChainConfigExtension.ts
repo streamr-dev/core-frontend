@@ -40,7 +40,7 @@ const ChainConfigExtension = z.object({
     networkSubgraphUrl: z
         .string()
         .optional()
-        .default('https://api.thegraph.com/subgraphs/name/streamr-dev/network-subgraphs'),
+        .default('https://api.thegraph.com/subgraphs/name/streamr-dev/network'),
     sponsorshipPaymentToken: z.string().optional().default('DATA'),
     storageNodes: z
         .array(
