@@ -20,6 +20,11 @@ export type Scalars = {
   Int8: { input: any; output: any; }
 };
 
+export enum Aggregation_Interval {
+  Day = 'day',
+  Hour = 'hour'
+}
+
 export type BlockChangedFilter = {
   number_gte: Scalars['Int']['input'];
 };
@@ -2629,7 +2634,8 @@ export type Query = {
   operatorDailyBuckets: Array<OperatorDailyBucket>;
   operators: Array<Operator>;
   project?: Maybe<Project>;
-  projectPaymentDetails: Array<ProjectPaymentDetails>;
+  projectPaymentDetails?: Maybe<ProjectPaymentDetails>;
+  projectPaymentDetails_collection: Array<ProjectPaymentDetails>;
   projectPermission?: Maybe<ProjectPermission>;
   projectPermissions: Array<ProjectPermission>;
   projectPurchase?: Maybe<ProjectPurchase>;
@@ -2822,6 +2828,13 @@ export type QueryProjectArgs = {
 
 
 export type QueryProjectPaymentDetailsArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryProjectPaymentDetails_CollectionArgs = {
   block?: InputMaybe<Block_Height>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<ProjectPaymentDetails_OrderBy>;
@@ -4403,7 +4416,8 @@ export type Subscription = {
   operatorDailyBuckets: Array<OperatorDailyBucket>;
   operators: Array<Operator>;
   project?: Maybe<Project>;
-  projectPaymentDetails: Array<ProjectPaymentDetails>;
+  projectPaymentDetails?: Maybe<ProjectPaymentDetails>;
+  projectPaymentDetails_collection: Array<ProjectPaymentDetails>;
   projectPermission?: Maybe<ProjectPermission>;
   projectPermissions: Array<ProjectPermission>;
   projectPurchase?: Maybe<ProjectPurchase>;
@@ -4595,6 +4609,13 @@ export type SubscriptionProjectArgs = {
 
 
 export type SubscriptionProjectPaymentDetailsArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionProjectPaymentDetails_CollectionArgs = {
   block?: InputMaybe<Block_Height>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<ProjectPaymentDetails_OrderBy>;
@@ -5212,13 +5233,6 @@ export type GetStreamByIdQueryVariables = Exact<{
 
 export type GetStreamByIdQuery = { __typename?: 'Query', stream?: { __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userAddress: any, subscribeExpiration?: any | null, publishExpiration?: any | null }> | null } | null };
 
-export type GetStreamsQueryVariables = Exact<{
-  streamIds: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
-}>;
-
-
-export type GetStreamsQuery = { __typename?: 'Query', streams: Array<{ __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userAddress: any, subscribeExpiration?: any | null, publishExpiration?: any | null }> | null }> };
-
 export type GetPagedStreamsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Stream_OrderBy>;
@@ -5648,14 +5662,6 @@ export const GetStreamByIdDocument = gql`
 }
     ${StreamFieldsFragmentDoc}`;
 export type GetStreamByIdQueryResult = Apollo.QueryResult<GetStreamByIdQuery, GetStreamByIdQueryVariables>;
-export const GetStreamsDocument = gql`
-    query getStreams($streamIds: [ID!]!) {
-  streams(where: {id_in: $streamIds}) {
-    ...StreamFields
-  }
-}
-    ${StreamFieldsFragmentDoc}`;
-export type GetStreamsQueryResult = Apollo.QueryResult<GetStreamsQuery, GetStreamsQueryVariables>;
 export const GetPagedStreamsDocument = gql`
     query getPagedStreams($first: Int, $orderBy: Stream_orderBy, $orderDirection: OrderDirection, $where: Stream_filter) {
   streams(
