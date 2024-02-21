@@ -5098,6 +5098,7 @@ export type SearchOperatorsByMetadataQuery = { __typename?: 'Query', operators: 
 
 export type GetOperatorByIdQueryVariables = Exact<{
   operatorId: Scalars['ID']['input'];
+  minBlockNumber?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
@@ -5506,8 +5507,8 @@ export const SearchOperatorsByMetadataDocument = gql`
     ${OperatorFieldsFragmentDoc}`;
 export type SearchOperatorsByMetadataQueryResult = Apollo.QueryResult<SearchOperatorsByMetadataQuery, SearchOperatorsByMetadataQueryVariables>;
 export const GetOperatorByIdDocument = gql`
-    query getOperatorById($operatorId: ID!) {
-  operator(id: $operatorId) {
+    query getOperatorById($operatorId: ID!, $minBlockNumber: Int = 0) {
+  operator(id: $operatorId, block: {number_gte: $minBlockNumber}) {
     ...OperatorFields
   }
 }

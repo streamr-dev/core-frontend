@@ -1,7 +1,9 @@
 import { StreamrConfig } from '@streamr/network-contracts'
 import React, { useCallback, useState, useSyncExternalStore } from 'react'
 import { useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { toaster } from 'toasterhea'
+import { z } from 'zod'
 import { getConfigValueFromChain } from '~/getters/getConfigValueFromChain'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
@@ -143,4 +145,14 @@ export function useMediaQuery(query: string): boolean {
         subscribe,
         () => typeof window.matchMedia === 'function' && window.matchMedia(query).matches,
     )
+}
+
+export function useRequestedBlockNumber(): number {
+    const blockNumber = useSearchParams()[0].get('blockNumber')
+
+    try {
+        return z.coerce.number().min(0).parse(blockNumber)
+    } catch (_) {
+        return 0
+    }
 }

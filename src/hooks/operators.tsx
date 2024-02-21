@@ -39,6 +39,7 @@ import { invalidateSponsorshipQueries } from '~/hooks/sponsorships'
 import { getSigner } from '~/shared/stores/wallet'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
+import { useRequestedBlockNumber } from '~/hooks'
 
 export function useOperatorForWalletQuery(address = '') {
     const currentChainId = useCurrentChainId()
@@ -53,8 +54,10 @@ export function useOperatorForWalletQuery(address = '') {
 export function useOperatorByIdQuery(operatorId = '') {
     const currentChainId = useCurrentChainId()
 
+    const minBlockNumber = useRequestedBlockNumber()
+
     return useQuery({
-        queryKey: ['operatorByIdQueryKey', currentChainId, operatorId],
+        queryKey: ['operatorByIdQueryKey', currentChainId, operatorId, minBlockNumber],
         async queryFn() {
             if (!operatorId) {
                 return null
@@ -62,6 +65,7 @@ export function useOperatorByIdQuery(operatorId = '') {
 
             const operator = await getOperatorById(currentChainId, operatorId, {
                 force: true,
+                minBlockNumber,
             })
 
             if (operator) {
@@ -90,7 +94,7 @@ export function invalidateActiveOperatorByIdQueries(
     if (operatorId) {
         return getQueryClient().invalidateQueries({
             queryKey: ['operatorByIdQueryKey', chainId, operatorId],
-            exact: true,
+            exact: false,
             refetchType: 'active',
         })
     }

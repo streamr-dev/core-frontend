@@ -601,7 +601,7 @@ export async function searchOperatorsByMetadata({
 export async function getOperatorById(
     chainId: number,
     operatorId: string,
-    { force = false } = {},
+    { force = false, minBlockNumber = 0 } = {},
 ): Promise<NonNullable<GetOperatorByIdQuery['operator']> | null> {
     const {
         data: { operator },
@@ -612,6 +612,7 @@ export async function getOperatorById(
         query: GetOperatorByIdDocument,
         variables: {
             operatorId,
+            minBlockNumber,
         },
         fetchPolicy: force ? 'network-only' : void 0,
     })

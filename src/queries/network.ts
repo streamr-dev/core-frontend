@@ -101,8 +101,8 @@ gql`
         }
     }
 
-    query getOperatorById($operatorId: ID!) {
-        operator(id: $operatorId) {
+    query getOperatorById($operatorId: ID!, $minBlockNumber: Int = 0) {
+        operator(id: $operatorId, block: { number_gte: $minBlockNumber }) {
             ...OperatorFields
         }
     }
