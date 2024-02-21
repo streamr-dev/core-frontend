@@ -54,7 +54,7 @@ const Inner = styled.div`
 type Props = {
     className?: string
     onPartitionChange: (partition: number) => void
-    onSettingsButtonClick: (streamId: string) => void
+    onSettingsButtonClick?: (streamId: string) => void
     partition: number
     partitions: Array<any>
     streamId: string

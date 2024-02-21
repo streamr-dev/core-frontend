@@ -1,10 +1,7 @@
 import React, { ReactNode } from 'react'
 import { UseInfiniteQueryResult } from '@tanstack/react-query'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
-import {
-    ScrollTableCore,
-    ScrollTableOrderDirection,
-} from '~/shared/components/ScrollTable/ScrollTable'
+import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { useOperatorForWalletQuery } from '~/hooks/operators'
@@ -19,12 +16,13 @@ import {
 import { FundedUntilCell, NumberOfOperatorsCell, StreamIdCell } from '~/components/Table'
 import { abbr } from '~/utils'
 import { useCurrentChainId } from '~/shared/stores/chain'
+import { OrderDirection } from '~/types'
 
 interface Props {
     noDataFirstLine?: ReactNode
     noDataSecondLine?: ReactNode
     orderBy?: string
-    orderDirection?: ScrollTableOrderDirection
+    orderDirection?: OrderDirection
     onOrderChange?: (columnKey: string) => void
     query: UseInfiniteQueryResult<{ skip: number; sponsorships: ParsedSponsorship[] }>
     hideStreamId?: boolean

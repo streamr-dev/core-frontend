@@ -19,7 +19,6 @@ name = "streamr-dev/dataunion"
 [mumbai]
 marketplaceChains = ['mumbai']
 networkSubgraphUrl = "https://api.thegraph.com/subgraphs/name/samt1803/network-subgraphs"
-streamIndexerUrl = "https://stream-metrics-staging.streamr.network/api"
 
 [mumbai.client]
 dataUnionJoinServerUrl = "https://join.dataunions.org/"
@@ -35,6 +34,7 @@ name = "samt1803/dataunion-subgraphs"
 
 [polygon]
 marketplaceChains = ['gnosis', 'polygon']
+streamIndexerUrl = "https://stream-metrics.streamr.network/api"
 
 [[polygon.storageNodes]]
 name = "Streamr Germany"

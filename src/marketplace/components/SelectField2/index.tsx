@@ -1,28 +1,28 @@
 import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import ReactSelect, {
     ClearIndicatorProps,
-    components,
     DropdownIndicatorProps,
+    components,
 } from 'react-select'
-
+import { z } from 'zod'
 import {
     StyledCaretIcon,
+    StyledCloseIcon,
     StyledDropdownIndicator,
     StyledOption,
+    StyledWhiteDropdownOption,
+    getClearIndicatorStyles,
     getControlStyles,
     getMenuListStyles,
     getMenuStyles,
     getOptionStyles,
     getPlaceholderStyles,
     getSingleValueStyles,
-    getClearIndicatorStyles,
-    StyledCloseIcon,
     getWhiteControlStyles,
-    getWhitePlaceholderStyles,
-    getWhiteMenuStyles,
     getWhiteMenuListStyles,
+    getWhiteMenuStyles,
     getWhiteOptionStyles,
-    StyledWhiteDropdownOption,
+    getWhitePlaceholderStyles,
 } from './selectField2.styles'
 
 type Option = { label: string; value: string }
@@ -41,17 +41,15 @@ type SelectFieldProps = {
 
 const DropdownIndicator = (props: DropdownIndicatorProps) => {
     return (
-        components.DropdownIndicator && (
-            <StyledDropdownIndicator {...props}>
-                <StyledCaretIcon
-                    name="caretDown"
-                    className={
-                        (props.selectProps.menuIsOpen ? 'rotated' : '') +
-                        (props.selectProps.isDisabled ? 'disabled' : '')
-                    }
-                />
-            </StyledDropdownIndicator>
-        )
+        <StyledDropdownIndicator {...props}>
+            <StyledCaretIcon
+                name="caretDown"
+                className={
+                    (props.selectProps.menuIsOpen ? 'rotated' : '') +
+                    (props.selectProps.isDisabled ? 'disabled' : '')
+                }
+            />
+        </StyledDropdownIndicator>
     )
 }
 
@@ -73,7 +71,7 @@ const SelectField2: FunctionComponent<SelectFieldProps> = ({
     options,
     value,
     onChange,
-    disabled,
+    disabled = false,
     isClearable = true,
     whiteVariant = false,
     noShrink = false,
@@ -126,12 +124,14 @@ const SelectField2: FunctionComponent<SelectFieldProps> = ({
         setSelected(value)
     }, [value])
 
-    const handleChange = (option: Option): void => {
-        if (disabled) {
+    const handleChange = (option: unknown): void => {
+        if (disabled || !isOption(option)) {
             return
         }
-        setSelected(option?.value)
-        onChange(option?.value)
+
+        setSelected(option.value)
+
+        onChange(option.value)
     }
 
     return (
@@ -158,7 +158,7 @@ const SelectField2: FunctionComponent<SelectFieldProps> = ({
                 value={
                     selected ? options.find((option) => option.value === selected) : null
                 }
-                onChange={(option: Option | null) => handleChange(option)}
+                onChange={handleChange}
                 styles={whiteVariant ? whiteVariantStyles : defaultStyles}
                 menuPortalTarget={document.body}
             />
@@ -167,3 +167,7 @@ const SelectField2: FunctionComponent<SelectFieldProps> = ({
 }
 
 export default SelectField2
+
+function isOption(arg: unknown): arg is Option {
+    return z.object({ label: z.string(), value: z.string() }).safeParse(arg).success
+}

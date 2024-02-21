@@ -20,7 +20,11 @@ import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
 import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
 import { getOperatorStats } from '~/getters/getOperatorStats'
-import NetworkPageSegment, { Pad, SegmentGrid } from '~/components/NetworkPageSegment'
+import NetworkPageSegment, {
+    Pad,
+    SegmentGrid,
+    TitleBar,
+} from '~/components/NetworkPageSegment'
 import NetworkChartDisplay from '~/components/NetworkChartDisplay'
 import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
 import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
@@ -294,10 +298,9 @@ export const SingleOperatorPage = () => {
                         <NetworkPageSegment
                             foot
                             title={
-                                <TitleWithCount>
-                                    <span>Sponsorships</span>
-                                    <Count>{operator.stakes.length}</Count>
-                                </TitleWithCount>
+                                <TitleBar label={operator.stakes.length}>
+                                    Sponsorships
+                                </TitleBar>
                             }
                         >
                             <ScrollTable
@@ -706,10 +709,9 @@ export const SingleOperatorPage = () => {
                         {isOwner && (
                             <NetworkPageSegment
                                 title={
-                                    <TitleWithCount>
-                                        <span>Live nodes</span>
-                                        <Count>{Object.keys(heartbeats).length}</Count>
-                                    </TitleWithCount>
+                                    <TitleBar label={Object.keys(heartbeats).length}>
+                                        Live nodes
+                                    </TitleBar>
                                 }
                             >
                                 <LiveNodesTable heartbeats={heartbeats} />
@@ -769,20 +771,6 @@ const Badge = styled.div`
     letter-spacing: 0.14px;
     padding: 0px 10px;
     margin-left: 12px;
-`
-
-const TitleWithCount = styled.h2`
-    display: flex;
-    align-items: center;
-`
-
-const Count = styled.div`
-    background-color: ${COLORS.secondary};
-    border-radius: 50%;
-    margin-left: 10px;
-    width: 30px;
-    font-size: 14px;
-    text-align: center;
 `
 
 const NodeAddressHeader = styled.h2`

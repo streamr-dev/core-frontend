@@ -16,7 +16,6 @@ import {
 } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import routes from '~/routes'
-import { ScrollTableOrderDirection } from '~/shared/components/ScrollTable/ScrollTable'
 import { useCurrentChainId } from '~/shared/stores/chain'
 
 const PAGE_SIZE = 20
@@ -41,9 +40,9 @@ export const SponsorshipsPage = () => {
 
     const wallet = useWalletAccount()
 
-    const { orderBy, orderDirection, handleOrderChange } = useTableOrder({
+    const { orderBy, orderDirection, setOrder } = useTableOrder<string>({
         orderBy: 'staked',
-        orderDirection: ScrollTableOrderDirection.Desc,
+        orderDirection: 'desc',
     })
 
     const allSponsorshipsQuery = useAllSponsorshipsQuery({
@@ -137,7 +136,7 @@ export const SponsorshipsPage = () => {
                             }
                             orderBy={orderBy}
                             orderDirection={orderDirection}
-                            onOrderChange={handleOrderChange}
+                            onOrderChange={setOrder}
                         />
                     </NetworkPageSegment>
                 </SegmentGrid>

@@ -2,10 +2,13 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import { useQuery } from '@tanstack/react-query'
-import styled from 'styled-components'
 import Layout from '~/components/Layout'
 import { NetworkHelmet } from '~/components/Helmet'
-import NetworkPageSegment, { Pad, SegmentGrid } from '~/components/NetworkPageSegment'
+import NetworkPageSegment, {
+    Pad,
+    SegmentGrid,
+    TitleBar,
+} from '~/components/NetworkPageSegment'
 import StatGrid, { StatCell } from '~/components/StatGrid'
 import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
 import {
@@ -136,10 +139,9 @@ function MyOperatorSummary() {
     return (
         <NetworkPageSegment
             title={
-                <MyOperatorSummaryTitle>
-                    <h2>My operator summary</h2>
-                    <div>
-                        {operator && (
+                <TitleBar
+                    aux={
+                        operator && (
                             <Button
                                 kind="secondary"
                                 as={Link}
@@ -147,9 +149,11 @@ function MyOperatorSummary() {
                             >
                                 View Operator
                             </Button>
-                        )}
-                    </div>
-                </MyOperatorSummaryTitle>
+                        )
+                    }
+                >
+                    My operator summary
+                </TitleBar>
             }
         >
             <WalletPass resourceName="operator summary" roundBorders>
@@ -230,21 +234,6 @@ function MyOperatorSummary() {
         </NetworkPageSegment>
     )
 }
-
-const MyOperatorSummaryTitle = styled.div`
-    align-items: center;
-    display: flex;
-    height: 30px;
-
-    h2 {
-        flex-grow: 1;
-        margin: 0 8px 0 0;
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-`
 
 function MyDelegationsSummary() {
     const wallet = useWalletAccount()

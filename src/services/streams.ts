@@ -1,4 +1,5 @@
-import _ from 'lodash'
+import omitBy from 'lodash/omitBy'
+import isEmpty from 'lodash/isEmpty'
 import { address0 } from '~/consts'
 import { post } from '~/shared/utils/api'
 import { getGraphClient } from '~/getters/getGraphClient'
@@ -9,16 +10,14 @@ import {
     GetStreamByIdDocument,
     GetStreamByIdQuery,
     GetStreamByIdQueryVariables,
-    GetStreamsDocument,
-    GetStreamsQuery,
-    GetStreamsQueryVariables,
-    OrderDirection,
+    OrderDirection as GraphOrderDirection,
     Stream,
     Stream_Filter,
     Stream_OrderBy,
     StreamPermission,
 } from '~/generated/gql/network'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
+import { OrderDirection } from '~/types'
 
 export type TheGraphStreamPermission = {
     userAddress: string
@@ -130,28 +129,6 @@ const prepareStreamResult = (
     }
 }
 
-export const getStreams = async (
-    chainId: number,
-    streamIds: Array<string>,
-    { force = false } = {},
-): Promise<TheGraphStream[]> => {
-    const {
-        data: { streams },
-    } = await getGraphClient(chainId).query<GetStreamsQuery, GetStreamsQueryVariables>({
-        query: GetStreamsDocument,
-        variables: {
-            streamIds,
-        },
-        fetchPolicy: force ? 'network-only' : void 0,
-    })
-
-    if (streams && streams.length > 0) {
-        return streams.map((s) => mapStream(s))
-    }
-
-    return []
-}
-
 export const getPagedStreams = async (
     chainId: number,
     first: number,
@@ -159,10 +136,13 @@ export const getPagedStreams = async (
     owner?: string,
     search?: string,
     orderBy = Stream_OrderBy.Id,
-    orderDirection = OrderDirection.Asc,
+    orderDirection: OrderDirection = 'asc',
     { force = false } = {},
 ): Promise<TheGraphStreamResult> => {
-    const orderOperator = orderDirection === OrderDirection.Asc ? 'gt' : 'lt'
+    const orderOperator = orderDirection === 'asc' ? 'gt' : 'lt'
+
+    const graphOrderDirection =
+        orderDirection === 'asc' ? GraphOrderDirection.Asc : GraphOrderDirection.Desc
 
     let where: Stream_Filter = {
         permissions_: {
@@ -172,8 +152,8 @@ export const getPagedStreams = async (
         [`id_${orderOperator}`]: lastId,
     }
 
-    where.permissions_ = _.omitBy(where.permissions_, _.isEmpty)
-    where = _.omitBy(where, _.isEmpty)
+    where.permissions_ = omitBy(where.permissions_, isEmpty)
+    where = omitBy(where, isEmpty)
 
     const {
         data: { streams },
@@ -185,7 +165,7 @@ export const getPagedStreams = async (
         variables: {
             first: first + 1,
             orderBy,
-            orderDirection,
+            orderDirection: graphOrderDirection,
             where,
         },
         fetchPolicy: force ? 'network-only' : void 0,
@@ -200,20 +180,6 @@ export const getPagedStreams = async (
         hasNextPage: false,
         lastId: null,
     }
-}
-
-export enum IndexerOrderBy {
-    Id = 'ID',
-    Description = 'DESCRIPTION',
-    PeerCount = 'PEER_COUNT',
-    MsgPerSecond = 'MESSAGES_PER_SECOND',
-    SubscriberCount = 'SUBSCRIBER_COUNT',
-    PublisherCount = 'PUBLISHER_COUNT',
-}
-
-export enum IndexerOrderDirection {
-    Asc = 'ASC',
-    Desc = 'DESC',
 }
 
 export type IndexerStream = {
@@ -231,82 +197,16 @@ export type IndexerResult = {
     hasNextPage: boolean
 }
 
-export const getPagedStreamsFromIndexer = async (
-    chainId: number,
-    first: number,
-    cursor?: string,
-    owner?: string,
-    search?: string,
-    orderBy?: IndexerOrderBy,
-    orderDirection?: IndexerOrderDirection,
-): Promise<IndexerResult> => {
-    const { streamIndexerUrl } = getChainConfigExtension(chainId)
-
-    const ownerFilter = owner != null ? `owner: "${owner}"` : null
-    const searchFilter =
-        search != null && search.length > 0 ? `searchTerm: "${search}"` : null
-    const cursorFilter = cursor != null ? `cursor: "${cursor}"` : null
-    const allFilters = [ownerFilter, searchFilter, cursorFilter]
-        .filter((filter) => !!filter)
-        .join(',')
-
-    const result = await post({
-        url: streamIndexerUrl,
-        data: {
-            query: `
-                {
-                    streams(
-                        pageSize: ${first},
-                        orderBy: ${
-                            orderBy?.toString() ?? IndexerOrderBy.MsgPerSecond.toString()
-                        },
-                        orderDirection: ${
-                            orderDirection?.toString() ??
-                            IndexerOrderDirection.Desc.toString()
-                        },
-                        ${allFilters},
-                    ) {
-                        items {
-                          id
-                          description
-                          peerCount
-                          messagesPerSecond
-                          subscriberCount
-                          publisherCount
-                        }
-                        cursor
-                    }
-                }
-            `,
-        },
-        options: {
-            timeout: 2000, // apply timeout so we fall back to using The Graph faster
-        },
-    })
-
-    const resultObj = result.data.streams
-    if (resultObj) {
-        return {
-            streams: resultObj.items,
-            cursor: resultObj.cursor,
-            hasNextPage: resultObj.cursor != null,
-        }
-    }
-
-    return {
-        streams: [],
-        cursor: null,
-        hasNextPage: false,
-    }
-}
-
+/**
+ * @deprecated
+ */
 export const getStreamsFromIndexer = async (
     chainId: number,
     streamIds: Array<string>,
 ): Promise<Array<IndexerStream>> => {
     const { streamIndexerUrl } = getChainConfigExtension(chainId)
 
-    if (streamIds == null || streamIds.length === 0) {
+    if (!streamIndexerUrl || streamIds == null || streamIds.length === 0) {
         return []
     }
 
@@ -333,33 +233,6 @@ export const getStreamsFromIndexer = async (
     return result.data.streams.items
 }
 
-export type GlobalStreamStats = {
-    streamCount: number
-    messagesPerSecond: number
-}
-
-export const getGlobalStatsFromIndexer = async (
-    chainId: number,
-): Promise<GlobalStreamStats> => {
-    const { streamIndexerUrl } = getChainConfigExtension(chainId)
-
-    const result = await post({
-        url: streamIndexerUrl,
-        data: {
-            query: `
-                {
-                    summary {
-                        streamCount
-                        messagesPerSecond
-                    }
-                }
-            `,
-        },
-    })
-
-    return result.data.summary
-}
-
 export const getStreamsOwnedBy = async (
     chainId: number,
     owner?: string,
@@ -374,7 +247,7 @@ export const getStreamsOwnedBy = async (
         owner,
         search,
         Stream_OrderBy.Id,
-        OrderDirection.Asc,
+        'asc',
         { force },
     )
 

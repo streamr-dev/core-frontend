@@ -175,7 +175,7 @@ export function SimpleDropdown({
     )
 }
 
-export const SimpleDropdownRoot = styled.div`
+const SimpleDropdownRoot = styled.div`
     position: relative;
 `
 

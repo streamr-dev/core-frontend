@@ -1,13 +1,5 @@
 import { toBN, BNish, BN } from '~/utils/bn'
 
-export function toNano(value: BNish) {
-    return toDecimals(value, 9)
-}
-
-export function fromNano(value: BNish) {
-    return fromDecimals(value, 9)
-}
-
 export function toAtto(value: BNish) {
     return toDecimals(value, 18)
 }

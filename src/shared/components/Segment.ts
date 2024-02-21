@@ -21,7 +21,7 @@ const Header = styled.div`
     }
 `
 const Footer = styled.div``
-const Body = styled.div`
+const Body = styled.div<{ pad?: boolean }>`
     background-color: #f8f8f8;
 
     & + & {
@@ -34,7 +34,7 @@ const Body = styled.div`
         }
     }
 
-    ${({ pad }) =>
+    ${({ pad = false }) =>
         !!pad &&
         css`
             padding: 24px;

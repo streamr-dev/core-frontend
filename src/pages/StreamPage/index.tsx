@@ -14,12 +14,14 @@ import {
     useParams,
 } from 'react-router-dom'
 import { StreamPermission } from 'streamr-client'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { Button } from '~/components/Button'
+import ColoredBox from '~/components/ColoredBox'
 import { CopyButton } from '~/components/CopyButton'
 import { FloatingToolbar } from '~/components/FloatingToolbar'
 import Helmet from '~/components/Helmet'
-import Layout from '~/components/Layout'
+import Layout, { LayoutColumn } from '~/components/Layout'
+import { Pad, SegmentGrid } from '~/components/NetworkPageSegment'
 import { useInViewport } from '~/hooks/useInViewport'
 import { GenericErrorPageContent } from '~/pages/GenericErrorPage'
 import { NotFoundPageContent } from '~/pages/NotFoundPage'
@@ -81,20 +83,42 @@ export function StreamEditPage({
     return (
         <>
             <LoadingIndicator loading={isLoading} />
-            <ContainerBox
-                disabled={disabled || !canSubmit}
-                showRelatedProjects={!!streamId}
-                showSaveButton={!isNew}
-                saveButtonRef={saveButtonRef}
-                streamId={streamId}
-                showProjectCreateHint={canGrant}
-            >
-                <InfoSection disabled={disabled} />
-                <AccessControlSection disabled={disabled} />
-                <HistorySection disabled={disabled} />
-                <PartitionsSection disabled={disabled} />
-                {canDelete && <DeleteSection />}
-            </ContainerBox>
+            <LayoutColumn>
+                <Footerless>
+                    <SegmentGrid>
+                        <ColoredBox>
+                            <Pad>
+                                <Wings>
+                                    <div>
+                                        <InfoSection disabled={disabled} />
+                                        <AccessControlSection disabled={disabled} />
+                                        <HistorySection disabled={disabled} />
+                                        <PartitionsSection disabled={disabled} />
+                                        {canDelete && <DeleteSection />}
+                                    </div>
+                                    {!isNew && (
+                                        <SaveButton
+                                            kind="primary"
+                                            type="submit"
+                                            disabled={disabled || !canSubmit}
+                                            ref={saveButtonRef}
+                                        >
+                                            Save
+                                        </SaveButton>
+                                    )}
+                                </Wings>
+                            </Pad>
+                        </ColoredBox>
+                        {streamId != null && <SponsorshipsTable streamId={streamId} />}
+                    </SegmentGrid>
+                    {streamId != null && (
+                        <>
+                            <RelatedProjects streamId={streamId} />
+                            {canGrant && <CreateProjectHint streamId={streamId} />}
+                        </>
+                    )}
+                </Footerless>
+            </LayoutColumn>
         </>
     )
 }
@@ -130,11 +154,21 @@ export function StreamConnectPage() {
     return (
         <>
             <LoadingIndicator loading={isLoading} />
-            {streamId != null && (
-                <ContainerBox fullWidth showRelatedProjects streamId={streamId}>
-                    <StreamConnect streams={[streamId]} />
-                </ContainerBox>
-            )}
+            <LayoutColumn>
+                {streamId != null && (
+                    <Footerless>
+                        <SegmentGrid>
+                            <ColoredBox>
+                                <Pad>
+                                    <StreamConnect streams={[streamId]} />
+                                </Pad>
+                            </ColoredBox>
+                            <SponsorshipsTable streamId={streamId} />
+                        </SegmentGrid>
+                        <RelatedProjects streamId={streamId} />
+                    </Footerless>
+                )}
+            </LayoutColumn>
         </>
     )
 }
@@ -435,87 +469,28 @@ const Asterisk = styled.span`
     }
 `
 
-const Inner = styled.div<{ $fullWidth?: boolean }>`
-    display: grid;
-    grid-template-columns: fit-content(680px) auto;
-    border-radius: 16px;
-    background-color: white;
-    padding: 24px;
-
-    ${({ $fullWidth = false }) =>
-        $fullWidth &&
-        css`
-            grid-template-columns: auto;
-        `}
-
-    @media ${TABLET} {
-        padding: 40px;
-    }
-
-    @media ${DESKTOP} {
-        padding: 52px;
-    }
-`
-
 const SaveButton = styled(Button)`
     width: fit-content;
     justify-self: right;
 `
 
-type ContainerBoxProps = {
-    children?: React.ReactNode
-    disabled?: boolean
-    fullWidth?: boolean
-    saveButtonRef?: MutableRefObject<Element | null> | RefCallback<Element | null>
-    showProjectCreateHint?: boolean
-    showRelatedProjects?: boolean
-    showSaveButton?: boolean
-    streamId?: string
-}
-
-const Outer = styled.div`
-    width: 100%;
-    padding: 24px 24px 80px 24px;
+const Footerless = styled.div`
+    padding-bottom: 80px;
 
     @media ${TABLET} {
-        max-width: 1296px;
-        margin: 0 auto;
-        padding: 45px 40px 90px 40px;
+        padding-bottom: 92px;
     }
 
     @media ${DESKTOP} {
-        padding: 60px 0px 130px 0px;
+        padding-bottom: 128px;
     }
 `
 
-function ContainerBox({
-    children,
-    disabled,
-    streamId,
-    showSaveButton = false,
-    fullWidth = false,
-    showRelatedProjects = false,
-    showProjectCreateHint = false,
-    saveButtonRef,
-}: ContainerBoxProps) {
-    return (
-        <Outer>
-            <Inner $fullWidth={fullWidth}>
-                <div>{children}</div>
-                {showSaveButton && (
-                    <SaveButton
-                        kind="primary"
-                        type="submit"
-                        disabled={disabled}
-                        ref={saveButtonRef}
-                    >
-                        Save
-                    </SaveButton>
-                )}
-            </Inner>
-            {streamId && <SponsorshipsTable streamId={streamId} />}
-            {showRelatedProjects && streamId && <RelatedProjects streamId={streamId} />}
-            {showProjectCreateHint && <CreateProjectHint streamId={streamId} />}
-        </Outer>
-    )
-}
+const Wings = styled.div`
+    display: grid;
+    grid-template-columns: fit-content(680px) auto;
+
+    div:first-child {
+        min-width: 0;
+    }
+`

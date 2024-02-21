@@ -16,7 +16,11 @@ import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { SponsorshipActionBar } from '~/components/ActionBars/SponsorshipActionBar'
 import { useSponsorshipFundingHistoryQuery } from '~/hooks/useSponsorshipFundingHistoryQuery'
 import { ChartPeriod } from '~/types'
-import NetworkPageSegment, { SegmentGrid, Pad } from '~/components/NetworkPageSegment'
+import NetworkPageSegment, {
+    SegmentGrid,
+    Pad,
+    TitleBar,
+} from '~/components/NetworkPageSegment'
 import NetworkChartDisplay from '~/components/NetworkChartDisplay'
 import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
 import Tabs, { Tab } from '~/shared/components/Tabs'
@@ -31,30 +35,6 @@ import routes from '~/routes'
 import { abbr } from '~/utils'
 import { NoDataWrap } from '~/shared/components/ScrollTable/ScrollTable.styles'
 import Spinner from '~/components/Spinner'
-import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
-
-const OperatorTableTitle = ({ sponsorship }: { sponsorship: ParsedSponsorship }) => (
-    <OperatorTitleContainer>
-        <h2>Operators</h2>
-        {sponsorship.operatorCount < sponsorship.minOperators ? (
-            <MinOperatorCountNotReached>
-                {sponsorship.operatorCount}/{sponsorship.minOperators}
-                <OperatorSpinner
-                    color="green"
-                    strokeWidth={3}
-                    size={20}
-                    fixed
-                    coverage={Math.max(
-                        0.01,
-                        sponsorship.operatorCount / sponsorship.minOperators,
-                    )}
-                />
-            </MinOperatorCountNotReached>
-        ) : (
-            <OperatorCount>{sponsorship.operatorCount}</OperatorCount>
-        )}
-    </OperatorTitleContainer>
-)
 
 export const SingleSponsorshipPage = () => {
     const sponsorshipId = useParams().id || ''
@@ -127,6 +107,10 @@ export const SingleSponsorshipPage = () => {
     )
 
     const fundingEventsQuery = useSponsorshipFundingHistoryQuery(sponsorshipId)
+
+    const { operatorCount = 0, minOperators } = sponsorship || {}
+
+    const operational = minOperators == null || operatorCount < minOperators
 
     return (
         <Layout>
@@ -201,7 +185,34 @@ export const SingleSponsorshipPage = () => {
                                 </NetworkPageSegment>
                                 <NetworkPageSegment
                                     title={
-                                        <OperatorTableTitle sponsorship={sponsorship} />
+                                        <TitleBar
+                                            aux={
+                                                operational ? undefined : (
+                                                    <MinOperatorCountNotReached>
+                                                        {sponsorship.operatorCount}/
+                                                        {sponsorship.minOperators}
+                                                        <OperatorSpinner
+                                                            color="green"
+                                                            strokeWidth={3}
+                                                            size={20}
+                                                            fixed
+                                                            coverage={Math.max(
+                                                                0.01,
+                                                                sponsorship.operatorCount /
+                                                                    sponsorship.minOperators,
+                                                            )}
+                                                        />
+                                                    </MinOperatorCountNotReached>
+                                                )
+                                            }
+                                            label={
+                                                operational
+                                                    ? sponsorship.operatorCount
+                                                    : undefined
+                                            }
+                                        >
+                                            Operators
+                                        </TitleBar>
                                     }
                                     foot
                                 >
@@ -379,22 +390,6 @@ const OperatorListItem = styled.li`
 const OperatorListWrap = styled.div`
     max-height: 538px;
     overflow: auto;
-`
-
-const OperatorTitleContainer = styled.div`
-    display: grid;
-    grid-template-columns: max-content auto;
-    gap: 8px;
-`
-
-const OperatorCount = styled.div`
-    display: flex;
-    color: #a3a3a3;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 30px;
-    letter-spacing: 0.2px;
 `
 
 const MinOperatorCountNotReached = styled.div`

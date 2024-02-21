@@ -1,17 +1,16 @@
-import DataUnionClient, { DataUnion, SecretsResponse } from '@dataunions/client'
+import DataUnionClient, { DataUnion } from '@dataunions/client'
 import { hexToNumber } from 'web3-utils'
-import { getConfigForChain } from '~/shared/web3/config'
-import { TheGraph } from '~/shared/types'
-import { getWalletAccount, getWalletProvider } from '~/shared/stores/wallet'
 import {
-    GetDataUnionsOwnedByQuery,
     GetDataUnionsOwnedByDocument,
+    GetDataUnionsOwnedByQuery,
     GetDataUnionsOwnedByQueryVariables,
 } from '~/generated/gql/du'
-import getClientConfig from '~/getters/getClientConfig'
-import { toBN } from '~/utils/bn'
-import { getDataUnionGraphClient } from '~/getters/getGraphClient'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
+import getClientConfig from '~/getters/getClientConfig'
+import { getDataUnionGraphClient } from '~/getters/getGraphClient'
+import { getWalletAccount, getWalletProvider } from '~/shared/stores/wallet'
+import { TheGraph } from '~/shared/types'
+import { getConfigForChain } from '~/shared/web3/config'
 
 export async function getDataUnionsOwnedByInChain(
     account: string,
@@ -96,13 +95,6 @@ export async function getDataUnionClient(chainId: number): Promise<DataUnionClie
     return new (await require('@dataunions/client')).DataUnionClient(clientConfig)
 }
 
-export async function getDataUnionSecrets(
-    dataUnionId: string,
-    chainId: number,
-): Promise<SecretsResponse[]> {
-    return (await getDataUnion(dataUnionId, chainId)).listSecrets()
-}
-
 export async function getDataUnion(
     dataUnionId: string,
     chainId: number,
@@ -116,37 +108,11 @@ export async function getDataUnion(
     return dataUnion
 }
 
-export async function getDataUnionAdminFee(
+async function getDataUnionAdminFee(
     dataUnionId: string,
     chainId: number,
 ): Promise<number> {
     return (await getDataUnion(dataUnionId, chainId)).getAdminFee()
-}
-
-export async function getDataUnionStats(
-    dataUnionId: string,
-    chainId: number,
-): Promise<{
-    memberCount: { active: number; inactive: number; total: number }
-    totalEarnings: number
-}> {
-    const dataUnion = await getDataUnion(dataUnionId, chainId)
-
-    const { activeMemberCount, inactiveMemberCount, totalEarnings } =
-        await dataUnion.getStats()
-
-    const active = toBN(activeMemberCount).toNumber()
-
-    const inactive = toBN(inactiveMemberCount).toNumber()
-
-    return {
-        memberCount: {
-            active,
-            inactive,
-            total: active + inactive,
-        },
-        totalEarnings: toBN(totalEarnings).toNumber(),
-    }
 }
 
 export function getDataUnionAdminFeeForSalePoint<

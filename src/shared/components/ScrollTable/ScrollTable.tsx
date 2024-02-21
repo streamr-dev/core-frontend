@@ -16,18 +16,14 @@ import {
     ScrollTableHeaderCell,
     ScrollTableNonStickyColumnsWrap,
 } from '~/shared/components/ScrollTable/ScrollTable.styles'
-
-export enum ScrollTableOrderDirection {
-    Asc = 'asc',
-    Desc = 'desc',
-}
+import { OrderDirection } from '~/types'
 
 type ScrollTableProps<Element> = {
     elements: Element[]
     isLoading?: boolean
     columns: ScrollTableColumnDef<Element>[]
     actions?: (ScrollTableAction<Element> | ScrollTableActionCallback<Element>)[]
-    orderDirection?: ScrollTableOrderDirection
+    orderDirection?: OrderDirection
     orderBy?: string
     onOrderChange?: (columnKey: string) => void
     noDataFirstLine?: ReactNode
@@ -41,9 +37,9 @@ type ScrollTableProps<Element> = {
 export type ScrollTableColumnDef<T> = {
     key: string
     displayName: ReactNode
-    isSticky: boolean
+    isSticky?: boolean
     valueMapper: (element: T) => ReactNode
-    align: 'start' | 'end'
+    align?: 'start' | 'end'
     sortable?: boolean
 }
 
@@ -282,37 +278,7 @@ export const ScrollTableCore = <T extends object>({
 }
 
 const OrderCaret: FunctionComponent<{
-    orderDirection: ScrollTableOrderDirection
+    orderDirection: OrderDirection
 }> = ({ orderDirection }) => {
     return <OrderCaretIcon name="caretUp" $direction={orderDirection} />
-}
-
-const ORDER_ITERATION_CYCLE = new Map<
-    ScrollTableOrderDirection | undefined,
-    ScrollTableOrderDirection | undefined
->([
-    [ScrollTableOrderDirection.Asc, ScrollTableOrderDirection.Desc],
-    [ScrollTableOrderDirection.Desc, undefined],
-    [undefined, ScrollTableOrderDirection.Asc],
-])
-
-export const getNextSortingParameters = (
-    currentOrderBy: string | undefined,
-    newOrderBy: string,
-    currentOrderDirection: ScrollTableOrderDirection | undefined,
-): {
-    orderBy: string | undefined
-    orderDirection: ScrollTableOrderDirection | undefined
-} => {
-    if (currentOrderBy !== newOrderBy) {
-        return {
-            orderBy: newOrderBy,
-            orderDirection: ScrollTableOrderDirection.Asc,
-        }
-    }
-    const newDirection = ORDER_ITERATION_CYCLE.get(currentOrderDirection)
-    return {
-        orderBy: newDirection ? newOrderBy : undefined,
-        orderDirection: newDirection,
-    }
 }

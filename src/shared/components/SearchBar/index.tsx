@@ -7,7 +7,7 @@ import React, {
 } from 'react'
 import styled from 'styled-components'
 import { useDebouncedCallback } from 'use-debounce'
-import { COLORS, MD, PHONE } from '~/shared/utils/styled'
+import { COLORS, DESKTOP, MD, PHONE, TABLET } from '~/shared/utils/styled'
 import searchIcon from './SearchIcon.svg'
 import closeIcon from './CloseIcon.svg'
 
@@ -191,3 +191,28 @@ const ClearButton = styled.button`
 `
 
 export default SearchBar
+
+export const SearchBarWrap = styled.div`
+    display: flex;
+    justify-content: center;
+    padding: 30px 0 50px;
+
+    ${FormWrapper} {
+        margin: 0 24px;
+        max-width: 770px;
+    }
+
+    @media ${TABLET} {
+        padding: 40px 0 80px;
+
+        ${FormWrapper} {
+            margin: 0 72px;
+        }
+    }
+
+    @media ${DESKTOP} {
+        ${FormWrapper} {
+            margin: 0;
+        }
+    }
+`

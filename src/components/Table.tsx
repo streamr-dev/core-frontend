@@ -73,7 +73,13 @@ function DeletedStreamIdCell() {
 /**
  * Stream id and description formatter.
  */
-export function StreamIdCell({ streamId = '' }: { streamId?: string }) {
+export function StreamIdCell({
+    streamId = '',
+    description,
+}: {
+    streamId?: string
+    description?: string
+}) {
     if (!streamId) {
         return <DeletedStreamIdCell />
     }
@@ -82,7 +88,11 @@ export function StreamIdCell({ streamId = '' }: { streamId?: string }) {
         <StreamInfoCell>
             <StreamIdWrap>{truncateStreamName(streamId)}</StreamIdWrap>
             <StreamDescriptionWrap>
-                <StreamDescription streamId={streamId} />
+                {description == null ? (
+                    <StreamDescription streamId={streamId} />
+                ) : (
+                    description
+                )}
             </StreamDescriptionWrap>
         </StreamInfoCell>
     )

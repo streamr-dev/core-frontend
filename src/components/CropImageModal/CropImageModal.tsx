@@ -25,12 +25,14 @@ type Props = {
     title?: string
     mask?: MaskOption
 } & Omit<BaseModalProps, 'children'>
-export const MAX_WIDTH = 1024
+
+const MAX_WIDTH = 1024
+
 // only width is considered because images returned from the cropper will always be squared
 export const getCroppedAndResizedBlob = async (
     imageUrl: string,
     cropInfo: CroppedRect,
-): Promise<Blob> => {
+): Promise<Blob | null> => {
     const imageElement = document.createElement('img')
     await new Promise((resolve) => {
         imageElement.onload = () => resolve(null)
@@ -86,7 +88,7 @@ export const getCroppedAndResizedBlob = async (
         canvas = resizedCanvas
     }
 
-    return await new Promise((resolve) => canvas.toBlob(resolve))
+    return await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve))
 }
 
 const CropImageModal = ({
@@ -97,7 +99,7 @@ const CropImageModal = ({
     mask = 'none',
     ...props
 }: Props) => {
-    const editorRef = useRef<AvatarEditor>()
+    const editorRef = useRef<AvatarEditor>(null)
     const [sliderValue, setSliderValue] = useState<number>(1)
     const onSave = useCallback(async () => {
         if (editorRef.current) {
@@ -105,6 +107,13 @@ const CropImageModal = ({
                 imageUrl,
                 editorRef.current.getCroppingRect(),
             )
+
+            if (!blob) {
+                console.warn('Failed to get the blob')
+
+                return
+            }
+
             onResolve(new File([blob], 'coverImage.png'))
         }
     }, [onResolve, editorRef, imageUrl])

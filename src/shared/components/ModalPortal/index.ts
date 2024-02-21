@@ -8,11 +8,12 @@ type Props = {
 
 class ModalPortal extends React.Component<Props> {
     static contextType = Context
-    public context: ModalPortalContextModel
+
+    public context: ModalPortalContextModel | undefined
 
     componentDidMount() {
         this.modalRoot = document.getElementById('modal-root')
-        const { registerModal } = this.context
+        const { registerModal } = this.context || {}
 
         if (!this.modalRoot) {
             throw new NoModalRootError()
@@ -20,28 +21,21 @@ class ModalPortal extends React.Component<Props> {
 
         this.modalRoot.appendChild(this.root)
 
-        if (registerModal) {
-            registerModal()
-        }
+        registerModal?.()
     }
 
     componentWillUnmount() {
-        const {
-            modalRoot,
-            root,
-            context: { unregisterModal },
-        } = this
+        const { unregisterModal } = this.context || {}
 
-        if (modalRoot) {
-            modalRoot.removeChild(root)
-        }
+        const { modalRoot, root } = this
 
-        if (unregisterModal) {
-            unregisterModal()
-        }
+        modalRoot?.removeChild(root)
+
+        unregisterModal?.()
     }
 
     modalRoot: HTMLElement | null | undefined
+
     root: HTMLDivElement = document.createElement('div')
 
     render() {

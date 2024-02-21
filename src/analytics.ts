@@ -3,17 +3,17 @@ import { RewriteFrames } from '@sentry/integrations'
 import LogRocket from 'logrocket'
 import { getEnvironmentConfig } from './getters/getEnvironmentConfig'
 
-type ErrorServiceId = string
 type ErrorService = {
-    id: ErrorServiceId
-    init?: (...args: Array<any>) => any
-    reportError?: (...args: Array<any>) => any
-    getMiddleware?: (...args: Array<any>) => any
-    reportWarning?: (...args: Array<any>) => any
+    id: string
+    init?: (...args: any[]) => void
+    reportError?: (...args: any[]) => void
+    getMiddleware?: (...args: any[]) => unknown
+    reportWarning?: (...args: any[]) => void
 }
-// TODO add typing
+
 export class Analytics {
-    services: { [key: string]: any } = {}
+    services: Record<string, ErrorService | undefined> = {}
+
     register({ id, init, reportError, getMiddleware }: ErrorService): void {
         if (!id) {
             throw new Error('Service has no id!')
@@ -31,40 +31,42 @@ export class Analytics {
                 typeof getMiddleware === 'function' ? getMiddleware : undefined,
         }
 
-        if (this.services[id].init) {
-            this.services[id].init()
-        }
+        this.services[id]?.init?.()
     }
-    deregister(id: ErrorServiceId): void {
+
+    deregister(id: string): void {
         delete this.services[id]
     }
-    reportError(error: Error, extra: Record<string, any> = {}): void {
-        Object.keys(this.services).forEach(
-            (id) =>
-                this.services[id].reportError &&
-                this.services[id].reportError(error, extra),
-        )
+
+    reportError(error: Error, extra: Record<string, unknown> = {}): void {
+        for (const id in this.services) {
+            this.services[id]?.reportError?.(error, extra)
+        }
     }
+
     reportWarning(error: Error, extra: Record<string, any> = {}): void {
-        Object.keys(this.services).forEach(
-            (id) =>
-                this.services[id].reportWarning &&
-                this.services[id].reportWarning(error, extra),
-        )
+        for (const id in this.services) {
+            this.services[id]?.reportWarning?.(error, extra)
+        }
     }
-    getMiddlewares(): any {
-        return Object.keys(this.services).reduce(
-            (result, id) => [
-                ...result,
-                ...(this.services[id].getMiddleware
-                    ? [this.services[id].getMiddleware()]
-                    : []),
-            ],
-            [],
-        )
+
+    getMiddlewares(): unknown[] {
+        const middlewares: unknown[] = []
+
+        for (const id in this.services) {
+            const { getMiddleware } = this.services[id] || {}
+
+            if (typeof getMiddleware === 'function') {
+                middlewares.push(getMiddleware())
+            }
+        }
+
+        return middlewares
     }
 }
+
 const analytics = new Analytics()
+
 const { streamrUrl, platformOriginUrl } = getEnvironmentConfig()
 
 if (process.env.SENTRY_DSN) {
@@ -153,5 +155,3 @@ if (LOGROCKET_SLUG) {
         },
     })
 }
-
-export default analytics

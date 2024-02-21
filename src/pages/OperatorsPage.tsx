@@ -5,10 +5,7 @@ import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { Button } from '~/components/Button'
-import {
-    ScrollTableCore,
-    ScrollTableOrderDirection,
-} from '~/shared/components/ScrollTable/ScrollTable'
+import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
 import routes from '~/routes'
@@ -21,7 +18,7 @@ import {
     useDelegationsForWalletQuery,
     useOperatorForWalletQuery,
 } from '~/hooks/operators'
-import { Delegation } from '~/types'
+import { Delegation, OrderDirection } from '~/types'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { abbr, saveOperator } from '~/utils'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
@@ -51,9 +48,9 @@ export const OperatorsPage = () => {
 
     const wallet = useWalletAccount()
 
-    const { orderBy, orderDirection, handleOrderChange } = useTableOrder({
+    const { orderBy, orderDirection, setOrder } = useTableOrder<string>({
         orderBy: 'totalValue',
-        orderDirection: ScrollTableOrderDirection.Desc,
+        orderDirection: 'desc',
     })
 
     const allOperatorsQuery = useAllOperatorsQuery({
@@ -154,7 +151,7 @@ export const OperatorsPage = () => {
                                 tokenSymbol={tokenSymbol}
                                 orderBy={orderBy}
                                 orderDirection={orderDirection}
-                                onOrderChange={handleOrderChange}
+                                onOrderChange={setOrder}
                             />
                         ) : (
                             <DelegationsTable
@@ -267,7 +264,7 @@ function OperatorsTable({
     query: UseInfiniteQueryResult<{ skip: number; elements: ParsedOperator[] }>
     tokenSymbol: string
     orderBy?: string
-    orderDirection?: ScrollTableOrderDirection
+    orderDirection?: OrderDirection
     onOrderChange: (columnKey: string) => void
 }) {
     const elements = query.data?.pages.flatMap((page) => page.elements) || []

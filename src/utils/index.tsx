@@ -2,7 +2,6 @@ import React from 'react'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
 import { QueryClient } from '@tanstack/react-query'
-import StreamrClient, { Stream } from 'streamr-client'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import getNativeTokenName from '~/shared/utils/nativeToken'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
@@ -149,28 +148,6 @@ export function formatChainName(chainName: string): string {
         default:
             return titleize(chainName)
     }
-}
-
-/**
- * Fetches a list of Stream associated with the given list of stream ids. Items
- * that cause fetching failures map to Stream-like `{ id: string }` objects.
- */
-export async function fetchStreamlikesByIds(streamIds: string[], client: StreamrClient) {
-    const streams: (Stream | { id: string })[] = []
-
-    for (const streamId of streamIds) {
-        let stream: Stream | undefined
-
-        try {
-            stream = await client.getStream(streamId)
-        } catch (e) {
-            console.warn(`Failed to get a stream "${streamId}"`, e)
-        }
-
-        streams.push(stream || { id: streamId })
-    }
-
-    return streams
 }
 
 /**
