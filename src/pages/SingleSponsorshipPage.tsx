@@ -35,11 +35,18 @@ import routes from '~/routes'
 import { abbr } from '~/utils'
 import { NoDataWrap } from '~/shared/components/ScrollTable/ScrollTable.styles'
 import Spinner from '~/components/Spinner'
+import { useLastBehindBlockError } from '~/hooks'
+import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
 
 export const SingleSponsorshipPage = () => {
     const sponsorshipId = useParams().id || ''
 
     const sponsorshipQuery = useSponsorshipByIdQuery(sponsorshipId)
+
+    const error = useLastBehindBlockError(sponsorshipQuery)
+
+    const isFetching =
+        sponsorshipQuery.isFetching || sponsorshipQuery.isLoading || !!error
 
     const sponsorship = sponsorshipQuery.data || null
 
@@ -112,207 +119,195 @@ export const SingleSponsorshipPage = () => {
 
     const operational = minOperators == null || operatorCount >= minOperators
 
+    const placeholder = error ? (
+        <BehindBlockErrorDisplay value={error} />
+    ) : !isFetching ? (
+        <NoData firstLine="Operator not found." />
+    ) : null
+
     return (
         <Layout>
             <NetworkHelmet title="Sponsorship" />
-            <LoadingIndicator
-                loading={sponsorshipQuery.isLoading || sponsorshipQuery.isFetching}
-            />
+            <LoadingIndicator loading={isFetching} />
             {!!sponsorship && <SponsorshipActionBar sponsorship={sponsorship} />}
             <LayoutColumn>
                 {sponsorship == null ? (
-                    <>
-                        {!(sponsorshipQuery.isLoading || sponsorshipQuery.isFetching) && (
-                            <NoData firstLine={'Sponsorship not found.'} />
-                        )}
-                    </>
+                    placeholder
                 ) : (
-                    <>
-                        <SegmentGrid>
-                            <ChartGrid>
-                                <NetworkPageSegment title="Overview charts">
-                                    <Pad>
-                                        <NetworkChartDisplay
-                                            periodTabs={
-                                                <ChartPeriodTabs
-                                                    value={selectedPeriod}
-                                                    onChange={setSelectedPeriod}
-                                                />
-                                            }
-                                            sourceTabs={
-                                                <Tabs
-                                                    selection={selectedDataSource}
-                                                    onSelectionChange={(dataSource) => {
-                                                        if (
-                                                            dataSource !==
-                                                                'amountStaked' &&
-                                                            dataSource !==
-                                                                'numberOfOperators' &&
-                                                            dataSource !== 'apy'
-                                                        ) {
-                                                            return
-                                                        }
-
-                                                        setSelectedDataSource(dataSource)
-                                                    }}
-                                                >
-                                                    <Tab id="amountStaked">
-                                                        Amount Staked
-                                                    </Tab>
-                                                    <Tab id="numberOfOperators">
-                                                        Number of Operators
-                                                    </Tab>
-                                                    <Tab id="apy">APY</Tab>
-                                                </Tabs>
-                                            }
-                                        >
-                                            <NetworkChart
-                                                isLoading={
-                                                    chartQuery.isLoading ||
-                                                    chartQuery.isFetching
-                                                }
-                                                tooltipValuePrefix={tooltipPrefix}
-                                                graphData={chartData}
-                                                xAxisDisplayFormatter={formatShortDate}
-                                                yAxisAxisDisplayFormatter={
-                                                    formatYAxisValue
-                                                }
-                                                tooltipLabelFormatter={formatLongDate}
-                                                tooltipValueFormatter={formatTooltipValue}
+                    <SegmentGrid>
+                        <ChartGrid>
+                            <NetworkPageSegment title="Overview charts">
+                                <Pad>
+                                    <NetworkChartDisplay
+                                        periodTabs={
+                                            <ChartPeriodTabs
+                                                value={selectedPeriod}
+                                                onChange={setSelectedPeriod}
                                             />
-                                        </NetworkChartDisplay>
-                                    </Pad>
-                                </NetworkPageSegment>
-                                <NetworkPageSegment
-                                    title={
-                                        <TitleBar
-                                            aux={
-                                                operational ? undefined : (
-                                                    <MinOperatorCountNotReached>
-                                                        {sponsorship.operatorCount}/
-                                                        {sponsorship.minOperators}
-                                                        <OperatorSpinner
-                                                            color="green"
-                                                            strokeWidth={3}
-                                                            size={20}
-                                                            fixed
-                                                            coverage={Math.max(
-                                                                0.01,
-                                                                sponsorship.operatorCount /
-                                                                    sponsorship.minOperators,
-                                                            )}
-                                                        />
-                                                    </MinOperatorCountNotReached>
-                                                )
+                                        }
+                                        sourceTabs={
+                                            <Tabs
+                                                selection={selectedDataSource}
+                                                onSelectionChange={(dataSource) => {
+                                                    if (
+                                                        dataSource !== 'amountStaked' &&
+                                                        dataSource !==
+                                                            'numberOfOperators' &&
+                                                        dataSource !== 'apy'
+                                                    ) {
+                                                        return
+                                                    }
+
+                                                    setSelectedDataSource(dataSource)
+                                                }}
+                                            >
+                                                <Tab id="amountStaked">Amount Staked</Tab>
+                                                <Tab id="numberOfOperators">
+                                                    Number of Operators
+                                                </Tab>
+                                                <Tab id="apy">APY</Tab>
+                                            </Tabs>
+                                        }
+                                    >
+                                        <NetworkChart
+                                            isLoading={
+                                                chartQuery.isLoading ||
+                                                chartQuery.isFetching
                                             }
-                                            label={
-                                                operational
-                                                    ? sponsorship.operatorCount
-                                                    : undefined
-                                            }
-                                        >
-                                            Operators
-                                        </TitleBar>
-                                    }
-                                    foot
-                                >
-                                    <OperatorListWrap>
-                                        <OperatorList>
-                                            <OperatorListHeader>
-                                                <div>
-                                                    <strong>Operator</strong>
-                                                </div>
-                                                <div>
-                                                    <strong>Staked</strong>
-                                                </div>
-                                            </OperatorListHeader>
-                                            {sponsorship.stakes.map((stake) => (
-                                                <OperatorListItem key={stake.operatorId}>
-                                                    <Link
-                                                        to={routes.network.operator({
-                                                            id: stake.operatorId,
-                                                        })}
-                                                    >
-                                                        <div>
-                                                            <OperatorIdCell
-                                                                truncate
-                                                                operatorId={
-                                                                    stake.operatorId
-                                                                }
-                                                                imageUrl={
-                                                                    stake.metadata
-                                                                        .imageUrl
-                                                                }
-                                                                operatorName={
-                                                                    stake.metadata.name
-                                                                }
-                                                            />
-                                                        </div>
-                                                        <strong>
-                                                            {abbr(stake.amount)}
-                                                        </strong>
-                                                    </Link>
-                                                </OperatorListItem>
-                                            ))}
-                                            {!sponsorship.stakes.length && (
-                                                <li>
-                                                    <NoDataWrap>
-                                                        <NoData
-                                                            firstLine="No operators"
-                                                            compact
-                                                        />
-                                                    </NoDataWrap>
-                                                </li>
-                                            )}
-                                        </OperatorList>
-                                    </OperatorListWrap>
-                                </NetworkPageSegment>
-                            </ChartGrid>
-                            <NetworkPageSegment foot title="Funding history">
-                                <ScrollTable
-                                    hasMoreResults={fundingEventsQuery.hasNextPage}
-                                    onLoadMore={() => fundingEventsQuery.fetchNextPage()}
-                                    elements={
-                                        fundingEventsQuery.data?.pages
-                                            .map((page) => page.events)
-                                            .flat() || []
-                                    }
-                                    isLoading={
-                                        fundingEventsQuery.isLoading ||
-                                        fundingEventsQuery.isFetching
-                                    }
-                                    columns={[
-                                        {
-                                            displayName: 'Date',
-                                            valueMapper: (element: any) => element.date,
-                                            align: 'start',
-                                            isSticky: true,
-                                            key: 'date',
-                                        },
-                                        {
-                                            displayName: 'Amount',
-                                            valueMapper: (element: any) => (
-                                                <>
-                                                    {abbr(element.amount)} {tokenSymbol}
-                                                </>
-                                            ),
-                                            align: 'start',
-                                            isSticky: false,
-                                            key: 'amount',
-                                        },
-                                        {
-                                            displayName: 'Sponsor',
-                                            valueMapper: (element: any) =>
-                                                truncate(element.sponsor),
-                                            align: 'start',
-                                            isSticky: false,
-                                            key: 'sponsor',
-                                        },
-                                    ]}
-                                />
+                                            tooltipValuePrefix={tooltipPrefix}
+                                            graphData={chartData}
+                                            xAxisDisplayFormatter={formatShortDate}
+                                            yAxisAxisDisplayFormatter={formatYAxisValue}
+                                            tooltipLabelFormatter={formatLongDate}
+                                            tooltipValueFormatter={formatTooltipValue}
+                                        />
+                                    </NetworkChartDisplay>
+                                </Pad>
                             </NetworkPageSegment>
-                        </SegmentGrid>
-                    </>
+                            <NetworkPageSegment
+                                title={
+                                    <TitleBar
+                                        aux={
+                                            operational ? undefined : (
+                                                <MinOperatorCountNotReached>
+                                                    {sponsorship.operatorCount}/
+                                                    {sponsorship.minOperators}
+                                                    <OperatorSpinner
+                                                        color="green"
+                                                        strokeWidth={3}
+                                                        size={20}
+                                                        fixed
+                                                        coverage={Math.max(
+                                                            0.01,
+                                                            sponsorship.operatorCount /
+                                                                sponsorship.minOperators,
+                                                        )}
+                                                    />
+                                                </MinOperatorCountNotReached>
+                                            )
+                                        }
+                                        label={
+                                            operational
+                                                ? sponsorship.operatorCount
+                                                : undefined
+                                        }
+                                    >
+                                        Operators
+                                    </TitleBar>
+                                }
+                                foot
+                            >
+                                <OperatorListWrap>
+                                    <OperatorList>
+                                        <OperatorListHeader>
+                                            <div>
+                                                <strong>Operator</strong>
+                                            </div>
+                                            <div>
+                                                <strong>Staked</strong>
+                                            </div>
+                                        </OperatorListHeader>
+                                        {sponsorship.stakes.map((stake) => (
+                                            <OperatorListItem key={stake.operatorId}>
+                                                <Link
+                                                    to={routes.network.operator({
+                                                        id: stake.operatorId,
+                                                    })}
+                                                >
+                                                    <div>
+                                                        <OperatorIdCell
+                                                            truncate
+                                                            operatorId={stake.operatorId}
+                                                            imageUrl={
+                                                                stake.metadata.imageUrl
+                                                            }
+                                                            operatorName={
+                                                                stake.metadata.name
+                                                            }
+                                                        />
+                                                    </div>
+                                                    <strong>{abbr(stake.amount)}</strong>
+                                                </Link>
+                                            </OperatorListItem>
+                                        ))}
+                                        {!sponsorship.stakes.length && (
+                                            <li>
+                                                <NoDataWrap>
+                                                    <NoData
+                                                        firstLine="No operators"
+                                                        compact
+                                                    />
+                                                </NoDataWrap>
+                                            </li>
+                                        )}
+                                    </OperatorList>
+                                </OperatorListWrap>
+                            </NetworkPageSegment>
+                        </ChartGrid>
+                        <NetworkPageSegment foot title="Funding history">
+                            <ScrollTable
+                                hasMoreResults={fundingEventsQuery.hasNextPage}
+                                onLoadMore={() => fundingEventsQuery.fetchNextPage()}
+                                elements={
+                                    fundingEventsQuery.data?.pages
+                                        .map((page) => page.events)
+                                        .flat() || []
+                                }
+                                isLoading={
+                                    fundingEventsQuery.isLoading ||
+                                    fundingEventsQuery.isFetching
+                                }
+                                columns={[
+                                    {
+                                        displayName: 'Date',
+                                        valueMapper: (element: any) => element.date,
+                                        align: 'start',
+                                        isSticky: true,
+                                        key: 'date',
+                                    },
+                                    {
+                                        displayName: 'Amount',
+                                        valueMapper: (element: any) => (
+                                            <>
+                                                {abbr(element.amount)} {tokenSymbol}
+                                            </>
+                                        ),
+                                        align: 'start',
+                                        isSticky: false,
+                                        key: 'amount',
+                                    },
+                                    {
+                                        displayName: 'Sponsor',
+                                        valueMapper: (element: any) =>
+                                            truncate(element.sponsor),
+                                        align: 'start',
+                                        isSticky: false,
+                                        key: 'sponsor',
+                                    },
+                                ]}
+                            />
+                        </NetworkPageSegment>
+                    </SegmentGrid>
                 )}
             </LayoutColumn>
         </Layout>

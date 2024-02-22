@@ -330,7 +330,7 @@ export async function getSponsorshipsByStreamId({
 export async function getParsedSponsorshipById(
     chainId: number,
     sponsorshipId: string,
-    { force = false } = {},
+    { force = false, minBlockNumber = 0 } = {},
 ) {
     let rawSponsorship: Sponsorship | undefined | null
 
@@ -342,12 +342,15 @@ export async function getParsedSponsorshipById(
             query: GetSponsorshipByIdDocument,
             variables: {
                 sponsorshipId: sponsorshipId.toLowerCase(),
+                minBlockNumber,
             },
             fetchPolicy: force ? 'network-only' : void 0,
         })
 
         rawSponsorship = (data.sponsorship || null) as Sponsorship | null
     } catch (e) {
+        prehandleBehindBlockError(e)
+
         console.warn('Failed to fetch a Sponsorship', e)
 
         errorToast({ title: 'Could not fetch Sponsorship details' })

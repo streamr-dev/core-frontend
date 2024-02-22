@@ -40,6 +40,7 @@ import { SponsorshipDisclaimer } from '~/components/SponsorshipDisclaimer'
 import { Abbr } from '~/components/Abbr'
 
 interface ResolveProps {
+    blockNumber: number
     sponsorshipId: string
     streamId?: string
 }
@@ -179,14 +180,20 @@ function CreateSponsorshipModal({
                         return
                     }
 
+                    let blockNumber = 0
+
                     const sponsorshipId = await createSponsorship(chainId, formData, {
-                        onBlockNumber: (blockNumber) =>
-                            waitForIndexedBlock(chainId, blockNumber),
+                        onBlockNumber: (blockNo) => {
+                            blockNumber = blockNo
+
+                            return waitForIndexedBlock(chainId, blockNo)
+                        },
                     })
 
                     onResolve?.({
                         sponsorshipId,
                         streamId: streamIdProp,
+                        blockNumber,
                     })
                 } catch (e) {
                     if (isRejectionReason(e)) {

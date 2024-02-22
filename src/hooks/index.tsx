@@ -1,9 +1,11 @@
 import { StreamrConfig } from '@streamr/network-contracts'
+import { UseQueryResult } from '@tanstack/react-query'
 import React, { useCallback, useState, useSyncExternalStore } from 'react'
 import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
+import { BehindIndexError } from '~/errors/BehindIndexError'
 import { getConfigValueFromChain } from '~/getters/getConfigValueFromChain'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
@@ -148,11 +150,41 @@ export function useMediaQuery(query: string): boolean {
 }
 
 export function useRequestedBlockNumber(): number {
-    const blockNumber = useSearchParams()[0].get('blockNumber')
+    const blockNumber = useSearchParams()[0].get('b')
 
     try {
         return z.coerce.number().min(0).parse(blockNumber)
     } catch (_) {
         return 0
     }
+}
+
+export function useLastBehindBlockError<T extends UseQueryResult>(
+    query: T,
+): BehindIndexError | null {
+    const { error, isSuccess } = query
+
+    const [lastError, setLastError] = useState(
+        error instanceof BehindIndexError ? error : null,
+    )
+
+    useEffect(
+        function setTruthyLastError() {
+            if (error instanceof BehindIndexError) {
+                setLastError(error)
+            }
+        },
+        [error],
+    )
+
+    useEffect(
+        function resetLastErrorOnSuccess() {
+            if (isSuccess) {
+                setLastError(null)
+            }
+        },
+        [isSuccess],
+    )
+
+    return lastError
 }

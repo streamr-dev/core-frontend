@@ -5176,6 +5176,7 @@ export type GetSponsorshipsByCreatorQuery = { __typename?: 'Query', sponsorships
 
 export type GetSponsorshipByIdQueryVariables = Exact<{
   sponsorshipId: Scalars['ID']['input'];
+  minBlockNumber?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
@@ -5598,8 +5599,8 @@ export const GetSponsorshipsByCreatorDocument = gql`
     ${SponsorshipFieldsFragmentDoc}`;
 export type GetSponsorshipsByCreatorQueryResult = Apollo.QueryResult<GetSponsorshipsByCreatorQuery, GetSponsorshipsByCreatorQueryVariables>;
 export const GetSponsorshipByIdDocument = gql`
-    query getSponsorshipById($sponsorshipId: ID!) {
-  sponsorship(id: $sponsorshipId) {
+    query getSponsorshipById($sponsorshipId: ID!, $minBlockNumber: Int = 0) {
+  sponsorship(id: $sponsorshipId, block: {number_gte: $minBlockNumber}) {
     ...SponsorshipFields
   }
 }

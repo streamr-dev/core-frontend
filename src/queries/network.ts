@@ -258,8 +258,8 @@ gql`
         }
     }
 
-    query getSponsorshipById($sponsorshipId: ID!) {
-        sponsorship(id: $sponsorshipId) {
+    query getSponsorshipById($sponsorshipId: ID!, $minBlockNumber: Int = 0) {
+        sponsorship(id: $sponsorshipId, block: { number_gte: $minBlockNumber }) {
             ...SponsorshipFields
         }
     }

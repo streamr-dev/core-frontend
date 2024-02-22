@@ -98,8 +98,13 @@ export const SponsorshipsPage = () => {
                         waiting={isCreatingSponsorship}
                         onClick={() => {
                             createSponsorship(chainId, wallet, {
-                                onDone(id) {
-                                    navigate(routes.network.sponsorship({ id }))
+                                onDone(id, blockNumber) {
+                                    navigate(
+                                        routes.network.sponsorship({
+                                            id,
+                                            b: blockNumber,
+                                        }),
+                                    )
                                 },
                             })
                         }}

@@ -154,11 +154,12 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                                         }
 
                                                         saveOperator(chainId, undefined, {
-                                                            onDone(id) {
+                                                            onDone(id, blockNumber) {
                                                                 navigate(
                                                                     routes.network.operator(
                                                                         {
                                                                             id,
+                                                                            b: blockNumber,
                                                                         },
                                                                     ),
                                                                 )

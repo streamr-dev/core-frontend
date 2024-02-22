@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useInfiniteQuery, UseInfiniteQueryResult, useQuery } from '@tanstack/react-query'
 import { OrderDirection, Sponsorship, Sponsorship_OrderBy } from '~/generated/gql/network'
 import {
@@ -29,6 +29,8 @@ import { invalidateActiveOperatorByIdQueries } from '~/hooks/operators'
 import { editStakeModal } from '~/modals/EditStakeModal'
 import { useCurrentChain, useCurrentChainId } from '~/shared/stores/chain'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
+import { useRequestedBlockNumber } from '.'
+import { BehindIndexError } from '~/errors/BehindIndexError'
 
 function getDefaultQueryParams(pageSize: number) {
     return {
@@ -211,7 +213,7 @@ export function useAllSponsorshipsQuery({
 
 function invalidateSponsorshipByIdQueries(chainId: number, sponsorshipId: string) {
     return getQueryClient().invalidateQueries({
-        exact: true,
+        exact: false,
         queryKey: ['useSponsorshipByIdQuery', chainId, sponsorshipId.toLowerCase()],
         refetchType: 'active',
     })
@@ -220,17 +222,82 @@ function invalidateSponsorshipByIdQueries(chainId: number, sponsorshipId: string
 export function useSponsorshipByIdQuery(sponsorshipId: string) {
     const currentChainId = useCurrentChainId()
 
-    return useQuery({
+    const minBlockNumber = useRequestedBlockNumber()
+
+    const initialBehindBlockErrorRef = useRef<BehindIndexError | null>(null)
+
+    const sponsorshipIdRef = useRef(sponsorshipId)
+
+    if (sponsorshipIdRef.current !== sponsorshipId) {
+        sponsorshipIdRef.current = sponsorshipId
+
+        /**
+         * We reset the `initialBehindBlockErrorRef` for each new sponsorship id. That's the
+         * whole point of reffing the id.
+         */
+        initialBehindBlockErrorRef.current = null
+    }
+
+    const query = useQuery({
         queryKey: [
             'useSponsorshipByIdQuery',
             currentChainId,
             sponsorshipId.toLowerCase(),
+            minBlockNumber,
         ],
-        queryFn: () =>
-            getParsedSponsorshipById(currentChainId, sponsorshipId, { force: true }),
+        queryFn: async () => {
+            let sponsorship: ParsedSponsorship | null = null
+
+            try {
+                sponsorship = await getParsedSponsorshipById(
+                    currentChainId,
+                    sponsorshipId,
+                    {
+                        force: true,
+                        minBlockNumber,
+                    },
+                )
+            } catch (e) {
+                if (e instanceof BehindIndexError) {
+                    if (!initialBehindBlockErrorRef.current) {
+                        initialBehindBlockErrorRef.current = e
+                    }
+
+                    e.setInitialBlockNumber(
+                        initialBehindBlockErrorRef.current?.actualBlockNumber,
+                        { overwrite: false },
+                    )
+                }
+
+                throw e
+            }
+
+            return sponsorship
+        },
         staleTime: 60 * 1000, // 1 minute
         keepPreviousData: true,
     })
+
+    const isBehindError = query.error instanceof BehindIndexError
+
+    useEffect(
+        function refetchQueryOnBehindBlockError() {
+            if (!isBehindError) {
+                return
+            }
+
+            const timeoutId = setTimeout(() => {
+                query.refetch()
+            }, 5000)
+
+            return () => {
+                clearTimeout(timeoutId)
+            }
+        },
+        [query, isBehindError],
+    )
+
+    return query
 }
 
 export function useSponsorshipsByStreamIdQuery({
@@ -309,7 +376,10 @@ export function useCreateSponsorship() {
         (
             chainId: number,
             wallet: string | undefined,
-            options: { onDone?: (sponsorshipId: string) => void; streamId?: string } = {},
+            options: {
+                onDone?: (sponsorshipId: string, blockNumber: number) => void
+                streamId?: string
+            } = {},
         ) => {
             if (!wallet) {
                 return
@@ -326,7 +396,7 @@ export function useCreateSponsorship() {
                                     wallet,
                                 )
 
-                                const { sponsorshipId, streamId } =
+                                const { sponsorshipId, streamId, blockNumber } =
                                     await createSponsorshipModal.pop({
                                         chainId,
                                         balance,
@@ -340,7 +410,7 @@ export function useCreateSponsorship() {
                                     streamId,
                                 )
 
-                                options.onDone?.(sponsorshipId)
+                                options.onDone?.(sponsorshipId, blockNumber)
                             },
                         )
                     } catch (e) {

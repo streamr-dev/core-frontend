@@ -54,7 +54,7 @@ import {
     useUncollectedEarnings,
 } from '~/shared/stores/uncollectedEarnings'
 import { truncate } from '~/shared/utils/text'
-import { useConfigValueFromChain } from '~/hooks'
+import { useConfigValueFromChain, useLastBehindBlockError } from '~/hooks'
 import { Button } from '~/components/Button'
 import { FundedUntilCell, StreamIdCell } from '~/components/Table'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
@@ -66,6 +66,7 @@ import { abbr, saveOperator } from '~/utils'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { Hint } from '~/components/Hint'
 import { useCurrentChainId } from '~/shared/stores/chain'
+import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
 
 const defaultChartData = []
 
@@ -77,6 +78,10 @@ export const SingleOperatorPage = () => {
     const operatorQuery = useOperatorByIdQuery(operatorId)
 
     const operator = operatorQuery.data || null
+
+    const error = useLastBehindBlockError(operatorQuery)
+
+    const isFetching = operatorQuery.isLoading || operatorQuery.isFetching || !!error
 
     const walletAddress = useWalletAccount()
 
@@ -172,12 +177,16 @@ export const SingleOperatorPage = () => {
 
     const forceUndelegate = useForceUndelegate()
 
+    const placeholder = error ? (
+        <BehindBlockErrorDisplay value={error} />
+    ) : !isFetching ? (
+        <NoData firstLine="Operator not found." />
+    ) : null
+
     return (
         <Layout>
             <NetworkHelmet title="Operator" />
-            <LoadingIndicator
-                loading={operatorQuery.isLoading || operatorQuery.isFetching}
-            />
+            <LoadingIndicator loading={isFetching} />
             {!!operator && (
                 <OperatorActionBar
                     operator={operator}
@@ -188,11 +197,7 @@ export const SingleOperatorPage = () => {
             )}
             <LayoutColumn>
                 {operator == null ? (
-                    <>
-                        {!(operatorQuery.isLoading || operatorQuery.isFetching) && (
-                            <NoData firstLine="Operator not found." />
-                        )}
-                    </>
+                    placeholder
                 ) : (
                     <SegmentGrid>
                         <ChartGrid>

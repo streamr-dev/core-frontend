@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { z } from 'zod'
 import { toaster } from 'toasterhea'
 import { isAddress } from 'web3-validator'
@@ -40,6 +40,7 @@ import { getSigner } from '~/shared/stores/wallet'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 import { useRequestedBlockNumber } from '~/hooks'
+import { BehindIndexError } from '~/errors/BehindIndexError'
 
 export function useOperatorForWalletQuery(address = '') {
     const currentChainId = useCurrentChainId()
@@ -56,17 +57,48 @@ export function useOperatorByIdQuery(operatorId = '') {
 
     const minBlockNumber = useRequestedBlockNumber()
 
-    return useQuery({
+    const initialBehindBlockErrorRef = useRef<BehindIndexError | null>(null)
+
+    const operatorIdRef = useRef(operatorId)
+
+    if (operatorIdRef.current !== operatorId) {
+        operatorIdRef.current = operatorId
+
+        /**
+         * We reset the `initialBehindBlockErrorRef` for each new operator id. That's the
+         * whole point of reffing the id.
+         */
+        initialBehindBlockErrorRef.current = null
+    }
+
+    const query = useQuery({
         queryKey: ['operatorByIdQueryKey', currentChainId, operatorId, minBlockNumber],
         async queryFn() {
             if (!operatorId) {
                 return null
             }
 
-            const operator = await getOperatorById(currentChainId, operatorId, {
-                force: true,
-                minBlockNumber,
-            })
+            let operator: Awaited<ReturnType<typeof getOperatorById>> = null
+
+            try {
+                operator = await getOperatorById(currentChainId, operatorId, {
+                    force: true,
+                    minBlockNumber,
+                })
+            } catch (e) {
+                if (e instanceof BehindIndexError) {
+                    if (!initialBehindBlockErrorRef.current) {
+                        initialBehindBlockErrorRef.current = e
+                    }
+
+                    e.setInitialBlockNumber(
+                        initialBehindBlockErrorRef.current?.actualBlockNumber,
+                        { overwrite: false },
+                    )
+                }
+
+                throw e
+            }
 
             if (operator) {
                 try {
@@ -85,6 +117,27 @@ export function useOperatorByIdQuery(operatorId = '') {
         staleTime: 60 * 1000, // 1 minute
         keepPreviousData: true,
     })
+
+    const isBehindError = query.error instanceof BehindIndexError
+
+    useEffect(
+        function refetchQueryOnBehindBlockError() {
+            if (!isBehindError) {
+                return
+            }
+
+            const timeoutId = setTimeout(() => {
+                query.refetch()
+            }, 5000)
+
+            return () => {
+                clearTimeout(timeoutId)
+            }
+        },
+        [query, isBehindError],
+    )
+
+    return query
 }
 
 export function invalidateActiveOperatorByIdQueries(
