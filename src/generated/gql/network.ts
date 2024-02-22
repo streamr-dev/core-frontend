@@ -5141,6 +5141,7 @@ export type GetOperatorsByDelegationAndMetadataQuery = { __typename?: 'Query', o
 
 export type GetOperatorByOwnerAddressQueryVariables = Exact<{
   owner: Scalars['String']['input'];
+  minBlockNumber?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
@@ -5557,8 +5558,12 @@ export const GetOperatorsByDelegationAndMetadataDocument = gql`
     ${OperatorFieldsFragmentDoc}`;
 export type GetOperatorsByDelegationAndMetadataQueryResult = Apollo.QueryResult<GetOperatorsByDelegationAndMetadataQuery, GetOperatorsByDelegationAndMetadataQueryVariables>;
 export const GetOperatorByOwnerAddressDocument = gql`
-    query getOperatorByOwnerAddress($owner: String!) {
-  operators(where: {owner: $owner}) {
+    query getOperatorByOwnerAddress($owner: String!, $minBlockNumber: Int = 0) {
+  operators(
+    first: 1
+    block: {number_gte: $minBlockNumber}
+    where: {owner: $owner}
+  ) {
     ...OperatorFields
   }
 }

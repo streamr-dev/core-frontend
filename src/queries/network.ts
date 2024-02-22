@@ -166,8 +166,12 @@ gql`
         }
     }
 
-    query getOperatorByOwnerAddress($owner: String!) {
-        operators(where: { owner: $owner }) {
+    query getOperatorByOwnerAddress($owner: String!, $minBlockNumber: Int = 0) {
+        operators(
+            first: 1
+            block: { number_gte: $minBlockNumber }
+            where: { owner: $owner }
+        ) {
             ...OperatorFields
         }
     }
