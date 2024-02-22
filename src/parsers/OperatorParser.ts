@@ -39,6 +39,7 @@ const OperatorParser = z.object({
     ),
     operatorsCutFraction: z.string().transform(fromAtto),
     owner: z.string(),
+    contractVersion: z.coerce.number(),
     operatorTokenTotalSupplyWei: z.string().transform(toBN),
     valueWithoutEarnings: z.string().transform(toBN),
     valueUpdateBlockNumber: z.coerce.number().optional(),

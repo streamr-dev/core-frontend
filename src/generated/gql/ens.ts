@@ -272,6 +272,11 @@ export enum AddrChanged_OrderBy {
   TransactionId = 'transactionID'
 }
 
+export enum Aggregation_Interval {
+  Day = 'day',
+  Hour = 'hour'
+}
+
 export type AuthorisationChanged = ResolverEvent & {
   __typename?: 'AuthorisationChanged';
   /** The block number at which the event occurred */

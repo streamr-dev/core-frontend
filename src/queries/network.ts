@@ -57,6 +57,7 @@ gql`
         cumulativeProfitsWei
         cumulativeOperatorsCutWei
         operatorsCutFraction
+        contractVersion
     }
 
     query getAllOperators(

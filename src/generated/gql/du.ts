@@ -20,6 +20,11 @@ export type Scalars = {
   Int8: { input: any; output: any; }
 };
 
+export enum Aggregation_Interval {
+  Day = 'day',
+  Hour = 'hour'
+}
+
 export type BlockChangedFilter = {
   number_gte: Scalars['Int']['input'];
 };
