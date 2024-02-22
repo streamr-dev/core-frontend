@@ -26,6 +26,8 @@ gql`
             }
             valueDataWei
             operatorTokenBalanceWei
+            latestDelegationTimestamp
+            earliestUndelegationTimestamp
             id
         }
         slashingEvents(first: 1000) {

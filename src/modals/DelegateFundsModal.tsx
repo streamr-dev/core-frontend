@@ -82,7 +82,6 @@ export default function DelegateFundsModal({
     const minimumDelegationSeconds = minimumDelegationSecondsValue
         ? toBN(minimumDelegationSecondsValue)
         : toBN(0)
-    console.log('minimumDelegationSeconds', minimumDelegationSeconds)
 
     const [rawAmount, setRawAmount] = useState(amountProp)
 
@@ -278,9 +277,9 @@ export default function DelegateFundsModal({
                     minimumDelegationSeconds.isGreaterThan(0) && (
                         <Alert
                             type="notice"
-                            title={`You will need to stay delegated for at least ${minimumDelegationSeconds.dividedBy(
-                                60 * 60 * 24,
-                            )} days`}
+                            title={`You will need to stay delegated for at least ${minimumDelegationSeconds
+                                .dividedBy(60 * 60 * 24)
+                                .toFixed()} days.`}
                         ></Alert>
                     )}
             </>

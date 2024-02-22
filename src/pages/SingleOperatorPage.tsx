@@ -97,6 +97,10 @@ export const SingleOperatorPage = () => {
 
     const currentChainId = useCurrentChainId()
 
+    const earliestUndelegationTimestamp = operator?.delegations.find(
+        (d) => d.delegator.toLowerCase() === walletAddress?.toLowerCase(),
+    )?.earliestUndelegationTimestamp
+
     const [selectedPeriod, setSelectedPeriod] = useState<ChartPeriod>(
         ChartPeriod.ThreeMonths,
     )
@@ -251,6 +255,50 @@ export const SingleOperatorPage = () => {
                                                     <Pad>
                                                         <StatCellLabel>
                                                             Current stake
+                                                            {operator.contractVersion >
+                                                                0 &&
+                                                                earliestUndelegationTimestamp !=
+                                                                    null &&
+                                                                earliestUndelegationTimestamp *
+                                                                    1000 >
+                                                                    Date.now() && (
+                                                                    <Tooltip
+                                                                        content={
+                                                                            <>
+                                                                                You can
+                                                                                not
+                                                                                undelegate
+                                                                                because
+                                                                                your
+                                                                                minimum
+                                                                                delegation
+                                                                                period is
+                                                                                still
+                                                                                active. It
+                                                                                will
+                                                                                expire on
+                                                                                {moment(
+                                                                                    earliestUndelegationTimestamp *
+                                                                                        1000,
+                                                                                ).format(
+                                                                                    'YYYY-MM-DD HH:mm',
+                                                                                )}
+                                                                                .
+                                                                            </>
+                                                                        }
+                                                                    >
+                                                                        <TooltipIconWrap
+                                                                            className="ml-1"
+                                                                            $color="#ADADAD"
+                                                                            $svgSize={{
+                                                                                width: '18px',
+                                                                                height: '18px',
+                                                                            }}
+                                                                        >
+                                                                            <SvgIcon name="lockClosed" />
+                                                                        </TooltipIconWrap>
+                                                                    </Tooltip>
+                                                                )}
                                                         </StatCellLabel>
                                                         <StatCellContent>
                                                             {abbr(
