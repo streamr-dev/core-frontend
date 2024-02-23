@@ -18,9 +18,9 @@ export function BehindBlockErrorDisplay({
 
     const { actualBlockNumber, expectedBlockNumber } = latest
 
-    const total = expectedBlockNumber - initialBlockNumber
+    const total = Math.max(1, expectedBlockNumber - initialBlockNumber)
 
-    const completed = actualBlockNumber - initialBlockNumber
+    const completed = Math.max(0, actualBlockNumber - initialBlockNumber)
 
     const togo = Math.max(0, expectedBlockNumber - actualBlockNumber)
 
