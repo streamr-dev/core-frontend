@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback } from 'react'
 import { useInfiniteQuery, UseInfiniteQueryResult, useQuery } from '@tanstack/react-query'
 import { OrderDirection, Sponsorship, Sponsorship_OrderBy } from '~/generated/gql/network'
 import {
@@ -30,7 +30,6 @@ import { editStakeModal } from '~/modals/EditStakeModal'
 import { useCurrentChain, useCurrentChainId } from '~/shared/stores/chain'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 import { useRequestedBlockNumber } from '.'
-import { BehindIndexError } from '~/errors/BehindIndexError'
 
 function getDefaultQueryParams(pageSize: number) {
     return {
@@ -224,80 +223,19 @@ export function useSponsorshipByIdQuery(sponsorshipId: string) {
 
     const minBlockNumber = useRequestedBlockNumber()
 
-    const initialBehindBlockErrorRef = useRef<BehindIndexError | null>(null)
-
-    const sponsorshipIdRef = useRef(sponsorshipId)
-
-    if (sponsorshipIdRef.current !== sponsorshipId) {
-        sponsorshipIdRef.current = sponsorshipId
-
-        /**
-         * We reset the `initialBehindBlockErrorRef` for each new sponsorship id. That's the
-         * whole point of reffing the id.
-         */
-        initialBehindBlockErrorRef.current = null
-    }
-
-    const query = useQuery({
+    return useQuery({
         queryKey: [
             'useSponsorshipByIdQuery',
             currentChainId,
             sponsorshipId.toLowerCase(),
             minBlockNumber,
         ],
-        queryFn: async () => {
-            let sponsorship: ParsedSponsorship | null = null
-
-            try {
-                sponsorship = await getParsedSponsorshipById(
-                    currentChainId,
-                    sponsorshipId,
-                    {
-                        force: true,
-                        minBlockNumber,
-                    },
-                )
-            } catch (e) {
-                if (e instanceof BehindIndexError) {
-                    if (!initialBehindBlockErrorRef.current) {
-                        initialBehindBlockErrorRef.current = e
-                    }
-
-                    e.setInitialBlockNumber(
-                        initialBehindBlockErrorRef.current?.actualBlockNumber,
-                        { overwrite: false },
-                    )
-                }
-
-                throw e
-            }
-
-            return sponsorship
-        },
-        staleTime: 60 * 1000, // 1 minute
-        keepPreviousData: true,
+        queryFn: () =>
+            getParsedSponsorshipById(currentChainId, sponsorshipId, {
+                force: true,
+                minBlockNumber,
+            }),
     })
-
-    const isBehindError = query.error instanceof BehindIndexError
-
-    useEffect(
-        function refetchQueryOnBehindBlockError() {
-            if (!isBehindError) {
-                return
-            }
-
-            const timeoutId = setTimeout(() => {
-                query.refetch()
-            }, 5000)
-
-            return () => {
-                clearTimeout(timeoutId)
-            }
-        },
-        [query, isBehindError],
-    )
-
-    return query
 }
 
 export function useSponsorshipsByStreamIdQuery({

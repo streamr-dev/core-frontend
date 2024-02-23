@@ -6,15 +6,32 @@ import Spinner from './Spinner'
 import { Tooltip } from './Tooltip'
 
 interface BehindBlockErrorDisplayProps {
-    value: BehindIndexError
+    latest: BehindIndexError
+    initial?: BehindIndexError | undefined
 }
 
-export function BehindBlockErrorDisplay({ value }: BehindBlockErrorDisplayProps) {
-    const togo = value.remaining() - value.completed()
+export function BehindBlockErrorDisplay({
+    latest,
+    initial = latest,
+}: BehindBlockErrorDisplayProps) {
+    const { actualBlockNumber: initialBlockNumber } = initial
+
+    const { actualBlockNumber, expectedBlockNumber } = latest
+
+    const total = expectedBlockNumber - initialBlockNumber
+
+    const completed = actualBlockNumber - initialBlockNumber
+
+    const togo = Math.max(0, expectedBlockNumber - actualBlockNumber)
 
     return (
         <Root>
-            <Spinner fixed coverage={value.progress()} size={24} strokeWidth={3} />
+            <Spinner
+                fixed
+                coverage={Math.min(1, completed / total)}
+                size={24}
+                strokeWidth={3}
+            />
             <h2>Indexing</h2>
             <p>
                 Your resource is being indexed.
@@ -22,8 +39,8 @@ export function BehindBlockErrorDisplay({ value }: BehindBlockErrorDisplayProps)
                 It will be available shortly.
             </p>
             <Tooltip
-                content={`${value.actualBlockNumber} / ${value.expectedBlockNumber}`}
                 anchorDisplay="inline-block"
+                content={`${actualBlockNumber} / ${expectedBlockNumber}`}
             >
                 <Blocks>
                     {togo} block{togo !== 1 ? 's' : ''} to go

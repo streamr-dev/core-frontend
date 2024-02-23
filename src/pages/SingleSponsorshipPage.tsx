@@ -35,7 +35,11 @@ import routes from '~/routes'
 import { abbr } from '~/utils'
 import { NoDataWrap } from '~/shared/components/ScrollTable/ScrollTable.styles'
 import Spinner from '~/components/Spinner'
-import { useLastBehindBlockError } from '~/hooks'
+import {
+    useInitialBehindIndexError,
+    useLatestBehindBlockError,
+    useRefetchQueryBehindIndexEffect,
+} from '~/hooks'
 import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
 
 export const SingleSponsorshipPage = () => {
@@ -43,10 +47,16 @@ export const SingleSponsorshipPage = () => {
 
     const sponsorshipQuery = useSponsorshipByIdQuery(sponsorshipId)
 
-    const error = useLastBehindBlockError(sponsorshipQuery)
+    const initialBehindBlockError = useInitialBehindIndexError(sponsorshipQuery, [
+        sponsorshipId,
+    ])
+
+    useRefetchQueryBehindIndexEffect(sponsorshipQuery)
+
+    const behindBlockError = useLatestBehindBlockError(sponsorshipQuery)
 
     const isFetching =
-        sponsorshipQuery.isFetching || sponsorshipQuery.isLoading || !!error
+        sponsorshipQuery.isFetching || sponsorshipQuery.isLoading || !!behindBlockError
 
     const sponsorship = sponsorshipQuery.data || null
 
@@ -119,8 +129,11 @@ export const SingleSponsorshipPage = () => {
 
     const operational = minOperators == null || operatorCount >= minOperators
 
-    const placeholder = error ? (
-        <BehindBlockErrorDisplay value={error} />
+    const placeholder = behindBlockError ? (
+        <BehindBlockErrorDisplay
+            latest={behindBlockError}
+            initial={initialBehindBlockError || undefined}
+        />
     ) : !isFetching ? (
         <NoData firstLine="Operator not found." />
     ) : null

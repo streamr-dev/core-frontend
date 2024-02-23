@@ -54,7 +54,12 @@ import {
     useUncollectedEarnings,
 } from '~/shared/stores/uncollectedEarnings'
 import { truncate } from '~/shared/utils/text'
-import { useConfigValueFromChain, useLastBehindBlockError } from '~/hooks'
+import {
+    useConfigValueFromChain,
+    useInitialBehindIndexError,
+    useLatestBehindBlockError,
+    useRefetchQueryBehindIndexEffect,
+} from '~/hooks'
 import { Button } from '~/components/Button'
 import { FundedUntilCell, StreamIdCell } from '~/components/Table'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
@@ -79,9 +84,16 @@ export const SingleOperatorPage = () => {
 
     const operator = operatorQuery.data || null
 
-    const error = useLastBehindBlockError(operatorQuery)
+    const initialBehindBlockError = useInitialBehindIndexError(operatorQuery, [
+        operatorId,
+    ])
 
-    const isFetching = operatorQuery.isLoading || operatorQuery.isFetching || !!error
+    useRefetchQueryBehindIndexEffect(operatorQuery)
+
+    const behindBlockError = useLatestBehindBlockError(operatorQuery)
+
+    const isFetching =
+        operatorQuery.isLoading || operatorQuery.isFetching || !!behindBlockError
 
     const walletAddress = useWalletAccount()
 
@@ -177,8 +189,11 @@ export const SingleOperatorPage = () => {
 
     const forceUndelegate = useForceUndelegate()
 
-    const placeholder = error ? (
-        <BehindBlockErrorDisplay value={error} />
+    const placeholder = behindBlockError ? (
+        <BehindBlockErrorDisplay
+            latest={behindBlockError}
+            initial={initialBehindBlockError || undefined}
+        />
     ) : !isFetching ? (
         <NoData firstLine="Operator not found." />
     ) : null

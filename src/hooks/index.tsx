@@ -1,6 +1,6 @@
 import { StreamrConfig } from '@streamr/network-contracts'
 import { UseQueryResult } from '@tanstack/react-query'
-import React, { useCallback, useState, useSyncExternalStore } from 'react'
+import React, { useCallback, useRef, useState, useSyncExternalStore } from 'react'
 import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { toaster } from 'toasterhea'
@@ -159,32 +159,81 @@ export function useRequestedBlockNumber(): number {
     }
 }
 
-export function useLastBehindBlockError<T extends UseQueryResult>(
+/**
+ * Tracks and returns a referenace to the latest of `BehindIndexError` exception.
+ */
+export function useLatestBehindBlockError<T extends UseQueryResult>(
     query: T,
 ): BehindIndexError | null {
     const { error, isSuccess } = query
 
-    const [lastError, setLastError] = useState(
+    const behindBlockErrorRef = useRef<BehindIndexError | null>(null)
+
+    if (error instanceof BehindIndexError) {
+        behindBlockErrorRef.current = error
+    }
+
+    if (isSuccess) {
+        behindBlockErrorRef.current = null
+    }
+
+    return behindBlockErrorRef.current
+}
+
+/**
+ * Keeps a reference of the first encountered `BehindIndexError` within
+ * the context of `resetDeps`.
+ */
+export function useInitialBehindIndexError<T extends UseQueryResult>(
+    query: T,
+    resetDeps: unknown[],
+) {
+    const { error } = query
+
+    const errorRef = useRef<BehindIndexError | null>(
         error instanceof BehindIndexError ? error : null,
     )
 
-    useEffect(
-        function setTruthyLastError() {
-            if (error instanceof BehindIndexError) {
-                setLastError(error)
-            }
-        },
-        [error],
-    )
+    const resetKey = JSON.stringify(resetDeps)
+
+    const resetKeyRef = useRef(resetKey)
+
+    if (!errorRef.current && error instanceof BehindIndexError) {
+        errorRef.current = error
+    }
+
+    if (resetKeyRef.current !== resetKey) {
+        resetKeyRef.current = resetKey
+
+        errorRef.current = null
+    }
+
+    return errorRef.current
+}
+
+/**
+ * Refreshes given erroring query after 5s if the reason for its failure
+ * is a `BehindIndexError`.
+ */
+export function useRefetchQueryBehindIndexEffect<T extends UseQueryResult>(query: T) {
+    const isBehindError = query.error instanceof BehindIndexError
 
     useEffect(
-        function resetLastErrorOnSuccess() {
-            if (isSuccess) {
-                setLastError(null)
+        function refetchQueryOnBehindBlockError() {
+            if (!isBehindError) {
+                return
+            }
+
+            const timeoutId = setTimeout(() => {
+                query.refetch()
+            }, 5000)
+
+            return () => {
+                clearTimeout(timeoutId)
             }
         },
-        [isSuccess],
+        [query, isBehindError],
     )
 
-    return lastError
+    return query
 }
