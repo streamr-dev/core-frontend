@@ -241,6 +241,11 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                                 continue
                             }
 
+                            /**
+                             * After all the trying the operator id can still be nullish. In such case we don't
+                             * wanna continue. It is, after all, unexpected behaviour, especially for newly
+                             * created operator.
+                             */
                             if (!operatorId) {
                                 throw new Error('Empty operator id')
                             }
