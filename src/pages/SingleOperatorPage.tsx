@@ -8,7 +8,7 @@ import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import { NoData } from '~/shared/components/NoData'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
-import { COLORS, LAPTOP, MEDIUM, TABLET } from '~/shared/utils/styled'
+import { COLORS, LAPTOP, MAX_BODY_WIDTH, MEDIUM, TABLET } from '~/shared/utils/styled'
 import {
     formatLongDate,
     formatShortDate,
@@ -179,12 +179,30 @@ export const SingleOperatorPage = () => {
                 loading={operatorQuery.isLoading || operatorQuery.isFetching}
             />
             {!!operator && (
-                <OperatorActionBar
-                    operator={operator}
-                    handleEdit={(currentOperator) => {
-                        saveOperator(currentChainId, currentOperator)
-                    }}
-                />
+                <>
+                    <OperatorActionBar
+                        operator={operator}
+                        handleEdit={(currentOperator) => {
+                            saveOperator(currentChainId, currentOperator)
+                        }}
+                    />
+                    {operator.contractVersion < 1 && (
+                        <NoticeBar>
+                            <NoticeWrap>
+                                <TooltipIconWrap $color="#ff5c00">
+                                    <JiraFailedBuildStatusIcon label="Error" />
+                                </TooltipIconWrap>
+                                <div>
+                                    Your Operator smart contract is outdated.{' '}
+                                    <a href="#" rel="noopener noreferrer" target="_blank">
+                                        Click here
+                                    </a>{' '}
+                                    to learn how to migrate to the latest version.
+                                </div>
+                            </NoticeWrap>
+                        </NoticeBar>
+                    )}
+                </>
             )}
             <LayoutColumn>
                 {operator == null ? (
@@ -847,6 +865,32 @@ const WarningCell = styled.div`
     ${TooltipIconWrap} svg {
         width: 18px;
         height: 18px;
+    }
+`
+
+const NoticeBar = styled.div`
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: #fff4ee;
+    font-size: 14px;
+    line-height: 20px;
+    color: #323232;
+    padding: 8px 0;
+`
+
+const NoticeWrap = styled.div`
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    gap: 8px;
+    align-items: center;
+    margin: 0 auto;
+    max-width: ${MAX_BODY_WIDTH}px;
+    padding: 0 24px;
+    width: 100%;
+
+    @media (min-width: ${MAX_BODY_WIDTH + 48}px) {
+        padding: 0;
     }
 `
 
