@@ -11,8 +11,8 @@ interface AnchorProps<T extends AnchorComponentProps = AnchorComponentProps>
     extends Omit<HTMLAttributes<HTMLDivElement>, 'translate'> {
     component: FC<T>
     componentProps: Omit<T, 'x' | 'y'>
+    display?: 'inline' | 'inline-block'
     indicateOrigin?: boolean
-    inline?: boolean
     translate?: (rect: DOMRect | undefined) => [number, number]
 }
 
@@ -26,7 +26,7 @@ export function Anchor<T extends AnchorComponentProps = AnchorComponentProps>({
     component: Component,
     componentProps,
     children,
-    inline = false,
+    display,
     ...props
 }: AnchorProps<T>) {
     const ref = useRef<HTMLDivElement>(null)
@@ -34,7 +34,7 @@ export function Anchor<T extends AnchorComponentProps = AnchorComponentProps>({
     const [x, y] = useBoundingClientRect(ref, (rect) => translate?.(rect) || [0, 0])
 
     return (
-        <Root {...props} ref={ref} $display={inline ? 'inline' : undefined}>
+        <Root {...props} ref={ref} $display={display}>
             {children}
             {createPortal(
                 <Component x={x} y={y} {...(componentProps as any)} />,
@@ -93,6 +93,6 @@ export function useBoundingClientRect<T>(
     ) as T
 }
 
-const Root = styled.div<{ $display?: 'inline' }>`
+const Root = styled.div<{ $display?: 'inline' | 'inline-block' }>`
     display: ${({ $display }) => $display};
 `

@@ -3,12 +3,12 @@ import styled, { css } from 'styled-components'
 import { Anchor, useBoundingClientRect } from './Anchor'
 
 interface Props {
+    anchorDisplay?: 'inline' | 'inline-block'
     children: ReactNode
     content: ReactNode
-    inlineWrap?: boolean
 }
 
-export function Tooltip({ children, content, inlineWrap = false }: Props) {
+export function Tooltip({ children, content, anchorDisplay }: Props) {
     const [isOpen, toggle] = useState(false)
 
     useEffect(() => {
@@ -35,7 +35,7 @@ export function Tooltip({ children, content, inlineWrap = false }: Props) {
                 children: content,
                 visible: isOpen,
             }}
-            inline={inlineWrap}
+            display={anchorDisplay}
             onMouseEnter={() => void toggle(true)}
             onMouseLeave={() => void toggle(false)}
             translate={(r) => (r ? [r.x + r.width / 2, r.y + window.scrollY] : [0, 0])}

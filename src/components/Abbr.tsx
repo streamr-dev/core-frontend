@@ -26,7 +26,7 @@ export function Abbr({ children, suffix }: { children: BNish; suffix?: string })
 
     return (
         <Tooltip
-            inlineWrap
+            anchorDisplay="inline"
             content={
                 <>
                     {stringified}&nbsp;{unit}
