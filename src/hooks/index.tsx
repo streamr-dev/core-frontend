@@ -160,7 +160,7 @@ export function useRequestedBlockNumber(): number {
 }
 
 /**
- * Tracks and returns a referenace to the latest of `BehindIndexError` exception.
+ * Tracks and returns a referenace to the latest `BehindIndexError` exception.
  */
 export function useLatestBehindBlockError<T extends UseQueryResult>(
     query: T,
@@ -190,9 +190,7 @@ export function useInitialBehindIndexError<T extends UseQueryResult>(
 ) {
     const { error } = query
 
-    const errorRef = useRef<BehindIndexError | null>(
-        error instanceof BehindIndexError ? error : null,
-    )
+    const errorRef = useRef<BehindIndexError | null>(null)
 
     const resetKey = JSON.stringify(resetDeps)
 
