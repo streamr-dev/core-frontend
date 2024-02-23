@@ -110,7 +110,7 @@ export const SingleSponsorshipPage = () => {
 
     const { operatorCount = 0, minOperators } = sponsorship || {}
 
-    const operational = minOperators == null || operatorCount < minOperators
+    const operational = minOperators == null || operatorCount >= minOperators
 
     return (
         <Layout>
