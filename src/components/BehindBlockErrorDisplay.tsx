@@ -23,6 +23,7 @@ export function BehindBlockErrorDisplay({ value }: BehindBlockErrorDisplayProps)
             </p>
             <Tooltip
                 content={`${value.actualBlockNumber} / ${value.expectedBlockNumber}`}
+                anchorDisplay="inline-block"
             >
                 <Blocks>
                     {togo} block{togo !== 1 ? 's' : ''} to go
@@ -41,7 +42,7 @@ const Root = styled.div`
     }
 
     p {
-        margin: 12px 0 0;
+        margin: 12px 0 16px;
         line-height: 1.5em;
     }
 
@@ -61,7 +62,7 @@ const Blocks = styled.div`
     font-size: 14px;
     gap: 4px;
     height: 32px;
-    margin: 16px auto 0;
+    margin: 0 auto;
     padding: 0 12px;
     width: max-content;
 `
