@@ -162,7 +162,7 @@ jobs:
           TEST_HOOKS: off
         run: npm run build-storybook --output-dir storybook-static
       - name: Publish storybook to Chromatic
-        uses: chromaui/action@v10
+        uses: chromaui/action@v11
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
