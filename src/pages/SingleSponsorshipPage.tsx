@@ -135,7 +135,7 @@ export const SingleSponsorshipPage = () => {
             initial={initialBehindBlockError || undefined}
         />
     ) : !isFetching ? (
-        <NoData firstLine="Operator not found." />
+        <NoData firstLine="Sponsorship not found." />
     ) : null
 
     return (
