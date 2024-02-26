@@ -82,8 +82,7 @@ import {
     GetEnsDomainsForAccountQueryVariables,
 } from '~/generated/gql/ens'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
-import { isMessagedObject } from '~/utils/exceptions'
-import { BehindIndexError } from '~/errors/BehindIndexError'
+import { prehandleBehindBlockError } from '~/errors/BehindIndexError'
 
 const DEFAULT_OPERATOR_ORDER_BY = Operator_OrderBy.Id
 const DEFAULT_SPONSORSHIP_ORDER_BY = Sponsorship_OrderBy.Id
@@ -349,7 +348,7 @@ export async function getParsedSponsorshipById(
 
         rawSponsorship = (data.sponsorship || null) as Sponsorship | null
     } catch (e) {
-        prehandleBehindBlockError(e)
+        prehandleBehindBlockError(e, minBlockNumber)
 
         console.warn('Failed to fetch a Sponsorship', e)
 
@@ -603,22 +602,6 @@ export async function searchOperatorsByMetadata({
     return operators
 }
 
-function prehandleBehindBlockError(e: unknown) {
-    const blockRegexp =
-        /indexed up to block number (\d+) and data for block number (\d+) is therefore not yet available/i
-
-    if (!isMessagedObject(e) || !blockRegexp.test(e.message)) {
-        return
-    }
-
-    const [actualBlockNumber, expectedBlockNumber] = e.message
-        .match(blockRegexp)!
-        .slice(1, 3)
-        .map(Number)
-
-    throw new BehindIndexError(expectedBlockNumber, actualBlockNumber)
-}
-
 export async function getOperatorById(
     chainId: number,
     operatorId: string,
@@ -641,7 +624,7 @@ export async function getOperatorById(
 
         return operator || null
     } catch (e) {
-        prehandleBehindBlockError(e)
+        prehandleBehindBlockError(e, minBlockNumber)
 
         throw e
     }
@@ -671,7 +654,7 @@ export async function getParsedOperatorByOwnerAddress(
 
         operator = operators?.[0] || null
     } catch (e) {
-        prehandleBehindBlockError(e)
+        prehandleBehindBlockError(e, minBlockNumber)
 
         throw e
     }
