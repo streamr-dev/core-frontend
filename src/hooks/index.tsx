@@ -149,6 +149,10 @@ export function useMediaQuery(query: string): boolean {
     )
 }
 
+/**
+ * Extracts block number (`?b=…`) from GET params; makes sure it's
+ * a number. Defaults to 0.
+ */
 export function useRequestedBlockNumber(): number {
     const blockNumber = useSearchParams()[0].get('b')
 
@@ -187,7 +191,7 @@ export function useLatestBehindBlockError<T extends UseQueryResult>(
 export function useInitialBehindIndexError<T extends UseQueryResult>(
     query: T,
     resetDeps: unknown[],
-) {
+): BehindIndexError | null {
     const { error } = query
 
     const errorRef = useRef<BehindIndexError | null>(null)
@@ -213,7 +217,9 @@ export function useInitialBehindIndexError<T extends UseQueryResult>(
  * Refreshes given erroring query after 5s if the reason for its failure
  * is a `BehindIndexError`.
  */
-export function useRefetchQueryBehindIndexEffect<T extends UseQueryResult>(query: T) {
+export function useRefetchQueryBehindIndexEffect<T extends UseQueryResult>(
+    query: T,
+): void {
     const isBehindError = query.error instanceof BehindIndexError
 
     useEffect(
@@ -232,6 +238,4 @@ export function useRefetchQueryBehindIndexEffect<T extends UseQueryResult>(query
         },
         [query, isBehindError],
     )
-
-    return query
 }
