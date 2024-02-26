@@ -320,8 +320,8 @@ gql`
         }
     }
 
-    query getProject($id: ID!) {
-        project(id: $id) {
+    query getProject($id: ID!, $minBlockNumber: Int = 0) {
+        project(id: $id, block: { number_gte: $minBlockNumber }) {
             ...ProjectFields
         }
     }
