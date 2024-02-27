@@ -875,7 +875,7 @@ const WarningCell = styled.div`
         height: 18px;
     }
 `
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const NoticeBar = styled.div`
     display: flex;
     align-items: center;
@@ -887,6 +887,7 @@ const NoticeBar = styled.div`
     padding: 8px 0;
 `
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const NoticeWrap = styled.div`
     display: grid;
     grid-template-columns: 18px 1fr;

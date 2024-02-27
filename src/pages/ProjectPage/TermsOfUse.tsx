@@ -6,18 +6,11 @@ import { Tick } from '~/shared/components/Checkbox'
 import Label from '~/shared/components/Ui/Label'
 import Input from '~/shared/components/Ui/Text/StyledInput'
 import { ProjectType } from '~/shared/types'
-import {
-    useIsProjectDraftBusy,
-    usePersistProjectCallback,
-    useProject,
-    useProjectDraft,
-    useSetProjectDraftErrors,
-    useUpdateProject,
-} from '~/stores/projectDraft'
+import { ProjectDraft, usePersistProjectCallback } from '~/stores/projectDraft'
 import { OpenDataPayload } from '~/types/projects'
 
 export default function TermsOfUse() {
-    const update = useUpdateProject()
+    const update = ProjectDraft.useUpdateEntity()
 
     const {
         termsOfUse: {
@@ -28,15 +21,17 @@ export default function TermsOfUse() {
             termsUrl,
             termsName,
         },
-    } = useProject({ hot: true }) || getEmptyParsedProject({ type: ProjectType.OpenData })
+    } =
+        ProjectDraft.useEntity({ hot: true }) ||
+        getEmptyParsedProject({ type: ProjectType.OpenData })
 
-    const { 'termsOfUse.termsUrl': termsUrlError } = useProjectDraft()?.errors || {}
+    const { 'termsOfUse.termsUrl': termsUrlError } = ProjectDraft.useDraft()?.errors || {}
 
-    const setErrors = useSetProjectDraftErrors()
+    const setErrors = ProjectDraft.useSetDraftErrors()
 
     const persist = usePersistProjectCallback()
 
-    const busy = useIsProjectDraftBusy()
+    const busy = ProjectDraft.useIsDraftBusy()
 
     return (
         <>

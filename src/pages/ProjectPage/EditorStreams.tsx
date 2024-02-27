@@ -7,11 +7,7 @@ import {
 } from '~/services/streams'
 import SearchBar from '~/shared/components/SearchBar'
 import { StreamSelectTable } from '~/shared/components/StreamSelectTable'
-import {
-    useIsProjectDraftBusy,
-    useProject,
-    useUpdateProject,
-} from '~/stores/projectDraft'
+import { ProjectDraft } from '~/stores/projectDraft'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { ProjectType } from '~/shared/types'
 import { address0 } from '~/consts'
@@ -25,9 +21,9 @@ export default function EditorStreams() {
     const {
         type: projectType = ProjectType.OpenData,
         streams: projectStreams = EmptyStreams,
-    } = useProject({ hot: true }) || {}
+    } = ProjectDraft.useEntity({ hot: true }) || {}
 
-    const busy = useIsProjectDraftBusy()
+    const busy = ProjectDraft.useIsDraftBusy()
 
     const [searchValue, setSearchValue] = useState('')
 
@@ -45,7 +41,7 @@ export default function EditorStreams() {
 
     const abortControllerRef = useRef<AbortController>()
 
-    const update = useUpdateProject()
+    const update = ProjectDraft.useUpdateEntity()
 
     const chainId = useCurrentChainId()
 

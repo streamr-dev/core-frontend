@@ -1,14 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
-import {
-    useIsProjectDraftBusy,
-    usePersistProjectCallback,
-    useProject,
-    useProjectDraft,
-    useSetProjectDraftErrors,
-    useUpdateProject,
-} from '~/stores/projectDraft'
+import { ProjectDraft, usePersistProjectCallback } from '~/stores/projectDraft'
 import { COLORS } from '~/shared/utils/styled'
 import RichTextEditor from '~/components/RichTextEditor'
 import DetailDropdown, {
@@ -28,20 +21,20 @@ const cropModal = toaster(CropImageModal, Layer.Modal)
 
 export default function EditorHero() {
     const { creator, contact, name, description, imageUrl } =
-        useProject({ hot: true }) ||
+        ProjectDraft.useEntity({ hot: true }) ||
         getEmptyParsedProject({
             type: ProjectType.OpenData,
         })
 
     const [newImageUrl, setNewImageUrl] = useState<string>()
 
-    const update = useUpdateProject()
+    const update = ProjectDraft.useUpdateEntity()
 
-    const errors = useProjectDraft()?.errors || {}
+    const errors = ProjectDraft.useDraft()?.errors || {}
 
-    const setErrors = useSetProjectDraftErrors()
+    const setErrors = ProjectDraft.useSetDraftErrors()
 
-    const busy = useIsProjectDraftBusy()
+    const busy = ProjectDraft.useIsDraftBusy()
 
     const imageAbortControllerRef = useRef<AbortController>()
 

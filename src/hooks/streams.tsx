@@ -392,7 +392,7 @@ export function useGlobalStreamStatsQuery() {
             const client = getIndexerClient(chainId)
 
             if (!client) {
-                return
+                return null
             }
 
             try {
@@ -412,6 +412,8 @@ export function useGlobalStreamStatsQuery() {
             } catch (e) {
                 console.warn('Fetching global streams stats failed', e)
             }
+
+            return null
         },
     })
 }

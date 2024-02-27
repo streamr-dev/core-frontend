@@ -6,12 +6,7 @@ import { LogoLink, Navbar, NavbarItem } from '~/components/Nav/Nav.styles'
 import Logo from '~/shared/components/Logo'
 import { Button } from '~/components/Button'
 import { REGULAR } from '~/shared/utils/styled'
-import {
-    useIsProjectDraftBusy,
-    useIsProjectDraftClean,
-    usePersistProjectCallback,
-    useProject,
-} from '~/stores/projectDraft'
+import { ProjectDraft, usePersistProjectCallback } from '~/stores/projectDraft'
 import routes from '~/routes'
 import { FloatingToolbar } from '~/components/FloatingToolbar'
 import { useInViewport } from '~/hooks/useInViewport'
@@ -39,11 +34,11 @@ const FlexNavbarItem = styled(NavbarItem)`
 `
 
 export default function EditorNav() {
-    const busy = useIsProjectDraftBusy()
+    const busy = ProjectDraft.useIsDraftBusy()
 
-    const clean = useIsProjectDraftClean()
+    const clean = ProjectDraft.useIsDraftClean()
 
-    const { id: projectId } = useProject() || {}
+    const { id: projectId } = ProjectDraft.useEntity() || {}
 
     const persist = usePersistProjectCallback()
 
