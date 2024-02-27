@@ -29,15 +29,16 @@ import CropImageModal from '~/components/CropImageModal/CropImageModal'
 import { Layer } from '~/utils/Layer'
 import { Alert } from '~/components/Alert'
 import { ParsedOperator } from '~/parsers/OperatorParser'
-import { sameBN, waitForIndexedBlock } from '~/utils'
+import { sameBN, sleep, waitForIndexedBlock } from '~/utils'
 import { createOperator, updateOperator } from '~/services/operators'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { getParsedOperatorByOwnerAddress } from '~/getters'
 import { Hint } from '~/components/Hint'
+import { BehindIndexError } from '~/errors/BehindIndexError'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     chainId: number
-    onResolve?: (operatorId: string) => void
+    onResolve?: (params: { operatorId: string; blockNumber: number }) => void
     operator: ParsedOperator | undefined
 }
 
@@ -181,29 +182,79 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                 setBusy(true)
 
                 try {
+                    let blockNumber = 0
+
                     if (!operator) {
                         await createOperator(chainId, finalData, {
-                            onBlockNumber: (blockNumber) =>
-                                waitForIndexedBlock(chainId, blockNumber),
+                            onBlockNumber: (blockNo) => {
+                                blockNumber = blockNo
+
+                                return waitForIndexedBlock(chainId, blockNo)
+                            },
                         })
                     } else {
                         await updateOperator(chainId, operator, finalData, {
-                            onBlockNumber: (blockNumber) =>
-                                waitForIndexedBlock(chainId, blockNumber),
+                            onBlockNumber: (blockNo) => {
+                                blockNumber = blockNo
+
+                                return waitForIndexedBlock(chainId, blockNo)
+                            },
                         })
                     }
 
-                    const operatorId = (
-                        await getParsedOperatorByOwnerAddress(chainId, walletAddress, {
-                            force: true,
-                        })
-                    )?.id
+                    let operatorId = operator?.id
 
                     if (!operatorId) {
-                        throw new Error('Empty operator id')
+                        /**
+                         * The following loop ensures that each thrown instance of `BehindIndexError`
+                         * causes a proper retry.
+                         */
+                        for (;;) {
+                            try {
+                                /**
+                                 * If the following request hits the indexer too early, i.e. before block
+                                 * at `blockNumber` got ingested, it'll give us nothing (it does not know
+                                 * about the operator). The above loop helps maneuver through such edge case.
+                                 */
+                                operatorId = (
+                                    await getParsedOperatorByOwnerAddress(
+                                        chainId,
+                                        walletAddress,
+                                        {
+                                            force: true,
+                                            minBlockNumber: blockNumber,
+                                        },
+                                    )
+                                )?.id
+                            } catch (e) {
+                                if (!(e instanceof BehindIndexError)) {
+                                    throw e
+                                }
+
+                                /**
+                                 * If we're behind on the indexed blocks with the operator id request
+                                 * we have to retry until we're good to move forward. Let's wait 5s
+                                 * and retry.
+                                 */
+                                await sleep(5000)
+
+                                continue
+                            }
+
+                            /**
+                             * After all the trying the operator id can still be nullish. In such case we don't
+                             * wanna continue. It is, after all, unexpected behaviour, especially for newly
+                             * created operator.
+                             */
+                            if (!operatorId) {
+                                throw new Error('Empty operator id')
+                            }
+
+                            break
+                        }
                     }
 
-                    onResolve?.(operatorId)
+                    onResolve?.({ operatorId, blockNumber })
                 } catch (e) {
                     if (isRejectionReason(e)) {
                         return

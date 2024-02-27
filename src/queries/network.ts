@@ -104,8 +104,8 @@ gql`
         }
     }
 
-    query getOperatorById($operatorId: ID!) {
-        operator(id: $operatorId) {
+    query getOperatorById($operatorId: ID!, $minBlockNumber: Int = 0) {
+        operator(id: $operatorId, block: { number_gte: $minBlockNumber }) {
             ...OperatorFields
         }
     }
@@ -169,8 +169,12 @@ gql`
         }
     }
 
-    query getOperatorByOwnerAddress($owner: String!) {
-        operators(where: { owner: $owner }) {
+    query getOperatorByOwnerAddress($owner: String!, $minBlockNumber: Int = 0) {
+        operators(
+            first: 1
+            block: { number_gte: $minBlockNumber }
+            where: { owner: $owner }
+        ) {
             ...OperatorFields
         }
     }
@@ -257,8 +261,8 @@ gql`
         }
     }
 
-    query getSponsorshipById($sponsorshipId: ID!) {
-        sponsorship(id: $sponsorshipId) {
+    query getSponsorshipById($sponsorshipId: ID!, $minBlockNumber: Int = 0) {
+        sponsorship(id: $sponsorshipId, block: { number_gte: $minBlockNumber }) {
             ...SponsorshipFields
         }
     }
@@ -319,8 +323,8 @@ gql`
         }
     }
 
-    query getProject($id: ID!) {
-        project(id: $id) {
+    query getProject($id: ID!, $minBlockNumber: Int = 0) {
+        project(id: $id, block: { number_gte: $minBlockNumber }) {
             ...ProjectFields
         }
     }

@@ -5150,6 +5150,7 @@ export type SearchOperatorsByMetadataQuery = { __typename?: 'Query', operators: 
 
 export type GetOperatorByIdQueryVariables = Exact<{
   operatorId: Scalars['ID']['input'];
+  minBlockNumber?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
@@ -5192,6 +5193,7 @@ export type GetOperatorsByDelegationAndMetadataQuery = { __typename?: 'Query', o
 
 export type GetOperatorByOwnerAddressQueryVariables = Exact<{
   owner: Scalars['String']['input'];
+  minBlockNumber?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
@@ -5226,6 +5228,7 @@ export type GetSponsorshipsByCreatorQuery = { __typename?: 'Query', sponsorships
 
 export type GetSponsorshipByIdQueryVariables = Exact<{
   sponsorshipId: Scalars['ID']['input'];
+  minBlockNumber?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
@@ -5246,6 +5249,7 @@ export type ProjectFieldsFragment = { __typename?: 'Project', id: string, domain
 
 export type GetProjectQueryVariables = Exact<{
   id: Scalars['ID']['input'];
+  minBlockNumber?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
@@ -5561,8 +5565,8 @@ export const SearchOperatorsByMetadataDocument = gql`
     ${OperatorFieldsFragmentDoc}`;
 export type SearchOperatorsByMetadataQueryResult = Apollo.QueryResult<SearchOperatorsByMetadataQuery, SearchOperatorsByMetadataQueryVariables>;
 export const GetOperatorByIdDocument = gql`
-    query getOperatorById($operatorId: ID!) {
-  operator(id: $operatorId) {
+    query getOperatorById($operatorId: ID!, $minBlockNumber: Int = 0) {
+  operator(id: $operatorId, block: {number_gte: $minBlockNumber}) {
     ...OperatorFields
   }
 }
@@ -5611,8 +5615,12 @@ export const GetOperatorsByDelegationAndMetadataDocument = gql`
     ${OperatorFieldsFragmentDoc}`;
 export type GetOperatorsByDelegationAndMetadataQueryResult = Apollo.QueryResult<GetOperatorsByDelegationAndMetadataQuery, GetOperatorsByDelegationAndMetadataQueryVariables>;
 export const GetOperatorByOwnerAddressDocument = gql`
-    query getOperatorByOwnerAddress($owner: String!) {
-  operators(where: {owner: $owner}) {
+    query getOperatorByOwnerAddress($owner: String!, $minBlockNumber: Int = 0) {
+  operators(
+    first: 1
+    block: {number_gte: $minBlockNumber}
+    where: {owner: $owner}
+  ) {
     ...OperatorFields
   }
 }
@@ -5647,8 +5655,8 @@ export const GetSponsorshipsByCreatorDocument = gql`
     ${SponsorshipFieldsFragmentDoc}`;
 export type GetSponsorshipsByCreatorQueryResult = Apollo.QueryResult<GetSponsorshipsByCreatorQuery, GetSponsorshipsByCreatorQueryVariables>;
 export const GetSponsorshipByIdDocument = gql`
-    query getSponsorshipById($sponsorshipId: ID!) {
-  sponsorship(id: $sponsorshipId) {
+    query getSponsorshipById($sponsorshipId: ID!, $minBlockNumber: Int = 0) {
+  sponsorship(id: $sponsorshipId, block: {number_gte: $minBlockNumber}) {
     ...SponsorshipFields
   }
 }
@@ -5669,8 +5677,8 @@ export const GetSponsorshipByStreamIdDocument = gql`
     ${SponsorshipFieldsFragmentDoc}`;
 export type GetSponsorshipByStreamIdQueryResult = Apollo.QueryResult<GetSponsorshipByStreamIdQuery, GetSponsorshipByStreamIdQueryVariables>;
 export const GetProjectDocument = gql`
-    query getProject($id: ID!) {
-  project(id: $id) {
+    query getProject($id: ID!, $minBlockNumber: Int = 0) {
+  project(id: $id, block: {number_gte: $minBlockNumber}) {
     ...ProjectFields
   }
 }

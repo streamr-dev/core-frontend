@@ -29,6 +29,7 @@ import { invalidateActiveOperatorByIdQueries } from '~/hooks/operators'
 import { editStakeModal } from '~/modals/EditStakeModal'
 import { useCurrentChain, useCurrentChainId } from '~/shared/stores/chain'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
+import { useRequestedBlockNumber } from '.'
 
 function getDefaultQueryParams(pageSize: number) {
     return {
@@ -211,7 +212,7 @@ export function useAllSponsorshipsQuery({
 
 function invalidateSponsorshipByIdQueries(chainId: number, sponsorshipId: string) {
     return getQueryClient().invalidateQueries({
-        exact: true,
+        exact: false,
         queryKey: ['useSponsorshipByIdQuery', chainId, sponsorshipId.toLowerCase()],
         refetchType: 'active',
     })
@@ -220,16 +221,20 @@ function invalidateSponsorshipByIdQueries(chainId: number, sponsorshipId: string
 export function useSponsorshipByIdQuery(sponsorshipId: string) {
     const currentChainId = useCurrentChainId()
 
+    const minBlockNumber = useRequestedBlockNumber()
+
     return useQuery({
         queryKey: [
             'useSponsorshipByIdQuery',
             currentChainId,
             sponsorshipId.toLowerCase(),
+            minBlockNumber,
         ],
         queryFn: () =>
-            getParsedSponsorshipById(currentChainId, sponsorshipId, { force: true }),
-        staleTime: 60 * 1000, // 1 minute
-        keepPreviousData: true,
+            getParsedSponsorshipById(currentChainId, sponsorshipId, {
+                force: true,
+                minBlockNumber,
+            }),
     })
 }
 
@@ -309,7 +314,10 @@ export function useCreateSponsorship() {
         (
             chainId: number,
             wallet: string | undefined,
-            options: { onDone?: (sponsorshipId: string) => void; streamId?: string } = {},
+            options: {
+                onDone?: (sponsorshipId: string, blockNumber: number) => void
+                streamId?: string
+            } = {},
         ) => {
             if (!wallet) {
                 return
@@ -326,7 +334,7 @@ export function useCreateSponsorship() {
                                     wallet,
                                 )
 
-                                const { sponsorshipId, streamId } =
+                                const { sponsorshipId, streamId, blockNumber } =
                                     await createSponsorshipModal.pop({
                                         chainId,
                                         balance,
@@ -340,7 +348,7 @@ export function useCreateSponsorship() {
                                     streamId,
                                 )
 
-                                options.onDone?.(sponsorshipId)
+                                options.onDone?.(sponsorshipId, blockNumber)
                             },
                         )
                     } catch (e) {

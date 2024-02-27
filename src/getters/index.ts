@@ -82,6 +82,7 @@ import {
     GetEnsDomainsForAccountQueryVariables,
 } from '~/generated/gql/ens'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
+import { prehandleBehindBlockError } from '~/errors/BehindIndexError'
 
 const DEFAULT_OPERATOR_ORDER_BY = Operator_OrderBy.Id
 const DEFAULT_SPONSORSHIP_ORDER_BY = Sponsorship_OrderBy.Id
@@ -328,7 +329,7 @@ export async function getSponsorshipsByStreamId({
 export async function getParsedSponsorshipById(
     chainId: number,
     sponsorshipId: string,
-    { force = false } = {},
+    { force = false, minBlockNumber = 0 } = {},
 ) {
     let rawSponsorship: Sponsorship | undefined | null
 
@@ -340,12 +341,15 @@ export async function getParsedSponsorshipById(
             query: GetSponsorshipByIdDocument,
             variables: {
                 sponsorshipId: sponsorshipId.toLowerCase(),
+                minBlockNumber,
             },
             fetchPolicy: force ? 'network-only' : void 0,
         })
 
         rawSponsorship = (data.sponsorship || null) as Sponsorship | null
     } catch (e) {
+        prehandleBehindBlockError(e, minBlockNumber)
+
         console.warn('Failed to fetch a Sponsorship', e)
 
         errorToast({ title: 'Could not fetch Sponsorship details' })
@@ -601,43 +605,59 @@ export async function searchOperatorsByMetadata({
 export async function getOperatorById(
     chainId: number,
     operatorId: string,
-    { force = false } = {},
+    { force = false, minBlockNumber = 0 } = {},
 ): Promise<NonNullable<GetOperatorByIdQuery['operator']> | null> {
-    const {
-        data: { operator },
-    } = await getGraphClient(chainId).query<
-        GetOperatorByIdQuery,
-        GetOperatorByIdQueryVariables
-    >({
-        query: GetOperatorByIdDocument,
-        variables: {
-            operatorId,
-        },
-        fetchPolicy: force ? 'network-only' : void 0,
-    })
+    try {
+        const {
+            data: { operator },
+        } = await getGraphClient(chainId).query<
+            GetOperatorByIdQuery,
+            GetOperatorByIdQueryVariables
+        >({
+            query: GetOperatorByIdDocument,
+            variables: {
+                operatorId,
+                minBlockNumber,
+            },
+            fetchPolicy: force ? 'network-only' : void 0,
+        })
 
-    return operator || null
+        return operator || null
+    } catch (e) {
+        prehandleBehindBlockError(e, minBlockNumber)
+
+        throw e
+    }
 }
 
 export async function getParsedOperatorByOwnerAddress(
     chainId: number,
     address: string,
-    { force = false }: { force?: boolean } = {},
+    { force = false, minBlockNumber = 0 } = {},
 ): Promise<ParsedOperator | null> {
-    const {
-        data: { operators },
-    } = await getGraphClient(chainId).query<
-        GetOperatorByOwnerAddressQuery,
-        GetOperatorByOwnerAddressQueryVariables
-    >({
-        query: GetOperatorByOwnerAddressDocument,
-        variables: {
-            owner: address.toLowerCase(),
-        },
-        fetchPolicy: force ? 'network-only' : void 0,
-    })
+    let operator: GetOperatorByOwnerAddressQuery['operators'][0] | null = null
 
-    const operator = operators?.[0] || null
+    try {
+        const {
+            data: { operators },
+        } = await getGraphClient(chainId).query<
+            GetOperatorByOwnerAddressQuery,
+            GetOperatorByOwnerAddressQueryVariables
+        >({
+            query: GetOperatorByOwnerAddressDocument,
+            variables: {
+                owner: address.toLowerCase(),
+                minBlockNumber,
+            },
+            fetchPolicy: force ? 'network-only' : void 0,
+        })
+
+        operator = operators?.[0] || null
+    } catch (e) {
+        prehandleBehindBlockError(e, minBlockNumber)
+
+        throw e
+    }
 
     if (operator) {
         try {

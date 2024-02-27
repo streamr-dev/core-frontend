@@ -54,7 +54,12 @@ import {
     useUncollectedEarnings,
 } from '~/shared/stores/uncollectedEarnings'
 import { truncate } from '~/shared/utils/text'
-import { useConfigValueFromChain } from '~/hooks'
+import {
+    useConfigValueFromChain,
+    useInitialBehindIndexError,
+    useLatestBehindBlockError,
+    useRefetchQueryBehindIndexEffect,
+} from '~/hooks'
 import { Button } from '~/components/Button'
 import { FundedUntilCell, StreamIdCell } from '~/components/Table'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
@@ -66,6 +71,7 @@ import { abbr, saveOperator } from '~/utils'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { Hint } from '~/components/Hint'
 import { useCurrentChainId } from '~/shared/stores/chain'
+import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
 
 const defaultChartData = []
 
@@ -77,6 +83,17 @@ export const SingleOperatorPage = () => {
     const operatorQuery = useOperatorByIdQuery(operatorId)
 
     const operator = operatorQuery.data || null
+
+    const initialBehindBlockError = useInitialBehindIndexError(operatorQuery, [
+        operatorId,
+    ])
+
+    useRefetchQueryBehindIndexEffect(operatorQuery)
+
+    const behindBlockError = useLatestBehindBlockError(operatorQuery)
+
+    const isFetching =
+        operatorQuery.isLoading || operatorQuery.isFetching || !!behindBlockError
 
     const walletAddress = useWalletAccount()
 
@@ -176,12 +193,19 @@ export const SingleOperatorPage = () => {
 
     const forceUndelegate = useForceUndelegate()
 
+    const placeholder = behindBlockError ? (
+        <BehindBlockErrorDisplay
+            latest={behindBlockError}
+            initial={initialBehindBlockError || undefined}
+        />
+    ) : !isFetching ? (
+        <NoData firstLine="Operator not found." />
+    ) : null
+
     return (
         <Layout>
             <NetworkHelmet title="Operator" />
-            <LoadingIndicator
-                loading={operatorQuery.isLoading || operatorQuery.isFetching}
-            />
+            <LoadingIndicator loading={isFetching} />
             {!!operator && (
                 <>
                     <OperatorActionBar
@@ -210,11 +234,7 @@ export const SingleOperatorPage = () => {
             )}
             <LayoutColumn>
                 {operator == null ? (
-                    <>
-                        {!(operatorQuery.isLoading || operatorQuery.isFetching) && (
-                            <NoData firstLine="Operator not found." />
-                        )}
-                    </>
+                    placeholder
                 ) : (
                     <SegmentGrid>
                         <ChartGrid>

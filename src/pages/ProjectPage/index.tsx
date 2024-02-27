@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query'
 import React, { useMemo } from 'react'
 import { Link, Navigate, Outlet, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
@@ -8,7 +7,6 @@ import Layout, { LayoutColumn } from '~/components/Layout'
 import NetworkPageSegment, { Pad, SegmentGrid } from '~/components/NetworkPageSegment'
 import { QueriedStreamsTable } from '~/components/QueriedStreamsTable'
 import { TermsOfUse } from '~/components/TermsOfUse'
-import { getParsedProjectById } from '~/getters/hub'
 import { StreamsOrderBy, useStreamsQuery, useStreamsStatsQuery } from '~/hooks/streams'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import ProjectHero from '~/marketplace/containers/ProjectPage/Hero/ProjectHero2'
@@ -21,7 +19,6 @@ import Segment from '~/shared/components/Segment'
 import { StreamConnect } from '~/shared/components/StreamConnect'
 import { StreamPreview } from '~/shared/components/StreamPreview'
 import SvgIcon from '~/shared/components/SvgIcon'
-import { useCurrentChainId } from '~/shared/stores/chain'
 import {
     ProjectPermission,
     useCurrentProjectAbility,
@@ -36,6 +33,13 @@ import {
     useProject,
 } from '~/stores/projectDraft'
 import { isProjectType } from '~/utils'
+import { useProjectByIdQuery } from '~/hooks/projects'
+import {
+    useInitialBehindIndexError,
+    useLatestBehindBlockError,
+    useRefetchQueryBehindIndexEffect,
+} from '~/hooks'
+import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
 import { AccessManifest } from './AccessManifest'
 import GetAccess from './GetAccess'
 import ProjectEditorPage from './ProjectEditorPage'
@@ -68,36 +72,41 @@ export function NewProjectPage() {
 export function ExistingProjectPageWrap() {
     const { id: projectId } = useParams<{ id: string }>()
 
-    const chainId = useCurrentChainId()
+    const projectQuery = useProjectByIdQuery(projectId)
 
-    const query = useQuery({
-        queryKey: ['ExistingProjectPageWrap.query', chainId, projectId?.toLowerCase()],
-        queryFn: async () => {
-            if (!projectId) {
-                return null
-            }
+    const initialBehindBlockError = useInitialBehindIndexError(projectQuery, [projectId])
 
-            const result = await getParsedProjectById(chainId, projectId)
+    useRefetchQueryBehindIndexEffect(projectQuery)
 
-            if (!result) {
-                throw new Error('Project could not be found or is invalid')
-            }
+    const behindBlockError = useLatestBehindBlockError(projectQuery)
 
-            return result
-        },
-        staleTime: Infinity,
-        cacheTime: 0,
-    })
+    const { data: project = null } = projectQuery
 
-    const { data: project = null } = query
+    const isFetching =
+        projectQuery.isLoading || projectQuery.isFetching || !!behindBlockError
 
-    const isLoading = !project && (query.isLoading || query.isFetching)
+    const draftId = useInitProjectDraft(isFetching ? undefined : project)
 
-    const draftId = useInitProjectDraft(isLoading ? undefined : project)
+    const placeholder = behindBlockError ? (
+        <Layout>
+            <LayoutColumn>
+                <BehindBlockErrorDisplay
+                    latest={behindBlockError}
+                    initial={initialBehindBlockError || undefined}
+                />
+            </LayoutColumn>
+        </Layout>
+    ) : isFetching ? (
+        <Layout>
+            <LoadingIndicator loading />
+        </Layout>
+    ) : (
+        <NotFoundPage />
+    )
 
     return (
         <ProjectDraftContext.Provider value={draftId}>
-            {query.isError ? <NotFoundPage /> : <Outlet />}
+            {project == null ? placeholder : <Outlet />}
         </ProjectDraftContext.Provider>
     )
 }

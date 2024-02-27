@@ -261,13 +261,13 @@ export function saveOperator(
     chainId: number,
     operator: ParsedOperator | undefined,
     options: {
-        onDone?: (operatorId: string) => void
+        onDone?: (operatorId: string, blockNumber: number) => void
         onError?: (error: unknown) => void
     } = {},
 ) {
     void (async () => {
         try {
-            const operatorId = await operatorModal.pop({
+            const { operatorId, blockNumber } = await operatorModal.pop({
                 chainId,
                 operator,
             })
@@ -278,7 +278,7 @@ export function saveOperator(
 
             invalidateDelegationsForWalletQueries(chainId)
 
-            options.onDone?.(operatorId)
+            options.onDone?.(operatorId, blockNumber)
         } catch (e) {
             if (options.onError) {
                 options.onError(e)

@@ -119,8 +119,13 @@ export const OperatorsPage = () => {
                         <Button
                             onClick={() => {
                                 saveOperator(chainId, undefined, {
-                                    onDone(id) {
-                                        navigate(routes.network.operator({ id }))
+                                    onDone(id, blockNumber) {
+                                        navigate(
+                                            routes.network.operator({
+                                                id,
+                                                b: blockNumber,
+                                            }),
+                                        )
                                     },
                                 })
                             }}
