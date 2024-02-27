@@ -25,12 +25,9 @@ import {
 } from '~/shared/stores/projectAbilities'
 import { ProjectType, SalePoint } from '~/shared/types'
 import {
-    ProjectDraftContext,
+    ProjectDraft,
     preselectSalePoint,
-    useInitProjectDraft,
     useIsAccessibleByCurrentWallet,
-    useIsProjectDraftBusy,
-    useProject,
 } from '~/stores/projectDraft'
 import { isProjectType } from '~/utils'
 import { useProjectByIdQuery } from '~/hooks/projects'
@@ -60,12 +57,12 @@ export function NewProjectPage() {
         return project
     }, [projectType])
 
-    const draftId = useInitProjectDraft(project)
+    const draftId = ProjectDraft.useInitDraft(project)
 
     return (
-        <ProjectDraftContext.Provider value={draftId}>
+        <ProjectDraft.DraftContext.Provider value={draftId}>
             <ProjectEditorPage />
-        </ProjectDraftContext.Provider>
+        </ProjectDraft.DraftContext.Provider>
     )
 }
 
@@ -85,7 +82,7 @@ export function ExistingProjectPageWrap() {
     const isFetching =
         projectQuery.isLoading || projectQuery.isFetching || !!behindBlockError
 
-    const draftId = useInitProjectDraft(isFetching ? undefined : project)
+    const draftId = ProjectDraft.useInitDraft(isFetching ? undefined : project)
 
     const placeholder = behindBlockError ? (
         <Layout>
@@ -105,14 +102,14 @@ export function ExistingProjectPageWrap() {
     )
 
     return (
-        <ProjectDraftContext.Provider value={draftId}>
+        <ProjectDraft.DraftContext.Provider value={draftId}>
             {project == null ? placeholder : <Outlet />}
-        </ProjectDraftContext.Provider>
+        </ProjectDraft.DraftContext.Provider>
     )
 }
 
 export function ProjectOverviewPage() {
-    const project = useProject()
+    const project = ProjectDraft.useEntity()
 
     if (!project) {
         return null
@@ -179,7 +176,7 @@ export function ProjectOverviewPage() {
 export function ProjectConnectPage() {
     const hasAccess = useIsAccessibleByCurrentWallet()
 
-    const project = useProject()
+    const project = ProjectDraft.useEntity()
 
     if (!project) {
         return null
@@ -222,7 +219,7 @@ export function ProjectConnectPage() {
 export function ProjectLiveDataPage() {
     const hasAccess = useIsAccessibleByCurrentWallet()
 
-    const project = useProject()
+    const project = ProjectDraft.useEntity()
 
     if (!project) {
         return null
@@ -257,9 +254,9 @@ export function ProjectLiveDataPage() {
 }
 
 export function ProjectTabbedPage() {
-    const { id = undefined, name = '', creator = '' } = useProject() || {}
+    const { id = undefined, name = '', creator = '' } = ProjectDraft.useEntity() || {}
 
-    const busy = useIsProjectDraftBusy()
+    const busy = ProjectDraft.useIsDraftBusy()
 
     const canEdit = useCurrentProjectAbility(ProjectPermission.Edit)
 

@@ -2,18 +2,18 @@ import React from 'react'
 import styled from 'styled-components'
 import { getEmptyParsedProject } from '~/parsers/ProjectParser'
 import TextField from '~/shared/components/Ui/Text/StyledInput'
-import { useProject, useUpdateProject } from '~/stores/projectDraft'
+import { ProjectDraft } from '~/stores/projectDraft'
 import { ProjectType } from '~/shared/types'
 import { COLORS } from '~/shared/utils/styled'
 
 export default function DataUnionFee({ disabled = false }: { disabled?: boolean }) {
-    const update = useUpdateProject()
+    const update = ProjectDraft.useUpdateEntity()
 
     const emptyProject = getEmptyParsedProject({ type: ProjectType.OpenData })
 
-    const project = useProject({ hot: true }) || emptyProject
+    const project = ProjectDraft.useEntity({ hot: true }) || emptyProject
 
-    const coldProject = useProject() || emptyProject
+    const coldProject = ProjectDraft.useEntity() || emptyProject
 
     const isDataUnion = project.type === ProjectType.DataUnion
 

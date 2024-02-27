@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { useProject } from '~/stores/projectDraft'
+import { ProjectDraft } from '~/stores/projectDraft'
 import { SalePoint } from '~/shared/types'
 
 export default function DataUnionPayment({
@@ -7,7 +7,7 @@ export default function DataUnionPayment({
 }: {
     children?: (salePoint: SalePoint | undefined) => ReactNode
 }) {
-    const { salePoints = {} } = useProject({ hot: true }) || {}
+    const { salePoints = {} } = ProjectDraft.useEntity({ hot: true }) || {}
 
     const salePoint = Object.values(salePoints).find((salePoint) => salePoint?.enabled)
 

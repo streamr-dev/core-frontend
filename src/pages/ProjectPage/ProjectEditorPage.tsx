@@ -26,13 +26,7 @@ import useIsMounted from '~/shared/hooks/useIsMounted'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { ProjectType, SalePoint } from '~/shared/types'
 import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
-import {
-    useIsProjectDraftBusy,
-    useProject,
-    useProjectDraft,
-    useSetProjectDraftErrors,
-    useUpdateProject,
-} from '~/stores/projectDraft'
+import { ProjectDraft } from '~/stores/projectDraft'
 import { Chain } from '~/types'
 import { SalePointsPayload } from '~/types/projects'
 import { formatChainName } from '~/utils'
@@ -53,13 +47,13 @@ export default function ProjectEditorPage() {
         type = ProjectType.OpenData,
         creator = '',
         salePoints: existingSalePoints = EmptySalePoints,
-    } = useProject({ hot: true }) || {}
+    } = ProjectDraft.useEntity({ hot: true }) || {}
 
-    const busy = useIsProjectDraftBusy()
+    const busy = ProjectDraft.useIsDraftBusy()
 
-    const { fetching = false, errors = EmptyErrors } = useProjectDraft() || {}
+    const { fetching = false, errors = EmptyErrors } = ProjectDraft.useDraft() || {}
 
-    const update = useUpdateProject()
+    const update = ProjectDraft.useUpdateEntity()
 
     const chainId = useCurrentChainId()
 
@@ -114,7 +108,7 @@ export default function ProjectEditorPage() {
         })
     }
 
-    const setErrors = useSetProjectDraftErrors()
+    const setErrors = ProjectDraft.useSetDraftErrors()
 
     const isMounted = useIsMounted()
 

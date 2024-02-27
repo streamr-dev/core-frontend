@@ -24,17 +24,7 @@ import networkPreflight from '~/utils/networkPreflight'
 import { validationErrorToast } from '~/utils/toast'
 import { toastedOperations } from '~/utils/toastedOperation'
 
-const {
-    DraftContext: ProjectDraftContext,
-    useDraft: useProjectDraft,
-    useEntity: useProject,
-    useInitDraft: useInitProjectDraft,
-    useIsDraftBusy: useIsProjectDraftBusy,
-    useIsDraftClean: useIsProjectDraftClean,
-    usePersistCallback,
-    useSetDraftErrors: useSetProjectDraftErrors,
-    useUpdateEntity: useUpdateProject,
-} = createDraftStore<ParsedProject>({
+export const ProjectDraft = createDraftStore<ParsedProject>({
     async persist({ entity }) {
         const operations: Operation[] = []
 
@@ -209,17 +199,6 @@ function eq(cold: ParsedProject, hot: ParsedProject) {
     return isEqual({ ...hot, adminFee: '' }, { ...cold, adminFee: '' })
 }
 
-export {
-    ProjectDraftContext,
-    useInitProjectDraft,
-    useIsProjectDraftBusy,
-    useIsProjectDraftClean,
-    useProject,
-    useProjectDraft,
-    useSetProjectDraftErrors,
-    useUpdateProject,
-}
-
 export function preselectSalePoint(project: ParsedProject) {
     if (project.type === ProjectType.OpenData) {
         return
@@ -268,7 +247,7 @@ function requiresAdminFeeUpdate(hot: ParsedProject, cold: ParsedProject) {
 export function useIsAccessibleByCurrentWallet() {
     const wallet = useWalletAccount()
 
-    const draft = useProjectDraft()
+    const draft = ProjectDraft.useDraft()
 
     const fetching = !!draft?.fetching
 
@@ -298,7 +277,7 @@ export function useIsAccessibleByCurrentWallet() {
 }
 
 export function usePersistProjectCallback() {
-    const persist = usePersistCallback()
+    const persist = ProjectDraft.usePersistCallback()
 
     const navigate = useNavigate()
 
